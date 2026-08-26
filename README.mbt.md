@@ -11,8 +11,8 @@ and [Moonrun](https://github.com/moonbitlang/moon/tree/main/crates/moonrun).
 
 ## Status
 
-The repository is currently preparing its initial command migration. The first
-release will import the existing command implementations and their CLI test
+The initial command migration is complete for the fixed upstream snapshot. The
+repository imports the existing command implementations and their CLI test
 suite from
 [`moonbit-community/moonbit-jq`](https://github.com/moonbit-community/moonbit-jq/tree/main/cmd).
 
@@ -25,6 +25,8 @@ paste   printf sleep sort   tail   tr    true  uniq   wc     xxd
 
 See the [migration and development plan](docs/migration-plan.md) for the
 architecture, migration stages, test strategy, and security acceptance work.
+Stage 3 CLI/CI migration and Stage 4 policy smoke coverage are complete for
+this snapshot.
 
 ## Package layout
 
@@ -73,12 +75,15 @@ This repository supplies auditable command implementations; Moonrun and
 the execution chain. Commands that can create child processes or expand
 authority require dedicated policy integration tests before they can enter a
 default harness allow-list. Native-only commands, including the currently
-planned `jqlog` package, are not enabled by default.
+planned `jqlog` package, are not enabled by default. The fixed snapshot's
+Wasm allow-list and policy checks live under `tests/policy/`; CI verifies that
+file reads are denied or allowed according to the supplied policy and that
+command packages do not import process-spawning APIs.
 
 ## Development
 
-The project will carry forward the upstream Moon Cram CLI suite and CI checks.
-The standard local validation sequence is:
+The project carries the upstream Moon Cram CLI suite and CI checks. The standard
+local validation sequence is:
 
 ```bash
 moon update
@@ -86,8 +91,12 @@ moon check --deny-warn
 moon info
 moon fmt
 moon test --target all
-moon cram test tests/cram docs/jq-tutorial.md
+moon cram test tests/cram TUTORIAL.md
+sh tests/policy/check-wasm-policy.sh
 ```
+
+Use the repository-local `AGENTS.md` tooling rule when selecting the Moon home
+for local commands.
 
 When adding a command, include its executable `moon.pkg`, implementation,
 README, generated interface, and CLI tests. Test native and Wasm targets where

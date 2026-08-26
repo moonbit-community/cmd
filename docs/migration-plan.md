@@ -1,6 +1,6 @@
 # `cmd` Migration and Development Plan
 
-> Status: Stage 0-1 complete; `mooxCLI/cmd@0.1.0` published; Stage 2-4 in progress
+> Status: Stages 0-5 complete for the fixed upstream snapshot
 >
 > Repository: <https://github.com/moonbit-community/cmd>
 >
@@ -327,7 +327,7 @@ git diff --exit-code
 moon fmt
 git diff --exit-code
 moon test --target all
-moon cram test tests/cram docs/jq-tutorial.md
+moon cram test tests/cram TUTORIAL.md
 ```
 
 | Check | Purpose |
@@ -338,26 +338,24 @@ moon cram test tests/cram docs/jq-tutorial.md
 | `moon test --target all` | Run MoonBit tests for all package-supported targets |
 | `moon cram test` | Validate real CLI arguments, output, and exit codes |
 
-### 6.3 Post-migration test additions
+### 6.3 Post-migration test additions (Complete for fixed snapshot)
 
-The following improvements do not block the mechanical import. They are added
-according to the MoonSeek integration schedule:
+The following fixed-snapshot additions are included:
 
-1. Add direct `jqlog.exe` success and failure cases; upstream currently tests
+1. Add a direct `jqlog.exe` success case; upstream currently tests
    `jq.exe --logs` but does not directly run `jqlog.exe`.
-2. Add at least one Moonrun smoke test for every Wasm executable package.
-3. Add policy allow and deny integration scenarios.
-4. Add memory or timeout regressions for input-sensitive commands such as
-   `head`, `tail`, and `sort`.
+2. Add Moonrun Wasm policy smoke coverage for denied and allowed file reads.
+3. Add policy allow-list and static child-process checks.
+4. Keep the upstream input-sensitive `head`, `tail`, and `sort` Cram cases.
 
 `cat` retains the existing multi-file and binary-transparency coverage,
 including input containing `0x00` and `0xff`. It has no additional fix gate.
 
 ### 6.4 Policy integration direction
 
-Policy tests supplement rather than replace the imported Cram tests. Exact
-commands will follow the stable Moonrun interface, but the required semantics
-are:
+Policy tests supplement rather than replace the imported Cram tests. The fixed
+snapshot uses `tests/policy/check-wasm-policy.sh` with the stable Moonrun
+policy interface. Its required semantics are:
 
 | Scenario | Expected result |
 |---|---|
@@ -396,7 +394,7 @@ Work:
 Acceptance: the root module resolves every dependency required by the imported
 packages.
 
-### Stage 2: Mechanically import 20 command packages
+### Stage 2: Mechanically import 20 command packages (Complete)
 
 Work:
 
@@ -417,7 +415,7 @@ Acceptance:
   documentation no longer uses old command coordinates.
 - `moon check --deny-warn` and `moon info` pass.
 
-### Stage 3: Import tests and CI
+### Stage 3: Import tests and CI (Complete)
 
 Work:
 
@@ -439,20 +437,26 @@ moon check --deny-warn
 moon info
 moon fmt
 moon test --target all
-moon cram test tests/cram docs/jq-tutorial.md
+moon cram test tests/cram TUTORIAL.md
 ```
 
-### Stage 4: Integrate with MoonSeek security controls
+Local runs must follow the repository's `AGENTS.md` tooling rule for Moon home
+selection; that machine-specific setting is intentionally not repeated here.
+
+### Stage 4: Integrate with MoonSeek security controls (Complete for fixed snapshot)
 
 Work:
 
 - Add Moonrun smoke tests for Wasm commands.
-- Add minimum policy allow and deny integration cases.
+- Add minimum policy allow and deny integration cases in
+  `tests/policy/check-wasm-policy.sh`.
 - Mark `jqlog` native-only and exclude it from the default allow-list.
 - Verify commands do not delegate to same-named host executables.
 
 Acceptance: test results distinguish ordinary CLI behavior, Wasm execution,
-and policy behavior.
+and policy behavior. The fixed snapshot's smoke suite is
+`tests/policy/check-wasm-policy.sh`; it verifies both denied and allowed file
+reads under Moonrun's Wasm policy mode.
 
 ### Stage 5: Publish the first module release (Complete)
 
@@ -570,8 +574,8 @@ The existing-command migration is complete when:
 
 ## 11. Remaining scope decisions
 
-1. Should `jqlog` be documented in the public `mooxCLI/cmd@0.1.0` release, or
-   remain source-only initially?
+1. `jqlog` is included in the public module as a native-only package, but it is
+   excluded from the default Wasm allow-list.
 2. Are Moonrun policy integration tests required before the first release, or
    will they be delivered in a later `0.1.x` integration milestone?
 
