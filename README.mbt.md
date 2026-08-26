@@ -1,64 +1,104 @@
 # `cmd`
 
-Common Unix command-line utilities implemented in [MoonBit](https://www.moonbitlang.com/).
+Wasm-first Unix command-line utilities implemented in
+[MoonBit](https://www.moonbitlang.com/) for policy-controlled execution.
 
-This repository provides standalone, Wasm-first command modules for use by
-[MoonSeek](https://github.com/moonbitlang/moon) and
-[Moonrun](https://github.com/moonbitlang/moon/tree/main/crates/moonrun).
-Commands are designed to make file, environment, and process access explicit
-and policy-controlled inside a sandbox.
+This repository provides one MoonBit module, `mooxCLI/cmd`, containing
+executable packages such as `mooxCLI/cmd/cat` and `mooxCLI/cmd/head`. The
+commands are intended for use by the MoonSeek harness through
+[moonx](https://github.com/moonbitlang/moon/blob/main/docs/dev/reference/moonx.md)
+and [Moonrun](https://github.com/moonbitlang/moon/tree/main/crates/moonrun).
+
+## Status
+
+The repository is currently preparing its initial command migration. The first
+release will import the existing command implementations and their CLI test
+suite from
+[`moonbit-community/moonbit-jq`](https://github.com/moonbit-community/moonbit-jq/tree/main/cmd).
+
+The initial migration covers:
+
+```text
+base64  cat    comm  cut    false  head  join  jq     jqlog  nl
+paste   printf sleep sort   tail   tr    true  uniq   wc     xxd
+```
+
+See the [migration and development plan](docs/migration-plan.md) for the
+architecture, migration stages, test strategy, and security acceptance work.
+
+## Package layout
+
+All commands belong to the single `mooxCLI/cmd` module. Each command is an
+executable package directly under the repository root:
+
+```text
+cmd/
+|-- moon.mod              # name = "mooxCLI/cmd"
+|-- cat/
+|   |-- moon.pkg          # executable package mooxCLI/cmd/cat
+|   |-- main.mbt
+|   `-- README.md
+|-- head/
+|-- jq/
+`-- ...
+```
+
+Command directories do not contain separate `moon.mod` files. Module-level
+dependencies and versions are managed once in the root `moon.mod`.
+
+After the first release, commands will be runnable through pinned coordinates:
+
+```bash
+moonx mooxCLI/cmd/cat@0.1.0 -- README.md
+moonx mooxCLI/cmd/head@0.1.0 -- -n 10 README.md
+```
 
 ## Goals
 
 - Port commonly used Unix commands to MoonBit.
-- Keep each command independently buildable and publishable as a Mooncake.
-- Prefer streaming implementations that work well with large inputs.
-- Preserve predictable command-line behavior, including stdout, stderr, and
-  exit codes.
-- Provide a command surface that a harness can allow-list and audit.
-
-## Command layout
-
-Each command lives in its own module under `cmd/` and is intended to be
-invoked through `moonx`, for example:
-
-```bash
-moonx bobzhang/cat -- README.md
-```
-
-The repository will first collect the existing migrated commands from
-[`moonbit-community/moonbit-jq`](https://github.com/moonbit-community/moonbit-jq/tree/main/cmd),
-then continue with additional common utilities. Existing package names such as
-`bobzhang/cat` remain stable so callers can migrate without changing their
-command references.
+- Prefer Wasm execution and explicit runtime-visible resource access.
+- Preserve predictable stdout, stderr, argument, and exit-code behavior.
+- Keep implementations streaming or bounded-memory where practical.
+- Provide a versioned command surface that a harness can allow-list and audit.
+- Avoid delegating command behavior to same-named host executables.
 
 ## Security model
 
-The command implementations are intended to run under Moonrun policy
-enforcement. A command must not silently delegate to a host executable to
-perform the same operation, and operations that access the filesystem,
-environment, network, or child processes must remain visible to the runtime
-policy.
+The command implementations are designed to run under Moonrun policy
+enforcement. Filesystem, environment, network, and process access must remain
+visible to the runtime policy.
 
-Commands that can create child processes or otherwise expand authority require
-additional policy and integration tests before they are enabled by default in
-a harness.
+This repository supplies auditable command implementations; Moonrun and
+`moonx` remain responsible for policy enforcement and policy inheritance across
+the execution chain. Commands that can create child processes or expand
+authority require dedicated policy integration tests before they can enter a
+default harness allow-list. Native-only commands, including the currently
+planned `jqlog` package, are not enabled by default.
 
 ## Development
 
-From the repository root:
+The project will carry forward the upstream Moon Cram CLI suite and CI checks.
+The standard local validation sequence is:
 
 ```bash
-moon check
-moon test
-moon fmt
+moon update
+moon check --deny-warn
 moon info
+moon fmt
+moon test --target all
+moon cram test tests/cram docs/jq-tutorial.md
 ```
 
-When adding a command, include its module metadata, README, and tests. Test
-both native and Wasm targets where the command supports them, and cover empty
-input, binary data, invalid arguments, missing files, stdin handling, and
-large inputs.
+When adding a command, include its executable `moon.pkg`, implementation,
+README, generated interface, and CLI tests. Test native and Wasm targets where
+supported, including invalid arguments, stdin, missing files, binary data, and
+large inputs as applicable.
+
+## Publishing
+
+The module is published from the `mooxCLI` Mooncakes account as
+`mooxCLI/cmd`. All executable packages share the module version. Publishing
+credentials must remain outside the repository.
 
 ## License
 

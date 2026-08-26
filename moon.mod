@@ -9,7 +9,7 @@
 //   "moonbitlang/x@0.4.6",
 // }
 
-name = "moonbit-community/cmd"
+name = "mooxCLI/cmd"
 
 version = "0.1.0"
 
