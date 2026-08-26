@@ -98,7 +98,9 @@ large inputs as applicable.
 
 The module is published from the `mooxCLI` Mooncakes account as
 `mooxCLI/cmd`. All executable packages share the module version. Publishing
-credentials must remain outside the repository.
+credentials and account-selection details must remain outside the repository.
+The initial `mooxCLI/cmd@0.1.0` release has been published; later releases
+must repeat the validation process before publication.
 
 ## License
 

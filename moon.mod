@@ -32,3 +32,13 @@ keywords = [
 preferred_target = "wasm"
 
 description = "Common Unix command-line utilities implemented in MoonBit for policy-controlled execution in MoonSeek and Moonrun sandboxes."
+
+import {
+  "bobzhang/moonjq@0.1.1",
+  "moonbitlang/async@0.21.0",
+  "moonbitlang/x@0.5.1",
+}
+
+options(
+  exclude: [ "AGENTS.md", "docs/" ],
+)

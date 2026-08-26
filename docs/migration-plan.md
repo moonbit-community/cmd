@@ -1,6 +1,6 @@
 # `cmd` Migration and Development Plan
 
-> Status: Draft for review
+> Status: Stage 0-1 complete; `mooxCLI/cmd@0.1.0` published; Stage 2-4 in progress
 >
 > Repository: <https://github.com/moonbit-community/cmd>
 >
@@ -104,14 +104,19 @@ plan does not define multi-maintainer approval or shared publishing access.
 
 Before publishing:
 
-1. Use `moon login` and verify that the active Mooncakes account is `mooxCLI`.
-2. Verify that the root `moon.mod` name is `mooxCLI/cmd`.
-3. Verify that the module version matches the intended Git tag.
-4. Complete all check, test, Cram, and package-content validation.
-5. Confirm that the worktree is clean and the package comes from a committed
+1. Verify that the root `moon.mod` name is `mooxCLI/cmd`.
+2. Verify that the module version matches the intended Git tag.
+3. Complete all check, test, Cram, and package-content validation.
+4. Confirm that the worktree is clean and the package comes from a committed
    revision.
-6. Keep publishing tokens and local credentials out of the Git repository.
-7. Run `moon publish` only after the preceding checks pass.
+5. Confirm that the configured `mooxCLI` publishing account is selected
+   locally.
+6. Keep publishing tokens, account-selection details, and local credentials
+   out of the Git repository.
+
+Publishing-account setup is complete for the current maintainer. The local
+account-selection procedure is intentionally omitted from public
+documentation.
 
 MoonBit module naming and publishing rules are documented in the
 [official module documentation](https://docs.moonbitlang.com/en/latest/toolchain/moon/module.html).
@@ -374,7 +379,8 @@ Work:
 
 - Freeze upstream at `06a529211343c773d30d2c3aa0231a2456665b7a`.
 - Record the 20 commands, two Cram files, and CI configuration.
-- Verify that the local Mooncakes account is `mooxCLI`, without publishing yet.
+- Mark the local publishing-account setup complete without recording local
+  account-selection details.
 
 Acceptance: record the source revision and scope in `docs/provenance.md`.
 
@@ -448,10 +454,12 @@ Work:
 Acceptance: test results distinguish ordinary CLI behavior, Wasm execution,
 and policy behavior.
 
-### Stage 5: Publish the first module release
+### Stage 5: Publish the first module release (Complete)
 
-After completing the checklist in Section 3.2, publish the complete module
-through the `mooxCLI` account:
+The first complete module release has been published through the `mooxCLI`
+account after completing the checklist in Section 3.2:
+
+The published module release is:
 
 ```text
 mooxCLI/cmd@0.1.0
@@ -526,7 +534,7 @@ admission status.
 
 | Risk | Severity | Control |
 |---|---|---|
-| Publishing from the wrong Mooncakes account | High | Verify account `mooxCLI` and module `mooxCLI/cmd` before publishing |
+| Publishing from the wrong Mooncakes account | High | Verify the configured `mooxCLI` account and module `mooxCLI/cmd` before publishing |
 | One module version covers every command | Medium | Release notes identify every affected command |
 | Dependency omissions or conflicts after consolidation | Medium | Keep dependencies in root `moon.mod` and run full check/test validation |
 | A child process bypasses parent policy | High | Exclude such commands until inheritance and tests are ready |
@@ -553,9 +561,10 @@ The existing-command migration is complete when:
   `moon test --target all`, and `moon cram test` all pass.
 - `jqlog` and any other native-only tool are excluded from the default MoonSeek
   allow-list.
-- The active Mooncakes account is verified as `mooxCLI` before release.
-- The first artifact is `mooxCLI/cmd@0.1.0`, with commands selected by package
-  path.
+- The `mooxCLI` publishing-account setup is complete outside the repository;
+  local account-selection details are not committed.
+- The first artifact, `mooxCLI/cmd@0.1.0`, has been published, with commands
+  selected by package path.
 - `moonbit-community/cmd` is the maintenance source for subsequent command
   changes.
 
