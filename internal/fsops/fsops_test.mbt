@@ -1,9 +1,9 @@
 ///|
-test "deletion path protection rejects lexical roots and ancestors" {
+test "deletion path protection rejects roots and working-directory ancestors" {
   inspect(protects_working_directory("."), content="true")
   inspect(protects_working_directory("./"), content="true")
   inspect(protects_working_directory(".."), content="true")
-  inspect(protects_working_directory("../outside"), content="true")
+  inspect(protects_working_directory("../outside"), content="false")
   inspect(protects_working_directory("/"), content="true")
 }
 

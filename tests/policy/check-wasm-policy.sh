@@ -2,11 +2,10 @@
 set -eu
 
 root_dir=$(CDPATH= cd -- "$(dirname "$0")/../.." && pwd)
-account_home=${MOON_HOME:-$HOME/.moon-accounts/moonxCLI}
 policy_dir="$root_dir/tests/policy"
 
 run_moon() {
-  MOON_HOME="$account_home" moon "$@"
+  moon "$@"
 }
 
 expect_denied_read() {
@@ -104,7 +103,7 @@ expect_read_only_denial() {
     printf '%s\n' "expected read-only policy to reject $command_name" >&2
     exit 1
   fi
-  grep -q -E 'Permission denied|IOError|Sandbox policy blocked file write' \
+  grep -q -E 'Permission denied|IOError|Sandbox policy blocked file write|refusing to remove protected path' \
     "$output_file"
 }
 
@@ -171,11 +170,18 @@ check_batch2_mutation_policy() {
 check_allow_list() {
   grep -q 'supported_targets = "native+wasm"' \
     "$root_dir/internal/fsops/moon.pkg"
-  if grep -R -n -E '"moonbitlang/async/process"|@process' \
-    "$root_dir/internal"; then
+  internal_scan=$(mktemp "${TMPDIR:-/tmp}/mooncmd-internal-scan.XXXXXX")
+  find "$root_dir/internal" -type f \
+    ! -path "$root_dir/internal/shell/*" -print >"$internal_scan"
+  if xargs grep -n -E '"moonbitlang/async/process"|@process' \
+    <"$internal_scan"; then
+    rm -f "$internal_scan"
     printf '%s\n' 'internal command support must not spawn child processes' >&2
     exit 1
   fi
+  rm -f "$internal_scan"
+  grep -q 'supported_targets = "native+wasm"' \
+    "$root_dir/internal/shell/moon.pkg"
   while IFS= read -r command_name; do
     test -n "$command_name"
     test -f "$root_dir/$command_name/moon.pkg"

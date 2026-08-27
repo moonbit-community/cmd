@@ -1,6 +1,7 @@
 # `cmd` Migration and Development Plan
 
-> Status: Stages 0-5 complete for the fixed upstream snapshot
+> Status: Initial release stages 0-5 complete; the current source tree contains
+> 48 command packages, with Batches 1-2 allow-listed and retained Batch 3 restricted
 >
 > Repository: <https://github.com/moonbit-community/cmd>
 >
@@ -19,7 +20,8 @@ same effective policy may gain additional host authority and invalidate the
 parent sandbox restrictions.
 
 The `cmd` project does not implement the Moonrun policy engine. It provides a
-single, versioned distribution of auditable, Wasm-first command-line utilities
+single, versioned distribution of auditable, policy-controlled command-line
+utilities
 so the harness can reduce its dependency on host commands and uncontrolled
 native child processes. Moonrun and `moonx` remain responsible for propagating
 and enforcing policy throughout the execution chain.
@@ -56,8 +58,10 @@ additional common commands required by MoonSeek.
 1. The initial milestone will not implement all GNU Coreutils commands or all
    options of each migrated command.
 2. This repository will not implement or duplicate the Moonrun policy engine.
-3. The initial milestone will not add a shell, command interpreter, or generic
-   host-command forwarding facility.
+3. The initial 20-command milestone did not add a shell, command interpreter,
+   or generic host-command forwarding facility. The later `sh` and `make`
+   expansion packages implement bounded MoonBit language subsets instead of
+   forwarding complete scripts to a host interpreter.
 4. The new module will not provide compatibility wrappers for
    `bobzhang/<command>` coordinates.
 5. The mechanical import will not rewrite command implementations that already
@@ -230,7 +234,8 @@ cmd/
 |-- jq/
 |-- jqlog/
 |-- internal/
-|   `-- fsops/                       # private mutation helpers
+|   |-- fsops/                       # private mutation helpers
+|   `-- netops/                      # private HTTP streaming helper
 |-- ...
 |-- tests/
 |   `-- cram/
@@ -266,8 +271,13 @@ must not retain unused dependencies mechanically.
 ### 5.2 Command packages
 
 Each root command directory contains an executable `moon.pkg`. Commands do not
-reuse behavior by invoking one another as executables, and they do not delegate
-to same-named host commands through `PATH`.
+reuse behavior by invoking one another as executables. The `sh` and `make`
+packages implement their parsers, expansion, dependency control flow, and
+error handling in MoonBit. Only individual external recipe commands are
+started through the policy-visible process API, so a complete script is never
+forwarded to a host interpreter. Both packages support native and Wasm and
+remain outside the default allow-list until child-policy inheritance is
+accepted by MoonSeek.
 
 For example, `cat/` uses MoonBit and Moonrun-visible stdin, stdout, and file
 APIs instead of executing `/bin/cat`. External resource access therefore stays
@@ -276,7 +286,11 @@ inside a boundary the runtime can observe and restrict.
 The initial migration did not create a shared utility package. Batch 2 adds the
 private `internal/fsops` package for policy-visible path inspection, bounded
 file copying, recursive traversal, and deletion behavior shared by `cp`, `mv`,
-and `rm`. It is not a public command or compatibility API.
+and `rm`. Batch 3 adds `internal/netops` for streaming HTTP responses shared by
+`curl` and `wget`, plus `internal/shell` for the MoonBit lexer, parser,
+expander, built-ins, redirections, pipelines, and policy-visible external
+process execution shared by `sh` and `make`. These packages are not public
+commands or compatibility APIs.
 
 ### 5.3 Execution path
 
@@ -303,6 +317,9 @@ The initial migration does not replace the upstream test framework. It imports:
   CLI tests.
 - `tests/cram/cli.md`, covering `jq` input, output, filters, log mode, and exit
   codes.
+- `tests/cram/batch1.md`, covering the 12 read-only expansion commands.
+- `tests/cram/batch2.md`, covering the eight filesystem mutation commands.
+- `tests/cram/batch3.md`, covering restricted high-authority command behavior.
 - The executable jq tutorial as both documentation and CLI regression coverage.
 - The GitHub Actions checks for typing, warnings, formatting, generated
   interfaces, all supported targets, and Cram tests.
@@ -372,6 +389,38 @@ policy interface. Its required semantics are:
 
 Commands that can launch arbitrary children do not enter the default allow-list
 until Moonrun policy inheritance and the corresponding tests are stable.
+
+### 6.5 Restricted high-authority batch
+
+`tests/policy/check-third-batch-policy.sh` is a separate gate for commands that
+start children, use the network, or change permissions. It verifies:
+
+- process commands fail under the default-deny process policy;
+- an exact `process.allow` rule for `echo` is sufficient for `env`, `xargs`, and
+  `timeout`;
+- `sh` and `make` execute their MoonBit interpreters on Wasm and require a
+  process rule for every external command;
+- empty network rules deny both `curl` and `wget` before a connection is made;
+  and
+- `chmod` fails closed under a read-only filesystem policy and leaves no side
+  effect.
+
+The batch remains outside `tests/policy/allow-list.txt`. In particular,
+`timeout` cancels only its directly owned child; it cannot promise process-group
+termination for descendants, so it must not be treated as a general sandbox
+escape barrier. Moonrun's current process policy also distinguishes the guest's
+spawn request from the authority of an arbitrary host child: enabling a spawn
+rule does not, by itself, sandbox that child filesystem, network, or process
+access. A command can enter a default allow-list only after the harness starts
+children through a policy-aware boundary that preserves the effective policy.
+Scoped rules match a logical program request, not necessarily the executable
+eventually selected through `PATH`, which is an additional reason to keep these
+packages out of default policy profiles.
+
+`sh` and `make` are complete MoonBit implementations of their supported core
+language surfaces. Parsing and expansion happen inside the guest; every child
+spawn remains a distinct policy decision. They cannot enter the default
+allow-list until MoonSeek accepts the child-policy inheritance contract.
 
 ## 7. Migration stages
 
@@ -534,14 +583,18 @@ succeed. Two focused unit tests cover the shared deletion-path protection.
 
 The current portable API defines four deliberate compatibility boundaries:
 
-- `touch` creates missing files but cannot update timestamps on existing files.
-- `ln` creates symbolic links only; hard links are unavailable.
+- `ln` creates symbolic links only; hard links require a policy-checked runtime
+  link primitive that is not yet exposed.
 - `mv` performs policy-checked rename operations without a cross-filesystem
   copy-and-delete fallback.
 - `cp` copies regular files and directory trees, and rejects symbolic-link and
   special-file sources.
+- `touch` creates files and updates existing regular files without rewriting
+  their contents. Updating timestamps on directories, symbolic links, and
+  special files requires a policy-visible timestamp mutation primitive that is
+  not yet exposed.
 
-### Batch 3: High authority or child processes
+### Batch 3: High authority or child processes (Implemented; restricted admission)
 
 ```text
 env (command-execution mode)
@@ -550,12 +603,19 @@ timeout
 sh
 make
 curl/wget
-chmod/chown
-kill
+chmod
 ```
 
-Batch 3 waits for mature policy inheritance and integration tests. It is not
-accelerated merely to increase the number of available commands.
+The eight command packages are implemented for explicit policy experiments and
+are tested by `tests/cram/batch3.md` and the dedicated policy smoke script, but
+they are deliberately not in the default allow-list. `env`, `xargs`, `timeout`,
+`sh`, and `make` create child processes; `sh` and `make` perform their parsing
+and control flow in MoonBit. `curl` and `wget` use network access, and `chmod`
+changes permission bits. Owner mutation (`chown`) and arbitrary-PID signalling
+(`kill`) are intentionally outside this repository's package scope until
+Moonrun exposes policy-checked primitives for them; they are tracked as
+separate runtime research items and are not built, tested, published, or
+allow-listed here.
 
 Every new command is a root `<name>/` executable package with a README,
 generated interface, Cram behavior tests, target declaration, and security
@@ -599,12 +659,27 @@ The existing-command migration is complete when:
 - `moonbit-community/cmd` is the maintenance source for subsequent command
   changes.
 
+For the current expanded inventory, completion additionally requires:
+
+- The 12 read-only Batch 1 commands and eight filesystem Batch 2 commands to
+  remain in the default policy allow-list with native+Wasm coverage.
+- The eight retained Batch 3 commands (`env`, `xargs`, `timeout`, `sh`, `make`,
+  `curl`, `wget`, and `chmod`) to remain restricted, with dedicated Cram and
+  policy smoke coverage.
+- `chown` and `kill` to remain absent from the package tree, policy inventory,
+  tests, and release artifacts until their runtime authority model is settled.
+- The module description to remain the concise policy-controlled command
+  utility description in `moon.mod` and the README.
+
 ## 11. Settled scope decisions
 
 1. `jqlog` supports native+Wasm execution and is included in the default Wasm
    allow-list. Its file-read behavior is covered by the policy smoke suite.
 2. Future commands that use filesystem access require native and Wasm policy
    smoke cases before entering the default allow-list.
+3. `chown` and `kill` are research-only runtime capabilities, not current
+   command packages; removing their stubs avoids implying a supported or
+   publishable implementation.
 
 The module name, root package layout, publishing account, MoonJQ dependency,
 and `cat` treatment are settled by this plan.

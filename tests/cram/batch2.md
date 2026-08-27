@@ -50,12 +50,27 @@ preserved
 ```
 
 ```mooncram
+$ dd if=/dev/zero of=touch-large bs=1048576 count=4 2>/dev/null && sha256sum.exe touch-large > touch-before && touch.exe touch-large && sha256sum.exe touch-large > touch-after && cmp.exe touch-before touch-after && echo touch-content-preserved
+touch-content-preserved
+```
+
+```mooncram
 $ touch.exe -c touch-not-created && test ! -e touch-not-created && echo no-create-ok
 no-create-ok
 ```
 
 ```mooncram
 $ touch.exe missing-parent/touch-file >/dev/null 2>&1
+[1]
+```
+
+```mooncram
+$ mkdir.exe touch-directory && touch.exe touch-directory >/dev/null 2>&1
+[1]
+```
+
+```mooncram
+$ ln -s touch-existing touch-link && touch.exe touch-link >/dev/null 2>&1
 [1]
 ```
 

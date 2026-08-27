@@ -397,6 +397,13 @@ $ seq.exe 0.5 0.5 1.5
 ```
 
 ```mooncram
+$ seq.exe 1e-1 1e-1 0.3
+0.1
+0.2
+0.3
+```
+
+```mooncram
 $ seq.exe 3 1 | wc.exe -l
 0
 ```
@@ -462,6 +469,16 @@ $ sha256sum.exe -z sha-a | xxd.exe -p
 ```mooncram
 $ printf 'malformed\n' > malformed-checks && sha256sum.exe -c malformed-checks >/dev/null 2>&1
 [1]
+```
+
+```mooncram
+$ printf '%064s  data.bin\n' z > nonhex-checks && sha256sum.exe -c nonhex-checks >/dev/null 2>&1
+[1]
+```
+
+```mooncram
+$ printf escaped > 'sha\\name' && sha256sum.exe 'sha\\name' > escaped-checks && sha256sum.exe -c escaped-checks
+sha\\name: OK
 ```
 
 ```mooncram

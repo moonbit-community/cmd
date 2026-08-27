@@ -11,7 +11,7 @@
 
 name = "mooxCLI/cmd"
 
-version = "0.1.2"
+version = "0.1.3"
 
 readme = "README.mbt.md"
 
@@ -31,7 +31,7 @@ keywords = [
 
 preferred_target = "wasm"
 
-description = "Common Unix command-line utilities implemented in MoonBit for policy-controlled execution in MoonSeek and Moonrun sandboxes."
+description = "Common Unix command-line utilities implemented in MoonBit for policy-controlled execution."
 
 import {
   "bobzhang/moonjq@0.1.1",

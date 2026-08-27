@@ -20,8 +20,8 @@ pub fn join(parent : String, child : String) -> String {
 
 ///|
 fn is_same_or_descendant(path : String, root : String) -> Bool {
-  let normalized_path = @path.Path(path).normalize().to_string()
-  let normalized_root = @path.Path(root).normalize().to_string()
+  let normalized_path = canonical_path(path)
+  let normalized_root = canonical_path(root)
   if normalized_path == normalized_root {
     return true
   }
@@ -34,18 +34,32 @@ fn is_same_or_descendant(path : String, root : String) -> Bool {
 }
 
 ///|
+fn canonical_path(path : String) -> String {
+  let separator = @path.sep.to_string()
+  let mut normalized = @path.Path(path).normalize().to_string()
+  while normalized.length() > 1 && normalized.has_suffix(separator) {
+    normalized = normalized[:normalized.length() - separator.length()].to_owned()
+  }
+  normalized
+}
+
+///|
 pub fn protects_working_directory(path : String) -> Bool {
+  guard @env.current_dir() is Some(current) else {
+    let normalized = @path.Path(path).normalize().to_string()
+    return normalized == "." ||
+      normalized == ".." ||
+      normalized == "/" ||
+      normalized.has_prefix("../")
+  }
+  let current = canonical_path(current)
   let target = @path.Path(path)
-    .normalize()
-    .to_string()
-    .trim_end(chars="/\\")
-    .to_owned()
-  let parent = dirname(target)
-  target == "" ||
-  target == "." ||
-  target == ".." ||
-  parent == target ||
-  target.has_prefix(".." + @path.sep.to_string())
+  let target = if target.is_absolute() {
+    canonical_path(target.to_string())
+  } else {
+    canonical_path(@path.Path(current).join(target).to_string())
+  }
+  target == current || is_same_or_descendant(current, target)
 }
 
 ///|

@@ -1,0 +1,10 @@
+{
+  "process": {
+    "allow": [
+      {
+        "program": "echo",
+        "args_prefix": []
+      }
+    ]
+  }
+}

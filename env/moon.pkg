@@ -1,0 +1,13 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/os_error",
+  "moonbitlang/async/process",
+  "moonbitlang/async/stdio",
+  "moonbitlang/core/env" @core_env,
+  "moonbitlang/core/strconv",
+  "moonbitlang/x/sys",
+}
+
+supported_targets = "native+wasm"
+
+pkgtype(kind: "executable")

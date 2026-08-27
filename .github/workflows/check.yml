@@ -55,3 +55,7 @@ jobs:
       - name: wasm policy smoke tests
         run: |
           sh tests/policy/check-wasm-policy.sh
+
+      - name: third-batch policy smoke tests
+        run: |
+          sh tests/policy/check-third-batch-policy.sh

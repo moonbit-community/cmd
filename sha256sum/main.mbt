@@ -28,6 +28,62 @@ fn split_lines(text : String) -> Array[String] {
 }
 
 ///|
+fn is_hex_digest(value : String) -> Bool {
+  if value.length() != 64 {
+    return false
+  }
+  for char in value {
+    if !(char is ('0'..='9' | 'a'..='f' | 'A'..='F')) {
+      return false
+    }
+  }
+  true
+}
+
+///|
+fn encode_filename(name : String) -> (String, Bool) {
+  let output = StringBuilder()
+  let mut escaped = false
+  for char in name {
+    match char {
+      '\\' => {
+        output.write_string("\\\\")
+        escaped = true
+      }
+      '\n' => {
+        output.write_string("\\n")
+        escaped = true
+      }
+      _ => output.write_char(char)
+    }
+  }
+  (output.to_string(), escaped)
+}
+
+///|
+fn decode_filename(value : String) -> String? {
+  let chars : Array[Char] = value.iter().collect()
+  let output = StringBuilder()
+  let mut index = 0
+  while index < chars.length() {
+    if chars[index] != '\\' {
+      output.write_char(chars[index])
+      index += 1
+    } else if index + 1 >= chars.length() {
+      return None
+    } else {
+      match chars[index + 1] {
+        '\\' => output.write_char('\\')
+        'n' => output.write_char('\n')
+        _ => return None
+      }
+      index += 2
+    }
+  }
+  Some(output.to_string())
+}
+
+///|
 async fn check_manifest(path : String) -> (Int, Int) {
   let text = if path == "-" {
     @stdio.stdin.read_all().text()
@@ -40,15 +96,30 @@ async fn check_manifest(path : String) -> (Int, Int) {
     if line == "" {
       continue
     }
-    if line.length() < 67 ||
-      line[64] != ' ' ||
-      (line[65] != ' ' && line[65] != '*') {
+    let escaped = line.has_prefix("\\")
+    let record = if escaped { line[1:].to_owned() } else { line }
+    if record.length() < 67 ||
+      record[64] != ' ' ||
+      (record[65] != ' ' && record[65] != '*') ||
+      !is_hex_digest(record[0:64].to_owned()) {
       @stdio.stderr.write("sha256sum: improperly formatted checksum line\n")
       failed += 1
       continue
     }
-    let expected = line[0:64].to_owned().to_lower()
-    let name = line[66:].to_owned()
+    let expected = record[0:64].to_owned().to_lower()
+    let encoded_name = record[66:].to_owned()
+    let name = if escaped {
+      match decode_filename(encoded_name) {
+        Some(value) => value
+        None => {
+          @stdio.stderr.write("sha256sum: improperly escaped file name\n")
+          failed += 1
+          continue
+        }
+      }
+    } else {
+      encoded_name
+    }
     let actual = digest_source(name) catch {
       err => {
         @stdio.stderr.write("sha256sum: '\{name}': \{err}\n")
@@ -127,7 +198,13 @@ async fn main {
           continue
         }
       }
-      @stdio.stdout.write("\{actual}  \{source}\{separator}")
+      if zero {
+        @stdio.stdout.write("\{actual}  \{source}\{separator}")
+      } else {
+        let (name, escaped) = encode_filename(source)
+        let prefix = if escaped { "\\" } else { "" }
+        @stdio.stdout.write("\{prefix}\{actual}  \{name}\{separator}")
+      }
     }
   }
   if failed {

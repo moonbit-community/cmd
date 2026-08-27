@@ -15,7 +15,17 @@ fn valid_logical_path(path : String) -> Bool {
 async fn main {
   let args = @env.args()[1:]
   let mut logical = true
+  let mut options = true
   for arg in args {
+    if options && arg == "--" {
+      options = false
+      continue
+    }
+    if !options {
+      @stdio.stderr.write("pwd: unexpected operand: '\{arg}'\n")
+      @sys.exit(2)
+      return
+    }
     match arg {
       "-L" | "--logical" => logical = true
       "-P" | "--physical" => logical = false

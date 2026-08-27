@@ -34,15 +34,53 @@ async fn main {
         continue
       }
     }
-    if exists is None && !no_create {
-      let file = @fs.open(path, mode=WriteOnly, create_mode=OpenOrCreate) catch {
-        err => {
-          @stdio.stderr.write("touch: cannot create '\{path}': \{err}\n")
+    match exists {
+      None if no_create => ()
+      None => {
+        let file = @fs.open(path, mode=WriteOnly, create_mode=OpenOrCreate) catch {
+          err => {
+            @stdio.stderr.write("touch: cannot create '\{path}': \{err}\n")
+            failed = true
+            continue
+          }
+        }
+        file.close()
+      }
+      Some(Regular) => {
+        let file = @fs.open(path, mode=ReadWrite) catch {
+          err => {
+            @stdio.stderr.write("touch: cannot open '\{path}': \{err}\n")
+            failed = true
+            continue
+          }
+        }
+        let update = try {
+          let size = file.size()
+          if size == 0L {
+            @fs.write_file(path, "", create_mode=CreateOrTruncate)
+          } else {
+            let final_byte = file.read_exactly_at(1, position=size - 1L)
+            file.write_at(final_byte[:], position=size - 1L)
+          }
+        } catch {
+          err => Some(err)
+        } noraise {
+          _ => None
+        }
+        file.close()
+        if update is Some(err) {
+          @stdio.stderr.write("touch: cannot update '\{path}': \{err}\n")
           failed = true
-          continue
         }
       }
-      file.close()
+      Some(SymLink) => {
+        @stdio.stderr.write("touch: refusing symbolic link '\{path}'\n")
+        failed = true
+      }
+      Some(_) => {
+        @stdio.stderr.write("touch: cannot update non-regular file '\{path}'\n")
+        failed = true
+      }
     }
   }
   if failed {

@@ -1,5 +1,6 @@
 # touch
 
-Create missing files without changing existing contents. `-c`/`--no-create`
-suppresses creation. The current portable Moonrun filesystem API does not
-expose timestamp mutation, so existing-file timestamps are left unchanged.
+Create missing files and update the modification timestamp of existing regular
+files without changing their bytes. `-c`/`--no-create` suppresses creation.
+Symbolic links are rejected deliberately because this command does not follow
+links for mutation.

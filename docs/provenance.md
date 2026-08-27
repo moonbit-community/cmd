@@ -110,6 +110,42 @@ commands were implemented in this repository against the same API.
 | `rmdir` | `moonbit-community/coreutils/src/rmdir` option surface | native + wasm | allow-listed |
 | `ln` | new implementation | native + wasm | allow-listed |
 
+## Restricted high-authority batch
+
+The third batch currently contains eight packages implemented against the
+current MoonBit runtime APIs, but is not admitted to the default allow-list.
+Child-process commands use
+`moonbitlang/async/process` with inherited stdio and remain subject to an exact
+Moonrun `process.allow` rule. `curl` and `wget` share the private streaming
+`internal/netops` package and use `moonbitlang/async/http`; they never invoke a
+host network executable. `chmod` uses `moonbitlang/async/fs.chmod`.
+
+| Command | Capability | Target | Admission | Limitation |
+|---|---|---|---|---|
+| `env` | child process + environment | native + wasm | restricted | no shell evaluation |
+| `xargs` | child process | native + wasm | restricted | 16 MiB input cap |
+| `timeout` | child process cancellation | native + wasm | restricted | direct child only, no process groups |
+| `sh` | child process | native + wasm | restricted | MoonBit shell subset; individual children only |
+| `make` | child process | native + wasm | restricted | MoonBit make subset; individual recipes only |
+| `curl` | network | native + wasm | restricted | GET/HTTPS streaming subset |
+| `wget` | network + file write | native + wasm | restricted | single URL download subset |
+| `chmod` | permission mutation | native + wasm | restricted | numeric modes only, no symlink traversal |
+
+`sh` and `make` are restricted MoonBit interpreters for a documented core
+subset. They parse, expand, and control execution in MoonBit on both native and
+Wasm targets. Only individual recipe or script commands are started through
+the policy-visible process API; neither package forwards a complete script to a
+host interpreter, and neither package is admitted to the default allow-list.
+
+The behavior and policy evidence for this table is in
+`tests/cram/batch3.md`, `tests/policy/check-third-batch-policy.sh`,
+`tests/policy/process-echo.json`, and `tests/policy/net-deny.json`.
+
+`chown` and `kill` are intentionally absent from the destination package tree,
+policy inventory, tests, and release artifacts. Their owner-mutation and
+arbitrary-PID signalling capabilities require runtime primitives that are
+being researched separately.
+
 ## Destination layout rules
 
 The destination has one root `moon.mod` named `mooxCLI/cmd`:
