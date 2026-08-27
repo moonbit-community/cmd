@@ -18,7 +18,7 @@ expect_process_denied() {
     printf '%s\n' "expected process policy to reject $command_name" >&2
     exit 1
   fi
-  # Moonrun and the guest may write denial diagnostics concurrently. Assert
+  # The runtime and guest may write denial diagnostics concurrently. Assert
   # the policy-visible effects instead of relying on an exact stderr ordering.
   test -s "$output_file"
   test ! -s "$stdout_file"

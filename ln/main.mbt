@@ -64,7 +64,7 @@ async fn main {
   }
   if !symbolic {
     @stdio.stderr.write(
-      "ln: hard links are unavailable in the portable Moonrun filesystem API; use -s\n",
+      "ln: hard links are unavailable in the portable filesystem API; use -s\n",
     )
     @sys.exit(2)
     return

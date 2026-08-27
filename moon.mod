@@ -19,15 +19,7 @@ repository = "https://github.com/moonbit-community/cmd"
 
 license = "Apache-2.0"
 
-keywords = [
-  "command-line",
-  "coreutils",
-  "moonbit",
-  "moonrun",
-  "moonseek",
-  "sandbox",
-  "wasm",
-]
+keywords = [ "command-line", "coreutils", "moonbit", "wasm" ]
 
 preferred_target = "wasm"
 

@@ -1,8 +1,8 @@
 # Migration Provenance
 
-This file records the fixed source snapshot and the scope of the first
-`mooxCLI/cmd` migration. It is intentionally separate from implementation and
-is updated when a new upstream snapshot is selected.
+This record identifies the upstream command snapshot and the package scope of
+`mooxCLI/cmd`. It does not define runtime policy or external integration
+behavior.
 
 ## Source snapshot
 
@@ -18,15 +18,15 @@ is updated when a new upstream snapshot is selected.
 | Initial destination version | `0.1.0` |
 | Initial release status | `mooxCLI/cmd@0.1.0` published |
 
-The source snapshot is pinned so that upstream changes cannot silently alter a
-partially completed migration. Later upstream changes must be imported as a
-separate, reviewable synchronization.
+The snapshot is pinned so that a partial migration cannot change underneath
+the implementation. A later upstream sync must be a separate reviewable
+change.
 
-## Command scope
+## Upstream command scope
 
-The fixed snapshot contains 20 command directories. The source package name and
-version are recorded for traceability; they are not retained as destination
-module identities. All destination packages belong to `mooxCLI/cmd`.
+The fixed snapshot contains 20 command directories. Source package names and
+versions are provenance only; every destination package belongs to
+`mooxCLI/cmd`.
 
 | Command | Source module | Destination package | Source version | Target |
 |---|---|---|---:|---|
@@ -51,122 +51,57 @@ module identities. All destination packages belong to `mooxCLI/cmd`.
 | `wc` | `bobzhang/wc` | `mooxCLI/cmd/wc` | 0.1.0 | native + wasm |
 | `xxd` | `bobzhang/xxd` | `mooxCLI/cmd/xxd` | 0.1.0 | native + wasm |
 
-## Test and CI scope
+## Local expansion scope
 
-The first migration imports these command-facing upstream artifacts without
-redesigning their test framework:
+The following packages were implemented directly in this repository. All
+currently declare native and Wasm support.
+
+### Batch 1: read-only
+
+`echo`, `pwd`, `basename`, `dirname`, `ls`, `grep`, `find`, `cmp`, `printenv`,
+`test`, `seq`, and `sha256sum` are allow-listed after command and denied-read
+tests.
+
+### Batch 2: filesystem mutation
+
+`mkdir`, `touch`, `tee`, `cp`, `mv`, `rm`, `rmdir`, and `ln` are allow-listed
+after mutation, denial, and symbolic-link safety tests.
+
+### Batch 3: restricted authority
+
+`env`, `xargs`, `timeout`, `sh`, `make`, `curl`, `wget`, and `chmod` are kept
+outside the default allow-list. Their process, network, and permission
+requests have dedicated Cram and policy smoke coverage.
+
+`chown` and `kill` are not destination packages. They are absent from the
+source tree, policy inventory, test suite, and release artifacts because their
+required owner-mutation and arbitrary-process-signalling primitives are not in
+the supported runtime API.
+
+## Test and dependency provenance
+
+The command-facing test artifacts are:
 
 | Artifact | Purpose |
 |---|---|
-| `tests/cram/coreutils.md` | End-to-end tests for the Unix-style commands |
-| `tests/cram/cli.md` | `jq` CLI input, output, filter, log, and exit-code tests |
-| `TUTORIAL.md` | Executable jq CLI documentation and regression coverage |
-| `.github/workflows/check.yml` | Moon check, info, format, target tests, and Cram CI |
+| `tests/cram/coreutils.md` | Upstream Unix-style command behavior |
+| `tests/cram/cli.md` | `jq` and `jqlog` CLI behavior |
+| `TUTORIAL.md` | Executable `jq` documentation and regression cases |
+| `tests/cram/batch1.md` | Read-only expansion behavior |
+| `tests/cram/batch2.md` | Filesystem mutation behavior |
+| `tests/cram/batch3.md` | Restricted authority behavior |
+| `tests/policy/check-wasm-policy.sh` | Wasm resource-access policy cases |
+| `tests/policy/check-third-batch-policy.sh` | Restricted command policy cases |
 
-The upstream `ast/` and `parser/` library tests are outside this repository's
-command migration scope. The `jq` and `jqlog` packages continue to depend on
-the external `bobzhang/moonjq@0.1.1` module.
+The `jq` and `jqlog` entry points depend on
+`bobzhang/moonjq@0.1.1`. MoonJQ parser and AST tests remain in that dependency;
+this repository records only the executable command boundary.
 
-## Read-only expansion batch
+## Destination rules
 
-The first post-migration batch was added directly to this module. `echo` was
-adapted from the Apache-2.0 `moonbit-community/coreutils` implementation at
-commit `f0aa233678ab9483f5ff73d7f8b1d76d54d992d7`; its argument handling,
-byte escapes, and target declaration were upgraded here. The other commands
-were implemented in this repository against the current MoonBit runtime APIs.
-
-| Command | Source | Target | Security admission |
-|---|---|---|---|
-| `echo` | `moonbit-community/coreutils/src/echo` | native + wasm | allow-listed |
-| `pwd` | new implementation | native + wasm | allow-listed |
-| `basename` | new implementation | native + wasm | allow-listed |
-| `dirname` | new implementation | native + wasm | allow-listed |
-| `ls` | new implementation | native + wasm | allow-listed |
-| `grep` | new implementation | native + wasm | allow-listed |
-| `find` | new implementation | native + wasm | allow-listed |
-| `cmp` | new implementation | native + wasm | allow-listed |
-| `printenv` | new implementation | native + wasm | allow-listed |
-| `test` | new implementation | native + wasm | allow-listed |
-| `seq` | new implementation | native + wasm | allow-listed |
-| `sha256sum` | new implementation | native + wasm | allow-listed |
-
-## Filesystem mutation batch
-
-The second post-migration batch was added directly to this module. `rmdir`
-adapts its option surface from the Apache-2.0
-`moonbit-community/coreutils/src/rmdir` implementation at commit
-`f0aa233678ab9483f5ff73d7f8b1d76d54d992d7`; its implementation was rewritten
-to use the current asynchronous, policy-visible filesystem API. The other
-commands were implemented in this repository against the same API.
-
-| Command | Source | Target | Security admission |
-|---|---|---|---|
-| `mkdir` | new implementation | native + wasm | allow-listed |
-| `touch` | new implementation | native + wasm | allow-listed |
-| `tee` | new implementation | native + wasm | allow-listed |
-| `cp` | new implementation | native + wasm | allow-listed |
-| `mv` | new implementation | native + wasm | allow-listed |
-| `rm` | new implementation | native + wasm | allow-listed |
-| `rmdir` | `moonbit-community/coreutils/src/rmdir` option surface | native + wasm | allow-listed |
-| `ln` | new implementation | native + wasm | allow-listed |
-
-## Restricted high-authority batch
-
-The third batch currently contains eight packages implemented against the
-current MoonBit runtime APIs, but is not admitted to the default allow-list.
-Child-process commands use
-`moonbitlang/async/process` with inherited stdio and remain subject to an exact
-Moonrun `process.allow` rule. `curl` and `wget` share the private streaming
-`internal/netops` package and use `moonbitlang/async/http`; they never invoke a
-host network executable. `chmod` uses `moonbitlang/async/fs.chmod`.
-
-| Command | Capability | Target | Admission | Limitation |
-|---|---|---|---|---|
-| `env` | child process + environment | native + wasm | restricted | no shell evaluation |
-| `xargs` | child process | native + wasm | restricted | 16 MiB input cap |
-| `timeout` | child process cancellation | native + wasm | restricted | direct child only, no process groups |
-| `sh` | child process | native + wasm | restricted | MoonBit shell subset; individual children only |
-| `make` | child process | native + wasm | restricted | MoonBit make subset; individual recipes only |
-| `curl` | network | native + wasm | restricted | GET/HTTPS streaming subset |
-| `wget` | network + file write | native + wasm | restricted | single URL download subset |
-| `chmod` | permission mutation | native + wasm | restricted | numeric modes only, no symlink traversal |
-
-`sh` and `make` are restricted MoonBit interpreters for a documented core
-subset. They parse, expand, and control execution in MoonBit on both native and
-Wasm targets. Only individual recipe or script commands are started through
-the policy-visible process API; neither package forwards a complete script to a
-host interpreter, and neither package is admitted to the default allow-list.
-
-The behavior and policy evidence for this table is in
-`tests/cram/batch3.md`, `tests/policy/check-third-batch-policy.sh`,
-`tests/policy/process-echo.json`, and `tests/policy/net-deny.json`.
-
-`chown` and `kill` are intentionally absent from the destination package tree,
-policy inventory, tests, and release artifacts. Their owner-mutation and
-arbitrary-PID signalling capabilities require runtime primitives that are
-being researched separately.
-
-## Destination layout rules
-
-The destination has one root `moon.mod` named `mooxCLI/cmd`:
-
-- Each command is copied to a root directory such as `cat/` or `head/`.
-- Each command keeps an executable `moon.pkg`, implementation, README, and
-  generated interface.
-- Command-level `moon.mod` files from the source are discarded.
-- No `moon.work` is introduced to combine command modules.
-- Module dependencies are declared once in the root `moon.mod`.
-- User-facing coordinates use `mooxCLI/cmd/<command>`.
-
-The `cat` implementation is imported as-is. It has no migration-specific bug
-fix requirement.
-
-## Publishing prerequisite
-
-The module is published as `mooxCLI/cmd`. The configured `mooxCLI`
-publishing-account setup is complete for the current maintainer. Account
-selection details and credentials are intentionally kept outside the
-repository and are not recorded here.
-
-The initial release status is recorded above. Later release executions remain
-local operator actions and are not tracked in this provenance record.
+- One root `moon.mod` names the module `mooxCLI/cmd`.
+- Commands live directly under root directories such as `cat/` and `grep/`.
+- Command-level `moon.mod` files and compatibility coordinates are not kept.
+- Generated `pkg.generated.mbti` files are produced by `moon info`.
+- The `cat` implementation is imported without a migration-specific repair
+  gate.
