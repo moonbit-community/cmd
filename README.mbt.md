@@ -29,10 +29,16 @@ The first read-only expansion batch adds:
 echo  pwd  basename  dirname  ls  grep  find  cmp  printenv  test  seq  sha256sum
 ```
 
+The filesystem mutation batch adds:
+
+```text
+mkdir  touch  tee  cp  mv  rm  rmdir  ln
+```
+
 See the [migration and development plan](docs/migration-plan.md) for the
 architecture, migration stages, test strategy, and security acceptance work.
-Stage 3 CLI/CI migration, Stage 4 policy coverage, and the first read-only
-expansion batch are complete in the working tree.
+Stage 3 CLI/CI migration, Stage 4 policy coverage, and the first two expansion
+batches are complete in the working tree.
 
 ## Package layout
 
@@ -81,9 +87,10 @@ This repository supplies auditable command implementations; Moonrun and
 the execution chain. Commands that can create child processes or expand
 authority require dedicated policy integration tests before they can enter a
 default harness allow-list. The Wasm allow-list and policy checks live under
-`tests/policy/`; CI verifies that file reads are denied or allowed according to
-the supplied policy and that command packages do not import process-spawning
-APIs.
+`tests/policy/`; CI verifies that file reads and writes are denied or allowed
+according to the supplied policy, checks that denied mutations leave no
+filesystem side effects, and ensures command packages do not import
+process-spawning APIs.
 
 ## Development
 

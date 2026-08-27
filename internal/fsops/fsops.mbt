@@ -1,0 +1,196 @@
+///|
+pub(all) suberror FsOpError {
+  FsOpError(String)
+}
+
+///|
+pub fn basename(value : String) -> String {
+  @path.Path(value).basename().to_owned()
+}
+
+///|
+pub fn dirname(value : String) -> String {
+  @path.Path(value).dirname().to_string()
+}
+
+///|
+pub fn join(parent : String, child : String) -> String {
+  @path.Path(parent).join(Path(child)).to_string()
+}
+
+///|
+fn is_same_or_descendant(path : String, root : String) -> Bool {
+  let normalized_path = @path.Path(path).normalize().to_string()
+  let normalized_root = @path.Path(root).normalize().to_string()
+  if normalized_path == normalized_root {
+    return true
+  }
+  let prefix = if normalized_root.has_suffix(@path.sep.to_string()) {
+    normalized_root
+  } else {
+    normalized_root + @path.sep.to_string()
+  }
+  normalized_path.has_prefix(prefix)
+}
+
+///|
+pub fn protects_working_directory(path : String) -> Bool {
+  let target = @path.Path(path)
+    .normalize()
+    .to_string()
+    .trim_end(chars="/\\")
+    .to_owned()
+  let parent = dirname(target)
+  target == "" ||
+  target == "." ||
+  target == ".." ||
+  parent == target ||
+  target.has_prefix(".." + @path.sep.to_string())
+}
+
+///|
+pub async fn kind_if_exists(path : String) -> @fs.FileKind? {
+  try @fs.kind(path, follow_symlink=false) catch {
+    @os_error.OSError(_) as err if err.is_ENOENT() => None
+    err => raise err
+  } noraise {
+    kind => Some(kind)
+  }
+}
+
+///|
+async fn copy_regular_file(
+  source : String,
+  destination : String,
+  replace : Bool,
+) -> Bool {
+  match kind_if_exists(destination) {
+    Some(Directory) =>
+      raise FsOpError("destination is a directory: '\{destination}'")
+    Some(SymLink) =>
+      raise FsOpError("refusing to overwrite symbolic link: '\{destination}'")
+    Some(Regular) => {
+      if !replace {
+        return false
+      }
+      if @fs.realpath(source) == @fs.realpath(destination) {
+        raise FsOpError("source and destination are the same file")
+      }
+    }
+    Some(_) => raise FsOpError("unsupported destination type: '\{destination}'")
+    None => ()
+  }
+  let input = @fs.open(source, mode=ReadOnly)
+  defer input.close()
+  let output = @fs.open(
+    destination,
+    mode=WriteOnly,
+    create_mode=CreateOrTruncate,
+  )
+  defer output.close()
+  output.write_reader(input)
+  true
+}
+
+///|
+async fn copy_entry(
+  source : String,
+  destination : String,
+  replace : Bool,
+) -> Bool {
+  match @fs.kind(source, follow_symlink=false) {
+    Regular => copy_regular_file(source, destination, replace)
+    Directory => {
+      match kind_if_exists(destination) {
+        Some(Directory) => ()
+        Some(_) =>
+          raise FsOpError("destination is not a directory: '\{destination}'")
+        None => @fs.mkdir(destination)
+      }
+      let entries = @fs.readdir(
+        source,
+        include_hidden=true,
+        include_special=false,
+        sort=false,
+      )
+      entries.sort_by((left, right) => left.lexical_compare(right))
+      let mut copied = false
+      for entry in entries {
+        if copy_entry(join(source, entry), join(destination, entry), replace) {
+          copied = true
+        }
+      }
+      copied || entries.is_empty()
+    }
+    SymLink =>
+      raise FsOpError("symbolic-link sources are not supported: '\{source}'")
+    _ => raise FsOpError("unsupported source type: '\{source}'")
+  }
+}
+
+///|
+async fn canonical_new_path(path : String) -> String {
+  let parent = dirname(path)
+  join(@fs.realpath(parent), basename(path))
+}
+
+///|
+pub async fn ensure_not_nested_destination(
+  source : String,
+  destination : String,
+) -> Unit {
+  let source_real = @fs.realpath(source)
+  let destination_real = match kind_if_exists(destination) {
+    Some(SymLink) =>
+      raise FsOpError(
+        "refusing to use symbolic-link destination: '\{destination}'",
+      )
+    Some(_) => @fs.realpath(destination)
+    None => canonical_new_path(destination)
+  }
+  if is_same_or_descendant(destination_real, source_real) {
+    raise FsOpError("directory destination is inside the source")
+  }
+}
+
+///|
+pub async fn copy_path(
+  source : String,
+  destination : String,
+  recursive : Bool,
+  replace : Bool,
+) -> Bool {
+  let source_kind = @fs.kind(source, follow_symlink=false)
+  if source_kind == Directory && !recursive {
+    raise FsOpError("omitting directory: '\{source}'")
+  }
+  if source_kind == SymLink {
+    raise FsOpError("symbolic-link sources are not supported: '\{source}'")
+  }
+  if source_kind == Directory {
+    ensure_not_nested_destination(source, destination)
+  }
+  copy_entry(source, destination, replace)
+}
+
+///|
+pub async fn remove_path(path : String, recursive : Bool) -> Unit {
+  match @fs.kind(path, follow_symlink=false) {
+    Directory => {
+      if !recursive {
+        raise FsOpError("cannot remove directory without recursion: '\{path}'")
+      }
+      let entries = @fs.readdir(
+        path,
+        include_hidden=true,
+        include_special=false,
+        sort=false,
+      )
+      for entry in entries {
+        remove_path(join(path, entry), true)
+      }
+      @fs.rmdir(path)
+    }
+    _ => @fs.remove(path)
+  }
+}

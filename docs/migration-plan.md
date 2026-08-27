@@ -229,6 +229,8 @@ cmd/
 |-- head/
 |-- jq/
 |-- jqlog/
+|-- internal/
+|   `-- fsops/                       # private mutation helpers
 |-- ...
 |-- tests/
 |   `-- cram/
@@ -271,9 +273,10 @@ For example, `cat/` uses MoonBit and Moonrun-visible stdin, stdout, and file
 APIs instead of executing `/bin/cat`. External resource access therefore stays
 inside a boundary the runtime can observe and restrict.
 
-The initial migration does not create a shared utility package. A private
-shared package may be introduced later only when stable, meaningful duplication
-exists across several commands.
+The initial migration did not create a shared utility package. Batch 2 adds the
+private `internal/fsops` package for policy-visible path inspection, bounded
+file copying, recursive traversal, and deletion behavior shared by `cp`, `mv`,
+and `rm`. It is not a public command or compatibility API.
 
 ### 5.3 Execution path
 
@@ -508,7 +511,7 @@ and Wasm targets, and are admitted to `tests/policy/allow-list.txt`. The Cram
 suite covers their documented CLI surface and the policy smoke suite exercises
 denied and allowed reads for `cmp`, `grep`, `ls`, `find`, and `sha256sum`.
 
-### Batch 2: Filesystem mutation
+### Batch 2: Filesystem mutation (Complete)
 
 ```text
 mkdir
@@ -520,6 +523,23 @@ rm
 rmdir
 ln
 ```
+
+All eight commands are implemented as root executable packages, support native
+and Wasm targets, and are admitted to `tests/policy/allow-list.txt`. Their 69
+Cram cases cover normal operation, documented options, invalid input, nested
+directories, large streaming input, and symbolic-link safety. Policy tests run
+every command under both read-only and read-write policies, verify denied
+operations leave no side effects, and verify explicitly authorized mutations
+succeed. Two focused unit tests cover the shared deletion-path protection.
+
+The current portable API defines four deliberate compatibility boundaries:
+
+- `touch` creates missing files but cannot update timestamps on existing files.
+- `ln` creates symbolic links only; hard links are unavailable.
+- `mv` performs policy-checked rename operations without a cross-filesystem
+  copy-and-delete fallback.
+- `cp` copies regular files and directory trees, and rejects symbolic-link and
+  special-file sources.
 
 ### Batch 3: High authority or child processes
 

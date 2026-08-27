@@ -90,6 +90,26 @@ were implemented in this repository against the current MoonBit runtime APIs.
 | `seq` | new implementation | native + wasm | allow-listed |
 | `sha256sum` | new implementation | native + wasm | allow-listed |
 
+## Filesystem mutation batch
+
+The second post-migration batch was added directly to this module. `rmdir`
+adapts its option surface from the Apache-2.0
+`moonbit-community/coreutils/src/rmdir` implementation at commit
+`f0aa233678ab9483f5ff73d7f8b1d76d54d992d7`; its implementation was rewritten
+to use the current asynchronous, policy-visible filesystem API. The other
+commands were implemented in this repository against the same API.
+
+| Command | Source | Target | Security admission |
+|---|---|---|---|
+| `mkdir` | new implementation | native + wasm | allow-listed |
+| `touch` | new implementation | native + wasm | allow-listed |
+| `tee` | new implementation | native + wasm | allow-listed |
+| `cp` | new implementation | native + wasm | allow-listed |
+| `mv` | new implementation | native + wasm | allow-listed |
+| `rm` | new implementation | native + wasm | allow-listed |
+| `rmdir` | `moonbit-community/coreutils/src/rmdir` option surface | native + wasm | allow-listed |
+| `ln` | new implementation | native + wasm | allow-listed |
+
 ## Destination layout rules
 
 The destination has one root `moon.mod` named `mooxCLI/cmd`:
