@@ -161,7 +161,7 @@ async fn main {
     @sys.exit(1)
     return
   }
-  let parser : Parser = { args, pos: 0 }
+  let parser : Parser = { args, pos: 0, }
   let result = parser.parse_or() catch {
     TestError(message) => {
       @stdio.stderr.write("test: \{message}\n")

@@ -154,12 +154,12 @@ fn prepare(command : Command, context : Context) -> Prepared raise ShellError {
     None => None
   }
   let stdout = match command.stdout {
-    Some({ target, append }) => Some((expand_path(target, context), append))
+    Some({ target, append, }) => Some((expand_path(target, context), append))
     None => None
   }
   let stderr = match command.stderr {
-    Some({ target, append }) => Some((expand_path(target, context), append))
+    Some({ target, append, }) => Some((expand_path(target, context), append))
     None => None
   }
-  { argv: executable, env, stdin, stdout, stderr }
+  { argv: executable, env, stdin, stdout, stderr, }
 }

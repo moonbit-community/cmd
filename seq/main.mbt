@@ -27,7 +27,7 @@ fn Decimal::normalize(self : Decimal) -> Decimal {
     coefficient = coefficient / ten
     scale -= 1
   }
-  { coefficient, scale }
+  { coefficient, scale, }
 }
 
 ///|
@@ -100,9 +100,9 @@ fn parse_decimal(text : String) -> Decimal raise SeqError {
   }
   if scale < 0 {
     coefficient = coefficient * pow10(-scale)
-    return ({ coefficient, scale: 0 } : Decimal).normalize()
+    return ({ coefficient, scale: 0, } : Decimal).normalize()
   }
-  ({ coefficient, scale } : Decimal).normalize()
+  ({ coefficient, scale, } : Decimal).normalize()
 }
 
 ///|
@@ -124,7 +124,7 @@ fn Decimal::compare(self : Decimal, other : Decimal) -> Int {
 fn Decimal::add(self : Decimal, other : Decimal) -> Decimal {
   let scale = if self.scale > other.scale { self.scale } else { other.scale }
   (
-    { coefficient: self.at_scale(scale) + other.at_scale(scale), scale } :
+    { coefficient: self.at_scale(scale) + other.at_scale(scale), scale, } :
     Decimal).normalize()
 }
 

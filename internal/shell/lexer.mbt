@@ -31,7 +31,7 @@ fn push_word(
 ) -> Unit {
   if started {
     flush_literal(parts, literal)
-    tokens.push(WordToken({ parts: parts.copy(), preserve_empty }))
+    tokens.push(WordToken({ parts: parts.copy(), preserve_empty, }))
     parts.clear()
   }
 }

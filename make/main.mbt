@@ -100,8 +100,8 @@ fn lookup_variable(
     return value
   }
   match variables.get(name) {
-    Some({ value, immediate: true }) => value
-    Some({ value, immediate: false }) =>
+    Some({ value, immediate: true, }) => value
+    Some({ value, immediate: false, }) =>
       expand(value, variables, automatic, depth + 1)
     None => ""
   }
@@ -183,7 +183,7 @@ fn assign_variable(
   match operator {
     "?=" =>
       if !variables.contains(name) {
-        variables[name] = { value, immediate: false }
+        variables[name] = { value, immediate: false, }
       }
     ":=" =>
       variables[name] = {
@@ -203,9 +203,9 @@ fn assign_variable(
             immediate: previous.immediate,
           }
         }
-        None => variables[name] = { value, immediate: false }
+        None => variables[name] = { value, immediate: false, }
       }
-    _ => variables[name] = { value, immediate: false }
+    _ => variables[name] = { value, immediate: false, }
   }
 }
 
@@ -528,14 +528,14 @@ async fn run(arguments : Array[String]) -> Unit {
   }
   let variables : Map[String, Variable] = Map([])
   for name, value in @env.get_env_vars() {
-    variables[name] = { value, immediate: true }
+    variables[name] = { value, immediate: true, }
   }
-  let database : Database = { variables, rules: {}, default_target: None }
+  let database : Database = { variables, rules: {}, default_target: None, }
   let makefile = choose_makefile(cwd, requested_file)
   parse_makefile(@fs.read_file(makefile).text(), database)
   for assignment in cli_assignments {
     let (name, value) = assignment
-    database.variables[name] = { value, immediate: true }
+    database.variables[name] = { value, immediate: true, }
   }
   let requested_targets = if targets.is_empty() {
     match database.default_target {
@@ -545,7 +545,7 @@ async fn run(arguments : Array[String]) -> Unit {
   } else {
     targets
   }
-  let settings : Settings = { cwd, silent, dry_run, always_make }
+  let settings : Settings = { cwd, silent, dry_run, always_make, }
   let states : Map[String, Int] = Map([])
   for target in requested_targets {
     build_target(target, database, settings, states)

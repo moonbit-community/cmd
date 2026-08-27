@@ -37,19 +37,19 @@ fn Parser::parse_command(self : Parser) -> Command raise ShellError {
       }
       Some(RedirectOut) => {
         self.pos += 1
-        stdout = Some({ target: self.take_word(), append: false })
+        stdout = Some({ target: self.take_word(), append: false, })
       }
       Some(RedirectAppend) => {
         self.pos += 1
-        stdout = Some({ target: self.take_word(), append: true })
+        stdout = Some({ target: self.take_word(), append: true, })
       }
       Some(RedirectError) => {
         self.pos += 1
-        stderr = Some({ target: self.take_word(), append: false })
+        stderr = Some({ target: self.take_word(), append: false, })
       }
       Some(RedirectErrorAppend) => {
         self.pos += 1
-        stderr = Some({ target: self.take_word(), append: true })
+        stderr = Some({ target: self.take_word(), append: true, })
       }
       _ => keep_parsing = false
     }
@@ -57,7 +57,7 @@ fn Parser::parse_command(self : Parser) -> Command raise ShellError {
   if words.is_empty() {
     raise ShellError("expected a command")
   }
-  { words, stdin, stdout, stderr }
+  { words, stdin, stdout, stderr, }
 }
 
 ///|
@@ -72,7 +72,7 @@ fn Parser::parse_pipeline(self : Parser) -> Pipeline raise ShellError {
 
 ///|
 fn parse(script : String) -> Array[Job] raise ShellError {
-  let parser : Parser = { tokens: lex(script), pos: 0 }
+  let parser : Parser = { tokens: lex(script), pos: 0, }
   let jobs : Array[Job] = []
   let mut connector = Always
   while parser.pos < parser.tokens.length() {
@@ -82,7 +82,7 @@ fn parse(script : String) -> Array[Job] raise ShellError {
     if parser.pos >= parser.tokens.length() {
       break
     }
-    jobs.push({ connector, pipeline: parser.parse_pipeline() })
+    jobs.push({ connector, pipeline: parser.parse_pipeline(), })
     match parser.peek() {
       Some(AndIf) => {
         connector = OnSuccess
