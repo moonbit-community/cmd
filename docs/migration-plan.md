@@ -164,8 +164,8 @@ multi-file concatenation and binary-transparency tests.
 - Packages that currently support `native+wasm` retain both targets.
 - The harness defaults to Wasm commands and must not silently fall back to
   native execution.
-- `jqlog` is currently native-only. It can be included in the source tree but
-  must not enter the default MoonSeek allow-list.
+- `jqlog` supports both native and Wasm execution and is included in the
+  default MoonSeek allow-list. Its file reads remain subject to Moonrun policy.
 
 ### 3.7 One version lifecycle
 
@@ -194,7 +194,7 @@ changes cannot alter the migration midway.
 | `head` | `bobzhang/head` | `mooxCLI/cmd/head` | 0.1.1 | native + wasm |
 | `join` | `bobzhang/join` | `mooxCLI/cmd/join` | 0.1.0 | native + wasm |
 | `jq` | `bobzhang/jq` | `mooxCLI/cmd/jq` | 0.1.1 | native + wasm |
-| `jqlog` | `bobzhang/jqlog` | `mooxCLI/cmd/jqlog` | 0.1.0 | native only |
+| `jqlog` | `bobzhang/jqlog` | `mooxCLI/cmd/jqlog` | 0.1.0 | native + wasm |
 | `nl` | `bobzhang/nl` | `mooxCLI/cmd/nl` | 0.1.0 | native + wasm |
 | `paste` | `bobzhang/paste` | `mooxCLI/cmd/paste` | 0.1.0 | native + wasm |
 | `printf` | `bobzhang/printf` | `mooxCLI/cmd/printf` | 0.1.0 | native + wasm |
@@ -344,7 +344,8 @@ The following fixed-snapshot additions are included:
 
 1. Add a direct `jqlog.exe` success case; upstream currently tests
    `jq.exe --logs` but does not directly run `jqlog.exe`.
-2. Add Moonrun Wasm policy smoke coverage for denied and allowed file reads.
+2. Add Moonrun Wasm policy smoke coverage for denied and allowed file reads,
+   including `jqlog`.
 3. Add policy allow-list and static child-process checks.
 4. Keep the upstream input-sensitive `head`, `tail`, and `sort` Cram cases.
 
@@ -450,7 +451,8 @@ Work:
 - Add Moonrun smoke tests for Wasm commands.
 - Add minimum policy allow and deny integration cases in
   `tests/policy/check-wasm-policy.sh`.
-- Mark `jqlog` native-only and exclude it from the default allow-list.
+- Promote `jqlog` to the native+Wasm allow-list after verifying its Wasm build
+  and policy-controlled file reads.
 - Verify commands do not delegate to same-named host executables.
 
 Acceptance: test results distinguish ordinary CLI behavior, Wasm execution,
@@ -484,7 +486,7 @@ new `mooxCLI/cmd` SemVer release.
 After the existing commands move, new work is ordered by authority risk rather
 than command popularity alone.
 
-### Batch 1: Read-only, no child process
+### Batch 1: Read-only, no child process (Complete)
 
 ```text
 echo
@@ -500,6 +502,11 @@ test
 seq
 sha256sum
 ```
+
+All 12 commands are implemented as root executable packages, support native
+and Wasm targets, and are admitted to `tests/policy/allow-list.txt`. The Cram
+suite covers their documented CLI surface and the policy smoke suite exercises
+denied and allowed reads for `cmp`, `grep`, `ls`, `find`, and `sha256sum`.
 
 ### Batch 2: Filesystem mutation
 
@@ -542,7 +549,7 @@ admission status.
 | One module version covers every command | Medium | Release notes identify every affected command |
 | Dependency omissions or conflicts after consolidation | Medium | Keep dependencies in root `moon.mod` and run full check/test validation |
 | A child process bypasses parent policy | High | Exclude such commands until inheritance and tests are ready |
-| `jqlog` is native-only | High | Keep it out of the default harness allow-list |
+| `jqlog` Wasm file access bypasses policy | High | Exercise denied and allowed reads under Moonrun policy |
 | Mechanical migration changes behavior | Medium | Avoid implementation rewrites and reuse upstream Cram expectations |
 | Upstream changes during migration | Medium | Import a fixed commit and review later syncs separately |
 | Wasm only compiles but is never executed | Medium | Add Moonrun Wasm smoke and policy tests after import |
@@ -563,8 +570,8 @@ The existing-command migration is complete when:
 - Both upstream Cram files and the command-related CI are imported and passing.
 - `moon check --deny-warn`, `moon info`, `moon fmt`,
   `moon test --target all`, and `moon cram test` all pass.
-- `jqlog` and any other native-only tool are excluded from the default MoonSeek
-  allow-list.
+- All commands in the default MoonSeek allow-list, including `jqlog`, support
+  native+Wasm execution and policy-visible resource access.
 - The `mooxCLI` publishing-account setup is complete outside the repository;
   local account-selection details are not committed.
 - The first artifact, `mooxCLI/cmd@0.1.0`, has been published, with commands
@@ -572,12 +579,12 @@ The existing-command migration is complete when:
 - `moonbit-community/cmd` is the maintenance source for subsequent command
   changes.
 
-## 11. Remaining scope decisions
+## 11. Settled scope decisions
 
-1. `jqlog` is included in the public module as a native-only package, but it is
-   excluded from the default Wasm allow-list.
-2. Are Moonrun policy integration tests required before the first release, or
-   will they be delivered in a later `0.1.x` integration milestone?
+1. `jqlog` supports native+Wasm execution and is included in the default Wasm
+   allow-list. Its file-read behavior is covered by the policy smoke suite.
+2. Future commands that use filesystem access require native and Wasm policy
+   smoke cases before entering the default allow-list.
 
 The module name, root package layout, publishing account, MoonJQ dependency,
 and `cat` treatment are settled by this plan.

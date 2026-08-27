@@ -23,10 +23,16 @@ base64  cat    comm  cut    false  head  join  jq     jqlog  nl
 paste   printf sleep sort   tail   tr    true  uniq   wc     xxd
 ```
 
+The first read-only expansion batch adds:
+
+```text
+echo  pwd  basename  dirname  ls  grep  find  cmp  printenv  test  seq  sha256sum
+```
+
 See the [migration and development plan](docs/migration-plan.md) for the
 architecture, migration stages, test strategy, and security acceptance work.
-Stage 3 CLI/CI migration and Stage 4 policy smoke coverage are complete for
-this snapshot.
+Stage 3 CLI/CI migration, Stage 4 policy coverage, and the first read-only
+expansion batch are complete in the working tree.
 
 ## Package layout
 
@@ -74,11 +80,10 @@ This repository supplies auditable command implementations; Moonrun and
 `moonx` remain responsible for policy enforcement and policy inheritance across
 the execution chain. Commands that can create child processes or expand
 authority require dedicated policy integration tests before they can enter a
-default harness allow-list. Native-only commands, including the currently
-planned `jqlog` package, are not enabled by default. The fixed snapshot's
-Wasm allow-list and policy checks live under `tests/policy/`; CI verifies that
-file reads are denied or allowed according to the supplied policy and that
-command packages do not import process-spawning APIs.
+default harness allow-list. The Wasm allow-list and policy checks live under
+`tests/policy/`; CI verifies that file reads are denied or allowed according to
+the supplied policy and that command packages do not import process-spawning
+APIs.
 
 ## Development
 

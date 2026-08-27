@@ -1,11 +1,10 @@
 import {
-  "bobzhang/moonjq",
   "moonbitlang/async",
+  "moonbitlang/async/fs",
   "moonbitlang/async/io",
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",
-  "moonbitlang/core/json",
-  "moonbitlang/x/fs",
+  "moonbitlang/core/string",
   "moonbitlang/x/sys",
 }
 

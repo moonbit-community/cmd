@@ -87,10 +87,15 @@ $ printf 'not json' | jq.exe '.' >/dev/null 2>&1
 [5]
 ```
 
-## Native jqlog companion
+## jqlog JSONL companion
 
 ```mooncram
 $ printf '%s\n' '{"message":"ok"}' 'not json' '{"message":"bad"}' | jqlog.exe '.message'
 "ok"
 "bad"
+```
+
+```mooncram
+$ jqlog.exe -f missing.jsonl '.message' >/dev/null 2>&1
+[2]
 ```

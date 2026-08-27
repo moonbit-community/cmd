@@ -38,7 +38,7 @@ module identities. All destination packages belong to `mooxCLI/cmd`.
 | `head` | `bobzhang/head` | `mooxCLI/cmd/head` | 0.1.1 | native + wasm |
 | `join` | `bobzhang/join` | `mooxCLI/cmd/join` | 0.1.0 | native + wasm |
 | `jq` | `bobzhang/jq` | `mooxCLI/cmd/jq` | 0.1.1 | native + wasm |
-| `jqlog` | `bobzhang/jqlog` | `mooxCLI/cmd/jqlog` | 0.1.0 | native only |
+| `jqlog` | `bobzhang/jqlog` | `mooxCLI/cmd/jqlog` | 0.1.0 | native + wasm |
 | `nl` | `bobzhang/nl` | `mooxCLI/cmd/nl` | 0.1.0 | native + wasm |
 | `paste` | `bobzhang/paste` | `mooxCLI/cmd/paste` | 0.1.0 | native + wasm |
 | `printf` | `bobzhang/printf` | `mooxCLI/cmd/printf` | 0.1.0 | native + wasm |
@@ -66,6 +66,29 @@ redesigning their test framework:
 The upstream `ast/` and `parser/` library tests are outside this repository's
 command migration scope. The `jq` and `jqlog` packages continue to depend on
 the external `bobzhang/moonjq@0.1.1` module.
+
+## Read-only expansion batch
+
+The first post-migration batch was added directly to this module. `echo` was
+adapted from the Apache-2.0 `moonbit-community/coreutils` implementation at
+commit `f0aa233678ab9483f5ff73d7f8b1d76d54d992d7`; its argument handling,
+byte escapes, and target declaration were upgraded here. The other commands
+were implemented in this repository against the current MoonBit runtime APIs.
+
+| Command | Source | Target | Security admission |
+|---|---|---|---|
+| `echo` | `moonbit-community/coreutils/src/echo` | native + wasm | allow-listed |
+| `pwd` | new implementation | native + wasm | allow-listed |
+| `basename` | new implementation | native + wasm | allow-listed |
+| `dirname` | new implementation | native + wasm | allow-listed |
+| `ls` | new implementation | native + wasm | allow-listed |
+| `grep` | new implementation | native + wasm | allow-listed |
+| `find` | new implementation | native + wasm | allow-listed |
+| `cmp` | new implementation | native + wasm | allow-listed |
+| `printenv` | new implementation | native + wasm | allow-listed |
+| `test` | new implementation | native + wasm | allow-listed |
+| `seq` | new implementation | native + wasm | allow-listed |
+| `sha256sum` | new implementation | native + wasm | allow-listed |
 
 ## Destination layout rules
 
