@@ -84,14 +84,14 @@ The command-facing test artifacts are:
 
 | Artifact | Purpose |
 |---|---|
-| `tests/cram/coreutils.md` | Upstream Unix-style command behavior |
-| `tests/cram/cli.md` | `jq` and `jqlog` CLI behavior |
-| `TUTORIAL.md` | Executable `jq` documentation and regression cases |
-| `tests/cram/batch1.md` | Read-only expansion behavior |
-| `tests/cram/batch2.md` | Filesystem mutation behavior |
-| `tests/cram/batch3.md` | Restricted authority behavior |
-| `tests/policy/check-wasm-policy.sh` | Wasm resource-access policy cases |
-| `tests/policy/check-third-batch-policy.sh` | Restricted command policy cases |
+| `tests/compat/main.mbt` | Direct execution, byte comparison, GNU differential, and stress cases |
+| `tests/policy/main.mbt` | Wasm resource, mutation, process, network, and permission policy cases |
+| `tests/cram/coreutils.md` | Upstream Unix-style compatibility provenance |
+| `tests/cram/cli.md` | `jq` and `jqlog` compatibility provenance |
+| `TUTORIAL.md` | `jq` documentation and migration examples |
+| `tests/cram/batch1.md` | Read-only migration examples |
+| `tests/cram/batch2.md` | Filesystem mutation migration examples |
+| `tests/cram/batch3.md` | Restricted authority migration examples |
 
 The `jq` and `jqlog` entry points depend on
 `bobzhang/moonjq@0.1.1`. MoonJQ parser and AST tests remain in that dependency;

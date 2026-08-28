@@ -1,25 +1,22 @@
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let names : Array[String] = []
-  let mut zero = false
-  let mut options = true
-  for arg in args {
-    if options && arg == "--" {
-      options = false
-    } else if options && (arg == "-0" || arg == "--null") {
-      zero = true
-    } else if options && arg == "--help" {
-      @stdio.stdout.write("Usage: printenv [-0] [NAME...]\n")
-      return
-    } else if options && arg.has_prefix("-") && arg != "-" {
-      @stdio.stderr.write("printenv: invalid option: '\{arg}'\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("null", short='0'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("printenv: \{message}: '\{option}'\n")
       @sys.exit(2)
       return
-    } else {
-      names.push(arg)
     }
   }
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: printenv [-0] [NAME...]\n")
+    return
+  }
+  let names = parsed.operands
+  let zero = parsed.contains("null")
   let separator = if zero { "\u0000" } else { "\n" }
   let environment = @env.get_env_vars()
   let mut missing = false

@@ -1,0 +1,32 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "mooxCLI/cmd/internal/process"
+
+// Values
+pub fn child(String, Array[String], context? : ExecutionContext) -> ChildSpec
+
+pub fn pipe() -> (&@moonbitlang/async/process.ProcessInput, &@moonbitlang/async/process.ProcessOutput) raise
+
+pub async fn redirect_from_file(String) -> &@moonbitlang/async/process.ProcessInput
+
+pub async fn redirect_to_file(String, append? : Bool) -> &@moonbitlang/async/process.ProcessOutput
+
+pub async fn run(ChildSpec, stdin? : &@moonbitlang/async/process.ProcessInput, stdout? : &@moonbitlang/async/process.ProcessOutput, stderr? : &@moonbitlang/async/process.ProcessOutput) -> Int
+
+// Errors
+
+// Types and methods
+pub(all) struct ChildSpec {
+  program : String
+  args : Array[String]
+  context : ExecutionContext
+}
+
+pub(all) struct ExecutionContext {
+  cwd : String
+  env : Map[String, String]
+}
+pub fn ExecutionContext::current() -> Self
+
+// Type aliases
+
+// Traits

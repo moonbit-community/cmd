@@ -1,8 +1,0 @@
-env
-xargs
-timeout
-sh
-make
-curl
-wget
-chmod

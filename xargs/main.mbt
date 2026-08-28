@@ -9,10 +9,7 @@ priv suberror XargsError {
 }
 
 ///|
-fn push_word(result : Array[String], word : String) -> Unit raise XargsError {
-  if result.length() >= 100_000 {
-    raise XargsError("input contains more than 100000 arguments")
-  }
+fn push_word(result : Array[String], word : String) -> Unit {
   result.push(word)
 }
 
@@ -86,12 +83,9 @@ fn parse_words(
 }
 
 ///|
-async fn read_bounded_input(limit : Int) -> String {
+async fn read_input() -> String {
   let bytes : Array[Byte] = []
   while @stdio.stdin.read_some(max_len=65536) is Some(chunk) {
-    if bytes.length() + chunk.length() > limit {
-      raise XargsError("input exceeds 16 MiB safety limit")
-    }
     bytes.append(chunk.to_array())
   }
   let encoded = Bytes::from_array(bytes)
@@ -171,7 +165,7 @@ async fn main {
     return
   }
   let values = try {
-    let input = read_bounded_input(16 * 1024 * 1024)
+    let input = read_input()
     parse_words(input, null_mode)
   } catch {
     XargsError(message) => {
@@ -205,8 +199,9 @@ async fn main {
     return
   }
   let mut offset = 0
+  let context = @process.ExecutionContext::current()
   if values.is_empty() {
-    let code = @process.run(program, prefix) catch {
+    let code = @process.run(@process.child(program, prefix, context~)) catch {
       @os_error.OSError(_) as err => {
         @stdio.stderr.write("xargs: cannot run '\{program}': \{err}\n")
         @sys.exit(if err.is_ENOENT() { 127 } else { 126 })
@@ -243,7 +238,7 @@ async fn main {
     if verbose {
       @stdio.stderr.write("\{program} \{batch.join(" ")}\n")
     }
-    let code = @process.run(program, batch) catch {
+    let code = @process.run(@process.child(program, batch, context~)) catch {
       @os_error.OSError(_) as err => {
         @stdio.stderr.write("xargs: cannot run '\{program}': \{err}\n")
         @sys.exit(if err.is_ENOENT() { 127 } else { 126 })

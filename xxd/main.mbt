@@ -47,143 +47,181 @@ fn write_hex_byte(sb : StringBuilder, b : Byte) -> Unit {
 }
 
 ///|
-fn hex_val(c : Char) -> Int {
-  match c {
-    '0'..='9' => c.to_int() - 0x30
-    'a'..='f' => c.to_int() - 0x61 + 10
-    'A'..='F' => c.to_int() - 0x41 + 10
-    _ => -1
+fn hex_val(byte : Byte) -> Int {
+  let value = byte.to_int()
+  if value >= 0x30 && value <= 0x39 {
+    value - 0x30
+  } else if value >= 0x61 && value <= 0x66 {
+    value - 0x61 + 10
+  } else if value >= 0x41 && value <= 0x46 {
+    value - 0x41 + 10
+  } else {
+    -1
   }
 }
 
 ///|
-fn dump(data : BytesView, cols : Int) -> String {
+fn dump_line(data : ArrayView[Byte], cols : Int, offset : Int) -> String {
   let sb = StringBuilder()
-  let mut offset = 0
-  while offset < data.length() {
-    for k in 0..<8 {
-      sb.write_char(hex_digit((offset >> ((7 - k) * 4)) & 0xF))
+  for k in 0..<8 {
+    sb.write_char(hex_digit((offset >> ((7 - k) * 4)) & 0xF))
+  }
+  sb.write_string(": ")
+  for index in 0..<cols {
+    if index > 0 && index % 2 == 0 {
+      sb.write_char(' ')
     }
-    sb.write_string(": ")
-    let line_end = if offset + cols < data.length() {
-      offset + cols
+    if index < data.length() {
+      write_hex_byte(sb, data[index])
     } else {
-      data.length()
+      sb.write_string("  ")
     }
-    for i in 0..<cols {
-      if i > 0 && i % 2 == 0 {
-        sb.write_char(' ')
-      }
-      if offset + i < line_end {
-        write_hex_byte(sb, data[offset + i])
-      } else {
-        sb.write_string("  ")
-      }
-    }
-    sb.write_string("  ")
-    for i in offset..<line_end {
-      let code = data[i].to_int()
-      if code >= 0x20 && code <= 0x7E {
-        sb.write_char(code.unsafe_to_char())
-      } else {
-        sb.write_char('.')
-      }
-    }
-    sb.write_char('\n')
-    offset += cols
   }
+  sb.write_string("  ")
+  for byte in data {
+    let code = byte.to_int()
+    if code >= 0x20 && code <= 0x7E {
+      sb.write_char(code.unsafe_to_char())
+    } else {
+      sb.write_char('.')
+    }
+  }
+  sb.write_char('\n')
   sb.to_string()
 }
 
 ///|
-fn dump_plain(data : BytesView, cols : Int) -> String {
-  let sb = StringBuilder()
-  for index, b in data {
-    write_hex_byte(sb, b)
-    if (index + 1) % cols == 0 {
-      sb.write_char('\n')
-    }
+fn limited_length(length : Int, remaining : Int?) -> Int {
+  match remaining {
+    Some(value) => if value < length { value } else { length }
+    None => length
   }
-  if data.length() > 0 && data.length() % cols != 0 {
-    sb.write_char('\n')
-  }
-  sb.to_string()
 }
 
 ///|
-fn reverse_plain(text : String) -> Bytes raise CliError {
+async fn dump_stream(
+  reader : &@io.Reader,
+  plain : Bool,
+  cols : Int,
+  limit : Int?,
+) -> Unit {
+  let pending : Array[Byte] = []
+  let mut offset = 0
+  let mut plain_column = 0
+  let mut remaining = limit
+  while remaining != Some(0) && @stream.read_chunk(reader) is Some(chunk) {
+    let take = limited_length(chunk.length(), remaining)
+    if remaining is Some(value) {
+      remaining = Some(value - take)
+    }
+    if plain {
+      let out = StringBuilder()
+      for byte in chunk[0:take] {
+        write_hex_byte(out, byte)
+        plain_column += 1
+        if plain_column == cols {
+          out.write_char('\n')
+          plain_column = 0
+        }
+      }
+      @stdio.stdout.write(out.to_string())
+    } else {
+      let data : Array[Byte] = []
+      data.append(pending)
+      pending.clear()
+      for byte in chunk[0:take] {
+        data.push(byte)
+      }
+      let mut index = 0
+      while index + cols <= data.length() {
+        @stdio.stdout.write(dump_line(data[index:index + cols], cols, offset))
+        index += cols
+        offset += cols
+      }
+      for byte in data[index:] {
+        pending.push(byte)
+      }
+    }
+  }
+  if plain {
+    if plain_column != 0 {
+      @stdio.stdout.write("\n")
+    }
+  } else if !pending.is_empty() {
+    @stdio.stdout.write(dump_line(pending, cols, offset))
+  }
+}
+
+///|
+fn reverse_dump_line(line : Bytes) -> Bytes {
   let out : Array[Byte] = []
-  let mut high = -1
-  for c in text {
-    if c is (' ' | '\t' | '\n' | '\r') {
+  let mut i = 0
+  while i < line.length() && line[i] != b':' {
+    i += 1
+  }
+  if i >= line.length() {
+    return b""
+  }
+  i += 1
+  while i < line.length() {
+    if line[i] == b' ' {
+      if i + 1 < line.length() && line[i + 1] == b' ' {
+        break
+      }
+      i += 1
       continue
     }
-    let v = hex_val(c)
-    if v < 0 {
-      raise CliError("xxd: invalid hex character: '\{c}'")
+    if i + 1 >= line.length() {
+      break
     }
-    if high < 0 {
-      high = v
-    } else {
-      out.push(((high << 4) | v).to_byte())
-      high = -1
+    let high = hex_val(line[i])
+    let low = hex_val(line[i + 1])
+    if high < 0 || low < 0 {
+      break
+    }
+    out.push(((high << 4) | low).to_byte())
+    i += 2
+  }
+  Bytes::from_array(out)
+}
+
+///|
+async fn reverse_plain_stream(reader : &@io.Reader) -> Unit {
+  let mut high = -1
+  while @stream.read_chunk(reader) is Some(chunk) {
+    let out : Array[Byte] = []
+    for byte in chunk {
+      if byte is (b' ' | b'\t' | b'\n' | b'\r') {
+        continue
+      }
+      let value = hex_val(byte)
+      if value < 0 {
+        raise CliError(
+          "xxd: invalid hex character: '\{byte.to_int().unsafe_to_char()}'",
+        )
+      }
+      if high < 0 {
+        high = value
+      } else {
+        out.push(((high << 4) | value).to_byte())
+        high = -1
+      }
+    }
+    if !out.is_empty() {
+      @stdio.stdout.write(Bytes::from_array(out))
     }
   }
   if high >= 0 {
     raise CliError("xxd: odd number of hex digits")
   }
-  Bytes::from_array(out)
 }
 
 ///|
-fn split_lines(text : String) -> Array[String] {
-  if text is "" {
-    return []
+async fn reverse_dump_stream(reader : &@io.Reader) -> Unit {
+  let scanner = @stream.LineScanner::new(reader)
+  while scanner.next() is Some(line) {
+    @stdio.stdout.write(reverse_dump_line(line.data))
   }
-  let lines : Array[String] = text.split("\n").map(v => v.to_owned()).collect()
-  if text.has_suffix("\n") {
-    ignore(lines.pop())
-  }
-  lines
-}
-
-///|
-/// Parse hex byte pairs from the region after the "offset:" column of a
-/// standard xxd dump line. Hex groups are separated by single spaces; the
-/// ASCII column is separated by at least two spaces, which ends the scan.
-fn reverse_dump(text : String) -> Bytes {
-  let out : Array[Byte] = []
-  for line in split_lines(text) {
-    let chars : Array[Char] = line.iter().collect()
-    let mut i = 0
-    while i < chars.length() && chars[i] != ':' {
-      i += 1
-    }
-    if i >= chars.length() {
-      continue
-    }
-    i += 1
-    while i < chars.length() {
-      if chars[i] == ' ' {
-        if i + 1 < chars.length() && chars[i + 1] == ' ' {
-          break
-        }
-        i += 1
-        continue
-      }
-      if i + 1 >= chars.length() {
-        break
-      }
-      let high = hex_val(chars[i])
-      let low = hex_val(chars[i + 1])
-      if high < 0 || low < 0 {
-        break
-      }
-      out.push(((high << 4) | low).to_byte())
-      i += 2
-    }
-  }
-  Bytes::from_array(out)
 }
 
 ///|
@@ -220,24 +258,6 @@ fn parse_number(
 }
 
 ///|
-async fn read_source_bytes(path : String) -> Bytes {
-  if path == "-" {
-    @stdio.stdin.read_all().binary()
-  } else {
-    @fs.read_file_to_bytes(path)
-  }
-}
-
-///|
-async fn read_source_text(path : String) -> String {
-  if path == "-" {
-    @stdio.stdin.read_all().text()
-  } else {
-    @fs.read_file_to_string(path)
-  }
-}
-
-///|
 async fn main {
   let args = @env.args()[1:]
   let command = xxd_command()
@@ -267,23 +287,28 @@ async fn main {
   let inputs = matches.values.get("input").unwrap_or([])
   let path = if inputs.is_empty() { "-" } else { inputs[0] }
   try {
-    if reverse {
-      let text = read_source_text(path)
-      let bytes = if plain { reverse_plain(text) } else { reverse_dump(text) }
-      @stdio.stdout.write(bytes)
-    } else {
-      let data = read_source_bytes(path)
-      let limit = match len_opt {
-        Some(n) => if n < data.length() { n } else { data.length() }
-        None => data.length()
-      }
-      let view = data[0:limit]
-      let rendered = if plain {
-        dump_plain(view, cols)
+    if path == "-" {
+      if reverse {
+        if plain {
+          reverse_plain_stream(@stdio.stdin)
+        } else {
+          reverse_dump_stream(@stdio.stdin)
+        }
       } else {
-        dump(view, cols)
+        dump_stream(@stdio.stdin, plain, cols, len_opt)
       }
-      @stdio.stdout.write(rendered)
+    } else {
+      let file = @fs.open(path, mode=ReadOnly)
+      defer file.close()
+      if reverse {
+        if plain {
+          reverse_plain_stream(file)
+        } else {
+          reverse_dump_stream(file)
+        }
+      } else {
+        dump_stream(file, plain, cols, len_opt)
+      }
     }
   } catch {
     CliError(msg) => {

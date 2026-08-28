@@ -76,8 +76,9 @@ async fn main {
     @sys.exit(125)
     return
   }
+  let context = @process.ExecutionContext::current()
   let result = @async.with_timeout_opt(milliseconds, () => {
-    @process.run(command[0], command[1:], cancel_handler=@process.hard_cancel())
+    @process.run(@process.child(command[0], command[1:].to_owned(), context~))
   }) catch {
     @os_error.OSError(_) as err => {
       @stdio.stderr.write("timeout: cannot run '\{command[0]}': \{err}\n")

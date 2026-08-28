@@ -94,6 +94,11 @@ async fn main {
       }
       Some(Directory) if options.recursive =>
         @fsops.remove_path(path, true) catch {
+          @fsops.FsOpError(message) => {
+            @stdio.stderr.write("rm: cannot remove '\{path}': \{message}\n")
+            failed = true
+            continue
+          }
           err => {
             @stdio.stderr.write("rm: cannot remove '\{path}': \{err}\n")
             failed = true
@@ -115,6 +120,11 @@ async fn main {
       }
       Some(_) =>
         @fsops.remove_path(path, false) catch {
+          @fsops.FsOpError(message) => {
+            @stdio.stderr.write("rm: cannot remove '\{path}': \{message}\n")
+            failed = true
+            continue
+          }
           err => {
             @stdio.stderr.write("rm: cannot remove '\{path}': \{err}\n")
             failed = true

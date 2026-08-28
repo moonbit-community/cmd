@@ -32,7 +32,7 @@ fn is_continuation(b : Byte) -> Bool {
 ///|
 /// Count valid UTF-8 encoded characters. Bytes that are not part of a valid
 /// sequence are skipped without being counted, like GNU wc -m.
-fn count_utf8_chars(data : Bytes) -> Int64 {
+fn count_utf8_chars(data : Bytes, at_eof : Bool) -> (Int64, Int) {
   let mut count : Int64 = 0
   let mut i = 0
   while i < data.length() {
@@ -60,6 +60,9 @@ fn count_utf8_chars(data : Bytes) -> Int64 {
     } else {
       (0, 0, 0)
     }
+    if len > 0 && i + len > data.length() && !at_eof {
+      break
+    }
     if len == 0 || i + len > data.length() {
       i += 1
       continue
@@ -83,25 +86,39 @@ fn count_utf8_chars(data : Bytes) -> Int64 {
       i += 1
     }
   }
-  count
+  (count, i)
 }
 
 ///|
-fn count(data : Bytes) -> Counts {
+async fn count_reader(reader : &@io.Reader) -> Counts {
   let counts = Counts::new()
-  counts.bytes = data.length().to_int64()
-  counts.chars = count_utf8_chars(data)
+  let pending : Array[Byte] = []
   let mut in_word = false
-  for b in data {
-    if b is b'\n' {
-      counts.lines += 1
+  while @stream.read_chunk(reader) is Some(chunk) {
+    counts.bytes += chunk.length().to_int64()
+    for b in chunk {
+      if b is b'\n' {
+        counts.lines += 1
+      }
+      if is_space_byte(b) {
+        in_word = false
+      } else if !in_word {
+        in_word = true
+        counts.words += 1
+      }
+      pending.push(b)
     }
-    if is_space_byte(b) {
-      in_word = false
-    } else if !in_word {
-      in_word = true
-      counts.words += 1
+    let data = Bytes::from_array(pending)
+    let (chars, consumed) = count_utf8_chars(data, false)
+    counts.chars += chars
+    if consumed > 0 {
+      let remaining = pending[consumed:].to_owned()
+      pending.clear()
+      pending.append(remaining)
     }
+  }
+  if !pending.is_empty() {
+    counts.chars += count_utf8_chars(Bytes::from_array(pending), true).0
   }
   counts
 }
@@ -162,11 +179,13 @@ fn wc_command() -> @argparse.Command {
 }
 
 ///|
-async fn read_source(path : String) -> Bytes {
+async fn count_source(path : String) -> Counts {
   if path == "-" {
-    @stdio.stdin.read_all().binary()
+    count_reader(@stdio.stdin)
   } else {
-    @fs.read_file_to_bytes(path)
+    let file = @async_fs.open(path, mode=ReadOnly)
+    defer file.close()
+    count_reader(file)
   }
 }
 
@@ -194,18 +213,17 @@ async fn main {
   let total = Counts::new()
   let mut failed = false
   if files.is_empty() {
-    let counts = count(@stdio.stdin.read_all().binary())
+    let counts = count_reader(@stdio.stdin)
     @stdio.stdout.write(render_counts(counts, selection, None) + "\n")
   } else {
     for path in files {
-      let data = read_source(path) catch {
+      let counts = count_source(path) catch {
         err => {
           @stdio.stderr.write("wc: \{err}\n")
           failed = true
           continue
         }
       }
-      let counts = count(data)
       total.add(counts)
       @stdio.stdout.write(render_counts(counts, selection, Some(path)) + "\n")
     }

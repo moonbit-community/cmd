@@ -74,6 +74,11 @@ async fn main {
     @sys.exit(1)
     return
   }
+  if !@platform.symbolic_links_supported() {
+    @stdio.stderr.write("ln: unsupported capability: symbolic links\n")
+    @sys.exit(1)
+    return
+  }
   let destination = operands[operands.length() - 1]
   let targets = operands[0:operands.length() - 1]
   if no_target_directory && targets.length() > 1 {
@@ -103,6 +108,13 @@ async fn main {
     }
     ignore(
       create_link(target, link_path, force, verbose) catch {
+        @fsops.FsOpError(message) => {
+          @stdio.stderr.write(
+            "ln: failed to create '\{link_path}': \{message}\n",
+          )
+          failed = true
+          false
+        }
         err => {
           @stdio.stderr.write("ln: failed to create '\{link_path}': \{err}\n")
           failed = true

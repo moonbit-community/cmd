@@ -5,4 +5,6 @@ plain seconds or `s`, `m`, `h`, and `d` suffixes. A timed-out command is
 forcefully cancelled and returns status 124. Process-group termination,
 `--kill-after`, and signal selection are intentionally unsupported because the
 portable API only provides cancellation for the directly owned child process.
-This package is not in the default policy allow-list.
+Unlike `sh`, `make`, and `xargs`, this difference from GNU `timeout` keeps the
+command behind its compatibility release gate. This package is not in the
+default policy allow-list.

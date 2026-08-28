@@ -120,63 +120,82 @@ fn selected(ranges : Array[(Int, Int)], index : Int) -> Bool {
 }
 
 ///|
-fn split_lines(text : String) -> Array[String] {
-  if text is "" {
-    return []
-  }
-  let lines : Array[String] = text.split("\n").map(v => v.to_owned()).collect()
-  if text.has_suffix("\n") {
-    ignore(lines.pop())
-  }
-  lines
-}
-
-///|
 fn cut_fields(
-  line : String,
+  line : Bytes,
   ranges : Array[(Int, Int)],
-  delimiter : String,
+  delimiter : Byte,
   only_delimited : Bool,
-) -> String? {
-  let parts : Array[String] = line
-    .split(delimiter)
-    .map(v => v.to_owned())
-    .collect()
-  if parts.length() == 1 {
-    // No delimiter in this line.
+) -> Bytes? {
+  let fields : Array[Bytes] = []
+  let mut start = 0
+  for index = 0; index < line.length(); index = index + 1 {
+    if line[index] == delimiter {
+      fields.push(line[start:index].to_owned())
+      start = index + 1
+    }
+  }
+  if start == 0 {
     if only_delimited {
       return None
     }
     return Some(line)
   }
-  let kept : Array[String] = []
-  for index, part in parts {
+  fields.push(line[start:].to_owned())
+  let kept : Array[Byte] = []
+  let mut first = true
+  for index, field in fields {
     if selected(ranges, index + 1) {
-      kept.push(part)
+      if !first {
+        kept.push(delimiter)
+      }
+      for byte in field {
+        kept.push(byte)
+      }
+      first = false
     }
   }
-  Some(kept.join(delimiter))
+  Some(Bytes::from_array(kept))
 }
 
 ///|
-fn cut_characters(line : String, ranges : Array[(Int, Int)]) -> String {
-  let sb = StringBuilder()
-  let mut index = 1
-  for c in line {
-    if selected(ranges, index) {
-      sb.write_char(c)
+fn cut_characters(line : Bytes, ranges : Array[(Int, Int)]) -> Bytes {
+  let out : Array[Byte] = []
+  for index, byte in line {
+    if selected(ranges, index + 1) {
+      out.push(byte)
     }
-    index += 1
   }
-  sb.to_string()
+  Bytes::from_array(out)
 }
 
 ///|
-async fn read_source_text(path : String) -> String {
-  if path == "-" {
-    @stdio.stdin.read_all().text()
-  } else {
-    @fs.read_file_to_string(path)
+async fn process_reader(
+  reader : &@io.Reader,
+  field_ranges : Array[(Int, Int)]?,
+  char_ranges : Array[(Int, Int)]?,
+  delimiter : Byte,
+  only_delimited : Bool,
+) -> Unit {
+  let scanner = @stream.LineScanner::new(reader)
+  while scanner.next() is Some(line) {
+    match field_ranges {
+      Some(ranges) =>
+        match cut_fields(line.data, ranges, delimiter, only_delimited) {
+          Some(out) => {
+            @stdio.stdout.write(out)
+            @stdio.stdout.write("\n")
+          }
+          None => ()
+        }
+      None =>
+        match char_ranges {
+          Some(ranges) => {
+            @stdio.stdout.write(cut_characters(line.data, ranges))
+            @stdio.stdout.write("\n")
+          }
+          None => ()
+        }
+    }
   }
 }
 
@@ -194,14 +213,17 @@ async fn main {
   let only_delimited = matches.flags.get_or_default("only-delimited", false)
   let delimiter = match option_value(matches, "delimiter") {
     Some(d) => {
-      if d.char_length() != 1 {
-        @stdio.stderr.write("cut: the delimiter must be a single character\n")
+      let encoded = @utf8.encode(d)
+      if encoded.length() != 1 {
+        @stdio.stderr.write(
+          "cut: the delimiter must be a single byte in C locale\n",
+        )
         @sys.exit(2)
         return
       }
-      d
+      encoded[0]
     }
-    None => "\t"
+    None => b'\t'
   }
   let fields_spec = option_value(matches, "fields")
   let chars_spec = option_value(matches, "characters")
@@ -233,26 +255,23 @@ async fn main {
   let sources = if files.is_empty() { ["-"] } else { files }
   let mut failed = false
   for path in sources {
-    let text = read_source_text(path) catch {
+    try {
+      if path == "-" {
+        process_reader(
+          @stdio.stdin, field_ranges, char_ranges, delimiter, only_delimited,
+        )
+      } else {
+        let file = @fs.open(path, mode=ReadOnly)
+        defer file.close()
+        process_reader(
+          file, field_ranges, char_ranges, delimiter, only_delimited,
+        )
+      }
+    } catch {
       err => {
         @stdio.stderr.write("cut: \{err}\n")
         failed = true
         continue
-      }
-    }
-    for line in split_lines(text) {
-      match field_ranges {
-        Some(ranges) =>
-          match cut_fields(line, ranges, delimiter, only_delimited) {
-            Some(out) => @stdio.stdout.write(out + "\n")
-            None => ()
-          }
-        None =>
-          match char_ranges {
-            Some(ranges) =>
-              @stdio.stdout.write(cut_characters(line, ranges) + "\n")
-            None => ()
-          }
       }
     }
   }

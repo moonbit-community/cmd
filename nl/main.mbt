@@ -52,18 +52,6 @@ fn option_value(
 }
 
 ///|
-fn split_lines(text : String) -> Array[String] {
-  if text is "" {
-    return []
-  }
-  let lines : Array[String] = text.split("\n").map(v => v.to_owned()).collect()
-  if text.has_suffix("\n") {
-    ignore(lines.pop())
-  }
-  lines
-}
-
-///|
 fn pad_left(text : String, width : Int) -> String {
   let sb = StringBuilder()
   for _ in 0..<(width - text.length()) {
@@ -83,11 +71,30 @@ fn spaces(width : Int) -> String {
 }
 
 ///|
-async fn read_source_text(path : String) -> String {
-  if path == "-" {
-    @stdio.stdin.read_all().text()
-  } else {
-    @fs.read_file_to_string(path)
+async fn process_reader(
+  reader : &@io.Reader,
+  style : String,
+  width : Int,
+  separator : String,
+  number : Ref[Int],
+) -> Unit {
+  let scanner = @stream.LineScanner::new(reader)
+  while scanner.next() is Some(line) {
+    let numbered = match style {
+      "a" => true
+      "t" => !line.data.is_empty()
+      _ => false
+    }
+    if numbered {
+      @stdio.stdout.write(pad_left(number.val.to_string(), width) + separator)
+      @stdio.stdout.write(line.data)
+      @stdio.stdout.write("\n")
+      number.val += 1
+    } else {
+      @stdio.stdout.write(spaces(width))
+      @stdio.stdout.write(line.data)
+      @stdio.stdout.write("\n")
+    }
   }
 }
 
@@ -128,29 +135,22 @@ async fn main {
   let separator = option_value(matches, "number-separator", "\t")
   let files = matches.values.get("files").unwrap_or([])
   let sources = if files.is_empty() { ["-"] } else { files }
-  let mut number = 1
+  let number = Ref(1)
   let mut failed = false
   for path in sources {
-    let text = read_source_text(path) catch {
+    try {
+      if path == "-" {
+        process_reader(@stdio.stdin, style, width, separator, number)
+      } else {
+        let file = @fs.open(path, mode=ReadOnly)
+        defer file.close()
+        process_reader(file, style, width, separator, number)
+      }
+    } catch {
       err => {
         @stdio.stderr.write("nl: \{err}\n")
         failed = true
         continue
-      }
-    }
-    for line in split_lines(text) {
-      let numbered = match style {
-        "a" => true
-        "t" => line != ""
-        _ => false
-      }
-      if numbered {
-        @stdio.stdout.write(
-          pad_left(number.to_string(), width) + separator + line + "\n",
-        )
-        number += 1
-      } else {
-        @stdio.stdout.write(spaces(width) + line + "\n")
       }
     }
   }

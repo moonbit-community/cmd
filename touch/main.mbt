@@ -1,25 +1,22 @@
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let files : Array[String] = []
-  let mut no_create = false
-  let mut options = true
-  for arg in args {
-    if options && arg == "--" {
-      options = false
-    } else if options && (arg == "-c" || arg == "--no-create") {
-      no_create = true
-    } else if options && arg == "--help" {
-      @stdio.stdout.write("Usage: touch [-c] FILE...\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("no-create", short='c'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("touch: \{message}: '\{option}'\n")
+      @sys.exit(2)
       return
-    } else if options && arg.has_prefix("-") && arg != "-" {
-      @stdio.stderr.write("touch: unsupported option: '\{arg}'\n")
-      @sys.exit(1)
-      return
-    } else {
-      files.push(arg)
     }
   }
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: touch [-c] FILE...\n")
+    return
+  }
+  let files = parsed.operands
+  let no_create = parsed.contains("no-create")
   if files.is_empty() {
     @stdio.stderr.write("touch: missing file operand\n")
     @sys.exit(1)

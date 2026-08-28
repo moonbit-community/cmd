@@ -35,25 +35,22 @@ fn dir_name(path : String) -> String {
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let operands : Array[String] = []
-  let mut zero = false
-  let mut options = true
-  for arg in args {
-    if options && arg == "--" {
-      options = false
-    } else if options && (arg == "-z" || arg == "--zero") {
-      zero = true
-    } else if options && arg == "--help" {
-      @stdio.stdout.write("Usage: dirname [-z] NAME...\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("zero", short='z'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("dirname: \{message}: '\{option}'\n")
+      @sys.exit(2)
       return
-    } else if options && arg.has_prefix("-") && arg != "-" {
-      @stdio.stderr.write("dirname: invalid option: '\{arg}'\n")
-      @sys.exit(1)
-      return
-    } else {
-      operands.push(arg)
     }
   }
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: dirname [-z] NAME...\n")
+    return
+  }
+  let operands = parsed.operands
+  let zero = parsed.contains("zero")
   if operands.is_empty() {
     @stdio.stderr.write("dirname: missing operand\n")
     @sys.exit(1)

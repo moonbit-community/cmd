@@ -211,9 +211,6 @@ fn assign_variable(
 
 ///|
 fn logical_lines(contents : String) -> Array[String] raise MakeError {
-  if contents.length() > 16 * 1024 * 1024 {
-    raise MakeError("Makefile exceeds the 16 MiB safety limit")
-  }
   let result : Array[String] = []
   let pending = StringBuilder()
   for raw_line in contents.split("\n") {

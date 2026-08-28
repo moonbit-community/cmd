@@ -5,24 +5,35 @@ pub(all) suberror FsOpError {
 
 ///|
 pub fn basename(value : String) -> String {
-  @path.Path(value).basename().to_owned()
+  @path.Path(@platform.normalize_input_separators(value)).basename().to_owned()
 }
 
 ///|
 pub fn dirname(value : String) -> String {
-  @path.Path(value).dirname().to_string()
+  @path.Path(@platform.normalize_input_separators(value)).dirname().to_string()
 }
 
 ///|
 pub fn join(parent : String, child : String) -> String {
-  @path.Path(parent).join(Path(child)).to_string()
+  @path.Path(@platform.normalize_input_separators(parent))
+  .join(Path(@platform.normalize_input_separators(child)))
+  .to_string()
+}
+
+///|
+fn comparable(path : String) -> String {
+  if @platform.is_windows() {
+    path.to_lower()
+  } else {
+    path
+  }
 }
 
 ///|
 fn is_same_or_descendant(path : String, root : String) -> Bool {
   let normalized_path = canonical_path(path)
   let normalized_root = canonical_path(root)
-  if normalized_path == normalized_root {
+  if comparable(normalized_path) == comparable(normalized_root) {
     return true
   }
   let prefix = if normalized_root.has_suffix(@path.sep.to_string()) {
@@ -30,26 +41,43 @@ fn is_same_or_descendant(path : String, root : String) -> Bool {
   } else {
     normalized_root + @path.sep.to_string()
   }
-  normalized_path.has_prefix(prefix)
+  comparable(normalized_path).has_prefix(comparable(prefix))
 }
 
 ///|
 fn canonical_path(path : String) -> String {
   let separator = @path.sep.to_string()
-  let mut normalized = @path.Path(path).normalize().to_string()
-  while normalized.length() > 1 && normalized.has_suffix(separator) {
+  let mut normalized = @path.Path(@platform.normalize_input_separators(path))
+    .normalize()
+    .to_string()
+  while normalized.has_suffix(separator) {
+    let parent = @path.Path(normalized).dirname().to_string()
+    if comparable(parent) == comparable(normalized) {
+      break
+    }
     normalized = normalized[:normalized.length() - separator.length()].to_owned()
   }
   normalized
 }
 
 ///|
+fn is_filesystem_root(path : String) -> Bool {
+  let normalized = canonical_path(path)
+  let value = @path.Path(normalized)
+  value.is_absolute() &&
+  comparable(canonical_path(value.dirname().to_string())) ==
+  comparable(normalized)
+}
+
+///|
 pub fn protects_working_directory(path : String) -> Bool {
+  if is_filesystem_root(path) {
+    return true
+  }
   guard @env.current_dir() is Some(current) else {
-    let normalized = @path.Path(path).normalize().to_string()
+    let normalized = canonical_path(path)
     return normalized == "." ||
       normalized == ".." ||
-      normalized == "/" ||
       normalized.has_prefix("../")
   }
   let current = canonical_path(current)
@@ -59,11 +87,13 @@ pub fn protects_working_directory(path : String) -> Bool {
   } else {
     canonical_path(@path.Path(current).join(target).to_string())
   }
-  target == current || is_same_or_descendant(current, target)
+  comparable(target) == comparable(current) ||
+  is_same_or_descendant(current, target)
 }
 
 ///|
 pub async fn kind_if_exists(path : String) -> @fs.FileKind? {
+  let path = @platform.normalize_input_separators(path)
   try @fs.kind(path, follow_symlink=false) catch {
     @os_error.OSError(_) as err if err.is_ENOENT() => None
     err => raise err
@@ -153,6 +183,8 @@ pub async fn ensure_not_nested_destination(
   source : String,
   destination : String,
 ) -> Unit {
+  let source = @platform.normalize_input_separators(source)
+  let destination = @platform.normalize_input_separators(destination)
   let source_real = @fs.realpath(source)
   let destination_real = match kind_if_exists(destination) {
     Some(SymLink) =>
@@ -174,6 +206,8 @@ pub async fn copy_path(
   recursive : Bool,
   replace : Bool,
 ) -> Bool {
+  let source = @platform.normalize_input_separators(source)
+  let destination = @platform.normalize_input_separators(destination)
   let source_kind = @fs.kind(source, follow_symlink=false)
   if source_kind == Directory && !recursive {
     raise FsOpError("omitting directory: '\{source}'")
@@ -189,6 +223,7 @@ pub async fn copy_path(
 
 ///|
 pub async fn remove_path(path : String, recursive : Bool) -> Unit {
+  let path = @platform.normalize_input_separators(path)
   match @fs.kind(path, follow_symlink=false) {
     Directory => {
       if !recursive {

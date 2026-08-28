@@ -68,7 +68,7 @@ async fn main {
     i += 1
   }
   let variables : Map[String, String] = if ignore_environment {
-    {}
+    Map([])
   } else {
     @core_env.get_env_vars()
   }
@@ -91,12 +91,11 @@ async fn main {
       }
     }
     Some(program) => {
-      let code = @process.run(
-        program,
-        command_args,
-        extra_env=variables,
-        inherit_env=false,
-      ) catch {
+      let context : @process.ExecutionContext = {
+        cwd: @core_env.current_dir().unwrap_or("."),
+        env: variables,
+      }
+      let code = @process.run(@process.child(program, command_args, context~)) catch {
         @os_error.OSError(_) as err => {
           @stdio.stderr.write("env: cannot run '\{program}': \{err}\n")
           @sys.exit(if err.is_ENOENT() { 127 } else { 126 })

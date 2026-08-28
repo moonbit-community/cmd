@@ -69,23 +69,50 @@ fn parse_delimiters(spec : String) -> Array[String] {
 }
 
 ///|
-fn split_lines(text : String) -> Array[String] {
-  if text is "" {
-    return []
+async fn paste_serial(
+  scanner : @stream.LineScanner,
+  delimiters : Array[String],
+) -> Unit {
+  let mut index = 0
+  while scanner.next() is Some(line) {
+    if index > 0 {
+      @stdio.stdout.write(delimiters[(index - 1) % delimiters.length()])
+    }
+    @stdio.stdout.write(line.data)
+    index += 1
   }
-  let lines : Array[String] = text.split("\n").map(v => v.to_owned()).collect()
-  if text.has_suffix("\n") {
-    ignore(lines.pop())
-  }
-  lines
+  @stdio.stdout.write("\n")
 }
 
 ///|
-async fn read_source_text(path : String) -> String {
-  if path == "-" {
-    @stdio.stdin.read_all().text()
-  } else {
-    @fs.read_file_to_string(path)
+async fn paste_parallel(
+  scanners : Array[@stream.LineScanner],
+  delimiters : Array[String],
+) -> Unit {
+  for ;; {
+    let row : Array[Bytes?] = []
+    let mut any = false
+    for scanner in scanners {
+      match scanner.next() {
+        Some(line) => {
+          row.push(Some(line.data))
+          any = true
+        }
+        None => row.push(None)
+      }
+    }
+    if !any {
+      break
+    }
+    for index, value in row {
+      if index > 0 {
+        @stdio.stdout.write(delimiters[(index - 1) % delimiters.length()])
+      }
+      if value is Some(data) {
+        @stdio.stdout.write(data)
+      }
+    }
+    @stdio.stdout.write("\n")
   }
 }
 
@@ -107,48 +134,50 @@ async fn main {
   }
   let files = matches.values.get("files").unwrap_or([])
   let sources = if files.is_empty() { ["-"] } else { files }
-  let contents : Array[Array[String]] = []
+  let mut stdin_count = 0
   for path in sources {
-    let text = read_source_text(path) catch {
-      err => {
-        @stdio.stderr.write("paste: \{err}\n")
-        @sys.exit(1)
-        return
-      }
+    if path == "-" {
+      stdin_count += 1
     }
-    contents.push(split_lines(text))
   }
-  if serial {
-    for lines in contents {
-      let sb = StringBuilder()
-      for index, line in lines {
-        if index > 0 {
-          sb.write_string(delims[(index - 1) % delims.length()])
+  if stdin_count > 1 {
+    @stdio.stderr.write("paste: standard input may be specified only once\n")
+    @sys.exit(2)
+    return
+  }
+  let open_files : Array[@fs.File] = []
+  defer (for file in open_files {
+    file.close()
+  })
+  try {
+    if serial {
+      for path in sources {
+        if path == "-" {
+          paste_serial(@stream.LineScanner::new(@stdio.stdin), delims)
+        } else {
+          let file = @fs.open(path, mode=ReadOnly)
+          open_files.push(file)
+          paste_serial(@stream.LineScanner::new(file), delims)
         }
-        sb.write_string(line)
       }
-      sb.write_string("\n")
-      @stdio.stdout.write(sb.to_string())
+    } else {
+      let scanners : Array[@stream.LineScanner] = []
+      for path in sources {
+        if path == "-" {
+          scanners.push(@stream.LineScanner::new(@stdio.stdin))
+        } else {
+          let file = @fs.open(path, mode=ReadOnly)
+          open_files.push(file)
+          scanners.push(@stream.LineScanner::new(file))
+        }
+      }
+      paste_parallel(scanners, delims)
     }
-  } else {
-    let mut rows = 0
-    for lines in contents {
-      if lines.length() > rows {
-        rows = lines.length()
-      }
-    }
-    for row in 0..<rows {
-      let sb = StringBuilder()
-      for index, lines in contents {
-        if index > 0 {
-          sb.write_string(delims[(index - 1) % delims.length()])
-        }
-        if row < lines.length() {
-          sb.write_string(lines[row])
-        }
-      }
-      sb.write_string("\n")
-      @stdio.stdout.write(sb.to_string())
+  } catch {
+    err => {
+      @stdio.stderr.write("paste: \{err}\n")
+      @sys.exit(1)
+      return
     }
   }
 }

@@ -1,0 +1,982 @@
+///|
+fn usage() -> String {
+  "Usage: compat-runner --bin-root DIR [--catalog-only] [--gnu-diff] [--stress]"
+}
+
+///|
+fn fail(message : String, failures : Array[String]) -> Unit {
+  failures.push(message)
+}
+
+///|
+async fn check_catalog(
+  bin_root : String,
+  require_binaries : Bool,
+  failures : Array[String],
+) -> Unit {
+  let catalog = @cli.command_catalog()
+  if catalog.length() != 48 {
+    fail("catalog: expected 48 commands, got \{catalog.length()}", failures)
+  }
+  let names : Map[String, Bool] = Map([])
+  for contract in catalog {
+    if names.contains(contract.name) {
+      fail("catalog: duplicate command '\{contract.name}'", failures)
+    }
+    names[contract.name] = true
+    if require_binaries {
+      let path = @testkit.executable_path(bin_root, contract.name)
+      if !@fs.exists(path) {
+        fail("catalog: missing native binary '\{path}'", failures)
+      }
+    }
+  }
+}
+
+///|
+async fn expect(
+  bin_root : String,
+  command : String,
+  args : Array[String],
+  stdin : Bytes?,
+  status : Int,
+  stdout : Bytes,
+  failures : Array[String],
+) -> Unit {
+  let path = @testkit.executable_path(bin_root, command)
+  let result = @testkit.run(path, args, stdin?) catch {
+    err => {
+      fail("\{command}: failed to execute: \{err}", failures)
+      return
+    }
+  }
+  if result.status != status {
+    fail(
+      "\{command}: expected status \{status}, got \{result.status}; stderr=\{result.stderr.to_unchecked_string()}",
+      failures,
+    )
+  }
+  if !@testkit.bytes_equal(result.stdout, stdout) {
+    fail(
+      "\{command}: stdout mismatch; expected \{stdout}, got \{result.stdout}",
+      failures,
+    )
+  }
+}
+
+///|
+async fn expect_case(
+  bin_root : String,
+  command : String,
+  args : Array[String],
+  stdin : Bytes?,
+  status : Int,
+  stdout : Bytes,
+  invoked : Map[String, Bool],
+  failures : Array[String],
+) -> Unit {
+  invoked[command] = true
+  expect(bin_root, command, args, stdin, status, stdout, failures)
+}
+
+///|
+async fn expect_stdout_contains(
+  bin_root : String,
+  command : String,
+  args : Array[String],
+  needle : String,
+  invoked : Map[String, Bool],
+  failures : Array[String],
+) -> Unit {
+  invoked[command] = true
+  let path = @testkit.executable_path(bin_root, command)
+  let result = @testkit.run(path, args) catch {
+    err => {
+      fail("\{command}: failed to execute: \{err}", failures)
+      return
+    }
+  }
+  if result.status != 0 {
+    fail(
+      "\{command}: expected status 0, got \{result.status}; stderr=\{result.stderr}",
+      failures,
+    )
+  }
+  if !@testkit.contains_bytes(result.stdout, needle) {
+    fail(
+      "\{command}: stdout does not contain '\{needle}': \{result.stdout}",
+      failures,
+    )
+  }
+}
+
+///|
+async fn expect_failure(
+  bin_root : String,
+  command : String,
+  args : Array[String],
+  expected_status : Int,
+  diagnostic : String,
+  failures : Array[String],
+  cwd? : String,
+) -> Unit {
+  let result = @testkit.run(
+    @testkit.executable_path(bin_root, command),
+    args,
+    cwd?,
+  ) catch {
+    err => {
+      fail("\{command}: failure case could not run: \{err}", failures)
+      return
+    }
+  }
+  if result.status != expected_status {
+    fail(
+      "\{command}: expected failure status \{expected_status}, got \{result.status}",
+      failures,
+    )
+  }
+  if !@testkit.contains_bytes(result.stderr, diagnostic) {
+    fail(
+      "\{command}: diagnostic missing '\{diagnostic}': \{result.stderr}",
+      failures,
+    )
+  }
+}
+
+///|
+async fn run_catalog_smoke(bin_root : String, failures : Array[String]) -> Unit {
+  let invoked : Map[String, Bool] = Map([])
+  expect_case(
+    bin_root,
+    "base64",
+    ["-w0"],
+    Some(b"hello world"),
+    0,
+    b"aGVsbG8gd29ybGQ=\n",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "basename",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_case(
+    bin_root,
+    "cat",
+    [],
+    Some(b"\x00\xff\x01ok"),
+    0,
+    b"\x00\xff\x01ok",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "chmod",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "cmp",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "comm",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "cp",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "curl",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_case(bin_root, "cut", ["-c1"], Some(b""), 0, b"", invoked, failures)
+  expect_stdout_contains(
+    bin_root,
+    "dirname",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "echo",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_case(bin_root, "env", ["-i"], None, 0, b"", invoked, failures)
+  expect_case(bin_root, "false", [], None, 1, b"", invoked, failures)
+  expect_stdout_contains(
+    bin_root,
+    "find",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "grep",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_case(bin_root, "head", [], Some(b""), 0, b"", invoked, failures)
+  expect_stdout_contains(
+    bin_root,
+    "join",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_case(
+    bin_root,
+    "jq",
+    ["-n", "-c", "null"],
+    None,
+    0,
+    b"null\n",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "jqlog",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "ln",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "ls",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "make",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "mkdir",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "mv",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_case(bin_root, "nl", [], Some(b""), 0, b"", invoked, failures)
+  expect_case(bin_root, "paste", [], Some(b""), 0, b"", invoked, failures)
+  expect_stdout_contains(
+    bin_root,
+    "printenv",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_case(
+    bin_root,
+    "printf",
+    ["%s=%d\n", "answer", "42"],
+    None,
+    0,
+    b"answer=42\n",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "pwd",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "rm",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "rmdir",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "seq",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "sha256sum",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_case(bin_root, "sh", ["-c", ""], None, 0, b"", invoked, failures)
+  expect_stdout_contains(
+    bin_root,
+    "sleep",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_case(bin_root, "sort", [], Some(b""), 0, b"", invoked, failures)
+  expect_case(bin_root, "tail", [], Some(b""), 0, b"", invoked, failures)
+  expect_stdout_contains(
+    bin_root,
+    "tee",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "test",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "timeout",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "touch",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_case(bin_root, "tr", ["a", "b"], Some(b""), 0, b"", invoked, failures)
+  expect_case(bin_root, "true", [], None, 0, b"", invoked, failures)
+  expect_case(bin_root, "uniq", [], Some(b""), 0, b"", invoked, failures)
+  expect_case(
+    bin_root,
+    "wc",
+    ["-l"],
+    Some(b"a\r\nb\n"),
+    0,
+    b"2\n",
+    invoked,
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "wget",
+    ["--help"],
+    "Usage:",
+    invoked,
+    failures,
+  )
+  expect_case(
+    bin_root,
+    "xargs",
+    ["-r", "echo"],
+    Some(b""),
+    0,
+    b"",
+    invoked,
+    failures,
+  )
+  expect_case(bin_root, "xxd", [], Some(b""), 0, b"", invoked, failures)
+  for contract in @cli.command_catalog() {
+    if !invoked.contains(contract.name) {
+      fail("\{contract.name}: catalog command was not executed", failures)
+    }
+  }
+}
+
+///|
+async fn run_option_boundaries(
+  bin_root : String,
+  failures : Array[String],
+) -> Unit {
+  expect(
+    bin_root,
+    "dirname",
+    ["-zz", "/alpha/beta"],
+    None,
+    0,
+    b"/alpha\x00",
+    failures,
+  )
+  expect(bin_root, "dirname", ["--", "-operand"], None, 0, b".\n", failures)
+  expect_failure(
+    bin_root,
+    "printenv",
+    ["--unknown"],
+    2,
+    "unknown option",
+    failures,
+  )
+  expect_failure(
+    bin_root,
+    "touch",
+    ["--no-create=value"],
+    2,
+    "does not accept a value",
+    failures,
+  )
+  expect_failure(
+    bin_root,
+    "base64",
+    ["--wrap=-1"],
+    2,
+    "invalid wrap size",
+    failures,
+  )
+  expect_failure(bin_root, "cut", ["-d::", "-f1"], 2, "single byte", failures)
+  expect_failure(bin_root, "comm", ["-", "-"], 2, "both inputs", failures)
+  expect_failure(
+    bin_root,
+    "paste",
+    ["-", "-"],
+    2,
+    "standard input may be specified only once",
+    failures,
+  )
+}
+
+///|
+async fn run_filesystem_cases(
+  bin_root : String,
+  failures : Array[String],
+) -> Unit {
+  let root = @fs.tmpdir(prefix="mooncmd-compat-fs")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let source = @path.Path(root).join(Path("source")).to_string()
+  let copy = @path.Path(root).join(Path("copy")).to_string()
+  let moved = @path.Path(root).join(Path("moved")).to_string()
+  @fs.write_file(source, b"policy-fixture\n")
+  let cp = @testkit.run(@testkit.executable_path(bin_root, "cp"), [source, copy]) catch {
+    err => {
+      fail("cp: filesystem case failed to run: \{err}", failures)
+      return
+    }
+  }
+  record_result(cp.status == 0, "cp: regular file copy failed", failures)
+  record_result(
+    @fs.read_file(copy).binary() == b"policy-fixture\n",
+    "cp: copied bytes mismatch",
+    failures,
+  )
+  let mv = @testkit.run(@testkit.executable_path(bin_root, "mv"), [copy, moved]) catch {
+    err => {
+      fail("mv: filesystem case failed to run: \{err}", failures)
+      return
+    }
+  }
+  record_result(mv.status == 0, "mv: rename failed", failures)
+  record_result(
+    !@fs.exists(copy) && @fs.exists(moved),
+    "mv: rename side effects mismatch",
+    failures,
+  )
+  let directory = @path.Path(root).join(Path("tree")).to_string()
+  let child = @path.Path(directory).join(Path("child")).to_string()
+  let nested = @path.Path(child).join(Path("copy")).to_string()
+  @fs.mkdir(child, recursive=true)
+  @fs.write_file(@path.Path(directory).join(Path("file")).to_string(), b"x")
+  let nested_copy = @testkit.run(@testkit.executable_path(bin_root, "cp"), [
+    "-R", directory, nested,
+  ]) catch {
+    err => {
+      fail("cp: nested case failed to run: \{err}", failures)
+      return
+    }
+  }
+  record_result(
+    nested_copy.status != 0 &&
+    @testkit.contains_bytes(nested_copy.stderr, "inside the source"),
+    "cp: nested destination was not stably rejected: status=\{nested_copy.status}, stderr=\{nested_copy.stderr}",
+    failures,
+  )
+  let dash = @path.Path(root).join(Path("-dash")).to_string()
+  @fs.write_file(dash, b"dash")
+  let rm_dash = @testkit.run(
+    @testkit.executable_path(bin_root, "rm"),
+    ["--", "-dash"],
+    cwd=root,
+  ) catch {
+    err => {
+      fail("rm: -- operand case failed to run: \{err}", failures)
+      return
+    }
+  }
+  record_result(
+    rm_dash.status == 0 && !@fs.exists(dash),
+    "rm: -- did not protect dash-prefixed operand parsing",
+    failures,
+  )
+  let guarded_dir = @path.Path(root).join(Path("protected")).to_string()
+  @fs.mkdir(guarded_dir)
+  @fs.write_file(
+    @path.Path(guarded_dir).join(Path("kept")).to_string(),
+    b"safe",
+  )
+  let protected_rm = @testkit.run(
+    @testkit.executable_path(bin_root, "rm"),
+    ["-r", "."],
+    cwd=guarded_dir,
+  ) catch {
+    err => {
+      fail("rm: protected path case failed to run: \{err}", failures)
+      return
+    }
+  }
+  record_result(
+    protected_rm.status != 0 &&
+    @testkit.contains_bytes(protected_rm.stderr, "protected path") &&
+    @fs.exists(@path.Path(guarded_dir).join(Path("kept")).to_string()),
+    "rm: current-directory protection failed",
+    failures,
+  )
+  let link = @path.Path(root).join(Path("link")).to_string()
+  if @platform.symbolic_links_supported() {
+    let ln = @testkit.run(@testkit.executable_path(bin_root, "ln"), [
+      "-s", source, link,
+    ]) catch {
+      err => {
+        fail("ln: filesystem case failed to run: \{err}", failures)
+        return
+      }
+    }
+    record_result(
+      ln.status == 0 && @fs.exists(link),
+      "ln: symlink creation failed",
+      failures,
+    )
+    let rm_link = @testkit.run(@testkit.executable_path(bin_root, "rm"), [
+      "-r", link,
+    ]) catch {
+      err => {
+        fail("rm: symlink case failed to run: \{err}", failures)
+        return
+      }
+    }
+    record_result(
+      rm_link.status == 0 && @fs.exists(source) && !@fs.exists(link),
+      "rm: recursive symlink removal followed the target",
+      failures,
+    )
+  } else {
+    expect_failure(
+      bin_root,
+      "ln",
+      ["-s", source, link],
+      1,
+      "unsupported capability",
+      failures,
+    )
+    expect_failure(
+      bin_root,
+      "chmod",
+      ["600", source],
+      1,
+      "unsupported capability",
+      failures,
+    )
+  }
+}
+
+///|
+fn record_result(
+  condition : Bool,
+  message : String,
+  failures : Array[String],
+) -> Unit {
+  if !condition {
+    fail(message, failures)
+  }
+}
+
+///|
+fn patterned_bytes(length : Int) -> Bytes {
+  let data : Array[Byte] = []
+  for index = 0; index < length; index = index + 1 {
+    data.push((index & 0xFF).to_byte())
+  }
+  Bytes::from_array(data)
+}
+
+///|
+async fn expect_round_trip(
+  bin_root : String,
+  command : String,
+  encode_args : Array[String],
+  decode_args : Array[String],
+  input : Bytes,
+  failures : Array[String],
+) -> Unit {
+  let executable = @testkit.executable_path(bin_root, command)
+  let encoded = @testkit.run(executable, encode_args, stdin=input) catch {
+    err => {
+      fail("\{command}: encoder failed to run: \{err}", failures)
+      return
+    }
+  }
+  if encoded.status != 0 {
+    fail(
+      "\{command}: encoder returned \{encoded.status}: \{encoded.stderr}",
+      failures,
+    )
+    return
+  }
+  let decoded = @testkit.run(executable, decode_args, stdin=encoded.stdout) catch {
+    err => {
+      fail("\{command}: decoder failed to run: \{err}", failures)
+      return
+    }
+  }
+  record_result(
+    decoded.status == 0 && @testkit.bytes_equal(decoded.stdout, input),
+    "\{command}: chunk-boundary round trip failed: status=\{decoded.status}, stderr=\{decoded.stderr}",
+    failures,
+  )
+}
+
+///|
+async fn run_chunk_boundary_cases(
+  bin_root : String,
+  failures : Array[String],
+) -> Unit {
+  for length in [65535, 65536, 65537] {
+    let input = patterned_bytes(length)
+    expect_round_trip(bin_root, "base64", ["-w0"], ["-d"], input, failures)
+    expect_round_trip(bin_root, "xxd", ["-p"], ["-r", "-p"], input, failures)
+  }
+  expect(
+    bin_root,
+    "tr",
+    ["-s", "a"],
+    Some(Bytes::make(65537, b'a')),
+    0,
+    b"a",
+    failures,
+  )
+}
+
+///|
+async fn run_merge_cases(bin_root : String, failures : Array[String]) -> Unit {
+  let root = @fs.tmpdir(prefix="mooncmd-compat-merge")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let left = @path.Path(root).join(Path("left")).to_string()
+  let right = @path.Path(root).join(Path("right")).to_string()
+  @fs.write_file(left, b"a\nb\nc\n")
+  @fs.write_file(right, b"b\nc\nd\n")
+  let comm = @testkit.run(@testkit.executable_path(bin_root, "comm"), [
+    "-23", left, right,
+  ]) catch {
+    err => {
+      fail("comm: merge case failed to run: \{err}", failures)
+      return
+    }
+  }
+  record_result(
+    comm.status == 0 && @testkit.bytes_equal(comm.stdout, b"a\n"),
+    "comm: incremental merge output mismatch",
+    failures,
+  )
+  @fs.write_file(left, b"1 alice\n2 bob\n")
+  @fs.write_file(right, b"1 red\n2 blue\n")
+  let join = @testkit.run(@testkit.executable_path(bin_root, "join"), [
+    left, right,
+  ]) catch {
+    err => {
+      fail("join: merge case failed to run: \{err}", failures)
+      return
+    }
+  }
+  record_result(
+    join.status == 0 &&
+    @testkit.bytes_equal(join.stdout, b"1 alice red\n2 bob blue\n"),
+    "join: incremental merge output mismatch",
+    failures,
+  )
+  @fs.write_file(left, b"1\n2\n")
+  @fs.write_file(right, b"a\nb\n")
+  let paste = @testkit.run(@testkit.executable_path(bin_root, "paste"), [
+    "-d,", left, right,
+  ]) catch {
+    err => {
+      fail("paste: merge case failed to run: \{err}", failures)
+      return
+    }
+  }
+  record_result(
+    paste.status == 0 && @testkit.bytes_equal(paste.stdout, b"1,a\n2,b\n"),
+    "paste: incremental merge output mismatch",
+    failures,
+  )
+}
+
+///|
+async fn run_edge_cases(bin_root : String, failures : Array[String]) -> Unit {
+  expect(
+    bin_root,
+    "wc",
+    ["-c"],
+    Some(Bytes::make(65536, b'x')),
+    0,
+    b"65536\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "cut",
+    ["-c1"],
+    Some(b"\x00abc\n\xfftail"),
+    0,
+    b"\x00\n\xff\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "uniq",
+    [],
+    Some(b"\xffsame\n\xffsame"),
+    0,
+    b"\xffsame\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "nl",
+    ["-ba", "-w1", "-s:"],
+    Some(b"\x00\nlast"),
+    0,
+    b"1:\x00\n2:last\n",
+    failures,
+  )
+  expect(bin_root, "base64", ["-d"], Some(b"YQ== \r\n\t"), 0, b"a", failures)
+  expect(bin_root, "base64", ["-d"], Some(b"YQ==YQ=="), 1, b"", failures)
+}
+
+///|
+async fn run_stress_cases(bin_root : String, failures : Array[String]) -> Unit {
+  for size in [1048576, 16777216, 67108864] {
+    expect(
+      bin_root,
+      "wc",
+      ["-c"],
+      Some(Bytes::make(size, b'x')),
+      0,
+      @utf8.encode("\{size}\n"),
+      failures,
+    )
+  }
+  expect(
+    bin_root,
+    "wc",
+    ["-l"],
+    Some(Bytes::make(1000000, b'\n')),
+    0,
+    b"1000000\n",
+    failures,
+  )
+}
+
+///|
+async fn compare_gnu(
+  bin_root : String,
+  command : String,
+  args : Array[String],
+  stdin : Bytes,
+  failures : Array[String],
+) -> Unit {
+  let candidate = @testkit.run(
+    @testkit.executable_path(bin_root, command),
+    args,
+    stdin~,
+    extra_env=Map([("LC_ALL", "C")]),
+  ) catch {
+    err => {
+      fail("\{command}: candidate differential run failed: \{err}", failures)
+      return
+    }
+  }
+  let oracle = @testkit.run(
+    command,
+    args,
+    stdin~,
+    extra_env=Map([("LC_ALL", "C")]),
+  ) catch {
+    err => {
+      fail("\{command}: GNU oracle failed: \{err}", failures)
+      return
+    }
+  }
+  if candidate.status != oracle.status {
+    fail(
+      "\{command}: GNU status mismatch: candidate=\{candidate.status}, oracle=\{oracle.status}",
+      failures,
+    )
+  }
+  if !@testkit.bytes_equal(candidate.stdout, oracle.stdout) {
+    fail(
+      "\{command}: GNU stdout mismatch: candidate=\{candidate.stdout}, oracle=\{oracle.stdout}",
+      failures,
+    )
+  }
+}
+
+///|
+async fn run_gnu_differential(
+  bin_root : String,
+  failures : Array[String],
+) -> Unit {
+  compare_gnu(bin_root, "base64", [], b"hello world", failures)
+  compare_gnu(bin_root, "cat", [], b"\x00\xfftext\n", failures)
+  compare_gnu(bin_root, "cut", ["-d,", "-f1,3"], b"x,y,z\n1,2,3\n", failures)
+  compare_gnu(bin_root, "head", ["-n", "2"], b"1\n2\n3\n", failures)
+  compare_gnu(bin_root, "sha256sum", [], b"hello world", failures)
+  compare_gnu(bin_root, "sort", ["-n"], b"10\n2\n1\n", failures)
+  compare_gnu(bin_root, "tail", ["-n", "2"], b"1\n2\n3\n", failures)
+  compare_gnu(bin_root, "tr", ["a-z", "A-Z"], b"hello world\n", failures)
+}
+
+///|
+async fn main {
+  let args = @env.args()[1:]
+  let mut bin_root : String? = None
+  let mut catalog_only = false
+  let mut gnu_diff = false
+  let mut stress = false
+  let mut index = 0
+  while index < args.length() {
+    match args[index] {
+      "--bin-root" => {
+        index += 1
+        if index >= args.length() {
+          @stdio.stderr.write(usage() + "\n")
+          @sys.exit(2)
+          return
+        }
+        bin_root = Some(args[index])
+      }
+      "--catalog-only" => catalog_only = true
+      "--gnu-diff" => gnu_diff = true
+      "--stress" => stress = true
+      _ => {
+        @stdio.stderr.write(usage() + "\n")
+        @sys.exit(2)
+        return
+      }
+    }
+    index += 1
+  }
+  let root = match bin_root {
+    Some(root) =>
+      @fs.realpath(root) catch {
+        err => {
+          @stdio.stderr.write(
+            "compat-runner: invalid bin root '\{root}': \{err}\n",
+          )
+          @sys.exit(2)
+          return
+        }
+      }
+    None => {
+      @stdio.stderr.write(usage() + "\n")
+      @sys.exit(2)
+      return
+    }
+  }
+  let failures : Array[String] = []
+  check_catalog(root, !catalog_only, failures)
+  if !catalog_only && failures.is_empty() {
+    run_catalog_smoke(root, failures)
+    run_option_boundaries(root, failures)
+    run_filesystem_cases(root, failures)
+    run_chunk_boundary_cases(root, failures)
+    run_merge_cases(root, failures)
+    run_edge_cases(root, failures)
+    if gnu_diff {
+      run_gnu_differential(root, failures)
+    }
+    if stress {
+      run_stress_cases(root, failures)
+    }
+  }
+  if !failures.is_empty() {
+    for failure in failures {
+      @stdio.stderr.write("FAIL: " + failure + "\n")
+    }
+    @sys.exit(1)
+    return
+  }
+  @stdio.stdout.write("Compatibility checks passed for 48 commands.\n")
+}

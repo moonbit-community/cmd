@@ -106,6 +106,13 @@ async fn main {
     }
     if source_kind == Directory {
       @fsops.ensure_not_nested_destination(source, target) catch {
+        @fsops.FsOpError(message) => {
+          @stdio.stderr.write(
+            "mv: cannot move '\{source}' to '\{target}': \{message}\n",
+          )
+          failed = true
+          continue
+        }
         err => {
           @stdio.stderr.write(
             "mv: cannot move '\{source}' to '\{target}': \{err}\n",

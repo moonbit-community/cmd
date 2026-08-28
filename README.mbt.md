@@ -17,9 +17,11 @@ The source tree contains 48 executable command packages:
 - Eight restricted commands in Batch 3: `env`, `xargs`, `timeout`, `sh`,
   `make`, `curl`, `wget`, and `chmod`.
 
-The first 20-command release is `mooxCLI/cmd@0.1.0`. The expansion batches are
-implemented and tested in this repository; they are not represented as a new
-published release by this change.
+The first 20-command release is `mooxCLI/cmd@0.1.0`. The 48-command source
+tree now has a frozen compatibility catalog and pure MoonBit compatibility and
+policy runners. `sh`, `make`, and `xargs` use a documented direct-child process
+contract. `timeout` remains behind a compatibility gate because its supported
+dialect does not yet provide process-group cancellation.
 
 `chown` and `kill` are intentionally absent. Their required owner-mutation and
 arbitrary-process-signalling primitives are outside the current package scope.
@@ -34,12 +36,18 @@ cmd/
 |   |-- main.mbt
 |   `-- README.md
 |-- internal/
+|   |-- cli/              # private option grammar and 48-command catalog
 |   |-- fsops/            # private filesystem helpers
 |   |-- netops/           # private network helpers
-|   `-- shell/            # private shell parsing helpers
+|   |-- platform/         # private platform capability boundary
+|   |-- process/          # explicit child process specifications
+|   |-- shell/            # private shell parsing helpers
+|   |-- stream/           # byte chunks and line scanner
+|   `-- testkit/          # native process-based test utilities
 |-- tests/
-|   |-- cram/             # command behavior tests
-|   `-- policy/           # policy behavior tests
+|   |-- compat/           # pure MoonBit compatibility runner
+|   |-- cram/             # compatibility examples and migration provenance
+|   `-- policy/           # pure MoonBit Wasm policy runner and JSON policies
 `-- docs/
 ```
 
@@ -57,8 +65,11 @@ through another interpreter.
 
 The default target is Wasm, and packages that declare `native+wasm` are checked
 on both targets. Commands with process, network, or permission-mutation access
-are kept in the restricted Batch 3 set until their policy behavior is
-explicitly tested.
+are kept in the restricted Batch 3 set and require explicit policy admission.
+`sh`, `make`, and `xargs` wait for direct children, propagate their status, and
+cancel the directly owned child when their MoonBit task is cancelled. They do
+not promise containment of detached or regrouped descendants. `timeout` alone
+retains the process-group compatibility gate.
 
 The `jq` and `jqlog` entry points depend on the external
 `bobzhang/moonjq@0.1.1` module. This dependency does not change the public
@@ -70,21 +81,26 @@ The validation suite covers formatting, generated interfaces, all supported
 MoonBit targets, command-line behavior, and policy-controlled resource access:
 
 ```bash
-moon update
-moon check --target all --deny-warn
-moon info
-moon fmt
-moon test --target all
-moon cram test tests/cram TUTORIAL.md
-sh tests/policy/check-wasm-policy.sh
-sh tests/policy/check-third-batch-policy.sh
+MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon update
+MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon check --target all --deny-warn
+MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon test --target all
+MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon build --target native --release --deny-warn
+MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon run --target native tests/compat -- --bin-root _build/native/release/build
+MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon run --target native tests/policy -- --root .
+MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon info
+MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon fmt
 ```
 
+Linux additionally runs `tests/compat --gnu-diff`. Harness or nightly jobs may
+run `tests/compat --stress`. Markdown Cram files are documentation and
+migration provenance rather than CI execution sources.
+
 When adding a command, include its executable `moon.pkg`, implementation,
-README, generated interface, Cram cases, target declaration, and policy
-admission status. Cover normal and invalid arguments, stdin, missing paths,
-binary or large input where applicable, and denied side effects for operations
-that mutate external resources.
+README, generated interface, MoonBit runner cases, target declaration, and
+catalog admission status. Cover normal and invalid arguments, stdin, missing
+paths, binary or large input where applicable, and denied side effects for
+operations that mutate external resources. See `docs/compatibility.md` for the
+frozen dialect and platform contract.
 
 ## Publishing
 

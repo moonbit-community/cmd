@@ -1,5 +1,6 @@
 import {
   "mooxCLI/cmd/internal/fsops",
+  "mooxCLI/cmd/internal/platform",
   "moonbitlang/async",
   "moonbitlang/async/fs",
   "moonbitlang/async/stdio",

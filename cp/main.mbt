@@ -98,6 +98,13 @@ async fn main {
       options.recursive,
       !options.no_clobber,
     ) catch {
+      @fsops.FsOpError(message) => {
+        @stdio.stderr.write(
+          "cp: cannot copy '\{source}' to '\{target}': \{message}\n",
+        )
+        failed = true
+        false
+      }
       err => {
         @stdio.stderr.write(
           "cp: cannot copy '\{source}' to '\{target}': \{err}\n",

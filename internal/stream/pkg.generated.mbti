@@ -1,0 +1,32 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "mooxCLI/cmd/internal/stream"
+
+import {
+  "moonbitlang/async/io",
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub let chunk_size : Int
+
+pub async fn read_chunk(&@io.Reader) -> Bytes?
+
+// Errors
+
+// Types and methods
+pub(all) struct Line {
+  data : Bytes
+  terminated : Bool
+} derive(Eq, @debug.Debug)
+
+pub struct LineScanner {
+  reader : &@io.Reader
+  pending : Array[Byte]
+  mut eof : Bool
+}
+pub fn LineScanner::new(&@io.Reader) -> Self
+pub async fn LineScanner::next(Self) -> Line?
+
+// Type aliases
+
+// Traits

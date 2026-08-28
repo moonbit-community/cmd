@@ -180,105 +180,33 @@ async fn run_builtin(prepared : Prepared, context : Context) -> Int? {
 ///|
 async fn run_process(
   prepared : Prepared,
-  stdin : &@process.ProcessInput?,
-  stdout : &@process.ProcessOutput?,
-  stderr : &@process.ProcessOutput?,
+  stdin : &@async_process.ProcessInput?,
+  stdout : &@async_process.ProcessOutput?,
+  stderr : &@async_process.ProcessOutput?,
   cwd : String,
 ) -> Int {
   let program = prepared.argv[0]
-  let args = prepared.argv[1:]
-  match (stdin, stdout, stderr) {
-    (None, None, None) =>
-      @process.run(
-        program,
-        args,
-        extra_env=prepared.env,
-        inherit_env=false,
-        cwd~,
-      )
-    (Some(input), None, None) =>
-      @process.run(
-        program,
-        args,
-        extra_env=prepared.env,
-        inherit_env=false,
-        stdin=input,
-        cwd~,
-      )
-    (None, Some(output), None) =>
-      @process.run(
-        program,
-        args,
-        extra_env=prepared.env,
-        inherit_env=false,
-        stdout=output,
-        cwd~,
-      )
-    (None, None, Some(error)) =>
-      @process.run(
-        program,
-        args,
-        extra_env=prepared.env,
-        inherit_env=false,
-        stderr=error,
-        cwd~,
-      )
-    (Some(input), Some(output), None) =>
-      @process.run(
-        program,
-        args,
-        extra_env=prepared.env,
-        inherit_env=false,
-        stdin=input,
-        stdout=output,
-        cwd~,
-      )
-    (Some(input), None, Some(error)) =>
-      @process.run(
-        program,
-        args,
-        extra_env=prepared.env,
-        inherit_env=false,
-        stdin=input,
-        stderr=error,
-        cwd~,
-      )
-    (None, Some(output), Some(error)) =>
-      @process.run(
-        program,
-        args,
-        extra_env=prepared.env,
-        inherit_env=false,
-        stdout=output,
-        stderr=error,
-        cwd~,
-      )
-    (Some(input), Some(output), Some(error)) =>
-      @process.run(
-        program,
-        args,
-        extra_env=prepared.env,
-        inherit_env=false,
-        stdin=input,
-        stdout=output,
-        stderr=error,
-        cwd~,
-      )
-  }
+  let context : @child_process.ExecutionContext = { cwd, env: prepared.env, }
+  @child_process.run(
+    @child_process.child(program, prepared.argv[1:].to_owned(), context~),
+    stdin?,
+    stdout?,
+    stderr?,
+  )
 }
 
 ///|
 async fn run_external(prepared : Prepared, context : Context) -> Int {
   let stdin = match prepared.stdin {
-    Some(path) => Some(@process.redirect_from_file(path))
+    Some(path) => Some(@child_process.redirect_from_file(path))
     None => None
   }
   let stdout = match prepared.stdout {
-    Some((path, append)) => Some(@process.redirect_to_file(path, append~))
+    Some((path, append)) => Some(@child_process.redirect_to_file(path, append~))
     None => None
   }
   let stderr = match prepared.stderr {
-    Some((path, append)) => Some(@process.redirect_to_file(path, append~))
+    Some((path, append)) => Some(@child_process.redirect_to_file(path, append~))
     None => None
   }
   normalize_status(run_process(prepared, stdin, stdout, stderr, context.cwd))
@@ -331,9 +259,11 @@ async fn run_pipeline(pipeline : Pipeline, context : Context) -> Int {
     }
   }
   @async.with_task_group(group => {
-    let pipes : Array[(&@process.ProcessInput, &@process.ProcessOutput)] = []
+    let pipes : Array[
+      (&@async_process.ProcessInput, &@async_process.ProcessOutput),
+    ] = []
     for _ in 1..<prepared.length() {
-      pipes.push(@process.pipe())
+      pipes.push(@child_process.pipe())
     }
     let tasks : Array[@async.Task[Int]] = []
     for index, command in prepared {
@@ -346,17 +276,17 @@ async fn run_pipeline(pipeline : Pipeline, context : Context) -> Int {
       tasks.push(
         group.spawn(() => {
           let stdin = match command.stdin {
-            Some(path) => Some(@process.redirect_from_file(path))
+            Some(path) => Some(@child_process.redirect_from_file(path))
             None => pipe_input
           }
           let stdout = match command.stdout {
             Some((path, append)) =>
-              Some(@process.redirect_to_file(path, append~))
+              Some(@child_process.redirect_to_file(path, append~))
             None => pipe_output
           }
           let stderr = match command.stderr {
             Some((path, append)) =>
-              Some(@process.redirect_to_file(path, append~))
+              Some(@child_process.redirect_to_file(path, append~))
             None => None
           }
           normalize_status(

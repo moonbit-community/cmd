@@ -1,3 +1,0 @@
-.PHONY: all
-all:
-	printf policy-make-ok

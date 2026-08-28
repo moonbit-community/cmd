@@ -21,18 +21,6 @@ fn uniq_command() -> @argparse.Command {
 }
 
 ///|
-fn split_lines(text : String) -> Array[String] {
-  if text is "" {
-    return []
-  }
-  let lines : Array[String] = text.split("\n").map(v => v.to_owned()).collect()
-  if text.has_suffix("\n") {
-    ignore(lines.pop())
-  }
-  lines
-}
-
-///|
 fn pad_left(text : String, width : Int) -> String {
   let sb = StringBuilder()
   for _ in 0..<(width - text.length()) {
@@ -43,11 +31,75 @@ fn pad_left(text : String, width : Int) -> String {
 }
 
 ///|
-async fn read_source_text(path : String) -> String {
-  if path == "-" {
-    @stdio.stdin.read_all().text()
+fn equal_line(left : Bytes, right : Bytes, ignore_case : Bool) -> Bool {
+  if left.length() != right.length() {
+    return false
+  }
+  for index = 0; index < left.length(); index = index + 1 {
+    let l = left[index].to_int()
+    let r = right[index].to_int()
+    let l = if ignore_case && l >= 0x41 && l <= 0x5A { l + 0x20 } else { l }
+    let r = if ignore_case && r >= 0x41 && r <= 0x5A { r + 0x20 } else { r }
+    if l != r {
+      return false
+    }
+  }
+  true
+}
+
+///|
+async fn write_group(
+  line : Bytes,
+  count : Int,
+  show_count : Bool,
+  only_repeated : Bool,
+  only_unique : Bool,
+) -> Unit {
+  let selected = if only_repeated && only_unique {
+    false
+  } else if only_repeated {
+    count > 1
+  } else if only_unique {
+    count == 1
   } else {
-    @fs.read_file_to_string(path)
+    true
+  }
+  if selected {
+    if show_count {
+      @stdio.stdout.write(pad_left(count.to_string(), 7) + " ")
+    }
+    @stdio.stdout.write(line)
+    @stdio.stdout.write("\n")
+  }
+}
+
+///|
+async fn process_reader(
+  reader : &@io.Reader,
+  show_count : Bool,
+  only_repeated : Bool,
+  only_unique : Bool,
+  ignore_case : Bool,
+) -> Unit {
+  let scanner = @stream.LineScanner::new(reader)
+  let mut previous : Bytes? = None
+  let mut count = 0
+  while scanner.next() is Some(line) {
+    match previous {
+      Some(value) if equal_line(value, line.data, ignore_case) => count += 1
+      Some(value) => {
+        write_group(value, count, show_count, only_repeated, only_unique)
+        previous = Some(line.data)
+        count = 1
+      }
+      None => {
+        previous = Some(line.data)
+        count = 1
+      }
+    }
+  }
+  if previous is Some(value) {
+    write_group(value, count, show_count, only_repeated, only_unique)
   }
 }
 
@@ -68,45 +120,21 @@ async fn main {
   let ignore_case = matches.flags.get_or_default("ignore-case", false)
   let inputs = matches.values.get("input").unwrap_or([])
   let path = if inputs.is_empty() { "-" } else { inputs[0] }
-  let text = read_source_text(path) catch {
+  try {
+    if path == "-" {
+      process_reader(
+        @stdio.stdin, show_count, only_repeated, only_unique, ignore_case,
+      )
+    } else {
+      let file = @fs.open(path, mode=ReadOnly)
+      defer file.close()
+      process_reader(file, show_count, only_repeated, only_unique, ignore_case)
+    }
+  } catch {
     err => {
       @stdio.stderr.write("uniq: \{err}\n")
       @sys.exit(1)
       return
-    }
-  }
-  let lines = split_lines(text)
-  // Each group is the first line of an adjacent run plus its length.
-  let groups : Array[(String, Int)] = []
-  for line in lines {
-    let key = if ignore_case { line.to_lower() } else { line }
-    if groups.length() > 0 {
-      let (last, count) = groups[groups.length() - 1]
-      let last_key = if ignore_case { last.to_lower() } else { last }
-      if last_key == key {
-        groups[groups.length() - 1] = (last, count + 1)
-        continue
-      }
-    }
-    groups.push((line, 1))
-  }
-  for group in groups {
-    let (line, count) = group
-    let selected = if only_repeated && only_unique {
-      false
-    } else if only_repeated {
-      count > 1
-    } else if only_unique {
-      count == 1
-    } else {
-      true
-    }
-    if selected {
-      if show_count {
-        @stdio.stdout.write(pad_left(count.to_string(), 7) + " " + line + "\n")
-      } else {
-        @stdio.stdout.write(line + "\n")
-      }
     }
   }
 }

@@ -85,9 +85,6 @@ fn parse_dollar(
 
 ///|
 fn lex(script : String) -> Array[Token] raise ShellError {
-  if script.length() > 4 * 1024 * 1024 {
-    raise ShellError("script exceeds 4 MiB safety limit")
-  }
   let chars : Array[Char] = script.iter().collect()
   let tokens : Array[Token] = []
   let parts : Array[WordPart] = []
@@ -242,9 +239,6 @@ fn lex(script : String) -> Array[Token] raise ShellError {
           started = true
           i += 1
         }
-    }
-    if tokens.length() > 1_000_000 {
-      raise ShellError("script contains too many tokens")
     }
   }
   if quote is Some(_) {

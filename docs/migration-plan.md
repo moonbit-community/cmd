@@ -61,12 +61,18 @@ name followed by the directory name:
 Command implementations do not call same-named executables. Shared behavior is
 private and lives under `internal/`:
 
+- `internal/cli` freezes the private option grammar and 48-command catalog.
 - `internal/fsops` provides bounded path inspection, copying, traversal, and
   deletion helpers for filesystem commands.
 - `internal/netops` provides streaming HTTP response handling for `curl` and
   `wget`.
+- `internal/platform` records portable capability boundaries.
+- `internal/process` describes explicit child cwd, environment, and I/O.
 - `internal/shell` provides MoonBit lexer, parser, expansion, built-ins,
   redirections, pipelines, and individual process requests for `sh` and `make`.
+- `internal/stream` provides byte chunks and a line scanner that preserves the
+  final-line termination state.
+- `internal/testkit` provides the native direct-process test harness.
 
 The `jq` and `jqlog` packages use the root dependency
 `bobzhang/moonjq@0.1.1`. The dependency namespace is independent of this
@@ -140,21 +146,20 @@ runtime primitives are part of the supported API.
 
 ## 4. Test architecture
 
-The test system has four layers:
+The test system has four layers, all implemented in MoonBit:
 
 1. MoonBit unit and white-box tests for parsers, helpers, and data handling.
-2. Cram command tests in `tests/cram/` for executable behavior, output, and
-   exit codes.
-3. Wasm policy smoke tests in `tests/policy/check-wasm-policy.sh` for denied
-   and permitted filesystem access and mutation side effects.
-4. Restricted Batch 3 policy tests in
-   `tests/policy/check-third-batch-policy.sh` for process, network, and
-   permission requests.
+2. `tests/compat` directly starts all 48 native release binaries, checks byte
+   output and exit codes, and provides GNU differential and stress modes.
+3. `tests/policy` starts Wasm commands under deny and narrow allow policies and
+   verifies denied operations have no side effects.
+4. The catalog admission checks verify native+Wasm declarations, authority
+   tiers, unsafe host paths, direct-child contracts, and the `timeout`
+   process-group release gate.
 
 The imported `tests/cram/coreutils.md`, `tests/cram/cli.md`, and `TUTORIAL.md`
-remain the regression baseline. Local batch files extend that baseline:
-`batch1.md` has read-only commands, `batch2.md` has filesystem mutations, and
-`batch3.md` has restricted authority commands.
+remain compatibility examples and migration provenance. They are useful during
+manual migration review but are no longer CI execution sources.
 
 Generated interfaces are part of the review surface. `moon info` must leave no
 unexpected `pkg.generated.mbti` diff, and `moon fmt` must leave no formatting
@@ -163,14 +168,14 @@ diff.
 ### Required validation
 
 ```bash
-moon update
-moon check --target all --deny-warn
-moon info
-moon fmt
-moon test --target all
-moon cram test tests/cram TUTORIAL.md
-sh tests/policy/check-wasm-policy.sh
-sh tests/policy/check-third-batch-policy.sh
+MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon update
+MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon check --target all --deny-warn
+MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon test --target all
+MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon build --target native --release --deny-warn
+MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon run --target native tests/compat -- --bin-root _build/native/release/build
+MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon run --target native tests/policy -- --root .
+MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon info
+MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon fmt
 ```
 
 The repository-local `AGENTS.md` supplies the machine-specific Moon home for
@@ -207,9 +212,11 @@ Acceptance: all 20 root packages build and retain their documented behavior.
 
 ### Stage 3: migrate tests and CI (complete)
 
-- Keep the upstream Cram and tutorial structure.
-- Add the root package paths to executable test commands.
-- Require check, formatting, generated-interface, target, and Cram validation.
+- Keep upstream Cram and tutorial files as non-executable provenance.
+- Run executable compatibility and policy cases through MoonBit runners.
+- Require fixed Linux, macOS Intel, and Windows runner images.
+- Require check, formatting, generated-interface, target, compatibility, and
+  policy validation.
 
 Acceptance: the complete validation sequence passes with a clean worktree.
 
@@ -221,8 +228,8 @@ Acceptance: the complete validation sequence passes with a clean worktree.
 - Verify restricted commands do not silently substitute another executable for
   their implementation.
 
-Acceptance: both policy scripts pass and denied operations leave no observable
-side effect.
+Acceptance: the MoonBit policy runner passes and denied operations leave no
+observable side effect.
 
 ### Stage 5: publish the initial module (complete)
 
@@ -236,8 +243,8 @@ versioned release decision and are not published by this documentation change.
 2. A command fix increments the module patch version; a compatible command or
    feature addition increments the minor version.
 3. Release notes list the commands and policy behavior changed.
-4. Generated interfaces, formatted sources, Cram cases, and policy tests are
-   reviewed together with implementation changes.
+4. Generated interfaces, formatted sources, compatibility cases, and policy
+   tests are reviewed together with implementation changes.
 5. Credentials and machine-local account settings stay outside the repository.
 6. The `cat` implementation is accepted as-is; no special repair gate is
    required for it.
@@ -254,6 +261,9 @@ The current source tree is complete when:
 - `chown` and `kill` are absent from package, policy, test, and release lists.
 - `jq` and `jqlog` continue to use `bobzhang/moonjq` without changing the
   public `mooxCLI/cmd/<command>` coordinates.
-- `moon check`, `moon info`, `moon fmt`, `moon test`, both policy scripts, and
-  the complete Cram suite pass.
+- `moon check`, `moon info`, `moon fmt`, `moon test`, the compatibility runner,
+  GNU differential subset, stress cases, and policy runner pass.
 - README, this plan, and provenance describe only the command module's scope.
+- `make`, `sh`, and `xargs` are releasable with documented direct-child
+  semantics; `timeout` remains unreleased until its process-group cancellation
+  contract is implementable without adding another language or FFI.

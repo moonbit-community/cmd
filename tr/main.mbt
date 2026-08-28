@@ -180,18 +180,34 @@ fn complement_set(set : Array[Byte]) -> Array[Byte] {
 }
 
 ///|
-fn squeeze(data : Array[Byte], table : FixedArray[Bool]) -> Array[Byte] {
-  let out : Array[Byte] = []
+async fn transform_stream(
+  delete : FixedArray[Bool]?,
+  translate : FixedArray[Byte]?,
+  squeeze : FixedArray[Bool]?,
+) -> Unit {
   let mut previous = -1
-  for b in data {
-    let code = b.to_int()
-    if code == previous && table[code] {
-      continue
+  while @stream.read_chunk(@stdio.stdin) is Some(chunk) {
+    let out : Array[Byte] = []
+    for input in chunk {
+      let input_code = input.to_int()
+      if delete is Some(table) && table[input_code] {
+        continue
+      }
+      let byte = match translate {
+        Some(table) => table[input_code]
+        None => input
+      }
+      let code = byte.to_int()
+      if squeeze is Some(table) && code == previous && table[code] {
+        continue
+      }
+      out.push(byte)
+      previous = code
     }
-    out.push(b)
-    previous = code
+    if !out.is_empty() {
+      @stdio.stdout.write(Bytes::from_array(out))
+    }
   }
-  out
 }
 
 ///|
@@ -237,23 +253,16 @@ async fn main {
         "tr: two sets must be given when both deleting and squeezing repeats",
       )
     }
-    let input : Array[Byte] = []
-    for b in @stdio.stdin.read_all().binary() {
-      input.push(b)
-    }
-    let output = if delete {
-      let del = membership(set1_bytes)
-      let kept : Array[Byte] = []
-      for b in input {
-        if !del[b.to_int()] {
-          kept.push(b)
-        }
-      }
-      if squeeze_repeats && sets.length() > 1 {
-        squeeze(kept, membership(set2_bytes))
-      } else {
-        kept
-      }
+    if delete {
+      transform_stream(
+        Some(membership(set1_bytes)),
+        None,
+        if squeeze_repeats && sets.length() > 1 {
+          Some(membership(set2_bytes))
+        } else {
+          None
+        },
+      )
     } else if sets.length() > 1 {
       if set2_bytes.is_empty() {
         raise CliError("tr: SET2 must be non-empty when translating")
@@ -270,17 +279,19 @@ async fn main {
         }
         map[from.to_int()] = to
       }
-      let translated : Array[Byte] = input.map(b => map[b.to_int()])
-      if squeeze_repeats {
-        squeeze(translated, membership(set2_bytes))
-      } else {
-        translated
-      }
+      transform_stream(
+        None,
+        Some(map),
+        if squeeze_repeats {
+          Some(membership(set2_bytes))
+        } else {
+          None
+        },
+      )
     } else {
       // -s with a single set.
-      squeeze(input, membership(set1_bytes))
+      transform_stream(None, None, Some(membership(set1_bytes)))
     }
-    @stdio.stdout.write(Bytes::from_array(output))
   } catch {
     CliError(msg) => {
       @stdio.stderr.write("\{msg}\n")

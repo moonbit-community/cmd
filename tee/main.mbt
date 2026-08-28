@@ -1,25 +1,22 @@
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let paths : Array[String] = []
-  let mut append = false
-  let mut options = true
-  for arg in args {
-    if options && arg == "--" {
-      options = false
-    } else if options && (arg == "-a" || arg == "--append") {
-      append = true
-    } else if options && arg == "--help" {
-      @stdio.stdout.write("Usage: tee [-a] [FILE...]\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("append", short='a'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("tee: \{message}: '\{option}'\n")
+      @sys.exit(2)
       return
-    } else if options && arg.has_prefix("-") && arg != "-" {
-      @stdio.stderr.write("tee: unsupported option: '\{arg}'\n")
-      @sys.exit(1)
-      return
-    } else {
-      paths.push(arg)
     }
   }
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: tee [-a] [FILE...]\n")
+    return
+  }
+  let paths = parsed.operands
+  let append = parsed.contains("append")
   let outputs : Array[@fs.File] = []
   let active : Array[Bool] = []
   let mut failed = false

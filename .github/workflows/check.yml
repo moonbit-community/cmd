@@ -6,56 +6,94 @@ on:
       - master
       - main
   pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 3 * * *'
 
 jobs:
   check:
+    name: ${{ matrix.os }}
     strategy:
       fail-fast: false
-    runs-on: ubuntu-latest
-    continue-on-error: false
+      matrix:
+        os:
+          - ubuntu-24.04
+          - macos-15-intel
+          - windows-2025
+    runs-on: ${{ matrix.os }}
     env:
-      MOON_HOME: ${{ github.workspace }}/.moon-home
+      MOON_HOME: ${{ runner.temp }}/moonxCLI
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
+          submodules: recursive
 
-      - name: install
-        run: |
-          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
-          echo "$MOON_HOME/bin" >> "$GITHUB_PATH"
+      - name: Setup MoonBit
+        uses: hustcer/setup-moonbit@v1.23
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: moon version
-        run: |
-          moon version --all
+      - name: Update registry
+        run: moon update
 
-      - name: moon check
-        run: |
-          moon update
-          moon check --deny-warn
+      - name: Check
+        run: moon check --target all --deny-warn
 
-      - name: moon info
-        run: |
-          moon info
-          git diff --exit-code
+      - name: Test
+        run: moon test --target all
 
-      - name: format diff
-        run: |
-          moon fmt
-          git diff --exit-code
+      - name: Build release commands
+        run: moon build --target native --release --deny-warn
 
-      - name: moon test
-        run: |
-          moon test --target all
+      - name: Compatibility
+        run: moon run --target native tests/compat -- --bin-root _build/native/release/build
 
-      - name: moon cram cli
-        run: |
-          moon cram test tests/cram TUTORIAL.md
+      - name: GNU differential
+        if: runner.os == 'Linux'
+        run: moon run --target native tests/compat -- --bin-root _build/native/release/build --gnu-diff
 
-      - name: wasm policy smoke tests
-        run: |
-          sh tests/policy/check-wasm-policy.sh
+      - name: Wasm policy
+        run: moon run --target native tests/policy -- --root .
 
-      - name: third-batch policy smoke tests
-        run: |
-          sh tests/policy/check-third-batch-policy.sh
+      - name: Generated interfaces
+        run: moon info
+
+      - name: Format
+        run: moon fmt
+
+      - name: Verify generated files
+        run: git diff --exit-code
+
+      - name: Upload test artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cmd-check-${{ matrix.os }}
+          path: |
+            _build
+            uncovered.log
+          if-no-files-found: ignore
+
+  stress:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    env:
+      MOON_HOME: ${{ runner.temp }}/moonxCLI
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup MoonBit
+        uses: hustcer/setup-moonbit@v1.23
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update registry
+        run: moon update
+
+      - name: Build release commands
+        run: moon build --target native --release --deny-warn
+
+      - name: Stress compatibility
+        run: moon run --target native tests/compat -- --bin-root _build/native/release/build --stress

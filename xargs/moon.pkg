@@ -1,7 +1,7 @@
 import {
+  "mooxCLI/cmd/internal/process",
   "moonbitlang/async",
   "moonbitlang/async/os_error",
-  "moonbitlang/async/process",
   "moonbitlang/async/stdio",
   "moonbitlang/core/bytes",
   "moonbitlang/core/encoding/utf8",

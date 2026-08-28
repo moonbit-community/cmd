@@ -18,39 +18,37 @@ fn help_message() -> String {
 }
 
 ///|
-fn split_lines(text : String) -> Array[String] {
-  if text is "" {
-    return []
-  }
-  let lines : Array[String] = text.split("\n").map(v => v.to_owned()).collect()
-  if text.has_suffix("\n") {
-    ignore(lines.pop())
-  }
-  lines
-}
-
-///|
-fn split_fields(line : String, separator : String?) -> Array[String] {
+fn split_fields(line : Bytes, separator : Byte?) -> Array[Bytes] {
   match separator {
-    Some(sep) => line.split(sep).map(v => v.to_owned()).collect()
-    None => {
-      let fields : Array[String] = []
-      let sb = StringBuilder()
-      let mut in_field = false
-      for c in line {
-        if c == ' ' || c == '\t' {
-          if in_field {
-            fields.push(sb.to_string())
-            sb.reset()
-            in_field = false
-          }
-        } else {
-          sb.write_char(c)
-          in_field = true
+    Some(separator) => {
+      let fields : Array[Bytes] = []
+      let mut start = 0
+      for index = 0; index < line.length(); index = index + 1 {
+        if line[index] == separator {
+          fields.push(line[start:index].to_owned())
+          start = index + 1
         }
       }
-      if in_field {
-        fields.push(sb.to_string())
+      fields.push(line[start:].to_owned())
+      fields
+    }
+    None => {
+      let fields : Array[Bytes] = []
+      let mut index = 0
+      while index < line.length() {
+        while index < line.length() &&
+              (line[index] == b' ' || line[index] == b'\t') {
+          index += 1
+        }
+        let start = index
+        while index < line.length() &&
+              line[index] != b' ' &&
+              line[index] != b'\t' {
+          index += 1
+        }
+        if start < index {
+          fields.push(line[start:index].to_owned())
+        }
       }
       fields
     }
@@ -58,17 +56,17 @@ fn split_fields(line : String, separator : String?) -> Array[String] {
 }
 
 ///|
-fn key_of(fields : Array[String], field : Int) -> String {
+fn key_of(fields : Array[Bytes], field : Int) -> Bytes {
   if field - 1 < fields.length() {
     fields[field - 1]
   } else {
-    ""
+    b""
   }
 }
 
 ///|
-fn rest_of(fields : Array[String], field : Int) -> Array[String] {
-  let rest : Array[String] = []
+fn rest_of(fields : Array[Bytes], field : Int) -> Array[Bytes] {
+  let rest : Array[Bytes] = []
   for index, value in fields {
     if index != field - 1 {
       rest.push(value)
@@ -78,79 +76,183 @@ fn rest_of(fields : Array[String], field : Int) -> Array[String] {
 }
 
 ///|
-async fn read_source_text(path : String) -> String {
-  if path == "-" {
-    @stdio.stdin.read_all().text()
-  } else {
-    @fs.read_file_to_string(path)
+fn bytes_equal(left : Bytes, right : Bytes) -> Bool {
+  left[:].equal(right[:])
+}
+
+///|
+fn compare_bytes(left : Bytes, right : Bytes) -> Int {
+  left[:].lexical_compare(right[:])
+}
+
+///|
+fn append_bytes(output : Array[Byte], value : Bytes) -> Unit {
+  for byte in value {
+    output.push(byte)
+  }
+}
+
+///|
+async fn write_joined(
+  key : Bytes,
+  left : Array[Bytes],
+  right : Array[Bytes],
+  separator : Byte,
+) -> Unit {
+  let output : Array[Byte] = []
+  append_bytes(output, key)
+  for value in left {
+    output.push(separator)
+    append_bytes(output, value)
+  }
+  for value in right {
+    output.push(separator)
+    append_bytes(output, value)
+  }
+  output.push(b'\n')
+  @stdio.stdout.write(Bytes::from_array(output))
+}
+
+///|
+async fn merge_readers(
+  reader1 : &@io.Reader,
+  reader2 : &@io.Reader,
+  field1 : Int,
+  field2 : Int,
+  separator : Byte?,
+) -> Unit {
+  let scanner1 = @stream.LineScanner::new(reader1)
+  let scanner2 = @stream.LineScanner::new(reader2)
+  let mut fields1 = match scanner1.next() {
+    Some(line) => Some(split_fields(line.data, separator))
+    None => None
+  }
+  let mut fields2 = match scanner2.next() {
+    Some(line) => Some(split_fields(line.data, separator))
+    None => None
+  }
+  let out_separator = separator.unwrap_or(b' ')
+  while fields1 is Some(left) && fields2 is Some(right) {
+    let key1 = key_of(left, field1)
+    let key2 = key_of(right, field2)
+    let order = compare_bytes(key1, key2)
+    if order < 0 {
+      fields1 = match scanner1.next() {
+        Some(line) => Some(split_fields(line.data, separator))
+        None => None
+      }
+    } else if order > 0 {
+      fields2 = match scanner2.next() {
+        Some(line) => Some(split_fields(line.data, separator))
+        None => None
+      }
+    } else {
+      let left_run : Array[Array[Bytes]] = [left]
+      let right_run : Array[Array[Bytes]] = [right]
+      fields1 = None
+      while scanner1.next() is Some(line) {
+        let next = split_fields(line.data, separator)
+        if bytes_equal(key_of(next, field1), key1) {
+          left_run.push(next)
+        } else {
+          fields1 = Some(next)
+          break
+        }
+      }
+      fields2 = None
+      while scanner2.next() is Some(line) {
+        let next = split_fields(line.data, separator)
+        if bytes_equal(key_of(next, field2), key2) {
+          right_run.push(next)
+        } else {
+          fields2 = Some(next)
+          break
+        }
+      }
+      for left_fields in left_run {
+        for right_fields in right_run {
+          write_joined(
+            key1,
+            rest_of(left_fields, field1),
+            rest_of(right_fields, field2),
+            out_separator,
+          )
+        }
+      }
+    }
   }
 }
 
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let mut field1 = 1
-  let mut field2 = 1
-  let mut separator : String? = None
-  let files : Array[String] = []
-  let mut index = 0
-  while index < args.length() {
-    let arg = args[index]
-    if arg == "-h" || arg == "--help" {
-      @stdio.stdout.write(help_message() + "\n")
+  let parsed = @cli.parse(args, [
+    @cli.option("field1", short='1'),
+    @cli.option("field2", short='2'),
+    @cli.option("separator", short='t'),
+    @cli.flag("help", short='h'),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("join: \{message}: '\{option}'\n")
+      @sys.exit(2)
       return
     }
-    if arg.has_prefix("-1") || arg.has_prefix("-2") || arg.has_prefix("-t") {
-      let is_separator = arg.has_prefix("-t")
-      // Accept both `-t,` (attached value) and `-t ,` (separate argument).
-      let (value, consumed) = if arg.length() > 2 {
-        (arg[2:].to_owned(), 1)
-      } else if index + 1 < args.length() {
-        (args[index + 1], 2)
-      } else {
-        @stdio.stderr.write("join: missing value after '\{arg}'\n")
-        @sys.exit(2)
-        return
-      }
-      if is_separator {
-        if value.char_length() != 1 {
-          @stdio.stderr.write(
-            "join: the separator must be a single character\n",
-          )
-          @sys.exit(2)
-          return
-        }
-        separator = Some(value)
-      } else {
-        let n = @string.parse_int(value) catch {
-          _ => {
-            @stdio.stderr.write("join: invalid field number: '\{value}'\n")
-            @sys.exit(2)
-            return
-          }
-        }
-        if n < 1 {
+  }
+  if parsed.contains("help") {
+    @stdio.stdout.write(help_message() + "\n")
+    return
+  }
+  let field1 = match parsed.last_value("field1") {
+    Some(value) => {
+      let number = @string.parse_int(value) catch {
+        _ => {
           @stdio.stderr.write("join: invalid field number: '\{value}'\n")
           @sys.exit(2)
           return
         }
-        if arg.has_prefix("-1") {
-          field1 = n
-        } else {
-          field2 = n
+      }
+      if number < 1 {
+        @stdio.stderr.write("join: invalid field number: '\{value}'\n")
+        @sys.exit(2)
+        return
+      }
+      number
+    }
+    None => 1
+  }
+  let field2 = match parsed.last_value("field2") {
+    Some(value) => {
+      let number = @string.parse_int(value) catch {
+        _ => {
+          @stdio.stderr.write("join: invalid field number: '\{value}'\n")
+          @sys.exit(2)
+          return
         }
       }
-      index += consumed
-      continue
+      if number < 1 {
+        @stdio.stderr.write("join: invalid field number: '\{value}'\n")
+        @sys.exit(2)
+        return
+      }
+      number
     }
-    if arg.has_prefix("-") && arg != "-" {
-      @stdio.stderr.write("join: unknown option: '\{arg}'\n")
-      @sys.exit(2)
-      return
-    }
-    files.push(arg)
-    index += 1
+    None => 1
   }
+  let separator = match parsed.last_value("separator") {
+    Some(value) => {
+      let encoded = @utf8.encode(value)
+      if encoded.length() != 1 {
+        @stdio.stderr.write(
+          "join: the separator must be a single byte in C locale\n",
+        )
+        @sys.exit(2)
+        return
+      }
+      Some(encoded[0])
+    }
+    None => None
+  }
+  let files = parsed.operands
   if files.length() != 2 {
     @stdio.stderr.write(
       "join: expected exactly two files\n\n" + help_message() + "\n",
@@ -158,56 +260,32 @@ async fn main {
     @sys.exit(2)
     return
   }
-  let (lines1, lines2) = (
-    split_lines(read_source_text(files[0])),
-    split_lines(read_source_text(files[1])),
-  ) catch {
+  if files[0] == "-" && files[1] == "-" {
+    @stdio.stderr.write("join: both inputs cannot be standard input\n")
+    @sys.exit(2)
+    return
+  }
+  try {
+    if files[0] == "-" {
+      let file2 = @fs.open(files[1], mode=ReadOnly)
+      defer file2.close()
+      merge_readers(@stdio.stdin, file2, field1, field2, separator)
+    } else if files[1] == "-" {
+      let file1 = @fs.open(files[0], mode=ReadOnly)
+      defer file1.close()
+      merge_readers(file1, @stdio.stdin, field1, field2, separator)
+    } else {
+      let file1 = @fs.open(files[0], mode=ReadOnly)
+      defer file1.close()
+      let file2 = @fs.open(files[1], mode=ReadOnly)
+      defer file2.close()
+      merge_readers(file1, file2, field1, field2, separator)
+    }
+  } catch {
     err => {
       @stdio.stderr.write("join: \{err}\n")
       @sys.exit(1)
       return
-    }
-  }
-  let fields1 : Array[Array[String]] = lines1.map(l => {
-    split_fields(l, separator)
-  })
-  let fields2 : Array[Array[String]] = lines2.map(l => {
-    split_fields(l, separator)
-  })
-  let out_sep = match separator {
-    Some(sep) => sep
-    None => " "
-  }
-  let mut i = 0
-  let mut j = 0
-  while i < fields1.length() && j < fields2.length() {
-    let key1 = key_of(fields1[i], field1)
-    let key2 = key_of(fields2[j], field2)
-    let cmp = key1.compare(key2)
-    if cmp < 0 {
-      i += 1
-    } else if cmp > 0 {
-      j += 1
-    } else {
-      // Find the runs of equal keys in both inputs and emit their product.
-      let mut end1 = i
-      while end1 < fields1.length() && key_of(fields1[end1], field1) == key1 {
-        end1 += 1
-      }
-      let mut end2 = j
-      while end2 < fields2.length() && key_of(fields2[end2], field2) == key2 {
-        end2 += 1
-      }
-      for a in i..<end1 {
-        for b in j..<end2 {
-          let parts : Array[String] = [key1]
-          parts.append(rest_of(fields1[a], field1))
-          parts.append(rest_of(fields2[b], field2))
-          @stdio.stdout.write(parts.join(out_sep) + "\n")
-        }
-      }
-      i = end1
-      j = end2
     }
   }
 }

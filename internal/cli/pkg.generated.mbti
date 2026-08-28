@@ -1,0 +1,95 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "mooxCLI/cmd/internal/cli"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn command_catalog() -> Array[CommandContract]
+
+pub fn find_contract(String) -> CommandContract?
+
+pub fn flag(String, short? : Char, repeatable? : Bool) -> OptionSpec
+
+pub fn option(String, short? : Char, repeatable? : Bool, allow_attached? : Bool) -> OptionSpec
+
+pub fn parse(ArrayView[String], ArrayView[OptionSpec]) -> ParsedArgs raise CliError
+
+pub fn process_group_cancellation_available() -> Bool
+
+pub fn releasable(CommandContract) -> Bool
+
+// Errors
+pub(all) suberror CliError {
+  CliError(kind~ : ErrorKind, option~ : String, message~ : String)
+} derive(Eq, @debug.Debug)
+
+// Types and methods
+pub(all) enum Capability {
+  FileRead
+  FileWrite
+  ProcessSpawn
+  Network
+  PermissionMutation
+  SymbolicLink
+  ProcessGroupCancellation
+} derive(Eq, @debug.Debug)
+
+pub(all) struct CommandContract {
+  name : String
+  tier : CompatibilityTier
+  input : InputMode
+  output : OutputMode
+  exit_codes : Array[Int]
+  capabilities : Array[Capability]
+  options : Array[String]
+}
+
+pub(all) enum CompatibilityTier {
+  Core
+  Extended
+  Restricted
+} derive(Eq, @debug.Debug)
+
+pub(all) enum ErrorKind {
+  UnknownOption
+  MissingOptionValue
+  UnexpectedOptionValue
+  DuplicateOption
+  InvalidValue
+  MissingOperand
+  UnsupportedCapability
+} derive(Eq, @debug.Debug)
+
+pub(all) enum InputMode {
+  NoInput
+  OptionalStdin
+  FileOrStdin
+  StructuredInput
+} derive(Eq, @debug.Debug)
+
+pub(all) struct OptionSpec {
+  name : String
+  short : Char?
+  takes_value : Bool
+  repeatable : Bool
+  allow_attached : Bool
+}
+
+pub(all) enum OutputMode {
+  ByteStream
+  LineStream
+  StructuredOutput
+} derive(Eq, @debug.Debug)
+
+pub(all) struct ParsedArgs {
+  occurrences : Map[String, Array[String?]]
+  operands : Array[String]
+}
+pub fn ParsedArgs::contains(Self, String) -> Bool
+pub fn ParsedArgs::last_value(Self, String) -> String?
+
+// Type aliases
+
+// Traits

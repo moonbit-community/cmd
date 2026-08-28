@@ -56,101 +56,130 @@ fn sextet(c : Char) -> Int raise CliError {
 }
 
 ///|
-fn encode(data : Bytes, wrap : Int) -> String {
-  let sb = StringBuilder()
+async fn encode_stream(reader : &@io.Reader, wrap : Int) -> Unit {
   let mut column = 0
-  fn emit(c : Char) {
+  let mut emitted = false
+  fn emit(sb : StringBuilder, c : Char) {
     sb.write_char(c)
+    emitted = true
     column += 1
     if wrap > 0 && column == wrap {
       sb.write_char('\n')
       column = 0
     }
   }
-
-  let mut i = 0
-  while i < data.length() {
-    let b0 = data[i].to_int()
-    let b1 = if i + 1 < data.length() { data[i + 1].to_int() } else { 0 }
-    let b2 = if i + 2 < data.length() { data[i + 2].to_int() } else { 0 }
-    let n = (b0 << 16) | (b1 << 8) | b2
-    emit(b64_char((n >> 18) & 0x3F))
-    emit(b64_char((n >> 12) & 0x3F))
-    if i + 1 < data.length() {
-      emit(b64_char((n >> 6) & 0x3F))
-    } else {
-      emit('=')
+  let pending : Array[Byte] = []
+  while @stream.read_chunk(reader) is Some(chunk) {
+    let data : Array[Byte] = []
+    data.append(pending)
+    pending.clear()
+    for byte in chunk {
+      data.push(byte)
     }
-    if i + 2 < data.length() {
-      emit(b64_char(n & 0x3F))
-    } else {
-      emit('=')
+    let out = StringBuilder()
+    let mut index = 0
+    while index + 2 < data.length() {
+      let n = (data[index].to_int() << 16) |
+        (data[index + 1].to_int() << 8) |
+        data[index + 2].to_int()
+      emit(out, b64_char((n >> 18) & 0x3F))
+      emit(out, b64_char((n >> 12) & 0x3F))
+      emit(out, b64_char((n >> 6) & 0x3F))
+      emit(out, b64_char(n & 0x3F))
+      index += 3
     }
-    i += 3
+    for byte in data[index:] {
+      pending.push(byte)
+    }
+    @stdio.stdout.write(out.to_string())
   }
-  let text = sb.to_string()
-  if text is "" {
-    ""
-  } else if text.has_suffix("\n") {
-    text
-  } else {
-    text + "\n"
+  if !pending.is_empty() {
+    let out = StringBuilder()
+    let b0 = pending[0].to_int()
+    let b1 = if pending.length() > 1 { pending[1].to_int() } else { 0 }
+    let n = (b0 << 16) | (b1 << 8)
+    emit(out, b64_char((n >> 18) & 0x3F))
+    emit(out, b64_char((n >> 12) & 0x3F))
+    if pending.length() > 1 {
+      emit(out, b64_char((n >> 6) & 0x3F))
+    } else {
+      emit(out, '=')
+    }
+    emit(out, '=')
+    @stdio.stdout.write(out.to_string())
+  }
+  if emitted && column != 0 {
+    @stdio.stdout.write("\n")
   }
 }
 
 ///|
-fn decode(text : String) -> Bytes raise CliError {
-  let cleaned : Array[Char] = []
-  for c in text {
-    // Skip all ASCII whitespace, including vertical tab and form feed.
-    if c.to_int() is (0x20 | 0x09 | 0x0A | 0x0D | 0x0B | 0x0C) {
-      continue
-    }
-    cleaned.push(c)
+fn ascii_whitespace(byte : Byte) -> Bool {
+  byte.to_int() is (0x20 | 0x09 | 0x0A | 0x0D | 0x0B | 0x0C)
+}
+
+///|
+fn decode_quad(
+  quad : ArrayView[Byte],
+  out : Array[Byte],
+) -> Bool raise CliError {
+  let c0 = quad[0].to_int().unsafe_to_char()
+  let c1 = quad[1].to_int().unsafe_to_char()
+  let c2 = quad[2].to_int().unsafe_to_char()
+  let c3 = quad[3].to_int().unsafe_to_char()
+  if c0 == '=' || c1 == '=' {
+    raise CliError("base64: invalid padding")
   }
-  if cleaned.length() % 4 != 0 {
+  if c2 == '=' && c3 != '=' {
+    raise CliError("base64: invalid padding")
+  }
+  let v0 = sextet(c0)
+  let v1 = sextet(c1)
+  let v2 = if c2 == '=' { 0 } else { sextet(c2) }
+  let v3 = if c3 == '=' { 0 } else { sextet(c3) }
+  if c2 == '=' && (v1 & 0xF) != 0 {
+    raise CliError("base64: invalid input")
+  }
+  if c3 == '=' && (v2 & 0x3) != 0 {
+    raise CliError("base64: invalid input")
+  }
+  let n = (v0 << 18) | (v1 << 12) | (v2 << 6) | v3
+  out.push(((n >> 16) & 0xFF).to_byte())
+  if c2 != '=' {
+    out.push(((n >> 8) & 0xFF).to_byte())
+  }
+  if c3 != '=' {
+    out.push((n & 0xFF).to_byte())
+  }
+  c2 == '=' || c3 == '='
+}
+
+///|
+async fn decode_stream(reader : &@io.Reader) -> Unit {
+  let quad : Array[Byte] = []
+  let mut finished = false
+  while @stream.read_chunk(reader) is Some(chunk) {
+    let out : Array[Byte] = []
+    for byte in chunk {
+      if ascii_whitespace(byte) {
+        continue
+      }
+      if finished {
+        raise CliError("base64: invalid padding")
+      }
+      quad.push(byte)
+      if quad.length() == 4 {
+        finished = decode_quad(quad, out)
+        quad.clear()
+      }
+    }
+    if !out.is_empty() {
+      @stdio.stdout.write(Bytes::from_array(out))
+    }
+  }
+  if !quad.is_empty() {
     raise CliError("base64: invalid input length")
   }
-  let out : Array[Byte] = []
-  let mut i = 0
-  while i < cleaned.length() {
-    let last_quad = i + 4 == cleaned.length()
-    let c0 = cleaned[i]
-    let c1 = cleaned[i + 1]
-    let c2 = cleaned[i + 2]
-    let c3 = cleaned[i + 3]
-    if c0 == '=' || c1 == '=' {
-      raise CliError("base64: invalid padding")
-    }
-    if (c2 == '=' || c3 == '=') && !last_quad {
-      raise CliError("base64: invalid padding")
-    }
-    if c2 == '=' && c3 != '=' {
-      raise CliError("base64: invalid padding")
-    }
-    let v0 = sextet(c0)
-    let v1 = sextet(c1)
-    let v2 = if c2 == '=' { 0 } else { sextet(c2) }
-    let v3 = if c3 == '=' { 0 } else { sextet(c3) }
-    // Reject non-canonical encodings whose discarded padding bits are set,
-    // e.g. AB== (low bits of v1) or AAB= (low bits of v2).
-    if c2 == '=' && (v1 & 0xF) != 0 {
-      raise CliError("base64: invalid input")
-    }
-    if c3 == '=' && (v2 & 0x3) != 0 {
-      raise CliError("base64: invalid input")
-    }
-    let n = (v0 << 18) | (v1 << 12) | (v2 << 6) | v3
-    out.push(((n >> 16) & 0xFF).to_byte())
-    if c2 != '=' {
-      out.push(((n >> 8) & 0xFF).to_byte())
-    }
-    if c3 != '=' {
-      out.push((n & 0xFF).to_byte())
-    }
-    i += 4
-  }
-  Bytes::from_array(out)
 }
 
 ///|
@@ -163,24 +192,6 @@ fn option_value(matches : @argparse.Matches, name : String) -> String? {
         Some(vals[vals.length() - 1])
       }
     None => None
-  }
-}
-
-///|
-async fn read_source_bytes(path : String) -> Bytes {
-  if path == "-" {
-    @stdio.stdin.read_all().binary()
-  } else {
-    @fs.read_file_to_bytes(path)
-  }
-}
-
-///|
-async fn read_source_text(path : String) -> String {
-  if path == "-" {
-    @stdio.stdin.read_all().text()
-  } else {
-    @fs.read_file_to_string(path)
   }
 }
 
@@ -212,10 +223,20 @@ async fn main {
   let inputs = matches.values.get("input").unwrap_or([])
   let path = if inputs.is_empty() { "-" } else { inputs[0] }
   try {
-    if decode_mode {
-      @stdio.stdout.write(decode(read_source_text(path)))
+    if path == "-" {
+      if decode_mode {
+        decode_stream(@stdio.stdin)
+      } else {
+        encode_stream(@stdio.stdin, wrap)
+      }
     } else {
-      @stdio.stdout.write(encode(read_source_bytes(path), wrap))
+      let file = @fs.open(path, mode=ReadOnly)
+      defer file.close()
+      if decode_mode {
+        decode_stream(file)
+      } else {
+        encode_stream(file, wrap)
+      }
     }
   } catch {
     CliError(msg) => {

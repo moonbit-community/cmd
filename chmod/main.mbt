@@ -141,6 +141,11 @@ async fn main {
     @sys.exit(2)
     return
   }
+  if !@platform.permission_mutation_supported() {
+    @stdio.stderr.write("chmod: unsupported capability: permission mutation\n")
+    @sys.exit(1)
+    return
+  }
   let mut failed = false
   for path in operands {
     chmod_path(path, selected_mode, recursive, verbose) catch {
