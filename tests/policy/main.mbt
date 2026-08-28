@@ -214,7 +214,11 @@ async fn expect_allowed_contains(
 
 ///|
 async fn check_runtime_policy(root : String, failures : Array[String]) -> Unit {
-  let denied = moon_run(root, "deny-all.json", "cat", ["tests/policy/input.txt"]) catch {
+  let input_rel = "tests/policy/runtime-input"
+  let input = root_path(root, input_rel)
+  @fs.write_file(input, b"policy-fixture\n")
+  defer (@fs.remove(input) catch { _ => () })
+  let denied = moon_run(root, "deny-all.json", "cat", [input_rel]) catch {
     err => {
       failures.push("deny-all cat could not run: \{err}")
       return
@@ -226,9 +230,7 @@ async fn check_runtime_policy(root : String, failures : Array[String]) -> Unit {
     "deny-all leaked file contents",
     failures,
   )
-  let allowed = moon_run(root, "read-workspace.json", "cat", [
-    "tests/policy/input.txt",
-  ]) catch {
+  let allowed = moon_run(root, "read-workspace.json", "cat", [input_rel]) catch {
     err => {
       failures.push("allowed cat could not run: \{err}")
       return
@@ -265,7 +267,7 @@ async fn check_runtime_policy(root : String, failures : Array[String]) -> Unit {
     root,
     "deny-all.json",
     "cmp",
-    ["tests/policy/input.txt", "tests/policy/input.txt"],
+    [input_rel, input_rel],
     None,
     failures,
   )
@@ -273,7 +275,7 @@ async fn check_runtime_policy(root : String, failures : Array[String]) -> Unit {
     root,
     "deny-all.json",
     "grep",
-    ["policy-fixture", "tests/policy/input.txt"],
+    ["policy-fixture", input_rel],
     None,
     failures,
   )
@@ -286,18 +288,11 @@ async fn check_runtime_policy(root : String, failures : Array[String]) -> Unit {
     None,
     failures,
   )
-  expect_denied(
-    root,
-    "deny-all.json",
-    "sha256sum",
-    ["tests/policy/input.txt"],
-    None,
-    failures,
-  )
+  expect_denied(root, "deny-all.json", "sha256sum", [input_rel], None, failures)
   expect_allowed(
     root,
     "grep",
-    ["policy-fixture", "tests/policy/input.txt"],
+    ["policy-fixture", input_rel],
     b"policy-fixture\n",
     failures,
   )
@@ -308,17 +303,21 @@ async fn check_runtime_policy(root : String, failures : Array[String]) -> Unit {
     b"tests/policy\n",
     failures,
   )
-  expect_allowed_contains(root, "ls", ["tests/policy"], "input.txt", failures)
+  expect_allowed_contains(
+    root,
+    "ls",
+    ["tests/policy"],
+    "runtime-input",
+    failures,
+  )
   expect_allowed_contains(
     root,
     "sha256sum",
-    ["tests/policy/input.txt"],
-    "input.txt",
+    [input_rel],
+    "runtime-input",
     failures,
   )
-  let cmp = moon_run(root, "read-workspace.json", "cmp", [
-    "tests/policy/input.txt", "tests/policy/input.txt",
-  ]) catch {
+  let cmp = moon_run(root, "read-workspace.json", "cmp", [input_rel, input_rel]) catch {
     err => {
       failures.push("cmp: allowed read failed: \{err}")
       return
