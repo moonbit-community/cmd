@@ -143,31 +143,26 @@ async fn check_manifest(path : String) -> (Int, Int) {
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let files : Array[String] = []
-  let mut check = false
-  let mut zero = false
-  let mut options = true
-  for arg in args {
-    if options && arg == "--" {
-      options = false
-    } else if options && (arg == "-c" || arg == "--check") {
-      check = true
-    } else if options && (arg == "-z" || arg == "--zero") {
-      zero = true
-    } else if options &&
-      (arg == "-b" || arg == "--binary" || arg == "-t" || arg == "--text") {
-      ()
-    } else if options && arg == "--help" {
-      @stdio.stdout.write("Usage: sha256sum [-c] [-z] [FILE...]\n")
-      return
-    } else if options && arg.has_prefix("-") && arg != "-" {
-      @stdio.stderr.write("sha256sum: invalid option: '\{arg}'\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("check", short='c'),
+    @cli.flag("zero", short='z'),
+    @cli.flag("binary", short='b'),
+    @cli.flag("text", short='t'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("sha256sum: \{message}: '\{option}'\n")
       @sys.exit(2)
       return
-    } else {
-      files.push(arg)
     }
   }
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: sha256sum [-c] [-z] [FILE...]\n")
+    return
+  }
+  let files = parsed.operands
+  let check = parsed.contains("check")
+  let zero = parsed.contains("zero")
   let sources = if files.is_empty() { ["-"] } else { files }
   let mut failed = false
   if check {

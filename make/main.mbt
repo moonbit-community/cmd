@@ -339,7 +339,7 @@ async fn newer(left : String, right : String) -> Bool {
 
 ///|
 fn command_environment(database : Database) -> Map[String, String] raise {
-  let result = @env.get_env_vars()
+  let result = @process.default_environment()
   for name, variable in database.variables {
     result[name] = if variable.immediate {
       variable.value
@@ -524,7 +524,7 @@ async fn run(arguments : Array[String]) -> Unit {
     index += 1
   }
   let variables : Map[String, Variable] = Map([])
-  for name, value in @env.get_env_vars() {
+  for name, value in @process.default_environment() {
     variables[name] = { value, immediate: true, }
   }
   let database : Database = { variables, rules: {}, default_target: None, }

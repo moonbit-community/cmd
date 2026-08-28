@@ -4,34 +4,6 @@ priv suberror CliError {
 }
 
 ///|
-fn xxd_command() -> @argparse.Command {
-  Command(
-    "xxd",
-    about="Make a hex dump, or reverse one back into bytes.",
-    flags=[
-      FlagArg("plain", short='p', about="Plain continuous hex dump."),
-      FlagArg("reverse", short='r', about="Convert a hex dump back into bytes."),
-    ],
-    options=[
-      OptionArg(
-        "cols",
-        short='c',
-        about="Bytes per line (default 16, or 30 with -p).",
-      ),
-      OptionArg("len", short='l', about="Stop after N input bytes."),
-    ],
-    positionals=[
-      PositionArg(
-        "input",
-        about="[file] ('-' or no file reads stdin)",
-        num_args=ValueRange(lower=0, upper=1),
-      ),
-    ],
-    disable_help_subcommand=true,
-  )
-}
-
-///|
 fn hex_digit(n : Int) -> Char {
   if n < 10 {
     (0x30 + n).unsafe_to_char()
@@ -225,25 +197,12 @@ async fn reverse_dump_stream(reader : &@io.Reader) -> Unit {
 }
 
 ///|
-fn option_value(matches : @argparse.Matches, name : String) -> String? {
-  match matches.values.get(name) {
-    Some(vals) =>
-      if vals.is_empty() {
-        None
-      } else {
-        Some(vals[vals.length() - 1])
-      }
-    None => None
-  }
-}
-
-///|
 fn parse_number(
-  matches : @argparse.Matches,
+  parsed : @cli.ParsedArgs,
   name : String,
   minimum? : Int = 1,
 ) -> Int? raise CliError {
-  match option_value(matches, name) {
+  match parsed.last_value(name) {
     Some(text) => {
       let n = @string.parse_int(text) catch {
         _ => raise CliError("xxd: invalid -\{name} value: '\{text}'")
@@ -260,19 +219,33 @@ fn parse_number(
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let command = xxd_command()
-  let matches = command.parse(argv=args, env=Map([])) catch {
-    err => {
-      @stdio.stderr.write("\{err}\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("plain", short='p'),
+    @cli.flag("reverse", short='r'),
+    @cli.option("cols", short='c'),
+    @cli.option("len", short='l'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("xxd: \{message}: '\{option}'\n")
       @sys.exit(2)
       return
     }
   }
-  let plain = matches.flags.get_or_default("plain", false)
-  let reverse = matches.flags.get_or_default("reverse", false)
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: xxd [-pr] [-c COLS] [-l LEN] [FILE]\n")
+    return
+  }
+  if parsed.operands.length() > 1 {
+    @stdio.stderr.write("xxd: extra operand: '\{parsed.operands[1]}'\n")
+    @sys.exit(2)
+    return
+  }
+  let plain = parsed.contains("plain")
+  let reverse = parsed.contains("reverse")
   let (cols_opt, len_opt) = (
-    parse_number(matches, "cols"),
-    parse_number(matches, "len", minimum=0),
+    parse_number(parsed, "cols"),
+    parse_number(parsed, "len", minimum=0),
   ) catch {
     CliError(msg) => {
       @stdio.stderr.write("\{msg}\n")
@@ -284,7 +257,7 @@ async fn main {
     Some(n) => n
     None => if plain { 30 } else { 16 }
   }
-  let inputs = matches.values.get("input").unwrap_or([])
+  let inputs = parsed.operands
   let path = if inputs.is_empty() { "-" } else { inputs[0] }
   try {
     if path == "-" {

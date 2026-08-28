@@ -11,7 +11,9 @@ Changes prepared in the source tree:
 - stream `wc`, `tr`, `base64`, `nl`, `cut`, `uniq`, and `xxd`;
 - incrementally merge `comm`, `join`, and `paste`;
 - make filesystem root, nesting, separator, and symlink behavior explicit;
-- isolate child cwd and environment through a private process boundary;
+- isolate child cwd and pass only a documented minimum environment through the
+  private process boundary;
+- use one private option parser for all ordinary flag/value command grammars;
 - return stable unsupported-capability failures where Windows lacks a portable
   MoonBit operation;
 - replace floating CI images with fixed Linux, macOS 15 arm64, and Windows 2025

@@ -157,28 +157,6 @@ fn render_counts(
 }
 
 ///|
-fn wc_command() -> @argparse.Command {
-  Command(
-    "wc",
-    about="Count lines, words, and bytes for each input.",
-    flags=[
-      FlagArg("lines", short='l', about="Print newline counts."),
-      FlagArg("words", short='w', about="Print word counts."),
-      FlagArg("bytes", short='c', about="Print byte counts."),
-      FlagArg("chars", short='m', about="Print character (UTF-8) counts."),
-    ],
-    positionals=[
-      PositionArg(
-        "files",
-        about="[file...] ('-' or no file reads stdin)",
-        num_args=ValueRange(lower=0),
-      ),
-    ],
-    disable_help_subcommand=true,
-  )
-}
-
-///|
 async fn count_source(path : String) -> Counts {
   if path == "-" {
     count_reader(@stdio.stdin)
@@ -192,24 +170,33 @@ async fn count_source(path : String) -> Counts {
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let command = wc_command()
-  let matches = command.parse(argv=args, env=Map([])) catch {
-    err => {
-      @stdio.stderr.write("\{err}\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("lines", short='l'),
+    @cli.flag("words", short='w'),
+    @cli.flag("bytes", short='c'),
+    @cli.flag("chars", short='m'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("wc: \{message}: '\{option}'\n")
       @sys.exit(2)
       return
     }
   }
-  let lines = matches.flags.get_or_default("lines", false)
-  let words = matches.flags.get_or_default("words", false)
-  let chars = matches.flags.get_or_default("chars", false)
-  let bytes = matches.flags.get_or_default("bytes", false)
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: wc [-lwcm] [FILE...]\n")
+    return
+  }
+  let lines = parsed.contains("lines")
+  let words = parsed.contains("words")
+  let chars = parsed.contains("chars")
+  let bytes = parsed.contains("bytes")
   let selection : Selection = if lines || words || chars || bytes {
     { lines, words, chars, bytes, }
   } else {
     { lines: true, words: true, chars: false, bytes: true, }
   }
-  let files = matches.values.get("files").unwrap_or([])
+  let files = parsed.operands
   let total = Counts::new()
   let mut failed = false
   if files.is_empty() {

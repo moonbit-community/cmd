@@ -1,47 +1,4 @@
 ///|
-fn paste_command() -> @argparse.Command {
-  Command(
-    "paste",
-    about="Merge corresponding lines of each input.",
-    flags=[
-      FlagArg(
-        "serial",
-        short='s',
-        about="Paste one file at a time instead of in parallel.",
-      ),
-    ],
-    options=[
-      OptionArg(
-        "delimiters",
-        short='d',
-        about="Reuse characters from LIST instead of TAB (\\t, \\n, \\0, \\\\ supported).",
-      ),
-    ],
-    positionals=[
-      PositionArg(
-        "files",
-        about="[file...] ('-' or no file reads stdin)",
-        num_args=ValueRange(lower=0),
-      ),
-    ],
-    disable_help_subcommand=true,
-  )
-}
-
-///|
-fn option_value(matches : @argparse.Matches, name : String) -> String? {
-  match matches.values.get(name) {
-    Some(vals) =>
-      if vals.is_empty() {
-        None
-      } else {
-        Some(vals[vals.length() - 1])
-      }
-    None => None
-  }
-}
-
-///|
 fn parse_delimiters(spec : String) -> Array[String] {
   let delims : Array[String] = []
   let chars : Array[Char] = spec.iter().collect()
@@ -119,20 +76,27 @@ async fn paste_parallel(
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let command = paste_command()
-  let matches = command.parse(argv=args, env=Map([])) catch {
-    err => {
-      @stdio.stderr.write("\{err}\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("serial", short='s'),
+    @cli.option("delimiters", short='d'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("paste: \{message}: '\{option}'\n")
       @sys.exit(2)
       return
     }
   }
-  let serial = matches.flags.get_or_default("serial", false)
-  let delims = match option_value(matches, "delimiters") {
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: paste [-s] [-d LIST] [FILE...]\n")
+    return
+  }
+  let serial = parsed.contains("serial")
+  let delims = match parsed.last_value("delimiters") {
     Some(spec) => parse_delimiters(spec)
     None => ["\t"]
   }
-  let files = matches.values.get("files").unwrap_or([])
+  let files = parsed.operands
   let sources = if files.is_empty() { ["-"] } else { files }
   let mut stdin_count = 0
   for path in sources {

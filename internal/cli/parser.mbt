@@ -31,6 +31,7 @@ fn split_long_option(arg : String) -> (String, String?) {
 ///|
 fn add_occurrence(
   occurrences : Map[String, Array[String?]],
+  order : Array[String],
   spec : OptionSpec,
   value : String?,
 ) -> Unit raise CliError {
@@ -44,6 +45,7 @@ fn add_occurrence(
     Some(values) => values.push(value)
     None => occurrences[spec.name] = [value]
   }
+  order.push(spec.name)
 }
 
 ///|
@@ -62,6 +64,7 @@ pub fn parse(
 ) -> ParsedArgs raise CliError {
   let occurrences : Map[String, Array[String?]] = Map([])
   let operands : Array[String] = []
+  let order : Array[String] = []
   let mut options = true
   let mut index = 0
   while index < args.length() {
@@ -96,7 +99,7 @@ pub fn parse(
             args[index]
           }
         }
-        add_occurrence(occurrences, spec, Some(value))
+        add_occurrence(occurrences, order, spec, Some(value))
       } else {
         if attached is Some(_) {
           raise CliError(
@@ -105,7 +108,7 @@ pub fn parse(
             message="flag does not accept a value",
           )
         }
-        add_occurrence(occurrences, spec, None)
+        add_occurrence(occurrences, order, spec, None)
       }
       index += 1
       continue
@@ -138,14 +141,14 @@ pub fn parse(
           }
           args[index]
         }
-        add_occurrence(occurrences, spec, Some(value))
+        add_occurrence(occurrences, order, spec, Some(value))
         offset = cluster.length()
       } else {
-        add_occurrence(occurrences, spec, None)
+        add_occurrence(occurrences, order, spec, None)
         offset += 1
       }
     }
     index += 1
   }
-  { occurrences, operands, }
+  { occurrences, operands, order, }
 }

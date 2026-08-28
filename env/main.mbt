@@ -70,7 +70,7 @@ async fn main {
   let variables : Map[String, String] = if ignore_environment {
     Map([])
   } else {
-    @core_env.get_env_vars()
+    @process.default_environment()
   }
   for name in unset {
     variables.remove(name)

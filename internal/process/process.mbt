@@ -1,4 +1,42 @@
 ///|
+fn allowed_environment_name(name : String, windows : Bool) -> Bool {
+  let normalized = if windows { name.to_upper() } else { name }
+  match normalized {
+    "PATH" | "HOME" | "TMPDIR" | "TMP" | "TEMP" => true
+    "LANG" | "LC_ALL" => true
+    "SYSTEMROOT"
+    | "WINDIR"
+    | "SYSTEMDRIVE"
+    | "COMSPEC"
+    | "PATHEXT"
+    | "USERPROFILE"
+    | "HOMEDRIVE"
+    | "HOMEPATH" => windows
+    _ => false
+  }
+}
+
+///|
+fn sanitize_environment(source : Map[String, String]) -> Map[String, String] {
+  let result : Map[String, String] = Map([])
+  let windows = @platform.is_windows()
+  for name, value in source {
+    if allowed_environment_name(name, windows) {
+      result[name] = value
+    }
+  }
+  // Keep child text classification deterministic even when the host locale is not.
+  result["LC_ALL"] = "C"
+  result["LANG"] = "C"
+  result
+}
+
+///|
+pub fn default_environment() -> Map[String, String] {
+  sanitize_environment(@env.get_env_vars())
+}
+
+///|
 pub(all) struct ExecutionContext {
   cwd : String
   env : Map[String, String]
@@ -6,7 +44,7 @@ pub(all) struct ExecutionContext {
 
 ///|
 pub fn ExecutionContext::current() -> ExecutionContext {
-  { cwd: @env.current_dir().unwrap_or("."), env: @env.get_env_vars(), }
+  { cwd: @env.current_dir().unwrap_or("."), env: default_environment(), }
 }
 
 ///|

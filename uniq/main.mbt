@@ -1,26 +1,4 @@
 ///|
-fn uniq_command() -> @argparse.Command {
-  Command(
-    "uniq",
-    about="Filter adjacent repeated lines.",
-    flags=[
-      FlagArg("count", short='c', about="Prefix lines with occurrence counts."),
-      FlagArg("repeated", short='d', about="Only print lines that repeat."),
-      FlagArg("unique", short='u', about="Only print lines that do not repeat."),
-      FlagArg("ignore-case", short='i', about="Compare case-insensitively."),
-    ],
-    positionals=[
-      PositionArg(
-        "input",
-        about="[file] ('-' or no file reads stdin)",
-        num_args=ValueRange(lower=0, upper=1),
-      ),
-    ],
-    disable_help_subcommand=true,
-  )
-}
-
-///|
 fn pad_left(text : String, width : Int) -> String {
   let sb = StringBuilder()
   for _ in 0..<(width - text.length()) {
@@ -106,19 +84,33 @@ async fn process_reader(
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let command = uniq_command()
-  let matches = command.parse(argv=args, env=Map([])) catch {
-    err => {
-      @stdio.stderr.write("\{err}\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("count", short='c'),
+    @cli.flag("repeated", short='d'),
+    @cli.flag("unique", short='u'),
+    @cli.flag("ignore-case", short='i'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("uniq: \{message}: '\{option}'\n")
       @sys.exit(2)
       return
     }
   }
-  let show_count = matches.flags.get_or_default("count", false)
-  let only_repeated = matches.flags.get_or_default("repeated", false)
-  let only_unique = matches.flags.get_or_default("unique", false)
-  let ignore_case = matches.flags.get_or_default("ignore-case", false)
-  let inputs = matches.values.get("input").unwrap_or([])
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: uniq [-cdui] [FILE]\n")
+    return
+  }
+  if parsed.operands.length() > 1 {
+    @stdio.stderr.write("uniq: extra operand: '\{parsed.operands[1]}'\n")
+    @sys.exit(2)
+    return
+  }
+  let show_count = parsed.contains("count")
+  let only_repeated = parsed.contains("repeated")
+  let only_unique = parsed.contains("unique")
+  let ignore_case = parsed.contains("ignore-case")
+  let inputs = parsed.operands
   let path = if inputs.is_empty() { "-" } else { inputs[0] }
   try {
     if path == "-" {

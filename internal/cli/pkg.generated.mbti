@@ -86,9 +86,12 @@ pub(all) enum OutputMode {
 pub(all) struct ParsedArgs {
   occurrences : Map[String, Array[String?]]
   operands : Array[String]
+  order : Array[String]
 }
 pub fn ParsedArgs::contains(Self, String) -> Bool
+pub fn ParsedArgs::last_occurrence(Self, Array[String]) -> String?
 pub fn ParsedArgs::last_value(Self, String) -> String?
+pub fn ParsedArgs::values(Self, String) -> Array[String]
 
 // Type aliases
 

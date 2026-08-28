@@ -1,8 +1,8 @@
 import {
+  "mooxCLI/cmd/internal/cli",
   "mooxCLI/cmd/internal/stream",
   "moonbitlang/async",
   "moonbitlang/async/stdio",
-  "moonbitlang/core/argparse",
   "moonbitlang/core/env",
   "moonbitlang/x/sys",
 }

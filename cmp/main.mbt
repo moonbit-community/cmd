@@ -151,31 +151,33 @@ fn pad_left(text : String, width : Int) -> String {
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let files : Array[String] = []
-  let mut silent = false
-  let mut verbose = false
-  let mut limit : Int64? = None
-  let mut skip_left : Int64 = 0
-  let mut skip_right : Int64 = 0
-  let mut options = true
-  let mut i = 0
-  while i < args.length() {
-    let arg = args[i]
-    if options && arg == "--" {
-      options = false
-    } else if options && (arg == "-s" || arg == "--silent" || arg == "--quiet") {
-      silent = true
-    } else if options && (arg == "-l" || arg == "--verbose") {
-      verbose = true
-    } else if options && (arg == "-n" || arg == "--bytes") {
-      if i + 1 >= args.length() {
-        @stdio.stderr.write("cmp: missing byte limit\n")
-        @sys.exit(2)
-        return
-      }
-      i += 1
-      limit = Some(
-        parse_count(args[i], "byte limit") catch {
+  let parsed = @cli.parse(args, [
+    @cli.flag("silent", short='s'),
+    @cli.flag("quiet"),
+    @cli.flag("verbose", short='l'),
+    @cli.option("bytes", short='n'),
+    @cli.option("ignore-initial", short='i'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("cmp: \{message}: '\{option}'\n")
+      @sys.exit(2)
+      return
+    }
+  }
+  if parsed.contains("help") {
+    @stdio.stdout.write(
+      "Usage: cmp [-s|-l] [-n LIMIT] [-i SKIP[:SKIP2]] FILE1 FILE2\n",
+    )
+    return
+  }
+  let files = parsed.operands
+  let silent = parsed.contains("silent") || parsed.contains("quiet")
+  let verbose = parsed.contains("verbose")
+  let limit = match parsed.last_value("bytes") {
+    Some(value) =>
+      Some(
+        parse_count(value, "byte limit") catch {
           CliError(message) => {
             @stdio.stderr.write(message + "\n")
             @sys.exit(2)
@@ -183,45 +185,18 @@ async fn main {
           }
         },
       )
-    } else if options && arg.has_prefix("--bytes=") {
-      limit = Some(
-        parse_count(arg[8:].to_owned(), "byte limit") catch {
-          CliError(message) => {
-            @stdio.stderr.write(message + "\n")
-            @sys.exit(2)
-            return
-          }
-        },
-      )
-    } else if options && (arg == "-i" || arg == "--ignore-initial") {
-      if i + 1 >= args.length() {
-        @stdio.stderr.write("cmp: missing skip value\n")
-        @sys.exit(2)
-        return
-      }
-      i += 1
-      let skips = parse_skips(args[i]) catch {
+    None => None
+  }
+  let (skip_left, skip_right) = match parsed.last_value("ignore-initial") {
+    Some(value) =>
+      parse_skips(value) catch {
         CliError(message) => {
           @stdio.stderr.write(message + "\n")
           @sys.exit(2)
           return
         }
       }
-      skip_left = skips.0
-      skip_right = skips.1
-    } else if options && arg == "--help" {
-      @stdio.stdout.write(
-        "Usage: cmp [-s|-l] [-n LIMIT] [-i SKIP[:SKIP2]] FILE1 FILE2\n",
-      )
-      return
-    } else if options && arg.has_prefix("-") && arg != "-" {
-      @stdio.stderr.write("cmp: invalid option: '\{arg}'\n")
-      @sys.exit(2)
-      return
-    } else {
-      files.push(arg)
-    }
-    i += 1
+    None => (0L, 0L)
   }
   if files.length() != 2 || (files[0] == "-" && files[1] == "-") {
     @stdio.stderr.write("cmp: expected two distinct input sources\n")

@@ -67,7 +67,7 @@ private and lives under `internal/`:
 - `internal/netops` provides streaming HTTP response handling for `curl` and
   `wget`.
 - `internal/platform` records portable capability boundaries.
-- `internal/process` describes explicit child cwd, environment, and I/O.
+- `internal/process` describes explicit child cwd, minimum environment, and I/O.
 - `internal/shell` provides MoonBit lexer, parser, expansion, built-ins,
   redirections, pipelines, and individual process requests for `sh` and `make`.
 - `internal/stream` provides byte chunks and a line scanner that preserves the
@@ -168,18 +168,17 @@ diff.
 ### Required validation
 
 ```bash
-MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon update
-MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon check --target all --deny-warn
-MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon test --target all
-MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon build --target native --release --deny-warn
-MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon run --target native tests/compat -- --bin-root _build/native/release/build
-MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon run --target native tests/policy -- --root .
-MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon info
-MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon fmt
+moon update
+moon check --target all --deny-warn
+moon test --target all
+moon build --target native --release --deny-warn
+moon run --target native tests/compat -- --bin-root _build/native/release/build
+moon run --target native tests/policy -- --root .
+moon info
+moon fmt
 ```
 
-The repository-local `AGENTS.md` supplies the machine-specific Moon home for
-these commands. That local account configuration is not part of this plan.
+These commands use the active MoonBit toolchain and account configuration.
 
 ## 5. Migration stages
 

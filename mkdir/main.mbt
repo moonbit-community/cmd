@@ -24,72 +24,36 @@ fn parse_mode(text : String) -> Int raise {
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let directories : Array[String] = []
-  let mut parents = false
-  let mut verbose = false
-  let mut permission = 0o755
-  let mut options = true
-  let mut i = 0
-  while i < args.length() {
-    let arg = args[i]
-    if options && arg == "--" {
-      options = false
-    } else if options && (arg == "-m" || arg == "--mode") {
-      if i + 1 >= args.length() {
-        @stdio.stderr.write("mkdir: missing mode\n")
-        @sys.exit(1)
-        return
-      }
-      i += 1
-      permission = parse_mode(args[i]) catch {
-        _ => {
-          @stdio.stderr.write("mkdir: invalid mode: '\{args[i]}'\n")
-          @sys.exit(1)
-          return
-        }
-      }
-    } else if options && arg.has_prefix("--mode=") {
-      permission = parse_mode(arg[7:].to_owned()) catch {
-        _ => {
-          @stdio.stderr.write("mkdir: invalid mode: '\{arg[7:]}'\n")
-          @sys.exit(1)
-          return
-        }
-      }
-    } else if options && arg.has_prefix("-m") && arg.length() > 2 {
-      permission = parse_mode(arg[2:].to_owned()) catch {
-        _ => {
-          @stdio.stderr.write("mkdir: invalid mode: '\{arg[2:]}'\n")
-          @sys.exit(1)
-          return
-        }
-      }
-    } else if options && arg == "--parents" {
-      parents = true
-    } else if options && arg == "--verbose" {
-      verbose = true
-    } else if options && arg == "--help" {
-      @stdio.stdout.write("Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("parents", short='p'),
+    @cli.option("mode", short='m'),
+    @cli.flag("verbose", short='v'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("mkdir: \{message}: '\{option}'\n")
+      @sys.exit(2)
       return
-    } else if options && arg.has_prefix("-") && arg != "-" {
-      let mut valid = true
-      for flag in arg[1:] {
-        match flag {
-          'p' => parents = true
-          'v' => verbose = true
-          _ => valid = false
+    }
+  }
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n")
+    return
+  }
+  let permission = match parsed.last_value("mode") {
+    Some(value) =>
+      parse_mode(value) catch {
+        _ => {
+          @stdio.stderr.write("mkdir: invalid mode: '\{value}'\n")
+          @sys.exit(1)
+          return
         }
       }
-      if !valid {
-        @stdio.stderr.write("mkdir: invalid option: '\{arg}'\n")
-        @sys.exit(1)
-        return
-      }
-    } else {
-      directories.push(arg)
-    }
-    i += 1
+    None => 0o755
   }
+  let directories = parsed.operands
+  let parents = parsed.contains("parents")
+  let verbose = parsed.contains("verbose")
   if directories.is_empty() {
     @stdio.stderr.write("mkdir: missing operand\n")
     @sys.exit(1)

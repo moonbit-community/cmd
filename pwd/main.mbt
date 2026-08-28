@@ -14,33 +14,28 @@ fn valid_logical_path(path : String) -> Bool {
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let mut logical = true
-  let mut options = true
-  for arg in args {
-    if options && arg == "--" {
-      options = false
-      continue
-    }
-    if !options {
-      @stdio.stderr.write("pwd: unexpected operand: '\{arg}'\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("logical", short='L'),
+    @cli.flag("physical", short='P'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("pwd: \{message}: '\{option}'\n")
       @sys.exit(2)
       return
     }
-    match arg {
-      "-L" | "--logical" => logical = true
-      "-P" | "--physical" => logical = false
-      "--help" => {
-        @stdio.stdout.write("Usage: pwd [-L|-P]\n")
-        return
-      }
-      "--" => ()
-      _ => {
-        @stdio.stderr.write("pwd: invalid option: '\{arg}'\n")
-        @sys.exit(2)
-        return
-      }
-    }
   }
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: pwd [-L|-P]\n")
+    return
+  }
+  if !parsed.operands.is_empty() {
+    @stdio.stderr.write("pwd: unexpected operand: '\{parsed.operands[0]}'\n")
+    @sys.exit(2)
+    return
+  }
+  let logical = parsed.last_occurrence(["logical", "physical"]) !=
+    Some("physical")
   guard @env.current_dir() is Some(current) else {
     @stdio.stderr.write("pwd: cannot determine current directory\n")
     @sys.exit(1)

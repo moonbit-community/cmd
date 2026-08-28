@@ -1,10 +1,10 @@
 ///|
 priv struct LsOptions {
-  mut all : Bool
-  mut almost_all : Bool
-  mut directory : Bool
-  mut classify : Bool
-  mut recursive : Bool
+  all : Bool
+  almost_all : Bool
+  directory : Bool
+  classify : Bool
+  recursive : Bool
 }
 
 ///|
@@ -78,59 +78,37 @@ async fn print_directory(
 }
 
 ///|
-fn apply_short_flags(options : LsOptions, arg : String) -> Bool {
-  for flag in arg[1:] {
-    match flag {
-      'a' => options.all = true
-      'A' => options.almost_all = true
-      'd' => options.directory = true
-      'F' => options.classify = true
-      'R' => options.recursive = true
-      '1' => ()
-      _ => return false
-    }
-  }
-  true
-}
 
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let options : LsOptions = {
-    all: false,
-    almost_all: false,
-    directory: false,
-    classify: false,
-    recursive: false,
-  }
-  let operands : Array[String] = []
-  let mut options_enabled = true
-  for arg in args {
-    if options_enabled && arg == "--" {
-      options_enabled = false
-    } else if options_enabled && arg == "--all" {
-      options.all = true
-    } else if options_enabled && arg == "--almost-all" {
-      options.almost_all = true
-    } else if options_enabled && arg == "--directory" {
-      options.directory = true
-    } else if options_enabled && arg == "--classify" {
-      options.classify = true
-    } else if options_enabled && arg == "--recursive" {
-      options.recursive = true
-    } else if options_enabled && arg == "--help" {
-      @stdio.stdout.write("Usage: ls [-aAdF1R] [FILE...]\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("all", short='a'),
+    @cli.flag("almost-all", short='A'),
+    @cli.flag("directory", short='d'),
+    @cli.flag("classify", short='F'),
+    @cli.flag("recursive", short='R'),
+    @cli.flag("one", short='1'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("ls: \{message}: '\{option}'\n")
+      @sys.exit(2)
       return
-    } else if options_enabled && arg.has_prefix("-") && arg != "-" {
-      if !apply_short_flags(options, arg) {
-        @stdio.stderr.write("ls: unsupported option: '\{arg}'\n")
-        @sys.exit(2)
-        return
-      }
-    } else {
-      operands.push(arg)
     }
   }
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: ls [-aAdF1R] [FILE...]\n")
+    return
+  }
+  let options : LsOptions = {
+    all: parsed.contains("all"),
+    almost_all: parsed.contains("almost-all"),
+    directory: parsed.contains("directory"),
+    classify: parsed.contains("classify"),
+    recursive: parsed.contains("recursive"),
+  }
+  let operands = parsed.operands
   let paths = if operands.is_empty() { ["."] } else { operands }
   let mut failed = false
   let directories : Array[String] = []

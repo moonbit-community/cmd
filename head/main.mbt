@@ -7,49 +7,6 @@ priv suberror CliError {
 let chunk_size : Int = 65536
 
 ///|
-fn head_command() -> @argparse.Command {
-  Command(
-    "head",
-    about="Print the first lines (or bytes) of each input.",
-    flags=[
-      FlagArg("quiet", short='q', about="Never print file name headers."),
-      FlagArg("verbose", short='v', about="Always print file name headers."),
-    ],
-    options=[
-      OptionArg(
-        "lines",
-        short='n',
-        about="Print the first N lines (default 10).",
-      ),
-      OptionArg("bytes", short='c', about="Print the first N bytes.", conflicts_with=[
-        "lines",
-      ]),
-    ],
-    positionals=[
-      PositionArg(
-        "files",
-        about="[file...] ('-' or no file reads stdin)",
-        num_args=ValueRange(lower=0),
-      ),
-    ],
-    disable_help_subcommand=true,
-  )
-}
-
-///|
-fn option_value(matches : @argparse.Matches, name : String) -> String? {
-  match matches.values.get(name) {
-    Some(vals) =>
-      if vals.is_empty() {
-        None
-      } else {
-        Some(vals[vals.length() - 1])
-      }
-    None => None
-  }
-}
-
-///|
 fn parse_count(text : String) -> Int64 raise CliError {
   let n = @string.parse_int64(text) catch {
     _ => raise CliError("head: invalid count: '\{text}'")
@@ -128,22 +85,36 @@ async fn head_reader(
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let command = head_command()
-  let matches = command.parse(argv=args, env=Map([])) catch {
-    err => {
-      @stdio.stderr.write("\{err}\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("quiet", short='q'),
+    @cli.flag("verbose", short='v'),
+    @cli.option("lines", short='n'),
+    @cli.option("bytes", short='c'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("head: \{message}: '\{option}'\n")
       @sys.exit(2)
       return
     }
   }
-  let quiet = matches.flags.get_or_default("quiet", false)
-  let verbose = matches.flags.get_or_default("verbose", false)
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: head [-qv] [-n NUM|-c NUM] [FILE...]\n")
+    return
+  }
+  let quiet = parsed.contains("quiet")
+  let verbose = parsed.contains("verbose")
+  if parsed.contains("lines") && parsed.contains("bytes") {
+    @stdio.stderr.write("head: lines and bytes are mutually exclusive\n")
+    @sys.exit(2)
+    return
+  }
   let (line_count, byte_count) = try {
-    let byte_count : Int64? = match option_value(matches, "bytes") {
+    let byte_count : Int64? = match parsed.last_value("bytes") {
       Some(text) => Some(parse_count(text))
       None => None
     }
-    let line_count = match option_value(matches, "lines") {
+    let line_count = match parsed.last_value("lines") {
       Some(text) => parse_count(text)
       None => 10
     }
@@ -155,7 +126,7 @@ async fn main {
       return
     }
   }
-  let files = matches.values.get("files").unwrap_or([])
+  let files = parsed.operands
   let sources = if files.is_empty() { ["-"] } else { files }
   let show_headers = (sources.length() > 1 || verbose) && !quiet
   let mut failed = false

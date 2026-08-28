@@ -1,71 +1,38 @@
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let mut output_path : String? = None
-  let mut fail_on_http_error = false
-  let mut silent = false
-  let mut url : String? = None
-  let mut options = true
-  let mut failed = false
-  let mut i = 0
-  while i < args.length() {
-    let arg = args[i]
-    if options && arg == "--" {
-      options = false
-    } else if options && (arg == "-s" || arg == "--silent") {
-      silent = true
-    } else if options && (arg == "-S" || arg == "--show-error") {
-      silent = false
-    } else if options && (arg == "-f" || arg == "--fail") {
-      fail_on_http_error = true
-    } else if options && (arg == "-o" || arg == "--output") {
-      if i + 1 >= args.length() {
-        @stdio.stderr.write("curl: option requires an argument: \{arg}\n")
-        @sys.exit(2)
-        return
-      }
-      i += 1
-      output_path = Some(args[i])
-    } else if options && arg.has_prefix("-o") && arg.length() > 2 {
-      output_path = Some(arg[2:].to_owned())
-    } else if options &&
-      arg.has_prefix("-") &&
-      !arg.has_prefix("--") &&
-      arg != "-" {
-      let mut valid = true
-      for flag in arg[1:] {
-        match flag {
-          's' => silent = true
-          'S' => silent = false
-          'f' => fail_on_http_error = true
-          _ => valid = false
-        }
-      }
-      if !valid {
-        @stdio.stderr.write("curl: unsupported option: \{arg}\n")
-        @sys.exit(2)
-        return
-      }
-    } else if options && arg == "--help" {
-      @stdio.stdout.write("Usage: curl [-sSf] [-o FILE] URL\n")
-      return
-    } else if options && arg.has_prefix("-") && arg != "-" {
-      @stdio.stderr.write("curl: unsupported option: \{arg}\n")
-      @sys.exit(2)
-      return
-    } else if url is None {
-      url = Some(arg)
-    } else {
-      @stdio.stderr.write("curl: only one URL is supported\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("silent", short='s'),
+    @cli.flag("show-error", short='S'),
+    @cli.flag("fail", short='f'),
+    @cli.option("output", short='o'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("curl: \{message}: '\{option}'\n")
       @sys.exit(2)
       return
     }
-    i += 1
   }
-  let target = match url {
-    Some(value) => value
-    None => {
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: curl [-sSf] [-o FILE] URL\n")
+    return
+  }
+  let output_path = parsed.last_value("output")
+  let fail_on_http_error = parsed.contains("fail")
+  let silent = parsed.last_occurrence(["silent", "show-error"]) ==
+    Some("silent")
+  let urls = parsed.operands
+  let mut failed = false
+  let target = match urls {
+    [value] => value
+    [] => {
       @stdio.stderr.write("curl: missing URL\n")
+      @sys.exit(2)
+      return
+    }
+    _ => {
+      @stdio.stderr.write("curl: only one URL is supported\n")
       @sys.exit(2)
       return
     }

@@ -12,65 +12,6 @@ priv struct Entry {
 }
 
 ///|
-fn sort_command() -> @argparse.Command {
-  Command(
-    "sort",
-    about="Sort lines of all inputs together.",
-    flags=[
-      FlagArg("reverse", short='r', about="Reverse the comparison."),
-      FlagArg(
-        "numeric-sort",
-        short='n',
-        about="Compare by the numeric prefix of the key.",
-      ),
-      FlagArg(
-        "unique",
-        short='u',
-        about="Output only the first line of each group of equal keys.",
-      ),
-      FlagArg(
-        "ignore-case",
-        short='f',
-        about="Fold lower case to upper case when comparing.",
-      ),
-    ],
-    options=[
-      OptionArg(
-        "key",
-        short='k',
-        about="Sort by fields START[,END] (1-based, whole fields only).",
-      ),
-      OptionArg(
-        "field-separator",
-        short='t',
-        about="Field separator for -k (default: runs of blanks).",
-      ),
-    ],
-    positionals=[
-      PositionArg(
-        "files",
-        about="[file...] ('-' or no file reads stdin)",
-        num_args=ValueRange(lower=0),
-      ),
-    ],
-    disable_help_subcommand=true,
-  )
-}
-
-///|
-fn option_value(matches : @argparse.Matches, name : String) -> String? {
-  match matches.values.get(name) {
-    Some(vals) =>
-      if vals.is_empty() {
-        None
-      } else {
-        Some(vals[vals.length() - 1])
-      }
-    None => None
-  }
-}
-
-///|
 fn split_lines(text : String) -> Array[String] {
   if text is "" {
     return []
@@ -214,19 +155,30 @@ async fn read_source_text(path : String) -> String {
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let command = sort_command()
-  let matches = command.parse(argv=args, env=Map([])) catch {
-    err => {
-      @stdio.stderr.write("\{err}\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("reverse", short='r'),
+    @cli.flag("numeric-sort", short='n'),
+    @cli.flag("unique", short='u'),
+    @cli.flag("ignore-case", short='f'),
+    @cli.option("key", short='k'),
+    @cli.option("field-separator", short='t'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("sort: \{message}: '\{option}'\n")
       @sys.exit(2)
       return
     }
   }
-  let reverse = matches.flags.get_or_default("reverse", false)
-  let numeric = matches.flags.get_or_default("numeric-sort", false)
-  let unique = matches.flags.get_or_default("unique", false)
-  let fold_case = matches.flags.get_or_default("ignore-case", false)
-  let separator = match option_value(matches, "field-separator") {
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: sort [-rnuif] [-k KEY] [-t CHAR] [FILE...]\n")
+    return
+  }
+  let reverse = parsed.contains("reverse")
+  let numeric = parsed.contains("numeric-sort")
+  let unique = parsed.contains("unique")
+  let fold_case = parsed.contains("ignore-case")
+  let separator = match parsed.last_value("field-separator") {
     Some(sep) => {
       if sep.char_length() != 1 {
         @stdio.stderr.write(
@@ -240,7 +192,7 @@ async fn main {
     None => None
   }
   let key_spec = try {
-    match option_value(matches, "key") {
+    match parsed.last_value("key") {
       Some(spec) => Some(parse_key(spec))
       None => None
     }
@@ -255,7 +207,7 @@ async fn main {
     Some(sep) => sep
     None => " "
   }
-  let files = matches.values.get("files").unwrap_or([])
+  let files = parsed.operands
   let sources = if files.is_empty() { ["-"] } else { files }
   let lines : Array[String] = []
   for path in sources {

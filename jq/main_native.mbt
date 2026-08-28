@@ -22,78 +22,48 @@ priv struct CliOptions {
 
 ///|
 priv enum CliParseResult {
+  Help
   Error(String)
   Run(CliOptions)
 }
 
 ///|
-fn jq_command() -> @argparse.Command {
-  Command(
-    "moonjq",
-    about="Run jq filters over JSON input.",
-    flags=[
-      FlagArg(
-        "compact-output",
-        short='c',
-        about="Print compact JSON instead of pretty JSON.",
-      ),
-      FlagArg(
-        "logs",
-        short='l',
-        about="Treat input as newline-delimited JSON logs.",
-        conflicts_with=["null-input"],
-      ),
-      FlagArg(
-        "null-input",
-        short='n',
-        about="Run the filter once with null input.",
-        conflicts_with=["logs"],
-      ),
-      FlagArg(
-        "raw-output",
-        short='r',
-        about="Print strings without JSON quotes.",
-      ),
-    ],
-    options=[
-      OptionArg(
-        "from-file",
-        short='f',
-        about="Read the filter from FILE.",
-        action=Append,
-      ),
-    ],
-    positionals=[
-      PositionArg(
-        "args",
-        about="<filter> [file...]",
-        num_args=ValueRange(lower=0),
-      ),
-    ],
-    disable_help_subcommand=true,
-  )
+fn help_message() -> String {
+  "Usage: jq [-clnr] [-f FILTER_FILE] [FILTER] [FILE...]"
 }
 
 ///|
 fn parse_cli(args : ArrayView[String]) -> CliParseResult {
-  let command = jq_command()
-  let matches = command.parse(argv=args, env=Map([])) catch {
-    err => return Error(err.to_string())
+  let parsed = @cli.parse(args, [
+    @cli.flag("compact-output", short='c'),
+    @cli.flag("logs", short='l'),
+    @cli.flag("null-input", short='n'),
+    @cli.flag("raw-output", short='r'),
+    @cli.option("from-file", short='f'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) =>
+      return Error("jq: \{message}: '\{option}'\n\{help_message()}")
   }
-  let positionals = matches.values.get("args").unwrap_or([])
-  let filter_files = matches.values.get("from-file").unwrap_or([])
+  if parsed.contains("help") {
+    return Help
+  }
+  if parsed.contains("logs") && parsed.contains("null-input") {
+    return Error(
+      "jq: logs and null-input are mutually exclusive\n\{help_message()}",
+    )
+  }
+  let positionals = parsed.operands
+  let filter_files = parsed.values("from-file")
   let query = match filter_files.length() {
     0 => {
       if positionals.is_empty() {
-        return Error("error: missing filter\n\n" + command.render_help())
+        return Error("error: missing filter\n\n" + help_message())
       }
       QuerySource::Inline(positionals[0])
     }
     1 => File(filter_files[0])
-    _ =>
-      return Error(
-        "error: multiple filters provided\n\n" + command.render_help(),
-      )
+    _ => return Error("error: multiple filters provided\n\n" + help_message())
   }
   let input_start = if filter_files.is_empty() { 1 } else { 0 }
   let inputs : Array[InputSource] = []
@@ -105,16 +75,16 @@ fn parse_cli(args : ArrayView[String]) -> CliParseResult {
       inputs.push(File(path))
     }
   }
-  if inputs.is_empty() && !matches.flags.get_or_default("null-input", false) {
+  if inputs.is_empty() && !parsed.contains("null-input") {
     inputs.push(Stdin)
   }
   Run({
     query,
     inputs,
-    logs: matches.flags.get_or_default("logs", false),
-    raw_output: matches.flags.get_or_default("raw-output", false),
-    compact_output: matches.flags.get_or_default("compact-output", false),
-    null_input: matches.flags.get_or_default("null-input", false),
+    logs: parsed.contains("logs"),
+    raw_output: parsed.contains("raw-output"),
+    compact_output: parsed.contains("compact-output"),
+    null_input: parsed.contains("null-input"),
   })
 }
 
@@ -180,6 +150,10 @@ async fn write_results(
 async fn main {
   let args = @env.args()[1:]
   match parse_cli(args) {
+    Help => {
+      @stdio.stdout.write(help_message() + "\n")
+      return
+    }
     Error(msg) => {
       @stdio.stderr.write(msg)
       if !msg.has_suffix("\n") {

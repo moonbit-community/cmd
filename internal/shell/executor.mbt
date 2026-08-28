@@ -311,7 +311,7 @@ pub async fn run(
   script : String,
   name? : String = "sh",
   args? : Array[String] = [],
-  env? : Map[String, String] = @env.get_env_vars(),
+  env? : Map[String, String] = @child_process.default_environment(),
   cwd? : String,
 ) -> Int {
   let initial_cwd = match cwd {

@@ -508,6 +508,93 @@ async fn run_option_boundaries(
     "standard input may be specified only once",
     failures,
   )
+  expect_failure(
+    bin_root,
+    "tr",
+    ["a", "b", "ignored"],
+    2,
+    "extra operand",
+    failures,
+  )
+}
+
+///|
+async fn run_environment_boundary_cases(
+  bin_root : String,
+  failures : Array[String],
+) -> Unit {
+  let secret_name = "MOOXCLI_COMPAT_SECRET"
+  let secret_value = "must-not-cross-process-boundary"
+  let injected : Map[String, String] = Map([(secret_name, secret_value)])
+  let sh = @testkit.run(
+    @testkit.executable_path(bin_root, "sh"),
+    ["-c", "export"],
+    extra_env=injected,
+  ) catch {
+    err => {
+      fail("sh: environment boundary case failed to run: \{err}", failures)
+      return
+    }
+  }
+  record_result(
+    sh.status == 0 && !@testkit.contains_bytes(sh.stdout, secret_name),
+    "sh: parent environment variable crossed the default shell boundary",
+    failures,
+  )
+
+  let root = @fs.tmpdir(prefix="mooncmd-environment")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let makefile = @path.Path(root).join(Path("Makefile")).to_string()
+  @fs.write_file(makefile, b"all:\n\t@export\n")
+  let make = @testkit.run(
+    @testkit.executable_path(bin_root, "make"),
+    ["-s", "-f", makefile],
+    extra_env=injected,
+  ) catch {
+    err => {
+      fail("make: environment boundary case failed to run: \{err}", failures)
+      return
+    }
+  }
+  record_result(
+    make.status == 0 && !@testkit.contains_bytes(make.stdout, secret_name),
+    "make: parent environment variable crossed the recipe boundary",
+    failures,
+  )
+
+  let printenv = @testkit.executable_path(bin_root, "printenv")
+  let xargs = @testkit.run(
+    @testkit.executable_path(bin_root, "xargs"),
+    [printenv, secret_name],
+    stdin=b"",
+    extra_env=injected,
+  ) catch {
+    err => {
+      fail("xargs: environment boundary case failed to run: \{err}", failures)
+      return
+    }
+  }
+  record_result(
+    xargs.status == 1 && xargs.stdout.is_empty(),
+    "xargs: parent environment variable crossed the child boundary",
+    failures,
+  )
+
+  let env = @testkit.run(
+    @testkit.executable_path(bin_root, "env"),
+    ["printenv", secret_name],
+    extra_env=injected,
+  ) catch {
+    err => {
+      fail("env: environment boundary case failed to run: \{err}", failures)
+      return
+    }
+  }
+  record_result(
+    env.status == 1 && env.stdout.is_empty(),
+    "env: parent environment variable crossed the default child boundary",
+    failures,
+  )
 }
 
 ///|
@@ -960,6 +1047,7 @@ async fn main {
   if !catalog_only && failures.is_empty() {
     run_catalog_smoke(root, failures)
     run_option_boundaries(root, failures)
+    run_environment_boundary_cases(root, failures)
     run_filesystem_cases(root, failures)
     run_chunk_boundary_cases(root, failures)
     run_merge_cases(root, failures)

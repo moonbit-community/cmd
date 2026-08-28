@@ -36,8 +36,12 @@ separate error categories. CLI syntax errors use exit status 2 where the
 command has adopted the common parser. Runtime and I/O failures use status 1
 unless a command documents another status.
 
-`find`, `test`, `printf`, `sh`, and `make` retain their command-specific
-grammars.
+The common parser is the only generic option parser used by command packages.
+It covers the ordinary flag/value grammar for 34 commands. `echo`, `env`,
+`find`, `jqlog`, `make`, `printf`, `seq`, `sh`, `sleep`, `test`, `timeout`, and
+`xargs` retain command-specific grammars because their operands may be
+option-shaped, parsing stops at a command or expression boundary, or the
+command embeds its own language. `true` and `false` have no option grammar.
 
 ## Inventory
 
@@ -95,9 +99,16 @@ shell, or an FFI helper.
 
 Restricted child processes are described by private MoonBit `ChildSpec` and
 `ExecutionContext` values. Each launch explicitly supplies cwd, environment,
-stdin, stdout, and stderr. Environment inheritance is disabled by default. The
-Wasm host applies its process policy at the spawn boundary; process groups are
-not a policy inheritance or sandbox boundary.
+stdin, stdout, and stderr. Environment inheritance is disabled. Default child
+contexts copy only execution essentials (`PATH`, home-directory variables,
+temporary-directory variables, and the Windows process-launch variables when
+applicable), and force `LANG=C` and `LC_ALL=C`. Other parent variables,
+including credentials and application configuration, do not cross the process
+boundary unless a caller explicitly constructs an `ExecutionContext`; `env`
+also starts from this minimum environment unless `-i` is present, then applies
+the assignments and removals requested on its command line. The Wasm host
+applies its process policy at the spawn boundary; process groups are not a
+policy inheritance or sandbox boundary.
 
 MoonBit async runtime `0.21.0` can cancel a direct child PID on Unix and
 Windows, but it does not expose a portable process group or Windows Job Object

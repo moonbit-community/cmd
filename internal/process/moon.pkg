@@ -1,6 +1,7 @@
 import {
   "moonbitlang/async/process" @async_process,
   "moonbitlang/core/env",
+  "mooxCLI/cmd/internal/platform",
 }
 
 supported_targets = "native+wasm"

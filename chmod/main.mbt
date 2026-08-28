@@ -82,60 +82,37 @@ async fn chmod_path(
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let operands : Array[String] = []
-  let mut recursive = false
-  let mut verbose = false
-  let mut options = true
-  let mut mode : Int? = None
-  let mut i = 0
-  while i < args.length() {
-    let arg = args[i]
-    if options && arg == "--" {
-      options = false
-    } else if options && (arg == "-R" || arg == "--recursive") {
-      recursive = true
-    } else if options && (arg == "-v" || arg == "--verbose") {
-      verbose = true
-    } else if options && arg == "--help" {
-      @stdio.stdout.write("Usage: chmod [-R] [-v] MODE FILE...\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("recursive", short='R'),
+    @cli.flag("verbose", short='v'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("chmod: \{message}: '\{option}'\n")
+      @sys.exit(2)
       return
-    } else if options && arg.has_prefix("-") && arg != "-" {
-      let mut valid = true
-      for flag in arg[1:] {
-        match flag {
-          'R' => recursive = true
-          'v' => verbose = true
-          _ => valid = false
+    }
+  }
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: chmod [-R] [-v] MODE FILE...\n")
+    return
+  }
+  let selected_mode = match parsed.operands.get(0) {
+    Some(value) =>
+      parse_mode(value) catch {
+        _ => {
+          @stdio.stderr.write("chmod: invalid mode: {value}\n")
+          @sys.exit(2)
+          return
         }
       }
-      if !valid {
-        @stdio.stderr.write("chmod: unsupported option: \{arg}\n")
-        @sys.exit(2)
-        return
-      }
-    } else if mode is None {
-      mode = Some(
-        parse_mode(arg) catch {
-          _ => {
-            @stdio.stderr.write("chmod: invalid mode: \{arg}\n")
-            @sys.exit(2)
-            return
-          }
-        },
-      )
-    } else {
-      operands.push(arg)
-    }
-    i += 1
-  }
-  let selected_mode = match mode {
-    Some(value) => value
     None => {
       @stdio.stderr.write("chmod: missing mode\n")
       @sys.exit(2)
       return
     }
   }
+  let operands = parsed.operands[1:]
   if operands.is_empty() {
     @stdio.stderr.write("chmod: missing operand\n")
     @sys.exit(2)
@@ -146,6 +123,8 @@ async fn main {
     @sys.exit(1)
     return
   }
+  let recursive = parsed.contains("recursive")
+  let verbose = parsed.contains("verbose")
   let mut failed = false
   for path in operands {
     chmod_path(path, selected_mode, recursive, verbose) catch {

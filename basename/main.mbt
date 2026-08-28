@@ -39,55 +39,25 @@ fn strip_suffix(name : String, suffix : String) -> String {
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let mut multiple = false
-  let mut zero = false
-  let mut suffix : String? = None
-  let operands : Array[String] = []
-  let mut options = true
-  let mut i = 0
-  while i < args.length() {
-    let arg = args[i]
-    if options && arg == "--" {
-      options = false
-    } else if options && (arg == "-a" || arg == "--multiple") {
-      multiple = true
-    } else if options && (arg == "-z" || arg == "--zero") {
-      zero = true
-    } else if options && (arg == "-s" || arg == "--suffix") {
-      if i + 1 >= args.length() {
-        @stdio.stderr.write("basename: missing suffix operand\n")
-        @sys.exit(1)
-        return
-      }
-      i += 1
-      suffix = Some(args[i])
-      multiple = true
-    } else if options && arg.has_prefix("--suffix=") {
-      suffix = Some(arg[9:].to_owned())
-      multiple = true
-    } else if options && arg == "--help" {
-      @stdio.stdout.write(
-        "Usage: basename [-a] [-s SUFFIX] [-z] NAME [SUFFIX]\n",
-      )
+  let parsed = @cli.parse(args, [
+    @cli.flag("multiple", short='a'),
+    @cli.option("suffix", short='s'),
+    @cli.flag("zero", short='z'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("basename: \{message}: '\{option}'\n")
+      @sys.exit(2)
       return
-    } else if options && arg.has_prefix("-") && arg != "-" {
-      let mut valid = true
-      for flag in arg[1:] {
-        match flag {
-          'a' => multiple = true
-          'z' => zero = true
-          _ => valid = false
-        }
-      }
-      if !valid {
-        @stdio.stderr.write("basename: invalid option: '\{arg}'\n")
-        @sys.exit(1)
-        return
-      }
-    } else {
-      operands.push(arg)
     }
-    i += 1
+  }
+  let multiple = parsed.contains("multiple") || parsed.contains("suffix")
+  let zero = parsed.contains("zero")
+  let mut suffix = parsed.last_value("suffix")
+  let operands = parsed.operands
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: basename [-a] [-s SUFFIX] [-z] NAME [SUFFIX]\n")
+    return
   }
   if operands.is_empty() || (!multiple && operands.length() > 2) {
     @stdio.stderr.write("basename: missing or extra operand\n")

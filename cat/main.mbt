@@ -13,17 +13,18 @@ fn help_message() -> String {
 ///|
 async fn main {
   let args = @env.args()[1:]
-  if args.length() > 0 && (args[0] == "-h" || args[0] == "--help") {
+  let parsed = @cli.parse(args, [@cli.flag("help", short='h')]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("cat: \{message}: '\{option}'\n")
+      @sys.exit(2)
+      return
+    }
+  }
+  if parsed.contains("help") {
     @stdio.stdout.write(help_message() + "\n")
     return
   }
-  // A leading `--` ends option processing, so `cat -- -h` reads a file
-  // literally named -h.
-  let operands = if args.length() > 0 && args[0] == "--" {
-    args[1:]
-  } else {
-    args
-  }
+  let operands = parsed.operands
   let sources = if operands.is_empty() { ["-"][:] } else { operands }
   let mut failed = false
   for path in sources {

@@ -21,8 +21,6 @@ jobs:
           - macos-15
           - windows-2025
     runs-on: ${{ matrix.os }}
-    env:
-      MOON_HOME: ${{ github.workspace }}/.moon-home
     steps:
       - uses: actions/checkout@v4
         with:
@@ -77,8 +75,6 @@ jobs:
   stress:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
-    env:
-      MOON_HOME: ${{ github.workspace }}/.moon-home
     steps:
       - uses: actions/checkout@v4
         with:

@@ -1,18 +1,18 @@
 ///|
 priv struct GrepOptions {
-  mut fixed : Bool
-  mut ignore_case : Bool
-  mut invert : Bool
-  mut line_number : Bool
-  mut count : Bool
-  mut files_with_matches : Bool
-  mut files_without_match : Bool
-  mut quiet : Bool
-  mut force_filename : Bool
-  mut no_filename : Bool
-  mut whole_line : Bool
-  mut word : Bool
-  mut recursive : Bool
+  fixed : Bool
+  ignore_case : Bool
+  invert : Bool
+  line_number : Bool
+  count : Bool
+  files_with_matches : Bool
+  files_without_match : Bool
+  quiet : Bool
+  force_filename : Bool
+  no_filename : Bool
+  whole_line : Bool
+  word : Bool
+  recursive : Bool
 }
 
 ///|
@@ -228,92 +228,61 @@ async fn process_reader(
 }
 
 ///|
-fn set_short_flags(options : GrepOptions, arg : String) -> Bool {
-  for flag in arg[1:] {
-    match flag {
-      'F' => options.fixed = true
-      'E' => options.fixed = false
-      'i' => options.ignore_case = true
-      'v' => options.invert = true
-      'n' => options.line_number = true
-      'c' => options.count = true
-      'l' => options.files_with_matches = true
-      'L' => options.files_without_match = true
-      'q' => options.quiet = true
-      'H' => options.force_filename = true
-      'h' => options.no_filename = true
-      'x' => options.whole_line = true
-      'w' => options.word = true
-      'r' | 'R' => options.recursive = true
-      _ => return false
-    }
-  }
-  true
-}
 
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let options : GrepOptions = {
-    fixed: false,
-    ignore_case: false,
-    invert: false,
-    line_number: false,
-    count: false,
-    files_with_matches: false,
-    files_without_match: false,
-    quiet: false,
-    force_filename: false,
-    no_filename: false,
-    whole_line: false,
-    word: false,
-    recursive: false,
-  }
-  let patterns : Array[String] = []
-  let pattern_files : Array[String] = []
-  let files : Array[String] = []
-  let mut options_enabled = true
-  let mut i = 0
-  while i < args.length() {
-    let arg = args[i]
-    if options_enabled && arg == "--" {
-      options_enabled = false
-    } else if options_enabled && (arg == "-e" || arg == "--regexp") {
-      if i + 1 >= args.length() {
-        @stdio.stderr.write("grep: missing pattern\n")
-        @sys.exit(2)
-        return
-      }
-      i += 1
-      patterns.push(args[i])
-    } else if options_enabled && arg.has_prefix("--regexp=") {
-      patterns.push(arg[9:].to_owned())
-    } else if options_enabled && (arg == "-f" || arg == "--file") {
-      if i + 1 >= args.length() {
-        @stdio.stderr.write("grep: missing pattern file\n")
-        @sys.exit(2)
-        return
-      }
-      i += 1
-      pattern_files.push(args[i])
-    } else if options_enabled && arg.has_prefix("--file=") {
-      pattern_files.push(arg[7:].to_owned())
-    } else if options_enabled && arg == "--help" {
-      @stdio.stdout.write(
-        "Usage: grep [-EFivnclLqHhxwr] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n",
-      )
+  let parsed = @cli.parse(args, [
+    @cli.flag("fixed-strings", short='F'),
+    @cli.flag("extended-regexp", short='E'),
+    @cli.flag("ignore-case", short='i'),
+    @cli.flag("invert-match", short='v'),
+    @cli.flag("line-number", short='n'),
+    @cli.flag("count", short='c'),
+    @cli.flag("files-with-matches", short='l'),
+    @cli.flag("files-without-match", short='L'),
+    @cli.flag("quiet", short='q'),
+    @cli.flag("with-filename", short='H'),
+    @cli.flag("no-filename", short='h'),
+    @cli.flag("line-regexp", short='x'),
+    @cli.flag("word-regexp", short='w'),
+    @cli.flag("recursive", short='r'),
+    @cli.flag("recursive", short='R'),
+    @cli.option("regexp", short='e'),
+    @cli.option("file", short='f'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("grep: \{message}: '\{option}'\n")
+      @sys.exit(2)
       return
-    } else if options_enabled && arg.has_prefix("-") && arg != "-" {
-      if !set_short_flags(options, arg) {
-        @stdio.stderr.write("grep: invalid option: '\{arg}'\n")
-        @sys.exit(2)
-        return
-      }
-    } else {
-      files.push(arg)
     }
-    i += 1
   }
+  if parsed.contains("help") {
+    @stdio.stdout.write(
+      "Usage: grep [-EFivnclLqHhxwr] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n",
+    )
+    return
+  }
+  let options : GrepOptions = {
+    fixed: parsed.last_occurrence(["fixed-strings", "extended-regexp"]) ==
+    Some("fixed-strings"),
+    ignore_case: parsed.contains("ignore-case"),
+    invert: parsed.contains("invert-match"),
+    line_number: parsed.contains("line-number"),
+    count: parsed.contains("count"),
+    files_with_matches: parsed.contains("files-with-matches"),
+    files_without_match: parsed.contains("files-without-match"),
+    quiet: parsed.contains("quiet"),
+    force_filename: parsed.contains("with-filename"),
+    no_filename: parsed.contains("no-filename"),
+    whole_line: parsed.contains("line-regexp"),
+    word: parsed.contains("word-regexp"),
+    recursive: parsed.contains("recursive"),
+  }
+  let patterns = parsed.values("regexp")
+  let pattern_files = parsed.values("file")
+  let files = parsed.operands
   if patterns.is_empty() && pattern_files.is_empty() {
     if files.is_empty() {
       @stdio.stderr.write("grep: missing pattern\n")

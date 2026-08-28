@@ -11,32 +11,6 @@ priv enum SetToken {
 }
 
 ///|
-fn tr_command() -> @argparse.Command {
-  Command(
-    "tr",
-    about="Translate, squeeze, or delete bytes read from stdin.",
-    flags=[
-      FlagArg("delete", short='d', about="Delete bytes in SET1."),
-      FlagArg(
-        "squeeze-repeats",
-        short='s',
-        about="Squeeze repeated output bytes that occur in the last set.",
-      ),
-      FlagArg("complement", short='c', about="Use the complement of SET1."),
-    ],
-    positionals=[
-      PositionArg(
-        "sets",
-        about="SET1 [SET2] (supports escapes, ranges a-z, and [:class:])",
-        num_args=ValueRange(lower=1, upper=2),
-        allow_hyphen_values=true,
-      ),
-    ],
-    disable_help_subcommand=true,
-  )
-}
-
-///|
 fn char_to_byte(c : Char, spec : String) -> Byte raise CliError {
   let code = c.to_int()
   if code > 0xFF {
@@ -213,20 +187,33 @@ async fn transform_stream(
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let command = tr_command()
-  let matches = command.parse(argv=args, env=Map([])) catch {
-    err => {
-      @stdio.stderr.write("\{err}\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("delete", short='d'),
+    @cli.flag("squeeze-repeats", short='s'),
+    @cli.flag("complement", short='c'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("tr: \{message}: '\{option}'\n")
       @sys.exit(2)
       return
     }
   }
-  let delete = matches.flags.get_or_default("delete", false)
-  let squeeze_repeats = matches.flags.get_or_default("squeeze-repeats", false)
-  let complement = matches.flags.get_or_default("complement", false)
-  let sets = matches.values.get("sets").unwrap_or([])
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: tr [-dsc] SET1 [SET2]\n")
+    return
+  }
+  let delete = parsed.contains("delete")
+  let squeeze_repeats = parsed.contains("squeeze-repeats")
+  let complement = parsed.contains("complement")
+  let sets = parsed.operands
   if sets.is_empty() {
     @stdio.stderr.write("tr: missing operand\n")
+    @sys.exit(2)
+    return
+  }
+  if sets.length() > 2 {
+    @stdio.stderr.write("tr: extra operand '\{sets[2]}'\n")
     @sys.exit(2)
     return
   }

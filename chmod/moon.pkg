@@ -1,4 +1,5 @@
 import {
+  "mooxCLI/cmd/internal/cli",
   "mooxCLI/cmd/internal/platform",
   "moonbitlang/async",
   "moonbitlang/async/fs",

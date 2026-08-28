@@ -38,7 +38,9 @@ test "parse option forms and operands" {
   assert_true(parsed.contains("all"))
   assert_true(parsed.contains("verbose"))
   assert_eq(parsed.last_value("output"), Some("last"))
+  assert_eq(parsed.values("output"), ["file", "last"])
   assert_eq(parsed.operands, ["-a", "-"])
+  assert_eq(parsed.last_occurrence(["all", "verbose"]), Some("verbose"))
 }
 
 ///|

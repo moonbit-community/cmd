@@ -7,62 +7,6 @@ priv suberror CliError {
 let open_end : Int = 0x7FFFFFFF
 
 ///|
-fn cut_command() -> @argparse.Command {
-  Command(
-    "cut",
-    about="Print selected fields or characters of each line.",
-    flags=[
-      FlagArg(
-        "only-delimited",
-        short='s',
-        about="Skip lines without the delimiter (field mode).",
-      ),
-    ],
-    options=[
-      OptionArg(
-        "delimiter",
-        short='d',
-        about="Field delimiter character (default TAB).",
-      ),
-      OptionArg(
-        "fields",
-        short='f',
-        about="Comma-separated field list, e.g. 1,3-5,7-.",
-        allow_hyphen_values=true,
-      ),
-      OptionArg(
-        "characters",
-        short='c',
-        about="Comma-separated character position list.",
-        conflicts_with=["fields"],
-        allow_hyphen_values=true,
-      ),
-    ],
-    positionals=[
-      PositionArg(
-        "files",
-        about="[file...] ('-' or no file reads stdin)",
-        num_args=ValueRange(lower=0),
-      ),
-    ],
-    disable_help_subcommand=true,
-  )
-}
-
-///|
-fn option_value(matches : @argparse.Matches, name : String) -> String? {
-  match matches.values.get(name) {
-    Some(vals) =>
-      if vals.is_empty() {
-        None
-      } else {
-        Some(vals[vals.length() - 1])
-      }
-    None => None
-  }
-}
-
-///|
 fn parse_positive(text : String, spec : String) -> Int raise CliError {
   let n = @string.parse_int(text) catch {
     _ => raise CliError("cut: invalid list: '\{spec}'")
@@ -202,16 +146,27 @@ async fn process_reader(
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let command = cut_command()
-  let matches = command.parse(argv=args, env=Map([])) catch {
-    err => {
-      @stdio.stderr.write("\{err}\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("only-delimited", short='s'),
+    @cli.option("delimiter", short='d'),
+    @cli.option("fields", short='f'),
+    @cli.option("characters", short='c'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("cut: \{message}: '\{option}'\n")
       @sys.exit(2)
       return
     }
   }
-  let only_delimited = matches.flags.get_or_default("only-delimited", false)
-  let delimiter = match option_value(matches, "delimiter") {
+  if parsed.contains("help") {
+    @stdio.stdout.write(
+      "Usage: cut (-c LIST | -f LIST [-d CHAR] [-s]) [FILE...]\n",
+    )
+    return
+  }
+  let only_delimited = parsed.contains("only-delimited")
+  let delimiter = match parsed.last_value("delimiter") {
     Some(d) => {
       let encoded = @utf8.encode(d)
       if encoded.length() != 1 {
@@ -225,9 +180,13 @@ async fn main {
     }
     None => b'\t'
   }
-  let fields_spec = option_value(matches, "fields")
-  let chars_spec = option_value(matches, "characters")
-  if fields_spec is None && chars_spec is None {
+  let fields_spec = parsed.last_value("fields")
+  let chars_spec = parsed.last_value("characters")
+  if fields_spec is Some(_) && chars_spec is Some(_) {
+    @stdio.stderr.write("cut: fields and characters are mutually exclusive\n")
+    @sys.exit(2)
+    return
+  } else if fields_spec is None && chars_spec is None {
     @stdio.stderr.write(
       "cut: you must specify a list of fields (-f) or characters (-c)\n",
     )
@@ -251,7 +210,7 @@ async fn main {
       return
     }
   }
-  let files = matches.values.get("files").unwrap_or([])
+  let files = parsed.operands
   let sources = if files.is_empty() { ["-"] } else { files }
   let mut failed = false
   for path in sources {

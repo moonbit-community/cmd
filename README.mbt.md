@@ -81,14 +81,14 @@ The validation suite covers formatting, generated interfaces, all supported
 MoonBit targets, command-line behavior, and policy-controlled resource access:
 
 ```bash
-MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon update
-MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon check --target all --deny-warn
-MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon test --target all
-MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon build --target native --release --deny-warn
-MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon run --target native tests/compat -- --bin-root _build/native/release/build
-MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon run --target native tests/policy -- --root .
-MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon info
-MOON_HOME="$HOME/.moon-accounts/moonxCLI" moon fmt
+moon update
+moon check --target all --deny-warn
+moon test --target all
+moon build --target native --release --deny-warn
+moon run --target native tests/compat -- --bin-root _build/native/release/build
+moon run --target native tests/policy -- --root .
+moon info
+moon fmt
 ```
 
 Linux additionally runs `tests/compat --gnu-diff`. Harness or nightly jobs may

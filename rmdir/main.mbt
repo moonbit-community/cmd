@@ -25,42 +25,26 @@ async fn remove_directory(
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let directories : Array[String] = []
-  let mut parents = false
-  let mut ignore_non_empty = false
-  let mut verbose = false
-  let mut options = true
-  for arg in args {
-    if options && arg == "--" {
-      options = false
-    } else if options && arg == "--parents" {
-      parents = true
-    } else if options && arg == "--ignore-fail-on-non-empty" {
-      ignore_non_empty = true
-    } else if options && arg == "--verbose" {
-      verbose = true
-    } else if options && arg == "--help" {
-      @stdio.stdout.write("Usage: rmdir [-p] [-I] [-v] DIRECTORY...\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("parents", short='p'),
+    @cli.flag("ignore-fail-on-non-empty", short='I'),
+    @cli.flag("verbose", short='v'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("rmdir: \{message}: '\{option}'\n")
+      @sys.exit(2)
       return
-    } else if options && arg.has_prefix("-") && arg != "-" {
-      let mut valid = true
-      for flag in arg[1:] {
-        match flag {
-          'p' => parents = true
-          'I' => ignore_non_empty = true
-          'v' => verbose = true
-          _ => valid = false
-        }
-      }
-      if !valid {
-        @stdio.stderr.write("rmdir: invalid option: '\{arg}'\n")
-        @sys.exit(1)
-        return
-      }
-    } else {
-      directories.push(arg)
     }
   }
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: rmdir [-p] [-I] [-v] DIRECTORY...\n")
+    return
+  }
+  let directories = parsed.operands
+  let parents = parsed.contains("parents")
+  let ignore_non_empty = parsed.contains("ignore-fail-on-non-empty")
+  let verbose = parsed.contains("verbose")
   if directories.is_empty() {
     @stdio.stderr.write("rmdir: missing operand\n")
     @sys.exit(1)

@@ -79,6 +79,7 @@ pub fn option(
 pub(all) struct ParsedArgs {
   occurrences : Map[String, Array[String?]]
   operands : Array[String]
+  order : Array[String]
 }
 
 ///|
@@ -92,6 +93,32 @@ pub fn ParsedArgs::last_value(self : ParsedArgs, name : String) -> String? {
   for index = values.length() - 1; index >= 0; index = index - 1 {
     if values[index] is Some(value) {
       return Some(value)
+    }
+  }
+  None
+}
+
+///|
+pub fn ParsedArgs::values(self : ParsedArgs, name : String) -> Array[String] {
+  let result : Array[String] = []
+  guard self.occurrences.get(name) is Some(values) else { return result }
+  for value in values {
+    if value is Some(text) {
+      result.push(text)
+    }
+  }
+  result
+}
+
+///|
+pub fn ParsedArgs::last_occurrence(
+  self : ParsedArgs,
+  names : Array[String],
+) -> String? {
+  for index = self.order.length() - 1; index >= 0; index = index - 1 {
+    let candidate = self.order[index]
+    if names.contains(candidate) {
+      return Some(candidate)
     }
   }
   None

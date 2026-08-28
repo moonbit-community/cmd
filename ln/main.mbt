@@ -22,46 +22,29 @@ async fn create_link(
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let operands : Array[String] = []
-  let mut symbolic = false
-  let mut force = false
-  let mut no_target_directory = false
-  let mut verbose = false
-  let mut options = true
-  for arg in args {
-    if options && arg == "--" {
-      options = false
-    } else if options && arg == "--symbolic" {
-      symbolic = true
-    } else if options && arg == "--force" {
-      force = true
-    } else if options && arg == "--no-target-directory" {
-      no_target_directory = true
-    } else if options && arg == "--verbose" {
-      verbose = true
-    } else if options && arg == "--help" {
-      @stdio.stdout.write("Usage: ln -s [-f] [-T] [-v] TARGET LINK_NAME\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("symbolic", short='s'),
+    @cli.flag("force", short='f'),
+    @cli.flag("no-target-directory", short='T'),
+    @cli.flag("no-target-directory", short='n'),
+    @cli.flag("verbose", short='v'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("ln: \{message}: '\{option}'\n")
+      @sys.exit(2)
       return
-    } else if options && arg.has_prefix("-") && arg != "-" {
-      let mut valid = true
-      for flag in arg[1:] {
-        match flag {
-          's' => symbolic = true
-          'f' => force = true
-          'n' | 'T' => no_target_directory = true
-          'v' => verbose = true
-          _ => valid = false
-        }
-      }
-      if !valid {
-        @stdio.stderr.write("ln: invalid option: '\{arg}'\n")
-        @sys.exit(2)
-        return
-      }
-    } else {
-      operands.push(arg)
     }
   }
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: ln -s [-f] [-T] [-v] TARGET LINK_NAME\n")
+    return
+  }
+  let operands = parsed.operands
+  let symbolic = parsed.contains("symbolic")
+  let force = parsed.contains("force")
+  let no_target_directory = parsed.contains("no-target-directory")
+  let verbose = parsed.contains("verbose")
   if !symbolic {
     @stdio.stderr.write(
       "ln: hard links are unavailable in the portable filesystem API; use -s\n",

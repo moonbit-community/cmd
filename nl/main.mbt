@@ -1,57 +1,4 @@
 ///|
-fn nl_command() -> @argparse.Command {
-  Command(
-    "nl",
-    about="Number lines of each input.",
-    options=[
-      OptionArg(
-        "body-numbering",
-        short='b',
-        about="Numbering style: a (all lines), t (nonempty lines), n (none).",
-        default_values=["t"],
-      ),
-      OptionArg(
-        "number-width",
-        short='w',
-        about="Width of the line number column.",
-        default_values=["6"],
-      ),
-      OptionArg(
-        "number-separator",
-        short='s',
-        about="String between number and line.",
-        default_values=["\t"],
-      ),
-    ],
-    positionals=[
-      PositionArg(
-        "files",
-        about="[file...] ('-' or no file reads stdin)",
-        num_args=ValueRange(lower=0),
-      ),
-    ],
-    disable_help_subcommand=true,
-  )
-}
-
-///|
-fn option_value(
-  matches : @argparse.Matches,
-  name : String,
-  fallback : String,
-) -> String {
-  match matches.values.get(name) {
-    Some(vals) =>
-      if vals.is_empty() {
-        fallback
-      } else {
-        vals[vals.length() - 1]
-      }
-    None => fallback
-  }
-}
-
-///|
 fn pad_left(text : String, width : Int) -> String {
   let sb = StringBuilder()
   for _ in 0..<(width - text.length()) {
@@ -101,21 +48,31 @@ async fn process_reader(
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let command = nl_command()
-  let matches = command.parse(argv=args, env=Map([])) catch {
-    err => {
-      @stdio.stderr.write("\{err}\n")
+  let parsed = @cli.parse(args, [
+    @cli.option("body-numbering", short='b'),
+    @cli.option("number-width", short='w'),
+    @cli.option("number-separator", short='s'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("nl: \{message}: '\{option}'\n")
       @sys.exit(2)
       return
     }
   }
-  let style = option_value(matches, "body-numbering", "t")
+  if parsed.contains("help") {
+    @stdio.stdout.write(
+      "Usage: nl [-b STYLE] [-w NUMBER] [-s STRING] [FILE...]\n",
+    )
+    return
+  }
+  let style = parsed.last_value("body-numbering").unwrap_or("t")
   if !(style is ("a" | "t" | "n")) {
     @stdio.stderr.write("nl: invalid body numbering style: '\{style}'\n")
     @sys.exit(2)
     return
   }
-  let width_text = option_value(matches, "number-width", "6")
+  let width_text = parsed.last_value("number-width").unwrap_or("6")
   let width = @string.parse_int(width_text) catch {
     _ => {
       @stdio.stderr.write(
@@ -132,8 +89,8 @@ async fn main {
     @sys.exit(2)
     return
   }
-  let separator = option_value(matches, "number-separator", "\t")
-  let files = matches.values.get("files").unwrap_or([])
+  let separator = parsed.last_value("number-separator").unwrap_or("\t")
+  let files = parsed.operands
   let sources = if files.is_empty() { ["-"] } else { files }
   let number = Ref(1)
   let mut failed = false

@@ -1,57 +1,38 @@
 ///|
 priv struct MvOptions {
   mut no_clobber : Bool
-  mut no_target_directory : Bool
-  mut verbose : Bool
-}
-
-///|
-fn apply_short_options(options : MvOptions, arg : String) -> Bool {
-  for flag in arg[1:] {
-    match flag {
-      'f' => options.no_clobber = false
-      'n' => options.no_clobber = true
-      'T' => options.no_target_directory = true
-      'v' => options.verbose = true
-      _ => return false
-    }
-  }
-  true
+  no_target_directory : Bool
+  verbose : Bool
 }
 
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let options : MvOptions = {
-    no_clobber: false,
-    no_target_directory: false,
-    verbose: false,
-  }
-  let operands : Array[String] = []
-  let mut parsing_options = true
-  for arg in args {
-    if parsing_options && arg == "--" {
-      parsing_options = false
-    } else if parsing_options && arg == "--force" {
-      options.no_clobber = false
-    } else if parsing_options && arg == "--no-clobber" {
-      options.no_clobber = true
-    } else if parsing_options && arg == "--no-target-directory" {
-      options.no_target_directory = true
-    } else if parsing_options && arg == "--verbose" {
-      options.verbose = true
-    } else if parsing_options && arg == "--help" {
-      @stdio.stdout.write("Usage: mv [-f|-n] [-T] [-v] SOURCE... DEST\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("force", short='f'),
+    @cli.flag("no-clobber", short='n'),
+    @cli.flag("no-target-directory", short='T'),
+    @cli.flag("verbose", short='v'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("mv: \{message}: '\{option}'\n")
+      @sys.exit(2)
       return
-    } else if parsing_options && arg.has_prefix("-") && arg != "-" {
-      if !apply_short_options(options, arg) {
-        @stdio.stderr.write("mv: invalid option: '\{arg}'\n")
-        @sys.exit(1)
-        return
-      }
-    } else {
-      operands.push(arg)
     }
+  }
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: mv [-f|-n] [-T] [-v] SOURCE... DEST\n")
+    return
+  }
+  let operands = parsed.operands
+  let options : MvOptions = {
+    no_clobber: parsed.contains("no-clobber"),
+    no_target_directory: parsed.contains("no-target-directory"),
+    verbose: parsed.contains("verbose"),
+  }
+  if parsed.last_occurrence(["force", "no-clobber"]) == Some("force") {
+    options.no_clobber = false
   }
   if operands.length() < 2 {
     @stdio.stderr.write("mv: missing source or destination operand\n")

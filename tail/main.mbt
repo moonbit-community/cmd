@@ -15,53 +15,6 @@ priv enum CountSpec {
 let chunk_size : Int = 65536
 
 ///|
-fn tail_command() -> @argparse.Command {
-  Command(
-    "tail",
-    about="Print the last lines (or bytes) of each input.",
-    flags=[
-      FlagArg("quiet", short='q', about="Never print file name headers."),
-      FlagArg("verbose", short='v', about="Always print file name headers."),
-    ],
-    options=[
-      OptionArg(
-        "lines",
-        short='n',
-        about="Print the last N lines, or from line +N (default 10).",
-        allow_hyphen_values=true,
-      ),
-      OptionArg(
-        "bytes",
-        short='c',
-        about="Print the last N bytes, or from byte +N.",
-        conflicts_with=["lines"],
-      ),
-    ],
-    positionals=[
-      PositionArg(
-        "files",
-        about="[file...] ('-' or no file reads stdin)",
-        num_args=ValueRange(lower=0),
-      ),
-    ],
-    disable_help_subcommand=true,
-  )
-}
-
-///|
-fn option_value(matches : @argparse.Matches, name : String) -> String? {
-  match matches.values.get(name) {
-    Some(vals) =>
-      if vals.is_empty() {
-        None
-      } else {
-        Some(vals[vals.length() - 1])
-      }
-    None => None
-  }
-}
-
-///|
 fn parse_spec(text : String) -> CountSpec raise CliError {
   let (from_start, digits) = if text is ['+', .. rest] {
     (true, rest)
@@ -385,21 +338,35 @@ async fn tail_stream(
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let command = tail_command()
-  let matches = command.parse(argv=args, env=Map([])) catch {
-    err => {
-      @stdio.stderr.write("\{err}\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("quiet", short='q'),
+    @cli.flag("verbose", short='v'),
+    @cli.option("lines", short='n'),
+    @cli.option("bytes", short='c'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("tail: \{message}: '\{option}'\n")
       @sys.exit(2)
       return
     }
   }
-  let quiet = matches.flags.get_or_default("quiet", false)
-  let verbose = matches.flags.get_or_default("verbose", false)
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: tail [-qv] [-n NUM|-c NUM] [FILE...]\n")
+    return
+  }
+  let quiet = parsed.contains("quiet")
+  let verbose = parsed.contains("verbose")
+  if parsed.contains("lines") && parsed.contains("bytes") {
+    @stdio.stderr.write("tail: lines and bytes are mutually exclusive\n")
+    @sys.exit(2)
+    return
+  }
   let (spec, bytes_mode) = try {
-    match option_value(matches, "bytes") {
+    match parsed.last_value("bytes") {
       Some(text) => (parse_spec(text), true)
       None =>
-        match option_value(matches, "lines") {
+        match parsed.last_value("lines") {
           Some(text) => (parse_spec(text), false)
           None => (Last(10), false)
         }
@@ -411,7 +378,7 @@ async fn main {
       return
     }
   }
-  let files = matches.values.get("files").unwrap_or([])
+  let files = parsed.operands
   let sources = if files.is_empty() { ["-"] } else { files }
   let show_headers = (sources.length() > 1 || verbose) && !quiet
   let mut failed = false

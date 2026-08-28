@@ -1,68 +1,48 @@
 ///|
 priv struct RmOptions {
-  mut recursive : Bool
-  mut force : Bool
-  mut empty_directories : Bool
-  mut verbose : Bool
-}
-
-///|
-fn apply_short_options(options : RmOptions, arg : String) -> Bool {
-  for flag in arg[1:] {
-    match flag {
-      'r' | 'R' => options.recursive = true
-      'f' => options.force = true
-      'd' => options.empty_directories = true
-      'v' => options.verbose = true
-      _ => return false
-    }
-  }
-  true
+  recursive : Bool
+  force : Bool
+  empty_directories : Bool
+  verbose : Bool
 }
 
 ///|
 async fn main {
   let args = @env.args()[1:]
-  let options : RmOptions = {
-    recursive: false,
-    force: false,
-    empty_directories: false,
-    verbose: false,
-  }
-  let paths : Array[String] = []
-  let mut parsing_options = true
-  for arg in args {
-    if parsing_options && arg == "--" {
-      parsing_options = false
-    } else if parsing_options && arg == "--recursive" {
-      options.recursive = true
-    } else if parsing_options && arg == "--force" {
-      options.force = true
-    } else if parsing_options && arg == "--dir" {
-      options.empty_directories = true
-    } else if parsing_options && arg == "--verbose" {
-      options.verbose = true
-    } else if parsing_options && arg == "--preserve-root" {
-      ()
-    } else if parsing_options && arg == "--no-preserve-root" {
-      @stdio.stderr.write(
-        "rm: --no-preserve-root is disabled by repository policy\n",
-      )
-      @sys.exit(1)
+  let parsed = @cli.parse(args, [
+    @cli.flag("recursive", short='r'),
+    @cli.flag("recursive", short='R'),
+    @cli.flag("force", short='f'),
+    @cli.flag("dir", short='d'),
+    @cli.flag("verbose", short='v'),
+    @cli.flag("preserve-root"),
+    @cli.flag("no-preserve-root"),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("rm: \{message}: '\{option}'\n")
+      @sys.exit(2)
       return
-    } else if parsing_options && arg == "--help" {
-      @stdio.stdout.write("Usage: rm [-f] [-r|-R] [-d] [-v] FILE...\n")
-      return
-    } else if parsing_options && arg.has_prefix("-") && arg != "-" {
-      if !apply_short_options(options, arg) {
-        @stdio.stderr.write("rm: invalid option: '\{arg}'\n")
-        @sys.exit(1)
-        return
-      }
-    } else {
-      paths.push(arg)
     }
   }
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: rm [-f] [-r|-R] [-d] [-v] FILE...\n")
+    return
+  }
+  if parsed.contains("no-preserve-root") {
+    @stdio.stderr.write(
+      "rm: --no-preserve-root is disabled by repository policy\n",
+    )
+    @sys.exit(1)
+    return
+  }
+  let options : RmOptions = {
+    recursive: parsed.contains("recursive"),
+    force: parsed.contains("force"),
+    empty_directories: parsed.contains("dir"),
+    verbose: parsed.contains("verbose"),
+  }
+  let paths = parsed.operands
   if paths.is_empty() {
     if options.force {
       return

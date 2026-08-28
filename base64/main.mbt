@@ -4,31 +4,6 @@ priv suberror CliError {
 }
 
 ///|
-fn base64_command() -> @argparse.Command {
-  Command(
-    "base64",
-    about="Base64 encode or decode a file or stdin.",
-    flags=[FlagArg("decode", short='d', about="Decode instead of encode.")],
-    options=[
-      OptionArg(
-        "wrap",
-        short='w',
-        about="Wrap encoded lines after N characters (0 disables; default 76).",
-        default_values=["76"],
-      ),
-    ],
-    positionals=[
-      PositionArg(
-        "input",
-        about="[file] ('-' or no file reads stdin)",
-        num_args=ValueRange(lower=0, upper=1),
-      ),
-    ],
-    disable_help_subcommand=true,
-  )
-}
-
-///|
 fn b64_char(v : Int) -> Char {
   if v < 26 {
     (0x41 + v).unsafe_to_char()
@@ -183,31 +158,30 @@ async fn decode_stream(reader : &@io.Reader) -> Unit {
 }
 
 ///|
-fn option_value(matches : @argparse.Matches, name : String) -> String? {
-  match matches.values.get(name) {
-    Some(vals) =>
-      if vals.is_empty() {
-        None
-      } else {
-        Some(vals[vals.length() - 1])
-      }
-    None => None
-  }
-}
-
-///|
 async fn main {
   let args = @env.args()[1:]
-  let command = base64_command()
-  let matches = command.parse(argv=args, env=Map([])) catch {
-    err => {
-      @stdio.stderr.write("\{err}\n")
+  let parsed = @cli.parse(args, [
+    @cli.flag("decode", short='d'),
+    @cli.option("wrap", short='w'),
+    @cli.flag("help"),
+  ]) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("base64: \{message}: '\{option}'\n")
       @sys.exit(2)
       return
     }
   }
-  let decode_mode = matches.flags.get_or_default("decode", false)
-  let wrap_text = option_value(matches, "wrap").unwrap_or("76")
+  if parsed.contains("help") {
+    @stdio.stdout.write("Usage: base64 [-d] [-w COLS] [FILE]\n")
+    return
+  }
+  if parsed.operands.length() > 1 {
+    @stdio.stderr.write("base64: extra operand: '\{parsed.operands[1]}'\n")
+    @sys.exit(2)
+    return
+  }
+  let decode_mode = parsed.contains("decode")
+  let wrap_text = parsed.last_value("wrap").unwrap_or("76")
   let wrap = @string.parse_int(wrap_text) catch {
     _ => {
       @stdio.stderr.write("base64: invalid wrap size: '\{wrap_text}'\n")
@@ -220,7 +194,7 @@ async fn main {
     @sys.exit(2)
     return
   }
-  let inputs = matches.values.get("input").unwrap_or([])
+  let inputs = parsed.operands
   let path = if inputs.is_empty() { "-" } else { inputs[0] }
   try {
     if path == "-" {
