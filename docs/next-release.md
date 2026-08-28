@@ -14,7 +14,7 @@ Changes prepared in the source tree:
 - isolate child cwd and environment through a private process boundary;
 - return stable unsupported-capability failures where Windows lacks a portable
   MoonBit operation;
-- replace floating CI images with fixed Linux, macOS Intel, and Windows 2025
+- replace floating CI images with fixed Linux, macOS 15 arm64, and Windows 2025
   runners.
 
 Known release blocker:

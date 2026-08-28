@@ -214,7 +214,7 @@ Acceptance: all 20 root packages build and retain their documented behavior.
 
 - Keep upstream Cram and tutorial files as non-executable provenance.
 - Run executable compatibility and policy cases through MoonBit runners.
-- Require fixed Linux, macOS Intel, and Windows runner images.
+- Require fixed Linux, macOS 15 arm64, and Windows runner images.
 - Require check, formatting, generated-interface, target, compatibility, and
   policy validation.
 
