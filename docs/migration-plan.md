@@ -1,7 +1,10 @@
-# `cmd` Migration and Development Plan
+# `cmd` Historical Migration and Development Plan
 
-> Status: The initial release stages are complete. The current source tree has
-> 48 command packages: Batches 1-2 are allow-listed and Batch 3 is restricted.
+> Historical note: the original migration described a single root module. The
+> historical release remains available as a frozen compatibility release, while
+> the current source tree is a workspace that publishes commands independently
+> as `cli/<command>` modules. See
+> `docs/publishing.md` for the current release layout.
 
 Repository: <https://github.com/moonbit-community/cmd>
 Module: `mooxCLI/cmd`
@@ -22,8 +25,8 @@ layout, and validation maintained in this repository.
 
 ### Goals
 
-1. Keep every command in one module, `mooxCLI/cmd`.
-2. Expose commands as root packages such as `mooxCLI/cmd/cat`.
+1. Keep the historical command snapshot reproducible.
+2. Expose each command as an independent `cli/<command>` module.
 3. Preserve documented stdout, stderr, argument, and exit-code behavior.
 4. Prefer Wasm-compatible implementations and policy-visible resource APIs.
 5. Add common commands in batches ordered by their requested authority.
@@ -41,38 +44,43 @@ layout, and validation maintained in this repository.
 
 ## 2. Module and package architecture
 
-The root `moon.mod` is the only module definition:
+The historical root `moon.mod` defined the frozen compatibility module:
 
 ```moonbit
 name = "mooxCLI/cmd"
 preferred_target = "wasm"
 ```
 
-Each command directory has an executable `moon.pkg`, implementation sources,
-a README, and a generated `pkg.generated.mbti`. The package path is the module
-name followed by the directory name:
+Each command directory also has a `moon.mod`, executable `moon.pkg`,
+implementation sources, a README, and a generated `pkg.generated.mbti`. The
+published module coordinate is:
 
 | Repository path | Package coordinate |
 |---|---|
-| `cat/` | `mooxCLI/cmd/cat` |
-| `grep/` | `mooxCLI/cmd/grep` |
-| `internal/fsops/` | private implementation package |
+| `commands/cat/` | `cli/cat` |
+| `commands/grep/` | `cli/grep` |
+| `core/fsops/` | `cli/core/fsops` |
 
-Command implementations do not call same-named executables. Shared behavior is
-private and lives under `internal/`:
+Command implementations do not call same-named executables. The current
+workspace keeps shared behavior in the publishable `core` module:
 
-- `internal/cli` freezes the private option grammar and 48-command catalog.
-- `internal/fsops` provides bounded path inspection, copying, traversal, and
+- `core/cli` freezes the option grammar and 48-command catalog.
+- `core/fsops` provides bounded path inspection, copying, traversal, and
   deletion helpers for filesystem commands.
-- `internal/netops` provides streaming HTTP response handling for `curl` and
+- `core/netops` provides streaming HTTP response handling for `curl` and
   `wget`.
-- `internal/platform` records portable capability boundaries.
-- `internal/process` describes explicit child cwd, minimum environment, and I/O.
-- `internal/shell` provides MoonBit lexer, parser, expansion, built-ins,
+- `core/platform` records portable capability boundaries.
+- `core/process` describes explicit child cwd, minimum environment, and I/O.
+- `core/shell` provides MoonBit lexer, parser, expansion, built-ins,
   redirections, pipelines, and individual process requests for `sh` and `make`.
-- `internal/stream` provides byte chunks and a line scanner that preserves the
+- `core/stream` provides byte chunks and a line scanner that preserves the
   final-line termination state.
-- `internal/testkit` provides the native direct-process test harness.
+- `tests/testkit` provides the native direct-process test harness and remains
+  outside the published `cli/core` module.
+
+The independently published command modules import the `cli/core` module with
+packages such as `cli/core/cli`. During local development the workspace binds
+that coordinate to `./core`; after publication it resolves from Mooncakes.
 
 The `jq` and `jqlog` packages use the root dependency
 `bobzhang/moonjq@0.1.1`. The dependency namespace is independent of this
@@ -88,8 +96,9 @@ tr true uniq wc xxd
 ```
 
 The source snapshot and original package versions are recorded in
-`docs/provenance.md`. Source module names are provenance only; destination
-coordinates are always `mooxCLI/cmd/<command>`.
+`docs/provenance.md`. In the historical release, destination coordinates were
+`mooxCLI/cmd/<command>`; the current destination coordinates are
+`cli/<command>`.
 
 ### Batch 1: read-only commands
 
@@ -191,21 +200,23 @@ These commands use the active MoonBit toolchain and account configuration.
 Acceptance: `docs/provenance.md` identifies the snapshot and destination
 module.
 
-### Stage 1: establish the root module (complete)
+### Stage 1: establish the root module (complete, historical)
 
 - Set `name = "mooxCLI/cmd"`, `preferred_target = "wasm"`, and one module
   version in `moon.mod`.
 - Consolidate only dependencies required by the command packages.
-- Remove command-level module files and do not add a `moon.work` file.
+- The current split supersedes this stage by adding command-level modules and a
+  workspace manifest.
 
 Acceptance: all package dependencies resolve from the root module.
 
-### Stage 2: migrate the upstream commands (complete)
+### Stage 2: migrate the upstream commands (complete, historical)
 
 - Move each upstream `cmd/<name>/` directory to root `<name>/`.
 - Keep the implementation, README, executable package metadata, and generated
   interface.
-- Rewrite public examples to `mooxCLI/cmd/<name>`.
+- Historical examples used `mooxCLI/cmd/<name>`; current examples use
+  `cli/<name>`.
 
 Acceptance: all 20 root packages build and retain their documented behavior.
 
@@ -238,9 +249,8 @@ versioned release decision and are not published by this documentation change.
 
 ## 6. Release and maintenance rules
 
-1. One module version covers all command packages in a release.
-2. A command fix increments the module patch version; a compatible command or
-   feature addition increments the minor version.
+1. `cli/core` is published before command modules that depend on it.
+2. Each `cli/<command>` module has its own version and release notes.
 3. Release notes list the commands and policy behavior changed.
 4. Generated interfaces, formatted sources, compatibility cases, and policy
    tests are reviewed together with implementation changes.
@@ -253,13 +263,13 @@ versioned release decision and are not published by this documentation change.
 
 The current source tree is complete when:
 
-- 48 executable packages are present directly under the root module.
+- 48 executable modules are present as `cli/<command>` workspace members.
 - The 20 upstream commands, 12 Batch 1 commands, and eight Batch 2 commands
   have native+Wasm coverage and the intended policy admission.
 - The eight Batch 3 commands have restricted Cram and policy coverage.
 - `chown` and `kill` are absent from package, policy, test, and release lists.
-- `jq` and `jqlog` continue to use `bobzhang/moonjq` without changing the
-  public `mooxCLI/cmd/<command>` coordinates.
+- `jq` and `jqlog` continue to use `bobzhang/moonjq` at their `cli/<command>`
+  module coordinates.
 - `moon check`, `moon info`, `moon fmt`, `moon test`, the compatibility runner,
   GNU differential subset, stress cases, and policy runner pass.
 - README, this plan, and provenance describe only the command module's scope.

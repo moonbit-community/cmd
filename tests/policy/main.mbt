@@ -16,9 +16,25 @@ async fn moon_run(
     .join(Path(policy))
     .to_string()
   let moon_args = [
-    "run", "--target", "wasm", "--wasm-policy", policy_path, command, "--",
+    "-C",
+    root_path(root, "commands/" + command),
+    "run",
+    "--target",
+    "wasm",
+    "--wasm-policy",
+    policy_path,
+    ".",
+    "--",
   ]
-  moon_args.append(args)
+  let resolved_args : Array[String] = []
+  for arg in args {
+    if arg.has_prefix("tests/") {
+      resolved_args.push(root_path(root, arg))
+    } else {
+      resolved_args.push(arg)
+    }
+  }
+  moon_args.append(resolved_args)
   @testkit.run("moon", moon_args, stdin?, cwd=root)
 }
 
@@ -63,7 +79,10 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
     } else {
       default_count += 1
     }
-    let manifest_path = root_path(root, contract.name + "/moon.pkg")
+    let manifest_path = root_path(
+      root,
+      "commands/" + contract.name + "/moon.pkg",
+    )
     let manifest = @fs.read_file(manifest_path).text() catch {
       err => {
         failures.push("\{contract.name}: cannot read moon.pkg: \{err}")
@@ -78,13 +97,13 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
     if contract.tier != Restricted {
       record(
         !manifest.contains("moonbitlang/async/process") &&
-        !manifest.contains("mooxCLI/cmd/internal/process") &&
-        !manifest.contains("mooxCLI/cmd/internal/shell"),
+        !manifest.contains("cli/core/process") &&
+        !manifest.contains("cli/core/shell"),
         "\{contract.name}: non-restricted command acquired process authority",
         failures,
       )
     } else {
-      let command_dir = root_path(root, contract.name)
+      let command_dir = root_path(root, "commands/" + contract.name)
       let entries = @fs.readdir(
         command_dir,
         include_hidden=true,
@@ -300,7 +319,7 @@ async fn check_runtime_policy(root : String, failures : Array[String]) -> Unit {
     root,
     "find",
     ["tests/policy", "-maxdepth", "0"],
-    b"tests/policy\n",
+    @utf8.encode(root_path(root, "tests/policy") + "\n"),
     failures,
   )
   expect_allowed_contains(

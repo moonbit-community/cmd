@@ -67,9 +67,11 @@ Restricted authority, 8 commands:
 chmod curl env make sh timeout wget xargs
 ```
 
-Every package retains the public coordinate `mooxCLI/cmd/<command>` and
-declares native and Wasm targets. The catalog and parser are private packages;
-this work does not add a public MoonBit library API.
+Every command is an independently published module at `cli/<command>` and
+declares native and Wasm targets. Shared implementation packages are published
+under `cli/core`, including the catalog and parser used by the command modules.
+This work does not add a separate public MoonBit library API beyond the runtime
+packages required by the commands.
 
 ## Platform behavior
 

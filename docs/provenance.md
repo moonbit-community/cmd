@@ -1,8 +1,9 @@
 # Migration Provenance
 
 This record identifies the upstream command snapshot and the package scope of
-`mooxCLI/cmd`. It does not define runtime policy or external integration
-behavior.
+the legacy `mooxCLI/cmd` release. It does not define runtime policy or external
+integration behavior. The current independently published modules are
+documented in `docs/publishing.md`.
 
 ## Source snapshot
 
@@ -25,8 +26,9 @@ change.
 ## Upstream command scope
 
 The fixed snapshot contains 20 command directories. Source package names and
-versions are provenance only; every destination package belongs to
-`mooxCLI/cmd`.
+versions are provenance only. In the historical release every destination
+package belonged to `mooxCLI/cmd`; the current independently published
+destinations are `cli/<command>` modules.
 
 | Command | Source module | Destination package | Source version | Target |
 |---|---|---|---:|---|
@@ -99,9 +101,10 @@ this repository records only the executable command boundary.
 
 ## Destination rules
 
-- One root `moon.mod` names the module `mooxCLI/cmd`.
-- Commands live directly under root directories such as `cat/` and `grep/`.
-- Command-level `moon.mod` files and compatibility coordinates are not kept.
+- The historical root `moon.mod` named the frozen legacy module `mooxCLI/cmd`.
+- Each command directory has a `moon.mod` naming `cli/<command>`.
+- Shared implementation packages live in `core/` and are published as
+  `cli/core`.
 - Generated `pkg.generated.mbti` files are produced by `moon info`.
 - The `cat` implementation is imported without a migration-specific repair
   gate.

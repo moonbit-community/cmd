@@ -1,0 +1,28 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "mooxCLI/cmd-tests/testkit"
+
+// Values
+pub fn bytes_equal(Bytes, Bytes) -> Bool
+
+pub fn contains_bytes(Bytes, String) -> Bool
+
+pub fn executable_path(String, String) -> String
+
+pub fn normalize_diagnostic(String, temporary_root? : String) -> String
+
+pub fn normalize_lf(String) -> String
+
+pub async fn run(String, Array[String], stdin? : Bytes, cwd? : String, extra_env? : Map[String, String], inherit_env? : Bool) -> RunResult
+
+// Errors
+
+// Types and methods
+pub(all) struct RunResult {
+  status : Int
+  stdout : Bytes
+  stderr : Bytes
+}
+
+// Type aliases
+
+// Traits

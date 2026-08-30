@@ -1,0 +1,33 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/core/platform"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn accepts_separator(Char) -> Bool
+
+pub fn current() -> Platform
+
+pub fn is_windows() -> Bool
+
+pub fn native_separator() -> Char
+
+pub fn normalize_input_separators(String) -> String
+
+pub fn permission_mutation_supported() -> Bool
+
+pub fn symbolic_links_supported() -> Bool
+
+// Errors
+
+// Types and methods
+pub(all) enum Platform {
+  Windows
+  Posix
+} derive(Eq, @debug.Debug)
+
+// Type aliases
+
+// Traits

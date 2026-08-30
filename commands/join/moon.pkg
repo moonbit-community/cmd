@@ -1,0 +1,16 @@
+import {
+  "cli/core/cli",
+  "cli/core/stream",
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/io",
+  "moonbitlang/async/stdio",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/env",
+  "moonbitlang/core/string",
+  "moonbitlang/x/sys",
+}
+
+supported_targets = "native+wasm"
+
+pkgtype(kind: "executable")

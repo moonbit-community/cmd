@@ -1,0 +1,34 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/core/fsops"
+
+import {
+  "moonbitlang/async/fs",
+}
+
+// Values
+pub fn basename(String) -> String
+
+pub async fn copy_path(String, String, Bool, Bool) -> Bool
+
+pub fn dirname(String) -> String
+
+pub async fn ensure_not_nested_destination(String, String) -> Unit
+
+pub fn join(String, String) -> String
+
+pub async fn kind_if_exists(String) -> @fs.FileKind?
+
+pub fn protects_working_directory(String) -> Bool
+
+pub async fn remove_path(String, Bool) -> Unit
+
+// Errors
+pub(all) suberror FsOpError {
+  FsOpError(String)
+}
+
+// Types and methods
+
+// Type aliases
+
+// Traits

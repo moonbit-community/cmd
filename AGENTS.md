@@ -12,8 +12,8 @@ You can browse and install extra skills here:
   blackbox test files (ending in `_test.mbt`) and whitebox test files (ending in
   `_wbtest.mbt`).
 
-- In the toplevel directory, there is a `moon.mod` file listing module
-  metadata.
+- The toplevel directory contains `moon.work`; publishable modules have their
+  own `moon.mod`, including `core/moon.mod` and each `commands/<cmd>/moon.mod`.
 
 ## Coding convention
 
@@ -29,8 +29,9 @@ You can browse and install extra skills here:
 ### Moon tooling and publishing
 
 Use normal `moon` commands with the active MoonBit account. Never commit
-credentials or toolchain cache contents to this repository. The published module is
-`mooxCLI/cmd`; verify the package and version before any release operation.
+credentials or toolchain cache contents to this repository. The shared
+published module is `cli/core`, and command modules are `cli/<cmd>`; verify the
+module and version before any release operation.
 
 - `moon fmt` is used to format
   your code properly.
