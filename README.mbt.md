@@ -1,137 +1,98 @@
 # cmd
 
-`cmd` is a MoonBit implementation and integration repository for command-line
-utilities. It collects executable CLI packages, the shared runtime they use,
-and the compatibility and policy tests that keep their behavior consistent.
+`cmd` is an integrated collection of command-line utilities implemented in
+MoonBit. It provides executable command modules, a shared runtime, and a test
+system for compatibility and policy-controlled execution.
 
-The repository is organized as a Moon workspace rather than one monolithic
-package:
-
-- `cli/core` contains the shared command runtime.
-- `cli/<command>` contains one independently published executable per command.
-- `tests` contains repository-only compatibility, policy, and process-test
-  infrastructure.
-
-The intended consumer experience is direct and composable:
+Each command is available as an independent module under `cli/<command>`:
 
 ```text
 moonx cli/base64
-moonx cli/grep --fixed-strings pattern input.txt
+moonx cli/grep pattern input.txt
 moonx cli/jq -r '.name'
 ```
 
-The command modules target MoonBit's policy-controlled execution environment.
-They implement their command behavior in MoonBit and use explicit runtime APIs
-for filesystem, process, network, stream, and shell operations. They do not
-delegate the command implementation to a same-named host utility.
+## Commands
 
-## Command set
+The repository currently contains 48 executable commands.
 
-The current source tree contains 48 executable command modules.
-
-### Core command set
-
-These commands originate from the upstream `moonbit-jq/cmd` snapshot:
+### Text and data
 
 ```text
-base64 cat comm cut false head join jq jqlog nl paste printf sleep sort tail
-tr true uniq wc xxd
+base64 cat cmp comm cut grep head join jq jqlog nl paste printf sha256sum
+sort tail tr uniq wc xxd
 ```
 
-### Read-only commands
+### Files and paths
 
 ```text
-basename cmp dirname echo find grep ls printenv pwd seq sha256sum test
+basename cp dirname find ln ls mkdir mv pwd rm rmdir tee touch
 ```
 
-### Filesystem commands
+### Environment and execution
 
 ```text
-cp ln mkdir mv rm rmdir tee touch
+chmod echo env false make printenv seq sh sleep test timeout true wget curl
+xargs
 ```
 
-### Restricted commands
+Commands implement their behavior in MoonBit and use explicit runtime APIs for
+filesystem, streams, processes, networking, and platform capabilities. They do
+not delegate their implementation to a same-named host command.
 
-These commands require explicit policy admission because they can start
-processes, access the network, or mutate permissions:
+## Controlled execution
 
-```text
-chmod curl env make sh timeout wget xargs
-```
+The command set is designed for native and Wasm execution. Under Wasm, commands
+can run with explicit policies that limit filesystem access, mutations,
+processes, network access, and permission changes.
 
-`cli/timeout` is currently held back from publication while its process-group
-compatibility issue is being resolved. The other command modules follow the
-`cli/<command>` publication layout.
+Commands that only read input use the default admission tier. Commands that
+spawn processes, access the network, or change permissions require explicit
+authorization. Denied operations fail with a nonzero status and are tested to
+leave no unintended side effects.
 
-`chown` and `kill` are intentionally outside the current scope because their
-required owner-mutation and arbitrary-process-signalling primitives are not
-part of the supported runtime contract.
+The repository intentionally does not provide `chown` or `kill`, because the
+required owner-mutation and arbitrary-process-signalling capabilities are not
+part of the current controlled runtime contract.
 
-## Repository layout
+## Structure
 
 ```text
 cmd/
-|-- moon.work                 # workspace manifest
-|-- core/                     # publishable module cli/core
-|   |-- moon.mod
-|   |-- cli/                  # option parsing and command catalog
-|   |-- fsops/                # filesystem helpers
-|   |-- netops/               # HTTP response helpers
-|   |-- platform/             # platform capability boundary
-|   |-- process/              # child-process specifications
-|   |-- shell/                # bounded shell parsing and execution
-|   `-- stream/               # byte and line-stream helpers
-|-- commands/                 # independently published executable modules
-|   |-- base64/
-|   |-- cat/
-|   `-- .../
-|-- tests/                    # repository-only validation module
-|   |-- compat/               # command compatibility runner
-|   |-- policy/               # Wasm policy runner
-|   |-- testkit/              # native process test harness
-|   `-- cram/                 # compatibility examples and provenance
-|-- docs/                     # compatibility and release documentation
-`-- README.mbt.md
+|-- core/                 # shared command runtime
+|   |-- cli/              # option parsing and command catalog
+|   |-- fsops/            # filesystem helpers
+|   |-- netops/           # network helpers
+|   |-- platform/         # platform capability boundary
+|   |-- process/          # child-process specifications
+|   |-- shell/            # shell parsing and execution
+|   `-- stream/           # byte and line-stream helpers
+|-- commands/             # one executable module per command
+|-- tests/
+|   |-- compat/           # command compatibility runner
+|   |-- policy/           # Wasm policy runner
+|   |-- testkit/          # process test utilities
+|   `-- cram/             # compatibility examples
+|-- docs/                 # behavior and provenance documentation
+`-- moon.work             # MoonBit workspace manifest
 ```
 
-Every directory under `commands/` is a module with its own `moon.mod` and an
-executable `moon.pkg`. Its filesystem location is an implementation detail;
-its public module coordinate is always `cli/<command>`.
+The `core` module provides the shared packages used by command implementations.
+The `tests` module remains repository-internal and contains no user-facing
+command packages.
 
-`core/` is the only shared published implementation module. The command
-manifests depend on `cli/core@0.1.0`; while developing in this repository, the
-workspace resolves that coordinate to the local `./core` member. `tests/` has a
-separate module manifest so its test harness can import the same public core
-packages, but it is never published.
+## Test system
 
-## Runtime and policy model
+The project uses four complementary test layers:
 
-The shared runtime is split into focused packages:
+- MoonBit unit and white-box tests for parsers and shared runtime packages.
+- A native compatibility runner that executes every command and checks stdout,
+  stderr, and exit status.
+- A Wasm policy runner that verifies allowed and denied resource access.
+- GNU differential and stress modes for selected compatible behavior and large
+  inputs.
 
-- `cli/core/cli` provides the common option grammar, command catalog, and
-  command-facing types.
-- `cli/core/fsops` provides bounded path inspection, traversal, copying, and
-  removal helpers.
-- `cli/core/netops` provides streaming HTTP response handling.
-- `cli/core/platform` records portable capability boundaries.
-- `cli/core/process` describes child working directories, environment, and I/O.
-- `cli/core/shell` provides the bounded lexer, parser, expansion, built-ins,
-  redirections, and pipelines used by `sh` and `make`.
-- `cli/core/stream` provides byte chunks and line scanning that preserves final
-  line termination state.
-
-Commands that only need input and read access remain in the default admission
-tier. Process, network, and permission-mutation commands are explicitly
-allow-listed in the restricted tier. Denied operations fail closed with a
-nonzero status and do not silently fall back to a host command.
-
-The implementation supports native and Wasm targets where declared by each
-package. The `jq` and `jqlog` modules additionally depend on
-`bobzhang/moonjq@0.1.1` for their jq parser and AST functionality.
-
-## Development
-
-Install MoonBit, then run the following commands from the repository root:
+Run the complete local validation from the repository root:
 
 ```bash
 moon update
@@ -144,52 +105,9 @@ moon info
 moon fmt
 ```
 
-The compatibility runner executes the 48 command implementations against the
-repository's behavior cases. The policy runner executes Wasm commands with
-explicit resource policies and checks both permitted and denied operations.
-Generated `pkg.generated.mbti` interfaces are committed and refreshed by
-`moon info`.
-
-When adding or changing a command, update its implementation, `moon.pkg`,
-README, generated interface, catalog admission, compatibility cases, and policy
-coverage as applicable. Keep command behavior, error output, exit status, and
-target declarations under test.
-
-## Publishing
-
-The shared runtime must be published before command modules that depend on it:
-
-```bash
-export MOON_HOME="$HOME/.moon-accounts/cli"
-moon whoami
-moon update
-moon -C core publish
-moon -C commands/base64 publish
-moon -C commands/cat publish
-```
-
-Repeat the last command for the command modules to release. Each command is
-published independently as `cli/<command>`; the repository root and `tests/`
-module are not publishable packages.
-
-After `cli/core` has been published, remove `"./core"` from `moon.work` when
-testing only against the registry version. Keep the command manifests' public
-dependency coordinate unchanged:
-
-```text
-cli/core@0.1.0
-```
-
-For account switching, set `MOON_HOME` on each Moon command or export it for
-the current shell. Moon credentials are independent of GitHub credentials.
-See [docs/publishing.md](docs/publishing.md) for the complete release and
-account workflow.
-
-## Project status
-
-The previously published `mooxCLI/cmd@0.1.3` package is the historical
-whole-tree release. The current checkout is the split workspace described
-above; it should not be republished as a new `mooxCLI/cmd` package.
+See [Compatibility](docs/compatibility.md) for the supported command dialect
+and platform behavior, and [Provenance](docs/provenance.md) for the source of
+the imported command implementations.
 
 ## License
 

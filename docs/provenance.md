@@ -1,9 +1,8 @@
 # Migration Provenance
 
-This record identifies the upstream command snapshot and the package scope of
-the legacy `mooxCLI/cmd` release. It does not define runtime policy or external
-integration behavior. The current independently published modules are
-documented in `docs/publishing.md`.
+This record identifies the upstream command snapshot and the command scope of
+the `cmd` repository. It does not define runtime policy or external integration
+behavior.
 
 ## Source snapshot
 
@@ -17,18 +16,15 @@ documented in `docs/publishing.md`.
 | Destination repository | <https://github.com/moonbit-community/cmd> |
 | Destination module | `mooxCLI/cmd` |
 | Initial destination version | `0.1.0` |
-| Initial release status | `mooxCLI/cmd@0.1.0` published |
 
-The snapshot is pinned so that a partial migration cannot change underneath
-the implementation. A later upstream sync must be a separate reviewable
-change.
+The snapshot is pinned so that the implementation does not change underneath
+the repository. A later upstream sync must be a separate reviewable change.
 
 ## Upstream command scope
 
 The fixed snapshot contains 20 command directories. Source package names and
-versions are provenance only. In the historical release every destination
-package belonged to `mooxCLI/cmd`; the current independently published
-destinations are `cli/<command>` modules.
+versions are provenance only. The implementations are integrated into the
+current `cli/<command>` command modules.
 
 | Command | Source module | Destination package | Source version | Target |
 |---|---|---|---:|---|
@@ -99,12 +95,12 @@ The `jq` and `jqlog` entry points depend on
 `bobzhang/moonjq@0.1.1`. MoonJQ parser and AST tests remain in that dependency;
 this repository records only the executable command boundary.
 
-## Destination rules
+## Current structure
 
-- The historical root `moon.mod` named the frozen legacy module `mooxCLI/cmd`.
-- Each command directory has a `moon.mod` naming `cli/<command>`.
-- Shared implementation packages live in `core/` and are published as
-  `cli/core`.
+- Command implementations live under `commands/`, one executable module per
+  command.
+- Shared runtime packages live under `core/`.
+- Compatibility, policy, and process tests live under `tests/`.
 - Generated `pkg.generated.mbti` files are produced by `moon info`.
 - The `cat` implementation is imported without a migration-specific repair
   gate.

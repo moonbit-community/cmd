@@ -1,13 +1,13 @@
 # Compatibility Contract
 
-This document defines the supported `mooxCLI/cmd` command dialect. It is a
-contract for the repository's tests and release gate, not a claim of complete
-GNU Coreutils compatibility.
+This document defines the supported command dialect for `cmd`. It is a
+contract for the repository's tests, not a claim of complete GNU Coreutils
+compatibility.
 
 ## Dialect
 
 - The baseline is the POSIX command model plus the options recorded in the
-  private MoonBit command catalog.
+  MoonBit command catalog.
 - GNU extensions are supported only when listed by a command's README and
   catalog entry.
 - Text classification and ordering use C-locale ASCII rules. Commands that
@@ -67,11 +67,10 @@ Restricted authority, 8 commands:
 chmod curl env make sh timeout wget xargs
 ```
 
-Every command is an independently published module at `cli/<command>` and
-declares native and Wasm targets. Shared implementation packages are published
-under `cli/core`, including the catalog and parser used by the command modules.
-This work does not add a separate public MoonBit library API beyond the runtime
-packages required by the commands.
+Each command is implemented as a separate executable module under
+`cli/<command>` and declares native and Wasm targets. Shared implementation
+packages live under `cli/core`, including the catalog and parser used by the
+command modules.
 
 ## Platform behavior
 
