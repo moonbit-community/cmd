@@ -65,3 +65,34 @@ test "parse rejects missing, unknown, and duplicate options" {
     _ => fail("expected duplicate-option error")
   }
 }
+
+///|
+test "stdin wait message identifies the command and EOF action" {
+  assert_eq(
+    stdin_wait_message("cat"),
+    "cat: reading standard input; send EOF to finish\n",
+  )
+}
+
+///|
+test "idle timeout accepts fractional seconds" {
+  assert_eq(parse_idle_timeout("0.001"), 1)
+  assert_eq(parse_idle_timeout("1.5"), 1500)
+  assert_eq(parse_idle_timeout("30"), 30000)
+}
+
+///|
+test "idle timeout rejects non-positive and invalid values" {
+  fn assert_rejected(value : String) raise {
+    try parse_idle_timeout(value) catch {
+      CliError(kind=InvalidValue, ..) => ()
+      _ => fail("expected invalid-value error")
+    } noraise {
+      _ => fail("expected timeout value to be rejected")
+    }
+  }
+  assert_rejected("0")
+  assert_rejected("-1")
+  assert_rejected("not-a-number")
+  assert_rejected("1e100")
+}

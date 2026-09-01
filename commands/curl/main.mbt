@@ -6,6 +6,7 @@ async fn main {
     @cli.flag("show-error", short='S'),
     @cli.flag("fail", short='f'),
     @cli.option("output", short='o'),
+    @cli.option("idle-timeout"),
     @cli.flag("help"),
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
@@ -15,13 +16,23 @@ async fn main {
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write("Usage: curl [-sSf] [-o FILE] URL\n")
+    @stdio.stdout.write(
+      "Usage: curl [-sSf] [-o FILE] [--idle-timeout SECONDS] URL\n",
+    )
     return
   }
   let output_path = parsed.last_value("output")
   let fail_on_http_error = parsed.contains("fail")
-  let silent = parsed.last_occurrence(["silent", "show-error"]) ==
-    Some("silent")
+  let silent = parsed.contains("silent")
+  let show_error = !silent || parsed.contains("show-error")
+  let timeout_text = parsed.last_value("idle-timeout").unwrap_or("30")
+  let idle_timeout_ms = @cli.parse_idle_timeout(timeout_text) catch {
+    @cli.CliError(message~, ..) => {
+      @stdio.stderr.write("curl: \{message}\n")
+      @sys.exit(2)
+      return
+    }
+  }
   let urls = parsed.operands
   let mut failed = false
   let target = match urls {
@@ -41,11 +52,27 @@ async fn main {
     Some("-") => None
     other => other
   }
-  @netops.fetch(target, destination, fail_on_http_error) catch {
+  @netops.fetch_with_options(
+    target,
+    destination,
+    @netops.fetch_options_with_feedback(
+      fail_on_http_error,
+      idle_timeout_ms,
+      if silent {
+        if show_error {
+          @netops.FeedbackMode::ErrorsOnly
+        } else {
+          @netops.FeedbackMode::Quiet
+        }
+      } else {
+        @netops.FeedbackMode::Progress
+      },
+      "curl",
+    ),
+  ) catch {
+    @netops.NetOpError(_) => failed = true
     err => {
-      if !silent {
-        @stdio.stderr.write("curl: \{err}\n")
-      }
+      ignore(err)
       failed = true
     }
   }

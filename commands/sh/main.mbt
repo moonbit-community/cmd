@@ -34,6 +34,9 @@ async fn main {
       index += 1
     }
   }
+  if command is None && script_path is None {
+    @cli.warn_stdin_wait("sh")
+  }
   let (script, name, positional) = match command {
     Some(value) => {
       let shell_name = arguments.get(index).unwrap_or("sh")

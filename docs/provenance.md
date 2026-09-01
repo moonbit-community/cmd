@@ -14,7 +14,7 @@ behavior.
 | Commit date | 2026-08-25 |
 | Commit subject | `Add bobzhang/true, false, cat, and sleep (#26)` |
 | Destination repository | <https://github.com/moonbit-community/cmd> |
-| Destination module | `mooxCLI/cmd` |
+| Destination module namespace | `cli` |
 | Initial destination version | `0.1.0` |
 
 The snapshot is pinned so that the implementation does not change underneath
@@ -28,26 +28,26 @@ current `cli/<command>` command modules.
 
 | Command | Source module | Destination package | Source version | Target |
 |---|---|---|---:|---|
-| `base64` | `bobzhang/base64` | `mooxCLI/cmd/base64` | 0.1.0 | native + wasm |
-| `cat` | `bobzhang/cat` | `mooxCLI/cmd/cat` | 0.1.0 | native + wasm |
-| `comm` | `bobzhang/comm` | `mooxCLI/cmd/comm` | 0.1.0 | native + wasm |
-| `cut` | `bobzhang/cut` | `mooxCLI/cmd/cut` | 0.1.0 | native + wasm |
-| `false` | `bobzhang/false` | `mooxCLI/cmd/false` | 0.1.0 | native + wasm |
-| `head` | `bobzhang/head` | `mooxCLI/cmd/head` | 0.1.1 | native + wasm |
-| `join` | `bobzhang/join` | `mooxCLI/cmd/join` | 0.1.0 | native + wasm |
-| `jq` | `bobzhang/jq` | `mooxCLI/cmd/jq` | 0.1.1 | native + wasm |
-| `jqlog` | `bobzhang/jqlog` | `mooxCLI/cmd/jqlog` | 0.1.0 | native + wasm |
-| `nl` | `bobzhang/nl` | `mooxCLI/cmd/nl` | 0.1.0 | native + wasm |
-| `paste` | `bobzhang/paste` | `mooxCLI/cmd/paste` | 0.1.0 | native + wasm |
-| `printf` | `bobzhang/printf` | `mooxCLI/cmd/printf` | 0.1.0 | native + wasm |
-| `sleep` | `bobzhang/sleep` | `mooxCLI/cmd/sleep` | 0.1.0 | native + wasm |
-| `sort` | `bobzhang/sort` | `mooxCLI/cmd/sort` | 0.1.0 | native + wasm |
-| `tail` | `bobzhang/tail` | `mooxCLI/cmd/tail` | 0.1.1 | native + wasm |
-| `tr` | `bobzhang/tr` | `mooxCLI/cmd/tr` | 0.1.0 | native + wasm |
-| `true` | `bobzhang/true` | `mooxCLI/cmd/true` | 0.1.0 | native + wasm |
-| `uniq` | `bobzhang/uniq` | `mooxCLI/cmd/uniq` | 0.1.0 | native + wasm |
-| `wc` | `bobzhang/wc` | `mooxCLI/cmd/wc` | 0.1.0 | native + wasm |
-| `xxd` | `bobzhang/xxd` | `mooxCLI/cmd/xxd` | 0.1.0 | native + wasm |
+| `base64` | `bobzhang/base64` | `cli/base64` | 0.1.0 | native + wasm |
+| `cat` | `bobzhang/cat` | `cli/cat` | 0.1.0 | native + wasm |
+| `comm` | `bobzhang/comm` | `cli/comm` | 0.1.0 | native + wasm |
+| `cut` | `bobzhang/cut` | `cli/cut` | 0.1.0 | native + wasm |
+| `false` | `bobzhang/false` | `cli/false` | 0.1.0 | native + wasm |
+| `head` | `bobzhang/head` | `cli/head` | 0.1.1 | native + wasm |
+| `join` | `bobzhang/join` | `cli/join` | 0.1.0 | native + wasm |
+| `jq` | `bobzhang/jq` | `cli/jq` | 0.1.1 | native + wasm |
+| `jqlog` | `bobzhang/jqlog` | `cli/jqlog` | 0.1.0 | native + wasm |
+| `nl` | `bobzhang/nl` | `cli/nl` | 0.1.0 | native + wasm |
+| `paste` | `bobzhang/paste` | `cli/paste` | 0.1.0 | native + wasm |
+| `printf` | `bobzhang/printf` | `cli/printf` | 0.1.0 | native + wasm |
+| `sleep` | `bobzhang/sleep` | `cli/sleep` | 0.1.0 | native + wasm |
+| `sort` | `bobzhang/sort` | `cli/sort` | 0.1.0 | native + wasm |
+| `tail` | `bobzhang/tail` | `cli/tail` | 0.1.1 | native + wasm |
+| `tr` | `bobzhang/tr` | `cli/tr` | 0.1.0 | native + wasm |
+| `true` | `bobzhang/true` | `cli/true` | 0.1.0 | native + wasm |
+| `uniq` | `bobzhang/uniq` | `cli/uniq` | 0.1.0 | native + wasm |
+| `wc` | `bobzhang/wc` | `cli/wc` | 0.1.0 | native + wasm |
+| `xxd` | `bobzhang/xxd` | `cli/xxd` | 0.1.0 | native + wasm |
 
 ## Local expansion scope
 

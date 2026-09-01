@@ -1,8 +1,18 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "cli/core/netops"
 
+import {
+  "moonbitlang/core/debug",
+}
+
 // Values
 pub async fn fetch(String, String?, Bool) -> Unit
+
+pub fn fetch_options(Bool, Int, Bool, String) -> FetchOptions
+
+pub fn fetch_options_with_feedback(Bool, Int, FeedbackMode, String, diagnostic_path? : String?) -> FetchOptions
+
+pub async fn fetch_with_options(String, String?, FetchOptions) -> Unit
 
 // Errors
 pub(all) suberror NetOpError {
@@ -10,6 +20,20 @@ pub(all) suberror NetOpError {
 }
 
 // Types and methods
+pub(all) enum FeedbackMode {
+  Quiet
+  ErrorsOnly
+  Progress
+  Summary
+} derive(Eq, @debug.Debug)
+
+pub(all) struct FetchOptions {
+  fail_on_http_error : Bool
+  idle_timeout_ms : Int
+  feedback : FeedbackMode
+  label : String
+  diagnostic_path : String?
+}
 
 // Type aliases
 

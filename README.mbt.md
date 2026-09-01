@@ -4,7 +4,8 @@
 MoonBit. It provides executable command modules, a shared runtime, and a test
 system for compatibility and policy-controlled execution.
 
-Each command is available as an independent module under `cli/<command>`:
+Releasable commands are available as independent modules under
+`cli/<command>`:
 
 ```text
 moonx cli/base64
@@ -14,7 +15,10 @@ moonx cli/jq -r '.name'
 
 ## Commands
 
-The repository currently contains 48 executable commands.
+The repository contains 48 executable commands for local builds. The current
+Mooncakes registry exposes 47 of them through MoonX. `timeout` remains
+local-only because portable process-group cancellation is not available, so
+`moonx cli/timeout` is intentionally unavailable.
 
 ### Text and data
 

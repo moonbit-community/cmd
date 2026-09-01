@@ -5,6 +5,14 @@ builds the workspace first and puts the built CLI binaries in `PATH`, so the
 tests call each `<tool>.exe` directly. Commands whose output has no trailing
 newline append `echo` so every expected block ends with a newline.
 
+## Redirected stdin stays non-interactive
+
+Piped input must never emit the terminal-only waiting prompt.
+
+```mooncram
+$ for tool in base64 cat head nl paste sha256sum sh sort tail tee uniq wc xargs xxd; do printf '' | "$tool.exe" >/dev/null 2>"$tool.err" || exit 1; test ! -s "$tool.err" || { cat "$tool.err"; exit 1; }; done
+```
+
 ## wc
 
 ```mooncram

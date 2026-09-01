@@ -72,6 +72,11 @@ Each command is implemented as a separate executable module under
 packages live under `cli/core`, including the catalog and parser used by the
 command modules.
 
+Local release builds contain all 48 commands. The Mooncakes registry currently
+contains 47 command modules. `timeout` is the only local-only command: its
+`ProcessGroupCancellation` compatibility gate prevents publication, and
+`moonx cli/timeout` is therefore not a supported invocation.
+
 ## Platform behavior
 
 Input paths accept the native separator. Windows also accepts `/` at the
@@ -147,9 +152,20 @@ to the harness. The remaining structural limits are:
 - user-requested counts such as `head -n`, `xxd -l`, or `find -maxdepth` are
   semantic limits rather than resource guards.
 
+Commands that implicitly read standard input print an English EOF hint to
+stderr when stdin and stderr are interactive terminals. Explicit `-` operands,
+pipelines, and file redirections remain silent and preserve ordinary Unix
+blocking semantics.
+
+`curl` and `wget` apply a 30-second inactivity timeout to request setup,
+response headers, and each response-body read. `--idle-timeout SECONDS`
+accepts a positive fractional value. Feedback is quiet, error-only, terminal
+progress, or plain summary according to the command flags. Terminal updates
+are throttled and newline-delimited diagnostics are used for redirected stderr.
+
 ## Validation
 
-`tests/compat` is a native MoonBit executable. It starts all 48 release
+`tests/compat` is a native MoonBit executable. It starts all 48 local release
 binaries directly without a shell, compares byte output, normalizes only
 diagnostic line endings and temporary paths, and checks edge cases at the
 64 KiB chunk boundary. `--gnu-diff` compares the explicitly compatible subset

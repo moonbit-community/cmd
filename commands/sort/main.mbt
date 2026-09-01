@@ -209,6 +209,9 @@ async fn main {
   }
   let files = parsed.operands
   let sources = if files.is_empty() { ["-"] } else { files }
+  if files.is_empty() {
+    @cli.warn_stdin_wait("sort")
+  }
   let lines : Array[String] = []
   for path in sources {
     let text = read_source_text(path) catch {

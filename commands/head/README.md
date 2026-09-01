@@ -13,3 +13,6 @@ control the `==> file <==` headers shown for multiple files.
 Input is streamed in fixed-size chunks and reading stops as soon as the
 quota is met, so heading a huge file (or an endless pipe) is instant and
 uses constant memory. Binary data passes through unchanged.
+
+With no file operand, an interactive terminal receives an EOF waiting prompt;
+piped, redirected, and explicit `-` input remain silent.

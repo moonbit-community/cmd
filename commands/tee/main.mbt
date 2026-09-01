@@ -17,6 +17,7 @@ async fn main {
   }
   let paths = parsed.operands
   let append = parsed.contains("append")
+  @cli.warn_stdin_wait("tee")
   let outputs : Array[@fs.File] = []
   let active : Array[Bool] = []
   let mut failed = false

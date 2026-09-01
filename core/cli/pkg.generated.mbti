@@ -16,9 +16,13 @@ pub fn option(String, short? : Char, repeatable? : Bool, allow_attached? : Bool)
 
 pub fn parse(ArrayView[String], ArrayView[OptionSpec]) -> ParsedArgs raise CliError
 
+pub fn parse_idle_timeout(String) -> Int raise CliError
+
 pub fn process_group_cancellation_available() -> Bool
 
 pub fn releasable(CommandContract) -> Bool
+
+pub async fn warn_stdin_wait(String) -> Unit
 
 // Errors
 pub(all) suberror CliError {

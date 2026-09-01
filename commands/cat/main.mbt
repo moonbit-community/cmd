@@ -26,6 +26,9 @@ async fn main {
   }
   let operands = parsed.operands
   let sources = if operands.is_empty() { ["-"][:] } else { operands }
+  if operands.is_empty() {
+    @cli.warn_stdin_wait("cat")
+  }
   let mut failed = false
   for path in sources {
     try {

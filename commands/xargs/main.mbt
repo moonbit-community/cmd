@@ -164,6 +164,7 @@ async fn main {
     @sys.exit(1)
     return
   }
+  @cli.warn_stdin_wait("xargs")
   let values = try {
     let input = read_input()
     parse_words(input, null_mode)

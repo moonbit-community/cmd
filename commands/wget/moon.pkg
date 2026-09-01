@@ -2,7 +2,6 @@ import {
   "cli/core/cli",
   "cli/core/netops",
   "moonbitlang/async",
-  "moonbitlang/async/fs",
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",
   "moonbitlang/x/path",

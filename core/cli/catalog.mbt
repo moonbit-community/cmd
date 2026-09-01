@@ -125,7 +125,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       "recursive", "verbose",
     ]),
     contract("curl", Restricted, NoInput, ByteStream, [Network, FileWrite], [
-      "fail", "output", "show-error", "silent",
+      "fail", "idle-timeout", "output", "show-error", "silent",
     ]),
     contract("env", Restricted, NoInput, LineStream, [ProcessSpawn], [
       "ignore-environment", "unset",
@@ -156,7 +156,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       exit_codes=[0, 124, 125, 126, 127],
     ),
     contract("wget", Restricted, NoInput, ByteStream, [Network, FileWrite], [
-      "output-document", "output-file", "quiet",
+      "idle-timeout", "output-document", "output-file", "quiet",
     ]),
     contract("xargs", Restricted, OptionalStdin, LineStream, [ProcessSpawn], [
       "max-args", "no-run-if-empty", "null", "verbose",

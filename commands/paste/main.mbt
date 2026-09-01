@@ -98,6 +98,9 @@ async fn main {
   }
   let files = parsed.operands
   let sources = if files.is_empty() { ["-"] } else { files }
+  if files.is_empty() {
+    @cli.warn_stdin_wait("paste")
+  }
   let mut stdin_count = 0
   for path in sources {
     if path == "-" {

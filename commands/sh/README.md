@@ -10,3 +10,7 @@ never delegates a complete script to a host shell.
 
 Unsupported shell language constructs fail closed with status 2 instead of
 being forwarded to another interpreter.
+
+When neither `-c` nor a script file is supplied, an interactive terminal
+receives an EOF waiting prompt before the shell reads its script. Piped,
+redirected, and explicit `-` input remain silent.

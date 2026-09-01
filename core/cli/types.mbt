@@ -125,6 +125,53 @@ pub fn ParsedArgs::last_occurrence(
 }
 
 ///|
+/// Parse a positive timeout expressed in seconds and return milliseconds.
+/// The result is bounded by the integer range accepted by async timers.
+pub fn parse_idle_timeout(value : String) -> Int raise CliError {
+  let seconds = @string.parse_double(value) catch {
+    _ =>
+      raise CliError(
+        kind=InvalidValue,
+        option="idle-timeout",
+        message="timeout must be a positive number of seconds",
+      )
+  }
+  if seconds.is_nan() ||
+    seconds.is_inf() ||
+    seconds <= 0.0 ||
+    seconds > 2147483.647 {
+    raise CliError(
+      kind=InvalidValue,
+      option="idle-timeout",
+      message="timeout must be between 0 and 2147483.647 seconds",
+    )
+  }
+  let milliseconds = (seconds * 1000.0).ceil().to_int()
+  if milliseconds <= 0 {
+    raise CliError(
+      kind=InvalidValue,
+      option="idle-timeout",
+      message="timeout must be greater than zero",
+    )
+  }
+  milliseconds
+}
+
+///|
+/// Announce an implicit stdin read only when both stdin and stderr are
+/// connected to terminals. Redirected and piped input remains silent.
+pub async fn warn_stdin_wait(command : String) -> Unit {
+  if @platform.stdin_is_terminal() && @platform.stderr_is_terminal() {
+    @stdio.stderr.write(stdin_wait_message(command))
+  }
+}
+
+///|
+fn stdin_wait_message(command : String) -> String {
+  "\{command}: reading standard input; send EOF to finish\n"
+}
+
+///|
 pub(all) struct CommandContract {
   name : String
   tier : CompatibilityTier

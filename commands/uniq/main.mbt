@@ -112,6 +112,9 @@ async fn main {
   let ignore_case = parsed.contains("ignore-case")
   let inputs = parsed.operands
   let path = if inputs.is_empty() { "-" } else { inputs[0] }
+  if inputs.is_empty() {
+    @cli.warn_stdin_wait("uniq")
+  }
   try {
     if path == "-" {
       process_reader(

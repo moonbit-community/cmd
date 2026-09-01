@@ -175,12 +175,12 @@ $ wget.exe -- file:///missing-wget-resource >/dev/null 2>&1
 
 ```mooncram
 $ curl.exe --help
-Usage: curl [-sSf] [-o FILE] URL
+Usage: curl [-sSf] [-o FILE] [--idle-timeout SECONDS] URL
 ```
 
 ```mooncram
 $ wget.exe --help
-Usage: wget [-q] [-O FILE] URL
+Usage: wget [-q] [-O FILE] [--idle-timeout SECONDS] URL
 ```
 
 ## chmod

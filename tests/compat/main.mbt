@@ -913,6 +913,184 @@ async fn run_edge_cases(bin_root : String, failures : Array[String]) -> Unit {
 }
 
 ///|
+async fn run_stdin_prompt_cases(
+  bin_root : String,
+  failures : Array[String],
+) -> Unit {
+  for
+    command in [
+      "base64", "cat", "head", "nl", "paste", "sha256sum", "sh", "sort", "tail",
+      "tee", "uniq", "wc", "xargs", "xxd",
+    ] {
+    let result = @testkit.run(
+      @testkit.executable_path(bin_root, command),
+      [],
+      stdin=b"",
+    ) catch {
+      err => {
+        fail("\{command}: redirected stdin case failed: \{err}", failures)
+        continue
+      }
+    }
+    record_result(
+      result.status == 0 && result.stderr.is_empty(),
+      "\{command}: redirected stdin emitted an interactive prompt",
+      failures,
+    )
+  }
+}
+
+///|
+async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
+  @async.with_task_group <| group => {
+    let server = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
+    defer server.close()
+    group.spawn_bg(no_wait=true) <| () => {
+      server.run_forever() <| ((request, _body, connection) => {
+        match request.path {
+          "/fixed" => {
+            connection.send_response(200, "OK", extra_headers={
+              "Content-Length": "5",
+            })
+            connection..write("hello").end_response()
+          }
+          "/chunked" => {
+            connection.send_response(200, "OK")
+            connection..write("slow-").flush()
+            @async.sleep(5)
+            connection..write("stream").end_response()
+          }
+          "/missing" =>
+            connection
+            ..send_response(404, "Not Found", extra_headers={
+              "Content-Length": "0",
+            })
+            .end_response()
+          "/stall" => {
+            @async.sleep(200)
+            connection..send_response(200, "OK").end_response()
+          }
+          _ => connection..send_response(400, "Bad Request").end_response()
+        }
+      })
+    }
+    let base = "http://127.0.0.1:\{server.addr.port()}"
+    let wget = @testkit.executable_path(bin_root, "wget")
+    let curl = @testkit.executable_path(bin_root, "curl")
+    let wget_fixed = @testkit.run(wget, ["-O", "-", base + "/fixed"])
+    record_result(
+      wget_fixed.status == 0 &&
+      @testkit.bytes_equal(wget_fixed.stdout, b"hello") &&
+      @testkit.contains_bytes(wget_fixed.stderr, "starting download") &&
+      @testkit.contains_bytes(wget_fixed.stderr, "downloaded 5 bytes"),
+      "wget: fixed-length response or progress feedback mismatch",
+      failures,
+    )
+    let wget_quiet = @testkit.run(wget, ["-q", "-O", "-", base + "/fixed"])
+    record_result(
+      wget_quiet.status == 0 &&
+      @testkit.bytes_equal(wget_quiet.stdout, b"hello") &&
+      wget_quiet.stderr.is_empty(),
+      "wget: -q did not suppress progress",
+      failures,
+    )
+    let wget_missing = @testkit.run(wget, ["-O", "-", base + "/missing"])
+    record_result(
+      wget_missing.status == 1 &&
+      wget_missing.stdout.is_empty() &&
+      @testkit.contains_bytes(wget_missing.stderr, "HTTP status 404 Not Found"),
+      "wget: HTTP error behavior mismatch",
+      failures,
+    )
+    let wget_quiet_missing = @testkit.run(wget, [
+      "-q",
+      "-O",
+      "-",
+      base + "/missing",
+    ])
+    record_result(
+      wget_quiet_missing.status == 1 &&
+      wget_quiet_missing.stdout.is_empty() &&
+      @testkit.contains_bytes(
+        wget_quiet_missing.stderr,
+        "HTTP status 404 Not Found",
+      ),
+      "wget: -q hid an HTTP error",
+      failures,
+    )
+    let curl_chunked = @testkit.run(curl, [base + "/chunked"])
+    record_result(
+      curl_chunked.status == 0 &&
+      @testkit.bytes_equal(curl_chunked.stdout, b"slow-stream") &&
+      @testkit.contains_bytes(curl_chunked.stderr, "downloaded 11 bytes"),
+      "curl: unknown-length response or progress feedback mismatch",
+      failures,
+    )
+    let curl_silent = @testkit.run(curl, ["-s", "-f", base + "/missing"])
+    record_result(
+      curl_silent.status == 1 && curl_silent.stderr.is_empty(),
+      "curl: -s did not suppress errors",
+      failures,
+    )
+    let curl_show_error = @testkit.run(curl, ["-sS", "-f", base + "/missing"])
+    record_result(
+      curl_show_error.status == 1 &&
+      @testkit.contains_bytes(
+        curl_show_error.stderr,
+        "HTTP status 404 Not Found",
+      ),
+      "curl: -sS did not restore the HTTP error",
+      failures,
+    )
+    let output_root = @fs.tmpdir(prefix="mooncmd-http")
+    defer (@fs.rmdir(output_root, recursive=true) catch { _ => () })
+    let output = @path.Path(output_root).join(Path("response")).to_string()
+    let wget_log = @path.Path(output_root).join(Path("wget.log")).to_string()
+    let wget_logged = @testkit.run(wget, [
+      "-o",
+      wget_log,
+      "-O",
+      "-",
+      base + "/fixed",
+    ])
+    record_result(
+      wget_logged.status == 0 &&
+      @testkit.bytes_equal(wget_logged.stdout, b"hello") &&
+      wget_logged.stderr.is_empty() &&
+      @testkit.contains_bytes(
+        @fs.read_file(wget_log).binary(),
+        "starting download",
+      ) &&
+      @testkit.contains_bytes(
+        @fs.read_file(wget_log).binary(),
+        "downloaded 5 bytes",
+      ),
+      "wget: -o did not route diagnostics to its log",
+      failures,
+    )
+    let curl_file = @testkit.run(curl, ["-s", "-o", output, base + "/fixed"])
+    record_result(
+      curl_file.status == 0 &&
+      curl_file.stdout.is_empty() &&
+      @testkit.bytes_equal(@fs.read_file(output).binary(), b"hello"),
+      "curl: file output mismatch",
+      failures,
+    )
+    let curl_timeout = @testkit.run(curl, [
+      "--idle-timeout",
+      "0.02",
+      base + "/stall",
+    ])
+    record_result(
+      curl_timeout.status == 1 &&
+      @testkit.contains_bytes(curl_timeout.stderr, "timed out after 20"),
+      "curl: idle timeout did not fail promptly",
+      failures,
+    )
+  }
+}
+
+///|
 async fn run_stress_cases(bin_root : String, failures : Array[String]) -> Unit {
   for size in [1048576, 16777216, 67108864] {
     expect(
@@ -1052,6 +1230,8 @@ async fn main {
     run_chunk_boundary_cases(root, failures)
     run_merge_cases(root, failures)
     run_edge_cases(root, failures)
+    run_stdin_prompt_cases(root, failures)
+    run_http_cases(root, failures)
     if gnu_diff {
       run_gnu_differential(root, failures)
     }

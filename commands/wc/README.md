@@ -10,3 +10,6 @@ moonx cli/wc -l notes.txt
 Options: `-l` lines, `-w` words, `-c` bytes, `-m` UTF-8 characters. With no
 flags it prints lines, words, and bytes. Counts are separated by single
 spaces (not column-aligned like GNU wc). Multiple files get a `total` row.
+
+With no file operand, an interactive terminal receives an EOF waiting prompt;
+piped and redirected input remain silent.

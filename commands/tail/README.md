@@ -16,3 +16,6 @@ memory stays constant for any file size — a multi-gigabyte log tails
 instantly, on the wasm target included. Stdin and pipes are streamed with a
 ring buffer that holds only the selected suffix. There is no `-f` (follow)
 mode.
+
+With no file operand, an interactive terminal receives an EOF waiting prompt;
+piped, redirected, and explicit `-` input remain silent.

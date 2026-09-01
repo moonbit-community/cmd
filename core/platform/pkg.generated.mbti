@@ -18,6 +18,10 @@ pub fn normalize_input_separators(String) -> String
 
 pub fn permission_mutation_supported() -> Bool
 
+pub async fn stderr_is_terminal() -> Bool
+
+pub async fn stdin_is_terminal() -> Bool
+
 pub fn symbolic_links_supported() -> Bool
 
 // Errors

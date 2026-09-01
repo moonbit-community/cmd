@@ -15,3 +15,6 @@ blanks). Like GNU sort, ties on the key fall back to comparing the whole
 line (the "last-resort" rule), and any remaining ties keep input order;
 strings compare by UTF-16 code units. With `-u`, the first line of each
 equal-key group in sorted order is kept.
+
+With no file operand, an interactive terminal receives an EOF waiting prompt;
+piped, redirected, and explicit `-` input remain silent.
