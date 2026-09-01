@@ -47,7 +47,7 @@ async fn serve_test_requests(
 async test "fetch streams fixed and unknown length responses to a file" {
   @async.with_task_group <| group => {
     let (server, port) = serve_test_requests(group)
-    defer server.close()
+    group.add_defer(() => server.close())
     let path = "netops-stream-\{@async.now()}.tmp"
     defer (try @sync_fs.remove_file(path) catch {
       _ => ()
@@ -66,7 +66,7 @@ async test "fetch streams fixed and unknown length responses to a file" {
 async test "HTTP errors are readable and do not create the output file" {
   @async.with_task_group <| group => {
     let (server, port) = serve_test_requests(group)
-    defer server.close()
+    group.add_defer(() => server.close())
     let path = "netops-error-\{@async.now()}.tmp"
     if @fs.exists(path) {
       @sync_fs.remove_file(path)
@@ -92,7 +92,7 @@ async test "HTTP errors are readable and do not create the output file" {
 async test "request and body reads enforce idle timeout" {
   @async.with_task_group <| group => {
     let (server, port) = serve_test_requests(group)
-    defer server.close()
+    group.add_defer(() => server.close())
     for path in ["/header-stall", "/body-stall"] {
       try
         fetch_with_options(

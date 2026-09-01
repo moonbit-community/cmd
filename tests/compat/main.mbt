@@ -944,7 +944,7 @@ async fn run_stdin_prompt_cases(
 async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
   @async.with_task_group <| group => {
     let server = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
-    defer server.close()
+    group.add_defer(() => server.close())
     group.spawn_bg(no_wait=true) <| () => {
       server.run_forever() <| ((request, _body, connection) => {
         match request.path {
