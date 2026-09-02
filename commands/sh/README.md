@@ -16,6 +16,6 @@ being forwarded to another interpreter.
 
 When neither `-c` nor a script file is supplied, the shell silently reads its
 script from stdin until EOF, as required by the POSIX compatibility path.
-`-s` explicitly selects stdin and assigns following operands to `$0`, `$1`,
-and subsequent positional parameters. Remaining POSIX language gaps are listed
+`-s` explicitly selects stdin; following operands become `$1`, `$2`, and later
+positional parameters while `$0` remains the invocation name. Remaining POSIX language gaps are listed
 in the [Phase 5 process/language spike](../../docs/spikes/2026-09-03-process-language-phase5.md).

@@ -16,7 +16,8 @@ The audit covers every command directory, not only `wget` and `curl`.
 
 | Baseline family | Commands |
 | --- | --- |
-| GNU Coreutils 9.11 | `base64`, `basename`, `cat`, `chmod`, `cmp`, `comm`, `cp`, `cut`, `dirname`, `echo`, `env`, `false`, `head`, `join`, `ln`, `ls`, `mkdir`, `mv`, `nl`, `paste`, `printenv`, `printf`, `pwd`, `rm`, `rmdir`, `seq`, `sha256sum`, `sleep`, `sort`, `tail`, `tee`, `test`, `timeout`, `touch`, `tr`, `true`, `uniq`, `wc` |
+| GNU Coreutils 9.11 | `base64`, `basename`, `cat`, `chmod`, `comm`, `cp`, `cut`, `dirname`, `echo`, `env`, `false`, `head`, `join`, `ln`, `ls`, `mkdir`, `mv`, `nl`, `paste`, `printenv`, `printf`, `pwd`, `rm`, `rmdir`, `seq`, `sha256sum`, `sleep`, `sort`, `tail`, `tee`, `test`, `timeout`, `touch`, `tr`, `true`, `uniq`, `wc` |
+| GNU Diffutils 3.12 | `cmp` |
 | GNU findutils 4.10.0 | `find`, `xargs` |
 | GNU grep 3.12 | `grep` |
 | GNU Wget 1.25.0 | `wget` |

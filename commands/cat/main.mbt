@@ -91,7 +91,7 @@ fn render_line(
       output.push(byte)
     }
   }
-  if show_ends {
+  if show_ends && terminated {
     append_char(output, '$')
   }
   if terminated {

@@ -5,7 +5,7 @@
     { "name": "basename", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["paths"] },
     { "name": "cat", "baseline": "coreutils-9.11", "status": "partial", "native": "measured", "wasm": "policy-pending", "capabilities": ["stdin", "files"] },
     { "name": "chmod", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "exception-pending", "capabilities": ["permissions"] },
-    { "name": "cmp", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["files"] },
+    { "name": "cmp", "baseline": "diffutils-3.12", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["files"] },
     { "name": "comm", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] },
     { "name": "cp", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "policy-pending", "capabilities": ["filesystem-mutation"] },
     { "name": "curl", "baseline": "curl-8.22.0", "status": "partial", "native": "unmeasured", "wasm": "policy-pending", "capabilities": ["network", "files"] },

@@ -37,6 +37,7 @@ The project will use the following initial upstream baselines:
 | Command family | Baseline |
 | --- | --- |
 | Core utility commands | GNU Coreutils 9.11 under `LC_ALL=C` |
+| `cmp` | GNU Diffutils 3.12 under `LC_ALL=C` |
 | `find`, `xargs` | GNU findutils 4.10.0 |
 | `grep` | GNU grep 3.12 |
 | `wget` | GNU Wget 1.25.0 |

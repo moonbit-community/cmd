@@ -5,6 +5,7 @@ export LC_ALL=C
 export PATH=/oracle/bin
 
 base64 --version | head -n1
+cmp --version | head -n1
 find --version | head -n1
 xargs --version | head -n1
 grep --version | head -n1

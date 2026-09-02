@@ -3,6 +3,8 @@ FROM ubuntu@sha256:2e863c44b718727c860746568e1d54afd13b2fa71b160f5cd9058fc436217
 ARG DEBIAN_FRONTEND=noninteractive
 ARG COREUTILS_VERSION=9.11
 ARG COREUTILS_SHA256=394024eda0a5955217ceda9cd1201e65dc8fa3aa29c2951135a49521d57c3cc3
+ARG DIFFUTILS_VERSION=3.12
+ARG DIFFUTILS_SHA256=7c8b7f9fc8609141fdea9cece85249d308624391ff61dedaf528fcb337727dfd
 ARG FINDUTILS_VERSION=4.10.0
 ARG FINDUTILS_SHA256=1387e0b67ff247d2abde998f90dfbf70c1491391a59ddfecb8ae698789f0a4f5
 ARG GREP_VERSION=3.12
@@ -57,6 +59,18 @@ RUN curl --fail --location --retry 5 \
   && make install-strip \
   && cd /build \
   && rm -rf coreutils.tar.xz "coreutils-${COREUTILS_VERSION}"
+
+RUN curl --fail --location --retry 5 \
+      "https://ftp.gnu.org/gnu/diffutils/diffutils-${DIFFUTILS_VERSION}.tar.xz" \
+      --output diffutils.tar.xz \
+  && echo "${DIFFUTILS_SHA256}  diffutils.tar.xz" | sha256sum --check --strict \
+  && tar --extract --file diffutils.tar.xz \
+  && cd "diffutils-${DIFFUTILS_VERSION}" \
+  && ./configure --prefix=/oracle --disable-nls \
+  && make -j"$(nproc)" \
+  && make install-strip \
+  && cd /build \
+  && rm -rf diffutils.tar.xz "diffutils-${DIFFUTILS_VERSION}"
 
 RUN curl --fail --location --retry 5 \
       "https://ftp.gnu.org/gnu/findutils/findutils-${FINDUTILS_VERSION}.tar.xz" \

@@ -8,7 +8,8 @@ code remains pure MoonBit.
 
 | Family | Baseline | Scope |
 | --- | --- | --- |
-| GNU Coreutils commands | GNU Coreutils 9.11 | `base64`, `basename`, `cat`, `chmod`, `cmp`, `comm`, `cp`, `cut`, `dirname`, `echo`, `env`, `false`, `head`, `join`, `ln`, `ls`, `mkdir`, `mv`, `nl`, `paste`, `printenv`, `printf`, `pwd`, `rm`, `rmdir`, `seq`, `sha256sum`, `sleep`, `sort`, `tail`, `tee`, `test`, `timeout`, `touch`, `tr`, `true`, `uniq`, `wc` |
+| GNU Coreutils commands | GNU Coreutils 9.11 | `base64`, `basename`, `cat`, `chmod`, `comm`, `cp`, `cut`, `dirname`, `echo`, `env`, `false`, `head`, `join`, `ln`, `ls`, `mkdir`, `mv`, `nl`, `paste`, `printenv`, `printf`, `pwd`, `rm`, `rmdir`, `seq`, `sha256sum`, `sleep`, `sort`, `tail`, `tee`, `test`, `timeout`, `touch`, `tr`, `true`, `uniq`, `wc` |
+| GNU Diffutils | GNU Diffutils 3.12 | `cmp` |
 | GNU findutils | GNU findutils 4.10.0 | `find`, `xargs` |
 | GNU grep | GNU grep 3.12 | `grep`, with locale fixed to `LC_ALL=C` in the first conformance pass |
 | GNU Wget | GNU Wget 1.25.0 | `wget`; the complete documented command is the target, with protocol families implemented in measured stages |
@@ -26,6 +27,7 @@ Every downloaded source or official binary is verified before use:
 | Artifact | SHA-256 |
 | --- | --- |
 | `coreutils-9.11.tar.xz` | `394024eda0a5955217ceda9cd1201e65dc8fa3aa29c2951135a49521d57c3cc3` |
+| `diffutils-3.12.tar.xz` | `7c8b7f9fc8609141fdea9cece85249d308624391ff61dedaf528fcb337727dfd` |
 | `findutils-4.10.0.tar.xz` | `1387e0b67ff247d2abde998f90dfbf70c1491391a59ddfecb8ae698789f0a4f5` |
 | `grep-3.12.tar.xz` | `2649b27c0e90e632eadcd757be06c6e9a4f48d941de51e7c0f83ff76408a07b9` |
 | `wget-1.25.0.tar.gz` | `766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784` |

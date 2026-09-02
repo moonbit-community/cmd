@@ -9,7 +9,18 @@ async fn read_script(path : String) -> String {
 
 ///|
 async fn main {
-  let arguments = @env.args()[1:]
+  let raw_arguments = @env.args()
+  let arguments = raw_arguments[1:]
+  let invocation_name = {
+    let name = @path.Path(raw_arguments.get(0).unwrap_or("sh"))
+      .basename()
+      .to_owned()
+    if name.has_suffix(".exe") {
+      name[:name.length() - 4].to_owned()
+    } else {
+      name
+    }
+  }
   let mut index = 0
   let mut command : String? = None
   let mut script_path : String? = None
@@ -51,13 +62,11 @@ async fn main {
     }
     None =>
       if stdin_script {
-        let shell_name = arguments.get(index).unwrap_or("sh")
-        let args = if index < arguments.length() {
-          arguments[index + 1:].to_owned()
-        } else {
-          []
-        }
-        (@stdio.stdin.read_all().text(), shell_name, args)
+        (
+          @stdio.stdin.read_all().text(),
+          invocation_name,
+          arguments[index:].to_owned(),
+        )
       } else {
         match script_path {
           Some(path) => (read_script(path), path, arguments[index:].to_owned())

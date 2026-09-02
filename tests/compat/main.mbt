@@ -899,7 +899,7 @@ async fn run_phase345_cases(
     ["-b", "-s", "-A"],
     Some(b"a\n\n\nb\t\x80"),
     0,
-    b"     1\ta$\n$\n     2\tb^IM-^@$",
+    b"     1\ta$\n$\n     2\tb^IM-^@",
     failures,
   )
   expect(
@@ -1010,7 +1010,7 @@ async fn run_phase345_cases(
     ["-s", "shell-name", "value"],
     Some(b"printf '%s|%s\\n' \"$0\" \"$1\"\n"),
     0,
-    b"shell-name|value\n",
+    b"sh|shell-name\n",
     failures,
   )
   let absent_copy = @path.Path(root).join(Path("preserved-copy")).to_string()
