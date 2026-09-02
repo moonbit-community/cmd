@@ -4,8 +4,10 @@ package "cli/wget"
 // Values
 
 // Errors
+type WgetUsageError
 
 // Types and methods
+type WgetOptions
 
 // Type aliases
 

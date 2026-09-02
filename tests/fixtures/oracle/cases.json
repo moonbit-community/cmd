@@ -90,6 +90,180 @@
       "environment": {},
       "expected_status": 0,
       "normalizations": []
+    },
+    {
+      "id": "phase2-wget-relative-redirect",
+      "command": "wget",
+      "args": ["-q", "-O", "-", "${HTTP_BASE}/redirect"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-wget-http-status-8",
+      "command": "wget",
+      "args": ["-q", "-O", "-", "${HTTP_BASE}/missing"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 8,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-wget-remote-file",
+      "command": "wget",
+      "args": ["-q", "${HTTP_BASE}/named.txt"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-wget-multiple-urls",
+      "command": "wget",
+      "args": ["-q", "${HTTP_BASE}/fixed", "${HTTP_BASE}/second"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-wget-request-body",
+      "command": "wget",
+      "args": ["-q", "-O", "-", "--method=POST", "--body-data=payload", "${HTTP_BASE}/echo"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-wget-input-file",
+      "command": "wget",
+      "args": ["-q", "-i", "urls.txt"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "urls.txt", "content_hex": "247b485454505f424153457d2f6e616d65642e7478740a247b485454505f424153457d2f7365636f6e640a" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-curl-does-not-follow",
+      "command": "curl",
+      "args": ["-s", "${HTTP_BASE}/redirect"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-curl-location",
+      "command": "curl",
+      "args": ["-sL", "${HTTP_BASE}/redirect"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-curl-fail-status-22",
+      "command": "curl",
+      "args": ["-sf", "${HTTP_BASE}/missing"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 22,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-curl-output-file",
+      "command": "curl",
+      "args": ["-s", "-o", "response.bin", "${HTTP_BASE}/fixed"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-curl-post-data",
+      "command": "curl",
+      "args": ["-s", "-d", "alpha=one", "${HTTP_BASE}/echo"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-curl-upload-file",
+      "command": "curl",
+      "args": ["-s", "-T", "upload.bin", "${HTTP_BASE}/echo"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "upload.bin", "content_hex": "0062696e617279ff" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-curl-multiple-urls",
+      "command": "curl",
+      "args": ["-s", "${HTTP_BASE}/fixed", "${HTTP_BASE}/second"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-curl-last-transfer-status",
+      "command": "curl",
+      "args": ["-sf", "${HTTP_BASE}/missing", "${HTTP_BASE}/fixed"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-curl-remote-name",
+      "command": "curl",
+      "args": ["-sO", "${HTTP_BASE}/named.txt"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-curl-https-insecure",
+      "command": "curl",
+      "args": ["-sk", "${HTTPS_BASE}/fixed.txt"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-wget-https-no-check-certificate",
+      "command": "wget",
+      "args": ["-q", "-O", "-", "--no-check-certificate", "${HTTPS_BASE}/fixed.txt"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
     }
   ]
 }

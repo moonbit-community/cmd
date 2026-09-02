@@ -168,11 +168,28 @@ pipelines, and file redirections are also byte-clean. Dynamic terminal feedback
 must opt into the shared terminal policy and is suppressed unless the selected
 stream is proven to be a character device.
 
-The current `curl` and `wget` implementations apply a 30-second inactivity
-timeout to request setup, response headers, and each response-body read, with a
-repository-specific `--idle-timeout SECONDS` option. This option and the
-feedback policy are migration work items: they must not alter the upstream
-default behavior or be advertised as compatible until their matrix cases pass.
+The Phase 2 `curl` and `wget` HTTP/HTTPS path streams request and response
+bodies and resets its inactivity timer after every successful chunk. Wget maps
+`-T`/`--timeout`, `--connect-timeout`, and `--read-timeout`; curl maps
+`--connect-timeout` and `-m`/`--max-time`. The compatibility slice also keeps
+the repository `--idle-timeout SECONDS` spelling as an explicit extension for
+inactivity fault injection. That extension is not an upstream compatibility
+claim and is catalogued as an extension rather than an upstream option.
+Default Wget and curl timing now uses their long upstream defaults instead of
+the former repository-wide 30-second default.
+
+Wget follows HTTP redirects by default; curl follows them only with `-L`.
+Every hop closes its client, relative `Location` values use the repository's
+tested RFC 3986 resolver, loops and limits fail, and authorization, proxy
+authorization, and cookie headers are stripped when the origin changes. Both
+commands remain `partial` in the matrix until their complete upstream command
+surfaces—not only this HTTP/HTTPS slice—pass the pinned oracle.
+
+The native compatibility runner also exercises a pure-MoonBit CONNECT relay
+and a repository self-signed TLS fixture. The latter proves default certificate
+rejection and the explicit curl `-k`/Wget `--no-check-certificate` opt-outs on
+Unix; Windows still receives the all-target compile gate while an equivalent
+deterministic TLS-server fixture remains pending there.
 
 ## Validation
 

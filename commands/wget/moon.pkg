@@ -1,11 +1,15 @@
 import {
   "cli/core/cli",
   "cli/core/netops",
+  "cli/core/platform",
   "moonbitlang/async",
+  "moonbitlang/async/fs",
   "moonbitlang/async/stdio",
+  "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/env",
-  "moonbitlang/x/path",
+  "moonbitlang/core/string",
   "moonbitlang/x/sys",
+  "moonbitlang/x/time",
 }
 
 supported_targets = "native+wasm"

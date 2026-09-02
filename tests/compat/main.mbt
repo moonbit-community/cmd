@@ -943,6 +943,8 @@ async fn run_stdin_prompt_cases(
 ///|
 async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
   @async.with_task_group <| group => {
+    let mut wget_retry_attempts = 0
+    let mut curl_retry_attempts = 0
     let server = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
     group.add_defer(() => server.close())
     group.spawn_bg(no_wait=true) <| () => {
@@ -952,13 +954,161 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
             connection.send_response(200, "OK", extra_headers={
               "Content-Length": "5",
             })
-            connection..write("hello").end_response()
+            if request.meth == @http.Head {
+              connection.end_response()
+            } else {
+              connection..write("hello").end_response()
+            }
           }
           "/chunked" => {
             connection.send_response(200, "OK")
             connection..write("slow-").flush()
             @async.sleep(5)
             connection..write("stream").end_response()
+          }
+          "/redirect" =>
+            connection
+            ..send_response(302, "Found", extra_headers={
+              "Location": "/fixed",
+              "Content-Length": "0",
+            })
+            .end_response()
+          "/redirect-301"
+          | "/redirect-302"
+          | "/redirect-303"
+          | "/redirect-307"
+          | "/redirect-308" => {
+            let status = @string.parse_int(request.path[10:])
+            let reason = match status {
+              301 => "Moved Permanently"
+              302 => "Found"
+              303 => "See Other"
+              307 => "Temporary Redirect"
+              _ => "Permanent Redirect"
+            }
+            connection
+            ..send_response(status, reason, extra_headers={
+              "Location": "/echo",
+              "Content-Length": "0",
+            })
+            .end_response()
+          }
+          "/loop-a" =>
+            connection
+            ..send_response(302, "Found", extra_headers={
+              "Location": "/loop-b",
+              "Content-Length": "0",
+            })
+            .end_response()
+          "/loop-b" =>
+            connection
+            ..send_response(302, "Found", extra_headers={
+              "Location": "/loop-a",
+              "Content-Length": "0",
+            })
+            .end_response()
+          "/echo" => {
+            let content = _body.read_all().binary()
+            connection.send_response(200, "OK", extra_headers={
+              "Content-Length": content.length().to_string(),
+            })
+            connection..write(content).end_response()
+          }
+          "/request" => {
+            let content = _body.read_all().text()
+            let request_name = match request.meth {
+              Get => "GET"
+              Head => "HEAD"
+              Post => "POST"
+              Put => "PUT"
+              Delete => "DELETE"
+              Connect => "CONNECT"
+              Options => "OPTIONS"
+              Trace => "TRACE"
+              Patch => "PATCH"
+            }
+            let marker = request.headers.get("X-Marker").unwrap_or("")
+            let response = "\{request_name}:\{marker}:\{content}"
+            connection.send_response(200, "OK", extra_headers={
+              "Content-Length": response.length().to_string(),
+            })
+            connection..write(response).end_response()
+          }
+          "/range" => {
+            let ranged = request.headers.get("Range") == Some("bytes=3-")
+            let content = if ranged { "lo" } else { "hello" }
+            connection.send_response(if ranged { 206 } else { 200 }, "OK", extra_headers={
+              "Content-Length": content.length().to_string(),
+            })
+            connection..write(content).end_response()
+          }
+          "/not-modified" =>
+            connection
+            ..send_response(304, "Not Modified", extra_headers={
+              "Content-Length": "0",
+            })
+            .end_response()
+          "/wget-retry" | "/curl-retry" => {
+            if request.path == "/wget-retry" {
+              wget_retry_attempts += 1
+            } else {
+              curl_retry_attempts += 1
+            }
+            let attempts = if request.path == "/wget-retry" {
+              wget_retry_attempts
+            } else {
+              curl_retry_attempts
+            }
+            if attempts < 3 {
+              connection
+              ..send_response(503, "Service Unavailable", extra_headers={
+                "Content-Length": "0",
+              })
+              .end_response()
+            } else {
+              connection.send_response(200, "OK", extra_headers={
+                "Content-Length": "5",
+              })
+              connection..write("hello").end_response()
+            }
+          }
+          "/partial" => {
+            connection.send_response(200, "OK", extra_headers={
+              "Content-Length": "9",
+            })
+            connection..write("abc").flush()
+            connection.close()
+          }
+          "/unauthorized" =>
+            connection
+            ..send_response(401, "Unauthorized", extra_headers={
+              "Content-Length": "0",
+            })
+            .end_response()
+          "/forbidden" =>
+            connection
+            ..send_response(403, "Forbidden", extra_headers={
+              "Content-Length": "0",
+            })
+            .end_response()
+          "/busy" =>
+            connection
+            ..send_response(429, "Too Many Requests", extra_headers={
+              "Content-Length": "0",
+            })
+            .end_response()
+          "/server-error" =>
+            connection
+            ..send_response(500, "Internal Server Error", extra_headers={
+              "Content-Length": "0",
+            })
+            .end_response()
+          "/named" => {
+            connection.send_response(200, "OK", extra_headers={
+              "Content-Length": "5",
+              "Content-Disposition": "attachment; filename=fixture.txt",
+            })
+            connection..write("hello").end_response()
           }
           "/missing" =>
             connection
@@ -981,8 +1131,8 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
     record_result(
       wget_fixed.status == 0 &&
       @testkit.bytes_equal(wget_fixed.stdout, b"hello") &&
-      @testkit.contains_bytes(wget_fixed.stderr, "starting download") &&
-      @testkit.contains_bytes(wget_fixed.stderr, "downloaded 5 bytes"),
+      @testkit.contains_bytes(wget_fixed.stderr, "HTTP request sent") &&
+      @testkit.contains_bytes(wget_fixed.stderr, "saved [5]"),
       "wget: fixed-length response or progress feedback mismatch",
       failures,
     )
@@ -996,7 +1146,7 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
     )
     let wget_missing = @testkit.run(wget, ["-O", "-", base + "/missing"])
     record_result(
-      wget_missing.status == 1 &&
+      wget_missing.status == 8 &&
       wget_missing.stdout.is_empty() &&
       @testkit.contains_bytes(wget_missing.stderr, "HTTP status 404 Not Found"),
       "wget: HTTP error behavior mismatch",
@@ -1009,32 +1159,29 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       base + "/missing",
     ])
     record_result(
-      wget_quiet_missing.status == 1 &&
+      wget_quiet_missing.status == 8 &&
       wget_quiet_missing.stdout.is_empty() &&
-      @testkit.contains_bytes(
-        wget_quiet_missing.stderr,
-        "HTTP status 404 Not Found",
-      ),
-      "wget: -q hid an HTTP error",
+      wget_quiet_missing.stderr.is_empty(),
+      "wget: -q did not suppress an HTTP error diagnostic",
       failures,
     )
     let curl_chunked = @testkit.run(curl, [base + "/chunked"])
     record_result(
       curl_chunked.status == 0 &&
       @testkit.bytes_equal(curl_chunked.stdout, b"slow-stream") &&
-      @testkit.contains_bytes(curl_chunked.stderr, "downloaded 11 bytes"),
+      @testkit.contains_bytes(curl_chunked.stderr, "0% 11"),
       "curl: unknown-length response or progress feedback mismatch",
       failures,
     )
     let curl_silent = @testkit.run(curl, ["-s", "-f", base + "/missing"])
     record_result(
-      curl_silent.status == 1 && curl_silent.stderr.is_empty(),
+      curl_silent.status == 22 && curl_silent.stderr.is_empty(),
       "curl: -s did not suppress errors",
       failures,
     )
     let curl_show_error = @testkit.run(curl, ["-sS", "-f", base + "/missing"])
     record_result(
-      curl_show_error.status == 1 &&
+      curl_show_error.status == 22 &&
       @testkit.contains_bytes(
         curl_show_error.stderr,
         "HTTP status 404 Not Found",
@@ -1059,12 +1206,9 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       wget_logged.stderr.is_empty() &&
       @testkit.contains_bytes(
         @fs.read_file(wget_log).binary(),
-        "starting download",
+        "HTTP request sent",
       ) &&
-      @testkit.contains_bytes(
-        @fs.read_file(wget_log).binary(),
-        "downloaded 5 bytes",
-      ),
+      @testkit.contains_bytes(@fs.read_file(wget_log).binary(), "saved [5]"),
       "wget: -o did not route diagnostics to its log",
       failures,
     )
@@ -1082,9 +1226,423 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       base + "/stall",
     ])
     record_result(
-      curl_timeout.status == 1 &&
+      curl_timeout.status == 28 &&
       @testkit.contains_bytes(curl_timeout.stderr, "timed out after 20"),
       "curl: idle timeout did not fail promptly",
+      failures,
+    )
+    let wget_redirect = @testkit.run(wget, ["-q", "-O", "-", base + "/redirect"])
+    record_result(
+      wget_redirect.status == 0 &&
+      @testkit.bytes_equal(wget_redirect.stdout, b"hello") &&
+      wget_redirect.stderr.is_empty(),
+      "wget: default relative redirect handling mismatch",
+      failures,
+    )
+    let curl_redirect = @testkit.run(curl, ["-s", base + "/redirect"])
+    record_result(
+      curl_redirect.status == 0 && curl_redirect.stdout.is_empty(),
+      "curl: followed a redirect without -L",
+      failures,
+    )
+    let curl_location = @testkit.run(curl, ["-sL", base + "/redirect"])
+    record_result(
+      curl_location.status == 0 &&
+      @testkit.bytes_equal(curl_location.stdout, b"hello"),
+      "curl: -L relative redirect handling mismatch",
+      failures,
+    )
+    let curl_last_status = @testkit.run(curl, [
+      "-sf",
+      base + "/missing",
+      base + "/fixed",
+    ])
+    record_result(
+      curl_last_status.status == 0 &&
+      @testkit.bytes_equal(curl_last_status.stdout, b"hello"),
+      "curl: final transfer did not determine the process status",
+      failures,
+    )
+    let curl_loop = @testkit.run(curl, ["-sSL", base + "/loop-a"])
+    record_result(
+      curl_loop.status == 47 &&
+      @testkit.contains_bytes(curl_loop.stderr, "redirect loop"),
+      "curl: redirect loop status mismatch",
+      failures,
+    )
+    let curl_post = @testkit.run(curl, [
+      "-s",
+      "-d",
+      "alpha=one",
+      "--data-raw",
+      "beta=two",
+      base + "/echo",
+    ])
+    record_result(
+      curl_post.status == 0 &&
+      @testkit.bytes_equal(curl_post.stdout, b"alpha=one&beta=two"),
+      "curl: repeated data body mismatch",
+      failures,
+    )
+    let curl_head = @testkit.run(curl, ["-I", base + "/fixed"])
+    record_result(
+      curl_head.status == 0 &&
+      @testkit.contains_bytes(curl_head.stdout, "HTTP/1.1 200 OK") &&
+      !@testkit.contains_bytes(curl_head.stdout, "hello"),
+      "curl: HEAD response mismatch",
+      failures,
+    )
+    let named_root = @fs.tmpdir(prefix="mooncmd-http-name")
+    defer (@fs.rmdir(named_root, recursive=true) catch { _ => () })
+    let curl_named = @testkit.run(
+      curl,
+      ["-sOJ", base + "/named"],
+      cwd=named_root,
+    )
+    let named_path = @path.Path(named_root)
+      .join(Path("fixture.txt"))
+      .to_string()
+    record_result(
+      curl_named.status == 0 &&
+      @fs.exists(named_path) &&
+      @testkit.bytes_equal(@fs.read_file(named_path).binary(), b"hello"),
+      "curl: -OJ content-disposition output mismatch",
+      failures,
+    )
+    for status in [301, 302, 303] {
+      let redirected = @testkit.run(curl, [
+        "-sL",
+        "-d",
+        "body",
+        base + "/redirect-\{status}",
+      ])
+      record_result(
+        redirected.status == 0 && redirected.stdout.is_empty(),
+        "curl: \{status} did not rewrite POST to GET",
+        failures,
+      )
+    }
+    for status in [307, 308] {
+      let redirected = @testkit.run(curl, [
+        "-sL",
+        "-d",
+        "body",
+        base + "/redirect-\{status}",
+      ])
+      record_result(
+        redirected.status == 0 &&
+        @testkit.bytes_equal(redirected.stdout, b"body"),
+        "curl: \{status} did not preserve the request body",
+        failures,
+      )
+    }
+    let curl_request = @testkit.run(curl, [
+      "-s",
+      "-H",
+      "X-Marker: present",
+      "-X",
+      "PATCH",
+      "--data-raw",
+      "payload",
+      base + "/request",
+    ])
+    record_result(
+      curl_request.status == 0 &&
+      @testkit.bytes_equal(curl_request.stdout, b"PATCH:present:payload"),
+      "curl: method/header/body request mismatch",
+      failures,
+    )
+    let wget_request = @testkit.run(wget, [
+      "-qO-",
+      "--header=X-Marker: present",
+      "--method=PATCH",
+      "--body-data=payload",
+      base + "/request",
+    ])
+    record_result(
+      wget_request.status == 0 &&
+      @testkit.bytes_equal(wget_request.stdout, b"PATCH:present:payload"),
+      "wget: method/header/body request mismatch",
+      failures,
+    )
+    let resume_root = @fs.tmpdir(prefix="mooncmd-http-resume")
+    defer (@fs.rmdir(resume_root, recursive=true) catch { _ => () })
+    let resume_path = @path.Path(resume_root).join(Path("range")).to_string()
+    @fs.write_file(resume_path, b"hel")
+    let wget_resume = @testkit.run(
+      wget,
+      ["-q", "-c", base + "/range"],
+      cwd=resume_root,
+    )
+    record_result(
+      wget_resume.status == 0 &&
+      @testkit.bytes_equal(@fs.read_file(resume_path).binary(), b"hello"),
+      "wget: range resume mismatch",
+      failures,
+    )
+    let unchanged_path = @path.Path(resume_root)
+      .join(Path("not-modified"))
+      .to_string()
+    @fs.write_file(unchanged_path, b"original")
+    let wget_unchanged = @testkit.run(
+      wget,
+      ["-q", "-N", base + "/not-modified"],
+      cwd=resume_root,
+    )
+    record_result(
+      wget_unchanged.status == 0 &&
+      @testkit.bytes_equal(@fs.read_file(unchanged_path).binary(), b"original"),
+      "wget: timestamping 304 changed the destination",
+      failures,
+    )
+    let wget_retry = @testkit.run(wget, [
+      "-qO-",
+      "--retry-on-http-error=503",
+      "--waitretry=0.001",
+      "--tries=3",
+      base + "/wget-retry",
+    ])
+    record_result(
+      wget_retry.status == 0 &&
+      @testkit.bytes_equal(wget_retry.stdout, b"hello") &&
+      wget_retry_attempts == 3,
+      "wget: HTTP retry mismatch",
+      failures,
+    )
+    let curl_retry = @testkit.run(curl, [
+      "-s",
+      "--retry",
+      "2",
+      "--retry-delay",
+      "0",
+      base + "/curl-retry",
+    ])
+    record_result(
+      curl_retry.status == 0 &&
+      @testkit.bytes_equal(curl_retry.stdout, b"hello") &&
+      curl_retry_attempts == 3,
+      "curl: HTTP retry mismatch",
+      failures,
+    )
+    for endpoint in ["unauthorized", "forbidden", "busy", "server-error"] {
+      let wget_status = @testkit.run(wget, ["-qO-", base + "/" + endpoint])
+      let curl_status = @testkit.run(curl, ["-sf", base + "/" + endpoint])
+      record_result(
+        wget_status.status == 8 && curl_status.status == 22,
+        "HTTP error status mapping mismatch for \{endpoint}",
+        failures,
+      )
+    }
+    let partial_path = @path.Path(resume_root)
+      .join(Path("partial.bin"))
+      .to_string()
+    let curl_partial = @testkit.run(curl, [
+      "-sS",
+      "--remove-on-error",
+      "-o",
+      partial_path,
+      base + "/partial",
+    ])
+    record_result(
+      curl_partial.status == 7 &&
+      !@fs.exists(partial_path) &&
+      @testkit.contains_bytes(curl_partial.stderr, "response body"),
+      "curl: partial response cleanup mismatch",
+      failures,
+    )
+    let collision_root = @fs.tmpdir(prefix="mooncmd-http-collision")
+    defer (@fs.rmdir(collision_root, recursive=true) catch { _ => () })
+    let original = @path.Path(collision_root).join(Path("fixed")).to_string()
+    let numbered = original + ".1"
+    @fs.write_file(original, b"original")
+    let wget_collision = @testkit.run(
+      wget,
+      ["-q", base + "/fixed"],
+      cwd=collision_root,
+    )
+    record_result(
+      wget_collision.status == 0 &&
+      @testkit.bytes_equal(@fs.read_file(original).binary(), b"original") &&
+      @testkit.bytes_equal(@fs.read_file(numbered).binary(), b"hello"),
+      "wget: numbered output collision mismatch",
+      failures,
+    )
+    let truncate = @path.Path(collision_root)
+      .join(Path("truncate.bin"))
+      .to_string()
+    @fs.write_file(truncate, b"old-data")
+    let wget_truncate = @testkit.run(wget, [
+      "-q", "-t", "1", "-O", truncate, "http://127.0.0.1:1/unreachable",
+    ])
+    record_result(
+      wget_truncate.status == 4 && @fs.read_file(truncate).binary().is_empty(),
+      "wget: -O did not truncate before connection setup",
+      failures,
+    )
+  }
+}
+
+///|
+async fn run_https_server(args : ArrayView[String]) -> Int {
+  guard args.length() == 3 else { return 2 }
+  let output = @process.redirect_to_file(args[2])
+  @process.run(
+    "openssl",
+    [
+      "s_server",
+      "-accept",
+      "127.0.0.1:0",
+      "-cert",
+      args[0],
+      "-key",
+      args[1],
+      "-www",
+    ],
+    stdout=output,
+    stderr=output,
+    no_console_window=true,
+  )
+}
+
+///|
+async fn run_https_cases(bin_root : String, failures : Array[String]) -> Unit {
+  if @platform.is_windows() {
+    return
+  }
+  @async.with_task_group <| group => {
+    let current = @env.current_dir().unwrap_or(".")
+    let cert = @path.Path(current)
+      .join(Path("tests/fixtures/http/cert.pem"))
+      .to_string()
+    let key = @path.Path(current)
+      .join(Path("tests/fixtures/http/key.pem"))
+      .to_string()
+    let output_root = @fs.tmpdir(prefix="mooncmd-https")
+    defer (@fs.rmdir(output_root, recursive=true) catch { _ => () })
+    let log = @path.Path(output_root).join(Path("server.log")).to_string()
+    let server = @process.spawn(
+      group,
+      @env.args()[0],
+      ["--https-server", cert, key, log],
+      no_console_window=true,
+      no_wait=true,
+    )
+    let mut port : Int? = None
+    for attempt = 0; attempt < 100; attempt = attempt + 1 {
+      if @fs.exists(log) {
+        let text = @fs.read_file(log).text()
+        if text.find("ACCEPT ") is Some(index) {
+          let suffix = text[index + 7:].to_owned()
+          let line = suffix.split("\n").next().unwrap_or("")
+          if line.rev_find(":") is Some(colon) {
+            port = try @string.parse_int(line[colon + 1:].to_owned()) catch {
+              _ => None
+            } noraise {
+              value => Some(value)
+            }
+            if port is Some(_) {
+              break
+            }
+          }
+        }
+      }
+      @async.sleep(10)
+    }
+    guard port is Some(port) else {
+      server.cancel()
+      ignore(server.wait()) catch {
+        _ => ()
+      }
+      fail("HTTPS fixture did not report a listening port", failures)
+      return
+    }
+    let url = "https://127.0.0.1:\{port}/"
+    let curl = @testkit.executable_path(bin_root, "curl")
+    let wget = @testkit.executable_path(bin_root, "wget")
+    let curl_verified = @testkit.run(curl, ["-sf", url])
+    let curl_insecure = @testkit.run(curl, ["-skf", url])
+    let wget_verified = @testkit.run(wget, ["-qO-", url])
+    let wget_insecure = @testkit.run(wget, [
+      "-qO-", "--no-check-certificate", url,
+    ])
+    record_result(
+      curl_verified.status == 60 &&
+      curl_insecure.status == 0 &&
+      wget_verified.status == 5 &&
+      wget_insecure.status == 0,
+      "HTTPS certificate verification controls mismatch",
+      failures,
+    )
+    server.cancel()
+    ignore(server.wait()) catch {
+      _ => ()
+    }
+  }
+}
+
+///|
+async fn run_connect_proxy(server : @socket.TcpServer) -> Unit {
+  server.run_forever() <| ((client, _) => {
+    guard client.read_until("\r\n") is Some(line) else { return }
+    while client.read_until("\r\n") is Some(header) && header != "" {
+
+    }
+    guard line.has_prefix("CONNECT ") && line.find(" HTTP/") is Some(end) else {
+      client.write("HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\n\r\n")
+      return
+    }
+    let authority = line[8:end].to_owned()
+    let destination = @socket.Tcp::connect(@socket.Addr::parse(authority))
+    defer destination.close()
+    client.write("HTTP/1.1 200 Connection Established\r\n\r\n")
+    @async.with_task_group <| relay => {
+      relay.spawn_bg(no_wait=true) <| () => { client.write_reader(destination) }
+      destination.write_reader(client)
+    }
+  })
+}
+
+///|
+async fn run_proxy_cases(bin_root : String, failures : Array[String]) -> Unit {
+  @async.with_task_group <| group => {
+    let origin = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
+    group.add_defer(() => origin.close())
+    group.spawn_bg(no_wait=true) <| () => {
+      origin.run_forever() <| ((_, _, connection) => {
+        connection.send_response(200, "OK", extra_headers={
+          "Content-Length": "5",
+        })
+        connection..write("hello").end_response()
+      })
+    }
+    let proxy = @socket.TcpServer(@socket.Addr::parse("127.0.0.1:0"))
+    group.add_defer(() => proxy.close())
+    group.spawn_bg(no_wait=true, () => run_connect_proxy(proxy))
+    let proxy_url = "http://127.0.0.1:\{proxy.addr.port()}"
+    let url = "http://127.0.0.1:\{origin.addr.port()}/fixed"
+    let curl = @testkit.executable_path(bin_root, "curl")
+    let wget = @testkit.executable_path(bin_root, "wget")
+    let curl_proxy = @testkit.run(
+      curl,
+      ["-s", "--proxy", proxy_url, "--noproxy", "", url],
+      extra_env=Map([("NO_PROXY", "")]),
+    )
+    let wget_proxy = @testkit.run(
+      wget,
+      ["-qO-", url],
+      extra_env=Map([
+        ("http_proxy", proxy_url),
+        ("HTTP_PROXY", ""),
+        ("NO_PROXY", ""),
+        ("no_proxy", ""),
+      ]),
+    )
+    record_result(
+      curl_proxy.status == 0 &&
+      @testkit.bytes_equal(curl_proxy.stdout, b"hello") &&
+      wget_proxy.status == 0 &&
+      @testkit.bytes_equal(wget_proxy.stdout, b"hello"),
+      "HTTP CONNECT proxy transfer mismatch",
       failures,
     )
   }
@@ -1176,6 +1734,13 @@ async fn run_gnu_differential(
 ///|
 async fn main {
   let args = @env.args()[1:]
+  if args.length() >= 1 && args[0] == "--https-server" {
+    let status = run_https_server(args[1:])
+    if status != 0 {
+      @sys.exit(status)
+    }
+    return
+  }
   let mut bin_root : String? = None
   let mut catalog_only = false
   let mut gnu_diff = false
@@ -1232,6 +1797,8 @@ async fn main {
     run_edge_cases(root, failures)
     run_stdin_prompt_cases(root, failures)
     run_http_cases(root, failures)
+    run_https_cases(root, failures)
+    run_proxy_cases(root, failures)
     if gnu_diff {
       run_gnu_differential(root, failures)
     }

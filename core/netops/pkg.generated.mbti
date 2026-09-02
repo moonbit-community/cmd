@@ -14,10 +14,30 @@ pub fn fetch_options_with_feedback(Bool, Int, FeedbackMode, String, diagnostic_p
 
 pub async fn fetch_with_options(String, String?, FetchOptions) -> Unit
 
+pub fn http_header(String, String) -> HttpHeader
+
+pub fn parse_http_method(String) -> HttpMethod raise TransferError
+
+pub fn proxy_bypassed(String, String?) -> Bool
+
+pub fn remote_name(String) -> String raise TransferError
+
+pub fn retryable_failure(TransferErrorKind, Int?) -> Bool
+
+pub async fn transfer(String, TransferOutput, TransferOptions, observer? : async (TransferEvent) -> Unit) -> TransferResult
+
+pub fn transfer_options(request_method? : HttpMethod, headers? : Array[HttpHeader], body? : RequestBody, redirects? : RedirectPolicy, preserve_method_on_redirect? : Bool, verify_tls? : Bool, proxy_url? : String, connect_timeout_ms? : Int, idle_timeout_ms? : Int, max_time_ms? : Int, fail_on_http_error? : Bool, http_error_statuses? : Array[Int], resume_from? : Int64, keep_output_on_not_modified? : Bool) -> TransferOptions
+
+pub fn url_host(String) -> String raise TransferError
+
 // Errors
 pub(all) suberror NetOpError {
   NetOpError(String)
 }
+
+pub(all) suberror TransferError {
+  TransferError(kind~ : TransferErrorKind, message~ : String, status~ : Int?)
+} derive(Eq, @debug.Debug)
 
 // Types and methods
 pub(all) enum FeedbackMode {
@@ -34,6 +54,98 @@ pub(all) struct FetchOptions {
   label : String
   diagnostic_path : String?
 }
+
+pub(all) struct HttpHeader {
+  name : String
+  value : String
+} derive(Eq, @debug.Debug)
+
+pub(all) enum HttpMethod {
+  Get
+  Head
+  Post
+  Put
+  Delete
+  Connect
+  Options
+  Trace
+  Patch
+} derive(Eq, @debug.Debug)
+
+pub(all) enum RedirectPolicy {
+  NoRedirects
+  FollowRedirects(Int)
+} derive(Eq, @debug.Debug)
+
+pub(all) enum RequestBody {
+  EmptyBody
+  BytesBody(Bytes)
+  FileBody(String)
+  StdinBody
+} derive(@debug.Debug)
+
+pub(all) enum TransferErrorKind {
+  InvalidUrl
+  UnsupportedProtocol
+  InvalidMethod
+  ConnectionFailure
+  TlsFailure
+  ProxyFailure
+  TimeoutFailure
+  RedirectFailure
+  HttpStatusFailure
+  InputFailure
+  OutputFailure
+  ProtocolFailure
+} derive(Eq, @debug.Debug)
+
+pub(all) enum TransferEvent {
+  ResponseStarted(url~ : String, status~ : Int, reason~ : String, headers~ : Array[HttpHeader], content_length~ : Int64?)
+  Redirected(status~ : Int, from~ : String, to~ : String)
+  Progress(received~ : Int64, content_length~ : Int64?)
+  Completed(received~ : Int64, content_length~ : Int64?)
+} derive(@debug.Debug)
+
+pub(all) enum TransferFileMode {
+  Truncate
+  Append
+  Unique
+} derive(Eq, @debug.Debug)
+
+pub(all) struct TransferOptions {
+  request_method : HttpMethod
+  headers : Array[HttpHeader]
+  body : RequestBody
+  redirects : RedirectPolicy
+  preserve_method_on_redirect : Bool
+  verify_tls : Bool
+  proxy_url : String?
+  connect_timeout_ms : Int
+  idle_timeout_ms : Int
+  max_time_ms : Int?
+  fail_on_http_error : Bool
+  http_error_statuses : Array[Int]
+  resume_from : Int64?
+  keep_output_on_not_modified : Bool
+}
+
+pub(all) enum TransferOutput {
+  StandardOutput
+  DiscardOutput
+  FileOutput(path~ : String, mode~ : TransferFileMode, content_disposition~ : Bool, remove_on_error~ : Bool)
+} derive(@debug.Debug)
+
+pub(all) struct TransferResult {
+  requested_url : String
+  effective_url : String
+  status : Int
+  reason : String
+  headers : Array[HttpHeader]
+  received : Int64
+  output_path : String?
+  redirects : Int
+}
+pub fn TransferResult::header(Self, String) -> String?
 
 // Type aliases
 

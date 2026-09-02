@@ -170,15 +170,31 @@ fn validate_manifest(manifest : Manifest) -> Array[String] {
 }
 
 ///|
-async fn prepare_directory(root : String, fixture : OracleCase) -> Unit {
+async fn prepare_directory(
+  root : String,
+  fixture : OracleCase,
+  http_base? : String,
+) -> Unit {
   for file in fixture.files {
     let destination = @path.Path(root).join(Path(file.path)).to_string()
     let parent = @path.Path(destination).dirname().to_string()
     @fs.mkdir(parent, recursive=true)
-    @fs.write_file(
-      destination,
-      decode_hex(file.content_hex, fixture.id + " file " + file.path),
+    let content = decode_hex(
+      file.content_hex,
+      fixture.id + " file " + file.path,
     )
+    let content = match http_base {
+      Some(base) if file.content_hex
+        .to_lower()
+        .contains("247b485454505f424153457d") =>
+        @utf8.encode(
+          content
+          .to_unchecked_string()
+          .replace_all(old="${HTTP_BASE}", new=base),
+        )
+      _ => content
+    }
+    @fs.write_file(destination, content)
   }
 }
 
@@ -318,10 +334,175 @@ fn controlled_environment(extra : Map[String, String]) -> Map[String, String] {
 }
 
 ///|
+fn oracle_request_name(request : @http.Request) -> String {
+  match request.meth {
+    Get => "GET"
+    Head => "HEAD"
+    Post => "POST"
+    Put => "PUT"
+    Delete => "DELETE"
+    Connect => "CONNECT"
+    Options => "OPTIONS"
+    Trace => "TRACE"
+    Patch => "PATCH"
+  }
+}
+
+///|
+async fn run_http_fixture(server : @http.Server) -> Unit {
+  server.run_forever() <| ((request, body, connection) => {
+    match request.path {
+      "/fixed" | "/named.txt" => {
+        connection.send_response(200, "OK", extra_headers={
+          "Content-Length": "5",
+        })
+        if request.meth == @http.Head {
+          connection.end_response()
+        } else {
+          connection..write("hello").end_response()
+        }
+      }
+      "/second" => {
+        connection.send_response(200, "OK", extra_headers={
+          "Content-Length": "5",
+        })
+        connection..write("world").end_response()
+      }
+      "/redirect" =>
+        connection
+        ..send_response(302, "Found", extra_headers={
+          "Location": "/fixed",
+          "Content-Length": "0",
+        })
+        .end_response()
+      "/redirect-echo" =>
+        connection
+        ..send_response(307, "Temporary Redirect", extra_headers={
+          "Location": "/echo",
+          "Content-Length": "0",
+        })
+        .end_response()
+      "/echo" => {
+        let content = body.read_all().binary()
+        let prefix = oracle_request_name(request) + ":"
+        let response = @utf8.encode(prefix) + content
+        connection.send_response(200, "OK", extra_headers={
+          "Content-Length": response.length().to_string(),
+        })
+        connection..write(response).end_response()
+      }
+      "/missing" =>
+        connection
+        ..send_response(404, "Not Found", extra_headers={
+          "Content-Length": "0",
+        })
+        .end_response()
+      _ =>
+        connection
+        ..send_response(400, "Bad Request", extra_headers={
+          "Content-Length": "0",
+        })
+        .end_response()
+    }
+  })
+}
+
+///|
+async fn run_external_http_fixture() -> Int {
+  let server = @http.Server(@socket.Addr::parse("0.0.0.0:0"))
+  @stdio.stdout.write(server.addr.port().to_string() + "\n")
+  run_http_fixture(server)
+  0
+}
+
+///|
+async fn spawn_http_fixture_process(
+  group : @async.TaskGroup[Unit],
+) -> (@process.Process, @process.ReadFromProcess, String) {
+  let (port_reader, port_writer) = @process.read_from_process()
+  let process = @process.spawn(
+    group,
+    @env.args()[0],
+    ["--http-fixture-server"],
+    stdout=port_writer,
+    no_console_window=true,
+    no_wait=true,
+  )
+  let line = port_reader.read_until("\n")
+  guard line is Some(line) else {
+    fail("oracle-runner: HTTP fixture process closed before reporting a port")
+  }
+  let port = @string.parse_int(line.trim().to_owned()) catch {
+    err => fail("oracle-runner: invalid HTTP fixture port: \{err}")
+  }
+  (process, port_reader, "http://127.0.0.1:\{port}")
+}
+
+///|
+async fn spawn_https_fixture_process(
+  group : @async.TaskGroup[Unit],
+  root : String,
+) -> (@process.Process, String) {
+  let cert = @fs.realpath("tests/fixtures/http/cert.pem")
+  let key = @fs.realpath("tests/fixtures/http/key.pem")
+  let fixture_root = @fs.realpath("tests/fixtures/http")
+  let log = @path.Path(root).join(Path("https.log")).to_string()
+  let output = @process.redirect_to_file(log)
+  let process = @process.spawn(
+    group,
+    "openssl",
+    ["s_server", "-accept", "127.0.0.1:0", "-cert", cert, "-key", key, "-WWW"],
+    cwd=fixture_root,
+    stdout=output,
+    stderr=output,
+    no_console_window=true,
+    no_wait=true,
+  )
+  for attempt = 0; attempt < 200; attempt = attempt + 1 {
+    if @fs.exists(log) {
+      let text = @fs.read_file(log).text()
+      if text.find("ACCEPT ") is Some(index) {
+        let suffix = text[index + 7:].to_owned()
+        let line = suffix.split("\n").next().unwrap_or("").trim().to_owned()
+        if line.rev_find(":") is Some(colon) {
+          let port = @string.parse_int(line[colon + 1:].to_owned()) catch {
+            _ => 0
+          }
+          if port > 0 {
+            return (process, "https://127.0.0.1:\{port}")
+          }
+        }
+      }
+    }
+    @async.sleep(10)
+  }
+  process.cancel()
+  ignore(process.wait()) catch {
+    _ => ()
+  }
+  fail("oracle-runner: HTTPS fixture did not report a listening port")
+}
+
+///|
+fn expand_fixture_args(
+  args : ArrayView[String],
+  http_base : String,
+  https_base : String,
+) -> Array[String] {
+  args.map(arg => {
+    arg
+    .replace_all(old="${HTTP_BASE}", new=http_base)
+    .replace_all(old="${HTTPS_BASE}", new=https_base)
+  })
+}
+
+///|
 async fn run_case(
   fixture : OracleCase,
   bin_root : String,
   oracle_image : String,
+  http_base : String,
+  https_base : String,
 ) -> Array[String] {
   let failures : Array[String] = []
   let root = @fs.tmpdir(prefix="mooncmd-oracle-")
@@ -330,13 +511,20 @@ async fn run_case(
   let oracle_root = @path.Path(root).join(Path("oracle")).to_string()
   @fs.mkdir(candidate_root)
   @fs.mkdir(oracle_root)
-  prepare_directory(candidate_root, fixture)
-  prepare_directory(oracle_root, fixture)
+  prepare_directory(candidate_root, fixture, http_base~)
+  prepare_directory(oracle_root, fixture, http_base~)
   let stdin = decode_hex(fixture.stdin_hex, fixture.id + " stdin")
   let environment = controlled_environment(fixture.environment)
+  let args = expand_fixture_args(fixture.args, http_base, https_base)
+  let networked = fixture.args.any(arg => {
+      arg.contains("${HTTP_BASE}") || arg.contains("${HTTPS_BASE}")
+    }) ||
+    fixture.files.any(file => {
+      file.content_hex.to_lower().contains("247b485454505f424153457d")
+    })
   let candidate = @testkit.run(
     @testkit.executable_path(bin_root, fixture.command),
-    fixture.args,
+    args,
     stdin~,
     cwd=candidate_root,
     extra_env=environment,
@@ -352,7 +540,11 @@ async fn run_case(
     "--rm",
     "-i",
     "--network",
-    "none",
+    if networked {
+      "host"
+    } else {
+      "none"
+    },
     "--read-only",
     "--tmpfs",
     "/tmp:rw,nosuid,nodev,size=64m",
@@ -371,7 +563,7 @@ async fn run_case(
   docker_args.push("PATH=/oracle/bin")
   docker_args.push(oracle_image)
   docker_args.push(fixture.command)
-  docker_args.append(fixture.args)
+  docker_args.append(args)
   let oracle = @testkit.run("docker", docker_args, stdin~, inherit_env=true) catch {
     err => {
       failures.push("\{fixture.id}: oracle failed to start: \{err}")
@@ -440,6 +632,13 @@ async fn run_case(
 ///|
 async fn main {
   let args = @env.args()[1:]
+  if args.length() == 1 && args[0] == "--http-fixture-server" {
+    let status = run_external_http_fixture()
+    if status != 0 {
+      @sys.exit(status)
+    }
+    return
+  }
   let mut manifest_path : String? = None
   let mut bin_root : String? = None
   let mut oracle_image = "mooncmd-oracle:phase0"
@@ -508,8 +707,29 @@ async fn main {
       return
     }
   }
-  for fixture in manifest.cases {
-    failures.append(run_case(fixture, bin_root, oracle_image))
+  let fixture_root = @fs.tmpdir(prefix="mooncmd-oracle-fixtures-")
+  defer (@fs.rmdir(fixture_root, recursive=true) catch { _ => () })
+  @async.with_task_group <| group => {
+    let (process, reader, http_base) = spawn_http_fixture_process(group)
+    let (tls_process, https_base) = spawn_https_fixture_process(
+      group, fixture_root,
+    )
+    group.add_defer(() => {
+      reader.close()
+      process.cancel()
+      ignore(process.wait()) catch {
+        _ => ()
+      }
+      tls_process.cancel()
+      ignore(tls_process.wait()) catch {
+        _ => ()
+      }
+    })
+    for fixture in manifest.cases {
+      failures.append(
+        run_case(fixture, bin_root, oracle_image, http_base, https_base),
+      )
+    }
   }
   if !failures.is_empty() {
     for failure in failures {

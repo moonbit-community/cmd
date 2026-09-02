@@ -57,6 +57,16 @@ is empty unless a fixture explicitly names a supported text field, rule, and
 rationale. Binary streams are otherwise compared without decoding or
 line-ending changes.
 
+Phase 2 HTTP cases use `${HTTP_BASE}` placeholders and a deterministic
+pure-MoonBit fixture server. The runner expands the placeholder for both the
+candidate and pinned Linux container and enables host networking only for
+those cases; all other oracle containers remain `--network none`. HTTP oracle
+cases run in a dedicated fixture-server process so the synchronous candidate
+and Docker subprocess waits cannot starve the server event loop.
+Self-signed HTTPS cases use `${HTTPS_BASE}` and a test-only OpenSSL fixture
+process on the Linux CI host; both candidate and pinned container receive the
+same endpoint and explicitly select their insecure/certificate-bypass option.
+
 The runner compares exit status, stdout, stderr, filesystem entries, file
 bytes, selected metadata, and child-process observations. It may normalize only
 temporary paths, platform-specific path separators, and explicitly declared

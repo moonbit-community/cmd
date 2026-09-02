@@ -139,6 +139,23 @@ the live 302 regression is covered by a local fixture. Rollback: retain the
 legacy `netops.fetch` wrapper until both adapters migrate, then remove it in a
 separate change.
 
+### Phase 2 delivery record (2026-09-02)
+
+The HTTP/HTTPS slice is implemented in pure MoonBit and retains the legacy
+`netops.fetch` rollback entry point. Local tests cover every fixture family
+listed above, including a CONNECT relay and Unix self-signed TLS. The pinned
+oracle manifest contains deterministic Wget/curl HTTP and self-signed HTTPS
+cases for redirects,
+HTTP status, multiple URLs, `-i`, request bodies, uploads, remote/output files,
+curl's follow/no-follow split, and curl's last-transfer exit-status rule.
+
+Both full commands intentionally remain `partial`: exact diagnostic/progress
+bytes, several advanced HTTP features, raw arbitrary methods/header bytes,
+post-download mtime restoration, and non-HTTP protocols are not certified.
+The public-API, direct-protocol, dependency and target-conditioned attempts are
+recorded in
+[`docs/spikes/2026-09-02-http-protocol-feasibility.md`](spikes/2026-09-02-http-protocol-feasibility.md).
+
 ## Phase 3: Core Text and Data Commands
 
 Files: the relevant `commands/*`, `core/stream`, and oracle fixtures.

@@ -125,7 +125,11 @@ pub fn command_catalog() -> Array[CommandContract] {
       "recursive", "verbose",
     ]),
     contract("curl", Restricted, NoInput, ByteStream, [Network, FileWrite], [
-      "fail", "idle-timeout", "output", "show-error", "silent",
+      "connect-timeout", "data", "data-binary", "data-raw", "data-urlencode", "fail",
+      "head", "header", "idle-timeout", "insecure", "location", "max-redirs", "max-time",
+      "output", "proxy", "remote-header-name", "remote-name", "remove-on-error",
+      "request", "retry", "retry-all-errors", "retry-connrefused", "retry-delay",
+      "retry-max-time", "show-error", "silent", "upload-file",
     ]),
     contract(
       "env",
@@ -162,7 +166,10 @@ pub fn command_catalog() -> Array[CommandContract] {
       exit_codes=[0, 124, 125, 126, 127],
     ),
     contract("wget", Restricted, NoInput, ByteStream, [Network, FileWrite], [
-      "idle-timeout", "output-document", "output-file", "quiet",
+      "append-output", "body-data", "body-file", "connect-timeout", "continue", "content-disposition",
+      "header", "input-file", "max-redirect", "method", "no-check-certificate", "no-proxy",
+      "output-document", "output-file", "quiet", "read-timeout", "retry-connrefused",
+      "retry-on-http-error", "timeout", "timestamping", "tries", "waitretry", "idle-timeout",
     ]),
     contract(
       "xargs",
