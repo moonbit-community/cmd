@@ -170,6 +170,13 @@ fn validate_manifest(manifest : Manifest) -> Array[String] {
 }
 
 ///|
+async fn ensure_directory(path : String) -> Unit {
+  if !@fs.exists(path) {
+    @fs.mkdir(path, recursive=true)
+  }
+}
+
+///|
 async fn prepare_directory(
   root : String,
   fixture : OracleCase,
@@ -178,7 +185,7 @@ async fn prepare_directory(
   for file in fixture.files {
     let destination = @path.Path(root).join(Path(file.path)).to_string()
     let parent = @path.Path(destination).dirname().to_string()
-    @fs.mkdir(parent, recursive=true)
+    ensure_directory(parent)
     let content = decode_hex(
       file.content_hex,
       fixture.id + " file " + file.path,
@@ -509,8 +516,8 @@ async fn run_case(
   defer (@fs.rmdir(root, recursive=true) catch { _ => () })
   let candidate_root = @path.Path(root).join(Path("candidate")).to_string()
   let oracle_root = @path.Path(root).join(Path("oracle")).to_string()
-  @fs.mkdir(candidate_root, recursive=true)
-  @fs.mkdir(oracle_root, recursive=true)
+  ensure_directory(candidate_root)
+  ensure_directory(oracle_root)
   prepare_directory(candidate_root, fixture, http_base~)
   prepare_directory(oracle_root, fixture, http_base~)
   let stdin = decode_hex(fixture.stdin_hex, fixture.id + " stdin")
