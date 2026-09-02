@@ -14,6 +14,23 @@ test "hex fixtures preserve arbitrary bytes" {
 }
 
 ///|
+test "fixture content expands HTTP placeholders after decoding" {
+  let base = "http://127.0.0.1:12345"
+  assert_eq(
+    expand_fixture_content(b"${HTTP_BASE}/fixed\n", http_base=base),
+    b"http://127.0.0.1:12345/fixed\n",
+  )
+  assert_eq(
+    expand_fixture_content(b"plain text", http_base=base),
+    b"plain text",
+  )
+  assert_eq(
+    expand_fixture_content(b"\xff${HTTP_BASE}", http_base=base),
+    b"\xff${HTTP_BASE}",
+  )
+}
+
+///|
 test "fixture paths cannot escape an isolated work directory" {
   assert_true(safe_relative_path("input/data.bin"))
   assert_false(safe_relative_path(""))

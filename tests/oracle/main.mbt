@@ -177,6 +177,16 @@ async fn ensure_directory(path : String) -> Unit {
 }
 
 ///|
+fn expand_fixture_content(content : Bytes, http_base? : String) -> Bytes {
+  guard http_base is Some(base) else { return content }
+  let text = @utf8.decode(content) catch { _ => return content }
+  if !text.contains("${HTTP_BASE}") {
+    return content
+  }
+  @utf8.encode(text.replace_all(old="${HTTP_BASE}", new=base))
+}
+
+///|
 async fn prepare_directory(
   root : String,
   fixture : OracleCase,
@@ -186,21 +196,10 @@ async fn prepare_directory(
     let destination = @path.Path(root).join(Path(file.path)).to_string()
     let parent = @path.Path(destination).dirname().to_string()
     ensure_directory(parent)
-    let content = decode_hex(
-      file.content_hex,
-      fixture.id + " file " + file.path,
+    let content = expand_fixture_content(
+      decode_hex(file.content_hex, fixture.id + " file " + file.path),
+      http_base?,
     )
-    let content = match http_base {
-      Some(base) if file.content_hex
-        .to_lower()
-        .contains("247b485454505f424153457d") =>
-        @utf8.encode(
-          content
-          .to_unchecked_string()
-          .replace_all(old="${HTTP_BASE}", new=base),
-        )
-      _ => content
-    }
     @fs.write_file(destination, content)
   }
 }
