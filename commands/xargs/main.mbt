@@ -95,6 +95,40 @@ async fn read_input() -> String {
 }
 
 ///|
+fn replacement_lines(text : String) -> Array[String] {
+  let result : Array[String] = []
+  for line in text.split("\n") {
+    let value = line.trim().to_owned()
+    if value != "" {
+      result.push(value)
+    }
+  }
+  result
+}
+
+///|
+fn replace_arguments(
+  arguments : Array[String],
+  marker : String,
+  value : String,
+) -> Array[String] {
+  arguments.map(argument => argument.replace_all(old=marker, new=value))
+}
+
+///|
+fn xargs_child_status(status : Int) -> Int {
+  if status == 0 {
+    0
+  } else if status == 255 {
+    124
+  } else if status < 0 {
+    125
+  } else {
+    123
+  }
+}
+
+///|
 async fn main {
   let args = @env.args()[1:]
   let mut null_mode = false
@@ -102,6 +136,7 @@ async fn main {
   let mut verbose = false
   let mut max_args = 0
   let mut max_args_set = false
+  let mut replace : String? = None
   let command : Array[String] = []
   let mut options = true
   let mut i = 0
@@ -115,6 +150,11 @@ async fn main {
       run_empty = true
     } else if options && (arg == "-t" || arg == "--verbose") {
       verbose = true
+    } else if options && arg == "--help" {
+      @stdio.stdout.write(
+        "Usage: xargs [-0rt] [-I REPLACE] [-n MAX-ARGS] [COMMAND [ARG...]]\n",
+      )
+      return
     } else if options && arg == "-n" {
       if i + 1 >= args.length() {
         @stdio.stderr.write("xargs: option requires an argument: -n\n")
@@ -130,6 +170,18 @@ async fn main {
           return
         }
       }
+    } else if options && (arg == "-I" || arg == "--replace") {
+      if i + 1 >= args.length() {
+        @stdio.stderr.write("xargs: option requires an argument: \{arg}\n")
+        @sys.exit(1)
+        return
+      }
+      i += 1
+      replace = Some(args[i])
+    } else if options && arg.has_prefix("--replace=") {
+      replace = Some(arg[10:].to_owned())
+    } else if options && arg.has_prefix("-I") && arg.length() > 2 {
+      replace = Some(arg[2:].to_owned())
     } else if options && arg.has_prefix("--max-args=") {
       max_args_set = true
       max_args = @strconv.from_str(arg[11:]) catch {
@@ -166,7 +218,10 @@ async fn main {
   }
   let values = try {
     let input = read_input()
-    parse_words(input, null_mode)
+    match replace {
+      Some(_) if !null_mode => replacement_lines(input)
+      _ => parse_words(input, null_mode)
+    }
   } catch {
     XargsError(message) => {
       @stdio.stderr.write("xargs: \{message}\n")
@@ -199,6 +254,7 @@ async fn main {
     return
   }
   let mut offset = 0
+  let mut final_status = 0
   let context = @process.ExecutionContext::current()
   if values.is_empty() {
     let code = @process.run(@process.child(program, prefix, context~)) catch {
@@ -222,11 +278,48 @@ async fn main {
       }
     }
     if code != 0 {
-      @sys.exit(code)
+      @sys.exit(xargs_child_status(code))
     }
     return
   }
   while offset < values.length() {
+    if replace is Some(marker) {
+      let batch = replace_arguments(prefix, marker, values[offset])
+      if verbose {
+        @stdio.stderr.write("\{program} \{batch.join(" ")}\n")
+      }
+      let code = @process.run(@process.child(program, batch, context~)) catch {
+        @os_error.OSError(_) as err => {
+          @stdio.stderr.write("xargs: cannot run '\{program}': \{err}\n")
+          @sys.exit(
+            @process.launch_failure_status(
+              if err.is_ENOENT() {
+                CommandNotFound
+              } else {
+                CommandNotInvokable
+              },
+            ),
+          )
+          return
+        }
+        err => {
+          @stdio.stderr.write("xargs: cannot run '\{program}': \{err}\n")
+          @sys.exit(@process.launch_failure_status(CommandNotInvokable))
+          return
+        }
+      }
+      if code != 0 {
+        let status = xargs_child_status(code)
+        if status == 123 {
+          final_status = status
+        } else {
+          @sys.exit(status)
+          return
+        }
+      }
+      offset += 1
+      continue
+    }
     let mut end = offset
     let mut batch_bytes = prefix_bytes
     while end < values.length() && (max_args <= 0 || end - offset < max_args) {
@@ -267,9 +360,17 @@ async fn main {
       }
     }
     if code != 0 {
-      @sys.exit(code)
-      return
+      let status = xargs_child_status(code)
+      if status == 123 {
+        final_status = status
+      } else {
+        @sys.exit(status)
+        return
+      }
     }
     offset = end
+  }
+  if final_status != 0 {
+    @sys.exit(final_status)
   }
 }

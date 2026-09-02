@@ -159,7 +159,9 @@ fn validate_manifest(manifest : Manifest) -> Array[String] {
           "\{fixture.id}: unsupported normalization field '\{normalization.field}'",
         )
       }
-      if !["temporary-path", "path-separator"].contains(normalization.rule) {
+      if !["temporary-path", "path-separator", "working-directory"].contains(
+          normalization.rule,
+        ) {
         failures.push(
           "\{fixture.id}: unsupported normalization rule '\{normalization.rule}'",
         )
@@ -311,13 +313,17 @@ fn normalize_text(
   if !applies {
     return data
   }
-  let mut text = data.to_unchecked_string()
+  let mut text = @utf8.decode(data) catch { _ => return data }
   for rule in rules {
     if rule.field == field {
       match rule.rule {
         "temporary-path" =>
-          text = text.replace_all(old=temporary_root, new="${TMP}")
+          text = text.replace_all(old=temporary_root, new="<TMP>")
         "path-separator" => text = text.replace_all(old="\\", new="/")
+        "working-directory" => {
+          text = text.replace_all(old=temporary_root, new="<WORK>")
+          text = text.replace_all(old="/work", new="<WORK>")
+        }
         _ => ()
       }
     }

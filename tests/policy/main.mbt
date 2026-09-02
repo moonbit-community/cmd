@@ -63,7 +63,7 @@ fn record(condition : Bool, message : String, failures : Array[String]) -> Unit 
 ///|
 async fn check_admission(root : String, failures : Array[String]) -> Unit {
   let expected_restricted = [
-    "chmod", "curl", "env", "make", "sh", "timeout", "wget", "xargs",
+    "chmod", "curl", "env", "find", "make", "sh", "timeout", "wget", "xargs",
   ]
   let catalog = @cli.command_catalog()
   record(
@@ -123,13 +123,13 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
     }
   }
   record(
-    default_count == 40,
-    "default allow tier must contain 40 commands",
+    default_count == 39,
+    "default allow tier must contain 39 commands",
     failures,
   )
   record(
-    restricted_count == 8,
-    "restricted tier must contain 8 commands",
+    restricted_count == 9,
+    "restricted tier must contain 9 commands",
     failures,
   )
   for name in expected_restricted {

@@ -60,10 +60,10 @@ command embeds its own language. `true` and `false` have no option grammar.
 
 The private catalog contains exactly 48 commands.
 
-Core, 32 commands:
+Core, 31 commands:
 
 ```text
-base64 basename cat cmp comm cut dirname echo false find grep head join jq
+base64 basename cat cmp comm cut dirname echo false grep head join jq
 jqlog ls nl paste printenv printf pwd seq sha256sum sleep sort tail test tr
 true uniq wc xxd
 ```
@@ -74,10 +74,10 @@ Extended filesystem mutation, 8 commands:
 cp ln mkdir mv rm rmdir tee touch
 ```
 
-Restricted authority, 8 commands:
+Restricted authority, 9 commands:
 
 ```text
-chmod curl env make sh timeout wget xargs
+chmod curl env find make sh timeout wget xargs
 ```
 
 Each command is implemented as a separate executable module under
@@ -198,8 +198,9 @@ binaries directly without a shell, compares byte output, normalizes only
 diagnostic line endings and temporary paths, and checks edge cases at the
 64 KiB chunk boundary. `--gnu-diff` currently compares only eight commands to
 the host GNU tools under `LC_ALL=C`; it is not a complete compatibility gate.
-The pinned multi-version oracle runner described in the plan must replace that
-subset check. `--stress` adds 1, 16, and 64 MiB
+The pinned Linux oracle manifest now contains 66 Phase 0/2/3/4/5 cases;
+`jqlog` still requires its source-snapshot executable rather than a system
+command substitute. `--stress` adds 1, 16, and 64 MiB
 single-line inputs plus a million-line case.
 
 `tests/policy` is a native MoonBit executable. It runs Wasm commands under

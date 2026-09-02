@@ -8,13 +8,22 @@ priv struct CpOptions {
 
 ///|
 async fn main {
-  let args = @env.args()[1:]
+  let raw_args = @env.args()[1:]
+  let args = raw_args.map(arg => {
+    if arg.has_prefix("--preserve=") {
+      "--preserve"
+    } else {
+      arg
+    }
+  })
   let parsed = @cli.parse(args, [
     @cli.flag("recursive", short='R'),
     @cli.flag("recursive", short='r'),
     @cli.flag("force", short='f'),
     @cli.flag("no-clobber", short='n'),
     @cli.flag("no-target-directory", short='T'),
+    @cli.flag("preserve", short='p'),
+    @cli.flag("archive", short='a'),
     @cli.flag("verbose", short='v'),
     @cli.flag("help"),
   ]) catch {
@@ -25,7 +34,9 @@ async fn main {
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write("Usage: cp [-R] [-f|-n] [-T] [-v] SOURCE... DEST\n")
+    @stdio.stdout.write(
+      "Usage: cp [-R] [-a|-p] [-f|-n] [-T] [-v] SOURCE... DEST\nNote: symbolic-link sources and -a/-p preservation are unavailable without portable readlink/metadata APIs.\n",
+    )
     return
   }
   let operands = parsed.operands
@@ -40,6 +51,13 @@ async fn main {
   }
   if operands.length() < 2 {
     @stdio.stderr.write("cp: missing source or destination operand\n")
+    @sys.exit(1)
+    return
+  }
+  if parsed.contains("preserve") || parsed.contains("archive") {
+    @stdio.stderr.write(
+      "cp: metadata/link preservation is unavailable in the portable filesystem API\n",
+    )
     @sys.exit(1)
     return
   }

@@ -1,10 +1,12 @@
 import {
   "cli/core/process",
   "moonbitlang/async",
+  "moonbitlang/async/fs",
   "moonbitlang/async/os_error",
   "moonbitlang/async/stdio",
   "moonbitlang/core/env" @core_env,
   "moonbitlang/core/strconv",
+  "moonbitlang/x/path",
   "moonbitlang/x/sys",
 }
 

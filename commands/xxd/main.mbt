@@ -76,9 +76,10 @@ async fn dump_stream(
   plain : Bool,
   cols : Int,
   limit : Int?,
+  start_offset : Int64,
 ) -> Unit {
   let pending : Array[Byte] = []
-  let mut offset = 0
+  let mut offset = start_offset.to_int()
   let mut plain_column = 0
   let mut remaining = limit
   while remaining != Some(0) && @stream.read_chunk(reader) is Some(chunk) {
@@ -217,6 +218,50 @@ fn parse_number(
 }
 
 ///|
+fn parse_seek(parsed : @cli.ParsedArgs) -> Int64? raise CliError {
+  match parsed.last_value("seek") {
+    Some(text) => {
+      let value = @string.parse_int64(text) catch {
+        _ => raise CliError("xxd: invalid seek offset: '\{text}'")
+      }
+      if value < 0L {
+        raise CliError("xxd: negative seek offset is not supported")
+      }
+      if value > 2147483647L {
+        raise CliError("xxd: seek offset is too large for this target")
+      }
+      Some(value)
+    }
+    None => None
+  }
+}
+
+///|
+async fn skip_bytes(reader : &@io.Reader, count : Int64) -> Int64 {
+  let buffer : FixedArray[Byte] = FixedArray::make(65536, 0)
+  let mut remaining = count
+  while remaining > 0L {
+    let limit = remaining.min(buffer.length().to_int64()).to_int()
+    let n = reader.read(buffer, max_len=limit)
+    if n == 0 {
+      break
+    }
+    remaining -= n.to_int64()
+  }
+  count - remaining
+}
+
+///|
+async fn write_zero_prefix(count : Int64) -> Unit {
+  let mut remaining = count
+  while remaining > 0L {
+    let length = remaining.min(65536L).to_int()
+    @stdio.stdout.write(Bytes::make(length, b'\x00'))
+    remaining -= length.to_int64()
+  }
+}
+
+///|
 async fn main {
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
@@ -224,6 +269,7 @@ async fn main {
     @cli.flag("reverse", short='r'),
     @cli.option("cols", short='c'),
     @cli.option("len", short='l'),
+    @cli.option("seek", short='s'),
     @cli.flag("help"),
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
@@ -233,7 +279,9 @@ async fn main {
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write("Usage: xxd [-pr] [-c COLS] [-l LEN] [FILE]\n")
+    @stdio.stdout.write(
+      "Usage: xxd [-pr] [-c COLS] [-l LEN] [-s OFFSET] [FILE]\nNote: OFFSET must be nonnegative; addressed reverse patching remains partial.\n",
+    )
     return
   }
   if parsed.operands.length() > 1 {
@@ -243,9 +291,10 @@ async fn main {
   }
   let plain = parsed.contains("plain")
   let reverse = parsed.contains("reverse")
-  let (cols_opt, len_opt) = (
+  let (cols_opt, len_opt, seek_opt) = (
     parse_number(parsed, "cols"),
     parse_number(parsed, "len", minimum=0),
+    parse_seek(parsed),
   ) catch {
     CliError(msg) => {
       @stdio.stderr.write("\{msg}\n")
@@ -262,25 +311,29 @@ async fn main {
   try {
     if path == "-" {
       if reverse {
+        write_zero_prefix(seek_opt.unwrap_or(0L))
         if plain {
           reverse_plain_stream(@stdio.stdin)
         } else {
           reverse_dump_stream(@stdio.stdin)
         }
       } else {
-        dump_stream(@stdio.stdin, plain, cols, len_opt)
+        let skipped = skip_bytes(@stdio.stdin, seek_opt.unwrap_or(0L))
+        dump_stream(@stdio.stdin, plain, cols, len_opt, skipped)
       }
     } else {
       let file = @fs.open(path, mode=ReadOnly)
       defer file.close()
       if reverse {
+        write_zero_prefix(seek_opt.unwrap_or(0L))
         if plain {
           reverse_plain_stream(file)
         } else {
           reverse_dump_stream(file)
         }
       } else {
-        dump_stream(file, plain, cols, len_opt)
+        let skipped = skip_bytes(file, seek_opt.unwrap_or(0L))
+        dump_stream(file, plain, cols, len_opt, skipped)
       }
     }
   } catch {

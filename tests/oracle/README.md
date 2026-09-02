@@ -29,5 +29,7 @@ and an OpenSSL fixture process on the Linux CI host. OpenSSL is an oracle test
 dependency only; no product package invokes it. `${HTTPS_BASE}` is expanded in
 the same way as the HTTP fixture address.
 
-The current manifest has 21 cases: four Phase 0 seeds and seventeen Phase 2
-Wget/curl HTTP/HTTPS cases.
+The current manifest has 66 cases: four Phase 0 seeds, seventeen Phase 2 HTTP
+cases, thirty Phase 3 text/data/path cases, eight Phase 4 filesystem cases, and
+seven Phase 5 process/language cases. `jqlog` remains outside the container
+suite until its pinned source snapshot is built as the oracle executable.

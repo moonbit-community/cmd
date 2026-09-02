@@ -1,9 +1,12 @@
 import {
   "cli/core/cli",
+  "cli/core/stream",
   "moonbitlang/async",
   "moonbitlang/async/fs",
+  "moonbitlang/async/io",
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",
+  "moonbitlang/core/encoding/utf8",
   "moonbitlang/x/sys",
 }
 

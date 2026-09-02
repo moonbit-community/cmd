@@ -871,6 +871,179 @@ async fn run_merge_cases(bin_root : String, failures : Array[String]) -> Unit {
 }
 
 ///|
+async fn run_phase345_cases(
+  bin_root : String,
+  failures : Array[String],
+) -> Unit {
+  let root = @fs.tmpdir(prefix="mooncmd-phase345")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let left = @path.Path(root).join(Path("left")).to_string()
+  let right = @path.Path(root).join(Path("right")).to_string()
+  @fs.write_file(left, b"a left\nb only-left\nc left-c\n")
+  @fs.write_file(right, b"a right\nc right-c\nd only-right\n")
+  let join = @testkit.run(@testkit.executable_path(bin_root, "join"), [
+    "-a", "1", "-a", "2", "-e", "0", "-o", "0,1.2,2.2", left, right,
+  ])
+  record_result(
+    join.status == 0 &&
+    @testkit.bytes_equal(
+      join.stdout,
+      b"a left right\nb only-left 0\nc left-c right-c\nd 0 only-right\n",
+    ),
+    "join: unpaired/output-list behavior mismatch",
+    failures,
+  )
+  expect(
+    bin_root,
+    "cat",
+    ["-b", "-s", "-A"],
+    Some(b"a\n\n\nb\t\x80"),
+    0,
+    b"     1\ta$\n$\n     2\tb^IM-^@$",
+    failures,
+  )
+  expect(
+    bin_root,
+    "xxd",
+    ["-s", "4", "-l", "4"],
+    Some(b"0123456789"),
+    0,
+    b"00000004: 3435 3637                                4567\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "xxd",
+    ["-r", "-p", "-s", "2"],
+    Some(b"6162\n"),
+    0,
+    b"\x00\x00ab",
+    failures,
+  )
+  let find = @testkit.run(@testkit.executable_path(bin_root, "find"), [
+    root,
+    "-maxdepth",
+    "0",
+    "-exec",
+    @testkit.executable_path(bin_root, "false"),
+    ";",
+  ])
+  record_result(
+    find.status == 0 && find.stdout.is_empty(),
+    "find: -exec false must not turn a successful traversal into status 1",
+    failures,
+  )
+  let rejected_find = @testkit.run(@testkit.executable_path(bin_root, "find"), [
+    root,
+    "-maxdepth",
+    "0",
+    "-exec",
+    @testkit.executable_path(bin_root, "true"),
+    "{}",
+    "+",
+  ])
+  record_result(
+    rejected_find.status == 1 &&
+    @testkit.contains_bytes(rejected_find.stderr, "batching is not supported"),
+    "find: unsupported -exec ... + must fail before traversal",
+    failures,
+  )
+  let printf = @testkit.executable_path(bin_root, "printf")
+  expect(
+    bin_root,
+    "xargs",
+    ["-I{}", printf, "<%s>\\n", "{}"],
+    Some(b"first line\nsecond line\n"),
+    0,
+    b"<first line>\n<second line>\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "xargs",
+    [@testkit.executable_path(bin_root, "false")],
+    Some(b"value\n"),
+    123,
+    b"",
+    failures,
+  )
+  expect(
+    bin_root,
+    "env",
+    ["-i", "-0", "B=2", "A=1"],
+    None,
+    0,
+    b"B=2\x00A=1\x00",
+    failures,
+  )
+  let work = @path.Path(root).join(Path("work")).to_string()
+  @fs.mkdir(work)
+  let env = @testkit.run(
+    @testkit.executable_path(bin_root, "env"),
+    ["-C", work, @testkit.executable_path(bin_root, "printenv"), "PHASE345"],
+    extra_env=Map([("PHASE345", "visible")]),
+  )
+  record_result(
+    env.status == 0 && @testkit.bytes_equal(env.stdout, b"visible\n"),
+    "env: -C child execution mismatch",
+    failures,
+  )
+  @fs.write_file(
+    @path.Path(work).join(Path("common.mk")).to_string(),
+    b"VALUE = included\n",
+  )
+  @fs.write_file(
+    @path.Path(work).join(Path("Makefile")).to_string(),
+    b"include common.mk\nVALUE = local\nall:\n\t@printf '%s\\n' '$(VALUE)'\n",
+  )
+  let make = @testkit.run(@testkit.executable_path(bin_root, "make"), [
+    "-s", "-C", work, "VALUE=cli",
+  ])
+  record_result(
+    make.status == 0 && @testkit.bytes_equal(make.stdout, b"cli\n"),
+    "make: include or command-line variable precedence mismatch",
+    failures,
+  )
+  expect(
+    bin_root,
+    "sh",
+    ["-s", "shell-name", "value"],
+    Some(b"printf '%s|%s\\n' \"$0\" \"$1\"\n"),
+    0,
+    b"shell-name|value\n",
+    failures,
+  )
+  let absent_copy = @path.Path(root).join(Path("preserved-copy")).to_string()
+  let cp = @testkit.run(@testkit.executable_path(bin_root, "cp"), [
+    "-p", left, absent_copy,
+  ])
+  record_result(
+    cp.status == 1 && !@fs.exists(absent_copy),
+    "cp: unsupported metadata preservation must fail before creating output",
+    failures,
+  )
+  let absent_touch = @path.Path(root).join(Path("dated")).to_string()
+  let touch = @testkit.run(@testkit.executable_path(bin_root, "touch"), [
+    "-d", "2020-01-01", absent_touch,
+  ])
+  record_result(
+    touch.status == 1 && !@fs.exists(absent_touch),
+    "touch: unsupported timestamp selection must fail before creating output",
+    failures,
+  )
+  let chmod = @testkit.run(@testkit.executable_path(bin_root, "chmod"), [
+    "--reference=" + left,
+    right,
+  ])
+  record_result(
+    chmod.status == 1 &&
+    @testkit.contains_bytes(chmod.stderr, "cannot read permission bits"),
+    "chmod: --reference must fail through the explicit capability path",
+    failures,
+  )
+}
+
+///|
 async fn run_edge_cases(bin_root : String, failures : Array[String]) -> Unit {
   expect(
     bin_root,
@@ -1794,6 +1967,7 @@ async fn main {
     run_filesystem_cases(root, failures)
     run_chunk_boundary_cases(root, failures)
     run_merge_cases(root, failures)
+    run_phase345_cases(root, failures)
     run_edge_cases(root, failures)
     run_stdin_prompt_cases(root, failures)
     run_http_cases(root, failures)

@@ -1,12 +1,14 @@
 ///|
-test "make parser expands variables and merges rule dependencies" {
+async test "make parser expands variables and merges rule dependencies" {
   let database : Database = {
     variables: Map([]),
+    command_line_variables: Map([]),
     rules: Map([]),
     default_target: None,
   }
   parse_makefile(
     "NAME = output\n$(NAME): first\n$(NAME): second\n\tprintf $@:$<:$^\n", database,
+    ".", 0,
   )
   debug_inspect(database.default_target, content="Some(\"output\")")
   guard database.rules.get("output") is Some(rule) else {
@@ -17,13 +19,14 @@ test "make parser expands variables and merges rule dependencies" {
 }
 
 ///|
-test "make parser marks phony targets declared before their rule" {
+async test "make parser marks phony targets declared before their rule" {
   let database : Database = {
     variables: Map([]),
+    command_line_variables: Map([]),
     rules: Map([]),
     default_target: None,
   }
-  parse_makefile(".PHONY: clean\nclean:\n\techo clean\n", database)
+  parse_makefile(".PHONY: clean\nclean:\n\techo clean\n", database, ".", 0)
   guard database.rules.get("clean") is Some(rule) else {
     fail("missing phony rule")
   }

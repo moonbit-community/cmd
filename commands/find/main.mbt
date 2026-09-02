@@ -21,6 +21,8 @@ priv struct FindParser {
   mut min_depth : Int
   mut max_depth : Int
   mut print_zero : Bool
+  mut print_requested : Bool
+  exec_actions : Array[Array[String]]
 }
 
 ///|
@@ -132,10 +134,33 @@ fn FindParser::parse_primary(self : FindParser) -> FindExpr raise FindError {
     }
     "-print" => {
       self.print_zero = false
+      self.print_requested = true
       Always(true)
     }
     "-print0" => {
       self.print_zero = true
+      self.print_requested = true
+      Always(true)
+    }
+    "-exec" => {
+      if self.tokens.any(token => token is ("-o" | "-or" | "!" | "-not")) {
+        raise FindError("-exec with OR or negation is not supported")
+      }
+      let command : Array[String] = []
+      while self.peek() is Some(next) && next != ";" && next != "+" {
+        command.push(self.take())
+      }
+      if command.is_empty() || self.peek() is None {
+        raise FindError("-exec: missing command or terminator")
+      }
+      let terminator = self.take()
+      if terminator == "+" {
+        raise FindError("-exec ... + batching is not supported")
+      }
+      if self.peek() is Some(_) {
+        raise FindError("-exec ... ; must be the final expression action")
+      }
+      self.exec_actions.push(command)
       Always(true)
     }
     "-true" => Always(true)
@@ -245,7 +270,7 @@ async fn main {
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--help" {
     @stdio.stdout.write(
-      "Usage: find [PATH...] [EXPRESSION]\nPredicates: -name, -path, -type, -mindepth, -maxdepth, !, -a, -o, -print, -print0\n",
+      "Usage: find [PATH...] [EXPRESSION]\nPredicates: -name, -path, -type, -mindepth, -maxdepth, !, -a, -o, -print, -print0, -exec COMMAND ;\n",
     )
     return
   }
@@ -273,6 +298,8 @@ async fn main {
     min_depth: 0,
     max_depth: 0x7FFFFFFF,
     print_zero: false,
+    print_requested: false,
+    exec_actions: [],
   }
   let expression = if expression_tokens.is_empty() {
     Always(true)
@@ -308,8 +335,25 @@ async fn main {
     if depth >= parser.min_depth &&
       depth <= parser.max_depth &&
       expression.matches(path, kind) {
-      @stdio.stdout.write(path)
-      @stdio.stdout.write(if parser.print_zero { "\u0000" } else { "\n" })
+      if parser.print_requested || parser.exec_actions.is_empty() {
+        @stdio.stdout.write(path)
+        @stdio.stdout.write(if parser.print_zero { "\u0000" } else { "\n" })
+      }
+      for action in parser.exec_actions {
+        let expanded : Array[String] = []
+        for argument in action {
+          expanded.push(if argument == "{}" { path } else { argument })
+        }
+        guard expanded.get(0) is Some(program) else { continue }
+        ignore(
+          @process.run(@process.child(program, expanded[1:].to_owned())) catch {
+            err => {
+              @stdio.stderr.write("find: \{err}\n")
+              continue
+            }
+          },
+        )
+      }
     }
     if kind == Directory && depth < parser.max_depth {
       let entries = @fs.readdir(

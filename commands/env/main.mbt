@@ -32,6 +32,9 @@ fn is_valid_name(value : String) -> Bool {
 async fn main {
   let args = @core_env.args()[1:]
   let mut ignore_environment = false
+  let mut null_output = false
+  let mut cwd = @core_env.current_dir().unwrap_or(".")
+  let mut chdir_requested = false
   let unset : Array[String] = []
   let assignments : Array[(String, String)] = []
   let command_args : Array[String] = []
@@ -46,6 +49,40 @@ async fn main {
       options = false
     } else if options && (arg == "-i" || arg == "--ignore-environment") {
       ignore_environment = true
+    } else if options && arg == "-" {
+      ignore_environment = true
+    } else if options && (arg == "-0" || arg == "--null") {
+      null_output = true
+    } else if options && (arg == "-C" || arg == "--chdir") {
+      if i + 1 >= args.length() {
+        @stdio.stderr.write("env: option requires an argument: \{arg}\n")
+        @sys.exit(125)
+        return
+      }
+      i += 1
+      chdir_requested = true
+      let directory = @path.Path(args[i])
+      cwd = if directory.is_absolute() {
+        directory.normalize().to_string()
+      } else {
+        @path.Path(cwd).join(directory).normalize().to_string()
+      }
+    } else if options && arg.has_prefix("--chdir=") {
+      chdir_requested = true
+      let directory = @path.Path(arg[8:].to_owned())
+      cwd = if directory.is_absolute() {
+        directory.normalize().to_string()
+      } else {
+        @path.Path(cwd).join(directory).normalize().to_string()
+      }
+    } else if options && arg.has_prefix("-C") && arg.length() > 2 {
+      chdir_requested = true
+      let directory = @path.Path(arg[2:].to_owned())
+      cwd = if directory.is_absolute() {
+        directory.normalize().to_string()
+      } else {
+        @path.Path(cwd).join(directory).normalize().to_string()
+      }
     } else if options && (arg == "-u" || arg == "--unset") {
       if i + 1 >= args.length() {
         @stdio.stderr.write("env: option requires an argument: \{arg}\n")
@@ -85,16 +122,39 @@ async fn main {
       for key, value in variables {
         lines.push("\{key}=\{value}")
       }
-      lines.sort()
       for line in lines {
-        @stdio.stdout.write("\{line}\n")
+        @stdio.stdout.write(line)
+        @stdio.stdout.write(if null_output { "\u0000" } else { "\n" })
       }
     }
     Some(program) => {
-      let context : @process.ExecutionContext = {
-        cwd: @core_env.current_dir().unwrap_or("."),
-        env: variables,
+      if null_output {
+        @stdio.stderr.write("env: cannot specify --null (-0) with command\n")
+        @sys.exit(125)
+        return
       }
+      if chdir_requested {
+        let cwd_kind = @fs.kind(cwd) catch {
+          err => {
+            @stdio.stderr.write(
+              "env: cannot change directory to '\{cwd}': \{err}\n",
+            )
+            @sys.exit(125)
+            return
+          }
+        }
+        match cwd_kind {
+          Directory => ()
+          _ => {
+            @stdio.stderr.write(
+              "env: cannot change directory to '\{cwd}': not a directory\n",
+            )
+            @sys.exit(125)
+            return
+          }
+        }
+      }
+      let context : @process.ExecutionContext = { cwd, env: variables, }
       let code = @process.run(@process.child(program, command_args, context~)) catch {
         @os_error.OSError(_) as err => {
           @stdio.stderr.write("env: cannot run '\{program}': \{err}\n")

@@ -37,7 +37,9 @@ async fn main {
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write("Usage: ln -s [-f] [-T] [-v] TARGET LINK_NAME\n")
+    @stdio.stdout.write(
+      "Usage: ln -s [-f] [-T] [-v] TARGET LINK_NAME\nNote: hard links are unavailable in the portable filesystem API.\n",
+    )
     return
   }
   let operands = parsed.operands
@@ -45,15 +47,15 @@ async fn main {
   let force = parsed.contains("force")
   let no_target_directory = parsed.contains("no-target-directory")
   let verbose = parsed.contains("verbose")
+  if operands.length() < 2 {
+    @stdio.stderr.write("ln: missing operand\n")
+    @sys.exit(1)
+    return
+  }
   if !symbolic {
     @stdio.stderr.write(
       "ln: hard links are unavailable in the portable filesystem API; use -s\n",
     )
-    @sys.exit(2)
-    return
-  }
-  if operands.length() < 2 {
-    @stdio.stderr.write("ln: missing operand\n")
     @sys.exit(1)
     return
   }

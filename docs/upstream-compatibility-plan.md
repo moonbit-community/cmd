@@ -180,6 +180,22 @@ Acceptance: every implemented matrix row passes its GNU oracle cases on Linux
 and the native compatibility runner on macOS and Windows where the behavior is
 portable. Rollback: one command group per pull request/release candidate.
 
+### Phase 3 delivery record (2026-09-03)
+
+The first cross-family text/data slice is delivered in pure MoonBit. The pinned
+manifest now contains thirty Phase 3 cases and, together with the four Phase 0
+seeds, exercises 32 of the 33 Phase 3 commands. `cat` gained streaming GNU
+formatting with cross-file state, `join` gained streaming unpaired/output-list
+behavior, `xxd` gained measured positive seek paths, and `find` gained
+policy-visible `-exec ... ;`. Existing command implementations received a
+portable success fixture across the byte, line, query, path, JSON and status
+groups.
+
+All rows remain `partial`: the fixtures are compatibility slices, not complete
+option/error/locale certification. `jqlog` is deliberately not compared to a
+made-up system executable; its imported source snapshot still needs to be
+built as a dedicated oracle before that row can advance.
+
 ## Phase 4: Filesystem Mutation Commands
 
 Files: `core/fsops`, `commands/cp`, `ln`, `mkdir`, `mv`, `rm`, `rmdir`,
@@ -197,6 +213,21 @@ Files: `core/fsops`, `commands/cp`, `ln`, `mkdir`, `mv`, `rm`, `rmdir`,
 Acceptance: destructive fixtures run in disposable directories and prove both
 success and no-side-effect failure behavior. Rollback: retain current strict
 safety checks until an upstream-equivalent replacement is validated.
+
+### Phase 4 delivery record (2026-09-03)
+
+All eight filesystem mutation commands now have pinned normal-path fixtures;
+the native compatibility suite also proves fail-before-side-effect behavior for
+metadata-preserving copy and selected timestamp requests. Common unavailable
+options are parsed and rejected explicitly in English instead of becoming
+unknown-option failures or partial mutations.
+
+The public-API, composition, dependency and target-conditioned attempts for
+hard links, readlink, metadata, timestamp setters, cross-device moves,
+ownership and special files are recorded in
+[`docs/spikes/2026-09-03-filesystem-primitives.md`](spikes/2026-09-03-filesystem-primitives.md).
+Affected rows remain `partial`; the record does not turn missing kernel
+primitives into a claim of GNU equivalence.
 
 ## Phase 5: Process and Language Commands
 
@@ -218,6 +249,20 @@ Files: `core/process`, `core/shell`, `commands/env`, `make`, `sh`, `xargs`,
 Acceptance: process fixtures have deterministic child programs and verify
 environment, signals/cancellation where available, pipelines, and exit codes.
 Rollback: preserve the local-only `timeout` publication rule.
+
+### Phase 5 delivery record (2026-09-03)
+
+Seven pinned fixtures cover `env` clean/NUL/cwd behavior, `xargs` replacement
+and child status, POSIX shell command/stdin positional parameters, and GNU Make
+include plus command-line variable precedence. `find` is moved to the
+Restricted catalog tier because `-exec` gives it process authority. Native
+children continue to inherit the full environment; Wasm keeps the explicit
+policy boundary.
+
+The remaining POSIX shell and GNU Make language work is catalogued in
+[`docs/spikes/2026-09-03-process-language-phase5.md`](spikes/2026-09-03-process-language-phase5.md).
+Those gaps are implementation work, not accepted permanent exceptions.
+`timeout` remains local-only behind `ProcessGroupCancellation`.
 
 ## Per-Command Definition Of Done
 

@@ -17,7 +17,10 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("base64", Core, FileOrStdin, ByteStream, [FileRead], [
       "decode", "ignore-garbage", "wrap",
     ]),
-    contract("cat", Core, FileOrStdin, ByteStream, [FileRead], ["help"]),
+    contract("cat", Core, FileOrStdin, ByteStream, [FileRead], [
+      "number", "number-nonblank", "show-all", "show-ends", "show-nonprinting", "show-tabs",
+      "squeeze-blank",
+    ]),
     contract("comm", Core, FileOrStdin, LineStream, [FileRead], [
       "1", "2", "3", "help",
     ]),
@@ -29,7 +32,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       "bytes", "lines", "quiet", "verbose",
     ]),
     contract("join", Core, FileOrStdin, LineStream, [FileRead], [
-      "1", "2", "t", "help",
+      "1", "2", "after", "empty", "only", "output", "t", "help",
     ]),
     contract("jq", Core, StructuredInput, StructuredOutput, [FileRead], [
       "compact-output", "from-file", "logs", "null-input", "raw-output",
@@ -62,7 +65,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       "bytes", "chars", "lines", "words",
     ]),
     contract("xxd", Core, FileOrStdin, ByteStream, [FileRead], [
-      "cols", "include", "len", "plain", "revert",
+      "cols", "include", "len", "plain", "revert", "seek",
     ]),
     contract("basename", Core, NoInput, LineStream, [], [
       "multiple", "suffix", "zero",
@@ -80,9 +83,14 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("echo", Core, NoInput, ByteStream, [], [
       "enable-escapes", "disable-escapes", "no-newline",
     ]),
-    contract("find", Core, NoInput, LineStream, [FileRead], [
-      "expression-language",
-    ]),
+    contract(
+      "find",
+      Restricted,
+      NoInput,
+      LineStream,
+      [FileRead, ProcessSpawn],
+      ["expression-language"],
+    ),
     contract("grep", Core, FileOrStdin, LineStream, [FileRead], [
       "count", "extended-regexp", "file", "fixed-strings", "ignore-case", "line-number",
       "recursive", "regexp", "word-regexp",
@@ -102,7 +110,8 @@ pub fn command_catalog() -> Array[CommandContract] {
       "expression-language",
     ]),
     contract("cp", Extended, NoInput, LineStream, [FileRead, FileWrite], [
-      "force", "no-clobber", "no-target-directory", "recursive", "verbose",
+      "archive", "force", "no-clobber", "no-target-directory", "preserve", "recursive",
+      "verbose",
     ]),
     contract("ln", Extended, NoInput, LineStream, [FileWrite, SymbolicLink], [
       "force", "no-target-directory", "symbolic", "verbose",
@@ -120,9 +129,12 @@ pub fn command_catalog() -> Array[CommandContract] {
       "ignore-fail-on-non-empty", "parents", "verbose",
     ]),
     contract("tee", Extended, OptionalStdin, ByteStream, [FileWrite], ["append"]),
-    contract("touch", Extended, NoInput, LineStream, [FileWrite], ["no-create"]),
+    contract("touch", Extended, NoInput, LineStream, [FileWrite], [
+      "access-time", "date", "modification-time", "no-create", "reference", "stamp",
+      "time",
+    ]),
     contract("chmod", Restricted, NoInput, LineStream, [PermissionMutation], [
-      "recursive", "verbose",
+      "recursive", "reference", "verbose",
     ]),
     contract("curl", Restricted, NoInput, ByteStream, [Network, FileWrite], [
       "connect-timeout", "data", "data-binary", "data-raw", "data-urlencode", "fail",
@@ -137,7 +149,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       NoInput,
       LineStream,
       [ProcessSpawn],
-      ["ignore-environment", "unset"],
+      ["chdir", "ignore-environment", "null", "unset"],
       exit_codes=[0, 125, 126, 127],
     ),
     contract(
@@ -154,7 +166,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       FileOrStdin,
       ByteStream,
       [FileRead, FileWrite, ProcessSpawn],
-      ["command"],
+      ["command", "stdin-script"],
     ),
     contract(
       "timeout",
@@ -177,8 +189,8 @@ pub fn command_catalog() -> Array[CommandContract] {
       OptionalStdin,
       LineStream,
       [ProcessSpawn],
-      ["max-args", "no-run-if-empty", "null", "verbose"],
-      exit_codes=[0, 1, 126, 127],
+      ["max-args", "no-run-if-empty", "null", "replace", "verbose"],
+      exit_codes=[0, 1, 123, 124, 125, 126, 127],
     ),
   ]
 }

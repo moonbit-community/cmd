@@ -37,7 +37,9 @@ async fn main {
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write("Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n")
+    @stdio.stdout.write(
+      "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\nNote: MODE currently accepts numeric octal permissions only.\n",
+    )
     return
   }
   let permission = match parsed.last_value("mode") {

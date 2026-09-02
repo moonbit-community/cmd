@@ -68,16 +68,16 @@ These probes are examples, not the complete oracle suite:
 | --- | --- | --- |
 | Implicit terminal stdin for 14 recently changed commands | Prints `reading standard input; send EOF to finish`. | The corresponding original commands silently wait for input; the extra stderr line is incompatible. |
 | `wc` default output | Emits unpadded counts such as `1 2 4`. | GNU `wc` aligns the count columns. |
-| `cat -n` | Rejects the option. | GNU `cat` numbers output lines. |
-| `find . -maxdepth 0 -exec true \;` | Rejects `-exec`. | GNU `find` executes the action. |
-| `join -a 1 FILE1 FILE2` | Rejects `-a`. | GNU `join` emits unpairable lines from the selected input. |
+| `cat -n` | Rejected at spike time; implemented in the Phase 3 slice. | GNU `cat` numbers output lines. |
+| `find . -maxdepth 0 -exec true \;` | Rejected at spike time; one-child `;` execution is implemented in the Phase 3 slice. | GNU `find` executes the action. |
+| `join -a 1 FILE1 FILE2` | Rejected at spike time; `-a`/`-v`/`-e`/`-o` are implemented in the Phase 3 slice. | GNU `join` emits unpairable lines from the selected input. |
 | `ls -l` | Rejects long format. | GNU `ls` prints the documented metadata format. |
-| `touch -r REF FILE` | Rejects reference timestamps. | GNU `touch` copies the reference time. |
-| `xxd -s 1 FILE` | Rejects seek offset. | Vim `xxd` starts at the requested offset. |
+| `touch -r REF FILE` | Now rejects before mutation with the Phase 4 capability diagnostic. | GNU `touch` copies the reference time. |
+| `xxd -s 1 FILE` | Rejected at spike time; positive forward/reverse offsets are implemented in the Phase 3 slice. | Vim `xxd` starts at the requested offset. |
 | `jq --sort-keys .` | Rejects the option. | jq accepts the long option. |
 | Native `env` with an inherited variable | The current child environment policy can omit the variable. | GNU `env` inherits the environment unless explicitly cleared or changed. |
 | POSIX command substitution in `sh` | The current parser/executor rejects the form. | POSIX `sh` evaluates command substitution. |
-| GNU Make `include` | The current implementation reports that include directives are unsupported. | GNU Make loads the included makefile. |
+| GNU Make `include` | Rejected at spike time; relative `include`/`-include`/`sinclude` are implemented in the Phase 5 slice. | GNU Make loads the included makefile. |
 
 The examples confirm a repository-wide pattern: many implementations provide a
 useful core operation, but their option grammar, defaults, output bytes,

@@ -264,6 +264,480 @@
       "environment": {},
       "expected_status": 0,
       "normalizations": []
+    },
+    {
+      "id": "phase3-basename-suffix",
+      "command": "basename",
+      "args": ["path/file.txt", ".txt"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-cat-formatting",
+      "command": "cat",
+      "args": ["-b", "-s", "-A"],
+      "stdin_hex": "610a0a0a620980",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-cmp-equal",
+      "command": "cmp",
+      "args": ["left", "right"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "left", "content_hex": "73616d650a" },
+        { "path": "right", "content_hex": "73616d650a" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-comm-columns",
+      "command": "comm",
+      "args": ["left", "right"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "left", "content_hex": "610a620a" },
+        { "path": "right", "content_hex": "620a630a" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-cut-field",
+      "command": "cut",
+      "args": ["-d:", "-f2"],
+      "stdin_hex": "613a6f6e650a623a74776f0a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-dirname-basic",
+      "command": "dirname",
+      "args": ["path/to/file"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-echo-basic",
+      "command": "echo",
+      "args": ["hello", "world"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-find-exec-status",
+      "command": "find",
+      "args": [".", "-maxdepth", "0", "-exec", "false", ";"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-grep-stdin",
+      "command": "grep",
+      "args": ["needle"],
+      "stdin_hex": "6e6f0a6e6565646c650a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-head-line-count",
+      "command": "head",
+      "args": ["-n", "1"],
+      "stdin_hex": "6f6e650a74776f0a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-join-unpaired-output-list",
+      "command": "join",
+      "args": ["-a", "1", "-a", "2", "-e", "0", "-o", "0,1.2,2.2", "left", "right"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "left", "content_hex": "61206c6566740a62206f6e6c792d6c6566740a63206c6566742d630a" },
+        { "path": "right", "content_hex": "612072696768740a632072696768742d630a64206f6e6c792d72696768740a" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-jq-property",
+      "command": "jq",
+      "args": [".name"],
+      "stdin_hex": "7b226e616d65223a226d6f6f6e227d0a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-ls-basic",
+      "command": "ls",
+      "args": [],
+      "stdin_hex": "",
+      "files": [
+        { "path": "alpha", "content_hex": "61" },
+        { "path": "beta", "content_hex": "62" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-nl-empty",
+      "command": "nl",
+      "args": [],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-paste-parallel",
+      "command": "paste",
+      "args": ["left", "right"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "left", "content_hex": "310a320a" },
+        { "path": "right", "content_hex": "610a620a" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-printenv-selected",
+      "command": "printenv",
+      "args": ["ORACLE_VALUE"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": { "ORACLE_VALUE": "visible" },
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-printf-format",
+      "command": "printf",
+      "args": ["%s=%d\\n", "answer", "42"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-pwd-working-directory",
+      "command": "pwd",
+      "args": [],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "candidate cases use a temporary path while the pinned container mounts the same case at /work"
+        }
+      ]
+    },
+    {
+      "id": "phase3-seq-basic",
+      "command": "seq",
+      "args": ["1", "3"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-sha256sum-stdin",
+      "command": "sha256sum",
+      "args": [],
+      "stdin_hex": "68656c6c6f0a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-sleep-zero",
+      "command": "sleep",
+      "args": ["0"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-sort-basic",
+      "command": "sort",
+      "args": [],
+      "stdin_hex": "620a610a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-tail-line-count",
+      "command": "tail",
+      "args": ["-n", "1"],
+      "stdin_hex": "6f6e650a74776f0a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-test-string",
+      "command": "test",
+      "args": ["value", "=", "value"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-tr-range",
+      "command": "tr",
+      "args": ["a-z", "A-Z"],
+      "stdin_hex": "68656c6c6f0a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-true-status",
+      "command": "true",
+      "args": [],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-uniq-adjacent",
+      "command": "uniq",
+      "args": [],
+      "stdin_hex": "610a610a620a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-wc-lines",
+      "command": "wc",
+      "args": ["-l"],
+      "stdin_hex": "610a620a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-xxd-seek",
+      "command": "xxd",
+      "args": ["-s", "4", "-l", "4"],
+      "stdin_hex": "30313233343536373839",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-xxd-reverse-seek",
+      "command": "xxd",
+      "args": ["-r", "-p", "-s", "2"],
+      "stdin_hex": "363136320a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase4-cp-regular",
+      "command": "cp",
+      "args": ["source", "copy"],
+      "stdin_hex": "",
+      "files": [{ "path": "source", "content_hex": "7061796c6f61640a" }],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase4-ln-symbolic",
+      "command": "ln",
+      "args": ["-s", "source", "link"],
+      "stdin_hex": "",
+      "files": [{ "path": "source", "content_hex": "7061796c6f61640a" }],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase4-mkdir-parents",
+      "command": "mkdir",
+      "args": ["-p", "nested/dir"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase4-mv-regular",
+      "command": "mv",
+      "args": ["source", "moved"],
+      "stdin_hex": "",
+      "files": [{ "path": "source", "content_hex": "7061796c6f61640a" }],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase4-rm-regular",
+      "command": "rm",
+      "args": ["removed"],
+      "stdin_hex": "",
+      "files": [{ "path": "removed", "content_hex": "7061796c6f61640a" }],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase4-rmdir-ignore-nonempty",
+      "command": "rmdir",
+      "args": ["--ignore-fail-on-non-empty", "nonempty"],
+      "stdin_hex": "",
+      "files": [{ "path": "nonempty/kept", "content_hex": "78" }],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase4-touch-create",
+      "command": "touch",
+      "args": ["created"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase4-chmod-numeric",
+      "command": "chmod",
+      "args": ["600", "file"],
+      "stdin_hex": "",
+      "files": [{ "path": "file", "content_hex": "7061796c6f61640a" }],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase5-env-clean-null",
+      "command": "env",
+      "args": ["-i", "-0", "VALUE=visible"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase5-env-chdir",
+      "command": "env",
+      "args": ["-C", "sub", "printenv", "VALUE"],
+      "stdin_hex": "",
+      "files": [{ "path": "sub/kept", "content_hex": "78" }],
+      "environment": { "VALUE": "visible" },
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase5-xargs-replace",
+      "command": "xargs",
+      "args": ["-I{}", "printf", "<%s>\\n", "{}"],
+      "stdin_hex": "6669727374206c696e650a7365636f6e64206c696e650a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase5-xargs-child-status",
+      "command": "xargs",
+      "args": ["false"],
+      "stdin_hex": "76616c75650a",
+      "files": [],
+      "environment": {},
+      "expected_status": 123,
+      "normalizations": []
+    },
+    {
+      "id": "phase5-sh-command-positional",
+      "command": "sh",
+      "args": ["-c", "echo \"$1\"", "shell", "value"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase5-sh-stdin-positional",
+      "command": "sh",
+      "args": ["-s", "shell-name", "value"],
+      "stdin_hex": "7072696e7466202725737c25735c6e27202224302220222431220a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase5-make-include-cli-variable",
+      "command": "make",
+      "args": ["-s", "VALUE=cli"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "common.mk", "content_hex": "56414c5545203d20696e636c756465640a" },
+        { "path": "Makefile", "content_hex": "696e636c75646520636f6d6d6f6e2e6d6b0a56414c5545203d206c6f63616c0a616c6c3a0a09407072696e7466202725735c6e272027242856414c554529270a" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
     }
   ]
 }

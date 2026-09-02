@@ -85,6 +85,7 @@ async fn main {
   let parsed = @cli.parse(args, [
     @cli.flag("recursive", short='R'),
     @cli.flag("verbose", short='v'),
+    @cli.option("reference"),
     @cli.flag("help"),
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
@@ -94,14 +95,30 @@ async fn main {
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write("Usage: chmod [-R] [-v] MODE FILE...\n")
+    @stdio.stdout.write(
+      "Usage: chmod [-R] [-v] MODE FILE...\n       chmod [-R] [-v] --reference=RFILE FILE...\nNote: symbolic modes and --reference are unavailable without portable permission reads.\n",
+    )
+    return
+  }
+  if parsed.contains("reference") {
+    if parsed.operands.is_empty() {
+      @stdio.stderr.write("chmod: missing operand\n")
+      @sys.exit(1)
+      return
+    }
+    @stdio.stderr.write(
+      "chmod: --reference is unavailable: the portable filesystem API cannot read permission bits\n",
+    )
+    @sys.exit(1)
     return
   }
   let selected_mode = match parsed.operands.get(0) {
     Some(value) =>
       parse_mode(value) catch {
         _ => {
-          @stdio.stderr.write("chmod: invalid mode: {value}\n")
+          @stdio.stderr.write(
+            "chmod: symbolic modes and invalid numeric mode are unsupported: \{value}\n",
+          )
           @sys.exit(2)
           return
         }

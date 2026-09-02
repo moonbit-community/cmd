@@ -13,6 +13,7 @@ async fn main {
   let mut index = 0
   let mut command : String? = None
   let mut script_path : String? = None
+  let mut stdin_script = false
   let mut options = true
   while index < arguments.length() && command is None && script_path is None {
     let argument = arguments[index]
@@ -26,6 +27,10 @@ async fn main {
       }
       command = Some(arguments[index + 1])
       index += 2
+    } else if options && argument == "-s" {
+      stdin_script = true
+      index += 1
+      break
     } else if options && argument.has_prefix("-") && argument != "-" {
       @stdio.stderr.write("sh: unsupported option '\{argument}'\n")
       @sys.exit(2)
@@ -45,9 +50,19 @@ async fn main {
       (value, shell_name, args)
     }
     None =>
-      match script_path {
-        Some(path) => (read_script(path), path, arguments[index:].to_owned())
-        None => (@stdio.stdin.read_all().text(), "sh", [])
+      if stdin_script {
+        let shell_name = arguments.get(index).unwrap_or("sh")
+        let args = if index < arguments.length() {
+          arguments[index + 1:].to_owned()
+        } else {
+          []
+        }
+        (@stdio.stdin.read_all().text(), shell_name, args)
+      } else {
+        match script_path {
+          Some(path) => (read_script(path), path, arguments[index:].to_owned())
+          None => (@stdio.stdin.read_all().text(), "sh", [])
+        }
       }
   }
   let status = @shell.run(script, name~, args=positional) catch {

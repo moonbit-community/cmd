@@ -26,7 +26,9 @@ async fn main {
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write("Usage: rm [-f] [-r|-R] [-d] [-v] FILE...\n")
+    @stdio.stdout.write(
+      "Usage: rm [-f] [-r|-R] [-d] [-v] FILE...\nNote: root and current-directory protection cannot be disabled.\n",
+    )
     return
   }
   if parsed.contains("no-preserve-root") {

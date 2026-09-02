@@ -52,6 +52,25 @@ test "undeclared normalization preserves binary bytes" {
 }
 
 ///|
+test "working-directory normalization maps local and container roots" {
+  let rules : Array[Normalization] = [
+    {
+      field: "stdout",
+      rule: "working-directory",
+      comment: "oracle containers mount each case at /work",
+    },
+  ]
+  assert_eq(
+    normalize_text(b"/tmp/case/sub\n", "stdout", rules, "/tmp/case"),
+    b"<WORK>/sub\n",
+  )
+  assert_eq(
+    normalize_text(b"/work/sub\n", "stdout", rules, "/oracle/root"),
+    b"<WORK>/sub\n",
+  )
+}
+
+///|
 test "byte differences identify offset and length" {
   assert_true(first_byte_difference(b"abc", b"axc").contains("at 1"))
   assert_true(first_byte_difference(b"abc", b"abcx").contains("length differs"))

@@ -20,6 +20,7 @@ struct Rule {
 ///|
 struct Database {
   variables : Map[String, Variable]
+  command_line_variables : Map[String, Bool]
   rules : Map[String, Rule]
   mut default_target : String?
 }
@@ -175,11 +176,15 @@ fn parse_assignment(line : String) -> (String, String, String)? {
 
 ///|
 fn assign_variable(
-  variables : Map[String, Variable],
+  database : Database,
   name : String,
   operator : String,
   value : String,
 ) -> Unit raise MakeError {
+  if database.command_line_variables.contains(name) {
+    return
+  }
+  let variables = database.variables
   match operator {
     "?=" =>
       if !variables.contains(name) {
@@ -238,10 +243,15 @@ fn logical_lines(contents : String) -> Array[String] raise MakeError {
 }
 
 ///|
-fn parse_makefile(
+async fn parse_makefile(
   contents : String,
   database : Database,
-) -> Unit raise MakeError {
+  source_directory : String,
+  depth : Int,
+) -> Unit {
+  if depth > 64 {
+    raise MakeError("include nesting exceeds the recursion limit")
+  }
   let mut current_rules : Array[Rule] = []
   for line_number, source_line in logical_lines(contents) {
     if source_line.has_prefix("\t") {
@@ -259,11 +269,36 @@ fn parse_makefile(
     if line == "" {
       continue
     }
-    if line.has_prefix("include ") || line.has_prefix("-include ") {
-      raise MakeError("include directives are not supported")
+    if line.has_prefix("include ") ||
+      line.has_prefix("-include ") ||
+      line.has_prefix("sinclude ") {
+      let optional = line.has_prefix("-include ") ||
+        line.has_prefix("sinclude ")
+      let names = if line.has_prefix("-include ") {
+        line[9:].to_owned()
+      } else if line.has_prefix("sinclude ") {
+        line[9:].to_owned()
+      } else {
+        line[8:].to_owned()
+      }
+      let expanded = expand(names, database.variables, {}, 0)
+      for name in split_words(expanded) {
+        let included = path_in(source_directory, name)
+        if @fs.exists(included) {
+          parse_makefile(
+            @fs.read_file(included).text(),
+            database,
+            @path.Path(included).dirname().to_string(),
+            depth + 1,
+          )
+        } else if !optional {
+          raise MakeError("included makefile not found: \{name}")
+        }
+      }
+      continue
     }
     if parse_assignment(line) is Some((name, operator, value)) {
-      assign_variable(database.variables, name, operator, value)
+      assign_variable(database, name, operator, value)
       continue
     }
     guard line.split_once(":") is Some((targets_text, deps_text)) else {
@@ -527,13 +562,25 @@ async fn run(arguments : Array[String]) -> Unit {
   for name, value in @process.default_environment() {
     variables[name] = { value, immediate: true, }
   }
-  let database : Database = { variables, rules: {}, default_target: None, }
-  let makefile = choose_makefile(cwd, requested_file)
-  parse_makefile(@fs.read_file(makefile).text(), database)
+  let command_line_variables : Map[String, Bool] = Map([])
   for assignment in cli_assignments {
     let (name, value) = assignment
-    database.variables[name] = { value, immediate: true, }
+    variables[name] = { value, immediate: true, }
+    command_line_variables[name] = true
   }
+  let database : Database = {
+    variables,
+    command_line_variables,
+    rules: {},
+    default_target: None,
+  }
+  let makefile = choose_makefile(cwd, requested_file)
+  parse_makefile(
+    @fs.read_file(makefile).text(),
+    database,
+    @path.Path(makefile).dirname().to_string(),
+    0,
+  )
   let requested_targets = if targets.is_empty() {
     match database.default_target {
       Some(value) => [value]

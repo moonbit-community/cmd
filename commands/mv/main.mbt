@@ -22,7 +22,9 @@ async fn main {
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write("Usage: mv [-f|-n] [-T] [-v] SOURCE... DEST\n")
+    @stdio.stdout.write(
+      "Usage: mv [-f|-n] [-T] [-v] SOURCE... DEST\nNote: cross-filesystem fallback is unavailable; a failed rename leaves SOURCE intact.\n",
+    )
     return
   }
   let operands = parsed.operands

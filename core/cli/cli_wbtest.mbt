@@ -36,7 +36,7 @@ test "catalog records shared child launch outcomes without owning diagnostics" {
   guard find_contract("xargs") is Some(xargs) else {
     fail("missing xargs contract")
   }
-  assert_eq(xargs.exit_codes, [0, 1, 126, 127])
+  assert_eq(xargs.exit_codes, [0, 1, 123, 124, 125, 126, 127])
 }
 
 ///|
