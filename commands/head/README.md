@@ -14,5 +14,5 @@ Input is streamed in fixed-size chunks and reading stops as soon as the
 quota is met, so heading a huge file (or an endless pipe) is instant and
 uses constant memory. Binary data passes through unchanged.
 
-With no file operand, an interactive terminal receives an EOF waiting prompt;
-piped, redirected, and explicit `-` input remain silent.
+With no file operand, the command silently reads stdin until EOF or the quota
+is satisfied; terminal, pipe, redirection, and explicit `-` paths are clean.

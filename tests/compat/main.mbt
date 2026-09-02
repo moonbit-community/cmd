@@ -524,7 +524,7 @@ async fn run_environment_boundary_cases(
   failures : Array[String],
 ) -> Unit {
   let secret_name = "MOOXCLI_COMPAT_SECRET"
-  let secret_value = "must-not-cross-process-boundary"
+  let secret_value = "must-cross-native-process-boundary"
   let injected : Map[String, String] = Map([(secret_name, secret_value)])
   let sh = @testkit.run(
     @testkit.executable_path(bin_root, "sh"),
@@ -537,8 +537,8 @@ async fn run_environment_boundary_cases(
     }
   }
   record_result(
-    sh.status == 0 && !@testkit.contains_bytes(sh.stdout, secret_name),
-    "sh: parent environment variable crossed the default shell boundary",
+    sh.status == 0 && @testkit.contains_bytes(sh.stdout, secret_value),
+    "sh: parent environment variable did not cross the native shell boundary",
     failures,
   )
 
@@ -557,8 +557,8 @@ async fn run_environment_boundary_cases(
     }
   }
   record_result(
-    make.status == 0 && !@testkit.contains_bytes(make.stdout, secret_name),
-    "make: parent environment variable crossed the recipe boundary",
+    make.status == 0 && @testkit.contains_bytes(make.stdout, secret_value),
+    "make: parent environment variable did not cross the native recipe boundary",
     failures,
   )
 
@@ -575,8 +575,8 @@ async fn run_environment_boundary_cases(
     }
   }
   record_result(
-    xargs.status == 1 && xargs.stdout.is_empty(),
-    "xargs: parent environment variable crossed the child boundary",
+    xargs.status == 0 && @testkit.contains_bytes(xargs.stdout, secret_value),
+    "xargs: parent environment variable did not cross the native child boundary",
     failures,
   )
 
@@ -591,8 +591,8 @@ async fn run_environment_boundary_cases(
     }
   }
   record_result(
-    env.status == 1 && env.stdout.is_empty(),
-    "env: parent environment variable crossed the default child boundary",
+    env.status == 0 && @testkit.contains_bytes(env.stdout, secret_value),
+    "env: parent environment variable did not cross the native child boundary",
     failures,
   )
 }

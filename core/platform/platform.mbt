@@ -5,6 +5,22 @@ pub(all) enum Platform {
 } derive(Eq, Debug)
 
 ///|
+pub(all) enum StandardStream {
+  Stdin
+  Stdout
+  Stderr
+} derive(Eq, Debug)
+
+///|
+/// Terminal-sensitive output is command policy, not a side effect of reading
+/// stdin. `IfTerminal` is suitable only when the pinned upstream command uses
+/// dynamic terminal feedback for that stream.
+pub(all) enum TerminalPolicy {
+  Silent
+  IfTerminal
+} derive(Eq, Debug)
+
+///|
 pub fn current() -> Platform {
   if @path.sep == '\\' {
     Windows
@@ -51,13 +67,35 @@ pub fn normalize_input_separators(path : String) -> String {
 /// Errors and non-terminal inputs are treated as non-interactive so that
 /// pipelines and redirected input keep their normal blocking semantics.
 pub async fn stdin_is_terminal() -> Bool {
-  stdio_is_terminal(0)
+  is_terminal(Stdin)
+}
+
+///|
+/// Return whether standard output is a proven interactive character device.
+pub async fn stdout_is_terminal() -> Bool {
+  is_terminal(Stdout)
 }
 
 ///|
 /// Return whether standard error is an interactive character device.
 pub async fn stderr_is_terminal() -> Bool {
-  stdio_is_terminal(2)
+  is_terminal(Stderr)
+}
+
+///|
+pub fn terminal_policy_allows(
+  policy : TerminalPolicy,
+  proven_terminal : Bool,
+) -> Bool {
+  policy == IfTerminal && proven_terminal
+}
+
+///|
+pub async fn terminal_output_enabled(
+  policy : TerminalPolicy,
+  stream : StandardStream,
+) -> Bool {
+  terminal_policy_allows(policy, is_terminal(stream))
 }
 
 ///|
@@ -65,12 +103,15 @@ pub async fn stderr_is_terminal() -> Bool {
 /// expose the kind recorded on the returned file handle. Windows keeps the
 /// conservative false result because `CONIN$`/`CONOUT$` do not describe
 /// redirected handles.
-async fn stdio_is_terminal(fd : Int) -> Bool {
+pub async fn is_terminal(stream : StandardStream) -> Bool {
   if is_windows() {
     return false
   }
-  let path = if fd == 0 { "/dev/fd/0" } else { "/dev/fd/2" }
-  let mode = if fd == 0 { @fs.Mode::ReadOnly } else { @fs.Mode::WriteOnly }
+  let (path, mode) = match stream {
+    Stdin => ("/dev/fd/0", @fs.Mode::ReadOnly)
+    Stdout => ("/dev/fd/1", @fs.Mode::WriteOnly)
+    Stderr => ("/dev/fd/2", @fs.Mode::WriteOnly)
+  }
   let file = @fs.open(path, mode~) catch { _ => return false }
   defer file.close()
   file.kind() is @fs.FileKind::CharDevice

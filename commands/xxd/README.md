@@ -13,5 +13,5 @@ Options: `-p` plain hex, `-r` reverse (with or without `-p`), `-c N` bytes
 per line (default 16, or 30 with `-p`), `-l N` stop after N bytes.
 Reverse mode ignores offsets and concatenates the hex columns in order.
 
-With no file operand, an interactive terminal receives an EOF waiting prompt;
-piped, redirected, and explicit `-` input remain silent.
+With no file operand, the command silently reads stdin until EOF, matching the
+upstream terminal, pipe, redirection, and explicit `-` behavior.

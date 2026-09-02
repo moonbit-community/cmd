@@ -200,7 +200,6 @@ async fn main {
   let total = Counts::new()
   let mut failed = false
   if files.is_empty() {
-    @cli.warn_stdin_wait("wc")
     let counts = count_reader(@stdio.stdin)
     @stdio.stdout.write(render_counts(counts, selection, None) + "\n")
   } else {

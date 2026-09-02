@@ -259,9 +259,6 @@ async fn main {
   }
   let inputs = parsed.operands
   let path = if inputs.is_empty() { "-" } else { inputs[0] }
-  if inputs.is_empty() {
-    @cli.warn_stdin_wait("xxd")
-  }
   try {
     if path == "-" {
       if reverse {

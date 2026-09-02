@@ -17,16 +17,17 @@ async fn main {
   }
   let paths = parsed.operands
   let append = parsed.contains("append")
-  @cli.warn_stdin_wait("tee")
   let outputs : Array[@fs.File] = []
   let active : Array[Bool] = []
   let mut failed = false
   for path in paths {
-    let file = @fs.open(
+    let file = @fsops.open_output(
       path,
-      mode=WriteOnly,
-      append~,
-      create_mode=if append { OpenOrCreate } else { CreateOrTruncate },
+      if append {
+        AppendOrCreate
+      } else {
+        CreateOrTruncate
+      },
     ) catch {
       err => {
         @stdio.stderr.write("tee: cannot open '\{path}': \{err}\n")

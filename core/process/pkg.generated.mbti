@@ -1,10 +1,16 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "cli/core/process"
 
+import {
+  "moonbitlang/core/debug",
+}
+
 // Values
 pub fn child(String, Array[String], context? : ExecutionContext) -> ChildSpec
 
 pub fn default_environment() -> Map[String, String]
+
+pub fn launch_failure_status(LaunchFailure) -> Int
 
 pub fn pipe() -> (&@moonbitlang/async/process.ProcessInput, &@moonbitlang/async/process.ProcessOutput) raise
 
@@ -28,6 +34,11 @@ pub(all) struct ExecutionContext {
   env : Map[String, String]
 }
 pub fn ExecutionContext::current() -> Self
+
+pub(all) enum LaunchFailure {
+  CommandNotFound
+  CommandNotInvokable
+} derive(Eq, @debug.Debug)
 
 // Type aliases
 

@@ -164,9 +164,6 @@ async fn main {
   let check = parsed.contains("check")
   let zero = parsed.contains("zero")
   let sources = if files.is_empty() { ["-"] } else { files }
-  if files.is_empty() {
-    @cli.warn_stdin_wait("sha256sum")
-  }
   let mut failed = false
   if check {
     if zero {

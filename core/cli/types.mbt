@@ -158,20 +158,6 @@ pub fn parse_idle_timeout(value : String) -> Int raise CliError {
 }
 
 ///|
-/// Announce an implicit stdin read only when both stdin and stderr are
-/// connected to terminals. Redirected and piped input remains silent.
-pub async fn warn_stdin_wait(command : String) -> Unit {
-  if @platform.stdin_is_terminal() && @platform.stderr_is_terminal() {
-    @stdio.stderr.write(stdin_wait_message(command))
-  }
-}
-
-///|
-fn stdin_wait_message(command : String) -> String {
-  "\{command}: reading standard input; send EOF to finish\n"
-}
-
-///|
 pub(all) struct CommandContract {
   name : String
   tier : CompatibilityTier

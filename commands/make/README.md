@@ -8,3 +8,7 @@ through `cli`'s MoonBit shell interpreter.
 Each external command in a recipe is launched through the policy-visible
 MoonBit process API. Unsupported Make extensions fail explicitly; the complete
 Makefile is never forwarded to a host `make` executable.
+
+Native recipes inherit the complete parent environment plus Make variables.
+Wasm recipes start from the explicit restricted environment and remain subject
+to the host process policy.

@@ -164,7 +164,6 @@ async fn main {
     @sys.exit(1)
     return
   }
-  @cli.warn_stdin_wait("xargs")
   let values = try {
     let input = read_input()
     parse_words(input, null_mode)
@@ -205,12 +204,20 @@ async fn main {
     let code = @process.run(@process.child(program, prefix, context~)) catch {
       @os_error.OSError(_) as err => {
         @stdio.stderr.write("xargs: cannot run '\{program}': \{err}\n")
-        @sys.exit(if err.is_ENOENT() { 127 } else { 126 })
+        @sys.exit(
+          @process.launch_failure_status(
+            if err.is_ENOENT() {
+              CommandNotFound
+            } else {
+              CommandNotInvokable
+            },
+          ),
+        )
         return
       }
       err => {
         @stdio.stderr.write("xargs: cannot run '\{program}': \{err}\n")
-        @sys.exit(126)
+        @sys.exit(@process.launch_failure_status(CommandNotInvokable))
         return
       }
     }
@@ -242,12 +249,20 @@ async fn main {
     let code = @process.run(@process.child(program, batch, context~)) catch {
       @os_error.OSError(_) as err => {
         @stdio.stderr.write("xargs: cannot run '\{program}': \{err}\n")
-        @sys.exit(if err.is_ENOENT() { 127 } else { 126 })
+        @sys.exit(
+          @process.launch_failure_status(
+            if err.is_ENOENT() {
+              CommandNotFound
+            } else {
+              CommandNotInvokable
+            },
+          ),
+        )
         return
       }
       err => {
         @stdio.stderr.write("xargs: cannot run '\{program}': \{err}\n")
-        @sys.exit(126)
+        @sys.exit(@process.launch_failure_status(CommandNotInvokable))
         return
       }
     }

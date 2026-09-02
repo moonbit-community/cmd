@@ -28,6 +28,18 @@ test "only timeout requires process-group cancellation" {
 }
 
 ///|
+test "catalog records shared child launch outcomes without owning diagnostics" {
+  guard find_contract("env") is Some(environment) else {
+    fail("missing env contract")
+  }
+  assert_eq(environment.exit_codes, [0, 125, 126, 127])
+  guard find_contract("xargs") is Some(xargs) else {
+    fail("missing xargs contract")
+  }
+  assert_eq(xargs.exit_codes, [0, 1, 126, 127])
+}
+
+///|
 test "parse option forms and operands" {
   let specs = [
     flag("all", short='a'),
@@ -64,14 +76,6 @@ test "parse rejects missing, unknown, and duplicate options" {
   } noraise {
     _ => fail("expected duplicate-option error")
   }
-}
-
-///|
-test "stdin wait message identifies the command and EOF action" {
-  assert_eq(
-    stdin_wait_message("cat"),
-    "cat: reading standard input; send EOF to finish\n",
-  )
 }
 
 ///|

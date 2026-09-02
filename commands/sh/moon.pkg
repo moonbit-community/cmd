@@ -1,5 +1,4 @@
 import {
-  "cli/core/cli",
   "cli/core/shell",
   "moonbitlang/async",
   "moonbitlang/async/fs",

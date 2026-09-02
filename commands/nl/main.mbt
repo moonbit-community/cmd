@@ -92,9 +92,6 @@ async fn main {
   let separator = parsed.last_value("number-separator").unwrap_or("\t")
   let files = parsed.operands
   let sources = if files.is_empty() { ["-"] } else { files }
-  if files.is_empty() {
-    @cli.warn_stdin_wait("nl")
-  }
   let number = Ref(1)
   let mut failed = false
   for path in sources {

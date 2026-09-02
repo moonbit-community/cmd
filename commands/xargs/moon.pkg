@@ -1,5 +1,4 @@
 import {
-  "cli/core/cli",
   "cli/core/process",
   "moonbitlang/async",
   "moonbitlang/async/os_error",

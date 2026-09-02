@@ -11,5 +11,5 @@ Bytes pass through unmodified — no UTF-8 decoding and no newline
 normalization, so binary data is safe. Use `-` (or no argument) to read
 stdin. No formatting flags.
 
-With no file operand, an interactive terminal receives an EOF waiting prompt;
-piped, redirected, and explicit `-` input remain silent.
+With no file operand, the command silently reads stdin until EOF, matching the
+upstream terminal, pipe, redirection, and explicit `-` behavior.

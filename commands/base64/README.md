@@ -12,5 +12,5 @@ Options: `-d` decode (whitespace in the input is ignored), `-w N` wrap
 encoded output after N characters (default 76, `0` disables). Standard
 alphabet with `=` padding.
 
-With no file operand, an interactive terminal receives an EOF waiting prompt;
-piped, redirected, and explicit `-` input remain silent.
+With no file operand, the command silently reads stdin until EOF, matching the
+upstream terminal, pipe, redirection, and explicit `-` behavior.

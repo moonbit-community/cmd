@@ -127,9 +127,15 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("curl", Restricted, NoInput, ByteStream, [Network, FileWrite], [
       "fail", "idle-timeout", "output", "show-error", "silent",
     ]),
-    contract("env", Restricted, NoInput, LineStream, [ProcessSpawn], [
-      "ignore-environment", "unset",
-    ]),
+    contract(
+      "env",
+      Restricted,
+      NoInput,
+      LineStream,
+      [ProcessSpawn],
+      ["ignore-environment", "unset"],
+      exit_codes=[0, 125, 126, 127],
+    ),
     contract(
       "make",
       Restricted,
@@ -158,9 +164,15 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("wget", Restricted, NoInput, ByteStream, [Network, FileWrite], [
       "idle-timeout", "output-document", "output-file", "quiet",
     ]),
-    contract("xargs", Restricted, OptionalStdin, LineStream, [ProcessSpawn], [
-      "max-args", "no-run-if-empty", "null", "verbose",
-    ]),
+    contract(
+      "xargs",
+      Restricted,
+      OptionalStdin,
+      LineStream,
+      [ProcessSpawn],
+      ["max-args", "no-run-if-empty", "null", "verbose"],
+      exit_codes=[0, 1, 126, 127],
+    ),
   ]
 }
 

@@ -17,23 +17,41 @@ fn allowed_environment_name(name : String, windows : Bool) -> Bool {
 }
 
 ///|
-fn sanitize_environment(source : Map[String, String]) -> Map[String, String] {
+priv enum EnvironmentPolicy {
+  NativeCompatible
+  WasmRestricted
+} derive(Eq)
+
+///|
+fn environment_with_policy(
+  source : Map[String, String],
+  policy : EnvironmentPolicy,
+  windows? : Bool = false,
+) -> Map[String, String] {
   let result : Map[String, String] = Map([])
-  let windows = @platform.is_windows()
   for name, value in source {
-    if allowed_environment_name(name, windows) {
+    if policy == NativeCompatible || allowed_environment_name(name, windows) {
       result[name] = value
     }
   }
-  // Keep child text classification deterministic even when the host locale is not.
-  result["LC_ALL"] = "C"
-  result["LANG"] = "C"
+  if policy == WasmRestricted {
+    // Keep policy-controlled child text classification deterministic.
+    result["LC_ALL"] = "C"
+    result["LANG"] = "C"
+  }
   result
 }
 
 ///|
+#cfg(target="native")
 pub fn default_environment() -> Map[String, String] {
-  sanitize_environment(@env.get_env_vars())
+  environment_with_policy(@env.get_env_vars(), NativeCompatible)
+}
+
+///|
+#cfg(not(target="native"))
+pub fn default_environment() -> Map[String, String] {
+  environment_with_policy(@env.get_env_vars(), WasmRestricted)
 }
 
 ///|
@@ -52,6 +70,22 @@ pub(all) struct ChildSpec {
   program : String
   args : Array[String]
   context : ExecutionContext
+}
+
+///|
+/// POSIX command-launch outcomes shared by the upstream `env`, `xargs`, and
+/// `timeout` contracts. Diagnostic wording remains command-owned.
+pub(all) enum LaunchFailure {
+  CommandNotFound
+  CommandNotInvokable
+} derive(Eq, Debug)
+
+///|
+pub fn launch_failure_status(failure : LaunchFailure) -> Int {
+  match failure {
+    CommandNotFound => 127
+    CommandNotInvokable => 126
+  }
 }
 
 ///|

@@ -1,6 +1,4 @@
 import {
-  "cli/core/platform",
-  "moonbitlang/async/stdio",
   "moonbitlang/core/double",
   "moonbitlang/core/string",
 }

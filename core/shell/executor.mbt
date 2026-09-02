@@ -14,13 +14,18 @@ async fn write_output(
   error : Bool,
 ) -> Unit {
   match redirect {
-    Some((path, append)) =>
-      @fs.write_file(
+    Some((path, append)) => {
+      let file = @fsops.open_output(
         path,
-        value,
-        create_mode=if append { OpenOrCreate } else { CreateOrTruncate },
-        append~,
+        if append {
+          AppendOrCreate
+        } else {
+          CreateOrTruncate
+        },
       )
+      defer file.close()
+      file.write(value)
+    }
     None =>
       if error {
         @stdio.stderr.write(value)

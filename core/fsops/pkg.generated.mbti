@@ -3,10 +3,15 @@ package "cli/core/fsops"
 
 import {
   "moonbitlang/async/fs",
+  "moonbitlang/core/debug",
 }
 
 // Values
 pub fn basename(String) -> String
+
+pub async fn cleanup_file_if_exists(String) -> Unit
+
+pub async fn commit_temporary_file(String, String, replace? : Bool) -> Unit
 
 pub async fn copy_path(String, String, Bool, Bool) -> Bool
 
@@ -18,6 +23,12 @@ pub fn join(String, String) -> String
 
 pub async fn kind_if_exists(String) -> @fs.FileKind?
 
+pub async fn metadata_if_exists(String, follow_symlink? : Bool) -> FileMetadata?
+
+pub async fn open_output(String, OutputMode, permission? : Int) -> @fs.File
+
+pub async fn open_unique_numbered_output(String, permission? : Int) -> (String, @fs.File)
+
 pub fn protects_working_directory(String) -> Bool
 
 pub async fn remove_path(String, Bool) -> Unit
@@ -28,6 +39,18 @@ pub(all) suberror FsOpError {
 }
 
 // Types and methods
+pub(all) struct FileMetadata {
+  kind : @fs.FileKind
+  size : Int64?
+  mtime_seconds : Int64
+  mtime_nanoseconds : Int
+} derive(Eq, @debug.Debug)
+
+pub(all) enum OutputMode {
+  CreateNew
+  CreateOrTruncate
+  AppendOrCreate
+} derive(Eq, @debug.Debug)
 
 // Type aliases
 

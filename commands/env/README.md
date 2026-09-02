@@ -6,3 +6,7 @@ Command execution uses MoonBit's policy-visible process API, never a shell;
 the command and every argument are passed as separate argv entries. Because
 execution can create a child process, this package is not in the default
 policy allow-list.
+
+Native execution starts from the complete parent environment unless `-i` is
+present. Wasm execution starts from the restricted policy environment before
+applying the requested assignments and removals.

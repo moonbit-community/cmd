@@ -380,9 +380,6 @@ async fn main {
   }
   let files = parsed.operands
   let sources = if files.is_empty() { ["-"] } else { files }
-  if files.is_empty() {
-    @cli.warn_stdin_wait("tail")
-  }
   let show_headers = (sources.length() > 1 || verbose) && !quiet
   let mut failed = false
   for index, path in sources {

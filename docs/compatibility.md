@@ -43,12 +43,14 @@ Commands using the common private parser accept:
 
 Unknown options, missing values, unexpected flag values, duplicate
 non-repeatable options, invalid numeric values, and missing operands are
-separate error categories. CLI syntax errors use exit status 2 where the
-command has adopted the common parser. Runtime and I/O failures use status 1
-unless a command documents another status.
+separate parser categories. Rendering and exit status remain command-owned
+because the pinned upstream families do not share one universal syntax-error
+status. The process layer shares only the established 126 (not invokable) and
+127 (not found) launch outcomes used by `env`, `xargs`, and `timeout`.
 
-The common parser is the only generic option parser used by command packages.
-It covers the ordinary flag/value grammar for 34 commands. `echo`, `env`,
+The common parser contains only generic flag/value token mechanics; every
+command supplies its own `OptionSpec` grammar. It covers the ordinary grammar
+for 34 commands. `echo`, `env`,
 `find`, `jqlog`, `make`, `printf`, `seq`, `sh`, `sleep`, `test`, `timeout`, and
 `xargs` retain command-specific grammars because their operands may be
 option-shaped, parsing stops at a command or expression boundary, or the
@@ -116,16 +118,13 @@ shell, or an FFI helper.
 
 Restricted child processes are described by private MoonBit `ChildSpec` and
 `ExecutionContext` values. Each launch explicitly supplies cwd, environment,
-stdin, stdout, and stderr. Environment inheritance is disabled. Default child
-contexts copy only execution essentials (`PATH`, home-directory variables,
-temporary-directory variables, and the Windows process-launch variables when
-applicable), and force `LANG=C` and `LC_ALL=C`. Other parent variables,
-including credentials and application configuration, do not cross the process
-boundary unless a caller explicitly constructs an `ExecutionContext`; `env`
-also starts from this minimum environment unless `-i` is present, then applies
-the assignments and removals requested on its command line. The Wasm host
-applies its process policy at the spawn boundary; process groups are not a
-policy inheritance or sandbox boundary.
+stdin, stdout, and stderr. On Native targets the default context copies the
+complete parent environment, matching the inheritance expected by `env`, `sh`,
+`make`, `xargs`, and their children. `env -i` still starts from an empty map and
+then applies requested assignments. On Wasm targets the default context keeps
+the explicit execution-variable allowlist and forces `LANG=C` and `LC_ALL=C`;
+the Wasm host then applies its process policy at the spawn boundary. Process
+groups are not a policy inheritance or sandbox boundary.
 
 MoonBit async runtime `0.21.0` can cancel a direct child PID on Unix and
 Windows, but it does not expose a portable process group or Windows Job Object
@@ -163,12 +162,11 @@ to the harness. The remaining structural limits are:
 - user-requested counts such as `head -n`, `xxd -l`, or `find -maxdepth` are
   semantic limits rather than resource guards.
 
-The current implementation of several implicit-stdin commands prints an
-English EOF hint when stdin and stderr are interactive terminals. This is a
-known upstream-compatibility defect: the target behavior is silent blocking,
-including for a terminal, unless the pinned upstream command itself prompts.
-Explicit `-` operands, pipelines, and file redirections must remain silent.
-Removal and regression coverage are tracked in the matrix and execution plan.
+Implicit stdin now blocks silently, including for a terminal, unless the
+pinned upstream command itself defines a prompt. Explicit `-` operands,
+pipelines, and file redirections are also byte-clean. Dynamic terminal feedback
+must opt into the shared terminal policy and is suppressed unless the selected
+stream is proven to be a character device.
 
 The current `curl` and `wget` implementations apply a 30-second inactivity
 timeout to request setup, response headers, and each response-body read, with a

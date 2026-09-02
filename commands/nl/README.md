@@ -12,5 +12,5 @@ number width (default 6), `-s SEP` separator (default TAB). Unnumbered
 lines are indented by the number width. Numbering is continuous across
 multiple files.
 
-With no file operand, an interactive terminal receives an EOF waiting prompt;
-piped, redirected, and explicit `-` input remain silent.
+With no file operand, the command silently reads stdin until EOF, matching the
+upstream terminal, pipe, redirection, and explicit `-` behavior.

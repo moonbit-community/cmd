@@ -90,8 +90,7 @@ async fn feedback_destination(options : FetchOptions) -> DiagnosticDestination {
     Quiet => Disabled
     ErrorsOnly | Progress | Summary =>
       match options.diagnostic_path {
-        Some(path) =>
-          File(@fs.open(path, mode=WriteOnly, create_mode=CreateOrTruncate))
+        Some(path) => File(@fsops.open_output(path, CreateOrTruncate))
         None => Stderr
       }
   }
@@ -101,7 +100,7 @@ async fn feedback_destination(options : FetchOptions) -> DiagnosticDestination {
 async fn feedback_is_interactive(options : FetchOptions) -> Bool {
   match options.feedback {
     Progress if options.diagnostic_path is None =>
-      @platform.stderr_is_terminal()
+      @platform.terminal_output_enabled(IfTerminal, Stderr)
     _ => false
   }
 }
@@ -197,8 +196,7 @@ async fn fetch_impl(
   )
   let output = match output_path {
     None => None
-    Some(path) =>
-      Some(@fs.open(path, mode=WriteOnly, create_mode=CreateOrTruncate))
+    Some(path) => Some(@fsops.open_output(path, CreateOrTruncate))
   }
   defer (match output {
     Some(file) => file.close()

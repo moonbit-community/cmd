@@ -22,7 +22,8 @@ pub fn process_group_cancellation_available() -> Bool
 
 pub fn releasable(CommandContract) -> Bool
 
-pub async fn warn_stdin_wait(String) -> Unit
+#deprecated
+pub fn warn_stdin_wait(String) -> Unit
 
 // Errors
 pub(all) suberror CliError {
