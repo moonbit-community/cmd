@@ -505,7 +505,7 @@ async fn run_case(
   https_base : String,
 ) -> Array[String] {
   let failures : Array[String] = []
-  let root = @fs.tmpdir(prefix="mooncmd-oracle-")
+  let root = @fs.tmpdir(prefix="mooncmd-oracle-\{fixture.id}-")
   defer (@fs.rmdir(root, recursive=true) catch { _ => () })
   let candidate_root = @path.Path(root).join(Path("candidate")).to_string()
   let oracle_root = @path.Path(root).join(Path("oracle")).to_string()
