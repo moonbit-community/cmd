@@ -72,6 +72,65 @@ jobs:
             uncovered.log
           if-no-files-found: ignore
 
+  oracle:
+    name: pinned-upstream-oracle
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup MoonBit
+        uses: hustcer/setup-moonbit@v1.23
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update registry
+        run: moon update
+
+      - name: Build release commands
+        run: moon build --target native --release --deny-warn
+
+      - name: Validate oracle manifest
+        run: moon run --target native tests/oracle -- --manifest tests/fixtures/oracle/cases.json --validate-only
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build pinned oracle image
+        uses: docker/build-push-action@v6
+        with:
+          context: tests/oracle/image
+          load: true
+          tags: mooncmd-oracle:phase0
+          cache-from: type=gha,scope=mooncmd-oracle
+          cache-to: type=gha,mode=max,scope=mooncmd-oracle
+
+      - name: Record oracle versions and image digest
+        run: |
+          docker run --rm mooncmd-oracle:phase0 /usr/local/bin/versions.sh | tee oracle-versions.txt
+          IMAGE_ID=$(docker image inspect --format='{{.Id}}' mooncmd-oracle:phase0)
+          printf 'Oracle image ID: `%s`\n\n' "$IMAGE_ID" | tee oracle-image.txt
+          cat oracle-image.txt oracle-versions.txt >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Compare pinned upstream fixtures
+        run: |
+          umask 022
+          moon run --target native tests/oracle -- \
+            --manifest tests/fixtures/oracle/cases.json \
+            --bin-root _build/native/release/build \
+            --oracle-image mooncmd-oracle:phase0
+
+      - name: Upload oracle evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pinned-upstream-oracle
+          path: |
+            oracle-image.txt
+            oracle-versions.txt
+          if-no-files-found: warn
+
   stress:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04

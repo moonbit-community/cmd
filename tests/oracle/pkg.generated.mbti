@@ -1,0 +1,28 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "mooxCLI/cmd-tests/oracle"
+
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+}
+
+// Values
+
+// Errors
+
+// Types and methods
+type CommandRow derive(@debug.Debug, @json.FromJson)
+
+type FixtureFile derive(@debug.Debug, @json.FromJson)
+
+type Manifest derive(@debug.Debug, @json.FromJson)
+
+type Normalization derive(@debug.Debug, @json.FromJson)
+
+type OracleCase derive(@debug.Debug, @json.FromJson)
+
+type SnapshotEntry derive(@debug.Debug)
+
+// Type aliases
+
+// Traits
