@@ -1,15 +1,26 @@
 # Compatibility Contract
 
-This document defines the supported command dialect for `cmd`. It is a
-contract for the repository's tests, not a claim of complete GNU Coreutils
-compatibility.
+The repository-wide migration status is tracked in the
+[command compatibility matrix](compatibility-matrix.md), and its external
+oracle versions and environment are fixed in
+[upstream baselines](upstream-baselines.md). This document remains the
+portable runtime and policy contract; it is not evidence that every command
+already matches its upstream implementation.
 
-## Dialect
+This document records the current interim runtime and policy profile for
+`cmd`. It is a contract for repository safety tests, not a claim of complete
+upstream compatibility. The required end state, pinned baselines, and work
+order are defined by the [upstream compatibility matrix](compatibility-matrix.md),
+[spike](spikes/2026-09-02-pure-moonbit-command-compatibility.md), and
+[ADR 0001](adr/0001-upstream-compatible-command-migration.md).
 
-- The baseline is the POSIX command model plus the options recorded in the
-  MoonBit command catalog.
-- GNU extensions are supported only when listed by a command's README and
-  catalog entry.
+## Current Interim Profile
+
+- The current implementation exposes the options recorded in the MoonBit
+  command catalog. This is an implementation inventory, not the final upstream
+  option contract.
+- GNU/POSIX extensions remain incomplete until their matrix rows pass the
+  pinned oracle cases.
 - Text classification and ordering use C-locale ASCII rules. Commands that
   operate on binary or line data preserve arbitrary bytes, including NUL and
   invalid UTF-8.
@@ -152,24 +163,28 @@ to the harness. The remaining structural limits are:
 - user-requested counts such as `head -n`, `xxd -l`, or `find -maxdepth` are
   semantic limits rather than resource guards.
 
-Commands that implicitly read standard input print an English EOF hint to
-stderr when stdin and stderr are interactive terminals. Explicit `-` operands,
-pipelines, and file redirections remain silent and preserve ordinary Unix
-blocking semantics.
+The current implementation of several implicit-stdin commands prints an
+English EOF hint when stdin and stderr are interactive terminals. This is a
+known upstream-compatibility defect: the target behavior is silent blocking,
+including for a terminal, unless the pinned upstream command itself prompts.
+Explicit `-` operands, pipelines, and file redirections must remain silent.
+Removal and regression coverage are tracked in the matrix and execution plan.
 
-`curl` and `wget` apply a 30-second inactivity timeout to request setup,
-response headers, and each response-body read. `--idle-timeout SECONDS`
-accepts a positive fractional value. Feedback is quiet, error-only, terminal
-progress, or plain summary according to the command flags. Terminal updates
-are throttled and newline-delimited diagnostics are used for redirected stderr.
+The current `curl` and `wget` implementations apply a 30-second inactivity
+timeout to request setup, response headers, and each response-body read, with a
+repository-specific `--idle-timeout SECONDS` option. This option and the
+feedback policy are migration work items: they must not alter the upstream
+default behavior or be advertised as compatible until their matrix cases pass.
 
 ## Validation
 
 `tests/compat` is a native MoonBit executable. It starts all 48 local release
 binaries directly without a shell, compares byte output, normalizes only
 diagnostic line endings and temporary paths, and checks edge cases at the
-64 KiB chunk boundary. `--gnu-diff` compares the explicitly compatible subset
-to GNU tools under `LC_ALL=C` on Linux. `--stress` adds 1, 16, and 64 MiB
+64 KiB chunk boundary. `--gnu-diff` currently compares only eight commands to
+the host GNU tools under `LC_ALL=C`; it is not a complete compatibility gate.
+The pinned multi-version oracle runner described in the plan must replace that
+subset check. `--stress` adds 1, 16, and 64 MiB
 single-line inputs plus a million-line case.
 
 `tests/policy` is a native MoonBit executable. It runs Wasm commands under
