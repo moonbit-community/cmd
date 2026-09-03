@@ -145,6 +145,207 @@ async fn expect_failure(
 }
 
 ///|
+/// Run a follow session against a set of regular files. The caller controls
+/// the initial contents, one append pass, and an optional replacement pass;
+/// the child is cancelled after both observations have had time to flush.
+async fn run_tail_follow_process(
+  program : String,
+  args_prefix : Array[String],
+  initial : Array[Bytes],
+  append : Array[Bytes],
+  replacement : Array[Bytes?],
+  poll_wait_ms? : Int = 160,
+) -> (Bytes, Bytes) {
+  let root = @fs.tmpdir(prefix="mooncmd-tail-follow")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let paths : Array[String] = []
+  for index in 0..<initial.length() {
+    let path = @path.Path(root).join(Path("log-\{index}")).to_string()
+    paths.push(path)
+    @fs.write_file(path, initial[index])
+  }
+  let args = args_prefix.copy()
+  args.append(paths)
+  let stdout_path = @path.Path(root).join(Path("stdout")).to_string()
+  let stderr_path = @path.Path(root).join(Path("stderr")).to_string()
+  let stdout = @process.redirect_to_file(stdout_path)
+  let stderr = @process.redirect_to_file(stderr_path)
+  @async.with_task_group <| group => {
+    let child = @process.spawn(
+      group,
+      program,
+      args,
+      stdout~,
+      stderr~,
+      cancel_handler=@process.hard_cancel(),
+      no_wait=true,
+    )
+    @async.sleep(120)
+    for index, path in paths {
+      @fs.write_file(path, append[index], append=true, create_mode=OpenExisting)
+    }
+    @async.sleep(poll_wait_ms)
+    let mut replaced = false
+    for index, path in paths {
+      match replacement[index] {
+        Some(data) => {
+          @fs.write_file(path, data)
+          replaced = true
+        }
+        None => ()
+      }
+    }
+    if replaced {
+      @async.sleep(poll_wait_ms)
+    }
+    child.cancel()
+    ignore(child.wait()) catch {
+      _ => ()
+    }
+  }
+  (@fs.read_file(stdout_path).binary(), @fs.read_file(stderr_path).binary())
+}
+
+///|
+fn record_tail_follow_result(
+  result : (Bytes, Bytes),
+  expected_stdout : Bytes,
+  label : String,
+  failures : Array[String],
+) -> Unit {
+  if !@testkit.bytes_equal(result.0, expected_stdout) {
+    fail(
+      "tail: \{label} stdout mismatch; expected \{expected_stdout}, got \{result.0}",
+      failures,
+    )
+  }
+  if result.1.length() != 0 {
+    fail("tail: \{label} wrote unexpected stderr: \{result.1}", failures)
+  }
+}
+
+///|
+async fn run_tail_follow_cases(
+  bin_root : String,
+  failures : Array[String],
+) -> Unit {
+  let tail = @testkit.executable_path(bin_root, "tail")
+  let append_lines = run_tail_follow_process(
+    tail,
+    ["--follow", "--sleep-interval", "0.02", "-n", "2"],
+    [b"one\ntwo\nthree\n"],
+    [b"four\n"],
+    [None],
+  )
+  record_tail_follow_result(
+    append_lines, b"two\nthree\nfour\n", "line append", failures,
+  )
+  let append_bytes = run_tail_follow_process(
+    tail,
+    ["-f", "-s", "0.02", "-c", "2"],
+    [b"abcdef"],
+    [b"gh"],
+    [None],
+  )
+  record_tail_follow_result(append_bytes, b"efgh", "byte append", failures)
+  let no_newline = run_tail_follow_process(
+    tail,
+    ["-f", "-s", "0.02", "-n", "1"],
+    [b"left"],
+    [b"-right\n"],
+    [None],
+  )
+  record_tail_follow_result(no_newline, b"left-right\n", "no newline", failures)
+  let truncated = run_tail_follow_process(
+    tail,
+    ["-f", "-s", "0.02"],
+    [b"before\n"],
+    [b"append\n"],
+    [Some(b"reset\n")],
+  )
+  record_tail_follow_result(
+    truncated, b"before\nappend\nreset\n", "truncate recovery", failures,
+  )
+  let multiple = run_tail_follow_process(
+    tail,
+    ["-f", "-s", "0.02", "-q", "-n", "1"],
+    [b"first\n", b"second\n"],
+    [b"first-add\n", b"second-add\n"],
+    [None, None],
+  )
+  record_tail_follow_result(
+    multiple, b"first\nsecond\nfirst-add\nsecond-add\n", "multiple files", failures,
+  )
+  let with_headers = run_tail_follow_process(
+    tail,
+    ["-f", "-s", "0.02", "-v", "-n", "1"],
+    [b"header-one\n", b"header-two\n"],
+    [b"", b""],
+    [None, None],
+  )
+  if !@testkit.contains_bytes(with_headers.0, "==> ") ||
+    !@testkit.contains_bytes(with_headers.0, "header-one") ||
+    !@testkit.contains_bytes(with_headers.0, "header-two") {
+    fail("tail: verbose follow headers missing: \{with_headers.0}", failures)
+  }
+  expect(
+    bin_root,
+    "tail",
+    ["-f", "-s", "0.02", "-n", "2"],
+    Some(b"one\ntwo\nthree\n"),
+    0,
+    b"two\nthree\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "tail",
+    ["-s", "0.02", "-n", "1"],
+    Some(b"one\ntwo\n"),
+    0,
+    b"two\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "tail",
+    ["-s", "0", "-n", "1"],
+    Some(b"zero\none\n"),
+    0,
+    b"one\n",
+    failures,
+  )
+  let default_interval = run_tail_follow_process(
+    tail,
+    ["-f", "-q", "-n", "0"],
+    [b""],
+    [b"default\n"],
+    [None],
+    poll_wait_ms=1100,
+  )
+  record_tail_follow_result(
+    default_interval, b"default\n", "default interval", failures,
+  )
+  expect_failure(
+    bin_root,
+    "tail",
+    ["-f", "-s", "-1"],
+    2,
+    "invalid sleep interval",
+    failures,
+  )
+  expect_failure(
+    bin_root,
+    "tail",
+    ["-s", "inf"],
+    2,
+    "invalid sleep interval",
+    failures,
+  )
+  expect_failure(bin_root, "tail", ["-F"], 2, "unknown short option", failures)
+}
+
+///|
 async fn run_catalog_smoke(bin_root : String, failures : Array[String]) -> Unit {
   let invoked : Map[String, Bool] = Map([])
   expect_case(
@@ -1890,6 +2091,70 @@ async fn compare_gnu(
 }
 
 ///|
+async fn compare_gnu_tail_follow(
+  bin_root : String,
+  failures : Array[String],
+) -> Unit {
+  let args = ["-f", "-q", "-n", "1"]
+  let candidate = run_tail_follow_process(
+    @testkit.executable_path(bin_root, "tail"),
+    args,
+    [b"first\nsecond\n"],
+    [b"third\n"],
+    [None],
+    poll_wait_ms=1200,
+  )
+  let oracle = run_tail_follow_process(
+    "tail",
+    args,
+    [b"first\nsecond\n"],
+    [b"third\n"],
+    [None],
+    poll_wait_ms=1200,
+  )
+  if !@testkit.bytes_equal(candidate.0, oracle.0) {
+    fail(
+      "tail: GNU follow stdout mismatch; candidate=\{candidate.0}, oracle=\{oracle.0}",
+      failures,
+    )
+  }
+  if !@testkit.bytes_equal(candidate.1, oracle.1) {
+    fail(
+      "tail: GNU follow stderr mismatch; candidate=\{candidate.1}, oracle=\{oracle.1}",
+      failures,
+    )
+  }
+  let candidate_truncate = run_tail_follow_process(
+    @testkit.executable_path(bin_root, "tail"),
+    args,
+    [b"before\n"],
+    [b"append\n"],
+    [Some(b"reset\n")],
+    poll_wait_ms=1200,
+  )
+  let oracle_truncate = run_tail_follow_process(
+    "tail",
+    args,
+    [b"before\n"],
+    [b"append\n"],
+    [Some(b"reset\n")],
+    poll_wait_ms=1200,
+  )
+  if !@testkit.bytes_equal(candidate_truncate.0, oracle_truncate.0) {
+    fail(
+      "tail: GNU truncate stdout mismatch; candidate=\{candidate_truncate.0}, oracle=\{oracle_truncate.0}",
+      failures,
+    )
+  }
+  if candidate_truncate.1.length() != 0 {
+    fail(
+      "tail: descriptor follow must recover from truncation silently: \{candidate_truncate.1}",
+      failures,
+    )
+  }
+}
+
+///|
 async fn run_gnu_differential(
   bin_root : String,
   failures : Array[String],
@@ -1901,6 +2166,7 @@ async fn run_gnu_differential(
   compare_gnu(bin_root, "sha256sum", [], b"hello world", failures)
   compare_gnu(bin_root, "sort", ["-n"], b"10\n2\n1\n", failures)
   compare_gnu(bin_root, "tail", ["-n", "2"], b"1\n2\n3\n", failures)
+  compare_gnu_tail_follow(bin_root, failures)
   compare_gnu(bin_root, "tr", ["a-z", "A-Z"], b"hello world\n", failures)
 }
 
@@ -1970,6 +2236,7 @@ async fn main {
     run_phase345_cases(root, failures)
     run_edge_cases(root, failures)
     run_stdin_prompt_cases(root, failures)
+    run_tail_follow_cases(root, failures)
     run_http_cases(root, failures)
     run_https_cases(root, failures)
     run_proxy_cases(root, failures)

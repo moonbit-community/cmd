@@ -45,6 +45,15 @@ $ printf '1\n2\n3\n4\n' | tail.exe -n +3
 4
 ```
 
+`-f` preserves normal finite-stream behavior: stdin is tailed through EOF and
+then the command exits instead of polling a path.
+
+```mooncram
+$ printf '1\n2\n3\n' | tail.exe -f -s 0.01 -n 2
+2
+3
+```
+
 ```mooncram
 $ printf 'abcdef\n' | head.exe -c 3 && echo
 abc
