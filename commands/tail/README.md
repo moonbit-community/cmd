@@ -11,11 +11,17 @@ moonx cli/tail -n 100 huge.log
 ```
 
 Options: `-n N` last N lines (default 10), `-n +K` from line K, `-c N` last
-N bytes, `-c +K` from byte K, `-q`/`-v` header control.
+N bytes, `-c +K` from byte K, `-q`/`-v` header control, `-f`/`--follow` to
+follow an open file descriptor, and `-s SEC`/`--sleep-interval SEC` to set the
+polling interval (default 1 second).
 
 The observed file paths produced the requested line/byte suffixes and `+K`
-forms. Large-file memory use and endless-pipe behavior were not measured.
-There is no verified `-f` (follow) mode.
+forms. Follow mode emits the initial selection, then emits bytes appended to
+each regular file. A file truncated in place is followed from byte zero. The
+descriptor remains open across renames, matching `tail -f`; deleting and
+recreating a path is not followed, because `-F` is not implemented.
 
-With no file operand, the command silently reads stdin until EOF, matching the
-upstream terminal, pipe, redirection, and explicit `-` behavior.
+With no file operand, `-f` silently reads stdin through EOF and exits, matching
+the upstream finite-pipe behavior. Regular-file follow is polling-based and
+works on the native and Wasm targets; it does not require host file-notify
+APIs.

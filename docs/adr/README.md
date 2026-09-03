@@ -24,7 +24,7 @@ capability evidence.
 | [0014](0014-safe-removal-profile.md) | Keep root/current-directory removal protection |
 | [0015](0015-moonbit-shell-profile.md) | Interpret shell syntax without delegating a script |
 | [0016](0016-sort-memory-profile.md) | Keep the Wasm sort implementation bounded and in-process |
-| [0017](0017-tail-non-follow-profile.md) | Publish tail without follow-mode claims |
+| [0017](0017-tail-non-follow-profile.md) | Use portable descriptor-follow polling for tail |
 | [0018](0018-timeout-publication-gate.md) | Keep timeout local-only behind process-group cancellation |
 | [0019](0019-touch-timestamp-boundary.md) | Create/update files; reject arbitrary timestamp setters |
 | [0020](0020-byte-oriented-tr-profile.md) | Use a byte-oriented tr profile |

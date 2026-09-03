@@ -52,7 +52,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       "field-separator", "ignore-case", "key", "numeric-sort", "reverse", "unique",
     ]),
     contract("tail", Core, FileOrStdin, ByteStream, [FileRead], [
-      "bytes", "lines", "quiet", "verbose",
+      "bytes", "follow", "lines", "quiet", "sleep-interval", "verbose",
     ]),
     contract("tr", Core, OptionalStdin, ByteStream, [], [
       "delete", "squeeze-repeats",

@@ -77,7 +77,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `sha256sum` | subset verified | file/stdin digest, `-c`, `-z` | All checksum warning/status combinations not claimed |
 | `sleep` | subset verified | fractional values, `s/m/h/d`, multiple operands | Signal/cancellation parity not claimed |
 | `sort` | subset verified | `-r -n -u -f -k -t` | `-i` is rejected by the Wasm artifact; locale/external-sort semantics not claimed |
-| `tail` | subset verified | `-n`, `-c`, `+K`, `-q`, `-v` | Follow modes `-f/-F` not claimed |
+| `tail` | subset verified | `-n`, `-c`, `+K`, `-q`, `-v`, `-f`/`--follow`, `-s`/`--sleep-interval` | `-f` follows open regular-file descriptors by polling; stdin/pipes stop at EOF; `-F` path-follow and rotation reopen are not claimed |
 | `tee` | subset verified | stdin to stdout/files and `-a` append | Signal/partial-write diagnostics not claimed |
 | `test` | subset verified | string/integer/file, `!`, `-a`, `-o` | Complete unary/binary ambiguity not claimed |
 | `timeout` | local-only | local duration and expiry returned 124 | No published process-group cancellation |

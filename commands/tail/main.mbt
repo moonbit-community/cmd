@@ -15,6 +15,16 @@ priv enum CountSpec {
 let chunk_size : Int = 65536
 
 ///|
+/// The follow loop keeps the descriptor open so renames do not switch it to a
+/// different file. The offset is the next byte that has not been emitted.
+priv struct FollowFile {
+  file : @fs.File
+  name : String
+  source_index : Int
+  mut offset : Int64
+}
+
+///|
 fn parse_spec(text : String) -> CountSpec raise CliError {
   let (from_start, digits) = if text is ['+', .. rest] {
     (true, rest)
@@ -31,6 +41,32 @@ fn parse_spec(text : String) -> CountSpec raise CliError {
     FromStart(if n < 1 { 1 } else { n })
   } else {
     Last(n)
+  }
+}
+
+///|
+/// Parse GNU tail's follow polling interval and convert seconds to the
+/// millisecond unit used by the async runtime.
+fn parse_sleep_interval(text : String) -> Int raise CliError {
+  if text is ['-', ..] {
+    raise CliError("tail: invalid sleep interval: '\{text}'")
+  }
+  let seconds = @string.parse_double(text) catch {
+    _ => raise CliError("tail: invalid sleep interval: '\{text}'")
+  }
+  if seconds < 0.0 || seconds.is_nan() || seconds.is_inf() {
+    raise CliError("tail: invalid sleep interval: '\{text}'")
+  }
+  let milliseconds = (seconds * 1000.0).ceil()
+  if milliseconds >= 2147483647.0 {
+    2147483647
+  } else {
+    let rounded = milliseconds.to_int()
+    if rounded < 1 {
+      1
+    } else {
+      rounded
+    }
   }
 }
 
@@ -139,7 +175,7 @@ async fn tail_file(
   file : @fs.File,
   spec : CountSpec,
   bytes_mode : Bool,
-) -> Unit {
+) -> Int64 {
   let size = file.size()
   if bytes_mode {
     let start : Int64 = match spec {
@@ -147,12 +183,12 @@ async fn tail_file(
       FromStart(k) => if k - 1 > size { size } else { k - 1 }
     }
     stream_range(file, start, size)
-    return
+    return size
   }
   match spec {
     Last(n) => {
       if n <= 0 || size == 0 {
-        return
+        return size
       }
       let mut newlines : Int64 = 0
       let mut start : Int64 = 0
@@ -187,11 +223,12 @@ async fn tail_file(
         pos -= len.to_int64()
       }
       stream_range(file, start, size)
+      size
     }
     FromStart(k) => {
       if k <= 1 {
         stream_range(file, 0, size)
-        return
+        return size
       }
       // Scan forward for the (k-1)-th newline, then stream the rest.
       let mut seen : Int64 = 0
@@ -208,12 +245,13 @@ async fn tail_file(
             seen += 1
             if seen == k - 1 {
               stream_range(file, pos + i.to_int64() + 1, size)
-              return
+              return size
             }
           }
         }
         pos += len.to_int64()
       }
+      size
     }
   }
 }
@@ -336,13 +374,75 @@ async fn tail_stream(
 }
 
 ///|
+/// Read the bytes observed by one follow pass. A short read is valid when a
+/// writer truncates the file while the pass is in progress; returning the
+/// actual position lets the next pass recover without skipping data.
+async fn stream_available(file : @fs.File, start : Int64, end : Int64) -> Int64 {
+  let buf : FixedArray[Byte] = FixedArray::make(chunk_size, 0)
+  let mut pos = start
+  while pos < end {
+    let len = if end - pos < chunk_size.to_int64() {
+      (end - pos).to_int()
+    } else {
+      chunk_size
+    }
+    let n = file.read_at(buf, position=pos, len~)
+    if n == 0 {
+      return pos
+    }
+    @stdio.stdout.write(Bytes::from_array(buf[0:n]))
+    pos += n.to_int64()
+    if n < len {
+      return pos
+    }
+  }
+  pos
+}
+
+///|
+/// Follow regular files by polling their already-open descriptors. A smaller
+/// size means the file was truncated in place, so the next pass starts again
+/// at byte zero. Cancellation closes every descriptor through the defer.
+async fn follow_files(
+  files : Array[FollowFile],
+  interval_ms : Int,
+  show_headers : Bool,
+  last_source_index : Int,
+) -> Unit {
+  defer (for state in files {
+    state.file.close()
+  })
+  let mut last_output = last_source_index
+  for ;; {
+    @async.sleep(interval_ms)
+    for index in 0..<files.length() {
+      let file = files[index].file
+      let offset = files[index].offset
+      let size = file.size()
+      let start : Int64 = if size < offset { 0 } else { offset }
+      if size > start {
+        if show_headers && files[index].source_index != last_output {
+          @stdio.stdout.write("\n==> \{files[index].name} <==\n")
+          last_output = files[index].source_index
+        }
+        files[index].offset = stream_available(file, start, size)
+      } else if size < offset {
+        files[index].offset = 0
+      }
+    }
+  }
+}
+
+///|
 async fn main {
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.flag("quiet", short='q'),
     @cli.flag("verbose", short='v'),
+    @cli.flag("follow", short='f'),
     @cli.option("lines", short='n'),
     @cli.option("bytes", short='c'),
+    @cli.option("sleep-interval", short='s'),
     @cli.flag("help"),
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
@@ -352,11 +452,14 @@ async fn main {
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write("Usage: tail [-qv] [-n NUM|-c NUM] [FILE...]\n")
+    @stdio.stdout.write(
+      "Usage: tail [-f] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n",
+    )
     return
   }
   let quiet = parsed.contains("quiet")
   let verbose = parsed.contains("verbose")
+  let follow = parsed.contains("follow")
   if parsed.contains("lines") && parsed.contains("bytes") {
     @stdio.stderr.write("tail: lines and bytes are mutually exclusive\n")
     @sys.exit(2)
@@ -378,10 +481,23 @@ async fn main {
       return
     }
   }
+  let interval_ms = try {
+    match parsed.last_value("sleep-interval") {
+      Some(text) => parse_sleep_interval(text)
+      None => 1000
+    }
+  } catch {
+    CliError(msg) => {
+      @stdio.stderr.write("\{msg}\n")
+      @sys.exit(2)
+      return
+    }
+  }
   let files = parsed.operands
   let sources = if files.is_empty() { ["-"] } else { files }
   let show_headers = (sources.length() > 1 || verbose) && !quiet
   let mut failed = false
+  let follow_states : Array[FollowFile] = []
   for index, path in sources {
     if show_headers {
       let name = if path == "-" { "standard input" } else { path }
@@ -393,12 +509,23 @@ async fn main {
         tail_stream(@stdio.stdin, spec, bytes_mode)
       } else {
         let file = @fs.open(path, mode=ReadOnly)
-        defer file.close()
+        errdefer file.close()
         if file.kind() is Regular {
-          tail_file(file, spec, bytes_mode)
+          let offset = tail_file(file, spec, bytes_mode)
+          if follow {
+            follow_states.push({
+              file,
+              name: path,
+              source_index: index,
+              offset,
+            })
+          } else {
+            file.close()
+          }
         } else {
           // Named pipes and devices are not seekable; stream them instead.
           tail_stream(file, spec, bytes_mode)
+          file.close()
         }
       }
     } catch {
@@ -407,6 +534,9 @@ async fn main {
         failed = true
       }
     }
+  }
+  if follow && !follow_states.is_empty() {
+    follow_files(follow_states, interval_ms, show_headers, sources.length() - 1)
   }
   if failed {
     @sys.exit(1)
