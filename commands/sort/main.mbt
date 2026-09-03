@@ -171,7 +171,7 @@ async fn main {
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write("Usage: sort [-rnuif] [-k KEY] [-t CHAR] [FILE...]\n")
+    @stdio.stdout.write("Usage: sort [-rnuf] [-k KEY] [-t CHAR] [FILE...]\n")
     return
   }
   let reverse = parsed.contains("reverse")

@@ -1,26 +1,26 @@
 # curl
 
-Pure-MoonBit curl 8.22 migration. The Phase 2 HTTP/HTTPS slice streams to
-stdout by default and supports multiple URLs, `-s`/`-S`, `-f` status 22,
-`-o`, `-O`/`-OJ`, `-L`, `--max-redirs`, `-I`, repeated `-H`, the supported
-`-X` methods, repeated `-d`/`--data-raw`/`--data-binary`/
-`--data-urlencode`, `-T`, retries, `--connect-timeout`, `-m`/`--max-time`,
-proxy/`--noproxy`, `-k`, and `--remove-on-error`.
+Observed Wasm profile (2026-09-03): this README is supplementary. The [support record](../../docs/compatibility.md) is the only capability authority; it lists the repeatable `moon run --target wasm --release` results and exclusions. Options mentioned here but not promoted in that record are not compatibility guarantees.
 
-Retry delay and retry-window values use upstream integer-second grammar and
-are bounded by the millisecond timer range (`2147483` seconds). Connection and
-total timeouts accept decimals; zero selects curl's disabled/default behavior.
+Pure-MoonBit curl 8.22 migration. The verified HTTP/HTTPS paths stream to
+stdout by default and cover `-s`/`-S`, `-f` status 22, `-o`, `-L`, `-I`,
+repeated `-H`, `-d`, GET, HEAD, redirect, POST, and output-file behavior. The
+remaining help-visible transfer controls are listed as unverified in the
+support record.
+
+The observed `--idle-timeout 0` parse failure returns status 2. A successful
+inactivity timeout expiry, timer-range behavior, retry windows, and other
+timeout spellings are not claimed.
 
 curl does not follow redirects unless `-L` is present. `-s` suppresses the
-meter and errors; `-sS` restores errors only. The meter never shares a terminal
-with a body written to terminal stdout, and redirected stderr receives bounded
-newline output rather than carriage-return spam. Failed fixed-length transfers
-are detected; `--remove-on-error` removes a partial output file.
+meter and errors; `-sS` restores errors only in the observed paths. The meter
+and `--remove-on-error` cleanup require their own terminal/partial-transfer
+probes before they can be treated as compatibility guarantees.
 
-The command remains `partial`, not fully curl-compatible. Arbitrary extension
-methods, byte-exact raw response-header/version display, compressed/HTTP2
-negotiation controls, config/auth/cookie features, retry-after/backoff parity,
-and curl's non-HTTP protocol families are not yet implemented. `-X` is limited
-to GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, and PATCH by the
-closed public HTTP method enum and rejects other values before network side
-effects. See `docs/spikes/2026-09-02-http-protocol-feasibility.md`.
+The command remains `partial`, not fully curl-compatible. A Wasm `-X` probe
+using a nonstandard method reached the transfer path, so method validation and
+endpoint behavior beyond the verified requests are not a compatibility claim.
+Byte-exact raw response-header/version display, compressed/HTTP2 negotiation
+controls, config/auth/cookie features, retry-after/backoff parity, and curl's
+non-HTTP protocol families remain outside the observed profile. See the
+[support record](../../docs/compatibility.md).

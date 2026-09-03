@@ -109,8 +109,8 @@ moon info
 moon fmt
 ```
 
-See [Compatibility](docs/compatibility.md) for the supported command dialect
-and platform behavior, and [Provenance](docs/provenance.md) for the source of
+See [Compatibility](docs/compatibility.md) for measured command support and
+platform behavior, and [Provenance](docs/provenance.md) for the source of
 the imported command implementations.
 
 ## License

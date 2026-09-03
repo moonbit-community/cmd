@@ -15,7 +15,7 @@ preferred_target = "native"
 description = "Compatibility and policy validation runners for the cmd workspace."
 
 import {
-  "cli/core@0.1.1",
+  "cli/core@0.1.2",
   "moonbitlang/async@0.21.0",
   "moonbitlang/x@0.5.1",
 }

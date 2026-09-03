@@ -1,20 +1,24 @@
 # make
 
-`cli/make` is a MoonBit implementation of the core Make workflow for
-native and Wasm targets. It parses Makefiles, expands variables, builds and
-checks the dependency graph, compares modification times, and executes recipes
-through `cli`'s MoonBit shell interpreter.
+Observed Wasm profile (2026-09-03): this README is supplementary. The [support record](../../docs/compatibility.md) is the only capability authority; it lists the repeatable `moon run --target wasm --release` results and exclusions. Options mentioned here but not promoted in that record are not compatibility guarantees.
 
-`include`, `-include`, and `sinclude` resolve relative to the Makefile that
-contains them. Command-line variable assignments take precedence over ordinary
-Makefile assignments. Include and variable expansion depth is bounded at 64.
+`cli/make` provides a measured Make subset. The Wasm audit verified one
+target/dependency rule, an included variable,
+command-line variable precedence, dry run, recipe execution, and silent mode.
+
+`include` and command-line variable assignment worked in that slice.
+`-include`, `sinclude`, recursive expansion limits, broader dependency-graph
+behavior, built-ins, pattern rules, and job control remain unverified.
+The observed Wasm `-C` path selects the Makefile, but recipe process lookup and
+working directory remain controlled by the Wasm host; do not assume GNU
+`make -C` recipe-directory parity.
 
 Each external command in a recipe is launched through the policy-visible
 MoonBit process API. Unsupported Make extensions fail explicitly; the complete
 Makefile is never forwarded to a host `make` executable. The remaining
 language surface is listed in the
-[Phase 5 process/language spike](../../docs/spikes/2026-09-03-process-language-phase5.md).
+[support record](../../docs/compatibility.md).
 
-Native recipes inherit the complete parent environment plus Make variables.
 Wasm recipes start from the explicit restricted environment and remain subject
-to the host process policy.
+to the host process policy. Native inheritance is outside this Wasm support
+record.

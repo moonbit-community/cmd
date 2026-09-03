@@ -21,7 +21,7 @@ priv enum CliParseResult {
 ///|
 fn help_message() -> String {
   let message =
-    #|Usage: moon run jqlog -- [options] <query> [input]
+    #|Usage: jqlog [options] <query> [input]
     #|
     #|Options:
     #|  -f, --file <path>   Read input text from a file.
@@ -34,8 +34,8 @@ fn help_message() -> String {
     #|  - If [input] is provided without --file, it is treated as raw text.
     #|
     #|Examples:
-    #|  cat logs.ndjson | moon run jqlog -- '.message'
-    #|  moon run jqlog -- -f output.txt '.a'
+    #|  cat logs.ndjson | jqlog '.message'
+    #|  jqlog -f output.txt '.a'
   message
 }
 

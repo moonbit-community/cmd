@@ -224,7 +224,11 @@ async fn process_reader(
   } else if options.files_without_match && selected_count == 0 {
     @stdio.stdout.write(path + "\n")
   }
-  selected_count > 0
+  if options.files_without_match {
+    selected_count == 0
+  } else {
+    selected_count > 0
+  }
 }
 
 ///|
