@@ -16,7 +16,8 @@ include-style C output, `-c N` bytes
 per line (default 16, or 30 with `-p`), `-l N` stop after N bytes, and `-s N`
 seek before a forward dump. Include output accepts `-n NAME` for the C symbol;
 addressed reverse dumps validate offsets and preserve sparse holes up to a
-bounded output size. Negative/end-relative seeks remain explicitly rejected.
+bounded output size. Lines without a valid addressed prefix follow Vim xxd's
+pass-through behavior. Negative/end-relative seeks remain explicitly rejected.
 
 With no file operand, the command silently reads stdin until EOF, matching the
 upstream terminal, pipe, redirection, and explicit `-` behavior.

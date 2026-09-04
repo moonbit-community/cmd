@@ -14,7 +14,8 @@ include/addressed hex workflows.
 Add bounded Make conditionals, pattern/static-pattern dependency expansion,
 automatic variables, and explicit `-j/-k/-W` handling. Add xxd include output,
 `--revert`, symbol naming, and validated addressed reverse patches. Keep
-parallel scheduling sequential and reject negative seeks.
+parallel scheduling sequential, preserve malformed-line pass-through, and
+reject negative seeks.
 
 ## Evidence
 
