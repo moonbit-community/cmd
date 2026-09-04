@@ -451,12 +451,14 @@ async fn main {
       }
     }
     let mut offset = 0
+    let mut eof_reached = false
     while offset < lines.length() {
       let mut end = offset
       let values : Array[String] = []
       while end < lines.length() && end - offset < max_lines {
         if eof_string is Some(marker) &&
           lines[end].any(value => value == marker) {
+          eof_reached = true
           break
         }
         let candidate = values + lines[end]
@@ -470,14 +472,20 @@ async fn main {
         end += 1
       }
       if end == offset {
+        if eof_reached {
+          break
+        }
         @stdio.stderr.write(
-          "xargs: input line exceeds {max_bytes} byte limit\n",
+          "xargs: input line exceeds \{max_bytes} byte limit\n",
         )
         @sys.exit(1)
         return
       }
       batches.push(prefix + values)
       offset = end
+      if eof_reached {
+        break
+      }
     }
   } else {
     let mut values = parse_words(input, null_mode)
@@ -505,7 +513,7 @@ async fn main {
         }
         if end == offset {
           @stdio.stderr.write(
-            "xargs: one argument exceeds {max_bytes} byte limit\n",
+            "xargs: one argument exceeds \{max_bytes} byte limit\n",
           )
           @sys.exit(1)
           return
