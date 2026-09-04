@@ -34,6 +34,9 @@ capability evidence.
 | [0024](0024-policy-is-part-of-behavior.md) | Record Wasm authorization separately from command semantics |
 | [0025](0025-c-locale-record-profile.md) | Keep text-pipeline records deterministic under `LC_ALL=C` |
 | [0026](0026-find-xargs-p4-workflow.md) | Bound metadata traversal and direct-child batching to portable Wasm capabilities |
+| [0027](0027-jq-cli-modes.md) | Publish deterministic jq CLI modes without claiming the full evaluator |
+| [0028](0028-make-xxd-p7-surface.md) | Extend self-contained make and xxd profiles with bounded semantics |
+| [0029](0029-filesystem-capability-gates.md) | Gate metadata-dependent filesystem options on portable runtime probes |
 
 The remaining commands have no additional portability trade-off beyond the
 common evidence and stdin decisions. Their exact observed option surface is

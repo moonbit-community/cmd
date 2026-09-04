@@ -66,11 +66,11 @@ claiming success; `local-only` is absent from MoonX by design.
 | `grep` | subset verified | existing match modes plus `-A -B -C -b -s -z`, binary policies, recursive `--include/--exclude`, C-locale byte offsets | Include/exclude globs are the portable `*`/`?` basename profile; locale-aware classes and full diagnostics not claimed |
 | `head` | subset verified | `-n`, `-c`, signed/attached/long/legacy counts and decimal/binary/IEC size suffixes, `-z`, `-q/-v`, files/stdin and headers | Counts are bounded by signed 64-bit storage; locale-aware records are not claimed |
 | `join` | subset verified | `-1 -2 -t -a -v -e -o`, `-` stdin | Legacy aliases/locale diagnostics not probed |
-| `jq` | subset verified | `-c -r -f -n -l`; field, compact, null, filter paths | Not a complete jq 1.8 filter-language claim |
+| `jq` | subset verified | `-c -r -f -n -l -S -j -s -R -e`, `--arg`, `--argjson`, `--indent`, `--tab`; field/path, map/reduce/assignment/try filters from the imported evaluator | Not a complete jq 1.8.2 diagnostics/modules/streaming claim |
 | `jqlog` | subset verified | JSONL stdin/raw input, `-f`, `-h`; invalid lines skipped | Compared with imported jqlog contract, not a system utility |
 | `ln` | subset verified | symbolic `-s`, `-f`, `-T`, `-v` | Hard-link request rejected before mutation |
 | `ls` | subset verified | `-a -A -d -F -1 -R` | Long/colour/ownership/time formats not claimed |
-| `make` | restricted | `-B -n -s -C -f`, command-line variables, includes and recipes | Recipe process lookup/cwd follows the Wasm host contract; full GNU language not verified |
+| `make` | restricted | `-B -n -s -C -f -k -W -j`, command-line variables, conditionals, pattern rules, automatic variables, includes and recipes | Recipe process lookup/cwd follows the Wasm host contract; parallel scheduling is bounded/sequential and full GNU language not verified |
 | `mkdir` | subset verified | `-p`, numeric `-m`, `-v` | Symbolic mode/umask parity not probed |
 | `mv` | subset verified | files/dirs, `-f/-n`, `-T`, `-v` | Cross-filesystem fallback not claimed |
 | `nl` | subset verified | `-b`, `-w`, `-s`, files/stdin | Page/section delimiters not probed |
@@ -96,7 +96,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `wc` | subset verified | `-l -w -c -m -L`, combinations, aligned multi-file totals, `--files0-from`, files/stdin | `-L` is the C-locale display-width profile; full locale diagnostics not claimed |
 | `wget` | restricted | Bounded HTTP/HTTPS profile: URL input files; quiet/output/log modes; resume and conditional 304; headers/method/data or binary file bodies; retry classification/delay; redirect limits; content-disposition collisions; connect/read/idle timeouts; HTTP CONNECT proxy/bypass; certificate verification control; HTTP status 8 | Recursive mirroring, cookies/auth/HSTS, FTP and other protocols, post-download timestamp restoration, and exact GNU progress/diagnostic bytes not claimed |
 | `xargs` | restricted | whitespace/NUL tokenization, quotes/backslashes, `-0 -r -t -n -L -s -E -I`, `--show-limits`, bounded `-P`; direct-child status classes 123/124/125/126/127 | Child policy required; process windows are bounded and aggregate status deterministically; GNU shell/locale extensions not claimed |
-| `xxd` | subset verified | forward hex, `-p -r -c -l`, positive `-s` | Negative/end-relative seek and addressed reverse patching not claimed |
+| `xxd` | subset verified | forward hex, `-p -r -c -l -i`, `--revert`, include symbol naming, positive `-s`, addressed reverse patching with bounded offsets | Negative/end-relative seek remains rejected; malformed/oversized addressed input is rejected before unbounded allocation |
 
 ## Help-Visible Only
 
@@ -114,7 +114,10 @@ positive result. They are probe targets, not product claims.
 Each row identifies the option families exercised successfully. Explicit
 rejections, including `chmod` symbolic/reference modes,
 `cp -a/-p`, `ln` hard links, `mkdir` symbolic modes, `sort -R`, timestamp
-selectors for `touch`, and negative `xxd -s`, are recorded in their rows.
+selectors for `touch`, and negative `xxd -s`, are recorded in their rows. P8
+capability probes keep metadata-preservation, timestamp mutation, hard-link,
+readlink, special-file, and cross-device fallback options explicitly rejected
+until a portable runtime primitive is available.
 
 ## Cross-cutting runtime rules
 

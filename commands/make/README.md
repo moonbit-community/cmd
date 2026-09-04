@@ -6,9 +6,13 @@ Observed Wasm profile (2026-09-03): this README is supplementary. The [support r
 target/dependency rule, an included variable,
 command-line variable precedence, dry run, recipe execution, and silent mode.
 
-`include` and command-line variable assignment worked in that slice.
-`-include`, `sinclude`, recursive expansion limits, broader dependency-graph
-behavior, built-ins, pattern rules, and job control remain unverified.
+`include`, `-include`, `sinclude`, command-line variable assignment,
+`ifeq`/`ifneq`/`ifdef`/`ifndef`, pattern/static-pattern dependencies, and
+automatic variables (`$@`, `$<`, `$^`, `$+`, `$*`, `$@D`, `$@F`, `$<D`, `$<F`)
+are supported in the measured slice. `-j` is accepted with bounded sequential
+execution, `-k` continues independent targets after recipe failures, and `-W`
+marks a target out of date. The full GNU built-in database, jobserver,
+secondary expansion, and complete parallel scheduling remain unverified.
 The observed Wasm `-C` path selects the Makefile, but recipe process lookup and
 working directory remain controlled by the Wasm host; do not assume GNU
 `make -C` recipe-directory parity.

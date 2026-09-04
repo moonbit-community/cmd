@@ -15,6 +15,7 @@ struct Rule {
   dependencies : Array[String]
   recipes : Array[String]
   mut phony : Bool
+  stem : String?
 }
 
 ///|
@@ -31,6 +32,50 @@ struct Settings {
   silent : Bool
   dry_run : Bool
   always_make : Bool
+  keep_going : Bool
+  what_if : Map[String, Bool]
+}
+
+///|
+fn conditional_value(line : String, database : Database) -> Bool {
+  if line.has_prefix("ifdef ") {
+    database.variables.contains(line[6:].trim().to_owned())
+  } else if line.has_prefix("ifndef ") {
+    !database.variables.contains(line[7:].trim().to_owned())
+  } else {
+    let negated = line.has_prefix("ifneq ")
+    let prefix = if negated { "ifneq " } else { "ifeq " }
+    if !line.has_prefix(prefix) {
+      false
+    } else {
+      let rest = line[prefix.length():].trim()
+      let rest = if rest.has_prefix("(") && rest.has_suffix(")") {
+        rest[1:rest.length() - 1].to_owned()
+      } else {
+        rest.to_owned()
+      }
+      let parts : Array[String] = rest
+        .split(",")
+        .map(x => x.trim().to_owned())
+        .collect()
+      let equal = if parts.length() == 2 {
+        let left = expand(parts[0], database.variables, {}, 0) catch {
+          _ => parts[0]
+        }
+        let right = expand(parts[1], database.variables, {}, 0) catch {
+          _ => parts[1]
+        }
+        left == right
+      } else {
+        false
+      }
+      if negated {
+        !equal
+      } else {
+        equal
+      }
+    }
+  }
 }
 
 ///|
@@ -150,6 +195,16 @@ fn expand(
         index = end + 1
       }
       char => {
+        if index + 2 < chars.length() &&
+          chars[index + 1] is ('@' | '<') &&
+          chars[index + 2] is ('D' | 'F') {
+          let name = String::from_array(chars[index + 1:index + 3])
+          output.write_string(
+            lookup_variable(name, variables, automatic, depth),
+          )
+          index += 3
+          continue
+        }
         output.write_string(
           lookup_variable(char.to_string(), variables, automatic, depth),
         )
@@ -158,6 +213,33 @@ fn expand(
     }
   }
   output.to_string()
+}
+
+///|
+fn pattern_match(pattern : String, target : String) -> String? {
+  guard pattern.split_once("%") is Some((prefix, suffix)) else { return None }
+  if target.has_prefix(prefix) &&
+    target.has_suffix(suffix) &&
+    target.length() >= prefix.length() + suffix.length() {
+    Some(target[prefix.length():target.length() - suffix.length()].to_owned())
+  } else {
+    None
+  }
+}
+
+///|
+fn instantiate_pattern(rule : Rule, target : String) -> Rule? {
+  guard rule.target.contains("%") else { return None }
+  guard pattern_match(rule.target, target) is Some(stem) else { return None }
+  Some({
+    target,
+    dependencies: rule.dependencies.map(dep => {
+      dep.replace_all(old="%", new=stem)
+    }),
+    recipes: rule.recipes.copy(),
+    phony: rule.phony,
+    stem: Some(stem),
+  })
 }
 
 ///|
@@ -253,7 +335,39 @@ async fn parse_makefile(
     raise MakeError("include nesting exceeds the recursion limit")
   }
   let mut current_rules : Array[Rule] = []
+  let active : Array[Bool] = [true]
   for line_number, source_line in logical_lines(contents) {
+    let directive = remove_comment(source_line).trim().to_owned()
+    if directive.has_prefix("ifeq ") ||
+      directive.has_prefix("ifneq ") ||
+      directive.has_prefix("ifdef ") ||
+      directive.has_prefix("ifndef ") {
+      active.push(
+        active.last().unwrap_or(false) && conditional_value(directive, database),
+      )
+      current_rules = []
+      continue
+    }
+    if directive == "else" {
+      if active.length() <= 1 {
+        raise MakeError("unexpected else")
+      }
+      let previous = active.pop().unwrap()
+      active.push(active.last().unwrap_or(false) && !previous)
+      current_rules = []
+      continue
+    }
+    if directive == "endif" {
+      if active.length() <= 1 {
+        raise MakeError("unexpected endif")
+      }
+      ignore(active.pop())
+      current_rules = []
+      continue
+    }
+    if !active.last().unwrap_or(false) {
+      continue
+    }
     if source_line.has_prefix("\t") {
       if current_rules.is_empty() {
         raise MakeError("recipe without a target at line \{line_number + 1}")
@@ -306,11 +420,17 @@ async fn parse_makefile(
         "expected a rule or assignment at line \{line_number + 1}",
       )
     }
+    let static_pattern = deps_text.split_once(":")
+    let prerequisite_text = match static_pattern {
+      Some((pattern, prerequisites)) if pattern.trim().contains("%") =>
+        prerequisites.to_owned()
+      _ => deps_text.to_owned()
+    }
     let targets = split_words(
       expand(targets_text.to_owned(), database.variables, {}, 0),
     )
     let dependencies = split_words(
-      expand(deps_text.to_owned(), database.variables, {}, 0),
+      expand(prerequisite_text, database.variables, {}, 0),
     )
     if targets.is_empty() {
       raise MakeError("rule has no target at line \{line_number + 1}")
@@ -325,12 +445,24 @@ async fn parse_makefile(
               dependencies: [],
               recipes: [],
               phony: true,
+              stem: None,
             }
         }
       }
       continue
     }
     for target in targets {
+      let dependencies = match static_pattern {
+        Some((pattern, _)) if pattern.trim().contains("%") => {
+          let pattern = pattern.trim().to_owned()
+          match pattern_match(pattern, target) {
+            Some(stem) =>
+              dependencies.map(dep => dep.replace_all(old="%", new=stem))
+            None => dependencies.copy()
+          }
+        }
+        _ => dependencies.copy()
+      }
       let rule = match database.rules.get(target) {
         Some(existing) => {
           existing.dependencies.append(dependencies)
@@ -342,6 +474,7 @@ async fn parse_makefile(
             dependencies: dependencies.copy(),
             recipes: [],
             phony: false,
+            stem: None,
           }
           database.rules[target] = created
           created
@@ -396,7 +529,14 @@ async fn run_recipe(
     "@": rule.target,
     "<": rule.dependencies.get(0).unwrap_or(""),
     "^": rule.dependencies.join(" "),
+    "+": rule.dependencies.join(" "),
+    "*": rule.stem.unwrap_or(""),
   }
+  automatic["@D"] = @path.Path(rule.target).dirname().to_string()
+  automatic["@F"] = @path.Path(rule.target).basename().to_owned()
+  let first = rule.dependencies.get(0).unwrap_or("")
+  automatic["<D"] = @path.Path(first).dirname().to_string()
+  automatic["<F"] = @path.Path(first).basename().to_owned()
   let mut command = expand(recipe, database.variables, automatic, 0)
   let mut local_silent = settings.silent
   let mut ignore_error = false
@@ -440,6 +580,7 @@ async fn build_target(
   database : Database,
   settings : Settings,
   states : Map[String, Int],
+  failures : Ref[Int],
 ) -> Unit {
   match states.get(target) {
     Some(1) => raise MakeError("dependency cycle detected at '\{target}'")
@@ -450,18 +591,33 @@ async fn build_target(
   let rule = match database.rules.get(target) {
     Some(value) => value
     None => {
-      if @fs.exists(target_path) {
+      let mut matched : Rule? = None
+      for candidate in database.rules.values() {
+        if instantiate_pattern(candidate, target) is Some(value) {
+          matched = Some(value)
+          break
+        }
+      }
+      if matched is Some(value) {
+        value
+      } else if @fs.exists(target_path) {
         states[target] = 2
         return
+      } else {
+        raise MakeError("no rule to make target '\{target}'")
       }
-      raise MakeError("no rule to make target '\{target}'")
     }
   }
   for dependency in rule.dependencies {
-    build_target(dependency, database, settings, states)
+    build_target(dependency, database, settings, states, failures) catch {
+      err => if settings.keep_going { failures.val += 1 } else { raise err }
+    }
   }
   let target_exists = if rule.phony { false } else { @fs.exists(target_path) }
-  let mut rebuild = settings.always_make || rule.phony || !target_exists
+  let mut rebuild = settings.always_make ||
+    rule.phony ||
+    !target_exists ||
+    settings.what_if.contains(target)
   if !rebuild {
     for dependency in rule.dependencies {
       let dependency_path = path_in(settings.cwd, dependency)
@@ -479,7 +635,11 @@ async fn build_target(
     for recipe in rule.recipes {
       let status = run_recipe(recipe, rule, database, settings)
       if status != 0 {
-        raise MakeError("recipe for '\{target}' failed with status \{status}")
+        if settings.keep_going {
+          failures.val += 1
+        } else {
+          raise MakeError("recipe for '\{target}' failed with status \{status}")
+        }
       }
     }
   }
@@ -515,6 +675,8 @@ async fn run(arguments : Array[String]) -> Unit {
   let mut silent = false
   let mut dry_run = false
   let mut always_make = false
+  let mut keep_going = false
+  let touch_targets : Map[String, Bool] = Map([])
   let mut options = true
   let targets : Array[String] = []
   let cli_assignments : Array[(String, String)] = []
@@ -543,6 +705,19 @@ async fn run(arguments : Array[String]) -> Unit {
       dry_run = true
     } else if options && (argument == "-B" || argument == "--always-make") {
       always_make = true
+    } else if options && (argument == "-k" || argument == "--keep-going") {
+      keep_going = true
+    } else if options && (argument == "-W" || argument == "--what-if") {
+      if index + 1 >= arguments.length() {
+        raise MakeError("{argument} requires a file")
+      }
+      index += 1
+      touch_targets[arguments[index]] = true
+    } else if options && argument == "-j" {
+      if index + 1 < arguments.length() {
+        let _ = @string.parse_int(arguments[index + 1]) catch { _ => 0 }
+        index += 1
+      }
     } else if options && (argument == "-h" || argument == "--help") {
       @stdio.stdout.write(
         "Usage: make [-Bns] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n",
@@ -589,10 +764,21 @@ async fn run(arguments : Array[String]) -> Unit {
   } else {
     targets
   }
-  let settings : Settings = { cwd, silent, dry_run, always_make, }
+  let settings : Settings = {
+    cwd,
+    silent,
+    dry_run,
+    always_make,
+    keep_going,
+    what_if: touch_targets,
+  }
   let states : Map[String, Int] = Map([])
+  let failures = Ref(0)
   for target in requested_targets {
-    build_target(target, database, settings, states)
+    build_target(target, database, settings, states, failures)
+  }
+  if failures.val > 0 {
+    raise MakeError("\{failures.val} target(s) failed")
   }
 }
 

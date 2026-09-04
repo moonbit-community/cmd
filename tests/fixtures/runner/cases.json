@@ -1259,6 +1259,110 @@
       "environment": {},
       "expected_status": 0,
       "normalizations": []
+    },
+    {
+      "id": "p6-jq-sort-keys",
+      "command": "jq",
+      "args": ["-S", "-c", "."],
+      "stdin_hex": "7b227a223a312c2261223a327d0a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p6-jq-slurp-raw-input",
+      "command": "jq",
+      "args": ["-R", "-s", "-c", "."],
+      "stdin_hex": "6f6e650a74776f0a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p6-jq-exit-status",
+      "command": "jq",
+      "args": ["-e", "-n", "false"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": []
+    },
+    {
+      "id": "p7-xxd-include",
+      "command": "xxd",
+      "args": ["-i"],
+      "stdin_hex": "616263",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p7-xxd-addressed-reverse",
+      "command": "xxd",
+      "args": ["-r"],
+      "stdin_hex": "30303030303030323a2034313432202020203b41420a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p7-make-conditional",
+      "command": "make",
+      "args": ["-s", "MODE=yes"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "Makefile", "content_hex": "4d4f4445203d206e6f0a69666571202824284d4f4445292c796573290a616c6c3a0a09407072696e7466207965730a656c73650a616c6c3a0a09407072696e7466206e6f0a656e6469660a" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p6-jq-invalid-indent",
+      "command": "jq",
+      "args": ["--indent", "-1", "."],
+      "stdin_hex": "6e756c6c0a",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": []
+    },
+    {
+      "id": "p6-jq-invalid-argjson",
+      "command": "jq",
+      "args": ["--argjson", "value", "not-json", "-n", "$value"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": []
+    },
+    {
+      "id": "p7-xxd-malformed-address",
+      "command": "xxd",
+      "args": ["-r"],
+      "stdin_hex": "6e6f7420612064756d700a",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": []
+    },
+    {
+      "id": "p7-make-unexpected-endif",
+      "command": "make",
+      "args": ["-f", "Makefile"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "Makefile", "content_hex": "656e6469660a" }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": []
     }
   ]
 }

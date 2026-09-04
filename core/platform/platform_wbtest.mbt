@@ -11,6 +11,17 @@ test "permission support follows platform" {
 }
 
 ///|
+test "filesystem capability gates are explicit" {
+  assert_true(metadata_reads_supported())
+  assert_false(permission_reads_supported())
+  assert_false(timestamp_mutation_supported())
+  assert_false(hard_links_supported())
+  assert_false(readlink_supported())
+  assert_false(cross_device_rename_classification_supported())
+  assert_false(special_file_policy_supported())
+}
+
+///|
 test "terminal output requires explicit policy and a proven terminal" {
   assert_false(terminal_policy_allows(Silent, false))
   assert_false(terminal_policy_allows(Silent, true))

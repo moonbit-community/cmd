@@ -126,14 +126,25 @@ async fn dump_stream(
 }
 
 ///|
-fn reverse_dump_line(line : Bytes) -> Bytes {
+fn reverse_dump_line(line : Bytes) -> (Int, Bytes)? {
   let out : Array[Byte] = []
-  let mut i = 0
+  if line.length() < 9 {
+    return None
+  }
+  let mut offset = 0
+  for index in 0..<8 {
+    let value = hex_val(line[index])
+    if value < 0 {
+      return None
+    }
+    offset = (offset << 4) | value
+  }
+  let mut i = 8
   while i < line.length() && line[i] != b':' {
     i += 1
   }
   if i >= line.length() {
-    return b""
+    return None
   }
   i += 1
   while i < line.length() {
@@ -145,17 +156,17 @@ fn reverse_dump_line(line : Bytes) -> Bytes {
       continue
     }
     if i + 1 >= line.length() {
-      break
+      return None
     }
     let high = hex_val(line[i])
     let low = hex_val(line[i + 1])
     if high < 0 || low < 0 {
-      break
+      return None
     }
     out.push(((high << 4) | low).to_byte())
     i += 2
   }
-  Bytes::from_array(out)
+  Some((offset, Bytes::from_array(out)))
 }
 
 ///|
@@ -192,9 +203,88 @@ async fn reverse_plain_stream(reader : &@io.Reader) -> Unit {
 ///|
 async fn reverse_dump_stream(reader : &@io.Reader) -> Unit {
   let scanner = @stream.LineScanner::new(reader)
+  let output : Array[Byte] = []
   while scanner.next() is Some(line) {
-    @stdio.stdout.write(reverse_dump_line(line.data))
+    match reverse_dump_line(line.data) {
+      Some((line_offset, bytes)) => {
+        if line_offset > 16 * 1024 * 1024 {
+          raise CliError("xxd: addressed offset is too large")
+        }
+        let mut offset = line_offset
+        while output.length() < offset {
+          output.push(b'\x00')
+        }
+        for byte in bytes {
+          if offset < output.length() {
+            output[offset] = byte
+          } else {
+            output.push(byte)
+          }
+          offset += 1
+        }
+      }
+      None => raise CliError("xxd: malformed hex dump line")
+    }
   }
+  @stdio.stdout.write(Bytes::from_array(output))
+}
+
+///|
+fn include_name(path : String, symbol_name : String?) -> String {
+  if symbol_name is Some(value) {
+    return value
+  }
+  let raw = if path == "-" { "" } else { path }
+  let normalized = StringBuilder()
+  for char in raw {
+    if char is ('a'..='z' | 'A'..='Z' | '0'..='9' | '_') {
+      normalized.write_char(char)
+    } else {
+      normalized.write_char('_')
+    }
+  }
+  let raw = normalized.to_string()
+  let result = raw
+  if result == "" {
+    "data"
+  } else {
+    result
+  }
+}
+
+///|
+fn include_output(path : String, data : Bytes, symbol_name : String?) -> String {
+  if path == "-" && symbol_name is None {
+    let out = StringBuilder()
+    for index, byte in data {
+      write_hex_byte(out, byte)
+      if index + 1 < data.length() {
+        out.write_string(", ")
+      }
+    }
+    if !data.is_empty() {
+      out.write_char('\n')
+    }
+    return out.to_string()
+  }
+  let name = include_name(path, symbol_name)
+  let out = StringBuilder()
+  out.write_string("unsigned char \{name}[] = {")
+  for index, byte in data {
+    if index % 12 == 0 {
+      out.write_string("\n  ")
+    }
+    out.write_string("0x")
+    write_hex_byte(out, byte)
+    if index + 1 < data.length() {
+      out.write_string(", ")
+    }
+  }
+  if !data.is_empty() {
+    out.write_char('\n')
+  }
+  out.write_string("};\nunsigned int \{name}_len = \{data.length()};\n")
+  out.to_string()
 }
 
 ///|
@@ -263,13 +353,21 @@ async fn write_zero_prefix(count : Int64) -> Unit {
 
 ///|
 async fn main {
-  let args = @env.args()[1:]
+  let args = @env.args()[1:].map(arg => {
+    if arg == "--revert" {
+      "--reverse"
+    } else {
+      arg
+    }
+  })
   let parsed = @cli.parse(args, [
+    @cli.flag("include", short='i'),
     @cli.flag("plain", short='p'),
     @cli.flag("reverse", short='r'),
     @cli.option("cols", short='c'),
     @cli.option("len", short='l'),
     @cli.option("seek", short='s'),
+    @cli.option("name", short='n'),
     @cli.flag("help"),
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
@@ -280,7 +378,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: xxd [-pr] [-c COLS] [-l LEN] [-s OFFSET] [FILE]\nNote: OFFSET must be nonnegative; addressed reverse patching remains partial.\n",
+      "Usage: xxd [-ipr] [-c COLS] [-l LEN] [-s OFFSET] [FILE]\n",
     )
     return
   }
@@ -291,6 +389,7 @@ async fn main {
   }
   let plain = parsed.contains("plain")
   let reverse = parsed.contains("reverse")
+  let include_mode = parsed.contains("include")
   let (cols_opt, len_opt, seek_opt) = (
     parse_number(parsed, "cols"),
     parse_number(parsed, "len", minimum=0),
@@ -309,10 +408,17 @@ async fn main {
   let inputs = parsed.operands
   let path = if inputs.is_empty() { "-" } else { inputs[0] }
   try {
-    if path == "-" {
+    if include_mode {
+      let data = if path == "-" {
+        @stdio.stdin.read_all().binary()
+      } else {
+        @fs.read_file(path).binary()
+      }
+      @stdio.stdout.write(include_output(path, data, parsed.last_value("name")))
+    } else if path == "-" {
       if reverse {
-        write_zero_prefix(seek_opt.unwrap_or(0L))
         if plain {
+          write_zero_prefix(seek_opt.unwrap_or(0L).max(0L))
           reverse_plain_stream(@stdio.stdin)
         } else {
           reverse_dump_stream(@stdio.stdin)
@@ -325,8 +431,8 @@ async fn main {
       let file = @fs.open(path, mode=ReadOnly)
       defer file.close()
       if reverse {
-        write_zero_prefix(seek_opt.unwrap_or(0L))
         if plain {
+          write_zero_prefix(seek_opt.unwrap_or(0L).max(0L))
           reverse_plain_stream(file)
         } else {
           reverse_dump_stream(file)

@@ -1,12 +1,13 @@
 # Compatibility Expansion Plan
 
-Status: P0-P5 implemented; P6-P8 roadmap
+Status: P0-P8 implemented; P8 dependent command gates remain explicitly closed
 Date: 2026-09-04
 Scope: the 48 local command modules and the 47 commands currently exposed by MoonX
 
 This document turns the current support record into an execution roadmap. The
-P0 test-system migration and the P1-P5 compatibility batches described below
-are implemented; P6-P8 are the remaining compatibility roadmap. It
+P0 test-system migration and the P1-P8 compatibility batches described below
+are implemented. P8 records capability-gate results and retains explicit
+rejections where the portable runtime does not expose the required primitive. It
 prioritizes the next parameters and behavior families to implement or certify;
 it does not change the support claims by itself. A parameter becomes a support
 claim only after a repeatable black-box probe against the pinned upstream
@@ -53,7 +54,7 @@ The following results were observed in the current checkout on 2026-09-04:
 | `moon run --target native tests/runner -- --manifest tests/fixtures/runner/cases.json --native-root _build/native/release/build --suite compat` | Passed | Native compatibility suite is green |
 | Same runner with `--gnu-diff` | Passed | The differential subset is green |
 | Same runner with the pre-built Wasm root and `--suite policy` | Passed | Denied and local-only allowed network policies are green |
-| Same runner with `--validate-only` | 48 commands and 117 cases valid | The unified manifest includes the P1-P5 differential contracts |
+| Same runner with `--validate-only` | 48 commands and 123 cases valid | The unified manifest includes the P1-P7 differential contracts and P8 gate records |
 
 The pinned Docker oracle cannot run locally because Docker is not installed.
 The remote pinned-oracle job remains required before this P5 delivery is
@@ -359,6 +360,11 @@ out of scope.
 
 ## P6 - JSON CLI Expansion
 
+P6 is implemented for the CLI-mode slice. The unified manifest now covers
+sorting, slurp/raw framing, argument bindings, exit-status mapping, and invalid
+option values; the imported evaluator remains separately bounded from a full
+jq 1.8.2 claim.
+
 **Command:** `jq`
 **Mode:** Extend CLI modes first, evaluator second.
 
@@ -383,6 +389,9 @@ oracle suites.
 as a proxy for system `jq` compatibility.
 
 ## P7 - Language and Self-Contained Utility Gaps
+
+P7 is implemented for the bounded make and xxd slices described below. Jobserver
+parallelism and negative/end-relative stream seeks remain explicit boundaries.
 
 ### P7a - `make`
 
@@ -413,6 +422,10 @@ host `make` executable.
 Keep the current positive-seek and forward/reverse byte-stream behavior green.
 
 ## P8 - Filesystem Capability Track
+
+P8 capability spikes are implemented as explicit cross-target predicates and
+runner-visible rejection gates. No metadata-dependent command option is
+promoted while its required primitive remains unavailable.
 
 These commands should not be expanded by adding parser branches alone. The
 missing semantics depend on runtime primitives that have not yet been verified

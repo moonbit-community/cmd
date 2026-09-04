@@ -45,6 +45,43 @@ pub fn symbolic_links_supported() -> Bool {
 }
 
 ///|
+/// The portable filesystem exposes kind, size, and modification timestamps;
+/// owner/group and permission-bit reads are intentionally not inferred.
+pub fn metadata_reads_supported() -> Bool {
+  true
+}
+
+///|
+pub fn permission_reads_supported() -> Bool {
+  false
+}
+
+///|
+pub fn timestamp_mutation_supported() -> Bool {
+  false
+}
+
+///|
+pub fn hard_links_supported() -> Bool {
+  false
+}
+
+///|
+pub fn readlink_supported() -> Bool {
+  false
+}
+
+///|
+pub fn cross_device_rename_classification_supported() -> Bool {
+  false
+}
+
+///|
+pub fn special_file_policy_supported() -> Bool {
+  false
+}
+
+///|
 pub fn native_separator() -> Char {
   @path.sep
 }

@@ -20,3 +20,14 @@ Supported options:
 - `-f`, `--from-file FILE`: read the filter from `FILE`.
 - `-n`, `--null-input`: evaluate once with `null` input.
 - `-l`, `--logs`: process newline-delimited JSON and skip invalid lines.
+- `-S`, `--sort-keys`: recursively sort object keys for deterministic output.
+- `-j`, `--join-output`: omit separators between filter results.
+- `-s`, `--slurp`: evaluate one array containing all input values.
+- `-R`, `--raw-input`: treat each input line as a JSON string.
+- `-e`, `--exit-status`: return 1 for false/null and 4 when no result is produced.
+- `--arg NAME VALUE`, `--argjson NAME JSON`: bind literal values for `$NAME`.
+- `--indent N` and `--tab`: select deterministic pretty-print indentation.
+
+The evaluator is the imported MoonJQ implementation. Its map, reduce,
+assignment, and try/catch slices are usable through this CLI; modules,
+streaming, and every jq 1.8.2 diagnostic are not claimed.

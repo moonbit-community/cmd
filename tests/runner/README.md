@@ -17,8 +17,8 @@ binary.
 
 The P2/P3 profile adds strict C-locale differential cases for `grep`, `env`,
 `sort`, `uniq`, `wc`, and `head`, plus the retained `tail -F` rejection. The
-manifest currently contains 117 semantic cases, including the P5 shell grammar
-and status fixtures. Binary/NUL and parser-heavy
+manifest currently contains 127 semantic cases, including the P5 shell grammar,
+P6 jq modes, and P7 xxd/make fixtures. Binary/NUL and parser-heavy
 checks are grouped in the native suite, while file/cwd/process authorization is
 exercised only by the Wasm policy suite.
 

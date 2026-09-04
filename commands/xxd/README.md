@@ -11,11 +11,12 @@ moonx cli/xxd -r dump.txt > out.bin  # reverse a dump
 printf '68690a' | moonx cli/xxd -r -p
 ```
 
-Options: `-p` plain hex, `-r` reverse (with or without `-p`), `-c N` bytes
+Options: `-p` plain hex, `-r`/`--revert` reverse (with or without `-p`), `-i`
+include-style C output, `-c N` bytes
 per line (default 16, or 30 with `-p`), `-l N` stop after N bytes, and `-s N`
-seek before a forward dump. In reverse mode a positive `-s N` shifts output
-by N bytes. Negative/end-relative seeks and full addressed reverse-patching
-semantics remain outside the measured slice.
+seek before a forward dump. Include output accepts `-n NAME` for the C symbol;
+addressed reverse dumps validate offsets and preserve sparse holes up to a
+bounded output size. Negative/end-relative seeks remain explicitly rejected.
 
 With no file operand, the command silently reads stdin until EOF, matching the
 upstream terminal, pipe, redirection, and explicit `-` behavior.

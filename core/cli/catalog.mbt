@@ -35,7 +35,9 @@ pub fn command_catalog() -> Array[CommandContract] {
       "1", "2", "after", "empty", "only", "output", "t", "help",
     ]),
     contract("jq", Core, StructuredInput, StructuredOutput, [FileRead], [
-      "compact-output", "from-file", "logs", "null-input", "raw-output",
+      "compact-output", "exit-status", "from-file", "indent", "join-output", "logs",
+      "null-input", "raw-input", "sort-keys", "slurp", "tab", "raw-output", "arg",
+      "argjson",
     ]),
     contract("jqlog", Core, StructuredInput, StructuredOutput, [FileRead], [
       "file", "help",
@@ -165,7 +167,10 @@ pub fn command_catalog() -> Array[CommandContract] {
       NoInput,
       LineStream,
       [FileRead, ProcessSpawn],
-      ["always-make", "directory", "file", "just-print", "silent"],
+      [
+        "always-make", "directory", "file", "jobs", "keep-going", "just-print", "silent",
+        "what-if",
+      ],
     ),
     contract(
       "sh",
