@@ -1263,6 +1263,380 @@ async fn run_phase345_cases(
 }
 
 ///|
+async fn run_p2_p3_cases(bin_root : String, failures : Array[String]) -> Unit {
+  expect(
+    bin_root,
+    "grep",
+    ["-n", "-b", "-C1", "hit"],
+    Some(b"a\nhit\nc\nd\ne\nhit\ng\n"),
+    0,
+    b"1-0-a\n2:2:hit\n3-6-c\n--\n5-10-e\n6:12:hit\n7-16-g\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "grep",
+    ["-A0", "-A1", "hit"],
+    Some(b"a\nhit\nc\n"),
+    0,
+    b"hit\nc\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "grep",
+    ["-Fzb", "hit"],
+    Some(b"one\x00hit\x00three\x00"),
+    0,
+    b"4:hit\x00",
+    failures,
+  )
+  expect(
+    bin_root,
+    "grep",
+    ["--binary-files=text", "hit"],
+    Some(b"a\x00hit\n"),
+    0,
+    b"a\x00hit\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "grep",
+    ["--binary-files=without-match", "hit"],
+    Some(b"a\x00hit\n"),
+    1,
+    b"",
+    failures,
+  )
+  expect(bin_root, "grep", ["--", "-x"], Some(b"-x\n"), 0, b"-x\n", failures)
+  expect_failure(
+    bin_root,
+    "grep",
+    ["-A", "bad", "hit"],
+    2,
+    "invalid context length",
+    failures,
+  )
+  expect_failure(
+    bin_root,
+    "grep",
+    ["--binary-files=bad", "hit"],
+    2,
+    "unknown binary-files type",
+    failures,
+  )
+  expect_failure(
+    bin_root,
+    "grep",
+    ["["],
+    2,
+    "invalid regular expression",
+    failures,
+  )
+  let quiet_error = @testkit.run(@testkit.executable_path(bin_root, "grep"), [
+    "-s", "hit", "missing-p2-p3-file",
+  ])
+  record_result(
+    quiet_error.status == 2 && quiet_error.stderr.is_empty(),
+    "grep: -s must suppress missing-file diagnostics without hiding status 2",
+    failures,
+  )
+  let root = @fs.tmpdir(prefix="mooncmd-p2-p3")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let nested = @path.Path(root).join(Path("nested")).to_string()
+  @fs.mkdir(nested)
+  let keep = @path.Path(nested).join(Path("keep.txt")).to_string()
+  let skip = @path.Path(nested).join(Path("skip.txt")).to_string()
+  let log = @path.Path(nested).join(Path("keep.log")).to_string()
+  @fs.write_file(keep, b"needle\n")
+  @fs.write_file(skip, b"needle\n")
+  @fs.write_file(log, b"needle\n")
+  expect(
+    bin_root,
+    "grep",
+    ["-r", "--include=*.txt", "--exclude=skip*", "needle", root],
+    None,
+    0,
+    @utf8.encode(keep + ":needle\n"),
+    failures,
+  )
+  expect(
+    bin_root,
+    "env",
+    ["--ignore-environment", "--unset=DROP", "DROP=no", "KEEP=yes"],
+    None,
+    0,
+    b"DROP=no\nKEEP=yes\n",
+    failures,
+  )
+  expect(bin_root, "env", ["-i", "1=x"], None, 0, b"1=x\n", failures)
+  expect_failure(bin_root, "env", ["-C"], 125, "requires an argument", failures)
+  expect_failure(bin_root, "env", ["=x"], 125, "invalid", failures)
+  expect_failure(
+    bin_root,
+    "env",
+    ["--help"],
+    125,
+    "unsupported option",
+    failures,
+  )
+  let repeated_cwd = @testkit.run(@testkit.executable_path(bin_root, "env"), [
+    "-C",
+    root,
+    "-C",
+    ".",
+    @testkit.executable_path(bin_root, "pwd"),
+  ])
+  let current = @fs.realpath(".")
+  record_result(
+    repeated_cwd.status == 0 &&
+    @testkit.bytes_equal(repeated_cwd.stdout, @utf8.encode(current + "\n")),
+    "env: repeated -C must resolve the last directory from the original cwd",
+    failures,
+  )
+  expect_failure(
+    bin_root,
+    "env",
+    ["mooncmd-command-that-does-not-exist"],
+    127,
+    "cannot run",
+    failures,
+  )
+  expect_failure(
+    bin_root,
+    "env",
+    ["-i", "FOO=x", "-u"],
+    127,
+    "cannot run",
+    failures,
+  )
+  let not_executable = @path.Path(root).join(Path("not-executable")).to_string()
+  @fs.mkdir(not_executable)
+  expect_failure(bin_root, "env", [not_executable], 126, "cannot run", failures)
+  expect(
+    bin_root,
+    "sort",
+    ["-t:", "-k2,2n", "-k1,1r"],
+    Some(b"b:2\na:10\nc:2\n"),
+    0,
+    b"c:2\nb:2\na:10\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "sort",
+    ["-g"],
+    Some(b"inf\n1\n-inf\nnan\ntext\n"),
+    0,
+    b"text\nnan\n-inf\n1\ninf\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "sort",
+    ["-t:", "-k2n,2r"],
+    Some(b"a:2\nb:10\n"),
+    0,
+    b"b:10\na:2\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "sort",
+    ["-k2,2"],
+    Some(b"x  b\nz a\ny   a\n"),
+    0,
+    b"y   a\nx  b\nz a\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "sort",
+    ["-u", "-t:", "-k2,2"],
+    Some(b"b:1\na:1\n"),
+    0,
+    b"b:1\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "sort",
+    ["-h"],
+    Some(b"999999K\n1M\n10K\n"),
+    0,
+    b"10K\n999999K\n1M\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "sort",
+    ["-bdf"],
+    Some(b"  z!\na-\n B\n"),
+    0,
+    b"a-\n B\n  z!\n",
+    failures,
+  )
+  expect(bin_root, "sort", ["-f"], Some(b"[\na\n"), 0, b"a\n[\n", failures)
+  expect(
+    bin_root,
+    "sort",
+    ["-V"],
+    Some(b"file10\nfile2\nfile1\n"),
+    0,
+    b"file1\nfile2\nfile10\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "sort",
+    ["-z"],
+    Some(b"b\x00a\x00"),
+    0,
+    b"a\x00b\x00",
+    failures,
+  )
+  expect(bin_root, "sort", ["-c"], Some(b"a\nb\n"), 0, b"", failures)
+  let sort_check = @testkit.run(
+    @testkit.executable_path(bin_root, "sort"),
+    ["--check"],
+    stdin=b"b\na\n",
+  )
+  record_result(
+    sort_check.status == 1 &&
+    sort_check.stdout.is_empty() &&
+    @testkit.contains_bytes(sort_check.stderr, "disorder"),
+    "sort: --check must diagnose the first disorder on stderr",
+    failures,
+  )
+  expect(bin_root, "sort", ["-C"], Some(b"b\na\n"), 1, b"", failures)
+  expect_failure(
+    bin_root,
+    "sort",
+    ["-R"],
+    2,
+    "deterministic seed contract",
+    failures,
+  )
+  expect(
+    bin_root,
+    "uniq",
+    ["-c", "-f1", "-s1", "-w1"],
+    Some(b"1 xa\n2 xb\n3 yy\n"),
+    0,
+    b"      2 1 xa\n      1 3 yy\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "uniq",
+    ["-z", "-s1", "-w1"],
+    Some(b"ax1\x00ax2\x00by\x00"),
+    0,
+    b"ax1\x00by\x00",
+    failures,
+  )
+  expect_failure(bin_root, "uniq", ["-f", "bad"], 2, "invalid number", failures)
+  expect(bin_root, "wc", ["-L"], Some(b"abc\n12345\n"), 0, b"5\n", failures)
+  expect(bin_root, "wc", ["-L"], Some(b"a\tb\n"), 0, b"9\n", failures)
+  let short = @path.Path(root).join(Path("short")).to_string()
+  let long = @path.Path(root).join(Path("long")).to_string()
+  @fs.write_file(short, b"a\n")
+  @fs.write_file(long, b"1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n")
+  let wc = @testkit.run(@testkit.executable_path(bin_root, "wc"), [
+    "-l", short, long,
+  ])
+  record_result(
+    wc.status == 0 &&
+    @testkit.bytes_equal(
+      wc.stdout,
+      @utf8.encode(" 1 \{short}\n10 \{long}\n11 total\n"),
+    ),
+    "wc: multiple-file alignment mismatch",
+    failures,
+  )
+  let list = @path.Path(root).join(Path("files.list")).to_string()
+  @fs.write_file(list, @utf8.encode(short + "\u0000" + long + "\u0000"))
+  let wc_list = @testkit.run(@testkit.executable_path(bin_root, "wc"), [
+    "-l", "--files0-from", list,
+  ])
+  record_result(
+    wc_list.status == 0 && @testkit.bytes_equal(wc_list.stdout, wc.stdout),
+    "wc: --files0-from must reuse normal multi-file accounting",
+    failures,
+  )
+  let wc_mixed = @testkit.run(@testkit.executable_path(bin_root, "wc"), [
+    "-l",
+    short,
+    root + "/missing",
+  ])
+  record_result(
+    wc_mixed.status == 1 &&
+    @testkit.contains_bytes(wc_mixed.stdout, "1 \{short}") &&
+    @testkit.contains_bytes(wc_mixed.stdout, "1 total") &&
+    @testkit.contains_bytes(wc_mixed.stderr, "missing"),
+    "wc: mixed readable/missing operands must preserve counts, diagnostics, and status",
+    failures,
+  )
+  expect_failure(
+    bin_root,
+    "wc",
+    ["--files0-from", list, short],
+    1,
+    "extra operand",
+    failures,
+  )
+  expect_failure(
+    bin_root,
+    "sort",
+    ["-c", short, long],
+    2,
+    "extra operand",
+    failures,
+  )
+  expect(
+    bin_root,
+    "head",
+    ["-z", "-n2"],
+    Some(b"abc\x00def\x00ghi\x00"),
+    0,
+    b"abc\x00def\x00",
+    failures,
+  )
+  expect(
+    bin_root,
+    "head",
+    ["-n", "-2"],
+    Some(b"1\n2\n3\n4\n"),
+    0,
+    b"1\n2\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "head",
+    ["-n", "+3"],
+    Some(b"1\n2\n3\n4\n"),
+    0,
+    b"1\n2\n3\n",
+    failures,
+  )
+  expect(bin_root, "head", ["-2"], Some(b"1\n2\n3\n"), 0, b"1\n2\n", failures)
+  expect(bin_root, "head", ["-2c"], Some(b"abc\n"), 0, b"ab", failures)
+  expect(
+    bin_root,
+    "head",
+    ["-n", "1KiB"],
+    Some(b"1\n2\n"),
+    0,
+    b"1\n2\n",
+    failures,
+  )
+  expect(bin_root, "head", ["-n1", "-c2"], Some(b"abc\n"), 0, b"ab", failures)
+  expect_failure(bin_root, "head", ["-n", "bad"], 2, "invalid count", failures)
+}
+
+///|
 async fn run_edge_cases(bin_root : String, failures : Array[String]) -> Unit {
   expect(
     bin_root,
@@ -2874,6 +3248,7 @@ async fn run_compat_suite(
   run_chunk_boundary_cases(bin_root, failures)
   run_merge_cases(bin_root, failures)
   run_phase345_cases(bin_root, failures)
+  run_p2_p3_cases(bin_root, failures)
   run_edge_cases(bin_root, failures)
   run_stdin_prompt_cases(bin_root, failures)
   run_tail_follow_cases(bin_root, failures)

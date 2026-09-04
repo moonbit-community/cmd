@@ -17,13 +17,17 @@ status; native inheritance is outside this Wasm support record.
 
 ## Evidence
 
-`env -i FOO=bar` returned `FOO=bar` in Wasm. `xargs` returned child output when
-`printf` was allowed and status 126/permission diagnostics when it was not.
+`env -i FOO=bar` returned `FOO=bar` in Wasm. P2 additionally exercises long
+aliases, non-shell assignment names, the assignment option boundary,
+removal-before-assignment precedence, status 125/126/127 mapping, and `-C` with
+independent filesystem and process authorization. `xargs` returned child output
+when `printf` was allowed and status 126/permission diagnostics when it was not.
 
 ## Consequences
 
 The same command can be semantically valid but operationally denied by a host
-policy. Documentation records these outcomes separately.
+policy. A permitted executable does not imply permission to inspect or use the
+requested working directory. Documentation records these outcomes separately.
 
 ## Rollback
 

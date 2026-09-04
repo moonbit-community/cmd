@@ -1,0 +1,10 @@
+{
+  "process": {
+    "allow": [
+      {
+        "program": "mooncmd-command-that-does-not-exist",
+        "args_prefix": []
+      }
+    ]
+  }
+}

@@ -12,11 +12,11 @@
     { "name": "cut", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] },
     { "name": "dirname", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["paths"] },
     { "name": "echo", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["stdout"] },
-    { "name": "env", "baseline": "coreutils-9.11", "status": "partial", "native": "foundation-measured", "wasm": "policy-pending", "capabilities": ["environment", "process"] },
+    { "name": "env", "baseline": "coreutils-9.11", "status": "partial", "native": "p2-measured", "wasm": "policy-measured", "capabilities": ["environment", "process"] },
     { "name": "false", "baseline": "coreutils-9.11", "status": "partial", "native": "measured", "wasm": "unmeasured", "capabilities": ["status"] },
     { "name": "find", "baseline": "findutils-4.10.0", "status": "partial", "native": "unmeasured", "wasm": "policy-pending", "capabilities": ["filesystem"] },
-    { "name": "grep", "baseline": "grep-3.12", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] },
-    { "name": "head", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] },
+    { "name": "grep", "baseline": "grep-3.12", "status": "partial", "native": "p2-measured", "wasm": "policy-measured", "capabilities": ["stdin", "files"] },
+    { "name": "head", "baseline": "coreutils-9.11", "status": "partial", "native": "p3-measured", "wasm": "policy-measured", "capabilities": ["stdin", "files"] },
     { "name": "join", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] },
     { "name": "jq", "baseline": "jq-1.8.2", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["json", "files"] },
     { "name": "jqlog", "baseline": "jqlog-06a529211343c773d30d2c3aa0231a2456665b7a", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["json", "files"] },
@@ -36,16 +36,16 @@
     { "name": "sh", "baseline": "posix.1-2024-sh", "status": "partial", "native": "foundation-measured", "wasm": "policy-pending", "capabilities": ["language", "process", "files"] },
     { "name": "sha256sum", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] },
     { "name": "sleep", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["time"] },
-    { "name": "sort", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] },
-    { "name": "tail", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] },
+    { "name": "sort", "baseline": "coreutils-9.11", "status": "partial", "native": "p3-measured", "wasm": "policy-measured", "capabilities": ["stdin", "files"] },
+    { "name": "tail", "baseline": "coreutils-9.11", "status": "partial", "native": "p3-measured", "wasm": "policy-measured", "capabilities": ["stdin", "files"] },
     { "name": "tee", "baseline": "coreutils-9.11", "status": "partial", "native": "measured", "wasm": "policy-pending", "capabilities": ["stdin", "filesystem-mutation"] },
     { "name": "test", "baseline": "coreutils-9.11-posix.1-2024", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["expression", "filesystem"] },
     { "name": "timeout", "baseline": "coreutils-9.11", "status": "exception", "native": "local-only", "wasm": "policy-denied", "capabilities": ["process", "process-group-cancellation"] },
     { "name": "touch", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "policy-pending", "capabilities": ["filesystem-mutation", "time"] },
     { "name": "tr", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["stdin"] },
     { "name": "true", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["status"] },
-    { "name": "uniq", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] },
-    { "name": "wc", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] },
+    { "name": "uniq", "baseline": "coreutils-9.11", "status": "partial", "native": "p3-measured", "wasm": "policy-measured", "capabilities": ["stdin", "files"] },
+    { "name": "wc", "baseline": "coreutils-9.11", "status": "partial", "native": "p3-measured", "wasm": "policy-measured", "capabilities": ["stdin", "files"] },
     { "name": "wget", "baseline": "wget-1.25.0", "status": "partial", "native": "unmeasured", "wasm": "policy-pending", "capabilities": ["network", "files"] },
     { "name": "xargs", "baseline": "findutils-4.10.0", "status": "partial", "native": "foundation-measured", "wasm": "policy-pending", "capabilities": ["stdin", "process"] },
     { "name": "xxd", "baseline": "vim-9.1.0000-xxd", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] }
@@ -814,6 +814,317 @@
       "files": [
         { "path": "common.mk", "content_hex": "56414c5545203d20696e636c756465640a" },
         { "path": "Makefile", "content_hex": "696e636c75646520636f6d6d6f6e2e6d6b0a56414c5545203d206c6f63616c0a616c6c3a0a09407072696e7466202725735c6e272027242856414c554529270a" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p2-grep-context-byte-offset",
+      "command": "grep",
+      "args": ["-n", "-b", "-C1", "hit"],
+      "stdin_hex": "610a6869740a630a640a650a6869740a670a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p2-grep-zero-records",
+      "command": "grep",
+      "args": ["-Fzb", "hit"],
+      "stdin_hex": "6f6e650068697400746872656500",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p2-grep-repeated-context",
+      "command": "grep",
+      "args": ["-A0", "-A1", "hit"],
+      "stdin_hex": "610a6869740a630a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p2-grep-binary-report",
+      "command": "grep",
+      "args": ["hit"],
+      "stdin_hex": "61006869740a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p2-grep-recursive-selection",
+      "command": "grep",
+      "args": ["-r", "--include=*.txt", "--exclude=skip*", "needle", "tree"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "tree/keep.txt", "content_hex": "6e6565646c650a" },
+        { "path": "tree/skip.txt", "content_hex": "6e6565646c650a" },
+        { "path": "tree/keep.log", "content_hex": "6e6565646c650a" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p2-env-long-aliases",
+      "command": "env",
+      "args": ["--ignore-environment", "--unset=DROP", "DROP=no", "KEEP=yes"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p2-env-non-shell-assignment-name",
+      "command": "env",
+      "args": ["-i", "1=x"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-multiple-key-modifiers",
+      "command": "sort",
+      "args": ["-t:", "-k2,2n", "-k1,1r"],
+      "stdin_hex": "623a320a613a31300a633a320a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-general-numeric",
+      "command": "sort",
+      "args": ["-g"],
+      "stdin_hex": "3165320a390a322e3565310a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-general-numeric-classes",
+      "command": "sort",
+      "args": ["-g"],
+      "stdin_hex": "696e660a310a2d696e660a6e616e0a746578740a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-local-key-modifier-combination",
+      "command": "sort",
+      "args": ["-t:", "-k2n,2r"],
+      "stdin_hex": "613a320a623a31300a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-blank-field-boundaries",
+      "command": "sort",
+      "args": ["-k2,2"],
+      "stdin_hex": "782020620a7a20610a79202020610a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-character-modifiers",
+      "command": "sort",
+      "args": ["-bdf"],
+      "stdin_hex": "20207a210a612d0a20420a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-unique-key-stability",
+      "command": "sort",
+      "args": ["-u", "-t:", "-k2,2"],
+      "stdin_hex": "623a310a613a310a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-human-numeric",
+      "command": "sort",
+      "args": ["-h"],
+      "stdin_hex": "3939393939394b0a314d0a31304b0a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-month",
+      "command": "sort",
+      "args": ["-M"],
+      "stdin_hex": "4d61720a4a414e0a7a7a7a0a4665620a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-version",
+      "command": "sort",
+      "args": ["-V"],
+      "stdin_hex": "66696c6531300a66696c65320a66696c65310a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-zero-records",
+      "command": "sort",
+      "args": ["-z"],
+      "stdin_hex": "62006100",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-ignore-nonprinting",
+      "command": "sort",
+      "args": ["-i"],
+      "stdin_hex": "61017a0a61790a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-ignore-case-c-locale",
+      "command": "sort",
+      "args": ["-f"],
+      "stdin_hex": "5b0a610a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-check-quiet",
+      "command": "sort",
+      "args": ["--check=quiet"],
+      "stdin_hex": "620a610a",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": []
+    },
+    {
+      "id": "p3-uniq-field-character-selection",
+      "command": "uniq",
+      "args": ["-c", "-f1", "-s1", "-w1"],
+      "stdin_hex": "312078610a322078620a332079790a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-uniq-zero-records",
+      "command": "uniq",
+      "args": ["-z", "-s1", "-w1"],
+      "stdin_hex": "6178310061783200627900",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-wc-max-line-length",
+      "command": "wc",
+      "args": ["-L"],
+      "stdin_hex": "6162630a31323334350a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-wc-files0-alignment",
+      "command": "wc",
+      "args": ["-l", "--files0-from=names"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "a", "content_hex": "610a" },
+        { "path": "b", "content_hex": "310a320a330a340a350a360a370a380a390a31300a" },
+        { "path": "names", "content_hex": "61006200" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-head-zero-records",
+      "command": "head",
+      "args": ["-z", "-n2"],
+      "stdin_hex": "616263006465660067686900",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-head-exclude-tail",
+      "command": "head",
+      "args": ["-n", "-2"],
+      "stdin_hex": "310a320a330a340a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-head-binary-prefix-count",
+      "command": "head",
+      "args": ["-n", "1KiB"],
+      "stdin_hex": "310a320a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-head-explicit-positive-count",
+      "command": "head",
+      "args": ["-n", "+3"],
+      "stdin_hex": "310a320a330a340a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-head-multiple-file-headers",
+      "command": "head",
+      "args": ["-n1", "a", "b"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "a", "content_hex": "6f6e650a74776f0a" },
+        { "path": "b", "content_hex": "74687265650a666f75720a" }
       ],
       "environment": {},
       "expected_status": 0,

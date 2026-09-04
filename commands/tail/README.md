@@ -1,6 +1,6 @@
 # tail for moonx
 
-Observed Wasm profile (2026-09-03): this README is supplementary. The [support record](../../docs/compatibility.md) is the only capability authority; it lists the repeatable `moon run --target wasm --release` results and exclusions. Options mentioned here but not promoted in that record are not compatibility guarantees.
+Observed native/Wasm P3 profile (2026-09-04): this README is supplementary. The [support record](../../docs/compatibility.md) is the only capability authority; it lists the repeatable unified-runner results and exclusions.
 
 Print the last lines or bytes of files or stdin:
 
@@ -20,6 +20,10 @@ forms. Follow mode emits the initial selection, then emits bytes appended to
 each regular file. A file truncated in place is followed from byte zero. The
 descriptor remains open across renames, matching `tail -f`; deleting and
 recreating a path is not followed, because `-F` is not implemented.
+
+P3 retained this boundary after rechecking the runtime: no portable
+cross-target file identity/reopen primitive is available. `-F` therefore
+remains a tested status-2 rejection rather than silently behaving like `-f`.
 
 With no file operand, `-f` silently reads stdin through EOF and exits, matching
 the upstream finite-pipe behavior. Regular-file follow is polling-based and

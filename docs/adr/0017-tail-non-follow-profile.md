@@ -27,6 +27,10 @@ multiple files, headers, stdin EOF, interval parsing, and cancellation. The
 same append/truncate session is also run against the release Wasm artifact
 before this capability is published in the support matrix.
 
+P3 repeated the `-F` rejection probe. The shared filesystem API still exposes
+size and descriptor reads but no cross-target stable file identity, so the
+reopen prerequisite remains unsatisfied.
+
 ## Consequences
 
 Log slicing and portable polling are predictable. Descriptor-follow does not

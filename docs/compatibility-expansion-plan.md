@@ -1,12 +1,12 @@
 # Compatibility Expansion Plan
 
-Status: P0-P1 implemented; P2-P8 roadmap
+Status: P0-P3 implemented; P4-P8 roadmap
 Date: 2026-09-04
 Scope: the 48 local command modules and the 47 commands currently exposed by MoonX
 
 This document turns the current support record into an execution roadmap. The
-P0 test-system migration and P1 HTTP certification described below are
-implemented; the remaining sections are the follow-on compatibility roadmap. It
+P0 test-system migration and the P1-P3 compatibility batches described below
+are implemented; P4-P8 are the remaining compatibility roadmap. It
 prioritizes the next parameters and behavior families to implement or certify;
 it does not change the support claims by itself. A parameter becomes a support
 claim only after a repeatable black-box probe against the pinned upstream
@@ -25,6 +25,8 @@ The recommended order is:
 2. Certify the already-implemented HTTP option surface in `curl` and `wget`.
    Completed in P1 with native semantic, pinned-oracle, and Wasm policy cases.
 3. Expand `grep`, then the `sort`/`uniq`/`wc`/`head`/`tail` text pipeline.
+   Completed in P2/P3 with native semantics, pinned-oracle cases, and Wasm
+   policy coverage.
 4. Expand the `find` and `xargs` process-oriented workflow together.
 5. Extend the POSIX subset of `sh`.
 6. Add high-value `jq` CLI modes before attempting the full filter language.
@@ -45,14 +47,14 @@ The following results were observed in the current checkout on 2026-09-04:
 | Check | Result | Meaning |
 | --- | --- | --- |
 | `moon check --target all --deny-warn` | Passed | All configured package targets type-check without enabled warnings |
-| `moon test --target all` | Native 69/69 and Wasm 60/60 passed; JS and Wasm-GC have no test entry | Package tests are green for configured targets |
+| `moon test --target all` | Native 80/80 and Wasm 71/71 passed; JS and Wasm-GC have no test entry | Package tests are green for configured targets |
 | `moon run --target native tests/runner -- --manifest tests/fixtures/runner/cases.json --native-root _build/native/release/build --suite compat` | Passed | Native compatibility suite is green |
 | Same runner with `--gnu-diff` | Passed | The differential subset is green |
 | Same runner with the pre-built Wasm root and `--suite policy` | Passed | Denied and local-only allowed network policies are green |
-| Same runner with `--validate-only` | 48 commands and 74 cases valid | The unified manifest includes the P1 differential contracts |
+| Same runner with `--validate-only` | 48 commands and 104 cases valid | The unified manifest includes the P1-P3 differential contracts |
 
 The pinned Docker oracle cannot run locally because Docker is not installed.
-The remote pinned-oracle job remains required before this P1 delivery is
+The remote pinned-oracle job remains required before this P2/P3 delivery is
 accepted; native semantics and Wasm authorization are separate required gates.
 
 The support record intentionally distinguishes `subset verified`, `restricted`,
@@ -216,6 +218,13 @@ This is a small, low-risk batch that can land alongside `grep`:
 Every new option gets a positive case, invalid-value case, repeated-option case,
 `--` case, stdin/file case where applicable, and native/Wasm policy coverage.
 
+**Implemented 2026-09-04.** `grep` now covers context, byte offsets,
+diagnostic suppression, NUL records, recursive basename selection, and binary
+policies under the C-locale byte contract. `env` long aliases, `-C`, precedence,
+and status mapping are certified; `--help` remains an explicit status-125
+rejection. The unified manifest contains the strict differential cases and the
+Wasm suite separates filesystem, cwd, and process authorization.
+
 ## P3 - Text Pipeline Completion
 
 ### P3a - `sort`
@@ -261,6 +270,14 @@ Add field/character selection and record controls:
 
 Use binary/NUL, empty, multiple-file, invalid-value, locale-fixed, and large
 input fixtures. The existing `--gnu-diff` subset must remain green.
+
+**Implemented 2026-09-04.** `sort`, `uniq`, `wc`, and `head` implement the
+listed deterministic P3 surface with native, oracle, and Wasm-policy evidence.
+`sort -R` remains a verified rejection because no deterministic seed contract
+exists. `tail -F` remains a verified rejection under ADR-0017 because the
+portable file-identity/reopen prerequisite is still unavailable; descriptor
+following with `-f` remains the supported behavior. No external sort files or
+additional build-per-case paths were introduced.
 
 ## P4 - `find` and `xargs` Workflow
 

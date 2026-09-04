@@ -229,6 +229,14 @@ async fn check_runtime_policy(root : String, failures : Array[String]) -> Unit {
   let input = root_path(root, input_rel)
   @fs.write_file(input, b"policy-fixture\n")
   defer (@fs.remove(input) catch { _ => () })
+  let zero_rel = "tests/fixtures/policy/runtime-zero"
+  let zero = root_path(root, zero_rel)
+  @fs.write_file(zero, b"second\x00first\x00first\x00")
+  defer (@fs.remove(zero) catch { _ => () })
+  let list_rel = "tests/fixtures/policy/runtime-list"
+  let list = root_path(root, list_rel)
+  @fs.write_file(list, @utf8.encode(input_rel + "\u0000"))
+  defer (@fs.remove(list) catch { _ => () })
   let denied = moon_run(root, "deny-all.json", "cat", [input_rel]) catch {
     err => {
       failures.push("deny-all cat could not run: \{err}")
@@ -307,6 +315,10 @@ async fn check_runtime_policy(root : String, failures : Array[String]) -> Unit {
     failures,
   )
   expect_denied(root, "deny-all.json", "sha256sum", [input_rel], None, failures)
+  expect_denied(root, "deny-all.json", "head", ["-z", zero_rel], None, failures)
+  expect_denied(root, "deny-all.json", "sort", ["-z", zero_rel], None, failures)
+  expect_denied(root, "deny-all.json", "uniq", ["-z", zero_rel], None, failures)
+  expect_denied(root, "deny-all.json", "wc", ["-L", input_rel], None, failures)
   expect_allowed(
     root,
     "grep",
@@ -342,6 +354,47 @@ async fn check_runtime_policy(root : String, failures : Array[String]) -> Unit {
     }
   }
   record(cmp.status == 0, "cmp: allowed identical inputs failed", failures)
+  expect_allowed(
+    root,
+    "head",
+    ["-z", zero_rel],
+    b"second\x00first\x00first\x00",
+    failures,
+  )
+  expect_allowed(
+    root,
+    "sort",
+    ["-z", zero_rel],
+    b"first\x00first\x00second\x00",
+    failures,
+  )
+  expect_allowed(
+    root,
+    "uniq",
+    ["-z", "-s1", "-w1", zero_rel],
+    b"second\x00first\x00",
+    failures,
+  )
+  expect_allowed(
+    root,
+    "wc",
+    ["-L", input_rel],
+    @utf8.encode("14 " + root_path(root, input_rel) + "\n"),
+    failures,
+  )
+  let listed = moon_run(root, "read-workspace.json", "wc", [
+    "-l", "--files0-from", list_rel,
+  ]) catch {
+    err => {
+      failures.push("wc: allowed NUL file list failed: \{err}")
+      return
+    }
+  }
+  record(
+    stdout_is(listed, @utf8.encode("1 " + input_rel + "\n")),
+    "wc: policy-visible --files0-from output mismatch",
+    failures,
+  )
 }
 
 ///|
@@ -573,11 +626,56 @@ async fn check_process_and_network_policy(
   let makefile = root_path(root, makefile_rel)
   @fs.write_file(makefile, b".PHONY: all\nall:\n\t@printf policy-make-ok\n")
   defer (@fs.remove(makefile) catch { _ => () })
+  let env_setup = moon_run(root, "deny-all.json", "env", ["-C"]) catch {
+    err => {
+      failures.push("env: status-125 setup case failed to run: \{err}")
+      return
+    }
+  }
+  record(
+    env_setup.status == 125,
+    "env: Wasm setup failure must return 125",
+    failures,
+  )
+  let env_denied = moon_run(root, "read-workspace.json", "env", [
+    "echo", "denied",
+  ]) catch {
+    err => {
+      failures.push("env: status-126 denial case failed to run: \{err}")
+      return
+    }
+  }
+  record(
+    env_denied.status == 126,
+    "env: denied Wasm child must return 126",
+    failures,
+  )
+  let env_missing = moon_run(root, "process-missing.json", "env", [
+    "mooncmd-command-that-does-not-exist",
+  ]) catch {
+    err => {
+      failures.push("env: status-127 lookup case failed to run: \{err}")
+      return
+    }
+  }
+  record(
+    env_missing.status == 127,
+    "env: missing Wasm child must return 127",
+    failures,
+  )
   expect_denied(
     root,
     "read-workspace.json",
     "env",
     ["-i", "echo", "denied"],
+    None,
+    failures,
+  )
+  expect_denied(
+    root,
+    "process-echo.json",
+    "env",
+    ["-C", "tests/fixtures/policy", "echo", "denied-cwd"],
     None,
     failures,
   )
@@ -624,6 +722,19 @@ async fn check_process_and_network_policy(
   record(
     stdout_is(env, b"process-policy-ok\n"),
     "env: allowed process output mismatch",
+    failures,
+  )
+  let env_cwd = moon_run(root, "process-printf.json", "env", [
+    "-C", "tests/fixtures/policy", "printf", "%s\n", "cwd-policy-ok",
+  ]) catch {
+    err => {
+      failures.push("env: allowed cwd process failed: \{err}")
+      return
+    }
+  }
+  record(
+    stdout_is(env_cwd, b"cwd-policy-ok\n"),
+    "env: -C must use the policy-visible child working directory",
     failures,
   )
   let xargs = moon_run(

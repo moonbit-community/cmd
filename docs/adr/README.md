@@ -32,6 +32,7 @@ capability evidence.
 | [0022](0022-xargs-child-policy.md) | Keep xargs direct-child execution policy-visible |
 | [0023](0023-xxd-seek-profile.md) | Verify forward hex and positive seeks only |
 | [0024](0024-policy-is-part-of-behavior.md) | Record Wasm authorization separately from command semantics |
+| [0025](0025-c-locale-record-profile.md) | Keep text-pipeline records deterministic under `LC_ALL=C` |
 
 The remaining commands have no additional portability trade-off beyond the
 common evidence and stdin decisions. Their exact observed option surface is

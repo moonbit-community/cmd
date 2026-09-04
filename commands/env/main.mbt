@@ -5,27 +5,10 @@ fn split_assignment(value : String) -> (String, String)? {
     return None
   }
   let key = pieces[0]
-  if key == "" || !is_valid_name(key) {
+  if key == "" {
     return None
   }
   Some((key, pieces[1:].join("=")))
-}
-
-///|
-fn is_valid_name(value : String) -> Bool {
-  let chars : Array[Char] = value.iter().collect()
-  if chars.is_empty() {
-    return false
-  }
-  if !(chars[0] == '_' || chars[0] is ('a'..='z' | 'A'..='Z')) {
-    return false
-  }
-  for char in chars[1:] {
-    if !(char == '_' || char is ('a'..='z' | 'A'..='Z' | '0'..='9')) {
-      return false
-    }
-  }
-  true
 }
 
 ///|
@@ -33,7 +16,8 @@ async fn main {
   let args = @core_env.args()[1:]
   let mut ignore_environment = false
   let mut null_output = false
-  let mut cwd = @core_env.current_dir().unwrap_or(".")
+  let base_cwd = @core_env.current_dir().unwrap_or(".")
+  let mut cwd = base_cwd
   let mut chdir_requested = false
   let unset : Array[String] = []
   let assignments : Array[(String, String)] = []
@@ -65,7 +49,7 @@ async fn main {
       cwd = if directory.is_absolute() {
         directory.normalize().to_string()
       } else {
-        @path.Path(cwd).join(directory).normalize().to_string()
+        @path.Path(base_cwd).join(directory).normalize().to_string()
       }
     } else if options && arg.has_prefix("--chdir=") {
       chdir_requested = true
@@ -73,7 +57,7 @@ async fn main {
       cwd = if directory.is_absolute() {
         directory.normalize().to_string()
       } else {
-        @path.Path(cwd).join(directory).normalize().to_string()
+        @path.Path(base_cwd).join(directory).normalize().to_string()
       }
     } else if options && arg.has_prefix("-C") && arg.length() > 2 {
       chdir_requested = true
@@ -81,7 +65,7 @@ async fn main {
       cwd = if directory.is_absolute() {
         directory.normalize().to_string()
       } else {
-        @path.Path(cwd).join(directory).normalize().to_string()
+        @path.Path(base_cwd).join(directory).normalize().to_string()
       }
     } else if options && (arg == "-u" || arg == "--unset") {
       if i + 1 >= args.length() {
@@ -95,6 +79,15 @@ async fn main {
       unset.push(arg[8:].to_owned())
     } else if options && split_assignment(arg) is Some((key, value)) {
       assignments.push((key, value))
+      options = false
+    } else if !options && split_assignment(arg) is Some((key, value)) {
+      assignments.push((key, value))
+    } else if arg.has_prefix("=") {
+      @stdio.stderr.write(
+        "env: invalid environment variable assignment: {arg}\n",
+      )
+      @sys.exit(125)
+      return
     } else if arg.has_prefix("-") && options {
       @stdio.stderr.write("env: unsupported option: \{arg}\n")
       @sys.exit(125)

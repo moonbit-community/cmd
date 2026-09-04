@@ -16,12 +16,16 @@ pub(all) struct Line {
 pub struct LineScanner {
   reader : &@io.Reader
   pending : Array[Byte]
+  delimiter : Byte
   mut eof : Bool
 }
 
 ///|
-pub fn LineScanner::new(reader : &@io.Reader) -> LineScanner {
-  { reader, pending: [], eof: false, }
+pub fn LineScanner::new(
+  reader : &@io.Reader,
+  delimiter? : Byte = b'\n',
+) -> LineScanner {
+  { reader, pending: [], delimiter, eof: false, }
 }
 
 ///|
@@ -42,7 +46,7 @@ fn LineScanner::take(
 pub async fn LineScanner::next(self : LineScanner) -> Line? {
   for ;; {
     for index, byte in self.pending {
-      if byte is b'\n' {
+      if byte == self.delimiter {
         return Some(self.take(index, true))
       }
     }

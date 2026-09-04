@@ -22,9 +22,10 @@ pub(all) struct Line {
 pub struct LineScanner {
   reader : &@io.Reader
   pending : Array[Byte]
+  delimiter : Byte
   mut eof : Bool
 }
-pub fn LineScanner::new(&@io.Reader) -> Self
+pub fn LineScanner::new(&@io.Reader, delimiter? : Byte) -> Self
 pub async fn LineScanner::next(Self) -> Line?
 
 // Type aliases

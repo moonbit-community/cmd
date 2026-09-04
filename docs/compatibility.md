@@ -60,11 +60,11 @@ claiming success; `local-only` is absent from MoonX by design.
 | `cut` | subset verified | `-c`, `-f`, `-d`, `-s`, range/comma lists | Locale/multibyte/error parity not probed |
 | `dirname` | subset verified | multiple operands and `-z` | Remaining path corner cases not probed |
 | `echo` | subset verified | `-n`, `-e`, `-E`, escapes | Shell mode ambiguities not probed |
-| `env` | restricted | `-i`, `-u`, assignments, direct child launch | `--help` rejected; `-C` depends on policy-visible cwd |
+| `env` | restricted | `-i/--ignore-environment`, `-u/--unset`, `-0`, GNU-style non-empty assignment names and option boundary, `-C/--chdir`, direct child launch, statuses 125/126/127 | `--help` is a verified status-125 rejection; cwd and child each require policy |
 | `false` | subset verified | any args: no output, status 1 | No help path in artifact |
 | `find` | restricted | `-name -path -type -mindepth -maxdepth ! -a -o -print -print0`, one-child `-exec ... ;` | Policy required; batching/delete/links/timestamps not verified |
-| `grep` | subset verified | `-E -F -i -v -n -c -l -L -q -H -h -x -w -e -f -r` | Binary/locale and full diagnostics not claimed |
-| `head` | subset verified | `-n`, `-c`, `-q`, `-v`, files/stdin | `-z` and all count spellings not probed |
+| `grep` | subset verified | existing match modes plus `-A -B -C -b -s -z`, binary policies, recursive `--include/--exclude`, C-locale byte offsets | Include/exclude globs are the portable `*`/`?` basename profile; locale-aware classes and full diagnostics not claimed |
+| `head` | subset verified | `-n`, `-c`, signed/attached/long/legacy counts and decimal/binary/IEC size suffixes, `-z`, `-q/-v`, files/stdin and headers | Counts are bounded by signed 64-bit storage; locale-aware records are not claimed |
 | `join` | subset verified | `-1 -2 -t -a -v -e -o`, `-` stdin | Legacy aliases/locale diagnostics not probed |
 | `jq` | subset verified | `-c -r -f -n -l`; field, compact, null, filter paths | Not a complete jq 1.8 filter-language claim |
 | `jqlog` | subset verified | JSONL stdin/raw input, `-f`, `-h`; invalid lines skipped | Compared with imported jqlog contract, not a system utility |
@@ -84,7 +84,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `sh` | restricted | `-c`, `-s`, script/stdin selection, variables, positional parameters, pipelines and redirections | Child programs require policy; command substitution returned 2, and conditionals depend on child lookup |
 | `sha256sum` | subset verified | file/stdin digest, `-c`, `-z` | All checksum warning/status combinations not claimed |
 | `sleep` | subset verified | fractional values, `s/m/h/d`, multiple operands | Signal/cancellation parity not claimed |
-| `sort` | subset verified | `-r -n -u -f -k -t` | `-i` is rejected by the Wasm artifact; locale/external-sort semantics not claimed |
+| `sort` | subset verified | repeated `-k` field/character modifiers with GNU blank boundaries; `-b -d -f -i -n -g -h -M -V -r -u -z`; `-c/-C` checks | `-R` is a verified rejection without a seed contract; locale/external-sort semantics not claimed |
 | `tail` | subset verified | `-n`, `-c`, `+K`, `-q`, `-v`, `-f`/`--follow`, `-s`/`--sleep-interval` | `-f` follows open regular-file descriptors by polling; stdin/pipes stop at EOF; `-F` path-follow and rotation reopen are not claimed |
 | `tee` | subset verified | stdin to stdout/files and `-a` append | Signal/partial-write diagnostics not claimed |
 | `test` | subset verified | string/integer/file, `!`, `-a`, `-o` | Complete unary/binary ambiguity not claimed |
@@ -92,8 +92,8 @@ claiming success; `local-only` is absent from MoonX by design.
 | `touch` | subset verified | create/default update and `-c` | `-d` returned nonzero; timestamp setters unavailable |
 | `tr` | subset verified | translate/delete/squeeze/complement/ranges/classes | Verified profile is byte-oriented; locale parity not claimed |
 | `true` | subset verified | any args: no output, status 0 | No help path in artifact |
-| `uniq` | subset verified | adjacent filtering, `-c -d -u -i` | Field/character skips and locale not claimed |
-| `wc` | subset verified | `-l -w -c -m`, combinations, files/stdin | Alignment, `-L`, locale and diagnostics not claimed |
+| `uniq` | subset verified | adjacent filtering, `-c -d -u -i`, `-f -s -w -z`, exact count spacing | Fixed C-locale field/character comparison; locale collation not claimed |
+| `wc` | subset verified | `-l -w -c -m -L`, combinations, aligned multi-file totals, `--files0-from`, files/stdin | `-L` is the C-locale display-width profile; full locale diagnostics not claimed |
 | `wget` | restricted | Bounded HTTP/HTTPS profile: URL input files; quiet/output/log modes; resume and conditional 304; headers/method/data or binary file bodies; retry classification/delay; redirect limits; content-disposition collisions; connect/read/idle timeouts; HTTP CONNECT proxy/bypass; certificate verification control; HTTP status 8 | Recursive mirroring, cookies/auth/HSTS, FTP and other protocols, post-download timestamp restoration, and exact GNU progress/diagnostic bytes not claimed |
 | `xargs` | restricted | whitespace/NUL tokenization, `-0 -r -t -n -I`; stdin batching | Child policy required; `-L/-P`, EOF strings and full size/signal diagnostics not claimed |
 | `xxd` | subset verified | forward hex, `-p -r -c -l`, positive `-s` | Negative/end-relative seek and addressed reverse patching not claimed |
@@ -106,7 +106,6 @@ positive result. They are probe targets, not product claims.
 
 | Command | Help-visible only |
 | --- | --- |
-| `env` | long aliases and `-C`; `--help` itself is a verified rejection |
 | `make` | semantic coverage beyond the tested rule/include/recipe slice |
 | `sh` | grammar beyond the listed successful slice |
 | `sha256sum` | checksum warning/status matrix |
@@ -114,7 +113,7 @@ positive result. They are probe targets, not product claims.
 
 Each row identifies the option families exercised successfully. Explicit
 rejections, including `chmod` symbolic/reference modes,
-`cp -a/-p`, `ln` hard links, `mkdir` symbolic modes, `sort -i`, timestamp
+`cp -a/-p`, `ln` hard links, `mkdir` symbolic modes, `sort -R`, timestamp
 selectors for `touch`, and negative `xxd -s`, are recorded in their rows.
 
 ## Cross-cutting runtime rules

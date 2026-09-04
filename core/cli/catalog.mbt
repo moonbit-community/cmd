@@ -29,7 +29,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     ]),
     contract("false", Core, NoInput, LineStream, [], []),
     contract("head", Core, FileOrStdin, ByteStream, [FileRead], [
-      "bytes", "lines", "quiet", "verbose",
+      "bytes", "lines", "quiet", "verbose", "zero-terminated",
     ]),
     contract("join", Core, FileOrStdin, LineStream, [FileRead], [
       "1", "2", "after", "empty", "only", "output", "t", "help",
@@ -49,7 +49,10 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("printf", Core, NoInput, ByteStream, [], ["help"]),
     contract("sleep", Core, NoInput, LineStream, [], ["help"]),
     contract("sort", Core, FileOrStdin, LineStream, [FileRead], [
-      "field-separator", "ignore-case", "key", "numeric-sort", "reverse", "unique",
+      "check", "check-quiet", "dictionary-order", "field-separator", "general-numeric-sort",
+      "human-numeric-sort", "ignore-case", "ignore-leading-blanks", "ignore-nonprinting",
+      "key", "month-sort", "numeric-sort", "random-sort", "reverse", "unique", "version-sort",
+      "zero-terminated",
     ]),
     contract("tail", Core, FileOrStdin, ByteStream, [FileRead], [
       "bytes", "follow", "lines", "quiet", "sleep-interval", "verbose",
@@ -59,10 +62,11 @@ pub fn command_catalog() -> Array[CommandContract] {
     ]),
     contract("true", Core, NoInput, LineStream, [], []),
     contract("uniq", Core, FileOrStdin, LineStream, [FileRead], [
-      "count", "ignore-case", "repeated", "unique",
+      "check-chars", "count", "ignore-case", "repeated", "skip-chars", "skip-fields",
+      "unique", "zero-terminated",
     ]),
     contract("wc", Core, FileOrStdin, LineStream, [FileRead], [
-      "bytes", "chars", "lines", "words",
+      "bytes", "chars", "files0-from", "lines", "max-line-length", "words",
     ]),
     contract("xxd", Core, FileOrStdin, ByteStream, [FileRead], [
       "cols", "include", "len", "plain", "revert", "seek",
@@ -92,8 +96,11 @@ pub fn command_catalog() -> Array[CommandContract] {
       ["expression-language"],
     ),
     contract("grep", Core, FileOrStdin, LineStream, [FileRead], [
-      "count", "extended-regexp", "file", "fixed-strings", "ignore-case", "line-number",
-      "recursive", "regexp", "word-regexp",
+      "after-context", "before-context", "binary-files", "byte-offset", "context",
+      "count", "exclude", "extended-regexp", "file", "files-with-matches", "files-without-match",
+      "fixed-strings", "ignore-case", "include", "invert-match", "line-number", "line-regexp",
+      "no-filename", "no-messages", "null-data", "quiet", "recursive", "regexp",
+      "text", "with-filename", "word-regexp",
     ]),
     contract("ls", Core, NoInput, LineStream, [FileRead], [
       "all", "almost-all", "classify", "directory", "recursive",
