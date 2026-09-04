@@ -1300,6 +1300,21 @@ async fn run_p2_p3_cases(bin_root : String, failures : Array[String]) -> Unit {
     b"a\x00hit\n",
     failures,
   )
+  let binary_report = @testkit.run(
+    @testkit.executable_path(bin_root, "grep"),
+    ["hit"],
+    stdin=b"a\x00hit\n",
+  )
+  record_result(
+    binary_report.status == 0 &&
+    binary_report.stdout.is_empty() &&
+    @testkit.bytes_equal(
+      binary_report.stderr,
+      b"grep: (standard input): binary file matches\n",
+    ),
+    "grep: binary match notice must use the GNU 3.12 stderr contract",
+    failures,
+  )
   expect(
     bin_root,
     "grep",

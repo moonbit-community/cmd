@@ -9,7 +9,8 @@ context with GNU-style selected/context separators, while `-z` switches input
 and output records to NUL. Recursive reads accept repeated `--include` and
 `--exclude` basename patterns using portable `*` and `?` wildcards.
 
-Binary input defaults to the `Binary file NAME matches` result;
+Binary input defaults to GNU 3.12's `grep: NAME: binary file matches` stderr
+notice;
 `--binary-files=text` (or `-a`) searches and emits raw records, and
 `--binary-files=without-match` skips binary inputs. `-s` suppresses file-read
 diagnostics without hiding status 2. Matching, offsets, and record boundaries

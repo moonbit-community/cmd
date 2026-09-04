@@ -377,7 +377,7 @@ async fn process_source(
     selected_count > 0 {
     if binary && options.binary_mode == Report {
       let name = if path == "-" { "(standard input)" } else { path }
-      @stdio.stdout.write("Binary file \{name} matches\n")
+      @stdio.stderr.write("grep: \{name}: binary file matches\n")
     } else {
       let mut emitted_through = -1
       for index in 0..<records.length() {
