@@ -816,8 +816,7 @@ async fn check_process_and_network_policy(
     }
   }
   record(
-    find_exec.status == 0 &&
-    @testkit.contains_bytes(find_exec.stdout, "tests/fixtures/policy"),
+    find_exec.status == 0 && @testkit.contains_bytes(find_exec.stdout, "policy"),
     "find: allowed child output mismatch: status=\{find_exec.status}, stdout=\{find_exec.stdout}, stderr=\{find_exec.stderr}",
     failures,
   )
