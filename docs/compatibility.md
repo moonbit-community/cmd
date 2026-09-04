@@ -81,7 +81,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `rm` | subset verified | files/trees, `-r`, `-f`, `-d`, `-v` | Root/current-directory protection is unconditional |
 | `rmdir` | subset verified | empty removal, `-p`, `-I`, `-v` | Full path diagnostics not claimed |
 | `seq` | subset verified | one/two/three-number forms, `-w`, `-s` | Full GNU formatting/overflow not probed |
-| `sh` | restricted | `-c`, `-s`, script/stdin selection, variables, positional parameters, pipelines and redirections | Child programs require policy; command substitution returned 2, and conditionals depend on child lookup |
+| `sh` | restricted | `-c`, `-s`, script/stdin selection, variables, positional parameters, pipelines, redirections/heredocs, command substitution, conditionals, case/patterns, loops, functions/return, grouping/subshells, `${#name}`, `set -e/-u`, `shift` | External commands remain explicit policy-visible child requests; unsupported non-POSIX/Bash-only syntax is rejected |
 | `sha256sum` | subset verified | file/stdin digest, `-c`, `-z` | All checksum warning/status combinations not claimed |
 | `sleep` | subset verified | fractional values, `s/m/h/d`, multiple operands | Signal/cancellation parity not claimed |
 | `sort` | subset verified | repeated `-k` field/character modifiers with GNU blank boundaries; `-b -d -f -i -n -g -h -M -V -r -u -z`; `-c/-C` checks | `-R` is a verified rejection without a seed contract; locale/external-sort semantics not claimed |
@@ -107,7 +107,7 @@ positive result. They are probe targets, not product claims.
 | Command | Help-visible only |
 | --- | --- |
 | `make` | semantic coverage beyond the tested rule/include/recipe slice |
-| `sh` | grammar beyond the listed successful slice |
+| `sh` | Bash-only syntax, interactive mode, job control, arrays, process substitution, startup files, and grammar beyond the listed successful POSIX slice |
 | `sha256sum` | checksum warning/status matrix |
 | `xargs` | child status mapping, `-L/-P`, EOF strings, and size/signal rules |
 

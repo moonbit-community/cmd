@@ -36,7 +36,10 @@ fn append_value(
 }
 
 ///|
-fn expand_word(word : Word, context : Context) -> Array[String] {
+async fn expand_word(
+  word : Word,
+  context : Context,
+) -> Array[String] raise ShellError {
   let fields : Array[String] = []
   let current = StringBuilder()
   let started = Ref(false)
@@ -46,14 +49,39 @@ fn expand_word(word : Word, context : Context) -> Array[String] {
         current.write_string(value)
         started.val = true
       }
-      Variable(name, quoted) =>
+      Variable(name, quoted) => {
+        let value = match context.env.get(name) {
+          Some(value) => value
+          None =>
+            if context.nounset {
+              raise ShellError("parameter '\\{name}' is unset")
+            } else {
+              ""
+            }
+        }
+        append_value(value, quoted, fields, current, started)
+      }
+      CommandSubstitution(script, quoted) => {
+        let (status, output) = run_substitution(script, context)
+        context.last_status = status
         append_value(
-          context.env.get(name).unwrap_or(""),
+          output.trim_end().to_owned(),
           quoted,
           fields,
           current,
           started,
         )
+      }
+      LengthVariable(name, quoted) => {
+        let value = context.env.get(name).unwrap_or("")
+        append_value(
+          value.iter().count().to_string(),
+          quoted,
+          fields,
+          current,
+          started,
+        )
+      }
       Positional(0, quoted) =>
         append_value(context.name, quoted, fields, current, started)
       Positional(index, quoted) =>
@@ -108,7 +136,7 @@ fn expand_word(word : Word, context : Context) -> Array[String] {
 }
 
 ///|
-fn expand_path(word : Word, context : Context) -> String raise ShellError {
+async fn expand_path(word : Word, context : Context) -> String raise ShellError {
   match expand_word(word, context) {
     [path] => path
     [] => raise ShellError("redirection path expands to no fields")
@@ -132,7 +160,10 @@ fn split_assignment(value : String) -> (String, String)? {
 }
 
 ///|
-fn prepare(command : Command, context : Context) -> Prepared raise ShellError {
+async fn prepare(
+  command : Command,
+  context : Context,
+) -> Prepared raise ShellError {
   let argv : Array[String] = []
   for word in command.words {
     argv.append(expand_word(word, context))
@@ -161,5 +192,12 @@ fn prepare(command : Command, context : Context) -> Prepared raise ShellError {
     Some({ target, append, }) => Some((expand_path(target, context), append))
     None => None
   }
-  { argv: executable, env, stdin, stdout, stderr, }
+  {
+    argv: executable,
+    env,
+    stdin,
+    stdin_data: command.stdin_data,
+    stdout,
+    stderr,
+  }
 }

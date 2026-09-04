@@ -834,7 +834,7 @@ async fn check_process_and_network_policy(
     failures,
   )
   let sh = moon_run(root, "process-printf.json", "sh", [
-    "-c", "printf policy-shell-ok",
+    "-c", "printf '%s' \"$(printf policy-shell-ok)\"",
   ]) catch {
     err => {
       failures.push("sh: allowed process failed: \{err}")

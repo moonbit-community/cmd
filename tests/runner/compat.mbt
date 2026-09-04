@@ -1284,6 +1284,118 @@ async fn run_phase345_cases(
 }
 
 ///|
+async fn run_p5_sh_cases(bin_root : String, failures : Array[String]) -> Unit {
+  expect(
+    bin_root,
+    "sh",
+    ["-c", "printf '%s\\n' \"$(printf inner)\""],
+    None,
+    0,
+    b"inner\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "sh",
+    ["-c", "cat <<EOF\nheredoc\nEOF"],
+    None,
+    0,
+    b"heredoc\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "sh",
+    ["-c", "if false; then printf no; else printf yes; fi"],
+    None,
+    0,
+    b"yes",
+    failures,
+  )
+  expect(
+    bin_root,
+    "sh",
+    ["-c", "case flower in f*) printf match;; *) printf no;; esac"],
+    None,
+    0,
+    b"match",
+    failures,
+  )
+  expect(
+    bin_root,
+    "sh",
+    ["-c", "for x in a b; do printf '%s' \"$x\"; done"],
+    None,
+    0,
+    b"ab",
+    failures,
+  )
+  expect(
+    bin_root,
+    "sh",
+    [
+      "-c", "while false; do printf no; done; until true; do printf no; done; printf yes",
+    ],
+    None,
+    0,
+    b"yes",
+    failures,
+  )
+  expect(
+    bin_root,
+    "sh",
+    ["-c", "f() { printf '%s' \"$1\"; return 7; }; f ok"],
+    None,
+    7,
+    b"ok",
+    failures,
+  )
+  expect(
+    bin_root,
+    "sh",
+    ["-c", "(printf one); { printf two; }"],
+    None,
+    0,
+    b"onetwo",
+    failures,
+  )
+  expect(
+    bin_root,
+    "sh",
+    ["-c", "VALUE=abcd; printf '%s' \"${#VALUE}\""],
+    None,
+    0,
+    b"4",
+    failures,
+  )
+  expect(
+    bin_root,
+    "sh",
+    ["-c", "set -- first second; shift; printf '%s' \"$1\""],
+    None,
+    0,
+    b"second",
+    failures,
+  )
+  expect_failure(
+    bin_root,
+    "sh",
+    ["-c", "set -e; false; printf no"],
+    1,
+    "",
+    failures,
+  )
+  expect_failure(
+    bin_root,
+    "sh",
+    ["-c", "set -u; printf '%s' \"$MISSING\""],
+    2,
+    "unset",
+    failures,
+  )
+}
+
+///|
 async fn run_p2_p3_cases(bin_root : String, failures : Array[String]) -> Unit {
   expect(
     bin_root,
@@ -3284,6 +3396,7 @@ async fn run_compat_suite(
   run_chunk_boundary_cases(bin_root, failures)
   run_merge_cases(bin_root, failures)
   run_phase345_cases(bin_root, failures)
+  run_p5_sh_cases(bin_root, failures)
   run_p2_p3_cases(bin_root, failures)
   run_edge_cases(bin_root, failures)
   run_stdin_prompt_cases(bin_root, failures)

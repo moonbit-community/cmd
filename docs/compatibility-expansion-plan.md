@@ -1,12 +1,12 @@
 # Compatibility Expansion Plan
 
-Status: P0-P4 implemented; P5-P8 roadmap
+Status: P0-P5 implemented; P6-P8 roadmap
 Date: 2026-09-04
 Scope: the 48 local command modules and the 47 commands currently exposed by MoonX
 
 This document turns the current support record into an execution roadmap. The
-P0 test-system migration and the P1-P3 compatibility batches described below
-are implemented; P5-P8 are the remaining compatibility roadmap. It
+P0 test-system migration and the P1-P5 compatibility batches described below
+are implemented; P6-P8 are the remaining compatibility roadmap. It
 prioritizes the next parameters and behavior families to implement or certify;
 it does not change the support claims by itself. A parameter becomes a support
 claim only after a repeatable black-box probe against the pinned upstream
@@ -53,10 +53,10 @@ The following results were observed in the current checkout on 2026-09-04:
 | `moon run --target native tests/runner -- --manifest tests/fixtures/runner/cases.json --native-root _build/native/release/build --suite compat` | Passed | Native compatibility suite is green |
 | Same runner with `--gnu-diff` | Passed | The differential subset is green |
 | Same runner with the pre-built Wasm root and `--suite policy` | Passed | Denied and local-only allowed network policies are green |
-| Same runner with `--validate-only` | 48 commands and 107 cases valid | The unified manifest includes the P1-P4 differential contracts |
+| Same runner with `--validate-only` | 48 commands and 117 cases valid | The unified manifest includes the P1-P5 differential contracts |
 
 The pinned Docker oracle cannot run locally because Docker is not installed.
-The remote pinned-oracle job remains required before this P2/P3 delivery is
+The remote pinned-oracle job remains required before this P5 delivery is
 accepted; native semantics and Wasm authorization are separate required gates.
 
 The support record intentionally distinguishes `subset verified`, `restricted`,
@@ -330,7 +330,7 @@ Fixtures must cover whitespace and NUL tokenization, quotes/backslashes,
 replacement, batching, empty input, command-size limits, child status, and
 policy denial. No ambient host process authority may be inherited by Wasm.
 
-## P5 - POSIX Shell Surface
+## P5 - POSIX Shell Surface — Implemented
 
 **Command:** `sh`
 **Mode:** Extend incrementally; do not claim Bash compatibility.
@@ -349,6 +349,13 @@ Each grammar addition needs parser tests, an execution fixture, an error case,
 and a child-policy case. The interpreter must continue to launch external
 commands as explicit child requests; forwarding a script to `/bin/sh` is not an
 acceptable compatibility shortcut.
+
+P5 is delivered in the current checkout. The unified runner covers command
+substitution, heredocs, conditionals, case patterns, loops, functions/return,
+grouping/subshells, parameter length/shift, `set -e/-u`, and policy-visible
+child execution. The published claim remains a restricted POSIX slice; Bash
+syntax, interactive mode, job control, arrays, and host-shell delegation remain
+out of scope.
 
 ## P6 - JSON CLI Expansion
 

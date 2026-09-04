@@ -837,6 +837,106 @@
       "normalizations": []
     },
     {
+      "id": "phase5-sh-command-substitution",
+      "command": "sh",
+      "args": ["-c", "printf '%s\\n' \"$(printf inner)\""],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase5-sh-heredoc",
+      "command": "sh",
+      "args": ["-c", "cat <<EOF\nheredoc\nEOF"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase5-sh-if",
+      "command": "sh",
+      "args": ["-c", "if false; then printf no; else printf yes; fi"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase5-sh-case",
+      "command": "sh",
+      "args": ["-c", "case flower in f*) printf match;; *) printf no;; esac"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase5-sh-for",
+      "command": "sh",
+      "args": ["-c", "for x in a b; do printf '%s' \"$x\"; done"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase5-sh-while-until",
+      "command": "sh",
+      "args": ["-c", "while false; do printf no; done; until true; do printf no; done; printf yes"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase5-sh-function-return",
+      "command": "sh",
+      "args": ["-c", "f() { printf '%s' \"$1\"; return 7; }; f ok"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 7,
+      "normalizations": []
+    },
+    {
+      "id": "phase5-sh-grouping",
+      "command": "sh",
+      "args": ["-c", "(printf one); { printf two; }"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase5-sh-parameter-length",
+      "command": "sh",
+      "args": ["-c", "VALUE=abcd; printf '%s' \"${#VALUE}\""],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase5-sh-shift",
+      "command": "sh",
+      "args": ["-c", "set -- first second; shift; printf '%s' \"$1\""],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
       "id": "phase5-make-include-cli-variable",
       "command": "make",
       "args": ["-s", "VALUE=cli"],
