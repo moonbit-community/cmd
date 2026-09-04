@@ -14,7 +14,7 @@
     { "name": "echo", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["stdout"] },
     { "name": "env", "baseline": "coreutils-9.11", "status": "partial", "native": "p2-measured", "wasm": "policy-measured", "capabilities": ["environment", "process"] },
     { "name": "false", "baseline": "coreutils-9.11", "status": "partial", "native": "measured", "wasm": "unmeasured", "capabilities": ["status"] },
-    { "name": "find", "baseline": "findutils-4.10.0", "status": "partial", "native": "unmeasured", "wasm": "policy-pending", "capabilities": ["filesystem"] },
+    { "name": "find", "baseline": "findutils-4.10.0", "status": "partial", "native": "p4-measured", "wasm": "policy-measured", "capabilities": ["filesystem", "filesystem-mutation", "process"] },
     { "name": "grep", "baseline": "grep-3.12", "status": "partial", "native": "p2-measured", "wasm": "policy-measured", "capabilities": ["stdin", "files"] },
     { "name": "head", "baseline": "coreutils-9.11", "status": "partial", "native": "p3-measured", "wasm": "policy-measured", "capabilities": ["stdin", "files"] },
     { "name": "join", "baseline": "coreutils-9.11", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] },
@@ -47,7 +47,7 @@
     { "name": "uniq", "baseline": "coreutils-9.11", "status": "partial", "native": "p3-measured", "wasm": "policy-measured", "capabilities": ["stdin", "files"] },
     { "name": "wc", "baseline": "coreutils-9.11", "status": "partial", "native": "p3-measured", "wasm": "policy-measured", "capabilities": ["stdin", "files"] },
     { "name": "wget", "baseline": "wget-1.25.0", "status": "partial", "native": "unmeasured", "wasm": "policy-pending", "capabilities": ["network", "files"] },
-    { "name": "xargs", "baseline": "findutils-4.10.0", "status": "partial", "native": "foundation-measured", "wasm": "policy-pending", "capabilities": ["stdin", "process"] },
+    { "name": "xargs", "baseline": "findutils-4.10.0", "status": "partial", "native": "p4-measured", "wasm": "policy-measured", "capabilities": ["stdin", "process"] },
     { "name": "xxd", "baseline": "vim-9.1.0000-xxd", "status": "partial", "native": "unmeasured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] }
   ],
   "cases": [
@@ -442,6 +442,26 @@
       "normalizations": []
     },
     {
+      "id": "phase4-find-metadata",
+      "command": "find",
+      "args": [".", "-maxdepth", "1", "-type", "f", "-size", "1c", "-print"],
+      "stdin_hex": "",
+      "files": [{ "path": "one", "content_hex": "78" }, { "path": "two", "content_hex": "7878" }],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase4-find-prune-depth",
+      "command": "find",
+      "args": [".", "-name", "skip", "-prune", "-o", "-type", "f", "-print"],
+      "stdin_hex": "",
+      "files": [{ "path": "keep", "content_hex": "6b" }, { "path": "skip/hidden", "content_hex": "68" }],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
       "id": "phase3-head-line-count",
       "command": "head",
       "args": ["-n", "1"],
@@ -784,6 +804,26 @@
       "files": [],
       "environment": {},
       "expected_status": 123,
+      "normalizations": []
+    },
+    {
+      "id": "phase4-xargs-lines-eof",
+      "command": "xargs",
+      "args": ["-L", "1", "-E", "STOP", "printf", "<%s>\\n"],
+      "stdin_hex": "6f6e652074776f0a53544f500a74687265650a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase4-xargs-size-report",
+      "command": "xargs",
+      "args": ["--show-limits"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
       "normalizations": []
     },
     {

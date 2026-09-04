@@ -74,7 +74,7 @@ fn parse_words(
     raise XargsError("input ends with an unmatched backslash")
   }
   if quote is Some(delimiter) {
-    raise XargsError("input contains an unmatched \'\{delimiter}\' quote")
+    raise XargsError("input contains an unmatched '\'\{delimiter}\' quote")
   }
   if word_started {
     push_word(result, current.to_string())
@@ -95,12 +95,18 @@ async fn read_input() -> String {
 }
 
 ///|
-fn replacement_lines(text : String) -> Array[String] {
+fn replacement_lines(text : String, eof? : String? = None) -> Array[String] {
   let result : Array[String] = []
   for line in text.split("\n") {
     let value = line.trim().to_owned()
-    if value != "" {
+    let is_eof = match eof {
+      Some(marker) => value == marker
+      None => false
+    }
+    if value != "" && !is_eof {
       result.push(value)
+    } else if is_eof {
+      break
     }
   }
   result
@@ -129,14 +135,160 @@ fn xargs_child_status(status : Int) -> Int {
 }
 
 ///|
+fn parse_positive(value : String, option : String) -> Int raise XargsError {
+  let parsed = @strconv.from_str(value) catch {
+    _ => raise XargsError("invalid value for \{option}: '\{value}'")
+  }
+  if parsed <= 0 {
+    raise XargsError("\{option} must be positive")
+  }
+  parsed
+}
+
+///|
+async fn parse_positive_or_exit(value : String, option : String) -> Int? {
+  try parse_positive(value, option) catch {
+    XargsError(message) => {
+      @stdio.stderr.write("xargs: \{message}\n")
+      @sys.exit(1)
+      None
+    }
+  } noraise {
+    parsed => Some(parsed)
+  }
+}
+
+///|
+fn command_size(prefix : Array[String], values : Array[String]) -> Int {
+  let mut size = 0
+  for argument in prefix {
+    size += argument.length() + 1
+  }
+  for argument in values {
+    size += argument.length() + 1
+  }
+  size
+}
+
+///|
+async fn run_xargs_child(
+  program : String,
+  arguments : Array[String],
+  context : @process.ExecutionContext,
+  verbose : Bool,
+) -> Int {
+  if verbose {
+    let command_line = program + " " + arguments.join(" ") + "\n"
+    @stdio.stderr.write(command_line)
+  }
+  let code = @process.run(@process.child(program, arguments, context~)) catch {
+    @os_error.OSError(_) as err => {
+      @stdio.stderr.write("xargs: cannot run '\{program}': \{err}\n")
+      let status = @process.launch_failure_status(
+        if err.is_ENOENT() {
+          CommandNotFound
+        } else {
+          CommandNotInvokable
+        },
+      )
+      @sys.exit(status)
+      status
+    }
+    err => {
+      @stdio.stderr.write("xargs: cannot run '\{program}': \{err}\n")
+      let status = @process.launch_failure_status(CommandNotInvokable)
+      @sys.exit(status)
+      status
+    }
+  }
+  if code == 126 || code == 127 {
+    @stdio.stderr.write(
+      "xargs: child launch denied or unavailable (status \{code})\n",
+    )
+  }
+  code
+}
+
+///|
+fn aggregate_xargs_status(current : Int, child : Int) -> Int {
+  let mapped = if child == 126 || child == 127 {
+    child
+  } else {
+    xargs_child_status(child)
+  }
+  if mapped == 125 || current == 125 {
+    125
+  } else if mapped == 124 || current == 124 {
+    124
+  } else if mapped == 127 || current == 127 {
+    127
+  } else if mapped == 123 || current == 123 {
+    123
+  } else {
+    0
+  }
+}
+
+///|
+async fn run_xargs_batches(
+  program : String,
+  batches : Array[Array[String]],
+  max_procs : Int,
+  context : @process.ExecutionContext,
+  verbose : Bool,
+) -> Int {
+  if max_procs <= 1 {
+    let mut result = 0
+    for arguments in batches {
+      result = aggregate_xargs_status(
+        result,
+        run_xargs_child(program, arguments, context, verbose),
+      )
+      if result == 124 || result == 125 || result == 126 || result == 127 {
+        break
+      }
+    }
+    result
+  } else {
+    @async.with_task_group <| group => {
+      let mut result = 0
+      let mut offset = 0
+      while offset < batches.length() {
+        let end = (offset + max_procs).min(batches.length())
+        let tasks : Array[@async.Task[Int]] = []
+        for arguments in batches[offset:end] {
+          tasks.push(
+            group.spawn(() => {
+              run_xargs_child(program, arguments, context, verbose)
+            }),
+          )
+        }
+        for task in tasks {
+          result = aggregate_xargs_status(result, task.wait())
+        }
+        offset = end
+        if result == 124 || result == 125 || result == 126 || result == 127 {
+          break
+        }
+      }
+      result
+    }
+  }
+}
+
+///|
 async fn main {
   let args = @env.args()[1:]
   let mut null_mode = false
   let mut run_empty = false
   let mut verbose = false
   let mut max_args = 0
-  let mut max_args_set = false
+  let mut max_lines = 0
+  let mut max_bytes = 64 * 1024
+  let mut max_procs = 1
   let mut replace : String? = None
+  let mut eof_string : String? = None
+  let mut show_limits = false
   let command : Array[String] = []
   let mut options = true
   let mut i = 0
@@ -150,26 +302,56 @@ async fn main {
       run_empty = true
     } else if options && (arg == "-t" || arg == "--verbose") {
       verbose = true
-    } else if options && arg == "--help" {
-      @stdio.stdout.write(
-        "Usage: xargs [-0rt] [-I REPLACE] [-n MAX-ARGS] [COMMAND [ARG...]]\n",
-      )
-      return
-    } else if options && arg == "-n" {
+    } else if options && arg == "--show-limits" {
+      show_limits = true
+    } else if options && (arg == "-n" || arg == "--max-args") {
       if i + 1 >= args.length() {
         @stdio.stderr.write("xargs: option requires an argument: -n\n")
         @sys.exit(1)
         return
       }
       i += 1
-      max_args_set = true
-      max_args = @strconv.from_str(args[i]) catch {
-        _ => {
-          @stdio.stderr.write("xargs: invalid max-args value\n")
-          @sys.exit(1)
-          return
-        }
+      guard parse_positive_or_exit(args[i], "-n") is Some(value) else { return }
+      max_args = value
+    } else if options && (arg == "-L" || arg == "--max-lines") {
+      if i + 1 >= args.length() {
+        @stdio.stderr.write("xargs: option requires an argument: -L\n")
+        @sys.exit(1)
+        return
       }
+      i += 1
+      guard parse_positive_or_exit(args[i], "-L") is Some(value) else { return }
+      max_lines = value
+    } else if options && (arg == "-s" || arg == "--max-chars") {
+      if i + 1 >= args.length() {
+        @stdio.stderr.write("xargs: option requires an argument: -s\n")
+        @sys.exit(1)
+        return
+      }
+      i += 1
+      guard parse_positive_or_exit(args[i], "-s") is Some(value) else { return }
+      max_bytes = value
+    } else if options && (arg == "-P" || arg == "--max-procs") {
+      if i + 1 >= args.length() {
+        @stdio.stderr.write("xargs: option requires an argument: -P\n")
+        @sys.exit(1)
+        return
+      }
+      i += 1
+      guard parse_positive_or_exit(args[i], "-P") is Some(value) else { return }
+      max_procs = value
+    } else if options && (arg == "-E" || arg == "--eof") {
+      if i + 1 >= args.length() {
+        @stdio.stderr.write("xargs: option requires an argument: -E\n")
+        @sys.exit(1)
+        return
+      }
+      i += 1
+      eof_string = Some(args[i])
+    } else if options && arg.has_prefix("-E") && arg.length() > 2 {
+      eof_string = Some(arg[2:].to_owned())
+    } else if options && arg.has_prefix("--eof=") {
+      eof_string = Some(arg[6:].to_owned())
     } else if options && (arg == "-I" || arg == "--replace") {
       if i + 1 >= args.length() {
         @stdio.stderr.write("xargs: option requires an argument: \{arg}\n")
@@ -183,14 +365,30 @@ async fn main {
     } else if options && arg.has_prefix("-I") && arg.length() > 2 {
       replace = Some(arg[2:].to_owned())
     } else if options && arg.has_prefix("--max-args=") {
-      max_args_set = true
-      max_args = @strconv.from_str(arg[11:]) catch {
-        _ => {
-          @stdio.stderr.write("xargs: invalid max-args value\n")
-          @sys.exit(1)
-          return
-        }
+      guard parse_positive_or_exit(arg[11:].to_owned(), "-n") is Some(value) else {
+        return
       }
+      max_args = value
+    } else if options && arg.has_prefix("--max-lines=") {
+      guard parse_positive_or_exit(arg[12:].to_owned(), "-L") is Some(value) else {
+        return
+      }
+      max_lines = value
+    } else if options && arg.has_prefix("--max-chars=") {
+      guard parse_positive_or_exit(arg[12:].to_owned(), "-s") is Some(value) else {
+        return
+      }
+      max_bytes = value
+    } else if options && arg.has_prefix("--max-procs=") {
+      guard parse_positive_or_exit(arg[12:].to_owned(), "-P") is Some(value) else {
+        return
+      }
+      max_procs = value
+    } else if options && arg == "--help" {
+      @stdio.stdout.write(
+        "Usage: xargs [-0rt] [-n N] [-L N] [-s BYTES] [-P N] [-E EOF] [-I REPLACE] [COMMAND [ARG...]]\n",
+      )
+      return
     } else if options && arg.has_prefix("-") && arg != "-" {
       let mut valid = true
       for flag in arg[1:] {
@@ -211,18 +409,7 @@ async fn main {
     }
     i += 1
   }
-  if max_args_set && max_args <= 0 {
-    @stdio.stderr.write("xargs: max-args must be positive\n")
-    @sys.exit(1)
-    return
-  }
-  let values = try {
-    let input = read_input()
-    match replace {
-      Some(_) if !null_mode => replacement_lines(input)
-      _ => parse_words(input, null_mode)
-    }
-  } catch {
+  let input = read_input() catch {
     XargsError(message) => {
       @stdio.stderr.write("xargs: \{message}\n")
       @sys.exit(1)
@@ -234,143 +421,111 @@ async fn main {
       return
     }
   }
+  if show_limits {
+    @stdio.stdout.write("max-args-bytes: \{max_bytes}\n")
+    return
+  }
   let program = if command.is_empty() { "echo" } else { command[0] }
   let prefix : Array[String] = if command.is_empty() {
     []
   } else {
     command[1:].to_owned()
   }
-  if values.is_empty() && run_empty {
-    return
-  }
-  let max_batch_bytes = 64 * 1024
-  let mut prefix_bytes = 0
-  for argument in prefix {
-    prefix_bytes += argument.length() + 1
-  }
-  if prefix_bytes >= max_batch_bytes {
-    @stdio.stderr.write("xargs: command arguments exceed 64 KiB safety limit\n")
-    @sys.exit(1)
-    return
-  }
-  let mut offset = 0
-  let mut final_status = 0
-  let context = @process.ExecutionContext::current()
-  if values.is_empty() {
-    let code = @process.run(@process.child(program, prefix, context~)) catch {
-      @os_error.OSError(_) as err => {
-        @stdio.stderr.write("xargs: cannot run '\{program}': \{err}\n")
-        @sys.exit(
-          @process.launch_failure_status(
-            if err.is_ENOENT() {
-              CommandNotFound
-            } else {
-              CommandNotInvokable
-            },
-          ),
+  let batches : Array[Array[String]] = []
+  if replace is Some(marker) {
+    for value in replacement_lines(input, eof=eof_string) {
+      batches.push(replace_arguments(prefix, marker, value))
+    }
+  } else if max_lines > 0 {
+    let lines : Array[Array[String]] = []
+    if null_mode {
+      for value in parse_words(input, true) {
+        lines.push([value])
+      }
+    } else {
+      for line in input.split("\n") {
+        let words = parse_words(line.to_owned(), false)
+        if !words.is_empty() {
+          lines.push(words)
+        }
+      }
+    }
+    let mut offset = 0
+    while offset < lines.length() {
+      let mut end = offset
+      let values : Array[String] = []
+      while end < lines.length() && end - offset < max_lines {
+        let candidate = values + lines[end]
+        if max_args > 0 && candidate.length() > max_args {
+          break
+        }
+        if command_size(prefix, candidate) > max_bytes {
+          break
+        }
+        values.append(lines[end])
+        end += 1
+      }
+      if end == offset {
+        @stdio.stderr.write(
+          "xargs: input line exceeds {max_bytes} byte limit\n",
         )
+        @sys.exit(1)
         return
       }
-      err => {
-        @stdio.stderr.write("xargs: cannot run '\{program}': \{err}\n")
-        @sys.exit(@process.launch_failure_status(CommandNotInvokable))
-        return
-      }
+      batches.push(prefix + values)
+      offset = end
     }
-    if code != 0 {
-      @sys.exit(xargs_child_status(code))
-    }
-    return
-  }
-  while offset < values.length() {
-    if replace is Some(marker) {
-      let batch = replace_arguments(prefix, marker, values[offset])
-      if verbose {
-        @stdio.stderr.write("\{program} \{batch.join(" ")}\n")
+  } else {
+    let mut values = parse_words(input, null_mode)
+    if eof_string is Some(marker) {
+      let mut end = values.length()
+      for index, value in values {
+        if value == marker {
+          end = index
+          break
+        }
       }
-      let code = @process.run(@process.child(program, batch, context~)) catch {
-        @os_error.OSError(_) as err => {
-          @stdio.stderr.write("xargs: cannot run '\{program}': \{err}\n")
-          @sys.exit(
-            @process.launch_failure_status(
-              if err.is_ENOENT() {
-                CommandNotFound
-              } else {
-                CommandNotInvokable
-              },
-            ),
+      values = values[:end].to_owned()
+    }
+    if !values.is_empty() {
+      let mut offset = 0
+      while offset < values.length() {
+        let mut end = offset
+        while end < values.length() &&
+              (max_args == 0 || end - offset < max_args) {
+          let candidate = values[offset:end + 1].to_owned()
+          if command_size(prefix, candidate) > max_bytes {
+            break
+          }
+          end += 1
+        }
+        if end == offset {
+          @stdio.stderr.write(
+            "xargs: one argument exceeds {max_bytes} byte limit\n",
           )
+          @sys.exit(1)
           return
         }
-        err => {
-          @stdio.stderr.write("xargs: cannot run '\{program}': \{err}\n")
-          @sys.exit(@process.launch_failure_status(CommandNotInvokable))
-          return
-        }
-      }
-      if code != 0 {
-        let status = xargs_child_status(code)
-        if status == 123 {
-          final_status = status
-        } else {
-          @sys.exit(status)
-          return
-        }
-      }
-      offset += 1
-      continue
-    }
-    let mut end = offset
-    let mut batch_bytes = prefix_bytes
-    while end < values.length() && (max_args <= 0 || end - offset < max_args) {
-      let argument_bytes = values[end].length() + 1
-      if batch_bytes + argument_bytes > max_batch_bytes {
-        break
-      }
-      batch_bytes += argument_bytes
-      end += 1
-    }
-    if end == offset {
-      @stdio.stderr.write("xargs: one argument exceeds 64 KiB safety limit\n")
-      @sys.exit(1)
-      return
-    }
-    let batch = prefix + values[offset:end].to_owned()
-    if verbose {
-      @stdio.stderr.write("\{program} \{batch.join(" ")}\n")
-    }
-    let code = @process.run(@process.child(program, batch, context~)) catch {
-      @os_error.OSError(_) as err => {
-        @stdio.stderr.write("xargs: cannot run '\{program}': \{err}\n")
-        @sys.exit(
-          @process.launch_failure_status(
-            if err.is_ENOENT() {
-              CommandNotFound
-            } else {
-              CommandNotInvokable
-            },
-          ),
-        )
-        return
-      }
-      err => {
-        @stdio.stderr.write("xargs: cannot run '\{program}': \{err}\n")
-        @sys.exit(@process.launch_failure_status(CommandNotInvokable))
-        return
+        batches.push(prefix + values[offset:end].to_owned())
+        offset = end
       }
     }
-    if code != 0 {
-      let status = xargs_child_status(code)
-      if status == 123 {
-        final_status = status
-      } else {
-        @sys.exit(status)
-        return
-      }
-    }
-    offset = end
   }
-  if final_status != 0 {
-    @sys.exit(final_status)
+  if batches.is_empty() && run_empty {
+    return
+  }
+  if batches.is_empty() {
+    batches.push(prefix)
+  }
+  let status = run_xargs_batches(
+    program,
+    batches,
+    max_procs,
+    @process.ExecutionContext::current(),
+    verbose,
+  )
+  if status != 0 {
+    @sys.exit(status)
+    return
   }
 }

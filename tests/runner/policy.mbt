@@ -172,7 +172,11 @@ async fn expect_denied(
       return
     }
   }
-  record(denied(result), "\{command}: policy must deny operation", failures)
+  record(
+    denied(result),
+    "\{command}: policy must deny operation (status=\{result.status}, stderr=\{result.stderr})",
+    failures,
+  )
   record(
     !@testkit.contains_bytes(result.stdout, "policy-fixture"),
     "\{command}: denied operation leaked fixture contents",
@@ -687,6 +691,36 @@ async fn check_process_and_network_policy(
     Some(b"denied\n"),
     failures,
   )
+  let find = moon_run(root, "read-workspace.json", "find", [
+    "tests/fixtures/policy", "-maxdepth", "1", "-type", "f", "-print",
+  ]) catch {
+    err => {
+      failures.push("find: allowed metadata traversal failed: \{err}")
+      return
+    }
+  }
+  record(
+    find.status == 0 &&
+    @testkit.contains_bytes(find.stdout, "process-echo.json"),
+    "find: allowed metadata traversal mismatch",
+    failures,
+  )
+  expect_denied(
+    root,
+    "read-workspace.json",
+    "find",
+    ["tests/fixtures/policy", "-maxdepth", "1", "-exec", "echo", "{}", ";"],
+    None,
+    failures,
+  )
+  expect_denied(
+    root,
+    "read-workspace.json",
+    "find",
+    ["tests/fixtures/policy", "-maxdepth", "1", "-type", "f", "-delete"],
+    None,
+    failures,
+  )
   expect_denied(
     root,
     "read-workspace.json",
@@ -752,6 +786,39 @@ async fn check_process_and_network_policy(
   record(
     stdout_is(xargs, b"one\ntwo\n"),
     "xargs: allowed process output mismatch",
+    failures,
+  )
+  let xargs_parallel = moon_run(
+    root,
+    "process-echo.json",
+    "xargs",
+    ["-P", "2", "-n", "1", "echo"],
+    stdin=b"parallel-one parallel-two\n",
+  ) catch {
+    err => {
+      failures.push("xargs: bounded parallel process failed: \{err}")
+      return
+    }
+  }
+  record(
+    xargs_parallel.status == 0 &&
+    @testkit.contains_bytes(xargs_parallel.stdout, "parallel-one") &&
+    @testkit.contains_bytes(xargs_parallel.stdout, "parallel-two"),
+    "xargs: bounded parallel output mismatch",
+    failures,
+  )
+  let find_exec = moon_run(root, "process-echo-cwd.json", "find", [
+    "tests/fixtures/policy", "-maxdepth", "0", "-exec", "echo", "{}", ";",
+  ]) catch {
+    err => {
+      failures.push("find: allowed child process failed: \{err}")
+      return
+    }
+  }
+  record(
+    find_exec.status == 0 &&
+    @testkit.contains_bytes(find_exec.stdout, "tests/fixtures/policy"),
+    "find: allowed child output mismatch: status=\{find_exec.status}, stdout=\{find_exec.stdout}, stderr=\{find_exec.stderr}",
     failures,
   )
   let timeout = moon_run(root, "process-echo.json", "timeout", [

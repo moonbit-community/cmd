@@ -62,7 +62,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `echo` | subset verified | `-n`, `-e`, `-E`, escapes | Shell mode ambiguities not probed |
 | `env` | restricted | `-i/--ignore-environment`, `-u/--unset`, `-0`, GNU-style non-empty assignment names and option boundary, `-C/--chdir`, direct child launch, statuses 125/126/127 | `--help` is a verified status-125 rejection; cwd and child each require policy |
 | `false` | subset verified | any args: no output, status 1 | No help path in artifact |
-| `find` | restricted | `-name -path -type -mindepth -maxdepth ! -a -o -print -print0`, one-child `-exec ... ;` | Policy required; batching/delete/links/timestamps not verified |
+| `find` | restricted | `-name -path -type -empty -size -mtime -newer -mindepth -maxdepth -depth -prune -print -print0`, one-child and deterministic batched `-exec`, postorder `-delete` | File/process policy required; ownership/link-target predicates and full GNU expression grammar not claimed |
 | `grep` | subset verified | existing match modes plus `-A -B -C -b -s -z`, binary policies, recursive `--include/--exclude`, C-locale byte offsets | Include/exclude globs are the portable `*`/`?` basename profile; locale-aware classes and full diagnostics not claimed |
 | `head` | subset verified | `-n`, `-c`, signed/attached/long/legacy counts and decimal/binary/IEC size suffixes, `-z`, `-q/-v`, files/stdin and headers | Counts are bounded by signed 64-bit storage; locale-aware records are not claimed |
 | `join` | subset verified | `-1 -2 -t -a -v -e -o`, `-` stdin | Legacy aliases/locale diagnostics not probed |
@@ -95,7 +95,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `uniq` | subset verified | adjacent filtering, `-c -d -u -i`, `-f -s -w -z`, exact count spacing | Fixed C-locale field/character comparison; locale collation not claimed |
 | `wc` | subset verified | `-l -w -c -m -L`, combinations, aligned multi-file totals, `--files0-from`, files/stdin | `-L` is the C-locale display-width profile; full locale diagnostics not claimed |
 | `wget` | restricted | Bounded HTTP/HTTPS profile: URL input files; quiet/output/log modes; resume and conditional 304; headers/method/data or binary file bodies; retry classification/delay; redirect limits; content-disposition collisions; connect/read/idle timeouts; HTTP CONNECT proxy/bypass; certificate verification control; HTTP status 8 | Recursive mirroring, cookies/auth/HSTS, FTP and other protocols, post-download timestamp restoration, and exact GNU progress/diagnostic bytes not claimed |
-| `xargs` | restricted | whitespace/NUL tokenization, `-0 -r -t -n -I`; stdin batching | Child policy required; `-L/-P`, EOF strings and full size/signal diagnostics not claimed |
+| `xargs` | restricted | whitespace/NUL tokenization, quotes/backslashes, `-0 -r -t -n -L -s -E -I`, `--show-limits`, bounded `-P`; direct-child status classes 123/124/125/126/127 | Child policy required; process windows are bounded and aggregate status deterministically; GNU shell/locale extensions not claimed |
 | `xxd` | subset verified | forward hex, `-p -r -c -l`, positive `-s` | Negative/end-relative seek and addressed reverse patching not claimed |
 
 ## Help-Visible Only

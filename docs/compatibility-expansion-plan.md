@@ -1,12 +1,12 @@
 # Compatibility Expansion Plan
 
-Status: P0-P3 implemented; P4-P8 roadmap
+Status: P0-P4 implemented; P5-P8 roadmap
 Date: 2026-09-04
 Scope: the 48 local command modules and the 47 commands currently exposed by MoonX
 
 This document turns the current support record into an execution roadmap. The
 P0 test-system migration and the P1-P3 compatibility batches described below
-are implemented; P4-P8 are the remaining compatibility roadmap. It
+are implemented; P5-P8 are the remaining compatibility roadmap. It
 prioritizes the next parameters and behavior families to implement or certify;
 it does not change the support claims by itself. A parameter becomes a support
 claim only after a repeatable black-box probe against the pinned upstream
@@ -28,6 +28,8 @@ The recommended order is:
    Completed in P2/P3 with native semantics, pinned-oracle cases, and Wasm
    policy coverage.
 4. Expand the `find` and `xargs` process-oriented workflow together.
+   Completed in P4 with bounded metadata traversal, explicit actions, direct
+   child status mapping, and policy-separated process cases.
 5. Extend the POSIX subset of `sh`.
 6. Add high-value `jq` CLI modes before attempting the full filter language.
 7. Extend `make` and the smaller, self-contained `xxd` gaps.
@@ -51,7 +53,7 @@ The following results were observed in the current checkout on 2026-09-04:
 | `moon run --target native tests/runner -- --manifest tests/fixtures/runner/cases.json --native-root _build/native/release/build --suite compat` | Passed | Native compatibility suite is green |
 | Same runner with `--gnu-diff` | Passed | The differential subset is green |
 | Same runner with the pre-built Wasm root and `--suite policy` | Passed | Denied and local-only allowed network policies are green |
-| Same runner with `--validate-only` | 48 commands and 104 cases valid | The unified manifest includes the P1-P3 differential contracts |
+| Same runner with `--validate-only` | 48 commands and 108 cases valid | The unified manifest includes the P1-P4 differential contracts |
 
 The pinned Docker oracle cannot run locally because Docker is not installed.
 The remote pinned-oracle job remains required before this P2/P3 delivery is
@@ -280,6 +282,14 @@ following with `-f` remains the supported behavior. No external sort files or
 additional build-per-case paths were introduced.
 
 ## P4 - `find` and `xargs` Workflow
+
+**Status:** Implemented on 2026-09-04. `find` now has deterministic metadata
+predicates (`-size`, `-empty`, `-mtime`, `-newer`), `-prune`, `-depth`, safe
+postorder `-delete`, and one-child or deterministic batched `-exec`. `xargs`
+now supports `-L`, `-s`, `-E`, `--show-limits`, and bounded `-P` windows. All
+child launches remain direct policy requests; no ambient shell or process-group
+authority is introduced. The unified manifest and policy suite contain the
+positive, rejection, and side-effect cases for this profile.
 
 These commands should move together because their useful cases are commonly
 composed and both cross the Wasm child-process policy boundary.

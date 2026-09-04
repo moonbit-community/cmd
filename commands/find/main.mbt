@@ -4,11 +4,30 @@ priv suberror FindError {
 }
 
 ///|
+priv enum Comparison {
+  Exact
+  Less
+  Greater
+}
+
+///|
+priv enum FindAction {
+  Print(Bool)
+  Exec(Array[String], Bool)
+  Delete
+}
+
+///|
 priv enum FindExpr {
   Always(Bool)
   Name(Regex)
   Path(Regex)
   Kind(Char)
+  Empty
+  Size(Comparison, Int64, Bool)
+  MTime(Comparison, Int)
+  Newer(String)
+  Prune
   Not(FindExpr)
   And(FindExpr, FindExpr)
   Or(FindExpr, FindExpr)
@@ -20,9 +39,18 @@ priv struct FindParser {
   mut pos : Int
   mut min_depth : Int
   mut max_depth : Int
-  mut print_zero : Bool
-  mut print_requested : Bool
-  exec_actions : Array[Array[String]]
+  mut depth_first : Bool
+  mut action : FindAction?
+}
+
+///|
+priv struct FindEntry {
+  path : String
+  kind : @fs.FileKind
+  size : Int64?
+  mtime_seconds : Int64
+  mtime_nanoseconds : Int
+  empty : Bool
 }
 
 ///|
@@ -103,6 +131,63 @@ fn parse_depth(text : String, option : String) -> Int raise FindError {
 }
 
 ///|
+fn parse_comparison(text : String) -> (Comparison, String) {
+  if text.has_prefix("+") {
+    (Greater, text[1:].to_owned())
+  } else if text.has_prefix("-") {
+    (Less, text[1:].to_owned())
+  } else {
+    (Exact, text)
+  }
+}
+
+///|
+fn parse_size(text : String) -> (Comparison, Int64, Bool) raise FindError {
+  let (comparison, raw) = parse_comparison(text)
+  guard raw != "" else { raise FindError("invalid size: '{text}'") }
+  let chars : Array[Char] = raw.iter().collect()
+  let suffix = chars.last()
+  let (digits, multiplier, blocks) = match suffix {
+    Some('c') => (raw[:raw.length() - 1].to_owned(), 1L, false)
+    Some('k') | Some('K') => (raw[:raw.length() - 1].to_owned(), 1024L, false)
+    Some('M') => (raw[:raw.length() - 1].to_owned(), 1024L * 1024L, false)
+    Some('G') =>
+      (raw[:raw.length() - 1].to_owned(), 1024L * 1024L * 1024L, false)
+    _ => (raw, 1L, true)
+  }
+  let value = @string.parse_int(digits) catch {
+    _ => raise FindError("invalid size: '{text}'")
+  }
+  if value < 0 {
+    raise FindError("invalid size: '{text}'")
+  }
+  (comparison, value.to_int64() * multiplier, blocks)
+}
+
+///|
+fn parse_mtime(text : String) -> (Comparison, Int) raise FindError {
+  let (comparison, raw) = parse_comparison(text)
+  let value = @string.parse_int(raw) catch {
+    _ => raise FindError("invalid mtime: '{text}'")
+  }
+  if value < 0 {
+    raise FindError("invalid mtime: '{text}'")
+  }
+  (comparison, value)
+}
+
+///|
+fn FindParser::set_action(
+  self : FindParser,
+  action : FindAction,
+) -> Unit raise FindError {
+  if self.action is Some(_) {
+    raise FindError("only one output or execution action is supported")
+  }
+  self.action = Some(action)
+}
+
+///|
 fn FindParser::parse_primary(self : FindParser) -> FindExpr raise FindError {
   let token = self.take()
   match token {
@@ -124,6 +209,21 @@ fn FindParser::parse_primary(self : FindParser) -> FindExpr raise FindError {
       }
       Kind(kind.get_char(0).unwrap())
     }
+    "-empty" => Empty
+    "-size" => {
+      let (comparison, value, blocks) = parse_size(self.take())
+      Size(comparison, value, blocks)
+    }
+    "-mtime" => {
+      let (comparison, value) = parse_mtime(self.take())
+      MTime(comparison, value)
+    }
+    "-newer" => Newer(self.take())
+    "-depth" => {
+      self.depth_first = true
+      Always(true)
+    }
+    "-prune" => Prune
     "-maxdepth" => {
       self.max_depth = parse_depth(self.take(), "maximum depth")
       Always(true)
@@ -133,19 +233,14 @@ fn FindParser::parse_primary(self : FindParser) -> FindExpr raise FindError {
       Always(true)
     }
     "-print" => {
-      self.print_zero = false
-      self.print_requested = true
+      self.set_action(Print(false))
       Always(true)
     }
     "-print0" => {
-      self.print_zero = true
-      self.print_requested = true
+      self.set_action(Print(true))
       Always(true)
     }
     "-exec" => {
-      if self.tokens.any(token => token is ("-o" | "-or" | "!" | "-not")) {
-        raise FindError("-exec with OR or negation is not supported")
-      }
       let command : Array[String] = []
       while self.peek() is Some(next) && next != ";" && next != "+" {
         command.push(self.take())
@@ -154,13 +249,21 @@ fn FindParser::parse_primary(self : FindParser) -> FindExpr raise FindError {
         raise FindError("-exec: missing command or terminator")
       }
       let terminator = self.take()
-      if terminator == "+" {
-        raise FindError("-exec ... + batching is not supported")
-      }
       if self.peek() is Some(_) {
         raise FindError("-exec ... ; must be the final expression action")
       }
-      self.exec_actions.push(command)
+      if terminator == "+" && !command.any(argument => argument == "{}") {
+        raise FindError("-exec ... + requires '{}' placeholder")
+      }
+      if terminator != ";" && terminator != "+" {
+        raise FindError("-exec: expected ';' or '+' terminator")
+      }
+      self.set_action(Exec(command, terminator == "+"))
+      Always(true)
+    }
+    "-delete" => {
+      self.depth_first = true
+      self.set_action(Delete)
       Always(true)
     }
     "-true" => Always(true)
@@ -235,29 +338,99 @@ fn kind_matches(kind : @fs.FileKind, wanted : Char) -> Bool {
 }
 
 ///|
-fn FindExpr::matches(
-  self : FindExpr,
-  path : String,
-  kind : @fs.FileKind,
-) -> Bool {
+async fn FindExpr::evaluate(self : FindExpr, entry : FindEntry) -> (Bool, Bool) {
   match self {
-    Always(value) => value
-    Name(regex) => regex.execute(base_name(path)) is Some(_)
-    Path(regex) => regex.execute(path) is Some(_)
-    Kind(wanted) => kind_matches(kind, wanted)
-    Not(inner) => !inner.matches(path, kind)
-    And(left, right) => left.matches(path, kind) && right.matches(path, kind)
-    Or(left, right) => left.matches(path, kind) || right.matches(path, kind)
+    Always(value) => (value, false)
+    Name(regex) => (regex.execute(base_name(entry.path)) is Some(_), false)
+    Path(regex) => (regex.execute(entry.path) is Some(_), false)
+    Kind(wanted) => (kind_matches(entry.kind, wanted), false)
+    Empty => (entry.empty, false)
+    Size(comparison, value, blocks) => {
+      let actual_bytes = match entry.size {
+        Some(bytes) => bytes
+        None => -1L
+      }
+      let actual = if blocks && actual_bytes >= 0L {
+        (actual_bytes + 511L) / 512L
+      } else {
+        actual_bytes
+      }
+      let matched = match comparison {
+        Exact => actual == value
+        Less => actual < value
+        Greater => actual > value
+      }
+      (matched, false)
+    }
+    MTime(comparison, value) => {
+      let age = (
+          @env.now().reinterpret_as_int64() / 1000L - entry.mtime_seconds
+        ) /
+        86400L
+      let wanted = value.to_int64()
+      let matched = match comparison {
+        Exact => age == wanted
+        Less => age < wanted
+        Greater => age > wanted
+      }
+      (matched, false)
+    }
+    Newer(reference) => {
+      let matched = match @fsops.metadata_if_exists(reference) {
+        Some(metadata) =>
+          entry.mtime_seconds > metadata.mtime_seconds ||
+          (
+            entry.mtime_seconds == metadata.mtime_seconds &&
+            entry.mtime_nanoseconds > metadata.mtime_nanoseconds
+          )
+        None => false
+      }
+      (matched, false)
+    }
+    Prune => (true, true)
+    Not(inner) => {
+      let (matched, prune) = inner.evaluate(entry)
+      (!matched, prune)
+    }
+    And(left, right) => {
+      let (left_matched, left_prune) = left.evaluate(entry)
+      if !left_matched {
+        (false, left_prune)
+      } else {
+        let (right_matched, right_prune) = right.evaluate(entry)
+        (right_matched, left_prune || right_prune)
+      }
+    }
+    Or(left, right) => {
+      let (left_matched, left_prune) = left.evaluate(entry)
+      if left_matched {
+        (true, left_prune)
+      } else {
+        let (right_matched, right_prune) = right.evaluate(entry)
+        (right_matched, left_prune || right_prune)
+      }
+    }
   }
 }
 
 ///|
 fn join_path(parent : String, name : String) -> String {
-  if parent == "/" {
-    "/" + name
-  } else {
-    parent + "/" + name
+  @fsops.join(parent, name)
+}
+
+///|
+fn exec_batch_size(command : Array[String], values : Array[String]) -> Int {
+  let mut size = 0
+  for argument in command {
+    if argument == "{}" {
+      for value in values {
+        size += value.length() + 1
+      }
+    } else {
+      size += argument.length() + 1
+    }
   }
+  size
 }
 
 ///|
@@ -270,7 +443,7 @@ async fn main {
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--help" {
     @stdio.stdout.write(
-      "Usage: find [PATH...] [EXPRESSION]\nPredicates: -name, -path, -type, -mindepth, -maxdepth, !, -a, -o, -print, -print0, -exec COMMAND ;\n",
+      "Usage: find [PATH...] [EXPRESSION]\nPredicates: -name, -path, -type, -empty, -size, -mtime, -newer, -mindepth, -maxdepth, -depth, -prune, -delete, !, -a, -o, -print, -print0, -exec COMMAND ;|+\n",
     )
     return
   }
@@ -297,9 +470,8 @@ async fn main {
     pos: 0,
     min_depth: 0,
     max_depth: 0x7FFFFFFF,
-    print_zero: false,
-    print_requested: false,
-    exec_actions: [],
+    depth_first: false,
+    action: None,
   }
   let expression = if expression_tokens.is_empty() {
     Always(true)
@@ -317,63 +489,162 @@ async fn main {
     @sys.exit(1)
     return
   }
-  let stack : Array[(String, Int)] = []
+  let stack : Array[(String, Int, Bool)] = []
   let mut path_index = paths.length()
   while path_index > 0 {
     path_index -= 1
-    stack.push((paths[path_index], 0))
+    stack.push((paths[path_index], 0, false))
   }
   let mut failed = false
-  while stack.pop() is Some((path, depth)) {
-    let kind = @fs.kind(path, follow_symlink=false) catch {
+  let mut batch_command : Array[String]? = None
+  let batch_values : Array[String] = []
+  let batch_groups : Array[(Array[String], Array[String])] = []
+  while stack.pop() is Some((path, depth, postorder)) {
+    let metadata = @fsops.metadata_if_exists(path) catch {
       err => {
         @stdio.stderr.write("find: '\{path}': \{err}\n")
         failed = true
         continue
       }
     }
-    if depth >= parser.min_depth &&
-      depth <= parser.max_depth &&
-      expression.matches(path, kind) {
-      if parser.print_requested || parser.exec_actions.is_empty() {
-        @stdio.stdout.write(path)
-        @stdio.stdout.write(if parser.print_zero { "\u0000" } else { "\n" })
-      }
-      for action in parser.exec_actions {
-        let expanded : Array[String] = []
-        for argument in action {
-          expanded.push(if argument == "{}" { path } else { argument })
-        }
-        guard expanded.get(0) is Some(program) else { continue }
-        ignore(
-          @process.run(@process.child(program, expanded[1:].to_owned())) catch {
-            err => {
-              @stdio.stderr.write("find: \{err}\n")
-              continue
-            }
-          },
-        )
-      }
+    guard metadata is Some(metadata) else {
+      @stdio.stderr.write("find: '\{path}': no such file or directory\n")
+      failed = true
+      continue
     }
-    if kind == Directory && depth < parser.max_depth {
-      let entries = @fs.readdir(
-        path,
-        include_hidden=true,
-        include_special=false,
-        sort=false,
-      ) catch {
+    let entries = if metadata.kind == Directory {
+      @fs.readdir(path, include_hidden=true, include_special=false, sort=false) catch {
         err => {
           @stdio.stderr.write("find: '\{path}': \{err}\n")
           failed = true
-          continue
+          []
         }
       }
-      entries.sort_by((left, right) => left.lexical_compare(right))
+    } else {
+      []
+    }
+    entries.sort_by((left, right) => left.lexical_compare(right))
+    let entry : FindEntry = {
+      path,
+      kind: metadata.kind,
+      size: metadata.size,
+      mtime_seconds: metadata.mtime_seconds,
+      mtime_nanoseconds: metadata.mtime_nanoseconds,
+      empty: if metadata.kind == Directory {
+        entries.is_empty()
+      } else {
+        metadata.size is Some(size) && size == 0L
+      },
+    }
+    if parser.depth_first &&
+      !postorder &&
+      metadata.kind == Directory &&
+      depth < parser.max_depth {
+      stack.push((path, depth, true))
       let mut index = entries.length()
       while index > 0 {
         index -= 1
-        stack.push((join_path(path, entries[index]), depth + 1))
+        stack.push((join_path(entry.path, entries[index]), depth + 1, false))
       }
+      continue
+    }
+    let in_depth = depth >= parser.min_depth && depth <= parser.max_depth
+    let (matched, prune) = if in_depth {
+      expression.evaluate(entry)
+    } else {
+      (false, false)
+    }
+    if in_depth && matched && !(prune && parser.action is Some(Print(_))) {
+      match parser.action {
+        None => {
+          @stdio.stdout.write(path)
+          @stdio.stdout.write("\n")
+        }
+        Some(Print(zero)) => {
+          @stdio.stdout.write(path)
+          @stdio.stdout.write(if zero { "\u0000" } else { "\n" })
+        }
+        Some(Delete) =>
+          if metadata.kind == Directory {
+            @fs.rmdir(path)
+          } else {
+            @fs.remove(path)
+          }
+        Some(Exec(command, batch)) =>
+          if batch {
+            if batch_command is Some(_) &&
+              !batch_values.is_empty() &&
+              exec_batch_size(command, batch_values + [path]) > 64 * 1024 {
+              batch_groups.push((command, batch_values.copy()))
+              batch_values.clear()
+            }
+            batch_command = Some(command)
+            batch_values.push(path)
+          } else {
+            let expanded : Array[String] = command.map(argument => {
+              if argument == "{}" {
+                path
+              } else {
+                argument
+              }
+            })
+            guard expanded.get(0) is Some(program) else { continue }
+            let code = @process.run(
+              @process.child(program, expanded[1:].to_owned()),
+            ) catch {
+              err => {
+                @stdio.stderr.write("find: \{err}\n")
+                failed = true
+                continue
+              }
+            }
+            if code < 0 {
+              @stdio.stderr.write("find: child terminated by signal\n")
+            }
+          }
+      }
+    }
+    if !parser.depth_first &&
+      metadata.kind == Directory &&
+      depth < parser.max_depth &&
+      !prune {
+      let mut index = entries.length()
+      while index > 0 {
+        index -= 1
+        stack.push((join_path(entry.path, entries[index]), depth + 1, false))
+      }
+    }
+  }
+  if batch_command is Some(command) && !batch_values.is_empty() {
+    batch_groups.push((command, batch_values.copy()))
+  }
+  for group in batch_groups {
+    let command = group.0
+    let values = group.1
+    let argv : Array[String] = []
+    for argument in command {
+      if argument == "{}" {
+        for value in values {
+          argv.push(value)
+        }
+      } else {
+        argv.push(argument)
+      }
+    }
+    match argv.get(0) {
+      Some(program) => {
+        let code = @process.run(@process.child(program, argv[1:].to_owned())) catch {
+          err => {
+            @stdio.stderr.write("find: \{err}\n")
+            failed = true
+            -1
+          }
+        }
+        if code != 0 {
+          failed = true
+        }
+      }
+      None => failed = true
     }
   }
   if failed {

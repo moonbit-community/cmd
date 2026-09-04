@@ -1152,22 +1152,16 @@ async fn run_phase345_cases(
     "find: -exec false must not turn a successful traversal into status 1",
     failures,
   )
-  let rejected_find = @testkit.run(@testkit.executable_path(bin_root, "find"), [
-    root,
-    "-maxdepth",
-    "0",
-    "-exec",
-    @testkit.executable_path(bin_root, "true"),
-    "{}",
-    "+",
+  let printf = @testkit.executable_path(bin_root, "printf")
+  let batched_find = @testkit.run(@testkit.executable_path(bin_root, "find"), [
+    root, "-maxdepth", "0", "-exec", printf, "%s\\n", "{}", "+",
   ])
   record_result(
-    rejected_find.status == 1 &&
-    @testkit.contains_bytes(rejected_find.stderr, "batching is not supported"),
-    "find: unsupported -exec ... + must fail before traversal",
+    batched_find.status == 0 &&
+    @testkit.bytes_equal(batched_find.stdout, @utf8.encode(root + "\n")),
+    "find: -exec ... + batching mismatch",
     failures,
   )
-  let printf = @testkit.executable_path(bin_root, "printf")
   expect(
     bin_root,
     "xargs",
@@ -1175,6 +1169,33 @@ async fn run_phase345_cases(
     Some(b"first line\nsecond line\n"),
     0,
     b"<first line>\n<second line>\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "xargs",
+    ["-L", "1", printf, "[%s]\\n"],
+    Some(b"a b\nc d\n"),
+    0,
+    b"[a]\n[b]\n[c]\n[d]\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "xargs",
+    ["-E", "STOP", printf, "[%s]\\n"],
+    Some(b"a STOP b\n"),
+    0,
+    b"[a]\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "xargs",
+    ["--show-limits"],
+    None,
+    0,
+    b"max-args-bytes: 65536\n",
     failures,
   )
   expect(

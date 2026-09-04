@@ -1,19 +1,22 @@
 # xargs
 
-Observed Wasm profile (2026-09-03): this README is supplementary. The [support record](../../docs/compatibility.md) is the only capability authority; it lists the repeatable `moon run --target wasm --release` results and exclusions. Options mentioned here but not promoted in that record are not compatibility guarantees.
+Observed Wasm profile (2026-09-04): this README is supplementary. The [support record](../../docs/compatibility.md) is the only capability authority; it lists the repeatable `moon run --target wasm --release` results and exclusions. Options mentioned here but not promoted in that record are not compatibility guarantees.
 
 Read arguments from standard input and execute a command with bounded batches.
-Supports `-0`/`--null`, `-n N`/`--max-args=N`, `-r`/`--no-run-if-empty`, and
-`-t`/`--verbose`, plus `-I REPLACE`/`--replace=REPLACE` logical-line
-replacement. Input size is controlled by the calling harness and is
-parsed into argv entries; there is no shell evaluation. Each child argv batch
-is kept below a conservative 64 KiB operating-system limit. Since it
-starts child processes, it is not in the default policy allow-list.
+Supports whitespace and NUL tokenization with quotes/backslashes, `-0`, `-n N`
+(`--max-args=N`), `-L N`/`--max-lines=N`, `-s BYTES`/`--max-chars=BYTES`,
+`-E EOF`/`--eof=EOF`, `-r`/`--no-run-if-empty`, `-t`/`--verbose`,
+`--show-limits`, and `-I REPLACE`/`--replace=REPLACE` logical-line
+replacement. Each child argv batch is kept below the configured limit (64 KiB
+by default), and `-P N` runs at most N batches in one structured task window.
+There is no shell evaluation; all children are direct process requests and
+therefore require an explicit Wasm process policy.
 
-Only successful `printf` child batches and policy-denied launches have been
-observed in the current Wasm audit. The exit mapping for ordinary child
-failure, status 255, and signal termination, plus `-L`/`-P`/size-limit
-behavior and signal precedence, remains unverified.
+Status classes match findutils for ordinary failures (123), status 255 (124),
+signals (125), and launch failures (126/127). Parallel output ordering is
+intentionally unspecified, but status aggregation is deterministic. The
+runtime does not expose ambient host process authority or process-group
+cancellation.
 
 Wasm children use the explicit restricted environment and host process policy.
 `xargs` always reads stdin silently until EOF, including on a terminal. Native
