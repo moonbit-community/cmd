@@ -17,7 +17,9 @@ struct WgetOptions {
   mut content_disposition : Bool
   headers : Array[@netops.HttpHeader]
   mut request_method : @netops.HttpMethod
+  mut method_explicit : Bool
   mut body : @netops.RequestBody
+  mut body_options_conflict : Bool
   mut no_check_certificate : Bool
   mut no_proxy : Bool
   mut connect_timeout_ms : Int
@@ -48,8 +50,8 @@ fn usage() -> String {
     #|      --content-disposition       honor Content-Disposition filenames
     #|      --header=STRING             insert STRING among request headers
     #|      --method=HTTPMethod         use a supported HTTP method
-    #|      --body-data=STRING          send STRING as request body
-    #|      --body-file=FILE            stream FILE as request body
+    #|      --body-data=STRING          send STRING with an explicit --method
+    #|      --body-file=FILE            send FILE with an explicit --method
     #|      --no-check-certificate      disable TLS certificate verification
     #|      --no-proxy                  do not use proxy environment variables
     #|  -T, --timeout=SECONDS           set connect and read timeouts
@@ -83,7 +85,9 @@ fn default_options() -> WgetOptions {
     content_disposition: false,
     headers: [],
     request_method: @netops.Get,
+    method_explicit: false,
     body: @netops.EmptyBody,
+    body_options_conflict: false,
     no_check_certificate: false,
     no_proxy: false,
     connect_timeout_ms: 900_000,
@@ -214,14 +218,14 @@ fn parse_wget_options(
     options.request_method = @netops.parse_http_method(value) catch {
       _ => raise WgetUsageError("--method: unsupported HTTP method '\{value}'")
     }
+    options.method_explicit = true
   }
+  options.body_options_conflict = parsed.contains("body-data") &&
+    parsed.contains("body-file")
   match parsed.last_occurrence(["body-data", "body-file"]) {
     Some("body-data") => {
       let value = parsed.last_value("body-data").unwrap()
       options.body = @netops.BytesBody(@utf8.encode(value))
-      if !parsed.contains("method") {
-        options.request_method = @netops.Post
-      }
     }
     Some("body-file") => {
       let value = parsed.last_value("body-file").unwrap()
@@ -229,9 +233,6 @@ fn parse_wget_options(
         @netops.StdinBody
       } else {
         @netops.FileBody(value)
-      }
-      if !parsed.contains("method") {
-        options.request_method = @netops.Post
       }
     }
     _ => ()

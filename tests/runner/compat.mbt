@@ -2294,6 +2294,19 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
     @fs.write_file(body_file, b"body\x00bytes")
     let wget_body_file = @testkit.run(wget, [
       "-qO-",
+      "--method=POST",
+      "--body-file=" + body_file,
+      base + "/echo",
+    ])
+    let wget_body_without_method = @testkit.run(wget, [
+      "-qO-",
+      "--body-data=payload",
+      base + "/echo",
+    ])
+    let wget_body_conflict = @testkit.run(wget, [
+      "-qO-",
+      "--method=POST",
+      "--body-data=payload",
       "--body-file=" + body_file,
       base + "/echo",
     ])
@@ -2306,6 +2319,10 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
     record_result(
       wget_body_file.status == 0 &&
       @testkit.bytes_equal(wget_body_file.stdout, b"body\x00bytes") &&
+      wget_body_without_method.status == 1 &&
+      wget_body_without_method.stdout.is_empty() &&
+      wget_body_conflict.status == 1 &&
+      wget_body_conflict.stdout.is_empty() &&
       wget_headers.status == 0 &&
       @testkit.bytes_equal(wget_headers.stdout, b"GET:second:"),
       "wget: binary body file or repeated header behavior mismatch",

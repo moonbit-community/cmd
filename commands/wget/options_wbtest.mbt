@@ -10,6 +10,7 @@ test "wget phase2 options map upstream HTTP controls" {
   assert_eq(options.input_files, ["urls.txt"])
   assert_eq(options.headers, [@netops.http_header("X-Marker", "value")])
   assert_true(options.request_method is @netops.Patch)
+  assert_true(options.method_explicit)
   assert_true(options.body is @netops.BytesBody(b"payload"))
   assert_eq(options.retry_http_statuses, [429, 503])
   assert_eq(options.tries, 3)
@@ -50,6 +51,7 @@ test "wget accepts documented methods and preserves repeated option order" {
       "https://example.test",
     ])
     assert_eq(options.request_method, @netops.parse_http_method(name))
+    assert_true(options.method_explicit)
     assert_eq(options.input_files, ["one", "two"])
   }
   let logs = parse_wget_options([
@@ -59,6 +61,15 @@ test "wget accepts documented methods and preserves repeated option order" {
   assert_true(logs.append_log)
   let unlimited = parse_wget_options(["--tries=0", "https://example.test"])
   assert_eq(unlimited.tries, 0)
+  let body_without_method = parse_wget_options([
+    "--body-data=value", "https://example.test",
+  ])
+  assert_true(body_without_method.request_method is @netops.Get)
+  assert_false(body_without_method.method_explicit)
+  let conflicting_body = parse_wget_options([
+    "--method=POST", "--body-data=value", "--body-file=file", "https://example.test",
+  ])
+  assert_true(conflicting_body.body_options_conflict)
 }
 
 ///|

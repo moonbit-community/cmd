@@ -12,8 +12,8 @@ The command supports:
   append behavior;
 - `-c` range resume with safe restart when a server ignores the range, and
   `-N` conditional requests that preserve output after 304;
-- repeated `--header`, all documented `--method` values, `--body-data`, and
-  binary `--body-file` input;
+- repeated `--header`, all documented `--method` values, and explicit-method
+  `--body-data` or binary `--body-file` input;
 - bounded/unlimited tries, connection-refused and HTTP-status retry controls,
   retry delay, redirect limits, `Content-Disposition`, and numbered filename
   collisions;

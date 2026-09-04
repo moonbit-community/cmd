@@ -390,6 +390,18 @@ async fn run(options : WgetOptions) -> Int {
     log.write("wget: missing URL\nUsage: wget [OPTION]... [URL]...\n")
     return 1
   }
+  if options.body_options_conflict {
+    log.write("wget: --body-data and --body-file are mutually exclusive\n")
+    return 1
+  }
+  match options.body {
+    @netops.EmptyBody => ()
+    _ if !options.method_explicit => {
+      log.write("wget: --body-data/--body-file requires --method\n")
+      return 1
+    }
+    _ => ()
+  }
   if options.continue_download && options.output_document is Some(_) {
     log.write("wget: --continue cannot be combined with --output-document\n")
     return 1

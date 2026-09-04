@@ -278,7 +278,7 @@
     {
       "id": "p1-wget-binary-body-file",
       "command": "wget",
-      "args": ["-qO-", "--body-file=payload.bin", "${HTTP_BASE}/echo"],
+      "args": ["-qO-", "--method=POST", "--body-file=payload.bin", "${HTTP_BASE}/echo"],
       "stdin_hex": "",
       "files": [{ "path": "payload.bin", "content_hex": "0062696e617279ff" }],
       "environment": {},
