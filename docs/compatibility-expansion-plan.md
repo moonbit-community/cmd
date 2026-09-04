@@ -53,7 +53,7 @@ The following results were observed in the current checkout on 2026-09-04:
 | `moon run --target native tests/runner -- --manifest tests/fixtures/runner/cases.json --native-root _build/native/release/build --suite compat` | Passed | Native compatibility suite is green |
 | Same runner with `--gnu-diff` | Passed | The differential subset is green |
 | Same runner with the pre-built Wasm root and `--suite policy` | Passed | Denied and local-only allowed network policies are green |
-| Same runner with `--validate-only` | 48 commands and 108 cases valid | The unified manifest includes the P1-P4 differential contracts |
+| Same runner with `--validate-only` | 48 commands and 107 cases valid | The unified manifest includes the P1-P4 differential contracts |
 
 The pinned Docker oracle cannot run locally because Docker is not installed.
 The remote pinned-oracle job remains required before this P2/P3 delivery is

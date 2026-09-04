@@ -415,7 +415,13 @@ async fn FindExpr::evaluate(self : FindExpr, entry : FindEntry) -> (Bool, Bool) 
 
 ///|
 fn join_path(parent : String, name : String) -> String {
-  @fsops.join(parent, name)
+  if parent == "." {
+    "./" + name
+  } else if parent == "/" {
+    "/" + name
+  } else {
+    @fsops.join(parent, name)
+  }
 }
 
 ///|

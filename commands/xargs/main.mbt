@@ -455,6 +455,10 @@ async fn main {
       let mut end = offset
       let values : Array[String] = []
       while end < lines.length() && end - offset < max_lines {
+        if eof_string is Some(marker) &&
+          lines[end].any(value => value == marker) {
+          break
+        }
         let candidate = values + lines[end]
         if max_args > 0 && candidate.length() > max_args {
           break

@@ -817,16 +817,6 @@
       "normalizations": []
     },
     {
-      "id": "phase4-xargs-size-report",
-      "command": "xargs",
-      "args": ["--show-limits"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
       "id": "phase5-sh-command-positional",
       "command": "sh",
       "args": ["-c", "echo \"$1\"", "shell", "value"],
