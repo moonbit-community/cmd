@@ -216,11 +216,7 @@ async fn read_bytes(path : String) -> Bytes {
 
 ///|
 fn join_path(parent : String, name : String) -> String {
-  if parent == "/" {
-    "/" + name
-  } else {
-    parent + "/" + name
-  }
+  @path.Path(parent).join(Path(name)).to_string()
 }
 
 ///|
