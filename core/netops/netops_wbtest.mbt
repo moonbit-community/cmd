@@ -228,6 +228,14 @@ test "redirect rewrites POST for 301/302/303 but preserves 307/308" {
       is (Post, BytesBody(_), false),
     )
   }
+  assert_true(
+    rewritten_request(302, Patch, BytesBody(b"x"), true)
+    is (Patch, EmptyBody, true),
+  )
+  assert_true(
+    rewritten_request(302, Patch, FileBody("body"), true)
+    is (Patch, FileBody("body"), false),
+  )
 }
 
 ///|

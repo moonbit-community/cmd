@@ -1,26 +1,35 @@
 # curl
 
-Observed Wasm profile (2026-09-03): this README is supplementary. The [support record](../../docs/compatibility.md) is the only capability authority; it lists the repeatable `moon run --target wasm --release` results and exclusions. Options mentioned here but not promoted in that record are not compatibility guarantees.
+Pure-MoonBit curl 8.22 HTTP/HTTPS profile. The authoritative capability record
+is [`docs/compatibility.md`](../../docs/compatibility.md); this README describes
+the package-level P1 contract verified by the unified test runner.
 
-Pure-MoonBit curl 8.22 migration. The verified HTTP/HTTPS paths stream to
-stdout by default and cover `-s`/`-S`, `-f` status 22, `-o`, `-L`, `-I`,
-repeated `-H`, `-d`, GET, HEAD, redirect, POST, and output-file behavior. The
-remaining help-visible transfer controls are listed as unverified in the
-support record.
+The command streams HTTP/HTTPS responses to stdout or files and supports:
 
-The observed `--idle-timeout 0` parse failure returns status 2. A successful
-inactivity timeout expiry, timer-range behavior, retry windows, and other
-timeout spellings are not claimed.
+- `-s/-S`, `-f`, `-o`, `-O/-J`, `-L`, `-I`, repeated `-H`, and all documented
+  HTTP methods through `-X` (`GET`, `HEAD`, `POST`, `PUT`, `DELETE`, `CONNECT`,
+  `OPTIONS`, `TRACE`, and `PATCH`);
+- ordered `-d`, `--data-raw`, `--data-binary`, and `--data-urlencode` values,
+  including their documented `@file`, empty-value, and binary behavior;
+- `-T` file/stdin uploads, multiple sequential URLs, retry controls, redirect
+  limits, connect/total/inactivity timeouts, HTTP CONNECT proxies, proxy bypass,
+  insecure TLS, and partial-output cleanup.
 
-curl does not follow redirects unless `-L` is present. `-s` suppresses the
-meter and errors; `-sS` restores errors only in the observed paths. The meter
-and `--remove-on-error` cleanup require their own terminal/partial-transfer
-probes before they can be treated as compatibility guarantees.
+Redirect behavior distinguishes ordinary data from upload streams. An explicit
+`-X` method remains explicit after a redirect; 301/302/303 can still discard a
+`--data-*` body as curl does, while 307/308 and upload streams preserve their
+body. Cross-origin redirects remove authorization headers.
 
-The command remains `partial`, not fully curl-compatible. A Wasm `-X` probe
-using a nonstandard method reached the transfer path, so method validation and
-endpoint behavior beyond the verified requests are not a compatibility claim.
-Byte-exact raw response-header/version display, compressed/HTTP2 negotiation
-controls, config/auth/cookie features, retry-after/backoff parity, and curl's
-non-HTTP protocol families remain outside the observed profile. See the
-[support record](../../docs/compatibility.md).
+`--max-redirs -1` is unlimited; zero disables followed hops. Zero for
+`--connect-timeout`, `--max-time`, and `--retry-max-time` selects the documented
+disabled/default behavior, while `--idle-timeout` must be positive. Timer input
+is bounded by the runtime millisecond range.
+
+Network authorization is supplied by the Wasm harness. The command does not
+embed an allowlist: the policy suite proves both a denied connection and a
+connection allowed only to a local fixture endpoint.
+
+This remains a bounded HTTP transfer profile, not full curl compatibility.
+Non-HTTP protocols, HTTP/2 negotiation, cookie/config/auth state, exact native
+progress and diagnostic bytes, and the rest of curl's option surface are not
+claimed.

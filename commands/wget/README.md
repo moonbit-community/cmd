@@ -1,26 +1,33 @@
 # wget
 
-Observed Wasm profile (2026-09-03): this README is supplementary. The [support record](../../docs/compatibility.md) is the only capability authority; it lists the repeatable `moon run --target wasm --release` results and exclusions. Options mentioned here but not promoted in that record are not compatibility guarantees.
+Pure-MoonBit GNU Wget 1.25 HTTP/HTTPS profile. The authoritative capability
+record is [`docs/compatibility.md`](../../docs/compatibility.md); this README
+describes the package-level P1 contract verified by the unified test runner.
 
-Pure-MoonBit GNU Wget 1.25 migration. The verified HTTP/HTTPS paths cover
-quiet stdout/file output, `-O -`, a POST request body, status 8 for a 404
-response, and invalid idle-timeout status 2. Other controls in `--help`,
-including input files, resume/timestamping, header/method edge cases, retry,
-proxy, TLS, and default remote-name behavior, remain help-visible only until
-separately probed.
+The command supports:
 
-The tested `--idle-timeout=0` input fails before transfer with status 2.
-Successful timeout expiry, timer range, and other timeout-spelling parity are
-not yet compatibility claims.
+- URL operands and repeated `-i/--input-file` lists with blank/comment-line
+  handling and aggregate failure status;
+- quiet mode, stdout/default/file output, `-o` log replacement, and `-a` log
+  append behavior;
+- `-c` range resume with safe restart when a server ignores the range, and
+  `-N` conditional requests that preserve output after 304;
+- repeated `--header`, all documented `--method` values, `--body-data`, and
+  binary `--body-file` input;
+- bounded/unlimited tries, connection-refused and HTTP-status retry controls,
+  retry delay, redirect limits, `Content-Disposition`, and numbered filename
+  collisions;
+- combined/connect/read/inactivity timeouts, certificate verification control,
+  environment HTTP CONNECT proxies, and explicit proxy bypass.
 
-The tested HTTP status failure returns Wget status 8. `-q -O -` streams the
-body to stdout without diagnostics in the measured paths. Default filename,
-file-truncation ordering, terminal progress, and redirected-stderr formatting
-need dedicated side-effect/TTY probes before they are compatibility claims.
+Default redirect rules remain Wget-specific: POST is rewritten on 301/302/303,
+other methods are retained, and 307/308 preserve method and body.
 
-The command remains `partial`, not fully Wget-compatible. Recursive/mirroring
-features, authentication/cookies/HSTS, exact Wget diagnostic and progress
-bytes, complete retry/backoff rules, post-download timestamp restoration, and
-FTP remain outside the observed profile. A nonstandard `--method` probe ended
-with endpoint status 8, so method validation beyond the POST path is not a
-compatibility claim. See the [support record](../../docs/compatibility.md).
+Network authorization is supplied by the Wasm harness. The command does not
+embed an allowlist: the policy suite proves both a denied connection and a
+connection allowed only to a local fixture endpoint.
+
+This remains a bounded HTTP transfer profile, not full Wget compatibility.
+Recursive mirroring, FTP, authentication/cookies/HSTS, post-download timestamp
+restoration, exact GNU progress and diagnostic bytes, and options outside the
+documented package help are not claimed.

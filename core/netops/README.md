@@ -12,6 +12,12 @@ headers, and each response read have separate inactivity checks; a successful
 chunk resets the phase timer, while an optional total deadline spans all
 redirects. Premature fixed-length EOF is an error.
 
+Redirect rewriting is adapter-controlled so curl can preserve an explicit
+method while retaining its distinct data/upload body rules, and Wget can use
+its normal POST rewrite rules. Redirect count zero, finite limits, unlimited
+curl traversal, loops, and cross-origin authorization stripping are exercised
+against deterministic local fixtures.
+
 Destinations support stdout, discard, truncate, append/resume, numbered
 collision files, `Content-Disposition`, 304 preservation, and optional cleanup
 after a partial transfer. `TransferErrorKind` separates URL, protocol, proxy,

@@ -50,6 +50,17 @@ test "curl max-redirs accepts the upstream unlimited sentinel" {
 }
 
 ///|
+test "curl accepts the complete documented HTTP method set" {
+  for
+    name in [
+      "GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH",
+    ] {
+    let options = parse_curl_options(["-X", name, "https://example.test"])
+    assert_eq(options.request_method, Some(@netops.parse_http_method(name)))
+  }
+}
+
+///|
 test "curl zero timeout values select their upstream disabled defaults" {
   let options = parse_curl_options([
     "--connect-timeout", "0", "--max-time", "0", "--retry-max-time", "0", "https://example.test",
@@ -60,6 +71,26 @@ test "curl zero timeout values select their upstream disabled defaults" {
   assert_eq(curl_retry_delay(options, 1), 1000)
   assert_eq(curl_retry_delay(options, 2), 2000)
   assert_eq(curl_retry_delay(options, 20), 600_000)
+}
+
+///|
+test "curl timeout options reject invalid and out-of-range timers" {
+  for
+    args in [
+      ["--connect-timeout", "-1", "https://example.test"],
+      ["--connect-timeout", "nan", "https://example.test"],
+      ["--max-time", "inf", "https://example.test"],
+      ["--max-time", "2147483.648", "https://example.test"],
+      ["--idle-timeout", "0", "https://example.test"],
+      ["--idle-timeout", "2147483.648", "https://example.test"],
+      ["--retry-max-time", "2147484", "https://example.test"],
+    ] {
+    try parse_curl_options(args) catch {
+      CurlUsageError(_) => ()
+    } noraise {
+      _ => fail("expected curl timer usage error")
+    }
+  }
 }
 
 ///|

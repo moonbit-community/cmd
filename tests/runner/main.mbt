@@ -396,6 +396,13 @@ async fn run_http_fixture(server : @http.Server) -> Unit {
           "Content-Length": "0",
         })
         .end_response()
+      "/redirect-explicit" =>
+        connection
+        ..send_response(302, "Found", extra_headers={
+          "Location": "/echo",
+          "Content-Length": "0",
+        })
+        .end_response()
       "/echo" => {
         let content = body.read_all().binary()
         let prefix = oracle_request_name(request) + ":"
@@ -404,6 +411,51 @@ async fn run_http_fixture(server : @http.Server) -> Unit {
           "Content-Length": response.length().to_string(),
         })
         connection..write(response).end_response()
+      }
+      "/inspect" => {
+        let content = body.read_all().binary()
+        let marker = request.headers.get("X-Marker").unwrap_or("")
+        let prefix = oracle_request_name(request) + ":" + marker + ":"
+        let response = @utf8.encode(prefix) + content
+        connection.send_response(200, "OK", extra_headers={
+          "Content-Length": response.length().to_string(),
+        })
+        connection..write(response).end_response()
+      }
+      "/range" => {
+        let ranged = request.headers.get("Range") == Some("bytes=3-")
+        let content = if ranged { "lo" } else { "hello" }
+        if ranged {
+          connection.send_response(206, "OK", extra_headers={
+            "Content-Length": content.length().to_string(),
+            "Content-Range": "bytes 3-4/5",
+          })
+        } else {
+          connection.send_response(200, "OK", extra_headers={
+            "Content-Length": content.length().to_string(),
+          })
+        }
+        connection..write(content).end_response()
+      }
+      "/conditional" =>
+        if request.headers.get("If-Modified-Since") is Some(_) {
+          connection
+          ..send_response(304, "Not Modified", extra_headers={
+            "Content-Length": "0",
+          })
+          .end_response()
+        } else {
+          connection.send_response(200, "OK", extra_headers={
+            "Content-Length": "5",
+          })
+          connection..write("fresh").end_response()
+        }
+      "/named-header" => {
+        connection.send_response(200, "OK", extra_headers={
+          "Content-Length": "5",
+          "Content-Disposition": "attachment; filename=fixture.txt",
+        })
+        connection..write("hello").end_response()
       }
       "/missing" =>
         connection

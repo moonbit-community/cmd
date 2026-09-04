@@ -37,6 +37,50 @@ test "wget phase2 options reject invalid methods, statuses, and timeouts" {
 }
 
 ///|
+test "wget accepts documented methods and preserves repeated option order" {
+  for
+    name in [
+      "GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH",
+    ] {
+    let options = parse_wget_options([
+      "-i",
+      "one",
+      "--input-file=two",
+      "--method=" + name,
+      "https://example.test",
+    ])
+    assert_eq(options.request_method, @netops.parse_http_method(name))
+    assert_eq(options.input_files, ["one", "two"])
+  }
+  let logs = parse_wget_options([
+    "-o", "first", "-a", "second", "https://example.test",
+  ])
+  assert_eq(logs.log_file, Some("second"))
+  assert_true(logs.append_log)
+  let unlimited = parse_wget_options(["--tries=0", "https://example.test"])
+  assert_eq(unlimited.tries, 0)
+}
+
+///|
+test "wget timeout options reject invalid and out-of-range timers" {
+  for
+    args in [
+      ["-T", "0", "https://example.test"],
+      ["--connect-timeout=-1", "https://example.test"],
+      ["--connect-timeout=nan", "https://example.test"],
+      ["--read-timeout=inf", "https://example.test"],
+      ["--idle-timeout=2147483.648", "https://example.test"],
+      ["--waitretry=0", "https://example.test"],
+    ] {
+    try parse_wget_options(args) catch {
+      WgetUsageError(_) => ()
+    } noraise {
+      _ => fail("expected wget timer usage error")
+    }
+  }
+}
+
+///|
 test "wget retries transient connections but gates connection refusal" {
   let options = default_options()
   assert_true(

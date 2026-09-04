@@ -1,23 +1,26 @@
 # Command Support Record
 
-Date: 2026-09-03
+Date: 2026-09-04
 
 This is the single support record for the `cmd` repository. It replaces the
-former matrix and phase-plan documents. Every claim below comes from a
-black-box invocation of a real Wasm executable, with authorization exercised
-by the unified runner's policy suite:
+former matrix and phase-plan documents. Claims are promoted through the unified
+runner: native black-box semantic tests, pinned-upstream differential cases,
+and separate Wasm authorization tests for restricted commands. The relevant
+artifacts are built once and passed to the runner; a test case does not rebuild
+the command.
 
 ```text
-moon run --target wasm --release commands/<command> -- <arguments>
+cmd-test-runner --suite compat --native-root <prebuilt-native-root>
+cmd-test-runner --suite oracle --native-root <prebuilt-native-root>
+cmd-test-runner --suite policy --wasm-root <prebuilt-wasm-root>
 ```
 
-The audit used temporary fixtures and explicit Wasm policies for process
-commands. Source code, unit tests, and the compatibility runner were not used
-to infer support. `subset verified` means that the listed invocation and
-options produced the stated result; it is not a claim that every upstream
-option is implemented. `help-visible only` means the current Wasm artifact
-printed the option in `--help`, but the audit did not execute a complete
-positive case for that option.
+The audit uses isolated temporary fixtures and explicit Wasm policies for file,
+process, and network access. `subset verified` means that the listed profile has
+repeatable semantic evidence; it is not a claim that every upstream option is
+implemented. `help-visible only` means an artifact prints the option in
+`--help`, but the unified runner does not yet have complete positive and
+negative evidence for it.
 
 The ordered implementation roadmap is in
 [`compatibility-expansion-plan.md`](compatibility-expansion-plan.md). It is a
@@ -53,7 +56,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `cmp` | subset verified | equal=0, different=1; `-s -l -n -i` accepted | Full diagnostic parity not claimed |
 | `comm` | subset verified | three columns, `-1 -2 -3`, `-`, clustered flags | Locale/unsorted diagnostics not probed |
 | `cp` | subset verified | files, `-R`, `-f/-n`, `-T`, `-v`; tree side effects | `-p/-a` rejected before output; metadata preservation absent |
-| `curl` | restricted | HTTP/HTTPS GET/HEAD/POST; `-sS -f -o -L -I -H`, request data, redirect, and HTTP 404 status 22 | `-X` method semantics, `-O`, successful timeout expiry, retry/proxy/TLS controls, non-HTTP, auth/cookie/config, and exact native diagnostics not claimed |
+| `curl` | restricted | Bounded HTTP/HTTPS profile: `-sS -f -o -OJ -L -I -H -X -d -T`; all documented methods; raw/binary/URL-encoded data; filename collisions and cleanup; retries; connect/total/idle timeouts; redirect limits and cross-origin stripping; HTTP CONNECT proxy/bypass; insecure TLS | Non-HTTP protocols, auth/cookie/config state, HTTP/2 negotiation, and exact native progress/diagnostic bytes not claimed |
 | `cut` | subset verified | `-c`, `-f`, `-d`, `-s`, range/comma lists | Locale/multibyte/error parity not probed |
 | `dirname` | subset verified | multiple operands and `-z` | Remaining path corner cases not probed |
 | `echo` | subset verified | `-n`, `-e`, `-E`, escapes | Shell mode ambiguities not probed |
@@ -91,7 +94,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `true` | subset verified | any args: no output, status 0 | No help path in artifact |
 | `uniq` | subset verified | adjacent filtering, `-c -d -u -i` | Field/character skips and locale not claimed |
 | `wc` | subset verified | `-l -w -c -m`, combinations, files/stdin | Alignment, `-L`, locale and diagnostics not claimed |
-| `wget` | restricted | HTTP/HTTPS, quiet mode, `-O -`, output file, POST request body, HTTP 404 status 8, and invalid idle-timeout rejection | Input/resume/timestamp, header/method edge cases, retry/redirect/proxy/TLS controls, successful timeout expiry, recursive mirroring, cookies/auth/HSTS, non-HTTP, and exact GNU meter not verified |
+| `wget` | restricted | Bounded HTTP/HTTPS profile: URL input files; quiet/output/log modes; resume and conditional 304; headers/method/data or binary file bodies; retry classification/delay; redirect limits; content-disposition collisions; connect/read/idle timeouts; HTTP CONNECT proxy/bypass; certificate verification control; HTTP status 8 | Recursive mirroring, cookies/auth/HSTS, FTP and other protocols, post-download timestamp restoration, and exact GNU progress/diagnostic bytes not claimed |
 | `xargs` | restricted | whitespace/NUL tokenization, `-0 -r -t -n -I`; stdin batching | Child policy required; `-L/-P`, EOF strings and full size/signal diagnostics not claimed |
 | `xxd` | subset verified | forward hex, `-p -r -c -l`, positive `-s` | Negative/end-relative seek and addressed reverse patching not claimed |
 
@@ -103,12 +106,10 @@ positive result. They are probe targets, not product claims.
 
 | Command | Help-visible only |
 | --- | --- |
-| `curl` | `-OJ`, `--max-redirs`, `--data-raw`, `--data-binary`, `--data-urlencode`, `-T`, retry/proxy/TLS/removal controls |
 | `env` | long aliases and `-C`; `--help` itself is a verified rejection |
 | `make` | semantic coverage beyond the tested rule/include/recipe slice |
 | `sh` | grammar beyond the listed successful slice |
 | `sha256sum` | checksum warning/status matrix |
-| `wget` | `-o/-a/-i/-c/-N`, retry/redirect/header/body/proxy/TLS controls |
 | `xargs` | child status mapping, `-L/-P`, EOF strings, and size/signal rules |
 
 Each row identifies the option families exercised successfully. Explicit
@@ -131,12 +132,12 @@ parser or transformation is absent.
 
 ## Reproduction rule
 
-Build once, then run each case with `moon run --target wasm --release` in an
-isolated directory. Pass absolute fixture paths when using `moon -C` so the
-project directory cannot be confused with the Wasm working directory. Capture
-stdout, stderr, exit status, and side effects independently. Record positive
-and negative cases together. Update this record and the command README only
-after the black-box result is repeatable.
+Build native and Wasm artifacts once, then pass their build roots to the
+unified runner. The runner creates isolated directories, captures stdout,
+stderr, exit status, and side effects independently, and applies network policy
+only in the policy suite. Record positive and negative cases together. Update
+this record and the command README only after native semantics, the applicable
+pinned oracle cases, and Wasm policy checks are repeatable.
 
 Per-command decisions are in [`docs/adr/README.md`](adr/README.md). Historical
 source provenance and upstream version pins remain in

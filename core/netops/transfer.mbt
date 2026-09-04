@@ -581,8 +581,15 @@ fn rewritten_request(
   body : RequestBody,
   preserve_method : Bool,
 ) -> (HttpMethod, RequestBody, Bool) {
-  if preserve_method || code == 307 || code == 308 || request_method == Head {
+  if code == 307 || code == 308 || request_method == Head {
     return (request_method, body, false)
+  }
+  if preserve_method {
+    return match body {
+      EmptyBody => (request_method, body, false)
+      FileBody(_) | StdinBody => (request_method, body, false)
+      BytesBody(_) => (request_method, EmptyBody, true)
+    }
   }
   if code == 303 || ((code == 301 || code == 302) && request_method == Post) {
     (Get, EmptyBody, true)

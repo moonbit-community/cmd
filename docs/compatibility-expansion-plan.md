@@ -1,12 +1,12 @@
 # Compatibility Expansion Plan
 
-Status: P0 implemented; P1-P8 roadmap
+Status: P0-P1 implemented; P2-P8 roadmap
 Date: 2026-09-04
 Scope: the 48 local command modules and the 47 commands currently exposed by MoonX
 
 This document turns the current support record into an execution roadmap. The
-P0 test-system migration described below is implemented; the remaining
-sections are the follow-on compatibility roadmap. It
+P0 test-system migration and P1 HTTP certification described below are
+implemented; the remaining sections are the follow-on compatibility roadmap. It
 prioritizes the next parameters and behavior families to implement or certify;
 it does not change the support claims by itself. A parameter becomes a support
 claim only after a repeatable black-box probe against the pinned upstream
@@ -23,6 +23,7 @@ The recommended order is:
 
 1. Stabilize the unified runner and remove the retired black-box systems.
 2. Certify the already-implemented HTTP option surface in `curl` and `wget`.
+   Completed in P1 with native semantic, pinned-oracle, and Wasm policy cases.
 3. Expand `grep`, then the `sort`/`uniq`/`wc`/`head`/`tail` text pipeline.
 4. Expand the `find` and `xargs` process-oriented workflow together.
 5. Extend the POSIX subset of `sh`.
@@ -39,19 +40,20 @@ inventing a non-portable Wasm primitive.
 
 ## Evidence Baseline
 
-The following results were observed in the current checkout on 2026-09-03:
+The following results were observed in the current checkout on 2026-09-04:
 
 | Check | Result | Meaning |
 | --- | --- | --- |
-| `moon test --target all` | Native 65/65 and Wasm 56/56 passed; JS and Wasm-GC have no test entry | Package tests are green for configured targets |
+| `moon check --target all --deny-warn` | Passed | All configured package targets type-check without enabled warnings |
+| `moon test --target all` | Native 69/69 and Wasm 60/60 passed; JS and Wasm-GC have no test entry | Package tests are green for configured targets |
 | `moon run --target native tests/runner -- --manifest tests/fixtures/runner/cases.json --native-root _build/native/release/build --suite compat` | Passed | Native compatibility suite is green |
 | Same runner with `--gnu-diff` | Passed | The differential subset is green |
-| `moon run --target native tests/runner -- --manifest tests/fixtures/runner/cases.json --validate-only` | 48 commands and 66 cases valid | The unified manifest is structurally ready |
+| Same runner with the pre-built Wasm root and `--suite policy` | Passed | Denied and local-only allowed network policies are green |
+| Same runner with `--validate-only` | 48 commands and 74 cases valid | The unified manifest includes the P1 differential contracts |
 
-The pinned Docker oracle was not rerun in this environment because Docker is
-not installed. The plan therefore treats the checked-in Wasm audit as the
-current capability authority and requires the pinned oracle job before any
-compatibility row is promoted.
+The pinned Docker oracle cannot run locally because Docker is not installed.
+The remote pinned-oracle job remains required before this P1 delivery is
+accepted; native semantics and Wasm authorization are separate required gates.
 
 The support record intentionally distinguishes `subset verified`, `restricted`,
 `verified rejection`, and `help-visible only`. Help output or a parser branch is
@@ -101,6 +103,12 @@ This is a prerequisite for every later workstream. It is not a feature batch.
   contract is changed for compatibility reasons.
 
 ## P1 - HTTP Transfer Controls
+
+**Status:** Implemented on 2026-09-04. The unified runner now has 74 pinned
+semantic cases plus reusable native HTTP/HTTPS/proxy fixtures. P1 added the
+missing explicit curl method/body redirect distinction and certified the
+listed curl/Wget families. Wasm policy coverage includes both denied networking
+and a local-only allowed endpoint.
 
 `curl` and `wget` share `core/netops`, already stream HTTP/HTTPS bodies, and
 have the largest number of help-visible-but-unverified options. This gives the
@@ -162,11 +170,14 @@ approved. The current ADR explicitly defines Wget as an HTTP transfer profile.
 
 ### P1 acceptance
 
-- Add deterministic local HTTP/HTTPS fixtures for every listed family.
-- Compare status, stdout, stderr, output files, collision names, and cleanup.
-- Run both allowed and denied network-policy cases.
-- Update `compatibility.md` only for options with a repeatable positive and
-  negative result.
+- Complete: deterministic reusable local HTTP/HTTPS/proxy fixtures cover every
+  listed family without rebuilding artifacts or starting one server per case.
+- Complete: assertions cover status, stdout, stderr, output files, collision
+  names, retry counts, timeout expiry, and cleanup.
+- Complete: pre-built Wasm artifacts run under both allowed and denied network
+  policies.
+- Complete: `compatibility.md`, package READMEs, and ADRs record only the
+  bounded HTTP profile established by these probes.
 
 ## P2 - High-Frequency Text Matching
 

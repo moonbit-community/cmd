@@ -1,7 +1,7 @@
 # ADR-0021: Support HTTP Transfer Controls, Not Recursive Mirroring
 
-Status: Accepted
-Date: 2026-09-03
+Status: Accepted (P1 implemented)
+Date: 2026-09-04
 
 ## Context
 
@@ -10,22 +10,27 @@ handling, and persistent state, not a single HTTP transfer.
 
 ## Decision
 
-Keep pure MoonBit HTTP/HTTPS transfers with the observed quiet mode, output
-selection, a POST body path, and invalid idle-timeout input. Input URL files,
-resume/timestamp controls, headers/method edge cases, retries, redirects,
-proxy/TLS controls, successful timeout expiry, and other help-visible options
-remain unverified. Do not claim recursive mirroring, cookies/auth/HSTS,
-non-HTTP protocols, or exact native progress bytes.
+Keep pure MoonBit HTTP/HTTPS transfers and certify the bounded single-transfer
+surface: repeated input URL files, output/log selection, resume and conditional
+requests, headers/method/body combinations, retries, redirects and duplicate
+filenames, timeout controls, HTTP CONNECT proxies, and certificate verification
+control. Do not claim recursive mirroring, cookies/auth/HSTS, non-HTTP
+protocols, post-download timestamp restoration, or exact native progress bytes.
 
 ## Evidence
 
-Wasm probes for stdout/file output, POST, and 404 returned status 0/8 as
-documented; `-q` suppressed transfer feedback.
+The unified native suite exercises each P1 family against reusable local
+HTTP/HTTPS/proxy fixtures, including positive, invalid-input, failure-status,
+and filesystem side-effect cases. The pinned upstream manifest covers input
+files, binary bodies, repeated headers, range resume, conditional 304, and
+content-disposition collision behavior. The Wasm policy suite proves both
+denied networking and a local-only allowed endpoint using pre-built artifacts.
 
 ## Consequences
 
-Common downloads are script-compatible without a host wget, while mirror users
-see a clear documented boundary.
+Common scripted downloads have repeatable compatibility evidence without a host
+wget, while mirror users see a clear documented boundary. Network authorization
+is supplied by the harness rather than embedded in the command.
 
 ## Rollback
 

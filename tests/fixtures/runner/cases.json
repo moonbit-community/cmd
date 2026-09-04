@@ -246,6 +246,86 @@
       "normalizations": []
     },
     {
+      "id": "p1-curl-explicit-method-redirect",
+      "command": "curl",
+      "args": ["-sL", "-X", "POST", "--data-raw", "payload", "${HTTP_BASE}/redirect-explicit"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p1-curl-binary-data-file",
+      "command": "curl",
+      "args": ["-s", "--data-binary", "@payload.bin", "${HTTP_BASE}/echo"],
+      "stdin_hex": "",
+      "files": [{ "path": "payload.bin", "content_hex": "0062696e617279ff" }],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p1-curl-redirect-limit-zero",
+      "command": "curl",
+      "args": ["-sL", "--max-redirs", "0", "${HTTP_BASE}/redirect"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 47,
+      "normalizations": []
+    },
+    {
+      "id": "p1-wget-binary-body-file",
+      "command": "wget",
+      "args": ["-qO-", "--body-file=payload.bin", "${HTTP_BASE}/echo"],
+      "stdin_hex": "",
+      "files": [{ "path": "payload.bin", "content_hex": "0062696e617279ff" }],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p1-wget-method-and-repeated-header",
+      "command": "wget",
+      "args": ["-qO-", "--method=PATCH", "--header=X-Marker: first", "--header=X-Marker: second", "--body-data=payload", "${HTTP_BASE}/inspect"],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p1-wget-continue-range",
+      "command": "wget",
+      "args": ["-q", "-c", "${HTTP_BASE}/range"],
+      "stdin_hex": "",
+      "files": [{ "path": "range", "content_hex": "68656c" }],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p1-wget-timestamp-not-modified",
+      "command": "wget",
+      "args": ["-q", "-N", "${HTTP_BASE}/conditional"],
+      "stdin_hex": "",
+      "files": [{ "path": "conditional", "content_hex": "707265736572766564" }],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p1-wget-content-disposition-collision",
+      "command": "wget",
+      "args": ["-q", "--content-disposition", "${HTTP_BASE}/named-header"],
+      "stdin_hex": "",
+      "files": [{ "path": "fixture.txt", "content_hex": "6f6c64" }],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
       "id": "phase2-curl-https-insecure",
       "command": "curl",
       "args": ["-sk", "${HTTPS_BASE}/fixed.txt"],

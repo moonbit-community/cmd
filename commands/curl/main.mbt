@@ -392,6 +392,7 @@ async fn curl_transfer_one(
           } else {
             @netops.NoRedirects
           },
+          preserve_method_on_redirect=options.request_method is Some(_),
           verify_tls=!options.insecure,
           proxy_url?,
           connect_timeout_ms=options.connect_timeout_ms,
