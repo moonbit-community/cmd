@@ -724,8 +724,8 @@ async fn check_process_and_network_policy(
     "env: allowed process output mismatch",
     failures,
   )
-  let env_cwd = moon_run(root, "process-printf.json", "env", [
-    "-C", "tests/fixtures/policy", "printf", "%s\n", "cwd-policy-ok",
+  let env_cwd = moon_run(root, "process-echo-cwd.json", "env", [
+    "-C", "tests/fixtures/policy", "echo", "cwd-policy-ok",
   ]) catch {
     err => {
       failures.push("env: allowed cwd process failed: \{err}")

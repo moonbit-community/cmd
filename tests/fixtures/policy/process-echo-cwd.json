@@ -1,0 +1,13 @@
+{
+  "fs": {
+    "read": ["."]
+  },
+  "process": {
+    "allow": [
+      {
+        "program": "echo",
+        "args_prefix": []
+      }
+    ]
+  }
+}
