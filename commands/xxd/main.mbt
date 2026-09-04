@@ -223,7 +223,12 @@ async fn reverse_dump_stream(reader : &@io.Reader) -> Unit {
           offset += 1
         }
       }
-      None => raise CliError("xxd: malformed hex dump line")
+      None => {
+        for byte in line.data {
+          output.push(byte)
+        }
+        output.push(b'\n')
+      }
     }
   }
   @stdio.stdout.write(Bytes::from_array(output))
@@ -257,10 +262,12 @@ fn include_output(path : String, data : Bytes, symbol_name : String?) -> String 
   if path == "-" && symbol_name is None {
     let out = StringBuilder()
     for index, byte in data {
-      write_hex_byte(out, byte)
-      if index + 1 < data.length() {
-        out.write_string(", ")
+      if index == 0 {
+        out.write_string("  0x")
+      } else {
+        out.write_string(", 0x")
       }
+      write_hex_byte(out, byte)
     }
     if !data.is_empty() {
       out.write_char('\n')

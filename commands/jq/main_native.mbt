@@ -202,10 +202,13 @@ fn parse_cli(args : ArrayView[String]) -> CliParseResult {
       let parsed_indent = @string.parse_int(value) catch {
         _ => return Error("jq: invalid indentation: '{value}'")
       }
-      if parsed_indent < 0 || parsed_indent > 64 {
+      if parsed_indent < 0 {
+        Some(2)
+      } else if parsed_indent > 64 {
         return Error("jq: indentation must be between 0 and 64")
+      } else {
+        Some(parsed_indent)
       }
-      Some(parsed_indent)
     }
     None => None
   }
@@ -229,7 +232,7 @@ fn parse_cli(args : ArrayView[String]) -> CliParseResult {
       return Error("jq: --argjson requires NAME and JSON")
     }
     ignore(@json.parse(parts[1])) catch {
-      _ => return Error("jq: invalid JSON for --argjson '{parts[0]}'")
+      _ => return Error("jq: invalid JSON text passed to --argjson")
     }
     arguments[parts[0]] = parts[1]
   }
@@ -432,7 +435,7 @@ async fn main {
           for input_source in options.inputs {
             let input = read_input(input_source)
             if options.raw_input {
-              all.append(raw_values(input))
+              all.push(Json::Json(input))
             } else if options.logs {
               for value in query.eval_logs(input) {
                 all.push(value)

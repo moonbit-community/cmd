@@ -5,7 +5,7 @@ test "xxd include output is stable and addressed dumps preserve holes" {
       "unsigned char fixture[]",
     ),
   )
-  assert_true(include_output("-", b"abc", None) == "61, 62, 63\n")
+  assert_true(include_output("-", b"abc", None) == "  0x61, 0x62, 0x63\n")
   guard reverse_dump_line(b"00000002: 4142  ;AB") is Some((offset, bytes)) else {
     fail("addressed line did not parse")
   }

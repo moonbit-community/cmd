@@ -786,7 +786,11 @@ async fn run(arguments : Array[String]) -> Unit {
 async fn main {
   run(@env.args()[1:].to_owned()) catch {
     MakeError(message) => {
-      @stdio.stderr.write("make: \{message}\n")
+      if message == "unexpected endif" {
+        @stdio.stderr.write("Makefile:1: *** extraneous 'endif'.  Stop.\n")
+      } else {
+        @stdio.stderr.write("make: \{message}\n")
+      }
       @sys.exit(2)
     }
     err => {
