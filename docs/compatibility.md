@@ -4,7 +4,8 @@ Date: 2026-09-03
 
 This is the single support record for the `cmd` repository. It replaces the
 former matrix and phase-plan documents. Every claim below comes from a
-black-box invocation of a real Wasm executable:
+black-box invocation of a real Wasm executable, with authorization exercised
+by the unified runner's policy suite:
 
 ```text
 moon run --target wasm --release commands/<command> -- <arguments>
@@ -17,6 +18,10 @@ options produced the stated result; it is not a claim that every upstream
 option is implemented. `help-visible only` means the current Wasm artifact
 printed the option in `--help`, but the audit did not execute a complete
 positive case for that option.
+
+The ordered implementation roadmap is in
+[`compatibility-expansion-plan.md`](compatibility-expansion-plan.md). It is a
+plan, not an additional support claim.
 
 ## Inventory
 

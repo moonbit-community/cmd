@@ -14,6 +14,8 @@ pub fn normalize_lf(String) -> String
 
 pub async fn run(String, Array[String], stdin? : Bytes, cwd? : String, extra_env? : Map[String, String], inherit_env? : Bool) -> RunResult
 
+pub fn wasm_path(String, String) -> String
+
 // Errors
 
 // Types and methods

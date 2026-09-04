@@ -69,7 +69,7 @@ after mutation, denial, and symbolic-link safety tests.
 
 `env`, `xargs`, `timeout`, `sh`, `make`, `curl`, `wget`, and `chmod` are kept
 outside the default allow-list. Their process, network, and permission
-requests have dedicated Cram and policy smoke coverage.
+requests have dedicated policy-controlled coverage in the unified runner.
 
 `chown` and `kill` are not destination packages. They are absent from the
 source tree, policy inventory, test suite, and release artifacts because their
@@ -82,14 +82,11 @@ The command-facing test artifacts are:
 
 | Artifact | Purpose |
 |---|---|
-| `tests/compat/main.mbt` | Direct execution, byte comparison, GNU differential, and stress cases |
-| `tests/policy/main.mbt` | Wasm resource, mutation, process, network, and permission policy cases |
-| `tests/cram/coreutils.md` | Upstream Unix-style compatibility provenance |
-| `tests/cram/cli.md` | `jq` and `jqlog` compatibility provenance |
+| `tests/runner/compat.mbt` | Native execution, byte comparison, GNU differential, and stress cases |
+| `tests/runner/policy.mbt` | Wasm resource, mutation, process, network, and permission policy cases |
+| `tests/runner/main.mbt` | Unified suite dispatch, strict differential cases, and fixture isolation |
+| `tests/fixtures/runner/cases.json` | Machine-readable semantic compatibility contract |
 | `TUTORIAL.md` | `jq` documentation and migration examples |
-| `tests/cram/batch1.md` | Read-only migration examples |
-| `tests/cram/batch2.md` | Filesystem mutation migration examples |
-| `tests/cram/batch3.md` | Restricted authority migration examples |
 
 The `jq` and `jqlog` entry points depend on
 `bobzhang/moonjq@0.1.1`. MoonJQ parser and AST tests remain in that dependency;

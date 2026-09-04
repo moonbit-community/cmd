@@ -1,6 +1,6 @@
 name = "cli/tail"
 
-version = "0.1.2"
+version = "0.1.3"
 
 readme = "README.md"
 
@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "tail command for MoonX."
 
 import {
-  "cli/core@0.1.2",
+  "cli/core@0.1.3",
   "moonbitlang/async@0.21.0",
   "moonbitlang/x@0.5.1",
 }

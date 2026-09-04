@@ -43,15 +43,30 @@ jobs:
       - name: Build release commands
         run: moon build --target native --release --deny-warn
 
+      - name: Build Wasm release commands
+        run: moon build --target wasm --release --deny-warn
+
       - name: Compatibility
-        run: moon run --target native tests/compat -- --bin-root _build/native/release/build
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
+          --manifest tests/fixtures/runner/cases.json
+          --native-root _build/native/release/build
+          --suite compat
 
       - name: GNU differential
         if: runner.os == 'Linux'
-        run: moon run --target native tests/compat -- --bin-root _build/native/release/build --gnu-diff
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
+          --manifest tests/fixtures/runner/cases.json
+          --native-root _build/native/release/build
+          --suite compat --gnu-diff
 
       - name: Wasm policy
-        run: moon run --target native tests/policy -- --root .
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
+          --manifest tests/fixtures/runner/cases.json
+          --wasm-root _build/wasm/release/build
+          --suite policy
 
       - name: Generated interfaces
         run: moon info
@@ -92,7 +107,9 @@ jobs:
         run: moon build --target native --release --deny-warn
 
       - name: Validate oracle manifest
-        run: moon run --target native tests/oracle -- --manifest tests/fixtures/oracle/cases.json --validate-only
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
+          --manifest tests/fixtures/runner/cases.json --validate-only
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -100,7 +117,7 @@ jobs:
       - name: Build pinned oracle image
         uses: docker/build-push-action@v6
         with:
-          context: tests/oracle/image
+          context: tests/runner/image
           load: true
           tags: mooncmd-oracle:phase0
           cache-from: type=gha,scope=mooncmd-oracle
@@ -116,9 +133,10 @@ jobs:
       - name: Compare pinned upstream fixtures
         run: |
           umask 022
-          moon run --target native tests/oracle -- \
-            --manifest tests/fixtures/oracle/cases.json \
-            --bin-root _build/native/release/build \
+          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe \
+            --manifest tests/fixtures/runner/cases.json \
+            --native-root _build/native/release/build \
+            --suite oracle \
             --oracle-image mooncmd-oracle:phase0
 
       - name: Upload oracle evidence
@@ -151,4 +169,8 @@ jobs:
         run: moon build --target native --release --deny-warn
 
       - name: Stress compatibility
-        run: moon run --target native tests/compat -- --bin-root _build/native/release/build --stress
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
+          --manifest tests/fixtures/runner/cases.json
+          --native-root _build/native/release/build
+          --suite compat --stress

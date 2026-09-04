@@ -73,10 +73,9 @@ cmd/
 |   `-- stream/           # byte and line-stream helpers
 |-- commands/             # one executable module per command
 |-- tests/
-|   |-- compat/           # command compatibility runner
-|   |-- policy/           # Wasm policy runner
+|   |-- runner/           # unified compat, policy, and oracle runner
 |   |-- testkit/          # process test utilities
-|   `-- cram/             # compatibility examples
+|   `-- fixtures/         # runner manifests and policy profiles
 |-- docs/                 # behavior and provenance documentation
 `-- moon.work             # MoonBit workspace manifest
 ```
@@ -87,14 +86,15 @@ command packages.
 
 ## Test system
 
-The project uses four complementary test layers:
+The project uses one unified black-box runner with complementary suites:
 
 - MoonBit unit and white-box tests for parsers and shared runtime packages.
-- A native compatibility runner that executes every command and checks stdout,
-  stderr, and exit status.
-- A Wasm policy runner that verifies allowed and denied resource access.
-- GNU differential and stress modes for selected compatible behavior and large
-  inputs.
+- `compat` executes every command and checks stdout, stderr, exit status, and
+  boundary behavior against the native contract.
+- `policy` executes pre-built Wasm artifacts through `moonrun --policy` and
+  verifies allowed and denied resource access.
+- `oracle` performs strict byte-level differential checks against the pinned
+  upstream image; GNU differential and stress are opt-in `compat` extensions.
 
 Run the complete local validation from the repository root:
 
@@ -103,8 +103,9 @@ moon update
 moon check --target all --deny-warn
 moon test --target all
 moon build --target native --release --deny-warn
-moon run --target native tests/compat -- --bin-root _build/native/release/build
-moon run --target native tests/policy -- --root .
+moon build --target wasm --release --deny-warn
+moon run --target native tests/runner -- --manifest tests/fixtures/runner/cases.json --native-root _build/native/release/build --suite compat
+moon run --target native tests/runner -- --manifest tests/fixtures/runner/cases.json --wasm-root _build/wasm/release/build --suite policy
 moon info
 moon fmt
 ```

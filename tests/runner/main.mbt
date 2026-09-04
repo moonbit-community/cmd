@@ -48,8 +48,10 @@ struct SnapshotEntry {
 } derive(Debug)
 
 ///|
+
+///|
 fn usage() -> String {
-  "Usage: oracle-runner --manifest FILE [--bin-root DIR --oracle-image IMAGE] [--validate-only]"
+  "Usage: cmd-test-runner --manifest FILE [--native-root DIR] [--wasm-root DIR] [--oracle-image IMAGE] [--suite compat|policy|oracle|all] [--gnu-diff] [--stress] [--validate-only]"
 }
 
 ///|
@@ -64,7 +66,7 @@ fn hex_nibble(char : Char) -> Int? {
 
 ///|
 fn decode_hex(value : String, label : String) -> Bytes raise Failure {
-  if value.length() % 2 != 0 {
+  guard value.length() % 2 == 0 else {
     fail("\{label}: hexadecimal byte string has odd length")
   }
   let output : Array[Byte] = []
@@ -428,6 +430,28 @@ async fn run_external_http_fixture() -> Int {
 }
 
 ///|
+async fn run_external_https_fixture(args : ArrayView[String]) -> Int {
+  guard args.length() == 4 else { return 2 }
+  let output = @process.redirect_to_file(args[3])
+  @process.run(
+    "openssl",
+    [
+      "s_server",
+      "-accept",
+      "127.0.0.1:0",
+      "-cert",
+      args[1],
+      "-key",
+      args[2],
+      "-www",
+    ],
+    stdout=output,
+    stderr=output,
+    no_console_window=true,
+  )
+}
+
+///|
 async fn spawn_http_fixture_process(
   group : @async.TaskGroup[Unit],
 ) -> (@process.Process, @process.ReadFromProcess, String) {
@@ -642,6 +666,51 @@ async fn run_case(
 }
 
 ///|
+async fn realpath_or_exit(path : String, label : String) -> String {
+  @fs.realpath(path) catch {
+    err => {
+      @stdio.stderr.write("cmd-test-runner: invalid " + label + ": \{err}\n")
+      @sys.exit(2)
+      ""
+    }
+  }
+}
+
+///|
+async fn require_artifacts(
+  manifest : Manifest,
+  native_root : String?,
+  wasm_root : String?,
+  suite : String,
+  failures : Array[String],
+) -> Unit {
+  if suite == "compat" || suite == "oracle" || suite == "all" {
+    match native_root {
+      Some(root) =>
+        for row in manifest.commands {
+          let path = @testkit.executable_path(root, row.name)
+          if !@fs.exists(path) {
+            failures.push("missing native artifact: " + path)
+          }
+        }
+      None => failures.push("compat/oracle suite requires --native-root")
+    }
+  }
+  if suite == "policy" || suite == "all" {
+    match wasm_root {
+      Some(root) =>
+        for row in manifest.commands {
+          let path = @testkit.wasm_path(root, row.name)
+          if !@fs.exists(path) {
+            failures.push("missing Wasm artifact: " + path)
+          }
+        }
+      None => failures.push("policy suite requires --wasm-root")
+    }
+  }
+}
+
+///|
 async fn main {
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--http-fixture-server" {
@@ -651,9 +720,20 @@ async fn main {
     }
     return
   }
+  if args.length() == 4 && args[0] == "--https-server" {
+    let status = run_external_https_fixture(args)
+    if status != 0 {
+      @sys.exit(status)
+    }
+    return
+  }
   let mut manifest_path : String? = None
-  let mut bin_root : String? = None
+  let mut native_root : String? = None
+  let mut wasm_root : String? = None
   let mut oracle_image = "mooncmd-oracle:phase0"
+  let mut suite = "all"
+  let mut gnu_diff = false
+  let mut stress = false
   let mut validate_only = false
   let mut index = 0
   while index < args.length() {
@@ -662,14 +742,24 @@ async fn main {
         index += 1
         manifest_path = Some(args[index])
       }
-      "--bin-root" if index + 1 < args.length() => {
+      "--native-root" if index + 1 < args.length() => {
         index += 1
-        bin_root = Some(args[index])
+        native_root = Some(args[index])
+      }
+      "--wasm-root" if index + 1 < args.length() => {
+        index += 1
+        wasm_root = Some(args[index])
       }
       "--oracle-image" if index + 1 < args.length() => {
         index += 1
         oracle_image = args[index]
       }
+      "--suite" if index + 1 < args.length() => {
+        index += 1
+        suite = args[index]
+      }
+      "--gnu-diff" => gnu_diff = true
+      "--stress" => stress = true
       "--validate-only" => validate_only = true
       _ => {
         @stdio.stderr.write(usage() + "\n")
@@ -684,11 +774,19 @@ async fn main {
     @sys.exit(2)
     return
   }
+  if !(suite == "compat" ||
+    suite == "policy" ||
+    suite == "oracle" ||
+    suite == "all") {
+    @stdio.stderr.write("cmd-test-runner: invalid suite '\{suite}'\n")
+    @sys.exit(2)
+    return
+  }
   let manifest : Manifest = @json.from_json(
     @json.parse(@fs.read_file(manifest_path).text()),
   ) catch {
     err => {
-      @stdio.stderr.write("oracle-runner: cannot read manifest: \{err}\n")
+      @stdio.stderr.write("cmd-test-runner: cannot read manifest: \{err}\n")
       @sys.exit(2)
       return
     }
@@ -703,44 +801,69 @@ async fn main {
   }
   if validate_only {
     @stdio.stdout.write(
-      "Oracle manifest valid: \{manifest.commands.length()} commands, \{manifest.cases.length()} cases.\n",
+      "Manifest valid: \{manifest.commands.length()} commands, \{manifest.cases.length()} semantic cases.\n",
     )
     return
   }
-  guard bin_root is Some(bin_root) else {
-    @stdio.stderr.write(usage() + "\n")
-    @sys.exit(2)
-    return
+  let native_root = match native_root {
+    Some(root) => Some(realpath_or_exit(root, "native root"))
+    None => None
   }
-  let bin_root = @fs.realpath(bin_root) catch {
+  let wasm_root = match wasm_root {
+    Some(root) => Some(realpath_or_exit(root, "Wasm root"))
+    None => None
+  }
+  let project_root = @fs.realpath(".") catch {
     err => {
-      @stdio.stderr.write("oracle-runner: invalid bin root: \{err}\n")
+      @stdio.stderr.write("cmd-test-runner: invalid project root: \{err}\n")
       @sys.exit(2)
       return
     }
   }
-  let fixture_root = @fs.tmpdir(prefix="mooncmd-oracle-fixtures-")
-  defer (@fs.rmdir(fixture_root, recursive=true) catch { _ => () })
-  @async.with_task_group <| group => {
-    let (process, reader, http_base) = spawn_http_fixture_process(group)
-    let (tls_process, https_base) = spawn_https_fixture_process(
-      group, fixture_root,
-    )
-    group.add_defer(() => {
-      reader.close()
-      process.cancel()
-      ignore(process.wait()) catch {
-        _ => ()
-      }
-      tls_process.cancel()
-      ignore(tls_process.wait()) catch {
-        _ => ()
-      }
-    })
-    for fixture in manifest.cases {
-      failures.append(
-        run_case(fixture, bin_root, oracle_image, http_base, https_base),
+  require_artifacts(manifest, native_root, wasm_root, suite, failures)
+  if !failures.is_empty() {
+    for failure in failures {
+      @stdio.stderr.write("FAIL: " + failure + "\n")
+    }
+    @sys.exit(1)
+    return
+  }
+  if suite == "compat" || suite == "all" {
+    run_compat_suite(native_root.unwrap_or(""), gnu_diff, stress, failures)
+  }
+  if suite == "policy" || suite == "all" {
+    run_policy_suite(project_root, wasm_root.unwrap_or(""), failures)
+  }
+  if suite == "oracle" || suite == "all" {
+    let fixture_root = @fs.tmpdir(prefix="mooncmd-runner-fixtures-")
+    defer (@fs.rmdir(fixture_root, recursive=true) catch { _ => () })
+    @async.with_task_group <| group => {
+      let (process, reader, http_base) = spawn_http_fixture_process(group)
+      let (tls_process, https_base) = spawn_https_fixture_process(
+        group, fixture_root,
       )
+      group.add_defer(() => {
+        reader.close()
+        process.cancel()
+        ignore(process.wait()) catch {
+          _ => ()
+        }
+        tls_process.cancel()
+        ignore(tls_process.wait()) catch {
+          _ => ()
+        }
+      })
+      for fixture in manifest.cases {
+        failures.append(
+          run_case(
+            fixture,
+            native_root.unwrap_or(""),
+            oracle_image,
+            http_base,
+            https_base,
+          ),
+        )
+      }
     }
   }
   if !failures.is_empty() {
@@ -750,7 +873,5 @@ async fn main {
     @sys.exit(1)
     return
   }
-  @stdio.stdout.write(
-    "Oracle comparison passed for \{manifest.cases.length()} cases.\n",
-  )
+  @stdio.stdout.write("Test suites passed: \{suite}.\n")
 }

@@ -1,7 +1,5 @@
 ///|
-fn usage() -> String {
-  "Usage: policy-runner --root DIR [--catalog-only]"
-}
+let policy_wasm_root : Ref[String] = Ref("")
 
 ///|
 async fn moon_run(
@@ -12,19 +10,13 @@ async fn moon_run(
   stdin? : Bytes,
 ) -> @testkit.RunResult {
   let policy_path = @path.Path(root)
-    .join(Path("tests/policy"))
+    .join(Path("tests/fixtures/policy"))
     .join(Path(policy))
     .to_string()
   let moon_args = [
-    "-C",
-    root_path(root, "commands/" + command),
-    "run",
-    "--target",
-    "wasm",
-    "--wasm-policy",
+    "--policy",
     policy_path,
-    ".",
-    "--",
+    @testkit.wasm_path(policy_wasm_root.val, command),
   ]
   let resolved_args : Array[String] = []
   for arg in args {
@@ -35,7 +27,7 @@ async fn moon_run(
     }
   }
   moon_args.append(resolved_args)
-  @testkit.run("moon", moon_args, stdin?, cwd=root)
+  @testkit.run("moonrun", moon_args, stdin?, cwd=root)
 }
 
 ///|
@@ -233,7 +225,7 @@ async fn expect_allowed_contains(
 
 ///|
 async fn check_runtime_policy(root : String, failures : Array[String]) -> Unit {
-  let input_rel = "tests/policy/runtime-input"
+  let input_rel = "tests/fixtures/policy/runtime-input"
   let input = root_path(root, input_rel)
   @fs.write_file(input, b"policy-fixture\n")
   defer (@fs.remove(input) catch { _ => () })
@@ -265,12 +257,12 @@ async fn check_runtime_policy(root : String, failures : Array[String]) -> Unit {
     root,
     "deny-all.json",
     "jqlog",
-    ["-f", "tests/policy/input.jsonl", ".message"],
+    ["-f", "tests/fixtures/policy/input.jsonl", ".message"],
     None,
     failures,
   )
   let jqlog = moon_run(root, "read-workspace.json", "jqlog", [
-    "-f", "tests/policy/input.jsonl", ".message",
+    "-f", "tests/fixtures/policy/input.jsonl", ".message",
   ]) catch {
     err => {
       failures.push("allowed jqlog could not run: \{err}")
@@ -298,12 +290,19 @@ async fn check_runtime_policy(root : String, failures : Array[String]) -> Unit {
     None,
     failures,
   )
-  expect_denied(root, "deny-all.json", "ls", ["tests/policy"], None, failures)
+  expect_denied(
+    root,
+    "deny-all.json",
+    "ls",
+    ["tests/fixtures/policy"],
+    None,
+    failures,
+  )
   expect_denied(
     root,
     "deny-all.json",
     "find",
-    ["tests/policy", "-maxdepth", "0"],
+    ["tests/fixtures/policy", "-maxdepth", "0"],
     None,
     failures,
   )
@@ -318,14 +317,14 @@ async fn check_runtime_policy(root : String, failures : Array[String]) -> Unit {
   expect_allowed(
     root,
     "find",
-    ["tests/policy", "-maxdepth", "0"],
-    @utf8.encode(root_path(root, "tests/policy") + "\n"),
+    ["tests/fixtures/policy", "-maxdepth", "0"],
+    @utf8.encode(root_path(root, "tests/fixtures/policy") + "\n"),
     failures,
   )
   expect_allowed_contains(
     root,
     "ls",
-    ["tests/policy"],
+    ["tests/fixtures/policy"],
     "runtime-input",
     failures,
   )
@@ -347,7 +346,7 @@ async fn check_runtime_policy(root : String, failures : Array[String]) -> Unit {
 
 ///|
 async fn check_mutation_policy(root : String, failures : Array[String]) -> Unit {
-  let fixture_rel = "tests/policy/write-fixture-runner"
+  let fixture_rel = "tests/fixtures/policy/write-fixture-runner"
   let fixture = root_path(root, fixture_rel)
   @fs.rmdir(fixture, recursive=true) catch {
     _ => ()
@@ -570,7 +569,7 @@ async fn check_process_and_network_policy(
   root : String,
   failures : Array[String],
 ) -> Unit {
-  let makefile_rel = "tests/policy/make-runner-fixture"
+  let makefile_rel = "tests/fixtures/policy/make-runner-fixture"
   let makefile = root_path(root, makefile_rel)
   @fs.write_file(makefile, b".PHONY: all\nall:\n\t@printf policy-make-ok\n")
   defer (@fs.remove(makefile) catch { _ => () })
@@ -703,7 +702,7 @@ async fn check_process_and_network_policy(
 
 ///|
 async fn check_chmod_policy(root : String, failures : Array[String]) -> Unit {
-  let fixture_rel = "tests/policy/chmod-runner-fixture"
+  let fixture_rel = "tests/fixtures/policy/chmod-runner-fixture"
   let fixture = root_path(root, fixture_rel)
   @fs.write_file(fixture, b"policy-mode\n")
   defer (@fs.remove(fixture) catch { _ => () })
@@ -735,60 +734,15 @@ async fn check_chmod_policy(root : String, failures : Array[String]) -> Unit {
 }
 
 ///|
-async fn main {
-  let args = @env.args()[1:]
-  let mut root : String? = None
-  let mut catalog_only = false
-  let mut index = 0
-  while index < args.length() {
-    match args[index] {
-      "--root" => {
-        index += 1
-        if index >= args.length() {
-          @stdio.stderr.write(usage() + "\n")
-          @sys.exit(2)
-          return
-        }
-        root = Some(args[index])
-      }
-      "--catalog-only" => catalog_only = true
-      _ => {
-        @stdio.stderr.write(usage() + "\n")
-        @sys.exit(2)
-        return
-      }
-    }
-    index += 1
-  }
-  let root = match root {
-    Some(root) =>
-      @fs.realpath(root) catch {
-        err => {
-          @stdio.stderr.write("policy-runner: invalid root '\{root}': \{err}\n")
-          @sys.exit(2)
-          return
-        }
-      }
-    None => {
-      @stdio.stderr.write(usage() + "\n")
-      @sys.exit(2)
-      return
-    }
-  }
-  let failures : Array[String] = []
+async fn run_policy_suite(
+  root : String,
+  wasm_root : String,
+  failures : Array[String],
+) -> Unit {
+  policy_wasm_root.val = wasm_root
   check_admission(root, failures)
-  if !catalog_only {
-    check_runtime_policy(root, failures)
-    check_mutation_policy(root, failures)
-    check_process_and_network_policy(root, failures)
-    check_chmod_policy(root, failures)
-  }
-  if !failures.is_empty() {
-    for failure in failures {
-      @stdio.stderr.write("FAIL: " + failure + "\n")
-    }
-    @sys.exit(1)
-    return
-  }
-  @stdio.stdout.write("Policy checks passed.\n")
+  check_runtime_policy(root, failures)
+  check_mutation_policy(root, failures)
+  check_process_and_network_policy(root, failures)
+  check_chmod_policy(root, failures)
 }

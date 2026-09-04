@@ -12,7 +12,7 @@ keywords = [ "command-line", "testing", "moonbit" ]
 
 preferred_target = "native"
 
-description = "Compatibility and policy validation runners for the cmd workspace."
+description = "Unified compatibility, policy, and pinned-oracle runner for the cmd workspace."
 
 import {
   "cli/core@0.1.2",

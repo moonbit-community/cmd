@@ -1,10 +1,7 @@
 ///|
-fn usage() -> String {
-  "Usage: compat-runner --bin-root DIR [--catalog-only] [--gnu-diff] [--stress]"
-}
 
 ///|
-fn fail(message : String, failures : Array[String]) -> Unit {
+fn compat_fail(message : String, failures : Array[String]) -> Unit {
   failures.push(message)
 }
 
@@ -16,18 +13,21 @@ async fn check_catalog(
 ) -> Unit {
   let catalog = @cli.command_catalog()
   if catalog.length() != 48 {
-    fail("catalog: expected 48 commands, got \{catalog.length()}", failures)
+    compat_fail(
+      "catalog: expected 48 commands, got \{catalog.length()}",
+      failures,
+    )
   }
   let names : Map[String, Bool] = Map([])
   for contract in catalog {
     if names.contains(contract.name) {
-      fail("catalog: duplicate command '\{contract.name}'", failures)
+      compat_fail("catalog: duplicate command '\{contract.name}'", failures)
     }
     names[contract.name] = true
     if require_binaries {
       let path = @testkit.executable_path(bin_root, contract.name)
       if !@fs.exists(path) {
-        fail("catalog: missing native binary '\{path}'", failures)
+        compat_fail("catalog: missing native binary '\{path}'", failures)
       }
     }
   }
@@ -46,18 +46,18 @@ async fn expect(
   let path = @testkit.executable_path(bin_root, command)
   let result = @testkit.run(path, args, stdin?) catch {
     err => {
-      fail("\{command}: failed to execute: \{err}", failures)
+      compat_fail("\{command}: failed to execute: \{err}", failures)
       return
     }
   }
   if result.status != status {
-    fail(
+    compat_fail(
       "\{command}: expected status \{status}, got \{result.status}; stderr=\{result.stderr.to_unchecked_string()}",
       failures,
     )
   }
   if !@testkit.bytes_equal(result.stdout, stdout) {
-    fail(
+    compat_fail(
       "\{command}: stdout mismatch; expected \{stdout}, got \{result.stdout}",
       failures,
     )
@@ -92,18 +92,18 @@ async fn expect_stdout_contains(
   let path = @testkit.executable_path(bin_root, command)
   let result = @testkit.run(path, args) catch {
     err => {
-      fail("\{command}: failed to execute: \{err}", failures)
+      compat_fail("\{command}: failed to execute: \{err}", failures)
       return
     }
   }
   if result.status != 0 {
-    fail(
+    compat_fail(
       "\{command}: expected status 0, got \{result.status}; stderr=\{result.stderr}",
       failures,
     )
   }
   if !@testkit.contains_bytes(result.stdout, needle) {
-    fail(
+    compat_fail(
       "\{command}: stdout does not contain '\{needle}': \{result.stdout}",
       failures,
     )
@@ -126,18 +126,18 @@ async fn expect_failure(
     cwd?,
   ) catch {
     err => {
-      fail("\{command}: failure case could not run: \{err}", failures)
+      compat_fail("\{command}: failure case could not run: \{err}", failures)
       return
     }
   }
   if result.status != expected_status {
-    fail(
+    compat_fail(
       "\{command}: expected failure status \{expected_status}, got \{result.status}",
       failures,
     )
   }
   if !@testkit.contains_bytes(result.stderr, diagnostic) {
-    fail(
+    compat_fail(
       "\{command}: diagnostic missing '\{diagnostic}': \{result.stderr}",
       failures,
     )
@@ -214,13 +214,13 @@ fn record_tail_follow_result(
   failures : Array[String],
 ) -> Unit {
   if !@testkit.bytes_equal(result.0, expected_stdout) {
-    fail(
+    compat_fail(
       "tail: \{label} stdout mismatch; expected \{expected_stdout}, got \{result.0}",
       failures,
     )
   }
   if result.1.length() != 0 {
-    fail("tail: \{label} wrote unexpected stderr: \{result.1}", failures)
+    compat_fail("tail: \{label} wrote unexpected stderr: \{result.1}", failures)
   }
 }
 
@@ -286,7 +286,10 @@ async fn run_tail_follow_cases(
   if !@testkit.contains_bytes(with_headers.0, "==> ") ||
     !@testkit.contains_bytes(with_headers.0, "header-one") ||
     !@testkit.contains_bytes(with_headers.0, "header-two") {
-    fail("tail: verbose follow headers missing: \{with_headers.0}", failures)
+    compat_fail(
+      "tail: verbose follow headers missing: \{with_headers.0}",
+      failures,
+    )
   }
   expect(
     bin_root,
@@ -655,7 +658,10 @@ async fn run_catalog_smoke(bin_root : String, failures : Array[String]) -> Unit 
   expect_case(bin_root, "xxd", [], Some(b""), 0, b"", invoked, failures)
   for contract in @cli.command_catalog() {
     if !invoked.contains(contract.name) {
-      fail("\{contract.name}: catalog command was not executed", failures)
+      compat_fail(
+        "\{contract.name}: catalog command was not executed",
+        failures,
+      )
     }
   }
 }
@@ -733,7 +739,10 @@ async fn run_environment_boundary_cases(
     extra_env=injected,
   ) catch {
     err => {
-      fail("sh: environment boundary case failed to run: \{err}", failures)
+      compat_fail(
+        "sh: environment boundary case failed to run: \{err}",
+        failures,
+      )
       return
     }
   }
@@ -753,7 +762,10 @@ async fn run_environment_boundary_cases(
     extra_env=injected,
   ) catch {
     err => {
-      fail("make: environment boundary case failed to run: \{err}", failures)
+      compat_fail(
+        "make: environment boundary case failed to run: \{err}",
+        failures,
+      )
       return
     }
   }
@@ -771,7 +783,10 @@ async fn run_environment_boundary_cases(
     extra_env=injected,
   ) catch {
     err => {
-      fail("xargs: environment boundary case failed to run: \{err}", failures)
+      compat_fail(
+        "xargs: environment boundary case failed to run: \{err}",
+        failures,
+      )
       return
     }
   }
@@ -787,7 +802,10 @@ async fn run_environment_boundary_cases(
     extra_env=injected,
   ) catch {
     err => {
-      fail("env: environment boundary case failed to run: \{err}", failures)
+      compat_fail(
+        "env: environment boundary case failed to run: \{err}",
+        failures,
+      )
       return
     }
   }
@@ -811,7 +829,7 @@ async fn run_filesystem_cases(
   @fs.write_file(source, b"policy-fixture\n")
   let cp = @testkit.run(@testkit.executable_path(bin_root, "cp"), [source, copy]) catch {
     err => {
-      fail("cp: filesystem case failed to run: \{err}", failures)
+      compat_fail("cp: filesystem case failed to run: \{err}", failures)
       return
     }
   }
@@ -823,7 +841,7 @@ async fn run_filesystem_cases(
   )
   let mv = @testkit.run(@testkit.executable_path(bin_root, "mv"), [copy, moved]) catch {
     err => {
-      fail("mv: filesystem case failed to run: \{err}", failures)
+      compat_fail("mv: filesystem case failed to run: \{err}", failures)
       return
     }
   }
@@ -842,7 +860,7 @@ async fn run_filesystem_cases(
     "-R", directory, nested,
   ]) catch {
     err => {
-      fail("cp: nested case failed to run: \{err}", failures)
+      compat_fail("cp: nested case failed to run: \{err}", failures)
       return
     }
   }
@@ -860,7 +878,7 @@ async fn run_filesystem_cases(
     cwd=root,
   ) catch {
     err => {
-      fail("rm: -- operand case failed to run: \{err}", failures)
+      compat_fail("rm: -- operand case failed to run: \{err}", failures)
       return
     }
   }
@@ -881,7 +899,7 @@ async fn run_filesystem_cases(
     cwd=guarded_dir,
   ) catch {
     err => {
-      fail("rm: protected path case failed to run: \{err}", failures)
+      compat_fail("rm: protected path case failed to run: \{err}", failures)
       return
     }
   }
@@ -898,7 +916,7 @@ async fn run_filesystem_cases(
       "-s", source, link,
     ]) catch {
       err => {
-        fail("ln: filesystem case failed to run: \{err}", failures)
+        compat_fail("ln: filesystem case failed to run: \{err}", failures)
         return
       }
     }
@@ -911,7 +929,7 @@ async fn run_filesystem_cases(
       "-r", link,
     ]) catch {
       err => {
-        fail("rm: symlink case failed to run: \{err}", failures)
+        compat_fail("rm: symlink case failed to run: \{err}", failures)
         return
       }
     }
@@ -947,7 +965,7 @@ fn record_result(
   failures : Array[String],
 ) -> Unit {
   if !condition {
-    fail(message, failures)
+    compat_fail(message, failures)
   }
 }
 
@@ -972,12 +990,12 @@ async fn expect_round_trip(
   let executable = @testkit.executable_path(bin_root, command)
   let encoded = @testkit.run(executable, encode_args, stdin=input) catch {
     err => {
-      fail("\{command}: encoder failed to run: \{err}", failures)
+      compat_fail("\{command}: encoder failed to run: \{err}", failures)
       return
     }
   }
   if encoded.status != 0 {
-    fail(
+    compat_fail(
       "\{command}: encoder returned \{encoded.status}: \{encoded.stderr}",
       failures,
     )
@@ -985,7 +1003,7 @@ async fn expect_round_trip(
   }
   let decoded = @testkit.run(executable, decode_args, stdin=encoded.stdout) catch {
     err => {
-      fail("\{command}: decoder failed to run: \{err}", failures)
+      compat_fail("\{command}: decoder failed to run: \{err}", failures)
       return
     }
   }
@@ -1029,7 +1047,7 @@ async fn run_merge_cases(bin_root : String, failures : Array[String]) -> Unit {
     "-23", left, right,
   ]) catch {
     err => {
-      fail("comm: merge case failed to run: \{err}", failures)
+      compat_fail("comm: merge case failed to run: \{err}", failures)
       return
     }
   }
@@ -1044,7 +1062,7 @@ async fn run_merge_cases(bin_root : String, failures : Array[String]) -> Unit {
     left, right,
   ]) catch {
     err => {
-      fail("join: merge case failed to run: \{err}", failures)
+      compat_fail("join: merge case failed to run: \{err}", failures)
       return
     }
   }
@@ -1060,7 +1078,7 @@ async fn run_merge_cases(bin_root : String, failures : Array[String]) -> Unit {
     "-d,", left, right,
   ]) catch {
     err => {
-      fail("paste: merge case failed to run: \{err}", failures)
+      compat_fail("paste: merge case failed to run: \{err}", failures)
       return
     }
   }
@@ -1302,7 +1320,10 @@ async fn run_stdin_prompt_cases(
       stdin=b"",
     ) catch {
       err => {
-        fail("\{command}: redirected stdin case failed: \{err}", failures)
+        compat_fail(
+          "\{command}: redirected stdin case failed: \{err}",
+          failures,
+        )
         continue
       }
     }
@@ -1857,28 +1878,6 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
 }
 
 ///|
-async fn run_https_server(args : ArrayView[String]) -> Int {
-  guard args.length() == 3 else { return 2 }
-  let output = @process.redirect_to_file(args[2])
-  @process.run(
-    "openssl",
-    [
-      "s_server",
-      "-accept",
-      "127.0.0.1:0",
-      "-cert",
-      args[0],
-      "-key",
-      args[1],
-      "-www",
-    ],
-    stdout=output,
-    stderr=output,
-    no_console_window=true,
-  )
-}
-
-///|
 async fn run_https_cases(bin_root : String, failures : Array[String]) -> Unit {
   if @platform.is_windows() {
     return
@@ -1927,7 +1926,7 @@ async fn run_https_cases(bin_root : String, failures : Array[String]) -> Unit {
       ignore(server.wait()) catch {
         _ => ()
       }
-      fail("HTTPS fixture did not report a listening port", failures)
+      compat_fail("HTTPS fixture did not report a listening port", failures)
       return
     }
     let url = "https://127.0.0.1:\{port}/"
@@ -2061,7 +2060,10 @@ async fn compare_gnu(
     extra_env=Map([("LC_ALL", "C")]),
   ) catch {
     err => {
-      fail("\{command}: candidate differential run failed: \{err}", failures)
+      compat_fail(
+        "\{command}: candidate differential run failed: \{err}",
+        failures,
+      )
       return
     }
   }
@@ -2072,18 +2074,18 @@ async fn compare_gnu(
     extra_env=Map([("LC_ALL", "C")]),
   ) catch {
     err => {
-      fail("\{command}: GNU oracle failed: \{err}", failures)
+      compat_fail("\{command}: GNU oracle failed: \{err}", failures)
       return
     }
   }
   if candidate.status != oracle.status {
-    fail(
+    compat_fail(
       "\{command}: GNU status mismatch: candidate=\{candidate.status}, oracle=\{oracle.status}",
       failures,
     )
   }
   if !@testkit.bytes_equal(candidate.stdout, oracle.stdout) {
-    fail(
+    compat_fail(
       "\{command}: GNU stdout mismatch: candidate=\{candidate.stdout}, oracle=\{oracle.stdout}",
       failures,
     )
@@ -2113,13 +2115,13 @@ async fn compare_gnu_tail_follow(
     poll_wait_ms=1200,
   )
   if !@testkit.bytes_equal(candidate.0, oracle.0) {
-    fail(
+    compat_fail(
       "tail: GNU follow stdout mismatch; candidate=\{candidate.0}, oracle=\{oracle.0}",
       failures,
     )
   }
   if !@testkit.bytes_equal(candidate.1, oracle.1) {
-    fail(
+    compat_fail(
       "tail: GNU follow stderr mismatch; candidate=\{candidate.1}, oracle=\{oracle.1}",
       failures,
     )
@@ -2141,13 +2143,13 @@ async fn compare_gnu_tail_follow(
     poll_wait_ms=1200,
   )
   if !@testkit.bytes_equal(candidate_truncate.0, oracle_truncate.0) {
-    fail(
+    compat_fail(
       "tail: GNU truncate stdout mismatch; candidate=\{candidate_truncate.0}, oracle=\{oracle_truncate.0}",
       failures,
     )
   }
   if candidate_truncate.1.length() != 0 {
-    fail(
+    compat_fail(
       "tail: descriptor follow must recover from truncation silently: \{candidate_truncate.1}",
       failures,
     )
@@ -2171,88 +2173,33 @@ async fn run_gnu_differential(
 }
 
 ///|
-async fn main {
-  let args = @env.args()[1:]
-  if args.length() >= 1 && args[0] == "--https-server" {
-    let status = run_https_server(args[1:])
-    if status != 0 {
-      @sys.exit(status)
-    }
-    return
-  }
-  let mut bin_root : String? = None
-  let mut catalog_only = false
-  let mut gnu_diff = false
-  let mut stress = false
-  let mut index = 0
-  while index < args.length() {
-    match args[index] {
-      "--bin-root" => {
-        index += 1
-        if index >= args.length() {
-          @stdio.stderr.write(usage() + "\n")
-          @sys.exit(2)
-          return
-        }
-        bin_root = Some(args[index])
-      }
-      "--catalog-only" => catalog_only = true
-      "--gnu-diff" => gnu_diff = true
-      "--stress" => stress = true
-      _ => {
-        @stdio.stderr.write(usage() + "\n")
-        @sys.exit(2)
-        return
-      }
-    }
-    index += 1
-  }
-  let root = match bin_root {
-    Some(root) =>
-      @fs.realpath(root) catch {
-        err => {
-          @stdio.stderr.write(
-            "compat-runner: invalid bin root '\{root}': \{err}\n",
-          )
-          @sys.exit(2)
-          return
-        }
-      }
-    None => {
-      @stdio.stderr.write(usage() + "\n")
-      @sys.exit(2)
-      return
-    }
-  }
-  let failures : Array[String] = []
-  check_catalog(root, !catalog_only, failures)
-  if !catalog_only && failures.is_empty() {
-    run_catalog_smoke(root, failures)
-    run_option_boundaries(root, failures)
-    run_environment_boundary_cases(root, failures)
-    run_filesystem_cases(root, failures)
-    run_chunk_boundary_cases(root, failures)
-    run_merge_cases(root, failures)
-    run_phase345_cases(root, failures)
-    run_edge_cases(root, failures)
-    run_stdin_prompt_cases(root, failures)
-    run_tail_follow_cases(root, failures)
-    run_http_cases(root, failures)
-    run_https_cases(root, failures)
-    run_proxy_cases(root, failures)
-    if gnu_diff {
-      run_gnu_differential(root, failures)
-    }
-    if stress {
-      run_stress_cases(root, failures)
-    }
-  }
+async fn run_compat_suite(
+  bin_root : String,
+  gnu_diff : Bool,
+  stress : Bool,
+  failures : Array[String],
+) -> Unit {
+  check_catalog(bin_root, true, failures)
   if !failures.is_empty() {
-    for failure in failures {
-      @stdio.stderr.write("FAIL: " + failure + "\n")
-    }
-    @sys.exit(1)
     return
   }
-  @stdio.stdout.write("Compatibility checks passed for 48 commands.\n")
+  run_catalog_smoke(bin_root, failures)
+  run_option_boundaries(bin_root, failures)
+  run_environment_boundary_cases(bin_root, failures)
+  run_filesystem_cases(bin_root, failures)
+  run_chunk_boundary_cases(bin_root, failures)
+  run_merge_cases(bin_root, failures)
+  run_phase345_cases(bin_root, failures)
+  run_edge_cases(bin_root, failures)
+  run_stdin_prompt_cases(bin_root, failures)
+  run_tail_follow_cases(bin_root, failures)
+  run_http_cases(bin_root, failures)
+  run_https_cases(bin_root, failures)
+  run_proxy_cases(bin_root, failures)
+  if gnu_diff {
+    run_gnu_differential(bin_root, failures)
+  }
+  if stress {
+    run_stress_cases(bin_root, failures)
+  }
 }

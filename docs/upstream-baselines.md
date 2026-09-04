@@ -54,7 +54,7 @@ The oracle runner sets:
 - explicit stdin, stdout, stderr, cwd, and environment values;
 - a fixed umask where the upstream command exposes permission-sensitive output.
 
-The seed contract is `tests/fixtures/oracle/cases.json`. Its normalization list
+The seed contract is `tests/fixtures/runner/cases.json`. Its normalization list
 is empty unless a fixture explicitly names a supported text field, rule, and
 rationale. Binary streams are otherwise compared without decoding or
 line-ending changes.

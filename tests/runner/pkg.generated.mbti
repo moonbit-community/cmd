@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "mooxCLI/cmd-tests/oracle"
+package "mooxCLI/cmd-tests/runner"
 
 import {
   "moonbitlang/core/debug",
