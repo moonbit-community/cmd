@@ -13,11 +13,12 @@ The runner never builds command packages. CI or a developer performs one
 native release build and, when policy tests are requested, one Wasm release
 build, then passes the artifact roots to the runner. Missing artifacts are a
 hard error so a test cannot accidentally validate a stale or implicitly built
-binary.
+binary. Filesystem fixtures may set `delay_ms` (0 through 10000) to establish
+stable timestamp order without rebuilding commands or launching setup processes.
 
 The P2/P3 profile adds strict C-locale differential cases for `grep`, `env`,
 `sort`, `uniq`, `wc`, and `head`, plus the retained `tail -F` rejection. The
-manifest currently contains 127 semantic cases, including the P5 shell grammar,
+manifest currently contains 141 semantic cases, including the P5 shell grammar,
 P6 jq modes, and P7 xxd/make fixtures. Binary/NUL and parser-heavy
 checks are grouped in the native suite, while file/cwd/process authorization is
 exercised only by the Wasm policy suite.

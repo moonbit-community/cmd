@@ -412,6 +412,7 @@ async fn check_mutation_policy(root : String, failures : Array[String]) -> Unit 
   defer (@fs.rmdir(fixture, recursive=true) catch { _ => () })
   @fs.mkdir(root_path(fixture, "empty-dir"))
   @fs.write_file(root_path(fixture, "source"), b"policy-fixture\n")
+  @fs.write_file(root_path(fixture, "backup-target"), b"old-target\n")
   @fs.write_file(root_path(fixture, "movable"), b"move-me\n")
   @fs.write_file(root_path(fixture, "removable"), b"remove-me\n")
   expect_denied(
@@ -419,6 +420,14 @@ async fn check_mutation_policy(root : String, failures : Array[String]) -> Unit 
     "read-workspace.json",
     "mkdir",
     [fixture_rel + "/denied-dir"],
+    None,
+    failures,
+  )
+  expect_denied(
+    root,
+    "deny-all.json",
+    "chmod",
+    ["a=rwx", fixture_rel + "/source"],
     None,
     failures,
   )
@@ -443,6 +452,18 @@ async fn check_mutation_policy(root : String, failures : Array[String]) -> Unit 
     "read-workspace.json",
     "cp",
     [fixture_rel + "/source", fixture_rel + "/denied-copy"],
+    None,
+    failures,
+  )
+  expect_denied(
+    root,
+    "read-workspace.json",
+    "cp",
+    [
+      "--backup=numbered",
+      fixture_rel + "/source",
+      fixture_rel + "/backup-target",
+    ],
     None,
     failures,
   )
@@ -488,6 +509,13 @@ async fn check_mutation_policy(root : String, failures : Array[String]) -> Unit 
       failures,
     )
   }
+  record(
+    @fs.read_file(root_path(fixture, "backup-target")).binary() ==
+    b"old-target\n" &&
+    !@fs.exists(root_path(fixture, "backup-target.~1~")),
+    "cp backup: denied operation changed target or left a backup",
+    failures,
+  )
   for preserved in ["movable", "removable", "empty-dir"] {
     record(
       @fs.exists(root_path(fixture, preserved)),
@@ -537,6 +565,33 @@ async fn check_mutation_policy(root : String, failures : Array[String]) -> Unit 
     }
   }
   record(cp.status == 0, "cp: write policy rejected mutation", failures)
+  let cp_backup = moon_run(root, policy, "cp", [
+    "--backup=numbered",
+    fixture_rel + "/source",
+    fixture_rel + "/backup-target",
+  ]) catch {
+    err => {
+      failures.push("cp backup: allowed mutation failed: \{err}")
+      return
+    }
+  }
+  record(
+    cp_backup.status == 0,
+    "cp backup: write policy rejected mutation",
+    failures,
+  )
+  record(
+    @fs.exists(root_path(fixture, "backup-target.~1~")),
+    "cp backup: numbered backup missing",
+    failures,
+  )
+  let chmod = moon_run(root, policy, "chmod", ["a=rwx", fixture_rel + "/source"]) catch {
+    err => {
+      failures.push("chmod: allowed mutation failed: \{err}")
+      return
+    }
+  }
+  record(chmod.status == 0, "chmod: write policy rejected mutation", failures)
   let mv = moon_run(root, policy, "mv", [
     fixture_rel + "/movable",
     fixture_rel + "/allowed-move",

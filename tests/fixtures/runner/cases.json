@@ -1389,6 +1389,157 @@
       "environment": {},
       "expected_status": 2,
       "normalizations": []
+    },
+    {
+      "id": "p8-test-regular-size",
+      "command": "test",
+      "args": ["-s", "input"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "input", "content_hex": "78" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-find-readable",
+      "command": "find",
+      "args": [".", "-readable", "-print"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "input", "content_hex": "78" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-ls-size-reverse",
+      "command": "ls",
+      "args": ["-S", "-r", "."],
+      "stdin_hex": "",
+      "files": [
+        { "path": "a", "content_hex": "61" },
+        { "path": "b", "content_hex": "6262" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-cp-update-older",
+      "command": "cp",
+      "args": ["--update=older", "source", "destination"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "source", "content_hex": "6f6c64" },
+        { "path": "destination", "content_hex": "6e6577" }
+      ],
+      "delay_ms": 2,
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-cp-numbered-backup",
+      "command": "cp",
+      "args": ["--backup=numbered", "source", "destination"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "source", "content_hex": "6e6577" },
+        { "path": "destination", "content_hex": "6f6c64" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-mv-update-none",
+      "command": "mv",
+      "args": ["--update=none", "source", "destination"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "source", "content_hex": "6f6c64" },
+        { "path": "destination", "content_hex": "6e6577" }
+      ],
+      "delay_ms": 2,
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-chmod-symbolic-assignment",
+      "command": "chmod",
+      "args": ["a=rwx", "input"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "input", "content_hex": "78" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-ln-relative",
+      "command": "ln",
+      "args": ["-s", "-r", "target", "link"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "target", "content_hex": "78" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-test-dangling-link",
+      "command": "test",
+      "args": ["-L", "dangling"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "dangling", "content_hex": "", "kind": "symlink", "target": "missing" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-find-xtype-link",
+      "command": "find",
+      "args": [".", "-xtype", "l", "-print"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "dangling", "content_hex": "", "kind": "symlink", "target": "missing" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-ls-dangling-classify",
+      "command": "ls",
+      "args": ["-F", "dangling"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "dangling", "content_hex": "", "kind": "symlink", "target": "missing" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-cp-command-line-link",
+      "command": "cp",
+      "args": ["-H", "link", "copy"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "target", "content_hex": "7061796c6f6164" },
+        { "path": "link", "content_hex": "", "kind": "symlink", "target": "target" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
     }
   ]
 }

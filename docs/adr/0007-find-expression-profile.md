@@ -16,7 +16,8 @@ postorder `-delete`, and direct one-child or deterministic batched
 `-exec ... ;/+`. File and process policy remains required for the
 corresponding operations. The profile does not follow symlinks, expose
 ownership/link-target predicates, or claim the complete findutils expression
-language.
+language. Time references are read once before traversal and metadata is loaded
+on demand from the public filesystem API.
 
 ## Evidence
 

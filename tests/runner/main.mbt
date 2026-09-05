@@ -12,6 +12,8 @@ struct CommandRow {
 struct FixtureFile {
   path : String
   content_hex : String
+  kind : String?
+  target : String?
 } derive(FromJson, Debug)
 
 ///|
@@ -28,6 +30,7 @@ struct OracleCase {
   args : Array[String]
   stdin_hex : String
   files : Array[FixtureFile]
+  delay_ms : Int?
   environment : Map[String, String]
   expected_status : Int
   normalizations : Array[Normalization]
@@ -151,6 +154,28 @@ fn validate_manifest(manifest : Manifest) -> Array[String] {
       ignore(decode_hex(file.content_hex, fixture.id + " file " + file.path)) catch {
         err => failures.push("\{err}")
       }
+      match file.kind {
+        Some("file") | None =>
+          if file.target is Some(_) {
+            failures.push(
+              "\{fixture.id}: regular fixture cannot have a symlink target",
+            )
+          }
+        Some("symlink") => {
+          guard file.target is Some(target) && target != "" else {
+            failures.push("\{fixture.id}: symlink fixture needs a target")
+            continue
+          }
+          if @path.Path(target).is_absolute() {
+            failures.push("\{fixture.id}: symlink target must be relative")
+          }
+        }
+        Some(kind) =>
+          failures.push("\{fixture.id}: unsupported fixture kind '\{kind}'")
+      }
+    }
+    if fixture.delay_ms is Some(delay) && (delay < 0 || delay > 10000) {
+      failures.push("\{fixture.id}: delay_ms must be between 0 and 10000")
     }
     for normalization in fixture.normalizations {
       if normalization.comment == "" {
@@ -200,11 +225,22 @@ async fn prepare_directory(
     let destination = @path.Path(root).join(Path(file.path)).to_string()
     let parent = @path.Path(destination).dirname().to_string()
     ensure_directory(parent)
-    let content = expand_fixture_content(
-      decode_hex(file.content_hex, fixture.id + " file " + file.path),
-      http_base?,
-    )
-    @fs.write_file(destination, content)
+    match file.kind {
+      Some("symlink") => {
+        let target = file.target.unwrap()
+        @fs.symlink(destination, target~)
+      }
+      _ => {
+        let content = expand_fixture_content(
+          decode_hex(file.content_hex, fixture.id + " file " + file.path),
+          http_base?,
+        )
+        @fs.write_file(destination, content)
+      }
+    }
+    if fixture.delay_ms is Some(delay) && delay > 0 {
+      @async.sleep(delay)
+    }
   }
 }
 

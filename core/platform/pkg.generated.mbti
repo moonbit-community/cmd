@@ -8,9 +8,15 @@ import {
 // Values
 pub fn accepts_separator(Char) -> Bool
 
+pub fn access_checks_supported() -> Bool
+
+pub fn access_time_reads_supported() -> Bool
+
 pub fn cross_device_rename_classification_supported() -> Bool
 
 pub fn current() -> Platform
+
+pub fn file_kind_reads_supported() -> Bool
 
 pub fn hard_links_supported() -> Bool
 
@@ -19,6 +25,8 @@ pub async fn is_terminal(StandardStream) -> Bool
 pub fn is_windows() -> Bool
 
 pub fn metadata_reads_supported() -> Bool
+
+pub fn modification_time_reads_supported() -> Bool
 
 pub fn native_separator() -> Char
 
@@ -30,13 +38,19 @@ pub fn permission_reads_supported() -> Bool
 
 pub fn readlink_supported() -> Bool
 
+pub fn regular_file_size_reads_supported() -> Bool
+
 pub fn special_file_policy_supported() -> Bool
+
+pub fn status_change_time_reads_supported() -> Bool
 
 pub async fn stderr_is_terminal() -> Bool
 
 pub async fn stdin_is_terminal() -> Bool
 
 pub async fn stdout_is_terminal() -> Bool
+
+pub fn symbolic_link_creation_supported() -> Bool
 
 pub fn symbolic_links_supported() -> Bool
 

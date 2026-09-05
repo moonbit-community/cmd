@@ -10,7 +10,8 @@ cross-target read/modify/write primitive for symbolic modes or `--reference`.
 
 ## Decision
 
-Accept numeric modes with `-R` and `-v`. Reject symbolic/reference requests
+Accept numeric modes with `-R` and `-v`, plus complete symbolic `=` assignments
+that explicitly cover `u`, `g`, and `o`. Reject incremental/reference requests
 before mutation instead of guessing the current mode.
 
 ## Evidence
@@ -20,8 +21,8 @@ and changed the file; the same artifact with `u+x` returned status 2.
 
 ## Consequences
 
-The supported result is deterministic on policy-enabled hosts. Symbolic mode
-parity waits for a portable permission-read API.
+The supported result is deterministic on policy-enabled hosts. Incremental
+symbolic parity still waits for a portable permission-read API.
 
 ## Rollback
 

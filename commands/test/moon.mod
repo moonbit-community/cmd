@@ -15,6 +15,7 @@ preferred_target = "wasm"
 description = "test command for MoonX."
 
 import {
+  "cli/core@0.1.2",
   "moonbitlang/async@0.21.0",
   "moonbitlang/x@0.5.1",
 }

@@ -1,13 +1,16 @@
 # Compatibility Expansion Plan
 
-Status: P0-P8 implemented; P8 dependent command gates remain explicitly closed
-Date: 2026-09-04
+Status: P0-P8 implemented; maximum portable Native/Wasm filesystem subset delivered
+Date: 2026-09-05
 Scope: the 48 local command modules and the 47 commands currently exposed by MoonX
 
 This document turns the current support record into an execution roadmap. The
 P0 test-system migration and the P1-P8 compatibility batches described below
-are implemented. P8 records capability-gate results and retains explicit
-rejections where the portable runtime does not expose the required primitive. It
+are implemented. P8 consumes public `async/fs` metadata and access primitives,
+with shared MoonBit implementations for comparison, traversal, sorting, backup,
+interaction, and closed symbolic assignments. It retains explicit rejections
+where a setter, hard-link primitive, readlink, special-file creator, or EXDEV
+discriminator is unavailable. It
 prioritizes the next parameters and behavior families to implement or certify;
 it does not change the support claims by itself. A parameter becomes a support
 claim only after a repeatable black-box probe against the pinned upstream
@@ -35,7 +38,9 @@ The recommended order is:
 6. Add high-value `jq` CLI modes before attempting the full filter language.
 7. Extend `make` and the smaller, self-contained `xxd` gaps.
 8. Run filesystem capability spikes before attempting metadata-dependent
-   options in `chmod`, `cp`, `ln`, `touch`, `ls`, and `mv`.
+   options in `chmod`, `cp`, `ln`, `touch`, `ls`, and `mv`. Completed in P8
+   with the maximum strict public Native/Wasm subset; unsupported setters and
+   link primitives remain closed.
 9. Close the remaining low-risk option, diagnostic, locale, and invalid-input
    gaps across the other commands.
 
@@ -50,11 +55,11 @@ The following results were observed in the current checkout on 2026-09-05:
 | Check | Result | Meaning |
 | --- | --- | --- |
 | `moon check --target all --deny-warn` | Passed | All configured package targets type-check without enabled warnings |
-| `moon test --target all` | Native 89/89 and Wasm 80/80 passed; JS and Wasm-GC have no test entry | Package tests are green for configured targets |
+| `moon test --target all` | Native 96/96 and Wasm 87/87 passed; JS and Wasm-GC have no test entry | Package tests are green for configured targets |
 | `moon run --target native tests/runner -- --manifest tests/fixtures/runner/cases.json --native-root _build/native/release/build --suite compat` | Passed | Native compatibility suite is green |
-| Same runner with `--gnu-diff` | Passed | The differential subset is green |
+| Same runner with `--gnu-diff` | Not run locally | Docker/Coreutils oracle is unavailable in this environment; remote CI remains required |
 | Same runner with the pre-built Wasm root and `--suite policy` | Passed | Denied and local-only allowed network policies are green |
-| Same runner with `--validate-only` | 48 commands and 129 cases valid | The unified manifest includes the P1-P7 differential contracts and P8 gate records |
+| Same runner with `--validate-only` | 48 commands and 141 cases valid | The unified manifest includes the P1-P8 contracts, symlink fixtures, and prebuilt-artifact delay support |
 
 The pinned Docker oracle cannot run locally because Docker is not installed.
 The remote pinned-oracle job remains required before this P6-P8 delivery is
@@ -423,41 +428,28 @@ Keep the current positive-seek and forward/reverse byte-stream behavior green.
 
 ## P8 - Filesystem Capability Track
 
-P8 capability spikes are implemented as explicit cross-target predicates and
-runner-visible rejection gates. No metadata-dependent command option is
-promoted while its required primitive remains unavailable.
+P8 is delivered as the maximum strict subset available from public
+`moonbitlang/async/fs` on Native and Wasm. `core/fsops` provides nanosecond
+timestamp values/comparison and age buckets, update/backup decisions, and
+preflighted copy traversal. `core/platform` exposes fine-grained gates while
+retaining the historical aggregate predicates.
 
-These commands should not be expanded by adding parser branches alone. The
-missing semantics depend on runtime primitives that have not yet been verified
-as portable across the supported targets.
+The delivered command surface includes `test` file kinds/size/access/time
+comparisons; `find` a/c/m age and reference predicates, access checks and
+`-xtype`; `ls` timestamp/size sorting, link-follow rules and executable
+classification; `cp`/`mv` update, interaction and backup controls; `chmod`
+closed complete symbolic `=` assignments; and `ln` relative, target-directory,
+interaction and backup paths. The unified tests reuse prebuilt artifacts and
+exercise policy acceptance and rejection separately.
 
-### Capability spikes, in order
+### Permanent hard boundaries
 
-1. **Metadata reads:** mode, owner/group, timestamps, link target, special-file
-   kind, and stable long-listing fields.
-2. **Metadata writes:** symbolic mode mutation, reference modes, timestamp
-   setters, and post-download timestamp restoration.
-3. **Link primitives:** hard-link creation and portable `readlink` behavior.
-4. **Rename classification:** reproducible cross-device (`EXDEV`) behavior and
-   fallback copy/remove semantics.
-5. **Special files and mount boundaries:** only if the Wasm policy can express
-   them without weakening isolation.
-
-### Dependent command work
-
-| Commands | Candidate parameters | Gate |
-| --- | --- | --- |
-| `ls` | `-l`, ownership, timestamps, color/time formats | Metadata reads and deterministic formatting |
-| `chmod` | symbolic modes and `--reference` | Metadata reads and writes; preserve current numeric profile until then |
-| `cp` | `-p`, `-a`, symlink/special-file preservation | Metadata and link primitives; prove no-side-effect rejection |
-| `touch` | `-d`, `-r`, `-t`, access/modification selection | Timestamp setters and symlink policy |
-| `ln` | hard links and complete link metadata rules | Hard-link/readlink spike |
-| `mv` | cross-device fallback and metadata preservation | Rename classification and copy semantics |
-| `test` | metadata predicates beyond the current file tests | Stable metadata reads |
-| `find` | time, size, link, and ownership predicates | Matching metadata spike |
-
-Until a gate passes, keep the current explicit rejection and document its
-status, diagnostic, target scope, and no-side-effect guarantee.
+Mode/owner reads, arbitrary timestamp setters, `cp -p/-a`, hard links,
+`readlink`, special-file creation/copy, and cross-device rename classification
+remain rejected before mutation. `touch` therefore keeps rejecting arbitrary
+timestamp selectors. `ls -l/-i/-s` and full color/ownership formatting remain
+outside the portable profile. No internal async event-loop imports, C stubs,
+host command delegation, or MoonX-specific adapters are permitted.
 
 `timeout` is deliberately excluded from this track. It remains local-only until
 a portable process-group cancellation primitive exists; adding more timeout
@@ -552,7 +544,7 @@ The following are intentionally not on the immediate implementation path:
 - silently delegating `sh`, `make`, `curl`, or `wget` to host executables;
 - claiming FTP/SFTP/SMTP or recursive Wget mirroring from an HTTP-only design;
 - adding metadata-preserving `cp`, symbolic/reference `chmod`, timestamped
-  `touch`, or hard-link `ln` before their capability spikes pass;
+  `touch`, or hard-link `ln` beyond the explicit P8 hard boundaries;
 - treating locale-sensitive behavior as portable without a fixed locale profile;
 - marking a command `compatible` from help output, source inspection, or a
   passing smoke test alone.

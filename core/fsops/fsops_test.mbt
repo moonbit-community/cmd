@@ -15,6 +15,42 @@ test "deletion path protection permits ordinary descendants" {
 }
 
 ///|
+test "timestamp comparison keeps nanosecond ordering" {
+  let earlier : FileTimestamp = { seconds: 10L, nanoseconds: 999, }
+  let later : FileTimestamp = { seconds: 11L, nanoseconds: 0, }
+  assert_eq(compare_timestamps(earlier, later), -1)
+  assert_eq(compare_timestamps(later, earlier), 1)
+  assert_eq(compare_timestamps(earlier, earlier), 0)
+}
+
+///|
+test "timestamp age buckets account for subsecond boundaries" {
+  let now : FileTimestamp = { seconds: 120L, nanoseconds: 0, }
+  let previous : FileTimestamp = { seconds: 60L, nanoseconds: 1, }
+  assert_eq(timestamp_age_bucket(now, previous, 60L), 0L)
+  assert_eq(
+    timestamp_age_bucket(now, { seconds: 0L, nanoseconds: 0, }, 60L),
+    2L,
+  )
+}
+
+///|
+test "update modes and backup controls are explicit" {
+  let source : FileTimestamp = { seconds: 2L, nanoseconds: 1, }
+  let target : FileTimestamp = { seconds: 2L, nanoseconds: 0, }
+  assert_eq(
+    overwrite_decision(UpdateOlder, source, Some(target)),
+    ReplaceDestination,
+  )
+  assert_eq(
+    overwrite_decision(UpdateNone, source, Some(target)),
+    SkipDestination,
+  )
+  assert_eq(parse_backup_control("numbered"), NumberedBackup)
+  assert_eq(parse_update_mode("none-fail"), UpdateNoneFail)
+}
+
+///|
 async test "recursive copy rejects a destination inside its source" {
   let root = @fs.tmpdir(prefix="mooncmd-fsops")
   defer (@fs.rmdir(root, recursive=true) catch { _ => () })
@@ -26,6 +62,38 @@ async test "recursive copy rejects a destination inside its source" {
   } noraise {
     _ => fail("expected nested-destination error")
   }
+}
+
+///|
+async test "copy preflight rejects followed symbolic-link cycles before output" {
+  if !@platform.symbolic_links_supported() {
+    return
+  }
+  let root = @fs.tmpdir(prefix="mooncmd-fsops-cycle")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let source = join(root, "source")
+  let destination = join(root, "destination")
+  @fs.mkdir(source)
+  @fs.write_file(join(source, "file"), b"content")
+  @fs.symlink(join(source, "loop"), target=source)
+  try preflight_copy_path(source, destination, true, FollowAllLinks) catch {
+    _ => assert_false(@fs.exists(destination))
+  } noraise {
+    _ => fail("expected symbolic-link cycle error")
+  }
+}
+
+///|
+async test "numbered backups select the first available GNU sibling" {
+  let root = @fs.tmpdir(prefix="mooncmd-fsops-backup")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let path = join(root, "target")
+  @fs.write_file(path, b"current")
+  @fs.write_file(path + ".~1~", b"first")
+  assert_eq(select_backup_path(path, NumberedBackup), Some(path + ".~2~"))
+  assert_eq(backup_destination(path, NumberedBackup), Some(path + ".~2~"))
+  assert_false(@fs.exists(path))
+  assert_eq(@fs.read_file(path + ".~2~").binary(), b"current")
 }
 
 ///|

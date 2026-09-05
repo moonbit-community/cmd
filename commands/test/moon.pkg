@@ -1,4 +1,5 @@
 import {
+  "cli/core/fsops",
   "moonbitlang/async",
   "moonbitlang/async/fs",
   "moonbitlang/async/stdio",

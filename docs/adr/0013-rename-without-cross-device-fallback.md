@@ -10,8 +10,9 @@ discriminator or complete metadata copy operation.
 
 ## Decision
 
-`mv` uses the policy-checked rename path and supports `-f/-n/-T/-v`. It does
-not fall back to copy-and-delete on an unclassified failure.
+`mv` uses the policy-checked rename path and supports `-f/-n/-T/-v` plus
+update/interactive/backup decisions. It does not fall back to copy-and-delete
+on an unclassified failure.
 
 ## Evidence
 

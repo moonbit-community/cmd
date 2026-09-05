@@ -11,9 +11,10 @@ metadata operations.
 
 ## Decision
 
-`cp` copies regular files and directory trees with `-R`, overwrite controls,
-`-T`, and `-v`. `-a` and `-p` fail before creating output. Symlink and special
-file preservation is not emulated.
+`cp` copies regular files and directory trees with `-R`, explicit H/L/P
+traversal, update/interactive/backup overwrite controls, `-T`, and `-v`.
+`-a` and `-p` fail before creating output. Symlink and special-file
+preservation is not emulated.
 
 ## Evidence
 

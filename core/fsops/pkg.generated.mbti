@@ -7,13 +7,21 @@ import {
 }
 
 // Values
+pub async fn backup_destination(String, BackupControl, suffix? : String) -> String?
+
 pub fn basename(String) -> String
 
 pub async fn cleanup_file_if_exists(String) -> Unit
 
 pub async fn commit_temporary_file(String, String, replace? : Bool) -> Unit
 
+pub fn compare_timestamps(FileTimestamp, FileTimestamp) -> Int
+
 pub async fn copy_path(String, String, Bool, Bool) -> Bool
+
+pub async fn copy_path_with_links(String, String, Bool, Bool, LinkTraversal) -> Bool
+
+pub fn current_timestamp() -> FileTimestamp
 
 pub fn dirname(String) -> String
 
@@ -29,9 +37,25 @@ pub async fn open_output(String, OutputMode, permission? : Int) -> @fs.File
 
 pub async fn open_unique_numbered_output(String, permission? : Int) -> (String, @fs.File)
 
+pub fn overwrite_decision(UpdateMode, FileTimestamp, FileTimestamp?) -> OverwriteDecision
+
+pub fn parse_backup_control(String) -> BackupControl raise FsOpError
+
+pub fn parse_update_mode(String) -> UpdateMode raise FsOpError
+
+pub async fn preflight_copy_path(String, String, Bool, LinkTraversal) -> Unit
+
 pub fn protects_working_directory(String) -> Bool
 
+pub async fn read_file_timestamp(String, TimestampKind, follow_symlink? : Bool) -> FileTimestamp
+
 pub async fn remove_path(String, Bool) -> Unit
+
+pub async fn restore_backup(String, String) -> Unit
+
+pub async fn select_backup_path(String, BackupControl, suffix? : String) -> String?
+
+pub fn timestamp_age_bucket(FileTimestamp, FileTimestamp, Int64) -> Int64 raise FsOpError
 
 // Errors
 pub(all) suberror FsOpError {
@@ -39,6 +63,13 @@ pub(all) suberror FsOpError {
 }
 
 // Types and methods
+pub(all) enum BackupControl {
+  NoBackup
+  SimpleBackup
+  NumberedBackup
+  ExistingBackup
+} derive(Eq, @debug.Debug)
+
 pub(all) struct FileMetadata {
   kind : @fs.FileKind
   size : Int64?
@@ -46,10 +77,40 @@ pub(all) struct FileMetadata {
   mtime_nanoseconds : Int
 } derive(Eq, @debug.Debug)
 
+pub(all) struct FileTimestamp {
+  seconds : Int64
+  nanoseconds : Int
+} derive(Eq, @debug.Debug)
+
+pub(all) enum LinkTraversal {
+  NeverFollowLinks
+  FollowCommandLineLinks
+  FollowAllLinks
+} derive(Eq, @debug.Debug)
+
 pub(all) enum OutputMode {
   CreateNew
   CreateOrTruncate
   AppendOrCreate
+} derive(Eq, @debug.Debug)
+
+pub(all) enum OverwriteDecision {
+  ReplaceDestination
+  SkipDestination
+  RejectDestination
+} derive(Eq, @debug.Debug)
+
+pub(all) enum TimestampKind {
+  AccessTime
+  ModificationTime
+  StatusChangeTime
+} derive(Eq, @debug.Debug)
+
+pub(all) enum UpdateMode {
+  UpdateAll
+  UpdateNone
+  UpdateNoneFail
+  UpdateOlder
 } derive(Eq, @debug.Debug)
 
 // Type aliases

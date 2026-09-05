@@ -14,6 +14,13 @@ pub(all) enum OutputMode {
 } derive(Eq, Debug)
 
 ///|
+pub(all) enum LinkTraversal {
+  NeverFollowLinks
+  FollowCommandLineLinks
+  FollowAllLinks
+} derive(Eq, Debug)
+
+///|
 pub(all) struct FileMetadata {
   kind : @fs.FileKind
   size : Int64?
@@ -251,12 +258,93 @@ async fn copy_regular_file(
 }
 
 ///|
+async fn copy_source_kind(
+  source : String,
+  traversal : LinkTraversal,
+  command_line : Bool,
+) -> @fs.FileKind {
+  let kind = @fs.kind(source, follow_symlink=false)
+  if kind != SymLink {
+    return kind
+  }
+  if traversal == FollowAllLinks ||
+    (traversal == FollowCommandLineLinks && command_line) {
+    @fs.kind(source, follow_symlink=true)
+  } else {
+    raise FsOpError("symbolic-link sources are not supported: '\{source}'")
+  }
+}
+
+///|
+async fn preflight_copy_entry(
+  source : String,
+  destination : String,
+  traversal : LinkTraversal,
+  command_line : Bool,
+  ancestors : Array[String],
+) -> Unit {
+  let kind = copy_source_kind(source, traversal, command_line)
+  match kind {
+    Regular =>
+      match kind_if_exists(destination) {
+        Some(Directory) =>
+          raise FsOpError("destination is a directory: '\{destination}'")
+        Some(SymLink) =>
+          raise FsOpError(
+            "refusing to overwrite symbolic link: '\{destination}'",
+          )
+        Some(Regular) =>
+          if @fs.realpath(source) == @fs.realpath(destination) {
+            raise FsOpError("source and destination are the same file")
+          }
+        Some(_) =>
+          raise FsOpError("unsupported destination type: '\{destination}'")
+        None => ()
+      }
+    Directory => {
+      let real = @fs.realpath(source)
+      if ancestors.contains(real) {
+        raise FsOpError("symbolic-link directory cycle at '\{source}'")
+      }
+      match kind_if_exists(destination) {
+        Some(Directory) | None => ()
+        Some(_) =>
+          raise FsOpError("destination is not a directory: '\{destination}'")
+      }
+      let next_ancestors = ancestors.copy()
+      next_ancestors.push(real)
+      let entries = @fs.readdir(
+        source,
+        include_hidden=true,
+        include_special=false,
+        sort=false,
+      )
+      entries.sort_by((left, right) => left.lexical_compare(right))
+      for entry in entries {
+        preflight_copy_entry(
+          join(source, entry),
+          join(destination, entry),
+          traversal,
+          false,
+          next_ancestors,
+        )
+      }
+    }
+    SymLink =>
+      raise FsOpError("symbolic-link sources are not supported: '\{source}'")
+    _ => raise FsOpError("unsupported source type: '\{source}'")
+  }
+}
+
+///|
 async fn copy_entry(
   source : String,
   destination : String,
   replace : Bool,
+  traversal : LinkTraversal,
+  command_line : Bool,
 ) -> Bool {
-  match @fs.kind(source, follow_symlink=false) {
+  match copy_source_kind(source, traversal, command_line) {
     Regular => copy_regular_file(source, destination, replace)
     Directory => {
       match kind_if_exists(destination) {
@@ -274,7 +362,13 @@ async fn copy_entry(
       entries.sort_by((left, right) => left.lexical_compare(right))
       let mut copied = false
       for entry in entries {
-        if copy_entry(join(source, entry), join(destination, entry), replace) {
+        if copy_entry(
+            join(source, entry),
+            join(destination, entry),
+            replace,
+            traversal,
+            false,
+          ) {
           copied = true
         }
       }
@@ -320,19 +414,50 @@ pub async fn copy_path(
   recursive : Bool,
   replace : Bool,
 ) -> Bool {
+  copy_path_with_links(
+    source,
+    destination,
+    recursive,
+    replace,
+    NeverFollowLinks,
+  )
+}
+
+///|
+pub async fn copy_path_with_links(
+  source : String,
+  destination : String,
+  recursive : Bool,
+  replace : Bool,
+  traversal : LinkTraversal,
+) -> Bool {
+  preflight_copy_path(source, destination, recursive, traversal)
+  copy_entry(
+    @platform.normalize_input_separators(source),
+    @platform.normalize_input_separators(destination),
+    replace,
+    traversal,
+    true,
+  )
+}
+
+///|
+pub async fn preflight_copy_path(
+  source : String,
+  destination : String,
+  recursive : Bool,
+  traversal : LinkTraversal,
+) -> Unit {
   let source = @platform.normalize_input_separators(source)
   let destination = @platform.normalize_input_separators(destination)
-  let source_kind = @fs.kind(source, follow_symlink=false)
+  let source_kind = copy_source_kind(source, traversal, true)
   if source_kind == Directory && !recursive {
     raise FsOpError("omitting directory: '\{source}'")
-  }
-  if source_kind == SymLink {
-    raise FsOpError("symbolic-link sources are not supported: '\{source}'")
   }
   if source_kind == Directory {
     ensure_not_nested_destination(source, destination)
   }
-  copy_entry(source, destination, replace)
+  preflight_copy_entry(source, destination, traversal, true, [])
 }
 
 ///|

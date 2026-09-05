@@ -1,20 +1,21 @@
 # ADR-0029: Gate Metadata-Dependent Filesystem Options
 
-Status: Accepted
+Status: Superseded by ADR-0030
 Date: 2026-09-05
 
 ## Context
 
-The runtime exposes portable kind, size, and timestamp reads, but not verified
-permission reads, timestamp setters, hard links, readlink, cross-device
-classification, or special-file policy across all supported targets.
+The runtime exposes a larger portable subset than the original gate recorded:
+kind, regular-file size, access checks, symbolic-link creation, and atime/mtime/
+ctime reads. Setters, hard links, readlink, cross-device classification, and
+special-file creation remain unavailable.
 
 ## Decision
 
-Publish explicit capability predicates in `core/platform`. Commands continue to
-reject metadata-preserving, symbolic/reference mode, timestamp-selection,
-hard-link, readlink, special-file, and cross-device fallback options before
-side effects until the corresponding predicate is proven.
+Publish explicit capability predicates in `core/platform`, retain the aggregate
+aliases, and let commands implement the strict public subset. Continue to reject
+operations that need unavailable setters, hard links, readlink, special-file
+creation, or cross-device classification before side effects.
 
 ## Evidence
 
@@ -23,8 +24,8 @@ negative fixtures verify no-side-effect rejection.
 
 ## Consequences
 
-The P8 track produces an auditable gate instead of guessing host metadata or
-weakening Wasm isolation.
+ADR-0030 supersedes the all-closed P8 decision while preserving its fail-closed
+boundaries.
 
 ## Rollback
 

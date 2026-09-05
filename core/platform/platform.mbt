@@ -45,10 +45,47 @@ pub fn symbolic_links_supported() -> Bool {
 }
 
 ///|
-/// The portable filesystem exposes kind, size, and modification timestamps;
-/// owner/group and permission-bit reads are intentionally not inferred.
-pub fn metadata_reads_supported() -> Bool {
+pub fn file_kind_reads_supported() -> Bool {
   true
+}
+
+///|
+pub fn regular_file_size_reads_supported() -> Bool {
+  true
+}
+
+///|
+pub fn access_time_reads_supported() -> Bool {
+  true
+}
+
+///|
+pub fn modification_time_reads_supported() -> Bool {
+  true
+}
+
+///|
+pub fn status_change_time_reads_supported() -> Bool {
+  true
+}
+
+///|
+pub fn access_checks_supported() -> Bool {
+  true
+}
+
+///|
+pub fn symbolic_link_creation_supported() -> Bool {
+  symbolic_links_supported()
+}
+
+///|
+/// Compatibility alias for callers that only need the original aggregate
+/// metadata gate.
+pub fn metadata_reads_supported() -> Bool {
+  file_kind_reads_supported() &&
+  regular_file_size_reads_supported() &&
+  modification_time_reads_supported()
 }
 
 ///|

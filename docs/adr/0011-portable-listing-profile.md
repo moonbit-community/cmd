@@ -11,7 +11,8 @@ format metadata that is not guaranteed by the runtime.
 ## Decision
 
 Support hidden/explicit directory selection, type indicators, one-entry lines,
-and recursion with deterministic ordering. Do not synthesize long metadata.
+recursion, timestamp/size sorting, and H/L/P traversal with deterministic
+ordering. Do not synthesize long metadata.
 
 ## Evidence
 

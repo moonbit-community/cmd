@@ -37,6 +37,7 @@ capability evidence.
 | [0027](0027-jq-cli-modes.md) | Publish deterministic jq CLI modes without claiming the full evaluator |
 | [0028](0028-make-xxd-p7-surface.md) | Extend self-contained make and xxd profiles with bounded semantics |
 | [0029](0029-filesystem-capability-gates.md) | Gate metadata-dependent filesystem options on portable runtime probes |
+| [0030](0030-native-wasm-filesystem-subset.md) | Deliver the maximum strict pure-MoonBit Native/Wasm filesystem subset |
 
 The remaining commands have no additional portability trade-off beyond the
 common evidence and stdin decisions. Their exact observed option surface is

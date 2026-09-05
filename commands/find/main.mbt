@@ -25,8 +25,13 @@ priv enum FindExpr {
   Kind(Char)
   Empty
   Size(Comparison, Int64, Bool)
-  MTime(Comparison, Int)
-  Newer(String)
+  TimeAge(@fsops.TimestampKind, Comparison, Int, Int64)
+  Newer(@fsops.TimestampKind, @fsops.TimestampKind, String)
+  Used(Comparison, Int)
+  Readable
+  Writable
+  Executable
+  XKind(Char)
   Prune
   Not(FindExpr)
   And(FindExpr, FindExpr)
@@ -47,10 +52,40 @@ priv struct FindParser {
 priv struct FindEntry {
   path : String
   kind : @fs.FileKind
+  followed_kind : @fs.FileKind?
   size : Int64?
-  mtime_seconds : Int64
-  mtime_nanoseconds : Int
+  atime : @fsops.FileTimestamp?
+  mtime : @fsops.FileTimestamp?
+  ctime : @fsops.FileTimestamp?
+  readable : Bool?
+  writable : Bool?
+  executable : Bool?
   empty : Bool
+}
+
+///|
+priv struct MetadataNeeds {
+  size : Bool
+  atime : Bool
+  mtime : Bool
+  ctime : Bool
+  followed_kind : Bool
+  readable : Bool
+  writable : Bool
+  executable : Bool
+}
+
+///|
+priv struct ReferenceTime {
+  path : String
+  kind : @fsops.TimestampKind
+  timestamp : @fsops.FileTimestamp
+}
+
+///|
+priv struct FindContext {
+  now : @fsops.FileTimestamp
+  references : Array[ReferenceTime]
 }
 
 ///|
@@ -177,6 +212,16 @@ fn parse_mtime(text : String) -> (Comparison, Int) raise FindError {
 }
 
 ///|
+fn timestamp_kind(code : Char) -> @fsops.TimestampKind raise FindError {
+  match code {
+    'a' => AccessTime
+    'c' => StatusChangeTime
+    'm' => ModificationTime
+    _ => raise FindError("invalid timestamp selector: '\{code}'")
+  }
+}
+
+///|
 fn FindParser::set_action(
   self : FindParser,
   action : FindAction,
@@ -190,6 +235,11 @@ fn FindParser::set_action(
 ///|
 fn FindParser::parse_primary(self : FindParser) -> FindExpr raise FindError {
   let token = self.take()
+  if token.has_prefix("-newer") && token.length() == 8 {
+    let source = timestamp_kind(token.get_char(6).unwrap())
+    let reference = timestamp_kind(token.get_char(7).unwrap())
+    return Newer(source, reference, self.take())
+  }
   match token {
     "(" => {
       let expression = self.parse_or()
@@ -216,9 +266,46 @@ fn FindParser::parse_primary(self : FindParser) -> FindExpr raise FindError {
     }
     "-mtime" => {
       let (comparison, value) = parse_mtime(self.take())
-      MTime(comparison, value)
+      TimeAge(ModificationTime, comparison, value, 86400L)
     }
-    "-newer" => Newer(self.take())
+    "-mmin" => {
+      let (comparison, value) = parse_mtime(self.take())
+      TimeAge(ModificationTime, comparison, value, 60L)
+    }
+    "-atime" => {
+      let (comparison, value) = parse_mtime(self.take())
+      TimeAge(AccessTime, comparison, value, 86400L)
+    }
+    "-amin" => {
+      let (comparison, value) = parse_mtime(self.take())
+      TimeAge(AccessTime, comparison, value, 60L)
+    }
+    "-ctime" => {
+      let (comparison, value) = parse_mtime(self.take())
+      TimeAge(StatusChangeTime, comparison, value, 86400L)
+    }
+    "-cmin" => {
+      let (comparison, value) = parse_mtime(self.take())
+      TimeAge(StatusChangeTime, comparison, value, 60L)
+    }
+    "-newer" => Newer(ModificationTime, ModificationTime, self.take())
+    "-anewer" => Newer(AccessTime, ModificationTime, self.take())
+    "-cnewer" => Newer(StatusChangeTime, ModificationTime, self.take())
+    "-used" => {
+      let (comparison, value) = parse_mtime(self.take())
+      Used(comparison, value)
+    }
+    "-readable" => Readable
+    "-writable" => Writable
+    "-executable" => Executable
+    "-xtype" => {
+      let kind = self.take()
+      if kind.length() != 1 ||
+        !(kind[0] is ('f' | 'd' | 'l' | 'p' | 's' | 'b' | 'c')) {
+        raise FindError("invalid file type: '\{kind}'")
+      }
+      XKind(kind.get_char(0).unwrap())
+    }
     "-depth" => {
       self.depth_first = true
       Always(true)
@@ -338,7 +425,122 @@ fn kind_matches(kind : @fs.FileKind, wanted : Char) -> Bool {
 }
 
 ///|
-async fn FindExpr::evaluate(self : FindExpr, entry : FindEntry) -> (Bool, Bool) {
+fn no_metadata_needs() -> MetadataNeeds {
+  {
+    size: false,
+    atime: false,
+    mtime: false,
+    ctime: false,
+    followed_kind: false,
+    readable: false,
+    writable: false,
+    executable: false,
+  }
+}
+
+///|
+fn merge_needs(left : MetadataNeeds, right : MetadataNeeds) -> MetadataNeeds {
+  {
+    size: left.size || right.size,
+    atime: left.atime || right.atime,
+    mtime: left.mtime || right.mtime,
+    ctime: left.ctime || right.ctime,
+    followed_kind: left.followed_kind || right.followed_kind,
+    readable: left.readable || right.readable,
+    writable: left.writable || right.writable,
+    executable: left.executable || right.executable,
+  }
+}
+
+///|
+fn FindExpr::metadata_needs(self : FindExpr) -> MetadataNeeds {
+  let needs = no_metadata_needs()
+  match self {
+    Empty | Size(_, _, _) => { ..needs, size: true, }
+    TimeAge(kind, _, _, _) | Newer(kind, _, _) =>
+      match kind {
+        AccessTime => { ..needs, atime: true, }
+        ModificationTime => { ..needs, mtime: true, }
+        StatusChangeTime => { ..needs, ctime: true, }
+      }
+    Used(_, _) => { ..needs, atime: true, ctime: true, }
+    Readable => { ..needs, readable: true, }
+    Writable => { ..needs, writable: true, }
+    Executable => { ..needs, executable: true, }
+    XKind(_) => { ..needs, followed_kind: true, }
+    Not(inner) => inner.metadata_needs()
+    And(left, right) | Or(left, right) =>
+      merge_needs(left.metadata_needs(), right.metadata_needs())
+    _ => needs
+  }
+}
+
+///|
+async fn load_reference_times(
+  expression : FindExpr,
+  references : Array[ReferenceTime],
+) -> Unit {
+  match expression {
+    Newer(_, kind, path) => {
+      if references.any(reference => {
+          reference.path == path && reference.kind == kind
+        }) {
+        return
+      }
+      let timestamp = @fsops.read_file_timestamp(path, kind)
+      references.push({ path, kind, timestamp, })
+    }
+    Not(inner) => load_reference_times(inner, references)
+    And(left, right) | Or(left, right) => {
+      load_reference_times(left, references)
+      load_reference_times(right, references)
+    }
+    _ => ()
+  }
+}
+
+///|
+fn entry_timestamp(
+  entry : FindEntry,
+  kind : @fsops.TimestampKind,
+) -> @fsops.FileTimestamp? {
+  match kind {
+    AccessTime => entry.atime
+    ModificationTime => entry.mtime
+    StatusChangeTime => entry.ctime
+  }
+}
+
+///|
+fn reference_timestamp(
+  references : Array[ReferenceTime],
+  path : String,
+  kind : @fsops.TimestampKind,
+) -> @fsops.FileTimestamp? {
+  for reference in references {
+    if reference.path == path && reference.kind == kind {
+      return Some(reference.timestamp)
+    }
+  }
+  None
+}
+
+///|
+fn compare_age(actual : Int64, comparison : Comparison, wanted : Int) -> Bool {
+  let wanted = wanted.to_int64()
+  match comparison {
+    Exact => actual == wanted
+    Less => actual < wanted
+    Greater => actual > wanted
+  }
+}
+
+///|
+async fn FindExpr::evaluate(
+  self : FindExpr,
+  entry : FindEntry,
+  context : FindContext,
+) -> (Bool, Bool) {
   match self {
     Always(value) => (value, false)
     Name(regex) => (regex.execute(base_name(entry.path)) is Some(_), false)
@@ -362,51 +564,53 @@ async fn FindExpr::evaluate(self : FindExpr, entry : FindEntry) -> (Bool, Bool) 
       }
       (matched, false)
     }
-    MTime(comparison, value) => {
-      let age = (
-          @env.now().reinterpret_as_int64() / 1000L - entry.mtime_seconds
-        ) /
-        86400L
-      let wanted = value.to_int64()
-      let matched = match comparison {
-        Exact => age == wanted
-        Less => age < wanted
-        Greater => age > wanted
+    TimeAge(kind, comparison, value, bucket) => {
+      guard entry_timestamp(entry, kind) is Some(timestamp) else {
+        return (false, false)
       }
-      (matched, false)
+      let age = @fsops.timestamp_age_bucket(context.now, timestamp, bucket)
+      (compare_age(age, comparison, value), false)
     }
-    Newer(reference) => {
-      let matched = match @fsops.metadata_if_exists(reference) {
-        Some(metadata) =>
-          entry.mtime_seconds > metadata.mtime_seconds ||
-          (
-            entry.mtime_seconds == metadata.mtime_seconds &&
-            entry.mtime_nanoseconds > metadata.mtime_nanoseconds
-          )
-        None => false
+    Newer(source_kind, reference_kind, reference) => {
+      guard entry_timestamp(entry, source_kind) is Some(source) &&
+        reference_timestamp(context.references, reference, reference_kind)
+        is Some(target) else {
+        return (false, false)
       }
-      (matched, false)
+      (@fsops.compare_timestamps(source, target) > 0, false)
     }
+    Used(comparison, value) => {
+      guard entry.atime is Some(atime) && entry.ctime is Some(ctime) else {
+        return (false, false)
+      }
+      let age = @fsops.timestamp_age_bucket(atime, ctime, 86400L)
+      (compare_age(age, comparison, value), false)
+    }
+    Readable => (entry.readable == Some(true), false)
+    Writable => (entry.writable == Some(true), false)
+    Executable => (entry.executable == Some(true), false)
+    XKind(wanted) =>
+      (kind_matches(entry.followed_kind.unwrap_or(entry.kind), wanted), false)
     Prune => (true, true)
     Not(inner) => {
-      let (matched, prune) = inner.evaluate(entry)
+      let (matched, prune) = inner.evaluate(entry, context)
       (!matched, prune)
     }
     And(left, right) => {
-      let (left_matched, left_prune) = left.evaluate(entry)
+      let (left_matched, left_prune) = left.evaluate(entry, context)
       if !left_matched {
         (false, left_prune)
       } else {
-        let (right_matched, right_prune) = right.evaluate(entry)
+        let (right_matched, right_prune) = right.evaluate(entry, context)
         (right_matched, left_prune || right_prune)
       }
     }
     Or(left, right) => {
-      let (left_matched, left_prune) = left.evaluate(entry)
+      let (left_matched, left_prune) = left.evaluate(entry, context)
       if left_matched {
         (true, left_prune)
       } else {
-        let (right_matched, right_prune) = right.evaluate(entry)
+        let (right_matched, right_prune) = right.evaluate(entry, context)
         (right_matched, left_prune || right_prune)
       }
     }
@@ -449,7 +653,7 @@ async fn main {
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--help" {
     @stdio.stdout.write(
-      "Usage: find [PATH...] [EXPRESSION]\nPredicates: -name, -path, -type, -empty, -size, -mtime, -newer, -mindepth, -maxdepth, -depth, -prune, -delete, !, -a, -o, -print, -print0, -exec COMMAND ;|+\n",
+      "Usage: find [PATH...] [EXPRESSION]\nPredicates include names, portable kinds, size, a/c/m times, newerXY, access checks, -used, -xtype, depth controls, actions, and boolean operators.\n",
     )
     return
   }
@@ -495,6 +699,16 @@ async fn main {
     @sys.exit(1)
     return
   }
+  let needs = expression.metadata_needs()
+  let references : Array[ReferenceTime] = []
+  load_reference_times(expression, references) catch {
+    err => {
+      @stdio.stderr.write("find: cannot read reference timestamp: \{err}\n")
+      @sys.exit(1)
+      return
+    }
+  }
+  let context : FindContext = { now: @fsops.current_timestamp(), references, }
   let stack : Array[(String, Int, Bool)] = []
   let mut path_index = paths.length()
   while path_index > 0 {
@@ -506,19 +720,19 @@ async fn main {
   let batch_values : Array[String] = []
   let batch_groups : Array[(Array[String], Array[String])] = []
   while stack.pop() is Some((path, depth, postorder)) {
-    let metadata = @fsops.metadata_if_exists(path) catch {
+    let kind = @fsops.kind_if_exists(path) catch {
       err => {
         @stdio.stderr.write("find: '\{path}': \{err}\n")
         failed = true
         continue
       }
     }
-    guard metadata is Some(metadata) else {
+    guard kind is Some(kind) else {
       @stdio.stderr.write("find: '\{path}': no such file or directory\n")
       failed = true
       continue
     }
-    let entries = if metadata.kind == Directory {
+    let entries = if kind == Directory {
       @fs.readdir(path, include_hidden=true, include_special=false, sort=false) catch {
         err => {
           @stdio.stderr.write("find: '\{path}': \{err}\n")
@@ -530,21 +744,73 @@ async fn main {
       []
     }
     entries.sort_by((left, right) => left.lexical_compare(right))
+    let size = if needs.size && kind == Regular {
+      let file = @fs.open(path, mode=ReadOnly)
+      defer file.close()
+      Some(file.size())
+    } else {
+      None
+    }
+    let atime = if needs.atime {
+      Some(@fsops.read_file_timestamp(path, AccessTime, follow_symlink=false))
+    } else {
+      None
+    }
+    let mtime = if needs.mtime {
+      Some(
+        @fsops.read_file_timestamp(path, ModificationTime, follow_symlink=false),
+      )
+    } else {
+      None
+    }
+    let ctime = if needs.ctime {
+      Some(
+        @fsops.read_file_timestamp(path, StatusChangeTime, follow_symlink=false),
+      )
+    } else {
+      None
+    }
+    let followed_kind = if needs.followed_kind {
+      if kind == SymLink {
+        Some(@fs.kind(path, follow_symlink=true) catch { _ => SymLink })
+      } else {
+        Some(kind)
+      }
+    } else {
+      None
+    }
     let entry : FindEntry = {
       path,
-      kind: metadata.kind,
-      size: metadata.size,
-      mtime_seconds: metadata.mtime_seconds,
-      mtime_nanoseconds: metadata.mtime_nanoseconds,
-      empty: if metadata.kind == Directory {
+      kind,
+      followed_kind,
+      size,
+      atime,
+      mtime,
+      ctime,
+      readable: if needs.readable {
+        Some(@fs.can_read(path))
+      } else {
+        None
+      },
+      writable: if needs.writable {
+        Some(@fs.can_write(path))
+      } else {
+        None
+      },
+      executable: if needs.executable {
+        Some(@fs.can_execute(path))
+      } else {
+        None
+      },
+      empty: if kind == Directory {
         entries.is_empty()
       } else {
-        metadata.size is Some(size) && size == 0L
+        size is Some(size) && size == 0L
       },
     }
     if parser.depth_first &&
       !postorder &&
-      metadata.kind == Directory &&
+      kind == Directory &&
       depth < parser.max_depth {
       stack.push((path, depth, true))
       let mut index = entries.length()
@@ -556,7 +822,7 @@ async fn main {
     }
     let in_depth = depth >= parser.min_depth && depth <= parser.max_depth
     let (matched, prune) = if in_depth {
-      expression.evaluate(entry)
+      expression.evaluate(entry, context)
     } else {
       (false, false)
     }
@@ -571,7 +837,7 @@ async fn main {
           @stdio.stdout.write(if zero { "\u0000" } else { "\n" })
         }
         Some(Delete) =>
-          if metadata.kind == Directory {
+          if kind == Directory {
             @fs.rmdir(path)
           } else {
             @fs.remove(path)
@@ -611,7 +877,7 @@ async fn main {
       }
     }
     if !parser.depth_first &&
-      metadata.kind == Directory &&
+      kind == Directory &&
       depth < parser.max_depth &&
       !prune {
       let mut index = entries.length()

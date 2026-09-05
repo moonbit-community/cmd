@@ -10,8 +10,8 @@ primitive across all targets.
 
 ## Decision
 
-Implement `ln -s` with `-f`, `-T`, and `-v`. Reject `ln` without `-s` before
-mutation.
+Implement `ln -s` with `-f/-i`, `-n/-T`, `-r`, `-t`, backup/suffix, and `-v`.
+Reject `ln` without `-s` before mutation.
 
 ## Evidence
 

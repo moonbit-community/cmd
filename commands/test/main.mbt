@@ -31,6 +31,14 @@ fn is_unary(op : String) -> Bool {
   op == "-a" ||
   op == "-f" ||
   op == "-d" ||
+  op == "-L" ||
+  op == "-h" ||
+  op == "-p" ||
+  op == "-S" ||
+  op == "-b" ||
+  op == "-c" ||
+  op == "-s" ||
+  op == "-N" ||
   op == "-r" ||
   op == "-w" ||
   op == "-x"
@@ -48,7 +56,9 @@ fn is_binary(op : String) -> Bool {
   op == "-lt" ||
   op == "-le" ||
   op == "-gt" ||
-  op == "-ge"
+  op == "-ge" ||
+  op == "-nt" ||
+  op == "-ot"
 }
 
 ///|
@@ -59,6 +69,26 @@ async fn eval_unary(op : String, value : String) -> Bool {
     "-e" | "-a" => @fs.exists(value)
     "-f" => (@fs.kind(value) catch { _ => Unknown }) == Regular
     "-d" => (@fs.kind(value) catch { _ => Unknown }) == Directory
+    "-L" | "-h" =>
+      (@fs.kind(value, follow_symlink=false) catch { _ => Unknown }) == SymLink
+    "-p" => (@fs.kind(value) catch { _ => Unknown }) == Pipe
+    "-S" => (@fs.kind(value) catch { _ => Unknown }) == Socket
+    "-b" => (@fs.kind(value) catch { _ => Unknown }) == BlockDevice
+    "-c" => (@fs.kind(value) catch { _ => Unknown }) == CharDevice
+    "-s" =>
+      match @fsops.metadata_if_exists(value, follow_symlink=true) {
+        Some({ kind: Regular, size: Some(size), .. }) => size > 0L
+        _ => false
+      }
+    "-N" => {
+      let modified = @fsops.read_file_timestamp(value, ModificationTime) catch {
+        _ => return false
+      }
+      let accessed = @fsops.read_file_timestamp(value, AccessTime) catch {
+        _ => return false
+      }
+      @fsops.compare_timestamps(modified, accessed) > 0
+    }
     "-r" => @fs.can_read(value)
     "-w" => @fs.can_write(value)
     "-x" => @fs.can_execute(value)
@@ -74,11 +104,16 @@ fn parse_integer(text : String) -> Int64 raise TestError {
 }
 
 ///|
-fn eval_binary(
-  left : String,
-  op : String,
-  right : String,
-) -> Bool raise TestError {
+async fn optional_mtime(path : String) -> @fsops.FileTimestamp? {
+  try @fsops.read_file_timestamp(path, ModificationTime) catch {
+    _ => None
+  } noraise {
+    timestamp => Some(timestamp)
+  }
+}
+
+///|
+async fn eval_binary(left : String, op : String, right : String) -> Bool {
   match op {
     "=" | "==" => left == right
     "!=" => left != right
@@ -90,6 +125,18 @@ fn eval_binary(
     "-le" => parse_integer(left) <= parse_integer(right)
     "-gt" => parse_integer(left) > parse_integer(right)
     "-ge" => parse_integer(left) >= parse_integer(right)
+    "-nt" =>
+      match (optional_mtime(left), optional_mtime(right)) {
+        (Some(left), Some(right)) => @fsops.compare_timestamps(left, right) > 0
+        (Some(_), None) => true
+        _ => false
+      }
+    "-ot" =>
+      match (optional_mtime(left), optional_mtime(right)) {
+        (Some(left), Some(right)) => @fsops.compare_timestamps(left, right) < 0
+        (None, Some(_)) => true
+        _ => false
+      }
     _ => raise TestError("unknown binary operator: '\{op}'")
   }
 }
@@ -153,7 +200,7 @@ async fn main {
   let args = @env.args()[1:].to_owned()
   if args == ["--help"] {
     @stdio.stdout.write(
-      "Usage: test EXPRESSION\nSupports string, integer, file, !, -a, and -o expressions.\n",
+      "Usage: test EXPRESSION\nSupports string, integer, portable file-kind, access, size, and timestamp expressions.\n",
     )
     return
   }

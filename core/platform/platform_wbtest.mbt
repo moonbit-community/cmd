@@ -12,6 +12,13 @@ test "permission support follows platform" {
 
 ///|
 test "filesystem capability gates are explicit" {
+  assert_true(file_kind_reads_supported())
+  assert_true(regular_file_size_reads_supported())
+  assert_true(access_time_reads_supported())
+  assert_true(modification_time_reads_supported())
+  assert_true(status_change_time_reads_supported())
+  assert_true(access_checks_supported())
+  assert_eq(symbolic_link_creation_supported(), !is_windows())
   assert_true(metadata_reads_supported())
   assert_false(permission_reads_supported())
   assert_false(timestamp_mutation_supported())

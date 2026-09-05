@@ -95,7 +95,10 @@ pub fn command_catalog() -> Array[CommandContract] {
       NoInput,
       LineStream,
       [FileRead, ProcessSpawn],
-      ["expression-language"],
+      [
+        "expression-language", "amin", "atime", "cmin", "ctime", "mmin", "anewer",
+        "cnewer", "newerXY", "used", "readable", "writable", "executable", "xtype",
+      ],
     ),
     contract("grep", Core, FileOrStdin, LineStream, [FileRead], [
       "after-context", "before-context", "binary-files", "byte-offset", "context",
@@ -105,7 +108,9 @@ pub fn command_catalog() -> Array[CommandContract] {
       "text", "with-filename", "word-regexp",
     ]),
     contract("ls", Core, NoInput, LineStream, [FileRead], [
-      "all", "almost-all", "classify", "directory", "recursive",
+      "all", "almost-all", "classify", "directory", "recursive", "sort-time", "access-time",
+      "change-time", "reverse", "sort-size", "dereference-command-line", "dereference",
+      "no-dereference", "time",
     ]),
     contract("printenv", Core, NoInput, ByteStream, [], ["null"]),
     contract("pwd", Core, NoInput, LineStream, [FileRead], [
@@ -116,20 +121,23 @@ pub fn command_catalog() -> Array[CommandContract] {
       "binary", "check", "text", "zero",
     ]),
     contract("test", Core, NoInput, LineStream, [FileRead], [
-      "expression-language",
+      "expression-language", "file-kinds", "access-checks", "size", "timestamps",
     ]),
     contract("cp", Extended, NoInput, LineStream, [FileRead, FileWrite], [
       "archive", "force", "no-clobber", "no-target-directory", "preserve", "recursive",
-      "verbose",
+      "verbose", "interactive", "update", "update-mode", "backup", "backup-control",
+      "suffix", "dereference-command-line", "dereference", "no-dereference",
     ]),
     contract("ln", Extended, NoInput, LineStream, [FileWrite, SymbolicLink], [
-      "force", "no-target-directory", "symbolic", "verbose",
+      "force", "no-target-directory", "symbolic", "verbose", "interactive", "relative",
+      "no-dereference-target", "target-directory", "backup", "backup-control", "suffix",
     ]),
     contract("mkdir", Extended, NoInput, LineStream, [FileWrite], [
       "mode", "parents", "verbose",
     ]),
     contract("mv", Extended, NoInput, LineStream, [FileRead, FileWrite], [
-      "force", "no-clobber", "no-target-directory", "verbose",
+      "force", "no-clobber", "no-target-directory", "verbose", "interactive", "update",
+      "update-mode", "backup", "backup-control", "suffix",
     ]),
     contract("rm", Extended, NoInput, LineStream, [FileWrite], [
       "dir", "force", "preserve-root", "recursive", "verbose",
@@ -143,7 +151,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       "time",
     ]),
     contract("chmod", Restricted, NoInput, LineStream, [PermissionMutation], [
-      "recursive", "reference", "verbose",
+      "recursive", "reference", "verbose", "symbolic-assignment",
     ]),
     contract("curl", Restricted, NoInput, ByteStream, [Network, FileWrite], [
       "connect-timeout", "data", "data-binary", "data-raw", "data-urlencode", "fail",
