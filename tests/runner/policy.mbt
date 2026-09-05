@@ -591,7 +591,21 @@ async fn check_mutation_policy(root : String, failures : Array[String]) -> Unit 
       return
     }
   }
-  record(chmod.status == 0, "chmod: write policy rejected mutation", failures)
+  if @platform.permission_mutation_supported() {
+    record(chmod.status == 0, "chmod: write policy rejected mutation", failures)
+  } else {
+    record(
+      chmod.status != 0 &&
+      @testkit.contains_bytes(chmod.stderr, "unsupported capability"),
+      "chmod: unsupported capability was not reported",
+      failures,
+    )
+    record(
+      @fs.read_file(root_path(fixture, "source")).text() == "policy-fixture\n",
+      "chmod: unsupported operation changed fixture contents",
+      failures,
+    )
+  }
   let mv = moon_run(root, policy, "mv", [
     fixture_rel + "/movable",
     fixture_rel + "/allowed-move",
