@@ -3,4 +3,7 @@
 Observed Wasm profile (2026-09-03): this README is supplementary. The [support record](../../docs/compatibility.md) is the only capability authority; it lists the repeatable `moon run --target wasm --release` results and exclusions. Options mentioned here but not promoted in that record are not compatibility guarantees.
 
 Print the current working directory. The Wasm artifact accepts `-L` and `-P`;
-their result follows the Wasm cwd contract.
+their result follows the Wasm cwd contract. `-L` uses `PWD` only when it is an
+absolute, dot-free path resolving to the current directory; otherwise it falls
+back to the physical cwd. The default is `-P`, or `-L` when
+`POSIXLY_CORRECT` is present; the last explicit `-L`/`-P` wins.

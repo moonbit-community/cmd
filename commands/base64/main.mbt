@@ -89,11 +89,6 @@ async fn encode_stream(reader : &@io.Reader, wrap : Int) -> Unit {
 }
 
 ///|
-fn ascii_whitespace(byte : Byte) -> Bool {
-  byte.to_int() is (0x20 | 0x09 | 0x0A | 0x0D | 0x0B | 0x0C)
-}
-
-///|
 fn decode_quad(
   quad : ArrayView[Byte],
   out : Array[Byte],
@@ -130,13 +125,24 @@ fn decode_quad(
 }
 
 ///|
-async fn decode_stream(reader : &@io.Reader) -> Unit {
+async fn decode_stream(reader : &@io.Reader, ignore_garbage : Bool) -> Unit {
   let quad : Array[Byte] = []
   let mut finished = false
   while @stream.read_chunk(reader) is Some(chunk) {
     let out : Array[Byte] = []
     for byte in chunk {
-      if ascii_whitespace(byte) {
+      // GNU base64 always permits embedded newlines. Other whitespace is
+      // garbage and is accepted only when -i was explicitly requested.
+      if byte == b'\n' {
+        continue
+      }
+      if ignore_garbage &&
+        !((byte >= b'A' && byte <= b'Z') ||
+        (byte >= b'a' && byte <= b'z') ||
+        (byte >= b'0' && byte <= b'9') ||
+        byte == b'+' ||
+        byte == b'/' ||
+        byte == b'=') {
         continue
       }
       if finished {
@@ -162,6 +168,8 @@ async fn main {
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.flag("decode", short='d'),
+    @cli.flag("decode", short='D'),
+    @cli.flag("ignore-garbage", short='i'),
     @cli.option("wrap", short='w'),
     @cli.flag("help"),
   ]) catch {
@@ -172,7 +180,7 @@ async fn main {
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write("Usage: base64 [-d] [-w COLS] [FILE]\n")
+    @stdio.stdout.write("Usage: base64 [-d|-D] [-i] [-w COLS] [FILE]\n")
     return
   }
   if parsed.operands.length() > 1 {
@@ -181,6 +189,7 @@ async fn main {
     return
   }
   let decode_mode = parsed.contains("decode")
+  let ignore_garbage = parsed.contains("ignore-garbage")
   let wrap_text = parsed.last_value("wrap").unwrap_or("76")
   let wrap = @string.parse_int(wrap_text) catch {
     _ => {
@@ -199,7 +208,7 @@ async fn main {
   try {
     if path == "-" {
       if decode_mode {
-        decode_stream(@stdio.stdin)
+        decode_stream(@stdio.stdin, ignore_garbage)
       } else {
         encode_stream(@stdio.stdin, wrap)
       }
@@ -207,7 +216,7 @@ async fn main {
       let file = @fs.open(path, mode=ReadOnly)
       defer file.close()
       if decode_mode {
-        decode_stream(file)
+        decode_stream(file, ignore_garbage)
       } else {
         encode_stream(file, wrap)
       }

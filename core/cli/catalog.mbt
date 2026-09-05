@@ -19,20 +19,21 @@ pub fn command_catalog() -> Array[CommandContract] {
     ]),
     contract("cat", Core, FileOrStdin, ByteStream, [FileRead], [
       "number", "number-nonblank", "show-all", "show-ends", "show-nonprinting", "show-tabs",
-      "squeeze-blank",
+      "squeeze-blank", "unbuffered",
     ]),
     contract("comm", Core, FileOrStdin, LineStream, [FileRead], [
-      "1", "2", "3", "help",
+      "1", "2", "3", "check-order", "nocheck-order", "help", "zero-terminated",
     ]),
     contract("cut", Core, FileOrStdin, LineStream, [FileRead], [
-      "characters", "delimiter", "fields", "only-delimited",
+      "bytes", "characters", "delimiter", "fields", "only-delimited", "zero-terminated",
     ]),
-    contract("false", Core, NoInput, LineStream, [], []),
+    contract("false", Core, NoInput, LineStream, [], ["help", "version"]),
     contract("head", Core, FileOrStdin, ByteStream, [FileRead], [
       "bytes", "lines", "quiet", "verbose", "zero-terminated",
     ]),
     contract("join", Core, FileOrStdin, LineStream, [FileRead], [
-      "1", "2", "after", "empty", "only", "output", "t", "help",
+      "1", "2", "after", "empty", "only", "output", "t", "check-order", "nocheck-order",
+      "help", "zero-terminated",
     ]),
     contract("jq", Core, StructuredInput, StructuredOutput, [FileRead], [
       "compact-output", "exit-status", "from-file", "indent", "join-output", "logs",
@@ -43,13 +44,15 @@ pub fn command_catalog() -> Array[CommandContract] {
       "file", "help",
     ]),
     contract("nl", Core, FileOrStdin, LineStream, [FileRead], [
-      "body-numbering", "number-separator", "number-width",
+      "body-numbering", "footer-numbering", "header-numbering", "line-increment",
+      "join-blank-lines", "no-renumber", "number-format", "number-separator", "number-width",
+      "section-delimiter", "starting-line-number",
     ]),
     contract("paste", Core, FileOrStdin, LineStream, [FileRead], [
-      "delimiters", "serial",
+      "delimiters", "help", "serial", "zero-terminated",
     ]),
     contract("printf", Core, NoInput, ByteStream, [], ["help"]),
-    contract("sleep", Core, NoInput, LineStream, [], ["help"]),
+    contract("sleep", Core, NoInput, LineStream, [], ["help", "version"]),
     contract("sort", Core, FileOrStdin, LineStream, [FileRead], [
       "check", "check-quiet", "dictionary-order", "field-separator", "general-numeric-sort",
       "human-numeric-sort", "ignore-case", "ignore-leading-blanks", "ignore-nonprinting",
@@ -60,9 +63,9 @@ pub fn command_catalog() -> Array[CommandContract] {
       "bytes", "follow", "lines", "quiet", "sleep-interval", "verbose",
     ]),
     contract("tr", Core, OptionalStdin, ByteStream, [], [
-      "delete", "squeeze-repeats",
+      "complement", "delete", "squeeze-repeats", "truncate-set1",
     ]),
-    contract("true", Core, NoInput, LineStream, [], []),
+    contract("true", Core, NoInput, LineStream, [], ["help", "version"]),
     contract("uniq", Core, FileOrStdin, LineStream, [FileRead], [
       "check-chars", "count", "ignore-case", "repeated", "skip-chars", "skip-fields",
       "unique", "zero-terminated",
@@ -87,7 +90,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     ),
     contract("dirname", Core, NoInput, LineStream, [], ["zero"]),
     contract("echo", Core, NoInput, ByteStream, [], [
-      "enable-escapes", "disable-escapes", "no-newline",
+      "enable-escapes", "disable-escapes", "help", "no-newline", "version",
     ]),
     contract(
       "find",
@@ -116,9 +119,12 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("pwd", Core, NoInput, LineStream, [FileRead], [
       "logical", "physical",
     ]),
-    contract("seq", Core, NoInput, LineStream, [], ["equal-width", "separator"]),
+    contract("seq", Core, NoInput, LineStream, [], [
+      "equal-width", "separator", "version",
+    ]),
     contract("sha256sum", Core, FileOrStdin, LineStream, [FileRead], [
-      "binary", "check", "text", "zero",
+      "binary", "check", "ignore-missing", "quiet", "status", "strict", "text", "warn",
+      "zero",
     ]),
     contract("test", Core, NoInput, LineStream, [FileRead], [
       "expression-language", "file-kinds", "access-checks", "size", "timestamps",

@@ -1,26 +1,61 @@
 ///|
-fn parse_delimiters(spec : String) -> Array[String] {
-  let delims : Array[String] = []
-  let chars : Array[Char] = spec.iter().collect()
+priv suberror DelimiterError {
+  DelimiterError(String)
+}
+
+///|
+fn parse_delimiters(spec : String) -> Array[Bytes] raise DelimiterError {
+  let delims : Array[Bytes] = []
+  let raw = @utf8.encode(spec)
   let mut i = 0
-  while i < chars.length() {
-    if chars[i] == '\\' && i + 1 < chars.length() {
-      let out = match chars[i + 1] {
-        'n' => "\n"
-        't' => "\t"
-        '0' => ""
-        '\\' => "\\"
-        c => c.to_string()
+  while i < raw.length() {
+    if raw[i] == b'\\' && i + 1 < raw.length() {
+      let octal = raw[i + 1] == b'0'
+      let out = match raw[i + 1] {
+        b'b' => b"\b"
+        b'f' => b"\f"
+        b'n' => b"\n"
+        b'r' => b"\r"
+        b't' => b"\t"
+        b'v' => b"\x0b"
+        b'0' => {
+          let mut j = i + 2
+          let mut value = 0
+          let mut count = 0
+          while j < raw.length() &&
+                count < 3 &&
+                raw[j] >= b'0' &&
+                raw[j] <= b'7' {
+            value = value * 8 + raw[j].to_int() - b'0'.to_int()
+            count += 1
+            j += 1
+          }
+          if count == 0 {
+            i += 2
+            delims.push(b"")
+            continue
+          }
+          i = j
+          Bytes::from_array([value.to_byte()])
+        }
+        b'\\' => b"\\"
+        byte => Bytes::from_array([byte])
       }
       delims.push(out)
-      i += 2
+      if !octal {
+        i += 2
+      }
+    } else if raw[i] == b'\\' {
+      raise DelimiterError(
+        "paste: delimiter list ends with an unescaped backslash",
+      )
     } else {
-      delims.push(chars[i].to_string())
+      delims.push(Bytes::from_array([raw[i]]))
       i += 1
     }
   }
   if delims.is_empty() {
-    delims.push("\t")
+    delims.push(b"")
   }
   delims
 }
@@ -28,7 +63,8 @@ fn parse_delimiters(spec : String) -> Array[String] {
 ///|
 async fn paste_serial(
   scanner : @stream.LineScanner,
-  delimiters : Array[String],
+  delimiters : Array[Bytes],
+  record_delimiter : Byte,
 ) -> Unit {
   let mut index = 0
   while scanner.next() is Some(line) {
@@ -38,13 +74,16 @@ async fn paste_serial(
     @stdio.stdout.write(line.data)
     index += 1
   }
-  @stdio.stdout.write("\n")
+  if index > 0 {
+    @stdio.stdout.write(Bytes::from_array([record_delimiter]))
+  }
 }
 
 ///|
 async fn paste_parallel(
   scanners : Array[@stream.LineScanner],
-  delimiters : Array[String],
+  delimiters : Array[Bytes],
+  record_delimiter : Byte,
 ) -> Unit {
   for ;; {
     let row : Array[Bytes?] = []
@@ -69,7 +108,7 @@ async fn paste_parallel(
         @stdio.stdout.write(data)
       }
     }
-    @stdio.stdout.write("\n")
+    @stdio.stdout.write(Bytes::from_array([record_delimiter]))
   }
 }
 
@@ -79,6 +118,7 @@ async fn main {
   let parsed = @cli.parse(args, [
     @cli.flag("serial", short='s'),
     @cli.option("delimiters", short='d'),
+    @cli.flag("zero-terminated", short='z'),
     @cli.flag("help"),
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
@@ -88,54 +128,65 @@ async fn main {
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write("Usage: paste [-s] [-d LIST] [FILE...]\n")
+    @stdio.stdout.write("Usage: paste [-s] [-d LIST] [-z] [FILE...]\n")
     return
   }
   let serial = parsed.contains("serial")
+  let record_delimiter = if parsed.contains("zero-terminated") {
+    b'\x00'
+  } else {
+    b'\n'
+  }
   let delims = match parsed.last_value("delimiters") {
-    Some(spec) => parse_delimiters(spec)
-    None => ["\t"]
+    Some(spec) =>
+      parse_delimiters(spec) catch {
+        DelimiterError(message) => {
+          @stdio.stderr.write(message + "\n")
+          @sys.exit(1)
+          return
+        }
+      }
+    None => [b"\t"]
   }
   let files = parsed.operands
   let sources = if files.is_empty() { ["-"] } else { files }
-  let mut stdin_count = 0
-  for path in sources {
-    if path == "-" {
-      stdin_count += 1
-    }
-  }
-  if stdin_count > 1 {
-    @stdio.stderr.write("paste: standard input may be specified only once\n")
-    @sys.exit(2)
-    return
-  }
   let open_files : Array[@fs.File] = []
   defer (for file in open_files {
     file.close()
   })
+  let stdin_scanner = @stream.LineScanner::new(
+    @stdio.stdin,
+    delimiter=record_delimiter,
+  )
   try {
     if serial {
       for path in sources {
         if path == "-" {
-          paste_serial(@stream.LineScanner::new(@stdio.stdin), delims)
+          paste_serial(stdin_scanner, delims, record_delimiter)
         } else {
           let file = @fs.open(path, mode=ReadOnly)
           open_files.push(file)
-          paste_serial(@stream.LineScanner::new(file), delims)
+          paste_serial(
+            @stream.LineScanner::new(file, delimiter=record_delimiter),
+            delims,
+            record_delimiter,
+          )
         }
       }
     } else {
       let scanners : Array[@stream.LineScanner] = []
       for path in sources {
         if path == "-" {
-          scanners.push(@stream.LineScanner::new(@stdio.stdin))
+          scanners.push(stdin_scanner)
         } else {
           let file = @fs.open(path, mode=ReadOnly)
           open_files.push(file)
-          scanners.push(@stream.LineScanner::new(file))
+          scanners.push(
+            @stream.LineScanner::new(file, delimiter=record_delimiter),
+          )
         }
       }
-      paste_parallel(scanners, delims)
+      paste_parallel(scanners, delims, record_delimiter)
     }
   } catch {
     err => {

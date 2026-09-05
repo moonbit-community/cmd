@@ -13,7 +13,9 @@ Bytes pass through unmodified when no formatting option is selected. `-n` and
 `-b` number lines, `-s` squeezes repeated blank lines, and `-A`, `-e`, `-E`,
 `-t`, `-T`, and `-v` expose the common GNU visible-byte forms. Formatting
 state is continuous across file operands, including an unterminated line at a
-file boundary. Use `-` (or no argument) to read stdin.
+file boundary. Use `-` (or no argument) to read stdin. `-u`/`--unbuffered` is
+accepted as the GNU compatibility no-op; MoonBit writes through its byte stream
+without an additional user-space buffer.
 
 With no file operand, the command silently reads stdin until EOF, matching the
 upstream terminal, pipe, redirection, and explicit `-` behavior.

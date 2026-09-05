@@ -4,7 +4,9 @@ Observed Wasm profile (2026-09-03): this README is supplementary. The [support r
 
 Write arguments separated by one space. Supports `-n`, `-e`, and `-E`,
 including the common backslash escapes and byte-valued octal/hex escapes.
+Escapes are evaluated per argument, so a trailing backslash cannot consume the
+space inserted before the next argument. `--help` and `--version` are metadata
+options only when they are the sole argument.
 
-```sh
-moonx cli/echo -- -e 'hello\nworld'
-```
+The normally special `--` operand is printed literally, matching GNU echo's
+historical ambiguity. Use `printf` when option-like input must be unambiguous.

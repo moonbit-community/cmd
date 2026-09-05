@@ -4,3 +4,6 @@ Observed Wasm profile (2026-09-03): this README is supplementary. The [support r
 
 Remove directory components from path operands. Supports `-a`/`--multiple`,
 `-s`/`--suffix`, and NUL-delimited output with `-z`.
+
+An empty operand produces an empty record; repeated separators and root paths
+follow the coreutils byte-oriented path rules.

@@ -9,10 +9,15 @@ printf 'alpha\nbeta\n' | moonx cli/nl
 moonx cli/nl -b a -w 3 -s ' ' notes.txt
 ```
 
-Options: `-b a|t|n` number all/nonempty/no lines (default `t`), `-w N`
-number width (default 6), `-s SEP` separator (default TAB). Unnumbered
-lines are indented by the number width. Numbering is continuous across
-multiple files.
+Options: `-b a|t|n` number all/nonempty/no body lines (default `t`), `-h` and
+`-f` select header/footer styles, `-w N` sets number width (default 6), and
+`-s SEP` sets the separator (default TAB). `-v N` sets the initial number,
+`-i N` its increment, `-d CC` selects the two-byte section delimiter, and
+`-p` prevents page resets. `-n ln|rn|rz` selects left, right, or zero-padded
+number fields; `-l N` numbers only the last line in each complete group of N
+blank lines when style `a` is active. Section markers are replaced by blank
+lines. The locale-sensitive `pBRE` numbering style remains outside this fixed
+C-locale profile and is rejected.
 
 With no file operand, the command silently reads stdin until EOF, matching the
 upstream terminal, pipe, redirection, and explicit `-` behavior.

@@ -4,4 +4,5 @@ Observed Wasm profile (2026-09-03): this README is supplementary. The [support r
 
 Remove empty directories. Supports parent removal (`-p`), verbose output
 (`-v`), and ignoring failures caused only by non-empty directories
-(`-I`/`--ignore-fail-on-non-empty`).
+(`-I`/`--ignore-fail-on-non-empty`). Failed operands do not stop later
+directories from being attempted.

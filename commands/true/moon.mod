@@ -1,6 +1,6 @@
 name = "cli/true"
 
-version = "0.1.2"
+version = "0.1.3"
 
 readme = "README.md"
 
@@ -13,3 +13,8 @@ keywords = [ "command-line", "moonx", "wasm" ]
 preferred_target = "wasm"
 
 description = "true command for MoonX."
+
+import {
+  "moonbitlang/async@0.21.0",
+  "moonbitlang/x@0.5.1",
+}

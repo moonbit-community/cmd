@@ -12,5 +12,9 @@ moonx cli/comm -12 left.txt right.txt   # only common lines
 ```
 
 Options: `-1`, `-2`, `-3` suppress the corresponding column (combinable as
-`-12`, `-23`, ...). Use `-` to read stdin. Lines are compared by UTF-16
-code units, matching `LC_ALL=C` order for ASCII data.
+`-12`, `-23`, ...). Use `-` to read stdin. Records are compared as raw bytes,
+matching `LC_ALL=C` order. `--check-order` reports
+an unsorted input and exits nonzero. By default, disorder is diagnosed once
+unpairable input is observed, matching GNU's conditional check.
+`-z` reads and writes NUL-delimited records; `--nocheck-order` explicitly
+selects permissive order handling whenever both order flags are present.

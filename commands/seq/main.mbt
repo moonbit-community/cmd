@@ -192,6 +192,9 @@ async fn main {
         "Usage: seq [-w] [-s STRING] [FIRST [INCREMENT]] LAST\n",
       )
       return
+    } else if options && arg == "--version" {
+      @stdio.stdout.write("seq (moonbit cmd) 0.1.3\n")
+      return
     } else if options &&
       arg.has_prefix("-") &&
       arg.length() > 1 &&

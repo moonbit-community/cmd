@@ -174,6 +174,11 @@ async fn main {
   let files = parsed.operands
   let silent = parsed.contains("silent") || parsed.contains("quiet")
   let verbose = parsed.contains("verbose")
+  if silent && verbose {
+    @stdio.stderr.write("cmp: options -l and -s are incompatible\n")
+    @sys.exit(2)
+    return
+  }
   let limit = match parsed.last_value("bytes") {
     Some(value) =>
       Some(
@@ -198,34 +203,40 @@ async fn main {
       }
     None => (0L, 0L)
   }
-  if files.length() != 2 || (files[0] == "-" && files[1] == "-") {
+  if files.length() < 1 || files.length() > 2 {
+    @stdio.stderr.write("cmp: expected two distinct input sources\n")
+    @sys.exit(2)
+    return
+  }
+  let sources = if files.length() == 1 { [files[0], "-"] } else { files }
+  if sources[0] == "-" && sources[1] == "-" {
     @stdio.stderr.write("cmp: expected two distinct input sources\n")
     @sys.exit(2)
     return
   }
   let different = try {
-    if files[0] == "-" {
-      let right = @fs.open(files[1], mode=ReadOnly)
+    if sources[0] == "-" {
+      let right = @fs.open(sources[1], mode=ReadOnly)
       defer right.close()
       compare_readers(
         @stdio.stdin,
         right,
-        files[0],
-        files[1],
+        sources[0],
+        sources[1],
         silent,
         verbose,
         limit,
         skip_left,
         skip_right,
       )
-    } else if files[1] == "-" {
-      let left = @fs.open(files[0], mode=ReadOnly)
+    } else if sources[1] == "-" {
+      let left = @fs.open(sources[0], mode=ReadOnly)
       defer left.close()
       compare_readers(
         left,
         @stdio.stdin,
-        files[0],
-        files[1],
+        sources[0],
+        sources[1],
         silent,
         verbose,
         limit,
@@ -233,15 +244,15 @@ async fn main {
         skip_right,
       )
     } else {
-      let left = @fs.open(files[0], mode=ReadOnly)
+      let left = @fs.open(sources[0], mode=ReadOnly)
       defer left.close()
-      let right = @fs.open(files[1], mode=ReadOnly)
+      let right = @fs.open(sources[1], mode=ReadOnly)
       defer right.close()
       compare_readers(
         left,
         right,
-        files[0],
-        files[1],
+        sources[0],
+        sources[1],
         silent,
         verbose,
         limit,

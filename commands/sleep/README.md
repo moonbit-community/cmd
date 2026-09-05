@@ -12,3 +12,6 @@ moonx cli/sleep 1m 30s   # arguments are summed
 
 NUMBER may be fractional; suffixes `s`, `m`, `h`, `d` scale it. With
 multiple arguments, sleeps for their sum.
+
+`--help` and `--version` are handled without sleeping.
+`--` explicitly ends option parsing before a duration operand.

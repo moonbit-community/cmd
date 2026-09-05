@@ -10,9 +10,11 @@ moonx cli/base64 -d encoded.txt
 moonx cli/base64 -w 0 big.bin   # no line wrapping
 ```
 
-Options: `-d` decode (whitespace in the input is ignored), `-w N` wrap
+Options: `-d`/`-D` decode (embedded newlines are always accepted), `-i`/
+`--ignore-garbage` discard non-alphabet bytes while decoding, and `-w N` wrap
 encoded output after N characters (default 76, `0` disables). Standard
-alphabet with `=` padding.
+alphabet with `=` padding. Invalid input is rejected unless garbage mode is
+explicitly selected.
 
 With no file operand, the command silently reads stdin until EOF, matching the
 upstream terminal, pipe, redirection, and explicit `-` behavior.

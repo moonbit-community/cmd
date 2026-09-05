@@ -15,6 +15,7 @@ fn help_message() -> String {
     #|  -A, --show-all           Equivalent to -vET.
     #|  -e                       Equivalent to -vE.
     #|  -t                       Equivalent to -vT.
+    #|  -u, --unbuffered         Accepted for GNU compatibility.
     #|  -h, --help               Show this help message.
   message
 }
@@ -194,6 +195,7 @@ async fn main {
     @cli.flag("show-all", short='A'),
     @cli.flag("show-ends-nonprinting", short='e'),
     @cli.flag("show-tabs-nonprinting", short='t'),
+    @cli.flag("unbuffered", short='u'),
     @cli.flag("help", short='h'),
   ]) catch {
     @cli.CliError(option~, message~, ..) => {

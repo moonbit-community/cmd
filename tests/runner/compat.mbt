@@ -707,12 +707,13 @@ async fn run_option_boundaries(
   )
   expect_failure(bin_root, "cut", ["-d::", "-f1"], 2, "single byte", failures)
   expect_failure(bin_root, "comm", ["-", "-"], 2, "both inputs", failures)
-  expect_failure(
+  expect(
     bin_root,
     "paste",
     ["-", "-"],
-    2,
-    "standard input may be specified only once",
+    Some(b"left\nright\n"),
+    0,
+    b"left\tright\n",
     failures,
   )
   expect_failure(
@@ -1822,7 +1823,7 @@ async fn run_edge_cases(bin_root : String, failures : Array[String]) -> Unit {
     b"1:\x00\n2:last\n",
     failures,
   )
-  expect(bin_root, "base64", ["-d"], Some(b"YQ== \r\n\t"), 0, b"a", failures)
+  expect(bin_root, "base64", ["-di"], Some(b"YQ== \r\n\t"), 0, b"a", failures)
   expect(bin_root, "base64", ["-d"], Some(b"YQ==YQ=="), 1, b"", failures)
 }
 
@@ -1855,6 +1856,403 @@ async fn run_stdin_prompt_cases(
       failures,
     )
   }
+}
+
+///|
+async fn run_p9_cases(bin_root : String, failures : Array[String]) -> Unit {
+  expect(bin_root, "base64", ["-di"], Some(b"aG!k="), 0, b"hi", failures)
+  expect(bin_root, "base64", ["-D"], Some(b"aGk="), 0, b"hi", failures)
+  expect(
+    bin_root,
+    "base64",
+    ["-w4"],
+    Some(b"abcdef"),
+    0,
+    b"YWJj\nZGVm\n",
+    failures,
+  )
+  expect(bin_root, "base64", ["-d"], Some(b"!"), 1, b"", failures)
+  expect(bin_root, "basename", ["--", ""], None, 0, b"\n", failures)
+  expect(bin_root, "basename", ["///"], None, 0, b"/\n", failures)
+  expect(
+    bin_root,
+    "basename",
+    ["path///to///file///"],
+    None,
+    0,
+    b"file\n",
+    failures,
+  )
+  expect(bin_root, "dirname", ["--", ""], None, 0, b".\n", failures)
+  expect(bin_root, "dirname", ["///"], None, 0, b"/\n", failures)
+  expect(
+    bin_root,
+    "dirname",
+    ["path///to///file///"],
+    None,
+    0,
+    b"path///to\n",
+    failures,
+  )
+  expect(
+    bin_root,
+    "cat",
+    ["-u"],
+    Some(b"binary\x00\xff"),
+    0,
+    b"binary\x00\xff",
+    failures,
+  )
+  expect(
+    bin_root,
+    "cut",
+    ["-z", "-c1"],
+    Some(b"ab\x00cd"),
+    0,
+    b"a\x00c\x00",
+    failures,
+  )
+  expect_failure(bin_root, "cut", ["-c", "3-1"], 2, "decreasing", failures)
+  expect_failure(bin_root, "cut", ["-d", "", "-f1"], 2, "single byte", failures)
+  expect(
+    bin_root,
+    "printf",
+    ["%d,", "1", "2", "3"],
+    None,
+    0,
+    b"1,2,3,",
+    failures,
+  )
+  expect(bin_root, "printf", ["%b", "A\\x00B"], None, 0, b"A\x00B", failures)
+  expect(bin_root, "printf", ["%d", "invalid"], None, 1, b"0", failures)
+  expect(bin_root, "seq", ["3", "-1", "1"], None, 0, b"3\n2\n1\n", failures)
+  expect_failure(
+    bin_root,
+    "seq",
+    ["1", "0", "2"],
+    1,
+    "zero increment",
+    failures,
+  )
+  expect(bin_root, "echo", ["--", "-e"], None, 0, b"-- -e\n", failures)
+  expect(bin_root, "echo", ["-e", "A\\x00B"], None, 0, b"A\x00B\n", failures)
+  expect_failure(
+    bin_root,
+    "paste",
+    ["-s", "-d", "\\"],
+    1,
+    "unescaped backslash",
+    failures,
+  )
+  expect(bin_root, "sleep", ["0", "0s"], None, 0, b"", failures)
+  expect_failure(
+    bin_root,
+    "sleep",
+    ["-1"],
+    1,
+    "invalid time interval",
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "sleep",
+    ["--version"],
+    "0.1.3",
+    Map([]),
+    failures,
+  )
+  expect(bin_root, "true", ["ignored"], None, 0, b"", failures)
+  expect(bin_root, "false", ["ignored"], None, 1, b"", failures)
+  expect_stdout_contains(
+    bin_root,
+    "true",
+    ["--help"],
+    "Usage:",
+    Map([]),
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "false",
+    ["--version"],
+    "0.1.3",
+    Map([]),
+    failures,
+  )
+  let sleep_cancelled = @async.with_task_group <| group => {
+    let child = @process.spawn(
+      group,
+      @testkit.executable_path(bin_root, "sleep"),
+      ["60"],
+      cancel_handler=@process.hard_cancel(),
+      no_wait=true,
+    )
+    @async.sleep(20)
+    child.cancel()
+    ignore(child.wait()) catch {
+      _ => ()
+    }
+    true
+  }
+  record_result(
+    sleep_cancelled, "sleep: hard-cancel signal path did not terminate the child",
+    failures,
+  )
+  expect(bin_root, "tr", ["\\141", "X"], Some(b"a"), 0, b"X", failures)
+  expect(bin_root, "tr", ["[=a=]", "X"], Some(b"a"), 0, b"X", failures)
+  expect(bin_root, "tr", ["abc", "[X*]"], Some(b"abc"), 0, b"XXX", failures)
+  expect(
+    bin_root,
+    "tr",
+    ["-d", "[:punct:]"],
+    Some(b"a! b?\n"),
+    0,
+    b"a b\n",
+    failures,
+  )
+  expect(bin_root, "tr", ["-C", "a", "X"], Some(b"ab"), 0, b"aX", failures)
+  expect(bin_root, "tr", ["-t", "abc", "X"], Some(b"abc"), 0, b"Xbc", failures)
+  expect_failure(bin_root, "tr", ["\\", "X"], 2, "missing character", failures)
+  expect_failure(
+    bin_root,
+    "tr",
+    ["[:unknown:]", "X"],
+    2,
+    "unsupported character class",
+    failures,
+  )
+
+  let root = @fs.tmpdir(prefix="mooncmd-p9")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let left = @path.Path(root).join(Path("left")).to_string()
+  let right = @path.Path(root).join(Path("right")).to_string()
+  @fs.write_file(left, b"same\n")
+  @fs.write_file(right, b"same\n")
+  let cmp_equal = @testkit.run(@testkit.executable_path(bin_root, "cmp"), [
+    left, right,
+  ])
+  @fs.write_file(right, b"different\n")
+  let cmp_different = @testkit.run(@testkit.executable_path(bin_root, "cmp"), [
+    left, right,
+  ])
+  let missing = @path.Path(root).join(Path("missing")).to_string()
+  let cmp_error = @testkit.run(@testkit.executable_path(bin_root, "cmp"), [
+    left, missing,
+  ])
+  record_result(
+    cmp_equal.status == 0 && cmp_different.status == 1 && cmp_error.status == 2,
+    "cmp: P9 status matrix did not produce 0/1/2",
+    failures,
+  )
+
+  @fs.write_file(left, b"a\x00c\x00")
+  @fs.write_file(right, b"b\x00c\x00")
+  let comm_zero = @testkit.run(@testkit.executable_path(bin_root, "comm"), [
+    "-z", left, right,
+  ])
+  record_result(
+    comm_zero.status == 0 &&
+    @testkit.bytes_equal(comm_zero.stdout, b"a\x00\tb\x00\t\tc\x00"),
+    "comm: NUL-record merge mismatch",
+    failures,
+  )
+  @fs.write_file(left, b"b\na\n")
+  @fs.write_file(right, b"z\n")
+  let comm_checked = @testkit.run(@testkit.executable_path(bin_root, "comm"), [
+    "--check-order", left, right,
+  ])
+  let comm_unchecked = @testkit.run(
+    @testkit.executable_path(bin_root, "comm"),
+    ["--check-order", "--nocheck-order", left, right],
+  )
+  let comm_default = @testkit.run(@testkit.executable_path(bin_root, "comm"), [
+    left, right,
+  ])
+  @fs.write_file(right, b"b\na\n")
+  let comm_pairable = @testkit.run(@testkit.executable_path(bin_root, "comm"), [
+    left, right,
+  ])
+  record_result(
+    comm_checked.status == 1 &&
+    @testkit.contains_bytes(comm_checked.stderr, "not in sorted order") &&
+    comm_unchecked.status == 0 &&
+    comm_default.status == 1 &&
+    comm_pairable.status == 0,
+    "comm: explicit order-check precedence mismatch",
+    failures,
+  )
+
+  @fs.write_file(left, b"1\x002\x00")
+  @fs.write_file(right, b"a\x00b\x00")
+  let paste_zero = @testkit.run(@testkit.executable_path(bin_root, "paste"), [
+    "-z", left, right,
+  ])
+  record_result(
+    paste_zero.status == 0 &&
+    @testkit.bytes_equal(paste_zero.stdout, b"1\ta\x002\tb\x00"),
+    "paste: NUL-record output mismatch",
+    failures,
+  )
+  @fs.write_file(left, b"1 left\x002 left\x00")
+  @fs.write_file(right, b"1 right\x002 right\x00")
+  let join_zero = @testkit.run(@testkit.executable_path(bin_root, "join"), [
+    "-z", left, right,
+  ])
+  record_result(
+    join_zero.status == 0 &&
+    @testkit.bytes_equal(join_zero.stdout, b"1 left right\x002 left right\x00"),
+    "join: NUL-record output mismatch",
+    failures,
+  )
+  @fs.write_file(left, b"b\na\n")
+  @fs.write_file(right, b"a\nb\n")
+  let join_checked = @testkit.run(@testkit.executable_path(bin_root, "join"), [
+    "--check-order", left, right,
+  ])
+  let join_unchecked = @testkit.run(
+    @testkit.executable_path(bin_root, "join"),
+    ["--check-order", "--nocheck-order", left, right],
+  )
+  record_result(
+    join_checked.status == 1 &&
+    @testkit.contains_bytes(join_checked.stderr, "not in sorted order") &&
+    join_unchecked.status == 0,
+    "join: order-check precedence mismatch",
+    failures,
+  )
+  expect(
+    bin_root,
+    "nl",
+    ["-ba", "-ha", "-w1", "-s:", "-v10", "-i2"],
+    Some(b"\\:\\:\\:\nh\n\\:\\:\nb\n"),
+    0,
+    b"\n10:h\n\n10:b\n",
+    failures,
+  )
+
+  let pwd_invalid = @testkit.run(
+    @testkit.executable_path(bin_root, "pwd"),
+    ["-L"],
+    cwd=root,
+    extra_env=Map([("PWD", "/mooncmd-p9-does-not-exist")]),
+  )
+  record_result(
+    pwd_invalid.status == 0 &&
+    @testkit.bytes_equal(
+      pwd_invalid.stdout,
+      @utf8.encode((@fs.realpath(root) catch { _ => root }) + "\n"),
+    ),
+    "pwd: invalid logical PWD did not fall back to the physical cwd",
+    failures,
+  )
+  let printenv_mixed = @testkit.run(
+    @testkit.executable_path(bin_root, "printenv"),
+    ["P9_VALUE", "P9_MISSING"],
+    extra_env=Map([("P9_VALUE", "visible")]),
+  )
+  record_result(
+    printenv_mixed.status == 1 &&
+    @testkit.bytes_equal(printenv_mixed.stdout, b"visible\n"),
+    "printenv: present/missing status precedence mismatch",
+    failures,
+  )
+
+  let payload = @path.Path(root).join(Path("payload")).to_string()
+  let checks = @path.Path(root).join(Path("checks")).to_string()
+  @fs.write_file(payload, b"abc")
+  @fs.write_file(
+    checks, b"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad  payload\nmalformed\n",
+  )
+  let checksum_warn = @testkit.run(
+    @testkit.executable_path(bin_root, "sha256sum"),
+    ["-c", "--warn", "checks"],
+    cwd=root,
+  )
+  let checksum_strict = @testkit.run(
+    @testkit.executable_path(bin_root, "sha256sum"),
+    ["-c", "--strict", "--status", "checks"],
+    cwd=root,
+  )
+  let missing_checks = @path.Path(root).join(Path("missing-checks")).to_string()
+  @fs.write_file(
+    missing_checks, b"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad  absent\nba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad  payload\n",
+  )
+  let checksum_missing = @testkit.run(
+    @testkit.executable_path(bin_root, "sha256sum"),
+    ["-c", "--ignore-missing", "--quiet", "missing-checks"],
+    cwd=root,
+  )
+  record_result(
+    checksum_warn.status == 0 &&
+    @testkit.bytes_equal(checksum_warn.stdout, b"payload: OK\n") &&
+    @testkit.contains_bytes(checksum_warn.stderr, "improperly formatted") &&
+    checksum_strict.status == 1 &&
+    checksum_strict.stdout.is_empty() &&
+    checksum_strict.stderr.is_empty() &&
+    checksum_missing.status == 0 &&
+    checksum_missing.stdout.is_empty() &&
+    checksum_missing.stderr.is_empty(),
+    "sha256sum: malformed warning/strict/status precedence mismatch",
+    failures,
+  )
+  let checksum_binary = @testkit.run(
+    @testkit.executable_path(bin_root, "sha256sum"),
+    ["-bt", "payload"],
+    cwd=root,
+  )
+  let checksum_text = @testkit.run(
+    @testkit.executable_path(bin_root, "sha256sum"),
+    ["-tb", "payload"],
+    cwd=root,
+  )
+  record_result(
+    checksum_binary.status == 0 &&
+    @testkit.contains_bytes(checksum_binary.stdout, "  payload\n") &&
+    checksum_text.status == 0 &&
+    @testkit.contains_bytes(checksum_text.stdout, " *payload\n"),
+    "sha256sum: binary/text marker precedence mismatch",
+    failures,
+  )
+
+  let existing = @path.Path(root).join(Path("existing")).to_string()
+  let created = @path.Path(root).join(Path("created")).to_string()
+  @fs.mkdir(existing)
+  let mkdir_order = @testkit.run(@testkit.executable_path(bin_root, "mkdir"), [
+    existing, created,
+  ])
+  let removable = @path.Path(root).join(Path("removable")).to_string()
+  @fs.write_file(removable, b"x")
+  let rm_order = @testkit.run(@testkit.executable_path(bin_root, "rm"), [
+    missing, removable,
+  ])
+  let nonempty = @path.Path(root).join(Path("nonempty")).to_string()
+  let empty = @path.Path(root).join(Path("empty")).to_string()
+  @fs.mkdir(nonempty)
+  @fs.write_file(@path.Path(nonempty).join(Path("kept")).to_string(), b"x")
+  @fs.mkdir(empty)
+  let rmdir_order = @testkit.run(@testkit.executable_path(bin_root, "rmdir"), [
+    nonempty, empty,
+  ])
+  let tee_output = @path.Path(root).join(Path("tee-output")).to_string()
+  let tee_partial = @testkit.run(
+    @testkit.executable_path(bin_root, "tee"),
+    [root, tee_output],
+    stdin=b"stream\x00data",
+  )
+  record_result(
+    mkdir_order.status == 1 &&
+    @fs.exists(created) &&
+    rm_order.status == 1 &&
+    !@fs.exists(removable) &&
+    rmdir_order.status == 1 &&
+    !@fs.exists(empty) &&
+    @fs.exists(nonempty) &&
+    tee_partial.status == 1 &&
+    @testkit.bytes_equal(tee_partial.stdout, b"stream\x00data") &&
+    @testkit.bytes_equal(@fs.read_file(tee_output).binary(), b"stream\x00data"),
+    "filesystem utilities: failure ordering or partial-output handling mismatch",
+    failures,
+  )
 }
 
 ///|
@@ -3399,6 +3797,7 @@ async fn run_compat_suite(
   run_p5_sh_cases(bin_root, failures)
   run_p2_p3_cases(bin_root, failures)
   run_edge_cases(bin_root, failures)
+  run_p9_cases(bin_root, failures)
   run_stdin_prompt_cases(bin_root, failures)
   run_tail_follow_cases(bin_root, failures)
   run_http_cases(bin_root, failures)

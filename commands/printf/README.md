@@ -20,4 +20,5 @@ a character code. The format is reused until all arguments are consumed.
 
 Float conversions use the exact decimal expansion of the double with
 round-half-even, matching GNU printf digit for digit. Use `--` before a
-FORMAT that starts with `-`.
+FORMAT that starts with `-`. Invalid numeric prefixes produce the converted
+prefix plus a diagnostic and status 1; the format is still repeated as needed.

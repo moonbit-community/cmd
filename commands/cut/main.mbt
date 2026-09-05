@@ -118,16 +118,17 @@ async fn process_reader(
   field_ranges : Array[(Int, Int)]?,
   char_ranges : Array[(Int, Int)]?,
   delimiter : Byte,
+  record_delimiter : Byte,
   only_delimited : Bool,
 ) -> Unit {
-  let scanner = @stream.LineScanner::new(reader)
+  let scanner = @stream.LineScanner::new(reader, delimiter=record_delimiter)
   while scanner.next() is Some(line) {
     match field_ranges {
       Some(ranges) =>
         match cut_fields(line.data, ranges, delimiter, only_delimited) {
           Some(out) => {
             @stdio.stdout.write(out)
-            @stdio.stdout.write("\n")
+            @stdio.stdout.write(Bytes::from_array([record_delimiter]))
           }
           None => ()
         }
@@ -135,7 +136,7 @@ async fn process_reader(
         match char_ranges {
           Some(ranges) => {
             @stdio.stdout.write(cut_characters(line.data, ranges))
-            @stdio.stdout.write("\n")
+            @stdio.stdout.write(Bytes::from_array([record_delimiter]))
           }
           None => ()
         }
@@ -150,7 +151,9 @@ async fn main {
     @cli.flag("only-delimited", short='s'),
     @cli.option("delimiter", short='d'),
     @cli.option("fields", short='f'),
+    @cli.option("bytes", short='b'),
     @cli.option("characters", short='c'),
+    @cli.flag("zero-terminated", short='z'),
     @cli.flag("help"),
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
@@ -161,15 +164,20 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: cut (-c LIST | -f LIST [-d CHAR] [-s]) [FILE...]\n",
+      "Usage: cut (-b LIST | -c LIST | -f LIST [-d CHAR] [-s]) [-z] [FILE...]\n",
     )
     return
   }
   let only_delimited = parsed.contains("only-delimited")
+  let record_delimiter = if parsed.contains("zero-terminated") {
+    b'\x00'
+  } else {
+    b'\n'
+  }
   let delimiter = match parsed.last_value("delimiter") {
     Some(d) => {
       let encoded = @utf8.encode(d)
-      if encoded.length() != 1 {
+      if encoded.is_empty() || encoded.length() > 1 {
         @stdio.stderr.write(
           "cut: the delimiter must be a single byte in C locale\n",
         )
@@ -182,13 +190,27 @@ async fn main {
   }
   let fields_spec = parsed.last_value("fields")
   let chars_spec = parsed.last_value("characters")
-  if fields_spec is Some(_) && chars_spec is Some(_) {
-    @stdio.stderr.write("cut: fields and characters are mutually exclusive\n")
+  let bytes_spec = parsed.last_value("bytes")
+  let mode_count = (if fields_spec is Some(_) { 1 } else { 0 }) +
+    (if chars_spec is Some(_) { 1 } else { 0 }) +
+    (if bytes_spec is Some(_) { 1 } else { 0 })
+  if mode_count > 1 {
+    @stdio.stderr.write(
+      "cut: byte, character, and field modes are mutually exclusive\n",
+    )
     @sys.exit(2)
     return
-  } else if fields_spec is None && chars_spec is None {
+  } else if mode_count == 0 {
     @stdio.stderr.write(
       "cut: you must specify a list of fields (-f) or characters (-c)\n",
+    )
+    @sys.exit(2)
+    return
+  }
+  if fields_spec is None &&
+    (parsed.contains("delimiter") || parsed.contains("only-delimited")) {
+    @stdio.stderr.write(
+      "cut: an input delimiter and -s may be used only with fields\n",
     )
     @sys.exit(2)
     return
@@ -198,7 +220,11 @@ async fn main {
       Some(spec) => Some(parse_list(spec))
       None => None
     }
-    let char_ranges = match chars_spec {
+    let selected_chars = match chars_spec {
+      Some(spec) => Some(spec)
+      None => bytes_spec
+    }
+    let char_ranges = match selected_chars {
       Some(spec) => Some(parse_list(spec))
       None => None
     }
@@ -217,13 +243,13 @@ async fn main {
     try {
       if path == "-" {
         process_reader(
-          @stdio.stdin, field_ranges, char_ranges, delimiter, only_delimited,
+          @stdio.stdin, field_ranges, char_ranges, delimiter, record_delimiter, only_delimited,
         )
       } else {
         let file = @fs.open(path, mode=ReadOnly)
         defer file.close()
         process_reader(
-          file, field_ranges, char_ranges, delimiter, only_delimited,
+          file, field_ranges, char_ranges, delimiter, record_delimiter, only_delimited,
         )
       }
     } catch {

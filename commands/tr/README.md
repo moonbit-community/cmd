@@ -10,8 +10,10 @@ printf 'a  b' | moonx cli/tr -s ' '
 moonx cli/tr -d '\n' < file.txt
 ```
 
-Options: `-d` delete SET1 bytes, `-s` squeeze repeats, `-c` complement
-SET1. Sets support escapes (`\n`, `\t`, ...), byte ranges (`a-z`), and the
-classes `[:lower:]`, `[:upper:]`, `[:digit:]`, `[:alpha:]`, `[:alnum:]`,
-`[:space:]`, `[:xdigit:]`. Operates on bytes; set characters must be
-Latin-1.
+Options: `-d` delete SET1 bytes, `-s` squeeze repeats, and `-c`/`-C`
+complement SET1. `-t` truncates SET1 to SET2's length. Sets support escapes
+(`\n`, `\t`, `\123`), byte
+ranges, C-locale character and equivalence classes, and `[CHAR*COUNT]` or
+SET2-filling `[CHAR*]` repetition. Operates on raw bytes under the fixed
+`LC_ALL=C` profile; locale data beyond that profile is intentionally not
+consulted.

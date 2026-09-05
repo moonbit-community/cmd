@@ -30,12 +30,13 @@ async fn main {
     return
   }
   if !parsed.operands.is_empty() {
-    @stdio.stderr.write("pwd: unexpected operand: '\{parsed.operands[0]}'\n")
-    @sys.exit(2)
-    return
+    @stdio.stderr.write("pwd: ignoring non-option arguments\n")
   }
-  let logical = parsed.last_occurrence(["logical", "physical"]) !=
-    Some("physical")
+  let logical = match parsed.last_occurrence(["logical", "physical"]) {
+    Some("logical") => true
+    Some("physical") => false
+    _ => @env.get_env_var("POSIXLY_CORRECT") is Some(_)
+  }
   guard @env.current_dir() is Some(current) else {
     @stdio.stderr.write("pwd: cannot determine current directory\n")
     @sys.exit(1)
@@ -43,7 +44,15 @@ async fn main {
   }
   let selected = if logical {
     match @env.get_env_var("PWD") {
-      Some(path) if valid_logical_path(path) => path
+      Some(path) if valid_logical_path(path) => {
+        let resolved = @fs.realpath(path) catch { _ => "" }
+        let physical = @fs.realpath(current) catch { _ => current }
+        if resolved != "" && resolved == physical {
+          path
+        } else {
+          current
+        }
+      }
       _ => current
     }
   } else {

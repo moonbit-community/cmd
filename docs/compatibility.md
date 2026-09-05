@@ -50,49 +50,49 @@ claiming success; `local-only` is absent from MoonX by design.
 
 | Command | Status | Measured profile | Observed boundary or open evidence |
 | --- | --- | --- | --- |
-| `base64` | subset verified | `-d`, `-w N`, file and stdin encode/decode | Invalid-input and every GNU alias not probed |
-| `basename` | subset verified | `-a`, `-s SUFFIX`, `-z`, multiple names | Full operand ambiguity not probed |
-| `cat` | subset verified | files/stdin; `-n -b -s -A -E -T -v -e -t` | Less common GNU flags not claimed |
+| `base64` | subset verified | `-d/-D`, `-i/--ignore-garbage`, `-w N`, file and stdin encode/decode | Nonstandard alphabets and locale diagnostics not claimed |
+| `basename` | subset verified | `-a`, `-s SUFFIX`, `-z`, empty/root/repeated-separator operands | Full multibyte path locale behavior not claimed |
+| `cat` | subset verified | files/stdin; `-n -b -s -A -E -T -v -e -t`, `-u/--unbuffered` | Unbuffered is a stream-safe compatibility no-op |
 | `chmod` | restricted | numeric modes plus closed `=` assignments (`a=rwx`, `u=rw,g=r,o=`), regular files, `-R`, `-v` | incremental/implicit symbolic classes, symbolic assignment on directories/symlinks, and `--reference` rejected; invalid-form and no-side-effect probes are P8.1 |
-| `cmp` | subset verified | equal=0, different=1; `-s -l -n -i` accepted | Full diagnostic parity not claimed |
-| `comm` | subset verified | three columns, `-1 -2 -3`, `-`, clustered flags | Locale/unsorted diagnostics not probed |
+| `cmp` | subset verified | equal=0, different=1, error=2; `-s -l -n -i` | Full diagnostic byte parity not claimed |
+| `comm` | subset verified | three columns, `-1 -2 -3`, `-z`, `--check-order`, `--nocheck-order`, `-`, clustered flags | Locale collation beyond C bytes not claimed |
 | `cp` | restricted | files/trees, exercised `--update=older` and numbered backup paths, command-line `-H`, `-T`, `-v`; complete preflight | Remaining update modes, interactive/suffix and `-L/-P` probes are P8.1; `-p/-a`, special files, unsupported links, and cycles rejected before output |
 | `curl` | restricted | Bounded HTTP/HTTPS profile: `-sS -f -o -OJ -L -I -H -X -d -T`; all documented methods; raw/binary/URL-encoded data; filename collisions and cleanup; retries; connect/total/idle timeouts; redirect limits and cross-origin stripping; HTTP CONNECT proxy/bypass; insecure TLS | Non-HTTP protocols, auth/cookie/config state, HTTP/2 negotiation, and exact native progress/diagnostic bytes not claimed |
-| `cut` | subset verified | `-c`, `-f`, `-d`, `-s`, range/comma lists | Locale/multibyte/error parity not probed |
-| `dirname` | subset verified | multiple operands and `-z` | Remaining path corner cases not probed |
-| `echo` | subset verified | `-n`, `-e`, `-E`, escapes | Shell mode ambiguities not probed |
+| `cut` | subset verified | `-c`, `-f`, `-d`, `-s`, `-z`, range/comma lists | Locale/multibyte behavior not claimed |
+| `dirname` | subset verified | multiple operands and `-z`, empty/root/repeated-separator operands | Multibyte path locale behavior not claimed |
+| `echo` | subset verified | `-n`, `-e`, `-E`, byte escapes, literal `--` ambiguity | `POSIXLY_CORRECT` profile not claimed |
 | `env` | restricted | `-i/--ignore-environment`, `-u/--unset`, `-0`, GNU-style non-empty assignment names and option boundary, `-C/--chdir`, direct child launch, statuses 125/126/127 | `--help` is a verified status-125 rejection; cwd and child each require policy |
-| `false` | subset verified | any args: no output, status 1 | No help path in artifact |
+| `false` | subset verified | any args: no output, status 1; help/version return 0 | Metadata text is package-versioned |
 | `find` | restricted | names/paths/types, `-empty/-size`, metadata predicates, access checks, `-xtype`, depth/actions | File/process policy required; P8 time/reference/access combinations still need independent probes; ownership, inode, link-count, and full GNU expression grammar not claimed |
 | `grep` | subset verified | existing match modes plus `-A -B -C -b -s -z`, binary policies, recursive `--include/--exclude`, C-locale byte offsets | Include/exclude globs are the portable `*`/`?` basename profile; locale-aware classes and full diagnostics not claimed |
 | `head` | subset verified | `-n`, `-c`, signed/attached/long/legacy counts and decimal/binary/IEC size suffixes, `-z`, `-q/-v`, files/stdin and headers | Counts are bounded by signed 64-bit storage; locale-aware records are not claimed |
-| `join` | subset verified | `-1 -2 -t -a -v -e -o`, `-` stdin | Legacy aliases/locale diagnostics not probed |
+| `join` | subset verified | `-1 -2 -t -a -v -e -o`, `-z`, `-` stdin | Locale diagnostics not claimed |
 | `jq` | subset verified | `-c -r -f -n -l -S -j -s -R -e`, `--arg`, `--argjson`, `--indent`, `--tab`; field/path, map/reduce/assignment/try filters from the imported evaluator | Not a complete jq 1.8.2 diagnostics/modules/streaming claim |
 | `jqlog` | subset verified | JSONL stdin/raw input, `-f`, `-h`; invalid lines skipped | Compared with imported jqlog contract, not a system utility |
 | `ln` | subset verified | symbolic `-s`, exercised `-r`, and the parser's `-f/-i`, `-n/-T`, `-t`, backup/suffix, `-v` paths | Target-directory and overwrite combinations need P8.1 probes; hard-link request rejected before mutation |
 | `ls` | subset verified | `-a -A -d -F -1 -R`, reverse, regular-file `-S`, basic time/access/status sorting | P8 time selector, link-follow, executable `-F`, and tie-break probes remain; long/colour/ownership/inode/block formats not claimed |
 | `make` | restricted | `-B -n -s -C -f -k -W -j`, command-line variables, conditionals, pattern rules, automatic variables, includes and recipes | Recipe process lookup/cwd follows the Wasm host contract; parallel scheduling is bounded/sequential and full GNU language not verified |
-| `mkdir` | subset verified | `-p`, numeric `-m`, `-v` | Symbolic mode/umask parity not probed |
+| `mkdir` | subset verified | `-p`, numeric `-m`, `-v`; deterministic failure ordering | Symbolic mode/umask parity not probed |
 | `mv` | subset verified | files/dirs, `-f/-n`, `-T`, `-v`, and the exercised `update=none` path | P8 interactive/backup/suffix and remaining update modes need probes; cross-filesystem fallback not claimed; source preserved on rename failure |
-| `nl` | subset verified | `-b`, `-w`, `-s`, files/stdin | Page/section delimiters not probed |
-| `paste` | subset verified | parallel/serial `-s`, delimiter cycling `-d` | Full delimiter/error matrix not claimed |
-| `printenv` | subset verified | selected/all values and `-0` | Wasm environment is policy-dependent |
-| `printf` | subset verified | reused formats, conversions, width/precision, flags, escapes, `--` | Locale and every GNU diagnostic not claimed |
-| `pwd` | subset verified | `-L`, `-P`; both status 0 | Logical/physical result follows Wasm cwd contract |
-| `rm` | subset verified | files/trees, `-r`, `-f`, `-d`, `-v` | Root/current-directory protection is unconditional |
-| `rmdir` | subset verified | empty removal, `-p`, `-I`, `-v` | Full path diagnostics not claimed |
-| `seq` | subset verified | one/two/three-number forms, `-w`, `-s` | Full GNU formatting/overflow not probed |
+| `nl` | subset verified | `-b/-h/-f`, `-w`, `-s`, `-v`, `-i`, `-d`, `-p`, files/stdin | Locale-aware formatting not claimed |
+| `paste` | subset verified | parallel/serial `-s`, delimiter cycling `-d`, `-z` | Full malformed delimiter diagnostics not claimed |
+| `printenv` | subset verified | selected/all values and `-0`, mixed present/missing status | Wasm environment is policy-dependent |
+| `printf` | subset verified | reused formats, conversions, width/precision, flags, escapes, numeric repetition, `--` | Locale and every GNU diagnostic not claimed |
+| `pwd` | subset verified | `-L`, `-P`, invalid logical `PWD` fallback | Logical/physical result follows Wasm cwd contract |
+| `rm` | subset verified | files/trees, `-r`, `-f`, `-d`, `-v`, failure ordering | Root/current-directory protection is unconditional |
+| `rmdir` | subset verified | empty removal, `-p`, `-I`, `-v`, failure ordering | Full path diagnostics not claimed |
+| `seq` | subset verified | one/two/three-number forms, descending values, `-w`, `-s`, `--version` | Full GNU overflow/locale formatting not claimed |
 | `sh` | restricted | `-c`, `-s`, script/stdin selection, variables, positional parameters, pipelines, redirections/heredocs, command substitution, conditionals, case/patterns, loops, functions/return, grouping/subshells, `${#name}`, `set -e/-u`, `shift` | External commands remain explicit policy-visible child requests; unsupported non-POSIX/Bash-only syntax is rejected |
-| `sha256sum` | subset verified | file/stdin digest, `-c`, `-z` | All checksum warning/status combinations not claimed |
-| `sleep` | subset verified | fractional values, `s/m/h/d`, multiple operands | Signal/cancellation parity not claimed |
+| `sha256sum` | subset verified | file/stdin digest, `-c`, `-z`, quiet/status/strict/warn/ignore-missing verification modes | Binary manifest extensions and every warning byte not claimed |
+| `sleep` | subset verified | fractional values, `s/m/h/d`, multiple operands, help/version | Signal/cancellation parity not claimed |
 | `sort` | subset verified | repeated `-k` field/character modifiers with GNU blank boundaries; `-b -d -f -i -n -g -h -M -V -r -u -z`; `-c/-C` checks | `-R` is a verified rejection without a seed contract; locale/external-sort semantics not claimed |
 | `tail` | subset verified | `-n`, `-c`, `+K`, `-q`, `-v`, `-f`/`--follow`, `-s`/`--sleep-interval` | `-f` follows open regular-file descriptors by polling; stdin/pipes stop at EOF; `-F` path-follow and rotation reopen are not claimed |
-| `tee` | subset verified | stdin to stdout/files and `-a` append | Signal/partial-write diagnostics not claimed |
+| `tee` | subset verified | stdin to stdout/files and `-a` append, partial-output ordering | Signal diagnostics not claimed |
 | `test` | subset verified | string/integer, file kinds, access, regular-file size, `!`, `-a`, `-o`, and the exercised dangling-link path | `-N`/`-nt`/`-ot` and special-file positive fixtures need independent probes; complete unary/binary ambiguity not claimed |
 | `timeout` | local-only | local duration and expiry returned 124 | No published process-group cancellation |
 | `touch` | subset verified | create/default update and `-c` | `-a/-m/-d/-r/-t/--time` return nonzero; explicit no-content-change rejection probes are P8.1 |
-| `tr` | subset verified | translate/delete/squeeze/complement/ranges/classes | Verified profile is byte-oriented; locale parity not claimed |
-| `true` | subset verified | any args: no output, status 0 | No help path in artifact |
+| `tr` | subset verified | translate/delete/squeeze/`-c/-C` complement, `-t`, ranges, C-locale classes, octal/equivalence/repetition forms | Verified profile is byte-oriented; locale data beyond C is not claimed |
+| `true` | subset verified | any args: no output, status 0; help/version | Metadata text is package-versioned |
 | `uniq` | subset verified | adjacent filtering, `-c -d -u -i`, `-f -s -w -z`, exact count spacing | Fixed C-locale field/character comparison; locale collation not claimed |
 | `wc` | subset verified | `-l -w -c -m -L`, combinations, aligned multi-file totals, `--files0-from`, files/stdin | `-L` is the C-locale display-width profile; full locale diagnostics not claimed |
 | `wget` | restricted | Bounded HTTP/HTTPS profile: URL input files; quiet/output/log modes; resume and conditional 304; headers/method/data or binary file bodies; retry classification/delay; redirect limits; content-disposition collisions; connect/read/idle timeouts; HTTP CONNECT proxy/bypass; certificate verification control; HTTP status 8 | Recursive mirroring, cookies/auth/HSTS, FTP and other protocols, post-download timestamp restoration, and exact GNU progress/diagnostic bytes not claimed |
@@ -109,7 +109,6 @@ positive result. They are probe targets, not product claims.
 | --- | --- |
 | `make` | semantic coverage beyond the tested rule/include/recipe slice |
 | `sh` | Bash-only syntax, interactive mode, job control, arrays, process substitution, startup files, and grammar beyond the listed successful POSIX slice |
-| `sha256sum` | checksum warning/status matrix |
 
 Each row identifies the option families exercised successfully. Explicit
 rejections, including `chmod` incremental/reference modes,

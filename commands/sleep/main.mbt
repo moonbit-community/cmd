@@ -47,9 +47,18 @@ fn parse_duration(text : String) -> Double raise CliError {
 
 ///|
 async fn main {
-  let args = @env.args()[1:]
+  let raw_args = @env.args()[1:]
+  let args = if raw_args.length() > 0 && raw_args[0] == "--" {
+    raw_args[1:]
+  } else {
+    raw_args
+  }
   if args.length() > 0 && (args[0] == "-h" || args[0] == "--help") {
     @stdio.stdout.write(usage() + "\n")
+    return
+  }
+  if args.length() == 1 && args[0] == "--version" {
+    @stdio.stdout.write("sleep (moonbit cmd) 0.1.3\n")
     return
   }
   if args.is_empty() {

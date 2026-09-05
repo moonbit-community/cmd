@@ -12,8 +12,9 @@ and Wasm.
 ## Decision
 
 Keep implicit stdin byte-clean and silent. Use a fixed C-locale byte contract
-for the text pipeline (`grep`, `sort`, `uniq`, `wc`, `tr`, and related record
-operations). Keep sorting in-process with bounded memory. `tail -f` follows an
+for the text pipeline (`grep`, `sort`, `uniq`, `wc`, `tr`, `cut`, `paste`,
+`join`, and `comm`). Record commands support explicit NUL framing where
+upstream exposes it. Keep sorting in-process with bounded memory. `tail -f` follows an
 already-open regular-file descriptor by polling; `tail -F` path reopen and
 rotation are rejected until a portable identity and cancellation contract
 exists.
@@ -26,8 +27,9 @@ and path-follow rotation are outside the claimed profile.
 
 ## Evidence
 
-The P2/P3 manifest cases exercise binary/NUL records, C-locale ordering, and
-the retained `tail -F` rejection.
+The P2/P3 and P9 manifest cases exercise binary/NUL records, C-locale byte
+classes and ordering, malformed-input handling, and the retained `tail -F`
+rejection.
 
 ## Revisit when
 

@@ -8,4 +8,5 @@ Do nothing, successfully:
 moonx cli/true && echo it worked
 ```
 
-Ignores all arguments, produces no output, and exits with status 0.
+Ignores all arguments, produces no output, and exits with status 0. `--help`
+and `--version` print the corresponding metadata and still exit successfully.

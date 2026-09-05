@@ -16,11 +16,10 @@ hard error so a test cannot accidentally validate a stale or implicitly built
 binary. Filesystem fixtures may set `delay_ms` (0 through 10000) to establish
 stable timestamp order without rebuilding commands or launching setup processes.
 
-The P2/P3 profile adds strict C-locale differential cases for `grep`, `env`,
-`sort`, `uniq`, `wc`, and `head`, plus the retained `tail -F` rejection. The
-manifest currently contains 141 semantic cases, including the P5 shell grammar,
-P6 jq modes, and P7 xxd/make fixtures. Binary/NUL and parser-heavy
-checks are grouped in the native suite, while file/cwd/process authorization is
+The manifest currently contains 177 semantic cases. P9 adds 36 pinned-oracle
+cases plus one shared-fixture native group for status matrices, binary/NUL
+records, malformed input, failure ordering, and cancellation. Parser-heavy
+checks remain in the native suite, while file/cwd/process authorization is
 exercised only by the Wasm policy suite.
 
 Validate the manifest without building or starting a command:
@@ -55,7 +54,7 @@ network endpoint is part of the contract. `--gnu-diff` and `--stress` are
 opt-in extensions of the native compatibility suite.
 
 The manifest `commands[].native` and `commands[].wasm` fields are audit labels
-such as `p8-measured` or `policy-measured`; they identify which evidence family
+such as `p9-measured` or `policy-measured`; they identify which evidence family
 has run, not a complete upstream support claim. `status` and
 `docs/compatibility.md` remain authoritative. A command can therefore be
 marked measured while its plan-level gap register still requires more

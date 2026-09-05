@@ -62,10 +62,10 @@ fn decode_escapes(text : String) -> (Bytes, Bool) {
         out.push(value.to_byte())
         i = j
       }
-    } else if escaped == '0' {
+    } else if escaped is ('0'..='7') {
       let mut value = 0
       let mut count = 0
-      let mut j = i + 2
+      let mut j = if escaped == '0' { i + 2 } else { i + 1 }
       while j < chars.length() && count < 3 && chars[j] is ('0'..='7') {
         value = value * 8 + chars[j].to_int() - '0'.to_int()
         count += 1
@@ -85,15 +85,19 @@ fn decode_escapes(text : String) -> (Bytes, Bool) {
 ///|
 async fn main {
   let args = @env.args()[1:]
+  if args.length() == 1 && args[0] == "--help" {
+    @stdio.stdout.write("Usage: echo [-n] [-e|-E] [STRING...]\n")
+    return
+  }
+  if args.length() == 1 && args[0] == "--version" {
+    @stdio.stdout.write("echo (moonbit cmd) 0.1.3\n")
+    return
+  }
   let mut newline = true
   let mut escapes = false
   let mut index = 0
   while index < args.length() {
     let arg = args[index]
-    if arg == "--help" {
-      @stdio.stdout.write("Usage: echo [-n] [-e|-E] [STRING...]\n")
-      return
-    }
     if !arg.has_prefix("-") || arg == "-" || arg == "--" {
       break
     }
@@ -116,15 +120,24 @@ async fn main {
     }
     index += 1
   }
-  let text = args[index:].join(" ")
   if escapes {
-    let (output, stopped) = decode_escapes(text)
-    @stdio.stdout.write(output)
+    let mut stopped = false
+    for operand_index in index..<args.length() {
+      if operand_index > index {
+        @stdio.stdout.write(" ")
+      }
+      let (output, operand_stopped) = decode_escapes(args[operand_index])
+      @stdio.stdout.write(output)
+      if operand_stopped {
+        stopped = true
+        break
+      }
+    }
     if newline && !stopped {
       @stdio.stdout.write("\n")
     }
   } else {
-    @stdio.stdout.write(text)
+    @stdio.stdout.write(args[index:].join(" "))
     if newline {
       @stdio.stdout.write("\n")
     }

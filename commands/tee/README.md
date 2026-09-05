@@ -4,6 +4,8 @@ Observed Wasm profile (2026-09-03): this README is supplementary. The [support r
 
 Copy standard input to standard output and each file operand. The observed
 `-a`/`--append` path appends instead of truncating files.
+If one output cannot be opened or written, `tee` continues writing stdout and
+the remaining outputs, then exits nonzero.
 
 `tee` always reads stdin silently until EOF. Terminal, pipe, and redirection
 paths do not receive a repository-specific prompt.
