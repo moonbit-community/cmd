@@ -85,7 +85,7 @@ async fn serve_test_requests(
           })
           .end_response()
         "/header-stall" => {
-          @async.sleep(200)
+          @async.sleep(500)
           connection..send_response(200, "OK").end_response()
         }
         "/body-stall" => {
@@ -93,7 +93,7 @@ async fn serve_test_requests(
             "Content-Length": "5",
           })
           connection.flush()
-          @async.sleep(200)
+          @async.sleep(500)
           connection..write("later").end_response()
         }
         _ => connection..send_response(400, "Bad Request").end_response()
@@ -158,11 +158,11 @@ async test "request and body reads enforce idle timeout" {
         fetch_with_options(
           "http://127.0.0.1:\{port}\{path}",
           None,
-          fetch_options(false, 20, false, "test"),
+          fetch_options(false, 100, false, "test"),
         )
       catch {
         NetOpError(message) =>
-          assert_true(message.contains("timed out after 20 milliseconds"))
+          assert_true(message.contains("timed out after 100 milliseconds"))
         _ => fail("expected NetOpError")
       } noraise {
         _ => fail("expected idle timeout")
