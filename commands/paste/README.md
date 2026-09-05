@@ -11,7 +11,7 @@ moonx cli/paste -s -d, nums.txt   # serial: one output line per file
 
 Options: `-d LIST` delimiter characters cycled between columns (default
 TAB; `\b`, `\f`, `\n`, `\r`, `\t`, `\v`, `\0` for empty, and `\\` are
-understood; `\0NNN` additionally emits an octal byte), `-s` serial
+understood), `-s` serial
 mode, and `-z` for NUL-delimited input and output records. Repeated `-`
 operands consume successive records from the same stdin stream. An empty delimiter list selects one empty delimiter, while
 a trailing unescaped backslash is rejected before any input is consumed.

@@ -27,7 +27,7 @@ line cannot promote a claim. The retired `tests/cram`, `tests/compat`,
 
 ## Evidence
 
-The current manifest validates 48 commands and 177 cases, including the P9
+The current manifest validates 48 commands and 176 cases, including the P9
 low-risk closure matrix. The runner README documents the reusable-artifact
 contract and the exact commands. P9's local compat group adds status, binary,
 malformed-input, and side-effect assertions that remain separate from the

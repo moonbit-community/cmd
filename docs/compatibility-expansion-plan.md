@@ -47,14 +47,14 @@ Observed in this checkout on 2026-09-05:
 | Wasm release build | Passed | One reusable Wasm artifact root exists |
 | Unified `compat` suite | Passed | Native semantics, boundaries, and stress hooks are green |
 | Unified `policy` suite | Passed | Wasm authorization and mutation assertions are green |
-| Unified manifest validation | 48 commands, 177 semantic cases | Fixture schema and pre-built artifact references are valid |
+| Unified manifest validation | 48 commands, 176 semantic cases | Fixture schema and pre-built artifact references are valid |
 | Remote pinned oracle | P9 run pending delivery commit | Linux pinned upstream comparison remains a required remote gate; no local Docker oracle is available |
 | Local Docker oracle | Not available | Docker is absent; remote CI is the required oracle gate |
 | `moon fmt`, `moon info`, `git diff --check` | Passed after this documentation audit | Documentation and generated interfaces are clean |
 
 Manifest case groups are: phase0 4, phase2 17, P1 8, phase3 30, phase4 11,
-phase5 17, P2 7, P3 23, P6 5, P7 7, P8 12, and P9 36. The oracle suite
-executes all 177 manifest cases; the old claim of 66 cases was stale.
+phase5 17, P2 7, P3 23, P6 5, P7 7, P8 12, and P9 35. The oracle suite
+executes all 176 manifest cases; the old claim of 66 cases was stale.
 
 ## Stage Reports
 
@@ -64,7 +64,7 @@ upstream option has been exhaustively tested.
 
 | Stage | Delivery date | Delivery commit(s) | Delivered surface | Evidence | Remaining boundary | Audit result |
 | --- | --- | --- | --- | --- | --- | --- |
-| P0 | 2026-09-04 | `1953490` | Unified `compat`, `oracle`, and `policy` suites; pre-built artifact roots; retired tree removal | Current 177-case manifest validates; native and policy suites pass; remote oracle green | Local Docker oracle unavailable | Complete |
+| P0 | 2026-09-04 | `1953490` | Unified `compat`, `oracle`, and `policy` suites; pre-built artifact roots; retired tree removal | Current 176-case manifest validates; native and policy suites pass; remote oracle green | Local Docker oracle unavailable | Complete |
 | P1 | 2026-09-04 | `0094682` | Bounded HTTP/HTTPS `curl` and `wget` controls, retries, redirects, bodies, proxy and TLS policy | 25 HTTP manifest cases (phase2 17 + P1 8), reusable local fixtures, Wasm network allow/deny | No FTP/SFTP/SMTP, auth/cookie/config state, or exact progress bytes | Delivered bounded profile |
 | P2 | 2026-09-04 | `9a12422` | `grep` context/byte/NUL/recursive/binary surface and `env` aliases, `-C`, precedence, status mapping | 7 P2 manifest cases plus native and policy runner coverage | Full locale classes and complete GNU diagnostics are not claimed | Delivered bounded profile |
 | P3 | 2026-09-04 | `9a12422` | Deterministic `sort`, `uniq`, `wc`, and `head` pipeline extensions | 23 P3 manifest cases, C-locale byte tests, retained `tail -F` rejection | No external sort files; `sort -R` and `tail -F` remain rejected | Delivered bounded profile |
@@ -73,7 +73,7 @@ upstream option has been exhaustively tested.
 | P6 | 2026-09-05 | `ca2f442`, `b684cf1` | Deterministic `jq` CLI modes and imported evaluator boundary | 5 P6 manifest cases, invalid-value cases, imported `jqlog` contract | Not a full jq 1.8.2 language, module or diagnostic claim | Delivered bounded profile |
 | P7 | 2026-09-05 | `ca2f442`, `b684cf1` | Bounded `make` conditionals/includes/patterns and `xxd` include/addressed reverse modes | 7 P7 manifest cases with negative parser and offset cases | Jobserver parallelism and negative/end-relative seeks remain rejected | Delivered bounded profile |
 | P8 | 2026-09-05 | `fbd2aae`, `083d21d`, `6c3aee6` | Maximum pure-MoonBit Native/Wasm filesystem subset; shared timestamp, overwrite, traversal and platform capability APIs | 12 P8 manifest cases, package tests, native/Wasm policy suite, remote oracle green | Several newly implemented option families lack one-case-per-option differential evidence; see gap register | Implementation shipped; certification incomplete |
-| P9 | 2026-09-05 | working tree (to be recorded at delivery) | Remaining low-risk closure: binary/text edge cases, aliases, NUL records, section numbering, status matrices, checksum verification controls, fixed C-locale `tr` classes and escapes | 36 manifest cases, `run_p9_cases` compat group, native/Wasm release runs, policy and GNU-diff gates passed locally; pinned oracle pending final delivery commit | Exact host diagnostics remain compat-only where GNU strings are not stable; no locale beyond fixed C byte profile | Delivered pending final CI |
+| P9 | 2026-09-05 | working tree (to be recorded at delivery) | Remaining low-risk closure: binary/text edge cases, aliases, NUL records, section numbering, status matrices, checksum verification controls, fixed C-locale `tr` classes and escapes | 35 manifest cases, `run_p9_cases` compat group, native/Wasm release runs, policy and GNU-diff gates passed locally; pinned oracle pending final delivery commit | Exact host diagnostics remain compat-only where GNU strings are not stable; no locale beyond fixed C byte profile | Delivered pending final CI |
 
 ## Delivered Scope By Stage
 

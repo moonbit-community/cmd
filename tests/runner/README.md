@@ -16,7 +16,7 @@ hard error so a test cannot accidentally validate a stale or implicitly built
 binary. Filesystem fixtures may set `delay_ms` (0 through 10000) to establish
 stable timestamp order without rebuilding commands or launching setup processes.
 
-The manifest currently contains 177 semantic cases. P9 adds 36 pinned-oracle
+The manifest currently contains 176 semantic cases. P9 adds 35 pinned-oracle
 cases plus one shared-fixture native group for status matrices, binary/NUL
 records, malformed input, failure ordering, and cancellation. Parser-heavy
 checks remain in the native suite, while file/cwd/process authorization is

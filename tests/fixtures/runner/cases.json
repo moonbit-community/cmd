@@ -1849,16 +1849,6 @@
       "normalizations": []
     },
     {
-      "id": "p9-paste-octal-delimiter",
-      "command": "paste",
-      "args": ["-s", "-d", "\\012"],
-      "stdin_hex": "610a620a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
       "id": "p9-join-check-order",
       "command": "join",
       "args": ["--check-order", "left", "right"],

@@ -107,7 +107,7 @@ async fn compare_readers(
             let position = compared + offset.to_int64() + 1
             if !silent && !verbose {
               @stdio.stdout.write(
-                "\{display_name(left_name)} \{display_name(right_name)} differ: byte \{position}, line \{line}\n",
+                "\{display_name(left_name)} \{display_name(right_name)} differ: char \{position}, line \{line}\n",
               )
               return true
             }

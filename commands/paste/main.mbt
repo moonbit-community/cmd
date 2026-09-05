@@ -10,7 +10,6 @@ fn parse_delimiters(spec : String) -> Array[Bytes] raise DelimiterError {
   let mut i = 0
   while i < raw.length() {
     if raw[i] == b'\\' && i + 1 < raw.length() {
-      let octal = raw[i + 1] == b'0'
       let out = match raw[i + 1] {
         b'b' => b"\b"
         b'f' => b"\f"
@@ -18,33 +17,12 @@ fn parse_delimiters(spec : String) -> Array[Bytes] raise DelimiterError {
         b'r' => b"\r"
         b't' => b"\t"
         b'v' => b"\x0b"
-        b'0' => {
-          let mut j = i + 2
-          let mut value = 0
-          let mut count = 0
-          while j < raw.length() &&
-                count < 3 &&
-                raw[j] >= b'0' &&
-                raw[j] <= b'7' {
-            value = value * 8 + raw[j].to_int() - b'0'.to_int()
-            count += 1
-            j += 1
-          }
-          if count == 0 {
-            i += 2
-            delims.push(b"")
-            continue
-          }
-          i = j
-          Bytes::from_array([value.to_byte()])
-        }
+        b'0' => b""
         b'\\' => b"\\"
         byte => Bytes::from_array([byte])
       }
       delims.push(out)
-      if !octal {
-        i += 2
-      }
+      i += 2
     } else if raw[i] == b'\\' {
       raise DelimiterError(
         "paste: delimiter list ends with an unescaped backslash",
@@ -74,9 +52,7 @@ async fn paste_serial(
     @stdio.stdout.write(line.data)
     index += 1
   }
-  if index > 0 {
-    @stdio.stdout.write(Bytes::from_array([record_delimiter]))
-  }
+  @stdio.stdout.write(Bytes::from_array([record_delimiter]))
 }
 
 ///|

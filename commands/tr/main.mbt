@@ -18,6 +18,7 @@ priv struct ExpandedSet {
   classes : Array[(Int, String)]
   has_equivalence : Bool
   indefinite_repeats : Int
+  warnings : Array[String]
 }
 
 ///|
@@ -39,6 +40,7 @@ fn parse_escaped_byte(
   raw : Bytes,
   start : Int,
   spec : String,
+  warnings : Array[String],
 ) -> (Byte, Int) raise CliError {
   if start + 1 >= raw.length() {
     raise CliError("tr: missing character after backslash in: '\{spec}'")
@@ -53,6 +55,13 @@ fn parse_escaped_byte(
       // GNU consumes only the first two digits when three digits overflow a
       // byte, leaving the third digit as a separate set element.
       if candidate > 0xFF {
+        let digits = bytes_to_ascii(raw, start + 1, index + 1)
+        let first_two = bytes_to_ascii(raw, start + 1, index)
+        let trailing = raw[index].to_int().unsafe_to_char()
+        warnings.push(
+          "tr: warning: the ambiguous octal escape \\\{digits} is being\n" +
+          "\tinterpreted as the 2-byte sequence \\0\{first_two}, \{trailing}\n",
+        )
         break
       }
       value = candidate
@@ -145,19 +154,22 @@ fn class_bytes(name : String) -> Array[Byte] raise CliError {
 }
 
 ///|
-fn parse_set_tokens(spec : String) -> Array[SetToken] raise CliError {
+fn parse_set_tokens(
+  spec : String,
+  warnings : Array[String],
+) -> Array[SetToken] raise CliError {
   let raw = @utf8.encode(spec)
   let tokens : Array[SetToken] = []
   let mut i = 0
   while i < raw.length() {
     let c = raw[i]
     if c == b'\\' {
-      let (escaped, next) = parse_escaped_byte(raw, i, spec)
+      let (escaped, next) = parse_escaped_byte(raw, i, spec, warnings)
       tokens.push(One(escaped))
       i = next
     } else if c == b'[' && i + 3 < raw.length() && raw[i + 1] == b'=' {
       let (equivalent, next) = if raw[i + 2] == b'\\' {
-        parse_escaped_byte(raw, i + 2, spec)
+        parse_escaped_byte(raw, i + 2, spec, warnings)
       } else {
         (raw[i + 2], i + 3)
       }
@@ -170,7 +182,7 @@ fn parse_set_tokens(spec : String) -> Array[SetToken] raise CliError {
       i + 3 < raw.length() &&
       (raw[i + 1] == b'\\' || raw[i + 2] == b'*') {
       let (repeated, after_char) = if raw[i + 1] == b'\\' {
-        parse_escaped_byte(raw, i + 1, spec)
+        parse_escaped_byte(raw, i + 1, spec, warnings)
       } else {
         (raw[i + 1], i + 2)
       }
@@ -232,7 +244,8 @@ fn expand_set_details(
   spec : String,
   fill_length : Int?,
 ) -> ExpandedSet raise CliError {
-  let tokens = parse_set_tokens(spec)
+  let warnings : Array[String] = []
+  let tokens = parse_set_tokens(spec, warnings)
   let mut fixed_length = 0
   let mut indefinite_repeats = 0
   let mut token_index = 0
@@ -329,7 +342,7 @@ fn expand_set_details(
       }
     }
   }
-  { bytes, classes, has_equivalence, indefinite_repeats, }
+  { bytes, classes, has_equivalence, indefinite_repeats, warnings, }
 }
 
 ///|
@@ -473,6 +486,16 @@ async fn main {
       Some(expand_set_details(sets[1], Some(set1_bytes.length())))
     } else {
       None
+    }
+    if @env.get_env_var("POSIXLY_CORRECT") is None {
+      for warning in set1_details.warnings {
+        @stdio.stderr.write(warning)
+      }
+      for details in set2_details {
+        for warning in details.warnings {
+          @stdio.stderr.write(warning)
+        }
+      }
     }
     let set2_bytes = match set2_details {
       Some(details) => details.bytes
