@@ -54,6 +54,13 @@ The differential suite additionally needs Docker and the image built from
 network endpoint is part of the contract. `--gnu-diff` and `--stress` are
 opt-in extensions of the native compatibility suite.
 
+The manifest `commands[].native` and `commands[].wasm` fields are audit labels
+such as `p8-measured` or `policy-measured`; they identify which evidence family
+has run, not a complete upstream support claim. `status` and
+`docs/compatibility.md` remain authoritative. A command can therefore be
+marked measured while its plan-level gap register still requires more
+option-specific differential cases.
+
 Package-level MoonBit unit and white-box tests remain next to their packages.
 The former `tests/cram`, `tests/compat`, `tests/policy`, and `tests/oracle`
 black-box entry points are intentionally not supported.
