@@ -3,8 +3,9 @@
 Date: 2026-09-05
 
 This is the single support record for the `cmd` repository. It replaces the
-former matrix; the phase plan is now its audit and roadmap companion. Claims are
-promoted through the unified runner: native black-box semantic tests,
+former matrix. Historical implementation stages are archived in
+[`reports/README.md`](reports/README.md); claims are promoted through the
+unified runner: native black-box semantic tests,
 pinned-upstream differential cases, and separate Wasm authorization tests for
 restricted commands. The relevant
 artifacts are built once and passed to the runner; a test case does not rebuild
@@ -23,9 +24,9 @@ implemented. `help-visible only` means an artifact prints the option in
 `--help`, but the unified runner does not yet have complete positive and
 negative evidence for it.
 
-The ordered implementation roadmap is in
-[`compatibility-expansion-plan.md`](compatibility-expansion-plan.md). It is a
-plan, not an additional support claim.
+The historical implementation roadmap and its stage evidence are archived in
+[`reports/README.md`](reports/README.md). They are historical context, not an
+additional support claim.
 
 ## Inventory
 
@@ -55,10 +56,10 @@ claiming success; `local-only` is absent from MoonX by design.
 | `base64` | subset verified | `-d/-D`, `-i/--ignore-garbage`, `-w N`, file and stdin encode/decode | Nonstandard alphabets and locale diagnostics not claimed |
 | `basename` | subset verified | `-a`, `-s SUFFIX`, `-z`, empty/root/repeated-separator operands | Full multibyte path locale behavior not claimed |
 | `cat` | subset verified | files/stdin; `-n -b -s -A -E -T -v -e -t`, `-u/--unbuffered` | Unbuffered is a stream-safe compatibility no-op |
-| `chmod` | restricted | numeric modes plus closed `=` assignments (`a=rwx`, `u=rw,g=r,o=`), regular files, `-R`, `-v` | incremental/implicit symbolic classes, symbolic assignment on directories/symlinks, and `--reference` rejected; invalid-form and no-side-effect probes are P8.1 |
+| `chmod` | restricted | numeric modes plus closed `=` assignments (`a=rwx`, `u=rw,g=r,o=`), regular files, `-R`, `-v` | incremental/implicit symbolic classes, symbolic assignment on directories/symlinks, and `--reference` rejected; invalid-form and no-side-effect probes remain explicit certification boundaries |
 | `cmp` | subset verified | equal=0, different=1, error=2; `-s -l -n -i` | Full diagnostic byte parity not claimed |
 | `comm` | subset verified | three columns, `-1 -2 -3`, `-z`, `--check-order`, `--nocheck-order`, `-`, clustered flags | Locale collation beyond C bytes not claimed |
-| `cp` | restricted | files/trees, exercised `--update=older` and numbered backup paths, command-line `-H`, `-T`, `-v`; complete preflight | Remaining update modes, interactive/suffix and `-L/-P` probes are P8.1; `-p/-a`, special files, unsupported links, and cycles rejected before output |
+| `cp` | restricted | files/trees, exercised `--update=older` and numbered backup paths, command-line `-H`, `-T`, `-v`; complete preflight | Remaining update modes, interactive/suffix and `-L/-P` probes remain certification boundaries; `-p/-a`, special files, unsupported links, and cycles rejected before output |
 | `curl` | restricted | Bounded HTTP/HTTPS profile: `-sS -f -o -OJ -L -I -H -X -d -T`; all documented methods; raw/binary/URL-encoded data; filename collisions and cleanup; retries; connect/total/idle timeouts; redirect limits and cross-origin stripping; HTTP CONNECT proxy/bypass; insecure TLS | Non-HTTP protocols, auth/cookie/config state, HTTP/2 negotiation, and exact native progress/diagnostic bytes not claimed |
 | `cut` | subset verified | `-c`, `-f`, `-d`, `-s`, `-z`, range/comma lists | Locale/multibyte behavior not claimed |
 | `dirname` | subset verified | multiple operands and `-z`, empty/root/repeated-separator operands | Multibyte path locale behavior not claimed |
@@ -71,7 +72,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `join` | subset verified | `-1 -2 -t -a -v -e -o`, `-z`, `-` stdin | Locale diagnostics not claimed |
 | `jq` | subset verified | `-c -r -f -n -l -S -j -s -R -e`, `--arg`, `--argjson`, `--indent`, `--tab`; field/path, map/reduce/assignment/try filters from the imported evaluator | Not a complete jq 1.8.2 diagnostics/modules/streaming claim |
 | `jqlog` | subset verified | JSONL stdin/raw input, `-f`, `-h`; invalid lines skipped | Compared with imported jqlog contract, not a system utility |
-| `ln` | subset verified | symbolic `-s`, exercised `-r`, and the parser's `-f/-i`, `-n/-T`, `-t`, backup/suffix, `-v` paths | Target-directory and overwrite combinations need P8.1 probes; hard-link request rejected before mutation |
+| `ln` | subset verified | symbolic `-s`, exercised `-r`, and the parser's `-f/-i`, `-n/-T`, `-t`, backup/suffix, `-v` paths | Target-directory and overwrite combinations remain certification boundaries; hard-link request rejected before mutation |
 | `ls` | subset verified | `-a -A -d -F -1 -R`, reverse, regular-file `-S`, basic time/access/status sorting | P8 time selector, link-follow, executable `-F`, and tie-break probes remain; long/colour/ownership/inode/block formats not claimed |
 | `make` | restricted | `-B -n -s -C -f -k -W -j`, command-line variables, conditionals, pattern rules, automatic variables, includes and recipes | Recipe process lookup/cwd follows the Wasm host contract; parallel scheduling is bounded/sequential and full GNU language not verified |
 | `mkdir` | subset verified | `-p`, numeric `-m`, `-v`; deterministic failure ordering | Symbolic mode/umask parity not probed |
@@ -92,7 +93,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `tee` | subset verified | stdin to stdout/files and `-a` append, partial-output ordering | Signal diagnostics not claimed |
 | `test` | subset verified | string/integer, file kinds, access, regular-file size, `!`, `-a`, `-o`, and the exercised dangling-link path | `-N`/`-nt`/`-ot` and special-file positive fixtures need independent probes; complete unary/binary ambiguity not claimed |
 | `timeout` | local-only | local duration and expiry returned 124 | No published process-group cancellation |
-| `touch` | subset verified | create/default update and `-c` | `-a/-m/-d/-r/-t/--time` return nonzero; explicit no-content-change rejection probes are P8.1 |
+| `touch` | subset verified | create/default update and `-c` | `-a/-m/-d/-r/-t/--time` return nonzero; rejection is required to leave content unchanged |
 | `tr` | subset verified | translate/delete/squeeze/`-c/-C` complement, `-t`, ranges, C-locale classes, octal/equivalence/repetition forms | Verified profile is byte-oriented; locale data beyond C is not claimed |
 | `true` | subset verified | any args: no output, status 0; help/version | Metadata text is package-versioned |
 | `uniq` | subset verified | adjacent filtering, `-c -d -u -i`, `-f -s -w -z`, exact count spacing | Fixed C-locale field/character comparison; locale collation not claimed |

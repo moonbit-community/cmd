@@ -3,8 +3,8 @@
 These are the active decisions that define the command surface. Read the
 shortest applicable record first, then use [`compatibility.md`](../compatibility.md)
 for the measured option profile and
-[`compatibility-expansion-plan.md`](../compatibility-expansion-plan.md) for the
-stage evidence and open audit gaps.
+[`reports/README.md`](../reports/README.md) for historical stage evidence.
+Reports are archival context; they do not override the support record.
 
 | ADR | Decision |
 | --- | --- |
