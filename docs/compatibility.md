@@ -41,8 +41,9 @@ moon run --target wasm --release commands/timeout -- 1s printf ok
 is a valid local invocation, while `moonx cli/timeout` is not a supported
 registry invocation. The other rows are intended for the package version
 recorded in each command's `moon.mod` after its Wasm asset is available. P9
-metadata paths for `echo`, `false`, `seq`, and `sleep` are versioned at `0.1.3`;
-unchanged packages remain at `0.1.2`.
+all command modules are being prepared at `0.1.4`, which is newer than every
+currently published command version (the highest published command version is
+`cli/tail@0.1.3`).
 
 Status vocabulary: `subset verified` is a successful normal-path probe;
 `restricted` additionally needs explicit Wasm file/process/network/permission

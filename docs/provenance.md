@@ -86,10 +86,9 @@ The command-facing test artifacts are:
 | `tests/runner/policy.mbt` | Wasm resource, mutation, process, network, and permission policy cases |
 | `tests/runner/main.mbt` | Unified suite dispatch, strict differential cases, and fixture isolation |
 | `tests/fixtures/runner/cases.json` | Machine-readable semantic compatibility contract |
-| `TUTORIAL.md` | `jq` documentation and migration examples |
 
 The `jq` and `jqlog` entry points depend on
-`bobzhang/moonjq@0.1.1`. MoonJQ parser and AST tests remain in that dependency;
+`bobzhang/moonjq@0.1.2`. MoonJQ parser and AST tests remain in that dependency;
 this repository records only the executable command boundary.
 
 ## Current structure

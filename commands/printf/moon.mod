@@ -1,6 +1,6 @@
 name = "cli/printf"
 
-version = "0.1.2"
+version = "0.1.4"
 
 readme = "README.md"
 
@@ -15,6 +15,6 @@ preferred_target = "wasm"
 description = "printf command for MoonX."
 
 import {
-  "moonbitlang/async@0.21.0",
+  "moonbitlang/async@0.21.2",
   "moonbitlang/x@0.5.1",
 }

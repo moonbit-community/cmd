@@ -1,6 +1,6 @@
 name = "cli/chmod"
 
-version = "0.1.2"
+version = "0.1.4"
 
 readme = "README.md"
 
@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "chmod command for MoonX."
 
 import {
-  "cli/core@0.1.2",
-  "moonbitlang/async@0.21.0",
+  "cli/core@0.1.4",
+  "moonbitlang/async@0.21.2",
   "moonbitlang/x@0.5.1",
 }
