@@ -31,7 +31,8 @@ The current manifest validates 48 commands and 176 cases, including the P9
 low-risk closure matrix. The runner README documents the reusable-artifact
 contract and the exact commands. P9's local compat group adds status, binary,
 malformed-input, and side-effect assertions that remain separate from the
-pinned GNU oracle when host diagnostics are not stable.
+pinned GNU oracle when host diagnostics are not stable. Delivery commit
+`58c8860` passed the full remote matrix, including the pinned oracle.
 
 ## Revisit when
 

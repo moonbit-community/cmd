@@ -48,7 +48,7 @@ Observed in this checkout on 2026-09-05:
 | Unified `compat` suite | Passed | Native semantics, boundaries, and stress hooks are green |
 | Unified `policy` suite | Passed | Wasm authorization and mutation assertions are green |
 | Unified manifest validation | 48 commands, 176 semantic cases | Fixture schema and pre-built artifact references are valid |
-| Remote pinned oracle | P9 run pending delivery commit | Linux pinned upstream comparison remains a required remote gate; no local Docker oracle is available |
+| Remote pinned oracle | Run `33961978569`, success | Linux pinned upstream comparison and the full Native/Wasm OS matrix are green for [`58c8860`](https://github.com/moonbit-community/cmd/actions/runs/33961978569) |
 | Local Docker oracle | Not available | Docker is absent; remote CI is the required oracle gate |
 | `moon fmt`, `moon info`, `git diff --check` | Passed after this documentation audit | Documentation and generated interfaces are clean |
 
@@ -73,7 +73,7 @@ upstream option has been exhaustively tested.
 | P6 | 2026-09-05 | `ca2f442`, `b684cf1` | Deterministic `jq` CLI modes and imported evaluator boundary | 5 P6 manifest cases, invalid-value cases, imported `jqlog` contract | Not a full jq 1.8.2 language, module or diagnostic claim | Delivered bounded profile |
 | P7 | 2026-09-05 | `ca2f442`, `b684cf1` | Bounded `make` conditionals/includes/patterns and `xxd` include/addressed reverse modes | 7 P7 manifest cases with negative parser and offset cases | Jobserver parallelism and negative/end-relative seeks remain rejected | Delivered bounded profile |
 | P8 | 2026-09-05 | `fbd2aae`, `083d21d`, `6c3aee6` | Maximum pure-MoonBit Native/Wasm filesystem subset; shared timestamp, overwrite, traversal and platform capability APIs | 12 P8 manifest cases, package tests, native/Wasm policy suite, remote oracle green | Several newly implemented option families lack one-case-per-option differential evidence; see gap register | Implementation shipped; certification incomplete |
-| P9 | 2026-09-05 | working tree (to be recorded at delivery) | Remaining low-risk closure: binary/text edge cases, aliases, NUL records, section numbering, status matrices, checksum verification controls, fixed C-locale `tr` classes and escapes | 35 manifest cases, `run_p9_cases` compat group, native/Wasm release runs, policy and GNU-diff gates passed locally; pinned oracle pending final delivery commit | Exact host diagnostics remain compat-only where GNU strings are not stable; no locale beyond fixed C byte profile | Delivered pending final CI |
+| P9 | 2026-09-05 | `14afdc5`, `58c8860` | Remaining low-risk closure: binary/text edge cases, aliases, NUL records, section numbering, status matrices, checksum verification controls, fixed C-locale `tr` classes and escapes | 35 manifest cases, `run_p9_cases` compat group, native/Wasm release runs, policy and GNU-diff gates passed locally; full remote matrix and pinned oracle green in [run 33961978569](https://github.com/moonbit-community/cmd/actions/runs/33961978569) | Exact host diagnostics remain compat-only where GNU strings are not stable; no locale beyond fixed C byte profile | Complete |
 
 ## Delivered Scope By Stage
 
@@ -250,6 +250,6 @@ mutation.
 ## Next Closure Work
 
 The immediate next work is independent certification of any remaining P8
-filesystem option rows and the P9 remote oracle/policy gates. P9 does not widen
-the permanent boundaries below; unsupported setters, ownership, special files,
-hard links, and locale-sensitive behavior still fail closed.
+filesystem option rows. P9 does not widen the permanent boundaries below;
+unsupported setters, ownership, special files, hard links, and
+locale-sensitive behavior still fail closed.
