@@ -52,8 +52,9 @@ The final remote run for the P9 delivery passed all applicable jobs:
   invocation.
 
 The archival documentation-only follow-up was also checked by the same matrix.
-The authoritative run links and commit IDs are recorded in the repository
-history and in the changelog.
+The authoritative final run is
+[33964497821](https://github.com/moonbit-community/cmd/actions/runs/33964497821)
+for commit `5f3429a`.
 
 ## Documentation consistency
 
@@ -66,4 +67,3 @@ directory; no live document is allowed to duplicate the support matrix.
 The final architecture remains the nine canonical ADRs. Reports link to ADRs
 for decisions and avoid restating them as new policy. The old phase plan was
 deleted only after its stage ledger and evidence were preserved here.
-

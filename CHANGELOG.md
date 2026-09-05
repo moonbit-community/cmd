@@ -21,7 +21,8 @@ by date and delivery milestone rather than by a single package version.
 - Removed stray `pkg.generated 2.mbti` artifacts; standard
   `pkg.generated.mbti` files remain authoritative.
 - Verified fresh Native/Wasm artifacts locally and reconciled the complete
-  Ubuntu/macOS/Windows plus pinned-oracle CI matrix.
+  Ubuntu/macOS/Windows plus pinned-oracle CI matrix in
+  [run 33964497821](https://github.com/moonbit-community/cmd/actions/runs/33964497821).
 
 ## 2026-09-04
 
@@ -53,4 +54,3 @@ by date and delivery milestone rather than by a single package version.
 - Split commands into publishable modules and removed the legacy command tree.
 - Defined the harness-owned policy boundary and retained `timeout` as
   local-only until portable process-group cancellation exists.
-
