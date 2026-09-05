@@ -232,7 +232,12 @@ fn parse_cli(args : ArrayView[String]) -> CliParseResult {
       return Error("jq: --argjson requires NAME and JSON")
     }
     ignore(@json.parse(parts[1])) catch {
-      _ => return Error("jq: invalid JSON text passed to --argjson")
+      _ =>
+        return Error(
+          "jq: invalid JSON text passed to --argjson\n" +
+          "Use jq --help for help with command-line options,\n" +
+          "or see the jq manpage, or online docs at https://jqlang.org",
+        )
     }
     arguments[parts[0]] = parts[1]
   }
@@ -431,20 +436,27 @@ async fn main {
             @sys.exit(status_for_results(results))
           }
         } else if options.slurp {
-          let all : Array[Json] = []
-          for input_source in options.inputs {
-            let input = read_input(input_source)
-            if options.raw_input {
-              all.push(Json::Json(input))
-            } else if options.logs {
-              for value in query.eval_logs(input) {
-                all.push(value)
-              }
-            } else {
-              all.push(@json.parse(input))
+          let input_value = if options.raw_input {
+            let all = StringBuilder()
+            for input_source in options.inputs {
+              all.write_string(read_input(input_source))
             }
+            Json::Json(all.to_string())
+          } else {
+            let all : Array[Json] = []
+            for input_source in options.inputs {
+              let input = read_input(input_source)
+              if options.logs {
+                for value in query.eval_logs(input) {
+                  all.push(value)
+                }
+              } else {
+                all.push(@json.parse(input))
+              }
+            }
+            Json::array(all)
           }
-          let results = query.eval(Json::array(all)).collect()
+          let results = query.eval(input_value).collect()
           write_results(
             results.iter(),
             options.raw_output,

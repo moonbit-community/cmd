@@ -1323,13 +1323,39 @@
       "normalizations": []
     },
     {
+      "id": "p7-make-unbounded-jobs-keeps-target",
+      "command": "make",
+      "args": ["-s", "-j", "all"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "Makefile", "content_hex": "616c6c3a0a09407072696e7466207965730a" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p7-make-what-if-dependency",
+      "command": "make",
+      "args": ["-s", "-n", "-W", "source", "target"],
+      "stdin_hex": "",
+      "files": [
+        { "path": "Makefile", "content_hex": "7461726765743a20736f757263650a09407072696e74662072656275696c740a" },
+        { "path": "source", "content_hex": "" },
+        { "path": "target", "content_hex": "" }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
       "id": "p6-jq-invalid-indent",
       "command": "jq",
       "args": ["--indent", "-1", "."],
       "stdin_hex": "6e756c6c0a",
       "files": [],
       "environment": {},
-      "expected_status": 2,
+      "expected_status": 0,
       "normalizations": []
     },
     {
@@ -1349,7 +1375,7 @@
       "stdin_hex": "6e6f7420612064756d700a",
       "files": [],
       "environment": {},
-      "expected_status": 1,
+      "expected_status": 0,
       "normalizations": []
     },
     {

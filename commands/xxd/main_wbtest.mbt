@@ -14,7 +14,9 @@ test "xxd include output is stable and addressed dumps preserve holes" {
 }
 
 ///|
-test "xxd malformed addressed lines are rejected" {
+test "xxd malformed addressed lines follow loose upstream offsets" {
   assert_true(reverse_dump_line(b"00000000: zz") is None)
   assert_true(reverse_dump_line(b"not a dump") is None)
+  assert_eq(loose_reverse_offset(b"not a dump"), Some(10))
+  assert_eq(loose_reverse_offset(b"xyz"), None)
 }

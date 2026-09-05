@@ -170,6 +170,36 @@ fn reverse_dump_line(line : Bytes) -> (Int, Bytes)? {
 }
 
 ///|
+fn loose_reverse_offset(line : Bytes) -> Int? {
+  let mut started = false
+  let mut offset = 0
+  let mut delimiter = -1
+  for index, byte in line {
+    let value = hex_val(byte)
+    if !started {
+      if value >= 0 {
+        started = true
+        offset = value
+      }
+    } else if delimiter < 0 {
+      if value >= 0 {
+        if offset > 16 * 1024 * 1024 / 16 {
+          return Some(16 * 1024 * 1024 + 1)
+        }
+        offset = (offset << 4) | value
+      } else {
+        delimiter = index
+      }
+    }
+  }
+  if delimiter >= 0 && delimiter + 1 < line.length() {
+    Some(offset)
+  } else {
+    None
+  }
+}
+
+///|
 async fn reverse_plain_stream(reader : &@io.Reader) -> Unit {
   let mut high = -1
   while @stream.read_chunk(reader) is Some(chunk) {
@@ -223,12 +253,15 @@ async fn reverse_dump_stream(reader : &@io.Reader) -> Unit {
           offset += 1
         }
       }
-      None => {
-        for byte in line.data {
-          output.push(byte)
+      None =>
+        if loose_reverse_offset(line.data) is Some(line_offset) {
+          if line_offset > 16 * 1024 * 1024 {
+            raise CliError("xxd: addressed offset is too large")
+          }
+          while output.length() < line_offset {
+            output.push(b'\x00')
+          }
         }
-        output.push(b'\n')
-      }
     }
   }
   @stdio.stdout.write(Bytes::from_array(output))

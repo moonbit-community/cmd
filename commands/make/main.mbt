@@ -15,7 +15,7 @@ struct Rule {
   dependencies : Array[String]
   recipes : Array[String]
   mut phony : Bool
-  stem : String?
+  mut stem : String?
 }
 
 ///|
@@ -39,9 +39,17 @@ struct Settings {
 ///|
 fn conditional_value(line : String, database : Database) -> Bool {
   if line.has_prefix("ifdef ") {
-    database.variables.contains(line[6:].trim().to_owned())
+    let name = line[6:].trim().to_owned()
+    let value = lookup_variable(name, database.variables, {}, 0) catch {
+      _ => ""
+    }
+    value != ""
   } else if line.has_prefix("ifndef ") {
-    !database.variables.contains(line[7:].trim().to_owned())
+    let name = line[7:].trim().to_owned()
+    let value = lookup_variable(name, database.variables, {}, 0) catch {
+      _ => ""
+    }
+    value == ""
   } else {
     let negated = line.has_prefix("ifneq ")
     let prefix = if negated { "ifneq " } else { "ifeq " }
@@ -452,20 +460,26 @@ async fn parse_makefile(
       continue
     }
     for target in targets {
-      let dependencies = match static_pattern {
+      let (dependencies, stem) = match static_pattern {
         Some((pattern, _)) if pattern.trim().contains("%") => {
           let pattern = pattern.trim().to_owned()
           match pattern_match(pattern, target) {
             Some(stem) =>
-              dependencies.map(dep => dep.replace_all(old="%", new=stem))
-            None => dependencies.copy()
+              (
+                dependencies.map(dep => dep.replace_all(old="%", new=stem)),
+                Some(stem),
+              )
+            None => (dependencies.copy(), None)
           }
         }
-        _ => dependencies.copy()
+        _ => (dependencies.copy(), None)
       }
       let rule = match database.rules.get(target) {
         Some(existing) => {
           existing.dependencies.append(dependencies)
+          if stem is Some(value) {
+            existing.stem = Some(value)
+          }
           existing
         }
         None => {
@@ -474,7 +488,7 @@ async fn parse_makefile(
             dependencies: dependencies.copy(),
             recipes: [],
             phony: false,
-            stem: None,
+            stem,
           }
           database.rules[target] = created
           created
@@ -485,6 +499,9 @@ async fn parse_makefile(
       }
       current_rules.push(rule)
     }
+  }
+  if active.length() != 1 {
+    raise MakeError("missing endif")
   }
 }
 
@@ -608,20 +625,23 @@ async fn build_target(
       }
     }
   }
+  let failures_before_dependencies = failures.val
   for dependency in rule.dependencies {
     build_target(dependency, database, settings, states, failures) catch {
       err => if settings.keep_going { failures.val += 1 } else { raise err }
     }
   }
+  if failures.val > failures_before_dependencies {
+    states[target] = 2
+    return
+  }
   let target_exists = if rule.phony { false } else { @fs.exists(target_path) }
-  let mut rebuild = settings.always_make ||
-    rule.phony ||
-    !target_exists ||
-    settings.what_if.contains(target)
+  let mut rebuild = settings.always_make || rule.phony || !target_exists
   if !rebuild {
     for dependency in rule.dependencies {
       let dependency_path = path_in(settings.cwd, dependency)
-      if @fs.exists(dependency_path) && newer(dependency_path, target_path) {
+      if settings.what_if.contains(dependency) ||
+        (@fs.exists(dependency_path) && newer(dependency_path, target_path)) {
         rebuild = true
         break
       }
@@ -669,6 +689,12 @@ async fn choose_makefile(cwd : String, requested : String?) -> String {
 }
 
 ///|
+fn positive_job_count(value : String) -> Bool {
+  let count = @string.parse_int(value) catch { _ => return false }
+  count > 0
+}
+
+///|
 async fn run(arguments : Array[String]) -> Unit {
   let mut requested_file : String? = None
   let mut cwd = @env.current_dir().unwrap_or(".")
@@ -709,14 +735,31 @@ async fn run(arguments : Array[String]) -> Unit {
       keep_going = true
     } else if options && (argument == "-W" || argument == "--what-if") {
       if index + 1 >= arguments.length() {
-        raise MakeError("{argument} requires a file")
+        raise MakeError("\{argument} requires a file")
       }
       index += 1
       touch_targets[arguments[index]] = true
-    } else if options && argument == "-j" {
-      if index + 1 < arguments.length() {
-        let _ = @string.parse_int(arguments[index + 1]) catch { _ => 0 }
+    } else if options && argument.has_prefix("--what-if=") {
+      let value = argument[10:].to_owned()
+      if value == "" {
+        raise MakeError("--what-if requires a file")
+      }
+      touch_targets[value] = true
+    } else if options && argument.has_prefix("-W") && argument.length() > 2 {
+      touch_targets[argument[2:].to_owned()] = true
+    } else if options && (argument == "-j" || argument == "--jobs") {
+      if index + 1 < arguments.length() &&
+        positive_job_count(arguments[index + 1]) {
         index += 1
+      }
+    } else if options && argument.has_prefix("--jobs=") {
+      let value = argument[7:].to_owned()
+      if !positive_job_count(value) {
+        raise MakeError("the '-j' option requires a positive integer")
+      }
+    } else if options && argument.has_prefix("-j") && argument.length() > 2 {
+      if !positive_job_count(argument[2:].to_owned()) {
+        raise MakeError("the '-j' option requires a positive integer")
       }
     } else if options && (argument == "-h" || argument == "--help") {
       @stdio.stdout.write(

@@ -45,19 +45,19 @@ inventing a non-portable Wasm primitive.
 
 ## Evidence Baseline
 
-The following results were observed in the current checkout on 2026-09-04:
+The following results were observed in the current checkout on 2026-09-05:
 
 | Check | Result | Meaning |
 | --- | --- | --- |
 | `moon check --target all --deny-warn` | Passed | All configured package targets type-check without enabled warnings |
-| `moon test --target all` | Native 80/80 and Wasm 71/71 passed; JS and Wasm-GC have no test entry | Package tests are green for configured targets |
+| `moon test --target all` | Native 89/89 and Wasm 80/80 passed; JS and Wasm-GC have no test entry | Package tests are green for configured targets |
 | `moon run --target native tests/runner -- --manifest tests/fixtures/runner/cases.json --native-root _build/native/release/build --suite compat` | Passed | Native compatibility suite is green |
 | Same runner with `--gnu-diff` | Passed | The differential subset is green |
 | Same runner with the pre-built Wasm root and `--suite policy` | Passed | Denied and local-only allowed network policies are green |
-| Same runner with `--validate-only` | 48 commands and 123 cases valid | The unified manifest includes the P1-P7 differential contracts and P8 gate records |
+| Same runner with `--validate-only` | 48 commands and 129 cases valid | The unified manifest includes the P1-P7 differential contracts and P8 gate records |
 
 The pinned Docker oracle cannot run locally because Docker is not installed.
-The remote pinned-oracle job remains required before this P5 delivery is
+The remote pinned-oracle job remains required before this P6-P8 delivery is
 accepted; native semantics and Wasm authorization are separate required gates.
 
 The support record intentionally distinguishes `subset verified`, `restricted`,

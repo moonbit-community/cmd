@@ -96,7 +96,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `wc` | subset verified | `-l -w -c -m -L`, combinations, aligned multi-file totals, `--files0-from`, files/stdin | `-L` is the C-locale display-width profile; full locale diagnostics not claimed |
 | `wget` | restricted | Bounded HTTP/HTTPS profile: URL input files; quiet/output/log modes; resume and conditional 304; headers/method/data or binary file bodies; retry classification/delay; redirect limits; content-disposition collisions; connect/read/idle timeouts; HTTP CONNECT proxy/bypass; certificate verification control; HTTP status 8 | Recursive mirroring, cookies/auth/HSTS, FTP and other protocols, post-download timestamp restoration, and exact GNU progress/diagnostic bytes not claimed |
 | `xargs` | restricted | whitespace/NUL tokenization, quotes/backslashes, `-0 -r -t -n -L -s -E -I`, `--show-limits`, bounded `-P`; direct-child status classes 123/124/125/126/127 | Child policy required; process windows are bounded and aggregate status deterministically; GNU shell/locale extensions not claimed |
-| `xxd` | subset verified | forward hex, `-p -r -c -l -i`, `--revert`, include symbol naming, positive `-s`, addressed reverse patching with bounded offsets | Negative/end-relative seek remains rejected; malformed addressed lines follow pass-through behavior and oversized offsets are rejected before unbounded allocation |
+| `xxd` | subset verified | forward hex, `-p -r -c -l -i`, `--revert`, include symbol naming, positive `-s`, addressed reverse patching with bounded offsets | Negative/end-relative seek remains rejected; loose reverse-offset parsing matches the pinned profile and oversized offsets are rejected before unbounded allocation |
 
 ## Help-Visible Only
 

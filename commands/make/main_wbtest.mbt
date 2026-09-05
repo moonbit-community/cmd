@@ -43,7 +43,7 @@ async test "make conditionals select one rule and pattern dependencies use stems
     default_target: None,
   }
   parse_makefile(
-    "MODE = yes\nifeq ($(MODE),yes)\nall: ready\n\techo yes\nelse\nall:\n\techo no\nendif\n%.o: %.c\n\techo $* $<\n",
+    "MODE = yes\nifeq ($(MODE),yes)\nall: ready\n\techo yes\nelse\nall:\n\techo no\nendif\n%.o: %.c\n\techo $* $<\nfoo.o: %.o: %.c\n\techo $*\n",
     database, ".", 0,
   )
   guard database.rules.get("all") is Some(all) else {
@@ -54,4 +54,12 @@ async test "make conditionals select one rule and pattern dependencies use stems
     fail("missing pattern rule")
   }
   assert_eq(pattern.dependencies, ["%.c"])
+  guard database.rules.get("foo.o") is Some(static_pattern) else {
+    fail("missing static pattern rule")
+  }
+  assert_eq(static_pattern.dependencies, ["foo.c"])
+  assert_eq(static_pattern.stem, Some("foo"))
+  assert_true(positive_job_count("2"))
+  assert_false(positive_job_count("0"))
+  assert_false(positive_job_count("all"))
 }

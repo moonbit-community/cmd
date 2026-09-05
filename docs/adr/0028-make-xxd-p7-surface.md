@@ -14,13 +14,15 @@ include/addressed hex workflows.
 Add bounded Make conditionals, pattern/static-pattern dependency expansion,
 automatic variables, and explicit `-j/-k/-W` handling. Add xxd include output,
 `--revert`, symbol naming, and validated addressed reverse patches. Keep
-parallel scheduling sequential, preserve malformed-line pass-through, and
-reject negative seeks.
+parallel scheduling sequential, preserve the pinned xxd profile's loose
+reverse-offset scan, and reject negative seeks. Bound every inferred reverse
+offset before allocation.
 
 ## Evidence
 
-Package tests and unified manifest cases exercise positive output, status, and
-malformed-input boundaries.
+Package tests and unified manifest cases exercise positive output, status,
+bare `-j` target parsing, `-W` dependency rebuilding, and malformed-input
+boundaries.
 
 ## Consequences
 
