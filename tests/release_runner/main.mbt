@@ -62,6 +62,23 @@ fn contains_any(text : String, needles : Array[String]) -> Bool {
 }
 
 ///|
+fn host_platform() -> String {
+  if @platform.is_windows() {
+    "windows"
+  } else {
+    "posix"
+  }
+}
+
+///|
+fn case_supported_on_host(fixture : ReleaseCase, platform : String) -> Bool {
+  match fixture.host_platforms {
+    Some(platforms) => platforms.contains(platform)
+    None => true
+  }
+}
+
+///|
 fn ends_with_newline(data : Bytes) -> Bool {
   data.length() > 0 &&
   data[data.length() - 1] == b'\n' &&
@@ -556,7 +573,22 @@ async fn run_selected_cases(
   docker_user : String?,
   reports : Array[CaseReport],
 ) -> Unit {
+  let platform = host_platform()
   for fixture in fixtures {
+    if !case_supported_on_host(fixture, platform) {
+      let version = match find_command(manifest, fixture.command) {
+        Some(row) => row.version
+        None => ""
+      }
+      reports.push({
+        id: fixture.id,
+        command: fixture.command,
+        version,
+        category: "skipped_platform",
+        detail: "case is not supported on host platform " + platform,
+      })
+      continue
+    }
     match find_command(manifest, fixture.command) {
       Some(row) =>
         run_case(
@@ -572,7 +604,7 @@ async fn run_selected_cases(
 async fn print_reports(reports : Array[CaseReport]) -> Unit {
   let mut failures = 0
   for report in reports {
-    if report.category != "passed" {
+    if report.category != "passed" && report.category != "skipped_platform" {
       failures = failures + 1
     }
     @stdio.stdout.write(

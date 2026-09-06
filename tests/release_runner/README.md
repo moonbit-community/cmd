@@ -39,7 +39,10 @@ LAST` descending extension is contract-tested: `seq 3 1` must emit `3`, `2`,
 `1`; GNU's default positive-step behavior is not treated as an exact oracle for
 that one case.
 Cases may set a positive `timeout_ms`; otherwise the CLI `--timeout-ms` default
-applies. A timeout is a hard failure, never a skipped case.
+applies. A timeout is a hard failure, never a skipped case. Cases may declare
+`host_platforms` as `posix` or `windows`; a POSIX permission/symlink case is
+reported as `skipped_platform` on Windows, an explicit host capability boundary
+rather than a compatibility pass or failure.
 
 The runner reports `asset_unavailable`, `registry_transport`,
 `candidate_failure`, `oracle_failure`, `semantic_mismatch`,

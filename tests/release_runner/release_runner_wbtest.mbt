@@ -52,6 +52,7 @@ test "release manifest selects explicit cases" {
         expected_stderr_ends_with_newline: None,
         forbidden_stderr: None,
         coverage: None,
+        host_platforms: None,
       },
     ],
   }

@@ -705,7 +705,8 @@
       "files": [{ "path": "source", "content_hex": "7061796c6f61640a" }],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "host_platforms": ["posix"]
     },
     {
       "id": "phase4-mkdir-parents",
@@ -765,7 +766,8 @@
       "files": [{ "path": "file", "content_hex": "7061796c6f61640a" }],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "host_platforms": ["posix"]
     },
     {
       "id": "phase5-env-clean-null",
@@ -1503,7 +1505,8 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "host_platforms": ["posix"]
     },
     {
       "id": "p8-find-xtype-link",
@@ -1515,7 +1518,8 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "host_platforms": ["posix"]
     },
     {
       "id": "p8-ls-dangling-classify",
@@ -1527,7 +1531,8 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "host_platforms": ["posix"]
     },
     {
       "id": "p8-cp-command-line-link",
@@ -1540,7 +1545,8 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "host_platforms": ["posix"]
     },
     {
       "id": "p9-base64-ignore-garbage",

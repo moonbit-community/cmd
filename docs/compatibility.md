@@ -63,6 +63,9 @@ skips. macOS and Windows run the same exact-version published smoke suite;
 only the pinned Linux oracle result promotes a strict differential claim.
 HTTP cases use a shared pure-MoonBit loopback fixture; HTTPS fixture cases stay
 outside the published selection until their TLS fixture is pinned.
+The Windows smoke profile explicitly records POSIX-only permission and symbolic
+link cases as `skipped_platform`; Linux/macOS run those cases, and the pinned
+Linux oracle remains the strict filesystem authority.
 
 ## Inventory
 

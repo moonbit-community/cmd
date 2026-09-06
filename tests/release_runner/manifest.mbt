@@ -41,6 +41,7 @@ priv struct ReleaseCase {
   expected_stderr_ends_with_newline : Bool?
   forbidden_stderr : Array[String]?
   coverage : Array[String]?
+  host_platforms : Array[String]?
 } derive(FromJson)
 
 ///|
@@ -233,6 +234,19 @@ fn validate_release_manifest(
       Some(value) if value <= 0 =>
         failures.push("\{fixture.id}: timeout_ms must be positive")
       _ => ()
+    }
+    match fixture.host_platforms {
+      Some(platforms) if platforms.is_empty() =>
+        failures.push("\{fixture.id}: host_platforms must not be empty")
+      Some(platforms) =>
+        for platform in platforms {
+          if platform != "posix" && platform != "windows" {
+            failures.push(
+              "\{fixture.id}: unsupported host platform '\{platform}'",
+            )
+          }
+        }
+      None => ()
     }
   }
   let selected_ids : Map[String, Bool] = Map([])
