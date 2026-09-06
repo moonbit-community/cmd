@@ -12,13 +12,14 @@ by date and delivery milestone rather than by a single package version.
   invocations, shared loopback HTTP fixtures, manifest validation, failure
   classification, filesystem snapshots, and Markdown/JSONL reports.
 - Added P0 regression coverage for `echo`, `false`, `jqlog`, `seq`, `sleep`,
-  and `true` at `0.1.5`, plus the corrected `sh` release at `0.1.6`.
+  and `true` at `0.1.5`, plus the compatible `sh` follow-up staged at `0.1.7`.
 - Added release-manifest, published differential, and cross-platform smoke CI
   jobs. `timeout` remains local-only and is excluded from the 47-command
   published manifest.
-- Published-version smoke found and fixed a POSIX `sh -s name arg` positional
-  parameter regression; `cli/sh@0.1.6` is pending publication before the
-  published gate can be promoted.
+- Published-version verification corrected an erroneous `sh -s` expectation:
+  POSIX/dash keeps the invocation name as `$0` and the first operand as `$1`.
+  The compatible follow-up `cli/sh@0.1.7` is staged for publication; `0.1.6`
+  is not promoted.
 
 ## 2026-09-05
 

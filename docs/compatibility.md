@@ -82,10 +82,10 @@ registry invocation. The other rows are intended for the package version
 recorded in each command's `moon.mod` after its Wasm asset is available. The
 current release keeps the unaffected commands at `0.1.4`; the P0 fixes for
 `echo`, `false`, `jqlog`, `seq`, `sleep` and `true` are published at `0.1.5`.
-The first published `sh@0.1.5` smoke run exposed a POSIX `-s` positional
-parameter regression; the corrected `sh@0.1.6` asset is now published and is
-included in the release manifest. The published gate still requires the
-registry transport and pinned Linux oracle jobs to pass.
+The first published `sh@0.1.5` smoke run exposed a runner expectation error
+around `-s` positional parameters. The fixed release keeps the POSIX oracle
+semantics and is staged at `sh@0.1.7`; it must be published before the release
+manifest can be promoted. The already published `sh@0.1.6` is not promoted.
 
 Status vocabulary: `subset verified` is a successful normal-path probe;
 `restricted` additionally needs explicit Wasm file/process/network/permission

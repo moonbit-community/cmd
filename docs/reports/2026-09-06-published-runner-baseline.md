@@ -22,13 +22,13 @@ Runner 区分资产不存在、注册表传输、候选失败、oracle 失败、
 23 个 P0/release-specific case）。其中 HTTP case 共享单个纯 MoonBit loopback
 fixture；HTTPS case 仍未选择。`0.1.4` 已发布资产以及 P0 修复版本均已进入
 发布验证；受影响版本为 `echo/false/jqlog/seq/sleep/true@0.1.5` 和
-`sh@0.1.6`。
+`sh@0.1.7`（待发布；`0.1.6` 不纳入 promoted support）。
 
 首次完整 smoke 已完成 94 个 case，其中 71 个通过、23 个因 Mooncakes
 注册表读取超时分类为 `registry_transport`；没有 `asset_unavailable`、
 `semantic_mismatch` 或 `unexpected_side_effect`。`sh@0.1.6` 的 `-s`
-位置参数回归已通过。注册表传输结果需由远端跨平台 smoke 重试确认，严格
-差分仍以 Linux pinned oracle 为准。
+位置参数应以 pinned POSIX oracle 的 `sh|shell-name` 语义为准。严格差分曾
+因该 fixture 旧期望失败，修正后需在 `sh@0.1.7` 资产发布后重新执行。
 
 本机已实际调用 `moonx cli/echo@0.1.5 --version`，结果为明确的
 `Prebuilt wasm asset does not exist`（状态 255），因此没有把未发布资产误报为

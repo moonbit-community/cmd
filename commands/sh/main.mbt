@@ -62,17 +62,11 @@ async fn main {
     }
     None =>
       if stdin_script {
-        let shell_name = arguments.get(index).unwrap_or(invocation_name)
-        let positional = if index < arguments.length() {
-          if index + 1 < arguments.length() {
-            arguments[index + 1:].to_owned()
-          } else {
-            []
-          }
-        } else {
-          []
-        }
-        (@stdio.stdin.read_all().text(), shell_name, positional)
+        (
+          @stdio.stdin.read_all().text(),
+          invocation_name,
+          arguments[index:].to_owned(),
+        )
       } else {
         match script_path {
           Some(path) => (read_script(path), path, arguments[index:].to_owned())

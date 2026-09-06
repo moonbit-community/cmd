@@ -34,7 +34,7 @@
     {"name":"rm","package_name":"cli/rm","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":true},
     {"name":"rmdir","package_name":"cli/rmdir","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":true},
     {"name":"seq","package_name":"cli/seq","version":"0.1.5","published":true,"compare_profile":"gnu","supported_options":["equal-width","separator","version"],"policy_sensitive":false},
-    {"name":"sh","package_name":"cli/sh","version":"0.1.6","published":true,"compare_profile":"posix","supported_options":["command","stdin-script"],"policy_sensitive":true},
+    {"name":"sh","package_name":"cli/sh","version":"0.1.7","published":true,"compare_profile":"posix","supported_options":["command","stdin-script"],"policy_sensitive":true},
     {"name":"sha256sum","package_name":"cli/sha256sum","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
     {"name":"sleep","package_name":"cli/sleep","version":"0.1.5","published":true,"compare_profile":"gnu","supported_options":["help","version"],"policy_sensitive":false},
     {"name":"sort","package_name":"cli/sort","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
@@ -189,7 +189,7 @@
     {
       "id":"p0-sh-stdin-script", "command":"sh", "args":["-s","shell","value"],
       "stdin_hex":"6563686f2022243122", "files":[], "environment":{}, "expected_status":0,
-      "normalizations":[], "comparison":"contract", "expected_stdout_contains":"value", "coverage":["stdin-script"]
+      "normalizations":[], "comparison":"exact", "coverage":["stdin-script"]
     },
     {
       "id":"p0-jqlog-file", "command":"jqlog", "args":["-f","input.log",".a"],

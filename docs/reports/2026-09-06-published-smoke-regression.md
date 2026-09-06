@@ -15,21 +15,22 @@ expected stdout to contain: value
 published cli/sh@0.1.5: stdout missing value
 ```
 
-The failure is a candidate behavior defect, not an asset or registry failure.
-POSIX `sh -s name arg` treats `name` as `$0` and `arg` as `$1`; the published
-implementation exposed `name` as `$1` instead.
+The first interpretation of this failure treated `name` as `$0`, but the
+pinned POSIX `dash` oracle and the repository's existing compat fixture establish
+the contract used here: with `sh -s shell-name value`, `$0` remains the
+invocation name (`sh`) and `$1` is `shell-name`. The published implementation
+at `0.1.5` matched that oracle; the runner expectation was wrong.
 
 ## Corrective action
 
-The local MoonBit implementation now selects the first operand after `-s` as
-the shell name and passes only subsequent operands as positional parameters.
+The local MoonBit implementation retains the oracle-compatible operand handling.
 The local regression probe passes:
 
 ```text
-printf 'echo "$1"\n' | moon run --target native commands/sh -- -s shell value
-=> value (status 0)
+printf 'printf "%s|%s\\n" "$0" "$1"\n' | moon run --target native commands/sh -- -s shell-name value
+=> sh|shell-name (status 0)
 ```
 
-The package version is advanced to `cli/sh@0.1.6`. Its Wasm asset is not yet
-published, so the remote published gate must not be run or claimed as passing
-until that exact asset is available. No remote push was made from this audit.
+The package version is advanced to `cli/sh@0.1.7` so the already published
+`0.1.6` asset is not overwritten. Its Wasm asset must be published before the
+final release gate can be rerun.
