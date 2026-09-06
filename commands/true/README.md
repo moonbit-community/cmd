@@ -10,3 +10,4 @@ moonx cli/true && echo it worked
 
 Ignores all arguments, produces no output, and exits with status 0. `--help`
 and `--version` print the corresponding metadata and still exit successfully.
+The version token matches the package version in `moon.mod`.

@@ -9,4 +9,5 @@ moonx cli/false || echo it failed
 ```
 
 Ignores all arguments, produces no output, and exits with status 1. `--help`
-and `--version` print the corresponding metadata and exit successfully.
+and `--version` print the corresponding metadata and exit successfully. The
+version token matches the package version in `moon.mod`.

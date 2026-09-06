@@ -6,6 +6,9 @@ Observed Wasm profile (2026-09-03): this README is supplementary. The [support r
 Wasm artifact applies a jq-compatible filter to each valid JSON line and skips
 non-JSON lines. File reads remain visible to the configured Wasm policy.
 
+`--help` and parser errors always end with a newline so output can be safely
+composed with other command-line tools.
+
 ```sh
 cat logs.ndjson | moon run --target wasm --release commands/jqlog -- '.message'
 ```

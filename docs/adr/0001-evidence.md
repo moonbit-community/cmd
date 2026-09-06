@@ -11,12 +11,15 @@ the support matrix, tests, and published Wasm behavior to disagree.
 
 ## Decision
 
-Use `tests/runner` as the only black-box entry point. Keep three explicit
+Use `tests/runner` as the repository artifact black-box entry point. Keep three explicit
 suites: `compat` for native semantics and boundaries, `oracle` for the pinned
 upstream comparison, and `policy` for Wasm authorization and mutation. Build
 native and Wasm release artifacts once and pass their roots to the runner. The
 manifest, captured status/stdout/stderr, and filesystem snapshot are the
-evidence; `docs/compatibility.md` is the sole support record.
+evidence; `docs/compatibility.md` is the sole support record. The separate
+pure-MoonBit `tests/release_runner` invokes exact registry versions with
+`moonx` for published-consumer evidence and never builds command packages in a
+case.
 
 ## Consequences
 

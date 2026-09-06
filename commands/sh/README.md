@@ -16,7 +16,8 @@ inheritance was not part of this Wasm-only capability audit.
 
 Unsupported shell language constructs fail closed instead of being forwarded to
 another interpreter. The interpreter never delegates a complete script to a
-host shell.
+host shell. Rejected syntax uses a stable `sh: <reason>` diagnostic and does
+not expose the internal `ShellError` type name.
 
 When neither `-c` nor a script file is supplied, the shell silently reads its
 script from stdin until EOF, as required by the POSIX compatibility path.

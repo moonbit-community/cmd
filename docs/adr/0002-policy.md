@@ -17,6 +17,9 @@ reimplement the policy. The runner records an authorization failure separately
 from a parser or semantic failure, and policy denial must leave no forbidden
 mutation.
 
+Published-version differential cases do not reinterpret policy denials as
+semantic incompatibility; authorization remains owned by the Wasm harness.
+
 ## Consequences
 
 Native tests establish command behavior; Wasm policy tests establish the

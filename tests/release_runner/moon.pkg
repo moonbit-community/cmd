@@ -1,0 +1,20 @@
+import {
+  "cli/core/cli",
+  "mooxCLI/cmd-tests/testkit",
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/http",
+  "moonbitlang/async/process",
+  "moonbitlang/async/socket",
+  "moonbitlang/async/stdio",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+  "moonbitlang/core/string",
+  "moonbitlang/x/sys",
+  "moonbitlang/x/path",
+}
+
+supported_targets = "native"
+
+pkgtype(kind: "executable")

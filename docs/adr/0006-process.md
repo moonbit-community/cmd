@@ -26,6 +26,10 @@ full GNU jobserver semantics are not silently inherited from the host.
 P4/P5/P7 runner and policy cases cover allowed and denied children, status
 classes, batching, recipes, and the local-only timeout boundary.
 
+The published-version Runner may start `moonx` and the pinned oracle as test
+tools through MoonBit's process API. This does not delegate command semantics
+to a host shell and does not change the command package process contract.
+
 ## Revisit when
 
 The host supplies a stable process-group and cancellation contract for Wasm.

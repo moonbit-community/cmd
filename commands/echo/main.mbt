@@ -90,7 +90,7 @@ async fn main {
     return
   }
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("echo (moonbit cmd) 0.1.3\n")
+    @stdio.stdout.write("echo (moonbit cmd) \{command_version}\n")
     return
   }
   let mut newline = true

@@ -36,7 +36,7 @@ fn help_message() -> String {
     #|Examples:
     #|  cat logs.ndjson | jqlog '.message'
     #|  jqlog -f output.txt '.a'
-  message
+  message + "\n"
 }
 
 ///|

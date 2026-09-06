@@ -1,0 +1,200 @@
+{
+  "schema": 1,
+  "base_manifest": "tests/fixtures/runner/cases.json",
+  "commands": [
+    {"name":"base64","package_name":"cli/base64","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
+    {"name":"basename","package_name":"cli/basename","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
+    {"name":"cat","package_name":"cli/cat","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
+    {"name":"chmod","package_name":"cli/chmod","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":true},
+    {"name":"cmp","package_name":"cli/cmp","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
+    {"name":"comm","package_name":"cli/comm","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
+    {"name":"cp","package_name":"cli/cp","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":true},
+    {"name":"curl","package_name":"cli/curl","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":true},
+    {"name":"cut","package_name":"cli/cut","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
+    {"name":"dirname","package_name":"cli/dirname","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
+    {"name":"echo","package_name":"cli/echo","version":"0.1.5","published":true,"compare_profile":"gnu","supported_options":["enable-escapes","disable-escapes","help","no-newline","version"],"policy_sensitive":false},
+    {"name":"env","package_name":"cli/env","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":true},
+    {"name":"false","package_name":"cli/false","version":"0.1.5","published":true,"compare_profile":"gnu","supported_options":["help","version"],"policy_sensitive":false},
+    {"name":"find","package_name":"cli/find","version":"0.1.4","published":true,"compare_profile":"findutils","supported_options":[],"policy_sensitive":true},
+    {"name":"grep","package_name":"cli/grep","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
+    {"name":"head","package_name":"cli/head","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":true},
+    {"name":"join","package_name":"cli/join","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
+    {"name":"jq","package_name":"cli/jq","version":"0.1.4","published":true,"compare_profile":"jq","supported_options":[],"policy_sensitive":false},
+    {"name":"jqlog","package_name":"cli/jqlog","version":"0.1.5","published":true,"compare_profile":"jqlog","supported_options":["file","help"],"policy_sensitive":true},
+    {"name":"ln","package_name":"cli/ln","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":true},
+    {"name":"ls","package_name":"cli/ls","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
+    {"name":"make","package_name":"cli/make","version":"0.1.4","published":true,"compare_profile":"make","supported_options":[],"policy_sensitive":true},
+    {"name":"mkdir","package_name":"cli/mkdir","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":true},
+    {"name":"mv","package_name":"cli/mv","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":true},
+    {"name":"nl","package_name":"cli/nl","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
+    {"name":"paste","package_name":"cli/paste","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
+    {"name":"printenv","package_name":"cli/printenv","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
+    {"name":"printf","package_name":"cli/printf","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
+    {"name":"pwd","package_name":"cli/pwd","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
+    {"name":"rm","package_name":"cli/rm","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":true},
+    {"name":"rmdir","package_name":"cli/rmdir","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":true},
+    {"name":"seq","package_name":"cli/seq","version":"0.1.5","published":true,"compare_profile":"gnu","supported_options":["equal-width","separator","version"],"policy_sensitive":false},
+    {"name":"sh","package_name":"cli/sh","version":"0.1.6","published":true,"compare_profile":"posix","supported_options":["command","stdin-script"],"policy_sensitive":true},
+    {"name":"sha256sum","package_name":"cli/sha256sum","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
+    {"name":"sleep","package_name":"cli/sleep","version":"0.1.5","published":true,"compare_profile":"gnu","supported_options":["help","version"],"policy_sensitive":false},
+    {"name":"sort","package_name":"cli/sort","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
+    {"name":"tail","package_name":"cli/tail","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":true},
+    {"name":"tee","package_name":"cli/tee","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":true},
+    {"name":"test","package_name":"cli/test","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":true},
+    {"name":"touch","package_name":"cli/touch","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":true},
+    {"name":"tr","package_name":"cli/tr","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
+    {"name":"true","package_name":"cli/true","version":"0.1.5","published":true,"compare_profile":"gnu","supported_options":["help","version"],"policy_sensitive":false},
+    {"name":"uniq","package_name":"cli/uniq","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
+    {"name":"wc","package_name":"cli/wc","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":true},
+    {"name":"wget","package_name":"cli/wget","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":true},
+    {"name":"xargs","package_name":"cli/xargs","version":"0.1.4","published":true,"compare_profile":"findutils","supported_options":[],"policy_sensitive":true},
+    {"name":"xxd","package_name":"cli/xxd","version":"0.1.4","published":true,"compare_profile":"vim","supported_options":[],"policy_sensitive":false}
+  ],
+  "case_ids": [
+    "phase0-base64-stdin", "phase3-basename-suffix", "phase0-cat-double-dash",
+    "phase4-chmod-numeric", "phase3-cmp-equal", "phase3-comm-columns",
+    "phase4-cp-regular", "phase3-cut-field", "phase3-dirname-basic",
+    "phase3-echo-basic", "phase5-env-clean-null", "phase0-false-status",
+    "phase2-wget-relative-redirect", "phase2-wget-http-status-8",
+    "phase2-wget-remote-file", "phase2-wget-multiple-urls",
+    "phase2-wget-request-body", "phase2-wget-input-file",
+    "phase2-curl-does-not-follow", "phase2-curl-location",
+    "phase2-curl-fail-status-22", "phase2-curl-output-file",
+    "phase2-curl-post-data", "phase2-curl-upload-file",
+    "phase2-curl-multiple-urls", "phase2-curl-last-transfer-status",
+    "phase2-curl-remote-name", "p1-curl-explicit-method-redirect",
+    "p1-curl-binary-data-file", "p1-curl-redirect-limit-zero",
+    "p1-wget-binary-body-file", "p1-wget-method-and-repeated-header",
+    "p1-wget-continue-range", "p1-wget-timestamp-not-modified",
+    "p1-wget-content-disposition-collision",
+    "phase3-find-exec-status", "phase3-grep-stdin", "phase3-head-line-count",
+    "phase3-join-unpaired-output-list", "phase3-jq-property", "phase4-ln-symbolic",
+    "phase3-ls-basic", "phase5-make-include-cli-variable", "phase4-mkdir-parents",
+    "phase4-mv-regular", "phase3-nl-empty", "phase3-paste-parallel",
+    "phase3-printenv-selected", "phase3-printf-format", "phase3-pwd-working-directory",
+    "phase4-rm-regular", "phase4-rmdir-ignore-nonempty", "phase3-seq-basic",
+    "phase5-sh-command-positional", "phase3-sha256sum-stdin", "phase3-sleep-zero",
+    "phase3-sort-basic", "phase3-tail-line-count", "phase0-tee-filesystem",
+    "phase3-test-string", "phase4-touch-create", "phase3-tr-range",
+    "phase3-true-status", "phase3-uniq-adjacent", "phase3-wc-lines",
+    "phase5-xargs-replace", "phase3-xxd-seek", "p8-test-dangling-link",
+    "p8-find-xtype-link", "p8-ls-dangling-classify", "p8-cp-command-line-link"
+  ],
+  "extra_cases": [
+    {
+      "id":"p0-seq-two-operand-descending", "command":"seq", "args":["3","1"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"exact", "coverage":["two-number","descending"]
+    },
+    {
+      "id":"p0-seq-version", "command":"seq", "args":["--version"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"contract", "expected_stdout_contains":"0.1.5", "coverage":["version"]
+    },
+    {
+      "id":"p0-echo-version", "command":"echo", "args":["--version"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"contract", "expected_stdout_contains":"0.1.5", "coverage":["version"]
+    },
+    {
+      "id":"p0-false-version", "command":"false", "args":["--version"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"contract", "expected_stdout_contains":"0.1.5", "coverage":["version"]
+    },
+    {
+      "id":"p0-sleep-version", "command":"sleep", "args":["--version"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"contract", "expected_stdout_contains":"0.1.5", "coverage":["version"]
+    },
+    {
+      "id":"p0-sh-public-error", "command":"sh", "args":["-c","arr=(one two)"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":2,
+      "normalizations":[], "comparison":"contract", "forbidden_stderr":["ShellError","cli/core/shell"], "coverage":["command"]
+    },
+    {
+      "id":"p0-jqlog-help-newline", "command":"jqlog", "args":["--help"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"contract", "expected_stdout_contains":"Usage: jqlog", "expected_stdout_ends_with_newline":true, "coverage":["help"]
+    },
+    {
+      "id":"p0-jqlog-error-newline", "command":"jqlog", "args":["--bad"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":2,
+      "normalizations":[], "comparison":"contract", "expected_stderr_ends_with_newline":true, "coverage":["error"]
+    },
+    {
+      "id":"p0-echo-help", "command":"echo", "args":["--help"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"contract", "expected_stdout_contains":"Usage:", "coverage":["help"]
+    },
+    {
+      "id":"p0-echo-no-newline", "command":"echo", "args":["-n","value"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"exact", "coverage":["no-newline"]
+    },
+    {
+      "id":"p0-echo-enable-escapes", "command":"echo", "args":["-e","a\\nb"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"exact", "coverage":["enable-escapes"]
+    },
+    {
+      "id":"p0-echo-disable-escapes", "command":"echo", "args":["-E","a\\nb"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"exact", "coverage":["disable-escapes"]
+    },
+    {
+      "id":"p0-false-help", "command":"false", "args":["--help"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"contract", "expected_stdout_contains":"Usage:", "coverage":["help"]
+    },
+    {
+      "id":"p0-true-version", "command":"true", "args":["--version"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"contract", "expected_stdout_contains":"0.1.5", "coverage":["version"]
+    },
+    {
+      "id":"p0-true-help", "command":"true", "args":["--help"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"contract", "expected_stdout_contains":"Usage:", "coverage":["help"]
+    },
+    {
+      "id":"p0-sleep-help", "command":"sleep", "args":["--help"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"contract", "expected_stdout_contains":"Usage:", "coverage":["help"]
+    },
+    {
+      "id":"p0-seq-equal-width", "command":"seq", "args":["-w","7","10"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"exact", "coverage":["equal-width"]
+    },
+    {
+      "id":"p0-seq-separator", "command":"seq", "args":["-s",",","1","3"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"exact", "coverage":["separator"]
+    },
+    {
+      "id":"p0-seq-one-number", "command":"seq", "args":["3"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"exact", "coverage":["one-number"]
+    },
+    {
+      "id":"p0-seq-two-number", "command":"seq", "args":["1","3"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"exact", "coverage":["two-number"]
+    },
+    {
+      "id":"p0-seq-three-number", "command":"seq", "args":["1","1","3"],
+      "stdin_hex":"", "files":[], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"exact", "coverage":["three-number"]
+    },
+    {
+      "id":"p0-sh-stdin-script", "command":"sh", "args":["-s","shell","value"],
+      "stdin_hex":"6563686f2022243122", "files":[], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"contract", "expected_stdout_contains":"value", "coverage":["stdin-script"]
+    },
+    {
+      "id":"p0-jqlog-file", "command":"jqlog", "args":["-f","input.log",".a"],
+      "stdin_hex":"", "files":[{"path":"input.log","content_hex":"7b2261223a317d0a"}], "environment":{}, "expected_status":0,
+      "normalizations":[], "comparison":"contract", "expected_stdout_contains":"1", "coverage":["file"]
+    }
+  ]
+}

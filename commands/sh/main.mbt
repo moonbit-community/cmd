@@ -62,11 +62,17 @@ async fn main {
     }
     None =>
       if stdin_script {
-        (
-          @stdio.stdin.read_all().text(),
-          invocation_name,
-          arguments[index:].to_owned(),
-        )
+        let shell_name = arguments.get(index).unwrap_or(invocation_name)
+        let positional = if index < arguments.length() {
+          if index + 1 < arguments.length() {
+            arguments[index + 1:].to_owned()
+          } else {
+            []
+          }
+        } else {
+          []
+        }
+        (@stdio.stdin.read_all().text(), shell_name, positional)
       } else {
         match script_path {
           Some(path) => (read_script(path), path, arguments[index:].to_owned())
@@ -75,8 +81,12 @@ async fn main {
       }
   }
   let status = @shell.run(script, name~, args=positional) catch {
-    err => {
-      @stdio.stderr.write("sh: \{err}\n")
+    @shell.ShellError(message) => {
+      @stdio.stderr.write("sh: \{message}\n")
+      2
+    }
+    _ => {
+      @stdio.stderr.write("sh: shell execution failed\n")
       2
     }
   }

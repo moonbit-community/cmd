@@ -3,6 +3,23 @@
 This repository integrates multiple command packages, so changes are recorded
 by date and delivery milestone rather than by a single package version.
 
+## 2026-09-06
+
+- Fixed two-operand descending `seq`, synchronized version metadata for the
+  affected commands, sanitized `sh` rejected-syntax diagnostics, and enforced
+  single-terminal-newline `jqlog` help/error output.
+- Added the pure-MoonBit published-version Runner with exact-version MoonX
+  invocations, shared loopback HTTP fixtures, manifest validation, failure
+  classification, filesystem snapshots, and Markdown/JSONL reports.
+- Added P0 regression coverage for `echo`, `false`, `jqlog`, `seq`, `sleep`,
+  and `true` at `0.1.5`, plus the corrected `sh` release at `0.1.6`.
+- Added release-manifest, published differential, and cross-platform smoke CI
+  jobs. `timeout` remains local-only and is excluded from the 47-command
+  published manifest.
+- Published-version smoke found and fixed a POSIX `sh -s name arg` positional
+  parameter regression; `cli/sh@0.1.6` is pending publication before the
+  published gate can be promoted.
+
 ## 2026-09-05
 
 - Delivered P6 JSON CLI modes and the bounded `jqlog` contract.

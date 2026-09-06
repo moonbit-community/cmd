@@ -58,7 +58,7 @@ async fn main {
     return
   }
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("sleep (moonbit cmd) 0.1.3\n")
+    @stdio.stdout.write("sleep (moonbit cmd) \{command_version}\n")
     return
   }
   if args.is_empty() {

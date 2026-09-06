@@ -28,6 +28,42 @@ The historical implementation roadmap and its stage evidence are archived in
 [`reports/README.md`](reports/README.md). They are historical context, not an
 additional support claim.
 
+## Published-version verification
+
+`tests/release_runner` is the published-consumer gate. It is a native MoonBit
+runner that starts exact `moonx cli/<command>@<version>` invocations through
+MoonBit's process API and compares them with the pinned Linux oracle. It never
+builds a command package during a case. The selected versions and case IDs are
+recorded in `tests/release_runner/manifest.json`; `latest`, version ranges and
+implicit package resolution are forbidden.
+
+The release manifest must cover every published command (47 commands; the
+`timeout` package remains local-only), and every option/operand form promoted in
+this record must have positive, boundary, failure and side-effect cases. Help
+and version text use contract comparison where project branding differs from
+GNU; bytes, status, final newlines and version tokens remain checked. Policy
+authorization is separate and continues to run through `moonrun --policy` in
+the unified runner.
+
+For every release, update the package version, command README, release
+manifest and case coverage together. After the Wasm asset is available, run:
+
+```text
+moon run --target native tests/release_runner -- \
+  --manifest tests/release_runner/manifest.json --suite validate
+moon run --target native tests/release_runner -- \
+  --manifest tests/release_runner/manifest.json --suite differential \
+  --oracle-image mooncmd-oracle:phase0
+```
+
+Asset/registry transport errors, candidate failures, oracle failures,
+semantic mismatches, side-effect violations, timeouts and runner failures are
+reported separately. Asset or infrastructure failures are hard failures, not
+skips. macOS and Windows run the same exact-version published smoke suite;
+only the pinned Linux oracle result promotes a strict differential claim.
+HTTP cases use a shared pure-MoonBit loopback fixture; HTTPS fixture cases stay
+outside the published selection until their TLS fixture is pinned.
+
 ## Inventory
 
 The local release contains 48 command modules. Mooncakes currently exposes 47
@@ -40,10 +76,13 @@ moon run --target wasm --release commands/timeout -- 1s printf ok
 
 is a valid local invocation, while `moonx cli/timeout` is not a supported
 registry invocation. The other rows are intended for the package version
-recorded in each command's `moon.mod` after its Wasm asset is available. P9
-all command modules are being prepared at `0.1.4`, which is newer than every
-currently published command version (the highest published command version is
-`cli/tail@0.1.3`).
+recorded in each command's `moon.mod` after its Wasm asset is available. The
+current release keeps the unaffected commands at `0.1.4`; the P0 fixes for
+`echo`, `false`, `jqlog`, `seq`, `sleep` and `true` are published at `0.1.5`.
+The first published `sh@0.1.5` smoke run exposed a POSIX `-s` positional
+parameter regression; the corrected `sh@0.1.6` asset is now published and is
+included in the release manifest. The published gate still requires the
+registry transport and pinned Linux oracle jobs to pass.
 
 Status vocabulary: `subset verified` is a successful normal-path probe;
 `restricted` additionally needs explicit Wasm file/process/network/permission
@@ -85,7 +124,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `pwd` | subset verified | `-L`, `-P`, invalid logical `PWD` fallback | Logical/physical result follows Wasm cwd contract |
 | `rm` | subset verified | files/trees, `-r`, `-f`, `-d`, `-v`, failure ordering | Root/current-directory protection is unconditional |
 | `rmdir` | subset verified | empty removal, `-p`, `-I`, `-v`, failure ordering | Full path diagnostics not claimed |
-| `seq` | subset verified | one/two/three-number forms, descending values, `-w`, `-s`, `--version` | Full GNU overflow/locale formatting not claimed |
+| `seq` | subset verified | one/two/three-number forms (including automatic two-operand descending), `-w`, `-s`, `--version` | Full GNU overflow/locale formatting not claimed |
 | `sh` | restricted | `-c`, `-s`, script/stdin selection, variables, positional parameters, pipelines, redirections/heredocs, command substitution, conditionals, case/patterns, loops, functions/return, grouping/subshells, `${#name}`, `set -e/-u`, `shift` | External commands remain explicit policy-visible child requests; unsupported non-POSIX/Bash-only syntax is rejected |
 | `sha256sum` | subset verified | file/stdin digest, `-c`, `-z`, quiet/status/strict/warn/ignore-missing verification modes | Binary manifest extensions and every warning byte not claimed |
 | `sleep` | subset verified | fractional values, `s/m/h/d`, multiple operands, help/version | Signal/cancellation parity not claimed |

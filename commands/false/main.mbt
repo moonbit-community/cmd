@@ -7,7 +7,7 @@ async fn main {
     return
   }
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("false (moonbit cmd) 0.1.3\n")
+    @stdio.stdout.write("false (moonbit cmd) \{command_version}\n")
     return
   }
   @sys.exit(1)

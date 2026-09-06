@@ -564,7 +564,8 @@
           "rule": "working-directory",
           "comment": "candidate cases use a temporary path while the pinned container mounts the same case at /work"
         }
-      ]
+      ],
+      "comparison": "normalized"
     },
     {
       "id": "phase3-seq-basic",

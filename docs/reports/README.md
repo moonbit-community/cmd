@@ -20,6 +20,9 @@ they are not an alternative support matrix.
 | 2026-09-05 | [P6-P8 language and filesystem](2026-09-05-p6-p8.md) | jq, make/xxd, and the pure MoonBit Native/Wasm filesystem subset |
 | 2026-09-05 | [P9 compatibility closure](2026-09-05-p9.md) | Remaining command-local options, diagnostics, NUL records, and C-locale `tr` |
 | 2026-09-05 | [Final audit and archival](2026-09-05-final-audit.md) | Generated artifacts, Wasm execution, differential evidence, CI reconciliation, and documentation audit |
+| 2026-09-06 | [P0 fixes](2026-09-06-p0-fixes.md) | `seq`, version metadata, `sh` diagnostics, and `jqlog` newline fixes |
+| 2026-09-06 | [Published-version Runner baseline](2026-09-06-published-runner-baseline.md) | Pure MoonBit registry consumer runner, exact versions, fixtures, and failure classes |
+| 2026-09-06 | [Published smoke regression](2026-09-06-published-smoke-regression.md) | `sh -s` positional-parameter defect and required `0.1.6` republish |
 
 ## Reading rule
 
@@ -28,4 +31,3 @@ record and the applicable ADR. A passing parser, help line, or smoke invocation
 never promotes an option to full upstream compatibility. Native semantic tests,
 pinned upstream differential tests, and Wasm policy tests remain separate
 evidence families.
-

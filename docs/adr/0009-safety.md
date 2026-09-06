@@ -29,6 +29,12 @@ The unified runner captures filesystem snapshots and includes nested-target,
 cycle, policy-denial, update, backup, and protected-path cases. Remaining P8
 side-effect probes are listed in the plan's gap register.
 
+The published-version Runner applies the same invariant to each candidate and
+oracle copy: the working directory remains alive until both processes,
+snapshots and reports complete. Registry/transport failures are explicit
+infrastructure failures, never skips, and failed cases must not leave target,
+backup or source mutations.
+
 ## Revisit when
 
 The runtime exposes a reliable atomic transaction or cross-device classification

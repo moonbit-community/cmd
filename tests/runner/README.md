@@ -63,3 +63,9 @@ option-specific differential cases.
 Package-level MoonBit unit and white-box tests remain next to their packages.
 The former `tests/cram`, `tests/compat`, `tests/policy`, and `tests/oracle`
 black-box entry points are intentionally not supported.
+
+Published package verification is a separate pure-MoonBit executable in
+`tests/release_runner`. It consumes the exact versions in its release manifest
+through `moonx` and compares them with the pinned oracle; it does not replace
+this runner's pre-built artifact or policy suites. A release must update that
+manifest and its option coverage before a package is considered verified.

@@ -590,6 +590,22 @@ async fn run_catalog_smoke(bin_root : String, failures : Array[String]) -> Unit 
     invoked,
     failures,
   )
+  expect_stdout_contains(
+    bin_root,
+    "echo",
+    ["--version"],
+    "0.1.5",
+    Map([]),
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
+    "seq",
+    ["--version"],
+    "0.1.5",
+    Map([]),
+    failures,
+  )
   expect_case(bin_root, "sort", [], Some(b""), 0, b"", invoked, failures)
   expect_case(bin_root, "tail", [], Some(b""), 0, b"", invoked, failures)
   expect_stdout_contains(
@@ -1394,6 +1410,21 @@ async fn run_p5_sh_cases(bin_root : String, failures : Array[String]) -> Unit {
     "unset",
     failures,
   )
+  let unsupported = @testkit.run(@testkit.executable_path(bin_root, "sh"), [
+    "-c", "arr=(one two)",
+  ]) catch {
+    err => {
+      compat_fail("sh: diagnostic case could not run: \{err}", failures)
+      return
+    }
+  }
+  record_result(
+    unsupported.status == 2 &&
+    !@testkit.contains_bytes(unsupported.stderr, "ShellError") &&
+    !@testkit.contains_bytes(unsupported.stderr, "cli/core/shell"),
+    "sh: unsupported syntax leaked an internal error type",
+    failures,
+  )
 }
 
 ///|
@@ -1925,6 +1956,8 @@ async fn run_p9_cases(bin_root : String, failures : Array[String]) -> Unit {
   )
   expect(bin_root, "printf", ["%b", "A\\x00B"], None, 0, b"A\x00B", failures)
   expect(bin_root, "printf", ["%d", "invalid"], None, 1, b"0", failures)
+  expect(bin_root, "seq", ["3", "1"], None, 0, b"3\n2\n1\n", failures)
+  expect(bin_root, "seq", ["1", "3"], None, 0, b"1\n2\n3\n", failures)
   expect(bin_root, "seq", ["3", "-1", "1"], None, 0, b"3\n2\n1\n", failures)
   expect_failure(
     bin_root,
@@ -1957,7 +1990,7 @@ async fn run_p9_cases(bin_root : String, failures : Array[String]) -> Unit {
     bin_root,
     "sleep",
     ["--version"],
-    "0.1.3",
+    "0.1.5",
     Map([]),
     failures,
   )
@@ -1973,10 +2006,52 @@ async fn run_p9_cases(bin_root : String, failures : Array[String]) -> Unit {
   )
   expect_stdout_contains(
     bin_root,
+    "true",
+    ["--version"],
+    "0.1.5",
+    Map([]),
+    failures,
+  )
+  expect_stdout_contains(
+    bin_root,
     "false",
     ["--version"],
-    "0.1.3",
+    "0.1.5",
     Map([]),
+    failures,
+  )
+  let jqlog_help = @testkit.run(@testkit.executable_path(bin_root, "jqlog"), [
+    "--help",
+  ]) catch {
+    err => {
+      compat_fail("jqlog: help case could not run: \{err}", failures)
+      return
+    }
+  }
+  record_result(
+    jqlog_help.status == 0 &&
+    jqlog_help.stdout.length() > 0 &&
+    jqlog_help.stdout[jqlog_help.stdout.length() - 1] == b'\n',
+    "jqlog: help output must end with a newline",
+    failures,
+  )
+  let jqlog_error = @testkit.run(@testkit.executable_path(bin_root, "jqlog"), [
+    "--bad",
+  ]) catch {
+    err => {
+      compat_fail("jqlog: error case could not run: \{err}", failures)
+      return
+    }
+  }
+  record_result(
+    jqlog_error.status == 2 &&
+    jqlog_error.stderr.length() > 0 &&
+    jqlog_error.stderr[jqlog_error.stderr.length() - 1] == b'\n' &&
+    (
+      jqlog_error.stderr.length() == 1 ||
+      jqlog_error.stderr[jqlog_error.stderr.length() - 2] != b'\n'
+    ),
+    "jqlog: parser error must end with exactly one newline",
     failures,
   )
   let sleep_cancelled = @async.with_task_group <| group => {
