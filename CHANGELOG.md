@@ -18,8 +18,9 @@ by date and delivery milestone rather than by a single package version.
   published manifest.
 - Published-version verification corrected an erroneous `sh -s` expectation:
   POSIX/dash keeps the invocation name as `$0` and the first operand as `$1`.
-  The compatible follow-up `cli/sh@0.1.7` is staged for publication; `0.1.6`
-  is not promoted.
+  The compatible follow-up `cli/sh@0.1.7` is published and passed the final
+  pinned-oracle, differential, smoke, stress, and cross-platform CI run
+  `34015767486`; `0.1.6` is not promoted.
 
 ## 2026-09-05
 

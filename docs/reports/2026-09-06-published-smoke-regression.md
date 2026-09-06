@@ -31,6 +31,7 @@ printf 'printf "%s|%s\\n" "$0" "$1"\n' | moon run --target native commands/sh --
 => sh|shell-name (status 0)
 ```
 
-The package version is advanced to `cli/sh@0.1.7` so the already published
-`0.1.6` asset is not overwritten. Its Wasm asset must be published before the
-final release gate can be rerun.
+The package version was advanced to `cli/sh@0.1.7` so the already published
+`0.1.6` asset was not overwritten. After publication, the final workflow
+(`34015767486`) passed pinned upstream oracle, published differential, all
+three published smoke jobs, stress, and the Native/Wasm cross-platform matrix.

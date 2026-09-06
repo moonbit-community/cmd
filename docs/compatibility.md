@@ -83,9 +83,10 @@ recorded in each command's `moon.mod` after its Wasm asset is available. The
 current release keeps the unaffected commands at `0.1.4`; the P0 fixes for
 `echo`, `false`, `jqlog`, `seq`, `sleep` and `true` are published at `0.1.5`.
 The first published `sh@0.1.5` smoke run exposed a runner expectation error
-around `-s` positional parameters. The fixed release keeps the POSIX oracle
-semantics and is staged at `sh@0.1.7`; it must be published before the release
-manifest can be promoted. The already published `sh@0.1.6` is not promoted.
+around `-s` positional parameters. The fixed `sh@0.1.7` release keeps the
+POSIX oracle semantics; `sh@0.1.6` is not promoted. The final cross-platform
+published gate for `sh@0.1.7` passed in CI run
+`34015767486`.
 
 Status vocabulary: `subset verified` is a successful normal-path probe;
 `restricted` additionally needs explicit Wasm file/process/network/permission
