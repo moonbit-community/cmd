@@ -146,12 +146,15 @@ async fn run_oracle(
   root : String,
   http_base : String?,
   networked : Bool,
+  docker_user : String?,
   timeout_ms : Int,
 ) -> (@testkit.RunResult, String?) {
-  let args = [
-    "run",
-    "--rm",
-    "-i",
+  let args = ["run", "--rm", "-i"]
+  match docker_user {
+    Some(value) => args.append(["--user", value])
+    None => ()
+  }
+  args.append([
     "--network",
     if networked {
       "host"
@@ -171,7 +174,7 @@ async fn run_oracle(
     "LANG=C",
     "-e",
     "TZ=UTC",
-  ]
+  ])
   for name, value in fixture.environment {
     if name != "PATH" && name != "LC_ALL" && name != "LANG" && name != "TZ" {
       args.push("-e")
@@ -200,6 +203,7 @@ async fn run_case_inner(
   differential : Bool,
   timeout_ms : Int,
   http_base : String?,
+  docker_user : String?,
   reports : Array[CaseReport],
 ) -> Unit {
   let networked = is_network_case(fixture)
@@ -390,7 +394,8 @@ async fn run_case_inner(
     return
   }
   let (oracle, oracle_timeout) = run_oracle(
-    docker, oracle_image, fixture, oracle_root, http_base, networked, case_timeout_ms,
+    docker, oracle_image, fixture, oracle_root, http_base, networked, docker_user,
+    case_timeout_ms,
   ) catch {
     err => {
       reports.push({
@@ -501,6 +506,7 @@ async fn run_case(
   differential : Bool,
   timeout_ms : Int,
   http_base : String?,
+  docker_user : String?,
   reports : Array[CaseReport],
 ) -> Unit {
   if is_network_case(fixture) && http_base is None {
@@ -515,8 +521,26 @@ async fn run_case(
   }
   run_case_inner(
     moonx, docker, oracle_image, row, fixture, differential, timeout_ms, http_base,
-    reports,
+    docker_user, reports,
   )
+}
+
+///|
+async fn detect_docker_user() -> String? {
+  let uid = @testkit.run("id", ["-u"], stdin=b"")
+  let gid = @testkit.run("id", ["-g"], stdin=b"")
+  if uid.status == 0 && gid.status == 0 {
+    let uid_text = (@utf8.decode(uid.stdout) catch { _ => "" })
+      .trim()
+      .to_owned()
+    let gid_text = (@utf8.decode(gid.stdout) catch { _ => "" })
+      .trim()
+      .to_owned()
+    if !uid_text.is_empty() && !gid_text.is_empty() {
+      return Some(uid_text + ":" + gid_text)
+    }
+  }
+  None
 }
 
 ///|
@@ -529,6 +553,7 @@ async fn run_selected_cases(
   differential : Bool,
   timeout_ms : Int,
   http_base : String?,
+  docker_user : String?,
   reports : Array[CaseReport],
 ) -> Unit {
   for fixture in fixtures {
@@ -536,7 +561,7 @@ async fn run_selected_cases(
       Some(row) =>
         run_case(
           moonx, docker, oracle_image, row, fixture, differential, timeout_ms, http_base,
-          reports,
+          docker_user, reports,
         )
       None => ()
     }
@@ -650,6 +675,7 @@ async fn main {
   let reports : Array[CaseReport] = []
   let fixtures = selected_cases(manifest, base)
   let differential = suite == "differential" || suite == "all"
+  let docker_user = if differential { detect_docker_user() } else { None }
   if fixtures.any(is_network_case) {
     @async.with_task_group <| group => {
       let (server, reader, http_base) = spawn_http_fixture_process(group)
@@ -669,6 +695,7 @@ async fn main {
         differential,
         timeout_ms,
         Some(http_base),
+        docker_user,
         reports,
       )
     }
@@ -682,6 +709,7 @@ async fn main {
       differential,
       timeout_ms,
       None,
+      docker_user,
       reports,
     )
   }

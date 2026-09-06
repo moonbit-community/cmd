@@ -84,7 +84,7 @@
     {
       "id":"p0-seq-two-operand-descending", "command":"seq", "args":["3","1"],
       "stdin_hex":"", "files":[], "environment":{}, "expected_status":0,
-      "normalizations":[], "comparison":"exact", "coverage":["two-number","descending"]
+      "normalizations":[], "comparison":"contract", "expected_stdout_contains":"3\n2\n1\n", "coverage":["two-number","descending"]
     },
     {
       "id":"p0-seq-version", "command":"seq", "args":["--version"],

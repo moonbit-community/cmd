@@ -124,7 +124,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `pwd` | subset verified | `-L`, `-P`, invalid logical `PWD` fallback | Logical/physical result follows Wasm cwd contract |
 | `rm` | subset verified | files/trees, `-r`, `-f`, `-d`, `-v`, failure ordering | Root/current-directory protection is unconditional |
 | `rmdir` | subset verified | empty removal, `-p`, `-I`, `-v`, failure ordering | Full path diagnostics not claimed |
-| `seq` | subset verified | one/two/three-number forms (including automatic two-operand descending), `-w`, `-s`, `--version` | Full GNU overflow/locale formatting not claimed |
+| `seq` | subset verified | one/two/three-number forms (including automatic two-operand descending), `-w`, `-s`, `--version` | Automatic `FIRST > LAST` descent is an explicit project contract extension (`seq 3 1` => `3\n2\n1\n`), so that case is contract-tested rather than compared as GNU exact behavior; full GNU overflow/locale formatting not claimed |
 | `sh` | restricted | `-c`, `-s`, script/stdin selection, variables, positional parameters, pipelines, redirections/heredocs, command substitution, conditionals, case/patterns, loops, functions/return, grouping/subshells, `${#name}`, `set -e/-u`, `shift` | External commands remain explicit policy-visible child requests; unsupported non-POSIX/Bash-only syntax is rejected |
 | `sha256sum` | subset verified | file/stdin digest, `-c`, `-z`, quiet/status/strict/warn/ignore-missing verification modes | Binary manifest extensions and every warning byte not claimed |
 | `sleep` | subset verified | fractional values, `s/m/h/d`, multiple operands, help/version | Signal/cancellation parity not claimed |

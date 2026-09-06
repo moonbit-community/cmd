@@ -34,7 +34,10 @@ is not started once per case. HTTPS cases are intentionally not selected until
 a TLS fixture is pinned. Each promoted option needs a successful case plus boundary,
 failure, argument-termination and side-effect coverage. `exact` cases compare
 bytes, status and snapshots; `contract` cases compare the documented status,
-tokens and newline contract where branding differs from GNU.
+tokens and newline contract where branding differs from GNU. The P0 `seq FIRST
+LAST` descending extension is contract-tested: `seq 3 1` must emit `3`, `2`,
+`1`; GNU's default positive-step behavior is not treated as an exact oracle for
+that one case.
 Cases may set a positive `timeout_ms`; otherwise the CLI `--timeout-ms` default
 applies. A timeout is a hard failure, never a skipped case.
 
