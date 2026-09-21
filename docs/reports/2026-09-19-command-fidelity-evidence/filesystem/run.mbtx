@@ -1,0 +1,110 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/json",
+}
+
+///|
+struct Record {
+  id : String
+  side : String
+  program : String
+  args : Array[String]
+  exit : Int
+  stdout : String
+  stderr : String
+} derive(ToJson)
+
+///|
+let root = "/tmp/cmd-audit-20260919-fs"
+
+///|
+async fn log_cmd(id : String, side : String, program : String, args : Array[String], input? : String = "") -> Unit {
+  let result = @shell.Cmd(program, args, cwd="\{root}/\{side}", stdin=@shell.Text(input)).output(timeout_ms=90000)
+  let record = Record::{ id, side, program, args, exit: result.exit_code(), stdout: result.stdout(), stderr: result.stderr() }
+  let serialized = record.to_json().stringify()
+  @fs.write_file("\{root}/results.jsonl", serialized + "\n", create_mode=@fs.OpenOrCreate, append=true)
+  @fs.write_file("\{root}/\{id}-\{side}.stdout", result.stdout_bytes())
+  @fs.write_file("\{root}/\{id}-\{side}.stderr", result.stderr())
+  println("\{id} \{side} exit=\{result.exit_code()} stdout=\{Repr(result.stdout())} stderr=\{Repr(result.stderr())}")
+}
+
+///|
+async fn pair(id : String, cmd : String, args : Array[String], input? : String = "") -> Unit {
+  log_cmd(id, "native", cmd, args, input~)
+  log_cmd(id, "moon", "/Users/winter/.moon/bin/moonx", ["cli/" + cmd] + args, input~)
+}
+
+///|
+async fn native_pair(id : String, program : String, args : Array[String]) -> Unit {
+  for side in ["native", "moon"] {
+    log_cmd(id, side, program, args)
+  }
+}
+
+///|
+async fn main {
+  @fs.write_file("\{root}/results.jsonl", "")
+  for side in ["native", "moon"] {
+    let dir = "\{root}/\{side}"
+    @fs.mkdir(dir, recursive=true)
+    @fs.mkdir("\{dir}/tree/sub", recursive=true)
+    @fs.mkdir("\{dir}/empty", recursive=true)
+    @fs.mkdir("\{dir}/remove/a", recursive=true)
+    @fs.write_file("\{dir}/source.txt", "alpha\nbeta\n")
+    @fs.write_file("\{dir}/tree/a.txt", "a\n")
+    @fs.write_file("\{dir}/tree/sub/b.txt", "b\n")
+    @fs.write_file("\{dir}/tree/.hidden", "hidden\n")
+    @fs.write_file("\{dir}/chmod.txt", "mode\n")
+    @fs.write_file("\{dir}/move.txt", "move\n")
+    @fs.write_file("\{dir}/exist.txt", "original\n")
+    @fs.symlink(target="source.txt", "\{dir}/link.txt")
+    @fs.symlink(target="../a.txt", "\{dir}/tree/sub/link")
+    @shell.Cmd("/bin/chmod", ["640", "source.txt"], cwd=dir).run()
+    @shell.Cmd("/usr/bin/touch", ["-t", "202001020304.05", "source.txt"], cwd=dir).run()
+  }
+  pair("cp-basic", "cp", ["source.txt", "basic.txt"])
+  pair("cp-preserve", "cp", ["-p", "source.txt", "preserve.txt"])
+  pair("cp-archive", "cp", ["-a", "tree", "archive"])
+  pair("cp-link-default", "cp", ["link.txt", "follow.txt"])
+  pair("cp-link-physical", "cp", ["-P", "link.txt", "physical.txt"])
+  pair("cp-self", "cp", ["source.txt", "source.txt"])
+  native_pair("cp-result-stat", "/usr/bin/stat", ["-f", "%N|%Sp|%m|%z|%Y", "source.txt", "basic.txt", "preserve.txt", "follow.txt", "physical.txt", "archive/sub/link"])
+  pair("mv-basic", "mv", ["move.txt", "moved.txt"])
+  pair("mv-no-clobber", "mv", ["-n", "moved.txt", "exist.txt"])
+  native_pair("mv-content", "/bin/cat", ["moved.txt", "exist.txt"])
+  pair("rm-link", "rm", ["link.txt"])
+  pair("rm-force-missing", "rm", ["-f", "missing"])
+  pair("rm-recursive", "rm", ["-r", "remove"])
+  pair("mkdir-mode", "mkdir", ["-p", "-m", "700", "created/a"])
+  native_pair("mkdir-result-stat", "/usr/bin/stat", ["-f", "%N|%Sp", "created", "created/a"])
+  pair("rmdir-parents", "rmdir", ["-p", "created/a"])
+  pair("ln-hard", "ln", ["source.txt", "hard.txt"])
+  pair("ln-sym", "ln", ["-s", "source.txt", "sym.txt"])
+  native_pair("ln-result-stat", "/usr/bin/stat", ["-f", "%N|%Sp|%l|%Y", "source.txt", "hard.txt", "sym.txt"])
+  pair("ls-one", "ls", ["-1", "tree"])
+  pair("ls-long", "ls", ["-l", "source.txt", "sym.txt"])
+  pair("find-type", "find", ["tree", "-type", "f", "-name", "*.txt"])
+  pair("find-group", "find", ["tree", "(", "-name", "a.txt", "-o", "-name", "b.txt", ")", "-print"])
+  pair("find-exec", "find", ["tree", "-name", "a.txt", "-exec", "/bin/echo", "hit", "{}", ";"])
+  pair("find-size", "find", ["tree", "-type", "f", "-size", "+1c"])
+  pair("chmod-octal", "chmod", ["600", "chmod.txt"])
+  native_pair("chmod-octal-stat", "/usr/bin/stat", ["-f", "%N|%Sp", "chmod.txt"])
+  pair("chmod-symbolic", "chmod", ["u+x,g=u,o-rwx", "chmod.txt"])
+  native_pair("chmod-symbolic-stat", "/usr/bin/stat", ["-f", "%N|%Sp", "chmod.txt"])
+  pair("touch-set-time", "touch", ["-t", "202001020304.05", "touched.txt"])
+  pair("touch-reference", "touch", ["-r", "source.txt", "ref.txt"])
+  pair("touch-no-create", "touch", ["-c", "nocreate.txt"])
+  native_pair("touch-stat", "/usr/bin/stat", ["-f", "%N|%m|%a|%z", "touched.txt", "ref.txt", "nocreate.txt"])
+  pair("tee-basic", "tee", ["tee.txt"], input="first\n")
+  pair("tee-append", "tee", ["-a", "tee.txt"], input="second\n")
+  native_pair("tee-content", "/bin/cat", ["tee.txt"])
+  pair("pwd-basic", "pwd", [])
+  pair("basename-suffix", "basename", ["/a/b/archive.tar.gz", ".gz"])
+  pair("dirname-trailing", "dirname", ["/a/b/c///"])
+  pair("test-file", "test", ["-f", "source.txt"])
+  pair("test-integer", "test", ["9", "-gt", "10"])
+  pair("test-symlink", "test", ["-L", "sym.txt"])
+  native_pair("final-tree", "/usr/bin/find", [".", "-type", "f", "-o", "-type", "l"])
+}

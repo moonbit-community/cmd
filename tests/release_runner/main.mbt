@@ -1,7 +1,8 @@
 ///|
 fn usage() -> String {
   "Usage: release-runner --manifest FILE [--suite differential|smoke|validate|all] " +
-  "[--moonx PATH] [--docker PATH] [--oracle-image IMAGE] [--report-dir DIR]"
+  "[--moonx PATH] [--docker PATH] [--oracle-image IMAGE] [--report-dir DIR] " +
+  "[--command NAME] [--case ID] [--list] [--jobs N] [--timeout-ms N]"
 }
 
 ///|
@@ -13,9 +14,17 @@ async fn read_release_manifest(path : String) -> ReleaseManifest raise Failure {
 
 ///|
 async fn read_base_manifest(path : String) -> BaseManifest raise Failure {
-  @json.from_json(@json.parse(@fs.read_file(path).text())) catch {
-    _ => fail("cannot read base manifest")
+  let cases = @testkit.load_cases(path) catch {
+    err => fail("cannot read base manifest: \{err}")
   }
+  let source = @json.parse(@fs.read_file(path).text()) catch {
+    _ => fail("cannot parse base manifest")
+  }
+  let schema = match source {
+    { "schema": Number(number, ..), .. } => number.to_int()
+    _ => 1
+  }
+  { schema, cases, }
 }
 
 ///|
@@ -41,14 +50,47 @@ fn selected_cases(
     return all
   }
   let selected : Array[ReleaseCase] = manifest.extra_cases.copy()
+  let included : Set[String] = Set::from_array(
+    selected.map(fixture => fixture.id),
+  )
   for id in manifest.case_ids {
     for fixture in all {
-      if fixture.id == id {
+      if (fixture.id == id || fixture.aliases.unwrap_or([]).contains(id)) &&
+        !included.contains(fixture.id) {
         selected.push(fixture)
+        included.add(fixture.id)
       }
     }
   }
   selected
+}
+
+///|
+fn filter_cases(
+  fixtures : Array[ReleaseCase],
+  commands : Array[String],
+  ids : Array[String],
+) -> Array[ReleaseCase] raise Failure {
+  @testkit.select_cases(fixtures, commands, ids)
+}
+
+///|
+fn has_contract_assertion(fixture : ReleaseCase) -> Bool {
+  @testkit.contract_errors(fixture).is_empty()
+}
+
+///|
+fn verification_level(fixture : ReleaseCase, differential : Bool) -> String {
+  if fixture.expected_rejection is Some(_) ||
+    fixture.comparison == Some("boundary") {
+    "boundary"
+  } else if fixture.comparison == Some("contract") {
+    "contract"
+  } else if differential {
+    "differential"
+  } else {
+    "availability"
+  }
 }
 
 ///|
@@ -63,26 +105,17 @@ fn contains_any(text : String, needles : Array[String]) -> Bool {
 
 ///|
 fn host_platform() -> String {
-  if @platform.is_windows() {
-    "windows"
-  } else {
-    "posix"
-  }
+  @testkit.host_platform()
 }
 
 ///|
 fn case_supported_on_host(fixture : ReleaseCase, platform : String) -> Bool {
   match fixture.host_platforms {
-    Some(platforms) => platforms.contains(platform)
+    Some(platforms) =>
+      platforms.contains(platform) ||
+      (platform != "windows" && platforms.contains("posix"))
     None => true
   }
-}
-
-///|
-fn ends_with_newline(data : Bytes) -> Bool {
-  data.length() > 0 &&
-  data[data.length() - 1] == b'\n' &&
-  (data.length() == 1 || data[data.length() - 2] != b'\n')
 }
 
 ///|
@@ -91,11 +124,17 @@ fn failure_category(result : @testkit.RunResult) -> String {
   if result.status == 255 &&
     stderr.contains("Prebuilt wasm asset does not exist") {
     "asset_unavailable"
-  } else if contains_any(stderr, [
-      "operation timed out", "timed out", "failed to connect", "could not resolve",
-      "failed to read registry asset response", "error sending request", "connection reset",
-      "network is unreachable",
-    ]) {
+  } else if result.status != 0 &&
+    (
+      stderr.contains("failed to read registry asset response") ||
+      (
+        (stderr.contains("mooncakes.io") || stderr.contains("registry")) &&
+        contains_any(stderr, [
+          "operation timed out", "timed out", "failed to connect", "could not resolve",
+          "error sending request", "connection reset", "network is unreachable",
+        ])
+      )
+    ) {
     "registry_transport"
   } else {
     "candidate_failure"
@@ -125,34 +164,20 @@ async fn run_candidate(
   root : String,
   http_base : String?,
   timeout_ms : Int,
-) -> (@testkit.RunResult, String?) {
+) -> @testkit.TimedRun {
   let args = [row.package_name + "@" + row.version]
   args.append(expand_args(fixture.args, root, http_base?))
-  let stdin = decode_hex(fixture.stdin_hex, fixture.id + " stdin")
+  let stdin = fixture.input(root~, http_base?)
   let environment = controlled_environment(fixture.environment)
-  for attempt in 0..<2 {
-    let result = @async.with_timeout_opt(timeout_ms, () => {
-      @testkit.run(
-        moonx,
-        args,
-        stdin~,
-        cwd=root,
-        extra_env=environment,
-        inherit_env=true,
-      )
-    })
-    match result {
-      Some(result) => {
-        if attempt == 0 && failure_category(result) == "registry_transport" {
-          continue
-        }
-        return (result, None)
-      }
-      None =>
-        return ({ status: 124, stdout: b"", stderr: b"", }, Some("timeout"))
-    }
-  }
-  abort("unreachable")
+  @testkit.run_with_deadline(
+    moonx,
+    args,
+    timeout_ms,
+    stdin~,
+    cwd=fixture.working_directory(root),
+    extra_env=environment,
+    inherit_env=true,
+  )
 }
 
 ///|
@@ -165,7 +190,7 @@ async fn run_oracle(
   networked : Bool,
   docker_user : String?,
   timeout_ms : Int,
-) -> (@testkit.RunResult, String?) {
+) -> @testkit.TimedRun {
   let args = ["run", "--rm", "-i"]
   match docker_user {
     Some(value) => args.append(["--user", value])
@@ -184,7 +209,7 @@ async fn run_oracle(
     "-v",
     root + ":/work:rw",
     "-w",
-    "/work",
+    fixture.working_directory("/work"),
     "-e",
     "LC_ALL=C",
     "-e",
@@ -199,15 +224,9 @@ async fn run_oracle(
     }
   }
   args.append(["-e", "PATH=/oracle/bin", image, fixture.command])
-  args.append(expand_args(fixture.args, root, http_base?))
-  let stdin = decode_hex(fixture.stdin_hex, fixture.id + " stdin")
-  let result = @async.with_timeout_opt(timeout_ms, () => {
-    @testkit.run(docker, args, stdin~, inherit_env=true)
-  })
-  match result {
-    Some(result) => (result, None)
-    None => ({ status: 124, stdout: b"", stderr: b"", }, Some("timeout"))
-  }
+  args.append(expand_args(fixture.args, "/work", http_base?))
+  let stdin = fixture.input(root="/work", http_base?)
+  @testkit.run_with_deadline(docker, args, timeout_ms, stdin~, inherit_env=true)
 }
 
 ///|
@@ -222,33 +241,90 @@ async fn run_case_inner(
   http_base : String?,
   docker_user : String?,
   reports : Array[CaseReport],
+  report_root : String?,
 ) -> Unit {
   let networked = is_network_case(fixture)
   let case_timeout_ms = fixture.timeout_ms.unwrap_or(timeout_ms)
+  if fixture.comparison == Some("contract") && !has_contract_assertion(fixture) {
+    reports.push({
+      id: fixture.id,
+      command: fixture.command,
+      version: row.version,
+      category: "invalid_contract",
+      detail: "contract needs a positive output assertion; status and forbidden internal diagnostics alone do not establish public behavior",
+    })
+    return
+  }
   let policy_note = if row.policy_sensitive {
     " (policy-sensitive; authorization is checked by the separate policy suite)"
   } else {
     ""
   }
-  let root = @fs.tmpdir(prefix="mooncmd-release-\{fixture.id}-")
-  defer (@fs.rmdir(root, recursive=true) catch {
-    err =>
+  let root = match report_root {
+    Some(directory) => {
+      if !@fs.exists(directory) {
+        @fs.mkdir(directory, recursive=true)
+      }
+      let work = @path.Path(@fs.realpath(directory))
+        .join(Path(fixture.id))
+        .to_string()
+      guard !@fs.exists(work) else {
+        fail("evidence already exists: \{work}; choose a fresh --report-dir")
+      }
+      @fs.mkdir(work, recursive=true)
+      work
+    }
+    None => @fs.tmpdir(prefix="mooncmd-release-\{fixture.id}-")
+  }
+  let reports_before = reports.length()
+  defer @async.protect_from_cancel(() => {
+    if reports.length() == reports_before {
       reports.push({
         id: fixture.id,
         command: fixture.command,
         version: row.version,
         category: "runner_infra",
-        detail: "failed to clean fixture directory: \{err}",
+        detail: "fixture or observation did not complete",
       })
+    }
+    if reports.any(report => {
+        report.id == fixture.id && result_class(report.category) != "pass"
+      }) {
+      for report in reports {
+        if report.id == fixture.id {
+          report.detail += "; artifacts: " + root
+        }
+      }
+    } else {
+      @fs.rmdir(root, recursive=true) catch {
+        err =>
+          for report in reports {
+            if report.id == fixture.id {
+              report.category = "runner_infra"
+              report.detail = "failed to clean fixture directory: \{err}; artifacts: " +
+                root
+            }
+          }
+      }
+    }
   })
   let candidate_root = @path.Path(root).join(Path("candidate")).to_string()
   let oracle_root = @path.Path(root).join(Path("oracle")).to_string()
   @fs.mkdir(candidate_root)
-  @fs.mkdir(oracle_root)
   prepare_fixture(candidate_root, fixture, http_base?)
-  prepare_fixture(oracle_root, fixture, http_base?)
-  let candidate_before = snapshot(candidate_root)
-  let (candidate, candidate_timeout) = run_candidate(
+  if differential &&
+    fixture.comparison != Some("contract") &&
+    fixture.expected_rejection is None {
+    @fs.mkdir(oracle_root)
+    prepare_fixture(oracle_root, fixture, http_base?)
+  }
+  let observed = @testkit.contract_observations(fixture)
+  let before = if fixture.expected_rejection is Some(_) {
+    snapshot(candidate_root, observe=observed[:], baseline=true)
+  } else {
+    []
+  }
+  let candidate_run = run_candidate(
     moonx, row, fixture, candidate_root, http_base, case_timeout_ms,
   ) catch {
     err => {
@@ -262,18 +338,34 @@ async fn run_case_inner(
       return
     }
   }
-  match candidate_timeout {
-    Some(category) => {
-      reports.push({
-        id: fixture.id,
-        command: fixture.command,
-        version: row.version,
-        category,
-        detail: "candidate did not finish before timeout",
-      })
-      return
-    }
-    None => ()
+  let candidate = candidate_run.output
+  @fs.write_file(root + "/candidate.stdout", candidate.stdout)
+  @fs.write_file(root + "/candidate.stderr", candidate.stderr)
+  if candidate_run.timed_out {
+    @fs.write_file(
+      root + "/candidate.capture-incomplete",
+      "Captured bytes are partial because the runner deadline expired.\n",
+    )
+  }
+  if candidate_run.cleanup_error is Some(error) {
+    reports.push({
+      id: fixture.id,
+      command: fixture.command,
+      version: row.version,
+      category: "cleanup_failure",
+      detail: error,
+    })
+    return
+  }
+  if candidate_run.timed_out {
+    reports.push({
+      id: fixture.id,
+      command: fixture.command,
+      version: row.version,
+      category: "timeout",
+      detail: "candidate did not finish before timeout",
+    })
+    return
   }
   let candidate_category = failure_category(candidate)
   if candidate_category == "asset_unavailable" {
@@ -300,107 +392,84 @@ async fn run_case_inner(
     })
     return
   }
-  if candidate.status != fixture.expected_status {
-    reports.push({
-      id: fixture.id,
-      command: fixture.command,
-      version: row.version,
-      category: "candidate_failure",
-      detail: "expected status \{fixture.expected_status}, got \{candidate.status}",
-    })
-    return
+  if fixture.expected_rejection is None {
+    let errors = @testkit.check_contract(fixture, candidate, candidate_root)
+    errors.append(@testkit.check_expected_files(fixture, candidate_root))
+    if !errors.is_empty() {
+      reports.push({
+        id: fixture.id,
+        command: fixture.command,
+        version: row.version,
+        category: "semantic_mismatch",
+        detail: errors.join("; "),
+      })
+      return
+    }
   }
-  if candidate.status != 0 {
-    let candidate_after = snapshot(candidate_root)
-    if !snapshots_equal(candidate_before, candidate_after) {
+  if fixture.expected_rejection is Some(reason) {
+    if fixture.expected_status != 0 {
+      let errors = @testkit.check_contract(fixture, candidate, candidate_root)
+      errors.append(@testkit.check_expected_files(fixture, candidate_root))
+      if !errors.is_empty() {
+        reports.push({
+          id: fixture.id,
+          command: fixture.command,
+          version: row.version,
+          category: "semantic_mismatch",
+          detail: errors.join("; "),
+        })
+        return
+      }
+    }
+    if candidate.status == 0 ||
+      (
+        fixture.expected_status != 0 &&
+        candidate.status != fixture.expected_status
+      ) ||
+      !@testkit.contains_bytes(candidate.stderr, reason) {
+      reports.push({
+        id: fixture.id,
+        command: fixture.command,
+        version: row.version,
+        category: "semantic_mismatch",
+        detail: "unsupported operation must report a nonzero status and the declared diagnostic: " +
+        reason,
+      })
+    } else if !snapshots_equal(
+        before,
+        snapshot(candidate_root, observe=observed[:]),
+      ) {
       reports.push({
         id: fixture.id,
         command: fixture.command,
         version: row.version,
         category: "unexpected_side_effect",
-        detail: "failed candidate changed its fixture directory",
+        detail: "rejected operation changed the required fixture observations",
       })
-      return
+    } else {
+      reports.push({
+        id: fixture.id,
+        command: fixture.command,
+        version: row.version,
+        category: "boundary_passed",
+        detail: "unsupported operation rejected with preserved fixture: " +
+        reason,
+      })
     }
+    return
   }
-  match fixture.expected_stdout_contains {
-    Some(needle) if !@testkit.contains_bytes(candidate.stdout, needle) => {
-      reports.push({
-        id: fixture.id,
-        command: fixture.command,
-        version: row.version,
-        category: "semantic_mismatch",
-        detail: "stdout missing '\{needle}'",
-      })
-      return
-    }
-    _ => ()
+  if !differential && fixture.comparison != Some("contract") {
+    reports.push({
+      id: fixture.id,
+      command: fixture.command,
+      version: row.version,
+      category: "availability_passed",
+      detail: "versioned package invocation completed; no differential semantics claimed" +
+      policy_note,
+    })
+    return
   }
-  match fixture.expected_stdout_ends_with_newline {
-    Some(true) if !ends_with_newline(candidate.stdout) => {
-      reports.push({
-        id: fixture.id,
-        command: fixture.command,
-        version: row.version,
-        category: "semantic_mismatch",
-        detail: "stdout must end with a newline",
-      })
-      return
-    }
-    Some(false) if ends_with_newline(candidate.stdout) => {
-      reports.push({
-        id: fixture.id,
-        command: fixture.command,
-        version: row.version,
-        category: "semantic_mismatch",
-        detail: "stdout must not end with a newline",
-      })
-      return
-    }
-    _ => ()
-  }
-  match fixture.expected_stderr_ends_with_newline {
-    Some(true) if !ends_with_newline(candidate.stderr) => {
-      reports.push({
-        id: fixture.id,
-        command: fixture.command,
-        version: row.version,
-        category: "semantic_mismatch",
-        detail: "stderr must end with a newline",
-      })
-      return
-    }
-    Some(false) if ends_with_newline(candidate.stderr) => {
-      reports.push({
-        id: fixture.id,
-        command: fixture.command,
-        version: row.version,
-        category: "semantic_mismatch",
-        detail: "stderr must not end with a newline",
-      })
-      return
-    }
-    _ => ()
-  }
-  match fixture.forbidden_stderr {
-    Some(needles) if contains_any(
-        @utf8.decode(candidate.stderr) catch {
-          _ => ""
-        },
-        needles,
-      ) => {
-      reports.push({
-        id: fixture.id,
-        command: fixture.command,
-        version: row.version,
-        category: "semantic_mismatch",
-        detail: "stderr contains a forbidden internal diagnostic",
-      })
-      return
-    }
-    _ => ()
-  }
-  if !differential || fixture.comparison == Some("contract") {
+  if fixture.comparison == Some("contract") {
     reports.push({
       id: fixture.id,
       command: fixture.command,
@@ -410,7 +479,7 @@ async fn run_case_inner(
     })
     return
   }
-  let (oracle, oracle_timeout) = run_oracle(
+  let oracle_run = run_oracle(
     docker, oracle_image, fixture, oracle_root, http_base, networked, docker_user,
     case_timeout_ms,
   ) catch {
@@ -425,18 +494,34 @@ async fn run_case_inner(
       return
     }
   }
-  match oracle_timeout {
-    Some(_) => {
-      reports.push({
-        id: fixture.id,
-        command: fixture.command,
-        version: row.version,
-        category: "oracle_failure",
-        detail: "oracle did not finish before timeout",
-      })
-      return
-    }
-    None => ()
+  let oracle = oracle_run.output
+  @fs.write_file(root + "/oracle.stdout", oracle.stdout)
+  @fs.write_file(root + "/oracle.stderr", oracle.stderr)
+  if oracle_run.timed_out {
+    @fs.write_file(
+      root + "/oracle.capture-incomplete",
+      "Captured bytes are partial because the oracle deadline expired.\n",
+    )
+  }
+  if oracle_run.cleanup_error is Some(error) {
+    reports.push({
+      id: fixture.id,
+      command: fixture.command,
+      version: row.version,
+      category: "cleanup_failure",
+      detail: error,
+    })
+    return
+  }
+  if oracle_run.timed_out {
+    reports.push({
+      id: fixture.id,
+      command: fixture.command,
+      version: row.version,
+      category: "oracle_failure",
+      detail: "oracle did not finish before timeout",
+    })
+    return
   }
   if oracle.status != fixture.expected_status {
     reports.push({
@@ -492,8 +577,8 @@ async fn run_case_inner(
     })
     return
   }
-  let candidate_files = snapshot(candidate_root)
-  let oracle_files = snapshot(oracle_root)
+  let candidate_files = snapshot(candidate_root, observe=observed[:])
+  let oracle_files = snapshot(oracle_root, observe=observed[:])
   if !snapshots_equal(candidate_files, oracle_files) {
     reports.push({
       id: fixture.id,
@@ -525,6 +610,7 @@ async fn run_case(
   http_base : String?,
   docker_user : String?,
   reports : Array[CaseReport],
+  report_root : String?,
 ) -> Unit {
   if is_network_case(fixture) && http_base is None {
     reports.push({
@@ -538,8 +624,25 @@ async fn run_case(
   }
   run_case_inner(
     moonx, docker, oracle_image, row, fixture, differential, timeout_ms, http_base,
-    docker_user, reports,
-  )
+    docker_user, reports, report_root,
+  ) catch {
+    err =>
+      if reports.any(report => report.id == fixture.id) {
+        for report in reports {
+          if report.id == fixture.id {
+            report.detail += "; cause: \{err}"
+          }
+        }
+      } else {
+        reports.push({
+          id: fixture.id,
+          command: fixture.command,
+          version: row.version,
+          category: "runner_infra",
+          detail: "fixture or observation failed: \{err}",
+        })
+      }
+  }
 }
 
 ///|
@@ -572,45 +675,86 @@ async fn run_selected_cases(
   http_base : String?,
   docker_user : String?,
   reports : Array[CaseReport],
+  timings : Map[String, Int64],
+  jobs : Int,
+  report_root : String?,
 ) -> Unit {
   let platform = host_platform()
-  for fixture in fixtures {
-    if !case_supported_on_host(fixture, platform) {
-      let version = match find_command(manifest, fixture.command) {
-        Some(row) => row.version
-        None => ""
-      }
-      reports.push({
-        id: fixture.id,
-        command: fixture.command,
-        version,
-        category: "skipped_platform",
-        detail: "case is not supported on host platform " + platform,
-      })
-      continue
+  let slots = @async.Semaphore(jobs)
+  @async.with_task_group <| group => {
+    let tasks : Array[@async.Task[Array[CaseReport]]] = []
+    for fixture in fixtures {
+      tasks.push(
+        group.spawn(() => {
+          let reports : Array[CaseReport] = []
+          slots.acquire()
+          defer slots.release()
+          let started = @async.now()
+          defer {
+            timings[fixture.id] = @async.now() - started
+          }
+          if !case_supported_on_host(fixture, platform) {
+            let version = match find_command(manifest, fixture.command) {
+              Some(row) => row.version
+              None => ""
+            }
+            reports.push({
+              id: fixture.id,
+              command: fixture.command,
+              version,
+              category: "skipped_platform",
+              detail: "case is not supported on host platform " + platform,
+            })
+            return reports
+          }
+          match find_command(manifest, fixture.command) {
+            Some(row) =>
+              run_case(
+                moonx, docker, oracle_image, row, fixture, differential, timeout_ms,
+                http_base, docker_user, reports, report_root,
+              )
+            None => ()
+          }
+          reports
+        }),
+      )
     }
-    match find_command(manifest, fixture.command) {
-      Some(row) =>
-        run_case(
-          moonx, docker, oracle_image, row, fixture, differential, timeout_ms, http_base,
-          docker_user, reports,
-        )
-      None => ()
+    for task in tasks {
+      reports.append(task.wait())
     }
   }
 }
 
 ///|
-async fn print_reports(reports : Array[CaseReport]) -> Unit {
+async fn print_reports(
+  reports : Array[CaseReport],
+  fixtures : Array[ReleaseCase],
+  differential : Bool,
+) -> Unit {
   let mut failures = 0
+  let mut semantic_passes = 0
+  let mut availability_passes = 0
+  let mut boundary_passes = 0
+  let mut skipped = 0
   for report in reports {
-    if report.category != "passed" && report.category != "skipped_platform" {
-      failures = failures + 1
+    let result = result_class(report.category)
+    let verification = report_verification(report, fixtures, differential)
+    match result {
+      "fail" | "infra" => failures += 1
+      "skip" => skipped += 1
+      "pass" if verification == "availability" => availability_passes += 1
+      "pass" if verification == "boundary" => boundary_passes += 1
+      "pass" if verification == "contract" || verification == "differential" =>
+        semantic_passes += 1
+      _ => ()
     }
     @stdio.stdout.write(
-      "[\{report.category}] \{report.command}@\{report.version} \{report.id}: \{report.detail}\n",
+      "[\{result}/\{verification}/\{report.category}] \{report.command}@\{report.version} \{report.id}: \{report.detail}\n",
     )
   }
+  @stdio.stdout.write(
+    "Summary: \{semantic_passes} semantic, \{availability_passes} availability, \{boundary_passes} boundary, \{skipped} skipped, \{failures} failed.\n",
+  )
   if failures > 0 {
     @stdio.stderr.write("\{failures} release runner case(s) failed\n")
     @sys.exit(1)
@@ -619,6 +763,16 @@ async fn print_reports(reports : Array[CaseReport]) -> Unit {
 
 ///|
 async fn main {
+  run_driver() catch {
+    error => {
+      @stdio.stderr.write("infrastructure: " + error.to_string() + "\n")
+      @sys.exit(1)
+    }
+  }
+}
+
+///|
+async fn run_driver() -> Unit {
   let raw_args = @env.args()
   if raw_args.length() == 2 && raw_args[1] == "--http-fixture-server" {
     run_http_fixture_process()
@@ -632,6 +786,10 @@ async fn main {
   let mut oracle_image = "mooncmd-oracle:phase0"
   let mut report_dir : String? = None
   let mut timeout_ms = 120000
+  let commands : Array[String] = []
+  let ids : Array[String] = []
+  let mut list_only = false
+  let mut jobs = 4
   let mut index = 0
   while index < args.length() {
     match args[index] {
@@ -661,8 +819,21 @@ async fn main {
       }
       "--timeout-ms" if index + 1 < args.length() => {
         index = index + 1
-        timeout_ms = @string.parse_int(args[index]) catch { _ => 120000 }
+        timeout_ms = @string.parse_int(args[index]) catch { _ => 0 }
       }
+      "--jobs" if index + 1 < args.length() => {
+        index += 1
+        jobs = @string.parse_int(args[index]) catch { _ => 0 }
+      }
+      "--command" if index + 1 < args.length() => {
+        index += 1
+        commands.push(args[index])
+      }
+      "--case" if index + 1 < args.length() => {
+        index += 1
+        ids.push(args[index])
+      }
+      "--list" => list_only = true
       _ => {
         @stdio.stderr.write(usage() + "\n")
         @sys.exit(2)
@@ -670,6 +841,13 @@ async fn main {
       }
     }
     index = index + 1
+  }
+  if timeout_ms <= 0 || jobs <= 0 {
+    @stdio.stderr.write(
+      "release-runner: timeout and jobs must be positive integers\n",
+    )
+    @sys.exit(2)
+    return
   }
   guard manifest_path is Some(manifest_path) else {
     @stdio.stderr.write(usage() + "\n")
@@ -684,13 +862,51 @@ async fn main {
     @sys.exit(2)
     return
   }
-  let manifest = read_release_manifest(manifest_path)
-  let base_path = @path.Path(@fs.realpath("."))
-    .join(Path(manifest.base_manifest))
-    .to_string()
-  let base = read_base_manifest(base_path)
+  let manifest = read_release_manifest(manifest_path) catch {
+    err => {
+      @stdio.stderr.write(
+        "release-runner: manifest infrastructure error: \{err}\n",
+      )
+      @sys.exit(1)
+      return
+    }
+  }
+  if manifest.candidate == Some(true) && suite != "validate" && !list_only {
+    @stdio.stderr.write(
+      "release-runner: unpublished candidates can only be validated; use local artifact probes until publication\n",
+    )
+    @sys.exit(2)
+    return
+  }
+  let base_directory = if manifest.schema == 2 {
+    @path.Path(@fs.realpath(manifest_path)).dirname()
+  } else {
+    @path.Path(@fs.realpath("."))
+  }
+  let base_path = base_directory.join(Path(manifest.base_manifest)).to_string()
+  let base = read_base_manifest(base_path) catch {
+    err => {
+      @stdio.stderr.write("release-runner: case infrastructure error: \{err}\n")
+      @sys.exit(1)
+      return
+    }
+  }
+  let fixtures = filter_cases(selected_cases(manifest, base), commands, ids) catch {
+    err => {
+      @stdio.stderr.write("release-runner: \{err}\n")
+      @sys.exit(2)
+      return
+    }
+  }
+  // Published evidence is pinned by its manifest and remains replayable after
+  // the working tree advances to a new candidate. Validate is the release-time
+  // check that deliberately compares the manifest to local package versions.
   let validation = validate_release_manifest(manifest, base) +
-    validate_package_versions(@fs.realpath("."), manifest)
+    (if suite == "validate" {
+      validate_package_versions(@fs.realpath("."), manifest)
+    } else {
+      []
+    })
   if !validation.is_empty() {
     for failure in validation {
       @stdio.stderr.write("FAIL: \{failure}\n")
@@ -698,25 +914,57 @@ async fn main {
     @sys.exit(1)
     return
   }
+  if list_only {
+    for fixture in fixtures {
+      @stdio.stdout.write("\{fixture.command}\t\{fixture.id}\n")
+    }
+    return
+  }
   if suite == "validate" {
     @stdio.stdout.write(
-      "Release manifest valid: \{manifest.commands.length()} packages, \{selected_cases(manifest, base).length()} cases.\n",
+      "Release manifest valid: \{manifest.commands.length()} packages, \{fixtures.length()} selected cases.\n",
     )
     return
   }
   let reports : Array[CaseReport] = []
-  let fixtures = selected_cases(manifest, base)
+  if report_dir is Some(directory) && !@fs.exists(directory) {
+    @fs.mkdir(directory, recursive=true)
+  }
+  let timings : Map[String, Int64] = Map([])
   let differential = suite == "differential" || suite == "all"
-  let docker_user = if differential { detect_docker_user() } else { None }
-  if fixtures.any(is_network_case) {
+  let needs_oracle = differential &&
+    fixtures.any(fixture => {
+      case_supported_on_host(fixture, host_platform()) &&
+      verification_level(fixture, true) == "differential"
+    })
+  let docker_user = if needs_oracle && !@platform.is_windows() {
+    detect_docker_user() catch {
+      _ => None
+    }
+  } else {
+    None
+  }
+  if fixtures.any(fixture => {
+      case_supported_on_host(fixture, host_platform()) &&
+      is_network_case(fixture)
+    }) {
     @async.with_task_group <| group => {
       let (server, reader, http_base) = spawn_http_fixture_process(group)
       group.add_defer(() => {
         reader.close()
         server.cancel()
-        ignore(server.wait()) catch {
-          _ => ()
-        }
+        @async.protect_from_cancel(() => {
+          ignore(server.wait()) catch {
+            err =>
+              reports.push({
+                id: "http-fixture-cleanup",
+                command: "fixture",
+                version: "",
+                category: "runner_infra",
+                detail: "HTTP fixture wait failed during cleanup: \{err}",
+              })
+          }
+        })
       })
       run_selected_cases(
         manifest,
@@ -729,6 +977,9 @@ async fn main {
         Some(http_base),
         docker_user,
         reports,
+        timings,
+        jobs,
+        report_dir,
       )
     }
   } else {
@@ -743,11 +994,15 @@ async fn main {
       None,
       docker_user,
       reports,
+      timings,
+      jobs,
+      report_dir,
     )
   }
   match report_dir {
-    Some(directory) => write_report(directory, reports)
+    Some(directory) =>
+      write_report(directory, reports, fixtures, differential, timings)
     None => ()
   }
-  print_reports(reports)
+  print_reports(reports, fixtures, differential)
 }

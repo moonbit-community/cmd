@@ -1,0 +1,193 @@
+COMMAND cli/base64
+Usage: base64 [-d|-D] [-i] [-w COLS] [FILE]
+Resolved cli/base64 latest version to 0.1.4
+Using cached /Users/winter/.moon/registry/cache/assets/cli/base64/0.1.4/base64.wasm
+moonrun '$MOON_HOME/registry/cache/assets/cli/base64/0.1.4/base64.wasm' -- --help
+
+COMMAND cli/cat
+Usage: cat [OPTION]... [FILE]...
+
+Concatenate FILEs (or stdin) to standard output, byte-transparently:
+no decoding, no newline normalization. Use '-' or no file for stdin.
+
+  -n, --number             Number all output lines.
+  -b, --number-nonblank    Number nonempty output lines (overrides -n).
+  -s, --squeeze-blank      Suppress repeated empty output lines.
+  -T, --show-tabs          Display TAB as ^I.
+  -E, --show-ends          Display '$' at the end of each line.
+  -v, --show-nonprinting   Display nonprinting bytes visibly.
+  -A, --show-all           Equivalent to -vET.
+  -e                       Equivalent to -vE.
+  -t                       Equivalent to -vT.
+  -u, --unbuffered         Accepted for GNU compatibility.
+  -h, --help               Show this help message.
+Resolved cli/cat latest version to 0.1.4
+Using cached /Users/winter/.moon/registry/cache/assets/cli/cat/0.1.4/cat.wasm
+moonrun '$MOON_HOME/registry/cache/assets/cli/cat/0.1.4/cat.wasm' -- --help
+
+COMMAND cli/cmp
+Usage: cmp [-s|-l] [-n LIMIT] [-i SKIP[:SKIP2]] FILE1 FILE2
+Resolved cli/cmp latest version to 0.1.4
+Using cached /Users/winter/.moon/registry/cache/assets/cli/cmp/0.1.4/cmp.wasm
+moonrun '$MOON_HOME/registry/cache/assets/cli/cmp/0.1.4/cmp.wasm' -- --help
+
+COMMAND cli/comm
+Usage: comm [-123] [-z] FILE1 FILE2
+
+Compare two sorted files line by line, producing three columns:
+lines only in FILE1, lines only in FILE2, and lines in both.
+
+Options:
+  -1  Suppress column 1 (lines unique to FILE1).
+  -2  Suppress column 2 (lines unique to FILE2).
+  -3  Suppress column 3 (lines in both files).
+      --check-order  Diagnose unsorted input.
+      --nocheck-order  Do not diagnose unsorted input.
+  -z, --zero-terminated  End records with NUL instead of newline.
+  -h, --help  Show this help message.
+
+Use '-' as a file name to read stdin.
+Resolved cli/comm latest version to 0.1.4
+Using cached /Users/winter/.moon/registry/cache/assets/cli/comm/0.1.4/comm.wasm
+moonrun '$MOON_HOME/registry/cache/assets/cli/comm/0.1.4/comm.wasm' -- --help
+
+COMMAND cli/cut
+Usage: cut (-b LIST | -c LIST | -f LIST [-d CHAR] [-s]) [-z] [FILE...]
+Resolved cli/cut latest version to 0.1.4
+Using cached /Users/winter/.moon/registry/cache/assets/cli/cut/0.1.4/cut.wasm
+moonrun '$MOON_HOME/registry/cache/assets/cli/cut/0.1.4/cut.wasm' -- --help
+
+COMMAND cli/grep
+Usage: grep [-EFivnclLqHhxwrbsz] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]
+Resolved cli/grep latest version to 0.1.4
+Using cached /Users/winter/.moon/registry/cache/assets/cli/grep/0.1.4/grep.wasm
+moonrun '$MOON_HOME/registry/cache/assets/cli/grep/0.1.4/grep.wasm' -- --help
+
+COMMAND cli/head
+Usage: head [-qvz] [-n NUM|-c NUM] [FILE...]
+Resolved cli/head latest version to 0.1.4
+Using cached /Users/winter/.moon/registry/cache/assets/cli/head/0.1.4/head.wasm
+moonrun '$MOON_HOME/registry/cache/assets/cli/head/0.1.4/head.wasm' -- --help
+
+COMMAND cli/join
+Usage: join [options] FILE1 FILE2
+
+Join lines of two files sorted on their join fields.
+
+Options:
+  -1 FIELD    Join on this field of FILE1 (default 1).
+  -2 FIELD    Join on this field of FILE2 (default 1).
+  -t CHAR     Use CHAR as the field separator instead of runs of
+              blanks; the output separator becomes CHAR as well.
+  -a FILENO    Also print unpairable lines from FILENO (1 or 2).
+  -v FILENO    Print only unpairable lines from FILENO.
+  -e STRING    Replace missing fields with STRING.
+  -o LIST      Select output fields (for example 0,1.2,2.2).
+      --check-order  Diagnose unsorted input.
+      --nocheck-order  Do not diagnose unsorted input.
+  -z           End records with NUL instead of newline.
+  -h, --help  Show this help message.
+
+Use '-' as a file name to read stdin.
+Resolved cli/join latest version to 0.1.4
+Using cached /Users/winter/.moon/registry/cache/assets/cli/join/0.1.4/join.wasm
+moonrun '$MOON_HOME/registry/cache/assets/cli/join/0.1.4/join.wasm' -- --help
+
+COMMAND cli/jq
+Usage: jq [-CjcnrRsM] [-f FILTER_FILE] [--arg NAME VALUE] [--argjson NAME JSON] [FILTER] [FILE...]
+Resolved cli/jq latest version to 0.1.4
+Using cached /Users/winter/.moon/registry/cache/assets/cli/jq/0.1.4/jq.wasm
+moonrun '$MOON_HOME/registry/cache/assets/cli/jq/0.1.4/jq.wasm' -- --help
+
+COMMAND cli/jqlog
+Usage: jqlog [options] <query> [input]
+
+Options:
+  -f, --file <path>   Read input text from a file.
+  -h, --help          Show this help message.
+
+Notes:
+  - Input is treated as JSONL/NDJSON with possible non-JSON lines.
+  - Non-JSON lines are skipped.
+  - If [input] is omitted, stdin is used.
+  - If [input] is provided without --file, it is treated as raw text.
+
+Examples:
+  cat logs.ndjson | jqlog '.message'
+  jqlog -f output.txt '.a'
+Resolved cli/jqlog latest version to 0.1.5
+Using cached /Users/winter/.moon/registry/cache/assets/cli/jqlog/0.1.5/jqlog.wasm
+moonrun '$MOON_HOME/registry/cache/assets/cli/jqlog/0.1.5/jqlog.wasm' -- --help
+
+COMMAND cli/nl
+Usage: nl [-b STYLE] [-h STYLE] [-f STYLE] [-v NUMBER] [-i NUMBER] [-l NUMBER] [-n FORMAT] [-w NUMBER] [-s STRING] [-d CC] [-p] [FILE...]
+Resolved cli/nl latest version to 0.1.4
+Using cached /Users/winter/.moon/registry/cache/assets/cli/nl/0.1.4/nl.wasm
+moonrun '$MOON_HOME/registry/cache/assets/cli/nl/0.1.4/nl.wasm' -- --help
+
+COMMAND cli/paste
+Usage: paste [-s] [-d LIST] [-z] [FILE...]
+Resolved cli/paste latest version to 0.1.4
+Using cached /Users/winter/.moon/registry/cache/assets/cli/paste/0.1.4/paste.wasm
+moonrun '$MOON_HOME/registry/cache/assets/cli/paste/0.1.4/paste.wasm' -- --help
+
+COMMAND cli/printf
+Usage: printf FORMAT [ARGUMENT...]
+
+Format and print ARGUMENTs under control of FORMAT, like printf(1).
+The FORMAT is reused as necessary to consume all arguments.
+
+Escapes: \a \b \e \f \n \r \t \v \\ \" \' \NNN \0NNN \xHH \uHHHH
+\UHHHHHHHH, and \c (stop all output).
+
+Conversions: %s %c %b %d %i %u %o %x %X %f %e %E %g %G %%, with the
+flags -+ 0#, field width, and precision (both accept *).
+%b interprets escapes in its argument.
+
+Use -- before a FORMAT that starts with '-'.
+Resolved cli/printf latest version to 0.1.4
+Using cached /Users/winter/.moon/registry/cache/assets/cli/printf/0.1.4/printf.wasm
+moonrun '$MOON_HOME/registry/cache/assets/cli/printf/0.1.4/printf.wasm' -- --help
+
+COMMAND cli/sha256sum
+Usage: sha256sum [-c] [-z] [--quiet] [--status] [--strict] [--warn] [--ignore-missing] [FILE...]
+Resolved cli/sha256sum latest version to 0.1.4
+Using cached /Users/winter/.moon/registry/cache/assets/cli/sha256sum/0.1.4/sha256sum.wasm
+moonrun '$MOON_HOME/registry/cache/assets/cli/sha256sum/0.1.4/sha256sum.wasm' -- --help
+
+COMMAND cli/sort
+Usage: sort [-bcdfghinMruVz] [-k KEY] [-t CHAR] [-c|-C] [FILE...]
+Resolved cli/sort latest version to 0.1.4
+Using cached /Users/winter/.moon/registry/cache/assets/cli/sort/0.1.4/sort.wasm
+moonrun '$MOON_HOME/registry/cache/assets/cli/sort/0.1.4/sort.wasm' -- --help
+
+COMMAND cli/tail
+Usage: tail [-f] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]
+Resolved cli/tail latest version to 0.1.4
+Using cached /Users/winter/.moon/registry/cache/assets/cli/tail/0.1.4/tail.wasm
+moonrun '$MOON_HOME/registry/cache/assets/cli/tail/0.1.4/tail.wasm' -- --help
+
+COMMAND cli/tr
+Usage: tr [-dscCt] SET1 [SET2]
+Resolved cli/tr latest version to 0.1.4
+Using cached /Users/winter/.moon/registry/cache/assets/cli/tr/0.1.4/tr.wasm
+moonrun '$MOON_HOME/registry/cache/assets/cli/tr/0.1.4/tr.wasm' -- --help
+
+COMMAND cli/uniq
+Usage: uniq [-cduiz] [-f FIELDS] [-s CHARS] [-w CHARS] [FILE]
+Resolved cli/uniq latest version to 0.1.4
+Using cached /Users/winter/.moon/registry/cache/assets/cli/uniq/0.1.4/uniq.wasm
+moonrun '$MOON_HOME/registry/cache/assets/cli/uniq/0.1.4/uniq.wasm' -- --help
+
+COMMAND cli/wc
+Usage: wc [-lwcmL] [--files0-from=FILE] [FILE...]
+Resolved cli/wc latest version to 0.1.4
+Using cached /Users/winter/.moon/registry/cache/assets/cli/wc/0.1.4/wc.wasm
+moonrun '$MOON_HOME/registry/cache/assets/cli/wc/0.1.4/wc.wasm' -- --help
+
+COMMAND cli/xxd
+Usage: xxd [-ipr] [-c COLS] [-l LEN] [-s OFFSET] [FILE]
+Resolved cli/xxd latest version to 0.1.4
+Using cached /Users/winter/.moon/registry/cache/assets/cli/xxd/0.1.4/xxd.wasm
+moonrun '$MOON_HOME/registry/cache/assets/cli/xxd/0.1.4/xxd.wasm' -- --help
+

@@ -1,0 +1,48 @@
+{"id":"visible-env-moonx","program":"moonx","args":["cli/printenv","CMD_AUDIT_MARKER"],"status":0,"stdout":"present\n","stderr":""}
+{"id":"visible-env-host","program":"/usr/bin/printenv","args":["CMD_AUDIT_MARKER"],"status":0,"stdout":"present\n","stderr":""}
+{"id":"env-child-moonx","program":"moonx","args":["cli/env","/usr/bin/printenv","CMD_AUDIT_MARKER"],"status":1,"stdout":"","stderr":""}
+{"id":"env-child-host","program":"/usr/bin/env","args":["/usr/bin/printenv","CMD_AUDIT_MARKER"],"status":0,"stdout":"present\n","stderr":""}
+{"id":"env-explicit-moonx","program":"moonx","args":["cli/env","CMD_AUDIT_MARKER=explicit","/usr/bin/printenv","CMD_AUDIT_MARKER"],"status":0,"stdout":"explicit\n","stderr":""}
+{"id":"env-explicit-host","program":"/usr/bin/env","args":["CMD_AUDIT_MARKER=explicit","/usr/bin/printenv","CMD_AUDIT_MARKER"],"status":0,"stdout":"explicit\n","stderr":""}
+{"id":"sh-inherited-moonx","program":"moonx","args":["cli/sh","-c","printf '<%s>\\n' \"$CMD_AUDIT_MARKER\""],"status":0,"stdout":"<>\n","stderr":""}
+{"id":"sh-inherited-host","program":"/bin/sh","args":["-c","printf '<%s>\\n' \"$CMD_AUDIT_MARKER\""],"status":0,"stdout":"<present>\n","stderr":""}
+{"id":"sh-child-env-moonx","program":"moonx","args":["cli/sh","-c","/usr/bin/printenv CMD_AUDIT_MARKER"],"status":1,"stdout":"","stderr":""}
+{"id":"sh-child-env-host","program":"/bin/sh","args":["-c","/usr/bin/printenv CMD_AUDIT_MARKER"],"status":0,"stdout":"present\n","stderr":""}
+{"id":"sh-locale-moonx","program":"moonx","args":["cli/sh","-c","printf '%s|%s\\n' \"$LC_ALL\" \"$LANG\""],"status":0,"stdout":"C|C\n","stderr":""}
+{"id":"sh-locale-host","program":"/bin/sh","args":["-c","printf '%s|%s\\n' \"$LC_ALL\" \"$LANG\""],"status":0,"stdout":"en_US.UTF-8|en_US.UTF-8\n","stderr":""}
+{"id":"env-locale-moonx","program":"moonx","args":["cli/env","/usr/bin/printenv","LC_ALL","LANG"],"status":0,"stdout":"C\n","stderr":""}
+{"id":"env-locale-host","program":"/usr/bin/env","args":["/usr/bin/printenv","LC_ALL","LANG"],"status":0,"stdout":"en_US.UTF-8\n","stderr":""}
+{"id":"xargs-env-moonx","program":"moonx","args":["cli/xargs","/usr/bin/printenv"],"status":123,"stdout":"","stderr":""}
+{"id":"xargs-env-host","program":"/usr/bin/xargs","args":["/usr/bin/printenv"],"status":0,"stdout":"present\n","stderr":""}
+{"id":"find-env-moonx","program":"moonx","args":["cli/find","Makefile.env","-exec","/usr/bin/printenv","CMD_AUDIT_MARKER",";"],"status":0,"stdout":"","stderr":""}
+{"id":"find-env-host","program":"/usr/bin/find","args":["Makefile.env","-exec","/usr/bin/printenv","CMD_AUDIT_MARKER",";"],"status":0,"stdout":"present\n","stderr":""}
+{"id":"make-env-moonx","program":"moonx","args":["cli/make","-s","-f","Makefile.env"],"status":2,"stdout":"<>\n","stderr":"make: recipe for 'all' failed with status 1\n"}
+{"id":"make-env-host","program":"/usr/bin/make","args":["-s","-f","Makefile.env"],"status":0,"stdout":"<present>\npresent\n","stderr":""}
+{"id":"sh-arithmetic-moonx","program":"moonx","args":["cli/sh","-c","printf '%s\\n' $((1+2))"],"status":0,"stdout":"\n","stderr":"sh: OSError(\"@process.run(): No such file or directory\")\n"}
+{"id":"sh-arithmetic-host","program":"/bin/sh","args":["-c","printf '%s\\n' $((1+2))"],"status":0,"stdout":"3\n","stderr":""}
+{"id":"sh-default-expand-moonx","program":"moonx","args":["cli/sh","-c","unset X; printf '%s\\n' \"${X:-fallback}\""],"status":2,"stdout":"","stderr":"sh: invalid variable name: 'X:-fallback'\n"}
+{"id":"sh-default-expand-host","program":"/bin/sh","args":["-c","unset X; printf '%s\\n' \"${X:-fallback}\""],"status":0,"stdout":"fallback\n","stderr":""}
+{"id":"sh-glob-moonx","program":"moonx","args":["cli/sh","-c","printf '%s\\n' Makefile.*"],"status":0,"stdout":"Makefile.*\n","stderr":""}
+{"id":"sh-glob-host","program":"/bin/sh","args":["-c","printf '%s\\n' Makefile.*"],"status":0,"stdout":"Makefile.env\nMakefile.jobs\nMakefile.override\nMakefile.shell\n","stderr":""}
+{"id":"sh-unexported-moonx","program":"moonx","args":["cli/sh","-c","CMD_INNER=private; /bin/sh -c 'printf \"<%s>\\n\" \"$CMD_INNER\"'"],"status":0,"stdout":"<private>\n","stderr":""}
+{"id":"sh-unexported-host","program":"/bin/sh","args":["-c","CMD_INNER=private; /bin/sh -c 'printf \"<%s>\\n\" \"$CMD_INNER\"'"],"status":0,"stdout":"<>\n","stderr":""}
+{"id":"sh-exec-moonx","program":"moonx","args":["cli/sh","-c","exec /usr/bin/printf 'ok\\n'"],"status":127,"stdout":"","stderr":"sh: OSError(\"@process.run(): No such file or directory\")\n"}
+{"id":"sh-exec-host","program":"/bin/sh","args":["-c","exec /usr/bin/printf 'ok\\n'"],"status":0,"stdout":"ok\n","stderr":""}
+{"id":"sh-read-moonx","program":"moonx","args":["cli/sh","-c","read answer; printf '<%s>\\n' \"$answer\""],"status":0,"stdout":"<>\n","stderr":""}
+{"id":"sh-read-host","program":"/bin/sh","args":["-c","read answer; printf '<%s>\\n' \"$answer\""],"status":0,"stdout":"<hello>\n","stderr":""}
+{"id":"sh-background-moonx","program":"moonx","args":["cli/sh","-c","true & wait; printf 'done\\n'"],"status":2,"stdout":"","stderr":"sh: background execution is not supported\n"}
+{"id":"sh-background-host","program":"/bin/sh","args":["-c","true & wait; printf 'done\\n'"],"status":0,"stdout":"done\n","stderr":""}
+{"id":"sh-case-pipeline-moonx","program":"moonx","args":["cli/sh","-c","printf 'a\\nb\\n' | /usr/bin/grep b"],"status":0,"stdout":"b\n","stderr":""}
+{"id":"sh-case-pipeline-host","program":"/bin/sh","args":["-c","printf 'a\\nb\\n' | /usr/bin/grep b"],"status":0,"stdout":"b\n","stderr":""}
+{"id":"sh-status-moonx","program":"moonx","args":["cli/sh","-c","false; printf '%s\\n' \"$?\""],"status":0,"stdout":"1\n","stderr":""}
+{"id":"sh-status-host","program":"/bin/sh","args":["-c","false; printf '%s\\n' \"$?\""],"status":0,"stdout":"1\n","stderr":""}
+{"id":"sh-syntax-moonx","program":"moonx","args":["cli/sh","-c","if"],"status":2,"stdout":"","stderr":"sh: expected '\\{value}'\n"}
+{"id":"sh-syntax-host","program":"/bin/sh","args":["-c","if"],"status":2,"stdout":"","stderr":"/bin/sh: -c: line 1: syntax error: unexpected end of file\n"}
+{"id":"make-shell-moonx","program":"moonx","args":["cli/make","-s","-f","Makefile.shell"],"status":0,"stdout":"\n","stderr":""}
+{"id":"make-shell-host","program":"/usr/bin/make","args":["-s","-f","Makefile.shell"],"status":0,"stdout":"computed\n","stderr":""}
+{"id":"make-jobs-moonx","program":"moonx","args":["cli/make","-s","-j2","-f","Makefile.jobs"],"status":0,"stdout":"AB","stderr":""}
+{"id":"make-jobs-host","program":"/usr/bin/make","args":["-s","-j2","-f","Makefile.jobs"],"status":0,"stdout":"BA","stderr":""}
+{"id":"make-shell-override-moonx","program":"moonx","args":["cli/make","-s","-f","Makefile.override"],"status":0,"stdout":"\n","stderr":"sh: OSError(\"@process.run(): No such file or directory\")\n"}
+{"id":"make-shell-override-host","program":"/usr/bin/make","args":["-s","-f","Makefile.override"],"status":0,"stdout":"3\n","stderr":""}
+{"id":"timeout-availability","program":"moonx","args":["cli/timeout","1","/usr/bin/printf","ok"],"status":255,"stdout":"","stderr":"Error: Module `cli/timeout` not found in registry\n"}
+{"id":"env-help","program":"moonx","args":["cli/env","--help"],"status":125,"stdout":"","stderr":"env: unsupported option: --help\n"}

@@ -117,6 +117,25 @@ pub fn protects_working_directory(path : String) -> Bool {
 }
 
 ///|
+/// GNU rm rejects final . and .. components, and preserves the filesystem root
+/// by default. An explicitly named working directory is not an extra policy.
+pub fn protects_removal_operand(
+  path : String,
+  preserve_root? : Bool = true,
+) -> Bool {
+  let normalized = @platform.normalize_input_separators(path)
+  let mut end = normalized.length()
+  while end > 0 && normalized[end - 1] == '/' {
+    end -= 1
+  }
+  let pieces = normalized[:end].split("/").collect()
+  let final_component = pieces.last().unwrap_or("")
+  final_component == "." ||
+  final_component == ".." ||
+  (preserve_root && is_filesystem_root(path))
+}
+
+///|
 pub async fn kind_if_exists(path : String) -> @fs.FileKind? {
   let path = @platform.normalize_input_separators(path)
   try @fs.kind(path, follow_symlink=false) catch {
@@ -238,9 +257,9 @@ async fn copy_regular_file(
       if !replace {
         return false
       }
-      if @fs.realpath(source) == @fs.realpath(destination) {
-        raise FsOpError("source and destination are the same file")
-      }
+      raise FsOpError(
+        "overwriting an existing file requires public file identity and handle truncation APIs",
+      )
     }
     Some(_) => raise FsOpError("unsupported destination type: '\{destination}'")
     None => ()
@@ -250,7 +269,8 @@ async fn copy_regular_file(
   let output = @fs.open(
     destination,
     mode=WriteOnly,
-    create_mode=CreateOrTruncate,
+    create_mode=CreateNew,
+    permission=0o666,
   )
   defer output.close()
   output.write_reader(input)
@@ -294,9 +314,9 @@ async fn preflight_copy_entry(
             "refusing to overwrite symbolic link: '\{destination}'",
           )
         Some(Regular) =>
-          if @fs.realpath(source) == @fs.realpath(destination) {
-            raise FsOpError("source and destination are the same file")
-          }
+          raise FsOpError(
+            "overwriting an existing file requires public file identity and handle truncation APIs",
+          )
         Some(_) =>
           raise FsOpError("unsupported destination type: '\{destination}'")
         None => ()
@@ -351,7 +371,7 @@ async fn copy_entry(
         Some(Directory) => ()
         Some(_) =>
           raise FsOpError("destination is not a directory: '\{destination}'")
-        None => @fs.mkdir(destination)
+        None => @fs.mkdir(destination, permission=0o777)
       }
       let entries = @fs.readdir(
         source,
@@ -430,8 +450,15 @@ pub async fn copy_path_with_links(
   recursive : Bool,
   replace : Bool,
   traversal : LinkTraversal,
+  preserve_permissions? : Bool = true,
 ) -> Bool {
-  preflight_copy_path(source, destination, recursive, traversal)
+  preflight_copy_path(
+    source,
+    destination,
+    recursive,
+    traversal,
+    preserve_permissions~,
+  )
   copy_entry(
     @platform.normalize_input_separators(source),
     @platform.normalize_input_separators(destination),
@@ -447,6 +474,7 @@ pub async fn preflight_copy_path(
   destination : String,
   recursive : Bool,
   traversal : LinkTraversal,
+  preserve_permissions? : Bool = true,
 ) -> Unit {
   let source = @platform.normalize_input_separators(source)
   let destination = @platform.normalize_input_separators(destination)
@@ -456,6 +484,11 @@ pub async fn preflight_copy_path(
   }
   if source_kind == Directory {
     ensure_not_nested_destination(source, destination)
+  }
+  if preserve_permissions && !@platform.permission_reads_supported() {
+    raise FsOpError(
+      "preserving source permissions requires a public mode reader; use --no-preserve=mode for a new destination",
+    )
   }
   preflight_copy_entry(source, destination, traversal, true, [])
 }

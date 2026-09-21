@@ -1,0 +1,46 @@
+Warning: [0006]
+    ╭─[ /Users/winter/Documents/Moonbit/cmd/commands/ls/main.mbt:10:3 ]
+    │
+ 10 │   NeverFollowLinks
+    │   ────────┬───────  
+    │           ╰───────── Warning (unused_constructor): Variant 'NeverFollowLinks' is never constructed
+────╯
+Error: [4015]
+    ╭─[ /Users/winter/Documents/Moonbit/cmd/commands/ls/main.mbt:84:69 ]
+    │
+ 84 │         @os_error.OSError(_) as error if error.is_ENOENT() || error.is_ELOOP() => SymLink
+    │                                                                     ────┬───  
+    │                                                                         ╰───── Type @moonbitlang/async/os_error.OSError has no method is_ELOOP.
+────╯
+Error: [4014]
+     ╭─[ /Users/winter/Documents/Moonbit/cmd/commands/ls/main.mbt:311:5 ]
+     │
+ 311 │     links,
+     │     ──┬──  
+     │       ╰──── Expr Type Mismatch
+        has type : @cli/core/fsops.LinkTraversal
+        wanted   : LinkMode
+─────╯
+Error: [4021]
+     ╭─[ /Users/winter/Documents/Moonbit/cmd/commands/ls/main.mbt:328:7 ]
+     │
+ 328 │       print_operand(path, options) catch {
+     │       ──────┬──────  
+     │             ╰──────── The value identifier print_operand is unbound.
+─────╯
+Warning: [0023]
+     ╭─[ /Users/winter/Documents/Moonbit/cmd/commands/ls/main.mbt:328:7 ]
+     │
+ 328 │       print_operand(path, options) catch {
+     │       ──────────────┬─────────────  
+     │                     ╰─────────────── Warning (unused_try): The body of this try expression never raises any error.
+─────╯
+Error: [4080]
+     ╭─[ /Users/winter/Documents/Moonbit/cmd/commands/ls/main.mbt:356:22 ]
+     │
+ 356 │ ╭─▶       let children = print_directory(
+     ┆ ┆   
+ 361 │ ├─▶       ) catch {
+     │ │                     
+     │ ╰───────────────────── This function has type async (String, LsOptions, Bool, @moonbitlang/core/ref.Ref[Bool], @moonbitlang/core/ref.Ref[Int]) -> Array[String], which requires 5 arguments, but is given 4 arguments.
+─────╯

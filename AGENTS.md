@@ -28,31 +28,37 @@ You can browse and install extra skills here:
 
 ### Moon tooling and publishing
 
-Use normal `moon` commands with the active MoonBit account. Never commit
+Use `MOON_HOME="$HOME/.moon-accounts/cli" moon xxx` for every local Moon
+command. Keep the current PATH toolchain; do not prepend the account's older
+`bin` directory or change the global PATH. Local published-consumer checks use
+`MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/<cmd>@<version>` and inherit this
+account setting in child launchers. CI uses its own installed toolchain and
+environment, without developer account credentials. Never commit
 credentials or toolchain cache contents to this repository. The shared
 published module is `cli/core`, and command modules are `cli/<cmd>`; verify the
 module and version before any release operation.
 
-- `moon fmt` is used to format
+- `MOON_HOME="$HOME/.moon-accounts/cli" moon fmt` is used to format
   your code properly.
 
-- `moon ide` provides project
+- `MOON_HOME="$HOME/.moon-accounts/cli" moon ide` provides project
   navigation helpers like `peek-def`, `outline`, and `find-references`. See
   $moonbit-agent-guide for details.
 
-- `moon info` is used to update the
+- `MOON_HOME="$HOME/.moon-accounts/cli" moon info` is used to update the
   generated interface of the package, each package has a generated interface
   file `.mbti`, it is a brief formal description of the package. If nothing in
   `.mbti` changes, this means your change does not bring the visible changes to
   the external package users, it is typically a safe refactoring.
 
-- In the last step, run `moon info` and `moon fmt` to update the interface
+- In the last step, run `MOON_HOME="$HOME/.moon-accounts/cli" moon info` and
+  `MOON_HOME="$HOME/.moon-accounts/cli" moon fmt` to update the interface
   and format the code. Check the diffs of `.mbti` file to see if the changes are
   expected.
 
-- Run `moon test` to check tests
+- Run `MOON_HOME="$HOME/.moon-accounts/cli" moon test` to check tests
   pass. MoonBit supports snapshot testing; when changes affect outputs, run
-  `moon test --update` to refresh
+  `MOON_HOME="$HOME/.moon-accounts/cli" moon test --update` to refresh
   snapshots.
 
 - Prefer `assert_eq` or `assert_true(pattern is Pattern(...))` for results that
@@ -60,5 +66,21 @@ module and version before any release operation.
   structured debugging output, derive `Debug` and use `debug_inspect`, rather
   than deriving `Show` for debugging. For solid, well-defined results (e.g.
   scientific computations), prefer assertion tests. You can use
-  `moon coverage analyze > uncovered.log` to see which parts of your code are
+  `MOON_HOME="$HOME/.moon-accounts/cli" moon coverage analyze > uncovered.log` to see which parts of your code are
   not covered by tests.
+
+- Use the same prefix for registry updates, checks, builds, runs and releases:
+  `MOON_HOME="$HOME/.moon-accounts/cli" moon update`,
+  `MOON_HOME="$HOME/.moon-accounts/cli" moon check --target all --deny-warn`,
+  `MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --release`,
+  `MOON_HOME="$HOME/.moon-accounts/cli" moon run <package>`, and
+  `MOON_HOME="$HOME/.moon-accounts/cli" moon publish` from the verified module.
+  Preparing a candidate does not authorize publication.
+
+- Serialize workspace check/test/build/info/fmt commands: they share the build
+  directory. Agent-authored automation must use pure MoonBit `.mbtx` files.
+
+- A behavior or option change must update the command README, help, shared
+  catalog, compatibility record and relevant regression together. Record
+  tradeoffs in the existing canonical ADR with an Updated date, evidence and
+  conditions for lifting limitations. Keep historical reports immutable.

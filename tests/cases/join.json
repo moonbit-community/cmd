@@ -1,0 +1,237 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-join-unpaired-output-list",
+      "command": "join",
+      "args": [
+        "-a",
+        "1",
+        "-a",
+        "2",
+        "-e",
+        "0",
+        "-o",
+        "0,1.2,2.2",
+        "left",
+        "right"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "left",
+          "content_text": "a left\nb only-left\nc left-c\n"
+        },
+        {
+          "path": "right",
+          "content_text": "a right\nc right-c\nd only-right\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-join-zero-terminated",
+      "command": "join",
+      "args": [
+        "-z",
+        "left",
+        "right"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "31206c6566740032206c65667400"
+        },
+        {
+          "path": "right",
+          "content_hex": "31207269676874003220726967687400"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-join-check-order",
+      "command": "join",
+      "args": [
+        "--check-order",
+        "left",
+        "right"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "left",
+          "content_text": "a\nb\n"
+        },
+        {
+          "path": "right",
+          "content_text": "a\nb\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-text-join-output-list",
+      "command": "join",
+      "args": [
+        "-a",
+        "1",
+        "-a",
+        "2",
+        "-e",
+        "0",
+        "-o",
+        "0,1.2,2.2",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "a left\nb only-left\nc left-c\n"
+        },
+        {
+          "path": "right",
+          "content_text": "a right\nc right-c\nd only-right\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "a left right\nb only-left 0\nc left-c right-c\nd 0 only-right\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-join-nul-records",
+      "command": "join",
+      "args": [
+        "-z",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "31206c6566740032206c65667400"
+        },
+        {
+          "path": "right",
+          "content_hex": "31207269676874003220726967687400"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_hex": "31206c6566742072696768740032206c65667420726967687400",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-join-check-order",
+      "command": "join",
+      "args": [
+        "--check-order",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "b\na\n"
+        },
+        {
+          "path": "right",
+          "content_text": "a\nb\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "not in sorted order",
+      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted."
+    },
+    {
+      "id": "compat-text-join-nocheck-precedence",
+      "command": "join",
+      "args": [
+        "--check-order",
+        "--nocheck-order",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "b\na\n"
+        },
+        {
+          "path": "right",
+          "content_text": "a\nb\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "b\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-merge-join",
+      "command": "join",
+      "args": [
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "1 alice\n2 bob\n"
+        },
+        {
+          "path": "right",
+          "content_text": "1 red\n2 blue\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "1 alice red\n2 bob blue\n",
+      "expected_files": [],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-catalog-line-108",
+      "command": "join",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    }
+  ]
+}

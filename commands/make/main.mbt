@@ -20,14 +20,17 @@ struct Rule {
 
 ///|
 struct Database {
+  cwd : String
   variables : Map[String, Variable]
   command_line_variables : Map[String, Bool]
+  exported : Set[String]
   rules : Map[String, Rule]
   mut default_target : String?
 }
 
 ///|
 struct Settings {
+  jobs : Int
   cwd : String
   silent : Bool
   dry_run : Bool
@@ -37,18 +40,28 @@ struct Settings {
 }
 
 ///|
-fn conditional_value(line : String, database : Database) -> Bool {
+async fn conditional_value(line : String, database : Database) -> Bool {
   if line.has_prefix("ifdef ") {
     let name = line[6:].trim().to_owned()
-    let value = lookup_variable(name, database.variables, {}, 0) catch {
-      _ => ""
-    }
+    let value = lookup_variable(
+      name,
+      database.variables,
+      {},
+      0,
+      cwd=database.cwd,
+      exported=database.exported,
+    )
     value != ""
   } else if line.has_prefix("ifndef ") {
     let name = line[7:].trim().to_owned()
-    let value = lookup_variable(name, database.variables, {}, 0) catch {
-      _ => ""
-    }
+    let value = lookup_variable(
+      name,
+      database.variables,
+      {},
+      0,
+      cwd=database.cwd,
+      exported=database.exported,
+    )
     value == ""
   } else {
     let negated = line.has_prefix("ifneq ")
@@ -67,12 +80,22 @@ fn conditional_value(line : String, database : Database) -> Bool {
         .map(x => x.trim().to_owned())
         .collect()
       let equal = if parts.length() == 2 {
-        let left = expand(parts[0], database.variables, {}, 0) catch {
-          _ => parts[0]
-        }
-        let right = expand(parts[1], database.variables, {}, 0) catch {
-          _ => parts[1]
-        }
+        let left = expand(
+          parts[0],
+          database.variables,
+          {},
+          0,
+          cwd=database.cwd,
+          exported=database.exported,
+        )
+        let right = expand(
+          parts[1],
+          database.variables,
+          {},
+          0,
+          cwd=database.cwd,
+          exported=database.exported,
+        )
         left == right
       } else {
         false
@@ -144,30 +167,34 @@ fn split_words(value : String) -> Array[String] {
 }
 
 ///|
-fn lookup_variable(
+async fn lookup_variable(
   name : String,
   variables : Map[String, Variable],
   automatic : Map[String, String],
   depth : Int,
-) -> String raise MakeError {
+  cwd? : String = @env.current_dir().unwrap_or("."),
+  exported? : Set[String] = Set([]),
+) -> String {
   if automatic.get(name) is Some(value) {
     return value
   }
   match variables.get(name) {
     Some({ value, immediate: true, }) => value
     Some({ value, immediate: false, }) =>
-      expand(value, variables, automatic, depth + 1)
+      expand(value, variables, automatic, depth + 1, cwd~, exported~)
     None => ""
   }
 }
 
 ///|
-fn expand(
+async fn expand(
   value : String,
   variables : Map[String, Variable],
   automatic : Map[String, String],
   depth : Int,
-) -> String raise MakeError {
+  cwd? : String = @env.current_dir().unwrap_or("."),
+  exported? : Set[String] = Set([]),
+) -> String {
   if depth > 64 {
     raise MakeError("variable expansion exceeds the recursion limit")
   }
@@ -192,14 +219,91 @@ fn expand(
       '(' | '{' as open => {
         let close = if open == '(' { ')' } else { '}' }
         let mut end = index + 2
-        while end < chars.length() && chars[end] != close {
+        let mut nesting = 1
+        while end < chars.length() {
+          if chars[end] == open {
+            nesting += 1
+          }
+          if chars[end] == close {
+            nesting -= 1
+            if nesting == 0 {
+              break
+            }
+          }
           end += 1
         }
         if end >= chars.length() {
           raise MakeError("unterminated variable reference")
         }
         let name = String::from_array(chars[index + 2:end]).trim().to_owned()
-        output.write_string(lookup_variable(name, variables, automatic, depth))
+        if name.has_prefix("shell ") || name.has_prefix("shell\t") {
+          let script = expand(
+            name[6:].to_owned(),
+            variables,
+            automatic,
+            depth + 1,
+            cwd~,
+            exported~,
+          )
+          let shell_environment : Map[String, String] = Map([])
+          for name in exported {
+            if variables.get(name) is Some(variable) {
+              if variable.value.contains("$(shell") ||
+                variable.value.contains("${shell") {
+                raise MakeError(
+                  "recursive shell-function exports are not supported",
+                )
+              }
+              shell_environment[name] = lookup_variable(
+                name,
+                variables,
+                automatic,
+                depth + 1,
+                cwd~,
+                exported~,
+              )
+            }
+          }
+          let (status, result) = @shell.capture(
+            script,
+            name="make",
+            cwd~,
+            env=shell_environment,
+          )
+          variables[".SHELLSTATUS"] = {
+            value: status.to_string(),
+            immediate: true,
+          }
+          // GNU make removes trailing newlines and folds each embedded newline
+          // into a space. Spaces within a line remain significant.
+          let chars = result.replace(old="\r\n", new="\n")
+          let mut length = chars.length()
+          while length > 0 && chars[length - 1] == '\n' {
+            length -= 1
+          }
+          output.write_string(
+            chars[:length].to_owned().replace(old="\n", new=" "),
+          )
+        } else {
+          let variable = expand(
+            name,
+            variables,
+            automatic,
+            depth + 1,
+            cwd~,
+            exported~,
+          )
+          output.write_string(
+            lookup_variable(
+              variable,
+              variables,
+              automatic,
+              depth,
+              cwd~,
+              exported~,
+            ),
+          )
+        }
         index = end + 1
       }
       char => {
@@ -208,13 +312,20 @@ fn expand(
           chars[index + 2] is ('D' | 'F') {
           let name = String::from_array(chars[index + 1:index + 3])
           output.write_string(
-            lookup_variable(name, variables, automatic, depth),
+            lookup_variable(name, variables, automatic, depth, cwd~, exported~),
           )
           index += 3
           continue
         }
         output.write_string(
-          lookup_variable(char.to_string(), variables, automatic, depth),
+          lookup_variable(
+            char.to_string(),
+            variables,
+            automatic,
+            depth,
+            cwd~,
+            exported~,
+          ),
         )
         index += 2
       }
@@ -265,12 +376,12 @@ fn parse_assignment(line : String) -> (String, String, String)? {
 }
 
 ///|
-fn assign_variable(
+async fn assign_variable(
   database : Database,
   name : String,
   operator : String,
   value : String,
-) -> Unit raise MakeError {
+) -> Unit {
   if database.command_line_variables.contains(name) {
     return
   }
@@ -282,7 +393,14 @@ fn assign_variable(
       }
     ":=" =>
       variables[name] = {
-        value: expand(value, variables, {}, 0),
+        value: expand(
+          value,
+          variables,
+          {},
+          0,
+          cwd=database.cwd,
+          exported=database.exported,
+        ),
         immediate: true,
       }
     "+=" =>
@@ -294,7 +412,20 @@ fn assign_variable(
             " "
           }
           variables[name] = {
-            value: previous.value + separator + value,
+            value: previous.value +
+            separator +
+            (if previous.immediate {
+              expand(
+                value,
+                variables,
+                {},
+                0,
+                cwd=database.cwd,
+                exported=database.exported,
+              )
+            } else {
+              value
+            }),
             immediate: previous.immediate,
           }
         }
@@ -403,7 +534,14 @@ async fn parse_makefile(
       } else {
         line[8:].to_owned()
       }
-      let expanded = expand(names, database.variables, {}, 0)
+      let expanded = expand(
+        names,
+        database.variables,
+        {},
+        0,
+        cwd=database.cwd,
+        exported=database.exported,
+      )
       for name in split_words(expanded) {
         let included = path_in(source_directory, name)
         if @fs.exists(included) {
@@ -418,6 +556,28 @@ async fn parse_makefile(
         }
       }
       continue
+    }
+    if line.has_prefix("export ") || line.has_prefix("unexport ") {
+      let exporting = line.has_prefix("export ")
+      let contents = line[if exporting { 7 } else { 9 }:].trim().to_owned()
+      match parse_assignment(contents) {
+        Some((name, operator, value)) if exporting => {
+          assign_variable(database, name, operator, value)
+          database.exported.add(name)
+        }
+        _ =>
+          for name in split_words(contents) {
+            if exporting {
+              database.exported.add(name)
+            } else {
+              database.exported.remove(name)
+            }
+          }
+      }
+      continue
+    }
+    if line == "export" || line == "unexport" {
+      raise MakeError("bare export/unexport directives are not supported")
     }
     if parse_assignment(line) is Some((name, operator, value)) {
       assign_variable(database, name, operator, value)
@@ -435,10 +595,24 @@ async fn parse_makefile(
       _ => deps_text.to_owned()
     }
     let targets = split_words(
-      expand(targets_text.to_owned(), database.variables, {}, 0),
+      expand(
+        targets_text.to_owned(),
+        database.variables,
+        {},
+        0,
+        cwd=database.cwd,
+        exported=database.exported,
+      ),
     )
     let dependencies = split_words(
-      expand(prerequisite_text, database.variables, {}, 0),
+      expand(
+        prerequisite_text,
+        database.variables,
+        {},
+        0,
+        cwd=database.cwd,
+        exported=database.exported,
+      ),
     )
     if targets.is_empty() {
       raise MakeError("rule has no target at line \{line_number + 1}")
@@ -523,13 +697,22 @@ async fn newer(left : String, right : String) -> Bool {
 }
 
 ///|
-fn command_environment(database : Database) -> Map[String, String] raise {
-  let result = @process.default_environment()
-  for name, variable in database.variables {
-    result[name] = if variable.immediate {
-      variable.value
-    } else {
-      expand(variable.value, database.variables, Map([]), 0)
+async fn command_environment(database : Database) -> Map[String, String] {
+  let result : Map[String, String] = Map([])
+  for name in database.exported {
+    if database.variables.get(name) is Some(variable) {
+      result[name] = if variable.immediate {
+        variable.value
+      } else {
+        expand(
+          variable.value,
+          database.variables,
+          Map([]),
+          0,
+          cwd=database.cwd,
+          exported=database.exported,
+        )
+      }
     }
   }
   result
@@ -554,7 +737,14 @@ async fn run_recipe(
   let first = rule.dependencies.get(0).unwrap_or("")
   automatic["<D"] = @path.Path(first).dirname().to_string()
   automatic["<F"] = @path.Path(first).basename().to_owned()
-  let mut command = expand(recipe, database.variables, automatic, 0)
+  let mut command = expand(
+    recipe,
+    database.variables,
+    automatic,
+    0,
+    cwd=settings.cwd,
+    exported=database.exported,
+  )
   let mut local_silent = settings.silent
   let mut ignore_error = false
   let mut scanning = true
@@ -589,81 +779,6 @@ async fn run_recipe(
   } else {
     0
   }
-}
-
-///|
-async fn build_target(
-  target : String,
-  database : Database,
-  settings : Settings,
-  states : Map[String, Int],
-  failures : Ref[Int],
-) -> Unit {
-  match states.get(target) {
-    Some(1) => raise MakeError("dependency cycle detected at '\{target}'")
-    Some(2) => return
-    _ => states[target] = 1
-  }
-  let target_path = path_in(settings.cwd, target)
-  let rule = match database.rules.get(target) {
-    Some(value) => value
-    None => {
-      let mut matched : Rule? = None
-      for candidate in database.rules.values() {
-        if instantiate_pattern(candidate, target) is Some(value) {
-          matched = Some(value)
-          break
-        }
-      }
-      if matched is Some(value) {
-        value
-      } else if @fs.exists(target_path) {
-        states[target] = 2
-        return
-      } else {
-        raise MakeError("no rule to make target '\{target}'")
-      }
-    }
-  }
-  let failures_before_dependencies = failures.val
-  for dependency in rule.dependencies {
-    build_target(dependency, database, settings, states, failures) catch {
-      err => if settings.keep_going { failures.val += 1 } else { raise err }
-    }
-  }
-  if failures.val > failures_before_dependencies {
-    states[target] = 2
-    return
-  }
-  let target_exists = if rule.phony { false } else { @fs.exists(target_path) }
-  let mut rebuild = settings.always_make || rule.phony || !target_exists
-  if !rebuild {
-    for dependency in rule.dependencies {
-      let dependency_path = path_in(settings.cwd, dependency)
-      if settings.what_if.contains(dependency) ||
-        (@fs.exists(dependency_path) && newer(dependency_path, target_path)) {
-        rebuild = true
-        break
-      }
-      if database.rules.get(dependency) is Some({ phony: true, .. }) {
-        rebuild = true
-        break
-      }
-    }
-  }
-  if rebuild {
-    for recipe in rule.recipes {
-      let status = run_recipe(recipe, rule, database, settings)
-      if status != 0 {
-        if settings.keep_going {
-          failures.val += 1
-        } else {
-          raise MakeError("recipe for '\{target}' failed with status \{status}")
-        }
-      }
-    }
-  }
-  states[target] = 2
 }
 
 ///|
@@ -702,6 +817,7 @@ async fn run(arguments : Array[String]) -> Unit {
   let mut dry_run = false
   let mut always_make = false
   let mut keep_going = false
+  let mut jobs = 1
   let touch_targets : Map[String, Bool] = Map([])
   let mut options = true
   let targets : Array[String] = []
@@ -748,22 +864,26 @@ async fn run(arguments : Array[String]) -> Unit {
     } else if options && argument.has_prefix("-W") && argument.length() > 2 {
       touch_targets[argument[2:].to_owned()] = true
     } else if options && (argument == "-j" || argument == "--jobs") {
+      jobs = 0
       if index + 1 < arguments.length() &&
         positive_job_count(arguments[index + 1]) {
         index += 1
+        jobs = @string.parse_int(arguments[index])
       }
     } else if options && argument.has_prefix("--jobs=") {
       let value = argument[7:].to_owned()
       if !positive_job_count(value) {
         raise MakeError("the '-j' option requires a positive integer")
       }
+      jobs = @string.parse_int(value)
     } else if options && argument.has_prefix("-j") && argument.length() > 2 {
       if !positive_job_count(argument[2:].to_owned()) {
         raise MakeError("the '-j' option requires a positive integer")
       }
+      jobs = @string.parse_int(argument[2:])
     } else if options && (argument == "-h" || argument == "--help") {
       @stdio.stdout.write(
-        "Usage: make [-Bns] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n",
+        "Usage: make [-Bkns] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n",
       )
       return
     } else if options && argument.has_prefix("-") && argument != "-" {
@@ -787,8 +907,10 @@ async fn run(arguments : Array[String]) -> Unit {
     command_line_variables[name] = true
   }
   let database : Database = {
+    cwd,
     variables,
     command_line_variables,
+    exported: Set(variables.keys().collect()),
     rules: {},
     default_target: None,
   }
@@ -808,6 +930,7 @@ async fn run(arguments : Array[String]) -> Unit {
     targets
   }
   let settings : Settings = {
+    jobs,
     cwd,
     silent,
     dry_run,
@@ -815,14 +938,7 @@ async fn run(arguments : Array[String]) -> Unit {
     keep_going,
     what_if: touch_targets,
   }
-  let states : Map[String, Int] = Map([])
-  let failures = Ref(0)
-  for target in requested_targets {
-    build_target(target, database, settings, states, failures)
-  }
-  if failures.val > 0 {
-    raise MakeError("\{failures.val} target(s) failed")
-  }
+  build_targets(requested_targets, database, settings)
 }
 
 ///|

@@ -30,48 +30,9 @@ pub fn normalize_lf(text : String) -> String {
 }
 
 ///|
-async fn run_with_pipe(
-  program : String,
-  args : Array[String],
-  data : Bytes,
-  cwd : String?,
-  extra_env : Map[String, String],
-  inherit_env : Bool,
-) -> (Int, &@io.Data, &@io.Data) {
-  let (input, writer) = @process.write_to_process()
-  @async.with_task_group() <| group => {
-    let result = group.spawn(() => {
-      match cwd {
-        Some(cwd) =>
-          @process.collect_output(
-            program,
-            args,
-            extra_env~,
-            inherit_env~,
-            stdin=input,
-            cwd~,
-            no_console_window=true,
-          )
-        None =>
-          @process.collect_output(
-            program,
-            args,
-            extra_env~,
-            inherit_env~,
-            stdin=input,
-            no_console_window=true,
-          )
-      }
-    })
-    group.spawn_bg(() => {
-      defer writer.close()
-      writer.write(data)
-    })
-    result.wait()
-  }
+pub fn ends_with_newline(bytes : Bytes) -> Bool {
+  bytes.has_suffix(b"\n") && !bytes.has_suffix(b"\n\n")
 }
-
-///|
 
 ///|
 pub fn normalize_diagnostic(text : String, temporary_root? : String) -> String {
@@ -91,31 +52,30 @@ pub async fn run(
   extra_env? : Map[String, String] = Map([]),
   inherit_env? : Bool = true,
 ) -> RunResult {
-  let (status, stdout, stderr) = match stdin {
-    Some(data) =>
-      run_with_pipe(program, args, data, cwd, extra_env, inherit_env)
-    None =>
-      match cwd {
-        Some(cwd) =>
-          @process.collect_output(
-            program,
-            args,
-            extra_env~,
-            inherit_env~,
-            cwd~,
-            no_console_window=true,
-          )
-        None =>
-          @process.collect_output(
-            program,
-            args,
-            extra_env~,
-            inherit_env~,
-            no_console_window=true,
-          )
-      }
+  let timeout_ms = if program == "docker" ||
+    program == "moonx" ||
+    program.has_suffix("/moonx") ||
+    program.has_suffix("\\moonx.exe") {
+    120000
+  } else {
+    15000
   }
-  { status, stdout: stdout.binary(), stderr: stderr.binary(), }
+  let result = run_with_deadline(
+    program,
+    args,
+    timeout_ms,
+    stdin=stdin.unwrap_or(b""),
+    cwd?,
+    extra_env~,
+    inherit_env~,
+  )
+  if result.cleanup_error is Some(error) {
+    fail("process cleanup failed: " + error)
+  }
+  if result.timed_out {
+    fail("runner deadline expired for " + program)
+  }
+  result.output
 }
 
 ///|

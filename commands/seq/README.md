@@ -1,10 +1,13 @@
 # seq
 
-Support note (2026-09-05): this README is supplementary. The [support record](../../docs/compatibility.md) is the only capability authority; it separates native compatibility evidence from Wasm policy and smoke evidence. Options mentioned here but not promoted in that record are not compatibility guarantees.
+This documents version 0.2.0. The [support record](../../docs/compatibility.md)
+tracks platform verification and exact-version publication evidence separately.
 
 Print a numeric sequence using `LAST`, `FIRST LAST`, or
-`FIRST INCREMENT LAST`. Two-operand sequences choose the unit step direction,
-so `seq 3 1` prints `3`, `2`, `1`. Supports custom separators (`-s`) and
+`FIRST INCREMENT LAST`. The default increment is always `1`, so `seq 3 1`
+produces no output; use `seq 3 -1 1` to count down. Supports custom separators (`-s`) and
 equal-width zero padding (`-w`). Decimal and exponent inputs use exact
 fixed-point arithmetic, avoiding cumulative floating-point drift.
-`--version` reports the published command version.
+`--version` reports the built package version. The published `cli/seq@0.1.5`
+still uses the earlier automatic descending-step behavior; the default `+1`
+change requires the candidate build.

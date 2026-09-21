@@ -1,0 +1,154 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-tail-line-count",
+      "command": "tail",
+      "args": [
+        "-n",
+        "1"
+      ],
+      "stdin_text": "one\ntwo\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-tail-follow-stdin",
+      "command": "tail",
+      "args": [
+        "-f",
+        "-s",
+        "0.02",
+        "-n",
+        "2"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "one\ntwo\nthree\n",
+      "expected_stdout_text": "two\nthree\n",
+      "expected_files": [],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-tail-interval-without-follow",
+      "command": "tail",
+      "args": [
+        "-s",
+        "0.02",
+        "-n",
+        "1"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "one\ntwo\n",
+      "expected_stdout_text": "two\n",
+      "expected_files": [],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-tail-zero-interval",
+      "command": "tail",
+      "args": [
+        "-s",
+        "0",
+        "-n",
+        "1"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "zero\none\n",
+      "expected_stdout_text": "one\n",
+      "expected_files": [],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-tail-negative-interval",
+      "command": "tail",
+      "args": [
+        "-f",
+        "-s",
+        "-1"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_contains": "invalid sleep interval",
+      "diagnostic_reason": "OS path formatting may vary; status, empty stdout and declared filesystem effects remain exact."
+    },
+    {
+      "id": "compat-tail-infinite-interval",
+      "command": "tail",
+      "args": [
+        "-s",
+        "inf"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_contains": "invalid sleep interval",
+      "diagnostic_reason": "OS path formatting may vary; status, empty stdout and declared filesystem effects remain exact."
+    },
+    {
+      "id": "compat-tail-follow-name-boundary",
+      "command": "tail",
+      "args": [
+        "-F"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_contains": "unknown short option",
+      "diagnostic_reason": "OS path formatting may vary; status, empty stdout and declared filesystem effects remain exact.",
+      "expected_rejection": "unknown short option"
+    },
+    {
+      "id": "compat-catalog-line-260",
+      "command": "tail",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-stdin-tail"
+      ]
+    }
+  ]
+}

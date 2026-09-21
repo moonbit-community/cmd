@@ -1,0 +1,253 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase4-cp-regular",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "source",
+        "copy"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "payload\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "aliases": [
+        "candidate-phase4-cp-regular"
+      ],
+      "observe": [
+        "mode",
+        "identity",
+        "symlink-target"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "p8-cp-update-older",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "--update=older",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "old"
+        },
+        {
+          "path": "destination",
+          "content_text": "new"
+        }
+      ],
+      "delay_ms": 2,
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-cp-numbered-backup",
+      "expected_rejection": "identity",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "--backup=numbered",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-cp-command-line-link",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "-H",
+        "link",
+        "copy"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "target",
+          "content_text": "payload"
+        },
+        {
+          "path": "link",
+          "content_text": "",
+          "kind": "symlink",
+          "target": "target"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "host_platforms": [
+        "posix"
+      ],
+      "aliases": [
+        "candidate-p8-cp-command-line-link"
+      ]
+    },
+    {
+      "id": "filesystem-fidelity",
+      "command": "cp",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ],
+      "timeout_ms": 15000,
+      "related_commands": [
+        "touch",
+        "mkdir",
+        "chmod",
+        "rm"
+      ]
+    },
+    {
+      "id": "compat-text-cp-preserve-rejected",
+      "command": "cp",
+      "args": [
+        "-p",
+        "left",
+        "preserved-copy"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "a left\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "metadata",
+      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted.",
+      "expected_rejection": "metadata"
+    },
+    {
+      "id": "compat-filesystem-copy",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "source",
+        "copy"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "policy-fixture\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "policy-fixture\n"
+        },
+        {
+          "path": "copy",
+          "kind": "file",
+          "content_text": "policy-fixture\n"
+        }
+      ],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-filesystem-nested-copy",
+      "command": "cp",
+      "args": [
+        "-R",
+        "tree",
+        "tree/child/copy"
+      ],
+      "files": [
+        {
+          "path": "tree/child",
+          "kind": "directory"
+        },
+        {
+          "path": "tree/file",
+          "content_text": "x"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "tree/file",
+          "content_text": "x"
+        },
+        {
+          "path": "tree/child/copy",
+          "exists": false
+        }
+      ],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_contains": "inside the source",
+      "diagnostic_reason": "OS path formatting may vary; status, empty stdout and declared filesystem effects remain exact."
+    },
+    {
+      "id": "compat-catalog-line-56",
+      "command": "cp",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    }
+  ]
+}

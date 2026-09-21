@@ -1,33 +1,33 @@
-# ADR-0005: HTTP Transfer Profile
+# ADR-0005: Pure MoonBit HTTP Transfer Profile
 
-Status: Accepted  
+Status: Accepted
 Date: 2026-09-05
+Updated: 2026-09-21
+Revision: Include Basic auth and cookies; share candidate and fixed-oracle network scenarios.
 
-## Context
+## Target and decision
 
-`curl` and `wget` have broad upstream protocols and terminal behaviors, while
-the repository can provide a deterministic pure-MoonBit HTTP implementation.
+Implement curl/wget HTTP/HTTPS with public async APIs. Basic auth, cookie selection/persistence and redirect state are project responsibilities. async 0.22.1 Response.cookies exposes repeated Set-Cookie separately from the header map. Preserve command-specific credential challenge/redirect rules and cookie domain/path/Secure/expiry behavior within the documented subset.
 
-## Decision
+## Alternatives and compatibility cost
 
-Publish a bounded HTTP/HTTPS profile: methods, bodies, files, redirects,
-retries, timeouts, output naming, HTTP CONNECT proxy selection, and explicit
-TLS verification controls. Keep local fixtures and network policy in the
-runner. Do not delegate to host clients.
+Reject host curl/wget delegation, own FFI and permanent exclusion of implementable protocol state. Do not forward authorization blindly across origins. Basic auth tests do not imply all protocols, authentication mechanisms, browser cookie policy or exact progress bytes.
 
-## Consequences
+## Versions and evidence
 
-The commands remain useful for scripts while FTP/SFTP/SMTP, authentication and
-cookie state, HTTP/2 negotiation, recursive mirroring, and exact progress or
-diagnostic bytes remain outside the claim.
+Custom `Cookie:` request headers combined with matching jar cookies require
+duplicate request fields, which the public HTTP request map cannot represent.
+Reject that combination before sending it; do not silently merge or discard
+fields. Reopen when a public ordered header-list API is released. Literal curl
+`-b` cookies follow cross-host redirects, while custom Cookie headers are
+removed; a local oracle probe covers this distinction. PSL/IDNA and cookie
+prefix rules remain project work rather than async limitations.
 
-## Evidence
-
-The phase2/P1 manifest contains 25 HTTP cases and reusable local HTTP/HTTPS and
-proxy fixtures. Wasm policy cases cover denied networking and an allowed local
-endpoint.
+Baseline: async 0.22.1, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-15.
+Command option tests, core/netops cookie tests and `network-auth-cookie` exercise the implemented profile against loopback HTTP fixtures. `network-auth-cookie-oracle` preserves the old probe's live output/status and jar-mode comparisons against the pinned Linux oracle. Its implementation and CI registration are not a local Linux pass. The original probe remains archived. Only final passing options are promoted in the support record.
+Historical results remain in [the audit](../reports/2026-09-19-command-fidelity-audit.md).
+Candidate runtime results are recorded separately from published versions.
 
 ## Revisit when
 
-A separate protocol and state model is designed and receives its own pinned
-oracle suite.
+Extend additional protocol/auth/cookie behavior with direct upstream fixtures; new APIs alone are not evidence of implemented behavior.

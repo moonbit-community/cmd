@@ -1,0 +1,145 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-cut-field",
+      "command": "cut",
+      "args": [
+        "-d:",
+        "-f2"
+      ],
+      "stdin_text": "a:one\nb:two\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-cut-zero-terminated",
+      "command": "cut",
+      "args": [
+        "-z",
+        "-c1"
+      ],
+      "stdin_hex": "6162006364",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-cut-bytes",
+      "command": "cut",
+      "args": [
+        "-b",
+        "1,3"
+      ],
+      "stdin_text": "abc\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-text-line-605",
+      "command": "cut",
+      "args": [
+        "-c1"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_hex": "006162630aff7461696c",
+      "expected_stdout_hex": "000aff0a",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-684",
+      "command": "cut",
+      "args": [
+        "-z",
+        "-c1"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_hex": "6162006364",
+      "expected_stdout_hex": "61006300",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-693",
+      "command": "cut",
+      "args": [
+        "-c",
+        "3-1"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "decreasing",
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+    },
+    {
+      "id": "compat-text-line-694",
+      "command": "cut",
+      "args": [
+        "-d",
+        "",
+        "-f1"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "single byte",
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+    },
+    {
+      "id": "compat-catalog-line-72",
+      "command": "cut",
+      "args": [
+        "-c1"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-catalog-line-374",
+      "command": "cut",
+      "args": [
+        "-d::",
+        "-f1"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "single byte",
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+    }
+  ]
+}

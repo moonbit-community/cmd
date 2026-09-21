@@ -1,0 +1,84 @@
+///|
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/process",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/io",
+  "moonbitlang/core/env",
+  "moonbitlang/core/encoding/utf8",
+}
+
+///|
+async fn expect(reader : &@io.Reader, expected : String) -> Unit {
+  let bytes = reader.read_exactly(@utf8.encode(expected).length())
+  assert_eq(@utf8.decode(bytes), expected)
+}
+
+///|
+async fn main {
+  let arguments = @env.args()[1:]
+  guard arguments.get(0) is Some(program) else {
+    fail("pass the shell executable, or a launcher and its arguments")
+  }
+  let directory = @fs.tmpdir(prefix="cmd-sh-repl-")
+  defer @fs.rmdir(directory, recursive=true)
+  let startup = directory + "/startup.sh"
+  @fs.write_file(startup, "STARTUP=loaded\n")
+  @async.with_timeout(15000, () => {
+    @async.with_task_group(group => {
+      let (stdin, writer) = @process.write_to_process()
+      let (stdout, output) = @process.read_from_process()
+      let (stderr, error) = @process.read_from_process()
+      defer {
+        writer.close()
+        stdout.close()
+        stderr.close()
+      }
+      let child = @process.spawn(
+        group,
+        program,
+        arguments[1:].to_owned() + ["-i"],
+        stdin~,
+        stdout=output,
+        stderr=error,
+        extra_env={ "PS1": "P> ", "PS2": "C> ", "ENV": startup },
+        cancel_handler=@process.hard_cancel(),
+      )
+      expect(stderr, "P> ")
+      writer.write("VALUE=kept\n")
+      expect(stderr, "P> ")
+      writer.write("printf '%s|%s\\n' \"$VALUE\" \"$STARTUP\"\n")
+      expect(stdout, "kept|loaded\n")
+      expect(stderr, "P> ")
+      writer.write("if true; then\n")
+      expect(stderr, "C> ")
+      writer.write("printf 'multiline\\n'\n")
+      expect(stderr, "C> ")
+      writer.write("fi\n")
+      expect(stdout, "multiline\n")
+      expect(stderr, "P> ")
+      writer.write("read ANSWER\n")
+      writer.write("hello foreground\n")
+      expect(stderr, "P> ")
+      writer.write("printf 'read=<%s>\\n' \"$ANSWER\"\n")
+      expect(stdout, "read=<hello foreground>\n")
+      expect(stderr, "P> ")
+      writer.write("/usr/bin/head -n 1\n")
+      writer.write("child input\n")
+      expect(stdout, "child input\n")
+      expect(stderr, "P> ")
+      writer.write(")\n")
+      expect(stderr, "sh: unexpected closing token\nP> ")
+      writer.write("printf 'recovered\\n'\n")
+      expect(stdout, "recovered\n")
+      expect(stderr, "P> ")
+      writer.close()
+      assert_eq(child.wait(), 0)
+      assert_eq(stdout.read_all().binary(), b"")
+      assert_eq(stderr.read_all().binary(), b"")
+    })
+  })
+  println(
+    "interactive: PASS (persistent open stdin, ENV, variables, multiline, read, foreground child, syntax recovery, EOF)",
+  )
+}

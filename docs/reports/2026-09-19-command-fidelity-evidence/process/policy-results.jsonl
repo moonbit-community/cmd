@@ -1,0 +1,7 @@
+{"id":"allowed-printenv","args":["cli/printenv","CMD_AUDIT_MARKER"],"policy":"policy-allow.json","status":0,"stdout":"policy-granted\n","stderr":""}
+{"id":"allowed-env-child","args":["cli/env","/usr/bin/printenv","CMD_AUDIT_MARKER"],"policy":"policy-allow.json","status":1,"stdout":"","stderr":""}
+{"id":"allowed-sh-variable","args":["cli/sh","-c","echo \"$CMD_AUDIT_MARKER\""],"policy":"policy-allow.json","status":0,"stdout":"\n","stderr":""}
+{"id":"allowed-sh-child","args":["cli/sh","-c","/usr/bin/printenv CMD_AUDIT_MARKER"],"policy":"policy-allow.json","status":1,"stdout":"","stderr":""}
+{"id":"allowed-sh-absolute-child","args":["cli/sh","-c","/usr/bin/printf 'allowed\\n'"],"policy":"policy-allow.json","status":0,"stdout":"allowed\n","stderr":""}
+{"id":"denied-sh-child","args":["cli/sh","-c","/usr/bin/printf 'denied\\n'"],"policy":"policy-deny.json","status":127,"stdout":"","stderr":"Sandbox policy blocked file read: \".\"\nSandbox policy blocked process spawn\nsh: OSError(\"@process.run(): Permission denied\")\n"}
+{"id":"denied-printenv","args":["cli/printenv","CMD_AUDIT_MARKER"],"policy":"policy-deny.json","status":1,"stdout":"","stderr":""}

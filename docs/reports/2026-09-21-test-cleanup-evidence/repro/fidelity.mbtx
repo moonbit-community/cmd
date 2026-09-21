@@ -1,0 +1,247 @@
+///|
+import {
+  "moonbitlang/async@0.22.1",
+  "moonbitlang/async@0.22.1/process",
+  "moonbitlang/async@0.22.1/fs",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+}
+
+///|
+struct Harness {
+  root : String
+  wasm : Bool
+}
+
+///|
+struct Observation {
+  backend : String
+  command : String
+  args : Array[String]
+  status : Int
+  stdout : String
+  stderr : String
+} derive(ToJson)
+
+///|
+async fn Harness::run(
+  self : Harness,
+  command : String,
+  args : Array[String],
+  input? : String = "",
+  cwd? : String,
+  locale? : String = "C",
+) -> Observation {
+  let executable = self.root + "/cli/" + command + "/" + command
+  let program = if self.wasm { "moonrun" } else { executable + ".exe" }
+  let arguments = if self.wasm {
+    [executable + ".wasm", "--"] + args
+  } else {
+    args
+  }
+  let (stdin, writer) = @process.write_to_process()
+  let (status, out, err) = @async.with_task_group(group => {
+    group.spawn_bg(() => {
+      defer writer.close()
+      writer.write(input)
+    })
+    @process.collect_output(
+      program,
+      arguments,
+      stdin~,
+      cwd?=cwd.map(value => value[:]),
+      extra_env={ "LC_ALL": locale, "CMD_FIDELITY_INHERIT": "retained" },
+    )
+  })
+  let observation : Observation = {
+    backend: if self.wasm {
+      "wasm"
+    } else {
+      "native"
+    },
+    command,
+    args,
+    status,
+    stdout: out.text(),
+    stderr: err.text(),
+  }
+  println(ToJson::to_json(observation).stringify())
+  observation
+}
+
+///|
+async fn Harness::expect(
+  self : Harness,
+  command : String,
+  args : Array[String],
+  status : Int,
+  stdout : String,
+  input? : String = "",
+  cwd? : String,
+) -> Unit {
+  let observed = self.run(command, args, input~, cwd?)
+  assert_eq(observed.status, status)
+  assert_eq(observed.stdout, stdout)
+}
+
+///|
+async fn main {
+  let arguments = @env.args()[1:]
+  guard arguments.get(0) is Some(root) else {
+    fail("pass an absolute prebuilt artifact root [wasm]")
+  }
+  let harness : Harness = { root, wasm: arguments.get(1) == Some("wasm"), }
+  let fixture = @fs.tmpdir(prefix="cmd-fidelity-")
+  defer @fs.rmdir(fixture, recursive=true)
+  @async.with_timeout(30000, () => {
+    harness.expect("grep", ["a"], 0, "a\na\n", input="a\nx\na\n")
+    harness.expect("grep", ["a+"], 0, "a+\n", input="aa\na+\n")
+    harness.expect("grep", ["-Eo", "a|aa"], 0, "aa\n", input="aa\n")
+    harness.expect("base64", ["-w0"], 0, "YWJj", input="abc")
+    harness.expect("seq", ["3", "1"], 0, "")
+    harness.expect("seq", ["3", "-1", "1"], 0, "3\n2\n1\n")
+    harness.expect(
+      "jq",
+      ["-c", "."],
+      0,
+      "1\n2\n{\"a\":3}\n",
+      input="1 2 {\"a\":3}",
+    )
+    harness.expect("jq", ["-cs", "."], 0, "[1,2]\n", input="1\n2")
+    harness.expect("jq", ["-Rrs", "."], 0, "a\nb\n", input="a\nb")
+    harness.expect(
+      "jq",
+      ["-nr", "--arg", "x", "outer", "\"inner\" as $x | $x"],
+      0,
+      "inner\n",
+    )
+    harness.expect("jq", ["-e", "."], 1, "false\n", input="false")
+    harness.expect("jq", ["-c", "."], 4, "1\n", input="1 invalid")
+    harness.expect(
+      "env",
+      ["/usr/bin/printenv", "CMD_FIDELITY_INHERIT"],
+      0,
+      "retained\n",
+    )
+    harness.expect("env", ["/usr/bin/printenv", "LC_ALL"], 0, "C\n")
+    let inherited_locale = harness.run(
+      "env",
+      ["/usr/bin/printenv", "LC_ALL"],
+      locale="POSIX",
+    )
+    assert_eq(inherited_locale.status, 0)
+    assert_eq(inherited_locale.stdout, "POSIX\n")
+    harness.expect(
+      "sh",
+      [
+        "-c", "LOCAL=secret; /usr/bin/printenv LOCAL; export LOCAL; /usr/bin/printenv LOCAL",
+      ],
+      0,
+      "secret\n",
+    )
+    harness.expect(
+      "sh",
+      ["-c", "v=$(printf 'a \\n\\n'); printf '<%s>\\n' \"$v\""],
+      0,
+      "<a >\n",
+    )
+    assert_true(
+      harness.run("sh", ["-c", "printf '%s' \"$((1/0))\""]).status != 0,
+    )
+    harness.expect("sh", ["-c", "x=$(false)"], 1, "")
+    let source = fixture + "/source"
+    let destination = fixture + "/destination"
+    @fs.write_file(source, "preserve source", permission=0o640)
+    @fs.write_file(destination, "preserve destination")
+    assert_true(harness.run("cp", [source, destination]).status != 0)
+    assert_eq(@fs.read_file(source).text(), "preserve source")
+    assert_eq(@fs.read_file(destination).text(), "preserve destination")
+    assert_true(harness.run("cp", [source, source]).status != 0)
+    let linked_path = fixture + "/alias"
+    let (linked, _, _) = @process.collect_output("/bin/ln", [
+      source, linked_path,
+    ])
+    assert_eq(linked, 0)
+    let identities_before = if @async.platform is MacOS {
+      @process.collect_output("/usr/bin/stat", [
+        "-f", "%i:%l", source, linked_path,
+      ]).1.text()
+    } else {
+      ""
+    }
+    assert_true(harness.run("cp", [source, linked_path]).status != 0)
+    assert_true(
+      harness.run("cp", ["--no-preserve=mode", source, linked_path]).status != 0,
+    )
+    assert_eq(@fs.read_file(linked_path).text(), "preserve source")
+    if @async.platform is MacOS {
+      assert_eq(
+        @process.collect_output("/usr/bin/stat", [
+          "-f", "%i:%l", source, linked_path,
+        ]).1.text(),
+        identities_before,
+      )
+    }
+    harness.expect(
+      "cp",
+      ["--no-preserve=mode", source, fixture + "/new"],
+      0,
+      "",
+    )
+    assert_eq(@fs.read_file(fixture + "/new").text(), "preserve source")
+    let before = @fs.mtime(source)
+    assert_true(harness.run("touch", [source]).status != 0)
+    assert_eq(@fs.mtime(source), before)
+    assert_eq(@fs.read_file(source).text(), "preserve source")
+    harness.expect("touch", ["-c", fixture + "/absent"], 0, "")
+    assert_false(@fs.exists(fixture + "/absent"))
+    harness.expect("touch", [fixture + "/created"], 0, "")
+    assert_true(
+      harness.run("touch", [fixture + "/earlier-created", source]).status != 0,
+    )
+    assert_true(@fs.exists(fixture + "/earlier-created"))
+    harness.expect("mkdir", ["-p", "-m700", fixture + "/parent/leaf"], 0, "")
+    if @async.platform is MacOS {
+      let (status, out, _) = @process.collect_output("/usr/bin/stat", [
+        "-f",
+        "%Lp",
+        fixture + "/parent",
+        fixture + "/parent/leaf",
+      ])
+      assert_eq(status, 0)
+      assert_eq(out.text(), "755\n700\n")
+    }
+    @fs.symlink(fixture + "/link", target=source)
+    harness.expect("chmod", ["600", fixture + "/link"], 0, "")
+    if @async.platform is MacOS {
+      let (_, out, _) = @process.collect_output("/usr/bin/stat", [
+        "-f", "%Lp", source,
+      ])
+      assert_eq(out.text(), "600\n")
+    }
+    @fs.write_file(
+      fixture + "/Makefile",
+      "VALUE := $(shell printf 'one\\ntwo\\n')\nall:\n\t@printf '%s\\n' '$(VALUE)'\n",
+    )
+    harness.expect("make", ["-C", fixture], 0, "one two\n")
+    @fs.write_file(
+      fixture + "/Makefile",
+      ".PHONY: all shared left right\nall: left right\nshared:\n\t@printf S >> events\nleft: shared\n\t@printf A >> events; /bin/sleep 0.1; printf a >> events\nright: shared\n\t@printf B >> events; /bin/sleep 0.1; printf b >> events\n",
+    )
+    harness.expect("make", ["-j2", "-C", fixture], 0, "")
+    let events = @fs.read_file(fixture + "/events").text()
+    assert_eq(events.length(), 5)
+    assert_eq(events[0], 'S')
+    assert_true(events[1:3] == "AB" || events[1:3] == "BA")
+    @fs.write_file(
+      fixture + "/Makefile",
+      "all: broken\n\t@printf wrong > forbidden\nbroken:\n\t@false\n",
+    )
+    harness.expect("make", ["-j2", "-C", fixture], 2, "")
+    assert_false(@fs.exists(fixture + "/forbidden"))
+    @fs.write_file(fixture + "/remove-me", "disposable")
+    harness.expect("rm", ["--no-preserve-root", fixture + "/remove-me"], 0, "")
+    assert_false(@fs.exists(fixture + "/remove-me"))
+  })
+  println("fidelity assertions passed")
+}

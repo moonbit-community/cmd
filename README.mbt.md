@@ -2,7 +2,18 @@
 
 `cmd` is an integrated collection of command-line utilities implemented in
 MoonBit. It provides executable command modules, a shared runtime, and a test
-system for compatibility and policy-controlled execution.
+system for preserving GNU/POSIX and command-upstream behavior. Authorization
+belongs to the caller or host; commands preserve the caller's environment and
+stream semantics.
+
+The working tree prepares **0.2.0**, which is not yet published. See the
+[candidate evidence](docs/reports/2026-09-20-fidelity-implementation.md),
+[support record](docs/compatibility.md), and
+[upstream API gaps](docs/async-upstream-gaps.md). The candidate includes a
+persistent line-oriented `sh -i`, real `make -j` scheduling, JSON input framing,
+Basic HTTP authentication and cookies. Strict filesystem limits are explicit:
+default `cp` and existing-file `touch` cannot be implemented faithfully with
+the current public metadata APIs; see ADR-0004.
 
 Releasable commands are available as independent modules under
 `cli/<command>`:
@@ -73,7 +84,9 @@ cmd/
 |   `-- stream/           # byte and line-stream helpers
 |-- commands/             # one executable module per command
 |-- tests/
-|   |-- runner/           # unified compat, policy, and oracle runner
+|   |-- runner/           # workspace compat, policy, and oracle runner
+|   |-- release_runner/   # exact published MoonX versions
+|   |-- cases/            # shared active command contracts and oracle fixtures
 |   |-- testkit/          # process test utilities
 |   `-- fixtures/         # runner manifests and policy profiles
 |-- docs/                 # behavior and provenance documentation
@@ -86,29 +99,45 @@ command packages.
 
 ## Test system
 
-The project uses one unified black-box runner with complementary suites:
+The project combines package tests and two runners sharing a Native testkit:
 
 - MoonBit unit and white-box tests for parsers and shared runtime packages.
-- `compat` executes every command and checks stdout, stderr, exit status, and
-  boundary behavior against the native contract.
+- `compat` retains the Native compatibility groups with stable selectable IDs.
+- `contract` runs shared per-command input/output/status contracts against
+  Native or Wasm artifacts; explicit rejection boundaries are counted separately.
 - `policy` executes pre-built Wasm artifacts through `moonrun --policy` and
   verifies allowed and denied resource access.
-- `oracle` performs strict byte-level differential checks against the pinned
-  upstream image; GNU differential and stress are opt-in `compat` extensions.
+- `oracle` compares Native and Wasm commands with the pinned upstream image,
+  including declared metadata observations. GNU and stress are independent suites.
+- `release_runner` validates candidate manifests and checks exact published
+  MoonX versions. The current 0.2.0 candidate is unpublished.
+- `scenarios` covers persistent shell input, HTTP auth/cookies, filesystem
+  boundaries and process/make lifecycle on both backends in CI. Former standalone
+  probes are archived with their assertion migration maps.
 
-Run the complete local validation from the repository root:
+Generic filesystem snapshots cover paths, kinds and regular-file bytes;
+explicit observers cover mode, fixed timestamps, symlink targets and fixture
+link relationships. Missing required observations cannot certify compatibility.
+See the
+[test entry-point guide](tests/README.md) for coverage and execution limits.
+
+Run the standard local checks from the repository root, serially:
 
 ```bash
-moon update
-moon check --target all --deny-warn
-moon test --target all
-moon build --target native --release --deny-warn
-moon build --target wasm --release --deny-warn
-moon run --target native tests/runner -- --manifest tests/fixtures/runner/cases.json --native-root _build/native/release/build --suite compat
-moon run --target native tests/runner -- --manifest tests/fixtures/runner/cases.json --wasm-root _build/wasm/release/build --suite policy
-moon info
-moon fmt
+MOON_HOME="$HOME/.moon-accounts/cli" moon update
+MOON_HOME="$HOME/.moon-accounts/cli" moon check --target all --deny-warn
+MOON_HOME="$HOME/.moon-accounts/cli" moon test --target all
+MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --release --deny-warn
+MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release --deny-warn
+./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite compat
+./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite policy
+./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe --manifest tests/release_runner/candidate-0.2.0.json --suite validate
+MOON_HOME="$HOME/.moon-accounts/cli" moon info
+MOON_HOME="$HOME/.moon-accounts/cli" moon fmt
 ```
+
+This sequence excludes the Docker oracle, published-package checks and manual
+scenario probes; it is not the complete release acceptance suite.
 
 See [Compatibility](docs/compatibility.md) for measured command support and
 platform behavior, and [Provenance](docs/provenance.md) for the source of

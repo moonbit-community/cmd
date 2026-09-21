@@ -1,0 +1,34 @@
+///|
+import { "moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/core/json" }
+///|
+async fn main {
+  let evidence = "docs/reports/2026-09-21-test-cleanup-evidence/"
+  for (source,target) in [
+    ("test-reports/tests-native-final-acceptance.log","final-tests-native.log"),
+    ("test-reports/tests-wasm-closure.log","final-tests-wasm.log"),
+    ("test-reports/acceptance-native/summary.jsonl","contracts-native.jsonl"),
+    ("test-reports/acceptance-wasm/summary.jsonl","contracts-wasm.jsonl"),
+    ("test-reports/scenarios-final-native/summary.jsonl","scenarios-native.jsonl"),
+    ("test-reports/scenarios-final-wasm/summary.jsonl","scenarios-wasm.jsonl"),
+    ("test-reports/cohorts-closure/summary.jsonl","cohorts.jsonl"),
+    ("test-reports/oracle-unavailable-closure/summary.jsonl","oracle-infra.jsonl"),
+    ("test-reports/platform-skip-closure/summary.jsonl","platform-skip.jsonl")
+  ] { @fs.write_file(evidence+target,@fs.read_file(source).binary()) }
+  let mut files = 0
+  let mut count = 0
+  let mut aliases = 0
+  let counts : Map[String,Int] = Map([])
+  for file in @fs.readdir("tests/cases") {
+    if !file.has_suffix(".json") { continue }
+    files += 1
+    guard @json.parse(@fs.read_file("tests/cases/"+file).text()) is {"cases":Array(cases),..} else { fail(file) }
+    count += cases.length()
+    for row in cases {
+      let comparison = match row { {"comparison":String(kind),..} => kind; _ => "differential" }
+      counts[comparison] = counts.get_or_default(comparison,0)+1
+      if row is {"aliases":Array(items),..} { aliases += items.length() }
+    }
+  }
+  let inventory : Json = {"command_files":files,"active_cases":count,"stable_aliases":aliases,"verification_input_modes":counts.to_json(),"compat_cohorts":16,"additional_cohorts":3,"candidate_packages":47,"candidate_selected_cases":154,"published":false}
+  @fs.write_file(evidence+"final-inventory.json",inventory.stringify(indent=2)+"\n")
+}

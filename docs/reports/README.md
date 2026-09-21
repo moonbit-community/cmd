@@ -14,6 +14,10 @@ they are not an alternative support matrix.
 
 | Date | Report | Scope |
 | --- | --- | --- |
+| 2026-09-21 | [Test cleanup implementation](2026-09-21-test-cleanup-implementation.md) | Shared testkit, judgment repair, case/fixture migration, ls/jq fixes, serialized validation and remaining external gates |
+| 2026-09-21 | [Test-system audit](2026-09-21-test-system-audit.md) | README synchronization, runner duplication, CI gaps and proposed cleanup; no test deletion |
+| 2026-09-20 | [0.2.0 fidelity candidate](2026-09-20-fidelity-implementation.md) | Released dependency upgrade, runtime regressions, shell sessions, make concurrency, HTTP auth/cookies and explicit public API gaps |
+| 2026-09-19 | [Published command-fidelity audit](2026-09-19-command-fidelity-audit.md) | Actual MoonX behavior before the 0.2.0 changes |
 | 2026-08-26—2026-08-30 | [Foundation and command migration](2026-08-26-foundation.md) | Repository scope, package split, initial command batches, and policy boundary |
 | 2026-09-02—2026-09-04 | [Oracle and unified runner](2026-09-02-oracle-runner.md) | Upstream baselines, pinned oracle, P0 migration, and the one-runner contract |
 | 2026-09-04 | [P1-P5 workflow expansion](2026-09-04-p1-p5.md) | HTTP, text pipelines, find/xargs, and the bounded POSIX shell |

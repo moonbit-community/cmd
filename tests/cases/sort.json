@@ -1,0 +1,463 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-sort-basic",
+      "command": "sort",
+      "args": [],
+      "stdin_text": "b\na\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-multiple-key-modifiers",
+      "command": "sort",
+      "args": [
+        "-t:",
+        "-k2,2n",
+        "-k1,1r"
+      ],
+      "stdin_text": "b:2\na:10\nc:2\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-general-numeric",
+      "command": "sort",
+      "args": [
+        "-g"
+      ],
+      "stdin_text": "1e2\n9\n2.5e1\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-general-numeric-classes",
+      "command": "sort",
+      "args": [
+        "-g"
+      ],
+      "stdin_text": "inf\n1\n-inf\nnan\ntext\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-local-key-modifier-combination",
+      "command": "sort",
+      "args": [
+        "-t:",
+        "-k2n,2r"
+      ],
+      "stdin_text": "a:2\nb:10\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-blank-field-boundaries",
+      "command": "sort",
+      "args": [
+        "-k2,2"
+      ],
+      "stdin_text": "x  b\nz a\ny   a\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-character-modifiers",
+      "command": "sort",
+      "args": [
+        "-bdf"
+      ],
+      "stdin_text": "  z!\na-\n B\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-unique-key-stability",
+      "command": "sort",
+      "args": [
+        "-u",
+        "-t:",
+        "-k2,2"
+      ],
+      "stdin_text": "b:1\na:1\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-human-numeric",
+      "command": "sort",
+      "args": [
+        "-h"
+      ],
+      "stdin_text": "999999K\n1M\n10K\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-month",
+      "command": "sort",
+      "args": [
+        "-M"
+      ],
+      "stdin_text": "Mar\nJAN\nzzz\nFeb\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-version",
+      "command": "sort",
+      "args": [
+        "-V"
+      ],
+      "stdin_text": "file10\nfile2\nfile1\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-zero-records",
+      "command": "sort",
+      "args": [
+        "-z"
+      ],
+      "stdin_hex": "62006100",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-ignore-nonprinting",
+      "command": "sort",
+      "args": [
+        "-i"
+      ],
+      "stdin_text": "a\u0001z\nay\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-ignore-case-c-locale",
+      "command": "sort",
+      "args": [
+        "-f"
+      ],
+      "stdin_text": "[\na\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-sort-check-quiet",
+      "command": "sort",
+      "args": [
+        "--check=quiet"
+      ],
+      "stdin_text": "b\na\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": []
+    },
+    {
+      "id": "compat-text-line-372",
+      "command": "sort",
+      "args": [
+        "-t:",
+        "-k2,2n",
+        "-k1,1r"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "b:2\na:10\nc:2\n",
+      "expected_stdout_text": "c:2\nb:2\na:10\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-381",
+      "command": "sort",
+      "args": [
+        "-g"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "inf\n1\n-inf\nnan\ntext\n",
+      "expected_stdout_text": "text\nnan\n-inf\n1\ninf\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-390",
+      "command": "sort",
+      "args": [
+        "-t:",
+        "-k2n,2r"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "a:2\nb:10\n",
+      "expected_stdout_text": "b:10\na:2\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-399",
+      "command": "sort",
+      "args": [
+        "-k2,2"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "x  b\nz a\ny   a\n",
+      "expected_stdout_text": "y   a\nx  b\nz a\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-408",
+      "command": "sort",
+      "args": [
+        "-u",
+        "-t:",
+        "-k2,2"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "b:1\na:1\n",
+      "expected_stdout_text": "b:1\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-417",
+      "command": "sort",
+      "args": [
+        "-h"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "999999K\n1M\n10K\n",
+      "expected_stdout_text": "10K\n999999K\n1M\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-426",
+      "command": "sort",
+      "args": [
+        "-bdf"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "  z!\na-\n B\n",
+      "expected_stdout_text": "a-\n B\n  z!\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-435",
+      "command": "sort",
+      "args": [
+        "-f"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "[\na\n",
+      "expected_stdout_text": "a\n[\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-436",
+      "command": "sort",
+      "args": [
+        "-V"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "file10\nfile2\nfile1\n",
+      "expected_stdout_text": "file1\nfile2\nfile10\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-445",
+      "command": "sort",
+      "args": [
+        "-z"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_hex": "62006100",
+      "expected_stdout_hex": "61006200",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-454",
+      "command": "sort",
+      "args": [
+        "-c"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "a\nb\n",
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-467",
+      "command": "sort",
+      "args": [
+        "-C"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "b\na\n",
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-468",
+      "command": "sort",
+      "args": [
+        "-R"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "deterministic seed contract",
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact.",
+      "expected_rejection": "deterministic seed contract"
+    },
+    {
+      "id": "compat-text-line-544",
+      "command": "sort",
+      "args": [
+        "-c",
+        "short",
+        "long"
+      ],
+      "files": [
+        {
+          "path": "short",
+          "content_text": "a\n"
+        },
+        {
+          "path": "long",
+          "content_text": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "extra operand",
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+    },
+    {
+      "id": "compat-text-sort-check-diagnostic",
+      "command": "sort",
+      "args": [
+        "--check"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "disorder",
+      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted.",
+      "stdin_text": "b\na\n"
+    },
+    {
+      "id": "compat-catalog-line-259",
+      "command": "sort",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-stdin-sort"
+      ]
+    }
+  ]
+}

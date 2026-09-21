@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "base_manifest": "tests/fixtures/runner/cases.json",
+  "base_manifest": "tests/release_runner/published-0.1-base.json",
   "commands": [
     {"name":"base64","package_name":"cli/base64","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},
     {"name":"basename","package_name":"cli/basename","version":"0.1.4","published":true,"compare_profile":"gnu","supported_options":[],"policy_sensitive":false},

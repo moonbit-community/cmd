@@ -314,6 +314,7 @@ async fn curl_transfer_one(
   options : CurlOptions,
   url : String,
   index : Int,
+  jar : @netops.CookieJar?,
 ) -> Int {
   let body = curl_request_body(options) catch {
     err => {
@@ -324,6 +325,12 @@ async fn curl_transfer_one(
     }
   }
   let headers = options.headers.copy()
+  let explicit_cookies = options.cookies.filter(value => value.contains("="))
+  let cookie_data = if explicit_cookies.is_empty() {
+    None
+  } else {
+    Some(explicit_cookies.join(";"))
+  }
   if !curl_has_header(headers, "user-agent") {
     headers.push(@netops.http_header("User-Agent", "curl/8.22.0"))
   }
@@ -400,6 +407,9 @@ async fn curl_transfer_one(
           max_time_ms?=options.max_time_ms,
           fail_on_http_error=options.fail,
           http_error_statuses=transient_statuses,
+          cookie_jar?=jar,
+          cookie_data?,
+          basic_credentials?=options.user,
         ),
         observer=event => {
           curl_observer(options.head, show_progress, stderr_terminal, event)
@@ -455,9 +465,34 @@ async fn curl_run(options : CurlOptions) -> Int {
     @stdio.stderr.write("curl: try 'curl --help' for more information\n")
     return 2
   }
+  let jar = if options.cookies.is_empty() && options.cookie_jar is None {
+    None
+  } else {
+    Some(@netops.CookieJar::new())
+  }
+  if jar is Some(jar) {
+    for source in options.cookies {
+      if source == "" || source.contains("=") {
+        continue
+      }
+      if source == "-" {
+        jar.load_netscape(@stdio.stdin.read_all().text())
+      } else {
+        jar.load(source) catch {
+          _ => () // curl treats missing cookie input files as an empty jar.
+        }
+      }
+    }
+  }
   let mut status = 0
   for index, url in options.urls {
-    status = curl_transfer_one(options, url, index)
+    status = curl_transfer_one(options, url, index, jar)
+  }
+  if options.cookie_jar is Some(path) && jar is Some(jar) {
+    jar.save(path) catch {
+      // Like curl, cookie-jar persistence does not change transfer status.
+      _ => ()
+    }
   }
   status
 }

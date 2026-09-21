@@ -1,6 +1,17 @@
 # Command Support Record
 
 Date: 2026-09-05
+Updated: 2026-09-20
+
+The working tree is the unpublished **0.2.0 candidate**. Rows marked candidate
+subset describe the new implementation and local Native/Wasm probes on macOS;
+they do not certify a new GNU/Linux or published MoonX release. The historical
+release manifest still pins 0.1.x and is deliberately retained for replay.
+See [candidate evidence](reports/2026-09-20-fidelity-implementation.md) and
+[public API gaps](async-upstream-gaps.md).
+
+Authorization belongs to the caller/host. Catalog capabilities and the older
+restricted label describe requirements, not command-local policy.
 
 This is the single support record for the `cmd` repository. It replaces the
 former matrix. Historical implementation stages are archived in
@@ -47,6 +58,11 @@ the unified runner.
 
 For every release, update the package version, command README, release
 manifest and case coverage together. After the Wasm asset is available, run:
+
+The current unpublished preparation uses `candidate-0.2.0.json` with
+`--suite validate`; its `candidate=true` / `published=false` fields prevent a
+premature registry run. Promote that manifest only after publication, retaining
+the old manifest as historical evidence.
 
 ```text
 moon run --target native tests/release_runner -- \
@@ -100,36 +116,36 @@ claiming success; `local-only` is absent from MoonX by design.
 | `base64` | subset verified | `-d/-D`, `-i/--ignore-garbage`, `-w N`, file and stdin encode/decode | Nonstandard alphabets and locale diagnostics not claimed |
 | `basename` | subset verified | `-a`, `-s SUFFIX`, `-z`, empty/root/repeated-separator operands | Full multibyte path locale behavior not claimed |
 | `cat` | subset verified | files/stdin; `-n -b -s -A -E -T -v -e -t`, `-u/--unbuffered` | Unbuffered is a stream-safe compatibility no-op |
-| `chmod` | restricted | numeric modes plus closed `=` assignments (`a=rwx`, `u=rw,g=r,o=`), regular files, `-R`, `-v` | incremental/implicit symbolic classes, symbolic assignment on directories/symlinks, and `--reference` rejected; invalid-form and no-side-effect probes remain explicit certification boundaries |
+| `chmod` | candidate subset | Numeric modes, closed symbolic assignments, command-line symlink following, recursive symlink skipping | Incremental/implicit symbolic modes need public mode reads; full recursive command-line directory-symlink combinations remain unverified |
 | `cmp` | subset verified | equal=0, different=1, error=2; `-s -l -n -i` | Full diagnostic byte parity not claimed |
 | `comm` | subset verified | three columns, `-1 -2 -3`, `-z`, `--check-order`, `--nocheck-order`, `-`, clustered flags | Locale collation beyond C bytes not claimed |
-| `cp` | restricted | files/trees, exercised `--update=older` and numbered backup paths, command-line `-H`, `-T`, `-v`; complete preflight | Remaining update modes, interactive/suffix and `-L/-P` probes remain certification boundaries; `-p/-a`, special files, unsupported links, and cycles rejected before output |
-| `curl` | restricted | Bounded HTTP/HTTPS profile: `-sS -f -o -OJ -L -I -H -X -d -T`; all documented methods; raw/binary/URL-encoded data; filename collisions and cleanup; retries; connect/total/idle timeouts; redirect limits and cross-origin stripping; HTTP CONNECT proxy/bypass; insecure TLS | Non-HTTP protocols, auth/cookie/config state, HTTP/2 negotiation, and exact native progress/diagnostic bytes not claimed |
+| `cp` | candidate subset | `--no-preserve=mode` to new regular files/trees; no-clobber/update no-ops; traversal controls | Default source-mode preservation and every existing regular-file overwrite reject until public mode/identity/handle-truncate APIs exist; same-inode aliases remain intact |
+| `curl` | candidate subset | Existing HTTP/HTTPS transfer profile plus Basic `-u`, literal/Netscape `-b`, `-c`, redirect cookie state and credential origin boundaries | No non-Basic auth/password prompts/PSL/IDNA/raw Set-Cookie input files; custom Cookie header plus stored cookies rejects because duplicate request fields are unavailable |
 | `cut` | subset verified | `-c`, `-f`, `-d`, `-s`, `-z`, range/comma lists | Locale/multibyte behavior not claimed |
 | `dirname` | subset verified | multiple operands and `-z`, empty/root/repeated-separator operands | Multibyte path locale behavior not claimed |
 | `echo` | subset verified | `-n`, `-e`, `-E`, byte escapes, literal `--` ambiguity | `POSIXLY_CORRECT` profile not claimed |
-| `env` | restricted | `-i/--ignore-environment`, `-u/--unset`, `-0`, GNU-style non-empty assignment names and option boundary, `-C/--chdir`, direct child launch, statuses 125/126/127 | `--help` is a verified status-125 rejection; cwd and child each require policy |
+| `env` | candidate subset | Complete inherited environment, `-i/-u/-0/-C`, direct children, `--help/--version` | Host authorization is separate; child launch error classes remain explicit |
 | `false` | subset verified | any args: no output, status 1; help/version return 0 | Metadata text is package-versioned |
 | `find` | restricted | names/paths/types, `-empty/-size`, metadata predicates, access checks, `-xtype`, depth/actions | File/process policy required; P8 time/reference/access combinations still need independent probes; ownership, inode, link-count, and full GNU expression grammar not claimed |
-| `grep` | subset verified | existing match modes plus `-A -B -C -b -s -z`, binary policies, recursive `--include/--exclude`, C-locale byte offsets | Include/exclude globs are the portable `*`/`?` basename profile; locale-aware classes and full diagnostics not claimed |
+| `grep` | candidate subset | Default BRE / `-G`, ERE / `-E`, `-F`, `-o` leftmost-longest, context-only separators, existing context/file/binary options | Backreferences and unsupported regex extensions reject; full locale classes and worst-case long-line performance remain project regex work |
 | `head` | subset verified | `-n`, `-c`, signed/attached/long/legacy counts and decimal/binary/IEC size suffixes, `-z`, `-q/-v`, files/stdin and headers | Counts are bounded by signed 64-bit storage; locale-aware records are not claimed |
 | `join` | subset verified | `-1 -2 -t -a -v -e -o`, `-z`, `-` stdin | Locale diagnostics not claimed |
-| `jq` | subset verified | `-c -r -f -n -l -S -j -s -R -e`, `--arg`, `--argjson`, `--indent`, `--tab`; field/path, map/reduce/assignment/try filters from the imported evaluator | Not a complete jq 1.8.2 diagnostics/modules/streaming claim |
+| `jq` | candidate subset | Consecutive JSON values, `-s/-R/-n/-e`, public AST variable binding, partial output on later parse error, explicit `-C` ANSI / `-M` precedence and `JQ_COLORS` | 23 jq 1.8.2 color contracts passed on both backends; evaluator remains moonjq 0.1.2; automatic TTY coloring, full modules/streaming/diagnostics not claimed |
 | `jqlog` | subset verified | JSONL stdin/raw input, `-f`, `-h`; invalid lines skipped | Compared with imported jqlog contract, not a system utility |
 | `ln` | subset verified | symbolic `-s`, exercised `-r`, and the parser's `-f/-i`, `-n/-T`, `-t`, backup/suffix, `-v` paths | Target-directory and overwrite combinations remain certification boundaries; hard-link request rejected before mutation |
-| `ls` | subset verified | `-a -A -d -F -1 -R`, reverse, regular-file `-S`, basic time/access/status sorting | P8 time selector, link-follow, executable `-F`, and tie-break probes remain; long/colour/ownership/inode/block formats not claimed |
-| `make` | restricted | `-B -n -s -C -f -k -W -j`, command-line variables, conditionals, pattern rules, automatic variables, includes and recipes | Recipe process lookup/cwd follows the Wasm host contract; parallel scheduling is bounded/sequential and full GNU language not verified |
-| `mkdir` | subset verified | `-p`, numeric `-m`, `-v`; deterministic failure ordering | Symbolic mode/umask parity not probed |
+| `ls` | candidate subset | `-a -A -d -F -1 -R`, reverse, regular-file `-S`, `-H/-L` link following, implicit `-u/-c` time sorting and `-S/-t` precedence | 22 Native/Wasm macOS CLI contracts passed; pinned GNU 9.11 Linux gate pending. `-P` is a project extension (GNU rejects it); directory-size sorting, long/colour/ownership/inode/block formats not claimed |
+| `make` | candidate subset | Real `-j` dependency scheduling, shared prerequisites once, failed-dependency propagation, `-k`, `$(shell ...)`, `.SHELLSTATUS`, cwd and exported recipe variables | No GNU jobserver/full Make grammar claim; shell-function export recursion and full GNU variable semantics remain project work |
+| `mkdir` | candidate subset | `-p`, numeric `-m`, requested mode on leaf only; default parent mode under ordinary umask | Symbolic modes and unusual umasks requiring temporary owner permissions remain unverified |
 | `mv` | subset verified | files/dirs, `-f/-n`, `-T`, `-v`, and the exercised `update=none` path | P8 interactive/backup/suffix and remaining update modes need probes; cross-filesystem fallback not claimed; source preserved on rename failure |
 | `nl` | subset verified | `-b/-h/-f`, `-w`, `-s`, `-v`, `-i`, `-d`, `-p`, files/stdin | Locale-aware formatting not claimed |
 | `paste` | subset verified | parallel/serial `-s`, delimiter cycling `-d`, `-z` | Full malformed delimiter diagnostics not claimed |
 | `printenv` | subset verified | selected/all values and `-0`, mixed present/missing status | Wasm environment is policy-dependent |
 | `printf` | subset verified | reused formats, conversions, width/precision, flags, escapes, numeric repetition, `--` | Locale and every GNU diagnostic not claimed |
 | `pwd` | subset verified | `-L`, `-P`, invalid logical `PWD` fallback | Logical/physical result follows Wasm cwd contract |
-| `rm` | subset verified | files/trees, `-r`, `-f`, `-d`, `-v`, failure ordering | Root/current-directory protection is unconditional |
+| `rm` | candidate subset | files/trees, `-r/-f/-d/-v`, failure ordering, root-preservation flags | Final dot/dot-dot operands are rejected; explicit cwd paths do not receive additional policy |
 | `rmdir` | subset verified | empty removal, `-p`, `-I`, `-v`, failure ordering | Full path diagnostics not claimed |
-| `seq` | subset verified | one/two/three-number forms (including automatic two-operand descending), `-w`, `-s`, `--version` | Automatic `FIRST > LAST` descent is an explicit project contract extension (`seq 3 1` => `3\n2\n1\n`), so that case is contract-tested rather than compared as GNU exact behavior; full GNU overflow/locale formatting not claimed |
-| `sh` | restricted | `-c`, `-s`, script/stdin selection, variables, positional parameters, pipelines, redirections/heredocs, command substitution, conditionals, case/patterns, loops, functions/return, grouping/subshells, `${#name}`, `set -e/-u`, `shift` | External commands remain explicit policy-visible child requests; unsupported non-POSIX/Bash-only syntax is rejected |
+| `seq` | candidate subset | One/two/three-number forms, default step +1, explicit negative step, `-w/-s/--version` | `seq 3 1` now produces no output, matching GNU; old descending extension removed |
+| `sh` | candidate subset | Persistent `-i` line REPL and opaque Session; export/local variables, cwd, quoting/IFS/glob, arithmetic, substitution, read, bounded printf/test, functions and pipeline state isolation | No public isatty/raw/editing/recoverable SIGINT/job control/exec; remaining interpreter grammar restrictions are project work, listed in command README |
 | `sha256sum` | subset verified | file/stdin digest, `-c`, `-z`, quiet/status/strict/warn/ignore-missing verification modes | Binary manifest extensions and every warning byte not claimed |
 | `sleep` | subset verified | fractional values, `s/m/h/d`, multiple operands, help/version | Signal/cancellation parity not claimed |
 | `sort` | subset verified | repeated `-k` field/character modifiers with GNU blank boundaries; `-b -d -f -i -n -g -h -M -V -r -u -z`; `-c/-C` checks | `-R` is a verified rejection without a seed contract; locale/external-sort semantics not claimed |
@@ -137,12 +153,12 @@ claiming success; `local-only` is absent from MoonX by design.
 | `tee` | subset verified | stdin to stdout/files and `-a` append, partial-output ordering | Signal diagnostics not claimed |
 | `test` | subset verified | string/integer, file kinds, access, regular-file size, `!`, `-a`, `-o`, and the exercised dangling-link path | `-N`/`-nt`/`-ot` and special-file positive fixtures need independent probes; complete unary/binary ambiguity not claimed |
 | `timeout` | local-only | local duration and expiry returned 124 | No published process-group cancellation |
-| `touch` | subset verified | create/default update and `-c` | `-a/-m/-d/-r/-t/--time` return nonzero; rejection is required to leave content unchanged |
+| `touch` | candidate subset | Create missing files; `-c` missing-file no-op | Existing-file timestamp updates and setters explicitly fail without content rewrites |
 | `tr` | subset verified | translate/delete/squeeze/`-c/-C` complement, `-t`, ranges, C-locale classes, octal/equivalence/repetition forms | Verified profile is byte-oriented; locale data beyond C is not claimed |
 | `true` | subset verified | any args: no output, status 0; help/version | Metadata text is package-versioned |
 | `uniq` | subset verified | adjacent filtering, `-c -d -u -i`, `-f -s -w -z`, exact count spacing | Fixed C-locale field/character comparison; locale collation not claimed |
 | `wc` | subset verified | `-l -w -c -m -L`, combinations, aligned multi-file totals, `--files0-from`, files/stdin | `-L` is the C-locale display-width profile; full locale diagnostics not claimed |
-| `wget` | restricted | Bounded HTTP/HTTPS profile: URL input files; quiet/output/log modes; resume and conditional 304; headers/method/data or binary file bodies; retry classification/delay; redirect limits; content-disposition collisions; connect/read/idle timeouts; HTTP CONNECT proxy/bypass; certificate verification control; HTTP status 8 | Recursive mirroring, cookies/auth/HSTS, FTP and other protocols, post-download timestamp restoration, and exact GNU progress/diagnostic bytes not claimed |
+| `wget` | candidate subset | Existing transfer profile plus challenge-based Basic credentials, `--auth-no-challenge`, load/save cookies, session-cookie option, shared redirect jar | No recursive mirror/FTP/HSTS/PSL/IDNA; consumed stdin bodies cannot replay an auth challenge; full progress text not claimed |
 | `xargs` | restricted | whitespace/NUL tokenization, quotes/backslashes, `-0 -r -t -n -L -s -E -I`, `--show-limits`, bounded `-P`; direct-child status classes 123/124/125/126/127 | Child policy required; process windows are bounded and aggregate status deterministically; GNU shell/locale extensions are not claimed |
 | `xxd` | subset verified | forward hex, `-p -r -c -l -i`, `--revert`, include symbol naming, positive `-s`, addressed reverse patching with bounded offsets | Negative/end-relative seek remains rejected; loose reverse-offset parsing matches the pinned profile and oversized offsets are rejected before unbounded allocation |
 
@@ -154,8 +170,6 @@ positive result. They are probe targets, not product claims.
 
 | Command | Help-visible only |
 | --- | --- |
-| `make` | semantic coverage beyond the tested rule/include/recipe slice |
-| `sh` | Bash-only syntax, interactive mode, job control, arrays, process substitution, startup files, and grammar beyond the listed successful POSIX slice |
 
 Each row identifies the option families exercised successfully. Explicit
 rejections, including `chmod` incremental/reference modes,
@@ -163,13 +177,14 @@ rejections, including `chmod` incremental/reference modes,
 selectors for `touch`, and negative `xxd -s`, are recorded in their rows. The
 portable filesystem profile exposes file kind, regular-file size, a/m/c times,
 access checks, and symlink creation; mode reads, timestamp setters, hard links,
-readlink, special-file creation, and EXDEV classification remain closed.
+readlink and special-file creation remain closed. POSIX EXDEV classification
+is available; metadata-preserving cross-device fallback is not.
 
 ## Cross-cutting runtime rules
 
-Implicit stdin remains silent and blocks until EOF. Terminal, pipeline,
-redirection, and explicit `-` paths use the same byte behavior; no
-repository-specific prompt is emitted. The successful quiet paths for `curl`
+Ordinary filter stdin remains silent. The explicit `sh -i` session instead
+emits PS1/PS2 on stderr and executes each complete input without waiting for
+EOF. Script mode emits no prompts. The successful quiet paths for `curl`
 and `wget` produced no stderr in this audit. Dynamic meter behavior and
 non-terminal progress formatting remain unverified.
 

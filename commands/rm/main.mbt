@@ -27,16 +27,18 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: rm [-f] [-r|-R] [-d] [-v] FILE...\nNote: root and current-directory protection cannot be disabled.\n",
+      "Usage: rm [-f] [-r|-R] [-d] [-v] [--preserve-root|--no-preserve-root] FILE...\n",
     )
     return
   }
-  if parsed.contains("no-preserve-root") {
-    @stdio.stderr.write(
-      "rm: --no-preserve-root is disabled by repository policy\n",
-    )
-    @sys.exit(1)
-    return
+  let mut preserve_root = true
+  for option in parsed.order {
+    if option == "preserve-root" {
+      preserve_root = true
+    }
+    if option == "no-preserve-root" {
+      preserve_root = false
+    }
   }
   let options : RmOptions = {
     recursive: parsed.contains("recursive"),
@@ -55,7 +57,7 @@ async fn main {
   }
   let mut failed = false
   for path in paths {
-    if @fsops.protects_working_directory(path) {
+    if @fsops.protects_removal_operand(path, preserve_root~) {
       @stdio.stderr.write("rm: refusing to remove protected path '\{path}'\n")
       failed = true
       continue

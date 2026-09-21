@@ -1,0 +1,28 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/json",
+}
+
+///|
+async fn main {
+  let root = "/tmp/cmd-audit-20260919/root"
+  let rows : Array[String] = []
+  let cases = [
+    ("allowed-printenv", "policy-allow.json", ["cli/printenv", "CMD_AUDIT_MARKER"]),
+    ("allowed-env-child", "policy-allow.json", ["cli/env", "/usr/bin/printenv", "CMD_AUDIT_MARKER"]),
+    ("allowed-sh-variable", "policy-allow.json", ["cli/sh", "-c", "echo \"$CMD_AUDIT_MARKER\""]),
+    ("allowed-sh-child", "policy-allow.json", ["cli/sh", "-c", "/usr/bin/printenv CMD_AUDIT_MARKER"]),
+    ("allowed-sh-absolute-child", "policy-allow.json", ["cli/sh", "-c", "/usr/bin/printf 'allowed\\n'"]),
+    ("denied-sh-child", "policy-deny.json", ["cli/sh", "-c", "/usr/bin/printf 'denied\\n'"]),
+    ("denied-printenv", "policy-deny.json", ["cli/printenv", "CMD_AUDIT_MARKER"]),
+  ]
+  for (id, policy, args) in cases {
+    let output = @shell.Cmd("moonx", ["--experimental-policy", root + "/" + policy] + args, cwd=root, stdin=@shell.Text("")).output(timeout_ms=15000)
+    let row : Json = { "id": id, "args": args, "policy": policy, "status": output.exit_code(), "stdout": output.stdout(), "stderr": output.stderr() }
+    rows.push(row.stringify())
+    println(row.stringify())
+  }
+  @fs.write_file(root + "/policy-results.jsonl", rows.join("\n") + "\n")
+}

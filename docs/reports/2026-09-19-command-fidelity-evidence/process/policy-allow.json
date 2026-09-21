@@ -1,0 +1,5 @@
+{
+  "env": { "set": { "CMD_AUDIT_MARKER": "policy-granted", "LC_ALL": "en_US.UTF-8", "LANG": "en_US.UTF-8", "PATH": "/usr/bin:/bin" } },
+  "fs": { "read": ["/tmp/cmd-audit-20260919/root", "/private/tmp/cmd-audit-20260919/root"] },
+  "process": { "allow": [ { "program": "/usr/bin/printenv", "args_prefix": ["CMD_AUDIT_MARKER"] }, { "program": "/usr/bin/printf", "args_prefix": [] } ] }
+}

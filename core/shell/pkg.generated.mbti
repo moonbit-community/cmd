@@ -1,7 +1,16 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "cli/core/shell"
 
+import {
+  "moonbitlang/async/io",
+  "moonbitlang/core/debug",
+}
+
 // Values
+pub async fn capture(String, name? : String, args? : Array[String], env? : Map[String, String], cwd? : String) -> (Int, String)
+
+pub async fn read_line(&@io.Reader) -> String?
+
 pub async fn run(String, name? : String, args? : Array[String], env? : Map[String, String], cwd? : String) -> Int
 
 // Errors
@@ -10,6 +19,18 @@ pub(all) suberror ShellError {
 }
 
 // Types and methods
+type Session
+pub async fn Session::feed(Self, String) -> SessionResult
+pub async fn Session::finish(Self) -> SessionResult
+pub async fn Session::load_startup(Self) -> Unit
+pub fn Session::new(name? : String, args? : Array[String], env? : Map[String, String], cwd? : String, input? : &@io.Reader, output? : &@io.Writer, error? : &@io.Writer, interactive? : Bool) -> Self
+pub fn Session::prompt(Self, continuation? : Bool) -> String
+
+pub(all) enum SessionResult {
+  NeedMoreInput
+  Completed(Int)
+  Exit(Int)
+} derive(Eq, @debug.Debug)
 
 // Type aliases
 

@@ -24,6 +24,13 @@ struct WgetOptions {
   mut no_proxy : Bool
   mut connect_timeout_ms : Int
   mut read_timeout_ms : Int
+  mut user : String?
+  mut password : String?
+  mut auth_no_challenge : Bool
+  mut cookies : Bool
+  mut load_cookies : String?
+  mut save_cookies : String?
+  mut keep_session_cookies : Bool
 }
 
 ///|
@@ -49,6 +56,13 @@ fn usage() -> String {
     #|      --max-redirect=NUMBER       maximum redirects (default 20)
     #|      --content-disposition       honor Content-Disposition filenames
     #|      --header=STRING             insert STRING among request headers
+    #|      --user=USER                 HTTP Basic user name
+    #|      --password=PASSWORD         HTTP Basic password
+    #|      --auth-no-challenge         send Basic credentials immediately
+    #|      --load-cookies=FILE         load a Netscape cookie jar
+    #|      --save-cookies=FILE         save persistent cookies
+    #|      --keep-session-cookies      also save session cookies
+    #|      --no-cookies                disable cookie storage
     #|      --method=HTTPMethod         use a supported HTTP method
     #|      --body-data=STRING          send STRING with an explicit --method
     #|      --body-file=FILE            send FILE with an explicit --method
@@ -92,6 +106,13 @@ fn default_options() -> WgetOptions {
     no_proxy: false,
     connect_timeout_ms: 900_000,
     read_timeout_ms: 900_000,
+    user: None,
+    password: None,
+    auth_no_challenge: false,
+    cookies: true,
+    load_cookies: None,
+    save_cookies: None,
+    keep_session_cookies: false,
   }
 }
 
@@ -162,6 +183,15 @@ fn parse_wget_options(
     @cli.option("max-redirect"),
     @cli.flag("content-disposition"),
     @cli.option("header"),
+    @cli.option("user"),
+    @cli.option("password"),
+    @cli.option("http-user"),
+    @cli.option("http-password"),
+    @cli.flag("auth-no-challenge"),
+    @cli.option("load-cookies"),
+    @cli.option("save-cookies"),
+    @cli.flag("keep-session-cookies"),
+    @cli.flag("no-cookies"),
     @cli.option("method"),
     @cli.option("body-data"),
     @cli.option("body-file"),
@@ -188,6 +218,20 @@ fn parse_wget_options(
   options.content_disposition = parsed.contains("content-disposition")
   options.no_check_certificate = parsed.contains("no-check-certificate")
   options.no_proxy = parsed.contains("no-proxy")
+  options.user = match parsed.last_occurrence(["user", "http-user"]) {
+    Some(name) => parsed.last_value(name)
+    None => None
+  }
+  options.password = match
+    parsed.last_occurrence(["password", "http-password"]) {
+    Some(name) => parsed.last_value(name)
+    None => None
+  }
+  options.auth_no_challenge = parsed.contains("auth-no-challenge")
+  options.cookies = !parsed.contains("no-cookies")
+  options.load_cookies = parsed.last_value("load-cookies")
+  options.save_cookies = parsed.last_value("save-cookies")
+  options.keep_session_cookies = parsed.contains("keep-session-cookies")
   match parsed.last_occurrence(["output-file", "append-output"]) {
     Some("output-file") => {
       options.log_file = parsed.last_value("output-file")

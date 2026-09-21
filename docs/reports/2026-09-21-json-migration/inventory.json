@@ -1,0 +1,14 @@
+{
+  "cases": 495,
+  "aliases": 15,
+  "kinds": {
+    "differential": 178,
+    "contract": 300,
+    "oracle-scenario": 1,
+    "scenario": 5,
+    "exact": 10,
+    "normalized": 1
+  },
+  "old_invocations_migrated": 240,
+  "retained_compat_cohorts": 9
+}

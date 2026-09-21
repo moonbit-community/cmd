@@ -1,0 +1,73 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/json",
+}
+
+///|
+struct Record {
+  id : String
+  side : String
+  program : String
+  args : Array[String]
+  exit : Int
+  stdout : String
+  stderr : String
+} derive(ToJson)
+
+///|
+let root = "/tmp/cmd-audit-20260919-fs"
+
+///|
+async fn log_cmd(id : String, side : String, program : String, args : Array[String]) -> Unit {
+  let result = @shell.Cmd(program, args, cwd="\{root}/\{side}").output(timeout_ms=90000)
+  let record = Record::{ id, side, program, args, exit: result.exit_code(), stdout: result.stdout(), stderr: result.stderr() }
+  @fs.write_file("\{root}/results.jsonl", ToJson::to_json(record).stringify() + "\n", create_mode=@fs.OpenOrCreate, append=true)
+  @fs.write_file("\{root}/\{id}-\{side}.stdout", result.stdout_bytes())
+  @fs.write_file("\{root}/\{id}-\{side}.stderr", result.stderr())
+  println("\{id} \{side} exit=\{result.exit_code()} stdout=\{Repr(result.stdout())} stderr=\{Repr(result.stderr())}")
+}
+
+///|
+async fn pair(id : String, cmd : String, args : Array[String]) -> Unit {
+  log_cmd(id, "native", cmd, args)
+  log_cmd(id, "moon", "/Users/winter/.moon/bin/moonx", ["cli/" + cmd] + args)
+}
+
+///|
+async fn native_pair(id : String, program : String, args : Array[String]) -> Unit {
+  for side in ["native", "moon"] { log_cmd(id, side, program, args) }
+}
+
+///|
+async fn main {
+  for side in ["native", "moon"] {
+    let dir = "\{root}/\{side}"
+    @fs.write_file("\{dir}/alias-source.txt", "DO NOT LOSE THIS\n")
+    @shell.Cmd("/bin/ln", ["alias-source.txt", "alias-dest.txt"], cwd=dir).run()
+    @fs.write_file("\{dir}/dest-target.txt", "original\n")
+    @fs.symlink(target="dest-target.txt", "\{dir}/dest-link.txt")
+    @fs.write_file("\{dir}/touch-basic.txt", "retain these bytes\n")
+    @shell.Cmd("/usr/bin/touch", ["-t", "202001020304.05", "touch-basic.txt", "empty"], cwd=dir).run()
+  }
+  native_pair("cp-hard-alias-before", "/usr/bin/stat", ["-f", "%N|%i|%l|%z", "alias-source.txt", "alias-dest.txt"])
+  pair("cp-hard-alias", "cp", ["alias-source.txt", "alias-dest.txt"])
+  native_pair("cp-hard-alias-after", "/bin/cat", ["alias-source.txt", "alias-dest.txt"])
+  native_pair("cp-hard-alias-stat-after", "/usr/bin/stat", ["-f", "%N|%i|%l|%z", "alias-source.txt", "alias-dest.txt"])
+  pair("cp-dest-link", "cp", ["source.txt", "dest-link.txt"])
+  native_pair("cp-dest-link-content", "/bin/cat", ["dest-target.txt"])
+  pair("touch-basic", "touch", ["touch-basic.txt"])
+  native_pair("touch-basic-content", "/bin/cat", ["touch-basic.txt"])
+  native_pair("touch-basic-stat", "/usr/bin/stat", ["-f", "%N|%m|%a|%z", "touch-basic.txt"])
+  pair("touch-dir", "touch", ["empty"])
+  pair("touch-link", "touch", ["sym.txt"])
+  pair("chmod-link", "chmod", ["600", "sym.txt"])
+  pair("find-mtime", "find", ["tree", "-type", "f", "-mtime", "-1"])
+  pair("find-prune", "find", ["tree", "-name", "sub", "-prune", "-o", "-print"])
+  pair("test-expression", "test", ["-f", "source.txt", "-a", "3", "-eq", "3"])
+  pair("chmod-complete-symbolic", "chmod", ["u=rw,g=r,o=", "chmod.txt"])
+  native_pair("chmod-complete-symbolic-stat", "/usr/bin/stat", ["-f", "%N|%Sp", "chmod.txt"])
+  pair("mkdir-simple", "mkdir", ["fresh"])
+  pair("rmdir-simple", "rmdir", ["fresh"])
+}

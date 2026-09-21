@@ -1,6 +1,8 @@
 # sort for moonx
 
-Observed native/Wasm profile (2026-09-04): this README is supplementary. The [support record](../../docs/compatibility.md) is the only capability authority; it lists the repeatable unified-runner results and exclusions.
+Version **0.2.0** behavior is documented here. The
+[support record](../../docs/compatibility.md) separates local verification from
+published MoonX behavior; `moonx` examples use registry releases.
 
 Sort lines of files or stdin:
 
@@ -17,7 +19,7 @@ character, and local comparison modifiers; `-t BYTE` selects a field
 separator. `-z` selects NUL records. `-c/--check` diagnoses the first disorder
 and `-C/--check=quiet` only returns status 1.
 
-The deterministic profile compares transformed bytes under `LC_ALL=C`.
+Comparison uses C-locale byte rules without changing environment variables.
 Blank-separated fields retain their leading separator run unless `-b` applies;
 case folding maps lowercase ASCII to uppercase, and human numeric order compares
 sign, suffix magnitude, then numeric value. Key ties use the whole record as the

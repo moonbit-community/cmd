@@ -1,0 +1,485 @@
+[
+  {
+    "name": "base64-basic",
+    "command": "base64",
+    "args": [],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "614756736247384b0a",
+    "expected_stdout": "614756736247384b0a",
+    "stderr": "",
+    "oracle": "base64 ",
+    "passed": true
+  },
+  {
+    "name": "cat-basic",
+    "command": "cat",
+    "args": [],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "6100ff0a6c617374",
+    "expected_stdout": "6100ff0a6c617374",
+    "stderr": "",
+    "oracle": "cat ",
+    "passed": true
+  },
+  {
+    "name": "cmp-basic",
+    "command": "cmp",
+    "args": [
+      "a.txt",
+      "a.txt"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "",
+    "expected_stdout": "",
+    "stderr": "",
+    "oracle": "cmp a.txt a.txt",
+    "passed": true
+  },
+  {
+    "name": "comm-basic",
+    "command": "comm",
+    "args": [
+      "a.txt",
+      "b.txt"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "6170706c650a090962616e616e610a096368657272790a",
+    "expected_stdout": "6170706c650a090962616e616e610a096368657272790a",
+    "stderr": "",
+    "oracle": "comm a.txt b.txt",
+    "passed": true
+  },
+  {
+    "name": "cut-basic",
+    "command": "cut",
+    "args": [
+      "-d",
+      ":",
+      "-f",
+      "2"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "620a790a",
+    "expected_stdout": "620a790a",
+    "stderr": "",
+    "oracle": "cut -d : -f 2",
+    "passed": true
+  },
+  {
+    "name": "grep-basic",
+    "command": "grep",
+    "args": [
+      "-n",
+      "alpha"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "313a616c7068610a2d2d0a333a616c706861320a",
+    "expected_stdout": "313a616c7068610a333a616c706861320a",
+    "stderr": "",
+    "oracle": "grep -n alpha",
+    "passed": false
+  },
+  {
+    "name": "head-basic",
+    "command": "head",
+    "args": [
+      "-n",
+      "2"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "610a620a",
+    "expected_stdout": "610a620a",
+    "stderr": "",
+    "oracle": "head -n 2",
+    "passed": true
+  },
+  {
+    "name": "join-basic",
+    "command": "join",
+    "args": [
+      "join-a.txt",
+      "join-b.txt"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "3120616c696365206465760a",
+    "expected_stdout": "3120616c696365206465760a",
+    "stderr": "",
+    "oracle": "join join-a.txt join-b.txt",
+    "passed": true
+  },
+  {
+    "name": "jq-basic",
+    "command": "jq",
+    "args": [
+      "-r",
+      ".name"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "4d6f6f6e0a",
+    "expected_stdout": "4d6f6f6e0a",
+    "stderr": "",
+    "oracle": "jq -r .name",
+    "passed": true
+  },
+  {
+    "name": "jqlog-basic",
+    "command": "jqlog",
+    "args": [
+      ".message"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "226f6b220a",
+    "expected_stdout": "226f6b220a",
+    "stderr": "",
+    "oracle": "explicit byte contract",
+    "passed": true
+  },
+  {
+    "name": "nl-basic",
+    "command": "nl",
+    "args": [],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "20202020203109616c7068610a202020202020090a20202020203209626574610a",
+    "expected_stdout": "20202020203109616c7068610a202020202020090a20202020203209626574610a",
+    "stderr": "",
+    "oracle": "nl ",
+    "passed": true
+  },
+  {
+    "name": "paste-basic",
+    "command": "paste",
+    "args": [
+      "a.txt",
+      "b.txt"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "6170706c650962616e616e610a62616e616e61096368657272790a",
+    "expected_stdout": "6170706c650962616e616e610a62616e616e61096368657272790a",
+    "stderr": "",
+    "oracle": "paste a.txt b.txt",
+    "passed": true
+  },
+  {
+    "name": "printf-basic",
+    "command": "printf",
+    "args": [
+      "%s:%04d\n",
+      "moon",
+      "7"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "6d6f6f6e3a303030370a",
+    "expected_stdout": "6d6f6f6e3a303030370a",
+    "stderr": "",
+    "oracle": "printf %s:%04d\n moon 7",
+    "passed": true
+  },
+  {
+    "name": "sha256sum-basic",
+    "command": "sha256sum",
+    "args": [],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "6261373831366266386630316366656134313431343064653564616532323233623030333631613339363137376139636234313066663631663230303135616420202d0a",
+    "expected_stdout": "6261373831366266386630316366656134313431343064653564616532323233623030333631613339363137376139636234313066663631663230303135616420202d0a",
+    "stderr": "",
+    "oracle": "explicit byte contract",
+    "passed": true
+  },
+  {
+    "name": "sort-basic",
+    "command": "sort",
+    "args": [
+      "-n"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "310a320a31300a",
+    "expected_stdout": "310a320a31300a",
+    "stderr": "",
+    "oracle": "sort -n",
+    "passed": true
+  },
+  {
+    "name": "tail-basic",
+    "command": "tail",
+    "args": [
+      "-n",
+      "2"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "620a630a",
+    "expected_stdout": "620a630a",
+    "stderr": "",
+    "oracle": "tail -n 2",
+    "passed": true
+  },
+  {
+    "name": "tr-basic",
+    "command": "tr",
+    "args": [
+      "a-z",
+      "A-Z"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "48454c4c4f203132330a",
+    "expected_stdout": "48454c4c4f203132330a",
+    "stderr": "",
+    "oracle": "tr a-z A-Z",
+    "passed": true
+  },
+  {
+    "name": "uniq-basic",
+    "command": "uniq",
+    "args": [
+      "-c"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "2020202020203220610a2020202020203120620a",
+    "expected_stdout": "2020202020203220610a2020202020203120620a",
+    "stderr": "",
+    "oracle": "explicit byte contract",
+    "passed": true
+  },
+  {
+    "name": "wc-basic",
+    "command": "wc",
+    "args": [
+      "-l"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "320a",
+    "expected_stdout": "320a",
+    "stderr": "",
+    "oracle": "explicit byte contract",
+    "passed": true
+  },
+  {
+    "name": "xxd-basic",
+    "command": "xxd",
+    "args": [
+      "-p"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "36313030666630610a",
+    "expected_stdout": "36313030666630610a",
+    "stderr": "",
+    "oracle": "xxd -p",
+    "passed": true
+  },
+  {
+    "name": "cat-number-squeeze",
+    "command": "cat",
+    "args": [
+      "-bn",
+      "-s"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "20202020203109610a0a20202020203209620a",
+    "expected_stdout": "20202020203109610a0a20202020203209620a",
+    "stderr": "",
+    "oracle": "cat -bn -s",
+    "passed": true
+  },
+  {
+    "name": "cmp-difference-status",
+    "command": "cmp",
+    "args": [
+      "-s",
+      "a.txt",
+      "b.txt"
+    ],
+    "exit_code": 1,
+    "expected_exit": 1,
+    "stdout": "",
+    "expected_stdout": "",
+    "stderr": "",
+    "oracle": "cmp -s a.txt b.txt",
+    "passed": true
+  },
+  {
+    "name": "cut-byte-mode",
+    "command": "cut",
+    "args": [
+      "-b",
+      "2-3"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "62630a",
+    "expected_stdout": "62630a",
+    "stderr": "",
+    "oracle": "cut -b 2-3",
+    "passed": true
+  },
+  {
+    "name": "grep-basic-regex-plus",
+    "command": "grep",
+    "args": [
+      "a+"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "6161610a612b0a",
+    "expected_stdout": "612b0a",
+    "stderr": "",
+    "oracle": "grep a+",
+    "passed": false
+  },
+  {
+    "name": "grep-basic-regex-group",
+    "command": "grep",
+    "args": [
+      "a\\(b\\)"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "612862290a",
+    "expected_stdout": "61620a",
+    "stderr": "",
+    "oracle": "grep a\\(b\\)",
+    "passed": false
+  },
+  {
+    "name": "grep-only-matching",
+    "command": "grep",
+    "args": [
+      "-o",
+      "a."
+    ],
+    "exit_code": 2,
+    "expected_exit": 0,
+    "stdout": "",
+    "expected_stdout": "61620a61630a",
+    "stderr": "grep: unknown short option: 'o'\n",
+    "oracle": "grep -o a.",
+    "passed": false
+  },
+  {
+    "name": "grep-no-match-status",
+    "command": "grep",
+    "args": [
+      "missing"
+    ],
+    "exit_code": 1,
+    "expected_exit": 1,
+    "stdout": "",
+    "expected_stdout": "",
+    "stderr": "",
+    "oracle": "grep missing",
+    "passed": true
+  },
+  {
+    "name": "head-negative-lines",
+    "command": "head",
+    "args": [
+      "-n",
+      "-1"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "610a620a",
+    "expected_stdout": "610a620a",
+    "stderr": "",
+    "oracle": "explicit byte contract",
+    "passed": true
+  },
+  {
+    "name": "tail-from-line",
+    "command": "tail",
+    "args": [
+      "-n",
+      "+2"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "620a630a",
+    "expected_stdout": "620a630a",
+    "stderr": "",
+    "oracle": "tail -n +2",
+    "passed": true
+  },
+  {
+    "name": "jq-empty-status",
+    "command": "jq",
+    "args": [
+      "-e",
+      "empty"
+    ],
+    "exit_code": 4,
+    "expected_exit": 4,
+    "stdout": "",
+    "expected_stdout": "",
+    "stderr": "",
+    "oracle": "jq -e empty",
+    "passed": true
+  },
+  {
+    "name": "printf-repeat",
+    "command": "printf",
+    "args": [
+      "%s=%d\n",
+      "a",
+      "1",
+      "b",
+      "2"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "613d310a623d320a",
+    "expected_stdout": "613d310a623d320a",
+    "stderr": "",
+    "oracle": "printf %s=%d\n a 1 b 2",
+    "passed": true
+  },
+  {
+    "name": "base64-no-wrap",
+    "command": "base64",
+    "args": [
+      "-w",
+      "0"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "614756736247383d0a",
+    "expected_stdout": "614756736247383d",
+    "stderr": "",
+    "oracle": "explicit byte contract",
+    "passed": false
+  },
+  {
+    "name": "tr-class-squeeze",
+    "command": "tr",
+    "args": [
+      "-s",
+      "[:space:]",
+      " "
+    ],
+    "exit_code": 0,
+    "expected_exit": 0,
+    "stdout": "61206220",
+    "expected_stdout": "61206220",
+    "stderr": "",
+    "oracle": "tr -s [:space:]  ",
+    "passed": true
+  }
+]

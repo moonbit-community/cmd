@@ -451,18 +451,10 @@ async fn check_mutation_policy(root : String, failures : Array[String]) -> Unit 
     root,
     "read-workspace.json",
     "cp",
-    [fixture_rel + "/source", fixture_rel + "/denied-copy"],
-    None,
-    failures,
-  )
-  expect_denied(
-    root,
-    "read-workspace.json",
-    "cp",
     [
-      "--backup=numbered",
+      "--no-preserve=mode",
       fixture_rel + "/source",
-      fixture_rel + "/backup-target",
+      fixture_rel + "/denied-copy",
     ],
     None,
     failures,
@@ -556,6 +548,7 @@ async fn check_mutation_policy(root : String, failures : Array[String]) -> Unit 
     failures,
   )
   let cp = moon_run(root, policy, "cp", [
+    "--no-preserve=mode",
     fixture_rel + "/source",
     fixture_rel + "/allowed-copy",
   ]) catch {
@@ -566,6 +559,7 @@ async fn check_mutation_policy(root : String, failures : Array[String]) -> Unit 
   }
   record(cp.status == 0, "cp: write policy rejected mutation", failures)
   let cp_backup = moon_run(root, policy, "cp", [
+    "--no-preserve=mode",
     "--backup=numbered",
     fixture_rel + "/source",
     fixture_rel + "/backup-target",
@@ -576,13 +570,16 @@ async fn check_mutation_policy(root : String, failures : Array[String]) -> Unit 
     }
   }
   record(
-    cp_backup.status == 0,
-    "cp backup: write policy rejected mutation",
+    cp_backup.status != 0 &&
+    @testkit.contains_bytes(cp_backup.stderr, "identity"),
+    "cp backup: missing implementation must be distinguished from authorization",
     failures,
   )
   record(
-    @fs.exists(root_path(fixture, "backup-target.~1~")),
-    "cp backup: numbered backup missing",
+    !@fs.exists(root_path(fixture, "backup-target.~1~")) &&
+    @fs.read_file(root_path(fixture, "backup-target")).binary() ==
+    b"old-target\n",
+    "cp backup: unsupported overwrite must preserve target and avoid backup mutation",
     failures,
   )
   let chmod = moon_run(root, policy, "chmod", ["a=rwx", fixture_rel + "/source"]) catch {
@@ -802,9 +799,14 @@ async fn check_process_and_network_policy(
     root,
     "read-workspace.json",
     "sh",
-    ["-c", "printf denied"],
+    ["-c", "printenv CMD_PROCESS_DENIAL"],
     None,
     failures,
+  )
+  // printf is now interpreted locally and needs no process permission.
+  // Exercise an actual external command for the process-denial assertion.
+  @fs.write_file(
+    makefile, b".PHONY: all\nall:\n\t@printenv CMD_PROCESS_DENIAL\n",
   )
   expect_denied(
     root,
@@ -814,6 +816,7 @@ async fn check_process_and_network_policy(
     None,
     failures,
   )
+  @fs.write_file(makefile, b".PHONY: all\nall:\n\t@printf policy-make-ok\n")
   let env = moon_run(root, "process-echo.json", "env", [
     "-i", "echo", "process-policy-ok",
   ]) catch {

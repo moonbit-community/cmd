@@ -1,0 +1,78 @@
+Warning: [0029]
+   ╭─[ /Users/winter/Documents/Moonbit/cmd/commands/grep/moon.pkg:5:3 ]
+   │
+ 5 │   "moonbitlang/async/io",
+   │   ───────────┬──────────  
+   │              ╰──────────── Warning (unused_package): Unused package 'moonbitlang/async/io'
+───╯
+Warning: [0001]
+     ╭─[ /Users/winter/Documents/Moonbit/cmd/commands/jq/main_native.mbt:267:4 ]
+     │
+ 267 │ fn raw_values(input : String) -> Array[Json] {
+     │    ─────┬────  
+     │         ╰────── Warning (unused_value): Unused function 'raw_values'
+─────╯
+Warning: [0001]
+     ╭─[ /Users/winter/Documents/Moonbit/cmd/commands/jq/main_native.mbt:330:4 ]
+     │
+ 330 │ fn status_for_results(values : Array[Json]) -> Int {
+     │    ─────────┬────────  
+     │             ╰────────── Warning (unused_value): Unused function 'status_for_results'
+─────╯
+Warning: [0029]
+   ╭─[ /Users/winter/Documents/Moonbit/cmd/commands/jqlog/moon.pkg:4:3 ]
+   │
+ 4 │   "moonbitlang/async/io",
+   │   ───────────┬──────────  
+   │              ╰──────────── Warning (unused_package): Unused package 'moonbitlang/async/io'
+───╯
+Warning: [0029]
+   ╭─[ /Users/winter/Documents/Moonbit/cmd/commands/jqlog/moon.pkg:7:3 ]
+   │
+ 7 │   "moonbitlang/core/json",
+   │   ───────────┬───────────  
+   │              ╰───────────── Warning (unused_package): Unused package 'moonbitlang/core/json'
+───╯
+Warning: [0029]
+   ╭─[ /Users/winter/Documents/Moonbit/cmd/commands/paste/moon.pkg:6:3 ]
+   │
+ 6 │   "moonbitlang/async/io",
+   │   ───────────┬──────────  
+   │              ╰──────────── Warning (unused_package): Unused package 'moonbitlang/async/io'
+───╯
+Warning: [0029]
+   ╭─[ /Users/winter/Documents/Moonbit/cmd/commands/seq/moon.pkg:4:3 ]
+   │
+ 4 │   "moonbitlang/core/bigint",
+   │   ────────────┬────────────  
+   │               ╰────────────── Warning (unused_package): Unused package 'moonbitlang/core/bigint'
+───╯
+Warning: [0029]
+   ╭─[ /Users/winter/Documents/Moonbit/cmd/commands/tail/moon.pkg:7:3 ]
+   │
+ 7 │   "moonbitlang/core/double",
+   │   ────────────┬────────────  
+   │               ╰────────────── Warning (unused_package): Unused package 'moonbitlang/core/double'
+───╯
+Warning: [0029]
+   ╭─[ /Users/winter/Documents/Moonbit/cmd/commands/tee/moon.pkg:6:3 ]
+   │
+ 6 │   "moonbitlang/async/io",
+   │   ───────────┬──────────  
+   │              ╰──────────── Warning (unused_package): Unused package 'moonbitlang/async/io'
+───╯
+Warning: [0029]
+   ╭─[ /Users/winter/Documents/Moonbit/cmd/commands/xargs/moon.pkg:6:3 ]
+   │
+ 6 │   "moonbitlang/core/bytes",
+   │   ────────────┬───────────  
+   │               ╰───────────── Warning (unused_package): Unused package 'moonbitlang/core/bytes'
+───╯
+Warning: [0029]
+   ╭─[ /Users/winter/Documents/Moonbit/cmd/core/cli/moon.pkg:2:3 ]
+   │
+ 2 │   "moonbitlang/core/double",
+   │   ────────────┬────────────  
+   │               ╰────────────── Warning (unused_package): Unused package 'moonbitlang/core/double'
+───╯
+Finished. moon: ran 41 tasks, now up to date (11 warnings, 0 errors)

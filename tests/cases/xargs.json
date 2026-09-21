@@ -1,0 +1,95 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase5-xargs-replace",
+      "command": "xargs",
+      "args": [
+        "-I{}",
+        "printf",
+        "<%s>\\n",
+        "{}"
+      ],
+      "stdin_text": "first line\nsecond line\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase5-xargs-child-status",
+      "command": "xargs",
+      "args": [
+        "false"
+      ],
+      "stdin_text": "value\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 123,
+      "normalizations": []
+    },
+    {
+      "id": "phase4-xargs-lines-eof",
+      "command": "xargs",
+      "args": [
+        "-L",
+        "1",
+        "-E",
+        "STOP",
+        "printf",
+        "<%s>\\n"
+      ],
+      "stdin_text": "one two\nSTOP\nthree\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-text-line-110",
+      "command": "xargs",
+      "args": [
+        "--show-limits"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "max-args-bytes: 65536\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-catalog-line-314",
+      "command": "xargs",
+      "args": [
+        "-r",
+        "echo"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-stdin-xargs",
+      "command": "xargs",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "",
+      "expected_stdout_text": "\n",
+      "expected_stderr_text": ""
+    }
+  ]
+}

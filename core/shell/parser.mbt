@@ -35,7 +35,13 @@ fn Parser::skip_sequences(self : Parser) -> Unit {
 ///|
 fn Parser::take_word(self : Parser) -> Word raise ShellError {
   guard self.peek() is Some(WordToken(word)) else {
-    raise ShellError("expected a word")
+    raise ShellError(
+      if self.peek() is None {
+        "incomplete: expected a word"
+      } else {
+        "expected a word"
+      },
+    )
   }
   self.pos += 1
   word
@@ -47,7 +53,13 @@ fn Parser::take_reserved(
   value : String,
 ) -> Unit raise ShellError {
   if self.peek_word() != Some(value) {
-    raise ShellError("expected '\\{value}'")
+    raise ShellError(
+      if self.peek() is None {
+        "incomplete: expected '\{value}'"
+      } else {
+        "expected '\{value}'"
+      },
+    )
   }
   self.pos += 1
 }
@@ -97,7 +109,13 @@ fn Parser::parse_command(self : Parser) -> Command raise ShellError {
     }
   }
   if words.is_empty() {
-    raise ShellError("expected a command")
+    raise ShellError(
+      if self.peek() is None {
+        "incomplete: expected a command"
+      } else {
+        "expected a command"
+      },
+    )
   }
   { words, stdin, stdin_data, stdout, stderr, }
 }
@@ -107,6 +125,7 @@ fn Parser::parse_pipeline(self : Parser) -> Pipeline raise ShellError {
   let commands : Array[Command] = [self.parse_command()]
   while self.peek() == Some(Pipe) {
     self.pos += 1
+    self.skip_sequences()
     commands.push(self.parse_command())
   }
   { commands, }
@@ -134,10 +153,18 @@ fn Parser::parse_until(
       Some(AndIf) => {
         connector = OnSuccess
         self.pos += 1
+        self.skip_sequences()
+        if self.peek() is None {
+          raise ShellError("incomplete: expected a command after &&")
+        }
       }
       Some(OrIf) => {
         connector = OnFailure
         self.pos += 1
+        self.skip_sequences()
+        if self.peek() is None {
+          raise ShellError("incomplete: expected a command after ||")
+        }
       }
       Some(Sequence) => {
         connector = Always
@@ -204,12 +231,17 @@ fn Parser::parse_for(self : Parser) -> Statement raise ShellError {
     Some(value) => value
     _ => raise ShellError("for variable must be a name")
   }
+  if !valid_name(name) {
+    raise ShellError("for variable must be a name")
+  }
   let words : Array[Word] = []
   if self.peek_word() == Some("in") {
     self.pos += 1
     while self.peek() is Some(WordToken(_)) {
       words.push(self.take_word())
     }
+  } else {
+    words.push({ parts: [AllArgs(true, false)], preserve_empty: false, })
   }
   self.skip_sequences()
   self.take_reserved("do")
@@ -280,5 +312,9 @@ fn Parser::parse_statement(self : Parser) -> Statement raise ShellError {
 ///|
 fn parse(script : String) -> Array[Job] raise ShellError {
   let parser : Parser = { tokens: lex(script), pos: 0, }
-  parser.parse_until([])
+  let jobs = parser.parse_until([])
+  if parser.pos != parser.tokens.length() {
+    raise ShellError("unexpected closing token")
+  }
+  jobs
 }

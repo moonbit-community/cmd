@@ -1,4 +1,17 @@
 ///|
+using @testkit {
+  safe_relative_path,
+  snapshot,
+  snapshots_equal,
+  normalize_text,
+  controlled_environment,
+  oracle_request_name,
+}
+
+///|
+type OracleCase = @testkit.Case
+
+///|
 struct CommandRow {
   name : String
   baseline : String
@@ -9,34 +22,6 @@ struct CommandRow {
 } derive(FromJson, Debug)
 
 ///|
-struct FixtureFile {
-  path : String
-  content_hex : String
-  kind : String?
-  target : String?
-} derive(FromJson, Debug)
-
-///|
-struct Normalization {
-  field : String
-  rule : String
-  comment : String
-} derive(FromJson, Debug)
-
-///|
-struct OracleCase {
-  id : String
-  command : String
-  args : Array[String]
-  stdin_hex : String
-  files : Array[FixtureFile]
-  delay_ms : Int?
-  environment : Map[String, String]
-  expected_status : Int
-  normalizations : Array[Normalization]
-} derive(FromJson, Debug)
-
-///|
 struct Manifest {
   schema : Int
   commands : Array[CommandRow]
@@ -44,65 +29,9 @@ struct Manifest {
 } derive(FromJson, Debug)
 
 ///|
-struct SnapshotEntry {
-  path : String
-  kind : String
-  content : Bytes
-} derive(Debug)
-
-///|
-
-///|
-fn usage() -> String {
-  "Usage: cmd-test-runner --manifest FILE [--native-root DIR] [--wasm-root DIR] [--oracle-image IMAGE] [--suite compat|policy|oracle|all] [--gnu-diff] [--stress] [--validate-only]"
-}
-
-///|
-fn hex_nibble(char : Char) -> Int? {
-  match char {
-    '0'..='9' => Some(char.to_int() - '0'.to_int())
-    'a'..='f' => Some(char.to_int() - 'a'.to_int() + 10)
-    'A'..='F' => Some(char.to_int() - 'A'.to_int() + 10)
-    _ => None
-  }
-}
-
-///|
-fn decode_hex(value : String, label : String) -> Bytes raise Failure {
-  guard value.length() % 2 == 0 else {
-    fail("\{label}: hexadecimal byte string has odd length")
-  }
-  let output : Array[Byte] = []
-  for index = 0; index < value.length(); index = index + 2 {
-    guard value[index].to_char() is Some(high_char) &&
-      value[index + 1].to_char() is Some(low_char) &&
-      hex_nibble(high_char) is Some(high) &&
-      hex_nibble(low_char) is Some(low) else {
-      fail("\{label}: invalid hexadecimal byte at offset \{index}")
-    }
-    output.push(((high << 4) | low).to_byte())
-  }
-  Bytes::from_array(output)
-}
-
-///|
-fn safe_relative_path(value : String) -> Bool {
-  if value == "" || @path.Path(value).is_absolute() {
-    return false
-  }
-  let normalized = value.replace_all(old="\\", new="/")
-  for component in normalized.split("/") {
-    if component == "" || component == "." || component == ".." {
-      return false
-    }
-  }
-  true
-}
-
-///|
 fn validate_manifest(manifest : Manifest) -> Array[String] {
   let failures : Array[String] = []
-  if manifest.schema != 1 {
+  if manifest.schema != 1 && manifest.schema != 2 {
     failures.push("manifest: expected schema 1, got \{manifest.schema}")
   }
   let catalog = @cli.command_catalog()
@@ -135,33 +64,67 @@ fn validate_manifest(manifest : Manifest) -> Array[String] {
   }
   let case_ids : Map[String, Bool] = Map([])
   for fixture in manifest.cases {
+    if fixture.expected_rejection == Some("") {
+      failures.push("\{fixture.id}: rejection reason must be nonempty")
+    }
     if fixture.id == "" || case_ids.contains(fixture.id) {
       failures.push(
         "manifest: case IDs must be nonempty and unique: '\{fixture.id}'",
       )
     }
     case_ids[fixture.id] = true
+    if !safe_relative_path(fixture.id) {
+      failures.push("unsafe case ID: " + fixture.id)
+    }
+    failures.append(@testkit.contract_errors(fixture))
+    for dimension in fixture.observe.unwrap_or([]) {
+      if ![
+          "content", "type", "mode", "identity", "symlink-target", "atime", "mtime",
+          "ctime",
+        ].contains(dimension) {
+        failures.push("unknown observation: " + dimension)
+      }
+      if ["atime", "ctime"].contains(dimension) &&
+        fixture.expected_rejection is None {
+        failures.push(
+          "time observations require a same-fixture boundary or scenario",
+        )
+      }
+      if dimension == "mtime" &&
+        fixture.expected_rejection is None &&
+        fixture.files.any(file => file.mtime is None) {
+        failures.push(
+          "differential mtime requires fixed timestamps on every input",
+        )
+      }
+    }
     if !rows.contains(fixture.command) {
       failures.push("\{fixture.id}: unknown command '\{fixture.command}'")
     }
-    ignore(decode_hex(fixture.stdin_hex, fixture.id + " stdin")) catch {
+    ignore(fixture.input()) catch {
       err => failures.push("\{err}")
     }
     for file in fixture.files {
       if !safe_relative_path(file.path) {
         failures.push("\{fixture.id}: unsafe fixture path '\{file.path}'")
       }
-      ignore(decode_hex(file.content_hex, fixture.id + " file " + file.path)) catch {
+      ignore(
+        @testkit.input_bytes(
+          file.content_hex,
+          file.content_text,
+          fixture.id + " file " + file.path,
+        ),
+      ) catch {
         err => failures.push("\{err}")
       }
       match file.kind {
-        Some("file") | None =>
+        Some("file") | Some("directory") | None =>
           if file.target is Some(_) {
             failures.push(
               "\{fixture.id}: regular fixture cannot have a symlink target",
             )
           }
-        Some("symlink") => {
+        Some("symlink") | Some("hardlink") => {
           guard file.target is Some(target) && target != "" else {
             failures.push("\{fixture.id}: symlink fixture needs a target")
             continue
@@ -206,121 +169,6 @@ async fn ensure_directory(path : String) -> Unit {
 }
 
 ///|
-fn expand_fixture_content(content : Bytes, http_base? : String) -> Bytes {
-  guard http_base is Some(base) else { return content }
-  let text = @utf8.decode(content) catch { _ => return content }
-  if !text.contains("${HTTP_BASE}") {
-    return content
-  }
-  @utf8.encode(text.replace_all(old="${HTTP_BASE}", new=base))
-}
-
-///|
-async fn prepare_directory(
-  root : String,
-  fixture : OracleCase,
-  http_base? : String,
-) -> Unit {
-  for file in fixture.files {
-    let destination = @path.Path(root).join(Path(file.path)).to_string()
-    let parent = @path.Path(destination).dirname().to_string()
-    ensure_directory(parent)
-    match file.kind {
-      Some("symlink") => {
-        let target = file.target.unwrap()
-        @fs.symlink(destination, target~)
-      }
-      _ => {
-        let content = expand_fixture_content(
-          decode_hex(file.content_hex, fixture.id + " file " + file.path),
-          http_base?,
-        )
-        @fs.write_file(destination, content)
-      }
-    }
-    if fixture.delay_ms is Some(delay) && delay > 0 {
-      @async.sleep(delay)
-    }
-  }
-}
-
-///|
-fn kind_name(kind : @fs.FileKind) -> String {
-  match kind {
-    Regular => "file"
-    Directory => "directory"
-    SymLink => "symlink"
-    BlockDevice => "block-device"
-    CharDevice => "character-device"
-    Pipe => "pipe"
-    Socket => "socket"
-    Unknown => "unknown"
-  }
-}
-
-///|
-async fn snapshot_into(
-  root : String,
-  relative : String,
-  entries : Array[SnapshotEntry],
-) -> Unit {
-  let directory = if relative == "" {
-    root
-  } else {
-    @path.Path(root).join(Path(relative)).to_string()
-  }
-  let names = @fs.readdir(
-    directory,
-    include_hidden=true,
-    include_special=false,
-    sort=true,
-  )
-  for name in names {
-    let child_relative = if relative == "" {
-      name
-    } else {
-      relative + "/" + name
-    }
-    let child = @path.Path(root).join(Path(child_relative)).to_string()
-    let kind = @fs.kind(child, follow_symlink=false)
-    let content = if kind == Regular {
-      @fs.read_file(child).binary()
-    } else {
-      b""
-    }
-    entries.push({ path: child_relative, kind: kind_name(kind), content, })
-    if kind == Directory {
-      snapshot_into(root, child_relative, entries)
-    }
-  }
-}
-
-///|
-async fn snapshot(root : String) -> Array[SnapshotEntry] {
-  let entries : Array[SnapshotEntry] = []
-  snapshot_into(root, "", entries)
-  entries
-}
-
-///|
-fn snapshots_equal(
-  left : ArrayView[SnapshotEntry],
-  right : ArrayView[SnapshotEntry],
-) -> Bool {
-  if left.length() != right.length() {
-    return false
-  }
-  for index = 0; index < left.length(); index = index + 1 {
-    if left[index].path != right[index].path ||
-      left[index].kind != right[index].kind ||
-      !@testkit.bytes_equal(left[index].content, right[index].content) {
-      return false
-    }
-  }
-  true
-}
-
-///|
 fn first_byte_difference(left : Bytes, right : Bytes) -> String {
   let shared = left.length().min(right.length())
   for index = 0; index < shared; index = index + 1 {
@@ -333,188 +181,6 @@ fn first_byte_difference(left : Bytes, right : Bytes) -> String {
   } else {
     "no byte difference"
   }
-}
-
-///|
-fn normalize_text(
-  data : Bytes,
-  field : String,
-  rules : ArrayView[Normalization],
-  temporary_root : String,
-) -> Bytes {
-  let mut applies = false
-  for rule in rules {
-    if rule.field == field {
-      applies = true
-    }
-  }
-  if !applies {
-    return data
-  }
-  let mut text = @utf8.decode(data) catch { _ => return data }
-  for rule in rules {
-    if rule.field == field {
-      match rule.rule {
-        "temporary-path" =>
-          text = text.replace_all(old=temporary_root, new="<TMP>")
-        "path-separator" => text = text.replace_all(old="\\", new="/")
-        "working-directory" => {
-          text = text.replace_all(old=temporary_root, new="<WORK>")
-          text = text.replace_all(old="/work", new="<WORK>")
-        }
-        _ => ()
-      }
-    }
-  }
-  @utf8.encode(text)
-}
-
-///|
-fn controlled_environment(extra : Map[String, String]) -> Map[String, String] {
-  let result : Map[String, String] = {
-    "LC_ALL": "C",
-    "LANG": "C",
-    "TZ": "UTC",
-    "PATH": "/usr/bin:/bin",
-  }
-  for name, value in extra {
-    result[name] = value
-  }
-  result
-}
-
-///|
-fn oracle_request_name(request : @http.Request) -> String {
-  match request.meth {
-    Get => "GET"
-    Head => "HEAD"
-    Post => "POST"
-    Put => "PUT"
-    Delete => "DELETE"
-    Connect => "CONNECT"
-    Options => "OPTIONS"
-    Trace => "TRACE"
-    Patch => "PATCH"
-  }
-}
-
-///|
-async fn run_http_fixture(server : @http.Server) -> Unit {
-  server.run_forever() <| ((request, body, connection) => {
-    match request.path {
-      "/fixed" | "/named.txt" => {
-        connection.send_response(200, "OK", extra_headers={
-          "Content-Length": "5",
-        })
-        if request.meth == @http.Head {
-          connection.end_response()
-        } else {
-          connection..write("hello").end_response()
-        }
-      }
-      "/second" => {
-        connection.send_response(200, "OK", extra_headers={
-          "Content-Length": "5",
-        })
-        connection..write("world").end_response()
-      }
-      "/redirect" =>
-        connection
-        ..send_response(302, "Found", extra_headers={
-          "Location": "/fixed",
-          "Content-Length": "0",
-        })
-        .end_response()
-      "/redirect-echo" =>
-        connection
-        ..send_response(307, "Temporary Redirect", extra_headers={
-          "Location": "/echo",
-          "Content-Length": "0",
-        })
-        .end_response()
-      "/redirect-explicit" =>
-        connection
-        ..send_response(302, "Found", extra_headers={
-          "Location": "/echo",
-          "Content-Length": "0",
-        })
-        .end_response()
-      "/echo" => {
-        let content = body.read_all().binary()
-        let prefix = oracle_request_name(request) + ":"
-        let response = @utf8.encode(prefix) + content
-        connection.send_response(200, "OK", extra_headers={
-          "Content-Length": response.length().to_string(),
-        })
-        connection..write(response).end_response()
-      }
-      "/inspect" => {
-        let content = body.read_all().binary()
-        let marker = request.headers.get("X-Marker").unwrap_or("")
-        let prefix = oracle_request_name(request) + ":" + marker + ":"
-        let response = @utf8.encode(prefix) + content
-        connection.send_response(200, "OK", extra_headers={
-          "Content-Length": response.length().to_string(),
-        })
-        connection..write(response).end_response()
-      }
-      "/range" => {
-        let ranged = request.headers.get("Range") == Some("bytes=3-")
-        let content = if ranged { "lo" } else { "hello" }
-        if ranged {
-          connection.send_response(206, "OK", extra_headers={
-            "Content-Length": content.length().to_string(),
-            "Content-Range": "bytes 3-4/5",
-          })
-        } else {
-          connection.send_response(200, "OK", extra_headers={
-            "Content-Length": content.length().to_string(),
-          })
-        }
-        connection..write(content).end_response()
-      }
-      "/conditional" =>
-        if request.headers.get("If-Modified-Since") is Some(_) {
-          connection
-          ..send_response(304, "Not Modified", extra_headers={
-            "Content-Length": "0",
-          })
-          .end_response()
-        } else {
-          connection.send_response(200, "OK", extra_headers={
-            "Content-Length": "5",
-          })
-          connection..write("fresh").end_response()
-        }
-      "/named-header" => {
-        connection.send_response(200, "OK", extra_headers={
-          "Content-Length": "5",
-          "Content-Disposition": "attachment; filename=fixture.txt",
-        })
-        connection..write("hello").end_response()
-      }
-      "/missing" =>
-        connection
-        ..send_response(404, "Not Found", extra_headers={
-          "Content-Length": "0",
-        })
-        .end_response()
-      _ =>
-        connection
-        ..send_response(400, "Bad Request", extra_headers={
-          "Content-Length": "0",
-        })
-        .end_response()
-    }
-  })
-}
-
-///|
-async fn run_external_http_fixture() -> Int {
-  let server = @http.Server(@socket.Addr::parse("0.0.0.0:0"))
-  @stdio.stdout.write(server.addr.port().to_string() + "\n")
-  run_http_fixture(server)
-  0
 }
 
 ///|
@@ -537,29 +203,6 @@ async fn run_external_https_fixture(args : ArrayView[String]) -> Int {
     stderr=output,
     no_console_window=true,
   )
-}
-
-///|
-async fn spawn_http_fixture_process(
-  group : @async.TaskGroup[Unit],
-) -> (@process.Process, @process.ReadFromProcess, String) {
-  let (port_reader, port_writer) = @process.read_from_process()
-  let process = @process.spawn(
-    group,
-    @env.args()[0],
-    ["--http-fixture-server"],
-    stdout=port_writer,
-    no_console_window=true,
-    no_wait=true,
-  )
-  let line = port_reader.read_until("\n")
-  guard line is Some(line) else {
-    fail("oracle-runner: HTTP fixture process closed before reporting a port")
-  }
-  let port = @string.parse_int(line.trim().to_owned()) catch {
-    err => fail("oracle-runner: invalid HTTP fixture port: \{err}")
-  }
-  (process, port_reader, "http://127.0.0.1:\{port}")
 }
 
 ///|
@@ -627,37 +270,76 @@ async fn run_case(
   oracle_image : String,
   http_base : String,
   https_base : String,
+  wasm : Bool,
+  report_dir : String,
 ) -> Array[String] {
   let failures : Array[String] = []
-  let root = @fs.tmpdir(prefix="mooncmd-oracle-\{fixture.id}-")
-  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  guard @testkit.safe_relative_path(fixture.id) else { fail("unsafe case ID") }
+  let root = report_dir + "/" + fixture.id
+  if @fs.exists(root) {
+    fail("evidence exists: " + root)
+  }
+  @fs.mkdir(root)
   let candidate_root = @path.Path(root).join(Path("candidate")).to_string()
   let oracle_root = @path.Path(root).join(Path("oracle")).to_string()
   ensure_directory(candidate_root)
   ensure_directory(oracle_root)
-  prepare_directory(candidate_root, fixture, http_base~)
-  prepare_directory(oracle_root, fixture, http_base~)
-  let stdin = decode_hex(fixture.stdin_hex, fixture.id + " stdin")
+  @testkit.prepare_fixture(candidate_root, fixture, http_base~)
+  @testkit.prepare_fixture(oracle_root, fixture, http_base~)
+  let stdin = fixture.input(root=candidate_root, http_base~)
   let environment = controlled_environment(fixture.environment)
-  let args = expand_fixture_args(fixture.args, http_base, https_base)
+  let args = @testkit.expand_args(
+    expand_fixture_args(fixture.args, http_base, https_base),
+    candidate_root,
+  )
   let networked = fixture.args.any(arg => {
       arg.contains("${HTTP_BASE}") || arg.contains("${HTTPS_BASE}")
     }) ||
     fixture.files.any(file => {
-      file.content_hex.to_lower().contains("247b485454505f424153457d")
+      file.content_hex
+      .unwrap_or("")
+      .to_lower()
+      .contains("247b485454505f424153457d") ||
+      file.content_text.unwrap_or("").contains("${HTTP_BASE}")
     })
-  let candidate = @testkit.run(
-    @testkit.executable_path(bin_root, fixture.command),
-    args,
+  let candidate_before = if fixture.expected_rejection is Some(_) {
+    snapshot(
+      candidate_root,
+      observe=fixture.observe.unwrap_or([]),
+      baseline=true,
+    )
+  } else {
+    []
+  }
+  let candidate_run = @testkit.run_with_deadline(
+    if wasm {
+      "moonrun"
+    } else {
+      @testkit.executable_path(bin_root, fixture.command)
+    },
+    if wasm {
+      [@testkit.wasm_path(bin_root, fixture.command), "--", ..args]
+    } else {
+      args
+    },
+    fixture.timeout_ms.unwrap_or(15000),
     stdin~,
-    cwd=candidate_root,
+    cwd=fixture.working_directory(candidate_root),
     extra_env=environment,
-    inherit_env=false,
   ) catch {
     err => {
       failures.push("\{fixture.id}: candidate failed to start: \{err}")
       return failures
     }
+  }
+  let candidate = candidate_run.output
+  @fs.write_file(root + "/candidate.stdout.bin", candidate.stdout)
+  @fs.write_file(root + "/candidate.stderr.bin", candidate.stderr)
+  if candidate_run.cleanup_error is Some(error) {
+    return ["infrastructure: cleanup: " + error]
+  }
+  if candidate_run.timed_out {
+    return ["candidate-timeout: partial streams retained"]
   }
   let docker_args = [
     "run",
@@ -675,7 +357,7 @@ async fn run_case(
     "-v",
     oracle_root + ":/work:rw",
     "-w",
-    "/work",
+    fixture.working_directory("/work"),
   ]
   for name, value in environment {
     if name != "PATH" {
@@ -687,12 +369,61 @@ async fn run_case(
   docker_args.push("PATH=/oracle/bin")
   docker_args.push(oracle_image)
   docker_args.push(fixture.command)
-  docker_args.append(args)
-  let oracle = @testkit.run("docker", docker_args, stdin~, inherit_env=true) catch {
+  docker_args.append(
+    @testkit.expand_args(
+      expand_fixture_args(fixture.args, http_base, https_base),
+      "/work",
+    ),
+  )
+  let oracle_run = @testkit.run_with_deadline(
+    "docker",
+    docker_args,
+    fixture.timeout_ms.unwrap_or(120000),
+    stdin=fixture.input(root="/work", http_base~),
+    inherit_env=true,
+  ) catch {
     err => {
       failures.push("\{fixture.id}: oracle failed to start: \{err}")
       return failures
     }
+  }
+  let oracle = oracle_run.output
+  @fs.write_file(root + "/oracle.stdout.bin", oracle.stdout)
+  @fs.write_file(root + "/oracle.stderr.bin", oracle.stderr)
+  if oracle_run.cleanup_error is Some(error) {
+    return ["infrastructure: cleanup: " + error]
+  }
+  if oracle_run.timed_out {
+    return ["infrastructure: oracle-timeout: partial streams retained"]
+  }
+  if [125, 126, 127].contains(oracle.status) {
+    return [
+      "infrastructure: oracle unavailable, Docker status \{oracle.status}",
+    ]
+  }
+  if fixture.expected_rejection is Some(reason) {
+    if oracle.status != fixture.expected_status {
+      failures.push("\{fixture.id}: upstream boundary oracle status mismatch")
+    }
+    if candidate.status == 0 ||
+      !@testkit.contains_bytes(candidate.stderr, reason) {
+      failures.push(
+        "\{fixture.id}: expected explicit rejection containing '\{reason}'",
+      )
+    }
+    if candidate.stdout != b"" {
+      failures.push("rejected operation wrote stdout")
+    }
+    if !snapshots_equal(
+        candidate_before,
+        snapshot(candidate_root, observe=fixture.observe.unwrap_or([])),
+      ) {
+      failures.push("\{fixture.id}: unsupported operation changed its fixture")
+    }
+    if failures.is_empty() {
+      @fs.rmdir(root, recursive=true)
+    }
+    return failures
   }
   if candidate.status != fixture.expected_status {
     failures.push(
@@ -734,14 +465,26 @@ async fn run_case(
     fixture.normalizations,
     oracle_root,
   )
-  if !@testkit.bytes_equal(candidate_stderr, oracle_stderr) {
+  let stderr_matches = match fixture.expected_stderr_contains {
+    Some(reason) if fixture.diagnostic_reason is Some(_) =>
+      @testkit.contains_bytes(candidate_stderr, reason) &&
+      @testkit.contains_bytes(oracle_stderr, reason)
+    _ => @testkit.bytes_equal(candidate_stderr, oracle_stderr)
+  }
+  if !stderr_matches {
     failures.push(
       "\{fixture.id}: stderr mismatch; " +
       first_byte_difference(candidate_stderr, oracle_stderr),
     )
   }
-  let candidate_files = snapshot(candidate_root)
-  let oracle_files = snapshot(oracle_root)
+  let candidate_files = snapshot(
+    candidate_root,
+    observe=fixture.observe.unwrap_or([]),
+  )
+  let oracle_files = snapshot(
+    oracle_root,
+    observe=fixture.observe.unwrap_or([]),
+  )
   if !snapshots_equal(candidate_files, oracle_files) {
     failures.push(
       "\{fixture.id}: filesystem mismatch\n  candidate=" +
@@ -750,216 +493,8 @@ async fn run_case(
       repr(oracle_files),
     )
   }
+  if failures.is_empty() {
+    @fs.rmdir(root, recursive=true)
+  }
   failures
-}
-
-///|
-async fn realpath_or_exit(path : String, label : String) -> String {
-  @fs.realpath(path) catch {
-    err => {
-      @stdio.stderr.write("cmd-test-runner: invalid " + label + ": \{err}\n")
-      @sys.exit(2)
-      ""
-    }
-  }
-}
-
-///|
-async fn require_artifacts(
-  manifest : Manifest,
-  native_root : String?,
-  wasm_root : String?,
-  suite : String,
-  failures : Array[String],
-) -> Unit {
-  if suite == "compat" || suite == "oracle" || suite == "all" {
-    match native_root {
-      Some(root) =>
-        for row in manifest.commands {
-          let path = @testkit.executable_path(root, row.name)
-          if !@fs.exists(path) {
-            failures.push("missing native artifact: " + path)
-          }
-        }
-      None => failures.push("compat/oracle suite requires --native-root")
-    }
-  }
-  if suite == "policy" || suite == "all" {
-    match wasm_root {
-      Some(root) =>
-        for row in manifest.commands {
-          let path = @testkit.wasm_path(root, row.name)
-          if !@fs.exists(path) {
-            failures.push("missing Wasm artifact: " + path)
-          }
-        }
-      None => failures.push("policy suite requires --wasm-root")
-    }
-  }
-}
-
-///|
-async fn main {
-  let args = @env.args()[1:]
-  if args.length() == 1 && args[0] == "--http-fixture-server" {
-    let status = run_external_http_fixture()
-    if status != 0 {
-      @sys.exit(status)
-    }
-    return
-  }
-  if args.length() == 4 && args[0] == "--https-server" {
-    let status = run_external_https_fixture(args)
-    if status != 0 {
-      @sys.exit(status)
-    }
-    return
-  }
-  let mut manifest_path : String? = None
-  let mut native_root : String? = None
-  let mut wasm_root : String? = None
-  let mut oracle_image = "mooncmd-oracle:phase0"
-  let mut suite = "all"
-  let mut gnu_diff = false
-  let mut stress = false
-  let mut validate_only = false
-  let mut index = 0
-  while index < args.length() {
-    match args[index] {
-      "--manifest" if index + 1 < args.length() => {
-        index += 1
-        manifest_path = Some(args[index])
-      }
-      "--native-root" if index + 1 < args.length() => {
-        index += 1
-        native_root = Some(args[index])
-      }
-      "--wasm-root" if index + 1 < args.length() => {
-        index += 1
-        wasm_root = Some(args[index])
-      }
-      "--oracle-image" if index + 1 < args.length() => {
-        index += 1
-        oracle_image = args[index]
-      }
-      "--suite" if index + 1 < args.length() => {
-        index += 1
-        suite = args[index]
-      }
-      "--gnu-diff" => gnu_diff = true
-      "--stress" => stress = true
-      "--validate-only" => validate_only = true
-      _ => {
-        @stdio.stderr.write(usage() + "\n")
-        @sys.exit(2)
-        return
-      }
-    }
-    index += 1
-  }
-  guard manifest_path is Some(manifest_path) else {
-    @stdio.stderr.write(usage() + "\n")
-    @sys.exit(2)
-    return
-  }
-  if !(suite == "compat" ||
-    suite == "policy" ||
-    suite == "oracle" ||
-    suite == "all") {
-    @stdio.stderr.write("cmd-test-runner: invalid suite '\{suite}'\n")
-    @sys.exit(2)
-    return
-  }
-  let manifest : Manifest = @json.from_json(
-    @json.parse(@fs.read_file(manifest_path).text()),
-  ) catch {
-    err => {
-      @stdio.stderr.write("cmd-test-runner: cannot read manifest: \{err}\n")
-      @sys.exit(2)
-      return
-    }
-  }
-  let failures = validate_manifest(manifest)
-  if !failures.is_empty() {
-    for failure in failures {
-      @stdio.stderr.write("FAIL: " + failure + "\n")
-    }
-    @sys.exit(1)
-    return
-  }
-  if validate_only {
-    @stdio.stdout.write(
-      "Manifest valid: \{manifest.commands.length()} commands, \{manifest.cases.length()} semantic cases.\n",
-    )
-    return
-  }
-  let native_root = match native_root {
-    Some(root) => Some(realpath_or_exit(root, "native root"))
-    None => None
-  }
-  let wasm_root = match wasm_root {
-    Some(root) => Some(realpath_or_exit(root, "Wasm root"))
-    None => None
-  }
-  let project_root = @fs.realpath(".") catch {
-    err => {
-      @stdio.stderr.write("cmd-test-runner: invalid project root: \{err}\n")
-      @sys.exit(2)
-      return
-    }
-  }
-  require_artifacts(manifest, native_root, wasm_root, suite, failures)
-  if !failures.is_empty() {
-    for failure in failures {
-      @stdio.stderr.write("FAIL: " + failure + "\n")
-    }
-    @sys.exit(1)
-    return
-  }
-  if suite == "compat" || suite == "all" {
-    run_compat_suite(native_root.unwrap_or(""), gnu_diff, stress, failures)
-  }
-  if suite == "policy" || suite == "all" {
-    run_policy_suite(project_root, wasm_root.unwrap_or(""), failures)
-  }
-  if suite == "oracle" || suite == "all" {
-    let fixture_root = @fs.tmpdir(prefix="mooncmd-runner-fixtures-")
-    defer (@fs.rmdir(fixture_root, recursive=true) catch { _ => () })
-    @async.with_task_group <| group => {
-      let (process, reader, http_base) = spawn_http_fixture_process(group)
-      let (tls_process, https_base) = spawn_https_fixture_process(
-        group, fixture_root,
-      )
-      group.add_defer(() => {
-        reader.close()
-        process.cancel()
-        ignore(process.wait()) catch {
-          _ => ()
-        }
-        tls_process.cancel()
-        ignore(tls_process.wait()) catch {
-          _ => ()
-        }
-      })
-      for fixture in manifest.cases {
-        failures.append(
-          run_case(
-            fixture,
-            native_root.unwrap_or(""),
-            oracle_image,
-            http_base,
-            https_base,
-          ),
-        )
-      }
-    }
-  }
-  if !failures.is_empty() {
-    for failure in failures {
-      @stdio.stderr.write("FAIL: " + failure + "\n")
-    }
-    @sys.exit(1)
-    return
-  }
-  @stdio.stdout.write("Test suites passed: \{suite}.\n")
 }

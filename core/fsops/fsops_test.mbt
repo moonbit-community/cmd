@@ -15,6 +15,16 @@ test "deletion path protection permits ordinary descendants" {
 }
 
 ///|
+test "rm operand protection follows command flags and final components" {
+  assert_true(protects_removal_operand("."))
+  assert_true(protects_removal_operand("dir/../"))
+  assert_true(protects_removal_operand("/"))
+  assert_false(protects_removal_operand("/", preserve_root=false))
+  assert_true(protects_removal_operand("dir/.", preserve_root=false))
+  assert_false(protects_removal_operand("/named/working/directory"))
+}
+
+///|
 test "timestamp comparison keeps nanosecond ordering" {
   let earlier : FileTimestamp = { seconds: 10L, nanoseconds: 999, }
   let later : FileTimestamp = { seconds: 11L, nanoseconds: 0, }
@@ -62,6 +72,72 @@ async test "recursive copy rejects a destination inside its source" {
   } noraise {
     _ => fail("expected nested-destination error")
   }
+}
+
+///|
+async test "copy rejects unsafe overwrite without changing either file" {
+  let root = @fs.tmpdir(prefix="mooncmd-copy-overwrite")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let source = join(root, "source")
+  let destination = join(root, "destination")
+  @fs.write_file(source, b"source bytes")
+  @fs.write_file(destination, b"destination bytes")
+  try
+    copy_path_with_links(
+      source,
+      destination,
+      false,
+      true,
+      FollowCommandLineLinks,
+      preserve_permissions=false,
+    )
+  catch {
+    _ => {
+      assert_eq(@fs.read_file(source).binary(), b"source bytes")
+      assert_eq(@fs.read_file(destination).binary(), b"destination bytes")
+    }
+  } noraise {
+    _ => fail("unsafe overwrite succeeded")
+  }
+  try
+    copy_path_with_links(
+      source,
+      source,
+      false,
+      true,
+      FollowCommandLineLinks,
+      preserve_permissions=false,
+    )
+  catch {
+    _ => assert_eq(@fs.read_file(source).binary(), b"source bytes")
+  } noraise {
+    _ => fail("same-file overwrite succeeded")
+  }
+}
+
+///|
+async test "copy supports explicit no-preserve mode only for new files" {
+  let root = @fs.tmpdir(prefix="mooncmd-copy-new")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let source = join(root, "source")
+  let destination = join(root, "destination")
+  @fs.write_file(source, b"copy bytes")
+  try copy_path(source, destination, false, true) catch {
+    _ => assert_false(@fs.exists(destination))
+  } noraise {
+    _ => fail("default copy cannot preserve source mode")
+  }
+  ignore(
+    copy_path_with_links(
+      source,
+      destination,
+      false,
+      true,
+      FollowCommandLineLinks,
+      preserve_permissions=false,
+    ),
+  )
+  assert_eq(@fs.read_file(destination).binary(), b"copy bytes")
 }
 
 ///|

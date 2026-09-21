@@ -1,0 +1,126 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-xxd-seek",
+      "command": "xxd",
+      "args": [
+        "-s",
+        "4",
+        "-l",
+        "4"
+      ],
+      "stdin_text": "0123456789",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-xxd-reverse-seek",
+      "command": "xxd",
+      "args": [
+        "-r",
+        "-p",
+        "-s",
+        "2"
+      ],
+      "stdin_text": "6162\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p7-xxd-include",
+      "command": "xxd",
+      "args": [
+        "-i"
+      ],
+      "stdin_text": "abc",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p7-xxd-addressed-reverse",
+      "command": "xxd",
+      "args": [
+        "-r"
+      ],
+      "stdin_text": "00000002: 4142    ;AB\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p7-xxd-malformed-address",
+      "command": "xxd",
+      "args": [
+        "-r"
+      ],
+      "stdin_text": "not a dump\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-text-line-42",
+      "command": "xxd",
+      "args": [
+        "-s",
+        "4",
+        "-l",
+        "4"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "0123456789",
+      "expected_stdout_text": "00000004: 3435 3637                                4567\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-51",
+      "command": "xxd",
+      "args": [
+        "-r",
+        "-p",
+        "-s",
+        "2"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "6162\n",
+      "expected_stdout_hex": "00006162",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-catalog-line-324",
+      "command": "xxd",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-stdin-xxd"
+      ]
+    }
+  ]
+}

@@ -2,6 +2,7 @@
 package "cli/core/platform"
 
 import {
+  "moonbitlang/async/os_error",
   "moonbitlang/core/debug",
 }
 
@@ -19,6 +20,8 @@ pub fn current() -> Platform
 pub fn file_kind_reads_supported() -> Bool
 
 pub fn hard_links_supported() -> Bool
+
+pub fn is_cross_device_error(@os_error.OSError) -> Bool
 
 pub async fn is_terminal(StandardStream) -> Bool
 

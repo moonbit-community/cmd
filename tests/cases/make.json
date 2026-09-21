@@ -1,0 +1,166 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase5-make-include-cli-variable",
+      "command": "make",
+      "args": [
+        "-s",
+        "VALUE=cli"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "common.mk",
+          "content_text": "VALUE = included\n"
+        },
+        {
+          "path": "Makefile",
+          "content_text": "include common.mk\nVALUE = local\nall:\n\t@printf '%s\\n' '$(VALUE)'\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p7-make-conditional",
+      "command": "make",
+      "args": [
+        "-s",
+        "MODE=yes"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "MODE = no\nifeq ($(MODE),yes)\nall:\n\t@printf yes\nelse\nall:\n\t@printf no\nendif\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p7-make-unbounded-jobs-keeps-target",
+      "command": "make",
+      "args": [
+        "-s",
+        "-j",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\t@printf yes\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p7-make-what-if-dependency",
+      "command": "make",
+      "args": [
+        "-s",
+        "-n",
+        "-W",
+        "source",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "target: source\n\t@printf rebuilt\n"
+        },
+        {
+          "path": "source",
+          "content_text": ""
+        },
+        {
+          "path": "target",
+          "content_text": ""
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p7-make-unexpected-endif",
+      "command": "make",
+      "args": [
+        "-f",
+        "Makefile"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "endif\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": []
+    },
+    {
+      "id": "make-ready-ack",
+      "command": "make",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "timeout_ms": 15000
+    },
+    {
+      "id": "compat-text-make-include-cli-override",
+      "command": "make",
+      "args": [
+        "-s",
+        "-C",
+        "work",
+        "VALUE=cli"
+      ],
+      "files": [
+        {
+          "path": "work/common.mk",
+          "content_text": "VALUE = included\n"
+        },
+        {
+          "path": "work/Makefile",
+          "content_text": "include common.mk\nVALUE = local\nall:\n\t@printf '%s\\n' '$(VALUE)'\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "cli\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-catalog-line-150",
+      "command": "make",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    }
+  ]
+}

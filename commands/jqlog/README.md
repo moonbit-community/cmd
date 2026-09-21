@@ -1,10 +1,14 @@
 # jqlog
 
-Observed Wasm profile (2026-09-03): this README is supplementary. The [support record](../../docs/compatibility.md) is the only capability authority; it lists the repeatable `moon run --target wasm --release` results and exclusions. Options mentioned here but not promoted in that record are not compatibility guarantees.
+Version **0.2.0** behavior is documented here. The
+[support record](../../docs/compatibility.md) separates local verification from
+published MoonX behavior; `moonx` examples use registry releases.
 
-`cli/jqlog` is the JSON Lines companion command in this module. The observed
-Wasm artifact applies a jq-compatible filter to each valid JSON line and skips
-non-JSON lines. File reads remain visible to the configured Wasm policy.
+`cli/jqlog` applies a jq-compatible filter to each valid JSON line and skips
+non-JSON lines. The first operand is the filter; an optional second operand is
+raw input text (`-` selects stdin). `-f/--file PATH` reads input from a file,
+and `-h/--help` prints usage. File-access authorization belongs to the caller
+or host. The evaluator remains MoonJQ 0.1.2.
 
 `--help` and parser errors always end with a newline so output can be safely
 composed with other command-line tools.

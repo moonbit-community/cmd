@@ -1,0 +1,61 @@
+///|
+import {
+  "moonbitlang/async@0.22.1",
+  "moonbitlang/async@0.22.1/fs",
+  "moonbitlang/async@0.22.1/process",
+  "moonbitlang/core/json",
+}
+
+///|
+async fn main {
+  let source = @json.parse(@fs.read_file("tests/release_runner/manifest.json").text())
+  guard source is Object(fields) else { fail("expected manifest object") }
+  guard fields.get("commands") is Some(Array(rows)) else { fail("expected commands") }
+  for row in rows {
+    guard row is Object(command) else { fail("expected command") }
+    command["supported_options"] = @json.parse("[]")
+  }
+  fields["case_ids"] = @json.parse("[\"phase3-true-status\"]")
+  fields["extra_cases"] = @json.parse("[]")
+  let path = "/tmp/cmd-test-system-audit-manifest.json"
+  @fs.write_file(path, source.stringify())
+  let runner = "_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe"
+  @async.with_timeout(120000, () => {
+    let (status, stdout, stderr) = @process.collect_output(runner, [
+      "--manifest", path, "--suite", "smoke",
+    ])
+    println("REAL_MOONX_SMOKE status=\{status}")
+    println(stdout.text())
+    println(stderr.text())
+    assert_eq(status, 1)
+    assert_true(stdout.text().contains("unverified_smoke"))
+  })
+  let cases = @json.parse(@fs.read_file("tests/fixtures/runner/cases.json").text())
+  guard cases is Object(base) else { fail("expected base") }
+  guard base.get("cases") is Some(Array(fixtures)) else { fail("expected cases") }
+  println("ACTIVE_CASES=\{fixtures.length()}")
+  println("RELEASE_PACKAGES=\{rows.length()}")
+  let directory = @fs.tmpdir(prefix="cmd-test-audit-ls-")
+  defer @fs.rmdir(directory, recursive=true)
+  @fs.mkdir(directory + "/dir")
+  @fs.write_file(directory + "/dir/inside", "fixture")
+  @fs.symlink(directory + "/link", target="dir")
+  @async.with_timeout(5000, () => {
+    let (status, output, _) = @process.collect_output(
+      @fs.realpath("_build/native/release/build/cli/ls/ls.exe"),
+      ["-H", "-1", "link"],
+      cwd=directory,
+    )
+    let (host_status, host_output, _) = @process.collect_output(
+      "/bin/ls",
+      ["-H", "-1", "link"],
+      cwd=directory,
+    )
+    println("LOCAL_LS_H status=\{status}, stdout=\{output.text().escape()}")
+    println("MACOS_LS_H status=\{host_status}, stdout=\{host_output.text().escape()}")
+    assert_eq(status, 0)
+    assert_eq(host_status, 0)
+    assert_eq(output.text(), "link\n")
+    assert_eq(host_output.text(), "inside\n")
+  })
+}

@@ -14,9 +14,19 @@ fn is_shell_space(char : Char) -> Bool {
 }
 
 ///|
-fn flush_literal(parts : Array[WordPart], literal : StringBuilder) -> Unit {
+fn flush_literal(
+  parts : Array[WordPart],
+  literal : StringBuilder,
+  quoted? : Bool = false,
+) -> Unit {
   if !literal.is_empty() {
-    parts.push(Text(literal.to_string()))
+    parts.push(
+      if quoted {
+        QuotedText(literal.to_string())
+      } else {
+        Text(literal.to_string())
+      },
+    )
     literal.reset()
   }
 }
@@ -53,14 +63,40 @@ fn parse_dollar(
     '0'..='9' as digit =>
       (Some(Positional(digit.to_int() - '0'.to_int(), quoted)), start + 2)
     '(' => {
+      let arithmetic = chars.get(start + 2) == Some('(')
       let mut depth = 1
       let mut end = start + 2
+      let mut quote : Char? = None
       while end < chars.length() {
-        if chars[end] == '(' {
+        if quote is Some(q) {
+          if chars[end] == q {
+            quote = None
+          } else if chars[end] == '\\' && q == '"' {
+            end += 1
+          }
+        } else if chars[end] == '\\' {
+          end += 1
+        } else if chars[end] == '\'' || chars[end] == '"' {
+          quote = Some(chars[end])
+        } else if chars[end] == '(' {
           depth += 1
         } else if chars[end] == ')' {
           depth -= 1
           if depth == 0 {
+            if arithmetic {
+              if chars.get(end - 1) != Some(')') {
+                raise ShellError("invalid arithmetic expansion")
+              }
+              return (
+                Some(
+                  Arithmetic(
+                    String::from_array(chars[start + 3:end - 1]),
+                    quoted,
+                  ),
+                ),
+                end + 1,
+              )
+            }
             return (
               Some(
                 CommandSubstitution(
@@ -78,13 +114,51 @@ fn parse_dollar(
     }
     '{' => {
       let mut end = start + 2
-      while end < chars.length() && chars[end] != '}' {
+      let mut depth = 1
+      while end < chars.length() {
+        if chars[end] == '{' {
+          depth += 1
+        }
+        if chars[end] == '}' {
+          depth -= 1
+          if depth == 0 {
+            break
+          }
+        }
         end += 1
       }
       if end >= chars.length() {
         raise ShellError("unterminated variable expansion")
       }
       let raw_name = String::from_array(chars[start + 2:end])
+      let raw_chars = raw_name.iter().collect()
+      let mut name_end = 0
+      while name_end < raw_chars.length() && is_name_char(raw_chars[name_end]) {
+        name_end += 1
+      }
+      if name_end > 0 &&
+        name_end < raw_chars.length() &&
+        is_name_start(raw_chars[0]) {
+        let mut op_end = name_end
+        if raw_chars[op_end] == ':' {
+          op_end += 1
+        }
+        if op_end < raw_chars.length() &&
+          raw_chars[op_end] is ('-' | '+' | '=' | '?') {
+          op_end += 1
+          return (
+            Some(
+              DefaultVariable(
+                String::from_array(raw_chars[:name_end]),
+                String::from_array(raw_chars[name_end:op_end]),
+                String::from_array(raw_chars[op_end:]),
+                quoted,
+              ),
+            ),
+            end + 1,
+          )
+        }
+      }
       if raw_name.has_prefix("#") {
         let name = raw_name[1:].to_owned()
         if name == "" || !is_name_start(name.iter().next().unwrap()) {
@@ -115,7 +189,10 @@ fn parse_dollar(
 }
 
 ///|
-fn lex(script : String) -> Array[Token] raise ShellError {
+fn lex(
+  script : String,
+  fragment? : Bool = false,
+) -> Array[Token] raise ShellError {
   let chars : Array[Char] = script.iter().collect()
   let tokens : Array[Token] = []
   let parts : Array[WordPart] = []
@@ -129,6 +206,7 @@ fn lex(script : String) -> Array[Token] raise ShellError {
     match quote {
       Some('\'') => {
         if char == '\'' {
+          flush_literal(parts, literal, quoted=true)
           quote = None
         } else {
           literal.write_char(char)
@@ -137,6 +215,7 @@ fn lex(script : String) -> Array[Token] raise ShellError {
       }
       Some('"') =>
         if char == '"' {
+          flush_literal(parts, literal, quoted=true)
           quote = None
           i += 1
         } else if char == '\\' {
@@ -155,7 +234,7 @@ fn lex(script : String) -> Array[Token] raise ShellError {
             i += 2
           }
         } else if char == '$' {
-          flush_literal(parts, literal)
+          flush_literal(parts, literal, quoted=true)
           let (part, next) = parse_dollar(chars, i, true)
           match part {
             Some(value) => parts.push(value)
@@ -170,7 +249,15 @@ fn lex(script : String) -> Array[Token] raise ShellError {
         }
       Some(_) => raise ShellError("invalid internal quote state")
       None =>
-        if is_shell_space(char) {
+        if fragment &&
+          (
+            is_shell_space(char) ||
+            char is ('\n' | ';' | '&' | '|' | '<' | '>' | '(' | ')' | '{' | '}')
+          ) {
+          literal.write_char(char)
+          started = true
+          i += 1
+        } else if is_shell_space(char) {
           push_word(tokens, parts, literal, started, preserve_empty)
           started = false
           preserve_empty = false
@@ -182,8 +269,10 @@ fn lex(script : String) -> Array[Token] raise ShellError {
           if char == ';' && i + 1 < chars.length() && chars[i + 1] == ';' {
             tokens.push(CaseEnd)
             i += 2
-          } else if tokens.last() != Some(Sequence) {
-            tokens.push(Sequence)
+          } else {
+            if tokens.last() != Some(Sequence) {
+              tokens.push(Sequence)
+            }
             i += 1
           }
         } else if char == '#' && !started {
@@ -191,6 +280,7 @@ fn lex(script : String) -> Array[Token] raise ShellError {
             i += 1
           }
         } else if char == '\'' || char == '"' {
+          flush_literal(parts, literal)
           quote = Some(char)
           started = true
           preserve_empty = true
@@ -202,7 +292,8 @@ fn lex(script : String) -> Array[Token] raise ShellError {
           if chars[i + 1] == '\n' {
             i += 2
           } else {
-            literal.write_char(chars[i + 1])
+            flush_literal(parts, literal)
+            parts.push(QuotedText(chars[i + 1].to_string()))
             started = true
             i += 2
           }
@@ -318,6 +409,7 @@ fn lex(script : String) -> Array[Token] raise ShellError {
                   preserve_empty: true,
                 }),
               )
+              tokens.push(Sequence)
               i = cursor
               continue
             }

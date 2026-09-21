@@ -41,6 +41,9 @@ struct CurlOptions {
   mut no_proxy : String?
   mut remove_on_error : Bool
   mut help : Bool
+  mut user : String?
+  cookies : Array[String]
+  mut cookie_jar : String?
 }
 
 ///|
@@ -62,6 +65,9 @@ fn curl_usage() -> String {
     #|      --max-redirs <num>       maximum redirects (default 50)
     #|  -I, --head                   show response headers only
     #|  -H, --header <header>        pass a custom header to the server
+    #|  -u, --user <user:password>   HTTP Basic authentication
+    #|  -b, --cookie <data|file>     send cookies or load a Netscape jar
+    #|  -c, --cookie-jar <file>      write a Netscape cookie jar
     #|  -X, --request <method>       specify a supported HTTP method
     #|  -d, --data <data>            HTTP POST data
     #|      --data-raw <data>        HTTP POST data without @ expansion
@@ -201,6 +207,9 @@ fn default_curl_options() -> CurlOptions {
     no_proxy: None,
     remove_on_error: false,
     help: false,
+    user: None,
+    cookies: [],
+    cookie_jar: None,
   }
 }
 
@@ -219,6 +228,10 @@ fn parse_curl_options(
     @cli.option("max-redirs"),
     @cli.flag("head", short='I'),
     @cli.option("header", short='H'),
+    @cli.option("user", short='u'),
+    @cli.flag("basic"),
+    @cli.option("cookie", short='b'),
+    @cli.option("cookie-jar", short='c'),
     @cli.option("request", short='X'),
     @cli.option("data", short='d'),
     @cli.option("data-raw"),
@@ -257,6 +270,14 @@ fn parse_curl_options(
   options.insecure = parsed.contains("insecure")
   options.remove_on_error = parsed.contains("remove-on-error")
   options.help = parsed.contains("help")
+  options.user = parsed.last_value("user")
+  if options.user is Some(user) && !user.contains(":") {
+    raise CurlUsageError(
+      "--user requires user:password; interactive password entry is unavailable",
+    )
+  }
+  options.cookies.append(parsed.values("cookie"))
+  options.cookie_jar = parsed.last_value("cookie-jar")
   if parsed.last_value("max-redirs") is Some(value) {
     options.max_redirects = curl_redirect_limit(value)
   }

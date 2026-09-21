@@ -1,6 +1,8 @@
 # sha256sum
 
-Support note (2026-09-05): this README is supplementary. The [support record](../../docs/compatibility.md) is the only capability authority; it separates native compatibility evidence from Wasm policy and smoke evidence. Options mentioned here but not promoted in that record are not compatibility guarantees.
+Version **0.2.0** behavior is documented here. The
+[support record](../../docs/compatibility.md) separates local verification from
+published MoonX behavior; `moonx` examples use registry releases.
 
 Compute SHA-256 digests for binary input and verify standard checksum files
 with `-c`. Supports stdin, multiple files, binary/text compatibility flags,

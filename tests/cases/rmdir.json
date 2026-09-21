@@ -1,0 +1,79 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase4-rmdir-ignore-nonempty",
+      "command": "rmdir",
+      "args": [
+        "--ignore-fail-on-non-empty",
+        "nonempty"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "nonempty/kept",
+          "content_text": "x"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-text-rmdir-partial-order",
+      "command": "rmdir",
+      "args": [
+        "nonempty",
+        "empty"
+      ],
+      "files": [
+        {
+          "path": "nonempty/kept",
+          "content_text": "x"
+        },
+        {
+          "path": "empty",
+          "kind": "directory"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "nonempty",
+      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted.",
+      "expected_files": [
+        {
+          "path": "empty",
+          "exists": false
+        },
+        {
+          "path": "nonempty",
+          "kind": "directory"
+        },
+        {
+          "path": "nonempty/kept",
+          "content_text": "x"
+        }
+      ]
+    },
+    {
+      "id": "compat-catalog-line-210",
+      "command": "rmdir",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    }
+  ]
+}

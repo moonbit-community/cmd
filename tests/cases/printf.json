@@ -1,0 +1,101 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-printf-format",
+      "command": "printf",
+      "args": [
+        "%s=%d\\n",
+        "answer",
+        "42"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-printf-repeated-format",
+      "command": "printf",
+      "args": [
+        "%d,",
+        "1",
+        "2",
+        "3"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-text-line-695",
+      "command": "printf",
+      "args": [
+        "%d,",
+        "1",
+        "2",
+        "3"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "1,2,3,",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-704",
+      "command": "printf",
+      "args": [
+        "%b",
+        "A\\x00B"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_hex": "410042",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-705",
+      "command": "printf",
+      "args": [
+        "%d",
+        "invalid"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "0",
+      "expected_stderr_text": "printf: 'invalid': expected a numeric value\n"
+    },
+    {
+      "id": "compat-catalog-line-184",
+      "command": "printf",
+      "args": [
+        "%s=%d\n",
+        "answer",
+        "42"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "answer=42\n",
+      "expected_stderr_text": ""
+    }
+  ]
+}

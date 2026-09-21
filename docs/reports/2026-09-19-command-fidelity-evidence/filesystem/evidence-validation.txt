@@ -1,0 +1,1 @@
+Recovered 124 records covering 46 paired behavior cases across 15 commands, plus 16 paired native side-effect inspections. Every stdout/stderr matched its original per-case file. Args recovered from invocation lines in run.mbtx/followup.mbtx; exit codes and streams recovered from original runner.log/followup.log. No behavior cases were rerun.

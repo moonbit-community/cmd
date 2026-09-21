@@ -1,55 +1,71 @@
 # Published-version Runner
 
-`release_runner` is the pure MoonBit release-consumer gate. It runs the exact
-`moonx cli/<command>@<version>` entries from `manifest.json`, captures bytes,
-status and filesystem effects, and compares them with the pinned oracle. It
-never builds command packages inside a case.
+`release_runner` executes exact `moonx cli/<command>@<version>` coordinates.
+It shares cases, fixtures, process capture, byte assertions, observations and
+report writing with the workspace runner through `testkit`.
 
-Validate the manifest and local package versions:
+Validate the unpublished candidate against local package versions:
 
-```text
-moon run --target native tests/release_runner -- \
-  --manifest tests/release_runner/manifest.json --suite validate
+```sh
+MOON_HOME="$HOME/.moon-accounts/cli" moon run --target native tests/release_runner -- \
+  --manifest tests/release_runner/candidate-0.2.0.json --suite validate
 ```
 
-`--suite all` is an alias for the full differential run; it keeps the pinned
-oracle requirement and does not silently downgrade to smoke.
+Run the frozen published release against the pinned oracle:
 
-Run the published differential suite after the registry assets are available:
-
-```text
-moon run --target native tests/release_runner -- \
+```sh
+MOON_HOME="$HOME/.moon-accounts/cli" moon run --target native tests/release_runner -- \
   --manifest tests/release_runner/manifest.json --suite differential \
   --oracle-image mooncmd-oracle:phase0 --report-dir _build/release-report
 ```
 
-Use `--suite smoke` on platforms without the pinned Docker oracle. Every
-invocation uses an explicit package version; `latest`, version ranges and
-implicit resolution are rejected. `timeout` is local-only and is intentionally
-absent from this manifest.
+`all` aliases `differential`. It requires the oracle and cannot fall back to
+smoke. `smoke` needs no Docker oracle: successful ordinary cases report
+`result=pass, verification=availability`. They do not count as semantic passes.
+Explicit contracts and documented rejection boundaries retain their own
+verification level. Availability checks do not replace the release differential
+gate. `latest`, ranges and implicit versions are rejected. `timeout` remains
+local-only and is absent from the release manifest.
 
-Cases are sourced from the unified fixture manifest and add release-specific
-regressions. HTTP cases share one pure-MoonBit loopback fixture per suite; it
-is not started once per case. HTTPS cases are intentionally not selected until
-a TLS fixture is pinned. Each promoted option needs a successful case plus boundary,
-failure, argument-termination and side-effect coverage. `exact` cases compare
-bytes, status and snapshots; `contract` cases compare the documented status,
-tokens and newline contract where branding differs from GNU. The P0 `seq FIRST
-LAST` descending extension is contract-tested: `seq 3 1` must emit `3`, `2`,
-`1`; GNU's default positive-step behavior is not treated as an exact oracle for
-that one case.
-Cases may set a positive `timeout_ms`; otherwise the CLI `--timeout-ms` default
-applies. A timeout is a hard failure, never a skipped case. Cases may declare
-`host_platforms` as `posix` or `windows`; a POSIX permission/symlink case is
-reported as `skipped_platform` on Windows, an explicit host capability boundary
-rather than a compatibility pass or failure.
+The candidate uses shared per-command cases. Frozen schema 1 manifests and their
+bases remain readable after local source versions change. Only `validate`
+compares pinned versions to local package versions. The unpublished candidate
+accepts `validate` and `--list`; execution is blocked until publication.
 
-The runner reports `asset_unavailable`, `registry_transport`,
-`candidate_failure`, `oracle_failure`, `semantic_mismatch`,
-`unexpected_side_effect`, `timeout` and `runner_infra` separately. Registry or
-fixture failures are hard failures and are never silently skipped.
+Contracts require explicit stdout and stderr assertions plus status. Stable
+outputs use complete bytes; partial diagnostics require a reason. A prohibition
+on internal diagnostics alone cannot establish public behavior. Frozen weak
+contracts report invalid contracts instead of being silently promoted to semantic
+evidence. Unsupported operations are checked as `boundary`, including nonzero
+status, a diagnostic and preserved fixture observations; they do not count as
+upstream agreement.
 
-When publishing a new command version, update `moon.mod`, its package README,
-the exact version in `manifest.json`, and the affected case coverage in one
-change. Run validation before publishing, then rerun the published suite after
-the Wasm asset has finished building.
+Differential cases compare status, stdout, stderr, file contents and types.
+Cases explicitly request additional mode, symlink-target and within-fixture
+identity observations. A missing required observation is infrastructure failure.
+Timestamp relations belong to stateful scenarios; independent wall-clock
+timestamps must not be compared. The pure MoonBit HTTP fixture is started only
+when applicable selected cases need it.
+
+Repeat `--command NAME` or `--case ID` to select unions within each filter;
+command and case filters intersect. `--list` prints command/ID pairs before
+launching MoonX, Docker or HTTP fixtures. Unknown selectors and empty selections
+exit 2. `--jobs` defaults to 4 independent cases. There are no automatic retries.
+The default deadline is 120 seconds, overridable by positive `--timeout-ms` or
+case `timeout_ms`. A command's own exit 124 differs from a runner deadline.
+Platform-excluded cases report `skip` with a reason. Schema 1 `posix` remains
+accepted alongside `linux`, `macos` and `windows`.
+
+`--report-dir` writes the shared JSONL/Markdown results plus `coverage.jsonl`
+with selected, platform-applicable, executed and semantically verified options.
+Each result includes its source coordinate, real OS, backend, duration and failure
+stage. Availability, skipped and boundary cases do not certify options. Registry,
+missing asset, oracle, timeout, candidate and fixture failures stay distinct.
+Failed cases retain working directories and raw stdout/stderr; successful cases
+are cleaned. Use a fresh report directory for independent runs. Local child
+launchers inherit `MOON_HOME`; CI uses its own environment without developer
+account credentials.
+
+When publishing, update package versions, README, help, catalog, compatibility
+records and case coverage together. Validate first, publish only with explicit
+authorization, then rerun exact published coordinates after their assets exist.

@@ -1,0 +1,10 @@
+{
+  "provenance": "recovered; original commands not rerun",
+  "cases": 23,
+  "main_records": 46,
+  "followup_records": 6,
+  "all_invocations": 52,
+  "same_stdout_status": 14,
+  "same_stdout_stderr_status": 13,
+  "different_stdout_or_status": 9
+}

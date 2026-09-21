@@ -1,6 +1,8 @@
 # tail for moonx
 
-Observed native/Wasm P3 profile (2026-09-04): this README is supplementary. The [support record](../../docs/compatibility.md) is the only capability authority; it lists the repeatable unified-runner results and exclusions.
+Version **0.2.0** behavior is documented here. The
+[support record](../../docs/compatibility.md) separates local verification from
+published MoonX behavior; `moonx` examples use registry releases.
 
 Print the last lines or bytes of files or stdin:
 
@@ -21,9 +23,10 @@ each regular file. A file truncated in place is followed from byte zero. The
 descriptor remains open across renames, matching `tail -f`; deleting and
 recreating a path is not followed, because `-F` is not implemented.
 
-P3 retained this boundary after rechecking the runtime: no portable
-cross-target file identity/reopen primitive is available. `-F` therefore
-remains a tested status-2 rejection rather than silently behaving like `-f`.
+`-F` remains a tested status-2 rejection. Faithful replacement detection needs
+public file identity, which async 0.22.1 does not expose; reopening a path is
+available but alone does not establish that the file was replaced. See the
+[upstream gap record](../../docs/async-upstream-gaps.md).
 
 With no file operand, `-f` silently reads stdin through EOF and exits, matching
 the upstream finite-pipe behavior. Regular-file follow is polling-based and

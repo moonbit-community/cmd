@@ -1,6 +1,8 @@
 # tr for moonx
 
-Support note (2026-09-05): this README is supplementary. The [support record](../../docs/compatibility.md) is the only capability authority; it separates native compatibility evidence from Wasm policy and smoke evidence. Options mentioned here but not promoted in that record are not compatibility guarantees.
+Version **0.2.0** behavior is documented here. The
+[support record](../../docs/compatibility.md) separates local verification from
+published MoonX behavior; `moonx` examples use registry releases.
 
 Translate, squeeze, or delete bytes read from stdin:
 
@@ -14,6 +16,6 @@ Options: `-d` delete SET1 bytes, `-s` squeeze repeats, and `-c`/`-C`
 complement SET1. `-t` truncates SET1 to SET2's length. Sets support escapes
 (`\n`, `\t`, `\123`), byte
 ranges, C-locale character and equivalence classes, and `[CHAR*COUNT]` or
-SET2-filling `[CHAR*]` repetition. Operates on raw bytes under the fixed
-`LC_ALL=C` profile; locale data beyond that profile is intentionally not
-consulted.
+SET2-filling `[CHAR*]` repetition. Operates on raw bytes with C-locale rules;
+locale data beyond that profile is not implemented. The command does not
+rewrite environment locale variables.

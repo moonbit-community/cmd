@@ -1,0 +1,103 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-nl-empty",
+      "command": "nl",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-nl-sections",
+      "command": "nl",
+      "args": [
+        "-ba",
+        "-ha",
+        "-w1",
+        "-s:",
+        "-v10",
+        "-i2"
+      ],
+      "stdin_text": "\\:\\:\\:\nh\n\\:\\:\nb\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-nl-number-format",
+      "command": "nl",
+      "args": [
+        "-n",
+        "rz",
+        "-w",
+        "3"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-text-line-623",
+      "command": "nl",
+      "args": [
+        "-ba",
+        "-w1",
+        "-s:"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_hex": "000a6c617374",
+      "expected_stdout_hex": "313a000a323a6c6173740a",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-945",
+      "command": "nl",
+      "args": [
+        "-ba",
+        "-ha",
+        "-w1",
+        "-s:",
+        "-v10",
+        "-i2"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "\\:\\:\\:\nh\n\\:\\:\nb\n",
+      "expected_stdout_text": "\n10:h\n\n10:b\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-catalog-line-174",
+      "command": "nl",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-stdin-nl"
+      ]
+    }
+  ]
+}

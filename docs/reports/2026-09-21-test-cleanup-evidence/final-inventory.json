@@ -1,0 +1,18 @@
+{
+  "command_files": 47,
+  "active_cases": 268,
+  "stable_aliases": 2,
+  "verification_input_modes": {
+    "differential": 178,
+    "oracle-scenario": 1,
+    "scenario": 5,
+    "contract": 73,
+    "exact": 10,
+    "normalized": 1
+  },
+  "compat_cohorts": 16,
+  "additional_cohorts": 3,
+  "candidate_packages": 47,
+  "candidate_selected_cases": 154,
+  "published": false
+}

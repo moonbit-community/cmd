@@ -1,0 +1,261 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-seq-basic",
+      "command": "seq",
+      "args": [
+        "1",
+        "3"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-seq-descending",
+      "command": "seq",
+      "args": [
+        "3",
+        "-1",
+        "1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p0-seq-two-operand-descending",
+      "command": "seq",
+      "args": [
+        "3",
+        "1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "exact",
+      "coverage": [
+        "two-number",
+        "descending"
+      ]
+    },
+    {
+      "id": "p0-seq-version",
+      "command": "seq",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "expected_stdout_text": "seq (moonbit cmd) 0.2.0\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "p0-seq-equal-width",
+      "command": "seq",
+      "args": [
+        "-w",
+        "7",
+        "10"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "exact",
+      "coverage": [
+        "equal-width"
+      ]
+    },
+    {
+      "id": "p0-seq-separator",
+      "command": "seq",
+      "args": [
+        "-s",
+        ",",
+        "1",
+        "3"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "exact",
+      "coverage": [
+        "separator"
+      ]
+    },
+    {
+      "id": "p0-seq-one-number",
+      "command": "seq",
+      "args": [
+        "3"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "exact",
+      "coverage": [
+        "one-number"
+      ]
+    },
+    {
+      "id": "p0-seq-two-number",
+      "command": "seq",
+      "args": [
+        "1",
+        "3"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "exact",
+      "coverage": [
+        "two-number"
+      ]
+    },
+    {
+      "id": "p0-seq-three-number",
+      "command": "seq",
+      "args": [
+        "1",
+        "1",
+        "3"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "exact",
+      "coverage": [
+        "three-number"
+      ]
+    },
+    {
+      "id": "seq-descending-default",
+      "command": "seq",
+      "args": [
+        "3",
+        "1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-text-line-706"
+      ]
+    },
+    {
+      "id": "seq-descending-explicit",
+      "command": "seq",
+      "args": [
+        "3",
+        "-1",
+        "1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "3\n2\n1\n",
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-text-line-708"
+      ]
+    },
+    {
+      "id": "compat-text-line-707",
+      "command": "seq",
+      "args": [
+        "1",
+        "3"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "1\n2\n3\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-709",
+      "command": "seq",
+      "args": [
+        "1",
+        "0",
+        "2"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "zero increment",
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+    },
+    {
+      "id": "compat-catalog-line-218",
+      "command": "seq",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "compat-catalog-line-251",
+      "command": "seq",
+      "args": [
+        "--version"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "0.2.0",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    }
+  ]
+}

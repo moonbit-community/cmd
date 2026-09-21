@@ -31,7 +31,11 @@ fn sextet(c : Char) -> Int raise CliError {
 }
 
 ///|
-async fn encode_stream(reader : &@io.Reader, wrap : Int) -> Unit {
+async fn encode_stream(
+  reader : &@io.Reader,
+  wrap : Int,
+  writer? : &@io.Writer = @stdio.stdout,
+) -> Unit {
   let mut column = 0
   let mut emitted = false
   fn emit(sb : StringBuilder, c : Char) {
@@ -66,7 +70,7 @@ async fn encode_stream(reader : &@io.Reader, wrap : Int) -> Unit {
     for byte in data[index:] {
       pending.push(byte)
     }
-    @stdio.stdout.write(out.to_string())
+    writer.write(out.to_string())
   }
   if !pending.is_empty() {
     let out = StringBuilder()
@@ -81,10 +85,10 @@ async fn encode_stream(reader : &@io.Reader, wrap : Int) -> Unit {
       emit(out, '=')
     }
     emit(out, '=')
-    @stdio.stdout.write(out.to_string())
+    writer.write(out.to_string())
   }
-  if emitted && column != 0 {
-    @stdio.stdout.write("\n")
+  if wrap > 0 && emitted && column != 0 {
+    writer.write("\n")
   }
 }
 

@@ -19,7 +19,7 @@ pub fn compare_timestamps(FileTimestamp, FileTimestamp) -> Int
 
 pub async fn copy_path(String, String, Bool, Bool) -> Bool
 
-pub async fn copy_path_with_links(String, String, Bool, Bool, LinkTraversal) -> Bool
+pub async fn copy_path_with_links(String, String, Bool, Bool, LinkTraversal, preserve_permissions? : Bool) -> Bool
 
 pub fn current_timestamp() -> FileTimestamp
 
@@ -43,7 +43,9 @@ pub fn parse_backup_control(String) -> BackupControl raise FsOpError
 
 pub fn parse_update_mode(String) -> UpdateMode raise FsOpError
 
-pub async fn preflight_copy_path(String, String, Bool, LinkTraversal) -> Unit
+pub async fn preflight_copy_path(String, String, Bool, LinkTraversal, preserve_permissions? : Bool) -> Unit
+
+pub fn protects_removal_operand(String, preserve_root? : Bool) -> Bool
 
 pub fn protects_working_directory(String) -> Bool
 

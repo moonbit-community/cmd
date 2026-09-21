@@ -1,0 +1,45 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/shell",
+  "moonbitlang/core/json",
+}
+
+///|
+async fn main {
+  let repo = "/Users/winter/Documents/Moonbit/cmd"
+  let root = "/tmp/cmd-audit-20260919/root"
+  let manifest = @json.parse(@fs.read_file(repo + "/tests/release_runner/manifest.json").text())
+  let rows : Array[String] = []
+  guard manifest is { "commands": Array(commands), .. } else { fail("no commands") }
+  for command in commands {
+    guard command is { "name": String(name), "version": String(version), .. } else { fail("invalid command") }
+    let result = @shell.Cmd("moonx", ["-v", "cli/" + name, "--help"], stdin=@shell.Text("")).output(timeout_ms=15000)
+    let row : Json = { "command": name, "manifest_version": version, "status": result.exit_code(), "resolver_stderr": result.stderr() }
+    rows.push(row.stringify())
+  }
+  @fs.write_file(root + "/inventory.jsonl", rows.join("\n") + "\n")
+  let extra : Array[String] = []
+  for (id, program, args) in [
+    ("seq-descending-moonx", "moonx", ["cli/seq", "3", "1"]),
+    ("seq-descending-host", "/usr/bin/seq", ["3", "1"]),
+    ("seq-explicit-negative-moonx", "moonx", ["cli/seq", "3", "-1", "1"]),
+    ("seq-explicit-negative-host", "/usr/bin/seq", ["3", "-1", "1"]),
+  ] {
+    let result = @shell.Cmd(program, args, stdin=@shell.Text("")).output(timeout_ms=15000)
+    let row : Json = { "id": id, "program": program, "args": args, "status": result.exit_code(), "stdout": result.stdout(), "stderr": result.stderr() }
+    extra.push(row.stringify())
+    println(row.stringify())
+  }
+  @fs.write_file(root + "/seq-results.jsonl", extra.join("\n") + "\n")
+  let smoke = @fs.read_file("/tmp/cmd-audit-20260919/release/summary.jsonl").text()
+  let mut count = 0
+  let names : Map[String, Bool] = Map([])
+  for line in smoke.split("\n") {
+    if line.is_empty() { continue }
+    guard @json.parse(line) is { "category": String("passed"), "command": String(name), .. } else { fail("smoke did not all pass") }
+    count += 1
+    names[name] = true
+  }
+  println("release smoke: \{count} passed cases, \{names.length()} commands")
+}

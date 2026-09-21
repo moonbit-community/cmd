@@ -31,6 +31,14 @@ async fn main {
       command_args.push(arg)
     } else if options && arg == "--" {
       options = false
+    } else if options && arg == "--help" {
+      @stdio.stdout.write(
+        "Usage: env [-i] [-0] [-u NAME] [-C DIR] [NAME=VALUE]... [COMMAND [ARG]...]\n",
+      )
+      return
+    } else if options && arg == "--version" {
+      @stdio.stdout.write("env (cli/env) \{command_version}\n")
+      return
     } else if options && (arg == "-i" || arg == "--ignore-environment") {
       ignore_environment = true
     } else if options && arg == "-" {
@@ -84,7 +92,7 @@ async fn main {
       assignments.push((key, value))
     } else if arg.has_prefix("=") {
       @stdio.stderr.write(
-        "env: invalid environment variable assignment: {arg}\n",
+        "env: invalid environment variable assignment: \{arg}\n",
       )
       @sys.exit(125)
       return

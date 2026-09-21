@@ -1,12 +1,13 @@
 import {
-  "cli/core/fsops",
   "cli/core/process" @child_process,
   "moonbitlang/async",
   "moonbitlang/async/fs",
+  "moonbitlang/async/io",
   "moonbitlang/async/process" @async_process,
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",
   "moonbitlang/core/string",
+  "moonbitlang/core/encoding/utf8",
   "moonbitlang/x/path",
 }
 

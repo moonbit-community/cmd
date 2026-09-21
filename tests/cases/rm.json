@@ -1,0 +1,166 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase4-rm-regular",
+      "command": "rm",
+      "args": [
+        "removed"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "removed",
+          "content_text": "payload\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-text-rm-partial-order",
+      "command": "rm",
+      "args": [
+        "missing",
+        "removable"
+      ],
+      "files": [
+        {
+          "path": "removable",
+          "content_text": "x"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "missing",
+      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted.",
+      "expected_files": [
+        {
+          "path": "removable",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "compat-filesystem-rm-dash",
+      "command": "rm",
+      "args": [
+        "--",
+        "-dash"
+      ],
+      "files": [
+        {
+          "path": "-dash",
+          "content_text": "dash"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "-dash",
+          "exists": false
+        }
+      ],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-filesystem-rm-current-directory",
+      "command": "rm",
+      "args": [
+        "-r",
+        "."
+      ],
+      "files": [
+        {
+          "path": "protected/kept",
+          "content_text": "safe"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "protected/kept",
+          "content_text": "safe"
+        }
+      ],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_contains": "protected path",
+      "diagnostic_reason": "OS path formatting may vary; status, empty stdout and declared filesystem effects remain exact.",
+      "cwd": "protected"
+    },
+    {
+      "id": "compat-filesystem-remove-link",
+      "command": "rm",
+      "args": [
+        "-r",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "policy-fixture\n"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "policy-fixture\n"
+        },
+        {
+          "path": "link",
+          "exists": false
+        }
+      ],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_text": "",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "compat-catalog-line-202",
+      "command": "rm",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    }
+  ]
+}

@@ -1,4 +1,18 @@
 ///|
+test "wget Basic authentication and session persistence are explicit" {
+  let options = parse_wget_options([
+    "--user=first", "--http-user=final", "--password=p:a:ss", "--load-cookies=in.txt",
+    "--save-cookies=out.txt", "--keep-session-cookies", "http://localhost/",
+  ])
+  assert_eq(options.user, Some("final"))
+  assert_eq(options.password, Some("p:a:ss"))
+  assert_false(options.auth_no_challenge)
+  assert_eq(options.load_cookies, Some("in.txt"))
+  assert_eq(options.save_cookies, Some("out.txt"))
+  assert_true(options.keep_session_cookies)
+}
+
+///|
 test "wget phase2 options map upstream HTTP controls" {
   let options = parse_wget_options([
     "-q", "-O-", "-i", "urls.txt", "--header=X-Marker: value", "--method=PATCH",

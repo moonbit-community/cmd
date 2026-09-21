@@ -26,7 +26,7 @@ pub fn retryable_failure(TransferErrorKind, Int?) -> Bool
 
 pub async fn transfer(String, TransferOutput, TransferOptions, observer? : async (TransferEvent) -> Unit) -> TransferResult
 
-pub fn transfer_options(request_method? : HttpMethod, headers? : Array[HttpHeader], body? : RequestBody, redirects? : RedirectPolicy, preserve_method_on_redirect? : Bool, verify_tls? : Bool, proxy_url? : String, connect_timeout_ms? : Int, idle_timeout_ms? : Int, max_time_ms? : Int, fail_on_http_error? : Bool, http_error_statuses? : Array[Int], resume_from? : Int64, keep_output_on_not_modified? : Bool) -> TransferOptions
+pub fn transfer_options(request_method? : HttpMethod, headers? : Array[HttpHeader], body? : RequestBody, redirects? : RedirectPolicy, preserve_method_on_redirect? : Bool, verify_tls? : Bool, proxy_url? : String, connect_timeout_ms? : Int, idle_timeout_ms? : Int, max_time_ms? : Int, fail_on_http_error? : Bool, http_error_statuses? : Array[Int], resume_from? : Int64, keep_output_on_not_modified? : Bool, cookie_jar? : CookieJar, cookie_data? : String, basic_credentials? : String, basic_preemptive? : Bool) -> TransferOptions
 
 pub fn url_host(String) -> String raise TransferError
 
@@ -40,6 +40,15 @@ pub(all) suberror TransferError {
 } derive(Eq, @debug.Debug)
 
 // Types and methods
+pub struct CookieJar {
+  mut entries : Array[StoredCookie]
+}
+pub async fn CookieJar::load(Self, String) -> Unit
+pub fn CookieJar::load_netscape(Self, String) -> Unit
+pub fn CookieJar::netscape(Self, include_session? : Bool) -> String
+pub fn CookieJar::new() -> Self
+pub async fn CookieJar::save(Self, String, include_session? : Bool) -> Unit
+
 pub(all) enum FeedbackMode {
   Quiet
   ErrorsOnly
@@ -84,6 +93,8 @@ pub(all) enum RequestBody {
   StdinBody
 } derive(@debug.Debug)
 
+type StoredCookie
+
 pub(all) enum TransferErrorKind {
   InvalidUrl
   UnsupportedProtocol
@@ -127,6 +138,10 @@ pub(all) struct TransferOptions {
   http_error_statuses : Array[Int]
   resume_from : Int64?
   keep_output_on_not_modified : Bool
+  cookie_jar : CookieJar?
+  cookie_data : String?
+  basic_credentials : String?
+  basic_preemptive : Bool
 }
 
 pub(all) enum TransferOutput {

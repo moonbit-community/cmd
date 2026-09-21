@@ -1,4 +1,14 @@
 ///|
+test "curl Basic credentials and cookie sources preserve argument values" {
+  let options = parse_curl_options([
+    "-u", "user:p:a:ss", "-b", "a=one", "--cookie=jar.txt", "-c", "out.txt", "http://localhost/",
+  ])
+  assert_eq(options.user, Some("user:p:a:ss"))
+  assert_eq(options.cookies, ["a=one", "jar.txt"])
+  assert_eq(options.cookie_jar, Some("out.txt"))
+}
+
+///|
 test "curl phase2 options preserve repeated data order and HTTP controls" {
   let options = parse_curl_options([
     "-sSL", "--max-redirs", "3", "-H", "X-Marker: value", "-X", "PATCH", "-d", "a=1",

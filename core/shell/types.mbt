@@ -6,6 +6,7 @@ pub(all) suberror ShellError {
 ///|
 priv enum WordPart {
   Text(String)
+  QuotedText(String)
   Variable(String, Bool)
   CommandSubstitution(String, Bool)
   LengthVariable(String, Bool)
@@ -13,6 +14,8 @@ priv enum WordPart {
   LastStatus(Bool)
   ArgCount(Bool)
   AllArgs(Bool, Bool)
+  Arithmetic(String, Bool)
+  DefaultVariable(String, String, String, Bool)
 } derive(Eq)
 
 ///|
@@ -94,6 +97,7 @@ priv enum Statement {
 ///|
 priv struct Context {
   env : Map[String, String]
+  exported : Set[String]
   mut positional : Array[String]
   name : String
   mut cwd : String
@@ -101,17 +105,26 @@ priv struct Context {
   mut exited : Bool
   mut exit_status : Int
   capture : StringBuilder?
+  mut input : &@io.Reader?
+  mut output : &@io.Writer?
+  mut error : &@io.Writer?
   functions : Map[String, Array[Job]]
   mut errexit : Bool
   mut nounset : Bool
   mut return_status : Int?
   mut break_loop : Bool
+  mut continue_loop : Bool
+  mut loop_depth : Int
+  mut call_depth : Int
+  mut substitution_status : Int?
+  mut expansion_failed : Bool
 }
 
 ///|
 priv struct Prepared {
   argv : Array[String]
   env : Map[String, String]
+  assignments : Map[String, String]
   stdin : String?
   stdin_data : String?
   stdout : (String, Bool)?

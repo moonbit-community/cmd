@@ -1,57 +1,8 @@
 ///|
-fn allowed_environment_name(name : String, windows : Bool) -> Bool {
-  let normalized = if windows { name.to_upper() } else { name }
-  match normalized {
-    "PATH" | "HOME" | "TMPDIR" | "TMP" | "TEMP" => true
-    "LANG" | "LC_ALL" => true
-    "SYSTEMROOT"
-    | "WINDIR"
-    | "SYSTEMDRIVE"
-    | "COMSPEC"
-    | "PATHEXT"
-    | "USERPROFILE"
-    | "HOMEDRIVE"
-    | "HOMEPATH" => windows
-    _ => false
-  }
-}
-
-///|
-priv enum EnvironmentPolicy {
-  NativeCompatible
-  WasmRestricted
-} derive(Eq)
-
-///|
-fn environment_with_policy(
-  source : Map[String, String],
-  policy : EnvironmentPolicy,
-  windows? : Bool = false,
-) -> Map[String, String] {
-  let result : Map[String, String] = Map([])
-  for name, value in source {
-    if policy == NativeCompatible || allowed_environment_name(name, windows) {
-      result[name] = value
-    }
-  }
-  if policy == WasmRestricted {
-    // Keep policy-controlled child text classification deterministic.
-    result["LC_ALL"] = "C"
-    result["LANG"] = "C"
-  }
-  result
-}
-
-///|
-#cfg(target="native")
+/// Inherit the environment made available by the host. Commands apply only
+/// their own env/export semantics; authorization belongs to the host.
 pub fn default_environment() -> Map[String, String] {
-  environment_with_policy(@env.get_env_vars(), NativeCompatible)
-}
-
-///|
-#cfg(not(target="native"))
-pub fn default_environment() -> Map[String, String] {
-  environment_with_policy(@env.get_env_vars(), WasmRestricted)
+  @env.get_env_vars()
 }
 
 ///|

@@ -21,6 +21,10 @@ jobs:
           - macos-15
           - windows-2025
     runs-on: ${{ matrix.os }}
+    env:
+      LANG: C
+      LC_ALL: C
+      TZ: UTC
     steps:
       - uses: actions/checkout@v4
         with:
@@ -28,8 +32,14 @@ jobs:
 
       - name: Setup MoonBit
         uses: hustcer/setup-moonbit@v1.23
+        with:
+          version: 0.10.13+cbb11c36f
+          core-version: 0.10.13+cbb11c36f
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Record toolchain
+        run: moon version --all
 
       - name: Update registry
         run: moon update
@@ -40,33 +50,105 @@ jobs:
       - name: Test
         run: moon test --target all
 
-      - name: Build release commands
+      - name: Build Native release commands and test drivers
         run: moon build --target native --release --deny-warn
 
       - name: Build Wasm release commands
         run: moon build --target wasm --release --deny-warn
 
-      - name: Compatibility
+      - name: Validate workspace cases
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
-          --manifest tests/fixtures/runner/cases.json
-          --native-root _build/native/release/build
-          --suite compat
+          --manifest tests/fixtures/runner/cases.json --validate-only
+
+      - name: Validate unpublished candidate manifest
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
+          --manifest tests/release_runner/candidate-0.2.0.json --suite validate
+
+      - name: Native compatibility
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
+          --suite compat --report-dir test-reports/compat-native
+
+      - name: Native command contracts
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
+          --suite contract --backend native --report-dir test-reports/contract-native
+
+      - name: Wasm command contracts
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
+          --suite contract --backend wasm --report-dir test-reports/contract-wasm
+
+      - name: Native interactive, network and lifecycle scenarios
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
+          --suite scenarios --backend native --report-dir test-reports/scenarios-native
+
+      - name: Wasm interactive, network and lifecycle scenarios
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
+          --suite scenarios --backend wasm --report-dir test-reports/scenarios-wasm
 
       - name: GNU differential
         if: runner.os == 'Linux'
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
-          --manifest tests/fixtures/runner/cases.json
-          --native-root _build/native/release/build
-          --suite compat --gnu-diff
+          --suite gnu --report-dir test-reports/gnu-native
 
       - name: Wasm policy
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
-          --manifest tests/fixtures/runner/cases.json
-          --wasm-root _build/wasm/release/build
-          --suite policy
+          --suite policy --report-dir test-reports/policy-wasm
+
+      - name: Setup Docker Buildx
+        if: runner.os == 'Linux'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build pinned oracle image
+        if: runner.os == 'Linux'
+        uses: docker/build-push-action@v6
+        with:
+          context: tests/runner/image
+          load: true
+          tags: mooncmd-oracle:phase0
+          cache-from: type=gha,scope=mooncmd-oracle
+          cache-to: type=gha,mode=max,scope=mooncmd-oracle
+
+      - name: Record oracle versions and image digest
+        if: runner.os == 'Linux'
+        run: |
+          docker run --rm mooncmd-oracle:phase0 /usr/local/bin/versions.sh > test-reports/oracle-versions.txt
+          docker image inspect --format='{{.Id}}' mooncmd-oracle:phase0 > test-reports/oracle-image.txt
+
+      - name: Compare pinned upstream fixtures on Native and Wasm
+        if: runner.os == 'Linux'
+        run: |
+          umask 022
+          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite oracle --oracle-image mooncmd-oracle:phase0 --report-dir test-reports/oracle-native
+          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite oracle --backend wasm --oracle-image mooncmd-oracle:phase0 --report-dir test-reports/oracle-wasm
+
+      - name: Published-version smoke
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
+          --manifest tests/release_runner/manifest.json --suite smoke
+          --report-dir test-reports/published-smoke
+
+      - name: Published-version differential
+        if: runner.os == 'Linux' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
+          --manifest tests/release_runner/manifest.json --suite differential
+          --oracle-image mooncmd-oracle:phase0
+          --report-dir test-reports/published-differential
+
+      - name: Stress scenarios
+        if: runner.os == 'Linux' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
+          --suite stress --report-dir test-reports/stress-native
 
       - name: Generated interfaces
         run: moon info
@@ -77,194 +159,10 @@ jobs:
       - name: Verify generated files
         run: git diff --exit-code
 
-      - name: Upload test artifacts
-        if: failure()
+      - name: Upload reports and failed fixtures
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: cmd-check-${{ matrix.os }}
-          path: |
-            _build
-            uncovered.log
+          name: cmd-test-reports-${{ matrix.os }}
+          path: test-reports
           if-no-files-found: ignore
-
-  oracle:
-    name: pinned-upstream-oracle
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Setup MoonBit
-        uses: hustcer/setup-moonbit@v1.23
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update registry
-        run: moon update
-
-      - name: Build release commands
-        run: moon build --target native --release --deny-warn
-
-      - name: Validate oracle manifest
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
-          --manifest tests/fixtures/runner/cases.json --validate-only
-
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build pinned oracle image
-        uses: docker/build-push-action@v6
-        with:
-          context: tests/runner/image
-          load: true
-          tags: mooncmd-oracle:phase0
-          cache-from: type=gha,scope=mooncmd-oracle
-          cache-to: type=gha,mode=max,scope=mooncmd-oracle
-
-      - name: Record oracle versions and image digest
-        run: |
-          docker run --rm mooncmd-oracle:phase0 /usr/local/bin/versions.sh | tee oracle-versions.txt
-          IMAGE_ID=$(docker image inspect --format='{{.Id}}' mooncmd-oracle:phase0)
-          printf 'Oracle image ID: `%s`\n\n' "$IMAGE_ID" | tee oracle-image.txt
-          cat oracle-image.txt oracle-versions.txt >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Compare pinned upstream fixtures
-        run: |
-          umask 022
-          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe \
-            --manifest tests/fixtures/runner/cases.json \
-            --native-root _build/native/release/build \
-            --suite oracle \
-            --oracle-image mooncmd-oracle:phase0
-
-      - name: Upload oracle evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pinned-upstream-oracle
-          path: |
-            oracle-image.txt
-            oracle-versions.txt
-          if-no-files-found: warn
-
-  release-manifest:
-    name: published-release-manifest
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Setup MoonBit
-        uses: hustcer/setup-moonbit@v1.23
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update registry
-        run: moon update
-
-      - name: Validate published release manifest
-        run: >-
-          moon run --target native tests/release_runner --
-          --manifest tests/release_runner/manifest.json --suite validate
-
-  published-differential:
-    name: published-version-differential
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Setup MoonBit
-        uses: hustcer/setup-moonbit@v1.23
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update registry
-        run: moon update
-
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build pinned oracle image
-        uses: docker/build-push-action@v6
-        with:
-          context: tests/runner/image
-          load: true
-          tags: mooncmd-oracle:phase0
-          cache-from: type=gha,scope=mooncmd-oracle
-          cache-to: type=gha,mode=max,scope=mooncmd-oracle
-
-      - name: Run published-version differential
-        run: >-
-          moon run --target native tests/release_runner --
-          --manifest tests/release_runner/manifest.json --suite differential
-          --oracle-image mooncmd-oracle:phase0
-          --report-dir _build/release-report
-
-      - name: Upload published differential report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: published-version-differential
-          path: _build/release-report
-          if-no-files-found: warn
-
-  published-smoke:
-    name: published-version-smoke
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - ubuntu-24.04
-          - macos-15
-          - windows-2025
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Setup MoonBit
-        uses: hustcer/setup-moonbit@v1.23
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update registry
-        run: moon update
-
-      - name: Run published-version smoke
-        run: >-
-          moon run --target native tests/release_runner --
-          --manifest tests/release_runner/manifest.json --suite smoke
-
-  stress:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Setup MoonBit
-        uses: hustcer/setup-moonbit@v1.23
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update registry
-        run: moon update
-
-      - name: Build release commands
-        run: moon build --target native --release --deny-warn
-
-      - name: Stress compatibility
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
-          --manifest tests/fixtures/runner/cases.json
-          --native-root _build/native/release/build
-          --suite compat --stress

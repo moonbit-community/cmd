@@ -1,0 +1,9 @@
+REAL_MOONX_SMOKE status=1
+[unverified_smoke] true@0.1.5 phase3-true-status: invocation completed; stdout, stderr and filesystem semantics require the differential suite
+
+1 release runner case(s) failed
+
+ACTIVE_CASES=176
+RELEASE_PACKAGES=47
+LOCAL_LS_H status=0, stdout="link\n"
+MACOS_LS_H status=0, stdout="inside\n"

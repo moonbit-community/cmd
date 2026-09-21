@@ -1,0 +1,101 @@
+Warning: [0029]
+   ╭─[ /Users/winter/Documents/Moonbit/cmd/core/cli/moon.pkg:2:3 ]
+   │
+ 2 │   "moonbitlang/core/double",
+   │   ────────────┬────────────  
+   │               ╰────────────── Warning (unused_package): Unused package 'moonbitlang/core/double'
+───╯
+[passed] seq@0.1.5 p0-seq-two-operand-descending: published candidate contract passed
+[passed] seq@0.1.5 p0-seq-version: published candidate contract passed
+[passed] echo@0.1.5 p0-echo-version: published candidate contract passed
+[passed] false@0.1.5 p0-false-version: published candidate contract passed
+[passed] sleep@0.1.5 p0-sleep-version: published candidate contract passed
+[passed] sh@0.1.7 p0-sh-public-error: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] jqlog@0.1.5 p0-jqlog-help-newline: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] jqlog@0.1.5 p0-jqlog-error-newline: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] echo@0.1.5 p0-echo-help: published candidate contract passed
+[passed] echo@0.1.5 p0-echo-no-newline: published candidate contract passed
+[passed] echo@0.1.5 p0-echo-enable-escapes: published candidate contract passed
+[passed] echo@0.1.5 p0-echo-disable-escapes: published candidate contract passed
+[passed] false@0.1.5 p0-false-help: published candidate contract passed
+[passed] true@0.1.5 p0-true-version: published candidate contract passed
+[passed] true@0.1.5 p0-true-help: published candidate contract passed
+[passed] sleep@0.1.5 p0-sleep-help: published candidate contract passed
+[passed] seq@0.1.5 p0-seq-equal-width: published candidate contract passed
+[passed] seq@0.1.5 p0-seq-separator: published candidate contract passed
+[passed] seq@0.1.5 p0-seq-one-number: published candidate contract passed
+[passed] seq@0.1.5 p0-seq-two-number: published candidate contract passed
+[passed] seq@0.1.5 p0-seq-three-number: published candidate contract passed
+[passed] sh@0.1.7 p0-sh-stdin-script: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] jqlog@0.1.5 p0-jqlog-file: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] base64@0.1.4 phase0-base64-stdin: published candidate contract passed
+[passed] basename@0.1.4 phase3-basename-suffix: published candidate contract passed
+[passed] cat@0.1.4 phase0-cat-double-dash: published candidate contract passed
+[passed] chmod@0.1.4 phase4-chmod-numeric: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] cmp@0.1.4 phase3-cmp-equal: published candidate contract passed
+[passed] comm@0.1.4 phase3-comm-columns: published candidate contract passed
+[passed] cp@0.1.4 phase4-cp-regular: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] cut@0.1.4 phase3-cut-field: published candidate contract passed
+[passed] dirname@0.1.4 phase3-dirname-basic: published candidate contract passed
+[passed] echo@0.1.5 phase3-echo-basic: published candidate contract passed
+[passed] env@0.1.4 phase5-env-clean-null: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] false@0.1.5 phase0-false-status: published candidate contract passed
+[passed] wget@0.1.4 phase2-wget-relative-redirect: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] wget@0.1.4 phase2-wget-http-status-8: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] wget@0.1.4 phase2-wget-remote-file: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] wget@0.1.4 phase2-wget-multiple-urls: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] wget@0.1.4 phase2-wget-request-body: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] wget@0.1.4 phase2-wget-input-file: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] curl@0.1.4 phase2-curl-does-not-follow: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] curl@0.1.4 phase2-curl-location: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] curl@0.1.4 phase2-curl-fail-status-22: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] curl@0.1.4 phase2-curl-output-file: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] curl@0.1.4 phase2-curl-post-data: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] curl@0.1.4 phase2-curl-upload-file: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] curl@0.1.4 phase2-curl-multiple-urls: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] curl@0.1.4 phase2-curl-last-transfer-status: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] curl@0.1.4 phase2-curl-remote-name: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] curl@0.1.4 p1-curl-explicit-method-redirect: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] curl@0.1.4 p1-curl-binary-data-file: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] curl@0.1.4 p1-curl-redirect-limit-zero: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] wget@0.1.4 p1-wget-binary-body-file: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] wget@0.1.4 p1-wget-method-and-repeated-header: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] wget@0.1.4 p1-wget-continue-range: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] wget@0.1.4 p1-wget-timestamp-not-modified: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] wget@0.1.4 p1-wget-content-disposition-collision: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] find@0.1.4 phase3-find-exec-status: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] grep@0.1.4 phase3-grep-stdin: published candidate contract passed
+[passed] head@0.1.4 phase3-head-line-count: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] join@0.1.4 phase3-join-unpaired-output-list: published candidate contract passed
+[passed] jq@0.1.4 phase3-jq-property: published candidate contract passed
+[passed] ln@0.1.4 phase4-ln-symbolic: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] ls@0.1.4 phase3-ls-basic: published candidate contract passed
+[passed] make@0.1.4 phase5-make-include-cli-variable: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] mkdir@0.1.4 phase4-mkdir-parents: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] mv@0.1.4 phase4-mv-regular: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] nl@0.1.4 phase3-nl-empty: published candidate contract passed
+[passed] paste@0.1.4 phase3-paste-parallel: published candidate contract passed
+[passed] printenv@0.1.4 phase3-printenv-selected: published candidate contract passed
+[passed] printf@0.1.4 phase3-printf-format: published candidate contract passed
+[passed] pwd@0.1.4 phase3-pwd-working-directory: published candidate contract passed
+[passed] rm@0.1.4 phase4-rm-regular: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] rmdir@0.1.4 phase4-rmdir-ignore-nonempty: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] seq@0.1.5 phase3-seq-basic: published candidate contract passed
+[passed] sh@0.1.7 phase5-sh-command-positional: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] sha256sum@0.1.4 phase3-sha256sum-stdin: published candidate contract passed
+[passed] sleep@0.1.5 phase3-sleep-zero: published candidate contract passed
+[passed] sort@0.1.4 phase3-sort-basic: published candidate contract passed
+[passed] tail@0.1.4 phase3-tail-line-count: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] tee@0.1.4 phase0-tee-filesystem: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] test@0.1.4 phase3-test-string: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] touch@0.1.4 phase4-touch-create: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] tr@0.1.4 phase3-tr-range: published candidate contract passed
+[passed] true@0.1.5 phase3-true-status: published candidate contract passed
+[passed] uniq@0.1.4 phase3-uniq-adjacent: published candidate contract passed
+[passed] wc@0.1.4 phase3-wc-lines: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] xargs@0.1.4 phase5-xargs-replace: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] xxd@0.1.4 phase3-xxd-seek: published candidate contract passed
+[passed] test@0.1.4 p8-test-dangling-link: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] find@0.1.4 p8-find-xtype-link: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)
+[passed] ls@0.1.4 p8-ls-dangling-classify: published candidate contract passed
+[passed] cp@0.1.4 p8-cp-command-line-link: published candidate contract passed (policy-sensitive; authorization is checked by the separate policy suite)

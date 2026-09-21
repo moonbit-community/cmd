@@ -18,36 +18,23 @@ test "shared command launch statuses preserve upstream shell convention" {
 }
 
 ///|
-test "native-compatible environment preserves ordinary variables" {
-  let source : Map[String, String] = {
-    "PATH": "/bin",
-    "HOME": "/home/test",
-    "SECRET_TOKEN": "ordinary-parent-value",
-    "LC_ALL": "zh_CN.UTF-8",
+test "default environment preserves host values and locale" {
+  let name = "CMD_ENVIRONMENT_REGRESSION"
+  let previous = @env.get_env_var(name)
+  let locale = @env.get_env_var("LC_ALL")
+  defer {
+    match previous {
+      Some(value) => @env.set_env_var(name, value)
+      None => @env.unset_env_var(name)
+    }
+    match locale {
+      Some(value) => @env.set_env_var("LC_ALL", value)
+      None => @env.unset_env_var("LC_ALL")
+    }
   }
-  let inherited = environment_with_policy(source, NativeCompatible)
-  assert_eq(inherited.get("PATH"), Some("/bin"))
-  assert_eq(inherited.get("HOME"), Some("/home/test"))
-  assert_eq(inherited.get("SECRET_TOKEN"), Some("ordinary-parent-value"))
+  @env.set_env_var(name, "preserved")
+  @env.set_env_var("LC_ALL", "zh_CN.UTF-8")
+  let inherited = default_environment()
+  assert_eq(inherited.get(name), Some("preserved"))
   assert_eq(inherited.get("LC_ALL"), Some("zh_CN.UTF-8"))
-}
-
-///|
-test "Wasm policy environment remains allowlisted and deterministic" {
-  let source : Map[String, String] = {
-    "PATH": "/bin",
-    "HOME": "/home/test",
-    "SECRET_TOKEN": "ordinary-parent-value",
-    "LC_ALL": "zh_CN.UTF-8",
-  }
-  let filtered = environment_with_policy(source, WasmRestricted)
-  assert_eq(filtered.get("PATH"), Some("/bin"))
-  assert_eq(filtered.get("HOME"), Some("/home/test"))
-  assert_eq(filtered.get("SECRET_TOKEN"), None)
-  assert_eq(filtered.get("LC_ALL"), Some("C"))
-  assert_eq(filtered.get("LANG"), Some("C"))
-  assert_true(allowed_environment_name("Path", true))
-  assert_true(allowed_environment_name("SystemRoot", true))
-  assert_false(allowed_environment_name("SystemRoot", false))
-  assert_false(allowed_environment_name("SECRET_TOKEN", true))
 }

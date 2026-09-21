@@ -1,0 +1,9 @@
+20	10	tests/release_runner/README.md
+28	19	tests/release_runner/main.mbt
+1	1	tests/release_runner/manifest.json
+7	1	tests/release_runner/manifest.mbt
+1	0	tests/release_runner/release_runner_wbtest.mbt
+15	5	tests/runner/README.md
+14	14	tests/runner/compat.mbt
+35	6	tests/runner/main.mbt
+18	15	tests/runner/policy.mbt

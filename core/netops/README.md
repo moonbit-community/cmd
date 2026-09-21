@@ -29,3 +29,47 @@ render them.
 The legacy `fetch` and `fetch_with_options` entry points remain source
 compatible and retain the original 30-second default. New command adapters use
 `transfer_options` directly.
+
+`CookieJar` uses async 0.22.1's public `Response.cookies` array, preserving
+multiple Set-Cookie fields. Stores survive redirects and separate transfers;
+request selection enforces host/domain and path boundaries, expiration and
+Secure, with longer paths first. Netscape files preserve HttpOnly and session
+state. A public-suffix database, IDNA and browser cookie-prefix rules remain
+project work, not async API blockers. Response events expose reconstructed
+Set-Cookie headers without promising original capitalization or attribute order.
+
+Basic credentials are scoped to the initial origin. Callers choose preemptive
+authentication or a single challenge retry; cross-origin redirects do not
+forward those credentials. A challenge retry reopens file bodies, but refuses
+to replay an already consumed stdin body.
+
+The public HTTP request API uses a header map. Combining stored cookies with
+an explicit Cookie header requires duplicate request headers and is rejected
+before issuing that request. This differs from the response side, where the
+public cookies array already preserves each Set-Cookie field.
+
+## Reproducing the CLI checks
+
+The workspace `network-auth-cookie` scenario starts a pure MoonBit loopback
+HTTP server and invokes real workspace curl/wget artifacts. It checks
+Basic request bytes, Wget's initial unauthenticated request and retry, literal
+and redirect cookies, repeated `-b`, Netscape persistence, session cookies,
+jar file permissions, stored-plus-literal cookie ordering, and upstream's
+non-fatal jar-write behavior. One additional invocation verifies the explicit
+rejection of duplicate Cookie request headers.
+
+```sh
+MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --release
+MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release
+./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite scenarios --case network-auth-cookie --backend native
+./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite scenarios --case network-auth-cookie --backend wasm
+```
+
+Linux CI also registers `--suite oracle --case network-auth-cookie-oracle`,
+which compares both backends with the pinned curl 8.22.0/Wget 1.25.0 container,
+including jar permissions. Local candidate contracts do not establish that
+gate passed. The former probe is archived with the 2026-09-21 test evidence.
+
+The 2026-09-20 local oracles were Apple curl 8.7.1 and GNU Wget 1.25.0 on
+macOS, with `LC_ALL=C`. These checks do not establish a Linux curl 8.22
+compatibility claim or validate a published `moonx` package version.

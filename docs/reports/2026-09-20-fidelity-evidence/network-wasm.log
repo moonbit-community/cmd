@@ -1,0 +1,31 @@
+case=0 command=curl candidate=false exit=0 stdout="auth=Basic dXNlcjpwYXNz\ncookie=\n" stderr="" requests=1
+case=0 command=curl candidate=true exit=0 stdout="auth=Basic dXNlcjpwYXNz\ncookie=\n" stderr="" requests=1
+case=1 command=curl candidate=false exit=0 stdout="auth=Basic dXNlcjpwYXNz\ncookie=\n" stderr="" requests=1
+case=1 command=curl candidate=true exit=0 stdout="auth=Basic dXNlcjpwYXNz\ncookie=\n" stderr="" requests=1
+case=2 command=curl candidate=false exit=0 stdout="auth=\ncookie=sid=explicit\n" stderr="" requests=1
+case=2 command=curl candidate=true exit=0 stdout="auth=\ncookie=sid=explicit\n" stderr="" requests=1
+case=3 command=curl candidate=false exit=0 stdout="auth=\ncookie=sid=first;sid=last\n" stderr="" requests=1
+case=3 command=curl candidate=true exit=0 stdout="auth=\ncookie=sid=first;sid=last\n" stderr="" requests=1
+case=4 command=curl candidate=false exit=0 stdout="auth=\ncookie=sid=fixture\n" stderr="" requests=2
+case=4 command=curl candidate=true exit=0 stdout="auth=\ncookie=sid=fixture\n" stderr="" requests=2
+case=5 command=curl candidate=false exit=0 stdout="auth=\ncookie=sid=explicit\n" stderr="" requests=2
+case=5 command=curl candidate=true exit=0 stdout="auth=\ncookie=sid=explicit\n" stderr="" requests=2
+case=6 command=curl candidate=false exit=0 stdout="auth=\ncookie=\n" stderr="" requests=2
+case=6 command=curl candidate=true exit=0 stdout="auth=\ncookie=\n" stderr="" requests=2
+case=7 command=wget candidate=false exit=0 stdout="auth=Basic dXNlcjpwYXNz\ncookie=\n" stderr="" requests=2
+case=7 command=wget candidate=true exit=0 stdout="auth=Basic dXNlcjpwYXNz\ncookie=\n" stderr="" requests=2
+combined-cookies candidate=false stdout="auth=\ncookie=sid=fixture; sid=manual\n"
+jar-mode command=curl candidate=false mode=644
+jar-roundtrip command=curl candidate=false passed
+combined-cookies candidate=true stdout="auth=\ncookie=sid=fixture; sid=manual\n"
+jar-mode command=curl candidate=true mode=644
+jar-roundtrip command=curl candidate=true passed
+jar-mode command=wget candidate=false mode=644
+jar-roundtrip command=wget candidate=false passed
+jar-mode command=wget candidate=true mode=644
+jar-roundtrip command=wget candidate=true passed
+jar-failure command=curl candidate=false exit=0 stderr=""
+jar-failure command=curl candidate=true exit=0 stderr=""
+jar-failure command=wget candidate=false exit=0 stderr=""
+jar-failure command=wget candidate=true exit=0 stderr=""
+network CLI fidelity: 30 matched invocations and 1 explicit unsupported combination passed

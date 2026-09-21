@@ -13,15 +13,7 @@ import {
 // Types and methods
 type CommandRow derive(@debug.Debug, @json.FromJson)
 
-type FixtureFile derive(@debug.Debug, @json.FromJson)
-
 type Manifest derive(@debug.Debug, @json.FromJson)
-
-type Normalization derive(@debug.Debug, @json.FromJson)
-
-type OracleCase derive(@debug.Debug, @json.FromJson)
-
-type SnapshotEntry derive(@debug.Debug)
 
 // Type aliases
 

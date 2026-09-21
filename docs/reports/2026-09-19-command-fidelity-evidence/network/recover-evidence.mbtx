@@ -1,0 +1,108 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/json",
+  "moonbitlang/core/string",
+}
+
+///|
+let root = "/tmp/cmd-audit-20260919/network"
+
+///|
+async fn recover(name : String, program : String, args : Array[String], input : String, script : String) -> Json {
+  let prefix = root + "/" + name
+  let stdout = @fs.read_file(prefix + ".stdout").text()
+  let stderr = @fs.read_file(prefix + ".stderr").text()
+  let status = @string.parse_int(@fs.read_file(prefix + ".status").text().trim().to_owned())
+  {
+    "name": name, "program": program, "argv": args, "stdin": input,
+    "status": status, "stdout": stdout, "stderr": stderr,
+    "provenance": {
+      "method": "Reconstructed from preserved per-invocation outputs; no commands rerun",
+      "stdout_file": prefix + ".stdout", "stderr_file": prefix + ".stderr", "status_file": prefix + ".status",
+      "argv_and_stdin_source": root + "/" + script,
+      "dynamic_http_base_source": root + "/fixture-url.txt",
+    },
+  }
+}
+
+///|
+async fn main {
+  let base = @fs.read_file(root + "/fixture-url.txt").text().trim().to_owned()
+  let base_auth = base.replace(old="http://", new="http://u:p@")
+  let cases = [
+    ("01-curl-get", "curl", ["-sS", base + "/fixed"], ""),
+    ("02-curl-redirect", "curl", ["-sSL", base + "/redirect"], ""),
+    ("03-curl-http-error", "curl", ["-sSf", base + "/missing"], ""),
+    ("04-curl-basic-auth", "curl", ["-sS", "-u", "u:p", base + "/auth"], ""),
+    ("05-curl-cookie", "curl", ["-sS", "-b", "sid=one", base + "/cookie"], ""),
+    ("06-curl-header-auth", "curl", ["-sS", "-H", "Authorization: Basic dTpw", base + "/auth"], ""),
+    ("07-wget-get", "wget", ["-qO-", base + "/fixed"], ""),
+    ("08-wget-redirect", "wget", ["-qO-", base + "/redirect"], ""),
+    ("09-wget-http-error", "wget", ["-qO-", base + "/missing"], ""),
+    ("10-wget-basic-auth", "wget", ["-qO-", "--user=u", "--password=p", base + "/auth"], ""),
+    ("11-wget-cookie-state", "wget", ["-qO-", "--save-cookies", root + "/cookies.txt", base + "/cookie"], ""),
+    ("12-curl-url-auth", "curl", ["-sS", base_auth + "/auth"], ""),
+    ("13-jq-map", "jq", ["-c", "map(. + 1)"], "[1,2,3]\n"),
+    ("14-jq-select", "jq", ["-c", ".[] | select(. > 1)"], "[1,2,3]\n"),
+    ("15-jq-reduce", "jq", ["-c", "reduce .[] as $x (0; . + $x)"], "[1,2,3]\n"),
+    ("16-jq-update", "jq", ["-c", ".items |= map(. + 1)"], "{\"items\":[1,2,3]}\n"),
+    ("17-jq-neg-index", "jq", ["-c", ".[-1]"], "[1,2,3]\n"),
+    ("18-jq-exit-stream", "jq", ["-e", "."], "true\nfalse\n"),
+    ("19-jq-input-sequence", "jq", ["-c", "."], "1 2 {\"a\":3}\n"),
+    ("20-jq-object-iteration", "jq", ["-c", "to_entries | map(.value)"], "{\"a\":1,\"b\":2}\n"),
+    ("21-jq-slurp-sequence", "jq", ["-sc", "."], "1\n2\n"),
+    ("22-jq-arg-interpolation", "jq", ["-nr", "--arg", "name", "Moon", "\"hello \\($name)\""], ""),
+    ("23-jq-arg-shadowing", "jq", ["-nc", "--arg", "x", "outer", "\"inner\" as $x | $x"], ""),
+  ]
+  let main_records : Array[Json] = []
+  let followup_records : Array[Json] = []
+  for command in ["curl", "wget", "jq"] {
+    main_records.push(recover(command + "-resolution", "moonx", ["-v", "cli/" + command, "--help"], "", "probe.mbtx"))
+  }
+  for (command, program) in [("curl", "/usr/bin/curl"), ("wget", "/opt/homebrew/bin/wget"), ("jq", "/usr/bin/jq")] {
+    main_records.push(recover(command + "-version", program, ["--version"], "", "probe.mbtx"))
+  }
+  let mut same_stdout_status = 0
+  let mut same_all = 0
+  for index, (name, command, args, input) in cases {
+    let script = if index < 20 { "probe.mbtx" } else { "jq-followup.mbtx" }
+    let oracle = match command { "curl" => "/usr/bin/curl"; "wget" => "/opt/homebrew/bin/wget"; _ => "/usr/bin/jq" }
+    let actual = recover(name + "-moonx", "moonx", ["cli/" + command] + args, input, script)
+    let expected = recover(name + "-native", oracle, args, input, script)
+    guard actual is Object(actual_fields) && expected is Object(expected_fields) else {
+      fail("recovery record must be an object")
+    }
+    if actual_fields["stdout"] == expected_fields["stdout"] && actual_fields["status"] == expected_fields["status"] {
+      same_stdout_status += 1
+      if actual_fields["stderr"] == expected_fields["stderr"] { same_all += 1 }
+    }
+    let records = if index < 20 { main_records } else { followup_records }
+    records.push(actual)
+    records.push(expected)
+  }
+  assert_eq(main_records.length(), 46)
+  assert_eq(followup_records.length(), 6)
+  assert_eq(same_stdout_status, 14)
+  assert_eq(same_all, 13)
+  for (filename, records) in [("results.jsonl", main_records), ("followup.jsonl", followup_records)] {
+    let original = root + "/" + filename
+    let backup = root + "/" + filename + ".truncated-original"
+    if !@fs.exists(backup) { @fs.write_file(backup, @fs.read_file(original)) }
+    let content = records.map(record => record.stringify()).join("\n") + "\n"
+    @fs.write_file(original, content)
+  }
+  let summary : Json = {
+    "provenance": "recovered; original commands not rerun",
+    "cases": cases.length(), "main_records": main_records.length(), "followup_records": followup_records.length(),
+    "all_invocations": main_records.length() + followup_records.length(),
+    "same_stdout_status": same_stdout_status, "same_stdout_stderr_status": same_all,
+    "different_stdout_or_status": cases.length() - same_stdout_status,
+  }
+  @fs.write_file(root + "/recovery-summary.json", summary.stringify(indent=2) + "\n")
+  let files = @fs.readdir(root, sort=true).filter(name => name != "_build" && name != "MANIFEST.txt")
+  files.push("MANIFEST.txt")
+  files.sort()
+  @fs.write_file(root + "/MANIFEST.txt", files.join("\n") + "\n")
+  println(summary.stringify())
+}

@@ -8,6 +8,8 @@ priv enum BinaryMode {
 ///|
 priv struct GrepOptions {
   fixed : Bool
+  extended : Bool
+  only_matching : Bool
   ignore_case : Bool
   invert : Bool
   line_number : Bool
@@ -25,13 +27,14 @@ priv struct GrepOptions {
   zero_terminated : Bool
   before_context : Int
   after_context : Int
+  context_enabled : Bool
   binary_mode : BinaryMode
 }
 
 ///|
 priv enum Matcher {
   Fixed(Array[String], Bool, Bool)
-  Regular(Regex?)
+  Regular(Regex?, Bool, Bool)
 }
 
 ///|
@@ -105,36 +108,6 @@ fn ascii_lower(text : String) -> String {
 }
 
 ///|
-fn fixed_word_match(line : String, needle : String) -> Bool {
-  if needle == "" {
-    return false
-  }
-  let haystack : Array[Char] = line.iter().collect()
-  let wanted : Array[Char] = needle.iter().collect()
-  if wanted.length() > haystack.length() {
-    return false
-  }
-  for start in 0..<=(haystack.length() - wanted.length()) {
-    let mut equal = true
-    for offset in 0..<wanted.length() {
-      if haystack[start + offset] != wanted[offset] {
-        equal = false
-        break
-      }
-    }
-    if equal {
-      let left_ok = start == 0 || !is_word_char(haystack[start - 1])
-      let end = start + wanted.length()
-      let right_ok = end == haystack.length() || !is_word_char(haystack[end])
-      if left_ok && right_ok {
-        return true
-      }
-    }
-  }
-  false
-}
-
-///|
 fn Matcher::matches(
   self : Matcher,
   original : String,
@@ -149,17 +122,16 @@ fn Matcher::matches(
             return true
           }
         } else if word {
-          if fixed_word_match(line, pattern) {
-            return true
-          }
+          return self.next_match(line, 0) is Some(_)
         } else if line.contains(pattern) {
           return true
         }
       }
       false
     }
-    Regular(Some(regex)) => regex.execute(line) is Some(_)
-    Regular(None) => false
+    Regular(Some(regex), false, false) => regex.execute(line) is Some(_)
+    Regular(None, _, _) => false
+    Regular(_, _, _) => self.next_match(line, 0) is Some(_)
   }
 }
 
@@ -180,20 +152,13 @@ fn compile_matcher(
     return Fixed(normalized, options.whole_line, options.word)
   }
   if normalized.is_empty() {
-    return Regular(None)
+    return Regular(None, options.whole_line, options.word)
   }
   let wrapped : Array[String] = []
   for pattern in normalized {
-    let value = if options.whole_line {
-      "^(?:\{pattern})$"
-    } else if options.word {
-      "(?:^|[^A-Za-z0-9_])(?:\{pattern})(?:$|[^A-Za-z0-9_])"
-    } else {
-      "(?:\{pattern})"
-    }
-    wrapped.push(value)
+    wrapped.push("(?:" + translate_regexp(pattern, options.extended) + ")")
   }
-  Regular(Some(Regex(wrapped.join("|"))))
+  Regular(Some(Regex(wrapped.join("|"))), options.whole_line, options.word)
 }
 
 ///|
@@ -374,6 +339,42 @@ async fn process_source(
     if binary && options.binary_mode == Report {
       let name = if path == "-" { "(standard input)" } else { path }
       @stdio.stderr.write("grep: \{name}: binary file matches\n")
+    } else if options.only_matching {
+      if !options.invert {
+        for index, record in records {
+          if !selected[index] {
+            continue
+          }
+          let original = bytes_as_string(record.data)
+          let line = if options.ignore_case {
+            ascii_lower(original)
+          } else {
+            original
+          }
+          let mut position = 0
+          while matcher.next_match(line, position) is Some((start, end)) {
+            if end > start {
+              write_record(
+                {
+                  data: record.data[start:end].to_owned(),
+                  number: record.number,
+                  offset: record.offset + start.to_int64(),
+                },
+                path,
+                options,
+                prefix_filename,
+                true,
+              )
+              position = end
+            } else {
+              position = start + 1
+            }
+            if position > line.length() {
+              break
+            }
+          }
+        }
+      }
     } else {
       let mut emitted_through = -1
       for index in 0..<records.length() {
@@ -383,7 +384,9 @@ async fn process_source(
             records.length() - 1,
             index + options.after_context,
           )
-          if emitted_through >= 0 && start > emitted_through + 1 {
+          if options.context_enabled &&
+            emitted_through >= 0 &&
+            start > emitted_through + 1 {
             @stdio.stdout.write("--\n")
           }
           for output_index in Int::max(start, emitted_through + 1)..<=end {
@@ -413,6 +416,8 @@ async fn main {
   let parsed = @cli.parse(args, [
     @cli.flag("fixed-strings", short='F'),
     @cli.flag("extended-regexp", short='E'),
+    @cli.flag("basic-regexp", short='G'),
+    @cli.flag("only-matching", short='o'),
     @cli.flag("ignore-case", short='i'),
     @cli.flag("invert-match", short='v'),
     @cli.flag("line-number", short='n'),
@@ -448,7 +453,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: grep [-EFivnclLqHhxwrbsz] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n",
+      "Usage: grep [-EFGivnclLqHhxwrbszo] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n",
     )
     return
   }
@@ -489,8 +494,15 @@ async fn main {
     }
   }
   let options : GrepOptions = {
-    fixed: parsed.last_occurrence(["fixed-strings", "extended-regexp"]) ==
+    fixed: parsed.last_occurrence([
+      "fixed-strings", "extended-regexp", "basic-regexp",
+    ]) ==
     Some("fixed-strings"),
+    extended: parsed.last_occurrence([
+      "fixed-strings", "extended-regexp", "basic-regexp",
+    ]) ==
+    Some("extended-regexp"),
+    only_matching: parsed.contains("only-matching"),
     ignore_case: parsed.contains("ignore-case"),
     invert: parsed.contains("invert-match"),
     line_number: parsed.contains("line-number"),
@@ -508,6 +520,9 @@ async fn main {
     zero_terminated: parsed.contains("null-data"),
     before_context,
     after_context,
+    context_enabled: parsed.contains("before-context") ||
+    parsed.contains("after-context") ||
+    parsed.contains("context"),
     binary_mode,
   }
   let patterns = parsed.values("regexp")

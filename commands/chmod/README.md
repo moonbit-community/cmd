@@ -1,14 +1,23 @@
 # chmod
 
-Observed Wasm profile (2026-09-03): this README is supplementary. The [support record](../../docs/compatibility.md) is the only capability authority; it lists the repeatable `moon run --target wasm --release` results and exclusions. Options mentioned here but not promoted in that record are not compatibility guarantees.
+This documents version 0.2.0. The [support record](../../docs/compatibility.md)
+tracks platform verification and exact-version publication evidence separately.
 
-Change Unix-style permission bits through the policy-visible MoonBit filesystem
-API. Supports octal modes, `-R`/`--recursive`, `-v`/`--verbose`, and closed
-symbolic assignments such as `a=rwx` or `u=rw,g=r,o=`. For symbolic
-assignments, `+/-`, omitted classes, `X/s/t`, permission copies, directories,
-symlinks, and `--reference` remain rejected. Numeric directory and recursive
-operation remains supported. Assignments are computed without reading the old
-mode and all operands are validated before mutation.
-`--reference` is recognized and fails before mutation because current
-permission bits cannot be read through the portable API. See the
-[support record](../../docs/compatibility.md).
+Change Unix-style permission bits through the public MoonBit filesystem API
+on POSIX hosts. Supports octal modes, `-R`/`--recursive`, and `-v`/`--verbose`.
+Numeric modes follow symbolic links named as command-line operands and change
+their targets. Links encountered while walking a real directory with `-R` are
+skipped. Recursive traversal through a command-line directory symlink is not
+implemented: only that target's own mode is changed.
+
+Closed symbolic assignments such as `a=rwx` or `u=rw,g=r,o=` are supported for
+regular files. They must explicitly assign all of `u`, `g`, and `o`; operands
+are checked for this subset before mutation. Incremental `+/-`, omitted
+classes, `X/s/t`, permission copies, directories and symlinks remain rejected
+for symbolic assignments. Numeric operations process operands in order and do
+not roll back earlier successful changes on a later error.
+
+`--reference` is recognized but fails before mutation because async 0.22.1
+does not expose current permission bits. Windows permission mutation is
+unavailable in this profile. Host permission denial is reported separately
+from these implementation limits.

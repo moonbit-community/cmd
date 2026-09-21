@@ -3,6 +3,7 @@ import {
   "cli/core/fsops",
   "moonbitlang/async",
   "moonbitlang/async/fs",
+  "moonbitlang/async/os_error",
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",
   "moonbitlang/core/encoding/utf8",

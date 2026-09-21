@@ -1,41 +1,25 @@
-# ADR-0009: Fail Before Mutation
+# ADR-0009: Honest Failure and Upstream Side Effects
 
-Status: Accepted  
+Status: Accepted
 Date: 2026-09-05
+Updated: 2026-09-20
+Revision: Replace universal transactional rejection with command-specific effects.
 
-## Context
+## Target and decision
 
-Filesystem commands can otherwise leave a partial tree, delete a source, or
-overwrite a target before discovering an unsupported link, cycle, policy, or
-rename condition.
+Unsupported structures fail before their execution or unsafe mutation. Supported commands retain upstream operand order, partial output/writes and earlier successful operands after later failure. Nonzero status is not global rollback. Cp rejects unsafe overwrite; touch does not rewrite bytes; expansion errors cannot become successful empty output.
 
-## Decision
+## Alternatives and compatibility cost
 
-Preflight complete copy/link trees, nested destinations, cycles, special files,
-and policy-sensitive operations before writing. `rm` protects the root and
-current directory. `mv` never guesses an EXDEV fallback and preserves the
-source when rename cannot complete. Interactive/update/backup decisions are
-made before an actual overwrite.
+Reject universal preflight/transaction semantics and the release runner's unconditional nonzero-means-unchanged-fixture rule. Differential runs compare final effects with the oracle even on failure. Retain operation-specific preflight where APIs cannot prevent known data loss, documented in ADR-0004.
 
-## Consequences
+## Versions and evidence
 
-An unsupported operation fails closed with deterministic status and no forbidden
-target, backup, or source mutation. The behavior may be narrower than GNU, but
-it is auditable across Native and Wasm.
-
-## Evidence
-
-The unified runner captures filesystem snapshots and includes nested-target,
-cycle, policy-denial, update, backup, and protected-path cases. Remaining P8
-side-effect probes are listed in the plan's gap register.
-
-The published-version Runner applies the same invariant to each candidate and
-oracle copy: the working directory remains alive until both processes,
-snapshots and reports complete. Registry/transport failures are explicit
-infrastructure failures, never skips, and failed cases must not leave target,
-backup or source mutations.
+Baseline: async 0.22.1, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-15.
+The original audit's hard-link corruption and arithmetic false success are regression triggers. Filesystem preservation, expansion tests and release byte/snapshot comparison protect the separate contracts.
+Historical results remain in [the audit](../reports/2026-09-19-command-fidelity-audit.md).
+Candidate runtime results are recorded separately from published versions.
 
 ## Revisit when
 
-The runtime exposes a reliable atomic transaction or cross-device classification
-that can preserve these guarantees.
+Document actual partial-effect rules for newly supported operations. Reopen rejected operations when public APIs can implement them correctly; record alternatives, cost and measured evidence.

@@ -22,10 +22,9 @@ pub(all) enum TerminalPolicy {
 
 ///|
 pub fn current() -> Platform {
-  if @path.sep == '\\' {
-    Windows
-  } else {
-    Posix
+  match @async.platform {
+    Windows => Windows
+    Linux | MacOS => Posix
   }
 }
 
@@ -110,7 +109,17 @@ pub fn readlink_supported() -> Bool {
 
 ///|
 pub fn cross_device_rename_classification_supported() -> Bool {
-  false
+  !is_windows()
+}
+
+///|
+/// Linux and Darwin use POSIX EXDEV (18). Windows errors remain unclassified
+/// until the runtime's rename error domain has a verified public contract.
+pub fn is_cross_device_error(error : @os_error.OSError) -> Bool {
+  match (@async.platform, error) {
+    (Linux | MacOS, @os_error.OSError(18, ..)) => true
+    _ => false
+  }
 }
 
 ///|
@@ -137,21 +146,20 @@ pub fn normalize_input_separators(path : String) -> String {
 }
 
 ///|
-/// Return whether standard input is an interactive character device.
-/// Errors and non-terminal inputs are treated as non-interactive so that
-/// pipelines and redirected input keep their normal blocking semantics.
+/// Return whether standard input is proven to be a terminal.
+/// Currently false until a public isatty API is available.
 pub async fn stdin_is_terminal() -> Bool {
   is_terminal(Stdin)
 }
 
 ///|
-/// Return whether standard output is a proven interactive character device.
+/// Return whether standard output is proven to be a terminal.
 pub async fn stdout_is_terminal() -> Bool {
   is_terminal(Stdout)
 }
 
 ///|
-/// Return whether standard error is an interactive character device.
+/// Return whether standard error is proven to be a terminal.
 pub async fn stderr_is_terminal() -> Bool {
   is_terminal(Stderr)
 }
@@ -173,20 +181,11 @@ pub async fn terminal_output_enabled(
 }
 
 ///|
-/// The public async filesystem API can open the POSIX `/dev/fd` aliases and
-/// expose the kind recorded on the returned file handle. Windows keeps the
-/// conservative false result because `CONIN$`/`CONOUT$` do not describe
-/// redirected handles.
-pub async fn is_terminal(stream : StandardStream) -> Bool {
-  if is_windows() {
-    return false
-  }
-  let (path, mode) = match stream {
-    Stdin => ("/dev/fd/0", @fs.Mode::ReadOnly)
-    Stdout => ("/dev/fd/1", @fs.Mode::WriteOnly)
-    Stderr => ("/dev/fd/2", @fs.Mode::WriteOnly)
-  }
-  let file = @fs.open(path, mode~) catch { _ => return false }
-  defer file.close()
-  file.kind() is @fs.FileKind::CharDevice
+/// async 0.22.1 has no public isatty operation. A character device (for
+/// example /dev/null) does not prove terminal ownership. Explicit interactive
+/// modes remain available without pretending this capability is present.
+// Retain the asynchronous public signature for existing callers.
+#warnings("-unused_async")
+pub async fn is_terminal(_stream : StandardStream) -> Bool {
+  false
 }

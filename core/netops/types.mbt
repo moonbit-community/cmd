@@ -128,6 +128,10 @@ pub(all) struct TransferOptions {
   http_error_statuses : Array[Int]
   resume_from : Int64?
   keep_output_on_not_modified : Bool
+  cookie_jar : CookieJar?
+  cookie_data : String?
+  basic_credentials : String?
+  basic_preemptive : Bool
 }
 
 ///|
@@ -146,6 +150,10 @@ pub fn transfer_options(
   http_error_statuses? : Array[Int] = [],
   resume_from? : Int64,
   keep_output_on_not_modified? : Bool = false,
+  cookie_jar? : CookieJar,
+  cookie_data? : String,
+  basic_credentials? : String,
+  basic_preemptive? : Bool = true,
 ) -> TransferOptions {
   {
     request_method,
@@ -162,6 +170,10 @@ pub fn transfer_options(
     http_error_statuses,
     resume_from,
     keep_output_on_not_modified,
+    cookie_jar,
+    cookie_data,
+    basic_credentials,
+    basic_preemptive,
   }
 }
 

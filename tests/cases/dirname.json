@@ -1,0 +1,148 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-dirname-basic",
+      "command": "dirname",
+      "args": [
+        "path/to/file"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-dirname-empty",
+      "command": "dirname",
+      "args": [
+        "--",
+        ""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-dirname-repeated-separators",
+      "command": "dirname",
+      "args": [
+        "path///to///file///"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-dirname-root",
+      "command": "dirname",
+      "args": [
+        "///"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-text-line-664",
+      "command": "dirname",
+      "args": [
+        "--",
+        ""
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": ".\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-665",
+      "command": "dirname",
+      "args": [
+        "///"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "/\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-666",
+      "command": "dirname",
+      "args": [
+        "path///to///file///"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "path///to\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-catalog-line-73",
+      "command": "dirname",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "compat-catalog-line-340",
+      "command": "dirname",
+      "args": [
+        "-zz",
+        "/alpha/beta"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_hex": "2f616c70686100",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-catalog-line-349",
+      "command": "dirname",
+      "args": [
+        "--",
+        "-operand"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": ".\n",
+      "expected_stderr_text": ""
+    }
+  ]
+}

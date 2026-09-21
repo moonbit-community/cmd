@@ -1,0 +1,83 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase4-mkdir-parents",
+      "command": "mkdir",
+      "args": [
+        "-p",
+        "nested/dir"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "mkdir-parent-leaf-mode",
+      "command": "mkdir",
+      "args": [
+        "-p",
+        "-m700",
+        "parent/leaf"
+      ],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "observe": [
+        "mode",
+        "identity"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "compat-text-mkdir-partial-order",
+      "command": "mkdir",
+      "args": [
+        "existing",
+        "created"
+      ],
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "existing",
+      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted.",
+      "expected_files": [
+        {
+          "path": "created",
+          "kind": "directory"
+        }
+      ]
+    },
+    {
+      "id": "compat-catalog-line-158",
+      "command": "mkdir",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    }
+  ]
+}

@@ -1,37 +1,25 @@
-# ADR-0003: Deterministic Streams
+# ADR-0003: Preserve Streams and Caller Locale
 
-Status: Accepted  
+Status: Accepted
 Date: 2026-09-05
+Updated: 2026-09-21
+Revision: Move fixed locale into test environments and byte contracts into the shared catalog.
 
-## Context
+## Target and decision
 
-Commands are composed through pipes, files, and explicit `-` operands. Host
-terminal behavior and locale-sensitive records are not portable across Native
-and Wasm.
+Preserve byte streams, final newlines and partial output. Set LC_ALL=C explicitly in differential fixtures; inherit caller locale in real commands. C-byte collation tests do not certify non-C behavior. Keep bounded sort and descriptor-follow tail as declared subsets.
 
-## Decision
+## Alternatives and compatibility cost
 
-Keep implicit stdin byte-clean and silent. Use a fixed C-locale byte contract
-for the text pipeline (`grep`, `sort`, `uniq`, `wc`, `tr`, `cut`, `paste`,
-`join`, and `comm`). Record commands support explicit NUL framing where
-upstream exposes it. Keep sorting in-process with bounded memory. `tail -f` follows an
-already-open regular-file descriptor by polling; `tail -F` path reopen and
-rotation are rejected until a portable identity and cancellation contract
-exists.
+Reject universal newline normalization, whole-output trimming and forced locale. Command substitution removes trailing LF only, preserving spaces and embedded newlines. Grep separators require requested context; base64 -w0 emits no newline. Full locale-aware comparisons remain unverified.
 
-## Consequences
+## Versions and evidence
 
-The same bytes flow through terminal, pipe, redirection, and explicit `-`
-paths. Locale-aware collation, external sort files, dynamic progress meters,
-and path-follow rotation are outside the claimed profile.
-
-## Evidence
-
-The P2/P3 and P9 manifest cases exercise binary/NUL records, C-locale byte
-classes and ordering, malformed-input handling, and the retained `tail -F`
-rejection.
+Baseline: async 0.22.1, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-15.
+Exact CLI contracts in tests/cases cover grep, base64 and shell substitution on both backends. The original audit records the previous mismatches; the original fidelity probe is retained in the 2026-09-21 evidence archive.
+Historical results remain in [the audit](../reports/2026-09-19-command-fidelity-audit.md).
+Candidate runtime results are recorded separately from published versions.
 
 ## Revisit when
 
-The runtime offers a stable locale/identity/reopen primitive and a bounded
-resource contract for external streams.
+Add locale profiles only when implementation and oracle evidence cover them; never rewrite the caller environment to hide a gap.

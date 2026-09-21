@@ -1,0 +1,715 @@
+diff --git a/commands/base64/moon.mod b/commands/base64/moon.mod
+index 133012b..34dd6a0 100644
+--- a/commands/base64/moon.mod
++++ b/commands/base64/moon.mod
+@@ -16,6 +16,6 @@ description = "base64 command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/basename/moon.mod b/commands/basename/moon.mod
+index 3cad8f3..027efb0 100644
+--- a/commands/basename/moon.mod
++++ b/commands/basename/moon.mod
+@@ -16,6 +16,6 @@ description = "basename command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/cat/moon.mod b/commands/cat/moon.mod
+index aa82ef4..6d8efc6 100644
+--- a/commands/cat/moon.mod
++++ b/commands/cat/moon.mod
+@@ -16,6 +16,6 @@ description = "cat command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/chmod/moon.mod b/commands/chmod/moon.mod
+index 28de8fe..47e9de9 100644
+--- a/commands/chmod/moon.mod
++++ b/commands/chmod/moon.mod
+@@ -16,6 +16,6 @@ description = "chmod command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/cmp/moon.mod b/commands/cmp/moon.mod
+index 9907f12..1c7f7af 100644
+--- a/commands/cmp/moon.mod
++++ b/commands/cmp/moon.mod
+@@ -16,6 +16,6 @@ description = "cmp command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/comm/moon.mod b/commands/comm/moon.mod
+index 2f53df0..73fbb44 100644
+--- a/commands/comm/moon.mod
++++ b/commands/comm/moon.mod
+@@ -16,6 +16,6 @@ description = "comm command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/cp/moon.mod b/commands/cp/moon.mod
+index 4861c21..26aa7ed 100644
+--- a/commands/cp/moon.mod
++++ b/commands/cp/moon.mod
+@@ -16,6 +16,6 @@ description = "cp command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/curl/moon.mod b/commands/curl/moon.mod
+index df1a3f2..4635452 100644
+--- a/commands/curl/moon.mod
++++ b/commands/curl/moon.mod
+@@ -16,6 +16,6 @@ description = "curl command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/cut/moon.mod b/commands/cut/moon.mod
+index c1cc361..62a21d3 100644
+--- a/commands/cut/moon.mod
++++ b/commands/cut/moon.mod
+@@ -16,6 +16,6 @@ description = "cut command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/dirname/moon.mod b/commands/dirname/moon.mod
+index de9b6ce..191011b 100644
+--- a/commands/dirname/moon.mod
++++ b/commands/dirname/moon.mod
+@@ -16,6 +16,6 @@ description = "dirname command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/echo/moon.mod b/commands/echo/moon.mod
+index 2c86914..3ca3518 100644
+--- a/commands/echo/moon.mod
++++ b/commands/echo/moon.mod
+@@ -15,5 +15,5 @@ preferred_target = "wasm"
+ description = "echo command for MoonX."
+ 
+ import {
+-  "moonbitlang/async@0.21.2",
++  "moonbitlang/async@0.22.1",
+ }
+diff --git a/commands/env/moon.mod b/commands/env/moon.mod
+index 31c3385..63de79c 100644
+--- a/commands/env/moon.mod
++++ b/commands/env/moon.mod
+@@ -16,6 +16,6 @@ description = "env command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/false/moon.mod b/commands/false/moon.mod
+index 7fd6d40..a29e9a1 100644
+--- a/commands/false/moon.mod
++++ b/commands/false/moon.mod
+@@ -15,6 +15,6 @@ preferred_target = "wasm"
+ description = "false command for MoonX."
+ 
+ import {
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/find/moon.mod b/commands/find/moon.mod
+index 880bf3b..6e68042 100644
+--- a/commands/find/moon.mod
++++ b/commands/find/moon.mod
+@@ -16,6 +16,6 @@ description = "find command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/grep/moon.mod b/commands/grep/moon.mod
+index ac5522d..ea4220e 100644
+--- a/commands/grep/moon.mod
++++ b/commands/grep/moon.mod
+@@ -16,6 +16,6 @@ description = "grep command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/head/moon.mod b/commands/head/moon.mod
+index 7632813..77558ac 100644
+--- a/commands/head/moon.mod
++++ b/commands/head/moon.mod
+@@ -16,6 +16,6 @@ description = "head command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/join/moon.mod b/commands/join/moon.mod
+index 0b184cc..333ab8f 100644
+--- a/commands/join/moon.mod
++++ b/commands/join/moon.mod
+@@ -16,6 +16,6 @@ description = "join command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/jq/moon.mod b/commands/jq/moon.mod
+index 04c26fc..572b127 100644
+--- a/commands/jq/moon.mod
++++ b/commands/jq/moon.mod
+@@ -16,7 +16,7 @@ description = "jq command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+   "bobzhang/moonjq@0.1.2",
+ }
+diff --git a/commands/jqlog/moon.mod b/commands/jqlog/moon.mod
+index 5349c4e..7e42bf2 100644
+--- a/commands/jqlog/moon.mod
++++ b/commands/jqlog/moon.mod
+@@ -15,7 +15,7 @@ preferred_target = "wasm"
+ description = "jqlog command for MoonX."
+ 
+ import {
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+   "bobzhang/moonjq@0.1.2",
+ }
+diff --git a/commands/ln/moon.mod b/commands/ln/moon.mod
+index f6e721d..d124348 100644
+--- a/commands/ln/moon.mod
++++ b/commands/ln/moon.mod
+@@ -16,6 +16,6 @@ description = "ln command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/ls/moon.mod b/commands/ls/moon.mod
+index f028814..c64eb68 100644
+--- a/commands/ls/moon.mod
++++ b/commands/ls/moon.mod
+@@ -16,6 +16,6 @@ description = "ls command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/make/moon.mod b/commands/make/moon.mod
+index 67ab276..8d05b3a 100644
+--- a/commands/make/moon.mod
++++ b/commands/make/moon.mod
+@@ -16,6 +16,6 @@ description = "make command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/mkdir/moon.mod b/commands/mkdir/moon.mod
+index 00e430c..4b7e6aa 100644
+--- a/commands/mkdir/moon.mod
++++ b/commands/mkdir/moon.mod
+@@ -16,6 +16,6 @@ description = "mkdir command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/mv/moon.mod b/commands/mv/moon.mod
+index 0ad992e..c74d4b3 100644
+--- a/commands/mv/moon.mod
++++ b/commands/mv/moon.mod
+@@ -16,6 +16,6 @@ description = "mv command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/nl/moon.mod b/commands/nl/moon.mod
+index ff38030..fff2e87 100644
+--- a/commands/nl/moon.mod
++++ b/commands/nl/moon.mod
+@@ -16,6 +16,6 @@ description = "nl command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/paste/moon.mod b/commands/paste/moon.mod
+index 8fde2da..e19fab8 100644
+--- a/commands/paste/moon.mod
++++ b/commands/paste/moon.mod
+@@ -16,6 +16,6 @@ description = "paste command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/printenv/moon.mod b/commands/printenv/moon.mod
+index e800e67..d2eab12 100644
+--- a/commands/printenv/moon.mod
++++ b/commands/printenv/moon.mod
+@@ -16,6 +16,6 @@ description = "printenv command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/printf/moon.mod b/commands/printf/moon.mod
+index 53f1560..782a7b9 100644
+--- a/commands/printf/moon.mod
++++ b/commands/printf/moon.mod
+@@ -15,6 +15,6 @@ preferred_target = "wasm"
+ description = "printf command for MoonX."
+ 
+ import {
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/pwd/moon.mod b/commands/pwd/moon.mod
+index fc2c605..685f14a 100644
+--- a/commands/pwd/moon.mod
++++ b/commands/pwd/moon.mod
+@@ -16,6 +16,6 @@ description = "pwd command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/rm/moon.mod b/commands/rm/moon.mod
+index 0f20276..7737fce 100644
+--- a/commands/rm/moon.mod
++++ b/commands/rm/moon.mod
+@@ -16,6 +16,6 @@ description = "rm command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/rmdir/moon.mod b/commands/rmdir/moon.mod
+index 3c4583d..1ea3eb9 100644
+--- a/commands/rmdir/moon.mod
++++ b/commands/rmdir/moon.mod
+@@ -16,6 +16,6 @@ description = "rmdir command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/seq/moon.mod b/commands/seq/moon.mod
+index 8324b52..de69b00 100644
+--- a/commands/seq/moon.mod
++++ b/commands/seq/moon.mod
+@@ -15,6 +15,6 @@ preferred_target = "wasm"
+ description = "seq command for MoonX."
+ 
+ import {
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/sh/moon.mod b/commands/sh/moon.mod
+index 81562eb..c24dab5 100644
+--- a/commands/sh/moon.mod
++++ b/commands/sh/moon.mod
+@@ -16,6 +16,6 @@ description = "sh command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/sha256sum/moon.mod b/commands/sha256sum/moon.mod
+index e2059e3..f113348 100644
+--- a/commands/sha256sum/moon.mod
++++ b/commands/sha256sum/moon.mod
+@@ -16,6 +16,6 @@ description = "sha256sum command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/sleep/moon.mod b/commands/sleep/moon.mod
+index 6e704bd..06f221f 100644
+--- a/commands/sleep/moon.mod
++++ b/commands/sleep/moon.mod
+@@ -15,6 +15,6 @@ preferred_target = "wasm"
+ description = "sleep command for MoonX."
+ 
+ import {
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/sort/moon.mod b/commands/sort/moon.mod
+index ff2a4e6..a37f27f 100644
+--- a/commands/sort/moon.mod
++++ b/commands/sort/moon.mod
+@@ -16,6 +16,6 @@ description = "sort command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/tail/moon.mod b/commands/tail/moon.mod
+index 9e864fe..90f0cc0 100644
+--- a/commands/tail/moon.mod
++++ b/commands/tail/moon.mod
+@@ -16,6 +16,6 @@ description = "tail command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/tee/moon.mod b/commands/tee/moon.mod
+index 694b586..a2a2d5f 100644
+--- a/commands/tee/moon.mod
++++ b/commands/tee/moon.mod
+@@ -16,6 +16,6 @@ description = "tee command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/test/moon.mod b/commands/test/moon.mod
+index d311929..ecdbcea 100644
+--- a/commands/test/moon.mod
++++ b/commands/test/moon.mod
+@@ -16,6 +16,6 @@ description = "test command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/timeout/moon.mod b/commands/timeout/moon.mod
+index a369972..53c528d 100644
+--- a/commands/timeout/moon.mod
++++ b/commands/timeout/moon.mod
+@@ -16,6 +16,6 @@ description = "timeout command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/touch/moon.mod b/commands/touch/moon.mod
+index 60381e0..5925242 100644
+--- a/commands/touch/moon.mod
++++ b/commands/touch/moon.mod
+@@ -16,6 +16,6 @@ description = "touch command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/tr/moon.mod b/commands/tr/moon.mod
+index 6e2593c..fd46492 100644
+--- a/commands/tr/moon.mod
++++ b/commands/tr/moon.mod
+@@ -16,6 +16,6 @@ description = "tr command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/true/moon.mod b/commands/true/moon.mod
+index 7ff2f40..dc4f3e9 100644
+--- a/commands/true/moon.mod
++++ b/commands/true/moon.mod
+@@ -15,6 +15,6 @@ preferred_target = "wasm"
+ description = "true command for MoonX."
+ 
+ import {
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/uniq/moon.mod b/commands/uniq/moon.mod
+index 8b94d28..ef865d2 100644
+--- a/commands/uniq/moon.mod
++++ b/commands/uniq/moon.mod
+@@ -16,6 +16,6 @@ description = "uniq command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/wc/moon.mod b/commands/wc/moon.mod
+index d30e39f..278b646 100644
+--- a/commands/wc/moon.mod
++++ b/commands/wc/moon.mod
+@@ -16,6 +16,6 @@ description = "wc command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/wget/moon.mod b/commands/wget/moon.mod
+index 8e88c6c..f64bbc4 100644
+--- a/commands/wget/moon.mod
++++ b/commands/wget/moon.mod
+@@ -16,6 +16,6 @@ description = "wget command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/xargs/main.mbt b/commands/xargs/main.mbt
+index 5544e87..7c1e06c 100644
+--- a/commands/xargs/main.mbt
++++ b/commands/xargs/main.mbt
+@@ -136,7 +136,7 @@ fn xargs_child_status(status : Int) -> Int {
+ 
+ ///|
+ fn parse_positive(value : String, option : String) -> Int raise XargsError {
+-  let parsed = @strconv.from_str(value) catch {
++  let parsed = @string.parse_int(value) catch {
+     _ => raise XargsError("invalid value for \{option}: '\{value}'")
+   }
+   if parsed <= 0 {
+diff --git a/commands/xargs/moon.mod b/commands/xargs/moon.mod
+index c1664b7..b6d9197 100644
+--- a/commands/xargs/moon.mod
++++ b/commands/xargs/moon.mod
+@@ -16,6 +16,6 @@ description = "xargs command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/commands/xargs/moon.pkg b/commands/xargs/moon.pkg
+index 44a973e..d6567c7 100644
+--- a/commands/xargs/moon.pkg
++++ b/commands/xargs/moon.pkg
+@@ -6,7 +6,7 @@ import {
+   "moonbitlang/core/bytes",
+   "moonbitlang/core/encoding/utf8",
+   "moonbitlang/core/env",
+-  "moonbitlang/core/strconv",
++  "moonbitlang/core/string",
+   "moonbitlang/x/sys",
+ }
+ 
+diff --git a/commands/xxd/moon.mod b/commands/xxd/moon.mod
+index 267c82f..f086b1c 100644
+--- a/commands/xxd/moon.mod
++++ b/commands/xxd/moon.mod
+@@ -16,6 +16,6 @@ description = "xxd command for MoonX."
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/core/moon.mod b/core/moon.mod
+index c03dfce..d2bc5f9 100644
+--- a/core/moon.mod
++++ b/core/moon.mod
+@@ -15,6 +15,6 @@ preferred_target = "wasm"
+ description = "Shared runtime core for cli command modules."
+ 
+ import {
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/tests/moon.mod b/tests/moon.mod
+index 8836333..b6a08f8 100644
+--- a/tests/moon.mod
++++ b/tests/moon.mod
+@@ -16,6 +16,6 @@ description = "Unified compatibility, policy, and pinned-oracle runner for the c
+ 
+ import {
+   "cli/core@0.1.4",
+-  "moonbitlang/async@0.21.2",
+-  "moonbitlang/x@0.5.1",
++  "moonbitlang/async@0.22.1",
++  "moonbitlang/x@0.5.5",
+ }
+diff --git a/tests/release_runner/main.mbt b/tests/release_runner/main.mbt
+index 4128a19..3a39583 100644
+--- a/tests/release_runner/main.mbt
++++ b/tests/release_runner/main.mbt
+@@ -714,9 +714,9 @@ async fn main {
+       group.add_defer(() => {
+         reader.close()
+         server.cancel()
+-        ignore(server.wait()) catch {
+-          _ => ()
+-        }
++        @async.protect_from_cancel(() => {
++          ignore(server.wait()) catch { _ => () }
++        })
+       })
+       run_selected_cases(
+         manifest,
+diff --git a/tests/runner/main.mbt b/tests/runner/main.mbt
+index ba28658..17926db 100644
+--- a/tests/runner/main.mbt
++++ b/tests/runner/main.mbt
+@@ -933,13 +933,11 @@ async fn main {
+       group.add_defer(() => {
+         reader.close()
+         process.cancel()
+-        ignore(process.wait()) catch {
+-          _ => ()
+-        }
+         tls_process.cancel()
+-        ignore(tls_process.wait()) catch {
+-          _ => ()
+-        }
++        @async.protect_from_cancel(() => {
++          ignore(process.wait()) catch { _ => () }
++          ignore(tls_process.wait()) catch { _ => () }
++        })
+       })
+       for fixture in manifest.cases {
+         failures.append(

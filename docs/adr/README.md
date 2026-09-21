@@ -9,14 +9,14 @@ Reports are archival context; they do not override the support record.
 | ADR | Decision |
 | --- | --- |
 | [0001 Evidence First](0001-evidence.md) | One runner, three suites, pre-built artifacts, and evidence-based support claims |
-| [0002 Harness Owns Policy](0002-policy.md) | Wasm authorization comes from the harness and is tested separately |
-| [0003 Deterministic Streams](0003-streams.md) | Byte-clean stdin, C-locale records, bounded sort, and descriptor-follow tail |
+| [0002 Upper Layers Own Authorization](0002-policy.md) | Complete command environment; host authorization tested separately |
+| [0003 Preserve Streams and Caller Locale](0003-streams.md) | Byte streams and partial effects; C locale belongs to fixtures |
 | [0004 Portable Filesystem Subset](0004-filesystem.md) | Maximum strict Native/Wasm metadata, link, copy, and timestamp subset |
 | [0005 HTTP Transfer Profile](0005-transfer.md) | Pure MoonBit bounded curl/wget HTTP behavior |
 | [0006 Direct Child Processes](0006-process.md) | Explicit policy-visible children and local-only timeout |
-| [0007 Interpreted Language Slices](0007-language.md) | Bounded MoonBit `sh` and `make`, with no host delegation |
+| [0007 Shell Sessions and Make Scheduling](0007-language.md) | Persistent line REPL and concurrent dependency scheduling in MoonBit |
 | [0008 Bounded JSON Modes](0008-data.md) | Deterministic jq CLI modes and imported jqlog contract |
-| [0009 Fail Before Mutation](0009-safety.md) | Preflight, source preservation, and no-side-effect rejection |
+| [0009 Honest Failure and Upstream Side Effects](0009-safety.md) | Reject unsafe unsupported operations; preserve supported partial effects |
 
 ## Historical Consolidation
 

@@ -3,6 +3,7 @@ import {
   "cli/core/shell",
   "moonbitlang/async",
   "moonbitlang/async/fs",
+  "moonbitlang/async/semaphore",
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",
   "moonbitlang/core/string",

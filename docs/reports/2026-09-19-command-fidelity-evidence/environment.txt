@@ -1,0 +1,18 @@
+moon version
+moon 0.1.20260915 (2e1a46d 2026-09-15)
+
+Feature flags enabled: rr_moon_mod,rr_moon_pkg
+
+moonx --version
+moonx 0.1.0
+
+/usr/bin/uname -a
+Darwin winterdeMacBook-Air.local 25.5.0 Darwin Kernel Version 25.5.0: Tue Jun  9 22:26:22 PDT 2026; root:xnu-12377.121.10~1/RELEASE_ARM64_T8132 arm64
+
+/usr/bin/sw_vers 
+ProductName:		macOS
+ProductVersion:		26.5.2
+BuildVersion:		25F84
+
+git -C /Users/winter/Documents/Moonbit/cmd rev-parse HEAD
+8b79e9bfd43c4d57ac615959cf21bf9e6c4c2668

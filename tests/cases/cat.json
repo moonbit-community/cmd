@@ -1,0 +1,140 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase0-cat-double-dash",
+      "command": "cat",
+      "args": [
+        "--",
+        "-"
+      ],
+      "stdin_hex": "00ff016f6b",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase3-cat-formatting",
+      "command": "cat",
+      "args": [
+        "-b",
+        "-s",
+        "-A"
+      ],
+      "stdin_hex": "610a0a0a620980",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-cat-unbuffered-binary",
+      "command": "cat",
+      "args": [
+        "-u"
+      ],
+      "stdin_hex": "00ff016f6b",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "cat-fixed-mtime-hardlink",
+      "command": "cat",
+      "args": [
+        "source",
+        "alias"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "data\n",
+          "mtime": "202001010000.00",
+          "mode": 384
+        },
+        {
+          "path": "alias",
+          "kind": "hardlink",
+          "target": "source",
+          "mtime": "202001010000.00"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "observe": [
+        "mode",
+        "identity",
+        "mtime"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "compat-text-line-33",
+      "command": "cat",
+      "args": [
+        "-b",
+        "-s",
+        "-A"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_hex": "610a0a0a620980",
+      "expected_stdout_text": "     1\ta$\n$\n     2\tb^IM-^@",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-675",
+      "command": "cat",
+      "args": [
+        "-u"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_hex": "62696e61727900ff",
+      "expected_stdout_hex": "62696e61727900ff",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-catalog-line-22",
+      "command": "cat",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_hex": "00ff016f6b",
+      "expected_stdout_hex": "00ff016f6b",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-stdin-cat",
+      "command": "cat",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
+    }
+  ]
+}

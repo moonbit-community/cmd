@@ -1,0 +1,110 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/json",
+  "moonbitlang/core/string",
+}
+
+///|
+struct Spec {
+  program : String
+  args : Array[String]
+  paired : Bool
+}
+
+///|
+struct Record {
+  id : String
+  side : String
+  program : String
+  args : Array[String]
+  exit : Int
+  stdout : String
+  stderr : String
+  recovered_from : String
+} derive(ToJson)
+
+///|
+let root = "/tmp/cmd-audit-20260919-fs"
+
+///|
+async fn read_text(path : String) -> String {
+  let out = @shell.Cmd("/bin/cat", [path]).output()
+  out.check()
+  out.stdout()
+}
+
+///|
+fn strings(values : Array[Json]) -> Array[String] raise {
+  let out = []
+  for value in values {
+    guard value is String(text) else { fail("non-string argv") }
+    out.push(text)
+  }
+  out
+}
+
+///|
+async fn main {
+  let specs : Map[String, Spec] = Map([])
+  let commands : Map[String, Bool] = Map([])
+  let mut pairs = 0
+  for source in ["run.mbtx", "followup.mbtx"] {
+    let content = read_text("\{root}/\{source}")
+    for line in content.split("\n") {
+      let line = line.trim().to_owned()
+      let paired = line.has_prefix("pair(")
+      if !paired && !line.has_prefix("native_pair(") { continue }
+      let start = line.find("(").unwrap() + 1
+      let end = line.find("]").unwrap() + 1
+      let data = @json.parse("[" + line[start:end].to_owned() + "]")
+      guard data is [String(id), String(program), Array(args)] else { fail("invalid invocation: \{line}") }
+      assert_true(!specs.contains(id))
+      specs[id] = { program, args: strings(args), paired }
+      if paired { pairs += 1; commands[program] = true }
+    }
+  }
+  let records : Array[Json] = []
+  let lines : Array[String] = []
+  let seen : Map[String, Bool] = Map([])
+  for logfile in ["runner.log", "followup.log"] {
+    let content = read_text("\{root}/\{logfile}")
+    for line in content.split("\n") {
+      let line = line.to_owned()
+      guard line.find(" exit=") is Some(exit_pos) else { continue }
+      let first_space = line.find(" ").unwrap()
+      let id = line[:first_space].to_owned()
+      let side = line[first_space + 1:exit_pos].to_owned()
+      assert_true(side == "native" || side == "moon")
+      let key = id + "-" + side
+      assert_true(!seen.contains(key))
+      seen[key] = true
+      let stdout_pos = line.find(" stdout=").unwrap()
+      let stderr_pos = line.find(" stderr=").unwrap()
+      let exit = @string.parse_int(line[exit_pos + 6:stdout_pos])
+      guard @json.parse(line[stdout_pos + 8:stderr_pos]) is String(stdout) else { fail("stdout not a string") }
+      guard @json.parse(line[stderr_pos + 8:]) is String(stderr) else { fail("stderr not a string") }
+      assert_eq(read_text("\{root}/\{key}.stdout"), stdout)
+      assert_eq(read_text("\{root}/\{key}.stderr"), stderr)
+      let spec = specs[id]
+      let moon = spec.paired && side == "moon"
+      let record = Record::{ id, side, program: if moon { "/Users/winter/.moon/bin/moonx" } else { spec.program }, args: if moon { ["cli/" + spec.program] + spec.args } else { spec.args }, exit, stdout, stderr, recovered_from: logfile }
+      let json = ToJson::to_json(record)
+      records.push(json)
+      lines.push(json.stringify())
+    }
+  }
+  assert_eq(pairs, 46)
+  assert_eq(commands.length(), 15)
+  assert_eq(records.length(), specs.length() * 2)
+  for id, _spec in specs {
+    assert_true(seen.contains(id + "-native"))
+    assert_true(seen.contains(id + "-moon"))
+  }
+  @fs.write_file("\{root}/results.json", ToJson::to_json(records).stringify(indent=2))
+  @fs.write_file("\{root}/results.jsonl", lines.join("\n") + "\n")
+  let report = "Recovered \{records.length()} records covering \{pairs} paired behavior cases across \{commands.length()} commands, plus \{specs.length() - pairs} paired native side-effect inspections. Every stdout/stderr matched its original per-case file. Args recovered from invocation lines in run.mbtx/followup.mbtx; exit codes and streams recovered from original runner.log/followup.log. No behavior cases were rerun.\n"
+  @fs.write_file("\{root}/evidence-validation.txt", report)
+  println(report)
+}

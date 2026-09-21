@@ -1,28 +1,193 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "mooxCLI/cmd-tests/testkit"
 
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/http",
+  "moonbitlang/async/process",
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+}
+
 // Values
 pub fn bytes_equal(Bytes, Bytes) -> Bool
 
+pub fn check_contract(Case, RunResult, String) -> Array[String]
+
+pub async fn check_expected_files(Case, String) -> Array[String]
+
 pub fn contains_bytes(Bytes, String) -> Bool
 
+pub fn contract_errors(Case) -> Array[String]
+
+pub fn contract_observations(Case) -> Array[String]
+
+pub fn controlled_environment(Map[String, String]) -> Map[String, String]
+
+pub fn decode_hex(String, String) -> Bytes raise Failure
+
+pub fn ends_with_newline(Bytes) -> Bool
+
 pub fn executable_path(String, String) -> String
+
+pub async fn execute_contract(Case, String, Bool, String, http_base? : String) -> CaseReport
+
+pub fn expand_args(ArrayView[String], String, http_base? : String) -> Array[String]
+
+pub fn expand_fixture_content(Bytes, http_base? : String) -> Bytes
+
+pub fn expand_text(String, String, http_base? : String) -> String
+
+pub fn host_platform() -> String
+
+pub fn input_bytes(String?, String?, String) -> Bytes raise Failure
+
+pub fn is_network_case(Case) -> Bool
+
+pub async fn load_cases(String) -> Array[Case]
 
 pub fn normalize_diagnostic(String, temporary_root? : String) -> String
 
 pub fn normalize_lf(String) -> String
 
+pub fn normalize_text(Bytes, String, ArrayView[Normalization], String) -> Bytes
+
+pub fn oracle_request_name(@http.Request) -> String
+
+pub async fn prepare_fixture(String, Case, http_base? : String) -> Unit
+
 pub async fn run(String, Array[String], stdin? : Bytes, cwd? : String, extra_env? : Map[String, String], inherit_env? : Bool) -> RunResult
 
+pub async fn run_artifact(String, Bool, String, Array[String], stdin? : Bytes, cwd? : String, extra_env? : Map[String, String]) -> RunResult
+
+pub async fn run_http_fixture(@http.Server) -> Unit
+
+pub async fn run_http_fixture_process() -> Unit
+
+pub async fn run_with_deadline(String, Array[String], Int, stdin? : Bytes, cwd? : String, extra_env? : Map[String, String], inherit_env? : Bool) -> TimedRun
+
+pub fn safe_relative_path(String) -> Bool
+
+pub fn safe_symlink_target(String) -> Bool
+
+pub fn select_cases(ArrayView[Case], ArrayView[String], ArrayView[String]) -> Array[Case] raise Failure
+
+pub async fn snapshot(String, observe? : ArrayView[String], baseline? : Bool) -> Array[SnapshotEntry]
+
+pub fn snapshots_equal(ArrayView[SnapshotEntry], ArrayView[SnapshotEntry]) -> Bool
+
+pub async fn spawn_http_fixture_process(@async.TaskGroup[Unit]) -> (@process.Process, @process.ReadFromProcess, String)
+
 pub fn wasm_path(String, String) -> String
+
+pub async fn write_reports(String, ArrayView[CaseReport]) -> Unit
 
 // Errors
 
 // Types and methods
+pub(all) struct Case {
+  id : String
+  aliases : Array[String]?
+  command : String
+  related_commands : Array[String]?
+  args : Array[String]
+  stdin_hex : String?
+  stdin_text : String?
+  files : Array[FixtureFile]
+  delay_ms : Int?
+  environment : Map[String, String]
+  expected_status : Int
+  expected_rejection : String?
+  normalizations : Array[Normalization]
+  timeout_ms : Int?
+  comparison : String?
+  oracle : Bool?
+  expected_stdout_hex : String?
+  expected_stdout_text : String?
+  expected_stderr_hex : String?
+  expected_stderr_text : String?
+  expected_stdout_contains : String?
+  expected_stderr_contains : String?
+  diagnostic_reason : String?
+  expected_stdout_ends_with_newline : Bool?
+  expected_stderr_ends_with_newline : Bool?
+  forbidden_stderr : Array[String]?
+  coverage : Array[String]?
+  host_platforms : Array[String]?
+  observe : Array[String]?
+  source_version : String?
+  cwd : String?
+  expected_files : Array[ExpectedFile]?
+  expected_stdout_contains_all : Array[String]?
+  expected_stderr_contains_all : Array[String]?
+  stdout_order : String?
+} derive(ToJson, @debug.Debug, @json.FromJson)
+pub fn Case::input(Self, root? : String, http_base? : String) -> Bytes raise Failure
+pub fn Case::platform_applies(Self) -> Bool
+pub fn Case::working_directory(Self, String) -> String raise Failure
+
+pub(all) struct CaseReport {
+  id : String
+  command : String
+  result : String
+  verification : String
+  stage : String
+  detail : String
+  platform : String
+  backend : String
+  source_version : String
+  duration_ms : Int64
+  observations : Array[String]
+  missing_observations : Array[String]
+  evidence : String?
+} derive(ToJson, @debug.Debug)
+pub fn CaseReport::semantic_pass(Self) -> Bool
+
+pub(all) struct ExpectedFile {
+  path : String
+  exists : Bool?
+  kind : String?
+  content_text : String?
+  content_hex : String?
+  mode : Int?
+  target : String?
+  same_identity_as : String?
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct FixtureFile {
+  path : String
+  content_hex : String?
+  content_text : String?
+  kind : String?
+  target : String?
+  mode : Int?
+  atime : String?
+  mtime : String?
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct Normalization {
+  field : String
+  rule : String
+  comment : String
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
 pub(all) struct RunResult {
   status : Int
   stdout : Bytes
   stderr : Bytes
+}
+
+pub(all) struct SnapshotEntry {
+  path : String
+  kind : String
+  content : Bytes
+  metadata : Map[String, String]
+} derive(@debug.Debug)
+
+pub(all) struct TimedRun {
+  output : RunResult
+  timed_out : Bool
+  cleanup_error : String?
 }
 
 // Type aliases

@@ -1,0 +1,394 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-grep-stdin",
+      "command": "grep",
+      "args": [
+        "needle"
+      ],
+      "stdin_text": "no\nneedle\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p2-grep-context-byte-offset",
+      "command": "grep",
+      "args": [
+        "-n",
+        "-b",
+        "-C1",
+        "hit"
+      ],
+      "stdin_text": "a\nhit\nc\nd\ne\nhit\ng\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p2-grep-zero-records",
+      "command": "grep",
+      "args": [
+        "-Fzb",
+        "hit"
+      ],
+      "stdin_hex": "6f6e650068697400746872656500",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p2-grep-repeated-context",
+      "command": "grep",
+      "args": [
+        "-A0",
+        "-A1",
+        "hit"
+      ],
+      "stdin_text": "a\nhit\nc\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p2-grep-binary-report",
+      "command": "grep",
+      "args": [
+        "hit"
+      ],
+      "stdin_hex": "61006869740a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p2-grep-recursive-selection",
+      "command": "grep",
+      "args": [
+        "-r",
+        "--include=*.txt",
+        "--exclude=skip*",
+        "needle",
+        "tree"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "tree/keep.txt",
+          "content_text": "needle\n"
+        },
+        {
+          "path": "tree/skip.txt",
+          "content_text": "needle\n"
+        },
+        {
+          "path": "tree/keep.log",
+          "content_text": "needle\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "grep-no-context-separator",
+      "command": "grep",
+      "args": [
+        "a"
+      ],
+      "stdin_text": "a\nx\na\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "a\na\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-basic-plus-literal",
+      "command": "grep",
+      "args": [
+        "a+"
+      ],
+      "stdin_text": "aa\na+\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "a+\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-extended-longest-only",
+      "command": "grep",
+      "args": [
+        "-Eo",
+        "a|aa"
+      ],
+      "stdin_text": "aa\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "aa\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-209",
+      "command": "grep",
+      "args": [
+        "-n",
+        "-b",
+        "-C1",
+        "hit"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "a\nhit\nc\nd\ne\nhit\ng\n",
+      "expected_stdout_text": "1-0-a\n2:2:hit\n3-6-c\n--\n5-10-e\n6:12:hit\n7-16-g\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-218",
+      "command": "grep",
+      "args": [
+        "-A0",
+        "-A1",
+        "hit"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "a\nhit\nc\n",
+      "expected_stdout_text": "hit\nc\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-227",
+      "command": "grep",
+      "args": [
+        "-Fzb",
+        "hit"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_hex": "6f6e650068697400746872656500",
+      "expected_stdout_hex": "343a68697400",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-236",
+      "command": "grep",
+      "args": [
+        "--binary-files=text",
+        "hit"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_hex": "61006869740a",
+      "expected_stdout_hex": "61006869740a",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-260",
+      "command": "grep",
+      "args": [
+        "--binary-files=without-match",
+        "hit"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_hex": "61006869740a",
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-269",
+      "command": "grep",
+      "args": [
+        "--",
+        "-x"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "-x\n",
+      "expected_stdout_text": "-x\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-270",
+      "command": "grep",
+      "args": [
+        "-A",
+        "bad",
+        "hit"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "invalid context length",
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+    },
+    {
+      "id": "compat-text-line-278",
+      "command": "grep",
+      "args": [
+        "--binary-files=bad",
+        "hit"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "unknown binary-files type",
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+    },
+    {
+      "id": "compat-text-line-286",
+      "command": "grep",
+      "args": [
+        "["
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "invalid regular expression",
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+    },
+    {
+      "id": "compat-text-line-312",
+      "command": "grep",
+      "args": [
+        "-r",
+        "--include=*.txt",
+        "--exclude=skip*",
+        "needle",
+        "${WORK}"
+      ],
+      "files": [
+        {
+          "path": "nested/keep.txt",
+          "content_text": "needle\n"
+        },
+        {
+          "path": "nested/skip.txt",
+          "content_text": "needle\n"
+        },
+        {
+          "path": "nested/keep.log",
+          "content_text": "needle\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "temporary-path",
+          "comment": "Only the fresh fixture prefix varies."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Platform path separators differ."
+        }
+      ],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "<TMP>/nested/keep.txt:needle\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-grep-binary-stderr",
+      "command": "grep",
+      "args": [
+        "hit"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "grep: (standard input): binary file matches\n",
+      "stdin_hex": "61006869740a"
+    },
+    {
+      "id": "compat-text-grep-silent-missing",
+      "command": "grep",
+      "args": [
+        "-s",
+        "hit",
+        "missing-p2-p3-file"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-catalog-line-99",
+      "command": "grep",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    }
+  ]
+}

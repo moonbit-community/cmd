@@ -1,0 +1,95 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/http",
+  "moonbitlang/async/shell",
+  "moonbitlang/async/socket",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/json",
+}
+
+///|
+let out_dir = "/tmp/cmd-audit-20260919/network"
+
+///|
+async fn save_run(name : String, program : String, args : Array[String], input : String) -> Unit {
+  let result = @shell.Cmd(program, args, stdin=@shell.Text(input), cwd=out_dir,
+    env={ "NO_PROXY": "*", "no_proxy": "*", "http_proxy": "", "https_proxy": "", "HTTP_PROXY": "", "HTTPS_PROXY": "", "ALL_PROXY": "", "all_proxy": "" },
+  ).output(timeout_ms=30000, max_output_bytes=1024 * 1024)
+  @fs.write_file(out_dir + "/" + name + ".stdout", result.stdout_bytes())
+  @fs.write_file(out_dir + "/" + name + ".stderr", result.stderr())
+  @fs.write_file(out_dir + "/" + name + ".status", result.exit_code().to_string() + "\n")
+  let record : Json = {
+    "name": name, "program": program, "argv": args, "stdin": input,
+    "status": result.exit_code(), "stdout": result.stdout(), "stderr": result.stderr(),
+  }
+  @fs.write_file(out_dir + "/results.jsonl", record.stringify() + "\n", create_mode=@fs.OpenOrCreate, append=true)
+  println(record.stringify())
+}
+
+///|
+async fn paired(name : String, command : String, args : Array[String], input? : String = "") -> Unit {
+  save_run(name + "-moonx", "moonx", ["cli/" + command] + args, input)
+  let oracle = match command { "curl" => "/usr/bin/curl"; "wget" => "/opt/homebrew/bin/wget"; _ => "/usr/bin/jq" }
+  save_run(name + "-native", oracle, args, input)
+}
+
+///|
+async fn serve(server : @http.Server) -> Unit {
+  server.run_forever(allow_failure=true) <| (request, body, connection) => {
+    ignore(body.read_all())
+    let (code, reason, content) = match request.path {
+      "/fixed" => (200, "OK", "hello\n")
+      "/missing" => (404, "Not Found", "missing\n")
+      "/auth" => if request.headers.get("Authorization") == Some("Basic dTpw") { (200, "OK", "auth-ok\n") } else { (401, "Unauthorized", "auth-required\n") }
+      "/cookie" => (200, "OK", request.headers.get("Cookie").unwrap_or("NO_COOKIE") + "\n")
+      "/redirect" => (302, "Found", "")
+      _ => (400, "Bad Request", "unknown\n")
+    }
+    let headers : Map[@http.CaseInsensitiveString, String] = {
+      "Content-Length": @utf8.encode(content).length().to_string(),
+      "Connection": "close",
+    }
+    if request.path == "/redirect" { headers["Location"] = "/fixed" }
+    if request.path == "/auth" { headers["WWW-Authenticate"] = "Basic realm=fixture" }
+    connection..send_response(code, reason, extra_headers=headers)..write(content).end_response()
+  }
+}
+
+///|
+async fn main {
+  @fs.write_file(out_dir + "/results.jsonl", "")
+  save_run("curl-resolution", "moonx", ["-v", "cli/curl", "--help"], "")
+  save_run("wget-resolution", "moonx", ["-v", "cli/wget", "--help"], "")
+  save_run("jq-resolution", "moonx", ["-v", "cli/jq", "--help"], "")
+  save_run("curl-version", "/usr/bin/curl", ["--version"], "")
+  save_run("wget-version", "/opt/homebrew/bin/wget", ["--version"], "")
+  save_run("jq-version", "/usr/bin/jq", ["--version"], "")
+  let server = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
+  let base = "http://127.0.0.1:\{server.addr().port()}"
+  @fs.write_file(out_dir + "/fixture-url.txt", base + "\n")
+  @async.with_task_group <| group => {
+    let worker = group.spawn(() => serve(server), no_wait=true)
+    group.add_defer(() => { worker.cancel(); server.close() })
+    paired("01-curl-get", "curl", ["-sS", base + "/fixed"])
+    paired("02-curl-redirect", "curl", ["-sSL", base + "/redirect"])
+    paired("03-curl-http-error", "curl", ["-sSf", base + "/missing"])
+    paired("04-curl-basic-auth", "curl", ["-sS", "-u", "u:p", base + "/auth"])
+    paired("05-curl-cookie", "curl", ["-sS", "-b", "sid=one", base + "/cookie"])
+    paired("06-curl-header-auth", "curl", ["-sS", "-H", "Authorization: Basic dTpw", base + "/auth"])
+    paired("07-wget-get", "wget", ["-qO-", base + "/fixed"])
+    paired("08-wget-redirect", "wget", ["-qO-", base + "/redirect"])
+    paired("09-wget-http-error", "wget", ["-qO-", base + "/missing"])
+    paired("10-wget-basic-auth", "wget", ["-qO-", "--user=u", "--password=p", base + "/auth"])
+    paired("11-wget-cookie-state", "wget", ["-qO-", "--save-cookies", out_dir + "/cookies.txt", base + "/cookie"])
+    paired("12-curl-url-auth", "curl", ["-sS", "http://u:p@127.0.0.1:\{server.addr().port()}/auth"])
+  }
+  paired("13-jq-map", "jq", ["-c", "map(. + 1)"], input="[1,2,3]\n")
+  paired("14-jq-select", "jq", ["-c", ".[] | select(. > 1)"], input="[1,2,3]\n")
+  paired("15-jq-reduce", "jq", ["-c", "reduce .[] as $x (0; . + $x)"], input="[1,2,3]\n")
+  paired("16-jq-update", "jq", ["-c", ".items |= map(. + 1)"], input="{\"items\":[1,2,3]}\n")
+  paired("17-jq-neg-index", "jq", ["-c", ".[-1]"], input="[1,2,3]\n")
+  paired("18-jq-exit-stream", "jq", ["-e", "."], input="true\nfalse\n")
+  paired("19-jq-input-sequence", "jq", ["-c", "."], input="1 2 {\"a\":3}\n")
+  paired("20-jq-object-iteration", "jq", ["-c", "to_entries | map(.value)"], input="{\"a\":1,\"b\":2}\n")
+}

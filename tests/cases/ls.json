@@ -1,0 +1,1383 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-ls-basic",
+      "command": "ls",
+      "args": [],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "alpha",
+          "content_text": "a"
+        },
+        {
+          "path": "beta",
+          "content_text": "b"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-ls-size-reverse",
+      "command": "ls",
+      "args": [
+        "-S",
+        "-r",
+        "."
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a"
+        },
+        {
+          "path": "b",
+          "content_text": "bb"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-ls-dangling-classify",
+      "command": "ls",
+      "args": [
+        "-F",
+        "dangling"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "dangling",
+          "content_text": "",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "host_platforms": [
+        "posix"
+      ]
+    },
+    {
+      "id": "ls-links-times-0",
+      "command": "ls",
+      "args": [
+        "-H",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "a\nz\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "ls-links-times-1",
+      "command": "ls",
+      "args": [
+        "link"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "a\nz\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "ls-links-times-2",
+      "command": "ls",
+      "args": [
+        "-F",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "link@\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "ls-links-times-3",
+      "command": "ls",
+      "args": [
+        "-HF",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "a\nz\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "ls-links-times-4",
+      "command": "ls",
+      "args": [
+        "-HdF",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "link/\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "ls-links-times-5",
+      "command": "ls",
+      "args": [
+        "-dR",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "link\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "ls-links-times-6",
+      "command": "ls",
+      "args": [
+        "-LHPF",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "link@\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "ls-links-times-7",
+      "command": "ls",
+      "args": [
+        "-PLHdF",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "link/\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "ls-links-times-8",
+      "command": "ls",
+      "args": [
+        "-H",
+        "broken"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_contains": "ls:",
+      "diagnostic_reason": "Host filesystem error wording differs; status, partial stdout, and ls diagnostic prefix are required.",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "ls-links-times-9",
+      "command": "ls",
+      "args": [
+        "-L",
+        "broken"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_contains": "ls:",
+      "diagnostic_reason": "Host filesystem error wording differs; status, partial stdout, and ls diagnostic prefix are required.",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "ls-links-times-10",
+      "command": "ls",
+      "args": [
+        "-PF",
+        "broken"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "broken@\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "ls-links-times-11",
+      "command": "ls",
+      "args": [
+        "-LF",
+        "other"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "missing\nx\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_contains": "ls:",
+      "diagnostic_reason": "Host filesystem error wording differs; status, partial stdout, and ls diagnostic prefix are required.",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "ls-links-times-12",
+      "command": "ls",
+      "args": [
+        "-H",
+        "broken",
+        "dir/a"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "dir/a\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_contains": "ls:",
+      "diagnostic_reason": "Host filesystem error wording differs; status, partial stdout, and ls diagnostic prefix are required.",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "ls-links-times-13",
+      "command": "ls",
+      "args": [
+        "-u",
+        "dir"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "z\na\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "ls-links-times-14",
+      "command": "ls",
+      "args": [
+        "--time=access",
+        "dir"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "z\na\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "ls-links-times-15",
+      "command": "ls",
+      "args": [
+        "-ur",
+        "dir"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "a\nz\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "ls-links-times-16",
+      "command": "ls",
+      "args": [
+        "-uS",
+        "dir"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "a\nz\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "ls-links-times-17",
+      "command": "ls",
+      "args": [
+        "-Su",
+        "dir"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "a\nz\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "ls-links-times-18",
+      "command": "ls",
+      "args": [
+        "-Sut",
+        "dir"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "z\na\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "ls-links-times-19",
+      "command": "ls",
+      "args": [
+        "-tuS",
+        "dir"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "a\nz\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "ls-links-times-20",
+      "command": "ls",
+      "args": [
+        "-u",
+        "dir/a",
+        "dir/z"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "dir/z\ndir/a\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "ls-links-times-21",
+      "command": "ls",
+      "args": [
+        "-c",
+        "dir"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "z\na\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "compat-catalog-line-142",
+      "command": "ls",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    }
+  ]
+}

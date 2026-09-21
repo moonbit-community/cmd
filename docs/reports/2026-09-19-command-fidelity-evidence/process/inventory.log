@@ -1,0 +1,5 @@
+{"id":"seq-descending-moonx","program":"moonx","args":["cli/seq","3","1"],"status":0,"stdout":"3\n2\n1\n","stderr":""}
+{"id":"seq-descending-host","program":"/usr/bin/seq","args":["3","1"],"status":0,"stdout":"3\n2\n1\n","stderr":""}
+{"id":"seq-explicit-negative-moonx","program":"moonx","args":["cli/seq","3","-1","1"],"status":0,"stdout":"3\n2\n1\n","stderr":""}
+{"id":"seq-explicit-negative-host","program":"/usr/bin/seq","args":["3","-1","1"],"status":0,"stdout":"3\n2\n1\n","stderr":""}
+release smoke: 94 passed cases, 47 commands

@@ -107,9 +107,18 @@ async fn chmod_numeric_path(
   mode : Int,
   recursive : Bool,
   verbose : Bool,
+  command_line? : Bool = true,
 ) -> Unit {
   match @fs.kind(path, follow_symlink=false) {
-    SymLink => raise ChmodError("refusing to chmod symbolic link: \{path}")
+    SymLink =>
+      if command_line {
+        @fs.chmod(path, mode)
+        if verbose {
+          @stdio.stdout.write(
+            "mode of '\{path}' changed to \{mode_text(mode)}\n",
+          )
+        }
+      }
     Directory => {
       @fs.chmod(path, mode)
       if verbose {
@@ -128,6 +137,7 @@ async fn chmod_numeric_path(
             mode,
             true,
             verbose,
+            command_line=false,
           )
         }
       }

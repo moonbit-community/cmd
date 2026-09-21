@@ -1,0 +1,35 @@
+{"backend":"native","command":"grep","args":["a"],"status":0,"stdout":"a\na\n","stderr":""}
+{"backend":"native","command":"grep","args":["a+"],"status":0,"stdout":"a+\n","stderr":""}
+{"backend":"native","command":"grep","args":["-Eo","a|aa"],"status":0,"stdout":"aa\n","stderr":""}
+{"backend":"native","command":"base64","args":["-w0"],"status":0,"stdout":"YWJj","stderr":""}
+{"backend":"native","command":"seq","args":["3","1"],"status":0,"stdout":"","stderr":""}
+{"backend":"native","command":"seq","args":["3","-1","1"],"status":0,"stdout":"3\n2\n1\n","stderr":""}
+{"backend":"native","command":"jq","args":["-c","."],"status":0,"stdout":"1\n2\n{\"a\":3}\n","stderr":""}
+{"backend":"native","command":"jq","args":["-cs","."],"status":0,"stdout":"[1,2]\n","stderr":""}
+{"backend":"native","command":"jq","args":["-Rrs","."],"status":0,"stdout":"a\nb\n","stderr":""}
+{"backend":"native","command":"jq","args":["-nr","--arg","x","outer","\"inner\" as $x | $x"],"status":0,"stdout":"inner\n","stderr":""}
+{"backend":"native","command":"jq","args":["-e","."],"status":1,"stdout":"false\n","stderr":""}
+{"backend":"native","command":"jq","args":["-c","."],"status":4,"stdout":"1\n","stderr":"moonjq: Invalid character 'i' at line 1, column 0\n"}
+{"backend":"native","command":"env","args":["/usr/bin/printenv","CMD_FIDELITY_INHERIT"],"status":0,"stdout":"retained\n","stderr":""}
+{"backend":"native","command":"env","args":["/usr/bin/printenv","LC_ALL"],"status":0,"stdout":"C\n","stderr":""}
+{"backend":"native","command":"env","args":["/usr/bin/printenv","LC_ALL"],"status":0,"stdout":"POSIX\n","stderr":""}
+{"backend":"native","command":"sh","args":["-c","LOCAL=secret; /usr/bin/printenv LOCAL; export LOCAL; /usr/bin/printenv LOCAL"],"status":0,"stdout":"secret\n","stderr":""}
+{"backend":"native","command":"sh","args":["-c","v=$(printf 'a \\n\\n'); printf '<%s>\\n' \"$v\""],"status":0,"stdout":"<a >\n","stderr":""}
+{"backend":"native","command":"sh","args":["-c","printf '%s' \"$((1/0))\""],"status":2,"stdout":"","stderr":"sh: arithmetic division by zero\n"}
+{"backend":"native","command":"sh","args":["-c","x=$(false)"],"status":1,"stdout":"","stderr":""}
+{"backend":"native","command":"cp","args":["/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/source","/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/destination"],"status":1,"stdout":"","stderr":"cp: cannot copy '/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/source' to '/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/destination': preserving source permissions requires a public mode reader; use --no-preserve=mode for a new destination\n"}
+{"backend":"native","command":"cp","args":["/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/source","/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/source"],"status":1,"stdout":"","stderr":"cp: cannot copy '/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/source' to '/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/source': preserving source permissions requires a public mode reader; use --no-preserve=mode for a new destination\n"}
+{"backend":"native","command":"cp","args":["/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/source","/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/alias"],"status":1,"stdout":"","stderr":"cp: cannot copy '/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/source' to '/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/alias': preserving source permissions requires a public mode reader; use --no-preserve=mode for a new destination\n"}
+{"backend":"native","command":"cp","args":["--no-preserve=mode","/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/source","/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/alias"],"status":1,"stdout":"","stderr":"cp: cannot copy '/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/source' to '/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/alias': overwriting an existing file requires public file identity and handle truncation APIs\n"}
+{"backend":"native","command":"cp","args":["--no-preserve=mode","/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/source","/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/new"],"status":0,"stdout":"","stderr":""}
+{"backend":"native","command":"touch","args":["/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/source"],"status":1,"stdout":"","stderr":"touch: cannot update '/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/source': timestamp setters are unavailable in moonbitlang/async 0.22.1\n"}
+{"backend":"native","command":"touch","args":["-c","/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/absent"],"status":0,"stdout":"","stderr":""}
+{"backend":"native","command":"touch","args":["/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/created"],"status":0,"stdout":"","stderr":""}
+{"backend":"native","command":"touch","args":["/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/earlier-created","/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/source"],"status":1,"stdout":"","stderr":"touch: cannot update '/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/source': timestamp setters are unavailable in moonbitlang/async 0.22.1\n"}
+{"backend":"native","command":"mkdir","args":["-p","-m700","/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/parent/leaf"],"status":0,"stdout":"","stderr":""}
+{"backend":"native","command":"chmod","args":["600","/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/link"],"status":0,"stdout":"","stderr":""}
+{"backend":"native","command":"make","args":["-C","/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24"],"status":0,"stdout":"one two\n","stderr":""}
+{"backend":"native","command":"make","args":["-j2","-C","/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24"],"status":0,"stdout":"","stderr":""}
+{"backend":"native","command":"make","args":["-j2","-C","/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24"],"status":2,"stdout":"","stderr":"make: recipe for 'broken' failed with status 1\nmake: 1 target(s) failed\n"}
+{"backend":"native","command":"rm","args":["--no-preserve-root","/var/folders/fv/gs2yjhx90sbch55yzczlpzk00000gn/T/cmd-fidelity-.39956.a9e2fe24/remove-me"],"status":0,"stdout":"","stderr":""}
+fidelity assertions passed

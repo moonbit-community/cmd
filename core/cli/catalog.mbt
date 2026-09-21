@@ -36,9 +36,9 @@ pub fn command_catalog() -> Array[CommandContract] {
       "help", "zero-terminated",
     ]),
     contract("jq", Core, StructuredInput, StructuredOutput, [FileRead], [
-      "compact-output", "exit-status", "from-file", "indent", "join-output", "logs",
-      "null-input", "raw-input", "sort-keys", "slurp", "tab", "raw-output", "arg",
-      "argjson",
+      "color-output", "monochrome-output", "compact-output", "exit-status", "from-file",
+      "indent", "join-output", "logs", "null-input", "raw-input", "sort-keys", "slurp",
+      "tab", "raw-output", "arg", "argjson",
     ]),
     contract("jqlog", Core, StructuredInput, StructuredOutput, [FileRead], [
       "file", "help",
@@ -104,11 +104,11 @@ pub fn command_catalog() -> Array[CommandContract] {
       ],
     ),
     contract("grep", Core, FileOrStdin, LineStream, [FileRead], [
-      "after-context", "before-context", "binary-files", "byte-offset", "context",
-      "count", "exclude", "extended-regexp", "file", "files-with-matches", "files-without-match",
-      "fixed-strings", "ignore-case", "include", "invert-match", "line-number", "line-regexp",
-      "no-filename", "no-messages", "null-data", "quiet", "recursive", "regexp",
-      "text", "with-filename", "word-regexp",
+      "after-context", "before-context", "basic-regexp", "binary-files", "byte-offset",
+      "context", "count", "exclude", "extended-regexp", "file", "files-with-matches",
+      "files-without-match", "fixed-strings", "ignore-case", "include", "invert-match",
+      "line-number", "line-regexp", "no-filename", "no-messages", "null-data", "only-matching",
+      "quiet", "recursive", "regexp", "text", "with-filename", "word-regexp",
     ]),
     contract("ls", Core, NoInput, LineStream, [FileRead], [
       "all", "almost-all", "classify", "directory", "recursive", "sort-time", "access-time",
@@ -130,8 +130,8 @@ pub fn command_catalog() -> Array[CommandContract] {
       "expression-language", "file-kinds", "access-checks", "size", "timestamps",
     ]),
     contract("cp", Extended, NoInput, LineStream, [FileRead, FileWrite], [
-      "archive", "force", "no-clobber", "no-target-directory", "preserve", "recursive",
-      "verbose", "interactive", "update", "update-mode", "backup", "backup-control",
+      "archive", "force", "no-clobber", "no-target-directory", "no-preserve", "preserve",
+      "recursive", "verbose", "interactive", "update", "update-mode", "backup", "backup-control",
       "suffix", "dereference-command-line", "dereference", "no-dereference",
     ]),
     contract("ln", Extended, NoInput, LineStream, [FileWrite, SymbolicLink], [
@@ -146,7 +146,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       "update-mode", "backup", "backup-control", "suffix",
     ]),
     contract("rm", Extended, NoInput, LineStream, [FileWrite], [
-      "dir", "force", "preserve-root", "recursive", "verbose",
+      "dir", "force", "preserve-root", "no-preserve-root", "recursive", "verbose",
     ]),
     contract("rmdir", Extended, NoInput, LineStream, [FileWrite], [
       "ignore-fail-on-non-empty", "parents", "verbose",
@@ -164,7 +164,8 @@ pub fn command_catalog() -> Array[CommandContract] {
       "head", "header", "idle-timeout", "insecure", "location", "max-redirs", "max-time",
       "output", "proxy", "remote-header-name", "remote-name", "remove-on-error",
       "request", "retry", "retry-all-errors", "retry-connrefused", "retry-delay",
-      "retry-max-time", "show-error", "silent", "upload-file",
+      "retry-max-time", "show-error", "silent", "upload-file", "user", "basic", "cookie",
+      "cookie-jar",
     ]),
     contract(
       "env",
@@ -172,7 +173,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       NoInput,
       LineStream,
       [ProcessSpawn],
-      ["chdir", "ignore-environment", "null", "unset"],
+      ["chdir", "ignore-environment", "null", "unset", "help", "version"],
       exit_codes=[0, 125, 126, 127],
     ),
     contract(
@@ -192,7 +193,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       FileOrStdin,
       ByteStream,
       [FileRead, FileWrite, ProcessSpawn],
-      ["command", "stdin-script"],
+      ["command", "stdin-script", "interactive"],
     ),
     contract(
       "timeout",
@@ -208,6 +209,8 @@ pub fn command_catalog() -> Array[CommandContract] {
       "header", "input-file", "max-redirect", "method", "no-check-certificate", "no-proxy",
       "output-document", "output-file", "quiet", "read-timeout", "retry-connrefused",
       "retry-on-http-error", "timeout", "timestamping", "tries", "waitretry", "idle-timeout",
+      "user", "password", "http-user", "http-password", "auth-no-challenge", "load-cookies",
+      "save-cookies", "keep-session-cookies", "no-cookies",
     ]),
     contract(
       "xargs",

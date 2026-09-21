@@ -1,0 +1,196 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-echo-basic",
+      "command": "echo",
+      "args": [
+        "hello",
+        "world"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-echo-double-dash-literal",
+      "command": "echo",
+      "args": [
+        "--",
+        "-e"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-echo-octal-per-argument",
+      "command": "echo",
+      "args": [
+        "-e",
+        "\\101",
+        "B\\102"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p0-echo-version",
+      "command": "echo",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "expected_stdout_text": "echo (moonbit cmd) 0.2.0\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "p0-echo-help",
+      "command": "echo",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "expected_stdout_text": "Usage: echo [-n] [-e|-E] [STRING...]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "p0-echo-no-newline",
+      "command": "echo",
+      "args": [
+        "-n",
+        "value"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "exact",
+      "coverage": [
+        "no-newline"
+      ]
+    },
+    {
+      "id": "p0-echo-enable-escapes",
+      "command": "echo",
+      "args": [
+        "-e",
+        "a\\nb"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "exact",
+      "coverage": [
+        "enable-escapes"
+      ]
+    },
+    {
+      "id": "p0-echo-disable-escapes",
+      "command": "echo",
+      "args": [
+        "-E",
+        "a\\nb"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "exact",
+      "coverage": [
+        "disable-escapes"
+      ]
+    },
+    {
+      "id": "compat-text-line-717",
+      "command": "echo",
+      "args": [
+        "--",
+        "-e"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "-- -e\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-718",
+      "command": "echo",
+      "args": [
+        "-e",
+        "A\\x00B"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_hex": "4100420a",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-catalog-line-81",
+      "command": "echo",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "compat-catalog-line-243",
+      "command": "echo",
+      "args": [
+        "--version"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "0.2.0",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    }
+  ]
+}

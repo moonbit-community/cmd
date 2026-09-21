@@ -1,20 +1,23 @@
 # base64 for moonx
 
-Support note (2026-09-05): this README is supplementary. The [support record](../../docs/compatibility.md) is the only capability authority; it separates native compatibility evidence from Wasm policy and smoke evidence. Options mentioned here but not promoted in that record are not compatibility guarantees.
+Version **0.2.0** behavior is documented here. The
+[support record](../../docs/compatibility.md) separates local verification from
+published MoonX behavior; `moonx` examples use registry releases.
 
 Base64 encode or decode a file or stdin:
 
 ```sh
 printf 'hello' | moonx cli/base64
 moonx cli/base64 -d encoded.txt
-moonx cli/base64 -w 0 big.bin   # no line wrapping
+moon run --target wasm commands/base64 -- -w0 big.bin # candidate: no wrapping or final newline
 ```
 
 Options: `-d`/`-D` decode (embedded newlines are always accepted), `-i`/
 `--ignore-garbage` discard non-alphabet bytes while decoding, and `-w N` wrap
-encoded output after N characters (default 76, `0` disables). Standard
-alphabet with `=` padding. Invalid input is rejected unless garbage mode is
-explicitly selected.
+encoded output after N characters (default 76, `0` disables wrapping and the
+terminal newline); attached `-w0` is accepted. The alphabet is standard Base64
+with `=` padding. Garbage mode ignores non-alphabet bytes; malformed Base64
+can still fail.
 
 With no file operand, the command silently reads stdin until EOF, matching the
 upstream terminal, pipe, redirection, and explicit `-` behavior.

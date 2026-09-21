@@ -136,7 +136,7 @@ fn xargs_child_status(status : Int) -> Int {
 
 ///|
 fn parse_positive(value : String, option : String) -> Int raise XargsError {
-  let parsed = @strconv.from_str(value) catch {
+  let parsed = @string.parse_int(value) catch {
     _ => raise XargsError("invalid value for \{option}: '\{value}'")
   }
   if parsed <= 0 {

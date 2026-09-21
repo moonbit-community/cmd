@@ -423,6 +423,32 @@ fn response_headers(response : @http.Response) -> Array[HttpHeader] {
   for name, value in response.headers {
     result.push({ name: name.to_string(), value, })
   }
+  for cookie in response.cookies {
+    let value = StringBuilder()
+    value.write_string(cookie.name + "=" + cookie.value)
+    if cookie.path is Some(path) {
+      value.write_string("; Path=" + path)
+    }
+    if cookie.domain is Some(domain) {
+      value.write_string("; Domain=" + domain)
+    }
+    if cookie.expires_raw is Some(expires) {
+      value.write_string("; Expires=" + expires)
+    }
+    if cookie.max_age is Some(age) {
+      value.write_string("; Max-Age=" + age.to_string())
+    }
+    if cookie.secure {
+      value.write_string("; Secure")
+    }
+    if cookie.http_only {
+      value.write_string("; HttpOnly")
+    }
+    for extension in cookie.extensions {
+      value.write_string("; " + extension)
+    }
+    result.push(http_header("Set-Cookie", value.to_string()))
+  }
   result
 }
 
@@ -631,9 +657,13 @@ pub async fn transfer(
   let started = @async.now()
   let requested_url = url
   let mut parsed = parse_absolute_url(url)
+  let credential_origin = parsed.origin_key()
+  let mut send_basic = options.basic_preemptive
+  let mut challenged = false
   let mut request_method = options.request_method
   let mut body = options.body
   let mut headers = options.headers.copy()
+  let cookie_data = options.cookie_data
   let seen : Map[String, Bool] = Map([])
   let mut redirect_count = 0
   for ;; {
@@ -649,6 +679,34 @@ pub async fn transfer(
       length,
       options.resume_from,
     )
+    if parsed.origin_key() == credential_origin &&
+      send_basic &&
+      options.basic_credentials is Some(credentials) &&
+      !contains_header(headers, "authorization") {
+      per_request["Authorization"] = "Basic " +
+        @base64.encode(@utf8.encode(credentials))
+    }
+    let stored = match options.cookie_jar {
+      Some(jar) => jar.header_for(parsed, @fsops.current_timestamp().seconds)
+      None => None
+    }
+    if per_request.contains("Cookie") && stored is Some(_) {
+      raise transfer_error(
+        ProtocolFailure,
+        "a custom Cookie header combined with stored cookies requires duplicate request-header support",
+      )
+    }
+    if !per_request.contains("Cookie") {
+      let value = match (stored, cookie_data) {
+        (Some(stored), Some(literal)) => Some(stored + "; " + literal)
+        (Some(stored), None) => Some(stored)
+        (None, Some(literal)) => Some(literal)
+        (None, None) => None
+      }
+      if value is Some(value) {
+        per_request["Cookie"] = value
+      }
+    }
     let client = open_client(parsed, persistent, options, started)
     errdefer client.close()
     let response = send_request(
@@ -657,6 +715,9 @@ pub async fn transfer(
       TransferError(..) as err => raise err
       err =>
         raise transfer_error(ConnectionFailure, "HTTP request failed: \{err}")
+    }
+    if options.cookie_jar is Some(jar) {
+      jar.receive(parsed, response.cookies, @fsops.current_timestamp().seconds)
     }
     let total = response_content_length(response)
     let visible_headers = response_headers(response)
@@ -670,6 +731,26 @@ pub async fn transfer(
         content_length=total,
       ),
     )
+    if response.code == 401 &&
+      !challenged &&
+      !send_basic &&
+      parsed.origin_key() == credential_origin &&
+      options.basic_credentials is Some(_) &&
+      response.headers.get("WWW-Authenticate") is Some(challenge) &&
+      challenge.to_lower().trim_start().has_prefix("basic") {
+      if body is StdinBody {
+        client.close()
+        raise transfer_error(
+          InputFailure,
+          "cannot replay standard input after an authentication challenge",
+        )
+      }
+      send_basic = true
+      challenged = true
+      seen.remove(key)
+      client.close()
+      continue
+    }
     if is_redirect(response.code) &&
       response.headers.get("Location") is Some(location) &&
       options.redirects is FollowRedirects(limit) {

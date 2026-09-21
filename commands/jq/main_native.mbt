@@ -23,6 +23,7 @@ priv struct CliOptions {
   slurp : Bool
   raw_input : Bool
   exit_status : Bool
+  color_output : Bool
   indent : Int?
   tab : Bool
   arguments : Map[String, String]
@@ -42,7 +43,7 @@ priv suberror ArgError {
 
 ///|
 fn help_message() -> String {
-  "Usage: jq [-CjcnrRsM] [-f FILTER_FILE] [--arg NAME VALUE] [--argjson NAME JSON] [FILTER] [FILE...]"
+  "Usage: jq [-CjcnrRseSM] [-f FILTER_FILE] [--arg NAME VALUE] [--argjson NAME JSON] [--indent -1..7 | --tab] [FILTER] [FILE...]\n  -C, --color-output       emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output  disable colors, including when -C is present"
 }
 
 ///|
@@ -51,44 +52,15 @@ fn json_string_literal(value : String) -> String {
 }
 
 ///|
-fn substitute_arguments(
+fn compile_query(
   query : String,
   arguments : Map[String, String],
-) -> String {
-  if arguments.is_empty() {
-    return query
+) -> @ast.Expr raise {
+  let mut expr = @moonjq.parse(query).expr
+  for name, value in arguments {
+    expr = @ast.Expr::As(@moonjq.parse(value).expr, name, expr)
   }
-  let chars : Array[Char] = query.iter().collect()
-  let output = StringBuilder()
-  let mut index = 0
-  let mut quoted = false
-  while index < chars.length() {
-    let char = chars[index]
-    if char == '"' && (index == 0 || chars[index - 1] != '\\') {
-      quoted = !quoted
-      output.write_char(char)
-      index += 1
-      continue
-    }
-    if !quoted && char == '$' && index + 1 < chars.length() {
-      let mut end = index + 1
-      while end < chars.length() &&
-            chars[end] is ('a'..='z' | 'A'..='Z' | '_' | '0'..='9') {
-        end += 1
-      }
-      if end > index + 1 {
-        let name = String::from_array(chars[index + 1:end])
-        if arguments.get(name) is Some(value) {
-          output.write_string(value)
-          index = end
-          continue
-        }
-      }
-    }
-    output.write_char(char)
-    index += 1
-  }
-  output.to_string()
+  expr
 }
 
 ///|
@@ -110,33 +82,6 @@ fn sort_json(value : Json) -> Json {
 }
 
 ///|
-fn indent_json(value : Json, indent : Int, tab : Bool) -> String {
-  let rendered = value.stringify(indent~)
-  if !tab || indent == 0 {
-    return rendered
-  }
-  let output = StringBuilder()
-  for line in rendered.split("\n") {
-    let mut index = 0
-    while index < line.length() && line[index] == ' ' {
-      index += 1
-    }
-    let tabs = index / indent
-    for _ in 0..<tabs {
-      output.write_char('\t')
-    }
-    output.write_string(line[index:].to_owned())
-    output.write_char('\n')
-  }
-  let result = output.to_string()
-  if result.has_suffix("\n") {
-    result[:result.length() - 1].to_owned()
-  } else {
-    result
-  }
-}
-
-///|
 fn prepare_args(args : ArrayView[String]) -> Array[String] raise ArgError {
   let prepared : Array[String] = []
   let mut index = 0
@@ -144,7 +89,7 @@ fn prepare_args(args : ArrayView[String]) -> Array[String] raise ArgError {
     let arg = args[index]
     if arg == "--arg" || arg == "--argjson" {
       if index + 2 >= args.length() {
-        raise ArgError("{arg} requires NAME and VALUE")
+        raise ArgError("\{arg} requires NAME and VALUE")
       }
       prepared.push(arg + "=" + args[index + 1] + "\u{0}" + args[index + 2])
       index += 3
@@ -194,62 +139,79 @@ fn parse_cli(args : ArrayView[String]) -> CliParseResult {
   }
   if parsed.contains("logs") && parsed.contains("raw-input") {
     return Error(
-      "jq: logs and raw-input are mutually exclusive\n{help_message()}",
+      "jq: logs and raw-input are mutually exclusive\n\{help_message()}",
     )
   }
-  let indent = match parsed.last_value("indent") {
-    Some(value) => {
-      let parsed_indent = @string.parse_int(value) catch {
-        _ => return Error("jq: invalid indentation: '{value}'")
+  let mut indent = 2
+  let mut tab = false
+  let mut compact_output = false
+  let indent_values = parsed.values("indent")
+  let mut indent_index = 0
+  for option in parsed.order {
+    match option {
+      "compact-output" => {
+        compact_output = true
+        tab = false
       }
-      if parsed_indent < 0 {
-        Some(2)
-      } else if parsed_indent > 64 {
-        return Error("jq: indentation must be between 0 and 64")
-      } else {
-        Some(parsed_indent)
+      "tab" => {
+        compact_output = false
+        tab = true
       }
+      "indent" => {
+        let value = indent_values[indent_index]
+        indent_index += 1
+        let spaces = @string.parse_int(value) catch {
+          _ => return Error("jq: indentation must be between -1 and 7")
+        }
+        if spaces < -1 || spaces > 7 || value.trim() != value {
+          return Error("jq: indentation must be between -1 and 7")
+        }
+        // jq 1.8.2 uses tabs for -1 and keeps line breaks for zero spaces.
+        compact_output = false
+        indent = spaces.max(0)
+        tab = spaces == -1
+      }
+      _ => ()
     }
-    None => None
   }
   let arguments : Map[String, String] = Map([])
-  for value in parsed.values("arg") {
+  let string_args = parsed.values("arg")
+  let json_args = parsed.values("argjson")
+  let mut string_index = 0
+  let mut json_index = 0
+  for option in parsed.order {
+    if option != "arg" && option != "argjson" {
+      continue
+    }
+    let value = if option == "arg" {
+      let value = string_args[string_index]
+      string_index += 1
+      value
+    } else {
+      let value = json_args[json_index]
+      json_index += 1
+      value
+    }
     let parts : Array[String] = value
       .split("\u{0}")
       .map(item => item.to_owned())
       .collect()
     if parts.length() != 2 || parts[0] == "" {
-      return Error("jq: --arg requires NAME and VALUE")
+      return Error("jq: --\{option} requires NAME and VALUE")
     }
-    arguments[parts[0]] = json_string_literal(parts[1])
-  }
-  for value in parsed.values("argjson") {
-    let parts : Array[String] = value
-      .split("\u{0}")
-      .map(item => item.to_owned())
-      .collect()
-    if parts.length() != 2 || parts[0] == "" {
-      return Error("jq: --argjson requires NAME and JSON")
+    if option == "arg" {
+      arguments[parts[0]] = json_string_literal(parts[1])
+    } else {
+      ignore(@json.parse(parts[1])) catch {
+        _ => return Error("jq: invalid JSON text passed to --argjson")
+      }
+      arguments[parts[0]] = parts[1]
     }
-    ignore(@json.parse(parts[1])) catch {
-      _ =>
-        return Error(
-          "jq: invalid JSON text passed to --argjson\n" +
-          "Use jq --help for help with command-line options,\n" +
-          "or see the jq manpage, or online docs at https://jqlang.org",
-        )
-    }
-    arguments[parts[0]] = parts[1]
   }
   let positionals = parsed.operands
   let filter_files = parsed.values("from-file")
   let query = match filter_files.length() {
-    0 => {
-      if positionals.is_empty() {
-        return Error("error: missing filter\n\n" + help_message())
-      }
-      QuerySource::Inline(positionals[0])
-    }
+    0 => QuerySource::Inline(positionals.get(0).unwrap_or("."))
     1 => File(filter_files[0])
     _ => return Error("error: multiple filters provided\n\n" + help_message())
   }
@@ -271,63 +233,27 @@ fn parse_cli(args : ArrayView[String]) -> CliParseResult {
     inputs,
     logs: parsed.contains("logs"),
     raw_output: parsed.contains("raw-output"),
-    compact_output: parsed.contains("compact-output"),
+    compact_output,
     null_input: parsed.contains("null-input"),
     sort_keys: parsed.contains("sort-keys"),
     join_output: parsed.contains("join-output"),
     slurp: parsed.contains("slurp"),
     raw_input: parsed.contains("raw-input"),
     exit_status: parsed.contains("exit-status"),
-    indent,
-    tab: parsed.contains("tab"),
+    color_output: parsed.contains("color-output") &&
+    !parsed.contains("monochrome-output"),
+    indent: Some(indent),
+    tab,
     arguments,
   })
 }
 
 ///|
-fn read_query(source : QuerySource) -> String raise {
+async fn read_query(source : QuerySource) -> String {
   match source {
     Inline(text) => text
-    File(path) => @fs.read_file_to_string(path)
+    File(path) => @fs.read_file(path).text()
   }
-}
-
-///|
-async fn read_input(source : InputSource) -> String {
-  match source {
-    Stdin => @stdio.stdin.read_all().text()
-    File(path) => @fs.read_file_to_string(path)
-  }
-}
-
-///|
-fn run_query(
-  query : @moonjq.Query,
-  input : String,
-  logs : Bool,
-) -> Iter[Json] raise {
-  if logs {
-    query.eval_logs(input)
-  } else {
-    let json = @json.parse(input)
-    query.eval(json)
-  }
-}
-
-///|
-fn raw_values(input : String) -> Array[Json] {
-  let values : Array[Json] = []
-  let lines : Array[String] = input
-    .split("\n")
-    .map(line => line.to_owned())
-    .collect()
-  for index, line in lines {
-    if index + 1 == lines.length() && line == "" {
-      continue
-    }
-    values.push(Json::string(line))
-  }
-  values
 }
 
 ///|
@@ -338,6 +264,7 @@ fn render_result(
   sort_keys : Bool,
   indent : Int?,
   tab : Bool,
+  colors : Array[String]?,
 ) -> String {
   let value = if sort_keys { sort_json(value) } else { value }
   let spacing = match indent {
@@ -347,10 +274,10 @@ fn render_result(
   if raw_output {
     match value {
       String(text) => text
-      _ => indent_json(value, spacing, tab)
+      _ => render_json(value, !compact_output, spacing, tab, colors)
     }
   } else {
-    indent_json(value, spacing, tab)
+    render_json(value, !compact_output, spacing, tab, colors)
   }
 }
 
@@ -363,19 +290,21 @@ async fn write_results(
   sort_keys : Bool,
   indent : Int?,
   tab : Bool,
-) -> Unit {
-  let rendered : Array[String] = []
+  colors : Array[String]?,
+) -> Json? {
+  let mut last : Json? = None
   for value in results {
-    rendered.push(
-      render_result(value, raw_output, compact_output, sort_keys, indent, tab),
+    @stdio.stdout.write(
+      render_result(
+        value, raw_output, compact_output, sort_keys, indent, tab, colors,
+      ),
     )
-  }
-  for index, value in rendered {
-    @stdio.stdout.write(value)
-    if !join_output || index + 1 < rendered.length() {
-      @stdio.stdout.write(if join_output { "" } else { "\n" })
+    if !join_output {
+      @stdio.stdout.write("\n")
     }
+    last = Some(value)
   }
+  last
 }
 
 ///|
@@ -404,6 +333,10 @@ async fn main {
       return
     }
     Run(options) => {
+      let (palette, valid_colors) = parse_colors(@env.get_env_var("JQ_COLORS"))
+      if !valid_colors {
+        @stdio.stderr.write("Failed to set $JQ_COLORS\n")
+      }
       let query_text = read_query(options.query) catch {
         err => {
           @stdio.stderr.write("moonjq: \{err}\n")
@@ -411,9 +344,7 @@ async fn main {
           return
         }
       }
-      let query = @moonjq.parse(
-        substitute_arguments(query_text, options.arguments),
-      ) catch {
+      let query = compile_query(query_text, options.arguments) catch {
         err => {
           @stdio.stderr.write("moonjq: \{err}\n")
           @sys.exit(3)
@@ -421,101 +352,65 @@ async fn main {
         }
       }
       try {
-        if options.null_input {
-          let results = query.eval(null).collect()
-          write_results(
-            results.iter(),
-            options.raw_output,
-            options.compact_output,
-            options.join_output,
-            options.sort_keys,
-            options.indent,
-            options.tab,
-          )
-          if options.exit_status {
-            @sys.exit(status_for_results(results))
-          }
-        } else if options.slurp {
-          let input_value = if options.raw_input {
-            let all = StringBuilder()
-            for input_source in options.inputs {
-              all.write_string(read_input(input_source))
-            }
-            Json::Json(all.to_string())
+        let state : Evaluation = {
+          query,
+          options,
+          colors: if options.color_output {
+            Some(palette)
           } else {
-            let all : Array[Json] = []
-            for input_source in options.inputs {
-              let input = read_input(input_source)
-              if options.logs {
-                for value in query.eval_logs(input) {
-                  all.push(value)
-                }
-              } else {
-                all.push(@json.parse(input))
-              }
-            }
-            Json::array(all)
-          }
-          let results = query.eval(input_value).collect()
-          write_results(
-            results.iter(),
-            options.raw_output,
-            options.compact_output,
-            options.join_output,
-            options.sort_keys,
-            options.indent,
-            options.tab,
-          )
-          if options.exit_status {
-            @sys.exit(status_for_results(results))
-          }
-        } else if options.raw_input {
-          let results : Array[Json] = []
-          for input_source in options.inputs {
-            let input = read_input(input_source)
-            for value in raw_values(input) {
-              for result in query.eval(value) {
-                results.push(result)
-              }
-            }
-          }
-          write_results(
-            results.iter(),
-            options.raw_output,
-            options.compact_output,
-            options.join_output,
-            options.sort_keys,
-            options.indent,
-            options.tab,
-          )
-          if options.exit_status {
-            @sys.exit(status_for_results(results))
-          }
+            None
+          },
+          last: None,
+          values: [],
+          raw: [],
+        }
+        if options.null_input {
+          state.emit(Json::null())
         } else {
-          let results : Array[Json] = []
-          for input_source in options.inputs {
-            let input = read_input(input_source)
-            for result in run_query(query, input, options.logs) {
-              results.push(result)
+          for source in options.inputs {
+            match source {
+              Stdin => state.read(@stdio.stdin)
+              File(path) => {
+                let file = @fs.open(path, mode=ReadOnly)
+                defer file.close()
+                state.read(file)
+              }
             }
           }
-          write_results(
-            results.iter(),
-            options.raw_output,
-            options.compact_output,
-            options.join_output,
-            options.sort_keys,
-            options.indent,
-            options.tab,
-          )
-          if options.exit_status {
-            @sys.exit(status_for_results(results))
+          if options.slurp {
+            state.emit(
+              if options.raw_input {
+                Json::string(@utf8.decode(Bytes::from_array(state.raw)))
+              } else {
+                Json::array(state.values)
+              },
+            )
           }
+        }
+        if options.exit_status {
+          @sys.exit(
+            status_for_results(
+              match state.last {
+                None => []
+                Some(value) => [value]
+              },
+            ),
+          )
         }
       } catch {
         err => {
           @stdio.stderr.write("moonjq: \{err}\n")
-          @sys.exit(5)
+          @sys.exit(
+            match err {
+              @json.InvalidChar(_, _)
+              | @json.InvalidEof
+              | @json.InvalidNumber(_, _)
+              | @json.InvalidIdentEscape(_)
+              | @json.DepthLimitExceeded
+              | @utf8.Malformed(_) => 4
+              _ => 5
+            },
+          )
           return
         }
       }

@@ -1,0 +1,232 @@
+///|
+/// Run after building curl and wget for Native. Only loopback HTTP is used.
+/// `moon run core/netops/verify_cli.mbtx` compares actual CLI processes with
+/// the curl and wget found on PATH. Set CMD_NETWORK_BACKEND=wasm to run the
+/// workspace Wasm executables through moonrun instead.
+import {
+  "moonbitlang/async@0.22.1",
+  "moonbitlang/async@0.22.1/fs",
+  "moonbitlang/async@0.22.1/http",
+  "moonbitlang/async@0.22.1/socket",
+  "moonbitlang/async@0.22.1/process",
+  "moonbitlang/core/env",
+}
+
+///|
+async fn invoke(
+  command : String,
+  args : Array[String],
+  candidate : Bool,
+) -> (Int, String, String) {
+  let wasm = @env.get_env_var("CMD_NETWORK_BACKEND") == Some("wasm")
+  let path = "_build/" +
+    (if wasm { "wasm" } else { "native" }) +
+    "/debug/build/cli/" +
+    command +
+    "/" +
+    command +
+    (if wasm { ".wasm" } else { ".exe" })
+  let executable = if candidate {
+    if wasm {
+      "moonrun"
+    } else {
+      path
+    }
+  } else {
+    command
+  }
+  let arguments = if candidate && wasm { [path, "--", ..args] } else { args }
+  let result = @process.collect_output(executable, arguments, extra_env={
+    "NO_PROXY": "*",
+    "no_proxy": "*",
+    "LC_ALL": "C",
+  })
+  (result.0, result.1.text(), result.2.text())
+}
+
+///|
+async fn main {
+  @async.with_task_group <| group => {
+    let server = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
+    group.add_defer(() => server.close())
+    let requests : Array[(String, String?)] = []
+    group.spawn_bg(no_wait=true) <| () => {
+      server.run_forever() <| ((request, _, connection) => {
+        requests.push((request.path, request.headers.get("Authorization")))
+        if request.path == "/auth" &&
+          request.headers.get("Authorization") is None {
+          connection
+          ..send_response(401, "Unauthorized", extra_headers={
+            "WWW-Authenticate": "Basic realm=\"local\"",
+            "Content-Length": "0",
+          })
+          .end_response()
+        } else if request.path == "/cross" {
+          connection..send_response(302, "Found", extra_headers={"Location": "http://localhost:\{server.addr.port()}/inspect", "Content-Length": "0"}).end_response()
+        } else if request.path == "/set" {
+          connection
+          ..send_response(
+            302,
+            "Found",
+            extra_headers={ "Location": "/inspect", "Content-Length": "0" },
+            cookies=[@http.Cookie("sid", "fixture", path="/")],
+          )
+          .end_response()
+        } else {
+          let body = "auth=" +
+            request.headers.get("Authorization").unwrap_or("") +
+            "\ncookie=" +
+            request.headers.get("Cookie").unwrap_or("") +
+            "\n"
+          connection.send_response(200, "OK", extra_headers={
+            "Content-Length": body.length().to_string(),
+          })
+          connection..write(body).end_response()
+        }
+      })
+    }
+    let base = "http://127.0.0.1:\{server.addr.port()}"
+    let cases : Array[(String, Array[String], String)] = [
+      (
+        "curl",
+        ["-sS", "-u", "user:pass", base + "/inspect"],
+        "auth=Basic dXNlcjpwYXNz\ncookie=\n",
+      ),
+      (
+        "curl",
+        [
+          "-sS",
+          "-u",
+          "user:pass",
+          "http://wrong:bad@127.0.0.1:\{server.addr.port()}/inspect",
+        ],
+        "auth=Basic dXNlcjpwYXNz\ncookie=\n",
+      ),
+      (
+        "curl",
+        ["-sS", "-b", "sid=explicit", base + "/inspect"],
+        "auth=\ncookie=sid=explicit\n",
+      ),
+      (
+        "curl",
+        ["-sS", "-b", "sid=first", "-b", "sid=last", base + "/inspect"],
+        "auth=\ncookie=sid=first;sid=last\n",
+      ),
+      ("curl", ["-sSL", "-b", "", base + "/set"], "auth=\ncookie=sid=fixture\n"),
+      ("curl", ["-sSL", "-b", "sid=explicit", base + "/cross"], "auth=\ncookie=sid=explicit\n"),
+      ("curl", ["-sSL", "-H", "Cookie: sid=header", base + "/cross"], "auth=\ncookie=\n"),
+      (
+        "wget",
+        ["-qO-", "--user=user", "--password=pass", base + "/auth"],
+        "auth=Basic dXNlcjpwYXNz\ncookie=\n",
+      ),
+    ]
+    for index, (command, args, expected) in cases {
+      for candidate in [false, true] {
+        let before = requests.length()
+        let result = invoke(command, args, candidate)
+        println(
+          "case=\{index} command=\{command} candidate=\{candidate} exit=\{result.0} stdout=\{result.1.escape()} stderr=\{result.2.escape()} requests=\{requests.length() - before}",
+        )
+        assert_eq(result.0, 0)
+        assert_eq(result.1, expected)
+        assert_eq(result.2, "")
+        if command == "wget" {
+          assert_eq(requests.length() - before, 2)
+          assert_eq(requests[before].1, None)
+        }
+      }
+    }
+    for command in ["curl", "wget"] {
+      let mut oracle_mode : String? = None
+      for candidate in [false, true] {
+        let path = "/tmp/cmd-network-\{command}-\{candidate}-\{@async.now()}.cookies"
+        let save_args = if command == "curl" {
+          ["-sSL", "-c", path, base + "/set"]
+        } else {
+          [
+            "-qO-",
+            "--save-cookies=" + path,
+            "--keep-session-cookies",
+            base + "/set",
+          ]
+        }
+        let saved = invoke(command, save_args, candidate)
+        assert_eq(saved.0, 0)
+        assert_eq(saved.1, "auth=\ncookie=sid=fixture\n")
+        assert_eq(saved.2, "")
+        assert_true(@fs.read_file(path).text().contains("\tsid\tfixture"))
+        let load_args = if command == "curl" {
+          ["-sS", "-b", path, base + "/inspect"]
+        } else {
+          ["-qO-", "--load-cookies=" + path, base + "/inspect"]
+        }
+        let loaded = invoke(command, load_args, candidate)
+        assert_eq(loaded.0, 0)
+        assert_eq(loaded.1, "auth=\ncookie=sid=fixture\n")
+        assert_eq(loaded.2, "")
+        if command == "curl" {
+          let combined = invoke(
+            command,
+            ["-sS", "-b", path, "-b", "sid=manual", base + "/inspect"],
+            candidate,
+          )
+          println(
+            "combined-cookies candidate=\{candidate} stdout=\{combined.1.escape()}",
+          )
+          assert_eq(combined.0, 0)
+          assert_eq(combined.1, "auth=\ncookie=sid=fixture; sid=manual\n")
+          if candidate {
+            let unsupported = invoke(
+              command,
+              ["-sS", "-b", path, "-H", "Cookie: sid=header", base + "/inspect"],
+              true,
+            )
+            assert_true(unsupported.0 != 0)
+            assert_eq(unsupported.1, "")
+            assert_true(
+              unsupported.2.contains("duplicate request-header support"),
+            )
+          }
+        }
+        if @async.platform is MacOS {
+          let mode = @process.collect_output("/usr/bin/stat", [
+            "-f", "%Lp", path,
+          ])
+          println(
+            "jar-mode command=\{command} candidate=\{candidate} mode=\{mode.1.text().trim()}",
+          )
+          if candidate {
+            assert_eq(Some(mode.1.text()), oracle_mode)
+          } else {
+            oracle_mode = Some(mode.1.text())
+          }
+        }
+        @fs.remove(path)
+        println(
+          "jar-roundtrip command=\{command} candidate=\{candidate} passed",
+        )
+      }
+    }
+    for command in ["curl", "wget"] {
+      for candidate in [false, true] {
+        let bad_path = "/tmp/cmd-network-missing-\{@async.now()}/cookies"
+        let args = if command == "curl" {
+          ["-sSL", "-c", bad_path, base + "/set"]
+        } else {
+          ["-qO-", "--save-cookies=" + bad_path, base + "/set"]
+        }
+        let result = invoke(command, args, candidate)
+        println(
+          "jar-failure command=\{command} candidate=\{candidate} exit=\{result.0} stderr=\{result.2.escape()}",
+        )
+        assert_eq(result.0, 0)
+        assert_eq(result.1, "auth=\ncookie=sid=fixture\n")
+        assert_eq(result.2, "")
+      }
+    }
+    println(
+      "network CLI fidelity: 30 matched invocations and 1 explicit unsupported combination passed",
+    )
+  }
+}

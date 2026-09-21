@@ -1,0 +1,16 @@
+    3886 tests/runner/compat.mbt
+     994 tests/runner/main.mbt
+    1040 tests/runner/policy.mbt
+      77 tests/runner/runner_wbtest.mbt
+     211 tests/release_runner/fixtures.mbt
+     762 tests/release_runner/main.mbt
+     364 tests/release_runner/manifest.mbt
+     150 tests/release_runner/network.mbt
+      63 tests/release_runner/release_runner_wbtest.mbt
+      46 tests/release_runner/report.mbt
+     156 tests/testkit/testkit.mbt
+      23 tests/testkit/testkit_wbtest.mbt
+     247 tests/fidelity.mbtx
+      84 commands/sh/interactive_probe.mbtx
+     232 core/netops/verify_cli.mbtx
+    8335 total

@@ -1,0 +1,1 @@
+interactive: PASS (persistent open stdin, ENV, variables, multiline, read, foreground child, syntax recovery, EOF)

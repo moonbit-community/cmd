@@ -1,0 +1,137 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/encoding/utf8",
+}
+
+///|
+let root = "/tmp/cmd-audit-20260919-text"
+
+///|
+struct ResultRow {
+  name : String
+  command : String
+  args : Array[String]
+  exit_code : Int
+  expected_exit : Int
+  stdout : String
+  expected_stdout : String
+  stderr : String
+  oracle : String
+  passed : Bool
+} derive(ToJson)
+
+///|
+fn hex(bytes : Bytes) -> String {
+  let out = StringBuilder()
+  let digits = "0123456789abcdef"
+  for byte in bytes {
+    let n = byte.to_int()
+    out.write_char(digits[n / 16].to_int().unsafe_to_char())
+    out.write_char(digits[n % 16].to_int().unsafe_to_char())
+  }
+  out.to_string()
+}
+
+///|
+async fn check(
+  rows : Array[ResultRow],
+  name : String,
+  command : String,
+  args : Array[String],
+  input : Bytes,
+  expected : Bytes,
+  expected_exit? : Int = 0,
+  oracle? : String = "explicit byte contract",
+) -> Unit {
+  let actual = @shell.Cmd(
+    "moonx", ["cli/" + command] + args,
+    cwd=root,
+    env={ "LC_ALL": "C" },
+    stdin=Binary(input),
+  ).output(timeout_ms=120000)
+  let passed = actual.stdout_bytes() == expected &&
+    actual.exit_code() == expected_exit && actual.stderr() == ""
+  let row : ResultRow = {
+    name, command, args,
+    exit_code: actual.exit_code(), expected_exit,
+    stdout: hex(actual.stdout_bytes()), expected_stdout: hex(expected),
+    stderr: actual.stderr(), oracle, passed,
+  }
+  rows.push(row)
+  @fs.write_file(root + "/" + name + ".stdout", actual.stdout_bytes())
+  @fs.write_file(root + "/" + name + ".stderr", actual.stderr())
+  @fs.write_file(root + "/" + name + ".json", ToJson::to_json(row).stringify(indent=2))
+  println("\{name}: \{if passed { "PASS" } else { "DIFF" }} exit=\{actual.exit_code()} stdout=\{hex(actual.stdout_bytes())} stderr=\{actual.stderr()}")
+}
+
+///|
+async fn compare(
+  rows : Array[ResultRow], name : String, command : String,
+  args : Array[String], input : Bytes,
+  oracle? : String,
+  oracle_args? : Array[String],
+) -> Unit {
+  let oracle_program = oracle.unwrap_or(command)
+  let oa = oracle_args.unwrap_or(args)
+  let output = @shell.Cmd(oracle_program, oa, cwd=root,
+    env={ "LC_ALL": "C" }, stdin=Binary(input)).output(timeout_ms=10000)
+  @fs.write_file(root + "/" + name + ".oracle.stdout", output.stdout_bytes())
+  @fs.write_file(root + "/" + name + ".oracle.stderr", output.stderr())
+  check(rows, name, command, args, input, output.stdout_bytes(),
+    expected_exit=output.exit_code(), oracle=oracle_program + " " + oa.join(" "))
+}
+
+///|
+async fn main {
+  let rows : Array[ResultRow] = []
+  let versions = StringBuilder()
+  for command in ["base64", "cat", "cmp", "comm", "cut", "grep", "head", "join", "jq", "jqlog", "nl", "paste", "printf", "sha256sum", "sort", "tail", "tr", "uniq", "wc", "xxd"] {
+    let output = @shell.Cmd("moonx", ["-v", "cli/" + command, "--help"],
+      cwd=root, stdin=Binary(b"")).output(timeout_ms=120000)
+    versions.write_string("COMMAND cli/" + command + "\n" + output.stdout() + output.stderr() + "\n")
+  }
+  @fs.write_file(root + "/versions.txt", versions.to_string())
+  @fs.write_file(root + "/a.txt", "apple\nbanana\n")
+  @fs.write_file(root + "/b.txt", "banana\ncherry\n")
+  @fs.write_file(root + "/join-a.txt", "1 alice\n2 bob\n")
+  @fs.write_file(root + "/join-b.txt", "1 dev\n3 ops\n")
+  compare(rows, "base64-basic", "base64", [], b"hello\n")
+  compare(rows, "cat-basic", "cat", [], b"a\x00\xff\nlast")
+  compare(rows, "cmp-basic", "cmp", ["a.txt", "a.txt"], b"")
+  compare(rows, "comm-basic", "comm", ["a.txt", "b.txt"], b"")
+  compare(rows, "cut-basic", "cut", ["-d", ":", "-f", "2"], b"a:b:c\nx:y:z\n")
+  compare(rows, "grep-basic", "grep", ["-n", "alpha"], b"alpha\nbeta\nalpha2\n")
+  compare(rows, "head-basic", "head", ["-n", "2"], b"a\nb\nc\n")
+  compare(rows, "join-basic", "join", ["join-a.txt", "join-b.txt"], b"")
+  compare(rows, "jq-basic", "jq", ["-r", ".name"], b"{\"name\":\"Moon\"}\n")
+  check(rows, "jqlog-basic", "jqlog", [".message"], b"not-json\n{\"message\":\"ok\"}\n", b"\"ok\"\n")
+  compare(rows, "nl-basic", "nl", [], b"alpha\n\nbeta\n")
+  compare(rows, "paste-basic", "paste", ["a.txt", "b.txt"], b"")
+  compare(rows, "printf-basic", "printf", ["%s:%04d\n", "moon", "7"], b"")
+  check(rows, "sha256sum-basic", "sha256sum", [], b"abc", b"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad  -\n")
+  compare(rows, "sort-basic", "sort", ["-n"], b"10\n2\n1\n")
+  compare(rows, "tail-basic", "tail", ["-n", "2"], b"a\nb\nc\n")
+  compare(rows, "tr-basic", "tr", ["a-z", "A-Z"], b"hello 123\n")
+  check(rows, "uniq-basic", "uniq", ["-c"], b"a\na\nb\n", b"      2 a\n      1 b\n")
+  check(rows, "wc-basic", "wc", ["-l"], b"a\nb\nlast", b"2\n")
+  compare(rows, "xxd-basic", "xxd", ["-p"], b"a\x00\xff\n")
+  compare(rows, "cat-number-squeeze", "cat", ["-bn", "-s"], b"a\n\n\nb\n")
+  compare(rows, "cmp-difference-status", "cmp", ["-s", "a.txt", "b.txt"], b"")
+  compare(rows, "cut-byte-mode", "cut", ["-b", "2-3"], b"abcde\n")
+  compare(rows, "grep-basic-regex-plus", "grep", ["a+"], b"aaa\na+\n")
+  compare(rows, "grep-basic-regex-group", "grep", ["a\\(b\\)"], b"ab\na(b)\n")
+  compare(rows, "grep-only-matching", "grep", ["-o", "a."], b"ab ac\n")
+  compare(rows, "grep-no-match-status", "grep", ["missing"], b"abc\n")
+  check(rows, "head-negative-lines", "head", ["-n", "-1"], b"a\nb\nc\n", b"a\nb\n")
+  compare(rows, "tail-from-line", "tail", ["-n", "+2"], b"a\nb\nc\n")
+  compare(rows, "jq-empty-status", "jq", ["-e", "empty"], b"{}\n")
+  compare(rows, "printf-repeat", "printf", ["%s=%d\n", "a", "1", "b", "2"], b"")
+  check(rows, "base64-no-wrap", "base64", ["-w", "0"], b"hello", b"aGVsbG8=")
+  compare(rows, "tr-class-squeeze", "tr", ["-s", "[:space:]", " "], b"a\t \nb\n")
+  let passed = rows.filter(r => r.passed).length()
+  @fs.write_file(root + "/results.json", rows.to_json().stringify(indent=2))
+  @fs.write_file(root + "/summary.txt", "cases=\{rows.length()} passed=\{passed} different=\{rows.length()-passed}\n")
+  println("cases=\{rows.length()} passed=\{passed} different=\{rows.length()-passed}")
+}

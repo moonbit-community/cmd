@@ -3,10 +3,9 @@ import {
   "moonbitlang/async",
   "moonbitlang/async/os_error",
   "moonbitlang/async/stdio",
-  "moonbitlang/core/bytes",
   "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/env",
-  "moonbitlang/core/strconv",
+  "moonbitlang/core/string",
   "moonbitlang/x/sys",
 }
 

@@ -1,0 +1,2405 @@
+{
+  "schema": 1,
+  "assertions": [
+    {
+      "old_id": "compat-text-line-33",
+      "retained_id": "compat-text-line-33",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-675",
+      "retained_id": "compat-text-line-675",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-42",
+      "retained_id": "compat-text-line-42",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-51",
+      "retained_id": "compat-text-line-51",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-110",
+      "retained_id": "compat-text-line-110",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-128",
+      "retained_id": "compat-text-line-128",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-321",
+      "retained_id": "compat-text-line-321",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-330",
+      "retained_id": "compat-text-line-330",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-331",
+      "retained_id": "compat-text-line-331",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-332",
+      "retained_id": "compat-text-line-332",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-353",
+      "retained_id": "compat-text-line-353",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-361",
+      "retained_id": "compat-text-line-361",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-371",
+      "retained_id": "compat-text-line-371",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-env-help",
+      "retained_id": "compat-text-env-help",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-165",
+      "retained_id": "compat-text-line-165",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-209",
+      "retained_id": "compat-text-line-209",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-218",
+      "retained_id": "compat-text-line-218",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-227",
+      "retained_id": "compat-text-line-227",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-236",
+      "retained_id": "compat-text-line-236",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-260",
+      "retained_id": "compat-text-line-260",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-269",
+      "retained_id": "compat-text-line-269",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-270",
+      "retained_id": "compat-text-line-270",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-278",
+      "retained_id": "compat-text-line-278",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-286",
+      "retained_id": "compat-text-line-286",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-312",
+      "retained_id": "compat-text-line-312",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-grep-binary-stderr",
+      "retained_id": "compat-text-grep-binary-stderr",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-grep-silent-missing",
+      "retained_id": "compat-text-grep-silent-missing",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-372",
+      "retained_id": "compat-text-line-372",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-381",
+      "retained_id": "compat-text-line-381",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-390",
+      "retained_id": "compat-text-line-390",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-399",
+      "retained_id": "compat-text-line-399",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-408",
+      "retained_id": "compat-text-line-408",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-417",
+      "retained_id": "compat-text-line-417",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-426",
+      "retained_id": "compat-text-line-426",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-435",
+      "retained_id": "compat-text-line-435",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-436",
+      "retained_id": "compat-text-line-436",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-445",
+      "retained_id": "compat-text-line-445",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-454",
+      "retained_id": "compat-text-line-454",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-467",
+      "retained_id": "compat-text-line-467",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-468",
+      "retained_id": "compat-text-line-468",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-544",
+      "retained_id": "compat-text-line-544",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-sort-check-diagnostic",
+      "retained_id": "compat-text-sort-check-diagnostic",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-476",
+      "retained_id": "compat-text-line-476",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-485",
+      "retained_id": "compat-text-line-485",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-494",
+      "retained_id": "compat-text-line-494",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-614",
+      "retained_id": "compat-text-line-614",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-495",
+      "retained_id": "compat-text-line-495",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-496",
+      "retained_id": "compat-text-line-496",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-536",
+      "retained_id": "compat-text-line-536",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-596",
+      "retained_id": "compat-text-line-596",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-wc-aligned-files",
+      "retained_id": "compat-text-wc-aligned-files",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-wc-files0-accounting",
+      "retained_id": "compat-text-wc-files0-accounting",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-wc-partial-counts",
+      "retained_id": "compat-text-wc-partial-counts",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-552",
+      "retained_id": "compat-text-line-552",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-561",
+      "retained_id": "compat-text-line-561",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-570",
+      "retained_id": "compat-text-line-570",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-579",
+      "retained_id": "compat-text-line-579",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-580",
+      "retained_id": "compat-text-line-580",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-581",
+      "retained_id": "compat-text-line-581",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-590",
+      "retained_id": "compat-text-line-590",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-591",
+      "retained_id": "compat-text-line-591",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-605",
+      "retained_id": "compat-text-line-605",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-684",
+      "retained_id": "compat-text-line-684",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-693",
+      "retained_id": "compat-text-line-693",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-694",
+      "retained_id": "compat-text-line-694",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-623",
+      "retained_id": "compat-text-line-623",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-945",
+      "retained_id": "compat-text-line-945",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-632",
+      "retained_id": "compat-text-line-632",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-633",
+      "retained_id": "compat-text-line-633",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-641",
+      "retained_id": "compat-text-line-641",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-642",
+      "retained_id": "compat-text-line-642",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-643",
+      "retained_id": "compat-text-line-643",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-652",
+      "retained_id": "compat-text-line-652",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-653",
+      "retained_id": "compat-text-line-653",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-654",
+      "retained_id": "compat-text-line-654",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-655",
+      "retained_id": "compat-text-line-655",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-664",
+      "retained_id": "compat-text-line-664",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-665",
+      "retained_id": "compat-text-line-665",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-666",
+      "retained_id": "compat-text-line-666",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-695",
+      "retained_id": "compat-text-line-695",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-704",
+      "retained_id": "compat-text-line-704",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-705",
+      "retained_id": "compat-text-line-705",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-706",
+      "retained_id": "seq-descending-default",
+      "source": "text",
+      "decision": "same contract merged as alias",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-707",
+      "retained_id": "compat-text-line-707",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-708",
+      "retained_id": "seq-descending-explicit",
+      "source": "text",
+      "decision": "same contract merged as alias",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-709",
+      "retained_id": "compat-text-line-709",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-717",
+      "retained_id": "compat-text-line-717",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-718",
+      "retained_id": "compat-text-line-718",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-719",
+      "retained_id": "compat-text-line-719",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-paste-nul-records",
+      "retained_id": "compat-text-paste-nul-records",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-727",
+      "retained_id": "compat-text-line-727",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-728",
+      "retained_id": "compat-text-line-728",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-736",
+      "retained_id": "p0-sleep-version",
+      "source": "text",
+      "decision": "same contract merged as alias",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-744",
+      "retained_id": "compat-text-line-744",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-746",
+      "retained_id": "p0-true-help",
+      "source": "text",
+      "decision": "same contract merged as alias",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-754",
+      "retained_id": "p0-true-version",
+      "source": "text",
+      "decision": "same contract merged as alias",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-745",
+      "retained_id": "compat-text-line-745",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-762",
+      "retained_id": "p0-false-version",
+      "source": "text",
+      "decision": "same contract merged as alias",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-823",
+      "retained_id": "compat-text-line-823",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-824",
+      "retained_id": "compat-text-line-824",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-825",
+      "retained_id": "compat-text-line-825",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-826",
+      "retained_id": "compat-text-line-826",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-835",
+      "retained_id": "compat-text-line-835",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-836",
+      "retained_id": "compat-text-line-836",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-837",
+      "retained_id": "compat-text-line-837",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-line-838",
+      "retained_id": "compat-text-line-838",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-join-output-list",
+      "retained_id": "compat-text-join-output-list",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-join-nul-records",
+      "retained_id": "compat-text-join-nul-records",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-join-check-order",
+      "retained_id": "compat-text-join-check-order",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-join-nocheck-precedence",
+      "retained_id": "compat-text-join-nocheck-precedence",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-make-include-cli-override",
+      "retained_id": "compat-text-make-include-cli-override",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-cp-preserve-rejected",
+      "retained_id": "compat-text-cp-preserve-rejected",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-touch-date-rejected",
+      "retained_id": "compat-text-touch-date-rejected",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-chmod-reference-rejected",
+      "retained_id": "compat-text-chmod-reference-rejected",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-jqlog-help-newline",
+      "retained_id": "compat-text-jqlog-help-newline",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-jqlog-error-newline",
+      "retained_id": "compat-text-jqlog-error-newline",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-cmp-equal-status",
+      "retained_id": "compat-text-cmp-equal-status",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-cmp-different-status",
+      "retained_id": "compat-text-cmp-different-status",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-cmp-error-status",
+      "retained_id": "compat-text-cmp-error-status",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-comm-nul-records",
+      "retained_id": "compat-text-comm-nul-records",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-comm-check-order",
+      "retained_id": "compat-text-comm-check-order",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-comm-nocheck-precedence",
+      "retained_id": "compat-text-comm-nocheck-precedence",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-comm-default-order",
+      "retained_id": "compat-text-comm-default-order",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-comm-pairable-unsorted",
+      "retained_id": "compat-text-comm-pairable-unsorted",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-pwd-invalid-logical-fallback",
+      "retained_id": "compat-text-pwd-invalid-logical-fallback",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-printenv-present-missing",
+      "retained_id": "compat-text-printenv-present-missing",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-sha256sum-warn-malformed",
+      "retained_id": "compat-text-sha256sum-warn-malformed",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-sha256sum-strict-status",
+      "retained_id": "compat-text-sha256sum-strict-status",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-sha256sum-ignore-missing",
+      "retained_id": "compat-text-sha256sum-ignore-missing",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-sha256sum-last-text",
+      "retained_id": "compat-text-sha256sum-last-text",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-sha256sum-last-binary",
+      "retained_id": "compat-text-sha256sum-last-binary",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-mkdir-partial-order",
+      "retained_id": "compat-text-mkdir-partial-order",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-rm-partial-order",
+      "retained_id": "compat-text-rm-partial-order",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-rmdir-partial-order",
+      "retained_id": "compat-text-rmdir-partial-order",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-text-tee-partial-output",
+      "retained_id": "compat-text-tee-partial-output",
+      "source": "text",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-filesystem-copy",
+      "retained_id": "compat-filesystem-copy",
+      "source": "filesystem",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-filesystem-rename",
+      "retained_id": "compat-filesystem-rename",
+      "source": "filesystem",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-filesystem-nested-copy",
+      "retained_id": "compat-filesystem-nested-copy",
+      "source": "filesystem",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-filesystem-rm-dash",
+      "retained_id": "compat-filesystem-rm-dash",
+      "source": "filesystem",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-filesystem-rm-current-directory",
+      "retained_id": "compat-filesystem-rm-current-directory",
+      "source": "filesystem",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-filesystem-symbolic-link",
+      "retained_id": "compat-filesystem-symbolic-link",
+      "source": "filesystem",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-filesystem-remove-link",
+      "retained_id": "compat-filesystem-remove-link",
+      "source": "filesystem",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-filesystem-windows-ln-boundary",
+      "retained_id": "compat-filesystem-windows-ln-boundary",
+      "source": "filesystem",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-filesystem-windows-chmod-boundary",
+      "retained_id": "compat-filesystem-windows-chmod-boundary",
+      "source": "filesystem",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-merge-comm",
+      "retained_id": "compat-merge-comm",
+      "source": "filesystem",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-merge-join",
+      "retained_id": "compat-merge-join",
+      "source": "filesystem",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-merge-paste",
+      "retained_id": "compat-merge-paste",
+      "source": "filesystem",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-tail-follow-stdin",
+      "retained_id": "compat-tail-follow-stdin",
+      "source": "filesystem",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-tail-interval-without-follow",
+      "retained_id": "compat-tail-interval-without-follow",
+      "source": "filesystem",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-tail-zero-interval",
+      "retained_id": "compat-tail-zero-interval",
+      "source": "filesystem",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-tail-negative-interval",
+      "retained_id": "compat-tail-negative-interval",
+      "source": "filesystem",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-tail-infinite-interval",
+      "retained_id": "compat-tail-infinite-interval",
+      "source": "filesystem",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-tail-follow-name-boundary",
+      "retained_id": "compat-tail-follow-name-boundary",
+      "source": "filesystem",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-chunk-squeeze",
+      "retained_id": "compat-chunk-squeeze",
+      "source": "filesystem",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-4",
+      "retained_id": "compat-catalog-line-4",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-366",
+      "retained_id": "compat-catalog-line-366",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-stdin-base64",
+      "retained_id": "compat-stdin-base64",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-14",
+      "retained_id": "compat-catalog-line-14",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-22",
+      "retained_id": "compat-catalog-line-22",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-stdin-cat",
+      "retained_id": "compat-stdin-cat",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-32",
+      "retained_id": "compat-catalog-line-32",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-40",
+      "retained_id": "compat-catalog-line-40",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-48",
+      "retained_id": "compat-catalog-line-48",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-375",
+      "retained_id": "compat-catalog-line-375",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-56",
+      "retained_id": "compat-catalog-line-56",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-64",
+      "retained_id": "compat-catalog-line-64",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-72",
+      "retained_id": "compat-catalog-line-72",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-374",
+      "retained_id": "compat-catalog-line-374",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-73",
+      "retained_id": "compat-catalog-line-73",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-340",
+      "retained_id": "compat-catalog-line-340",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-349",
+      "retained_id": "compat-catalog-line-349",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-81",
+      "retained_id": "compat-catalog-line-81",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-243",
+      "retained_id": "compat-catalog-line-243",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-89",
+      "retained_id": "compat-catalog-line-89",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-90",
+      "retained_id": "compat-catalog-line-90",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-91",
+      "retained_id": "compat-catalog-line-91",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-99",
+      "retained_id": "compat-catalog-line-99",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-107",
+      "retained_id": "compat-catalog-line-107",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-stdin-head",
+      "retained_id": "compat-catalog-line-107",
+      "source": "catalog-shell",
+      "decision": "same contract merged as alias",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-108",
+      "retained_id": "compat-catalog-line-108",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-116",
+      "retained_id": "compat-catalog-line-116",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-126",
+      "retained_id": "compat-catalog-line-126",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-134",
+      "retained_id": "compat-catalog-line-134",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-142",
+      "retained_id": "compat-catalog-line-142",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-150",
+      "retained_id": "compat-catalog-line-150",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-158",
+      "retained_id": "compat-catalog-line-158",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-166",
+      "retained_id": "compat-catalog-line-166",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-174",
+      "retained_id": "compat-catalog-line-174",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-stdin-nl",
+      "retained_id": "compat-catalog-line-174",
+      "source": "catalog-shell",
+      "decision": "same contract merged as alias",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-175",
+      "retained_id": "compat-catalog-line-175",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-376",
+      "retained_id": "compat-catalog-line-376",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-stdin-paste",
+      "retained_id": "compat-catalog-line-175",
+      "source": "catalog-shell",
+      "decision": "same contract merged as alias",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-176",
+      "retained_id": "compat-catalog-line-176",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-350",
+      "retained_id": "compat-catalog-line-350",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-184",
+      "retained_id": "compat-catalog-line-184",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-194",
+      "retained_id": "compat-catalog-line-194",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-202",
+      "retained_id": "compat-catalog-line-202",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-210",
+      "retained_id": "compat-catalog-line-210",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-218",
+      "retained_id": "compat-catalog-line-218",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-251",
+      "retained_id": "compat-catalog-line-251",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-226",
+      "retained_id": "compat-catalog-line-226",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-stdin-sha256sum",
+      "retained_id": "compat-stdin-sha256sum",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-234",
+      "retained_id": "compat-catalog-line-234",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-shell-line-3",
+      "retained_id": "compat-shell-line-3",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-shell-line-12",
+      "retained_id": "compat-shell-line-12",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-shell-line-21",
+      "retained_id": "compat-shell-line-21",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-shell-line-30",
+      "retained_id": "compat-shell-line-30",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-shell-line-39",
+      "retained_id": "compat-shell-line-39",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-shell-line-48",
+      "retained_id": "compat-shell-line-48",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-shell-line-59",
+      "retained_id": "compat-shell-line-59",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-shell-line-68",
+      "retained_id": "compat-shell-line-68",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-shell-line-77",
+      "retained_id": "compat-shell-line-77",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-shell-line-86",
+      "retained_id": "compat-shell-line-86",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-shell-line-95",
+      "retained_id": "compat-shell-line-95",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-shell-line-103",
+      "retained_id": "compat-shell-line-103",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-stdin-sh",
+      "retained_id": "compat-stdin-sh",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-shell-array-boundary",
+      "retained_id": "compat-shell-array-boundary",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-235",
+      "retained_id": "compat-catalog-line-235",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-259",
+      "retained_id": "compat-catalog-line-259",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-stdin-sort",
+      "retained_id": "compat-catalog-line-259",
+      "source": "catalog-shell",
+      "decision": "same contract merged as alias",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-260",
+      "retained_id": "compat-catalog-line-260",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-stdin-tail",
+      "retained_id": "compat-catalog-line-260",
+      "source": "catalog-shell",
+      "decision": "same contract merged as alias",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-261",
+      "retained_id": "compat-catalog-line-261",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-stdin-tee",
+      "retained_id": "compat-stdin-tee",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-269",
+      "retained_id": "compat-catalog-line-269",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-277",
+      "retained_id": "compat-catalog-line-277",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-285",
+      "retained_id": "compat-catalog-line-285",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-358",
+      "retained_id": "compat-catalog-line-358",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-293",
+      "retained_id": "compat-catalog-line-293",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-385",
+      "retained_id": "compat-catalog-line-385",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-294",
+      "retained_id": "compat-catalog-line-294",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-295",
+      "retained_id": "compat-catalog-line-295",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-stdin-uniq",
+      "retained_id": "compat-catalog-line-295",
+      "source": "catalog-shell",
+      "decision": "same contract merged as alias",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-296",
+      "retained_id": "compat-catalog-line-296",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-stdin-wc",
+      "retained_id": "compat-stdin-wc",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-306",
+      "retained_id": "compat-catalog-line-306",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-314",
+      "retained_id": "compat-catalog-line-314",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-stdin-xargs",
+      "retained_id": "compat-stdin-xargs",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-catalog-line-324",
+      "retained_id": "compat-catalog-line-324",
+      "source": "catalog-shell",
+      "decision": "migrated",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    },
+    {
+      "old_id": "compat-stdin-xxd",
+      "retained_id": "compat-catalog-line-324",
+      "source": "catalog-shell",
+      "decision": "same contract merged as alias",
+      "backends": [
+        "native",
+        "wasm"
+      ]
+    }
+  ]
+}

@@ -1,4 +1,10 @@
 ///|
+type ReleaseCase = @testkit.Case
+
+///|
+using @testkit {safe_relative_path, safe_symlink_target}
+
+///|
 priv struct ReleaseCommand {
   name : String
   package_name : String
@@ -10,43 +16,9 @@ priv struct ReleaseCommand {
 } derive(FromJson)
 
 ///|
-priv struct FixtureFile {
-  path : String
-  content_hex : String
-  kind : String?
-  target : String?
-} derive(FromJson)
-
-///|
-priv struct Normalization {
-  field : String
-  rule : String
-  comment : String
-} derive(FromJson)
-
-///|
-priv struct ReleaseCase {
-  id : String
-  command : String
-  args : Array[String]
-  stdin_hex : String
-  files : Array[FixtureFile]
-  environment : Map[String, String]
-  expected_status : Int
-  timeout_ms : Int?
-  normalizations : Array[Normalization]
-  comparison : String?
-  expected_stdout_contains : String?
-  expected_stdout_ends_with_newline : Bool?
-  expected_stderr_ends_with_newline : Bool?
-  forbidden_stderr : Array[String]?
-  coverage : Array[String]?
-  host_platforms : Array[String]?
-} derive(FromJson)
-
-///|
 priv struct ReleaseManifest {
   schema : Int
+  candidate : Bool?
   base_manifest : String
   commands : Array[ReleaseCommand]
   case_ids : Array[String]
@@ -57,7 +29,7 @@ priv struct ReleaseManifest {
 priv struct BaseManifest {
   schema : Int
   cases : Array[ReleaseCase]
-} derive(FromJson)
+}
 
 ///|
 fn valid_version(version : String) -> Bool {
@@ -82,50 +54,16 @@ fn valid_version(version : String) -> Bool {
 }
 
 ///|
-fn safe_relative_path(value : String) -> Bool {
-  if value == "" || @path.Path(value).is_absolute() {
-    return false
-  }
-  let normalized = value.replace_all(old="\\", new="/")
-  if normalized.length() >= 2 && normalized[1] == ':' {
-    return false
-  }
-  for component in normalized.split("/") {
-    if component == "" || component == "." || component == ".." {
-      return false
-    }
-  }
-  true
-}
-
-///|
-fn safe_symlink_target(value : String) -> Bool {
-  if value == "" || @path.Path(value).is_absolute() {
-    return false
-  }
-  let normalized = value.replace_all(old="\\", new="/")
-  if normalized.length() >= 2 && normalized[1] == ':' {
-    return false
-  }
-  for component in normalized.split("/") {
-    if component == ".." {
-      return false
-    }
-  }
-  true
-}
-
-///|
 fn validate_release_manifest(
   manifest : ReleaseManifest,
   base : BaseManifest,
 ) -> Array[String] {
   let failures : Array[String] = []
-  if manifest.schema != 1 {
-    failures.push("release manifest: expected schema 1")
+  if manifest.schema != 1 && manifest.schema != 2 {
+    failures.push("release manifest: expected schema 1 or 2")
   }
-  if base.schema != 1 {
-    failures.push("base manifest: expected schema 1")
+  if base.schema != 1 && base.schema != 2 {
+    failures.push("base manifest: expected schema 1 or 2")
   }
   if !safe_relative_path(manifest.base_manifest) {
     failures.push(
@@ -150,8 +88,13 @@ fn validate_release_manifest(
     if row.package_name != "cli/" + row.name {
       failures.push("\{row.name}: package must be cli/\{row.name}")
     }
-    if !row.published {
+    if !row.published && manifest.candidate != Some(true) {
       failures.push("\{row.name}: published rows must set published=true")
+    }
+    if row.published && manifest.candidate == Some(true) {
+      failures.push(
+        "\{row.name}: unpublished candidate rows must set published=false",
+      )
     }
     if !valid_version(row.version) {
       failures.push("\{row.name}: invalid version '\{row.version}'")
@@ -187,12 +130,28 @@ fn validate_release_manifest(
       )
     }
     case_ids[fixture.id] = true
-    if !seen.contains(fixture.command) {
+    for old_id in fixture.aliases.unwrap_or([]) {
+      case_ids[old_id] = true
+    }
+    if !seen.contains(fixture.command) &&
+      selected_cases(manifest, base).any(item => item.id == fixture.id) {
       failures.push("\{fixture.id}: command is not in release manifest")
+    }
+    ignore(fixture.input()) catch {
+      err => failures.push("\{err}")
     }
     for file in fixture.files {
       if !safe_relative_path(file.path) {
         failures.push("\{fixture.id}: unsafe fixture path '\{file.path}'")
+      }
+      ignore(
+        @testkit.input_bytes(
+          file.content_hex,
+          file.content_text,
+          fixture.id + ":" + file.path,
+        ),
+      ) catch {
+        err => failures.push("\{err}")
       }
       match file.kind {
         Some("symlink") =>
@@ -202,7 +161,15 @@ fn validate_release_manifest(
               failures.push("\{fixture.id}: unsafe symlink target")
             Some(_) => ()
           }
-        Some("file") | None => ()
+        Some("hardlink") =>
+          match file.target {
+            Some(target) if safe_relative_path(target) => ()
+            _ =>
+              failures.push(
+                "\{fixture.id}: hardlink target must be a safe relative path",
+              )
+          }
+        Some("file") | Some("directory") | None => ()
         Some(_) => failures.push("\{fixture.id}: unsupported fixture kind")
       }
     }
@@ -220,14 +187,80 @@ fn validate_release_manifest(
       }
     }
     match fixture.comparison {
-      None | Some("exact") | Some("normalized") | Some("contract") => ()
+      None
+      | Some("exact")
+      | Some("normalized")
+      | Some("contract")
+      | Some("boundary")
+      | Some("scenario")
+      | Some("oracle-scenario") => ()
       Some(other) =>
         failures.push("\{fixture.id}: unsupported comparison mode '\{other}'")
     }
     if !fixture.normalizations.is_empty() &&
-      fixture.comparison != Some("normalized") {
+      fixture.comparison != Some("normalized") &&
+      fixture.comparison != Some("contract") {
       failures.push(
-        "\{fixture.id}: normalizations require comparison=normalized",
+        "\{fixture.id}: normalizations require comparison=normalized or contract",
+      )
+    }
+    if fixture.expected_rejection is Some(reason) && reason.is_empty() {
+      failures.push("\{fixture.id}: expected_rejection needs a reason")
+    }
+    if fixture.comparison == Some("boundary") &&
+      fixture.expected_rejection is None {
+      failures.push(
+        "\{fixture.id}: boundary comparison requires expected_rejection",
+      )
+    }
+    if (
+        fixture.comparison == Some("scenario") ||
+        fixture.comparison == Some("oracle-scenario")
+      ) &&
+      selected_cases(manifest, base).any(selected => selected.id == fixture.id) {
+      failures.push(
+        "\{fixture.id}: stateful scenarios run through the workspace runner, not a release case",
+      )
+    }
+    for dimension in fixture.observe.unwrap_or([]) {
+      if ![
+          "content", "type", "mode", "identity", "symlink-target", "atime", "mtime",
+          "ctime",
+        ].contains(dimension) {
+        failures.push("\{fixture.id}: unknown observation '\{dimension}'")
+      }
+      if ["atime", "ctime"].contains(dimension) &&
+        fixture.expected_rejection is None {
+        failures.push(
+          "\{fixture.id}: time relations require a stateful scenario, not cross-root equality",
+        )
+      }
+      if dimension == "mtime" &&
+        fixture.expected_rejection is None &&
+        fixture.files.any(file => file.mtime is None) {
+        failures.push(
+          "\{fixture.id}: differential mtime requires fixed timestamps on every input",
+        )
+      }
+    }
+    if manifest.schema == 2 &&
+      fixture.comparison == Some("contract") &&
+      !has_contract_assertion(fixture) {
+      failures.push(
+        "\{fixture.id}: contract needs an explicit output assertion",
+      )
+    }
+    if manifest.schema == 2 &&
+      (
+        fixture.expected_stdout_contains is Some(_) ||
+        fixture.expected_stderr_contains is Some(_)
+      ) &&
+      (
+        fixture.diagnostic_reason is None ||
+        fixture.diagnostic_reason == Some("")
+      ) {
+      failures.push(
+        "\{fixture.id}: partial output assertion requires diagnostic_reason",
       )
     }
     match fixture.timeout_ms {
@@ -235,12 +268,24 @@ fn validate_release_manifest(
         failures.push("\{fixture.id}: timeout_ms must be positive")
       _ => ()
     }
+    if fixture.delay_ms is Some(value) && (value < 0 || value > 10000) {
+      failures.push("\{fixture.id}: delay_ms must be between 0 and 10000")
+    }
+    for
+      (hex, text, stream) in [
+        (fixture.expected_stdout_hex, fixture.expected_stdout_text, "stdout"),
+        (fixture.expected_stderr_hex, fixture.expected_stderr_text, "stderr"),
+      ] {
+      ignore(@testkit.input_bytes(hex, text, fixture.id + " " + stream)) catch {
+        err => failures.push("\{err}")
+      }
+    }
     match fixture.host_platforms {
       Some(platforms) if platforms.is_empty() =>
         failures.push("\{fixture.id}: host_platforms must not be empty")
       Some(platforms) =>
         for platform in platforms {
-          if platform != "posix" && platform != "windows" {
+          if !["posix", "windows", "linux", "macos"].contains(platform) {
             failures.push(
               "\{fixture.id}: unsupported host platform '\{platform}'",
             )
@@ -262,7 +307,7 @@ fn validate_release_manifest(
   for row in manifest.commands {
     for option in row.supported_options {
       let mut covered = false
-      for fixture in base.cases + manifest.extra_cases {
+      for fixture in selected_cases(manifest, base) {
         if fixture.command == row.name {
           match fixture.coverage {
             Some(items) if items.contains(option) => covered = true

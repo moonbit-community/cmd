@@ -293,6 +293,7 @@ async fn download_one(
   options : WgetOptions,
   log : LogDestination,
   url : String,
+  jar : @netops.CookieJar?,
 ) -> Int {
   let (output, label, resume_from) = output_for(options, url) catch {
     err => {
@@ -337,6 +338,11 @@ async fn download_one(
           fail_on_http_error=true,
           resume_from?,
           keep_output_on_not_modified=options.timestamping,
+          cookie_jar?=jar,
+          basic_credentials?=options.user.map(user => {
+            user + ":" + options.password.unwrap_or("")
+          }),
+          basic_preemptive=options.auth_no_challenge,
         ),
         observer=event => wget_observer(log, interactive, label, event),
       )
@@ -421,11 +427,22 @@ async fn run(options : WgetOptions) -> Int {
     }
     file.close()
   }
+  let jar = if options.cookies { Some(@netops.CookieJar::new()) } else { None }
+  if jar is Some(jar) && options.load_cookies is Some(path) {
+    jar.load(path) catch {
+      err => log.write("wget: cannot read cookie jar '\{path}': \{err}\n")
+    }
+  }
   let mut result = 0
   for url in urls {
-    let status = download_one(options, log, url)
+    let status = download_one(options, log, url, jar)
     if status != 0 {
       result = status
+    }
+  }
+  if jar is Some(jar) && options.save_cookies is Some(path) {
+    jar.save(path, include_session=options.keep_session_cookies) catch {
+      err => log.write("wget: cannot write cookie jar '\{path}': \{err}\n")
     }
   }
   result

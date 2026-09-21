@@ -1,0 +1,71 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase0-tee-filesystem",
+      "command": "tee",
+      "args": [
+        "copy.txt"
+      ],
+      "stdin_text": "side-effect\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-text-tee-partial-output",
+      "command": "tee",
+      "args": [
+        ".",
+        "tee-output"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_hex": "73747265616d0064617461",
+      "expected_stderr_contains": "tee:",
+      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted.",
+      "stdin_hex": "73747265616d0064617461",
+      "expected_files": [
+        {
+          "path": "tee-output",
+          "content_hex": "73747265616d0064617461"
+        }
+      ]
+    },
+    {
+      "id": "compat-catalog-line-261",
+      "command": "tee",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "compat-stdin-tee",
+      "command": "tee",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
+    }
+  ]
+}

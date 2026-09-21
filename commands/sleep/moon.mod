@@ -1,6 +1,6 @@
 name = "cli/sleep"
 
-version = "0.1.5"
+version = "0.2.0"
 
 readme = "README.md"
 
@@ -15,6 +15,6 @@ preferred_target = "wasm"
 description = "sleep command for MoonX."
 
 import {
-  "moonbitlang/async@0.21.2",
-  "moonbitlang/x@0.5.1",
+  "moonbitlang/async@0.22.1",
+  "moonbitlang/x@0.5.5",
 }

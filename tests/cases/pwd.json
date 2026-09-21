@@ -1,0 +1,66 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-pwd-working-directory",
+      "command": "pwd",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "candidate cases use a temporary path while the pinned container mounts the same case at /work"
+        }
+      ],
+      "comparison": "normalized"
+    },
+    {
+      "id": "compat-text-pwd-invalid-logical-fallback",
+      "command": "pwd",
+      "args": [
+        "-L"
+      ],
+      "files": [],
+      "environment": {
+        "PWD": "/mooncmd-p9-does-not-exist"
+      },
+      "expected_status": 0,
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "temporary-path",
+          "comment": "Fresh fixture path only."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host separator spelling only."
+        }
+      ],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "<TMP>\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-catalog-line-194",
+      "command": "pwd",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    }
+  ]
+}

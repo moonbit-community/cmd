@@ -1,0 +1,68 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/json",
+}
+
+///|
+let root = "/tmp/cmd-audit-20260919/root"
+
+///|
+async fn probe(id : String, program : String, args : Array[String], input? : String = "") -> Unit {
+  let output = @shell.Cmd(program, args, cwd=root, env={
+    "CMD_AUDIT_MARKER": "present",
+    "LC_ALL": "en_US.UTF-8",
+    "LANG": "en_US.UTF-8",
+  }, stdin=@shell.Text(input)).output(timeout_ms=15000)
+  let row : Json = {
+    "id": id,
+    "program": program,
+    "args": args,
+    "status": output.exit_code(),
+    "stdout": output.stdout(),
+    "stderr": output.stderr(),
+  }
+  @fs.write_file(root + "/results.jsonl", row.stringify() + "\n", create_mode=@fs.OpenOrCreate, append=true)
+  println(row.stringify())
+}
+
+///|
+async fn pair(id : String, command : String, args : Array[String], host : String, input? : String = "") -> Unit {
+  probe(id + "-moonx", "moonx", ["cli/" + command] + args, input~)
+  probe(id + "-host", host, args, input~)
+}
+
+///|
+async fn main {
+  @fs.write_file(root + "/results.jsonl", "")
+  @fs.write_file(root + "/Makefile.env", "all:\n\t@printf '<%s>\\n' '$(CMD_AUDIT_MARKER)'\n\t@/usr/bin/printenv CMD_AUDIT_MARKER\n")
+  @fs.write_file(root + "/Makefile.shell", "all:\n\t@printf '%s\\n' $(shell printf computed)\n")
+  @fs.write_file(root + "/Makefile.jobs", ".PHONY: all a b\nall: a b\na:\n\t@sleep 0.2; printf A\nb:\n\t@printf B\n")
+  @fs.write_file(root + "/Makefile.override", "SHELL = /bin/sh\nall:\n\t@printf '%s\\n' $$((1+2))\n")
+  pair("visible-env", "printenv", ["CMD_AUDIT_MARKER"], "/usr/bin/printenv")
+  pair("env-child", "env", ["/usr/bin/printenv", "CMD_AUDIT_MARKER"], "/usr/bin/env")
+  pair("env-explicit", "env", ["CMD_AUDIT_MARKER=explicit", "/usr/bin/printenv", "CMD_AUDIT_MARKER"], "/usr/bin/env")
+  pair("sh-inherited", "sh", ["-c", "printf '<%s>\\n' \"$CMD_AUDIT_MARKER\""], "/bin/sh")
+  pair("sh-child-env", "sh", ["-c", "/usr/bin/printenv CMD_AUDIT_MARKER"], "/bin/sh")
+  pair("sh-locale", "sh", ["-c", "printf '%s|%s\\n' \"$LC_ALL\" \"$LANG\""], "/bin/sh")
+  pair("env-locale", "env", ["/usr/bin/printenv", "LC_ALL", "LANG"], "/usr/bin/env")
+  pair("xargs-env", "xargs", ["/usr/bin/printenv"], "/usr/bin/xargs", input="CMD_AUDIT_MARKER\n")
+  pair("find-env", "find", ["Makefile.env", "-exec", "/usr/bin/printenv", "CMD_AUDIT_MARKER", ";"], "/usr/bin/find")
+  pair("make-env", "make", ["-s", "-f", "Makefile.env"], "/usr/bin/make")
+  pair("sh-arithmetic", "sh", ["-c", "printf '%s\\n' $((1+2))"], "/bin/sh")
+  pair("sh-default-expand", "sh", ["-c", "unset X; printf '%s\\n' \"${X:-fallback}\""], "/bin/sh")
+  pair("sh-glob", "sh", ["-c", "printf '%s\\n' Makefile.*"], "/bin/sh")
+  pair("sh-unexported", "sh", ["-c", "CMD_INNER=private; /bin/sh -c 'printf \"<%s>\\n\" \"$CMD_INNER\"'"], "/bin/sh")
+  pair("sh-exec", "sh", ["-c", "exec /usr/bin/printf 'ok\\n'"], "/bin/sh")
+  pair("sh-read", "sh", ["-c", "read answer; printf '<%s>\\n' \"$answer\""], "/bin/sh", input="hello\n")
+  pair("sh-background", "sh", ["-c", "true & wait; printf 'done\\n'"], "/bin/sh")
+  pair("sh-case-pipeline", "sh", ["-c", "printf 'a\\nb\\n' | /usr/bin/grep b"], "/bin/sh")
+  pair("sh-status", "sh", ["-c", "false; printf '%s\\n' \"$?\""], "/bin/sh")
+  pair("sh-syntax", "sh", ["-c", "if"], "/bin/sh")
+  pair("make-shell", "make", ["-s", "-f", "Makefile.shell"], "/usr/bin/make")
+  pair("make-jobs", "make", ["-s", "-j2", "-f", "Makefile.jobs"], "/usr/bin/make")
+  pair("make-shell-override", "make", ["-s", "-f", "Makefile.override"], "/usr/bin/make")
+  probe("timeout-availability", "moonx", ["cli/timeout", "1", "/usr/bin/printf", "ok"])
+  probe("env-help", "moonx", ["cli/env", "--help"])
+}

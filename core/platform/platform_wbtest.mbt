@@ -24,7 +24,7 @@ test "filesystem capability gates are explicit" {
   assert_false(timestamp_mutation_supported())
   assert_false(hard_links_supported())
   assert_false(readlink_supported())
-  assert_false(cross_device_rename_classification_supported())
+  assert_eq(cross_device_rename_classification_supported(), !is_windows())
   assert_false(special_file_policy_supported())
 }
 

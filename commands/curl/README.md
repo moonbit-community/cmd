@@ -1,8 +1,8 @@
 # curl
 
-Pure-MoonBit curl 8.22 HTTP/HTTPS profile. The authoritative capability record
-is [`docs/compatibility.md`](../../docs/compatibility.md); this README describes
-the package-level P1 contract verified by the unified test runner.
+Pure-MoonBit curl 8.22 HTTP/HTTPS profile, version **0.2.0**. See the
+[support record](../../docs/compatibility.md) for platform verification and
+exact-version publication evidence.
 
 The command streams HTTP/HTTPS responses to stdout or files and supports:
 
@@ -14,6 +14,10 @@ The command streams HTTP/HTTPS responses to stdout or files and supports:
 - `-T` file/stdin uploads, multiple sequential URLs, retry controls, redirect
   limits, connect/total/inactivity timeouts, HTTP CONNECT proxies, proxy bypass,
   insecure TLS, and partial-output cleanup.
+- `-u/--user user:password` Basic authentication; `-b/--cookie` literal cookie
+  values or Netscape input jars, and `-c/--cookie-jar` output jars. A shared jar
+  processes every response, including redirects, and matches domain, path,
+  expiry and Secure attributes before sending cookies.
 
 Redirect behavior distinguishes ordinary data from upload streams. An explicit
 `-X` method remains explicit after a redirect; 301/302/303 can still discard a
@@ -25,11 +29,23 @@ body. Cross-origin redirects remove authorization headers.
 disabled/default behavior, while `--idle-timeout` must be positive. Timer input
 is bounded by the runtime millisecond range.
 
-Network authorization is supplied by the Wasm harness. The command does not
-embed an allowlist: the policy suite proves both a denied connection and a
-connection allowed only to a local fixture endpoint.
+Network authorization belongs to the caller or host. The command does not
+embed an allowlist.
 
 This remains a bounded HTTP transfer profile, not full curl compatibility.
-Non-HTTP protocols, HTTP/2 negotiation, cookie/config/auth state, exact native
-progress and diagnostic bytes, and the rest of curl's option surface are not
-claimed.
+Non-HTTP protocols, HTTP/2 negotiation, config files, non-Basic authentication,
+interactive password prompts, exact native progress and diagnostic bytes,
+and the rest of curl's option surface are not claimed. Cookie files use the
+Netscape format; importing raw Set-Cookie header files, a public-suffix database,
+IDNA, and curl's HTTP-localhost Secure-cookie exception are not implemented.
+These are command implementation gaps, not limitations of async's public
+cookie parser. Like curl, cookie-jar write failures do not change the transfer
+exit status (verbose-mode warnings are not implemented).
+
+A custom `-H 'Cookie: ...'` together with matching stored cookies is rejected:
+curl sends distinct Cookie request headers, while async's public request API
+accepts a map and cannot preserve those duplicate fields. Literal `-b` cookies
+can be combined with stored cookies and preserve curl's ordering. Explicit
+custom Cookie headers are removed on a cross-origin redirect; literal `-b`
+data follows redirects as curl does. Jar cookies are selected again for the
+destination.

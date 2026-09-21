@@ -1,0 +1,4 @@
+"one"
+"two"
+make: recipe for 'broken' failed with status 1
+Total tests: 11, passed: 11, failed: 0.

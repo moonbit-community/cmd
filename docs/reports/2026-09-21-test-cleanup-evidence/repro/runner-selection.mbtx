@@ -1,0 +1,30 @@
+///|
+import { "moonbitlang/async", "moonbitlang/async/process", "moonbitlang/async/fs", "moonbitlang/core/json" }
+///|
+async fn main {
+  let runner = "./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe"
+  let rows : Array[String] = []
+  for (label,args,status) in [
+    ("unknown-command",["--command","not-a-command","--list"],2),
+    ("unknown-case",["--case","not-a-case","--list"],2),
+    ("empty-intersection",["--suite","contract","--case","sh-interactive-session","--list"],2),
+    ("suite-list-no-artifact",["--suite","contract","--command","jq","--native-root","absent","--list"],0),
+    ("cohort-filter",["--suite","compat","--case","compat-tail-follow","--list"],0),
+    ("stable-alias",["--suite","oracle","--case","candidate-phase4-cp-regular","--case","phase4-cp-regular","--list"],0),
+    ("platform-skip",["--suite","oracle","--case","network-auth-cookie-oracle","--report-dir","test-reports/platform-skip-closure"],0),
+    ("oracle-unavailable",["--suite","oracle","--case","phase3-echo-basic","--report-dir","test-reports/oracle-unavailable-closure"],1)
+  ] {
+    let (actual,stdout,stderr) = @process.collect_output(runner,args)
+    assert_eq(actual,status)
+    @fs.write_file("test-reports/"+label+".stdout.bin",stdout.binary())
+    @fs.write_file("test-reports/"+label+".stderr.bin",stderr.binary())
+    if label == "stable-alias" { assert_eq(stdout.text(),"phase4-cp-regular\tcp\tdifferential\n") }
+    if label == "cohort-filter" { assert_eq(stdout.text(),"compat-tail-follow\ttail\tcompat\n") }
+    if label == "suite-list-no-artifact" { assert_false(stdout.text().contains("\tdifferential")) }
+    if label == "platform-skip" { assert_true(stdout.text().contains("skip differential")); assert_true(stdout.text().contains("semantic passes: 0")) }
+    if label == "oracle-unavailable" { assert_true(stdout.text().contains("infra differential")); assert_true(stdout.text().contains("semantic passes: 0")) }
+    rows.push("\{label}: exit \{actual}, passed")
+  }
+  @fs.write_file("docs/reports/2026-09-21-test-cleanup-evidence/runner-selection.txt",rows.join("\n")+"\n")
+  println(rows.join("\n"))
+}

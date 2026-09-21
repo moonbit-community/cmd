@@ -1,1922 +1,569 @@
 {
-  "schema": 1,
+  "schema": 2,
   "commands": [
-    { "name": "base64", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] },
-    { "name": "basename", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "unmeasured", "capabilities": ["paths"] },
-    { "name": "cat", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "policy-measured", "capabilities": ["stdin", "files"] },
-    { "name": "chmod", "baseline": "coreutils-9.11", "status": "partial", "native": "p8-measured", "wasm": "policy-measured", "capabilities": ["permissions"] },
-    { "name": "cmp", "baseline": "diffutils-3.12", "status": "partial", "native": "p9-measured", "wasm": "unmeasured", "capabilities": ["files"] },
-    { "name": "comm", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] },
-    { "name": "cp", "baseline": "coreutils-9.11", "status": "partial", "native": "p8-measured", "wasm": "policy-measured", "capabilities": ["filesystem-mutation"] },
-    { "name": "curl", "baseline": "curl-8.22.0", "status": "partial", "native": "p1-measured", "wasm": "policy-measured", "capabilities": ["network", "files"] },
-    { "name": "cut", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] },
-    { "name": "dirname", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "unmeasured", "capabilities": ["paths"] },
-    { "name": "echo", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "unmeasured", "capabilities": ["stdout"] },
-    { "name": "env", "baseline": "coreutils-9.11", "status": "partial", "native": "p2-measured", "wasm": "policy-measured", "capabilities": ["environment", "process"] },
-    { "name": "false", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "unmeasured", "capabilities": ["status"] },
-    { "name": "find", "baseline": "findutils-4.10.0", "status": "partial", "native": "p8-measured", "wasm": "policy-measured", "capabilities": ["filesystem", "filesystem-mutation", "process"] },
-    { "name": "grep", "baseline": "grep-3.12", "status": "partial", "native": "p2-measured", "wasm": "policy-measured", "capabilities": ["stdin", "files"] },
-    { "name": "head", "baseline": "coreutils-9.11", "status": "partial", "native": "p3-measured", "wasm": "policy-measured", "capabilities": ["stdin", "files"] },
-    { "name": "join", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] },
-    { "name": "jq", "baseline": "jq-1.8.2", "status": "partial", "native": "p6-measured", "wasm": "unmeasured", "capabilities": ["json", "files"] },
-    { "name": "jqlog", "baseline": "jqlog-06a529211343c773d30d2c3aa0231a2456665b7a", "status": "partial", "native": "p6-measured", "wasm": "policy-measured", "capabilities": ["json", "files"] },
-    { "name": "ln", "baseline": "coreutils-9.11", "status": "partial", "native": "p8-measured", "wasm": "policy-measured", "capabilities": ["filesystem-mutation", "links"] },
-    { "name": "ls", "baseline": "coreutils-9.11", "status": "partial", "native": "p8-measured", "wasm": "policy-measured", "capabilities": ["filesystem"] },
-    { "name": "make", "baseline": "make-4.4.1", "status": "partial", "native": "p7-measured", "wasm": "policy-measured", "capabilities": ["language", "process", "files"] },
-    { "name": "mkdir", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "policy-measured", "capabilities": ["filesystem-mutation"] },
-    { "name": "mv", "baseline": "coreutils-9.11", "status": "partial", "native": "p8-measured", "wasm": "policy-measured", "capabilities": ["filesystem-mutation"] },
-    { "name": "nl", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] },
-    { "name": "paste", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] },
-    { "name": "printenv", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "unmeasured", "capabilities": ["environment"] },
-    { "name": "printf", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "unmeasured", "capabilities": ["stdout"] },
-    { "name": "pwd", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "unmeasured", "capabilities": ["filesystem", "environment"] },
-    { "name": "rm", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "policy-measured", "capabilities": ["filesystem-mutation"] },
-    { "name": "rmdir", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "policy-measured", "capabilities": ["filesystem-mutation"] },
-    { "name": "seq", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "unmeasured", "capabilities": ["stdout"] },
-    { "name": "sh", "baseline": "posix.1-2024-sh", "status": "partial", "native": "p5-measured", "wasm": "policy-measured", "capabilities": ["language", "process", "files"] },
-    { "name": "sha256sum", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] },
-    { "name": "sleep", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "unmeasured", "capabilities": ["time"] },
-    { "name": "sort", "baseline": "coreutils-9.11", "status": "partial", "native": "p3-measured", "wasm": "policy-measured", "capabilities": ["stdin", "files"] },
-    { "name": "tail", "baseline": "coreutils-9.11", "status": "partial", "native": "p3-measured", "wasm": "policy-measured", "capabilities": ["stdin", "files"] },
-    { "name": "tee", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "policy-measured", "capabilities": ["stdin", "filesystem-mutation"] },
-    { "name": "test", "baseline": "coreutils-9.11-posix.1-2024", "status": "partial", "native": "p8-measured", "wasm": "unmeasured", "capabilities": ["expression", "filesystem"] },
-    { "name": "timeout", "baseline": "coreutils-9.11", "status": "exception", "native": "local-only", "wasm": "policy-denied", "capabilities": ["process", "process-group-cancellation"] },
-    { "name": "touch", "baseline": "coreutils-9.11", "status": "partial", "native": "p8-measured", "wasm": "policy-measured", "capabilities": ["filesystem-mutation", "time"] },
-    { "name": "tr", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "unmeasured", "capabilities": ["stdin"] },
-    { "name": "true", "baseline": "coreutils-9.11", "status": "partial", "native": "p9-measured", "wasm": "unmeasured", "capabilities": ["status"] },
-    { "name": "uniq", "baseline": "coreutils-9.11", "status": "partial", "native": "p3-measured", "wasm": "policy-measured", "capabilities": ["stdin", "files"] },
-    { "name": "wc", "baseline": "coreutils-9.11", "status": "partial", "native": "p3-measured", "wasm": "policy-measured", "capabilities": ["stdin", "files"] },
-    { "name": "wget", "baseline": "wget-1.25.0", "status": "partial", "native": "p1-measured", "wasm": "policy-measured", "capabilities": ["network", "files"] },
-    { "name": "xargs", "baseline": "findutils-4.10.0", "status": "partial", "native": "p4-measured", "wasm": "policy-measured", "capabilities": ["stdin", "process"] },
-    { "name": "xxd", "baseline": "vim-9.1.0000-xxd", "status": "partial", "native": "p7-measured", "wasm": "unmeasured", "capabilities": ["stdin", "files"] }
-  ],
-  "cases": [
-    {
-      "id": "phase0-base64-stdin",
-      "command": "base64",
-      "args": [],
-      "stdin_hex": "68656c6c6f0a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase0-cat-double-dash",
-      "command": "cat",
-      "args": ["--", "-"],
-      "stdin_hex": "00ff016f6b",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase0-false-status",
-      "command": "false",
-      "args": [],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 1,
-      "normalizations": []
-    },
-    {
-      "id": "phase0-tee-filesystem",
-      "command": "tee",
-      "args": ["copy.txt"],
-      "stdin_hex": "736964652d6566666563740a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase2-wget-relative-redirect",
-      "command": "wget",
-      "args": ["-q", "-O", "-", "${HTTP_BASE}/redirect"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase2-wget-http-status-8",
-      "command": "wget",
-      "args": ["-q", "-O", "-", "${HTTP_BASE}/missing"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 8,
-      "normalizations": []
-    },
-    {
-      "id": "phase2-wget-remote-file",
-      "command": "wget",
-      "args": ["-q", "${HTTP_BASE}/named.txt"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase2-wget-multiple-urls",
-      "command": "wget",
-      "args": ["-q", "${HTTP_BASE}/fixed", "${HTTP_BASE}/second"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase2-wget-request-body",
-      "command": "wget",
-      "args": ["-q", "-O", "-", "--method=POST", "--body-data=payload", "${HTTP_BASE}/echo"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase2-wget-input-file",
-      "command": "wget",
-      "args": ["-q", "-i", "urls.txt"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "urls.txt", "content_hex": "247b485454505f424153457d2f6e616d65642e7478740a247b485454505f424153457d2f7365636f6e640a" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase2-curl-does-not-follow",
-      "command": "curl",
-      "args": ["-s", "${HTTP_BASE}/redirect"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase2-curl-location",
-      "command": "curl",
-      "args": ["-sL", "${HTTP_BASE}/redirect"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase2-curl-fail-status-22",
-      "command": "curl",
-      "args": ["-sf", "${HTTP_BASE}/missing"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 22,
-      "normalizations": []
-    },
-    {
-      "id": "phase2-curl-output-file",
-      "command": "curl",
-      "args": ["-s", "-o", "response.bin", "${HTTP_BASE}/fixed"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase2-curl-post-data",
-      "command": "curl",
-      "args": ["-s", "-d", "alpha=one", "${HTTP_BASE}/echo"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase2-curl-upload-file",
-      "command": "curl",
-      "args": ["-s", "-T", "upload.bin", "${HTTP_BASE}/echo"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "upload.bin", "content_hex": "0062696e617279ff" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase2-curl-multiple-urls",
-      "command": "curl",
-      "args": ["-s", "${HTTP_BASE}/fixed", "${HTTP_BASE}/second"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase2-curl-last-transfer-status",
-      "command": "curl",
-      "args": ["-sf", "${HTTP_BASE}/missing", "${HTTP_BASE}/fixed"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase2-curl-remote-name",
-      "command": "curl",
-      "args": ["-sO", "${HTTP_BASE}/named.txt"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p1-curl-explicit-method-redirect",
-      "command": "curl",
-      "args": ["-sL", "-X", "POST", "--data-raw", "payload", "${HTTP_BASE}/redirect-explicit"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p1-curl-binary-data-file",
-      "command": "curl",
-      "args": ["-s", "--data-binary", "@payload.bin", "${HTTP_BASE}/echo"],
-      "stdin_hex": "",
-      "files": [{ "path": "payload.bin", "content_hex": "0062696e617279ff" }],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p1-curl-redirect-limit-zero",
-      "command": "curl",
-      "args": ["-sL", "--max-redirs", "0", "${HTTP_BASE}/redirect"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 47,
-      "normalizations": []
-    },
-    {
-      "id": "p1-wget-binary-body-file",
-      "command": "wget",
-      "args": ["-qO-", "--method=POST", "--body-file=payload.bin", "${HTTP_BASE}/echo"],
-      "stdin_hex": "",
-      "files": [{ "path": "payload.bin", "content_hex": "0062696e617279ff" }],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p1-wget-method-and-repeated-header",
-      "command": "wget",
-      "args": ["-qO-", "--method=PATCH", "--header=X-Marker: first", "--header=X-Marker: second", "--body-data=payload", "${HTTP_BASE}/inspect"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p1-wget-continue-range",
-      "command": "wget",
-      "args": ["-q", "-c", "${HTTP_BASE}/range"],
-      "stdin_hex": "",
-      "files": [{ "path": "range", "content_hex": "68656c" }],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p1-wget-timestamp-not-modified",
-      "command": "wget",
-      "args": ["-q", "-N", "${HTTP_BASE}/conditional"],
-      "stdin_hex": "",
-      "files": [{ "path": "conditional", "content_hex": "707265736572766564" }],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p1-wget-content-disposition-collision",
-      "command": "wget",
-      "args": ["-q", "--content-disposition", "${HTTP_BASE}/named-header"],
-      "stdin_hex": "",
-      "files": [{ "path": "fixture.txt", "content_hex": "6f6c64" }],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase2-curl-https-insecure",
-      "command": "curl",
-      "args": ["-sk", "${HTTPS_BASE}/fixed.txt"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase2-wget-https-no-check-certificate",
-      "command": "wget",
-      "args": ["-q", "-O", "-", "--no-check-certificate", "${HTTPS_BASE}/fixed.txt"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-basename-suffix",
-      "command": "basename",
-      "args": ["path/file.txt", ".txt"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-cat-formatting",
-      "command": "cat",
-      "args": ["-b", "-s", "-A"],
-      "stdin_hex": "610a0a0a620980",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-cmp-equal",
-      "command": "cmp",
-      "args": ["left", "right"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "left", "content_hex": "73616d650a" },
-        { "path": "right", "content_hex": "73616d650a" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-comm-columns",
-      "command": "comm",
-      "args": ["left", "right"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "left", "content_hex": "610a620a" },
-        { "path": "right", "content_hex": "620a630a" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-cut-field",
-      "command": "cut",
-      "args": ["-d:", "-f2"],
-      "stdin_hex": "613a6f6e650a623a74776f0a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-dirname-basic",
-      "command": "dirname",
-      "args": ["path/to/file"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-echo-basic",
-      "command": "echo",
-      "args": ["hello", "world"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-find-exec-status",
-      "command": "find",
-      "args": [".", "-maxdepth", "0", "-exec", "false", ";"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-grep-stdin",
-      "command": "grep",
-      "args": ["needle"],
-      "stdin_hex": "6e6f0a6e6565646c650a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase4-find-metadata",
-      "command": "find",
-      "args": [".", "-maxdepth", "1", "-type", "f", "-size", "1c", "-print"],
-      "stdin_hex": "",
-      "files": [{ "path": "one", "content_hex": "78" }, { "path": "two", "content_hex": "7878" }],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase4-find-prune-depth",
-      "command": "find",
-      "args": [".", "-name", "skip", "-prune", "-o", "-type", "f", "-print"],
-      "stdin_hex": "",
-      "files": [{ "path": "keep", "content_hex": "6b" }, { "path": "skip/hidden", "content_hex": "68" }],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-head-line-count",
-      "command": "head",
-      "args": ["-n", "1"],
-      "stdin_hex": "6f6e650a74776f0a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-join-unpaired-output-list",
-      "command": "join",
-      "args": ["-a", "1", "-a", "2", "-e", "0", "-o", "0,1.2,2.2", "left", "right"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "left", "content_hex": "61206c6566740a62206f6e6c792d6c6566740a63206c6566742d630a" },
-        { "path": "right", "content_hex": "612072696768740a632072696768742d630a64206f6e6c792d72696768740a" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-jq-property",
-      "command": "jq",
-      "args": [".name"],
-      "stdin_hex": "7b226e616d65223a226d6f6f6e227d0a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-ls-basic",
-      "command": "ls",
-      "args": [],
-      "stdin_hex": "",
-      "files": [
-        { "path": "alpha", "content_hex": "61" },
-        { "path": "beta", "content_hex": "62" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-nl-empty",
-      "command": "nl",
-      "args": [],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-paste-parallel",
-      "command": "paste",
-      "args": ["left", "right"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "left", "content_hex": "310a320a" },
-        { "path": "right", "content_hex": "610a620a" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-printenv-selected",
-      "command": "printenv",
-      "args": ["ORACLE_VALUE"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": { "ORACLE_VALUE": "visible" },
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-printf-format",
-      "command": "printf",
-      "args": ["%s=%d\\n", "answer", "42"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-pwd-working-directory",
-      "command": "pwd",
-      "args": [],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [
-        {
-          "field": "stdout",
-          "rule": "working-directory",
-          "comment": "candidate cases use a temporary path while the pinned container mounts the same case at /work"
-        }
-      ],
-      "comparison": "normalized"
-    },
-    {
-      "id": "phase3-seq-basic",
-      "command": "seq",
-      "args": ["1", "3"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-sha256sum-stdin",
-      "command": "sha256sum",
-      "args": [],
-      "stdin_hex": "68656c6c6f0a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-sleep-zero",
-      "command": "sleep",
-      "args": ["0"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-sort-basic",
-      "command": "sort",
-      "args": [],
-      "stdin_hex": "620a610a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-tail-line-count",
-      "command": "tail",
-      "args": ["-n", "1"],
-      "stdin_hex": "6f6e650a74776f0a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-test-string",
-      "command": "test",
-      "args": ["value", "=", "value"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-tr-range",
-      "command": "tr",
-      "args": ["a-z", "A-Z"],
-      "stdin_hex": "68656c6c6f0a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-true-status",
-      "command": "true",
-      "args": [],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-uniq-adjacent",
-      "command": "uniq",
-      "args": [],
-      "stdin_hex": "610a610a620a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-wc-lines",
-      "command": "wc",
-      "args": ["-l"],
-      "stdin_hex": "610a620a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-xxd-seek",
-      "command": "xxd",
-      "args": ["-s", "4", "-l", "4"],
-      "stdin_hex": "30313233343536373839",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-xxd-reverse-seek",
-      "command": "xxd",
-      "args": ["-r", "-p", "-s", "2"],
-      "stdin_hex": "363136320a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase4-cp-regular",
-      "command": "cp",
-      "args": ["source", "copy"],
-      "stdin_hex": "",
-      "files": [{ "path": "source", "content_hex": "7061796c6f61640a" }],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase4-ln-symbolic",
-      "command": "ln",
-      "args": ["-s", "source", "link"],
-      "stdin_hex": "",
-      "files": [{ "path": "source", "content_hex": "7061796c6f61640a" }],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "host_platforms": ["posix"]
-    },
-    {
-      "id": "phase4-mkdir-parents",
-      "command": "mkdir",
-      "args": ["-p", "nested/dir"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase4-mv-regular",
-      "command": "mv",
-      "args": ["source", "moved"],
-      "stdin_hex": "",
-      "files": [{ "path": "source", "content_hex": "7061796c6f61640a" }],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase4-rm-regular",
-      "command": "rm",
-      "args": ["removed"],
-      "stdin_hex": "",
-      "files": [{ "path": "removed", "content_hex": "7061796c6f61640a" }],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase4-rmdir-ignore-nonempty",
-      "command": "rmdir",
-      "args": ["--ignore-fail-on-non-empty", "nonempty"],
-      "stdin_hex": "",
-      "files": [{ "path": "nonempty/kept", "content_hex": "78" }],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase4-touch-create",
-      "command": "touch",
-      "args": ["created"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase4-chmod-numeric",
-      "command": "chmod",
-      "args": ["600", "file"],
-      "stdin_hex": "",
-      "files": [{ "path": "file", "content_hex": "7061796c6f61640a" }],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "host_platforms": ["posix"]
-    },
-    {
-      "id": "phase5-env-clean-null",
-      "command": "env",
-      "args": ["-i", "-0", "VALUE=visible"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-env-chdir",
-      "command": "env",
-      "args": ["-C", "sub", "printenv", "VALUE"],
-      "stdin_hex": "",
-      "files": [{ "path": "sub/kept", "content_hex": "78" }],
-      "environment": { "VALUE": "visible" },
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-xargs-replace",
-      "command": "xargs",
-      "args": ["-I{}", "printf", "<%s>\\n", "{}"],
-      "stdin_hex": "6669727374206c696e650a7365636f6e64206c696e650a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-xargs-child-status",
-      "command": "xargs",
-      "args": ["false"],
-      "stdin_hex": "76616c75650a",
-      "files": [],
-      "environment": {},
-      "expected_status": 123,
-      "normalizations": []
-    },
-    {
-      "id": "phase4-xargs-lines-eof",
-      "command": "xargs",
-      "args": ["-L", "1", "-E", "STOP", "printf", "<%s>\\n"],
-      "stdin_hex": "6f6e652074776f0a53544f500a74687265650a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-command-positional",
-      "command": "sh",
-      "args": ["-c", "echo \"$1\"", "shell", "value"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-stdin-positional",
-      "command": "sh",
-      "args": ["-s", "shell-name", "value"],
-      "stdin_hex": "7072696e7466202725737c25735c6e27202224302220222431220a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-command-substitution",
-      "command": "sh",
-      "args": ["-c", "printf '%s\\n' \"$(printf inner)\""],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-heredoc",
-      "command": "sh",
-      "args": ["-c", "cat <<EOF\nheredoc\nEOF"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-if",
-      "command": "sh",
-      "args": ["-c", "if false; then printf no; else printf yes; fi"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-case",
-      "command": "sh",
-      "args": ["-c", "case flower in f*) printf match;; *) printf no;; esac"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-for",
-      "command": "sh",
-      "args": ["-c", "for x in a b; do printf '%s' \"$x\"; done"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-while-until",
-      "command": "sh",
-      "args": ["-c", "while false; do printf no; done; until true; do printf no; done; printf yes"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-function-return",
-      "command": "sh",
-      "args": ["-c", "f() { printf '%s' \"$1\"; return 7; }; f ok"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 7,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-grouping",
-      "command": "sh",
-      "args": ["-c", "(printf one); { printf two; }"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-parameter-length",
-      "command": "sh",
-      "args": ["-c", "VALUE=abcd; printf '%s' \"${#VALUE}\""],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-shift",
-      "command": "sh",
-      "args": ["-c", "set -- first second; shift; printf '%s' \"$1\""],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-make-include-cli-variable",
-      "command": "make",
-      "args": ["-s", "VALUE=cli"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "common.mk", "content_hex": "56414c5545203d20696e636c756465640a" },
-        { "path": "Makefile", "content_hex": "696e636c75646520636f6d6d6f6e2e6d6b0a56414c5545203d206c6f63616c0a616c6c3a0a09407072696e7466202725735c6e272027242856414c554529270a" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p2-grep-context-byte-offset",
-      "command": "grep",
-      "args": ["-n", "-b", "-C1", "hit"],
-      "stdin_hex": "610a6869740a630a640a650a6869740a670a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p2-grep-zero-records",
-      "command": "grep",
-      "args": ["-Fzb", "hit"],
-      "stdin_hex": "6f6e650068697400746872656500",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p2-grep-repeated-context",
-      "command": "grep",
-      "args": ["-A0", "-A1", "hit"],
-      "stdin_hex": "610a6869740a630a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p2-grep-binary-report",
-      "command": "grep",
-      "args": ["hit"],
-      "stdin_hex": "61006869740a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p2-grep-recursive-selection",
-      "command": "grep",
-      "args": ["-r", "--include=*.txt", "--exclude=skip*", "needle", "tree"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "tree/keep.txt", "content_hex": "6e6565646c650a" },
-        { "path": "tree/skip.txt", "content_hex": "6e6565646c650a" },
-        { "path": "tree/keep.log", "content_hex": "6e6565646c650a" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p2-env-long-aliases",
-      "command": "env",
-      "args": ["--ignore-environment", "--unset=DROP", "DROP=no", "KEEP=yes"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p2-env-non-shell-assignment-name",
-      "command": "env",
-      "args": ["-i", "1=x"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-sort-multiple-key-modifiers",
-      "command": "sort",
-      "args": ["-t:", "-k2,2n", "-k1,1r"],
-      "stdin_hex": "623a320a613a31300a633a320a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-sort-general-numeric",
-      "command": "sort",
-      "args": ["-g"],
-      "stdin_hex": "3165320a390a322e3565310a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-sort-general-numeric-classes",
-      "command": "sort",
-      "args": ["-g"],
-      "stdin_hex": "696e660a310a2d696e660a6e616e0a746578740a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-sort-local-key-modifier-combination",
-      "command": "sort",
-      "args": ["-t:", "-k2n,2r"],
-      "stdin_hex": "613a320a623a31300a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-sort-blank-field-boundaries",
-      "command": "sort",
-      "args": ["-k2,2"],
-      "stdin_hex": "782020620a7a20610a79202020610a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-sort-character-modifiers",
-      "command": "sort",
-      "args": ["-bdf"],
-      "stdin_hex": "20207a210a612d0a20420a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-sort-unique-key-stability",
-      "command": "sort",
-      "args": ["-u", "-t:", "-k2,2"],
-      "stdin_hex": "623a310a613a310a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-sort-human-numeric",
-      "command": "sort",
-      "args": ["-h"],
-      "stdin_hex": "3939393939394b0a314d0a31304b0a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-sort-month",
-      "command": "sort",
-      "args": ["-M"],
-      "stdin_hex": "4d61720a4a414e0a7a7a7a0a4665620a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-sort-version",
-      "command": "sort",
-      "args": ["-V"],
-      "stdin_hex": "66696c6531300a66696c65320a66696c65310a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-sort-zero-records",
-      "command": "sort",
-      "args": ["-z"],
-      "stdin_hex": "62006100",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-sort-ignore-nonprinting",
-      "command": "sort",
-      "args": ["-i"],
-      "stdin_hex": "61017a0a61790a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-sort-ignore-case-c-locale",
-      "command": "sort",
-      "args": ["-f"],
-      "stdin_hex": "5b0a610a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-sort-check-quiet",
-      "command": "sort",
-      "args": ["--check=quiet"],
-      "stdin_hex": "620a610a",
-      "files": [],
-      "environment": {},
-      "expected_status": 1,
-      "normalizations": []
-    },
-    {
-      "id": "p3-uniq-field-character-selection",
-      "command": "uniq",
-      "args": ["-c", "-f1", "-s1", "-w1"],
-      "stdin_hex": "312078610a322078620a332079790a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-uniq-zero-records",
-      "command": "uniq",
-      "args": ["-z", "-s1", "-w1"],
-      "stdin_hex": "6178310061783200627900",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-wc-max-line-length",
-      "command": "wc",
-      "args": ["-L"],
-      "stdin_hex": "6162630a31323334350a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-wc-files0-alignment",
-      "command": "wc",
-      "args": ["-l", "--files0-from=names"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "a", "content_hex": "610a" },
-        { "path": "b", "content_hex": "310a320a330a340a350a360a370a380a390a31300a" },
-        { "path": "names", "content_hex": "61006200" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-head-zero-records",
-      "command": "head",
-      "args": ["-z", "-n2"],
-      "stdin_hex": "616263006465660067686900",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-head-exclude-tail",
-      "command": "head",
-      "args": ["-n", "-2"],
-      "stdin_hex": "310a320a330a340a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-head-binary-prefix-count",
-      "command": "head",
-      "args": ["-n", "1KiB"],
-      "stdin_hex": "310a320a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-head-explicit-positive-count",
-      "command": "head",
-      "args": ["-n", "+3"],
-      "stdin_hex": "310a320a330a340a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-head-multiple-file-headers",
-      "command": "head",
-      "args": ["-n1", "a", "b"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "a", "content_hex": "6f6e650a74776f0a" },
-        { "path": "b", "content_hex": "74687265650a666f75720a" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p6-jq-sort-keys",
-      "command": "jq",
-      "args": ["-S", "-c", "."],
-      "stdin_hex": "7b227a223a312c2261223a327d0a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p6-jq-slurp-raw-input",
-      "command": "jq",
-      "args": ["-R", "-s", "-c", "."],
-      "stdin_hex": "6f6e650a74776f0a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p6-jq-exit-status",
-      "command": "jq",
-      "args": ["-e", "-n", "false"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 1,
-      "normalizations": []
-    },
-    {
-      "id": "p7-xxd-include",
-      "command": "xxd",
-      "args": ["-i"],
-      "stdin_hex": "616263",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p7-xxd-addressed-reverse",
-      "command": "xxd",
-      "args": ["-r"],
-      "stdin_hex": "30303030303030323a2034313432202020203b41420a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p7-make-conditional",
-      "command": "make",
-      "args": ["-s", "MODE=yes"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "Makefile", "content_hex": "4d4f4445203d206e6f0a69666571202824284d4f4445292c796573290a616c6c3a0a09407072696e7466207965730a656c73650a616c6c3a0a09407072696e7466206e6f0a656e6469660a" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p7-make-unbounded-jobs-keeps-target",
-      "command": "make",
-      "args": ["-s", "-j", "all"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "Makefile", "content_hex": "616c6c3a0a09407072696e7466207965730a" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p7-make-what-if-dependency",
-      "command": "make",
-      "args": ["-s", "-n", "-W", "source", "target"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "Makefile", "content_hex": "7461726765743a20736f757263650a09407072696e74662072656275696c740a" },
-        { "path": "source", "content_hex": "" },
-        { "path": "target", "content_hex": "" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p6-jq-invalid-indent",
-      "command": "jq",
-      "args": ["--indent", "-1", "."],
-      "stdin_hex": "6e756c6c0a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p6-jq-invalid-argjson",
-      "command": "jq",
-      "args": ["--argjson", "value", "not-json", "-n", "$value"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 2,
-      "normalizations": []
-    },
-    {
-      "id": "p7-xxd-malformed-address",
-      "command": "xxd",
-      "args": ["-r"],
-      "stdin_hex": "6e6f7420612064756d700a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p7-make-unexpected-endif",
-      "command": "make",
-      "args": ["-f", "Makefile"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "Makefile", "content_hex": "656e6469660a" }
-      ],
-      "environment": {},
-      "expected_status": 2,
-      "normalizations": []
-    },
-    {
-      "id": "p8-test-regular-size",
-      "command": "test",
-      "args": ["-s", "input"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "input", "content_hex": "78" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p8-find-readable",
-      "command": "find",
-      "args": [".", "-readable", "-print"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "input", "content_hex": "78" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p8-ls-size-reverse",
-      "command": "ls",
-      "args": ["-S", "-r", "."],
-      "stdin_hex": "",
-      "files": [
-        { "path": "a", "content_hex": "61" },
-        { "path": "b", "content_hex": "6262" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p8-cp-update-older",
-      "command": "cp",
-      "args": ["--update=older", "source", "destination"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "source", "content_hex": "6f6c64" },
-        { "path": "destination", "content_hex": "6e6577" }
-      ],
-      "delay_ms": 2,
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p8-cp-numbered-backup",
-      "command": "cp",
-      "args": ["--backup=numbered", "source", "destination"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "source", "content_hex": "6e6577" },
-        { "path": "destination", "content_hex": "6f6c64" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p8-mv-update-none",
-      "command": "mv",
-      "args": ["--update=none", "source", "destination"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "source", "content_hex": "6f6c64" },
-        { "path": "destination", "content_hex": "6e6577" }
-      ],
-      "delay_ms": 2,
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p8-chmod-symbolic-assignment",
-      "command": "chmod",
-      "args": ["a=rwx", "input"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "input", "content_hex": "78" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p8-ln-relative",
-      "command": "ln",
-      "args": ["-s", "-r", "target", "link"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "target", "content_hex": "78" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p8-test-dangling-link",
-      "command": "test",
-      "args": ["-L", "dangling"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "dangling", "content_hex": "", "kind": "symlink", "target": "missing" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "host_platforms": ["posix"]
-    },
-    {
-      "id": "p8-find-xtype-link",
-      "command": "find",
-      "args": [".", "-xtype", "l", "-print"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "dangling", "content_hex": "", "kind": "symlink", "target": "missing" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "host_platforms": ["posix"]
-    },
-    {
-      "id": "p8-ls-dangling-classify",
-      "command": "ls",
-      "args": ["-F", "dangling"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "dangling", "content_hex": "", "kind": "symlink", "target": "missing" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "host_platforms": ["posix"]
-    },
-    {
-      "id": "p8-cp-command-line-link",
-      "command": "cp",
-      "args": ["-H", "link", "copy"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "target", "content_hex": "7061796c6f6164" },
-        { "path": "link", "content_hex": "", "kind": "symlink", "target": "target" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "host_platforms": ["posix"]
-    },
-    {
-      "id": "p9-base64-ignore-garbage",
-      "command": "base64",
-      "args": ["-di"],
-      "stdin_hex": "6147216b3d",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-base64-wrap-boundary",
-      "command": "base64",
-      "args": ["-w4"],
-      "stdin_hex": "616263646566",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-basename-empty",
-      "command": "basename",
-      "args": ["--", ""],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-basename-repeated-separators",
-      "command": "basename",
-      "args": ["path///to///file///"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-dirname-empty",
-      "command": "dirname",
-      "args": ["--", ""],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-dirname-repeated-separators",
-      "command": "dirname",
-      "args": ["path///to///file///"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-cmp-different",
-      "command": "cmp",
-      "args": ["left", "right"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "left", "content_hex": "610a" },
-        { "path": "right", "content_hex": "620a" }
-      ],
-      "environment": {},
-      "expected_status": 1,
-      "normalizations": []
-    },
-    {
-      "id": "p9-comm-zero-terminated",
-      "command": "comm",
-      "args": ["-z", "left", "right"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "left", "content_hex": "61006300" },
-        { "path": "right", "content_hex": "62006300" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-cat-unbuffered-binary",
-      "command": "cat",
-      "args": ["-u"],
-      "stdin_hex": "00ff016f6b",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-cut-zero-terminated",
-      "command": "cut",
-      "args": ["-z", "-c1"],
-      "stdin_hex": "6162006364",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-paste-zero-terminated",
-      "command": "paste",
-      "args": ["-z", "left", "right"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "left", "content_hex": "31003200" },
-        { "path": "right", "content_hex": "61006200" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-join-zero-terminated",
-      "command": "join",
-      "args": ["-z", "left", "right"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "left", "content_hex": "31206c6566740032206c65667400" },
-        { "path": "right", "content_hex": "31207269676874003220726967687400" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-nl-sections",
-      "command": "nl",
-      "args": ["-ba", "-ha", "-w1", "-s:", "-v10", "-i2"],
-      "stdin_hex": "5c3a5c3a5c3a0a680a5c3a5c3a0a620a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-printf-repeated-format",
-      "command": "printf",
-      "args": ["%d,", "1", "2", "3"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-seq-descending",
-      "command": "seq",
-      "args": ["3", "-1", "1"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-echo-double-dash-literal",
-      "command": "echo",
-      "args": ["--", "-e"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-printenv-mixed-status",
-      "command": "printenv",
-      "args": ["P9_VALUE", "P9_MISSING"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": { "P9_VALUE": "visible" },
-      "expected_status": 1,
-      "normalizations": []
-    },
-    {
-      "id": "p9-sha256sum-quiet-check",
-      "command": "sha256sum",
-      "args": ["-c", "--quiet", "checks"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "payload", "content_hex": "616263" },
-        { "path": "checks", "content_hex": "6261373831366266386630316366656134313431343064653564616532323233623030333631613339363137376139636234313066663631663230303135616420207061796c6f61640a" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-tr-equivalence-repeat",
-      "command": "tr",
-      "args": ["[=a=]bc", "[X*]"],
-      "stdin_hex": "616263",
-      "files": [],
-      "environment": { "LC_ALL": "C" },
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-tr-punctuation-class",
-      "command": "tr",
-      "args": ["-d", "[:punct:]"],
-      "stdin_hex": "612120623f0a",
-      "files": [],
-      "environment": { "LC_ALL": "C" },
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-tr-truncate-set1",
-      "command": "tr",
-      "args": ["-t", "abc", "X"],
-      "stdin_hex": "616263",
-      "files": [],
-      "environment": { "LC_ALL": "C" },
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-tr-octal-escape",
-      "command": "tr",
-      "args": ["\\141", "X"],
-      "stdin_hex": "61",
-      "files": [],
-      "environment": { "LC_ALL": "C" },
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-tr-octal-overflow-consumption",
-      "command": "tr",
-      "args": ["\\400", "XY"],
-      "stdin_hex": "2030",
-      "files": [],
-      "environment": { "LC_ALL": "C" },
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-basename-root",
-      "command": "basename",
-      "args": ["///"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-dirname-root",
-      "command": "dirname",
-      "args": ["///"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-cmp-implicit-stdin",
-      "command": "cmp",
-      "args": ["left"],
-      "stdin_hex": "73616d650a",
-      "files": [
-        { "path": "left", "content_hex": "73616d650a" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-cut-bytes",
-      "command": "cut",
-      "args": ["-b", "1,3"],
-      "stdin_hex": "6162630a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-paste-serial-empty",
-      "command": "paste",
-      "args": ["-s"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-paste-escaped-delimiters",
-      "command": "paste",
-      "args": ["-s", "-d", "\\n\\t"],
-      "stdin_hex": "610a620a630a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-join-check-order",
-      "command": "join",
-      "args": ["--check-order", "left", "right"],
-      "stdin_hex": "",
-      "files": [
-        { "path": "left", "content_hex": "610a620a" },
-        { "path": "right", "content_hex": "610a620a" }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-nl-number-format",
-      "command": "nl",
-      "args": ["-n", "rz", "-w", "3"],
-      "stdin_hex": "610a620a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-echo-octal-per-argument",
-      "command": "echo",
-      "args": ["-e", "\\101", "B\\102"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-sleep-double-dash",
-      "command": "sleep",
-      "args": ["--", "0"],
-      "stdin_hex": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-tr-lower-upper-classes",
-      "command": "tr",
-      "args": ["[:lower:]", "[:upper:]"],
-      "stdin_hex": "61627a",
-      "files": [],
-      "environment": { "LC_ALL": "C" },
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-tr-middle-repeat",
-      "command": "tr",
-      "args": ["a[b*2]c", "WXYZ"],
-      "stdin_hex": "61626263",
-      "files": [],
-      "environment": { "LC_ALL": "C" },
-      "expected_status": 0,
-      "normalizations": []
+    {
+      "name": "base64",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "basename",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "paths"
+      ]
+    },
+    {
+      "name": "cat",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "chmod",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p8-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "permissions"
+      ]
+    },
+    {
+      "name": "cmp",
+      "baseline": "diffutils-3.12",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "files"
+      ]
+    },
+    {
+      "name": "comm",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "cp",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p8-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "filesystem-mutation"
+      ]
+    },
+    {
+      "name": "curl",
+      "baseline": "curl-8.22.0",
+      "status": "partial",
+      "native": "p1-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "network",
+        "files"
+      ]
+    },
+    {
+      "name": "cut",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "dirname",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "paths"
+      ]
+    },
+    {
+      "name": "echo",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "stdout"
+      ]
+    },
+    {
+      "name": "env",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p2-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "environment",
+        "process"
+      ]
+    },
+    {
+      "name": "false",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "status"
+      ]
+    },
+    {
+      "name": "find",
+      "baseline": "findutils-4.10.0",
+      "status": "partial",
+      "native": "p8-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "filesystem",
+        "filesystem-mutation",
+        "process"
+      ]
+    },
+    {
+      "name": "grep",
+      "baseline": "grep-3.12",
+      "status": "partial",
+      "native": "p2-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "head",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p3-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "join",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "jq",
+      "baseline": "jq-1.8.2",
+      "status": "partial",
+      "native": "p6-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "json",
+        "files"
+      ]
+    },
+    {
+      "name": "jqlog",
+      "baseline": "jqlog-06a529211343c773d30d2c3aa0231a2456665b7a",
+      "status": "partial",
+      "native": "p6-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "json",
+        "files"
+      ]
+    },
+    {
+      "name": "ln",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p8-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "filesystem-mutation",
+        "links"
+      ]
+    },
+    {
+      "name": "ls",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p8-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "filesystem"
+      ]
+    },
+    {
+      "name": "make",
+      "baseline": "make-4.4.1",
+      "status": "partial",
+      "native": "p7-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "language",
+        "process",
+        "files"
+      ]
+    },
+    {
+      "name": "mkdir",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "filesystem-mutation"
+      ]
+    },
+    {
+      "name": "mv",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p8-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "filesystem-mutation"
+      ]
+    },
+    {
+      "name": "nl",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "paste",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "printenv",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "environment"
+      ]
+    },
+    {
+      "name": "printf",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "stdout"
+      ]
+    },
+    {
+      "name": "pwd",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "filesystem",
+        "environment"
+      ]
+    },
+    {
+      "name": "rm",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "filesystem-mutation"
+      ]
+    },
+    {
+      "name": "rmdir",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "filesystem-mutation"
+      ]
+    },
+    {
+      "name": "seq",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "stdout"
+      ]
+    },
+    {
+      "name": "sh",
+      "baseline": "posix.1-2024-sh",
+      "status": "partial",
+      "native": "p5-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "language",
+        "process",
+        "files"
+      ]
+    },
+    {
+      "name": "sha256sum",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "sleep",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "time"
+      ]
+    },
+    {
+      "name": "sort",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p3-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "tail",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p3-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "tee",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "stdin",
+        "filesystem-mutation"
+      ]
+    },
+    {
+      "name": "test",
+      "baseline": "coreutils-9.11-posix.1-2024",
+      "status": "partial",
+      "native": "p8-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "expression",
+        "filesystem"
+      ]
+    },
+    {
+      "name": "timeout",
+      "baseline": "coreutils-9.11",
+      "status": "exception",
+      "native": "local-only",
+      "wasm": "policy-denied",
+      "capabilities": [
+        "process",
+        "process-group-cancellation"
+      ]
+    },
+    {
+      "name": "touch",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p8-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "filesystem-mutation",
+        "time"
+      ]
+    },
+    {
+      "name": "tr",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "stdin"
+      ]
+    },
+    {
+      "name": "true",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p9-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "status"
+      ]
+    },
+    {
+      "name": "uniq",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p3-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "wc",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p3-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "wget",
+      "baseline": "wget-1.25.0",
+      "status": "partial",
+      "native": "p1-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "network",
+        "files"
+      ]
+    },
+    {
+      "name": "xargs",
+      "baseline": "findutils-4.10.0",
+      "status": "partial",
+      "native": "p4-measured",
+      "wasm": "policy-measured",
+      "capabilities": [
+        "stdin",
+        "process"
+      ]
+    },
+    {
+      "name": "xxd",
+      "baseline": "vim-9.1.0000-xxd",
+      "status": "partial",
+      "native": "p7-measured",
+      "wasm": "unmeasured",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
     }
+  ],
+  "cases": [],
+  "case_files": [
+    "../../cases/cp.json",
+    "../../cases/jq.json",
+    "../../cases/ln.json",
+    "../../cases/ls.json",
+    "../../cases/mv.json",
+    "../../cases/nl.json",
+    "../../cases/rm.json",
+    "../../cases/sh.json",
+    "../../cases/tr.json",
+    "../../cases/wc.json",
+    "../../cases/cat.json",
+    "../../cases/cmp.json",
+    "../../cases/cut.json",
+    "../../cases/env.json",
+    "../../cases/pwd.json",
+    "../../cases/seq.json",
+    "../../cases/tee.json",
+    "../../cases/xxd.json",
+    "../../cases/comm.json",
+    "../../cases/curl.json",
+    "../../cases/echo.json",
+    "../../cases/find.json",
+    "../../cases/grep.json",
+    "../../cases/head.json",
+    "../../cases/join.json",
+    "../../cases/make.json",
+    "../../cases/sort.json",
+    "../../cases/tail.json",
+    "../../cases/test.json",
+    "../../cases/true.json",
+    "../../cases/uniq.json",
+    "../../cases/wget.json",
+    "../../cases/chmod.json",
+    "../../cases/false.json",
+    "../../cases/jqlog.json",
+    "../../cases/mkdir.json",
+    "../../cases/paste.json",
+    "../../cases/rmdir.json",
+    "../../cases/sleep.json",
+    "../../cases/touch.json",
+    "../../cases/xargs.json",
+    "../../cases/base64.json",
+    "../../cases/printf.json",
+    "../../cases/dirname.json",
+    "../../cases/timeout.json",
+    "../../cases/basename.json",
+    "../../cases/printenv.json",
+    "../../cases/sha256sum.json"
   ]
 }

@@ -1,0 +1,6 @@
+sh: arithmetic division by zero
+"one"
+"two"
+make: fixture failure
+make: fixture failure
+Total tests: 126, passed: 126, failed: 0.

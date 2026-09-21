@@ -1,0 +1,85 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-true-status",
+      "command": "true",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p0-true-version",
+      "command": "true",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "expected_stdout_text": "true (moonbit cmd) 0.2.0\n",
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-text-line-754"
+      ]
+    },
+    {
+      "id": "p0-true-help",
+      "command": "true",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "expected_stdout_text": "Usage: true [ignored command line arguments]\n",
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-text-line-746"
+      ]
+    },
+    {
+      "id": "compat-text-line-744",
+      "command": "true",
+      "args": [
+        "ignored"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-catalog-line-294",
+      "command": "true",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
+    }
+  ]
+}

@@ -9,6 +9,7 @@ priv struct CpOptions {
   update : @fsops.UpdateMode
   backup : @fsops.BackupControl
   suffix : String
+  preserve_permissions : Bool
 }
 
 ///|
@@ -91,7 +92,7 @@ async fn copy_tree_with_policy(
     Directory => {
       match target_kind {
         Some(Directory) => ()
-        None => @fs.mkdir(target)
+        None => @fs.mkdir(target, permission=0o777)
         Some(_) =>
           raise @fsops.FsOpError("destination is not a directory: '\{target}'")
       }
@@ -148,6 +149,7 @@ async fn copy_tree_with_policy(
           false,
           backup is None,
           options.traversal,
+          preserve_permissions=options.preserve_permissions,
         ),
       )
       true
@@ -162,11 +164,21 @@ async fn copy_one(
   target : String,
   options : CpOptions,
 ) -> Bool {
+  // A no-op selected by the command does not require copy capabilities.
+  if @fs.kind(source) == Regular {
+    match replacement_decision(source, target, options) {
+      SkipDestination => return false
+      RejectDestination =>
+        raise @fsops.FsOpError("destination exists under update=none-fail")
+      ReplaceDestination => ()
+    }
+  }
   @fsops.preflight_copy_path(
     source,
     target,
     options.recursive,
     options.traversal,
+    preserve_permissions=options.preserve_permissions,
   )
   copy_tree_with_policy(source, target, options, true)
 }
@@ -189,6 +201,7 @@ async fn main {
     @cli.flag("no-dereference", short='P'),
     @cli.flag("no-target-directory", short='T'),
     @cli.flag("preserve", short='p'),
+    @cli.option("no-preserve"),
     @cli.flag("archive", short='a'),
     @cli.flag("verbose", short='v'),
     @cli.flag("help"),
@@ -201,7 +214,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: cp [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n",
+      "Usage: cp [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n",
     )
     return
   }
@@ -210,6 +223,11 @@ async fn main {
       "cp: metadata and symbolic-link preservation are unavailable in the portable filesystem profile\n",
     )
     @sys.exit(1)
+    return
+  }
+  if parsed.last_value("no-preserve") is Some(value) && value != "mode" {
+    @stdio.stderr.write("cp: only --no-preserve=mode is currently supported\n")
+    @sys.exit(2)
     return
   }
   let operands = parsed.operands
@@ -265,6 +283,7 @@ async fn main {
     update,
     backup,
     suffix: parsed.last_value("suffix").unwrap_or("~"),
+    preserve_permissions: !parsed.contains("no-preserve"),
   }
   let destination = operands[operands.length() - 1]
   let sources = operands[0:operands.length() - 1]

@@ -51,7 +51,7 @@ async fn main {
           return
         }
       }
-    None => 0o755
+    None => 0o777
   }
   let directories = parsed.operands
   let parents = parsed.contains("parents")
@@ -68,7 +68,17 @@ async fn main {
         Some(Directory) if parents => false
         Some(_) => fail("path already exists")
         None => {
-          @fs.mkdir(directory, permission~, recursive=parents)
+          if parents {
+            @fs.mkdir(
+              @fsops.dirname(directory),
+              permission=0o777,
+              recursive=true,
+            )
+          }
+          @fs.mkdir(directory, permission~)
+          if parsed.contains("mode") {
+            @fs.chmod(directory, permission)
+          }
           true
         }
       }

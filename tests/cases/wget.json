@@ -1,0 +1,224 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase2-wget-relative-redirect",
+      "command": "wget",
+      "args": [
+        "-q",
+        "-O",
+        "-",
+        "${HTTP_BASE}/redirect"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-wget-http-status-8",
+      "command": "wget",
+      "args": [
+        "-q",
+        "-O",
+        "-",
+        "${HTTP_BASE}/missing"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 8,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-wget-remote-file",
+      "command": "wget",
+      "args": [
+        "-q",
+        "${HTTP_BASE}/named.txt"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-wget-multiple-urls",
+      "command": "wget",
+      "args": [
+        "-q",
+        "${HTTP_BASE}/fixed",
+        "${HTTP_BASE}/second"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-wget-request-body",
+      "command": "wget",
+      "args": [
+        "-q",
+        "-O",
+        "-",
+        "--method=POST",
+        "--body-data=payload",
+        "${HTTP_BASE}/echo"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-wget-input-file",
+      "command": "wget",
+      "args": [
+        "-q",
+        "-i",
+        "urls.txt"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "urls.txt",
+          "content_text": "${HTTP_BASE}/named.txt\n${HTTP_BASE}/second\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p1-wget-binary-body-file",
+      "command": "wget",
+      "args": [
+        "-qO-",
+        "--method=POST",
+        "--body-file=payload.bin",
+        "${HTTP_BASE}/echo"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload.bin",
+          "content_hex": "0062696e617279ff"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p1-wget-method-and-repeated-header",
+      "command": "wget",
+      "args": [
+        "-qO-",
+        "--method=PATCH",
+        "--header=X-Marker: first",
+        "--header=X-Marker: second",
+        "--body-data=payload",
+        "${HTTP_BASE}/inspect"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p1-wget-continue-range",
+      "command": "wget",
+      "args": [
+        "-q",
+        "-c",
+        "${HTTP_BASE}/range"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "range",
+          "content_text": "hel"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p1-wget-timestamp-not-modified",
+      "command": "wget",
+      "args": [
+        "-q",
+        "-N",
+        "${HTTP_BASE}/conditional"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "conditional",
+          "content_text": "preserved"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p1-wget-content-disposition-collision",
+      "command": "wget",
+      "args": [
+        "-q",
+        "--content-disposition",
+        "${HTTP_BASE}/named-header"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "fixture.txt",
+          "content_text": "old"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-wget-https-no-check-certificate",
+      "command": "wget",
+      "args": [
+        "-q",
+        "-O",
+        "-",
+        "--no-check-certificate",
+        "${HTTPS_BASE}/fixed.txt"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-catalog-line-306",
+      "command": "wget",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    }
+  ]
+}

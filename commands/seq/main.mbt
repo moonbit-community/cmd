@@ -225,14 +225,7 @@ async fn main {
   }
   let (first, step, last) = match parsed {
     [last] => (parse_decimal("1"), parse_decimal("1"), last)
-    [first, last] => {
-      let step = if first.compare(last) <= 0 {
-        parse_decimal("1")
-      } else {
-        parse_decimal("-1")
-      }
-      (first, step, last)
-    }
+    [first, last] => (first, parse_decimal("1"), last)
     [first, step, last] => (first, step, last)
     _ => abort("unreachable")
   }
