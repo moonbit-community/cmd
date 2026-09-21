@@ -123,7 +123,11 @@ pub fn protects_removal_operand(
   path : String,
   preserve_root? : Bool = true,
 ) -> Bool {
-  let normalized = @platform.normalize_input_separators(path)
+  let normalized = if @platform.is_windows() {
+    path.replace_all(old="\\", new="/")
+  } else {
+    path
+  }
   let mut end = normalized.length()
   while end > 0 && normalized[end - 1] == '/' {
     end -= 1

@@ -2,6 +2,37 @@
   "schema": 2,
   "cases": [
     {
+      "id": "rm-final-parent-slash",
+      "command": "rm",
+      "args": ["-r", "dir/../"],
+      "files": [{"path": "dir", "kind": "directory"}, {"path": "kept", "content_text": "safe"}],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU rm final-dot operand rule; Windows CI regression",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "protected path",
+      "diagnostic_reason": "The path spelling is platform dependent; the refusal, status and complete retained fixture are required.",
+      "expected_files": [{"path": "dir", "kind": "directory"}, {"path": "kept", "content_text": "safe"}]
+    },
+    {
+      "id": "rm-final-parent-backslash",
+      "command": "rm",
+      "args": ["-r", "dir\\..\\"],
+      "files": [{"path": "dir", "kind": "directory"}, {"path": "kept", "content_text": "safe"}],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Windows final-dot operand regression",
+      "host_platforms": ["windows"],
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "protected path",
+      "diagnostic_reason": "The refusal, status and complete retained fixture are required; command branding differs from upstream.",
+      "expected_files": [{"path": "dir", "kind": "directory"}, {"path": "kept", "content_text": "safe"}]
+    },
+    {
       "id": "phase4-rm-regular",
       "command": "rm",
       "args": [

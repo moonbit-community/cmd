@@ -51,3 +51,10 @@ CI pins the validated 0.10.13+cbb11c36f binaries and core. The official manifest
 now advertises 0.10.14; the separately documented pin prevents acceptance
 variables from drifting. Case duration fields are actual invocation times;
 there is no claimed build-time reduction from incomparable old measurements.
+
+The first remote run, [35571034120](https://github.com/moonbit-community/cmd/actions/runs/35571034120),
+found a Windows-only `rm` operand bug in both package backends: final `..`
+was not detected after input slashes had become backslashes. The fix recognizes
+both Windows separators while preserving literal POSIX backslashes. The same
+test now explicitly covers both Windows forms and POSIX preservation; local
+fsops tests pass 18/18 on each backend. This run is not a passing release gate.

@@ -452,6 +452,8 @@
     }
   ],
   "case_ids": [
+    "rm-final-parent-slash",
+    "rm-final-parent-backslash",
     "phase0-base64-stdin",
     "phase3-basename-suffix",
     "phase0-cat-double-dash",
