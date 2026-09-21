@@ -22,14 +22,16 @@ pub async fn run_with_deadline(
   let stderr_buffer = @buffer.Buffer()
   let exit_status = Ref(-1)
   let cleanup_error : Ref[String?] = Ref(None)
+  // Keep handles alive until the task group has finished cancelling pending
+  // IO. Closing them from the group's body races Windows IO completion.
+  let (input, writer) = @process.write_to_process()
+  defer writer.close()
+  let (reader_out, output) = @process.read_from_process()
+  defer reader_out.close()
+  let (reader_err, error_output) = @process.read_from_process()
+  defer reader_err.close()
   let finished = @async.with_timeout_opt(timeout_ms, () => {
     @async.with_task_group(group => {
-      let (input, writer) = @process.write_to_process()
-      defer writer.close()
-      let (reader_out, output) = @process.read_from_process()
-      defer reader_out.close()
-      let (reader_err, error_output) = @process.read_from_process()
-      defer reader_err.close()
       let child = @process.spawn(
         group,
         program,

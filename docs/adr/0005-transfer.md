@@ -19,8 +19,11 @@ Custom `Cookie:` request headers combined with matching jar cookies require
 duplicate request fields, which the public HTTP request map cannot represent.
 Reject that combination before sending it; do not silently merge or discard
 fields. Reopen when a public ordered header-list API is released. Literal curl
-`-b` cookies follow cross-host redirects, while custom Cookie headers are
-removed; a local oracle probe covers this distinction. PSL/IDNA and cookie
+`-b` cookies and custom Cookie headers are restricted to the initial origin;
+stored jar cookies are selected for the redirect destination. The pinned curl
+8.22.0 Linux oracle removed literal cookies on a cross-host redirect, unlike
+the older macOS probe. The fixed-version oracle defines the current contract.
+PSL/IDNA and cookie
 prefix rules remain project work rather than async limitations.
 
 Baseline: async 0.22.1, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-15.

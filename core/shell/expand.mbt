@@ -177,6 +177,51 @@ async fn expand_default(
 }
 
 ///|
+/// ENV already contains a scalar value, not shell source. Expand substitutions
+/// with double-quoted escape rules while retaining literal quote characters,
+/// spaces, operators, glob characters, and ordinary path backslashes.
+async fn expand_startup_path(
+  value : String,
+  context : Context,
+) -> String raise ShellError {
+  let chars = value.iter().collect()
+  let parts : Array[WordPart] = []
+  let literal = StringBuilder()
+  let mut index = 0
+  while index < chars.length() {
+    let char = chars[index]
+    if char == '\\' &&
+      index + 1 < chars.length() &&
+      chars[index + 1] is ('$' | '`' | '"' | '\\' | '\n') {
+      if chars[index + 1] != '\n' {
+        literal.write_char(chars[index + 1])
+      }
+      index += 2
+    } else if char == '$' {
+      flush_literal(parts, literal, quoted=true)
+      let (part, next) = parse_dollar(chars, index, true)
+      match part {
+        Some(part) => parts.push(part)
+        None => literal.write_char('$')
+      }
+      index = next
+    } else if char == '`' {
+      raise ShellError("backtick command substitution is not supported")
+    } else {
+      literal.write_char(char)
+      index += 1
+    }
+  }
+  flush_literal(parts, literal, quoted=true)
+  expand_word(
+    { parts, preserve_empty: true, },
+    context,
+    split=false,
+    pathname=false,
+  ).join("")
+}
+
+///|
 async fn expand_word(
   word : Word,
   context : Context,

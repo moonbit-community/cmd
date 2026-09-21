@@ -206,7 +206,7 @@ async fn network_cli_scenario(
       (
         "curl",
         ["-sSL", "-b", "sid=explicit", base + "/cross"],
-        "auth=\ncookie=sid=explicit\n",
+        "auth=\ncookie=\n",
         2,
       ),
       (

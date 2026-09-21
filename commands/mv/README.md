@@ -1,6 +1,6 @@
 # mv
 
-This describes the unpublished 0.2.0 workspace candidate. See the
+This describes version 0.2.0. See the
 [support record](../../docs/compatibility.md) for measured option combinations
 and backend limits; accepted options do not establish full compatibility.
 

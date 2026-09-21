@@ -140,7 +140,7 @@ pub async fn Session::load_startup(self : Session) -> Unit {
     return
   }
   if self.context.env.get("ENV") is Some(value) && value != "" {
-    let filename = expand_default(value, self.context)
+    let filename = expand_startup_path(value, self.context)
     if filename != "" {
       let source = @fs.read_file(resolve_path(self.context, filename)).text()
       ignore(run_jobs(parse(source), self.context))

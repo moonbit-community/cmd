@@ -21,6 +21,11 @@ file. `sh -s [ARG...]` and a bare invocation read commands from stdin, executing
 complete commands before EOF without prompts. `sh -i` explicitly enables the
 line-oriented interactive session, including `ENV`, `PS1`/`PS2` on stderr,
 multiline input and recovery after a syntax or expansion error.
+`ENV` is expanded as a single startup pathname: parameter, arithmetic and
+`$(...)` substitutions are supported without field splitting or globbing.
+Literal quote characters, repeated spaces and ordinary Windows path
+backslashes survive expansion; backslashes before `$`, backticks, `"`, `\`
+or a newline use double-quoted escape rules. Script sessions never load `ENV`.
 
 Command input is read one byte at a time through public async Reader methods,
 so the parser does not prefetch bytes intended for `read` or a foreground child.

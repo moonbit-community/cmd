@@ -9,5 +9,5 @@ produces no output; use `seq 3 -1 1` to count down. Supports custom separators (
 equal-width zero padding (`-w`). Decimal and exponent inputs use exact
 fixed-point arithmetic, avoiding cumulative floating-point drift.
 `--version` reports the built package version. The published `cli/seq@0.1.5`
-still uses the earlier automatic descending-step behavior; the default `+1`
-change requires the candidate build.
+uses the earlier automatic descending-step behavior; version 0.2.0 uses the
+GNU-compatible default `+1`.

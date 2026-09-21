@@ -697,7 +697,12 @@ pub async fn transfer(
       )
     }
     if !per_request.contains("Cookie") {
-      let value = match (stored, cookie_data) {
+      let literal = if parsed.origin_key() == credential_origin {
+        cookie_data
+      } else {
+        None
+      }
+      let value = match (stored, literal) {
         (Some(stored), Some(literal)) => Some(stored + "; " + literal)
         (Some(stored), None) => Some(stored)
         (None, Some(literal)) => Some(literal)

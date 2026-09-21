@@ -49,6 +49,6 @@ A custom `-H 'Cookie: ...'` together with matching stored cookies is rejected:
 curl sends distinct Cookie request headers, while async's public request API
 accepts a map and cannot preserve those duplicate fields. Literal `-b` cookies
 can be combined with stored cookies and preserve curl's ordering. Explicit
-custom Cookie headers are removed on a cross-origin redirect; literal `-b`
-data follows redirects as curl does. Jar cookies are selected again for the
+custom Cookie headers and literal `-b` data are scoped to the initial origin,
+matching curl 8.22. Jar cookies are selected again for the
 destination.

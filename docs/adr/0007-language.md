@@ -15,6 +15,13 @@ Revision: Integrate persistent shell and synchronized make scenarios into both-b
 
 Opaque Session provides async feed/finish returning NeedMoreInput, Completed(status), Exit(status); run remains an adapter and capture returns output/status. sh -i persists cwd, variables/export state, functions/status; uses PS1/PS2 on stderr, interactive ENV, EOF/exit and syntax recovery. One-byte command input reads preserve read/foreground-child input. Make -j schedules dependency-ready targets concurrently, executes shared prerequisites once and propagates failures. $(shell ...) normalizes newlines and updates .SHELLSTATUS. No jobserver claim.
 
+ENV is expanded as one pathname, without token recognition, field splitting or
+globbing. Retain literal quotes, spaces and ordinary path backslashes; support
+parameter, arithmetic and command substitution with double-quoted escape
+rules. Re-lexing ENV as shell source was rejected after Windows CI exposed
+lost path separators. Native/Wasm shell tests cover literal filenames and
+startup loading; the continuous-input scenario verifies the real CLI path.
+
 ## Alternatives and compatibility cost
 
 Reject host interpreter delegation, exec as an external command, CharDevice as isatty and cancellation handling as recoverable SIGINT. Raw mode, editing/completion, resize and fg/bg require distinct terminal APIs. Bounded printf/test, one-level loop control, arithmetic assignment/increment/ternary, backticks, fd duplication and background syntax are project limitations, not async blockers; unsupported forms fail explicitly.

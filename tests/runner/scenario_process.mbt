@@ -4,6 +4,8 @@ async fn process_lifecycle_scenario(
   wasm : Bool,
   work : String,
 ) -> Unit {
+  let progress = work + "/../lifecycle.log"
+  @fs.write_file(progress, "environment\n")
   let helper = @fs.realpath(@env.args()[0])
   let env = scenario_run(
     work,
@@ -51,6 +53,7 @@ async fn process_lifecycle_scenario(
   assert_eq(cancelled, None)
   let continuing = scenario_run(work, root, wasm, "true", [], stdin=b"")
   assert_eq(continuing.status, 0)
+  @fs.write_file(progress, "capture timeout\n", append=true)
   let deadline = @testkit.run_with_deadline(
     helper,
     ["--test-helper", "capture-then-wait"],
@@ -60,6 +63,7 @@ async fn process_lifecycle_scenario(
   assert_eq(deadline.output.stdout, b"partial stdout\n")
   assert_eq(deadline.output.stderr, b"partial stderr\n")
   assert_eq(deadline.cleanup_error, None)
+  @fs.write_file(progress, "status 124 with closed stdin\n", append=true)
   let status_124 = @testkit.run_with_deadline(
     helper,
     ["--test-helper", "status-124"],
@@ -69,6 +73,7 @@ async fn process_lifecycle_scenario(
   assert_false(status_124.timed_out)
   assert_eq(status_124.output.status, 124)
   assert_eq(status_124.cleanup_error, None)
+  @fs.write_file(progress, "cancel and wait\n", append=true)
   @async.with_task_group(group => {
     let (reader, output) = @process.read_from_process()
     defer reader.close()
@@ -85,4 +90,5 @@ async fn process_lifecycle_scenario(
     assert_eq(child.wait(), first)
     assert_eq(reader.read_all().binary(), b"")
   })
+  @fs.write_file(progress, "complete\n", append=true)
 }

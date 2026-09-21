@@ -93,6 +93,43 @@ async test "session holds incomplete source recovers syntax errors and preserves
 }
 
 ///|
+async test "ENV scalar expansion preserves path characters without shell tokenization" {
+  let session = Session::new(env={ "ROOT": "C:\\Users\\two  words" })
+  assert_eq(
+    expand_startup_path("C:\\Users\\two  words\\startup.rc", session.context),
+    "C:\\Users\\two  words\\startup.rc",
+  )
+  assert_eq(
+    expand_startup_path("${ROOT}/startup 'quoted';[*].rc", session.context),
+    "C:\\Users\\two  words/startup 'quoted';[*].rc",
+  )
+  assert_eq(
+    expand_startup_path("/tmp/\\$ROOT\\\\literal.rc", session.context),
+    "/tmp/$ROOT\\literal.rc",
+  )
+  assert_eq(
+    expand_startup_path("$(printf /tmp)/$((1+1)).rc", session.context),
+    "/tmp/2.rc",
+  )
+}
+
+///|
+async test "interactive ENV loads a literal filename and script sessions ignore it" {
+  let directory = @fs.tmpdir(prefix="cmd-sh-startup-")
+  defer @fs.rmdir(directory, recursive=true)
+  let basename = "startup ' two  spaces.rc"
+  @fs.write_file(directory + "/" + basename, "STARTED=yes; PS1='loaded> '")
+  let env = { "ENV": "${STARTUP_DIR}/" + basename, "STARTUP_DIR": directory }
+  let session = Session::new(env~, interactive=true)
+  session.load_startup()
+  assert_eq(session.context.env.get("STARTED"), Some("yes"))
+  assert_eq(session.prompt(), "loaded> ")
+  let script = Session::new(env~)
+  script.load_startup()
+  assert_eq(script.context.env.get("STARTED"), None)
+}
+
+///|
 async test "read consumes one line pipeline builtins preserve parent variables" {
   let (status, output) = capture(
     "VALUE=parent; printf 'child\\n' | read VALUE; printf '%s' \"$VALUE\"; printf hi | printf end",

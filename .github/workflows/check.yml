@@ -82,11 +82,13 @@ jobs:
           --suite contract --backend wasm --report-dir test-reports/contract-wasm
 
       - name: Native interactive, network and lifecycle scenarios
+        timeout-minutes: 3
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
           --suite scenarios --backend native --report-dir test-reports/scenarios-native
 
       - name: Wasm interactive, network and lifecycle scenarios
+        timeout-minutes: 3
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
           --suite scenarios --backend wasm --report-dir test-reports/scenarios-wasm

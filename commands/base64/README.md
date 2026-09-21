@@ -9,7 +9,7 @@ Base64 encode or decode a file or stdin:
 ```sh
 printf 'hello' | moonx cli/base64
 moonx cli/base64 -d encoded.txt
-moon run --target wasm commands/base64 -- -w0 big.bin # candidate: no wrapping or final newline
+moonx cli/base64@0.2.0 -w0 big.bin # no wrapping or final newline
 ```
 
 Options: `-d`/`-D` decode (embedded newlines are always accepted), `-i`/

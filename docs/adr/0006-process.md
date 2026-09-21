@@ -15,6 +15,11 @@ local cases have a 15-second default deadline; Docker and MoonX cases have a
 runner timeout, separately from a command deliberately returning 124. Cleanup
 closes owned pipes, requests cancellation and waits for direct children in an
 uncancellable region. Cleanup failures remain visible infrastructure failures.
+Pipe handles outlive the task group that performs their IO: pending reads and
+writes must finish cancellation before closing the handles. Closing a handle
+from the group's main task can race Windows completion delivery. The direct
+child timeout scenario retains partial output and records each lifecycle phase
+so a cleanup stall remains diagnosable in CI.
 
 ## Alternatives and compatibility cost
 

@@ -75,3 +75,12 @@ separators before substituting a fixture prefix. The latter fixes two Windows
 contracts whose raw output was correct; their exact suffixes remain checked.
 These corrections retain all semantic assertions and distinguish verifier
 failures from product failures.
+
+Run [35573226232](https://github.com/moonbit-community/cmd/actions/runs/35573226232)
+passed macOS and both Windows contract backends, but exposed a Windows
+interactive startup path error and a lifecycle cleanup stall. ENV now has
+scalar expansion, and pipe handles outlive cancellation of their reader tasks.
+The lifecycle scenario saves phase progress and CI bounds each scenario step.
+The same run found that pinned curl 8.22.0 also removes literal `-b` cookies
+on a cross-host redirect; the implementation and contract now follow it.
+These changes require a new passing remote gate.
