@@ -189,3 +189,21 @@ pub async fn terminal_output_enabled(
 pub async fn is_terminal(_stream : StandardStream) -> Bool {
   false
 }
+
+///|
+pub extend Platform with Eq::{not_equal, equal}
+
+///|
+pub extend Platform with @debug.Debug::{to_repr}
+
+///|
+pub extend StandardStream with Eq::{not_equal, equal}
+
+///|
+pub extend StandardStream with @debug.Debug::{to_repr}
+
+///|
+pub extend TerminalPolicy with Eq::{not_equal, equal}
+
+///|
+pub extend TerminalPolicy with @debug.Debug::{to_repr}

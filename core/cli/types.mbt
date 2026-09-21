@@ -6,6 +6,12 @@ pub(all) enum CompatibilityTier {
 } derive(Eq, Debug)
 
 ///|
+pub extend CompatibilityTier with Eq::{equal, not_equal}
+
+///|
+pub extend CompatibilityTier with @debug.Debug::{to_repr}
+
+///|
 pub(all) enum InputMode {
   NoInput
   OptionalStdin
@@ -167,3 +173,33 @@ pub(all) struct CommandContract {
   capabilities : Array[Capability]
   options : Array[String]
 }
+
+///|
+pub extend InputMode with Eq::{not_equal, equal}
+
+///|
+pub extend InputMode with @debug.Debug::{to_repr}
+
+///|
+pub extend OutputMode with Eq::{not_equal, equal}
+
+///|
+pub extend OutputMode with @debug.Debug::{to_repr}
+
+///|
+pub extend Capability with Eq::{not_equal, equal}
+
+///|
+pub extend Capability with @debug.Debug::{to_repr}
+
+///|
+pub extend ErrorKind with Eq::{not_equal, equal}
+
+///|
+pub extend ErrorKind with @debug.Debug::{to_repr}
+
+///|
+pub extend CliError with Eq::{not_equal, equal}
+
+///|
+pub extend CliError with @debug.Debug::{to_repr}

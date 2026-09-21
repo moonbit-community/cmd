@@ -68,6 +68,7 @@ fn curl_usage() -> String {
     #|  -u, --user <user:password>   HTTP Basic authentication
     #|  -b, --cookie <data|file>     send cookies or load a Netscape jar
     #|  -c, --cookie-jar <file>      write a Netscape cookie jar
+    #|      -H 'Cookie: ...'       send a separate field after stored jar cookies
     #|  -X, --request <method>       specify a supported HTTP method
     #|  -d, --data <data>            HTTP POST data
     #|      --data-raw <data>        HTTP POST data without @ expansion

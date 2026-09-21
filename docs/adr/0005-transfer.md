@@ -3,7 +3,7 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-09-21
-Revision: Preserve Wget's explicit credential scope across redirects; keep curl credentials origin-scoped and authentication challenge state separate per origin.
+Revision: Use both public HTTP header layers for curl's explicit-plus-jar Cookie fields; preserve Wget's explicit Cookie override and command-specific credential scopes.
 
 ## Target and decision
 
@@ -36,10 +36,20 @@ not yet claimed; adding a shared command-session authentication cache requires
 specific upstream comparison cases. Credentials can still answer a new Basic
 challenge at each allowed origin.
 
-Custom `Cookie:` request headers combined with matching jar cookies require
-duplicate request fields, which the public HTTP request map cannot represent.
-Reject that combination before sending it; do not silently merge or discard
-fields. Reopen when a public ordered header-list API is released. Literal curl
+The current workspace sends matching jar cookies through persistent client headers
+and an explicit curl `Cookie:` through per-request headers. async 0.22.1 emits
+these separately and in that order. Wget selects `ReplaceStored` so its explicit
+field replaces outgoing jar cookies without disabling response-cookie storage.
+The earlier single-map rejection was too restrictive. A pure MoonBit raw TCP
+probe confirmed the public API path and compared curl 8.7.1 and Wget 1.25.0;
+core tests assert the wire fields and redirect behavior, and the shared CLI
+scenario compares against pinned Linux tools when its oracle suite runs.
+Reject CRLF injection, concatenating fields, or maintaining a second HTTP stack:
+none is needed for this case. The compatibility cost is limited to unsupported
+arbitrary ordered repeated headers: two maps do not replace an ordered list.
+That remaining limit can be lifted by a public list API plus wire-level tests.
+These corrections are local candidate changes, not changes to published 0.2.0.
+Literal curl
 `-b` cookies and custom Cookie headers are restricted to the initial origin;
 stored jar cookies are selected for the redirect destination. The pinned curl
 8.22.0 Linux oracle removed literal cookies on a cross-host redirect, unlike
@@ -47,7 +57,8 @@ the older macOS probe. The fixed-version oracle defines the current contract.
 PSL/IDNA and cookie
 prefix rules remain project work rather than async limitations.
 
-Baseline: async 0.22.1, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-15.
+Recheck baseline: async 0.22.1, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-20,
+moonc 0.10.14+7d59c7ec9. The original 0.2.0 release used the earlier pinned toolchain.
 Command option tests, core/netops cookie tests and `network-auth-cookie` exercise the implemented profile against loopback HTTP fixtures. `network-auth-cookie-oracle` preserves the old probe's live output/status and jar-mode comparisons against the pinned Linux oracle. Its implementation and CI registration are not a local Linux pass. The original probe remains archived. Only final passing options are promoted in the support record.
 Historical results remain in [the audit](../reports/2026-09-19-command-fidelity-audit.md).
 Candidate runtime results are recorded separately from published versions.

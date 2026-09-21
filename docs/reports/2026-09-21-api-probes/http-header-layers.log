@@ -1,0 +1,25 @@
+GET /public-api HTTP/1.1
+Cookie: sid=fixture
+Host: 127.0.0.1:55041
+User-Agent: moonbit-http-client/1.1
+Cookie: sid=header
+Accept-Encoding: gzip,identity
+
+
+GET /curl-oracle HTTP/1.1
+Host: 127.0.0.1:55041
+User-Agent: curl/8.7.1
+Accept: */*
+Cookie: sid=fixture
+Cookie: sid=header
+
+
+GET /wget-oracle HTTP/1.1
+Host: 127.0.0.1:55041
+User-Agent: Wget/1.25.0
+Accept: */*
+Accept-Encoding: identity
+Connection: Keep-Alive
+Cookie: sid=header
+
+

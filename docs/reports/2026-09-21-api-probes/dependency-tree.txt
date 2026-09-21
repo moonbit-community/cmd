@@ -1,0 +1,9 @@
+cli/jq@0.2.0 (local /Users/winter/Documents/Moonbit/cmd/commands/jq) [workspace member]:
+├─ bobzhang/moonjq -> bobzhang/moonjq@0.1.2
+│  ├─ moonbitlang/async -> moonbitlang/async@0.22.1
+│  └─ moonbitlang/x -> moonbitlang/x@0.5.5
+├─ cli/core -> cli/core@0.2.0 (local /Users/winter/Documents/Moonbit/cmd/core) [workspace member]
+│  ├─ moonbitlang/async -> moonbitlang/async@0.22.1
+│  └─ moonbitlang/x -> moonbitlang/x@0.5.5
+├─ moonbitlang/async -> moonbitlang/async@0.22.1
+└─ moonbitlang/x -> moonbitlang/x@0.5.5

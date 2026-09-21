@@ -3,7 +3,7 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-09-21
-Revision: Keep strict filesystem boundaries and make test metadata observations explicit.
+Revision: Recheck public fd and procfs alternatives; preserve strict boundaries and explicit metadata observations.
 
 ## Target and decision
 
@@ -21,9 +21,18 @@ pass. This observation capability does not expand product command APIs.
 
 Reject realpath as inode identity, temporary rename as inode-preserving overwrite, content rewrites as touch, internal imports and own FFI. This intentionally contracts the old false-success surface. POSIX EXDEV is now classifiable via async.platform, but correct mv fallback still requires mode/link/timestamp preservation.
 
+The 2026-09-21 public API recheck found a possible Linux Native procfs route,
+not a portable fd API. Unix Native exposes OS fd, Windows exposes HANDLE and
+Wasm an opaque host handle. Keep this route experimental until fdinfo/mountinfo
+identity, bind mounts, path replacement, permission changes and missing procfs
+are tested together. It does not recover source mode. The compatibility cost
+remains refusal of existing-file copies; no content/lock/access heuristic is
+accepted as identity or metadata. See the [recheck](../reports/2026-09-21-public-api-recheck.md).
+
 ## Versions and evidence
 
-Baseline: async 0.22.1, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-15.
+Recheck: async 0.22.1, x 0.5.5, moonjq 0.1.2; moon 0.1.20260920,
+moonc 0.10.14+7d59c7ec9. Original release evidence retains its earlier baseline.
 The unified filesystem scenarios retain the former standalone fidelity probe's
 same-file/hard-link source preservation, new-file copy, unchanged mtime/content
 on touch rejection, parent/leaf permissions and chmod symlink assertions. Their

@@ -37,6 +37,9 @@ Recursive mirroring, FTP, non-Basic authentication/HSTS, post-download timestamp
 restoration, exact GNU progress and diagnostic bytes, and options outside the
 documented package help are not claimed.
 
+The current workspace lets an explicit `--header='Cookie: ...'` replace
+the outgoing jar cookie field, as in GNU Wget 1.25.0. The jar still receives
+response cookies. This correction is not included in published 0.2.0.
 Cookie matching includes host/domain boundaries, path order, Secure, Max-Age,
 Expires, replacement and deletion. Public-suffix database and IDNA behavior
 remain project implementation gaps. A challenge cannot replay an already

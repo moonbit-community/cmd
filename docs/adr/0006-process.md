@@ -3,7 +3,7 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-09-21
-Revision: Share direct-child cleanup and distinguish runner deadlines from command statuses.
+Revision: Recheck public cancellation callbacks as a signal workaround; retain direct-child cleanup and deadline/status separation.
 
 ## Target and decision
 
@@ -24,6 +24,16 @@ so a cleanup stall remains diagnosable in CI.
 ## Alternatives and compatibility cost
 
 Reject spawn+wait as exec replacement and direct-PID kill as descendant cleanup. Process groups are not authorization. handle_cancellation cannot clear current task cancellation. Timeout remains a local direct-child subset, not a published portable process-group guarantee.
+
+The public CancellationHandler wrapper can expose the supplied cancellation
+function, but using it as a kill command loses errors: async 0.22.1 Native
+kill wrappers discard the syscall result. A macOS probe on the 2026-09-20
+toolchain confirms an absent PID is rejected by host kill but returns Unit
+through hard_cancel. graceful_cancel additionally escalates after a timeout.
+Reject this workaround because it would reintroduce false success; release a
+standalone kill subset only when signal/target selection and failure reporting
+are faithful. The needed API is public signal sending with observable OS errors,
+separate from task cancellation. Probe: ../reports/2026-09-21-api-probes/cancellation-is-not-kill.mbtx.
 
 Reject sleep-duration guesses as proof of concurrency. Ready/ack synchronization
 establishes that independent make recipes overlap while shared prerequisites

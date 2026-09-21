@@ -159,6 +159,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("chmod", Restricted, NoInput, LineStream, [PermissionMutation], [
       "recursive", "reference", "verbose", "symbolic-assignment",
     ]),
+    // header + cookie: explicit Cookie follows the jar as a separate field.
     contract("curl", Restricted, NoInput, ByteStream, [Network, FileWrite], [
       "connect-timeout", "data", "data-binary", "data-raw", "data-urlencode", "fail",
       "head", "header", "idle-timeout", "insecure", "location", "max-redirs", "max-time",
@@ -204,6 +205,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       ["duration"],
       exit_codes=[0, 124, 125, 126, 127],
     ),
+    // header + load-cookies: explicit Cookie replaces the outgoing jar field.
     contract("wget", Restricted, NoInput, ByteStream, [Network, FileWrite], [
       "append-output", "body-data", "body-file", "connect-timeout", "continue", "content-disposition",
       "header", "input-file", "max-redirect", "method", "no-check-certificate", "no-proxy",

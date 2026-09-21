@@ -315,3 +315,6 @@ pub fn normalize_text(
   }
   @utf8.encode(text)
 }
+
+///|
+pub extend SnapshotEntry with @debug.Debug::{to_repr}

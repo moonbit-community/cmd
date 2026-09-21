@@ -1,14 +1,17 @@
 # MoonBit async 公开能力缺口反馈
 
-Updated: 2026-09-21（复现入口迁入统一测试场景）。复核正式发布的 `moonbitlang/async 0.22.1`、
+Updated: 2026-09-21（新工具链复核；移除 Cookie 组合的错误阻塞归因）。刷新注册表后复核正式发布的 `moonbitlang/async 0.22.1`、
 `moonbitlang/x 0.5.5`、`moonjq 0.1.2`；工具链为 moon/moonrun
-`0.1.20260915`、moonc/core `0.10.13+cbb11c36f`。
+`0.1.20260920`、moonc/core `0.10.14+7d59c7ec9`。三个依赖仍为最新正式版；
+moonjq 的传递依赖解析到相同 async/x 版本，没有残留旧版本。
 未将 upstream main 的未发布代码算作可用能力。
 
 本表供上游讨论 API 语义；建议的 API 名称不是当前已存在的接口。
 Native/Wasm 的“缺失”指公开 MoonBit API，不能据此推断 OS 或 Wasm
 宿主没有底层能力。源码路径均相对 `.mooncakes/moonbitlang/async/src/`。
-macOS 上的两种后端已实测；Linux/Windows 的运行结果不由 macOS 外推。
+本轮结果与已发布 0.2.0 的三平台验收分开记录，见
+[公开接口复查](reports/2026-09-21-public-api-recheck.md)；不将旧版 CI
+或 macOS 结果冒充新工具链的 Linux/Windows 验收。
 
 | 优先级 | 能力 | Native / Wasm 公开状态 | 分类与影响 |
 | --- | --- | --- | --- |
@@ -27,6 +30,8 @@ macOS 上的两种后端已实测；Linux/Windows 的运行结果不由 macOS �
 
 公开证据：`fs/pkg.generated.mbti` 的 `File` 有 kind、size、时间、
 position、seek、read/write，没有 identity、metadata/mode 或 truncate。
+`File::fd` 已公开，但 Unix Native 是 OS fd，Windows 是 HANDLE，Wasm
+是 opaque UInt64 host handle；不能把后者当 Linux `/proc/self/fd` 编号。
 `CreateOrTruncate` 是打开时截断，发生在调用者能够比较 identity 之前。
 内部证据：`internal/event_loop` 定义并使用 `FileIdentity`，watch 使用该类型；
 Native statx/fstatx 路径和 Wasm 相关宿主导入已经存在。
@@ -46,11 +51,21 @@ identity/mode/kind/size；`File.truncate(length)` 操作已打开对象。
 新文件权限、已有 inode 保留的测试全部通过。路径 realpath 或临时文件 rename
 不能替代该条件。决策见 ADR-0004。
 
+**替代路径复查**：Linux Native 可考虑从 `fdinfo` 的 inode/mount ID 与
+`mountinfo` 的设备号获得 identity，再从 `/proc/self/fd/<fd>` 重开持有对象。
+这不是跨后端方案，也仍缺普通 cp 的源 mode。当前 macOS 没有 procfs，
+未验证 Linux bind mount、路径替换与权限失败，所以未开放覆盖；完整探针
+验收条件和拒绝原因见公开接口复查报告。不能用 `(mnt_id, ino)` 代替
+`(device, ino)`，也不采用 realpath、内容相等或 advisory lock 伪造 identity。
+
 ## P1：元数据、时间、链接和权限
 
 公开证据：`fs/pkg.generated.mbti` 有路径/句柄 atime、mtime、ctime 读取，
 路径 chmod、symlink、rename，没有公开 mode/uid/gid/nlink 读取、utime、
 readlink、hardlink 或句柄 chmod。`x/fs` 也没有补齐这些语义。
+`can_read/write/execute` 只能判断当前凭据访问权，不能还原 mode；realpath
+会丢失相对链接原文且不能保留断链目标，不能代替 readlink。Windows chmod
+属于“入口公开、运行时不支持”，与缺少公开入口分别记录。
 
 最小复现：`filesystem-fidelity` 创建文件，记录 mtime 和 bytes，执行
 `touch existing`，验证非零且两者保持；`touch new` 和 `touch -c absent`
@@ -103,17 +118,31 @@ stopped/continued wait events 和 PTY。Native 有底层 fd 并不等于已公�
 建议 API 需分别表达 replace-current-process、建立/加入进程组、组信号、
 前台终端归属、wait Exit/Stopped/Continued 和 PTY master/slave 的关闭规则。
 定义取消作用域与 wait/reap 所有权，避免 kill 后遗留 zombie 或 pipe drain 挂起。
+额外复查了公开 `CancellationHandler` 的函数值：Native `hard_cancel()`
+内部会调用 kill，但丢弃其返回值。macOS
+[负向探针](reports/2026-09-21-api-probes/cancellation-is-not-kill.mbtx) 中，
+宿主确认不存在的 PID 在这个接口仍正常返回 Unit。`graceful_cancel` 还会
+在延迟后升级 SIGKILL，并不是单次信号发送。因此不能据此实现保真的 kill；
+建议新增带 OSError/权限/不存在反馈的 `send_signal`，不能把“内部已调用 kill”
+写成“完整 kill 命令可用”，也不能反过来说完全没有信号发送的底层能力。
 解除条件：Native/Wasm 各自具备完整公开链条，并验证直接子进程、后代、停止恢复、
 终端 Ctrl-C 和取消后回收，不能仅靠一个 PID 的消失判定通过。
 
 ## 不应向 async 归因的项目工作
 
-附加 P2 HTTP 请求能力：`Client::request` 的 headers 为 Map，无法表达
-多个同名请求字段。Native/Wasm 的 curl “自定义 Cookie header + 匹配 jar”
-在 `network-auth-cookie` 场景中明确拒绝。实际 curl oracle 会发送两个
-Cookie 字段；直接拼接或丢掉其中之一都不能保证相同语义。建议提供保持顺序和
-重复字段的请求 header list，保留现有 Map 便利接口；发布并通过该组合差分后
-解除限制。响应侧公开 `Response.cookies` 已支持多个 Set-Cookie，不在此限制内。
+**已解除：curl 自定义 Cookie + jar**。此前仅检查单个 Map，漏看了公开
+`Client(headers=...)` 与 `Client::request(extra_headers=...)` 两层独立参数。
+async 0.22.1 会先发 client 字段、再发 request 字段。纯 MoonBit raw TCP
+[探针](reports/2026-09-21-api-probes/http-header-layers.mbtx) 实测两个独立
+Cookie 字段，与 macOS curl 8.7.1 同序；Wget 1.25.0 则只发送显式字段。
+当前工作区已实现两种命令各自的行为，覆盖原始字节、同源/跨源重定向和真实
+CLI，0.2.0 已发布包不包含此修正。没有拼接 CRLF、导入 internal、替换 HTTP
+栈或加入 FFI。此组合不再作为上游 blocker。
+
+**仍缺通用表达能力**：两层 Map 不能表达任意数量、任意顺序的重复字段，
+所以不能从这个修复推断所有重复 `-H` 已保真。建议 ordered header list
+仍有价值，但只适用于这部分剩余表达限制。响应侧 `Response.cookies` 已
+保留多个 Set-Cookie。PSL/IDNA/cookie-prefix 规则仍属于项目实现工作。
 
 Shell 解析、引号/分词/glob、JSON 输入分帧与 AST 变量绑定、cookie 管理、
 make DAG 调度都已列入项目实现。grep 全部 GNU BRE/ERE 扩展、shell 完整

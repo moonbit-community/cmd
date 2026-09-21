@@ -3,7 +3,7 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-09-21
-Revision: Share test mechanisms and active cases; separate invocation health, semantic compatibility and explicit capability boundaries; record the three-platform 0.2.0 source gate and subsequent publication.
+Revision: Adopt the 2026-09-20 compiler with explicit trait methods and unchanged latest dependency versions; preserve separate workspace and published-release evidence.
 
 ## Target and decision
 
@@ -100,13 +100,16 @@ command contract. Do not alter expected command output to compensate for argv
 lost in a launcher. Revisit this adapter if MoonX changes its parsing contract;
 keep direct exact-version probes for commands that consume a leading separator.
 
-The 2026-09-21 final migration check found a newer official toolchain manifest
-(moonc 0.10.14+7d59c7ec9 and moon/moonrun 0.1.20260920). This release gate pins
-CI binaries and core to the already validated 0.10.13+cbb11c36f archive, whose
-official download was verified, so local and remote measurements share a
-baseline. Floating `latest` was rejected because it silently changes the
-compiler during acceptance. This does not claim validation of 0.10.14; lift the
-pin in a separate toolchain change after repeating all three platform checks.
+The 0.2.0 release gate used the validated 0.10.13+cbb11c36f archive. The next
+workspace baseline pins CI binaries and core to 0.10.14+7d59c7ec9
+(moon/moonrun 0.1.20260920), matching the developer's upgraded toolchain.
+The newer compiler deprecates implicit trait-method promotion; explicit public
+extensions preserve the previous methods instead of suppressing warnings or
+removing API. Black-box tests qualify the package under test. Registry refresh
+still resolves async 0.22.1, x 0.5.5 and moonjq 0.1.2, including moonjq's
+transitive imports. Floating `latest` remains rejected so acceptance cannot
+silently change compiler. Local new-baseline results do not replace the required
+three-platform CI gate or retroactively change published-release evidence.
 
 The [original audit](../reports/2026-09-19-command-fidelity-audit.md) and
 [test-system audit](../reports/2026-09-21-test-system-audit.md) remain immutable

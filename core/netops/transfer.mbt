@@ -694,11 +694,13 @@ pub async fn transfer(
       Some(jar) => jar.header_for(parsed, @fsops.current_timestamp().seconds)
       None => None
     }
-    if per_request.contains("Cookie") && stored is Some(_) {
-      raise transfer_error(
-        ProtocolFailure,
-        "a custom Cookie header combined with stored cookies requires duplicate request-header support",
-      )
+    if per_request.contains("Cookie") &&
+      stored is Some(value) &&
+      options.custom_cookie_mode is SeparateFields {
+      // async serializes client headers before request headers. These are two
+      // independent maps, so the jar and explicit field retain their wire
+      // identity and order without merging values or replacing the transport.
+      persistent["Cookie"] = value
     }
     if !per_request.contains("Cookie") {
       let literal = if parsed.origin_key() == credential_origin {

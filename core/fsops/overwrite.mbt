@@ -154,3 +154,21 @@ pub async fn restore_backup(path : String, backup : String) -> Unit {
   }
   @fs.rename(backup, path, replace=false)
 }
+
+///|
+pub extend UpdateMode with Eq::{not_equal, equal}
+
+///|
+pub extend UpdateMode with @debug.Debug::{to_repr}
+
+///|
+pub extend BackupControl with Eq::{not_equal, equal}
+
+///|
+pub extend BackupControl with @debug.Debug::{to_repr}
+
+///|
+pub extend OverwriteDecision with Eq::{not_equal, equal}
+
+///|
+pub extend OverwriteDecision with @debug.Debug::{to_repr}

@@ -17,6 +17,12 @@ Basic HTTP authentication and cookies. Strict filesystem limits are explicit:
 default `cp` and existing-file `touch` cannot be implemented faithfully with
 the current public metadata APIs; see ADR-0004.
 
+The current workspace adopts MoonBit 2026-09-20 and corrects curl/wget custom
+Cookie plus jar behavior using the two public HTTP header layers. These changes
+are not included in published 0.2.0. See the [API recheck](docs/async-upstream-gaps.md)
+and the [common-command inventory and proposed priorities](docs/command-coverage.md),
+including the missing `tree` command.
+
 Releasable commands are available as independent modules under
 `cli/<command>`:
 
@@ -68,9 +74,9 @@ describe their requirements and do not add a command-level policy. Host-denied
 operations fail with a nonzero status; the policy suite checks the resulting
 effects independently of command compatibility.
 
-The repository intentionally does not provide `chown` or `kill`, because the
-required owner-mutation and arbitrary-process-signalling capabilities are not
-part of the current controlled runtime contract.
+The repository does not yet provide `chown` or `kill`: public owner mutation
+and signal sending with observable errors are missing. These are implementation
+boundaries; the host remains responsible for authorization.
 
 ## Structure
 

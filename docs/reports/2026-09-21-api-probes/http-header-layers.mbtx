@@ -1,0 +1,30 @@
+///|
+import { "moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/async/http", "moonbitlang/async/io", "moonbitlang/async/socket", "moonbitlang/async/process", "moonbitlang/core/encoding/utf8" }
+
+///|
+async fn main {
+  @async.with_timeout(15000, () => @async.with_task_group(group => {
+    let server = @socket.TcpServer(@socket.Addr::parse("127.0.0.1:0"))
+    group.add_defer(() => server.close())
+    group.spawn_bg(no_wait=true, () => server.run_forever((connection, _) => {
+      let mut request = ""
+      while !request.has_suffix("\r\n\r\n") {
+        request += @utf8.decode(connection.read_exactly(1))
+      }
+      println(request)
+      connection.write("HTTP/1.1 200 OK\r\nContent-Length: 0\r\nConnection: close\r\n\r\n")
+    }))
+    let url = "http://127.0.0.1:\{server.addr.port()}"
+    let client = @http.Client(url, headers={"Cookie":"sid=fixture"})
+    defer client.close()
+    let response = client..request(Get,"/public-api",extra_headers={"Cookie":"sid=header"}).end_request()
+    assert_eq(response.code,200)
+    let path = "/tmp/cmd-header-probe-\{@async.now()}.cookies"
+    group.add_defer(() => @async.protect_from_cancel(() => @fs.remove(path)))
+    @fs.write_file(path,"# Netscape HTTP Cookie File\n127.0.0.1\tFALSE\t/\tFALSE\t0\tsid\tfixture\n")
+    let (status, _, errors) = @process.collect_output("curl",["-sS","--noproxy","*","-b",path,"-H","Cookie: sid=header",url+"/curl-oracle"])
+    assert_eq(status,0,msg=errors.text())
+    let (wget_status, _, wget_errors) = @process.collect_output("wget",["-qO-","--no-proxy","--load-cookies="+path,"--header=Cookie: sid=header",url+"/wget-oracle"])
+    assert_eq(wget_status,0,msg=wget_errors.text())
+  }))
+}
