@@ -647,20 +647,7 @@ async fn run_case(
 
 ///|
 async fn detect_docker_user() -> String? {
-  let uid = @testkit.run("id", ["-u"], stdin=b"")
-  let gid = @testkit.run("id", ["-g"], stdin=b"")
-  if uid.status == 0 && gid.status == 0 {
-    let uid_text = (@utf8.decode(uid.stdout) catch { _ => "" })
-      .trim()
-      .to_owned()
-    let gid_text = (@utf8.decode(gid.stdout) catch { _ => "" })
-      .trim()
-      .to_owned()
-    if !uid_text.is_empty() && !gid_text.is_empty() {
-      return Some(uid_text + ":" + gid_text)
-    }
-  }
-  None
+  Some(@testkit.docker_user())
 }
 
 ///|

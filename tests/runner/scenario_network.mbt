@@ -20,6 +20,7 @@ async fn network_request(
   @fs.write_file(prefix + ".stdout.bin", result.stdout)
   @fs.write_file(prefix + ".stderr.bin", result.stderr)
   if oracle_image is Some(image) {
+    let docker_user = @testkit.docker_user()
     let oracle_work = work + "/oracle"
     if !@fs.exists(oracle_work) {
       @fs.mkdir(oracle_work)
@@ -29,6 +30,8 @@ async fn network_request(
       "docker",
       [
         "run",
+        "--user",
+        docker_user,
         "--rm",
         "-i",
         "--network",
@@ -191,7 +194,7 @@ async fn network_cli_scenario(
       (
         "curl",
         ["-sS", "-b", "sid=first", "-b", "sid=last", base + "/inspect"],
-        "auth=\ncookie=sid=first;sid=last\n",
+        "auth=\ncookie=sid=first; sid=last\n",
         1,
       ),
       (

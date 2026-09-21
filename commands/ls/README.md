@@ -13,6 +13,10 @@ use C-locale byte order. `-u`, `-c` and `--time` imply time sorting unless an
 explicit `-S` selects size sorting. The last `-S`/`-t` wins; the last time
 selector wins independently. Multiple file operands are sorted too.
 
+When `-L` cannot dereference a directory entry, `ls` reports failure and still
+prints that entry. With `-F`, a dangling symbolic link retains its `@` marker,
+matching GNU coreutils 9.11.
+
 `-H` follows command-line links; `-L` also follows links found in directories.
 The last `-H/-L/-P` wins. With none of these options, command-line links to
 directories are followed unless `-d` or `-F` is present. `-d` lists a directory

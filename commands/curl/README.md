@@ -4,6 +4,9 @@ Pure-MoonBit curl 8.22 HTTP/HTTPS profile, version **0.2.0**. See the
 [support record](../../docs/compatibility.md) for platform verification and
 exact-version publication evidence.
 
+Repeated literal `-b` values join with `; `, matching the pinned curl 8.22
+request bytes. This differs from the earlier macOS curl 8.7 comparison.
+
 The command streams HTTP/HTTPS responses to stdout or files and supports:
 
 - `-s/-S`, `-f`, `-o`, `-O/-J`, `-L`, `-I`, repeated `-H`, and all documented

@@ -1,5 +1,8 @@
 # jq for moonx
 
+Malformed `--argjson` input returns status 2 and the jq 1.8.2 argument-error
+diagnostic, including its help/manual guidance; no filter output is emitted.
+
 Version **0.2.0** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.

@@ -229,6 +229,7 @@ async fn run_driver() -> Unit {
         })
       }
       "oracle" => {
+        let docker_user = @testkit.docker_user()
         for
           fixture in selected.filter(item => {
             item.comparison == Some("oracle-scenario")
@@ -303,6 +304,7 @@ async fn run_driver() -> Unit {
                 https_base,
                 backend == "wasm",
                 report_dir,
+                docker_user,
               ) catch {
                 error => ["infrastructure: " + error.to_string()]
               }

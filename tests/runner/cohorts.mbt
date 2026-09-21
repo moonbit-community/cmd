@@ -67,8 +67,7 @@ fn case_in_suites(fixture : @testkit.Case, suites : Array[String]) -> Bool {
         kind == "exact" ||
         kind == "normalized" ||
         fixture.oracle == Some(true) ||
-        kind == "oracle-scenario" ||
-        fixture.expected_rejection is Some(_)
+        kind == "oracle-scenario"
       "scenarios" => kind == "scenario"
       _ => kind == suite
     }

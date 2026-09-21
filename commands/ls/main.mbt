@@ -194,7 +194,20 @@ async fn sorted_entries(
       error => {
         @stdio.stderr.write("ls: cannot access '\{full_path}': \{error}\n")
         status.val = status.val.max(1)
-        { name, path: full_path, kind: None, timestamp: None, size: None, }
+        let fallback_kind = try
+          @fs.kind(full_path, follow_symlink=false)
+        catch {
+          _ => None
+        } noraise {
+          kind => Some(kind)
+        }
+        {
+          name,
+          path: full_path,
+          kind: fallback_kind,
+          timestamp: None,
+          size: None,
+        }
       }
     }
     entries.push(entry)

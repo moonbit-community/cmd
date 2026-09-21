@@ -58,3 +58,20 @@ was not detected after input slashes had become backslashes. The fix recognizes
 both Windows separators while preserving literal POSIX backslashes. The same
 test now explicitly covers both Windows forms and POSIX preservation; local
 fsops tests pass 18/18 on each backend. This run is not a passing release gate.
+
+The Linux fixed oracle found three command corrections: curl 8.22 joins literal
+cookie operands with semicolon-space (the older macOS curl observation lacked
+the space); GNU `ls -LF` retains `@` when dereferencing a dangling directory
+entry fails; jq 1.8.2's invalid-argjson diagnostic includes help guidance. These
+change implementation and exact expectations together with the oracle evidence.
+The jq stderr was also compared byte-for-byte with the downloaded official
+macOS jq 1.8.2 executable. Native/Wasm local network scenarios pass after the
+cookie correction.
+
+Driver corrections keep candidate-only boundary statuses out of the oracle
+suite unless explicitly selected, run Linux containers under the fixture
+owner's uid/gid so 0700 outputs can be observed, and normalize declared Windows
+separators before substituting a fixture prefix. The latter fixes two Windows
+contracts whose raw output was correct; their exact suffixes remain checked.
+These corrections retain all semantic assertions and distinguish verifier
+failures from product failures.

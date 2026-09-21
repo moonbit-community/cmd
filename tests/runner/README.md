@@ -71,7 +71,11 @@ field are mutually exclusive. Preserve stable case IDs when moving cases.
 `delay_ms` remains available for fixture timestamp ordering; multi-step behavior
 uses a MoonBit scenario instead of encoding a new script language in JSON.
 `oracle: true` also selects a contract for the pinned differential suite without
-copying its definition. The ls link/time cases exclude GNU-incompatible `-P`
+copying its definition. Newly migrated boundary contracts run in the contract suite on both
+backends; they are not implicitly upstream differential cases, since their
+expected status describes candidate refusal. Frozen differential boundary
+fixtures keep their separate upstream status and unchanged-state checks. The
+ls link/time cases exclude GNU-incompatible `-P`
 extensions; jq explicit-color cases run against jq 1.8.2. Reasoned diagnostic
 fragments are checked on both sides; other stream comparisons use full bytes.
 

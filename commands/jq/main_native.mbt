@@ -203,7 +203,10 @@ fn parse_cli(args : ArrayView[String]) -> CliParseResult {
       arguments[parts[0]] = json_string_literal(parts[1])
     } else {
       ignore(@json.parse(parts[1])) catch {
-        _ => return Error("jq: invalid JSON text passed to --argjson")
+        _ =>
+          return Error(
+            "jq: invalid JSON text passed to --argjson\nUse jq --help for help with command-line options,\nor see the jq manpage, or online docs at https://jqlang.org",
+          )
       }
       arguments[parts[0]] = parts[1]
     }

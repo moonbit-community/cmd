@@ -16,4 +16,22 @@ test "suite filtering respects case kind before fixtures or artifacts" {
     .filter(item => case_in_suites(item, ["gnu"]))
     .all(item => item.id == "gnu-host"),
   )
+  let boundary : @testkit.Case = @json.from_json({
+    "id": "candidate-boundary",
+    "command": "cp",
+    "args": [],
+    "files": [],
+    "environment": {},
+    "expected_status": 1,
+    "normalizations": [],
+    "comparison": "contract",
+    "expected_rejection": "metadata unavailable",
+  })
+  assert_true(case_in_suites(boundary, ["contract"]))
+  assert_false(case_in_suites(boundary, ["oracle"]))
+  assert_true(
+    case_in_suites({ ..boundary, comparison: None, expected_status: 0, }, [
+      "oracle",
+    ]),
+  )
 }

@@ -73,6 +73,24 @@ test "working-directory normalization maps local and container roots" {
 }
 
 ///|
+test "fixture prefix normalization handles mixed Windows separators" {
+  let rules : Array[Normalization] = [
+    { field: "stdout", rule: "temporary-path", comment: "fixture prefix", },
+    {
+      field: "stdout",
+      rule: "path-separator",
+      comment: "Windows slash variants",
+    },
+  ]
+  assert_eq(
+    normalize_text(
+      b"D:\\a\\case\\work\\file\n", "stdout", rules, "D:\\a\\case/work",
+    ),
+    b"<TMP>/file\n",
+  )
+}
+
+///|
 test "release contract newline checks exactly one terminator" {
   assert_true(ends_with_newline(b"line\n"))
   assert_false(ends_with_newline(b"line\n\n"))

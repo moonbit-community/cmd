@@ -114,3 +114,20 @@ pub fn contains_bytes(haystack : Bytes, needle : String) -> Bool {
   }
   false
 }
+
+///|
+/// Use the fixture owner's identity in Linux containers so mode-restricted
+/// oracle output remains observable and removable by the runner.
+pub async fn docker_user() -> String {
+  let uid = run("id", ["-u"], stdin=b"")
+  let gid = run("id", ["-g"], stdin=b"")
+  guard uid.status == 0 && gid.status == 0 else {
+    fail("cannot identify Docker fixture owner")
+  }
+  let uid = @utf8.decode(uid.stdout).trim().to_owned()
+  let gid = @utf8.decode(gid.stdout).trim().to_owned()
+  guard !uid.is_empty() && !gid.is_empty() else {
+    fail("empty Docker fixture owner")
+  }
+  uid + ":" + gid
+}

@@ -329,7 +329,7 @@ async fn curl_transfer_one(
   let cookie_data = if explicit_cookies.is_empty() {
     None
   } else {
-    Some(explicit_cookies.join(";"))
+    Some(explicit_cookies.join("; "))
   }
   if !curl_has_header(headers, "user-agent") {
     headers.push(@netops.http_header("User-Agent", "curl/8.22.0"))

@@ -760,7 +760,7 @@
       "expected_status": 1,
       "normalizations": [],
       "comparison": "contract",
-      "expected_stdout_text": "missing\nx\n",
+      "expected_stdout_text": "missing@\nx\n",
       "delay_ms": 5,
       "host_platforms": [
         "posix"

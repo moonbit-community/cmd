@@ -26,6 +26,8 @@ pub fn controlled_environment(Map[String, String]) -> Map[String, String]
 
 pub fn decode_hex(String, String) -> Bytes raise Failure
 
+pub async fn docker_user() -> String
+
 pub fn ends_with_newline(Bytes) -> Bool
 
 pub fn executable_path(String, String) -> String

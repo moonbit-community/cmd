@@ -290,6 +290,15 @@ pub fn normalize_text(
     return data
   }
   let mut text = @utf8.decode(data) catch { _ => return data }
+  let normalize_separators = rules.any(rule => {
+    rule.field == field && rule.rule == "path-separator"
+  })
+  let temporary_root = if normalize_separators {
+    text = text.replace_all(old="\\", new="/")
+    temporary_root.replace_all(old="\\", new="/")
+  } else {
+    temporary_root
+  }
   for rule in rules {
     if rule.field == field {
       match rule.rule {

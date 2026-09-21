@@ -272,6 +272,7 @@ async fn run_case(
   https_base : String,
   wasm : Bool,
   report_dir : String,
+  docker_user : String,
 ) -> Array[String] {
   let failures : Array[String] = []
   guard @testkit.safe_relative_path(fixture.id) else { fail("unsafe case ID") }
@@ -343,6 +344,8 @@ async fn run_case(
   }
   let docker_args = [
     "run",
+    "--user",
+    docker_user,
     "--rm",
     "-i",
     "--network",
