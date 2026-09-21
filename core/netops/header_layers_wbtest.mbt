@@ -45,6 +45,7 @@ async test "Cookie jar and explicit header remain separate across redirects" {
             headers=[http_header("cOoKiE", "sid=explicit")],
             cookie_jar=jar,
             custom_cookie_mode=mode,
+            custom_cookie_cross_origin=mode is ReplaceStored,
             cookie_data="sid=ignored-when-custom-header",
             redirects=FollowRedirects(3),
           ),
@@ -66,7 +67,13 @@ async test "Cookie jar and explicit header remain separate across redirects" {
           },
         )
         assert_eq(cookies[1], cookies[0])
-        assert_eq(cookies[2], ["Cookie: sid=destination"])
+        assert_eq(
+          cookies[2],
+          match mode {
+            SeparateFields => ["Cookie: sid=destination"]
+            ReplaceStored => ["cOoKiE: sid=explicit"]
+          },
+        )
       }
     })
   })

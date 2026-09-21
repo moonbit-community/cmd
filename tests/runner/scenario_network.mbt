@@ -397,6 +397,31 @@ async fn network_cli_scenario(
           "auth=\ncookie=sid=fixture; sid=manual\n",
         )
       }
+      check_network_response(
+        network_request(
+          root,
+          wasm,
+          work,
+          command,
+          if command == "curl" {
+            ["-sSL", "-b", jar, "-H", "Cookie: sid=header", base + "/cross"]
+          } else {
+            [
+              "-qO-",
+              "--load-cookies=" + jar,
+              "--header=Cookie: sid=header",
+              base + "/cross",
+            ]
+          },
+          oracle_image?,
+          oracle_failures~,
+        ),
+        if command == "curl" {
+          "auth=\ncookie=\n"
+        } else {
+          "auth=\ncookie=sid=header\n"
+        },
+      )
       if !(@async.platform is Windows) {
         // A newly created ordinary file observes this process's real umask.
         let control = work + "/mode-control-" + command

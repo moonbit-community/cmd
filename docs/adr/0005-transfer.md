@@ -40,6 +40,9 @@ The current workspace sends matching jar cookies through persistent client heade
 and an explicit curl `Cookie:` through per-request headers. async 0.22.1 emits
 these separately and in that order. Wget selects `ReplaceStored` so its explicit
 field replaces outgoing jar cookies without disabling response-cookie storage.
+Wget also forwards that explicit field across origins, as its 1.25.0 wire probe
+shows; curl removes it. An independent `custom_cookie_cross_origin` flag preserves
+this difference without changing Basic or custom Authorization handling.
 The earlier single-map rejection was too restrictive. A pure MoonBit raw TCP
 probe confirmed the public API path and compared curl 8.7.1 and Wget 1.25.0;
 core tests assert the wire fields and redirect behavior, and the shared CLI

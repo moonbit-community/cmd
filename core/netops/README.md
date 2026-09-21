@@ -46,7 +46,9 @@ to replay an already consumed stdin body.
 The current workspace uses the public client's persistent headers and per-request
 headers as separate layers. `CustomCookieMode::SeparateFields` sends stored
 cookies before the explicit Cookie field (curl); `ReplaceStored` sends only the
-explicit field while continuing to receive cookies (wget). This corrects the
+explicit field while continuing to receive cookies (wget). Wget also enables
+`custom_cookie_cross_origin`; curl leaves it disabled, independently of Basic
+credential scope. This corrects the
 0.2.0 rejection without new FFI or a replacement HTTP transport. It does not
 provide arbitrary ordered repeated headers: each layer is still a map.
 The response cookies array preserves each Set-Cookie field.

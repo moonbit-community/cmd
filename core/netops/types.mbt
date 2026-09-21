@@ -145,6 +145,7 @@ pub(all) struct TransferOptions {
   cookie_jar : CookieJar?
   cookie_data : String?
   custom_cookie_mode : CustomCookieMode
+  custom_cookie_cross_origin : Bool
   basic_credentials : String?
   basic_preemptive : Bool
   basic_credential_scope : BasicCredentialScope
@@ -169,6 +170,7 @@ pub fn transfer_options(
   cookie_jar? : CookieJar,
   cookie_data? : String,
   custom_cookie_mode? : CustomCookieMode = SeparateFields,
+  custom_cookie_cross_origin? : Bool = false,
   basic_credentials? : String,
   basic_preemptive? : Bool = true,
   basic_credential_scope? : BasicCredentialScope = InitialOrigin,
@@ -191,6 +193,7 @@ pub fn transfer_options(
     cookie_jar,
     cookie_data,
     custom_cookie_mode,
+    custom_cookie_cross_origin,
     basic_credentials,
     basic_preemptive,
     basic_credential_scope,

@@ -102,6 +102,7 @@ fn filtered_headers(
   headers : ArrayView[HttpHeader],
   strip_sensitive : Bool,
   strip_entity : Bool,
+  keep_cookie? : Bool = false,
 ) -> Array[HttpHeader] {
   let result : Array[HttpHeader] = []
   for header in headers {
@@ -110,7 +111,7 @@ fn filtered_headers(
       (
         name == "authorization" ||
         name == "proxy-authorization" ||
-        name == "cookie"
+        (name == "cookie" && !keep_cookie)
       ) {
       continue
     }
@@ -792,7 +793,12 @@ pub async fn transfer(
         body,
         options.preserve_method_on_redirect,
       )
-      headers = filtered_headers(headers, cross_origin, strip_entity)
+      headers = filtered_headers(
+        headers,
+        cross_origin,
+        strip_entity,
+        keep_cookie=options.custom_cookie_cross_origin,
+      )
       request_method = next_method
       body = next_body
       parsed = next

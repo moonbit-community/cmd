@@ -134,7 +134,8 @@ stopped/continued wait events 和 PTY。Native 有底层 fd 并不等于已公�
 `Client(headers=...)` 与 `Client::request(extra_headers=...)` 两层独立参数。
 async 0.22.1 会先发 client 字段、再发 request 字段。纯 MoonBit raw TCP
 [探针](reports/2026-09-21-api-probes/http-header-layers.mbtx) 实测两个独立
-Cookie 字段，与 macOS curl 8.7.1 同序；Wget 1.25.0 则只发送显式字段。
+Cookie 字段，与 macOS curl 8.7.1 同序；Wget 1.25.0 则只发送显式字段，
+且跨源重定向继续发送显式字段，curl 会移除它。该区别另有 raw TCP 探针。
 当前工作区已实现两种命令各自的行为，覆盖原始字节、同源/跨源重定向和真实
 CLI，0.2.0 已发布包不包含此修正。没有拼接 CRLF、导入 internal、替换 HTTP
 栈或加入 FFI。此组合不再作为上游 blocker。

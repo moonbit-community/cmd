@@ -18,7 +18,8 @@ Date: 2026-09-21
 新版编译器要求显式 trait 方法提升：增加 74 条公开 extend 声明，保留
 原来隐式可调用的方法；修复 84 处黑盒测试包限定名。未关闭 warning。
 接口检查中这些方法变成显式签名；行为改动新增 CustomCookieMode 和
-TransferOptions 的同名配置字段，构造函数默认 SeparateFields。直接用
+TransferOptions 的配置字段，构造函数默认 SeparateFields，显式 Cookie
+不跨源转发；wget 单独开启跨源转发。直接用
 struct literal 构造 TransferOptions 的下游需要补字段，发布前须按 API
 变更审查版本；本轮没有发布。
 
@@ -27,7 +28,7 @@ struct literal 构造 TransferOptions 的下游需要补字段，发布前须按
 | 路径 | 实测 | 处理 |
 | --- | --- | --- |
 | HTTP 双层公开 headers | 原始 TCP 请求有两个独立 Cookie；macOS curl 8.7.1 同序 | 已实现 curl 显式字段 + jar，保留传输栈、超时与 TLS |
-| Wget 自定义 Cookie | Wget 1.25.0 只发显式字段，覆盖自动 Cookie | 独立模式实现，jar 仍存响应 Cookie |
+| Wget 自定义 Cookie | Wget 1.25.0 只发显式字段，覆盖自动 Cookie，并跨源转发显式字段 | 独立模式及转发开关实现，jar 仍存响应 Cookie；curl 跨源移除显式字段 |
 | 解包 cancellation handler 作 kill | 宿主 kill 拒绝不存在 PID；Native hard_cancel 返回 Unit | 因丢失错误状态而不采用，新增上游反馈要求 |
 | Linux Native procfs identity/truncate | 当前 macOS 无法提供 Linux 运行证据；Wasm handle 非 OS fd | 保留实验方向及验收前置条件，不开放产品覆盖 |
 
@@ -50,6 +51,11 @@ struct literal 构造 TransferOptions 的下游需要补字段，发布前须按
 网络 core 测试观察两种 Cookie 模式在初始请求、同源重定向和跨源重定向的
 完整 Cookie 字段；真实 CLI 场景检查 stdout/stderr/状态和 jar。Linux 固定
 oracle 与三平台 CI 沿用现有门禁，CI 配置更新本身不代表验收通过。
+
+后续跨源探针确认 Wget 还会保留显式 Cookie，curl 则移除。修正后重新通过
+两后端 netops 15/15、两后端真实网络 CLI 场景、release 构建与全目标严格
+检查，新增证据使用 `cross-cookie-*` / `*-cross-cookie-*` 文件名；上述初次
+全量记录保持不变。两项 Cookie 行为均已接入既有 Linux 固定 oracle 场景。
 
 ## 常见命令盘点
 

@@ -205,7 +205,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       ["duration"],
       exit_codes=[0, 124, 125, 126, 127],
     ),
-    // header + load-cookies: explicit Cookie replaces the outgoing jar field.
+    // header + load-cookies: explicit Cookie overrides jar fields across origins.
     contract("wget", Restricted, NoInput, ByteStream, [Network, FileWrite], [
       "append-output", "body-data", "body-file", "connect-timeout", "continue", "content-disposition",
       "header", "input-file", "max-redirect", "method", "no-check-certificate", "no-proxy",
