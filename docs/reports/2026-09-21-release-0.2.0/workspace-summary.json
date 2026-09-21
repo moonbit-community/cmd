@@ -1,0 +1,122 @@
+{
+  "ubuntu-24.04/contract-native": {
+    "total": 304,
+    "commands": 48,
+    "counts": {
+      "pass/boundary": 8,
+      "pass/contract": 293,
+      "skip/boundary": 2,
+      "skip/contract": 1
+    }
+  },
+  "ubuntu-24.04/contract-wasm": {
+    "total": 304,
+    "commands": 48,
+    "counts": {
+      "pass/boundary": 8,
+      "pass/contract": 293,
+      "skip/boundary": 2,
+      "skip/contract": 1
+    }
+  },
+  "ubuntu-24.04/scenarios-native": {
+    "total": 5,
+    "commands": 5,
+    "counts": {
+      "pass/contract": 5
+    }
+  },
+  "ubuntu-24.04/scenarios-wasm": {
+    "total": 5,
+    "commands": 5,
+    "counts": {
+      "pass/contract": 5
+    }
+  },
+  "ubuntu-24.04/oracle-native": {
+    "total": 232,
+    "commands": 46,
+    "counts": {
+      "pass/differential": 230,
+      "pass/boundary": 2
+    }
+  },
+  "ubuntu-24.04/oracle-wasm": {
+    "total": 232,
+    "commands": 46,
+    "counts": {
+      "pass/differential": 230,
+      "pass/boundary": 2
+    }
+  },
+  "macos-15/contract-native": {
+    "total": 304,
+    "commands": 48,
+    "counts": {
+      "pass/boundary": 8,
+      "pass/contract": 293,
+      "skip/boundary": 2,
+      "skip/contract": 1
+    }
+  },
+  "macos-15/contract-wasm": {
+    "total": 304,
+    "commands": 48,
+    "counts": {
+      "pass/boundary": 8,
+      "pass/contract": 293,
+      "skip/boundary": 2,
+      "skip/contract": 1
+    }
+  },
+  "macos-15/scenarios-native": {
+    "total": 5,
+    "commands": 5,
+    "counts": {
+      "pass/contract": 5
+    }
+  },
+  "macos-15/scenarios-wasm": {
+    "total": 5,
+    "commands": 5,
+    "counts": {
+      "pass/contract": 5
+    }
+  },
+  "windows-2025/contract-native": {
+    "total": 304,
+    "commands": 48,
+    "counts": {
+      "pass/boundary": 9,
+      "pass/contract": 270,
+      "skip/contract": 24,
+      "skip/boundary": 1
+    }
+  },
+  "windows-2025/contract-wasm": {
+    "total": 304,
+    "commands": 48,
+    "counts": {
+      "pass/boundary": 9,
+      "pass/contract": 270,
+      "skip/contract": 24,
+      "skip/boundary": 1
+    }
+  },
+  "windows-2025/scenarios-native": {
+    "total": 5,
+    "commands": 5,
+    "counts": {
+      "skip/contract": 1,
+      "pass/contract": 4
+    }
+  },
+  "windows-2025/scenarios-wasm": {
+    "total": 5,
+    "commands": 5,
+    "counts": {
+      "skip/contract": 1,
+      "pass/contract": 4
+    }
+  }
+}

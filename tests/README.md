@@ -40,14 +40,17 @@ Run the existing Native driver against the selected command backend:
 ```sh
 ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite contract --backend native --command jq --report-dir test-reports/jq-native
 ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite scenarios --backend wasm --report-dir test-reports/scenarios-wasm
-MOON_HOME="$HOME/.moon-accounts/cli" ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe --manifest tests/release_runner/manifest.json --suite smoke --command true --report-dir test-reports/published-true
+MOON_HOME="$HOME/.moon-accounts/cli" ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe --manifest tests/release_runner/published-0.2.0.json --suite smoke --command true --report-dir test-reports/published-true
 ```
 
 Use a fresh report directory for a new run; failures retain their working files
 and raw stdout/stderr. The driver never rebuilds commands. Ensure artifacts
-match the source being tested. Candidate `0.2.0` is unpublished:
-`release_runner/candidate-0.2.0.json` accepts validation only, and is not evidence
-that a published consumer has run.
+match the source being tested. `release_runner/published-0.2.0.json` selects 382
+cases for the 47 published command modules. The preparation manifest
+`release_runner/candidate-0.2.0.json` remains validation-only; its historical
+candidate flags are not the release's current publication status. The driver
+inserts `--` after the MoonX coordinate so a command's own leading `--` reaches
+the command unchanged.
 
 ## Reading results
 
@@ -85,6 +88,10 @@ GitHub records step/job durations; case reports record execution durations.
 Only reports and failed fixtures are uploaded, not the whole build tree.
 Failures are not automatically retried. A CI definition is not proof that its
 platforms passed: implementation reports record the platforms actually run.
+The [0.2.0 source gate](https://github.com/moonbit-community/cmd/actions/runs/35576541301)
+passed on all three hosts, including Linux Native/Wasm pinned oracle cases.
+Published-consumer results are recorded in the separate
+[release evidence](../docs/reports/2026-09-21-release-0.2.0/README.md).
 
 When changing a behavior, update its package README, help, support records and
 regression together. Remove an assertion only after mapping it to retained

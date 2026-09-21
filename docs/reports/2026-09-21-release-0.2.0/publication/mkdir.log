@@ -1,0 +1,13 @@
+Running moon check ...
+Finished. moon: no work to do
+Check passed
+validating packaged zip: /Users/winter/Documents/Moonbit/cmd/_build/publish/cli-mkdir-0.2.0.zip
+extracting packaged zip to /Users/winter/Documents/Moonbit/cmd/_build/publish/verify/mooncake_publish_checkdjqLx8
+running moon check on extracted package
+Running moon check ...
+Using cached moonbitlang/async@0.22.1
+Using cached moonbitlang/x@0.5.5
+Using cached cli/core@0.2.0
+Finished. moon: ran 29 tasks, now up to date
+Check passed
+Server status: 200 OK

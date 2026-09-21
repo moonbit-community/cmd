@@ -1,0 +1,11 @@
+{
+  "total": 382,
+  "commands": 47,
+  "counts": {
+    "pass/contract": 292,
+    "skip/contract": 1,
+    "pass/availability": 81,
+    "pass/boundary": 6,
+    "skip/boundary": 2
+  }
+}

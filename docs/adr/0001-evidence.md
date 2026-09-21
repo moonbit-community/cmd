@@ -3,7 +3,7 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-09-21
-Revision: Share test mechanisms and active cases; separate invocation health, semantic compatibility and explicit capability boundaries.
+Revision: Share test mechanisms and active cases; separate invocation health, semantic compatibility and explicit capability boundaries; record the three-platform 0.2.0 source gate and subsequent publication.
 
 ## Target and decision
 
@@ -82,7 +82,23 @@ atime relations use the same fixture in a boundary or stateful scenario.
 Baseline: moon/moonrun 0.1.20260915; moonc/core 0.10.13+cbb11c36f;
 async 0.22.1; x 0.5.5; moonjq 0.1.2. The dependency refresh found no older external
 versions in the resolved tree. Upgrade-only tests passed Native 104/104 and
-Wasm 91/91 before behavior changes. The current candidate remains unpublished.
+Wasm 91/91 before behavior changes.
+
+The [0.2.0 source gate](https://github.com/moonbit-community/cmd/actions/runs/35576541301)
+passed Linux, macOS and Windows at source commit
+`442015078b8dc01f64f499e5df0847d7c7458c3d`, including Linux Native/Wasm pinned
+oracle checks. After that gate, `cli/core@0.2.0` was published first, followed
+sequentially by 47 command modules. `timeout` remains local-only. Publication
+receipts and the separate exact-version MoonX gate are recorded in
+[release evidence](../reports/2026-09-21-release-0.2.0/README.md). The published
+manifest selects 382 active cases; the frozen schema 1 manifests and candidate
+preparation manifest retain their original roles.
+
+The consumer driver inserts a MoonX argument separator after the exact package
+coordinate. This preserves a command's own leading `--` without changing the
+command contract. Do not alter expected command output to compensate for argv
+lost in a launcher. Revisit this adapter if MoonX changes its parsing contract;
+keep direct exact-version probes for commands that consume a leading separator.
 
 The 2026-09-21 final migration check found a newer official toolchain manifest
 (moonc 0.10.14+7d59c7ec9 and moon/moonrun 0.1.20260920). This release gate pins

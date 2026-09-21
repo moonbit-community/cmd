@@ -6,10 +6,12 @@ system for preserving GNU/POSIX and command-upstream behavior. Authorization
 belongs to the caller or host; commands preserve the caller's environment and
 stream semantics.
 
-The working tree prepares **0.2.0**, which is not yet published. See the
-[candidate evidence](docs/reports/2026-09-20-fidelity-implementation.md),
+**0.2.0 is published** as `cli/core` and 47 command modules. Linux, macOS and
+Windows passed the release source checks, including Linux Native/Wasm pinned
+oracle comparisons. Exact-version MoonX acceptance is recorded separately in
+the [release evidence](docs/reports/2026-09-21-release-0.2.0/README.md). See the
 [support record](docs/compatibility.md), and
-[upstream API gaps](docs/async-upstream-gaps.md). The candidate includes a
+[upstream API gaps](docs/async-upstream-gaps.md). This release includes a
 persistent line-oriented `sh -i`, real `make -j` scheduling, JSON input framing,
 Basic HTTP authentication and cookies. Strict filesystem limits are explicit:
 default `cp` and existing-file `touch` cannot be implemented faithfully with
@@ -19,9 +21,9 @@ Releasable commands are available as independent modules under
 `cli/<command>`:
 
 ```text
-moonx cli/base64
-moonx cli/grep pattern input.txt
-moonx cli/jq -r '.name'
+MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/base64@0.2.0
+MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/grep@0.2.0 -- pattern input.txt
+MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/jq@0.2.0 -- -r '.name'
 ```
 
 ## Commands
@@ -61,10 +63,10 @@ The command set is designed for native and Wasm execution. Under Wasm, commands
 can run with explicit policies that limit filesystem access, mutations,
 processes, network access, and permission changes.
 
-Commands that only read input use the default admission tier. Commands that
-spawn processes, access the network, or change permissions require explicit
-authorization. Denied operations fail with a nonzero status and are tested to
-leave no unintended side effects.
+The caller configures host authorization. Command capability declarations
+describe their requirements and do not add a command-level policy. Host-denied
+operations fail with a nonzero status; the policy suite checks the resulting
+effects independently of command compatibility.
 
 The repository intentionally does not provide `chown` or `kill`, because the
 required owner-mutation and arbitrary-process-signalling capabilities are not
@@ -110,7 +112,8 @@ The project combines package tests and two runners sharing a Native testkit:
 - `oracle` compares Native and Wasm commands with the pinned upstream image,
   including declared metadata observations. GNU and stress are independent suites.
 - `release_runner` validates candidate manifests and checks exact published
-  MoonX versions. The current 0.2.0 candidate is unpublished.
+  MoonX versions selected by `published-0.2.0.json`; frozen 0.1.x manifests remain
+  available for historical replay.
 - `scenarios` covers persistent shell input, HTTP auth/cookies, filesystem
   boundaries and process/make lifecycle on both backends in CI. Former standalone
   probes are archived with their assertion migration maps.

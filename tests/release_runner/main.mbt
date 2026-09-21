@@ -165,7 +165,9 @@ async fn run_candidate(
   http_base : String?,
   timeout_ms : Int,
 ) -> @testkit.TimedRun {
-  let args = [row.package_name + "@" + row.version]
+  // MoonX consumes its first `--`. Supply the launcher's separator so a
+  // command's own `--` remains part of its argv.
+  let args = [row.package_name + "@" + row.version, "--"]
   args.append(expand_args(fixture.args, root, http_base?))
   let stdin = fixture.input(root~, http_base?)
   let environment = controlled_environment(fixture.environment)

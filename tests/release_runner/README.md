@@ -4,18 +4,18 @@
 It shares cases, fixtures, process capture, byte assertions, observations and
 report writing with the workspace runner through `testkit`.
 
-Validate the unpublished candidate against local package versions:
+Validate the retained preparation manifest against local package versions:
 
 ```sh
 MOON_HOME="$HOME/.moon-accounts/cli" moon run --target native tests/release_runner -- \
   --manifest tests/release_runner/candidate-0.2.0.json --suite validate
 ```
 
-Run the frozen published release against the pinned oracle:
+Run published 0.2.0 against the pinned oracle:
 
 ```sh
 MOON_HOME="$HOME/.moon-accounts/cli" moon run --target native tests/release_runner -- \
-  --manifest tests/release_runner/manifest.json --suite differential \
+  --manifest tests/release_runner/published-0.2.0.json --suite differential \
   --oracle-image mooncmd-oracle:phase0 --report-dir _build/release-report
 ```
 
@@ -27,10 +27,19 @@ verification level. Availability checks do not replace the release differential
 gate. `latest`, ranges and implicit versions are rejected. `timeout` remains
 local-only and is absent from the release manifest.
 
-The candidate uses shared per-command cases. Frozen schema 1 manifests and their
-bases remain readable after local source versions change. Only `validate`
-compares pinned versions to local package versions. The unpublished candidate
-accepts `validate` and `--list`; execution is blocked until publication.
+Published 0.2.0 selects 382 shared per-command cases across 47 command modules.
+Frozen schema 1 manifests (`manifest.json` and their bases) remain readable after
+local source versions change. Only `validate` compares pinned versions to local
+package versions. The retained preparation manifest accepts `validate` and
+`--list`; its candidate flags deliberately continue to block execution. Use
+`published-0.2.0.json` for the released packages.
+
+The process argv is `moonx cli/<command>@<version> -- <command arguments>`.
+The inserted separator preserves a command's own leading `--`; such an operand
+must not be consumed as MoonX's separator. Local launchers inherit
+`MOON_HOME="$HOME/.moon-accounts/cli"`. Publication and exact-version execution
+are separate facts; current results are in the
+[release evidence](../../docs/reports/2026-09-21-release-0.2.0/README.md).
 
 Contracts require explicit stdout and stderr assertions plus status. Stable
 outputs use complete bytes; partial diagnostics require a reason. A prohibition

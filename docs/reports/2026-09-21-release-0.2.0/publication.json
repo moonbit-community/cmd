@@ -1,0 +1,194 @@
+[
+  {
+    "coordinate": "cli/core@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/base64@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/basename@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/cat@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/chmod@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/cmp@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/comm@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/cp@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/curl@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/cut@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/dirname@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/echo@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/env@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/false@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/find@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/grep@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/head@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/join@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/jq@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/jqlog@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/ln@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/ls@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/make@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/mkdir@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/mv@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/nl@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/paste@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/printenv@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/printf@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/pwd@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/rm@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/rmdir@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/seq@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/sh@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/sha256sum@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/sleep@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/sort@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/tail@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/tee@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/test@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/touch@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/tr@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/true@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/uniq@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/wc@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/wget@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/xargs@0.2.0",
+    "confirmed": true
+  },
+  {
+    "coordinate": "cli/xxd@0.2.0",
+    "confirmed": true
+  }
+]

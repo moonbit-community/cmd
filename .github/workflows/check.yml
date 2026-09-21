@@ -135,14 +135,14 @@ jobs:
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
-          --manifest tests/release_runner/manifest.json --suite smoke
+          --manifest tests/release_runner/published-0.2.0.json --suite smoke
           --report-dir test-reports/published-smoke
 
       - name: Published-version differential
         if: runner.os == 'Linux' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
-          --manifest tests/release_runner/manifest.json --suite differential
+          --manifest tests/release_runner/published-0.2.0.json --suite differential
           --oracle-image mooncmd-oracle:phase0
           --report-dir test-reports/published-differential
 
