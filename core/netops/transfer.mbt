@@ -658,8 +658,7 @@ pub async fn transfer(
   let requested_url = url
   let mut parsed = parse_absolute_url(url)
   let credential_origin = parsed.origin_key()
-  let mut send_basic = options.basic_preemptive
-  let mut challenged = false
+  let challenged_origins : Map[String, Bool] = Map([])
   let mut request_method = options.request_method
   let mut body = options.body
   let mut headers = options.headers.copy()
@@ -667,6 +666,11 @@ pub async fn transfer(
   let seen : Map[String, Bool] = Map([])
   let mut redirect_count = 0
   for ;; {
+    let origin = parsed.origin_key()
+    let credentials_allowed = options.basic_credential_scope == AllOrigins ||
+      origin == credential_origin
+    let send_basic = options.basic_preemptive ||
+      challenged_origins.contains(origin)
     let key = parsed.to_url()
     if seen.contains(key) {
       raise transfer_error(RedirectFailure, "redirect loop detected at \{key}")
@@ -679,7 +683,7 @@ pub async fn transfer(
       length,
       options.resume_from,
     )
-    if parsed.origin_key() == credential_origin &&
+    if credentials_allowed &&
       send_basic &&
       options.basic_credentials is Some(credentials) &&
       !contains_header(headers, "authorization") {
@@ -737,9 +741,8 @@ pub async fn transfer(
       ),
     )
     if response.code == 401 &&
-      !challenged &&
       !send_basic &&
-      parsed.origin_key() == credential_origin &&
+      credentials_allowed &&
       options.basic_credentials is Some(_) &&
       response.headers.get("WWW-Authenticate") is Some(challenge) &&
       challenge.to_lower().trim_start().has_prefix("basic") {
@@ -750,8 +753,7 @@ pub async fn transfer(
           "cannot replay standard input after an authentication challenge",
         )
       }
-      send_basic = true
-      challenged = true
+      challenged_origins[origin] = true
       seen.remove(key)
       client.close()
       continue

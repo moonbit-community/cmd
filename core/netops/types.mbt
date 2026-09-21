@@ -37,6 +37,13 @@ pub(all) enum RedirectPolicy {
 } derive(Eq, Debug)
 
 ///|
+/// Scope of explicitly supplied Basic credentials, independent of custom headers.
+pub(all) enum BasicCredentialScope {
+  InitialOrigin
+  AllOrigins
+} derive(Eq, Debug)
+
+///|
 pub(all) enum TransferFileMode {
   Truncate
   Append
@@ -132,6 +139,7 @@ pub(all) struct TransferOptions {
   cookie_data : String?
   basic_credentials : String?
   basic_preemptive : Bool
+  basic_credential_scope : BasicCredentialScope
 }
 
 ///|
@@ -154,6 +162,7 @@ pub fn transfer_options(
   cookie_data? : String,
   basic_credentials? : String,
   basic_preemptive? : Bool = true,
+  basic_credential_scope? : BasicCredentialScope = InitialOrigin,
 ) -> TransferOptions {
   {
     request_method,
@@ -174,6 +183,7 @@ pub fn transfer_options(
     cookie_data,
     basic_credentials,
     basic_preemptive,
+    basic_credential_scope,
   }
 }
 

@@ -6,6 +6,7 @@ async fn network_request(
   command : String,
   args : Array[String],
   oracle_image? : String,
+  oracle_failures? : Array[String],
 ) -> @testkit.RunResult {
   let result = @testkit.run_artifact(
     root,
@@ -19,6 +20,12 @@ async fn network_request(
   let prefix = work + "/call-\{@fs.readdir(work).length()}"
   @fs.write_file(prefix + ".stdout.bin", result.stdout)
   @fs.write_file(prefix + ".stderr.bin", result.stderr)
+  @fs.write_file(
+    prefix + ".request.json",
+    { "command": command.to_json(), "args": args.to_json() }
+    .to_json()
+    .stringify(indent=2),
+  )
   if oracle_image is Some(image) {
     let docker_user = @testkit.docker_user()
     let oracle_work = work + "/oracle"
@@ -59,9 +66,27 @@ async fn network_request(
       [125, 126, 127].contains(run.output.status) {
       fail("oracle infrastructure failure")
     }
-    assert_eq(result.status, run.output.status)
-    assert_eq(result.stdout, run.output.stdout)
-    assert_eq(result.stderr, run.output.stderr)
+    let differences : Array[String] = []
+    if result.status != run.output.status {
+      differences.push("status \{result.status} != \{run.output.status}")
+    }
+    if result.stdout != run.output.stdout {
+      differences.push("stdout bytes differ")
+    }
+    if result.stderr != run.output.stderr {
+      differences.push("stderr bytes differ")
+    }
+    if !differences.is_empty() {
+      let detail = command +
+        " " +
+        args.join(" ") +
+        ": " +
+        differences.join(", ")
+      match oracle_failures {
+        Some(failures) => failures.push(detail)
+        None => fail(detail)
+      }
+    }
   }
   result
 }
@@ -85,6 +110,7 @@ async fn network_cli_scenario(
   work : String,
   oracle_image? : String,
 ) -> Unit {
+  let oracle_failures : Array[String] = []
   @async.with_task_group <| group => {
     let server = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
     group.add_defer(() => server.close())
@@ -104,6 +130,13 @@ async fn network_cli_scenario(
             connection
             ..send_response(302, "Found", extra_headers={
               "Location": "http://localhost:\{server.addr.port()}/inspect",
+              "Content-Length": "0",
+            })
+            .end_response()
+          "/cross-auth" =>
+            connection
+            ..send_response(302, "Found", extra_headers={
+              "Location": "http://localhost:\{server.addr.port()}/auth",
               "Content-Length": "0",
             })
             .end_response()
@@ -248,15 +281,29 @@ async fn network_cli_scenario(
           "--auth-no-challenge",
           base + "/cross",
         ],
-        "auth=\ncookie=\n",
+        "auth=Basic dXNlcjpwYXNz\ncookie=\n",
         2,
+      ),
+      (
+        "wget",
+        ["-qO-", "--user=user", "--password=pass", base + "/cross-auth"],
+        "auth=Basic dXNlcjpwYXNz\ncookie=\n",
+        3,
       ),
       ("wget", ["-qO-", "--no-cookies", base + "/set"], "auth=\ncookie=\n", 2),
     ]
     for (command, args, expected, request_count) in cases {
       let before = requests.length()
       check_network_response(
-        network_request(root, wasm, work, command, args, oracle_image?),
+        network_request(
+          root,
+          wasm,
+          work,
+          command,
+          args,
+          oracle_image?,
+          oracle_failures~,
+        ),
         expected,
       )
       assert_eq(
@@ -281,7 +328,15 @@ async fn network_cli_scenario(
         ]
       }
       check_network_response(
-        network_request(root, wasm, work, command, save, oracle_image?),
+        network_request(
+          root,
+          wasm,
+          work,
+          command,
+          save,
+          oracle_image?,
+          oracle_failures~,
+        ),
         "auth=\ncookie=sid=fixture\n",
       )
       assert_true(@fs.read_file(jar).text().contains("\tsid\tfixture"))
@@ -291,7 +346,15 @@ async fn network_cli_scenario(
         ["-qO-", "--load-cookies=" + jar, base + "/inspect"]
       }
       check_network_response(
-        network_request(root, wasm, work, command, load, oracle_image?),
+        network_request(
+          root,
+          wasm,
+          work,
+          command,
+          load,
+          oracle_image?,
+          oracle_failures~,
+        ),
         "auth=\ncookie=sid=fixture\n",
       )
       if command == "curl" {
@@ -303,6 +366,7 @@ async fn network_cli_scenario(
             command,
             ["-sS", "-b", jar, "-b", "sid=manual", base + "/inspect"],
             oracle_image?,
+            oracle_failures~,
           ),
           "auth=\ncookie=sid=fixture; sid=manual\n",
         )
@@ -350,7 +414,15 @@ async fn network_cli_scenario(
             stdin=b"",
           )
           assert_eq(oracle_mode.status, 0)
-          assert_eq(actual_mode.stdout, oracle_mode.stdout)
+          if actual_mode.stdout != oracle_mode.stdout {
+            oracle_failures.push(
+              command +
+              " cookie jar mode differs: " +
+              @utf8.decode(actual_mode.stdout) +
+              " != " +
+              @utf8.decode(oracle_mode.stdout),
+            )
+          }
         }
       }
       for endpoint in ["set-path", "set-domain", "set-expired"] {
@@ -360,7 +432,15 @@ async fn network_cli_scenario(
           ["-qO-", base + "/" + endpoint]
         }
         check_network_response(
-          network_request(root, wasm, work, command, args, oracle_image?),
+          network_request(
+            root,
+            wasm,
+            work,
+            command,
+            args,
+            oracle_image?,
+            oracle_failures~,
+          ),
           "auth=\ncookie=\n",
         )
       }
@@ -371,7 +451,15 @@ async fn network_cli_scenario(
         ["-qO-", "--save-cookies=" + missing, base + "/set"]
       }
       check_network_response(
-        network_request(root, wasm, work, command, args, oracle_image?),
+        network_request(
+          root,
+          wasm,
+          work,
+          command,
+          args,
+          oracle_image?,
+          oracle_failures~,
+        ),
         "auth=\ncookie=sid=fixture\n",
       )
       assert_false(@fs.exists(missing))
@@ -385,9 +473,13 @@ async fn network_cli_scenario(
         "wget",
         ["-qO-", "--save-cookies=" + session_jar, base + "/set"],
         oracle_image?,
+        oracle_failures~,
       ),
       "auth=\ncookie=sid=fixture\n",
     )
     assert_false(@fs.read_file(session_jar).text().contains("\tsid\tfixture"))
+    if !oracle_failures.is_empty() {
+      fail(oracle_failures.join("; "))
+    }
   }
 }

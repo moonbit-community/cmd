@@ -58,7 +58,7 @@ fn usage() -> String {
     #|      --header=STRING             insert STRING among request headers
     #|      --user=USER                 HTTP Basic user name
     #|      --password=PASSWORD         HTTP Basic password
-    #|      --auth-no-challenge         send Basic credentials immediately
+    #|      --auth-no-challenge         send Basic credentials on every request, including redirects
     #|      --load-cookies=FILE         load a Netscape cookie jar
     #|      --save-cookies=FILE         save persistent cookies
     #|      --keep-session-cookies      also save session cookies

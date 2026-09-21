@@ -20,7 +20,9 @@ The command supports:
 - combined/connect/read/inactivity timeouts, certificate verification control,
   environment HTTP CONNECT proxies, and explicit proxy bypass.
 - `--user/--password` and their `--http-*` aliases for Basic authentication,
-  sent after a Basic challenge unless `--auth-no-challenge` is selected;
+  available to redirected hosts after their own Basic challenge;
+  `--auth-no-challenge` sends these explicit credentials on every request,
+  including cross-host redirects, as GNU Wget does;
 - response cookies shared across redirects and URL operands, Netscape
   `--load-cookies/--save-cookies` jars, `--keep-session-cookies`, and `--no-cookies`.
 

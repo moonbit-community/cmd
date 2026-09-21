@@ -343,6 +343,7 @@ async fn download_one(
             user + ":" + options.password.unwrap_or("")
           }),
           basic_preemptive=options.auth_no_challenge,
+          basic_credential_scope=@netops.AllOrigins,
         ),
         observer=event => wget_observer(log, interactive, label, event),
       )

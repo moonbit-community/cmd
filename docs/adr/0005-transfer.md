@@ -3,7 +3,7 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-09-21
-Revision: Include Basic auth and cookies; share candidate and fixed-oracle network scenarios.
+Revision: Preserve Wget's explicit credential scope across redirects; keep curl credentials origin-scoped and authentication challenge state separate per origin.
 
 ## Target and decision
 
@@ -11,9 +11,30 @@ Implement curl/wget HTTP/HTTPS with public async APIs. Basic auth, cookie select
 
 ## Alternatives and compatibility cost
 
-Reject host curl/wget delegation, own FFI and permanent exclusion of implementable protocol state. Do not forward authorization blindly across origins. Basic auth tests do not imply all protocols, authentication mechanisms, browser cookie policy or exact progress bytes.
+Reject host curl/wget delegation, own FFI and permanent exclusion of implementable protocol state. Explicit Basic credentials use a command-specific scope: the public transport defaults to the initial origin, while Wget selects all origins for `--user/--password`. Custom authorization headers retain their separate redirect behavior. Applying curl's scope to Wget was rejected because it changes authenticated redirects despite the caller supplying explicit credentials. Basic auth tests do not imply all protocols, authentication mechanisms, browser cookie policy or exact progress bytes.
 
 ## Versions and evidence
+
+The fixed GNU Wget 1.25.0 Linux oracle in CI run `35575026875` sends
+`--user/--password --auth-no-challenge` credentials through a redirect from
+`127.0.0.1` to `localhost`; the previous candidate incorrectly omitted them.
+The [GNU Wget manual](https://www.gnu.org/software/wget/manual/html_node/HTTP-Options.html)
+defines preemptive Basic authentication for all requests. Without that option,
+each previously unchallenged origin must issue its own Basic challenge before
+explicit credentials are sent. The transport keeps challenge state per origin,
+so one server's challenge does not enable unsolicited authentication to another.
+Core HTTP fixture regressions cover default origin restriction, Wget preemptive
+redirects, and challenge-driven redirects. Their execution results are recorded
+by the release validation; registration alone is not a pass. Additional host,
+port or authentication-cache behavior requires a fixed upstream fixture before
+expanding this profile.
+The [Wget 1.25.0 implementation](https://git.savannah.gnu.org/cgit/wget.git/tree/src/http.c?h=v1.25.0)
+selects global command-line credentials again for each URL and caches Basic
+challenges by hostname. This implementation currently caches them per origin
+within a transfer. Reusing a challenge across ports or separate URL operands is
+not yet claimed; adding a shared command-session authentication cache requires
+specific upstream comparison cases. Credentials can still answer a new Basic
+challenge at each allowed origin.
 
 Custom `Cookie:` request headers combined with matching jar cookies require
 duplicate request fields, which the public HTTP request map cannot represent.

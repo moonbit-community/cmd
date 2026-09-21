@@ -84,3 +84,12 @@ The lifecycle scenario saves phase progress and CI bounds each scenario step.
 The same run found that pinned curl 8.22.0 also removes literal `-b` cookies
 on a cross-host redirect; the implementation and contract now follow it.
 These changes require a new passing remote gate.
+
+That run subsequently completed all Windows and macOS checks successfully,
+including Native/Wasm continuous-input and cancellation scenarios. Linux
+completed its portable suites, then the fixed GNU Wget 1.25.0 oracle exposed
+the next network mismatch: explicit preemptive credentials apply across the
+redirect destination. The shared transport now exposes command-specific Basic
+credential scope, and network oracle comparisons retain all independent
+round mismatches in one report with the exact request arguments and streams.
+This is a product correction, not a reclassification of the failing case.
