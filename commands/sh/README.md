@@ -70,7 +70,7 @@ Here-documents retain their existing literal-body subset.
 ## Upstream terminal limits
 
 `-i` does not promise automatic TTY detection, raw mode, line editing, terminal
-resize events, recoverable Ctrl-C, or job control. Async 0.22.1 does not expose
+resize events, recoverable Ctrl-C, or job control. Async 0.22.4 does not expose
 the complete public terminal/process-group interfaces needed for these
 behaviors. `exec`, `fg`, `bg`, `jobs` and `wait` reject the request explicitly.
 See the [upstream gap record](../../docs/async-upstream-gaps.md) and ADR-0007.

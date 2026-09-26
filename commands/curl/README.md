@@ -45,9 +45,9 @@ These are command implementation gaps, not limitations of async's public
 cookie parser. Like curl, cookie-jar write failures do not change the transfer
 exit status (verbose-mode warnings are not implemented).
 
-A custom `-H 'Cookie: ...'` together with matching stored cookies is rejected:
-curl sends distinct Cookie request headers, while async's public request API
-accepts a map and cannot preserve those duplicate fields. Literal `-b` cookies
+The current workspace supports a custom `-H 'Cookie: ...'` together with
+matching stored cookies as two separate request fields, with stored cookies
+first. This correction is not included in published 0.2.0. Literal `-b` cookies
 can be combined with stored cookies and preserve curl's ordering. Explicit
 custom Cookie headers and literal `-b` data are scoped to the initial origin,
 matching curl 8.22. Jar cookies are selected again for the

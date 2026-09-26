@@ -8,7 +8,7 @@ Validate the retained preparation manifest against local package versions:
 
 ```sh
 MOON_HOME="$HOME/.moon-accounts/cli" moon run --target native tests/release_runner -- \
-  --manifest tests/release_runner/candidate-0.2.0.json --suite validate
+  --manifest tests/release_runner/candidate-0.1.0.json --suite validate
 ```
 
 Run published 0.2.0 against the pinned oracle:
@@ -27,12 +27,14 @@ verification level. Availability checks do not replace the release differential
 gate. `latest`, ranges and implicit versions are rejected. `timeout` remains
 local-only and is absent from the release manifest.
 
-Published 0.2.0 selects 382 shared per-command cases across 47 command modules.
+Published 0.1.0 selects the new command cases alongside the frozen 0.2.0
+rows for the original 47 command modules.
 Frozen schema 1 manifests (`manifest.json` and their bases) remain readable after
 local source versions change. Only `validate` compares pinned versions to local
 package versions. The retained preparation manifest accepts `validate` and
 `--list`; its candidate flags deliberately continue to block execution. Use
-`published-0.2.0.json` for the released packages.
+`published-0.1.0.json` for the current 58 released packages; the frozen
+`published-0.2.0.json` remains available for historical replay.
 
 The process argv is `moonx cli/<command>@<version> -- <command arguments>`.
 The inserted separator preserves a command's own leading `--`; such an operand

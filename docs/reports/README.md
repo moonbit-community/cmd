@@ -14,6 +14,7 @@ they are not an alternative support matrix.
 
 | Date | Report | Scope |
 | --- | --- | --- |
+| 2026-09-26 | [P0 command release 0.1.0](2026-09-26-release-0.1.0/README.md) | Eleven pure MoonBit command packages, three-platform CI, sequential publication and exact MoonX smoke acceptance |
 | 2026-09-21 | [0.2.0 publication and acceptance](2026-09-21-release-0.2.0/README.md) | Three-platform source gate, core-first publication receipts, fixed Linux oracle and exact-version MoonX results |
 | 2026-09-21 | [Complete JSON migration and release gate](2026-09-21-json-migration/README.md) | 240 legacy invocations migrated with assertion maps, two-backend execution, remote CI and publication gate |
 | 2026-09-21 | [Test cleanup implementation](2026-09-21-test-cleanup-implementation.md) | Shared testkit, judgment repair, case/fixture migration, ls/jq fixes, serialized validation and remaining external gates |

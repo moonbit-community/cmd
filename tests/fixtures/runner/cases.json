@@ -2,6 +2,14 @@
   "schema": 2,
   "commands": [
     {
+      "name": "base32",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p0-workspace",
+      "wasm": "p0-workspace",
+      "capabilities": ["stdin", "files"]
+    },
+    {
       "name": "base64",
       "baseline": "coreutils-9.11",
       "status": "partial",
@@ -11,6 +19,14 @@
         "stdin",
         "files"
       ]
+    },
+    {
+      "name": "cksum",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p0-workspace",
+      "wasm": "p0-workspace",
+      "capabilities": ["stdin", "files"]
     },
     {
       "name": "basename",
@@ -115,6 +131,14 @@
       "capabilities": [
         "stdout"
       ]
+    },
+    {
+      "name": "expand",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p0-workspace",
+      "wasm": "p0-workspace",
+      "capabilities": ["stdin", "files"]
     },
     {
       "name": "env",
@@ -248,6 +272,14 @@
       ]
     },
     {
+      "name": "mktemp",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p0-workspace",
+      "wasm": "p0-workspace",
+      "capabilities": ["filesystem-mutation"]
+    },
+    {
       "name": "mv",
       "baseline": "coreutils-9.11",
       "status": "partial",
@@ -311,6 +343,14 @@
       ]
     },
     {
+      "name": "realpath",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p0-workspace",
+      "wasm": "p0-workspace",
+      "capabilities": ["files"]
+    },
+    {
       "name": "rm",
       "baseline": "coreutils-9.11",
       "status": "partial",
@@ -319,6 +359,14 @@
       "capabilities": [
         "filesystem-mutation"
       ]
+    },
+    {
+      "name": "rev",
+      "baseline": "util-linux-2.40",
+      "status": "partial",
+      "native": "p0-workspace",
+      "wasm": "p0-workspace",
+      "capabilities": ["stdin", "files"]
     },
     {
       "name": "rmdir",
@@ -396,6 +444,14 @@
       ]
     },
     {
+      "name": "tac",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p0-workspace",
+      "wasm": "p0-workspace",
+      "capabilities": ["stdin", "files"]
+    },
+    {
       "name": "tee",
       "baseline": "coreutils-9.11",
       "status": "partial",
@@ -460,6 +516,14 @@
       ]
     },
     {
+      "name": "tree",
+      "baseline": "tree-2.2.1",
+      "status": "partial",
+      "native": "p0-workspace",
+      "wasm": "p0-workspace",
+      "capabilities": ["files"]
+    },
+    {
       "name": "uniq",
       "baseline": "coreutils-9.11",
       "status": "partial",
@@ -469,6 +533,22 @@
         "stdin",
         "files"
       ]
+    },
+    {
+      "name": "unexpand",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p0-workspace",
+      "wasm": "p0-workspace",
+      "capabilities": ["stdin", "files"]
+    },
+    {
+      "name": "unlink",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p0-workspace",
+      "wasm": "p0-workspace",
+      "capabilities": ["filesystem-mutation"]
     },
     {
       "name": "wc",
@@ -491,6 +571,14 @@
         "network",
         "files"
       ]
+    },
+    {
+      "name": "yes",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p0-workspace",
+      "wasm": "p0-workspace",
+      "capabilities": ["stdout"]
     },
     {
       "name": "xargs",
@@ -517,6 +605,9 @@
   ],
   "cases": [],
   "case_files": [
+    "../../cases/base32.json",
+    "../../cases/cksum.json",
+    "../../cases/expand.json",
     "../../cases/cp.json",
     "../../cases/jq.json",
     "../../cases/ln.json",
@@ -564,6 +655,14 @@
     "../../cases/timeout.json",
     "../../cases/basename.json",
     "../../cases/printenv.json",
-    "../../cases/sha256sum.json"
+    "../../cases/sha256sum.json",
+    "../../cases/mktemp.json",
+    "../../cases/realpath.json",
+    "../../cases/rev.json",
+    "../../cases/tac.json",
+    "../../cases/tree.json",
+    "../../cases/unexpand.json",
+    "../../cases/unlink.json",
+    "../../cases/yes.json"
   ]
 }

@@ -28,7 +28,7 @@ Reject host interpreter delegation, exec as an external command, CharDevice as i
 
 ## Versions and evidence
 
-Baseline: async 0.22.1, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-15.
+Baseline: async 0.22.4, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-20.
 The 2026-09-20 Native/Wasm shell tests each passed 15/15, and the original
 interactive probe passed on both with stdin held open. Current unified scenarios
 retain those assertions, with a pure MoonBit one-line foreground helper instead

@@ -231,13 +231,14 @@ async fn snapshot_into(
 pub async fn snapshot(
   root : String,
   observe? : ArrayView[String] = [],
-  baseline? : Bool = false,
 ) -> Array[SnapshotEntry] {
   let entries : Array[SnapshotEntry] = []
   snapshot_into(root, "", entries, observe)
-  // Baseline content inspection may itself access files. Anchor an unchanged
-  // atime assertion after that inspection, before the candidate starts.
-  if baseline && observe.contains("atime") {
+  // Content inspection may itself access files. Re-anchor atime after that
+  // inspection so the observer is not mistaken for a command side effect.
+  // For a baseline this happens before the candidate; for the final snapshot
+  // it records the post-command state after the same observation sequence.
+  if observe.contains("atime") {
     for entry in entries {
       let (s, n) = @fs.atime(
         @path.Path(root).join(Path(entry.path)).to_string(),
@@ -315,3 +316,6 @@ pub fn normalize_text(
   }
   @utf8.encode(text)
 }
+
+///|
+pub extend SnapshotEntry with @debug.Debug::{to_repr}

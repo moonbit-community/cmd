@@ -176,3 +176,39 @@ pub fn controlled_environment(
   }
   result
 }
+
+///|
+pub extend FixtureFile with @json.FromJson::{from_json}
+
+///|
+pub extend FixtureFile with ToJson::{to_json}
+
+///|
+pub extend FixtureFile with @debug.Debug::{to_repr}
+
+///|
+pub extend Normalization with @json.FromJson::{from_json}
+
+///|
+pub extend Normalization with ToJson::{to_json}
+
+///|
+pub extend Normalization with @debug.Debug::{to_repr}
+
+///|
+pub extend ExpectedFile with @json.FromJson::{from_json}
+
+///|
+pub extend ExpectedFile with ToJson::{to_json}
+
+///|
+pub extend ExpectedFile with @debug.Debug::{to_repr}
+
+///|
+pub extend Case with @json.FromJson::{from_json}
+
+///|
+pub extend Case with ToJson::{to_json}
+
+///|
+pub extend Case with @debug.Debug::{to_repr}

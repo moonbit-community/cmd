@@ -74,7 +74,7 @@ pub fn safe_symlink_target(String) -> Bool
 
 pub fn select_cases(ArrayView[Case], ArrayView[String], ArrayView[String]) -> Array[Case] raise Failure
 
-pub async fn snapshot(String, observe? : ArrayView[String], baseline? : Bool) -> Array[SnapshotEntry]
+pub async fn snapshot(String, observe? : ArrayView[String]) -> Array[SnapshotEntry]
 
 pub fn snapshots_equal(ArrayView[SnapshotEntry], ArrayView[SnapshotEntry]) -> Bool
 
@@ -124,8 +124,11 @@ pub(all) struct Case {
   expected_stderr_contains_all : Array[String]?
   stdout_order : String?
 } derive(ToJson, @debug.Debug, @json.FromJson)
+pub fn Case::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 pub fn Case::input(Self, root? : String, http_base? : String) -> Bytes raise Failure
 pub fn Case::platform_applies(Self) -> Bool
+pub fn Case::to_json(Self) -> Json
+pub fn Case::to_repr(Self) -> @debug.Repr
 pub fn Case::working_directory(Self, String) -> String raise Failure
 
 pub(all) struct CaseReport {
@@ -144,6 +147,8 @@ pub(all) struct CaseReport {
   evidence : String?
 } derive(ToJson, @debug.Debug)
 pub fn CaseReport::semantic_pass(Self) -> Bool
+pub fn CaseReport::to_json(Self) -> Json
+pub fn CaseReport::to_repr(Self) -> @debug.Repr
 
 pub(all) struct ExpectedFile {
   path : String
@@ -155,6 +160,9 @@ pub(all) struct ExpectedFile {
   target : String?
   same_identity_as : String?
 } derive(ToJson, @debug.Debug, @json.FromJson)
+pub fn ExpectedFile::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn ExpectedFile::to_json(Self) -> Json
+pub fn ExpectedFile::to_repr(Self) -> @debug.Repr
 
 pub(all) struct FixtureFile {
   path : String
@@ -166,12 +174,18 @@ pub(all) struct FixtureFile {
   atime : String?
   mtime : String?
 } derive(ToJson, @debug.Debug, @json.FromJson)
+pub fn FixtureFile::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FixtureFile::to_json(Self) -> Json
+pub fn FixtureFile::to_repr(Self) -> @debug.Repr
 
 pub(all) struct Normalization {
   field : String
   rule : String
   comment : String
 } derive(ToJson, @debug.Debug, @json.FromJson)
+pub fn Normalization::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Normalization::to_json(Self) -> Json
+pub fn Normalization::to_repr(Self) -> @debug.Repr
 
 pub(all) struct RunResult {
   status : Int
@@ -185,6 +199,7 @@ pub(all) struct SnapshotEntry {
   content : Bytes
   metadata : Map[String, String]
 } derive(@debug.Debug)
+pub fn SnapshotEntry::to_repr(Self) -> @debug.Repr
 
 pub(all) struct TimedRun {
   output : RunResult

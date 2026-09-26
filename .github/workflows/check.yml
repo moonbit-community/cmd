@@ -33,8 +33,8 @@ jobs:
       - name: Setup MoonBit
         uses: hustcer/setup-moonbit@v1.23
         with:
-          version: 0.10.13+cbb11c36f
-          core-version: 0.10.13+cbb11c36f
+          version: 0.10.14+7d59c7ec9
+          core-version: 0.10.14+7d59c7ec9
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -64,7 +64,7 @@ jobs:
       - name: Validate unpublished candidate manifest
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
-          --manifest tests/release_runner/candidate-0.2.0.json --suite validate
+          --manifest tests/release_runner/candidate-0.1.0.json --suite validate
 
       - name: Native compatibility
         run: >-
@@ -135,14 +135,14 @@ jobs:
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
-          --manifest tests/release_runner/published-0.2.0.json --suite smoke
+          --manifest tests/release_runner/published-0.1.0.json --suite smoke
           --report-dir test-reports/published-smoke
 
       - name: Published-version differential
         if: runner.os == 'Linux' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
-          --manifest tests/release_runner/published-0.2.0.json --suite differential
+          --manifest tests/release_runner/published-0.1.0.json --suite differential
           --oracle-image mooncmd-oracle:phase0
           --report-dir test-reports/published-differential
 

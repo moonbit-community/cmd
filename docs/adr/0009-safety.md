@@ -15,7 +15,7 @@ Reject universal preflight/transaction semantics and the release runner's uncond
 
 ## Versions and evidence
 
-Baseline: async 0.22.1, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-15.
+Baseline: async 0.22.4, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-20.
 The original audit's hard-link corruption and arithmetic false success are regression triggers. Filesystem preservation, expansion tests and release byte/snapshot comparison protect the separate contracts.
 Historical results remain in [the audit](../reports/2026-09-19-command-fidelity-audit.md).
 Candidate runtime results are recorded separately from published versions.

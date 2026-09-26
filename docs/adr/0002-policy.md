@@ -21,7 +21,7 @@ remain rejected by command semantics. An explicit named working directory is
 not an additional authorization boundary. Tests exercise the decision helper
 and disposable fixtures only; no root deletion is executed.
 
-Baseline: async 0.22.1, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-15.
+Baseline: async 0.22.4, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-20.
 core/process/default_environment returns the complete environment on both backends. The `process-lifecycle` CLI scenario checks an unrelated variable and both C/POSIX LC_ALL values through a pure MoonBit child. The original published audit retains the old filtered results; its follow-up fidelity probe is archived with the 2026-09-21 evidence.
 Historical results remain in [the audit](../reports/2026-09-19-command-fidelity-audit.md).
 Candidate runtime results are recorded separately from published versions.

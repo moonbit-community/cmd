@@ -339,6 +339,8 @@ async fn download_one(
           resume_from?,
           keep_output_on_not_modified=options.timestamping,
           cookie_jar?=jar,
+          custom_cookie_mode=@netops.ReplaceStored,
+          custom_cookie_cross_origin=true,
           basic_credentials?=options.user.map(user => {
             user + ":" + options.password.unwrap_or("")
           }),

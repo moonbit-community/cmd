@@ -198,3 +198,9 @@ pub async fn fetch(
     fetch_options(fail_on_http_error, 30_000, false, "download"),
   )
 }
+
+///|
+pub extend FeedbackMode with Eq::{not_equal, equal}
+
+///|
+pub extend FeedbackMode with @debug.Debug::{to_repr}

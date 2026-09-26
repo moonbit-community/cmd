@@ -84,3 +84,54 @@ module and version before any release operation.
   catalog, compatibility record and relevant regression together. Record
   tradeoffs in the existing canonical ADR with an Updated date, evidence and
   conditions for lifting limitations. Keep historical reports immutable.
+
+#### Version evolution and publication order
+
+- Keep an unchanged published command at its current registry version. Bump a
+  command only when its source behavior, public API, dependency resolution, or
+  documented support profile changes. Do not republish unchanged commands just
+  to synchronize another package.
+- A newly migrated command with no registry release starts at `0.1.0`, unless
+  the release decision explicitly selects another version. Later changes use
+  the next unused semantic version. Update `moon.mod`, any package version
+  declaration, the package README, help/version output, active and candidate
+  manifests, the compatibility record, and the relevant regressions together.
+- Publish `cli/core` only when its public API or shared behavior changed. If
+  core is unchanged, keep its existing published version and make command
+  packages depend on that coordinate. Never create a core release solely to
+  force unchanged commands to new versions.
+- Before a release, verify the account and exact registry state with
+  `MOON_HOME="$HOME/.moon-accounts/cli" moon whoami`, the package version
+  listing, and the candidate manifest. A first release must be absent before
+  publishing; registry versions are immutable and must never be overwritten.
+- Serialize the release pipeline. Commit source, tests, and docs first and
+  push that commit once. Wait for the required Linux, macOS, and Windows CI
+  checks to pass. Publish `cli/core` first only when core changed, then publish
+  changed command packages one at a time in lexical command-name order. After
+  every upload require `Server status: 200 OK` and verify the exact registry
+  version before moving to the next package. Never run publishes in parallel.
+- After all uploads, run exact published-consumer smoke and contract checks
+  with `MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/<cmd>@<version> ...`.
+  Update the published manifest and release report with those results, then
+  commit and push the documentation. Do not publish from a failing or
+  unverified candidate.
+- Current baseline after the 2026-09-27 release: `cli/core` and previously
+  published commands remain at `0.2.0`; the newly migrated `base32`, `cksum`,
+  `expand`, `mktemp`, `realpath`, `rev`, `tac`, `tree`, `unexpand`, `unlink`,
+  and `yes` packages are at `0.1.0`; `timeout` remains local-only. Update this
+  baseline whenever a subsequent release changes it.
+
+### Mandatory pure MoonBit boundary
+
+- All product code, shared runtime code, command implementations, test runners,
+  fixtures, and agent-authored automation in this repository must be written in
+  pure MoonBit. Do not add project-owned C, C++, Rust, JavaScript, TypeScript,
+  shell, Python, or other language implementations, and do not add FFI or
+  native stubs as a workaround for a missing public MoonBit API.
+- Host programs are allowed only outside the product boundary for fixed-version
+  oracle comparison, test observation, CI setup, and diagnostic collection.
+  They must never be delegated to as the implementation of `cli/<cmd>`.
+- If a required behavior cannot be implemented through released public MoonBit
+  APIs, keep the command or option in an explicit boundary state, record the
+  missing API and unlock condition in `docs/async-upstream-gaps.md` and the
+  applicable ADR, and add a rejection regression test.

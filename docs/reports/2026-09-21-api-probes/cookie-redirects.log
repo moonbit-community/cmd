@@ -1,0 +1,35 @@
+curl
+GET /start HTTP/1.1
+Host: 127.0.0.1:55844
+User-Agent: curl/8.7.1
+Accept: */*
+Cookie: sid=stored
+Cookie: sid=header
+
+
+GET /end HTTP/1.1
+Host: localhost:55844
+User-Agent: curl/8.7.1
+Accept: */*
+Cookie: sid=destination
+
+
+wget
+GET /start HTTP/1.1
+Host: 127.0.0.1:55844
+User-Agent: Wget/1.25.0
+Accept: */*
+Accept-Encoding: identity
+Connection: Keep-Alive
+Cookie: sid=header
+
+
+GET /end HTTP/1.1
+Host: localhost:55844
+User-Agent: Wget/1.25.0
+Accept: */*
+Accept-Encoding: identity
+Connection: Keep-Alive
+Cookie: sid=header
+
+

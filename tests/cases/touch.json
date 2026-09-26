@@ -41,7 +41,7 @@
       "host_platforms": [
         "posix"
       ],
-      "source_version": "GNU coreutils 9.11; candidate async 0.22.1 boundary"
+      "source_version": "GNU coreutils 9.11; candidate async 0.22.4 boundary"
     },
     {
       "id": "compat-text-touch-date-rejected",

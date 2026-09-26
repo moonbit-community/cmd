@@ -30,7 +30,7 @@ The legacy `fetch` and `fetch_with_options` entry points remain source
 compatible and retain the original 30-second default. New command adapters use
 `transfer_options` directly.
 
-`CookieJar` uses async 0.22.1's public `Response.cookies` array, preserving
+`CookieJar` uses async 0.22.4's public `Response.cookies` array, preserving
 multiple Set-Cookie fields. Stores survive redirects and separate transfers;
 request selection enforces host/domain and path boundaries, expiration and
 Secure, with longer paths first. Netscape files preserve HttpOnly and session
@@ -43,10 +43,15 @@ authentication or a single challenge retry; cross-origin redirects do not
 forward those credentials. A challenge retry reopens file bodies, but refuses
 to replay an already consumed stdin body.
 
-The public HTTP request API uses a header map. Combining stored cookies with
-an explicit Cookie header requires duplicate request headers and is rejected
-before issuing that request. This differs from the response side, where the
-public cookies array already preserves each Set-Cookie field.
+The current workspace uses the public client's persistent headers and per-request
+headers as separate layers. `CustomCookieMode::SeparateFields` sends stored
+cookies before the explicit Cookie field (curl); `ReplaceStored` sends only the
+explicit field while continuing to receive cookies (wget). Wget also enables
+`custom_cookie_cross_origin`; curl leaves it disabled, independently of Basic
+credential scope. This corrects the
+0.2.0 rejection without new FFI or a replacement HTTP transport. It does not
+provide arbitrary ordered repeated headers: each layer is still a map.
+The response cookies array preserves each Set-Cookie field.
 
 ## Reproducing the CLI checks
 
@@ -55,8 +60,9 @@ HTTP server and invokes real workspace curl/wget artifacts. It checks
 Basic request bytes, Wget's initial unauthenticated request and retry, literal
 and redirect cookies, repeated `-b`, Netscape persistence, session cookies,
 jar file permissions, stored-plus-literal cookie ordering, and upstream's
-non-fatal jar-write behavior. One additional invocation verifies the explicit
-rejection of duplicate Cookie request headers.
+non-fatal jar-write behavior, separate curl Cookie fields and wget's explicit-field
+override. A raw TCP core regression observes the individual fields and redirect
+origin handling.
 
 ```sh
 MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --release

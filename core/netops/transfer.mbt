@@ -102,6 +102,7 @@ fn filtered_headers(
   headers : ArrayView[HttpHeader],
   strip_sensitive : Bool,
   strip_entity : Bool,
+  keep_cookie? : Bool = false,
 ) -> Array[HttpHeader] {
   let result : Array[HttpHeader] = []
   for header in headers {
@@ -110,7 +111,7 @@ fn filtered_headers(
       (
         name == "authorization" ||
         name == "proxy-authorization" ||
-        name == "cookie"
+        (name == "cookie" && !keep_cookie)
       ) {
       continue
     }
@@ -694,11 +695,13 @@ pub async fn transfer(
       Some(jar) => jar.header_for(parsed, @fsops.current_timestamp().seconds)
       None => None
     }
-    if per_request.contains("Cookie") && stored is Some(_) {
-      raise transfer_error(
-        ProtocolFailure,
-        "a custom Cookie header combined with stored cookies requires duplicate request-header support",
-      )
+    if per_request.contains("Cookie") &&
+      stored is Some(value) &&
+      options.custom_cookie_mode is SeparateFields {
+      // async serializes client headers before request headers. These are two
+      // independent maps, so the jar and explicit field retain their wire
+      // identity and order without merging values or replacing the transport.
+      persistent["Cookie"] = value
     }
     if !per_request.contains("Cookie") {
       let literal = if parsed.origin_key() == credential_origin {
@@ -790,7 +793,12 @@ pub async fn transfer(
         body,
         options.preserve_method_on_redirect,
       )
-      headers = filtered_headers(headers, cross_origin, strip_entity)
+      headers = filtered_headers(
+        headers,
+        cross_origin,
+        strip_entity,
+        keep_cookie=options.custom_cookie_cross_origin,
+      )
       request_method = next_method
       body = next_body
       parsed = next

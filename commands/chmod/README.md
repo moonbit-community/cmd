@@ -17,7 +17,7 @@ classes, `X/s/t`, permission copies, directories and symlinks remain rejected
 for symbolic assignments. Numeric operations process operands in order and do
 not roll back earlier successful changes on a later error.
 
-`--reference` is recognized but fails before mutation because async 0.22.1
+`--reference` is recognized but fails before mutation because async 0.22.4
 does not expose current permission bits. Windows permission mutation is
 unavailable in this profile. Host permission denial is reported separately
 from these implementation limits.

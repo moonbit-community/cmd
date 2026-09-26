@@ -317,3 +317,9 @@ pub async fn check_expected_files(
   }
   errors
 }
+
+///|
+pub extend CaseReport with ToJson::{to_json}
+
+///|
+pub extend CaseReport with @debug.Debug::{to_repr}

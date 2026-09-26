@@ -304,11 +304,7 @@ async fn run_case(
       file.content_text.unwrap_or("").contains("${HTTP_BASE}")
     })
   let candidate_before = if fixture.expected_rejection is Some(_) {
-    snapshot(
-      candidate_root,
-      observe=fixture.observe.unwrap_or([]),
-      baseline=true,
-    )
+    snapshot(candidate_root, observe=fixture.observe.unwrap_or([]))
   } else {
     []
   }
