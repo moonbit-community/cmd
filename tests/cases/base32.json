@@ -1,0 +1,86 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "base32-rfc4648-foobar",
+      "command": "base32",
+      "args": ["-w0"],
+      "stdin_text": "foobar",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "MZXW6YTBOI======",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "base32-rfc4648-decode",
+      "command": "base32",
+      "args": ["-d"],
+      "stdin_text": "MZXW6===\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "foo",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "base32-uppercase-only",
+      "command": "base32",
+      "args": ["-d"],
+      "stdin_text": "mzxw6===\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "invalid",
+      "diagnostic_reason": "The decoder status and empty stdout are exact; error wording is implementation-specific."
+    },
+    {
+      "id": "base32-nonzero-tail-bits-accepted",
+      "command": "base32",
+      "args": ["-d"],
+      "stdin_text": "MZ======",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "f",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "base32-prefix-before-malformed-padding",
+      "command": "base32",
+      "args": ["-d"],
+      "stdin_text": "MY=XXXXX",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "f",
+      "expected_stderr_contains": "invalid",
+      "diagnostic_reason": "The decoded prefix and failure status are exact; error wording is implementation-specific."
+    },
+    {
+      "id": "base32-negative-wrap",
+      "command": "base32",
+      "args": ["--wrap=-1"],
+      "stdin_text": "foo",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "invalid wrap size",
+      "diagnostic_reason": "The argument status and empty stdout are exact; diagnostic wording may vary."
+    }
+  ]
+}

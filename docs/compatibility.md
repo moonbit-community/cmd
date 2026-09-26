@@ -1,7 +1,7 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-09-21
+Updated: 2026-09-26
 
 **0.2.0 is published** for `cli/core` and 47 command modules. The
 [source gate](https://github.com/moonbit-community/cmd/actions/runs/35576541301)
@@ -12,7 +12,9 @@ MoonX acceptance, recorded in the
 0.1.x manifests remain unchanged for replay. See
 [public API gaps](async-upstream-gaps.md).
 
-The current unpublished workspace corrects custom Cookie plus jar handling:
+The current unpublished workspace uses async 0.22.4 and adds the documented
+local-only command profiles for base32, mktemp, realpath, rev, tac, tree,
+unlink and yes. It also corrects custom Cookie plus jar handling:
 curl sends two separate fields; wget sends the explicit field instead of the
 stored-cookie field. It also adopts MoonBit 2026-09-20 with strict warning
 cleanup. These changes are not included in the 0.2.0 registry packages.
@@ -93,8 +95,11 @@ Linux oracle remains the strict filesystem authority.
 
 ## Inventory
 
-The local release contains 48 command modules. Mooncakes currently exposes 47
-through MoonX. `timeout` is intentionally local-only because portable
+The workspace contains 59 command modules. Mooncakes currently exposes 47
+through MoonX; `base32`, `cksum`, `expand`, `mktemp`, `realpath`, `rev`, `tac`, `tree`, `unexpand`, `unlink`,
+`yes` and `timeout`
+are currently local-only.
+`timeout` is intentionally local-only because portable
 `ProcessGroupCancellation` is unavailable:
 
 ```sh
@@ -102,9 +107,10 @@ MOON_HOME="$HOME/.moon-accounts/cli" moon run --target wasm --release commands/t
 ```
 
 is a valid local invocation, while `moonx cli/timeout` is not a supported
-registry invocation. All other command modules and their shared `cli/core`
-dependency are published at `0.2.0`. Earlier package versions and their measured
-results remain in the frozen manifests and historical reports.
+registry invocation. The same local-only status currently applies to
+`base32`, `cksum`, `expand`, `mktemp`, `realpath`, `rev`, `tac`, `tree`, `unexpand`, `unlink` and `yes`; their
+registry publication is a later release gate. Earlier package versions and their
+measured results remain in the frozen manifests and historical reports.
 
 Status vocabulary: `subset verified` is a successful normal-path probe;
 `restricted` additionally needs explicit Wasm file/process/network/permission
@@ -115,6 +121,9 @@ claiming success; `local-only` is absent from MoonX by design.
 
 | Command | Status | Measured profile | Observed boundary or open evidence |
 | --- | --- | --- | --- |
+| `base32` | subset verified | RFC 4648 uppercase encode/decode, `-d`, `-i`, `-w`, stdin or one file | Nonstandard alphabets and locale diagnostics not claimed |
+| `cksum` | subset verified | POSIX CRC-32 and byte count for stdin or multiple files, ordered partial failure | GNU alternate algorithms and tagged output are not claimed |
+| `expand` | subset verified | C-locale tab expansion, `-i`, `-t` stops, stdin or multiple files | Locale display widths and non-byte tab semantics are not claimed |
 | `base64` | subset verified | `-d/-D`, `-i/--ignore-garbage`, `-w N`, file and stdin encode/decode | Nonstandard alphabets and locale diagnostics not claimed |
 | `basename` | subset verified | `-a`, `-s SUFFIX`, `-z`, empty/root/repeated-separator operands | Full multibyte path locale behavior not claimed |
 | `cat` | subset verified | files/stdin; `-n -b -s -A -E -T -v -e -t`, `-u/--unbuffered` | Unbuffered is a stream-safe compatibility no-op |
@@ -138,6 +147,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `ls` | subset verified | `-a -A -d -F -1 -R`, reverse, regular-file `-S`, `-H/-L` link following, implicit `-u/-c` time sorting and `-S/-t` precedence | Native/Wasm command contracts and pinned GNU 9.11 Linux gate passed. `-P` is a project extension (GNU rejects it); directory-size sorting, long/colour/ownership/inode/block formats not claimed |
 | `make` | subset verified | Real `-j` dependency scheduling, shared prerequisites once, failed-dependency propagation, `-k`, `$(shell ...)`, `.SHELLSTATUS`, cwd and exported recipe variables | No GNU jobserver/full Make grammar claim; shell-function export recursion and full GNU variable semantics remain project work |
 | `mkdir` | subset verified | `-p`, numeric `-m`, requested mode on leaf only; default parent mode under ordinary umask | Symbolic modes and unusual umasks requiring temporary owner permissions remain unverified |
+| `mktemp` | subset verified | One template, secure random suffix, `-d/--directory`, atomic create, 0600 files and 0700 directories | Template extensions, owner metadata and platform-specific permission details are not claimed |
 | `mv` | subset verified | files/dirs, `-f/-n`, `-T`, `-v`, and the exercised `update=none` path | P8 interactive/backup/suffix and remaining update modes need probes; cross-filesystem fallback not claimed; source preserved on rename failure |
 | `nl` | subset verified | `-b/-h/-f`, `-w`, `-s`, `-v`, `-i`, `-d`, `-p`, files/stdin | Locale-aware formatting not claimed |
 | `paste` | subset verified | parallel/serial `-s`, delimiter cycling `-d`, `-z` | Full malformed delimiter diagnostics not claimed |
@@ -145,6 +155,8 @@ claiming success; `local-only` is absent from MoonX by design.
 | `printf` | subset verified | reused formats, conversions, width/precision, flags, escapes, numeric repetition, `--` | Locale and every GNU diagnostic not claimed |
 | `pwd` | subset verified | `-L`, `-P`, invalid logical `PWD` fallback | Logical/physical result follows Wasm cwd contract |
 | `rm` | subset verified | files/trees, `-r/-f/-d/-v`, failure ordering, root-preservation flags | Final dot/dot-dot operands are rejected, including Windows separators; explicit cwd paths do not receive additional policy |
+| `realpath` | subset verified | Existing path canonicalization, `-e`, `-z`, multiple operands | GNU missing-path `-m` semantics and every diagnostic byte are not claimed |
+| `rev` | subset verified | C-locale byte reversal per line, stdin or one file, line-feed preservation | Multibyte locale character semantics and multiple files are not claimed |
 | `rmdir` | subset verified | empty removal, `-p`, `-I`, `-v`, failure ordering | Full path diagnostics not claimed |
 | `seq` | subset verified | One/two/three-number forms, default step +1, explicit negative step, `-w/-s/--version` | `seq 3 1` now produces no output, matching GNU; old descending extension removed |
 | `sh` | subset verified | Persistent `-i` line REPL and opaque Session; export/local variables, cwd, quoting/IFS/glob, arithmetic, substitution, read, bounded printf/test, functions and pipeline state isolation | No public isatty/raw/editing/recoverable SIGINT/job control/exec; remaining interpreter grammar restrictions are project work, listed in command README |
@@ -152,15 +164,20 @@ claiming success; `local-only` is absent from MoonX by design.
 | `sleep` | subset verified | fractional values, `s/m/h/d`, multiple operands, help/version | Signal/cancellation parity not claimed |
 | `sort` | subset verified | repeated `-k` field/character modifiers with GNU blank boundaries; `-b -d -f -i -n -g -h -M -V -r -u -z`; `-c/-C` checks | `-R` is a verified rejection without a seed contract; locale/external-sort semantics not claimed |
 | `tail` | subset verified | `-n`, `-c`, `+K`, `-q`, `-v`, `-f`/`--follow`, `-s`/`--sleep-interval` | `-f` follows open regular-file descriptors by polling; stdin/pipes stop at EOF; `-F` path-follow and rotation reopen are not claimed |
+| `tac` | subset verified | Reverse records from stdin or one file, `-s/--separator`, `-b/--before` | Regex separators and multiple input files are rejected; locale diagnostics not claimed |
 | `tee` | subset verified | stdin to stdout/files and `-a` append, partial-output ordering | Signal diagnostics not claimed |
 | `test` | subset verified | string/integer, file kinds, access, regular-file size, `!`, `-a`, `-o`, and the exercised dangling-link path | `-N`/`-nt`/`-ot` and special-file positive fixtures need independent probes; complete unary/binary ambiguity not claimed |
+| `tree` | subset verified | Sorted recursive display, `-a -d -f -L --noreport`, multiple roots | Symlink targets, color, permissions, device metadata and extended reports are rejected or not claimed because public async fs lacks readlink and mode APIs |
 | `timeout` | local-only | local duration and expiry returned 124 | No published process-group cancellation |
 | `touch` | subset verified | Create missing files; `-c` missing-file no-op | Existing-file timestamp updates and setters explicitly fail without content rewrites |
 | `tr` | subset verified | translate/delete/squeeze/`-c/-C` complement, `-t`, ranges, C-locale classes, octal/equivalence/repetition forms | Verified profile is byte-oriented; locale data beyond C is not claimed |
 | `true` | subset verified | any args: no output, status 0; help/version | Metadata text is package-versioned |
 | `uniq` | subset verified | adjacent filtering, `-c -d -u -i`, `-f -s -w -z`, exact count spacing | Fixed C-locale field/character comparison; locale collation not claimed |
+| `unlink` | subset verified | Multiple regular-file or symlink operands, ordered partial failure, `--help`/`--version` | Directories are rejected; owner metadata and every diagnostic byte are not claimed |
+| `unexpand` | subset verified | Leading/all blank conversion, `--first-only`, `-t` stops, stdin or multiple files | Locale display widths and non-byte tab semantics are not claimed |
 | `wc` | subset verified | `-l -w -c -m -L`, combinations, aligned multi-file totals, `--files0-from`, files/stdin | `-L` is the C-locale display-width profile; full locale diagnostics not claimed |
 | `wget` | subset verified | Existing transfer profile plus challenge-based Basic credentials across destinations; `--auth-no-challenge` sends explicit credentials on every request, including redirects; load/save cookies, session-cookie option, shared redirect jar; workspace lets explicit Cookie override stored cookies | No recursive mirror/FTP/HSTS/PSL/IDNA; consumed stdin bodies cannot replay an auth challenge; cross-port and cross-operand authentication caching and full progress text not claimed; explicit Cookie override is not in published 0.2.0 |
+| `yes` | subset verified | Infinite repeated `y` or joined arguments, help/version, broken-pipe termination | Exact signal diagnostics and terminal interaction are not claimed |
 | `xargs` | restricted | whitespace/NUL tokenization, quotes/backslashes, `-0 -r -t -n -L -s -E -I`, `--show-limits`, bounded `-P`; direct-child status classes 123/124/125/126/127 | Child policy required; process windows are bounded and aggregate status deterministically; GNU shell/locale extensions are not claimed |
 | `xxd` | subset verified | forward hex, `-p -r -c -l -i`, `--revert`, include symbol naming, positive `-s`, addressed reverse patching with bounded offsets | Negative/end-relative seek remains rejected; loose reverse-offset parsing matches the pinned profile and oversized offsets are rejected before unbounded allocation |
 

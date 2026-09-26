@@ -74,7 +74,7 @@ pub fn safe_symlink_target(String) -> Bool
 
 pub fn select_cases(ArrayView[Case], ArrayView[String], ArrayView[String]) -> Array[Case] raise Failure
 
-pub async fn snapshot(String, observe? : ArrayView[String], baseline? : Bool) -> Array[SnapshotEntry]
+pub async fn snapshot(String, observe? : ArrayView[String]) -> Array[SnapshotEntry]
 
 pub fn snapshots_equal(ArrayView[SnapshotEntry], ArrayView[SnapshotEntry]) -> Bool
 

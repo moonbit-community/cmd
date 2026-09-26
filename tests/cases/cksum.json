@@ -1,0 +1,16 @@
+{
+  "schema": 2,
+  "cases": [{
+    "id": "p0-cksum-stdin",
+    "command": "cksum",
+    "args": [],
+    "stdin_text": "hello\n",
+    "files": [],
+    "environment": {},
+    "expected_status": 0,
+    "expected_stdout_text": "3015617425 6\n",
+    "expected_stderr_text": "",
+    "comparison": "contract",
+    "normalizations": []
+  }]
+}

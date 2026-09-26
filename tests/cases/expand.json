@@ -1,0 +1,61 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "p0-expand-basic-tabs",
+      "command": "expand",
+      "args": [],
+      "stdin_text": "a\tb\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "a       b\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": ["default-stops", "stdin"]
+    },
+    {
+      "id": "p0-expand-initial",
+      "command": "expand",
+      "args": ["--initial"],
+      "stdin_text": "\t\tA\tB\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "                A\tB\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": ["initial-only"]
+    },
+    {
+      "id": "p0-expand-explicit-stops",
+      "command": "expand",
+      "args": ["--tabs=4,10"],
+      "stdin_text": "1234\tX\t\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "1234      X \n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": ["explicit-stops", "post-final-stop"]
+    },
+    {
+      "id": "p0-expand-rejects-unsorted-stops",
+      "command": "expand",
+      "args": ["-t", "8,4"],
+      "stdin_text": "x\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "expand: tab sizes must be ascending\n",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": ["invalid-option-value"]
+    }
+  ]
+}

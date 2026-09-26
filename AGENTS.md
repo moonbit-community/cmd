@@ -84,3 +84,18 @@ module and version before any release operation.
   catalog, compatibility record and relevant regression together. Record
   tradeoffs in the existing canonical ADR with an Updated date, evidence and
   conditions for lifting limitations. Keep historical reports immutable.
+
+### Mandatory pure MoonBit boundary
+
+- All product code, shared runtime code, command implementations, test runners,
+  fixtures, and agent-authored automation in this repository must be written in
+  pure MoonBit. Do not add project-owned C, C++, Rust, JavaScript, TypeScript,
+  shell, Python, or other language implementations, and do not add FFI or
+  native stubs as a workaround for a missing public MoonBit API.
+- Host programs are allowed only outside the product boundary for fixed-version
+  oracle comparison, test observation, CI setup, and diagnostic collection.
+  They must never be delegated to as the implementation of `cli/<cmd>`.
+- If a required behavior cannot be implemented through released public MoonBit
+  APIs, keep the command or option in an explicit boundary state, record the
+  missing API and unlock condition in `docs/async-upstream-gaps.md` and the
+  applicable ADR, and add a rejection regression test.

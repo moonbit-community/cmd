@@ -1,10 +1,32 @@
 # MoonBit async 公开能力缺口反馈
 
-Updated: 2026-09-21（新工具链复核；移除 Cookie 组合的错误阻塞归因）。刷新注册表后复核正式发布的 `moonbitlang/async 0.22.1`、
+强制实现边界：项目命令、共享库、测试 runner、fixture 和自动化必须使用
+纯 MoonBit。不得新增项目自有 C/C++/Rust/JavaScript/TypeScript、FFI、
+native stub，或调用宿主同名命令来绕过公开 MoonBit API。宿主工具只能用于
+固定版本 oracle、测试观察、CI 设置和诊断采集。无法实现的操作必须保持明确
+拒绝，并记录缺失 API、兼容性代价和解除条件。
+
+Updated: 2026-09-26（补充纯 MoonBit 强制边界，并完成 async 0.22.4 基线刷新）。此前 2026-09-21 的复核针对正式发布的 `moonbitlang/async 0.22.1`、
 `moonbitlang/x 0.5.5`、`moonjq 0.1.2`；工具链为 moon/moonrun
 `0.1.20260920`、moonc/core `0.10.14+7d59c7ec9`。三个依赖仍为最新正式版；
 moonjq 的传递依赖解析到相同 async/x 版本，没有残留旧版本。
 未将 upstream main 的未发布代码算作可用能力。
+
+本次补充复核发现公开 registry 当前正式最新为 async `0.22.4`（checksum
+`2ffdb85cb229cfe9219161a7f2b959215a79a0d75b7e642cb346713f168a1457`），
+尚无可解析的 `0.22.5`。基线刷新时工作区 50 个模块已统一解析到 0.22.4，并通过
+`moon check --target all --deny-warn`；不得把未来版本或 upstream main 的接口
+写成当前能力。详细基线见
+[`reports/2026-09-26-async-0.22.4-baseline.md`](reports/2026-09-26-async-0.22.4-baseline.md)。
+
+### 2026-09-26：0.22.4 可用能力迁移
+
+0.22.4 的公开包已提供 `mkdir` 的幂等参数、文件和管道的 Reader/Writer
+流式接口，以及 gzip Decoder/Encoder 的流式接口。这些能力解除了解析、
+分帧、临时目录创建和 gzip 命令的原有阻塞；后续实现必须直接使用公开接口，
+不能继续把它们列为 async 限制。文件 identity、mode 读取、readlink、hard
+link、句柄截断、isatty、PTY、进程组和 exec 仍未公开，相关命令继续保留
+明确拒绝及解除条件。
 
 本表供上游讨论 API 语义；建议的 API 名称不是当前已存在的接口。
 Native/Wasm 的“缺失”指公开 MoonBit API，不能据此推断 OS 或 Wasm
@@ -132,7 +154,7 @@ stopped/continued wait events 和 PTY。Native 有底层 fd 并不等于已公�
 
 **已解除：curl 自定义 Cookie + jar**。此前仅检查单个 Map，漏看了公开
 `Client(headers=...)` 与 `Client::request(extra_headers=...)` 两层独立参数。
-async 0.22.1 会先发 client 字段、再发 request 字段。纯 MoonBit raw TCP
+async 0.22.4 会先发 client 字段、再发 request 字段。纯 MoonBit raw TCP
 [探针](reports/2026-09-21-api-probes/http-header-layers.mbtx) 实测两个独立
 Cookie 字段，与 macOS curl 8.7.1 同序；Wget 1.25.0 则只发送显式字段，
 且跨源重定向继续发送显式字段，curl 会移除它。该区别另有 raw TCP 探针。

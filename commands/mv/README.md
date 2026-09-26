@@ -10,7 +10,7 @@ Supports force/no-clobber/interactive selection (`-f`/`-n`/`-i`), update modes
 paths (`-T`), directory destinations, and verbose output. Cross-filesystem
 copy-and-delete fallback is excluded because public APIs cannot preserve all
 required mode/link/time semantics. POSIX EXDEV can now be classified using
-async 0.22.1 host-platform information. The source remains intact when rename
+async 0.22.4 host-platform information. The source remains intact when rename
 or backup commit fails.
 Classification of EXDEV does not add a cross-device fallback. Windows rename
 error classification and the remaining interactive/backup/update combinations

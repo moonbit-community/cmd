@@ -14,6 +14,12 @@ fn contract(
 ///|
 pub fn command_catalog() -> Array[CommandContract] {
   [
+    contract("base32", Core, FileOrStdin, ByteStream, [FileRead], [
+      "decode", "ignore-garbage", "wrap",
+    ]),
+    contract("cksum", Core, FileOrStdin, LineStream, [FileRead], [
+      "help", "version",
+    ]),
     contract("base64", Core, FileOrStdin, ByteStream, [FileRead], [
       "decode", "ignore-garbage", "wrap",
     ]),
@@ -62,6 +68,9 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("tail", Core, FileOrStdin, ByteStream, [FileRead], [
       "bytes", "follow", "lines", "quiet", "sleep-interval", "verbose",
     ]),
+    contract("tac", Core, FileOrStdin, ByteStream, [FileRead], [
+      "before", "separator",
+    ]),
     contract("tr", Core, OptionalStdin, ByteStream, [], [
       "complement", "delete", "squeeze-repeats", "truncate-set1",
     ]),
@@ -70,6 +79,10 @@ pub fn command_catalog() -> Array[CommandContract] {
       "check-chars", "count", "ignore-case", "repeated", "skip-chars", "skip-fields",
       "unique", "zero-terminated",
     ]),
+    contract("unexpand", Core, FileOrStdin, ByteStream, [FileRead], [
+      "all", "first-only", "tabs",
+    ]),
+    contract("unlink", Core, NoInput, LineStream, [FileWrite], []),
     contract("wc", Core, FileOrStdin, LineStream, [FileRead], [
       "bytes", "chars", "files0-from", "lines", "max-line-length", "words",
     ]),
@@ -91,6 +104,9 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("dirname", Core, NoInput, LineStream, [], ["zero"]),
     contract("echo", Core, NoInput, ByteStream, [], [
       "enable-escapes", "disable-escapes", "help", "no-newline", "version",
+    ]),
+    contract("expand", Core, FileOrStdin, ByteStream, [FileRead], [
+      "initial", "tabs",
     ]),
     contract(
       "find",
@@ -141,6 +157,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("mkdir", Extended, NoInput, LineStream, [FileWrite], [
       "mode", "parents", "verbose",
     ]),
+    contract("mktemp", Extended, NoInput, LineStream, [FileWrite], ["directory"]),
     contract("mv", Extended, NoInput, LineStream, [FileRead, FileWrite], [
       "force", "no-clobber", "no-target-directory", "verbose", "interactive", "update",
       "update-mode", "backup", "backup-control", "suffix",
@@ -151,7 +168,14 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("rmdir", Extended, NoInput, LineStream, [FileWrite], [
       "ignore-fail-on-non-empty", "parents", "verbose",
     ]),
+    contract("realpath", Core, NoInput, LineStream, [FileRead], [
+      "canonicalize-existing", "zero",
+    ]),
+    contract("rev", Core, FileOrStdin, ByteStream, [FileRead], []),
     contract("tee", Extended, OptionalStdin, ByteStream, [FileWrite], ["append"]),
+    contract("tree", Core, NoInput, LineStream, [FileRead], [
+      "all", "dirs-only", "full-path", "level", "noreport",
+    ]),
     contract("touch", Extended, NoInput, LineStream, [FileWrite], [
       "access-time", "date", "modification-time", "no-create", "reference", "stamp",
       "time",
@@ -214,6 +238,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       "user", "password", "http-user", "http-password", "auth-no-challenge", "load-cookies",
       "save-cookies", "keep-session-cookies", "no-cookies",
     ]),
+    contract("yes", Core, NoInput, ByteStream, [], []),
     contract(
       "xargs",
       Restricted,

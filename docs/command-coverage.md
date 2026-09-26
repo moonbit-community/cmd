@@ -1,18 +1,24 @@
 # 常见命令缺口与建议顺序
 
-Updated: 2026-09-21
+Updated: 2026-09-26
+
+强制实现边界：所有命令包、共享库、测试 runner、fixture 和自动化必须使用
+纯 MoonBit。宿主程序只能作为固定版本 oracle、测试观察器、CI 工具或诊断
+采集器，不能作为 `cli/<cmd>` 的后备实现。缺少已发布公开 MoonBit API 时，
+必须保留明确 boundary、ADR 和解除条件。
 
 本次按目录、catalog、发布 manifest 和刷新后的 `cli/*` 注册表核对：
-**48 个本地命令，47 个已发布 0.2.0，1 个本地未发布（timeout）**。
+**59 个本地命令，47 个已发布 0.2.0，12 个本地未发布（base32、cksum、expand、mktemp、realpath、rev、tac、tree、unexpand、unlink、yes、timeout）**。
 `cli/core` 是共享库，不计命令数量。已发布并不表示完整 GNU/POSIX 兼容；
 每个命令的参数边界见 [支持记录](compatibility.md)。
 
-下面是明确选定的 **59 个常见缺失候选**，不是“所有 Unix 命令”的统计。
+基线清单包含 59 个常见缺口；本轮已实现其中 `base32`、`mktemp`、`realpath`、
+`rev`、`tac`、`tree`、`unlink`、`yes`、`cksum`、`expand` 和 `unexpand`，因此下表列出当前剩余的 **48 个缺失候选**，不是“所有 Unix 命令”的统计。
 基线取自 [GNU coreutils 9.11 命令分类](https://www.gnu.org/software/coreutils/manual/coreutils.html)，
 加上开发中常用的文本、归档、进程工具及 [tree 上游](https://gitlab.com/OldManProgrammer/unix-tree)。
 不把 shell 内建 `cd/read/export`、别名 `[`、Git、编译器和语言运行时计入。
-这些候选目前都没有本仓库模块，也没有 `cli/<cmd>` 注册表包；其中 **57 个
-此前没有现行实施计划，chown/kill 两个此前被明确排除**。下表只是候选排期
+此前这些候选都没有本仓库模块；本轮已迁移 `base32`、`mktemp`、`realpath`、`rev`、
+`tac`、`tree`、`unlink`、`yes`、`cksum`、`expand` 和 `unexpand`，因此它们不再属于当前缺口。其余候选只是排期
 建议，不把文档中的建议冒充已实施或已排期交付。
 
 可重放的 [JSON 清单](reports/2026-09-21-api-probes/inventory.json) 和
@@ -20,17 +26,24 @@ Updated: 2026-09-21
 “此前未规划”另由当前 README、ADR、支持记录及计划文件人工交叉核对，
 不是仅凭目录不存在推断。历史审计中的提及不视为现行实施计划。
 
+2026-09-26 起按 async 0.22.4 基线执行缺口补全。P0 命令按独立包逐项迁移；
+只有在 README、help、catalog、兼容表和回归测试同步后，命令才会从缺口提升
+为已验证子集。
+
+本轮 P0 实施证据见
+[`reports/2026-09-26-p0-command-completion.md`](reports/2026-09-26-p0-command-completion.md)。
+
 | 类别 | 数量 | 缺失命令 |
 | --- | ---: | --- |
-| 文件与路径 | 13 | tree、du、df、stat、readlink、realpath、mktemp、install、truncate、split、csplit、unlink、link |
-| 文本与表达式 | 15 | sed、awk、diff、patch、tac、rev、fold、fmt、expand、unexpand、od、hexdump、strings、column、expr |
-| 编码、校验与归档 | 11 | cksum、md5sum、sha1sum、sha512sum、base32、tar、gzip、gunzip、zcat、zip、unzip |
-| 系统与执行 | 20 | date、uname、hostname、id、whoami、groups、ps、kill、watch、uptime、free、tty、stty、tput、clear、yes、which、nproc、chown、chgrp |
+| 文件与路径 | 9 | du、df、stat、readlink、install、truncate、split、csplit、link |
+| 文本与表达式 | 11 | sed、awk、diff、patch、fold、fmt、od、hexdump、strings、column、expr |
+| 编码、校验与归档 | 9 | md5sum、sha1sum、sha512sum、tar、gzip、gunzip、zcat、zip、unzip |
+| 系统与执行 | 19 | date、uname、hostname、id、whoami、groups、ps、kill、watch、uptime、free、tty、stty、tput、clear、which、nproc、chown、chgrp |
 
 ## 建议优先补的开发缺项
 
-**第一批：tree、realpath、mktemp、yes、tac、rev、expand、unexpand、fold、
-od/hexdump、base32、cksum、md5sum、sha1sum、sha512sum、unlink。**
+**第一批已完成：tree、realpath、mktemp、yes、tac、rev、expand、unexpand、
+base32、cksum、unlink。下一批候选：fold、od/hexdump、md5sum、sha1sum、sha512sum。**
 这些命令有可实现的基础子集，不能统一归因于 async。`x/crypto` 已有 MD5、
 SHA-1、SHA-512；二进制 IO、目录遍历、排他创建及 realpath 也已有公开入口。
 仍需每项先确定上游参数、错误与字节合同，再补 CLI 差分。`mktemp` 必须
@@ -46,8 +59,7 @@ async 包可复用，但命令选项和错误行为仍需实现。
 
 ## tree 的具体起点
 
-`tree` 当前是开发覆盖遗漏，基础递归和排版没有新的系统调用要求。
-建议优先实现无链接 fixture 下的默认树形输出、`-a/-d/-f/-L`、
+`tree` 当前已实现无链接 fixture 下的基础子集：默认树形输出、`-a/-d/-f/-L`、
 `--noreport`、排序、统计、多根操作数与失败状态；用固定版本 tree 的
 完整输出比较，覆盖空目录、隐藏项、深度边界、不可读目录和 Unicode 名称。
 目录可读性与权限错误应逐项报告，而不是静默省略。
@@ -59,7 +71,7 @@ async 包可复用，但命令选项和错误行为仍需实现。
 不能虚构目标、静默忽略或把 realpath 当原始链接文本。Native/Wasm 要分别
 验证，并在包 README 中明确普通目录子集，不能先宣称全部 tree 已支持。
 
-本轮按用户要求完成现状盘点，未新增 tree 模块；以上是建议首个补齐对象。
+本轮已完成 tree 的普通目录子集；以上链接、元数据和完整报告是后续边界项。
 
 ## 需要拆分 API 边界的候选
 

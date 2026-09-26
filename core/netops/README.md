@@ -30,7 +30,7 @@ The legacy `fetch` and `fetch_with_options` entry points remain source
 compatible and retain the original 30-second default. New command adapters use
 `transfer_options` directly.
 
-`CookieJar` uses async 0.22.1's public `Response.cookies` array, preserving
+`CookieJar` uses async 0.22.4's public `Response.cookies` array, preserving
 multiple Set-Cookie fields. Stores survive redirects and separate transfers;
 request selection enforces host/domain and path boundaries, expiration and
 Secure, with longer paths first. Netscape files preserve HttpOnly and session

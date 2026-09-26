@@ -6,7 +6,9 @@ system for preserving GNU/POSIX and command-upstream behavior. Authorization
 belongs to the caller or host; commands preserve the caller's environment and
 stream semantics.
 
-**0.2.0 is published** as `cli/core` and 47 command modules. Linux, macOS and
+**0.2.0 is published** as `cli/core` and 47 command modules. The workspace now
+contains 59 command modules, including twelve local-only P0 additions awaiting
+publication. Linux, macOS and
 Windows passed the release source checks, including Linux Native/Wasm pinned
 oracle comparisons. Exact-version MoonX acceptance is recorded separately in
 the [release evidence](docs/reports/2026-09-21-release-0.2.0/README.md). See the
@@ -17,11 +19,11 @@ Basic HTTP authentication and cookies. Strict filesystem limits are explicit:
 default `cp` and existing-file `touch` cannot be implemented faithfully with
 the current public metadata APIs; see ADR-0004.
 
-The current workspace adopts MoonBit 2026-09-20 and corrects curl/wget custom
+The current workspace adopts MoonBit 2026-09-20 and async 0.22.4, and corrects curl/wget custom
 Cookie plus jar behavior using the two public HTTP header layers. These changes
 are not included in published 0.2.0. See the [API recheck](docs/async-upstream-gaps.md)
 and the [common-command inventory and proposed priorities](docs/command-coverage.md),
-including the missing `tree` command.
+including the current P0 additions and the remaining command-gap inventory.
 
 Releasable commands are available as independent modules under
 `cli/<command>`:
@@ -34,29 +36,31 @@ MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/jq@0.2.0 -- -r '.name'
 
 ## Commands
 
-The repository contains 48 executable commands for local builds. The current
-Mooncakes registry exposes 47 of them through MoonX. `timeout` remains
-local-only because portable process-group cancellation is not available, so
-`moonx cli/timeout` is intentionally unavailable.
+The repository contains 59 executable commands for local builds. The current
+Mooncakes registry exposes 47 of them through MoonX. The local-only commands
+`base32`, `cksum`, `expand`, `mktemp`, `realpath`, `rev`, `tac`, `tree`, `unexpand`, `unlink`, `yes` and
+`timeout` await publication; `timeout` additionally remains outside the
+releasable profile because portable process-group cancellation is not available.
 
 ### Text and data
 
 ```text
-base64 cat cmp comm cut grep head join jq jqlog nl paste printf sha256sum
-sort tail tr uniq wc xxd
+base32 base64 cat cksum cmp comm cut expand grep head join jq jqlog nl paste printf rev
+sha256sum sort tac tail tr uniq wc xxd
 ```
 
 ### Files and paths
 
 ```text
-basename cp dirname find ln ls mkdir mv pwd rm rmdir tee touch
+basename cp dirname find ln ls mkdir mktemp mv realpath rm rmdir tee touch tree
+unexpand unlink
 ```
 
 ### Environment and execution
 
 ```text
 chmod echo env false make printenv seq sh sleep test timeout true wget curl
-xargs
+xargs yes
 ```
 
 Commands implement their behavior in MoonBit and use explicit runtime APIs for

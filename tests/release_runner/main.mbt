@@ -322,7 +322,7 @@ async fn run_case_inner(
   }
   let observed = @testkit.contract_observations(fixture)
   let before = if fixture.expected_rejection is Some(_) {
-    snapshot(candidate_root, observe=observed[:], baseline=true)
+    snapshot(candidate_root, observe=observed[:])
   } else {
     []
   }

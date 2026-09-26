@@ -15,6 +15,6 @@ preferred_target = "wasm"
 description = "false command for MoonX."
 
 import {
-  "moonbitlang/async@0.22.1",
+  "moonbitlang/async@0.22.4",
   "moonbitlang/x@0.5.5",
 }

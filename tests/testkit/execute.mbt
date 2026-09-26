@@ -56,7 +56,7 @@ pub async fn execute_contract(
   try {
     prepare_fixture(fixture_root, fixture, http_base?)
     let before = if fixture.expected_rejection is Some(_) {
-      snapshot(fixture_root, observe=dimensions, baseline=true)
+      snapshot(fixture_root, observe=dimensions)
     } else {
       []
     }

@@ -2,10 +2,16 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-09-21
-Revision: Adopt the 2026-09-20 compiler with explicit trait methods and unchanged latest dependency versions; preserve separate workspace and published-release evidence.
+Updated: 2026-09-26
+Revision: Adopt the 2026-09-20 compiler with explicit trait methods, require a pure MoonBit product boundary, preserve separate workspace and published-release evidence, and record the first eight local-only command profiles.
 
 ## Target and decision
+
+All product code, shared runtime code, test runners, fixtures, and automation
+must be pure MoonBit. Project-owned C/C++/Rust/JavaScript/TypeScript, FFI,
+native stubs, and host-command delegation are prohibited as implementation
+workarounds. Host tools may only observe fixtures, collect diagnostics, or act
+as fixed-version oracles.
 
 Command support requires observable GNU/POSIX or upstream agreement in stdout,
 stderr, status and required filesystem effects. Exact published MoonX versions
@@ -79,8 +85,15 @@ atime relations use the same fixture in a boundary or stateful scenario.
 
 ## Versions and evidence
 
-Baseline: moon/moonrun 0.1.20260915; moonc/core 0.10.13+cbb11c36f;
-async 0.22.1; x 0.5.5; moonjq 0.1.2. The dependency refresh found no older external
+Current refresh (2026-09-26): the public registry resolves
+`moonbitlang/async 0.22.4` (checksum
+`2ffdb85cb229cfe9219161a7f2b959215a79a0d75b7e642cb346713f168a1457`) across
+the 50 pre-existing workspace modules. The current published index did not contain a
+released 0.22.5. Native and Wasm warning-denied checks passed after the
+refresh; command completion evidence remains per-package and per-backend.
+
+Baseline: moon/moonrun 0.1.20260920; moonc/core 0.10.14+7d59c7ec9;
+async 0.22.4; x 0.5.5; moonjq 0.1.2. The dependency refresh found no older external
 versions in the resolved tree. Upgrade-only tests passed Native 104/104 and
 Wasm 91/91 before behavior changes.
 
@@ -88,7 +101,8 @@ The [0.2.0 source gate](https://github.com/moonbit-community/cmd/actions/runs/35
 passed Linux, macOS and Windows at source commit
 `442015078b8dc01f64f499e5df0847d7c7458c3d`, including Linux Native/Wasm pinned
 oracle checks. After that gate, `cli/core@0.2.0` was published first, followed
-sequentially by 47 command modules. `timeout` remains local-only. Publication
+sequentially by 47 command modules. `timeout` remains local-only; the eight
+new P0 command profiles are workspace-only until a later publication gate. Publication
 receipts and the separate exact-version MoonX gate are recorded in
 [release evidence](../reports/2026-09-21-release-0.2.0/README.md). The published
 manifest selects 382 active cases; the frozen schema 1 manifests and candidate
@@ -106,7 +120,7 @@ workspace baseline pins CI binaries and core to 0.10.14+7d59c7ec9
 The newer compiler deprecates implicit trait-method promotion; explicit public
 extensions preserve the previous methods instead of suppressing warnings or
 removing API. Black-box tests qualify the package under test. Registry refresh
-still resolves async 0.22.1, x 0.5.5 and moonjq 0.1.2, including moonjq's
+still resolves async 0.22.4, x 0.5.5 and moonjq 0.1.2, including moonjq's
 transitive imports. Floating `latest` remains rejected so acceptance cannot
 silently change compiler. Local new-baseline results do not replace the required
 three-platform CI gate or retroactively change published-release evidence.

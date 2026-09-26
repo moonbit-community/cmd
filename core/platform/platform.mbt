@@ -181,7 +181,7 @@ pub async fn terminal_output_enabled(
 }
 
 ///|
-/// async 0.22.1 has no public isatty operation. A character device (for
+/// async 0.22.4 has no public isatty operation. A character device (for
 /// example /dev/null) does not prove terminal ownership. Explicit interactive
 /// modes remain available without pretending this capability is present.
 // Retain the asynchronous public signature for existing callers.

@@ -7,7 +7,7 @@ Revision: Use both public HTTP header layers for curl's explicit-plus-jar Cookie
 
 ## Target and decision
 
-Implement curl/wget HTTP/HTTPS with public async APIs. Basic auth, cookie selection/persistence and redirect state are project responsibilities. async 0.22.1 Response.cookies exposes repeated Set-Cookie separately from the header map. Preserve command-specific credential challenge/redirect rules and cookie domain/path/Secure/expiry behavior within the documented subset.
+Implement curl/wget HTTP/HTTPS with public async APIs. Basic auth, cookie selection/persistence and redirect state are project responsibilities. async 0.22.4 Response.cookies exposes repeated Set-Cookie separately from the header map. Preserve command-specific credential challenge/redirect rules and cookie domain/path/Secure/expiry behavior within the documented subset.
 
 ## Alternatives and compatibility cost
 
@@ -37,7 +37,7 @@ specific upstream comparison cases. Credentials can still answer a new Basic
 challenge at each allowed origin.
 
 The current workspace sends matching jar cookies through persistent client headers
-and an explicit curl `Cookie:` through per-request headers. async 0.22.1 emits
+and an explicit curl `Cookie:` through per-request headers. async 0.22.4 emits
 these separately and in that order. Wget selects `ReplaceStored` so its explicit
 field replaces outgoing jar cookies without disabling response-cookie storage.
 Wget also forwards that explicit field across origins, as its 1.25.0 wire probe
@@ -60,7 +60,7 @@ the older macOS probe. The fixed-version oracle defines the current contract.
 PSL/IDNA and cookie
 prefix rules remain project work rather than async limitations.
 
-Recheck baseline: async 0.22.1, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-20,
+Recheck baseline: async 0.22.4, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-20,
 moonc 0.10.14+7d59c7ec9. The original 0.2.0 release used the earlier pinned toolchain.
 Command option tests, core/netops cookie tests and `network-auth-cookie` exercise the implemented profile against loopback HTTP fixtures. `network-auth-cookie-oracle` preserves the old probe's live output/status and jar-mode comparisons against the pinned Linux oracle. Its implementation and CI registration are not a local Linux pass. The original probe remains archived. Only final passing options are promoted in the support record.
 Historical results remain in [the audit](../reports/2026-09-19-command-fidelity-audit.md).
