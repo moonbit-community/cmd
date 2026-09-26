@@ -59,8 +59,8 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
   ]
   let catalog = @cli.command_catalog()
   record(
-    catalog.length() == 48,
-    "catalog must contain exactly 48 commands",
+    catalog.length() == 59,
+    "catalog must contain exactly 59 commands",
     failures,
   )
   let mut default_count = 0
@@ -115,8 +115,8 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
     }
   }
   record(
-    default_count == 39,
-    "default allow tier must contain 39 commands",
+    default_count == 50,
+    "default allow tier must contain 50 commands",
     failures,
   )
   record(
