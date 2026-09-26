@@ -3,6 +3,105 @@
   "base_manifest": "active-cases.json",
   "commands": [
     {
+      "name": "base32",
+      "package_name": "cli/base32",
+      "version": "0.2.0",
+      "published": false,
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false
+    },
+    {
+      "name": "cksum",
+      "package_name": "cli/cksum",
+      "version": "0.2.0",
+      "published": false,
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false
+    },
+    {
+      "name": "expand",
+      "package_name": "cli/expand",
+      "version": "0.2.0",
+      "published": false,
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false
+    },
+    {
+      "name": "mktemp",
+      "package_name": "cli/mktemp",
+      "version": "0.2.0",
+      "published": false,
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false
+    },
+    {
+      "name": "realpath",
+      "package_name": "cli/realpath",
+      "version": "0.2.0",
+      "published": false,
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false
+    },
+    {
+      "name": "rev",
+      "package_name": "cli/rev",
+      "version": "0.2.0",
+      "published": false,
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false
+    },
+    {
+      "name": "tac",
+      "package_name": "cli/tac",
+      "version": "0.2.0",
+      "published": false,
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false
+    },
+    {
+      "name": "tree",
+      "package_name": "cli/tree",
+      "version": "0.2.0",
+      "published": false,
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false
+    },
+    {
+      "name": "unexpand",
+      "package_name": "cli/unexpand",
+      "version": "0.2.0",
+      "published": false,
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false
+    },
+    {
+      "name": "unlink",
+      "package_name": "cli/unlink",
+      "version": "0.2.0",
+      "published": false,
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false
+    },
+    {
+      "name": "yes",
+      "package_name": "cli/yes",
+      "version": "0.2.0",
+      "published": false,
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false
+    },
+    {
       "name": "base64",
       "package_name": "cli/base64",
       "version": "0.2.0",
@@ -452,6 +551,28 @@
     }
   ],
   "case_ids": [
+    "base32-rfc4648-foobar",
+    "base32-rfc4648-decode",
+    "base32-uppercase-only",
+    "base32-nonzero-tail-bits-accepted",
+    "base32-prefix-before-malformed-padding",
+    "base32-negative-wrap",
+    "p0-cksum-stdin",
+    "p0-expand-basic-tabs",
+    "p0-expand-initial",
+    "p0-expand-explicit-stops",
+    "p0-expand-rejects-unsorted-stops",
+    "p0-mktemp-help",
+    "p0-realpath-help",
+    "p0-rev-lines",
+    "p0-tac-lines",
+    "p0-tree-help",
+    "p0-unexpand-leading",
+    "p0-unexpand-all",
+    "p0-unexpand-first-only",
+    "p0-unexpand-explicit-stops",
+    "p0-unlink-help",
+    "p0-yes-help",
     "rm-final-parent-slash",
     "rm-final-parent-backslash",
     "phase0-base64-stdin",

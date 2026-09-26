@@ -2,6 +2,9 @@
   "schema": 2,
   "cases": [],
   "case_files": [
+    "../cases/base32.json",
+    "../cases/cksum.json",
+    "../cases/expand.json",
     "../cases/cp.json",
     "../cases/jq.json",
     "../cases/ln.json",
@@ -49,6 +52,14 @@
     "../cases/timeout.json",
     "../cases/basename.json",
     "../cases/printenv.json",
-    "../cases/sha256sum.json"
+    "../cases/sha256sum.json",
+    "../cases/mktemp.json",
+    "../cases/realpath.json",
+    "../cases/rev.json",
+    "../cases/tac.json",
+    "../cases/tree.json",
+    "../cases/unexpand.json",
+    "../cases/unlink.json",
+    "../cases/yes.json"
   ]
 }
