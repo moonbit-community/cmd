@@ -1,8 +1,16 @@
-# yes for moonx
+# yes
 
-Version **0.1.0** behavior is documented in the
-[support record](../../docs/compatibility.md), which also records the exact
-published MoonX verification and remaining compatibility boundaries.
+Version **0.1.0** behavior is documented here. The
+[support record](../../docs/compatibility.md) separates local verification from
+published MoonX behavior; `moonx` examples use registry releases.
 
-This package provides the verified pure-MoonBit repeated-output subset for
-Native and Wasm.
+Write the operand text followed by a newline repeatedly:
+
+```sh
+moonx cli/yes hello | moonx cli/head -n 2
+```
+
+With no operands the line is `y`; multiple operands are joined with one space.
+`--help` and `--version` report package information. The producer exits when a
+downstream pipe closes; exact signal diagnostics and terminal interaction are
+not claimed.
