@@ -1,6 +1,6 @@
 # unexpand
 
-The `cli/unexpand@0.1.0` candidate converts runs of spaces to tabs while preserving the
+The published `cli/unexpand@0.1.0` package converts runs of spaces to tabs while preserving the
 column positions of the input. It reads standard input when no file is given,
 accepts multiple files, and preserves all non-space bytes and line boundaries.
 

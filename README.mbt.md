@@ -6,9 +6,9 @@ system for preserving GNU/POSIX and command-upstream behavior. Authorization
 belongs to the caller or host; commands preserve the caller's environment and
 stream semantics.
 
-**0.2.0 is published** as `cli/core` and 47 command modules. The workspace now
-contains 59 command modules, including twelve local-only P0 additions awaiting
-publication. Linux, macOS and
+**0.2.0 is published** as `cli/core` and 47 command modules; the eleven new P0
+modules are published at **0.1.0**. The workspace contains 59 command modules,
+with only `timeout` remaining local-only. Linux, macOS and
 Windows passed the release source checks, including Linux Native/Wasm pinned
 oracle comparisons. Exact-version MoonX acceptance is recorded separately in
 the [release evidence](docs/reports/2026-09-21-release-0.2.0/README.md). See the
@@ -20,7 +20,7 @@ default `cp` and existing-file `touch` cannot be implemented faithfully with
 the current public metadata APIs; see ADR-0004.
 
 The current workspace adopts MoonBit 2026-09-20 and async 0.22.4, and corrects curl/wget custom
-Cookie plus jar behavior using the two public HTTP header layers. These changes
+Cookie plus jar behavior using the two public HTTP header layers. These corrections
 are not included in published 0.2.0. See the [API recheck](docs/async-upstream-gaps.md)
 and the [common-command inventory and proposed priorities](docs/command-coverage.md),
 including the current P0 additions and the remaining command-gap inventory.
@@ -37,10 +37,9 @@ MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/jq@0.2.0 -- -r '.name'
 ## Commands
 
 The repository contains 59 executable commands for local builds. The current
-Mooncakes registry exposes 47 of them through MoonX. The local-only commands
-`base32`, `cksum`, `expand`, `mktemp`, `realpath`, `rev`, `tac`, `tree`, `unexpand`, `unlink`, `yes` and
-`timeout` await publication; `timeout` additionally remains outside the
-releasable profile because portable process-group cancellation is not available.
+Mooncakes registry exposes 58 of them through MoonX: 47 commands at 0.2.0 and
+the eleven new P0 commands at 0.1.0. `timeout` remains outside the releasable
+profile because portable process-group cancellation is not available.
 
 ### Text and data
 
@@ -144,7 +143,7 @@ MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --release --deny
 MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release --deny-warn
 ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite compat
 ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite policy
-./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe --manifest tests/release_runner/candidate-0.2.0.json --suite validate
+./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe --manifest tests/release_runner/candidate-0.1.0.json --suite validate
 MOON_HOME="$HOME/.moon-accounts/cli" moon info
 MOON_HOME="$HOME/.moon-accounts/cli" moon fmt
 ```

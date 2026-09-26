@@ -4,8 +4,8 @@
 uppercase alphabet (`A-Z` and `2-7`). It is implemented in pure MoonBit and
 has the same byte-oriented behavior on Native and Wasm.
 
-This documents the `cli/base32@0.1.0` candidate. It is not published until
-the release gate and exact MoonX acceptance pass.
+This documents the published `cli/base32@0.1.0` package. Exact MoonX smoke
+and contract acceptance passed after publication.
 
 ```sh
 printf 'foo' | moonx cli/base32

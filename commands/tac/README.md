@@ -1,6 +1,6 @@
 # tac
 
-The `cli/tac@0.1.0` candidate reverses records from standard input or one file and writes
+The published `cli/tac@0.1.0` package reverses records from standard input or one file and writes
 the result byte-for-byte. The default separator is newline. `-s STRING` uses a
 fixed UTF-8 separator and `-b` places separators before records.
 

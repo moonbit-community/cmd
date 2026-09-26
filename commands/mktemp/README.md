@@ -2,8 +2,8 @@
 
 `mktemp` creates a unique temporary pathname and atomically reserves it.
 
-This documents the `cli/mktemp@0.1.0` candidate. It is not published until
-the release gate and exact MoonX acceptance pass.
+This documents the published `cli/mktemp@0.1.0` package. Exact MoonX smoke
+and contract acceptance passed after publication.
 
 ```text
 moonx cli/mktemp -d /tmp/moonx.XXXXXX

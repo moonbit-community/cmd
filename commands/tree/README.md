@@ -1,7 +1,7 @@
 # tree
 
-Version **0.1.0** candidate behavior is documented here. The support record separates
-workspace verification from published MoonX behavior.
+Version **0.1.0** published behavior is documented here. The support record
+includes exact published MoonX verification.
 
 `tree` recursively displays directory entries with deterministic lexical
 ordering and Unicode branch markers:

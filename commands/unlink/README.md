@@ -1,6 +1,6 @@
 # unlink
 
-Version **0.1.0** candidate behavior removes each named file-system entry. Regular files and
+Version **0.1.0** published behavior removes each named file-system entry. Regular files and
 symbolic links are removed with the released `moonbitlang/async` API; a link is
 never followed to inspect its target. Multiple operands are processed in order,
 and a later failure does not undo earlier removals. Directories are rejected.

@@ -8,11 +8,11 @@ Updated: 2026-09-26
 必须保留明确 boundary、ADR 和解除条件。
 
 本次按目录、catalog、发布 manifest 和刷新后的 `cli/*` 注册表核对：
-**59 个本地命令，47 个已发布 0.2.0，12 个本地未发布（base32、cksum、expand、mktemp、realpath、rev、tac、tree、unexpand、unlink、yes、timeout）**。
+**59 个本地命令，58 个已发布（47 个 0.2.0、11 个 0.1.0），仅 timeout 本地未发布**。
 `cli/core` 是共享库，不计命令数量。已发布并不表示完整 GNU/POSIX 兼容；
 每个命令的参数边界见 [支持记录](compatibility.md)。
 
-基线清单包含 59 个常见缺口；本轮已实现其中 `base32`、`mktemp`、`realpath`、
+基线清单包含 59 个常见缺口；本轮已实现并发布其中 `base32`、`mktemp`、`realpath`、
 `rev`、`tac`、`tree`、`unlink`、`yes`、`cksum`、`expand` 和 `unexpand`，因此下表列出当前剩余的 **48 个缺失候选**，不是“所有 Unix 命令”的统计。
 基线取自 [GNU coreutils 9.11 命令分类](https://www.gnu.org/software/coreutils/manual/coreutils.html)，
 加上开发中常用的文本、归档、进程工具及 [tree 上游](https://gitlab.com/OldManProgrammer/unix-tree)。

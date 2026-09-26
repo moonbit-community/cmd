@@ -3,8 +3,9 @@
 Date: 2026-09-05
 Updated: 2026-09-26
 
-**0.2.0 is published** for `cli/core` and 47 command modules. The
-[source gate](https://github.com/moonbit-community/cmd/actions/runs/35576541301)
+**0.2.0 is published** for `cli/core` and the original 47 command modules;
+the eleven new P0 command modules are published at **0.1.0**. The
+[source gate](https://github.com/moonbit-community/cmd/actions/runs/36248352909)
 passed on Linux, macOS and Windows, including Linux Native/Wasm comparisons
 with the pinned oracle. These source checks remain distinct from exact-version
 MoonX acceptance, recorded in the
@@ -12,9 +13,8 @@ MoonX acceptance, recorded in the
 0.1.x manifests remain unchanged for replay. See
 [public API gaps](async-upstream-gaps.md).
 
-The current unpublished workspace uses async 0.22.4 and adds the documented
-local-only command profiles for base32, mktemp, realpath, rev, tac, tree,
-unlink and yes. It also corrects custom Cookie plus jar handling:
+The current workspace uses async 0.22.4 and retains only the documented
+local-only `timeout` profile. It also corrects custom Cookie plus jar handling:
 curl sends two separate fields; wget sends the explicit field instead of the
 stored-cookie field. It also adopts MoonBit 2026-09-20 with strict warning
 cleanup. These changes are not included in the 0.2.0 registry packages.
@@ -54,10 +54,11 @@ additional support claim.
 runner that starts exact `moonx cli/<command>@<version>` invocations through
 MoonBit's process API and compares them with the pinned Linux oracle. It never
 builds a command package during a case. The selected versions and case IDs are
-recorded in `tests/release_runner/published-0.2.0.json`; `latest`, version ranges and
+recorded in `tests/release_runner/published-0.1.0.json` and the frozen
+`tests/release_runner/published-0.2.0.json`; `latest`, version ranges and
 implicit package resolution are forbidden.
 
-The release manifest must cover every published command (47 commands; the
+The release manifest must cover every published command (58 commands; the
 `timeout` package remains local-only), and every option/operand form promoted in
 this record must have positive, boundary, failure and side-effect cases. Help
 and version text use contract comparison where project branding differs from
@@ -68,9 +69,9 @@ the unified runner.
 For every release, update the package version, command README, release
 manifest and case coverage together. After the Wasm asset is available, run:
 
-The published manifest selects 382 active cases. `candidate-0.2.0.json` remains
-a validation-only preparation record; its candidate flags do not describe the
-current release status. The consumer driver inserts `--` after the exact MoonX
+The 0.1.0 manifest covers the new command cases; `candidate-0.1.0.json` is its
+validation-only preparation record. `published-0.2.0.json` remains the frozen
+historical manifest. Candidate flags do not describe release status. The consumer driver inserts `--` after the exact MoonX
 coordinate so the command's own leading `--` is preserved. The frozen schema 1
 `manifest.json` and `published-0.1-base.json` retain the historical release.
 
@@ -95,10 +96,9 @@ Linux oracle remains the strict filesystem authority.
 
 ## Inventory
 
-The workspace contains 59 command modules. Mooncakes currently exposes 47
-through MoonX; `base32`, `cksum`, `expand`, `mktemp`, `realpath`, `rev`, `tac`, `tree`, `unexpand`, `unlink`,
-`yes` and `timeout`
-are currently local-only.
+The workspace contains 59 command modules. Mooncakes currently exposes 58
+through MoonX: the original 47 at 0.2.0 and the eleven new commands at 0.1.0;
+only `timeout` remains local-only.
 `timeout` is intentionally local-only because portable
 `ProcessGroupCancellation` is unavailable:
 
@@ -107,10 +107,8 @@ MOON_HOME="$HOME/.moon-accounts/cli" moon run --target wasm --release commands/t
 ```
 
 is a valid local invocation, while `moonx cli/timeout` is not a supported
-registry invocation. The same local-only status currently applies to
-`base32`, `cksum`, `expand`, `mktemp`, `realpath`, `rev`, `tac`, `tree`, `unexpand`, `unlink` and `yes`; their
-registry publication is a later release gate. Earlier package versions and their
-measured results remain in the frozen manifests and historical reports.
+registry invocation. Earlier package versions and their measured results remain
+in the frozen manifests and historical reports.
 
 Status vocabulary: `subset verified` is a successful normal-path probe;
 `restricted` additionally needs explicit Wasm file/process/network/permission

@@ -1,7 +1,7 @@
 # realpath
 
-Version **0.1.0** candidate behavior is documented here. The support record separates
-workspace verification from published MoonX behavior.
+Version **0.1.0** published behavior is documented here. The support record
+includes exact published MoonX verification.
 
 Canonicalize one or more existing path operands using the released public
 `async/fs.realpath` API:
