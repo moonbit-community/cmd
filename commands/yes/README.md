@@ -1,14 +1,8 @@
-# yes
+# yes for moonx
 
-Version **0.1.0** published behavior writes its operand text followed by a newline repeatedly
-until stdout is closed or the task is cancelled.
+Version **0.1.0** behavior is documented in the
+[support record](../../docs/compatibility.md), which also records the exact
+published MoonX verification and remaining compatibility boundaries.
 
-```
-yes [STRING]...
-```
-
-With no operands the line is `y`; multiple operands are joined by one space.
-`--help` and `--version` print one line and exit. A broken pipe is treated as
-normal producer termination, so `yes | head` does not report a command-level
-failure. The command does not inspect terminal state or introduce an output
-quota; callers should use a bounded consumer in tests.
+This package provides the verified pure-MoonBit repeated-output subset for
+Native and Wasm.
