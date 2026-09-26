@@ -64,7 +64,7 @@ jobs:
       - name: Validate unpublished candidate manifest
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
-          --manifest tests/release_runner/candidate-0.2.0.json --suite validate
+          --manifest tests/release_runner/candidate-0.1.0.json --suite validate
 
       - name: Native compatibility
         run: >-

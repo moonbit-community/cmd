@@ -1,6 +1,6 @@
 # expand
 
-`cli/expand@0.2.0` converts input tab bytes to spaces. It reads standard input
+The `cli/expand@0.1.0` candidate converts input tab bytes to spaces. It reads standard input
 when no file is given and accepts multiple files, preserving every other byte
 and each file's boundary exactly.
 

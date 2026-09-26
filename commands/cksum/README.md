@@ -1,6 +1,6 @@
 # cksum for moonx
 
-`cli/cksum@0.2.0` computes the POSIX CRC-32 checksum and byte count for
+The `cli/cksum@0.1.0` candidate computes the POSIX CRC-32 checksum and byte count for
 standard input or each file operand. Its output is:
 
 ```text

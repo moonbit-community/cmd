@@ -1,6 +1,6 @@
 # tree
 
-Version **0.2.0** behavior is documented here. The support record separates
+Version **0.1.0** candidate behavior is documented here. The support record separates
 workspace verification from published MoonX behavior.
 
 `tree` recursively displays directory entries with deterministic lexical

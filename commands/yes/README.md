@@ -1,6 +1,6 @@
 # yes
 
-Version **0.2.0** writes its operand text followed by a newline repeatedly
+Version **0.1.0** candidate behavior writes its operand text followed by a newline repeatedly
 until stdout is closed or the task is cancelled.
 
 ```
