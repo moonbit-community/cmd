@@ -40,14 +40,14 @@ Run the existing Native driver against the selected command backend:
 ```sh
 ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite contract --backend native --command jq --report-dir test-reports/jq-native
 ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite scenarios --backend wasm --report-dir test-reports/scenarios-wasm
-MOON_HOME="$HOME/.moon-accounts/cli" ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe --manifest tests/release_runner/published-0.1.0.json --suite smoke --command base32 --report-dir test-reports/published-base32
+MOON_HOME="$HOME/.moon-accounts/cli" ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe --manifest tests/release_runner/published-0.1.1.json --suite smoke --command base32 --report-dir test-reports/published-base32
 ```
 
 Use a fresh report directory for a new run; failures retain their working files
 and raw stdout/stderr. The driver never rebuilds commands. Ensure artifacts
-match the source being tested. `release_runner/published-0.1.0.json` selects
+match the source being tested. `release_runner/published-0.1.1.json` selects
 the current 58 published command rows. The preparation manifest
-`release_runner/candidate-0.1.0.json` remains validation-only; its candidate
+`release_runner/candidate-0.1.1.json` remains validation-only; its candidate
 flags are not the release's current publication status. The driver
 inserts `--` after the MoonX coordinate so a command's own leading `--` reaches
 the command unchanged.

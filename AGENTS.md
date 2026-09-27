@@ -118,7 +118,7 @@ module and version before any release operation.
 - Current baseline after the 2026-09-27 release: `cli/core` and previously
   published commands remain at `0.2.0`; the newly migrated `base32`, `cksum`,
   `expand`, `mktemp`, `realpath`, `rev`, `tac`, `tree`, `unexpand`, `unlink`,
-  and `yes` packages are at `0.1.0`; `timeout` remains local-only. Update this
+  and `yes` packages are at `0.1.1`; `timeout` remains local-only. Update this
   baseline whenever a subsequent release changes it.
 
 ### Mandatory pure MoonBit boundary

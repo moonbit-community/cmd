@@ -7,11 +7,11 @@ belongs to the caller or host; commands preserve the caller's environment and
 stream semantics.
 
 **0.2.0 is published** as `cli/core` and 47 command modules; the eleven new P0
-modules are published at **0.1.0**. The workspace contains 59 command modules,
+modules are published at **0.1.1**. The workspace contains 59 command modules,
 with only `timeout` remaining local-only. Linux, macOS and
 Windows passed the release source checks, including Linux Native/Wasm pinned
 oracle comparisons. Exact-version MoonX acceptance is recorded separately in
-the [release evidence](docs/reports/2026-09-21-release-0.2.0/README.md). See the
+the [release evidence](docs/reports/2026-09-27-release-0.1.1/README.md). See the
 [support record](docs/compatibility.md), and
 [upstream API gaps](docs/async-upstream-gaps.md). This release includes a
 persistent line-oriented `sh -i`, real `make -j` scheduling, JSON input framing,
@@ -38,7 +38,7 @@ MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/jq@0.2.0 -- -r '.name'
 
 The repository contains 59 executable commands for local builds. The current
 Mooncakes registry exposes 58 of them through MoonX: 47 commands at 0.2.0 and
-the eleven new P0 commands at 0.1.0. `timeout` remains outside the releasable
+the eleven new P0 commands at 0.1.1. `timeout` remains outside the releasable
 profile because portable process-group cancellation is not available.
 
 ### Text and data
@@ -143,7 +143,7 @@ MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --release --deny
 MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release --deny-warn
 ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite compat
 ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite policy
-./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe --manifest tests/release_runner/candidate-0.1.0.json --suite validate
+./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe --manifest tests/release_runner/candidate-0.1.1.json --suite validate
 MOON_HOME="$HOME/.moon-accounts/cli" moon info
 MOON_HOME="$HOME/.moon-accounts/cli" moon fmt
 ```

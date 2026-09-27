@@ -27,14 +27,15 @@ verification level. Availability checks do not replace the release differential
 gate. `latest`, ranges and implicit versions are rejected. `timeout` remains
 local-only and is absent from the release manifest.
 
-Published 0.1.0 selects the new command cases alongside the frozen 0.2.0
+Published 0.1.1 selects the new command cases alongside the frozen 0.2.0
 rows for the original 47 command modules.
 Frozen schema 1 manifests (`manifest.json` and their bases) remain readable after
 local source versions change. Only `validate` compares pinned versions to local
 package versions. The retained preparation manifest accepts `validate` and
 `--list`; its candidate flags deliberately continue to block execution. Use
-`published-0.1.0.json` for the current 58 released packages; the frozen
-`published-0.2.0.json` remains available for historical replay.
+`published-0.1.1.json` for the current 58 released packages; the previous
+`published-0.1.0.json` and the frozen
+`published-0.2.0.json` remain available for historical replay.
 
 The process argv is `moonx cli/<command>@<version> -- <command arguments>`.
 The inserted separator preserves a command's own leading `--`; such an operand

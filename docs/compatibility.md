@@ -1,15 +1,15 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-09-26
+Updated: 2026-09-27
 
 **0.2.0 is published** for `cli/core` and the original 47 command modules;
-the eleven new P0 command modules are published at **0.1.0**. The
-[source gate](https://github.com/moonbit-community/cmd/actions/runs/36248352909)
+the eleven new P0 command modules are published at **0.1.1**. The
+[source gate](https://github.com/moonbit-community/cmd/actions/runs/36296273687)
 passed on Linux, macOS and Windows, including Linux Native/Wasm comparisons
 with the pinned oracle. These source checks remain distinct from exact-version
 MoonX acceptance, recorded in the
-[release evidence](reports/2026-09-21-release-0.2.0/README.md). The historical
+[release evidence](reports/2026-09-27-release-0.1.1/README.md). The historical
 0.1.x manifests remain unchanged for replay. See
 [public API gaps](async-upstream-gaps.md).
 
@@ -54,8 +54,9 @@ additional support claim.
 runner that starts exact `moonx cli/<command>@<version>` invocations through
 MoonBit's process API and compares them with the pinned Linux oracle. It never
 builds a command package during a case. The selected versions and case IDs are
-recorded in `tests/release_runner/published-0.1.0.json` and the frozen
-`tests/release_runner/published-0.2.0.json`; `latest`, version ranges and
+recorded in `tests/release_runner/published-0.1.1.json`; the previous
+`tests/release_runner/published-0.1.0.json` and frozen
+`tests/release_runner/published-0.2.0.json` remain replayable; `latest`, version ranges and
 implicit package resolution are forbidden.
 
 The release manifest must cover every published command (58 commands; the
@@ -69,9 +70,9 @@ the unified runner.
 For every release, update the package version, command README, release
 manifest and case coverage together. After the Wasm asset is available, run:
 
-The published `0.1.0` manifest remains the replay record for the previous
-release; `candidate-0.1.1.json` is the validation-only preparation record for
-the README/version update. `published-0.2.0.json` remains the frozen historical
+The published `0.1.1` manifest covers the README/version update; the previous
+`published-0.1.0.json` remains the replay record, and `candidate-0.1.1.json` is
+the validation-only preparation record. `published-0.2.0.json` remains the frozen historical
 manifest. Candidate flags do not describe release status. The consumer driver inserts `--` after the exact MoonX
 coordinate so the command's own leading `--` is preserved. The frozen schema 1
 `manifest.json` and `published-0.1-base.json` retain the historical release.
@@ -98,7 +99,7 @@ Linux oracle remains the strict filesystem authority.
 ## Inventory
 
 The workspace contains 59 command modules. Mooncakes currently exposes 58
-through MoonX: the original 47 at 0.2.0 and the eleven new commands at 0.1.0;
+through MoonX: the original 47 at 0.2.0 and the eleven new commands at 0.1.1;
 only `timeout` remains local-only.
 `timeout` is intentionally local-only because portable
 `ProcessGroupCancellation` is unavailable:
