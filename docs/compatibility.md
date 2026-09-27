@@ -69,9 +69,10 @@ the unified runner.
 For every release, update the package version, command README, release
 manifest and case coverage together. After the Wasm asset is available, run:
 
-The 0.1.0 manifest covers the new command cases; `candidate-0.1.0.json` is its
-validation-only preparation record. `published-0.2.0.json` remains the frozen
-historical manifest. Candidate flags do not describe release status. The consumer driver inserts `--` after the exact MoonX
+The published `0.1.0` manifest remains the replay record for the previous
+release; `candidate-0.1.1.json` is the validation-only preparation record for
+the README/version update. `published-0.2.0.json` remains the frozen historical
+manifest. Candidate flags do not describe release status. The consumer driver inserts `--` after the exact MoonX
 coordinate so the command's own leading `--` is preserved. The frozen schema 1
 `manifest.json` and `published-0.1-base.json` retain the historical release.
 

@@ -8,7 +8,7 @@ Validate the retained preparation manifest against local package versions:
 
 ```sh
 MOON_HOME="$HOME/.moon-accounts/cli" moon run --target native tests/release_runner -- \
-  --manifest tests/release_runner/candidate-0.1.0.json --suite validate
+  --manifest tests/release_runner/candidate-0.1.1.json --suite validate
 ```
 
 Run published 0.2.0 against the pinned oracle:
