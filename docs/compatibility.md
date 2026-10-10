@@ -1,7 +1,7 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-09-27
+Updated: 2026-10-10
 
 **0.2.0 is published** for `cli/core` and the original 47 command modules;
 the eleven new P0 command modules are published at **0.1.1**. The
@@ -98,9 +98,12 @@ Linux oracle remains the strict filesystem authority.
 
 ## Inventory
 
-The workspace contains 59 command modules. Mooncakes currently exposes 58
+The workspace contains 75 command modules. Mooncakes currently exposes 58
 through MoonX: the original 47 at 0.2.0 and the eleven new commands at 0.1.1;
-only `timeout` remains local-only.
+The sixteen additions below are local 0.1.0 candidates using the unpublished
+core 0.3.0 API; `timeout` remains local-only by design. The prior 58 published
+coordinates are unchanged. New candidate evidence is recorded in
+[the batch report](reports/2026-10-10-command-batch.md).
 `timeout` is intentionally local-only because portable
 `ProcessGroupCancellation` is unavailable:
 
@@ -121,6 +124,15 @@ claiming success; `local-only` is absent from MoonX by design.
 
 | Command | Status | Measured profile | Observed boundary or open evidence |
 | --- | --- | --- | --- |
+| `fold` | candidate | Byte/control-column folding, width, space breaks, files/stdin | C-locale profile; verify UTF-8 separately |
+| `od`, `hexdump` | candidate | Integer and character formats, offsets, lengths, duplicate blocks, raw byte input | Floating od types and custom hexdump format language are project work; default integers use little endian |
+| `md5sum`, `sha1sum`, `sha512sum` | candidate | Incremental hashes, file/stdin, GNU check records and check flags | Tagged formats and platform text transformations are not claimed |
+| `sed` | candidate | BRE/ERE substitution, captures, address/range selection, p/d/q/=, ordered scripts | No in-place edit, hold space, branching or complete GNU grammar; unsupported syntax rejects |
+| `diff` | candidate | Normal/unified/context text output, labels, binary detection and 0/1/2 statuses | Directory and whitespace modes remain project work; exact hunk choices for ambiguous alignments need separate comparison |
+| `patch` | candidate | Exact unified/context hunks, reverse, stdout result, dry run, creation/deletion | Existing destination and named output require public source mode; fuzzy/offset/reject-file behavior is not claimed |
+| `split`, `csplit` | candidate | Line/byte splitting, numeric/regex boundaries, suffixes, cleanup and keep-files | Existing output refuses until safe truncation is public; chunk/filter modes are project work |
+| `expr`, `fmt` | candidate | Integer/string expressions and BRE matches; paragraph width/goal/spacing | C-byte locale; remaining expression/formatting extensions are project work |
+| `gzip`, `gunzip`, `zcat` | candidate | gzip stream encoding, RFC 1951 decoding, concatenated members, CRC and partial-error output | Named replacement requires metadata; compression emits stored blocks, compression-level options reject |
 | `base32` | subset verified | RFC 4648 uppercase encode/decode, `-d`, `-i`, `-w`, stdin or one file | Nonstandard alphabets and locale diagnostics not claimed |
 | `cksum` | subset verified | POSIX CRC-32 and byte count for stdin or multiple files, ordered partial failure | GNU alternate algorithms and tagged output are not claimed |
 | `expand` | subset verified | C-locale tab expansion, `-i`, `-t` stops, stdin or multiple files | Locale display widths and non-byte tab semantics are not claimed |

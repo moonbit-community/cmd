@@ -2,8 +2,8 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-09-26
-Revision: Recheck public fd and procfs alternatives; add pure-MoonBit realpath, tree and mktemp subsets under async 0.22.4 while preserving strict metadata boundaries.
+Updated: 2026-10-10
+Revision: Distinguish patch inode replacement from cp overwrite, and require exclusive new outputs for split/csplit under the released metadata API.
 
 ## Target and decision
 
@@ -25,6 +25,23 @@ failure; platform-inapplicable cases are explicit skips. Neither is a semantic
 pass. This observation capability does not expand product command APIs.
 
 ## Alternatives and compatibility cost
+
+The new patch profile applies exact unified/context hunks to stdout or in a
+dry run, and supports unambiguous creation/deletion. Existing-file replacement
+and named `-o` output refuse because GNU patch preserves source mode. Unlike cp,
+patch may replace the target inode: rename itself is available. Reject direct
+truncate/write because it mutates hard-link aliases, and reject default-mode
+temporary replacement because it loses source permissions. The compatibility
+cost is that ordinary `patch < change.diff` cannot update an existing file yet.
+Evidence: [2026-10-10 inode/mode observation](../reports/2026-10-10-patch-file-semantics.md),
+async 0.22.4 public fs interface and exact-hunk contract cases. Reopen ordinary
+writeback after public mode metadata and fixed GNU mode/link regressions pass.
+
+split/csplit use exclusive creation for new outputs and refuse collisions.
+They do not emulate existing-target truncation with rename or infer identity
+from spelling. This limits repeated splitting into existing names; public
+handle identity/truncation and same-file alias tests are the unlock condition.
+Ordinary partial output/cleanup behavior remains separately tested.
 
 Reject realpath as inode identity, temporary rename as inode-preserving overwrite, content rewrites as touch, internal imports and own FFI. This intentionally contracts the old false-success surface. POSIX EXDEV is now classifiable via async.platform, but correct mv fallback still requires mode/link/timestamp preservation.
 

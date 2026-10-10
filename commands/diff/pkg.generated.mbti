@@ -1,0 +1,19 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/diff"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+
+// Errors
+
+// Types and methods
+type Edit derive(Eq, @debug.Debug)
+
+type Line derive(Eq, @debug.Debug)
+
+// Type aliases
+
+// Traits

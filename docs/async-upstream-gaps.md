@@ -6,13 +6,13 @@ native stub，或调用宿主同名命令来绕过公开 MoonBit API。宿主工
 固定版本 oracle、测试观察、CI 设置和诊断采集。无法实现的操作必须保持明确
 拒绝，并记录缺失 API、兼容性代价和解除条件。
 
-Updated: 2026-09-26（补充纯 MoonBit 强制边界，并完成 async 0.22.4 基线刷新）。此前 2026-09-21 的复核针对正式发布的 `moonbitlang/async 0.22.1`、
+Updated: 2026-10-10（补充 gzip 纯 MoonBit 解码替代路径，以及 patch/split 的精确元数据边界）。此前 2026-09-21 的复核针对正式发布的 `moonbitlang/async 0.22.1`、
 `moonbitlang/x 0.5.5`、`moonjq 0.1.2`；工具链为 moon/moonrun
-`0.1.20260920`、moonc/core `0.10.14+7d59c7ec9`。三个依赖仍为最新正式版；
+`0.1.20260920`、moonc/core `0.10.14+7d59c7ec9`。这里的版本结论对应当时复核日期；
 moonjq 的传递依赖解析到相同 async/x 版本，没有残留旧版本。
 未将 upstream main 的未发布代码算作可用能力。
 
-本次补充复核发现公开 registry 当前正式最新为 async `0.22.4`（checksum
+2026-09-26 的补充复核发现公开 registry 当时正式最新为 async `0.22.4`（checksum
 `2ffdb85cb229cfe9219161a7f2b959215a79a0d75b7e642cb346713f168a1457`），
 尚无可解析的 `0.22.5`。基线刷新时工作区 50 个模块已统一解析到 0.22.4，并通过
 `moon check --target all --deny-warn`；不得把未来版本或 upstream main 的接口
@@ -151,6 +151,36 @@ stopped/continued wait events 和 PTY。Native 有底层 fd 并不等于已公�
 终端 Ctrl-C 和取消后回收，不能仅靠一个 PID 的消失判定通过。
 
 ## 不应向 async 归因的项目工作
+
+**2026-10-10：gzip 编解码可用纯 MoonBit 补齐。** 0.22.4 的公开
+`gzip.Decoder` 只处理无可选 header 的单 member；同一 read 中遇到 CRC 或
+截断 trailer 会抛错，调用者不能总是取得该 read 已产生的输出。公开
+`MemoryReader` 能辅助多 member 定位，却不能恢复被异常隐藏的输出。
+这些限制在 Native/Wasm 均适用；不是宿主授权拒绝。
+
+本轮在 `core/gzipops` 实现 RFC 1951 stored/fixed/dynamic Huffman 解码、
+32 KiB 滑动窗口与重叠回溯，复用公开 Encoder 编码。可选字段、header CRC、
+多个 member、payload CRC/size 和失败前缀由纯 MoonBit 完成，不再把 gzip
+流格式列为阻塞。最小复现是 `gzip -dc` 输入
+`1f8b08000000000000034b4c4a0600c2412435`：预期输出 `abc` 后返回 1，
+候选测试固定该行为；上游 Decoder 小 buffer 路径曾仅交付 `a`。
+最小回归位于 `core/gzipops/codec_wbtest.mbt`；固定 GNU 1.14 对照脚本为
+[`reports/2026-10-10-gzip-oracle.mbtx`](reports/2026-10-10-gzip-oracle.mbtx)。
+
+上游仍可改进 Decoder：支持 RFC 1952 optional header 与连续 member，
+并将错误推迟至已解码字节交付后的下一次读取，或返回包含 partial bytes
+的错误。解除自有 decoder 维护负担的条件是正式公开版本通过这些回归。
+当前解码缓冲压缩输入，超大输入的流式内存优化属于项目工作。
+
+**patch 与拆分输出的限制应分开描述。** patch 正常写回可使用 rename 替换
+inode，不能把 cp 所需的“保留目标 inode”直接套用。实际 blocker 是源 mode
+等元数据读取/保持；`-o new` 也需要源权限。普通更新及 named output 暂拒绝，
+支持 `-o -`、`--dry-run` 和明确创建/删除。macOS inode/mode 观察证据见
+[`reports/2026-10-10-patch-file-semantics.md`](reports/2026-10-10-patch-file-semantics.md)，
+这不是 GNU/Linux 完整认证。公开 metadata + 安全替换通过固定 GNU metadata
+差分后解除限制。split/csplit 新文件可排他创建；已有输出缺句柄 identity
+和 truncate，故明确拒绝，避免截断输入硬链接。它们的 suffix、正则分割、
+cleanup 以及 patch context/unified 解析都属于项目实现，不能归因上游。
 
 **已解除：curl 自定义 Cookie + jar**。此前仅检查单个 Map，漏看了公开
 `Client(headers=...)` 与 `Client::request(extra_headers=...)` 两层独立参数。

@@ -240,6 +240,110 @@ pub fn command_catalog() -> Array[CommandContract] {
     ]),
     contract("yes", Core, NoInput, ByteStream, [], []),
     contract(
+      "fold",
+      Core,
+      FileOrStdin,
+      ByteStream,
+      [FileRead],
+      ["bytes", "characters", "spaces", "width", "version"],
+      exit_codes=[0, 1],
+    ),
+    contract(
+      "od",
+      Core,
+      FileOrStdin,
+      ByteStream,
+      [FileRead],
+      [
+        "address-radix", "skip-bytes", "read-bytes", "format", "endian", "width",
+        "output-duplicates", "named", "octal-byte", "character", "decimal", "int",
+        "long", "octal", "signed", "hex", "version",
+      ],
+      exit_codes=[0, 1],
+    ),
+    contract(
+      "hexdump",
+      Core,
+      FileOrStdin,
+      ByteStream,
+      [FileRead],
+      [
+        "one-byte-octal", "one-byte-char", "canonical", "two-bytes-decimal", "two-bytes-octal",
+        "two-bytes-hex", "one-byte-hex", "length", "skip", "no-squeezing", "version",
+      ],
+      exit_codes=[0, 1],
+    ),
+    contract("md5sum", Core, FileOrStdin, LineStream, [FileRead], [
+      "binary", "check", "ignore-missing", "quiet", "status", "strict", "text", "warn",
+      "zero",
+    ]),
+    contract("sha1sum", Core, FileOrStdin, LineStream, [FileRead], [
+      "binary", "check", "ignore-missing", "quiet", "status", "strict", "text", "warn",
+      "zero",
+    ]),
+    contract("sha512sum", Core, FileOrStdin, LineStream, [FileRead], [
+      "binary", "check", "ignore-missing", "quiet", "status", "strict", "text", "warn",
+      "zero",
+    ]),
+    contract("sed", Core, FileOrStdin, ByteStream, [FileRead], [
+      "expression", "file", "extended-regexp", "quiet", "silent", "in-place",
+    ]),
+    contract(
+      "diff",
+      Core,
+      FileOrStdin,
+      LineStream,
+      [FileRead],
+      [
+        "brief", "report-identical-files", "text", "unified", "context", "unified-lines",
+        "context-lines", "label",
+      ],
+      exit_codes=[0, 1, 2],
+    ),
+    contract(
+      "patch",
+      Extended,
+      FileOrStdin,
+      ByteStream,
+      [FileRead, FileWrite],
+      [
+        "strip", "input", "output", "directory", "reverse", "dry-run", "quiet", "unified",
+        "context", "batch", "fuzz", "no-backup-if-mismatch", "version",
+      ],
+      exit_codes=[0, 1, 2],
+    ),
+    contract(
+      "split",
+      Extended,
+      FileOrStdin,
+      ByteStream,
+      [FileRead, FileWrite],
+      [
+        "bytes", "lines", "numeric-suffixes", "suffix-length", "additional-suffix",
+      ],
+    ),
+    contract(
+      "csplit",
+      Extended,
+      FileOrStdin,
+      LineStream,
+      [FileRead, FileWrite],
+      ["elide-empty-files", "prefix", "quiet", "silent", "keep-files", "digits"],
+    ),
+    contract("expr", Core, NoInput, LineStream, [], ["expression-language"]),
+    contract("fmt", Core, FileOrStdin, ByteStream, [FileRead], [
+      "width", "goal", "split-only", "uniform-spacing",
+    ]),
+    contract("gzip", Extended, FileOrStdin, ByteStream, [FileRead], [
+      "stdout", "decompress", "test", "no-name", "quiet",
+    ]),
+    contract("gunzip", Extended, FileOrStdin, ByteStream, [FileRead], [
+      "stdout", "decompress", "test", "no-name", "quiet",
+    ]),
+    contract("zcat", Core, FileOrStdin, ByteStream, [FileRead], [
+      "stdout", "decompress", "test", "no-name", "quiet",
+    ]),
+    contract(
       "xargs",
       Restricted,
       OptionalStdin,

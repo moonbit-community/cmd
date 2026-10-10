@@ -78,6 +78,16 @@ the supported runtime API.
 
 ## Test and dependency provenance
 
+The 2026-10-10 additions are new pure MoonBit implementations in this
+repository: fold/od/hexdump, MD5/SHA-1/SHA-512 commands, sed, diff/patch,
+split/csplit, expr, fmt and gzip/gunzip/zcat. Core shares byte views/regex
+adaptation, incremental hashes and RFC 1951 decoding. GNU and util-linux
+sources/binaries are fixed test oracles only; they are not bundled as product
+implementations. Hash definitions follow their published standards; gzip
+headers/DEFLATE follow RFC 1952/RFC 1951. Public async Encoder is used through
+its released interface. See the batch report and upstream-baselines.md for
+versions, checksums and executable evidence.
+
 The command-facing test artifacts are:
 
 | Artifact | Purpose |

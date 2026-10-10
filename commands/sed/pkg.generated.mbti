@@ -1,0 +1,23 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/sed"
+
+// Values
+
+// Errors
+
+// Types and methods
+type Action
+
+type Address
+
+type Command
+
+type PatternRef
+
+type Runtime
+
+type Script
+
+// Type aliases
+
+// Traits

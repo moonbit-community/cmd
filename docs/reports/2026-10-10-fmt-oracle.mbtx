@@ -1,0 +1,79 @@
+///|
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/json",
+  "moonbitlang/core/env",
+}
+
+///|
+async fn main {
+  let args = @env.args()
+  guard args.length() >= 3 && args.length() <= 4 else {
+    fail(
+      "Usage: moon run docs/reports/2026-10-10-fmt-oracle.mbtx -- ORACLE_FMT CANDIDATE_FMT [REPORT_JSON]",
+    )
+  }
+  let oracle = args[1]
+  let candidate = args[2]
+  let report = args.get(3).unwrap_or("fmt-oracle-results.json")
+  let version = @shell.Cmd(oracle, ["--version"], env={ "LC_ALL": "C" }).output()
+  guard version.exit_code() == 0 &&
+    version.stdout().has_prefix("fmt (GNU coreutils) 9.11\n") else {
+    fail("oracle must be GNU coreutils fmt 9.11")
+  }
+  let samples = [
+    "one two three four five six seven eight nine ten\n",
+    "alpha beta gamma delta epsilon zeta eta theta iota kappa lambda mu nu xi omicron\n",
+    "First sentence.  Second sentence here.  Third short.\n",
+    "  alpha beta gamma\n  delta epsilon zeta\n",
+    "alpha\n  beta gamma\ndelta\n",
+    "one   two.   Three\n",
+    "\tone\ttwo three\n\n  last line\n",
+    ".keep   this   spacing\nnext paragraph line\n",
+    "one\u000b two\u000c three\r four\n",
+    "<alpha> [beta] (gamma) delta epsilon zeta eta theta\n",
+    "a ".repeat(150) + "longlastword\n",
+    "alpha beta gamma\n\n\nlast",
+  ]
+  let options = [
+    [],
+    ["-w12"],
+    ["-w20"],
+    ["-g10"],
+    ["-w0"],
+    ["-w1"],
+    ["-s", "-w12"],
+    ["-u", "-w20"],
+  ]
+  let failures : Array[Json] = []
+  for index, input in samples {
+    for args in options {
+      let reference = @shell.Cmd(oracle, args, stdin=Text(input), env={
+        "LC_ALL": "C",
+      }).output()
+      let result = @shell.Cmd(candidate, args, stdin=Text(input), env={
+        "LC_ALL": "C",
+      }).output()
+      if reference.stdout_bytes() != result.stdout_bytes() ||
+        reference.exit_code() != result.exit_code() {
+        let detail : Json = {
+          "sample": index,
+          "args": args,
+          "stdin_text": input,
+          "expected_stdout_text": reference.stdout(),
+          "actual": result.stdout(),
+          "status": result.exit_code(),
+          "stderr": result.stderr(),
+        }
+        failures.push(detail)
+      }
+    }
+  }
+  @fs.write_file(report, failures.to_json().stringify(indent=2))
+  println(
+    "fmt probe: \{samples.length() * options.length()} calls, \{failures.length()} differences; \{report}",
+  )
+  guard failures.is_empty() else { fail("fmt oracle comparison failed") }
+}

@@ -7,7 +7,10 @@
       "status": "partial",
       "native": "p0-workspace",
       "wasm": "p0-workspace",
-      "capabilities": ["stdin", "files"]
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
     },
     {
       "name": "base64",
@@ -26,7 +29,10 @@
       "status": "partial",
       "native": "p0-workspace",
       "wasm": "p0-workspace",
-      "capabilities": ["stdin", "files"]
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
     },
     {
       "name": "basename",
@@ -138,7 +144,10 @@
       "status": "partial",
       "native": "p0-workspace",
       "wasm": "p0-workspace",
-      "capabilities": ["stdin", "files"]
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
     },
     {
       "name": "env",
@@ -277,7 +286,9 @@
       "status": "partial",
       "native": "p0-workspace",
       "wasm": "p0-workspace",
-      "capabilities": ["filesystem-mutation"]
+      "capabilities": [
+        "filesystem-mutation"
+      ]
     },
     {
       "name": "mv",
@@ -348,7 +359,9 @@
       "status": "partial",
       "native": "p0-workspace",
       "wasm": "p0-workspace",
-      "capabilities": ["files"]
+      "capabilities": [
+        "files"
+      ]
     },
     {
       "name": "rm",
@@ -366,7 +379,10 @@
       "status": "partial",
       "native": "p0-workspace",
       "wasm": "p0-workspace",
-      "capabilities": ["stdin", "files"]
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
     },
     {
       "name": "rmdir",
@@ -449,7 +465,10 @@
       "status": "partial",
       "native": "p0-workspace",
       "wasm": "p0-workspace",
-      "capabilities": ["stdin", "files"]
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
     },
     {
       "name": "tee",
@@ -521,7 +540,9 @@
       "status": "partial",
       "native": "p0-workspace",
       "wasm": "p0-workspace",
-      "capabilities": ["files"]
+      "capabilities": [
+        "files"
+      ]
     },
     {
       "name": "uniq",
@@ -540,7 +561,10 @@
       "status": "partial",
       "native": "p0-workspace",
       "wasm": "p0-workspace",
-      "capabilities": ["stdin", "files"]
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
     },
     {
       "name": "unlink",
@@ -548,7 +572,9 @@
       "status": "partial",
       "native": "p0-workspace",
       "wasm": "p0-workspace",
-      "capabilities": ["filesystem-mutation"]
+      "capabilities": [
+        "filesystem-mutation"
+      ]
     },
     {
       "name": "wc",
@@ -578,7 +604,9 @@
       "status": "partial",
       "native": "p0-workspace",
       "wasm": "p0-workspace",
-      "capabilities": ["stdout"]
+      "capabilities": [
+        "stdout"
+      ]
     },
     {
       "name": "xargs",
@@ -597,6 +625,182 @@
       "status": "partial",
       "native": "p7-measured",
       "wasm": "unmeasured",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "fold",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p1-candidate",
+      "wasm": "p1-candidate",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "od",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p1-candidate",
+      "wasm": "p1-candidate",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "hexdump",
+      "baseline": "util-linux-2.40",
+      "status": "partial",
+      "native": "p1-candidate",
+      "wasm": "p1-candidate",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "md5sum",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p1-candidate",
+      "wasm": "p1-candidate",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "sha1sum",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p1-candidate",
+      "wasm": "p1-candidate",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "sha512sum",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p1-candidate",
+      "wasm": "p1-candidate",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "sed",
+      "baseline": "sed-4.9",
+      "status": "partial",
+      "native": "p1-candidate",
+      "wasm": "p1-candidate",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "diff",
+      "baseline": "diffutils-3.12",
+      "status": "partial",
+      "native": "p1-candidate",
+      "wasm": "p1-candidate",
+      "capabilities": [
+        "files"
+      ]
+    },
+    {
+      "name": "patch",
+      "baseline": "patch-2.8",
+      "status": "partial",
+      "native": "p1-candidate",
+      "wasm": "p1-candidate",
+      "capabilities": [
+        "files",
+        "filesystem-mutation"
+      ]
+    },
+    {
+      "name": "split",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p1-candidate",
+      "wasm": "p1-candidate",
+      "capabilities": [
+        "stdin",
+        "files",
+        "filesystem-mutation"
+      ]
+    },
+    {
+      "name": "csplit",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p1-candidate",
+      "wasm": "p1-candidate",
+      "capabilities": [
+        "stdin",
+        "files",
+        "filesystem-mutation"
+      ]
+    },
+    {
+      "name": "expr",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p1-candidate",
+      "wasm": "p1-candidate",
+      "capabilities": [
+        "stdout"
+      ]
+    },
+    {
+      "name": "fmt",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p1-candidate",
+      "wasm": "p1-candidate",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "gzip",
+      "baseline": "gzip-1.14",
+      "status": "partial",
+      "native": "p1-candidate",
+      "wasm": "p1-candidate",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "gunzip",
+      "baseline": "gzip-1.14",
+      "status": "partial",
+      "native": "p1-candidate",
+      "wasm": "p1-candidate",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "zcat",
+      "baseline": "gzip-1.14",
+      "status": "partial",
+      "native": "p1-candidate",
+      "wasm": "p1-candidate",
       "capabilities": [
         "stdin",
         "files"
@@ -663,6 +867,22 @@
     "../../cases/tree.json",
     "../../cases/unexpand.json",
     "../../cases/unlink.json",
-    "../../cases/yes.json"
+    "../../cases/yes.json",
+    "../../cases/fold.json",
+    "../../cases/od.json",
+    "../../cases/hexdump.json",
+    "../../cases/md5sum.json",
+    "../../cases/sha1sum.json",
+    "../../cases/sha512sum.json",
+    "../../cases/sed.json",
+    "../../cases/diff.json",
+    "../../cases/patch.json",
+    "../../cases/split.json",
+    "../../cases/csplit.json",
+    "../../cases/expr.json",
+    "../../cases/fmt.json",
+    "../../cases/gzip.json",
+    "../../cases/gunzip.json",
+    "../../cases/zcat.json"
   ]
 }

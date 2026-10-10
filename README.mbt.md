@@ -7,8 +7,9 @@ belongs to the caller or host; commands preserve the caller's environment and
 stream semantics.
 
 **0.2.0 is published** as `cli/core` and 47 command modules; the eleven new P0
-modules are published at **0.1.1**. The workspace contains 59 command modules,
-with only `timeout` remaining local-only. Linux, macOS and
+modules are published at **0.1.1**. The workspace now contains 75 command modules:
+58 published commands, 16 new **0.1.0 candidates**, and local-only `timeout`.
+The new candidates are not registry releases. Linux, macOS and
 Windows passed the release source checks, including Linux Native/Wasm pinned
 oracle comparisons. Exact-version MoonX acceptance is recorded separately in
 the [release evidence](docs/reports/2026-09-27-release-0.1.1/README.md). See the
@@ -36,7 +37,7 @@ MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/jq@0.2.0 -- -r '.name'
 
 ## Commands
 
-The repository contains 59 executable commands for local builds. The current
+The repository contains 75 executable commands for local builds. The current
 Mooncakes registry exposes 58 of them through MoonX: 47 commands at 0.2.0 and
 the eleven new P0 commands at 0.1.1. `timeout` remains outside the releasable
 profile because portable process-group cancellation is not available.
@@ -44,14 +45,15 @@ profile because portable process-group cancellation is not available.
 ### Text and data
 
 ```text
-base32 base64 cat cksum cmp comm cut expand grep head join jq jqlog nl paste printf rev
-sha256sum sort tac tail tr uniq wc xxd
+base32 base64 cat cksum cmp comm cut diff expand expr fmt fold grep gunzip gzip
+head hexdump join jq jqlog md5sum nl od paste printf rev sed sha1sum sha256sum
+sha512sum sort tac tail tr uniq wc xxd zcat
 ```
 
 ### Files and paths
 
 ```text
-basename cp dirname find ln ls mkdir mktemp mv realpath rm rmdir tee touch tree
+basename cp csplit dirname find ln ls mkdir mktemp mv patch realpath rm rmdir split tee touch tree
 unexpand unlink
 ```
 

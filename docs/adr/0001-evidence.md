@@ -2,8 +2,8 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-09-26
-Revision: Adopt the 2026-09-20 compiler with explicit trait methods, require a pure MoonBit product boundary, preserve separate workspace and published-release evidence, and record the first eight local-only command profiles.
+Updated: 2026-10-10
+Revision: Add 16 local command candidates and pinned oracle comparisons; validate candidate completeness without invalidating frozen published inventories.
 
 ## Target and decision
 
@@ -132,6 +132,16 @@ configuration alone does not establish a passing cross-platform result. Record
 before/after execution counts and same-host timings without predicting a speedup.
 
 ## Revisit when
+
+2026-10-10: The new 16-command batch uses a separate candidate manifest with
+74 releasable coordinates; the 58 published coordinates keep their versions.
+Candidate validation requires the complete current catalog. Frozen published
+manifests validate their declared release inventory and selected cases, so
+adding a new command does not invalidate old-version replay. Empty inventories,
+unknown commands, missing selected coordinates and option claims still fail.
+The compatibility cost is that completeness is a candidate gate rather than a
+retroactive property of every old manifest. Revisit only with explicit release
+inventory schemas, preserving historical replay tests.
 
 Recheck released dependencies or reported mismatches. Rerun affected behavior and
 exact-version published-consumer gates before promoting support. Expand observer

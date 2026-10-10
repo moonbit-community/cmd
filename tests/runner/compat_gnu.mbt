@@ -57,6 +57,7 @@ async fn compare_gnu_tail_follow(
     [b"first\nsecond\n"],
     [b"third\n"],
     [None],
+    ready_marker="second\n",
     poll_wait_ms=1200,
   )
   let oracle = run_tail_follow_process(
@@ -65,6 +66,7 @@ async fn compare_gnu_tail_follow(
     [b"first\nsecond\n"],
     [b"third\n"],
     [None],
+    ready_marker="second\n",
     poll_wait_ms=1200,
   )
   if !@testkit.bytes_equal(candidate.0, oracle.0) {
@@ -85,6 +87,7 @@ async fn compare_gnu_tail_follow(
     [b"before\n"],
     [b"append\n"],
     [Some(b"reset\n")],
+    ready_marker="before\n",
     poll_wait_ms=1200,
   )
   let oracle_truncate = run_tail_follow_process(
@@ -93,6 +96,7 @@ async fn compare_gnu_tail_follow(
     [b"before\n"],
     [b"append\n"],
     [Some(b"reset\n")],
+    ready_marker="before\n",
     poll_wait_ms=1200,
   )
   if !@testkit.bytes_equal(candidate_truncate.0, oracle_truncate.0) {

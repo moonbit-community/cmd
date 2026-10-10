@@ -60,6 +60,22 @@
     "../cases/tree.json",
     "../cases/unexpand.json",
     "../cases/unlink.json",
-    "../cases/yes.json"
+    "../cases/yes.json",
+    "../cases/fold.json",
+    "../cases/od.json",
+    "../cases/hexdump.json",
+    "../cases/md5sum.json",
+    "../cases/sha1sum.json",
+    "../cases/sha512sum.json",
+    "../cases/sed.json",
+    "../cases/diff.json",
+    "../cases/patch.json",
+    "../cases/split.json",
+    "../cases/csplit.json",
+    "../cases/expr.json",
+    "../cases/fmt.json",
+    "../cases/gzip.json",
+    "../cases/gunzip.json",
+    "../cases/zcat.json"
   ]
 }

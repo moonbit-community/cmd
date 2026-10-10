@@ -1,6 +1,9 @@
 # cli/core
 
 Shared runtime packages used by the independently published command modules.
+The local **0.3.0 candidate** adds shared incremental MD5/SHA-1/SHA-512,
+C-byte regular-expression adaptation and gzip stream codecs. Published core
+0.2.0 remains available for unchanged command packages.
 This module is published as `cli/core` and is an implementation dependency for
 `cli/<command>` modules. The portable filesystem layer exposes file-kind and
 regular-file-size reads, atime/mtime/ctime timestamps, access checks, and

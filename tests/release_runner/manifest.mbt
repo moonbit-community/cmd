@@ -114,10 +114,17 @@ fn validate_release_manifest(
       None => ()
     }
   }
-  for name, _ in expected {
-    if !seen.contains(name) {
-      failures.push("release manifest: missing published command '\{name}'")
+  // Candidates must inventory the complete current releasable set. Frozen
+  // published manifests describe their release, which predates new commands.
+  if manifest.candidate == Some(true) {
+    for name, _ in expected {
+      if !seen.contains(name) {
+        failures.push("release manifest: missing candidate command '\{name}'")
+      }
     }
+  }
+  if manifest.commands.is_empty() {
+    failures.push("release manifest: no command coordinates")
   }
   let case_ids : Map[String, Bool] = Map([])
   for fixture in base.cases + manifest.extra_cases {

@@ -85,7 +85,11 @@ pub async fn prepare_fixture(
         guard !(@async.platform is Windows) else {
           fail("fixed timestamp fixture requires POSIX observer")
         }
-        let set = run("touch", [flag, "-t", time, destination])
+        let set = run(
+          "touch",
+          [flag, "-t", time, destination],
+          extra_env=Map([("TZ", "UTC")]),
+        )
         guard set.status == 0 else { fail("fixed timestamp fixture failed") }
       }
     }
@@ -231,14 +235,14 @@ async fn snapshot_into(
 pub async fn snapshot(
   root : String,
   observe? : ArrayView[String] = [],
+  baseline? : Bool = false,
 ) -> Array[SnapshotEntry] {
   let entries : Array[SnapshotEntry] = []
   snapshot_into(root, "", entries, observe)
-  // Content inspection may itself access files. Re-anchor atime after that
-  // inspection so the observer is not mistaken for a command side effect.
-  // For a baseline this happens before the candidate; for the final snapshot
-  // it records the post-command state after the same observation sequence.
-  if observe.contains("atime") {
+  // Only the baseline includes accesses caused by preparing its content
+  // observation. The final snapshot must retain atime measured before reading
+  // content; otherwise the observer's own read becomes a candidate side effect.
+  if baseline && observe.contains("atime") {
     for entry in entries {
       let (s, n) = @fs.atime(
         @path.Path(root).join(Path(entry.path)).to_string(),

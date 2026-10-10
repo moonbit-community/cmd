@@ -1,0 +1,18 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/core/checksum"
+
+// Values
+pub async fn run(Algorithm, ArrayView[String], String) -> Int
+
+// Errors
+
+// Types and methods
+pub(all) enum Algorithm {
+  Md5
+  Sha1
+  Sha512
+}
+
+// Type aliases
+
+// Traits

@@ -1,6 +1,6 @@
 # 常见命令缺口与建议顺序
 
-Updated: 2026-09-27
+Updated: 2026-10-10
 
 强制实现边界：所有命令包、共享库、测试 runner、fixture 和自动化必须使用
 纯 MoonBit。宿主程序只能作为固定版本 oracle、测试观察器、CI 工具或诊断
@@ -8,12 +8,12 @@ Updated: 2026-09-27
 必须保留明确 boundary、ADR 和解除条件。
 
 本次按目录、catalog、发布 manifest 和刷新后的 `cli/*` 注册表核对：
-**59 个本地命令，58 个已发布（47 个 0.2.0、11 个 0.1.1），仅 timeout 本地未发布**。
+**75 个本地命令，58 个已发布（47 个 0.2.0、11 个 0.1.1），16 个新候选未发布，timeout 继续仅本地提供**。
 `cli/core` 是共享库，不计命令数量。已发布并不表示完整 GNU/POSIX 兼容；
 每个命令的参数边界见 [支持记录](compatibility.md)。
 
 基线清单包含 59 个常见缺口；本轮已实现并发布其中 `base32`、`mktemp`、`realpath`、
-`rev`、`tac`、`tree`、`unlink`、`yes`、`cksum`、`expand` 和 `unexpand`，因此下表列出当前剩余的 **48 个缺失候选**，不是“所有 Unix 命令”的统计。
+`rev`、`tac`、`tree`、`unlink`、`yes`、`cksum`、`expand` 和 `unexpand`。2026-10-10 再增加 16 个命令候选：实现覆盖达到 **27/59（45.8%）**，发布覆盖仍为 **11/59（18.6%）**。下表保留 **32 个尚无模块的候选**；已有模块内部的未实现选项另列支持记录。
 基线取自 [GNU coreutils 9.11 命令分类](https://www.gnu.org/software/coreutils/manual/coreutils.html)，
 加上开发中常用的文本、归档、进程工具及 [tree 上游](https://gitlab.com/OldManProgrammer/unix-tree)。
 不把 shell 内建 `cd/read/export`、别名 `[`、Git、编译器和语言运行时计入。
@@ -35,22 +35,22 @@ Updated: 2026-09-27
 
 | 类别 | 数量 | 缺失命令 |
 | --- | ---: | --- |
-| 文件与路径 | 9 | du、df、stat、readlink、install、truncate、split、csplit、link |
-| 文本与表达式 | 11 | sed、awk、diff、patch、fold、fmt、od、hexdump、strings、column、expr |
-| 编码、校验与归档 | 9 | md5sum、sha1sum、sha512sum、tar、gzip、gunzip、zcat、zip、unzip |
+| 文件与路径 | 7 | du、df、stat、readlink、install、truncate、link |
+| 文本与表达式 | 3 | awk、strings、column |
+| 编码、校验与归档 | 3 | tar、zip、unzip |
 | 系统与执行 | 19 | date、uname、hostname、id、whoami、groups、ps、kill、watch、uptime、free、tty、stty、tput、clear、which、nproc、chown、chgrp |
 
 ## 建议优先补的开发缺项
 
-**第一批已完成：tree、realpath、mktemp、yes、tac、rev、expand、unexpand、
-base32、cksum、unlink。下一批候选：fold、od/hexdump、md5sum、sha1sum、sha512sum。**
+**第一批已发布：tree、realpath、mktemp、yes、tac、rev、expand、unexpand、
+base32、cksum、unlink。第二批本地候选：fold、od/hexdump、md5sum、sha1sum、sha512sum、
+sed、diff/patch、split/csplit、expr、fmt、gzip/gunzip/zcat。**
 这些命令有可实现的基础子集，不能统一归因于 async。`x/crypto` 已有 MD5、
 SHA-1、SHA-512；二进制 IO、目录遍历、排他创建及 realpath 也已有公开入口。
 仍需每项先确定上游参数、错误与字节合同，再补 CLI 差分。`mktemp` 必须
 采用安全随机源与排他创建，不能把时间戳文件名当作完成。
 
-**第二批：sed、diff/patch、split/csplit、expr、fmt、strings、column、
-which、date、awk、gzip/gunzip/zcat、tar/zip/unzip。**
+**后续纯算法及数据来源候选：strings、column、which、date、awk、tar/zip/unzip。**
 主要成本是解析、格式与算法，纯 MoonBit 可实现，不应列成永久上游阻塞。
 其中 which 需定义 PATH/可执行性与 alias/function 边界；date 的 UTC 格式
 子集和本地时区数据库/设置系统时钟分开；归档的内容编解码和权限、链接、
