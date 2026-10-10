@@ -6,14 +6,15 @@ system for preserving GNU/POSIX and command-upstream behavior. Authorization
 belongs to the caller or host; commands preserve the caller's environment and
 stream semantics.
 
-**0.2.0 is published** as `cli/core` and 47 command modules; the eleven new P0
-modules are published at **0.1.1**. The workspace now contains 75 command modules:
-58 published commands, 16 new **0.1.0 candidates**, and local-only `timeout`.
-The new candidates are not registry releases. Linux, macOS and
-Windows passed the release source checks, including Linux Native/Wasm pinned
-oracle comparisons. Exact-version MoonX acceptance is recorded separately in
-the [release evidence](docs/reports/2026-09-27-release-0.1.1/README.md). See the
-[support record](docs/compatibility.md), and
+**0.3.0 is published** as `cli/core`. The original 47 command modules remain at
+**0.2.0**, the first eleven P0 modules remain at **0.1.1**, and the second
+sixteen-command batch is published at **0.1.0**. The workspace contains 75
+command modules: 74 published commands and local-only `timeout`. Linux, macOS
+and Windows passed the release source checks, including Linux Native/Wasm
+pinned oracle comparisons. Exact-version MoonX acceptance for the second batch
+is recorded in the [release evidence](docs/reports/2026-10-11-release-0.1.0/README.md);
+the first batch remains documented in [its release evidence](docs/reports/2026-09-27-release-0.1.1/README.md).
+See the [support record](docs/compatibility.md), and
 [upstream API gaps](docs/async-upstream-gaps.md). This release includes a
 persistent line-oriented `sh -i`, real `make -j` scheduling, JSON input framing,
 Basic HTTP authentication and cookies. Strict filesystem limits are explicit:
@@ -38,8 +39,9 @@ MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/jq@0.2.0 -- -r '.name'
 ## Commands
 
 The repository contains 75 executable commands for local builds. The current
-Mooncakes registry exposes 58 of them through MoonX: 47 commands at 0.2.0 and
-the eleven new P0 commands at 0.1.1. `timeout` remains outside the releasable
+Mooncakes registry exposes 74 of them through MoonX: 47 commands at 0.2.0, the
+eleven first-batch commands at 0.1.1, and the sixteen second-batch commands at
+0.1.0. `timeout` remains outside the releasable
 profile because portable process-group cancellation is not available.
 
 ### Text and data
@@ -123,8 +125,8 @@ The project combines package tests and two runners sharing a Native testkit:
 - `oracle` compares Native and Wasm commands with the pinned upstream image,
   including declared metadata observations. GNU and stress are independent suites.
 - `release_runner` validates candidate manifests and checks exact published
-  MoonX versions selected by `published-0.2.0.json`; frozen 0.1.x manifests remain
-  available for historical replay.
+  MoonX versions selected by `published-2026-10-10.json`; the 0.1.x and 0.2.0
+  manifests remain available for historical replay.
 - `scenarios` covers persistent shell input, HTTP auth/cookies, filesystem
   boundaries and process/make lifecycle on both backends in CI. Former standalone
   probes are archived with their assertion migration maps.

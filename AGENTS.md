@@ -115,11 +115,15 @@ module and version before any release operation.
   Update the published manifest and release report with those results, then
   commit and push the documentation. Do not publish from a failing or
   unverified candidate.
-- Current baseline after the 2026-09-27 release: `cli/core` and previously
-  published commands remain at `0.2.0`; the newly migrated `base32`, `cksum`,
-  `expand`, `mktemp`, `realpath`, `rev`, `tac`, `tree`, `unexpand`, `unlink`,
-  and `yes` packages are at `0.1.1`; `timeout` remains local-only. Update this
-  baseline whenever a subsequent release changes it.
+- Current baseline after the 2026-10-11 release: `cli/core` is at `0.3.0`, the
+  original published commands remain at `0.2.0`, and the first migrated batch
+  (`base32`, `cksum`, `expand`, `mktemp`, `realpath`, `rev`, `tac`, `tree`,
+  `unexpand`, `unlink`, `yes`) remains at `0.1.1`. The second migrated batch
+  (`fold`, `od`, `hexdump`, `md5sum`, `sha1sum`, `sha512sum`, `sed`, `diff`,
+  `patch`, `split`, `csplit`, `expr`, `fmt`, `gzip`, `gunzip`, `zcat`) is at
+  `0.1.0`; `timeout` remains local-only. The exact consumer evidence is in
+  `docs/reports/2026-10-11-release-0.1.0/README.md`. Update this baseline
+  whenever a subsequent release changes it.
 
 ### Mandatory pure MoonBit boundary
 

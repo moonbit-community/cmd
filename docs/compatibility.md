@@ -1,15 +1,17 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-10-10
+Updated: 2026-10-11
 
-**0.2.0 is published** for `cli/core` and the original 47 command modules;
-the eleven new P0 command modules are published at **0.1.1**. The
+**0.3.0 is published** for `cli/core`; the original 47 command modules remain
+at **0.2.0**, the first eleven P0 command modules remain at **0.1.1**, and the
+second sixteen-command batch is published at **0.1.0**. The
 [source gate](https://github.com/moonbit-community/cmd/actions/runs/36296273687)
 passed on Linux, macOS and Windows, including Linux Native/Wasm comparisons
 with the pinned oracle. These source checks remain distinct from exact-version
 MoonX acceptance, recorded in the
-[release evidence](reports/2026-09-27-release-0.1.1/README.md). The historical
+[0.1.0 release evidence](reports/2026-10-11-release-0.1.0/README.md) and the
+[0.1.1 release evidence](reports/2026-09-27-release-0.1.1/README.md). The historical
 0.1.x manifests remain unchanged for replay. See
 [public API gaps](async-upstream-gaps.md).
 
@@ -53,13 +55,14 @@ additional support claim.
 `tests/release_runner` is the published-consumer gate. It is a native MoonBit
 runner that starts exact `moonx cli/<command>@<version>` invocations through
 MoonBit's process API and compares them with the pinned Linux oracle. It never
-builds a command package during a case. The selected versions and case IDs are
-recorded in `tests/release_runner/published-0.1.1.json`; the previous
-`tests/release_runner/published-0.1.0.json` and frozen
-`tests/release_runner/published-0.2.0.json` remain replayable; `latest`, version ranges and
+builds a command package during a case. The selected versions and case IDs for
+the current release are recorded in
+`tests/release_runner/published-2026-10-10.json`; the previous
+`tests/release_runner/published-0.1.1.json`, `tests/release_runner/published-0.1.0.json`
+and frozen `tests/release_runner/published-0.2.0.json` remain replayable; `latest`, version ranges and
 implicit package resolution are forbidden.
 
-The release manifest must cover every published command (58 commands; the
+The release manifest must cover every published command (74 commands; the
 `timeout` package remains local-only), and every option/operand form promoted in
 this record must have positive, boundary, failure and side-effect cases. Help
 and version text use contract comparison where project branding differs from
@@ -70,10 +73,11 @@ the unified runner.
 For every release, update the package version, command README, release
 manifest and case coverage together. After the Wasm asset is available, run:
 
-The published `0.1.1` manifest covers the README/version update; the previous
-`published-0.1.0.json` remains the replay record, and `candidate-0.1.1.json` is
-the validation-only preparation record. `published-0.2.0.json` remains the frozen historical
-manifest. Candidate flags do not describe release status. The consumer driver inserts `--` after the exact MoonX
+The published `published-2026-10-10.json` manifest covers the second-batch
+release; `candidate-2026-10-10.json` is the validation-only preparation record.
+The earlier `published-0.1.1.json` and `published-0.2.0.json` manifests remain
+frozen historical records, and `published-0.1.0.json` remains the oldest replay
+record. Candidate flags do not describe release status. The consumer driver inserts `--` after the exact MoonX
 coordinate so the command's own leading `--` is preserved. The frozen schema 1
 `manifest.json` and `published-0.1-base.json` retain the historical release.
 
@@ -98,12 +102,12 @@ Linux oracle remains the strict filesystem authority.
 
 ## Inventory
 
-The workspace contains 75 command modules. Mooncakes currently exposes 58
-through MoonX: the original 47 at 0.2.0 and the eleven new commands at 0.1.1;
-The sixteen additions below are local 0.1.0 candidates using the unpublished
-core 0.3.0 API; `timeout` remains local-only by design. The prior 58 published
-coordinates are unchanged. New candidate evidence is recorded in
-[the batch report](reports/2026-10-10-command-batch.md).
+The workspace contains 75 command modules. Mooncakes currently exposes 74
+through MoonX: the original 47 at 0.2.0, the eleven first-batch commands at
+0.1.1, and the sixteen second-batch commands at 0.1.0; `timeout` remains
+local-only by design. The exact coordinates and selected cases are recorded in
+[`published-2026-10-10.json`](../tests/release_runner/published-2026-10-10.json)
+and [the release report](reports/2026-10-11-release-0.1.0/README.md).
 `timeout` is intentionally local-only because portable
 `ProcessGroupCancellation` is unavailable:
 
@@ -124,15 +128,15 @@ claiming success; `local-only` is absent from MoonX by design.
 
 | Command | Status | Measured profile | Observed boundary or open evidence |
 | --- | --- | --- | --- |
-| `fold` | candidate | Byte/control-column folding, width, space breaks, files/stdin | C-locale profile; verify UTF-8 separately |
-| `od`, `hexdump` | candidate | Integer and character formats, offsets, lengths, duplicate blocks, raw byte input | Floating od types and custom hexdump format language are project work; default integers use little endian |
-| `md5sum`, `sha1sum`, `sha512sum` | candidate | Incremental hashes, file/stdin, GNU check records and check flags | Tagged formats and platform text transformations are not claimed |
-| `sed` | candidate | BRE/ERE substitution, captures, address/range selection, p/d/q/=, ordered scripts | No in-place edit, hold space, branching or complete GNU grammar; unsupported syntax rejects |
-| `diff` | candidate | Normal/unified/context text output, labels, binary detection and 0/1/2 statuses | Directory and whitespace modes remain project work; exact hunk choices for ambiguous alignments need separate comparison |
-| `patch` | candidate | Exact unified/context hunks, reverse, stdout result, dry run, creation/deletion | Existing destination and named output require public source mode; fuzzy/offset/reject-file behavior is not claimed |
-| `split`, `csplit` | candidate | Line/byte splitting, numeric/regex boundaries, suffixes, cleanup and keep-files | Existing output refuses until safe truncation is public; chunk/filter modes are project work |
-| `expr`, `fmt` | candidate | Integer/string expressions and BRE matches; paragraph width/goal/spacing | C-byte locale; remaining expression/formatting extensions are project work |
-| `gzip`, `gunzip`, `zcat` | candidate | gzip stream encoding, RFC 1951 decoding, concatenated members, CRC and partial-error output | Named replacement requires metadata; compression emits stored blocks, compression-level options reject |
+| `fold` | subset verified | Byte/control-column folding, width, space breaks, files/stdin | C-locale profile; verify UTF-8 separately |
+| `od`, `hexdump` | subset verified | Integer and character formats, offsets, lengths, duplicate blocks, raw byte input | Floating od types and custom hexdump format language are project work; default integers use little endian |
+| `md5sum`, `sha1sum`, `sha512sum` | subset verified | Incremental hashes, file/stdin, GNU check records and check flags | Tagged formats and platform text transformations are not claimed |
+| `sed` | subset verified | BRE/ERE substitution, captures, address/range selection, p/d/q/=, ordered scripts | No in-place edit, hold space, branching or complete GNU grammar; unsupported syntax rejects |
+| `diff` | subset verified | Normal/unified/context text output, labels, binary detection and 0/1/2 statuses | Directory and whitespace modes remain project work; exact hunk choices for ambiguous alignments need separate comparison |
+| `patch` | subset verified | Exact unified/context hunks, reverse, stdout result, dry run, creation/deletion | Existing destination and named output require public source mode; fuzzy/offset/reject-file behavior is not claimed |
+| `split`, `csplit` | subset verified | Line/byte splitting, numeric/regex boundaries, suffixes, cleanup and keep-files | Existing output refuses until safe truncation is public; chunk/filter modes are project work |
+| `expr`, `fmt` | subset verified | Integer/string expressions and BRE matches; paragraph width/goal/spacing | C-byte locale; remaining expression/formatting extensions are project work |
+| `gzip`, `gunzip`, `zcat` | subset verified | gzip stream encoding, RFC 1951 decoding, concatenated members, CRC and partial-error output | Named replacement requires metadata; compression emits stored blocks, compression-level options reject |
 | `base32` | subset verified | RFC 4648 uppercase encode/decode, `-d`, `-i`, `-w`, stdin or one file | Nonstandard alphabets and locale diagnostics not claimed |
 | `cksum` | subset verified | POSIX CRC-32 and byte count for stdin or multiple files, ordered partial failure | GNU alternate algorithms and tagged output are not claimed |
 | `expand` | subset verified | C-locale tab expansion, `-i`, `-t` stops, stdin or multiple files | Locale display widths and non-byte tab semantics are not claimed |
