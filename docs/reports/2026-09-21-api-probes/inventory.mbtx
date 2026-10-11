@@ -1,0 +1,72 @@
+///|
+import { "moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/core/env", "moonbitlang/core/json" }
+
+///|
+async fn main {
+  let registry = @env.get_env_var("MOON_HOME").unwrap() + "/registry/index/user/"
+  let implemented : Array[String] = []
+  for name in @fs.readdir("commands") {
+    if @fs.exists("commands/" + name + "/moon.mod") { implemented.push(name) }
+  }
+  implemented.sort()
+  let published : Array[String] = []
+  let unpublished : Array[String] = []
+  for name in implemented {
+    let index = registry + "cli/" + name + ".index"
+    let mut released = false
+    if @fs.exists(index) {
+      for line in @fs.read_file(index).text().split("\n") {
+        if line.trim() == "" { continue }
+        match @json.parse(line) {
+          {"version":"0.2.0","yanked":true,..} => ()
+          {"version":"0.2.0",..} => released = true
+          _ => ()
+        }
+      }
+    }
+    if released { published.push(name) } else { unpublished.push(name) }
+  }
+  let groups = [
+    ("files_paths", "tree du df stat readlink realpath mktemp install truncate split csplit unlink link"),
+    ("text", "sed awk diff patch tac rev fold fmt expand unexpand od hexdump strings column expr"),
+    ("encoding_archive", "cksum md5sum sha1sum sha512sum base32 tar gzip gunzip zcat zip unzip"),
+    ("system_execution", "date uname hostname id whoami groups ps kill watch uptime free tty stty tput clear yes which nproc chown chgrp"),
+  ]
+  let rows : Array[Json] = []
+  let seen : Map[String, Bool] = Map([])
+  for (category, names) in groups {
+    for name in names.split(" ") {
+      let name = name.to_owned()
+      assert_false(seen.contains(name))
+      seen[name] = true
+      assert_false(implemented.contains(name))
+      assert_false(@fs.exists(registry + "cli/" + name + ".index"))
+      rows.push({
+        "command":name.to_json(), "category":category.to_json(),
+        "implemented":false, "published_in_cli_namespace":false,
+        "prior_plan":if ["chown", "kill"].contains(name) { "explicitly_excluded" } else { "no_active_implementation_plan_found" },
+      })
+    }
+  }
+  let dependencies : Array[Json] = []
+  for name in ["moonbitlang/async", "moonbitlang/x", "bobzhang/moonjq"] {
+    let entries : Array[Json] = []
+    for line in @fs.read_file(registry + name + ".index").text().split("\n") {
+      if line.trim() == "" { continue }
+      let row = @json.parse(line)
+      if !(row is {"yanked":true,..}) { entries.push(row) }
+    }
+    dependencies.push(entries[entries.length()-1])
+  }
+  let report : Json = {
+    "date":"2026-09-21", "scope":"48 local commands plus 59 explicitly selected common missing commands; not an exhaustive Unix inventory",
+    "implemented_count":implemented.length().to_json(), "published_0_2_0_count":published.length().to_json(),
+    "published_0_2_0":published.to_json(), "local_only":unpublished.to_json(),
+    "missing_selected_count":rows.length().to_json(),
+    "missing_without_prior_plan":(rows.length()-2).to_json(),
+    "missing_previously_excluded":2,
+    "missing":rows.to_json(), "latest_external_registry_entries":dependencies.to_json(),
+  }
+  @fs.write_file("docs/reports/2026-09-21-api-probes/inventory.json", report.stringify(indent=2)+"\n")
+  println("implemented=\{implemented.length()}, published=\{published.length()}, local_only=\{unpublished.join(",")}, selected_missing=\{rows.length()}")
+}

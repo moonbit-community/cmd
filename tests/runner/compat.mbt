@@ -10,9 +10,9 @@ async fn check_catalog(
   failures : Array[String],
 ) -> Unit {
   let catalog = @cli.command_catalog()
-  if catalog.length() != 48 {
+  if catalog.length() != 79 {
     compat_fail(
-      "catalog: expected 48 commands, got \{catalog.length()}",
+      "catalog: expected 79 commands, got \{catalog.length()}",
       failures,
     )
   }
@@ -72,6 +72,7 @@ async fn run_tail_follow_process(
   initial : Array[Bytes],
   append : Array[Bytes],
   replacement : Array[Bytes?],
+  ready_marker? : String = "",
   poll_wait_ms? : Int = 160,
 ) -> (Bytes, Bytes) {
   let root = @fs.tmpdir(prefix="mooncmd-tail-follow")
@@ -98,9 +99,24 @@ async fn run_tail_follow_process(
       cancel_handler=@process.hard_cancel(),
       no_wait=true,
     )
-    @async.sleep(120)
-    for index, path in paths {
-      @fs.write_file(path, append[index], append=true, create_mode=OpenExisting)
+    let mut ready = ready_marker == ""
+    let deadline = @async.now() + 5000L
+    while !ready && @async.now() < deadline {
+      let captured = @fs.read_file(stdout_path).binary() catch { _ => b"" }
+      ready = @testkit.contains_bytes(captured, ready_marker)
+      if !ready {
+        @async.sleep(10)
+      }
+    }
+    if ready {
+      for index, path in paths {
+        @fs.write_file(
+          path,
+          append[index],
+          append=true,
+          create_mode=OpenExisting,
+        )
+      }
     }
     @async.sleep(poll_wait_ms)
     let mut replaced = false
@@ -113,7 +129,7 @@ async fn run_tail_follow_process(
         None => ()
       }
     }
-    if replaced {
+    if ready && replaced {
       @async.sleep(poll_wait_ms)
     }
     child.cancel()

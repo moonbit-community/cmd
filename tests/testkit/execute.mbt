@@ -22,7 +22,7 @@ pub async fn execute_contract(
     detail: "case excludes " + host_platform(),
     platform: host_platform(),
     backend,
-    source_version: fixture.source_version.unwrap_or("workspace 0.2.0"),
+    source_version: fixture.source_version.unwrap_or("workspace"),
     duration_ms: 0L,
     observations: [],
     missing_observations: [],
@@ -76,7 +76,9 @@ pub async fn execute_contract(
       fixture.timeout_ms.unwrap_or(15000),
       stdin=fixture.input(root=fixture_root, http_base?),
       cwd=fixture.working_directory(fixture_root),
-      extra_env=controlled_environment(fixture.environment),
+      extra_env=controlled_environment(
+        expand_environment(fixture.environment, fixture_root, http_base?),
+      ),
     )
     let observed = completed.output
     result = Some(observed)
@@ -92,6 +94,7 @@ pub async fn execute_contract(
       stage = "assertion"
       match fixture.expected_rejection {
         Some(reason) => {
+          let after = snapshot(fixture_root, observe=dimensions)
           if observed.status == 0 || !contains_bytes(observed.stderr, reason) {
             errors.push("expected rejection: " + reason)
           }
@@ -106,10 +109,7 @@ pub async fn execute_contract(
           if observed.stdout != b"" {
             errors.push("unsupported operation wrote stdout")
           }
-          if !snapshots_equal(
-              before,
-              snapshot(fixture_root, observe=dimensions),
-            ) {
+          if !snapshots_equal(before, after) {
             errors.push("rejected operation changed fixture")
           }
         }

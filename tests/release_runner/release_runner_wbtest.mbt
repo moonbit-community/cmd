@@ -8,6 +8,42 @@ test "release manifest version validation" {
 }
 
 ///|
+test "frozen release inventory survives catalog growth but candidates remain complete" {
+  let row : ReleaseCommand = {
+    name: "true",
+    package_name: "cli/true",
+    version: "0.1.5",
+    published: true,
+    compare_profile: "gnu",
+    supported_options: [],
+    policy_sensitive: false,
+  }
+  let base : BaseManifest = {
+    schema: 2,
+    cases: [release_case_for_test("frozen-true", "true")],
+  }
+  let frozen : ReleaseManifest = {
+    schema: 2,
+    candidate: None,
+    base_manifest: "active-cases.json",
+    commands: [row],
+    case_ids: ["frozen-true"],
+    extra_cases: [],
+  }
+  assert_true(validate_release_manifest(frozen, base).is_empty())
+  let candidate = {
+    ..frozen,
+    candidate: Some(true),
+    commands: [{ ..row, published: false, }],
+  }
+  assert_true(
+    validate_release_manifest(candidate, base).any(message => {
+      message.contains("missing candidate command")
+    }),
+  )
+}
+
+///|
 test "release manifest selects explicit cases" {
   let manifest : ReleaseManifest = {
     schema: 1,

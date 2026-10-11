@@ -6,6 +6,10 @@ export PATH=/oracle/bin
 
 base64 --version | head -n1
 cmp --version | head -n1
+sed --version | head -n1
+patch --version | head -n1
+gzip --version | head -n1
+hexdump --version | head -n1
 find --version | head -n1
 xargs --version | head -n1
 grep --version | head -n1

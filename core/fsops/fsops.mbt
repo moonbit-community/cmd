@@ -519,3 +519,21 @@ pub async fn remove_path(path : String, recursive : Bool) -> Unit {
     _ => @fs.remove(path)
   }
 }
+
+///|
+pub extend OutputMode with Eq::{not_equal, equal}
+
+///|
+pub extend OutputMode with @debug.Debug::{to_repr}
+
+///|
+pub extend LinkTraversal with Eq::{not_equal, equal}
+
+///|
+pub extend LinkTraversal with @debug.Debug::{to_repr}
+
+///|
+pub extend FileMetadata with Eq::{not_equal, equal}
+
+///|
+pub extend FileMetadata with @debug.Debug::{to_repr}

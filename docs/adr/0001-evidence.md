@@ -2,10 +2,16 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-09-21
-Revision: Share test mechanisms and active cases; separate invocation health, semantic compatibility and explicit capability boundaries; record the three-platform 0.2.0 source gate and subsequent publication.
+Updated: 2026-10-11
+Revision: Map all 31 migrated commands to canonical decisions and inventory 79 command follow-ups; distinguish new fidelity findings from the frozen successful release selections.
 
 ## Target and decision
+
+All product code, shared runtime code, test runners, fixtures, and automation
+must be pure MoonBit. Project-owned C/C++/Rust/JavaScript/TypeScript, FFI,
+native stubs, and host-command delegation are prohibited as implementation
+workarounds. Host tools may only observe fixtures, collect diagnostics, or act
+as fixed-version oracles.
 
 Command support requires observable GNU/POSIX or upstream agreement in stdout,
 stderr, status and required filesystem effects. Exact published MoonX versions
@@ -28,6 +34,15 @@ Neither, nor a platform skip, contributes to semantic compatibility. Only a
 passing contract or differential with every required observation contributes.
 Contracts assert both output streams and status; diagnostic fragments require a
 reason. Absence of internal errors alone is not a behavioral contract.
+
+Passing a self-authored contract proves that contract, not upstream equivalence.
+The [2026-10-11 follow-up audit](../reports/2026-10-11-command-followups/README.md)
+finds missing GNU meanings in strings, executable access in which, default/LF
+behavior in column and caller TZ handling in date despite passing published
+selections. These are explicit follow-ups in current support records. Keep old
+reports immutable and correct faulty expectations only with upstream evidence.
+The [79-command register](../command-followups.md) separates defects, project
+work, public API gaps, platform behavior and missing measurements.
 
 Validate option coverage against the actual selected cases, then report platform
 applicability, execution and passing observations separately. An empty option
@@ -79,8 +94,29 @@ atime relations use the same fixture in a boundary or stateful scenario.
 
 ## Versions and evidence
 
-Baseline: moon/moonrun 0.1.20260915; moonc/core 0.10.13+cbb11c36f;
-async 0.22.1; x 0.5.5; moonjq 0.1.2. The dependency refresh found no older external
+Current refresh (2026-09-26): the public registry resolves
+`moonbitlang/async 0.22.4` (checksum
+`2ffdb85cb229cfe9219161a7f2b959215a79a0d75b7e642cb346713f168a1457`) across
+the 50 pre-existing workspace modules. The current published index did not contain a
+released 0.22.5. Native and Wasm warning-denied checks passed after the
+refresh; command completion evidence remains per-package and per-backend.
+
+The 2026-10-11 P2 release adds `strings`, `column`, `which` and `date` as
+independent 0.1.0 command modules and publishes `cli/core@0.4.0`. Their Native
+and Wasm contract selections pass 19 semantic cases plus the explicit encoding
+boundary. The published manifest contains 78 command coordinates and 554
+selected cases. After clearing the account's 78 cached command assets, the
+published-consumer runner re-downloaded every exact coordinate; the final smoke
+run passed 447 semantic, 81 availability and 23 boundary observations, with 3
+macOS platform skips and no failures. A transient TLS handshake failure for
+`chmod@0.2.0` was rerun after its asset was re-downloaded and passed; it is
+retained in the first redownload report as infrastructure evidence. The shared
+testkit now expands the `${WORK}` placeholder in environment values as it
+already does in arguments and fixture text. This is a test-observation
+correction, not a product authorization rule.
+
+Baseline: moon/moonrun 0.1.20260920; moonc/core 0.10.14+7d59c7ec9;
+async 0.22.4; x 0.5.5; moonjq 0.1.2. The dependency refresh found no older external
 versions in the resolved tree. Upgrade-only tests passed Native 104/104 and
 Wasm 91/91 before behavior changes.
 
@@ -88,7 +124,8 @@ The [0.2.0 source gate](https://github.com/moonbit-community/cmd/actions/runs/35
 passed Linux, macOS and Windows at source commit
 `442015078b8dc01f64f499e5df0847d7c7458c3d`, including Linux Native/Wasm pinned
 oracle checks. After that gate, `cli/core@0.2.0` was published first, followed
-sequentially by 47 command modules. `timeout` remains local-only. Publication
+sequentially by 47 command modules. `timeout` remains local-only; the eight
+new P0 command profiles are workspace-only until a later publication gate. Publication
 receipts and the separate exact-version MoonX gate are recorded in
 [release evidence](../reports/2026-09-21-release-0.2.0/README.md). The published
 manifest selects 382 active cases; the frozen schema 1 manifests and candidate
@@ -100,13 +137,16 @@ command contract. Do not alter expected command output to compensate for argv
 lost in a launcher. Revisit this adapter if MoonX changes its parsing contract;
 keep direct exact-version probes for commands that consume a leading separator.
 
-The 2026-09-21 final migration check found a newer official toolchain manifest
-(moonc 0.10.14+7d59c7ec9 and moon/moonrun 0.1.20260920). This release gate pins
-CI binaries and core to the already validated 0.10.13+cbb11c36f archive, whose
-official download was verified, so local and remote measurements share a
-baseline. Floating `latest` was rejected because it silently changes the
-compiler during acceptance. This does not claim validation of 0.10.14; lift the
-pin in a separate toolchain change after repeating all three platform checks.
+The 0.2.0 release gate used the validated 0.10.13+cbb11c36f archive. The next
+workspace baseline pins CI binaries and core to 0.10.14+7d59c7ec9
+(moon/moonrun 0.1.20260920), matching the developer's upgraded toolchain.
+The newer compiler deprecates implicit trait-method promotion; explicit public
+extensions preserve the previous methods instead of suppressing warnings or
+removing API. Black-box tests qualify the package under test. Registry refresh
+still resolves async 0.22.4, x 0.5.5 and moonjq 0.1.2, including moonjq's
+transitive imports. Floating `latest` remains rejected so acceptance cannot
+silently change compiler. Local new-baseline results do not replace the required
+three-platform CI gate or retroactively change published-release evidence.
 
 The [original audit](../reports/2026-09-19-command-fidelity-audit.md) and
 [test-system audit](../reports/2026-09-21-test-system-audit.md) remain immutable
@@ -116,8 +156,25 @@ before/after execution counts and same-host timings without predicting a speedup
 
 ## Revisit when
 
+2026-10-10: The new 16-command batch uses a separate candidate manifest with
+74 releasable coordinates; the 58 published coordinates keep their versions.
+Candidate validation requires the complete current catalog. Frozen published
+manifests validate their declared release inventory and selected cases, so
+adding a new command does not invalidate old-version replay. Empty inventories,
+unknown commands, missing selected coordinates and option claims still fail.
+The compatibility cost is that completeness is a candidate gate rather than a
+retroactive property of every old manifest. Revisit only with explicit release
+inventory schemas, preserving historical replay tests.
+
 Recheck released dependencies or reported mismatches. Rerun affected behavior and
 exact-version published-consumer gates before promoting support. Expand observer
 capabilities when public APIs or fixed test oracles can measure a missing
 dimension reliably. Change test frequency only after measured cost and a mapping
 show that required behavior/platform coverage is preserved.
+
+2026-10-11: The P2 candidate was promoted only after CI run
+`38103982048` passed Linux, macOS and Windows. Publication was serialized as
+`cli/core@0.4.0`, then `column`, `date`, `strings` and `which` at `0.1.0`; each
+registry upload returned `Server status: 200 OK` and exact `moon view` checks
+confirmed immutable coordinates. The preparation manifest remains frozen; the
+published manifest and final smoke report are the current release evidence.

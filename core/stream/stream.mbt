@@ -65,3 +65,9 @@ pub async fn LineScanner::next(self : LineScanner) -> Line? {
     }
   }
 }
+
+///|
+pub extend Line with Eq::{not_equal, equal}
+
+///|
+pub extend Line with @debug.Debug::{to_repr}

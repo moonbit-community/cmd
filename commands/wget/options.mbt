@@ -60,6 +60,7 @@ fn usage() -> String {
     #|      --password=PASSWORD         HTTP Basic password
     #|      --auth-no-challenge         send Basic credentials on every request, including redirects
     #|      --load-cookies=FILE         load a Netscape cookie jar
+    #|      --header='Cookie: ...'      override jar cookies, including on redirects
     #|      --save-cookies=FILE         save persistent cookies
     #|      --keep-session-cookies      also save session cookies
     #|      --no-cookies                disable cookie storage

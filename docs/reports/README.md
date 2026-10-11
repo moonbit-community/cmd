@@ -14,6 +14,12 @@ they are not an alternative support matrix.
 
 | Date | Report | Scope |
 | --- | --- | --- |
+| 2026-10-11 | [Command follow-up audit](2026-10-11-command-followups/README.md) | 79-command inventory, 31 new-package ADR mappings and Native/Wasm/exact MoonX observations of four known fidelity deviations |
+| 2026-10-11 | [P2 command release 0.1.0](2026-10-11-p2-release-0.1.0/README.md) | Four pure MoonBit command packages, core 0.4.0, three-platform CI, clean-cache exact MoonX redownload and 554-case final smoke acceptance |
+| 2026-10-11 | [P2 command candidate](2026-10-11-p2-command-candidate.md) | Local-only strings, column, which and date packages, shared testkit environment expansion, candidate manifest validation and Native/Wasm contracts |
+| 2026-10-11 | [Second command batch release 0.1.0](2026-10-11-release-0.1.0/README.md) | Sixteen pure MoonBit command packages, core 0.3.0, three-platform CI, serial registry publication and exact MoonX smoke acceptance |
+| 2026-09-27 | [P0 command release 0.1.1](2026-09-27-release-0.1.1/README.md) | README/version refresh for eleven command packages, three-platform CI, registry verification and exact MoonX smoke acceptance |
+| 2026-09-26 | [P0 command release 0.1.0](2026-09-26-release-0.1.0/README.md) | Eleven pure MoonBit command packages, three-platform CI, sequential publication and exact MoonX smoke acceptance |
 | 2026-09-21 | [0.2.0 publication and acceptance](2026-09-21-release-0.2.0/README.md) | Three-platform source gate, core-first publication receipts, fixed Linux oracle and exact-version MoonX results |
 | 2026-09-21 | [Complete JSON migration and release gate](2026-09-21-json-migration/README.md) | 240 legacy invocations migrated with assertion maps, two-backend execution, remote CI and publication gate |
 | 2026-09-21 | [Test cleanup implementation](2026-09-21-test-cleanup-implementation.md) | Shared testkit, judgment repair, case/fixture migration, ls/jq fixes, serialized validation and remaining external gates |

@@ -16,6 +16,6 @@ description = "dirname command for MoonX."
 
 import {
   "cli/core@0.2.0",
-  "moonbitlang/async@0.22.1",
+  "moonbitlang/async@0.22.4",
   "moonbitlang/x@0.5.5",
 }

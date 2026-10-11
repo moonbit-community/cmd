@@ -1,0 +1,15 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/od"
+
+// Values
+
+// Errors
+
+// Types and methods
+type DumpState
+
+type Format
+
+// Type aliases
+
+// Traits

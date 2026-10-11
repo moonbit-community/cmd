@@ -6,7 +6,7 @@ published MoonX behavior; `moonx` examples use registry releases.
 
 Create missing files with `0666 & ~umask`. `-c`/`--no-create` succeeds without
 creating a missing file. Existing operands, including with `-c`, fail explicitly:
-async 0.22.1 has
+async 0.22.4 has
 no public timestamp setter. The command never writes file contents to fake
 timestamp updates. Operands are processed in order; earlier successful creates
 remain when a later operand fails.

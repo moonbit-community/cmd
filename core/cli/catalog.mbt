@@ -14,6 +14,12 @@ fn contract(
 ///|
 pub fn command_catalog() -> Array[CommandContract] {
   [
+    contract("base32", Core, FileOrStdin, ByteStream, [FileRead], [
+      "decode", "ignore-garbage", "wrap",
+    ]),
+    contract("cksum", Core, FileOrStdin, LineStream, [FileRead], [
+      "help", "version",
+    ]),
     contract("base64", Core, FileOrStdin, ByteStream, [FileRead], [
       "decode", "ignore-garbage", "wrap",
     ]),
@@ -62,6 +68,9 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("tail", Core, FileOrStdin, ByteStream, [FileRead], [
       "bytes", "follow", "lines", "quiet", "sleep-interval", "verbose",
     ]),
+    contract("tac", Core, FileOrStdin, ByteStream, [FileRead], [
+      "before", "separator",
+    ]),
     contract("tr", Core, OptionalStdin, ByteStream, [], [
       "complement", "delete", "squeeze-repeats", "truncate-set1",
     ]),
@@ -70,6 +79,10 @@ pub fn command_catalog() -> Array[CommandContract] {
       "check-chars", "count", "ignore-case", "repeated", "skip-chars", "skip-fields",
       "unique", "zero-terminated",
     ]),
+    contract("unexpand", Core, FileOrStdin, ByteStream, [FileRead], [
+      "all", "first-only", "tabs",
+    ]),
+    contract("unlink", Core, NoInput, LineStream, [FileWrite], []),
     contract("wc", Core, FileOrStdin, LineStream, [FileRead], [
       "bytes", "chars", "files0-from", "lines", "max-line-length", "words",
     ]),
@@ -91,6 +104,9 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("dirname", Core, NoInput, LineStream, [], ["zero"]),
     contract("echo", Core, NoInput, ByteStream, [], [
       "enable-escapes", "disable-escapes", "help", "no-newline", "version",
+    ]),
+    contract("expand", Core, FileOrStdin, ByteStream, [FileRead], [
+      "initial", "tabs",
     ]),
     contract(
       "find",
@@ -141,6 +157,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("mkdir", Extended, NoInput, LineStream, [FileWrite], [
       "mode", "parents", "verbose",
     ]),
+    contract("mktemp", Extended, NoInput, LineStream, [FileWrite], ["directory"]),
     contract("mv", Extended, NoInput, LineStream, [FileRead, FileWrite], [
       "force", "no-clobber", "no-target-directory", "verbose", "interactive", "update",
       "update-mode", "backup", "backup-control", "suffix",
@@ -151,7 +168,14 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("rmdir", Extended, NoInput, LineStream, [FileWrite], [
       "ignore-fail-on-non-empty", "parents", "verbose",
     ]),
+    contract("realpath", Core, NoInput, LineStream, [FileRead], [
+      "canonicalize-existing", "zero",
+    ]),
+    contract("rev", Core, FileOrStdin, ByteStream, [FileRead], []),
     contract("tee", Extended, OptionalStdin, ByteStream, [FileWrite], ["append"]),
+    contract("tree", Core, NoInput, LineStream, [FileRead], [
+      "all", "dirs-only", "full-path", "level", "noreport",
+    ]),
     contract("touch", Extended, NoInput, LineStream, [FileWrite], [
       "access-time", "date", "modification-time", "no-create", "reference", "stamp",
       "time",
@@ -159,6 +183,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("chmod", Restricted, NoInput, LineStream, [PermissionMutation], [
       "recursive", "reference", "verbose", "symbolic-assignment",
     ]),
+    // header + cookie: explicit Cookie follows the jar as a separate field.
     contract("curl", Restricted, NoInput, ByteStream, [Network, FileWrite], [
       "connect-timeout", "data", "data-binary", "data-raw", "data-urlencode", "fail",
       "head", "header", "idle-timeout", "insecure", "location", "max-redirs", "max-time",
@@ -204,6 +229,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       ["duration"],
       exit_codes=[0, 124, 125, 126, 127],
     ),
+    // header + load-cookies: explicit Cookie overrides jar fields across origins.
     contract("wget", Restricted, NoInput, ByteStream, [Network, FileWrite], [
       "append-output", "body-data", "body-file", "connect-timeout", "continue", "content-disposition",
       "header", "input-file", "max-redirect", "method", "no-check-certificate", "no-proxy",
@@ -211,6 +237,129 @@ pub fn command_catalog() -> Array[CommandContract] {
       "retry-on-http-error", "timeout", "timestamping", "tries", "waitretry", "idle-timeout",
       "user", "password", "http-user", "http-password", "auth-no-challenge", "load-cookies",
       "save-cookies", "keep-session-cookies", "no-cookies",
+    ]),
+    contract("yes", Core, NoInput, ByteStream, [], []),
+    contract(
+      "fold",
+      Core,
+      FileOrStdin,
+      ByteStream,
+      [FileRead],
+      ["bytes", "characters", "spaces", "width", "version"],
+      exit_codes=[0, 1],
+    ),
+    contract(
+      "od",
+      Core,
+      FileOrStdin,
+      ByteStream,
+      [FileRead],
+      [
+        "address-radix", "skip-bytes", "read-bytes", "format", "endian", "width",
+        "output-duplicates", "named", "octal-byte", "character", "decimal", "int",
+        "long", "octal", "signed", "hex", "version",
+      ],
+      exit_codes=[0, 1],
+    ),
+    contract(
+      "hexdump",
+      Core,
+      FileOrStdin,
+      ByteStream,
+      [FileRead],
+      [
+        "one-byte-octal", "one-byte-char", "canonical", "two-bytes-decimal", "two-bytes-octal",
+        "two-bytes-hex", "one-byte-hex", "length", "skip", "no-squeezing", "version",
+      ],
+      exit_codes=[0, 1],
+    ),
+    contract("md5sum", Core, FileOrStdin, LineStream, [FileRead], [
+      "binary", "check", "ignore-missing", "quiet", "status", "strict", "text", "warn",
+      "zero",
+    ]),
+    contract("sha1sum", Core, FileOrStdin, LineStream, [FileRead], [
+      "binary", "check", "ignore-missing", "quiet", "status", "strict", "text", "warn",
+      "zero",
+    ]),
+    contract("sha512sum", Core, FileOrStdin, LineStream, [FileRead], [
+      "binary", "check", "ignore-missing", "quiet", "status", "strict", "text", "warn",
+      "zero",
+    ]),
+    contract("sed", Core, FileOrStdin, ByteStream, [FileRead], [
+      "expression", "file", "extended-regexp", "quiet", "silent", "in-place",
+    ]),
+    contract(
+      "diff",
+      Core,
+      FileOrStdin,
+      LineStream,
+      [FileRead],
+      [
+        "brief", "report-identical-files", "text", "unified", "context", "unified-lines",
+        "context-lines", "label",
+      ],
+      exit_codes=[0, 1, 2],
+    ),
+    contract(
+      "patch",
+      Extended,
+      FileOrStdin,
+      ByteStream,
+      [FileRead, FileWrite],
+      [
+        "strip", "input", "output", "directory", "reverse", "dry-run", "quiet", "unified",
+        "context", "batch", "fuzz", "no-backup-if-mismatch", "version",
+      ],
+      exit_codes=[0, 1, 2],
+    ),
+    contract(
+      "split",
+      Extended,
+      FileOrStdin,
+      ByteStream,
+      [FileRead, FileWrite],
+      [
+        "bytes", "lines", "numeric-suffixes", "suffix-length", "additional-suffix",
+      ],
+    ),
+    contract(
+      "csplit",
+      Extended,
+      FileOrStdin,
+      LineStream,
+      [FileRead, FileWrite],
+      ["elide-empty-files", "prefix", "quiet", "silent", "keep-files", "digits"],
+    ),
+    contract("expr", Core, NoInput, LineStream, [], ["expression-language"]),
+    contract("fmt", Core, FileOrStdin, ByteStream, [FileRead], [
+      "width", "goal", "split-only", "uniform-spacing",
+    ]),
+    contract("gzip", Extended, FileOrStdin, ByteStream, [FileRead], [
+      "stdout", "decompress", "test", "no-name", "quiet",
+    ]),
+    contract("gunzip", Extended, FileOrStdin, ByteStream, [FileRead], [
+      "stdout", "decompress", "test", "no-name", "quiet",
+    ]),
+    contract("zcat", Core, FileOrStdin, ByteStream, [FileRead], [
+      "stdout", "decompress", "test", "no-name", "quiet",
+    ]),
+    contract("strings", Core, FileOrStdin, LineStream, [FileRead], [
+      "all", "bytes", "encoding", "octal", "print-file-name", "radix", "version",
+    ]),
+    contract("column", Core, FileOrStdin, LineStream, [FileRead], [
+      "table", "separator", "output-separator", "version",
+    ]),
+    contract(
+      "which",
+      Core,
+      NoInput,
+      LineStream,
+      [FileRead],
+      ["all", "silent", "version"],
+      exit_codes=[0, 1, 2],
+    ),
+    contract("date", Core, NoInput, LineStream, [], [
+      "utc", "date", "iso-8601", "rfc-email", "version",
     ]),
     contract(
       "xargs",

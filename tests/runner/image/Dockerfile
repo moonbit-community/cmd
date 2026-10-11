@@ -21,6 +21,14 @@ ARG JQ_VERSION=1.8.2
 ARG JQ_SHA256=b1c22172dd303f3be49e935aa56aa48a8b7a46e0bc838b4997d3bb451495870f
 ARG VIM_VERSION=9.1.0000
 ARG VIM_SHA256=8d2a74e358be9cf260174e15e2e29dba4773f2670718b5bf728db6f54b90e25d
+ARG SED_VERSION=4.9
+ARG SED_SHA256=6e226b732e1cd739464ad6862bd1a1aba42d7982922da7a53519631d24975181
+ARG PATCH_VERSION=2.8
+ARG PATCH_SHA256=f87cee69eec2b4fcbf60a396b030ad6aa3415f192aa5f7ee84cad5e11f7f5ae3
+ARG GZIP_VERSION=1.14
+ARG GZIP_SHA256=01a7b881bd220bfdf615f97b8718f80bdfd3f6add385b993dcf6efd14e8c0ac6
+ARG UTIL_LINUX_VERSION=2.40
+ARG UTIL_LINUX_SHA256=d57a626081f9ead02fa44c63a6af162ec19c58f53e993f206ab7c3a6641c2cd7
 
 RUN apt-get update \
   && apt-get install --yes --no-install-recommends \
@@ -161,6 +169,54 @@ RUN curl --fail --location --retry 5 \
   && rm -rf vim.tar.gz "vim-${VIM_VERSION}"
 
 RUN ln -s /oracle/bin/dash /oracle/bin/sh
+
+RUN curl --fail --location --retry 5 \
+      "https://ftp.gnu.org/gnu/sed/sed-${SED_VERSION}.tar.xz" \
+      --output sed.tar.xz \
+  && echo "${SED_SHA256}  sed.tar.xz" | sha256sum --check --strict \
+  && tar --extract --file sed.tar.xz \
+  && cd "sed-${SED_VERSION}" \
+  && ./configure --prefix=/oracle --disable-nls \
+  && make -j"$(nproc)" \
+  && make install-strip \
+  && cd /build \
+  && rm -rf sed.tar.xz "sed-${SED_VERSION}"
+
+RUN curl --fail --location --retry 5 \
+      "https://ftp.gnu.org/gnu/patch/patch-${PATCH_VERSION}.tar.xz" \
+      --output patch.tar.xz \
+  && echo "${PATCH_SHA256}  patch.tar.xz" | sha256sum --check --strict \
+  && tar --extract --file patch.tar.xz \
+  && cd "patch-${PATCH_VERSION}" \
+  && ./configure --prefix=/oracle \
+  && make -j"$(nproc)" \
+  && make install-strip \
+  && cd /build \
+  && rm -rf patch.tar.xz "patch-${PATCH_VERSION}"
+
+RUN curl --fail --location --retry 5 \
+      "https://ftp.gnu.org/gnu/gzip/gzip-${GZIP_VERSION}.tar.xz" \
+      --output gzip.tar.xz \
+  && echo "${GZIP_SHA256}  gzip.tar.xz" | sha256sum --check --strict \
+  && tar --extract --file gzip.tar.xz \
+  && cd "gzip-${GZIP_VERSION}" \
+  && ./configure --prefix=/oracle \
+  && make -j"$(nproc)" \
+  && make install-strip \
+  && cd /build \
+  && rm -rf gzip.tar.xz "gzip-${GZIP_VERSION}"
+
+RUN curl --fail --location --retry 5 \
+      "https://www.kernel.org/pub/linux/utils/util-linux/v${UTIL_LINUX_VERSION}/util-linux-${UTIL_LINUX_VERSION}.tar.xz" \
+      --output util-linux.tar.xz \
+  && echo "${UTIL_LINUX_SHA256}  util-linux.tar.xz" | sha256sum --check --strict \
+  && tar --extract --file util-linux.tar.xz \
+  && cd "util-linux-${UTIL_LINUX_VERSION}" \
+  && ./configure --prefix=/oracle --disable-nls --without-python --without-systemd --disable-liblastlog2 --without-ncursesw --without-ncurses \
+  && make -j"$(nproc)" hexdump \
+  && install -m 0755 hexdump /oracle/bin/hexdump \
+  && cd /build \
+  && rm -rf util-linux.tar.xz "util-linux-${UTIL_LINUX_VERSION}"
 
 COPY --chmod=0755 entrypoint.sh versions.sh /usr/local/bin/
 

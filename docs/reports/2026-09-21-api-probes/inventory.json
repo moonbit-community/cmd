@@ -1,0 +1,533 @@
+{
+  "date": "2026-09-21",
+  "scope": "48 local commands plus 59 explicitly selected common missing commands; not an exhaustive Unix inventory",
+  "implemented_count": 48,
+  "published_0_2_0_count": 47,
+  "published_0_2_0": [
+    "cp",
+    "jq",
+    "ln",
+    "ls",
+    "mv",
+    "nl",
+    "rm",
+    "sh",
+    "tr",
+    "wc",
+    "cat",
+    "cmp",
+    "cut",
+    "env",
+    "pwd",
+    "seq",
+    "tee",
+    "xxd",
+    "comm",
+    "curl",
+    "echo",
+    "find",
+    "grep",
+    "head",
+    "join",
+    "make",
+    "sort",
+    "tail",
+    "test",
+    "true",
+    "uniq",
+    "wget",
+    "chmod",
+    "false",
+    "jqlog",
+    "mkdir",
+    "paste",
+    "rmdir",
+    "sleep",
+    "touch",
+    "xargs",
+    "base64",
+    "printf",
+    "dirname",
+    "basename",
+    "printenv",
+    "sha256sum"
+  ],
+  "local_only": [
+    "timeout"
+  ],
+  "missing_selected_count": 59,
+  "missing_without_prior_plan": 57,
+  "missing_previously_excluded": 2,
+  "missing": [
+    {
+      "command": "tree",
+      "category": "files_paths",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "du",
+      "category": "files_paths",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "df",
+      "category": "files_paths",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "stat",
+      "category": "files_paths",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "readlink",
+      "category": "files_paths",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "realpath",
+      "category": "files_paths",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "mktemp",
+      "category": "files_paths",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "install",
+      "category": "files_paths",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "truncate",
+      "category": "files_paths",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "split",
+      "category": "files_paths",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "csplit",
+      "category": "files_paths",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "unlink",
+      "category": "files_paths",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "link",
+      "category": "files_paths",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "sed",
+      "category": "text",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "awk",
+      "category": "text",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "diff",
+      "category": "text",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "patch",
+      "category": "text",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "tac",
+      "category": "text",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "rev",
+      "category": "text",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "fold",
+      "category": "text",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "fmt",
+      "category": "text",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "expand",
+      "category": "text",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "unexpand",
+      "category": "text",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "od",
+      "category": "text",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "hexdump",
+      "category": "text",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "strings",
+      "category": "text",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "column",
+      "category": "text",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "expr",
+      "category": "text",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "cksum",
+      "category": "encoding_archive",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "md5sum",
+      "category": "encoding_archive",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "sha1sum",
+      "category": "encoding_archive",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "sha512sum",
+      "category": "encoding_archive",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "base32",
+      "category": "encoding_archive",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "tar",
+      "category": "encoding_archive",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "gzip",
+      "category": "encoding_archive",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "gunzip",
+      "category": "encoding_archive",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "zcat",
+      "category": "encoding_archive",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "zip",
+      "category": "encoding_archive",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "unzip",
+      "category": "encoding_archive",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "date",
+      "category": "system_execution",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "uname",
+      "category": "system_execution",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "hostname",
+      "category": "system_execution",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "id",
+      "category": "system_execution",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "whoami",
+      "category": "system_execution",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "groups",
+      "category": "system_execution",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "ps",
+      "category": "system_execution",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "kill",
+      "category": "system_execution",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "explicitly_excluded"
+    },
+    {
+      "command": "watch",
+      "category": "system_execution",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "uptime",
+      "category": "system_execution",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "free",
+      "category": "system_execution",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "tty",
+      "category": "system_execution",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "stty",
+      "category": "system_execution",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "tput",
+      "category": "system_execution",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "clear",
+      "category": "system_execution",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "yes",
+      "category": "system_execution",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "which",
+      "category": "system_execution",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "nproc",
+      "category": "system_execution",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    },
+    {
+      "command": "chown",
+      "category": "system_execution",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "explicitly_excluded"
+    },
+    {
+      "command": "chgrp",
+      "category": "system_execution",
+      "implemented": false,
+      "published_in_cli_namespace": false,
+      "prior_plan": "no_active_implementation_plan_found"
+    }
+  ],
+  "latest_external_registry_entries": [
+    {
+      "name": "moonbitlang/async",
+      "version": "0.22.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbitlang/async",
+      "license": "Apache-2.0",
+      "keywords": [],
+      "description": "Asynchronous programming library for MoonBit",
+      "preferred_target": "native",
+      "source": "src",
+      "checksum": "bf828e78d7e038f9393e7a6bf936bb60a4068f0c03b8e1863be772f74808b0de",
+      "created_at": "2026-09-16T09:22:14.278824+00:00",
+      "yanked": false,
+      "yanked_reason": null
+    },
+    {
+      "name": "moonbitlang/x",
+      "version": "0.5.5",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbitlang/x",
+      "license": "Apache-2.0",
+      "keywords": [
+        "experimental",
+        "moonbitlang",
+        "json",
+        "time",
+        "crypto"
+      ],
+      "description": "experimental packages for moonbitlang/core",
+      "checksum": "eb7ddddea2c871ac823d210c4a9fdf5efc75d2c1fe9965292760669f15041dc4",
+      "created_at": "2026-09-11T07:30:15.145003+00:00",
+      "yanked": false,
+      "yanked_reason": null
+    },
+    {
+      "name": "bobzhang/moonjq",
+      "version": "0.1.2",
+      "readme": "README.mbt.md",
+      "repository": "git@github.com:moonbit-community/moobit-jq.git",
+      "keywords": [
+        "jq",
+        "json",
+        "query"
+      ],
+      "description": "A jq implementation in MoonBit",
+      "deps": {
+        "moonbitlang/async": "0.21.1",
+        "moonbitlang/x": "0.5.1"
+      },
+      "preferred_target": "native",
+      "license": "Apache-2.0",
+      "warn-list": "+test_unqualified_package+unnecessary_view_op+unnecessary_annotation+deprecated+missing_doc",
+      "checksum": "107f1e1f2195098cb0eebd43e16ab2e7458a5dc6c8c51f467fb833214b68cb16",
+      "created_at": "2026-08-26T08:21:22.331441+00:00"
+    }
+  ]
+}

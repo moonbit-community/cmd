@@ -170,7 +170,9 @@ async fn run_candidate(
   let args = [row.package_name + "@" + row.version, "--"]
   args.append(expand_args(fixture.args, root, http_base?))
   let stdin = fixture.input(root~, http_base?)
-  let environment = controlled_environment(fixture.environment)
+  let environment = controlled_environment(
+    @testkit.expand_environment(fixture.environment, root, http_base?),
+  )
   @testkit.run_with_deadline(
     moonx,
     args,

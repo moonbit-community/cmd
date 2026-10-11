@@ -201,3 +201,9 @@ pub async fn capture(
   let session = Session::new(name~, args~, env~, cwd?)
   run_substitution(script, session.context)
 }
+
+///|
+pub extend SessionResult with Eq::{not_equal, equal}
+
+///|
+pub extend SessionResult with @debug.Debug::{to_repr}

@@ -1,0 +1,41 @@
+///|
+import { "moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/async/process" }
+
+///|
+async fn main {
+  let destination = "docs/reports/2026-09-21-api-probes/"
+  for (source, name) in [
+    ("/tmp/cmd-new-toolchain-check-all.log", "check-all.log"),
+    ("/tmp/cmd-new-toolchain-tests-native.log", "tests-native.log"),
+    ("/tmp/cmd-new-toolchain-tests-wasm.log", "tests-wasm.log"),
+    ("/tmp/cmd-new-toolchain-build-native.log", "build-native.log"),
+    ("/tmp/cmd-new-toolchain-build-wasm.log", "build-wasm.log"),
+    ("/tmp/cmd-new-toolchain-info.log", "info.log"),
+    ("/tmp/cmd-new-toolchain-fmt.log", "fmt.log"),
+    ("/tmp/cmd-header-probe.log", "http-header-layers.log"),
+    ("/tmp/cmd-cancellation-probe.log", "cancellation-is-not-kill.log"),
+    ("/tmp/cmd-cookie-redirect-probe.mbtx", "cookie-redirects.mbtx"),
+    ("/tmp/cmd-cookie-redirect-probe.log", "cookie-redirects.log"),
+    ("/tmp/cmd-new-toolchain-check-all.log", "check-cross-cookie-all.log"),
+    ("/tmp/cmd-new-toolchain-build-native.log", "build-cross-cookie-native.log"),
+    ("/tmp/cmd-new-toolchain-build-wasm.log", "build-cross-cookie-wasm.log"),
+    ("/tmp/cmd-netops-tests.log", "cross-cookie-tests-native.log"),
+    ("/tmp/cmd-netops-tests-wasm.log", "cross-cookie-tests-wasm.log"),
+    ("test-reports/toolchain-20260920/cookie-cross-native/summary.jsonl", "cross-cookie-native.jsonl"),
+    ("test-reports/toolchain-20260920/cookie-cross-wasm/summary.jsonl", "cross-cookie-wasm.jsonl"),
+    ("test-reports/toolchain-20260920/scenarios-native/summary.jsonl", "scenarios-native.jsonl"),
+    ("test-reports/toolchain-20260920/scenarios-wasm/summary.jsonl", "scenarios-wasm.jsonl"),
+    ("test-reports/toolchain-20260920/contracts-native/summary.jsonl", "contracts-native.jsonl"),
+    ("test-reports/toolchain-20260920/contracts-wasm/summary.jsonl", "contracts-wasm.jsonl"),
+  ] {
+    if !@fs.exists(destination + name) {
+      @fs.write_file(destination + name, @fs.read_file(source).binary())
+    }
+  }
+  // Child launchers inherit MOON_HOME from this script's required invocation.
+  for (args, name) in [(["version", "--all"], "toolchain.txt"), (["-C", "commands/jq", "tree"], "dependency-tree.txt")] {
+    let (status, stdout, stderr) = @process.collect_output("moon",args)
+    assert_eq(status,0,msg=stderr.text())
+    if !@fs.exists(destination + name) { @fs.write_file(destination + name, stdout.binary()) }
+  }
+}

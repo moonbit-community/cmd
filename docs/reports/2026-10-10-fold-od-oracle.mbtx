@@ -1,0 +1,83 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+}
+
+///|
+async fn call(program : String, args : Array[String], input : Bytes) -> @shell.Output {
+  @shell.Cmd(program, args, stdin=Binary(input), env={ "LC_ALL": "C" }).output(timeout_ms=15000, max_output_bytes=4000000)
+}
+
+///|
+async fn main {
+  let oracle_root = @env.args().get(1).unwrap_or("/tmp/coreutils-9.11/src")
+  let artifact_root = @env.args().get(2).unwrap_or("_build/native/release/build/cli")
+  let hexdump_oracle = @env.args().get(3).unwrap_or("/tmp/util-linux-2.40/hexdump")
+  let inputs : Array[Bytes] = [
+    b"", b"abc", b"abcdef\nxy", b"aa bb cccccc", b"a\tb", b"ab\bcd\rabc",
+    b"a\x00\xffb", b" \n\xff", b"0123456789abcdef0123456789abcdef0123456789abcdef",
+    Bytes::makei(257, i => (i % 256).to_byte()),
+  ]
+  let fold_args : Array[Array[String]] = [
+    [], ["-w3"], ["-w4", "-s"], ["-w5", "-s"], ["-w2", "-b"], ["-w3", "-c"], ["-w3", "-b", "-s"],
+  ]
+  let od_args : Array[Array[String]] = [
+    [], ["-An", "-tx1"], ["-Ax", "-tx2"], ["-Ad", "-tu1"], ["-An", "-td1"],
+    ["-An", "-tu8"], ["-An", "-td8"], ["-An", "-tc"], ["-An", "-ta"],
+    ["-tx1", "-w4"], ["-tx1", "-w4", "-v"], ["-tx2", "--endian=big"],
+    ["-tx1z"], ["-tx1", "-td2"], ["-tx4", "-tc"], ["-j0", "-N3", "-tx1"],
+    ["-N0"], ["-N0", "-j0"],
+  ]
+  let hexdump_args : Array[Array[String]] = [
+    [], ["-b"], ["-c"], ["-C"], ["-d"], ["-o"], ["-x"], ["-X"],
+    ["-C", "-v"], ["-C", "-n3"], ["-C", "-n0", "-s2"], ["-C", "-s2"], ["-b", "-x", "-C"],
+  ]
+  let mut checks = 0
+  let mut failures = 0
+  let scratch = @fs.tmpdir(prefix="cli-binary-oracle-")
+  defer @fs.rmdir(scratch, recursive=true)
+  for (command, arguments) in [("fold", fold_args), ("od", od_args), ("hexdump", hexdump_args)] {
+    let oracle = if command == "hexdump" { hexdump_oracle } else { oracle_root + "/" + command }
+    let version = call(oracle, ["--version"], b"")
+    assert_true(version.stdout().contains(if command == "hexdump" { "2.40" } else { "9.11" }))
+    for args in arguments {
+      for input in inputs {
+        let options = args.copy()
+        if command == "hexdump" && args.contains("-s2") {
+          let fixture = scratch + "/input"
+          @fs.write_file(fixture, input)
+          options.push(fixture)
+        }
+        let expected = call(oracle, options, input)
+        let actual = call(artifact_root + "/" + command + "/" + command + ".exe", options, input)
+        checks += 1
+        if expected.exit_code() != actual.exit_code() || expected.stdout_bytes() != actual.stdout_bytes() || expected.stderr() != actual.stderr() {
+          failures += 1
+          println("FAIL \{command} \{Repr(args)} input-length=\{input.length()}")
+          println("expected status=\{expected.exit_code()} out=\{expected.stdout().to_json().stringify()} err=\{expected.stderr()}")
+          println("actual status=\{actual.exit_code()} out=\{actual.stdout().to_json().stringify()} err=\{actual.stderr()}")
+        }
+      }
+    }
+  }
+  println("GNU coreutils 9.11 / util-linux hexdump 2.40: \{checks} comparisons, \{failures} failures")
+  assert_eq(failures, 0)
+  if @env.args().contains("--mark") {
+    for command in ["fold", "od", "hexdump"] {
+      let path = "tests/cases/" + command + ".json"
+      let document = @json.parse(@fs.read_file(path).text())
+      if document is { "cases": Array(cases), .. } {
+        for item in cases {
+          if item is { "expected_status": Number(0, ..), "comparison": String("contract"), .. } && item is Object(fields) {
+            fields["oracle"] = true
+            fields["source_version"] = (if command == "hexdump" { "util-linux 2.40" } else { "GNU coreutils 9.11" }).to_json()
+          }
+        }
+      }
+      @fs.write_file(path, document.stringify(indent=2) + "\n")
+    }
+  }
+}

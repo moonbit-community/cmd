@@ -357,6 +357,32 @@ async fn network_cli_scenario(
         ),
         "auth=\ncookie=sid=fixture\n",
       )
+      check_network_response(
+        network_request(
+          root,
+          wasm,
+          work,
+          command,
+          if command == "curl" {
+            ["-sS", "-b", jar, "-H", "Cookie: sid=header", base + "/inspect"]
+          } else {
+            [
+              "-qO-",
+              "--load-cookies=" + jar,
+              "--header=Cookie: sid=header",
+              base + "/inspect",
+            ]
+          },
+          oracle_image?,
+          oracle_failures~,
+        ),
+        if command == "curl" {
+          // The HTTP fixture joins repeated wire fields with a comma.
+          "auth=\ncookie=sid=fixture,sid=header\n"
+        } else {
+          "auth=\ncookie=sid=header\n"
+        },
+      )
       if command == "curl" {
         check_network_response(
           network_request(
@@ -370,25 +396,32 @@ async fn network_cli_scenario(
           ),
           "auth=\ncookie=sid=fixture; sid=manual\n",
         )
-        let before = requests.length()
-        let unsupported = network_request(root, wasm, work, command, [
-          "-sS",
-          "-b",
-          jar,
-          "-H",
-          "Cookie: sid=header",
-          base + "/inspect",
-        ])
-        assert_true(unsupported.status != 0)
-        assert_eq(unsupported.stdout, b"")
-        assert_true(
-          @testkit.contains_bytes(
-            unsupported.stderr,
-            "duplicate request-header support",
-          ),
-        )
-        assert_eq(requests.length(), before)
       }
+      check_network_response(
+        network_request(
+          root,
+          wasm,
+          work,
+          command,
+          if command == "curl" {
+            ["-sSL", "-b", jar, "-H", "Cookie: sid=header", base + "/cross"]
+          } else {
+            [
+              "-qO-",
+              "--load-cookies=" + jar,
+              "--header=Cookie: sid=header",
+              base + "/cross",
+            ]
+          },
+          oracle_image?,
+          oracle_failures~,
+        ),
+        if command == "curl" {
+          "auth=\ncookie=\n"
+        } else {
+          "auth=\ncookie=sid=header\n"
+        },
+      )
       if !(@async.platform is Windows) {
         // A newly created ordinary file observes this process's real umask.
         let control = work + "/mode-control-" + command

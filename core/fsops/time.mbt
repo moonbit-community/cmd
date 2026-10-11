@@ -69,3 +69,15 @@ pub fn current_timestamp() -> FileTimestamp {
     nanoseconds: (milliseconds % 1000L * 1000000L).to_int(),
   }
 }
+
+///|
+pub extend TimestampKind with Eq::{not_equal, equal}
+
+///|
+pub extend TimestampKind with @debug.Debug::{to_repr}
+
+///|
+pub extend FileTimestamp with Eq::{not_equal, equal}
+
+///|
+pub extend FileTimestamp with @debug.Debug::{to_repr}

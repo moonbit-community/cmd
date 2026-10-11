@@ -11,8 +11,8 @@ unsupported because the
 portable API only provides cancellation for the directly owned child process.
 Unlike `sh`, `make`, and `xargs`, this difference from GNU `timeout` keeps the
 command behind its compatibility release gate. It is included in the
-48-command local build but is
-not one of the 47 command modules currently available from Mooncakes;
+79-command local build but is
+not one of the 78 command modules currently available from Mooncakes;
 `moonx cli/timeout` is intentionally unsupported.
 
 The child inherits the complete caller environment. The caller or host grants

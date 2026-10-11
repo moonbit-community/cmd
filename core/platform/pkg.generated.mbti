@@ -70,17 +70,26 @@ pub(all) enum Platform {
   Windows
   Posix
 } derive(Eq, @debug.Debug)
+pub fn Platform::equal(Self, Self) -> Bool
+pub fn Platform::not_equal(Self, Self) -> Bool
+pub fn Platform::to_repr(Self) -> @debug.Repr
 
 pub(all) enum StandardStream {
   Stdin
   Stdout
   Stderr
 } derive(Eq, @debug.Debug)
+pub fn StandardStream::equal(Self, Self) -> Bool
+pub fn StandardStream::not_equal(Self, Self) -> Bool
+pub fn StandardStream::to_repr(Self) -> @debug.Repr
 
 pub(all) enum TerminalPolicy {
   Silent
   IfTerminal
 } derive(Eq, @debug.Debug)
+pub fn TerminalPolicy::equal(Self, Self) -> Bool
+pub fn TerminalPolicy::not_equal(Self, Self) -> Bool
+pub fn TerminalPolicy::to_repr(Self) -> @debug.Repr
 
 // Type aliases
 

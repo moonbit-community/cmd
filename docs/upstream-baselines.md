@@ -1,6 +1,6 @@
 # Upstream Baselines
 
-This file fixes the external behavior against which the 48 commands are
+This file fixes the external behavior against which the workspace commands are
 measured. A baseline is an oracle for tests, not a runtime dependency. Product
 code remains pure MoonBit.
 
@@ -9,7 +9,11 @@ code remains pure MoonBit.
 | Family | Baseline | Scope |
 | --- | --- | --- |
 | GNU Coreutils commands | GNU Coreutils 9.11 | `base64`, `basename`, `cat`, `chmod`, `comm`, `cp`, `cut`, `dirname`, `echo`, `env`, `false`, `head`, `join`, `ln`, `ls`, `mkdir`, `mv`, `nl`, `paste`, `printenv`, `printf`, `pwd`, `rm`, `rmdir`, `seq`, `sha256sum`, `sleep`, `sort`, `tail`, `tee`, `test`, `timeout`, `touch`, `tr`, `true`, `uniq`, `wc` |
-| GNU Diffutils | GNU Diffutils 3.12 | `cmp` |
+| GNU Diffutils | GNU Diffutils 3.12 | `cmp`, `diff` |
+| GNU sed | GNU sed 4.9 | `sed` byte-profile scripts |
+| GNU patch | GNU patch 2.8 | `patch` exact unified/context profile |
+| GNU gzip | GNU gzip 1.14 | `gzip`, `gunzip`, `zcat`; compare decoded data and failure behavior, not encoder byte identity |
+| util-linux | util-linux 2.40 | `hexdump` layouts and `rev` byte profile |
 | GNU findutils | GNU findutils 4.10.0 | `find`, `xargs` |
 | GNU grep | GNU grep 3.12 | `grep`, with locale fixed to `LC_ALL=C` in the first conformance pass |
 | GNU Wget | GNU Wget 1.25.0 | `wget`; the complete documented command is the target, with protocol families implemented in measured stages |
@@ -28,6 +32,10 @@ Every downloaded source or official binary is verified before use:
 | --- | --- |
 | `coreutils-9.11.tar.xz` | `394024eda0a5955217ceda9cd1201e65dc8fa3aa29c2951135a49521d57c3cc3` |
 | `diffutils-3.12.tar.xz` | `7c8b7f9fc8609141fdea9cece85249d308624391ff61dedaf528fcb337727dfd` |
+| `sed-4.9.tar.xz` | `6e226b732e1cd739464ad6862bd1a1aba42d7982922da7a53519631d24975181` |
+| `patch-2.8.tar.xz` | `f87cee69eec2b4fcbf60a396b030ad6aa3415f192aa5f7ee84cad5e11f7f5ae3` |
+| `gzip-1.14.tar.xz` | `01a7b881bd220bfdf615f97b8718f80bdfd3f6add385b993dcf6efd14e8c0ac6` |
+| `util-linux-2.40.tar.xz` | `d57a626081f9ead02fa44c63a6af162ec19c58f53e993f206ab7c3a6641c2cd7` |
 | `findutils-4.10.0.tar.xz` | `1387e0b67ff247d2abde998f90dfbf70c1491391a59ddfecb8ae698789f0a4f5` |
 | `grep-3.12.tar.xz` | `2649b27c0e90e632eadcd757be06c6e9a4f48d941de51e7c0f83ff76408a07b9` |
 | `wget-1.25.0.tar.gz` | `766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784` |

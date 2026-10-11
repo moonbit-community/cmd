@@ -1,0 +1,15 @@
+///|
+import { "moonbitlang/async", "moonbitlang/async/process" }
+
+///|
+async fn main {
+  // Positive INT_MAX is outside macOS's PID range. Never use 0 or a negative
+  // PID here: those select process groups. This is a macOS-only observation.
+  guard @async.platform is MacOS else { fail("This probe requires macOS") }
+  let (status, _, error) = @process.collect_output("/bin/kill", ["-0", "2147483647"])
+  assert_true(status != 0)
+  assert_true(error.text().contains("No such process"))
+  let @process.CancellationHandler(cancel) = @process.hard_cancel()
+  cancel(2147483647)
+  println("oracle: missing pid rejected; public hard_cancel: returned Unit without an error")
+}

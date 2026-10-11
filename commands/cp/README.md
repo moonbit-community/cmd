@@ -5,7 +5,7 @@ tracks platform verification and exact-version publication evidence separately.
 
 Copy regular files and directory trees to new destinations with
 `--no-preserve=mode` (and `-R`/`-r` for trees). Source modes cannot be read with
-the public async 0.22.1 API, so default copying is explicitly unavailable.
+the public async 0.22.4 API, so default copying is explicitly unavailable.
 New files use `0666 & ~umask`, and new directories use `0777 & ~umask`.
 Supports `-T`, `-v`, and `-H/-L/-P` traversal. No-clobber (`-n`) and
 `-u`/`--update` modes (`all`, `none`, `none-fail`, `older`) can select a no-op

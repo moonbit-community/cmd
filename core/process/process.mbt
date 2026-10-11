@@ -86,3 +86,9 @@ pub async fn redirect_to_file(
 pub fn pipe() -> (&@async_process.ProcessInput, &@async_process.ProcessOutput) raise {
   @async_process.pipe()
 }
+
+///|
+pub extend LaunchFailure with Eq::{not_equal, equal}
+
+///|
+pub extend LaunchFailure with @debug.Debug::{to_repr}

@@ -1,0 +1,15 @@
+Date: 2026-10-10
+Host: macOS arm64
+Candidate: workspace Native release, cli/gzip and cli/gunzip 0.1.0
+Oracle: GNU gzip 1.14, /tmp/cmd-oracle-gzip/bin/gzip
+Toolchain: moon 0.1.20260920 (914d7da), moonc v0.10.14+7d59c7ec9
+Command: MOON_HOME="$HOME/.moon-accounts/cli" moon run docs/reports/2026-10-10-gzip-oracle.mbtx
+
+GNU gzip 1.14: 54 checks passed (decode, encode roundtrip, truncated-trailer prefix)
+
+The script compares complete decompressed bytes and statuses for deterministic
+inputs of 0, 1, 23, 257, 4096 and 65537 bytes, each with three entropy profiles.
+Compression is checked through an oracle decode roundtrip; compressed-byte
+identity is not claimed. Truncated trailers preserve the GNU-visible prefix.
+The oracle was built from the pinned source and SHA-256 in the runner image.
+This is local macOS evidence, not Linux, Windows or published MoonX evidence.

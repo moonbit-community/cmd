@@ -1,0 +1,17 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/csplit"
+
+// Values
+
+// Errors
+
+// Types and methods
+type Control
+
+type Output
+
+type Pattern
+
+// Type aliases
+
+// Traits

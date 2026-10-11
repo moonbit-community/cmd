@@ -1,0 +1,61 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+  "moonbitlang/core/env",
+}
+
+///|
+async fn call(program : String, args : Array[String], input : Bytes) -> @shell.Output {
+  @shell.Cmd(program, args, stdin=Binary(input)).output(timeout_ms=15000, max_output_bytes=2000000)
+}
+
+///|
+fn payload(size : Int, mode : Int) -> Bytes {
+  let mut random = 0x51c0deU
+  Bytes::makei(size, index => {
+    random = random ^ (random << 13)
+    random = random ^ (random >> 17)
+    random = random ^ (random << 5)
+    match mode {
+      0 => random.to_byte()
+      1 => (random % 7U).to_byte()
+      _ => (index % 3 + 97).to_byte()
+    }
+  })
+}
+
+///|
+async fn main {
+  let args = @env.args()
+  let oracle = args.get(1).unwrap_or("/tmp/cmd-oracle-gzip/bin/gzip")
+  let build = "_build/native/release/build/cli/"
+  let decoder = build + "gunzip/gunzip.exe"
+  let encoder = build + "gzip/gzip.exe"
+  let version = call(oracle, ["--version"], b"")
+  assert_eq(version.exit_code(), 0)
+  assert_true(version.stdout().has_prefix("gzip 1.14"))
+  let mut checks = 0
+  for size in [0, 1, 23, 257, 4096, 65537] {
+    for mode in 0..<3 {
+      let input = payload(size, mode)
+      let encoded = call(oracle, ["-cn"], input)
+      assert_eq(encoded.exit_code(), 0)
+      let decoded = call(decoder, ["-c"], encoded.stdout_bytes())
+      assert_eq(decoded.exit_code(), 0)
+      assert_eq(decoded.stdout_bytes(), input)
+      let candidate = call(encoder, ["-cn"], input)
+      assert_eq(candidate.exit_code(), 0)
+      let restored = call(oracle, ["-dc"], candidate.stdout_bytes())
+      assert_eq(restored.exit_code(), 0)
+      assert_eq(restored.stdout_bytes(), input)
+      let compressed = encoded.stdout_bytes()
+      let damaged = compressed[:compressed.length() - 4].to_owned()
+      let ours = call(decoder, ["-c"], damaged)
+      let expected = call(oracle, ["-dc"], damaged)
+      assert_eq(ours.exit_code(), expected.exit_code())
+      assert_eq(ours.stdout_bytes(), expected.stdout_bytes())
+      checks += 3
+    }
+  }
+  println("GNU gzip 1.14: \{checks} checks passed (decode, encode roundtrip, truncated-trailer prefix)")
+}

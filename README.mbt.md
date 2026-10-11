@@ -6,16 +6,28 @@ system for preserving GNU/POSIX and command-upstream behavior. Authorization
 belongs to the caller or host; commands preserve the caller's environment and
 stream semantics.
 
-**0.2.0 is published** as `cli/core` and 47 command modules. Linux, macOS and
-Windows passed the release source checks, including Linux Native/Wasm pinned
-oracle comparisons. Exact-version MoonX acceptance is recorded separately in
-the [release evidence](docs/reports/2026-09-21-release-0.2.0/README.md). See the
-[support record](docs/compatibility.md), and
+`cli/core@0.4.0` is published for the current catalog contracts. The original 47
+command modules remain at **0.2.0**, the first eleven P0 modules remain at **0.1.1**,
+the second sixteen-command batch remains at **0.1.0**, and `strings`, `column`,
+`which` and `date` are published at **0.1.0**. The workspace contains 79 command
+modules: 78 published commands and local-only `timeout`. Linux, macOS
+and Windows passed the release source checks, including Linux Native/Wasm
+pinned oracle comparisons. Exact-version MoonX acceptance for this batch is recorded
+in the [release evidence](docs/reports/2026-10-11-p2-release-0.1.0/README.md); the
+second batch remains documented in [its release evidence](docs/reports/2026-10-11-release-0.1.0/README.md);
+the first batch remains documented in [its release evidence](docs/reports/2026-09-27-release-0.1.1/README.md).
+See the [support record](docs/compatibility.md), and
 [upstream API gaps](docs/async-upstream-gaps.md). This release includes a
 persistent line-oriented `sh -i`, real `make -j` scheduling, JSON input framing,
 Basic HTTP authentication and cookies. Strict filesystem limits are explicit:
 default `cp` and existing-file `touch` cannot be implemented faithfully with
 the current public metadata APIs; see ADR-0004.
+
+The current workspace adopts MoonBit 2026-09-20 and async 0.22.4, and corrects curl/wget custom
+Cookie plus jar behavior using the two public HTTP header layers. These corrections
+are not included in published 0.2.0. See the [API recheck](docs/async-upstream-gaps.md)
+and the [common-command inventory and proposed priorities](docs/command-coverage.md),
+including the current P0 additions and the remaining command-gap inventory.
 
 Releasable commands are available as independent modules under
 `cli/<command>`:
@@ -28,29 +40,32 @@ MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/jq@0.2.0 -- -r '.name'
 
 ## Commands
 
-The repository contains 48 executable commands for local builds. The current
-Mooncakes registry exposes 47 of them through MoonX. `timeout` remains
-local-only because portable process-group cancellation is not available, so
-`moonx cli/timeout` is intentionally unavailable.
+The repository contains 79 executable commands for local builds. The current
+Mooncakes registry exposes 78 of them through MoonX: 47 commands at 0.2.0, the
+eleven first-batch commands at 0.1.1, the sixteen second-batch commands at 0.1.0,
+and `strings`, `column`, `which` and `date` at 0.1.0. `timeout` remains outside
+the releasable profile because portable process-group cancellation is not available.
 
 ### Text and data
 
 ```text
-base64 cat cmp comm cut grep head join jq jqlog nl paste printf sha256sum
-sort tail tr uniq wc xxd
+base32 base64 cat cksum cmp column comm cut date diff expand expr fmt fold grep
+gunzip gzip head hexdump join jq jqlog md5sum nl od paste printf rev sed sha1sum
+sha256sum sha512sum sort strings tac tail tr uniq wc xxd zcat
 ```
 
 ### Files and paths
 
 ```text
-basename cp dirname find ln ls mkdir mv pwd rm rmdir tee touch
+basename cp csplit dirname find ln ls mkdir mktemp mv patch realpath rm rmdir split tee touch tree
+unexpand unlink
 ```
 
 ### Environment and execution
 
 ```text
 chmod echo env false make printenv seq sh sleep test timeout true wget curl
-xargs
+which xargs yes
 ```
 
 Commands implement their behavior in MoonBit and use explicit runtime APIs for
@@ -68,9 +83,9 @@ describe their requirements and do not add a command-level policy. Host-denied
 operations fail with a nonzero status; the policy suite checks the resulting
 effects independently of command compatibility.
 
-The repository intentionally does not provide `chown` or `kill`, because the
-required owner-mutation and arbitrary-process-signalling capabilities are not
-part of the current controlled runtime contract.
+The repository does not yet provide `chown` or `kill`: public owner mutation
+and signal sending with observable errors are missing. These are implementation
+boundaries; the host remains responsible for authorization.
 
 ## Structure
 
@@ -112,8 +127,8 @@ The project combines package tests and two runners sharing a Native testkit:
 - `oracle` compares Native and Wasm commands with the pinned upstream image,
   including declared metadata observations. GNU and stress are independent suites.
 - `release_runner` validates candidate manifests and checks exact published
-  MoonX versions selected by `published-0.2.0.json`; frozen 0.1.x manifests remain
-  available for historical replay.
+  MoonX versions selected by `published-2026-10-11.json`; the 0.1.x, 0.2.0 and
+  prior 2026-10-10 manifests remain available for historical replay.
 - `scenarios` covers persistent shell input, HTTP auth/cookies, filesystem
   boundaries and process/make lifecycle on both backends in CI. Former standalone
   probes are archived with their assertion migration maps.
@@ -134,7 +149,7 @@ MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --release --deny
 MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release --deny-warn
 ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite compat
 ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite policy
-./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe --manifest tests/release_runner/candidate-0.2.0.json --suite validate
+./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe --manifest tests/release_runner/candidate-0.1.1.json --suite validate
 MOON_HOME="$HOME/.moon-accounts/cli" moon info
 MOON_HOME="$HOME/.moon-accounts/cli" moon fmt
 ```
@@ -145,6 +160,10 @@ scenario probes; it is not the complete release acceptance suite.
 See [Compatibility](docs/compatibility.md) for measured command support and
 platform behavior, and [Provenance](docs/provenance.md) for the source of
 the imported command implementations.
+The [prioritized follow-up register](docs/command-followups.md) covers known
+defects, unsupported options and verification gaps across all 79 local commands;
+the [ADR index](docs/adr/README.md#recent-command-decision-coverage) maps all
+31 recently added packages to their technical decisions.
 
 ## License
 

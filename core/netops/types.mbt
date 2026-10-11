@@ -120,6 +120,13 @@ fn HttpMethod::to_runtime(self : HttpMethod) -> @http.RequestMethod {
 }
 
 ///|
+/// How an explicit Cookie field interacts with cookies selected from the jar.
+pub(all) enum CustomCookieMode {
+  SeparateFields
+  ReplaceStored
+}
+
+///|
 pub(all) struct TransferOptions {
   request_method : HttpMethod
   headers : Array[HttpHeader]
@@ -137,6 +144,8 @@ pub(all) struct TransferOptions {
   keep_output_on_not_modified : Bool
   cookie_jar : CookieJar?
   cookie_data : String?
+  custom_cookie_mode : CustomCookieMode
+  custom_cookie_cross_origin : Bool
   basic_credentials : String?
   basic_preemptive : Bool
   basic_credential_scope : BasicCredentialScope
@@ -160,6 +169,8 @@ pub fn transfer_options(
   keep_output_on_not_modified? : Bool = false,
   cookie_jar? : CookieJar,
   cookie_data? : String,
+  custom_cookie_mode? : CustomCookieMode = SeparateFields,
+  custom_cookie_cross_origin? : Bool = false,
   basic_credentials? : String,
   basic_preemptive? : Bool = true,
   basic_credential_scope? : BasicCredentialScope = InitialOrigin,
@@ -181,6 +192,8 @@ pub fn transfer_options(
     keep_output_on_not_modified,
     cookie_jar,
     cookie_data,
+    custom_cookie_mode,
+    custom_cookie_cross_origin,
     basic_credentials,
     basic_preemptive,
     basic_credential_scope,
@@ -223,3 +236,54 @@ pub fn TransferResult::header(self : TransferResult, name : String) -> String? {
   }
   None
 }
+
+///|
+pub extend HttpMethod with Eq::{not_equal, equal}
+
+///|
+pub extend HttpMethod with @debug.Debug::{to_repr}
+
+///|
+pub extend HttpHeader with Eq::{not_equal, equal}
+
+///|
+pub extend HttpHeader with @debug.Debug::{to_repr}
+
+///|
+pub extend RequestBody with @debug.Debug::{to_repr}
+
+///|
+pub extend RedirectPolicy with Eq::{not_equal, equal}
+
+///|
+pub extend RedirectPolicy with @debug.Debug::{to_repr}
+
+///|
+pub extend BasicCredentialScope with Eq::{not_equal, equal}
+
+///|
+pub extend BasicCredentialScope with @debug.Debug::{to_repr}
+
+///|
+pub extend TransferFileMode with Eq::{not_equal, equal}
+
+///|
+pub extend TransferFileMode with @debug.Debug::{to_repr}
+
+///|
+pub extend TransferOutput with @debug.Debug::{to_repr}
+
+///|
+pub extend TransferErrorKind with Eq::{not_equal, equal}
+
+///|
+pub extend TransferErrorKind with @debug.Debug::{to_repr}
+
+///|
+pub extend TransferError with Eq::{not_equal, equal}
+
+///|
+pub extend TransferError with @debug.Debug::{to_repr}
+
+///|
+pub extend TransferEvent with @debug.Debug::{to_repr}

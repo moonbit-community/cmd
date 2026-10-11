@@ -8,7 +8,7 @@ Validate the retained preparation manifest against local package versions:
 
 ```sh
 MOON_HOME="$HOME/.moon-accounts/cli" moon run --target native tests/release_runner -- \
-  --manifest tests/release_runner/candidate-0.2.0.json --suite validate
+  --manifest tests/release_runner/candidate-0.1.1.json --suite validate
 ```
 
 Run published 0.2.0 against the pinned oracle:
@@ -27,12 +27,18 @@ verification level. Availability checks do not replace the release differential
 gate. `latest`, ranges and implicit versions are rejected. `timeout` remains
 local-only and is absent from the release manifest.
 
-Published 0.2.0 selects 382 shared per-command cases across 47 command modules.
+Published 0.1.1 selects the first migrated command cases alongside the frozen
+0.2.0 rows for the original 47 command modules. The current published manifest
+`published-2026-10-11.json` additionally selects the second 0.1.0 batch and the
+P2 `column`, `date`, `strings` and `which` packages, with `cli/core@0.4.0`.
 Frozen schema 1 manifests (`manifest.json` and their bases) remain readable after
 local source versions change. Only `validate` compares pinned versions to local
 package versions. The retained preparation manifest accepts `validate` and
 `--list`; its candidate flags deliberately continue to block execution. Use
-`published-0.2.0.json` for the released packages.
+`published-0.1.1.json` for the historical 58 released packages; the current
+`published-2026-10-11.json` covers 78 released command coordinates. The previous
+`published-0.1.0.json` and the frozen
+`published-0.2.0.json` remain available for historical replay.
 
 The process argv is `moonx cli/<command>@<version> -- <command arguments>`.
 The inserted separator preserves a command's own leading `--`; such an operand
@@ -78,3 +84,7 @@ account credentials.
 When publishing, update package versions, README, help, catalog, compatibility
 records and case coverage together. Validate first, publish only with explicit
 authorization, then rerun exact published coordinates after their assets exist.
+The 2026-10-11 P2 publication was validated by
+`published-2026-10-11.json`; its final local smoke report is
+`test-reports/published-smoke-20261011-p2-final` and the release evidence is
+`docs/reports/2026-10-11-p2-release-0.1.0/README.md`.

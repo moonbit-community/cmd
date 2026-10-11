@@ -44,36 +44,35 @@ async fn main {
   }
   let mut failed = false
   for path in files {
-    let exists = @fsops.kind_if_exists(path) catch {
+    let exists = @fs.exists(path) catch {
       err => {
         @stdio.stderr.write("touch: cannot inspect '\{path}': \{err}\n")
         failed = true
         continue
       }
     }
-    match exists {
-      None if no_create => ()
-      None => {
-        let file = @fs.open(
-          path,
-          mode=WriteOnly,
-          create_mode=CreateNew,
-          permission=0o666,
-        ) catch {
-          err => {
-            @stdio.stderr.write("touch: cannot create '\{path}': \{err}\n")
-            failed = true
-            continue
-          }
+    if !exists && no_create {
+      continue
+    }
+    if !exists {
+      let file = @fs.open(
+        path,
+        mode=WriteOnly,
+        create_mode=CreateNew,
+        permission=0o666,
+      ) catch {
+        err => {
+          @stdio.stderr.write("touch: cannot create '\{path}': \{err}\n")
+          failed = true
+          continue
         }
-        file.close()
       }
-      Some(_) => {
-        @stdio.stderr.write(
-          "touch: cannot update '\{path}': timestamp setters are unavailable in moonbitlang/async 0.22.1\n",
-        )
-        failed = true
-      }
+      file.close()
+    } else {
+      @stdio.stderr.write(
+        "touch: cannot update '\{path}': timestamp setters are unavailable in moonbitlang/async 0.22.4\n",
+      )
+      failed = true
     }
   }
   if failed {

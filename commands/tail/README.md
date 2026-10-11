@@ -24,7 +24,7 @@ descriptor remains open across renames, matching `tail -f`; deleting and
 recreating a path is not followed, because `-F` is not implemented.
 
 `-F` remains a tested status-2 rejection. Faithful replacement detection needs
-public file identity, which async 0.22.1 does not expose; reopening a path is
+public file identity, which async 0.22.4 does not expose; reopening a path is
 available but alone does not establish that the file was replaced. See the
 [upstream gap record](../../docs/async-upstream-gaps.md).
 

@@ -21,6 +21,19 @@ pub fn expand_args(
 }
 
 ///|
+pub fn expand_environment(
+  values : Map[String, String],
+  root : String,
+  http_base? : String,
+) -> Map[String, String] {
+  let expanded : Map[String, String] = Map([])
+  for name, value in values {
+    expanded[name] = expand_text(value, root, http_base?)
+  }
+  expanded
+}
+
+///|
 pub fn expand_fixture_content(content : Bytes, http_base? : String) -> Bytes {
   guard http_base is Some(base) else { return content }
   let text = @utf8.decode(content) catch { _ => return content }
@@ -85,7 +98,11 @@ pub async fn prepare_fixture(
         guard !(@async.platform is Windows) else {
           fail("fixed timestamp fixture requires POSIX observer")
         }
-        let set = run("touch", [flag, "-t", time, destination])
+        let set = run(
+          "touch",
+          [flag, "-t", time, destination],
+          extra_env=Map([("TZ", "UTC")]),
+        )
         guard set.status == 0 else { fail("fixed timestamp fixture failed") }
       }
     }
@@ -235,8 +252,9 @@ pub async fn snapshot(
 ) -> Array[SnapshotEntry] {
   let entries : Array[SnapshotEntry] = []
   snapshot_into(root, "", entries, observe)
-  // Baseline content inspection may itself access files. Anchor an unchanged
-  // atime assertion after that inspection, before the candidate starts.
+  // Only the baseline includes accesses caused by preparing its content
+  // observation. The final snapshot must retain atime measured before reading
+  // content; otherwise the observer's own read becomes a candidate side effect.
   if baseline && observe.contains("atime") {
     for entry in entries {
       let (s, n) = @fs.atime(
@@ -315,3 +333,6 @@ pub fn normalize_text(
   }
   @utf8.encode(text)
 }
+
+///|
+pub extend SnapshotEntry with @debug.Debug::{to_repr}

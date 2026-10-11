@@ -31,6 +31,9 @@ pub(all) enum SessionResult {
   Completed(Int)
   Exit(Int)
 } derive(Eq, @debug.Debug)
+pub fn SessionResult::equal(Self, Self) -> Bool
+pub fn SessionResult::not_equal(Self, Self) -> Bool
+pub fn SessionResult::to_repr(Self) -> @debug.Repr
 
 // Type aliases
 

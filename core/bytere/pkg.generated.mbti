@@ -1,0 +1,38 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/core/bytere"
+
+import {
+  "moonbitlang/core/string",
+}
+
+// Values
+pub fn argument(String) -> String
+
+pub fn bytes(StringView) -> Bytes
+
+pub fn compile(String, extended? : Bool) -> Pattern raise
+
+pub fn text(BytesView) -> String
+
+// Errors
+pub(all) suberror PatternError {
+  PatternError(String)
+}
+
+// Types and methods
+pub(all) struct Hit {
+  start : Int
+  end : Int
+  groups : Array[String?]
+}
+
+pub struct Pattern {
+  regex : @string.Regex
+  groups : Int
+}
+pub fn Pattern::find(Self, String, start? : Int) -> Hit?
+pub fn Pattern::group_count(Self) -> Int
+
+// Type aliases
+
+// Traits

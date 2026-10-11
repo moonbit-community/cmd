@@ -1,0 +1,23 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/core/gzipops"
+
+import {
+  "moonbitlang/async/io",
+}
+
+// Values
+pub async fn decode(Bytes, &@io.Writer, Bool) -> Bool
+
+pub async fn encode(&@io.Reader, &@io.Writer) -> Unit
+
+pub fn help(String) -> String
+
+pub async fn run(String, ArrayView[String]) -> Int
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

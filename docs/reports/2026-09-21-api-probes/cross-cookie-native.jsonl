@@ -1,0 +1,1 @@
+{"id":"network-auth-cookie","command":"curl","result":"pass","verification":"contract","stage":"complete","detail":"","platform":"macos","backend":"native","source_version":"workspace 0.2.0","duration_ms":"1276","observations":["legacy-assertions"],"missing_observations":[]}
