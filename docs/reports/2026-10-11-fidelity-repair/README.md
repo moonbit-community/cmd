@@ -150,3 +150,10 @@ Release case directories now append a case-sensitive ID encoding, preventing
 `strings -e b/B` and `-e l/L` evidence from colliding on case-insensitive hosts.
 Both TLS contracts passed locally on Native, Wasm and exact published curl/wget.
 The new 841-case selection remains subject to full final MoonX acceptance.
+
+Remote published run `38131874801` passed Linux, including the pinned
+differential gate, and macOS. Windows reported one false failure because the
+POSIX-only `chmod` symbolic-assignment contract lacked its `host_platforms`
+condition even though the command README rejects Windows permission mutation.
+The case is corrected to skip on Windows with an explicit reason; the next
+three-platform run is the release gate for this test-only repair.
