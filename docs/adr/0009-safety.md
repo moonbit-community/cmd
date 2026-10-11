@@ -41,10 +41,12 @@ observations. Retain historical release reports, but annotate current support
 claims and add upstream fixtures when fixing. Do not downgrade a wrong result
 to availability or call a parser reinterpretation an accepted boundary merely
 because a previous self-authored contract passed. GNU unlink's extra-operand
-rejection must also remain distinct from the current multi-operand extension;
-future fidelity correction must check that neither file is removed.
+rejection is now preflighted in the candidate, with a two-file untouched-state
+regression. There is no rollback promise for supported operations that can
+legitimately produce partial effects.
 
-This audit documents rather than fixes those behaviors. Merging the historical
-implementation does not close the follow-ups or authorize another publication.
+The user subsequently authorized issue creation, repairs and publication after
+second review and CI. Track completion in the repair report; a passing older
+release selection or a local unit test does not close the publication gates.
 
 Document actual partial-effect rules for newly supported operations. Reopen rejected operations when public APIs can implement them correctly; record alternatives, cost and measured evidence.

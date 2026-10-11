@@ -1,5 +1,6 @@
 import {
   "cli/core/cli",
+  "cli/core/time_zone",
   "moonbitlang/async",
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",

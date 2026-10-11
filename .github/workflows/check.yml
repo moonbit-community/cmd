@@ -64,7 +64,7 @@ jobs:
       - name: Validate unpublished candidate manifest
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
-          --manifest tests/release_runner/candidate-2026-10-11.json --suite validate
+          --manifest tests/release_runner/candidate-2026-10-11-repair.json --suite validate
 
       - name: Native compatibility
         run: >-
@@ -131,18 +131,27 @@ jobs:
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite oracle --oracle-image mooncmd-oracle:phase0 --report-dir test-reports/oracle-native
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite oracle --backend wasm --oracle-image mooncmd-oracle:phase0 --report-dir test-reports/oracle-wasm
 
+      - name: Resolve published-test launcher
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+        shell: pwsh
+        run: |
+          $moonxPath = (Get-Command moonx -CommandType Application).Source
+          "CMD_MOONX=$moonxPath" >> $env:GITHUB_ENV
+
       - name: Published-version smoke
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
-          --manifest tests/release_runner/published-2026-10-11.json --suite smoke
+          --manifest tests/release_runner/published-2026-10-11-repair.json --suite smoke
+          --moonx "${{ env.CMD_MOONX }}"
           --report-dir test-reports/published-smoke
 
       - name: Published-version differential
         if: runner.os == 'Linux' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
-          --manifest tests/release_runner/published-2026-10-11.json --suite differential
+          --manifest tests/release_runner/published-2026-10-11-repair.json --suite differential
+          --moonx "${{ env.CMD_MOONX }}"
           --oracle-image mooncmd-oracle:phase0
           --report-dir test-reports/published-differential
 

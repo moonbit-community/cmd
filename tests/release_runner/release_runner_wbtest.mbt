@@ -1,10 +1,63 @@
 ///|
+test "published network argv expands both fixture schemes" {
+  assert_eq(
+    expand_network_args(
+      ["${HTTP_BASE}/fixed", "${HTTPS_BASE}/fixed", "literal"],
+      Some("http://127.0.0.1:1234"),
+      Some("https://127.0.0.1:4321"),
+    ),
+    ["http://127.0.0.1:1234/fixed", "https://127.0.0.1:4321/fixed", "literal"],
+  )
+  let fixture = {
+    ..release_case_for_test("tls", "curl"),
+    args: ["${HTTPS_BASE}/fixed.txt"],
+  }
+  assert_false(case_supported_on_host(fixture, "windows"))
+  assert_true(case_supported_on_host(fixture, "linux"))
+}
+
+///|
+test "timestamp fixtures are serialized" {
+  let timestamped = {
+    ..release_case_for_test("timestamped", "ls"),
+    files: [
+      {
+        path: "input",
+        content_text: Some("x"),
+        content_hex: None,
+        kind: None,
+        target: None,
+        mode: None,
+        atime: Some("202001010000.00"),
+        mtime: None,
+      },
+    ],
+  }
+  let ordinary = release_case_for_test("ordinary", "echo")
+  assert_true(requires_serial_fixture(timestamped))
+  assert_false(requires_serial_fixture(ordinary))
+  assert_true(requires_serial_fixture({ ..ordinary, delay_ms: Some(5), }))
+}
+
+///|
 test "release manifest version validation" {
   assert_true(valid_version("0.1.4"))
   assert_true(valid_version("12.0.7"))
   assert_false(valid_version("latest"))
   assert_false(valid_version("0.1"))
   assert_false(valid_version("0.x.1"))
+}
+
+///|
+test "report directories remain unique on case-insensitive filesystems" {
+  assert_true(
+    report_directory_name("repair-strings-wide-B") !=
+    report_directory_name("repair-strings-wide-b"),
+  )
+  assert_true(
+    report_directory_name("repair-strings-wide-L") !=
+    report_directory_name("repair-strings-wide-l"),
+  )
 }
 
 ///|
@@ -102,6 +155,10 @@ test "contracts need an assertion and preserve binary exact output" {
   )
   assert_true(has_contract_assertion(exact))
   assert_eq(verification_level(exact, false), "contract")
+  assert_eq(verification_level(exact, true), "contract")
+  let compared = { ..exact, oracle: Some(true), }
+  assert_eq(verification_level(compared, false), "contract")
+  assert_eq(verification_level(compared, true), "differential")
   let empty = release_case_for_test(
     "empty",
     "true",
@@ -114,6 +171,10 @@ test "contracts need an assertion and preserve binary exact output" {
     extra=",\"expected_rejection\":\"file identity unavailable\"",
   )
   assert_eq(verification_level(rejection, true), "boundary")
+  assert_eq(
+    verification_level({ ..rejection, oracle: Some(true), }, true),
+    "boundary",
+  )
 }
 
 ///|
@@ -255,6 +316,32 @@ test "contract output and status mismatches cannot pass" {
       "/fixture",
     ).is_empty(),
   )
+}
+
+///|
+test "differential reports preserve partial diagnostics and inferred metadata" {
+  let fixture = release_case_for_test(
+    "diagnostic",
+    "ln",
+    extra=",\"comparison\":\"contract\",\"oracle\":true,\"expected_stdout_text\":\"\",\"expected_stderr_contains\":\"ln:\",\"diagnostic_reason\":\"Platform wording differs; both must identify ln.\",\"expected_files\":[{\"path\":\"file\",\"mode\":420}]",
+  )
+  let report = shared_report(
+    {
+      id: fixture.id,
+      command: "ln",
+      version: "0.2.1",
+      category: "passed",
+      detail: "candidate and pinned oracle agree",
+    },
+    [fixture],
+    true,
+    Map([]),
+  )
+  assert_eq(report.verification, "differential")
+  assert_true(report.observations.contains("stderr-contract"))
+  assert_false(report.observations.contains("stderr-bytes"))
+  assert_true(report.observations.contains("mode"))
+  assert_true(report.observations.contains("stdout-bytes"))
 }
 
 ///|

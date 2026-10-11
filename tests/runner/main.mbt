@@ -206,49 +206,6 @@ async fn run_external_https_fixture(args : ArrayView[String]) -> Int {
 }
 
 ///|
-async fn spawn_https_fixture_process(
-  group : @async.TaskGroup[Unit],
-  root : String,
-) -> (@process.Process, String) {
-  let cert = @fs.realpath("tests/fixtures/http/cert.pem")
-  let key = @fs.realpath("tests/fixtures/http/key.pem")
-  let fixture_root = @fs.realpath("tests/fixtures/http")
-  let log = @path.Path(root).join(Path("https.log")).to_string()
-  let output = @process.redirect_to_file(log)
-  let process = @process.spawn(
-    group,
-    "openssl",
-    ["s_server", "-accept", "127.0.0.1:0", "-cert", cert, "-key", key, "-WWW"],
-    cwd=fixture_root,
-    stdout=output,
-    stderr=output,
-    no_console_window=true,
-    no_wait=true,
-  )
-  for attempt = 0; attempt < 200; attempt = attempt + 1 {
-    if @fs.exists(log) {
-      let text = @fs.read_file(log).text()
-      if text.find("ACCEPT ") is Some(index) {
-        let suffix = text[index + 7:].to_owned()
-        let line = suffix.split("\n").next().unwrap_or("").trim().to_owned()
-        if line.rev_find(":") is Some(colon) {
-          let port = @string.parse_int(line[colon + 1:].to_owned()) catch {
-            _ => 0
-          }
-          if port > 0 {
-            return (process, "https://127.0.0.1:\{port}")
-          }
-        }
-      }
-    }
-    @async.sleep(10)
-  }
-  process.cancel()
-  ignore(process.wait()) catch {
-    _ => ()
-  }
-  fail("oracle-runner: HTTPS fixture did not report a listening port")
-}
 
 ///|
 fn expand_fixture_args(
@@ -364,7 +321,10 @@ async fn run_case(
     "-w",
     fixture.working_directory("/work"),
   ]
-  for name, value in environment {
+  let oracle_environment = controlled_environment(
+    @testkit.expand_environment(fixture.environment, "/work", http_base~),
+  )
+  for name, value in oracle_environment {
     if name != "PATH" {
       docker_args.push("-e")
       docker_args.push(name + "=" + value)

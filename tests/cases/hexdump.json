@@ -217,6 +217,75 @@
       "expected_rejection": "unknown short option",
       "comparison": "boundary",
       "normalizations": []
+    },
+    {
+      "id": "repair-alias-hexdump-one-byte-hex",
+      "command": "hexdump",
+      "args": [
+        "--one-byte-hex"
+      ],
+      "stdin_text": "abc",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "0000000  61  62  63                                                    \n0000003\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "-X",
+        "--one-byte-hex"
+      ],
+      "oracle": true,
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+    },
+    {
+      "id": "repair-alias-hexdump-canonical",
+      "command": "hexdump",
+      "args": [
+        "--canonical"
+      ],
+      "stdin_text": "abc",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "00000000  61 62 63                                          |abc|\n00000003\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "-C",
+        "--canonical"
+      ],
+      "oracle": true,
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+    },
+    {
+      "id": "repair-alias-hexdump-two-bytes-hex",
+      "command": "hexdump",
+      "args": [
+        "--two-bytes-hex"
+      ],
+      "stdin_text": "abc",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "0000000    6261    0063                                                \n0000003\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "-x",
+        "--two-bytes-hex"
+      ],
+      "oracle": true,
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
     }
   ]
 }

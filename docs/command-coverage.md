@@ -1,98 +1,101 @@
-# 常见命令缺口与建议顺序
+# Common-command gaps and implementation order
 
 Updated: 2026-10-11
 
-强制实现边界：所有命令包、共享库、测试 runner、fixture 和自动化必须使用
-纯 MoonBit。宿主程序只能作为固定版本 oracle、测试观察器、CI 工具或诊断
-采集器，不能作为 `cli/<cmd>` 的后备实现。缺少已发布公开 MoonBit API 时，
-必须保留明确 boundary、ADR 和解除条件。
+All command packages, shared libraries, test runners, fixtures and automation
+must use pure MoonBit. Host programs may serve as pinned oracles, test observers,
+CI tools or diagnostics, never fallback implementations of `cli/<cmd>`.
+Missing released public APIs require explicit boundaries, ADRs and unlock
+conditions.
 
-本次按目录、catalog、发布 manifest 和刷新后的 `cli/*` 注册表核对：
-**79 个本地命令，78 个已发布（47 个 0.2.0、11 个 0.1.1、20 个 0.1.0），
-timeout 继续仅本地提供**。
-`cli/core` 是共享库，不计命令数量。已发布并不表示完整 GNU/POSIX 兼容；
-每个命令的参数边界见 [支持记录](compatibility.md)。
+The directory/catalog/manifest/registry inventory contains **79 local commands,
+78 published and local-only timeout**. The fidelity repair is published with
+core 0.5.0, `ls@0.2.1`, and the changed command coordinates listed in the
+[support record](compatibility.md). The historical counts below describe the
+inventory snapshot that established these priorities. Core is a library and is
+excluded. Publication does not imply complete GNU/POSIX compatibility.
 
-基线清单包含 59 个常见缺口；本轮已实现并发布其中 `base32`、`mktemp`、`realpath`、
-`rev`、`tac`、`tree`、`unlink`、`yes`、`cksum`、`expand` 和 `unexpand`，以及
-2026-10-10 完成的 16 个命令批次以及本轮四个命令：已发布覆盖为 **31/59（52.5%）**。
-下表保留 **28 个尚无模块的候选**；已有模块内部的未实现选项另列支持记录。
-基线取自 [GNU coreutils 9.11 命令分类](https://www.gnu.org/software/coreutils/manual/coreutils.html)，
-加上开发中常用的文本、归档、进程工具及 [tree 上游](https://gitlab.com/OldManProgrammer/unix-tree)。
-不把 shell 内建 `cd/read/export`、别名 `[`、Git、编译器和语言运行时计入。
-此前这些候选都没有本仓库模块；本轮又迁移 `strings`、`column`、`which`、`date`，
-并已迁移 `base32`、`mktemp`、`realpath`、`rev`、`tac`、`tree`、`unlink`、`yes`、
-`cksum`、`expand` 和 `unexpand`，因此它们不再属于当前缺口。其余候选只是排期
-建议，不把文档中的建议冒充已实施或已排期交付。
+Of 59 selected common gaps, **31/59 (52.5%)** now have published modules:
+the first 11 (`base32, mktemp, realpath, rev, tac, tree, unlink, yes, cksum,
+expand, unexpand`), the 16-command 2026-10-10 batch, and `strings, column,
+which, date`. **28 candidates still lack modules**; missing options inside
+existing modules are counted separately.
 
-可重放的 [JSON 清单](reports/2026-09-21-api-probes/inventory.json) 和
-[MoonBit 盘点程序](reports/2026-09-21-api-probes/inventory.mbtx) 保存具体集合；
-“此前未规划”另由当前 README、ADR、支持记录及计划文件人工交叉核对，
-不是仅凭目录不存在推断。历史审计中的提及不视为现行实施计划。
+The inventory draws on [GNU coreutils 9.11 categories](https://www.gnu.org/software/coreutils/manual/coreutils.html),
+common development text/archive/process tools and [tree upstream](https://gitlab.com/OldManProgrammer/unix-tree).
+Shell builtins cd/read/export, the [ alias, Git, compilers and language runtimes
+are excluded. Suggestions below do not constitute implemented or scheduled
+delivery.
 
-2026-09-26 起按 async 0.22.4 基线执行缺口补全。P0 命令按独立包逐项迁移；
-只有在 README、help、catalog、兼容表和回归测试同步后，命令才会从缺口提升
-为已验证子集。
+The historical [JSON inventory](reports/2026-09-21-api-probes/inventory.json)
+and [MoonBit collector](reports/2026-09-21-api-probes/inventory.mbtx) preserve
+the original sets. Previously unplanned status was cross-checked against README,
+ADRs, support records and plans, not inferred solely from missing directories.
+A mention in an old audit is not an active implementation plan.
 
-本轮 P0 实施证据见
-[`reports/2026-09-26-p0-command-completion.md`](reports/2026-09-26-p0-command-completion.md)。
+Gap implementation began on 2026-09-26 with async 0.22.4. Each independent P0
+package becomes a verified subset only after README, help, catalog, compatibility
+and regressions agree. See [P0 evidence](reports/2026-09-26-p0-command-completion.md).
 
-| 类别 | 数量 | 缺失命令 |
+| Category | Count | Missing commands |
 | --- | ---: | --- |
-| 文件与路径 | 7 | du、df、stat、readlink、install、truncate、link |
-| 文本与表达式 | 1 | awk |
-| 编码、校验与归档 | 3 | tar、zip、unzip |
-| 系统与执行 | 17 | uname、hostname、id、whoami、groups、ps、kill、watch、uptime、free、tty、stty、tput、clear、nproc、chown、chgrp |
+| Files and paths | 7 | du, df, stat, readlink, install, truncate, link |
+| Text and expressions | 1 | awk |
+| Encoding, checksums and archives | 3 | tar, zip, unzip |
+| System and execution | 17 | uname, hostname, id, whoami, groups, ps, kill, watch, uptime, free, tty, stty, tput, clear, nproc, chown, chgrp |
 
-## 建议优先补的开发缺项
+## Algorithmic priorities
 
-**第一批已发布：tree、realpath、mktemp、yes、tac、rev、expand、unexpand、
-base32、cksum、unlink。第二批已发布（0.1.0）：fold、od/hexdump、md5sum、sha1sum、
-sha512sum、sed、diff/patch、split/csplit、expr、fmt、gzip/gunzip/zcat。**
-这些命令有可实现的基础子集，不能统一归因于 async。`x/crypto` 已有 MD5、
-SHA-1、SHA-512；二进制 IO、目录遍历、排他创建及 realpath 也已有公开入口。
-仍需每项先确定上游参数、错误与字节合同，再补 CLI 差分。`mktemp` 必须
-采用安全随机源与排他创建，不能把时间戳文件名当作完成。
+The first 11-command batch is published. The second published batch started at
+0.1.0: fold, od/hexdump, md5sum, sha1sum, sha512sum, sed, diff/patch,
+split/csplit, expr, fmt and gzip/gunzip/zcat. These have implementable basic
+subsets and must not all be attributed to async limitations. x/crypto already
+provides MD5/SHA-1/SHA-512; public APIs expose binary I/O, directory traversal,
+exclusive creation and realpath. Each still requires chosen upstream options,
+errors and byte contracts with actual CLI comparison. mktemp requires secure
+randomness and exclusive creation, not timestamp-derived names.
 
-**后续纯算法及数据来源候选：awk、tar/zip/unzip。** `strings`、`column`、`which`、`date`
-已发布 0.1.0。发布不代表完整上游兼容；本轮发现的参数/default 偏差和其余
-79 个现有命令的后续工作见 [按优先级排列的清单](command-followups.md)。
-主要成本是解析、格式与算法，纯 MoonBit 可实现，不应列成永久上游阻塞。
-其中 awk 的语法、字段分割和执行模型仍需定义；date 的 UTC 格式
-子集和本地时区数据库/设置系统时钟分开；归档的内容编解码和权限、链接、
-时间恢复分开验收，不能只解出内容就称完整 tar/unzip。gzip 格式已有官方
-async 包可复用，但命令选项和错误行为仍需实现。
+Next algorithmic/data-source candidates are **awk and tar/zip/unzip**.
+strings/column/which/date were published at 0.1.0; their discovered defects and
+the remaining work across 79 commands are in the [prioritized register](command-followups.md).
+Parsing, formats and algorithms are pure MoonBit work, not permanent upstream
+blocks. Define awk grammar, fields and execution semantics. Separate date's
+formatting/timezone database work from setting the clock. Archive codecs and
+restoration of mode, links and timestamps need independent acceptance; recovered
+contents alone do not establish complete tar/unzip. Official async gzip helpers
+can be reused, but CLI options and failures remain project responsibilities.
 
-## tree 的具体起点
+## Tree subset
 
-`tree` 当前已实现无链接 fixture 下的基础子集：默认树形输出、`-a/-d/-f/-L`、
-`--noreport`、排序、统计、多根操作数与失败状态；用固定版本 tree 的
-完整输出比较，覆盖空目录、隐藏项、深度边界、不可读目录和 Unicode 名称。
-目录可读性与权限错误应逐项报告，而不是静默省略。
+The implemented no-symlink subset covers default tree output, -a/-d/-f/-L,
+--noreport, sorting, counts, multiple roots and failures. Full-output comparisons
+with pinned tree cover empty directories, hidden entries, depth boundaries,
+unreadable directories and Unicode names. Report access/permission errors rather
+than silently omitting entries.
 
-[上游手册](https://oldmanprogrammer.net/source.php?dir=projects%2Ftree%2Fdoc%2F%2Ftree.1)
-明确默认输出包含符号链接目标，`-l` 会跟随目录链接。因此“能画树”不等于
-完整默认语义。当前 readlink 缺口影响箭头目标；identity/mode/owner 缺口影响
-链接环、跨文件系统、权限/属主显示。首版遇到无法保真的链接必须明确报错，
-不能虚构目标、静默忽略或把 realpath 当原始链接文本。Native/Wasm 要分别
-验证，并在包 README 中明确普通目录子集，不能先宣称全部 tree 已支持。
+The [upstream manual](https://oldmanprogrammer.net/source.php?dir=projects%2Ftree%2Fdoc%2F%2Ftree.1)
+includes symlink targets by default and follows directory links with -l.
+Drawing a tree is therefore not complete default semantics. Missing readlink
+affects target arrows; identity/mode/owner affect loop/device checks and metadata
+display. Unsupported links must fail explicitly without invented targets, silent
+omission or realpath masquerading as link text. Verify Native/Wasm separately
+and describe the ordinary-directory subset in README. Links, metadata and
+complete reporting remain follow-ups.
 
-本轮已完成 tree 的普通目录子集；以上链接、元数据和完整报告是后续边界项。
+## Candidates requiring separate API boundaries
 
-## 需要拆分 API 边界的候选
-
-| 命令 | 可实现部分与仍缺能力 |
+| Command | Implementable portion and missing capability |
 | --- | --- |
-| du | 遍历及 apparent-size 可以研究；默认磁盘占用、硬链接去重、跨设备边界需要 blocks/identity/device 元数据 |
-| df | 需要文件系统容量、可用块和挂载点信息；不能用文件大小累加代替 |
-| stat | kind/size/时间读取已有；完整 mode/uid/gid/nlink/identity 不足，必须逐格式字段声明 |
-| readlink / link | realpath 不等于 readlink；symlink 不等于 hard link，当前无公开等价入口 |
-| install / truncate | 内容与新建子集可研究；owner、mode 读取、时间保存、句柄截断仍有限制 |
-| uname / hostname / id / whoami / groups / nproc | 平台枚举只给 OS 类别；不能把环境变量当成真实宿主身份、组或 CPU affinity；需额外公开查询接口或逐平台可靠来源 |
-| ps / uptime / free | Linux procfs 可能有纯 MoonBit 专用子集；不能外推 macOS/Windows/Wasm，未完成对应实测 |
-| tty / stty / tput / clear / watch | 文本及定时调度可以实现；真实 TTY、termios、终端数据库/窗口和信号需要分别解决，固定 ANSI 字符串不是通用终端兼容 |
-| chown / chgrp | 缺 owner/group mutation 入口；由宿主决定是否授权，项目不追加授权政策 |
-| kill / timeout | 需要可观察失败的信号发送及组语义；公开 cancellation handler 会吞掉 Native kill 的错误，不能冒充 kill 成功状态；timeout 仍只本地提供直接子进程子集 |
+| du | Traversal/apparent size are researchable; default allocated usage, hard-link deduplication and device boundaries need blocks/identity/device metadata. |
+| df | Requires filesystem capacity, available blocks and mounts; summing file sizes is not equivalent. |
+| stat | Kind/size/timestamps exist; declare format fields individually because full mode/uid/gid/nlink/identity are missing. |
+| readlink / link | realpath is not readlink; symlink is not a hard link. No public equivalent currently exists. |
+| install / truncate | Content/new-file subsets are researchable; owner, source mode, timestamp preservation and handle truncation remain limited. |
+| uname / hostname / id / whoami / groups / nproc | OS enumeration does not provide host identity/groups/CPU affinity. Environment variables are not authoritative; require public queries or validated platform sources. |
+| ps / uptime / free | Linux procfs may support a dedicated pure MoonBit subset; no corresponding runtime evidence yet, and it cannot certify macOS/Windows/Wasm. |
+| tty / stty / tput / clear / watch | Text/scheduling are implementable. TTY, termios, terminal database/window and signals need independent solutions; fixed ANSI strings are not universal terminal compatibility. |
+| chown / chgrp | Missing owner/group mutation API; host owns authorization, with no additional command policy. |
+| kill / timeout | Need observable signal failures and group semantics. Cancellation handlers discard Native kill errors and cannot establish kill success; timeout remains a local direct-child subset. |
 
-API 解除条件见 [缺口文档](async-upstream-gaps.md)。这些条件只限制对应操作，
-不应该阻止纯算法、文本和普通目录功能进入正常开发队列。
+[API unlock conditions](async-upstream-gaps.md) constrain the specific operations,
+not unrelated algorithms, text processing or ordinary-directory functionality.

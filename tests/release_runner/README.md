@@ -8,7 +8,7 @@ Validate the retained preparation manifest against local package versions:
 
 ```sh
 MOON_HOME="$HOME/.moon-accounts/cli" moon run --target native tests/release_runner -- \
-  --manifest tests/release_runner/candidate-0.1.1.json --suite validate
+  --manifest tests/release_runner/candidate-2026-10-11-repair.json --suite validate
 ```
 
 Run published 0.2.0 against the pinned oracle:
@@ -56,6 +56,12 @@ status, a diagnostic and preserved fixture observations; they do not count as
 upstream agreement.
 
 Differential cases compare status, stdout, stderr, file contents and types.
+In `differential`/`all`, a contract marked `oracle: true` also runs the pinned
+oracle and reports `differential`; both executions must satisfy the contract.
+It stays a contract in `smoke`. Contract cases without the marker remain
+contract-only, and rejection boundaries never become upstream parity claims.
+Justified diagnostic fragments are checked in both results; all other stream
+comparisons use complete normalized bytes.
 Cases explicitly request additional mode, symlink-target and within-fixture
 identity observations. A missing required observation is infrastructure failure.
 Timestamp relations belong to stateful scenarios; independent wall-clock
@@ -65,7 +71,12 @@ when applicable selected cases need it.
 Repeat `--command NAME` or `--case ID` to select unions within each filter;
 command and case filters intersect. `--list` prints command/ID pairs before
 launching MoonX, Docker or HTTP fixtures. Unknown selectors and empty selections
-exit 2. `--jobs` defaults to 4 independent cases. There are no automatic retries.
+exit 2. `--jobs` defaults to 4 independent cases. Published `smoke` execution
+is serialized after macOS time contracts showed unexpected atime changes during
+concurrent runs; the source of those changes is not yet established. In
+differential runs, fixed-time, time-observation and delayed fixtures execute
+serially after all ordinary cases finish. No assertion is weakened and there
+are no automatic retries. Workspace runners retain their normal parallelism.
 The default deadline is 120 seconds, overridable by positive `--timeout-ms` or
 case `timeout_ms`. A command's own exit 124 differs from a runner deadline.
 Platform-excluded cases report `skip` with a reason. Schema 1 `posix` remains
@@ -88,3 +99,11 @@ The 2026-10-11 P2 publication was validated by
 `published-2026-10-11.json`; its final local smoke report is
 `test-reports/published-smoke-20261011-p2-final` and the release evidence is
 `docs/reports/2026-10-11-p2-release-0.1.0/README.md`.
+
+The fidelity repair is published in `published-2026-10-11-repair.json`: 78 exact
+command coordinates and 841 selected cases. The two HTTPS cases use the fixed
+certificate fixture on POSIX hosts and are skipped on Windows, where the native
+TLS fixture is unavailable. The earlier P2 manifest remains historical. Source
+gate 38119870855 passed all three platforms; the repair report tracks
+fresh-download and remote published acceptance separately. CI resolves the
+MoonX launcher to an absolute path before fixture PATH overrides.

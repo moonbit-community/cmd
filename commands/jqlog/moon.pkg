@@ -1,5 +1,7 @@
 import {
-  "bobzhang/moonjq",
+  "cli/core/jq_filter",
+  "bobzhang/moonjq/ast",
+  "moonbitlang/core/json",
   "moonbitlang/async",
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",

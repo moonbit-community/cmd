@@ -186,25 +186,90 @@
       "source_version": "diffutils-3.12"
     },
     {
-      "id": "p1-diff-label-brief", "command": "diff", "args": ["-q", "--label=LEFT", "--label=RIGHT", "a", "b"],
-      "files": [{"path": "a", "content_text": "old\n"}, {"path": "b", "content_text": "new\n"}],
-      "environment": {}, "normalizations": [], "expected_status": 1,
-      "expected_stdout_text": "Files LEFT and RIGHT differ\n", "expected_stderr_text": "",
-      "comparison": "contract", "oracle": true, "source_version": "GNU diffutils 3.12"
+      "id": "p1-diff-label-brief",
+      "command": "diff",
+      "args": [
+        "-q",
+        "--label=LEFT",
+        "--label=RIGHT",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "old\n"
+        },
+        {
+          "path": "b",
+          "content_text": "new\n"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "Files LEFT and RIGHT differ\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12"
     },
     {
-      "id": "p1-diff-label-binary", "command": "diff", "args": ["--label=LEFT", "--label=RIGHT", "a", "b"],
-      "files": [{"path": "a", "content_hex": "00ff"}, {"path": "b", "content_hex": "00fe"}],
-      "environment": {}, "normalizations": [], "expected_status": 1,
-      "expected_stdout_text": "Binary files LEFT and RIGHT differ\n", "expected_stderr_text": "",
-      "comparison": "contract", "oracle": true, "source_version": "GNU diffutils 3.12"
+      "id": "p1-diff-label-binary",
+      "command": "diff",
+      "args": [
+        "--label=LEFT",
+        "--label=RIGHT",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_hex": "00ff"
+        },
+        {
+          "path": "b",
+          "content_hex": "00fe"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "Binary files LEFT and RIGHT differ\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12"
     },
     {
-      "id": "p1-diff-label-identical", "command": "diff", "args": ["-s", "--label=LEFT", "--label=RIGHT", "a", "b"],
-      "files": [{"path": "a", "content_text": "same\n"}, {"path": "b", "content_text": "same\n"}],
-      "environment": {}, "normalizations": [], "expected_status": 0,
-      "expected_stdout_text": "Files LEFT and RIGHT are identical\n", "expected_stderr_text": "",
-      "comparison": "contract", "oracle": true, "source_version": "GNU diffutils 3.12"
+      "id": "p1-diff-label-identical",
+      "command": "diff",
+      "args": [
+        "-s",
+        "--label=LEFT",
+        "--label=RIGHT",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "same\n"
+        },
+        {
+          "path": "b",
+          "content_text": "same\n"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "Files LEFT and RIGHT are identical\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12"
     },
     {
       "files": [],
@@ -226,6 +291,36 @@
       "expected_stderr_contains": "unknown short option",
       "diagnostic_reason": "Parser wording includes the unsupported option.",
       "expected_rejection": "unknown short option"
+    },
+    {
+      "files": [
+        {
+          "path": "a",
+          "content_text": "same\n"
+        },
+        {
+          "path": "b",
+          "content_text": "same\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "id": "repair-alias-diff-report-identical-files",
+      "command": "diff",
+      "args": [
+        "--report-identical-files",
+        "a",
+        "b"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "Files a and b are identical\n",
+      "oracle": true,
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
     }
   ]
 }

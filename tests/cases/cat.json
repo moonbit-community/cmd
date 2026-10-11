@@ -135,6 +135,40 @@
       "stdin_text": "",
       "expected_stdout_text": "",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "repair-alias-cat-number-nonblank",
+      "command": "cat",
+      "args": [
+        "--number-nonblank",
+        "-s",
+        "-A"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "stdin_hex": "610a0a0a620980",
+      "expected_stdout_text": "     1\ta$\n$\n     2\tb^IM-^@",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "repair-alias-cat-unbuffered",
+      "command": "cat",
+      "args": [
+        "--unbuffered"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "stdin_hex": "62696e61727900ff",
+      "expected_stdout_hex": "62696e61727900ff",
+      "expected_stderr_text": ""
     }
   ]
 }

@@ -1378,6 +1378,240 @@
       "expected_stdout_contains": "Usage:",
       "expected_stderr_text": "",
       "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "repair-alias-ls-dereference-command-line",
+      "command": "ls",
+      "args": [
+        "--dereference-command-line",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "a\nz\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+    },
+    {
+      "id": "repair-alias-ls-classify",
+      "command": "ls",
+      "args": [
+        "--classify",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "link@\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+    },
+    {
+      "id": "repair-alias-ls-access-time",
+      "command": "ls",
+      "args": [
+        "--access-time",
+        "dir"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "z\na\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "source_version": "Existing project long alias, not a GNU ls spelling. The retained -u/-c cases provide GNU differential coverage; this case checks the same command-local bytes and status."
+    },
+    {
+      "id": "repair-alias-ls-change-time",
+      "command": "ls",
+      "args": [
+        "--change-time",
+        "dir"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "z\na\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "source_version": "Existing project long alias, not a GNU ls spelling. The retained -u/-c cases provide GNU differential coverage; this case checks the same command-local bytes and status."
     }
   ]
 }

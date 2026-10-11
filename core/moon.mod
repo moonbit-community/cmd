@@ -1,6 +1,6 @@
 name = "cli/core"
 
-version = "0.4.0"
+version = "0.5.0"
 
 readme = "README.md"
 
@@ -17,4 +17,5 @@ description = "Shared runtime core for cli command modules."
 import {
   "moonbitlang/async@0.22.4",
   "moonbitlang/x@0.5.5",
+  "bobzhang/moonjq@0.2.0",
 }

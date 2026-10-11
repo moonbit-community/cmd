@@ -151,6 +151,377 @@
       "expected_stdout_contains": "Usage:",
       "expected_stderr_text": "",
       "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "repair-alias-ln-symbolic",
+      "command": "ln",
+      "args": [
+        "--symbolic",
+        "source",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "policy-fixture\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "policy-fixture\n"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ],
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "expected_stderr_text": "",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "repair-fs-ln-force-last",
+      "command": "ln",
+      "args": [
+        "-s",
+        "-i",
+        "-f",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ]
+    },
+    {
+      "id": "repair-fs-ln-interactive-last",
+      "command": "ln",
+      "args": [
+        "-s",
+        "-f",
+        "-i",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "ln: replace 'destination'? ",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 Linux CI 38117528667: interactive refusal returns 1",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "kind": "file",
+          "content_text": "old"
+        }
+      ]
+    },
+    {
+      "id": "repair-fs-ln-force-long-last",
+      "command": "ln",
+      "args": [
+        "--symbolic",
+        "--interactive",
+        "--force",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ]
+    },
+    {
+      "id": "repair-fs-ln-backup",
+      "command": "ln",
+      "args": [
+        "-s",
+        "-b",
+        "-S",
+        ".save",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "destination",
+          "kind": "symlink",
+          "target": "source"
+        },
+        {
+          "path": "destination.save",
+          "content_text": "old"
+        },
+        {
+          "path": "source",
+          "content_text": "new"
+        }
+      ]
+    },
+    {
+      "id": "repair-fs-ln-target-directory",
+      "command": "ln",
+      "args": [
+        "-s",
+        "-t",
+        "links",
+        "source"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "links",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "links/source",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ]
+    },
+    {
+      "id": "repair-fs-ln-no-dereference",
+      "command": "ln",
+      "args": [
+        "-sfn",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "destination",
+          "kind": "symlink",
+          "target": "directory"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "destination",
+          "kind": "symlink",
+          "target": "source"
+        },
+        {
+          "path": "directory/source",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "repair-fs-ln-interactive-last-eof",
+      "command": "ln",
+      "args": [
+        "-s",
+        "-f",
+        "-i",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "ln: replace 'destination'? ",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 Linux CI 38117528667: interactive refusal returns 1",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "kind": "file",
+          "content_text": "old"
+        }
+      ]
     }
   ]
 }

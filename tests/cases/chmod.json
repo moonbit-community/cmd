@@ -37,6 +37,7 @@
         }
       ],
       "environment": {},
+      "host_platforms": ["posix"],
       "expected_status": 0,
       "normalizations": []
     },

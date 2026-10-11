@@ -212,11 +212,27 @@ RUN curl --fail --location --retry 5 \
   && echo "${UTIL_LINUX_SHA256}  util-linux.tar.xz" | sha256sum --check --strict \
   && tar --extract --file util-linux.tar.xz \
   && cd "util-linux-${UTIL_LINUX_VERSION}" \
-  && ./configure --prefix=/oracle --disable-nls --without-python --without-systemd --disable-liblastlog2 --without-ncursesw --without-ncurses \
-  && make -j"$(nproc)" hexdump \
+  && ./configure --prefix=/oracle --disable-nls --disable-shared --without-python --without-systemd --disable-liblastlog2 --without-ncursesw --without-ncurses \
+  && make -j"$(nproc)" hexdump column \
   && install -m 0755 hexdump /oracle/bin/hexdump \
+  && install -m 0755 column /oracle/bin/column \
   && cd /build \
   && rm -rf util-linux.tar.xz "util-linux-${UTIL_LINUX_VERSION}"
+
+ARG BINUTILS_VERSION=2.44
+ARG BINUTILS_SHA256=ce2017e059d63e67ddb9240e9d4ec49c2893605035cd60e92ad53177f4377237
+
+RUN curl --fail --location --retry 5 \
+      "https://ftp.gnu.org/gnu/binutils/binutils-${BINUTILS_VERSION}.tar.xz" \
+      --output binutils.tar.xz \
+  && echo "${BINUTILS_SHA256}  binutils.tar.xz" | sha256sum --check --strict \
+  && tar --extract --file binutils.tar.xz \
+  && cd "binutils-${BINUTILS_VERSION}" \
+  && ./configure --prefix=/oracle --disable-nls --disable-gdb --disable-gprof --disable-gprofng --disable-gas --disable-ld --disable-gold --disable-sim --disable-werror --without-zstd --with-system-zlib \
+  && make -j"$(nproc)" all-binutils \
+  && install -m 0755 binutils/strings /oracle/bin/strings \
+  && cd /build \
+  && rm -rf binutils.tar.xz "binutils-${BINUTILS_VERSION}"
 
 COPY --chmod=0755 entrypoint.sh versions.sh /usr/local/bin/
 

@@ -1,36 +1,20 @@
-# Published-version Runner 基线
+# Published-version runner baseline
 
 Date: 2026-09-06
+Language revision: 2026-10-11; historical results retained.
 
 ## Runner
 
-`tests/release_runner` 是 Native 目标编译的纯 MoonBit 发布消费者测试器。它
-从 `manifest.json` 读取精确的 `cli/<cmd>@<version>`，通过 MoonBit process API
-启动 `moonx`，在独立夹具副本中采集 stdout、stderr、退出状态和文件快照，并
-可使用固定 Docker oracle 做差分。
+`tests/release_runner` is a pure MoonBit published-consumer driver compiled for Native. It reads exact `cli/<cmd>@<version>` coordinates from `manifest.json`, launches `moonx` through the MoonBit process API, and captures stdout, stderr, status and filesystem snapshots in independent fixtures. A pinned Docker oracle provides differential comparison.
 
-`timeout` 保持 local-only，因此发布清单覆盖 47 个命令。当前清单复用统一
-runner 的稳定基础 case，并附加 P0 回归 case；发布新版本时必须同步修改清单
-版本与参数覆盖。
+`timeout` remains local-only, so the manifest covers 47 commands. It reuses stable shared-runner cases and adds P0 regressions. New releases must update coordinates and option coverage together.
 
-## 分类与门禁
+## Classification and gates
 
-Runner 区分资产不存在、注册表传输、候选失败、oracle 失败、语义差异、意外
-副作用、超时和 Runner 基础设施失败。资产或基础设施失败不会被跳过。
+The runner distinguishes missing assets, registry transport, candidate failure, oracle failure, semantic mismatch, unexpected side effects, timeout and runner infrastructure failure. Asset and infrastructure failures are not skipped.
 
-本地 manifest validation 已通过：47 packages、94 cases（71 个统一基础 case、
-23 个 P0/release-specific case）。其中 HTTP case 共享单个纯 MoonBit loopback
-fixture；HTTPS case 仍未选择。`0.1.4` 已发布资产以及 P0 修复版本均已进入
-发布验证；受影响版本为 `echo/false/jqlog/seq/sleep/true@0.1.5` 和
-`sh@0.1.7`（已发布并通过最终 CI；`0.1.6` 不纳入 promoted support）。
+Local manifest validation passed: 47 packages and 94 cases, comprising 71 shared base cases and 23 P0/release-specific cases. HTTP cases share one pure MoonBit loopback fixture; HTTPS cases are not selected. Published 0.1.4 assets and P0 fixes entered validation. Affected versions are `echo/false/jqlog/seq/sleep/true@0.1.5` and `sh@0.1.7`, published and accepted by final CI; 0.1.6 is not promoted support.
 
-首次完整 smoke 已完成 94 个 case，其中 71 个通过、23 个因 Mooncakes
-注册表读取超时分类为 `registry_transport`；没有 `asset_unavailable`、
-`semantic_mismatch` 或 `unexpected_side_effect`。`sh@0.1.6` 的 `-s`
-位置参数以 pinned POSIX oracle 的 `sh|shell-name` 语义为准。修正后的
-`sh@0.1.7` 已在 workflow `34015767486` 通过严格差分和跨平台 smoke。
+The first complete smoke executed 94 cases: 71 passed and 23 were classified `registry_transport` after Mooncakes registry read timeouts. There were no `asset_unavailable`, `semantic_mismatch` or `unexpected_side_effect` results. For `sh@0.1.6`, `-s` positional parameters were compared with the pinned POSIX oracle's `sh|shell-name` behavior. Corrected `sh@0.1.7` passed strict differential and cross-platform smoke in workflow `34015767486`.
 
-本机已实际调用 `moonx cli/echo@0.1.5 --version`，结果为明确的
-`Prebuilt wasm asset does not exist`（状态 255），因此没有把未发布资产误报为
-命令语义失败。本机未安装 Docker，pinned-oracle differential 只能在 Linux CI
-执行；该环境限制不影响 manifest/Runner 编译验证。
+A local `moonx cli/echo@0.1.5 --version` call returned `Prebuilt wasm asset does not exist`, status 255. Missing assets were therefore not mislabeled as command semantic failures. Docker was unavailable locally; pinned differential execution required Linux CI. This did not prevent manifest validation or runner compilation.

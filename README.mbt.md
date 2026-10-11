@@ -6,28 +6,13 @@ system for preserving GNU/POSIX and command-upstream behavior. Authorization
 belongs to the caller or host; commands preserve the caller's environment and
 stream semantics.
 
-`cli/core@0.4.0` is published for the current catalog contracts. The original 47
-command modules remain at **0.2.0**, the first eleven P0 modules remain at **0.1.1**,
-the second sixteen-command batch remains at **0.1.0**, and `strings`, `column`,
-`which` and `date` are published at **0.1.0**. The workspace contains 79 command
-modules: 78 published commands and local-only `timeout`. Linux, macOS
-and Windows passed the release source checks, including Linux Native/Wasm
-pinned oracle comparisons. Exact-version MoonX acceptance for this batch is recorded
-in the [release evidence](docs/reports/2026-10-11-p2-release-0.1.0/README.md); the
-second batch remains documented in [its release evidence](docs/reports/2026-10-11-release-0.1.0/README.md);
-the first batch remains documented in [its release evidence](docs/reports/2026-09-27-release-0.1.1/README.md).
-See the [support record](docs/compatibility.md), and
-[upstream API gaps](docs/async-upstream-gaps.md). This release includes a
-persistent line-oriented `sh -i`, real `make -j` scheduling, JSON input framing,
-Basic HTTP authentication and cookies. Strict filesystem limits are explicit:
-default `cp` and existing-file `touch` cannot be implemented faithfully with
-the current public metadata APIs; see ADR-0004.
+This repair publishes `cli/core@0.5.0`, `column/date/diff/strings/which@0.1.1`, `unlink@0.1.2`, and `curl/jq/jqlog/ln/ls/mv/seq/wget@0.2.1`. Unchanged commands retain their existing coordinates.
 
-The current workspace adopts MoonBit 2026-09-20 and async 0.22.4, and corrects curl/wget custom
-Cookie plus jar behavior using the two public HTTP header layers. These corrections
-are not included in published 0.2.0. See the [API recheck](docs/async-upstream-gaps.md)
-and the [common-command inventory and proposed priorities](docs/command-coverage.md),
-including the current P0 additions and the remaining command-gap inventory.
+The workspace contains **79 command modules**, with **78 published** and local-only `timeout`. Published command versions are **39 at 0.2.0, 8 at 0.2.1, 15 at 0.1.0, 15 at 0.1.1 and 1 at 0.1.2**. Shared `cli/core` is **0.5.0** and is not counted as a command.
+
+Source CI passed on Linux, macOS and Windows, including pinned Linux Native/Wasm comparisons. Published-consumer acceptance is recorded in the [repair report](docs/reports/2026-10-11-fidelity-repair/README.md). See the [support record](docs/compatibility.md), [API gaps](docs/async-upstream-gaps.md) and [remaining command inventory](docs/command-coverage.md).
+
+The documented subset includes persistent line-oriented sh -i, real make -j scheduling, JSON framing, Basic HTTP auth and cookies. Default cp and existing-file touch remain explicit public-metadata boundaries; mv equal-time interactive/update decisions require identity. Native/Wasm use released public APIs and pure MoonBit implementations.
 
 Releasable commands are available as independent modules under
 `cli/<command>`:
@@ -35,16 +20,12 @@ Releasable commands are available as independent modules under
 ```text
 MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/base64@0.2.0
 MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/grep@0.2.0 -- pattern input.txt
-MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/jq@0.2.0 -- -r '.name'
+MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/jq@0.2.1 -- -r '.name'
 ```
 
 ## Commands
 
-The repository contains 79 executable commands for local builds. The current
-Mooncakes registry exposes 78 of them through MoonX: 47 commands at 0.2.0, the
-eleven first-batch commands at 0.1.1, the sixteen second-batch commands at 0.1.0,
-and `strings`, `column`, `which` and `date` at 0.1.0. `timeout` remains outside
-the releasable profile because portable process-group cancellation is not available.
+The workspace contains **79 command modules**, with **78 published** and local-only `timeout`. Published command versions are **39 at 0.2.0, 8 at 0.2.1, 15 at 0.1.0, 15 at 0.1.1 and 1 at 0.1.2**. Shared `cli/core` is **0.5.0** and is not counted as a command. `timeout` remains outside the release profile because portable process-group cancellation is unavailable.
 
 ### Text and data
 
@@ -149,7 +130,7 @@ MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --release --deny
 MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release --deny-warn
 ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite compat
 ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite policy
-./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe --manifest tests/release_runner/candidate-0.1.1.json --suite validate
+./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe --manifest tests/release_runner/candidate-2026-10-11-repair.json --suite validate
 MOON_HOME="$HOME/.moon-accounts/cli" moon info
 MOON_HOME="$HOME/.moon-accounts/cli" moon fmt
 ```

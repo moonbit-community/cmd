@@ -140,6 +140,23 @@
       "expected_stdout_text": "",
       "expected_stderr_contains": "single byte",
       "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+    },
+    {
+      "id": "repair-alias-cut-zero-terminated",
+      "command": "cut",
+      "args": [
+        "--zero-terminated",
+        "-c1"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "stdin_hex": "6162006364",
+      "expected_stdout_hex": "61006300",
+      "expected_stderr_text": ""
     }
   ]
 }

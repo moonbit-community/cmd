@@ -232,6 +232,65 @@
       "expected_stdout_contains": "Usage:",
       "expected_stderr_text": "",
       "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "repair-alias-join-after",
+      "command": "join",
+      "args": [
+        "--after",
+        "1",
+        "-a",
+        "2",
+        "-e",
+        "0",
+        "-o",
+        "0,1.2,2.2",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "a left\nb only-left\nc left-c\n"
+        },
+        {
+          "path": "right",
+          "content_text": "a right\nc right-c\nd only-right\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "expected_stdout_text": "a left right\nb only-left 0\nc left-c right-c\nd 0 only-right\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "repair-alias-join-zero-terminated",
+      "command": "join",
+      "args": [
+        "--zero-terminated",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "31206c6566740032206c65667400"
+        },
+        {
+          "path": "right",
+          "content_hex": "31207269676874003220726967687400"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "expected_stdout_hex": "31206c6566742072696768740032206c65667420726967687400",
+      "expected_stderr_text": ""
     }
   ]
 }

@@ -17,6 +17,49 @@ pub fn oracle_request_name(request : @http.Request) -> String {
 pub async fn run_http_fixture(server : @http.Server) -> Unit {
   server.run_forever() <| ((request, body, connection) => {
     match request.path {
+      "/auth-cookie-challenge" if request.headers.get("Authorization") is None =>
+        connection
+        ..send_response(401, "Unauthorized", extra_headers={
+          "WWW-Authenticate": "Basic realm=\"fixture\"",
+          "Content-Length": "0",
+        })
+        .end_response()
+      "/auth-cookie" | "/auth-cookie-challenge" => {
+        let response = "auth=" +
+          request.headers.get("Authorization").unwrap_or("") +
+          "\ncookie=" +
+          request.headers.get("Cookie").unwrap_or("") +
+          "\n"
+        connection
+        ..send_response(200, "OK", extra_headers={
+          "Content-Length": response.length().to_string(),
+        })
+        ..write(response)
+        .end_response()
+      }
+      "/set-cookie" | "/set-cookie-path" | "/set-cookie-domain" => {
+        let cookie = match request.path {
+          "/set-cookie-path" => @http.Cookie("sid", "fixture", path="/private")
+          "/set-cookie-domain" =>
+            @http.Cookie("sid", "fixture", path="/", domain="example.invalid")
+          _ => @http.Cookie("sid", "fixture", path="/")
+        }
+        connection
+        ..send_response(
+          302,
+          "Found",
+          extra_headers={ "Location": "/auth-cookie", "Content-Length": "0" },
+          cookies=[cookie],
+        )
+        .end_response()
+      }
+      "/cross-cookie" =>
+        connection
+        ..send_response(302, "Found", extra_headers={
+          "Location": "http://localhost:\{server.addr.port()}/auth-cookie",
+          "Content-Length": "0",
+        })
+        .end_response()
       "/fixed" | "/named.txt" => {
         connection.send_response(200, "OK", extra_headers={
           "Content-Length": "5",
@@ -147,4 +190,49 @@ pub async fn spawn_http_fixture_process(
     err => fail("release-runner: invalid HTTP fixture port: \{err}")
   }
   (process, port_reader, "http://127.0.0.1:\{port}")
+}
+
+///|
+pub async fn spawn_https_fixture_process(
+  group : @async.TaskGroup[Unit],
+  root : String,
+) -> (@process.Process, String) {
+  let cert = @fs.realpath("tests/fixtures/http/cert.pem")
+  let key = @fs.realpath("tests/fixtures/http/key.pem")
+  let fixture_root = @fs.realpath("tests/fixtures/http")
+  let log = @path.Path(root).join(Path("https.log")).to_string()
+  let output = @process.redirect_to_file(log)
+  let process = @process.spawn(
+    group,
+    "openssl",
+    ["s_server", "-accept", "127.0.0.1:0", "-cert", cert, "-key", key, "-WWW"],
+    cwd=fixture_root,
+    stdout=output,
+    stderr=output,
+    no_console_window=true,
+    no_wait=true,
+  )
+  for attempt = 0; attempt < 200; attempt = attempt + 1 {
+    if @fs.exists(log) {
+      let text = @fs.read_file(log).text()
+      if text.find("ACCEPT ") is Some(index) {
+        let suffix = text[index + 7:].to_owned()
+        let line = suffix.split("\n").next().unwrap_or("").trim().to_owned()
+        if line.rev_find(":") is Some(colon) {
+          let port = @string.parse_int(line[colon + 1:].to_owned()) catch {
+            _ => 0
+          }
+          if port > 0 {
+            return (process, "https://127.0.0.1:\{port}")
+          }
+        }
+      }
+    }
+    @async.sleep(10)
+  }
+  process.cancel()
+  ignore(process.wait()) catch {
+    _ => ()
+  }
+  fail("release-runner: HTTPS fixture did not report a listening port")
 }

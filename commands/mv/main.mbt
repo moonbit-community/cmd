@@ -10,6 +10,13 @@ priv struct MvOptions {
 }
 
 ///|
+priv enum MoveResult {
+  Moved
+  Skipped
+  Declined
+}
+
+///|
 fn normalized_args(args : ArrayView[String]) -> Array[String] {
   let result : Array[String] = []
   let mut options = true
@@ -46,14 +53,35 @@ async fn move_one(
   source : String,
   target : String,
   options : MvOptions,
-) -> Bool {
+) -> MoveResult {
   let source_kind = @fs.kind(source, follow_symlink=false)
   if source_kind == Directory {
     @fsops.ensure_not_nested_destination(source, target)
   }
   let target_kind = @fsops.kind_if_exists(target)
   if options.no_clobber && target_kind is Some(_) {
-    return false
+    return Skipped
+  }
+  if target_kind is Some(_) &&
+    options.update != @fsops.UpdateNone &&
+    options.update != @fsops.UpdateNoneFail {
+    // Resolve parent aliases without following a final symlink entry.
+    let source_entry = @fsops.join(
+      @fs.realpath(@fsops.dirname(source)),
+      @fsops.basename(source),
+    )
+    let target_entry = @fsops.join(
+      @fs.realpath(@fsops.dirname(target)),
+      @fsops.basename(target),
+    )
+    if source_entry == target_entry ||
+      (
+        source_kind == Regular &&
+        target_kind == Some(Regular) &&
+        @fs.realpath(source) == @fs.realpath(target)
+      ) {
+      raise @fsops.FsOpError("source and destination are the same file")
+    }
   }
   if target_kind is Some(_) && target_kind != Some(Directory) {
     let source_time = @fsops.read_file_timestamp(source, ModificationTime)
@@ -62,16 +90,25 @@ async fn move_one(
       ModificationTime,
       follow_symlink=false,
     )
+    if source_time == target_time &&
+      (
+        options.update == @fsops.UpdateOlder ||
+        (options.interactive && options.update == @fsops.UpdateAll)
+      ) {
+      raise @fsops.FsOpError(
+        "unsupported capability: file identity for equal-time interactive/update targets",
+      )
+    }
     match
       @fsops.overwrite_decision(options.update, source_time, Some(target_time)) {
-      SkipDestination => return false
+      SkipDestination => return Skipped
       RejectDestination =>
         raise @fsops.FsOpError("destination exists under update=none-fail")
       ReplaceDestination => ()
     }
     if options.interactive {
       if !confirm_overwrite(target) {
-        return false
+        return Declined
       }
     }
   }
@@ -86,7 +123,14 @@ async fn move_one(
     None => ()
   })
   @fs.rename(source, target, replace=backup is None)
-  true
+  if @fsops.kind_if_exists(source) is Some(_) {
+    // POSIX rename of hard-link aliases succeeds without removing the source.
+    // Verify the operation's postcondition; never infer identity from contents.
+    raise @fsops.FsOpError(
+      "rename left the source entry in place (possible same file)",
+    )
+  }
+  Moved
 }
 
 ///|
@@ -112,7 +156,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n",
+      "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\nDeclining an interactive overwrite returns status 1 and preserves both files.\nEqual-time interactive/update targets require unavailable file identity metadata.\n",
     )
     return
   }
@@ -202,7 +246,10 @@ async fn main {
         continue
       }
     }
-    if moved && options.verbose {
+    if moved is Declined {
+      failed = true
+    }
+    if moved is Moved && options.verbose {
       @stdio.stdout.write("renamed '\{source}' -> '\{target}'\n")
     }
   }

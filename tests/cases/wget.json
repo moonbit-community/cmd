@@ -190,6 +190,7 @@
     },
     {
       "id": "phase2-wget-https-no-check-certificate",
+      "host_platforms": ["posix"],
       "command": "wget",
       "args": [
         "-q",
@@ -202,7 +203,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "hello\n",
+      "expected_stderr_text": ""
     },
     {
       "id": "compat-catalog-line-306",
@@ -219,6 +224,179 @@
       "expected_stdout_contains": "Usage:",
       "expected_stderr_text": "",
       "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "repair-final-wget-basic",
+      "command": "wget",
+      "args": [
+        "-qO-",
+        "--user=user",
+        "--password=pass",
+        "${HTTP_BASE}/auth-cookie-challenge"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "jar",
+          "content_text": "# Netscape HTTP Cookie File\n127.0.0.1\tFALSE\t/\tFALSE\t0\tsid\tfixture\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "auth=Basic dXNlcjpwYXNz\ncookie=\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled",
+      "oracle": true
+    },
+    {
+      "id": "repair-final-wget-cookie-header",
+      "command": "wget",
+      "args": [
+        "-qO-",
+        "--load-cookies=jar",
+        "--header=Cookie: sid=header",
+        "${HTTP_BASE}/auth-cookie"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "jar",
+          "content_text": "# Netscape HTTP Cookie File\n127.0.0.1\tFALSE\t/\tFALSE\t0\tsid\tfixture\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "auth=\ncookie=sid=header\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled",
+      "oracle": true
+    },
+    {
+      "id": "repair-final-wget-cookie-session",
+      "command": "wget",
+      "args": [
+        "-qO-",
+        "--load-cookies=jar",
+        "${HTTP_BASE}/auth-cookie"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "jar",
+          "content_text": "# Netscape HTTP Cookie File\n127.0.0.1\tFALSE\t/\tFALSE\t0\tsid\tfixture\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "auth=\ncookie=sid=fixture\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled",
+      "oracle": true
+    },
+    {
+      "id": "repair-final-wget-cookie-redirect",
+      "command": "wget",
+      "args": [
+        "-qO-",
+        "${HTTP_BASE}/set-cookie"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "jar",
+          "content_text": "# Netscape HTTP Cookie File\n127.0.0.1\tFALSE\t/\tFALSE\t0\tsid\tfixture\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "auth=\ncookie=sid=fixture\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled",
+      "oracle": true
+    },
+    {
+      "id": "repair-final-wget-cookie-path",
+      "command": "wget",
+      "args": [
+        "-qO-",
+        "${HTTP_BASE}/set-cookie-path"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "jar",
+          "content_text": "# Netscape HTTP Cookie File\n127.0.0.1\tFALSE\t/\tFALSE\t0\tsid\tfixture\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "auth=\ncookie=\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled",
+      "oracle": true
+    },
+    {
+      "id": "repair-final-wget-cookie-domain",
+      "command": "wget",
+      "args": [
+        "-qO-",
+        "${HTTP_BASE}/set-cookie-domain"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "jar",
+          "content_text": "# Netscape HTTP Cookie File\n127.0.0.1\tFALSE\t/\tFALSE\t0\tsid\tfixture\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "auth=\ncookie=\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled",
+      "oracle": true
     }
   ]
 }

@@ -237,6 +237,32 @@
       "expected_stdout_text": "",
       "expected_stderr_contains": "both inputs",
       "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+    },
+    {
+      "id": "repair-alias-comm-zero-terminated",
+      "command": "comm",
+      "args": [
+        "--zero-terminated",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "61006300"
+        },
+        {
+          "path": "right",
+          "content_hex": "62006300"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "expected_stdout_hex": "610009620009096300",
+      "expected_stderr_text": ""
     }
   ]
 }

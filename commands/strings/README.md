@@ -1,24 +1,25 @@
 # strings
 
-Version **0.1.0** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
+Version **0.1.1**. See the [support record](../../docs/compatibility.md) for release evidence.
 
 Print printable byte sequences from files or standard input:
 
 ```sh
-printf 'xxhello\000world\n' | moonx cli/strings
-moonx cli/strings -n 6 data.bin
+printf 'hello\000world\n' | moonx cli/strings
+moonx cli/strings -n 6 -t d data.bin
 ```
 
-The default minimum sequence length is four bytes. `-n`/`--bytes` changes the
-minimum, `-t` selects binary/octal/hex address output, `-o` selects octal
-addresses, and `-f` prefixes each record with its file name. `-a` is accepted
-for the GNU all-input spelling. The supported encoding is the C-locale byte
-profile; multibyte and wide-character decoding are outside this release.
-`--help` and `--version` are available.
+The default minimum is four bytes. `-n`/`--bytes` changes it. TAB and
+printable ASCII belong to a sequence; other control bytes end it.
+`-e s`/`--encoding=s` selects 7-bit bytes (the default); `-e S` includes
+8-bit bytes and preserves their raw output. Wide encodings `b/l/B/L` are
+rejected before input is read.
 
-Known 0.1.0 deviations: GNU's decimal `-t d` and single-byte `-e s` are rejected,
-while `-e b` incorrectly selects single-byte scanning instead of UTF-16 big
-endian. TAB ends a sequence here. These are pending command fixes, not upstream
-API restrictions; see the [follow-up record](../../docs/command-followups.md).
+`-t`/`--radix` accepts `d`, `o` or `x` for decimal, octal or hexadecimal
+offsets, padded to at least seven columns. `-o` is octal; the last `-o` or
+`-t` wins. `-f`/`--print-file-name` adds the filename; multiple input files
+do not add it automatically. `-a`/`--all` and bare `-` select whole-file
+scanning. With no files, stdin is read once.
+
+`--help` and `--version` are available. Object-section selection, locale
+decoding and GNU Unicode rendering modes are not implemented.

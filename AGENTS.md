@@ -17,6 +17,11 @@ You can browse and install extra skills here:
 
 ## Coding convention
 
+- Repository documentation, issue titles/bodies, PR descriptions and new
+  explanatory comments must be written in English. Historical document
+  translations preserve recorded versions, results and limitations; language
+  revisions must not turn old evidence into current acceptance claims.
+
 - MoonBit code is organized in block style, each block is separated by `///|`,
   the order of each block is irrelevant. In some refactorings, you can process
   block by block independently.
@@ -115,16 +120,14 @@ module and version before any release operation.
   Update the published manifest and release report with those results, then
   commit and push the documentation. Do not publish from a failing or
   unverified candidate.
-- Current baseline after the 2026-10-11 P2 release: `cli/core` is at `0.4.0`,
-  the original published commands remain at `0.2.0`, the first migrated batch
-  (`base32`, `cksum`, `expand`, `mktemp`, `realpath`, `rev`, `tac`, `tree`,
-  `unexpand`, `unlink`, `yes`) remains at `0.1.1`, and the second migrated batch
-  (`fold`, `od`, `hexdump`, `md5sum`, `sha1sum`, `sha512sum`, `sed`, `diff`,
-  `patch`, `split`, `csplit`, `expr`, `fmt`, `gzip`, `gunzip`, `zcat`) remains at
-  `0.1.0`. The P2 packages (`column`, `date`, `strings`, `which`) are at
-  `0.1.0`; `timeout` remains local-only. Exact consumer evidence is in
-  `docs/reports/2026-10-11-p2-release-0.1.0/README.md`. Update this baseline
-  whenever a subsequent release changes it.
+- Current baseline after the 2026-10-11 fidelity repair: core is 0.5.0;
+  column/date/diff/strings/which are 0.1.1; unlink is 0.1.2;
+  curl/jq/jqlog/ln/mv/seq/wget are 0.2.1. Other command versions are unchanged.
+  `ls` is also 0.2.1 after the published ls sorting/link fixes. There are 78
+  published commands and local-only timeout. Exact coordinates
+  are in tests/release_runner/published-2026-10-11-repair.json; acceptance is
+  recorded in docs/reports/2026-10-11-fidelity-repair/README.md.
+  Update this baseline whenever a later release changes it.
 
 ### Mandatory pure MoonBit boundary
 

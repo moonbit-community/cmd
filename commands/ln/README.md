@@ -1,11 +1,14 @@
 # ln
 
-Version **0.2.0** behavior is documented here. The
+Version **0.2.1** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
+Declining an interactive overwrite, including EOF, returns status 1 without
+changing the destination; other operands are still processed.
+
 Create symbolic links with `-s`, including force/interactive replacement
-(`-f`/`-i`), relative targets (`-r`), target directories (`-t`), explicit link
+(`-f`/`-i`, last option wins), relative targets (`-r`), target directories (`-t`), explicit link
 destinations (`-T`), backup controls (`-b`, `-S`), directory destinations, and
 verbose output. `-n` only disables following a destination symlink; it is not
 an alias for `-T`. Target-directory and replacement combinations are accepted

@@ -78,10 +78,16 @@ fn shared_report(
           observations.append(@testkit.contract_observations(fixture))
         }
         _ => {
-          observations.append([
-            "status", "stdout-bytes", "stderr-bytes", "content", "type",
-          ])
-          observations.append(fixture.observe.unwrap_or([]))
+          observations.append(["status", "stdout-bytes", "content", "type"])
+          observations.push(
+            if fixture.expected_stderr_contains is Some(_) &&
+              fixture.diagnostic_reason is Some(_) {
+              "stderr-contract"
+            } else {
+              "stderr-bytes"
+            },
+          )
+          observations.append(@testkit.contract_observations(fixture))
         }
       }
     }

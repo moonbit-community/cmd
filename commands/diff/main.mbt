@@ -42,7 +42,7 @@ async fn run(args : ArrayView[String]) -> Int {
     return 0
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("diff 0.1.0\n")
+    @stdio.stdout.write("diff 0.1.1\n")
     return 0
   }
   guard parsed.operands.length() == 2 else {
@@ -160,34 +160,9 @@ async fn header(path : String, context : Bool) -> String {
   if path == "-" {
     fail("unified stdin headers require an explicit --label")
   }
-  let tz = @env.get_env_var("TZ")
-  let zone = match tz {
-    Some("UTC" | "UTC0" | "GMT" | "GMT0" | "") => @time.utc_zone
-    _ => {
-      let file = match tz {
-        None => "/etc/localtime"
-        Some(name) => {
-          let name = if name.has_prefix(":") {
-            name[1:].to_owned()
-          } else {
-            name
-          }
-          if name.has_prefix("/") {
-            name
-          } else {
-            "/usr/share/zoneinfo/" + name
-          }
-        }
-      }
-      let data = @fs.read_file(file).binary()
-      @time.Zone::from_tzif2(
-        "local",
-        FixedArray::makei(data.length(), i => data[i]),
-      )
-    }
-  }
+  let zone = @time_zone.load()
   let (seconds, nanos) = @fs.mtime(path)
-  let date = @time.unix(seconds, nanosecond=nanos, zone~)
+  let date = zone.at_unix(seconds, nanosecond=nanos)
   if context {
     return path + "\t" + context_date(date)
   }

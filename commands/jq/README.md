@@ -3,7 +3,7 @@
 Malformed `--argjson` input returns status 2 and the jq 1.8.2 argument-error
 diagnostic, including its help/manual guidance; no filter output is emitted.
 
-Version **0.2.0** behavior is documented here. The
+Version **0.2.1** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -53,6 +53,9 @@ already emitted results and exit with status 4. `-n` evaluates once without
 reading input files; `-e` reflects the final emitted value. With no filter the
 identity filter is used.
 
-The evaluator is MoonJQ 0.1.2. Its map, reduce,
-assignment, and try/catch slices are usable through this CLI; modules,
+The evaluator is MoonJQ 0.2.0. `tostring` preserves strings and serializes other
+values; `tojson` emits JSON text. String slices use Unicode scalar indices,
+including negative and open bounds, in nested filters as well as at the top
+level. Numeric/boolean/object slices fail instead of silently returning null.
+Map, reduce, assignment and try/catch use the evaluator's public AST; modules,
 the `--stream` event representation, and every jq 1.8.2 diagnostic are not claimed.

@@ -149,6 +149,47 @@
       "aliases": [
         "compat-stdin-tail"
       ]
+    },
+    {
+      "id": "repair-alias-tail-follow",
+      "command": "tail",
+      "args": [
+        "--follow",
+        "-s",
+        "0.02",
+        "-n",
+        "2"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "one\ntwo\nthree\n",
+      "expected_stdout_text": "two\nthree\n",
+      "expected_files": [],
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "repair-alias-tail-sleep-interval",
+      "command": "tail",
+      "args": [
+        "--sleep-interval",
+        "0.02",
+        "-n",
+        "1"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "one\ntwo\n",
+      "expected_stdout_text": "two\n",
+      "expected_files": [],
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "expected_stderr_text": ""
     }
   ]
 }

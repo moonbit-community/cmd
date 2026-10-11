@@ -347,7 +347,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       "all", "bytes", "encoding", "octal", "print-file-name", "radix", "version",
     ]),
     contract("column", Core, FileOrStdin, LineStream, [FileRead], [
-      "table", "separator", "output-separator", "version",
+      "table", "separator", "output-separator", "output-width", "fillrows", "version",
     ]),
     contract(
       "which",
@@ -358,7 +358,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       ["all", "silent", "version"],
       exit_codes=[0, 1, 2],
     ),
-    contract("date", Core, NoInput, LineStream, [], [
+    contract("date", Core, NoInput, LineStream, [FileRead], [
       "utc", "date", "iso-8601", "rfc-email", "version",
     ]),
     contract(

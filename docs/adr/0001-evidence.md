@@ -3,9 +3,40 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-10-11
-Revision: Map all 31 migrated commands to canonical decisions and inventory 79 command follow-ups; distinguish new fidelity findings from the frozen successful release selections.
+Revision: Correct self-authored expected outputs, pin new strings/column oracles, expand real CLI/alias/edge coverage before a repaired release, and run published HTTPS cases through the same fixed POSIX fixture as the workspace runner.
 
 ## Target and decision
+
+The 2026-10-11 repair treats an upstream disagreement as a failed contract,
+even when old package tests encoded the same defect. Pin binutils 2.44 and
+util-linux 2.40 alongside coreutils 9.11/jq 1.8.2. Correct known wrong golden
+values with retained upstream evidence; do not auto-bless candidate output.
+Separate semantic, availability and explicit rejection results throughout.
+Review every command README/help, then execute long-option aliases against the
+retained short-option byte/status/file contract rather than assuming parser
+aliases work. Source review and case counts do not prove all possible inputs.
+The cost is maintaining independent expected behavior and fixtures; retire
+duplicate assertions only when their entrypoint/backend/observation survives.
+Release requires second review, three-platform CI and exact-version MoonX,
+as recorded in [the repair report](../reports/2026-10-11-fidelity-repair/README.md).
+
+The release runner owns no separate network implementation. HTTP and HTTPS cases
+share the testkit fixtures; HTTPS uses the repository's fixed certificate through
+the host observation layer, expands `${HTTPS_BASE}` in both candidate and oracle
+argv, and records Windows as a platform skip when that fixture is unavailable.
+This keeps published network contracts aligned with workspace contracts while
+preserving the pure-MoonBit product boundary.
+
+Published time contracts produced intermittent atime changes on macOS under
+concurrent execution (runs 38135713734 and retained local reports). Their
+assertions remain unchanged. Smoke runs serially; differential runs complete
+ordinary cases first, then execute fixed-time, delayed and time-observation
+cases serially. A separate serial semaphore was rejected because it still let
+ordinary cases overlap them. The cost is longer release checks. The source of
+the observed atime changes remains unconfirmed; no MoonX extraction or product
+defect is inferred from this correlation. Restore parallel execution only after
+an isolated reproduction identifies and fixes the cause and repeated concurrent
+Native/Wasm/MoonX runs preserve the time contracts. No automatic retries.
 
 All product code, shared runtime code, test runners, fixtures, and automation
 must be pure MoonBit. Project-owned C/C++/Rust/JavaScript/TypeScript, FFI,
@@ -36,6 +67,15 @@ Contracts assert both output streams and status; diagnostic fragments require a
 reason. Absence of internal errors alone is not a behavioral contract.
 
 Passing a self-authored contract proves that contract, not upstream equivalence.
+The published runner honors a contract's explicit `oracle: true` marker in
+differential mode, requiring both the golden contract and an upstream comparison.
+Previously those cases returned early as contract-only. Smoke intentionally
+keeps its Docker-free contract checks, while boundary and unmarked contracts
+remain separate classifications. Classification self-tests and published Linux
+oracle execution verify this distinction; no oracle-selected case may silently
+fall back to a golden-only pass.
+Reports label justified diagnostic fragments as `stderr-contract`, not full
+byte equality, and retain metadata dimensions inferred from file expectations.
 The [2026-10-11 follow-up audit](../reports/2026-10-11-command-followups/README.md)
 finds missing GNU meanings in strings, executable access in which, default/LF
 behavior in column and caller TZ handling in date despite passing published
@@ -155,6 +195,16 @@ configuration alone does not establish a passing cross-platform result. Record
 before/after execution counts and same-host timings without predicting a speedup.
 
 ## Revisit when
+
+2026-10-11 repair CI exposed oracle-fixture errors: the Docker entrypoint must
+not overwrite explicit TZ (or other fixture environment), and `${WORK}` expands
+to the candidate directory for the candidate and `/work` for its container
+oracle. Docker ENV provides defaults; both runners preserve explicit fixture
+values while pinning oracle PATH. Non-UTC and TZif fixture tests enforce this
+end to end. Existing project-only long aliases such as ls `--access-time` and
+`--change-time` have command-local contracts; GNU comparison uses the retained
+`-u/-c` cases. Comparing an extension's spelling with an upstream that rejects
+it is a test-definition error, not evidence to relax a product defect's assertion.
 
 2026-10-10: The new 16-command batch uses a separate candidate manifest with
 74 releasable coordinates; the 58 published coordinates keep their versions.
