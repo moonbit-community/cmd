@@ -488,6 +488,28 @@
       "oracle": true
     },
     {
+      "id": "repair-final-date-inline-dst-offset",
+      "command": "date",
+      "args": [
+        "-d",
+        "@0",
+        "+%z %Z"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "<+1030>-10:30<+11>-11,M10.1.0/2,M4.1.0/2"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "+1100 +11\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled",
+      "oracle": true
+    },
+    {
       "id": "repair-final-date-invalid-diagnostic",
       "command": "date",
       "args": [

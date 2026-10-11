@@ -149,7 +149,7 @@ MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --release --deny
 MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release --deny-warn
 ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite compat
 ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite policy
-./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe --manifest tests/release_runner/candidate-0.1.1.json --suite validate
+./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe --manifest tests/release_runner/candidate-2026-10-11-repair.json --suite validate
 MOON_HOME="$HOME/.moon-accounts/cli" moon info
 MOON_HOME="$HOME/.moon-accounts/cli" moon fmt
 ```

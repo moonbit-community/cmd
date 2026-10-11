@@ -364,7 +364,10 @@ async fn run_case(
     "-w",
     fixture.working_directory("/work"),
   ]
-  for name, value in environment {
+  let oracle_environment = controlled_environment(
+    @testkit.expand_environment(fixture.environment, "/work", http_base~),
+  )
+  for name, value in oracle_environment {
     if name != "PATH" {
       docker_args.push("-e")
       docker_args.push(name + "=" + value)

@@ -221,8 +221,13 @@ async fn run_oracle(
     "-e",
     "TZ=UTC",
   ])
-  for name, value in fixture.environment {
-    if name != "PATH" && name != "LC_ALL" && name != "LANG" && name != "TZ" {
+  for
+    name, value in @testkit.expand_environment(
+      fixture.environment,
+      "/work",
+      http_base?,
+    ) {
+    if name != "PATH" {
       args.push("-e")
       args.push(name + "=" + value)
     }

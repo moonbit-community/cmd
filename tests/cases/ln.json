@@ -190,6 +190,291 @@
         "linux",
         "macos"
       ]
+    },
+    {
+      "id": "repair-fs-ln-force-last",
+      "command": "ln",
+      "args": [
+        "-s",
+        "-i",
+        "-f",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ]
+    },
+    {
+      "id": "repair-fs-ln-interactive-last",
+      "command": "ln",
+      "args": [
+        "-s",
+        "-f",
+        "-i",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "ln: replace 'destination'? ",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "kind": "file",
+          "content_text": "old"
+        }
+      ]
+    },
+    {
+      "id": "repair-fs-ln-force-long-last",
+      "command": "ln",
+      "args": [
+        "--symbolic",
+        "--interactive",
+        "--force",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ]
+    },
+    {
+      "id": "repair-fs-ln-backup",
+      "command": "ln",
+      "args": [
+        "-s",
+        "-b",
+        "-S",
+        ".save",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "destination",
+          "kind": "symlink",
+          "target": "source"
+        },
+        {
+          "path": "destination.save",
+          "content_text": "old"
+        },
+        {
+          "path": "source",
+          "content_text": "new"
+        }
+      ]
+    },
+    {
+      "id": "repair-fs-ln-target-directory",
+      "command": "ln",
+      "args": [
+        "-s",
+        "-t",
+        "links",
+        "source"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "links",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "links/source",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ]
+    },
+    {
+      "id": "repair-fs-ln-no-dereference",
+      "command": "ln",
+      "args": [
+        "-sfn",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "destination",
+          "kind": "symlink",
+          "target": "directory"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "destination",
+          "kind": "symlink",
+          "target": "source"
+        },
+        {
+          "path": "directory/source",
+          "exists": false
+        }
+      ]
     }
   ]
 }

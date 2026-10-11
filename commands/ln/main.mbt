@@ -124,7 +124,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: ln -s [-f|-i] [-r] [-n|-T] [-t DIRECTORY] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\n",
+      "Usage: ln -s [-f|-i] [-r] [-n|-T] [-t DIRECTORY] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\nThe last -f/--force or -i/--interactive selects overwrite behavior.\n",
     )
     return
   }
@@ -148,8 +148,9 @@ async fn main {
     _ => "none"
   }
   let options : LnOptions = {
-    force: parsed.contains("force"),
-    interactive: parsed.contains("interactive"),
+    force: parsed.last_occurrence(["force", "interactive"]) == Some("force"),
+    interactive: parsed.last_occurrence(["force", "interactive"]) ==
+    Some("interactive"),
     no_target_directory: parsed.contains("no-target-directory"),
     no_dereference_target: parsed.contains("no-dereference-target"),
     relative: parsed.contains("relative"),

@@ -169,6 +169,16 @@ before/after execution counts and same-host timings without predicting a speedup
 
 ## Revisit when
 
+2026-10-11 repair CI exposed oracle-fixture errors: the Docker entrypoint must
+not overwrite explicit TZ (or other fixture environment), and `${WORK}` expands
+to the candidate directory for the candidate and `/work` for its container
+oracle. Docker ENV provides defaults; both runners preserve explicit fixture
+values while pinning oracle PATH. Non-UTC and TZif fixture tests enforce this
+end to end. Existing project-only long aliases such as ls `--access-time` and
+`--change-time` have command-local contracts; GNU comparison uses the retained
+`-u/-c` cases. Comparing an extension's spelling with an upstream that rejects
+it is a test-definition error, not evidence to relax a product defect's assertion.
+
 2026-10-10: The new 16-command batch uses a separate candidate manifest with
 74 releasable coordinates; the 58 published coordinates keep their versions.
 Candidate validation requires the complete current catalog. Frozen published

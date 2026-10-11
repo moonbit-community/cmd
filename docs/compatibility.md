@@ -4,7 +4,7 @@ Date: 2026-09-05
 Updated: 2026-10-11
 
 Repair in progress: `core@0.5.0`, `column/date/diff/strings/which@0.1.1`,
-`unlink@0.1.2`, and `curl/jq/jqlog/seq/wget@0.2.1` are **unpublished candidates**.
+`unlink@0.1.2`, and `curl/jq/jqlog/ln/mv/seq/wget@0.2.1` are **unpublished candidates**.
 They correct known implementation errors and deliver the previously local
 Cookie fixes. The following published baseline remains distinct until the
 [repair gates and MoonX acceptance](reports/2026-10-11-fidelity-repair/README.md)

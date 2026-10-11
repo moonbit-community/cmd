@@ -1553,8 +1553,7 @@
         "posix"
       ],
       "expected_stderr_text": "",
-      "oracle": true,
-      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+      "source_version": "Existing project long alias, not a GNU ls spelling. The retained -u/-c cases provide GNU differential coverage; this case checks the same command-local bytes and status."
     },
     {
       "id": "repair-alias-ls-change-time",
@@ -1612,8 +1611,7 @@
         "posix"
       ],
       "expected_stderr_text": "",
-      "oracle": true,
-      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+      "source_version": "Existing project long alias, not a GNU ls spelling. The retained -u/-c cases provide GNU differential coverage; this case checks the same command-local bytes and status."
     }
   ]
 }

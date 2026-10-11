@@ -12,6 +12,14 @@ Updated: 2026-10-11（确认 strings、column、which、date 的纯 MoonBit 数�
 moonjq 的传递依赖解析到相同 async/x 版本，没有残留旧版本。
 未将 upstream main 的未发布代码算作可用能力。
 
+2026-10-11 修复复检补充：公开 `rename` 在源/目标为同 inode 的硬链接时可以
+成功但不移除源。`mv` 候选现在检查“源路径消失”的后置条件，保留别名并报告失败，
+不会再尝试删除源。相同目录项可经父目录 canonicalization 提前识别；但 `-i/-u`
+必须在 rename 之前决定交互或跳过，仍缺公共 identity。相同 mtime 不能证明 identity，
+候选对此歧义子集明确拒绝（包括时间相同但独立的文件）。解除条件为公共 identity/
+handle 元数据和相应 Native/Wasm 对照；不能将这个 gate 写成所有 mv 均不可实现。
+详见 ADR-0004 和 issue #25。并发进程重建源路径会导致后置条件失败而不会被再次删除。
+
 2026-09-26 的补充复核发现公开 registry 当时正式最新为 async `0.22.4`（checksum
 `2ffdb85cb229cfe9219161a7f2b959215a79a0d75b7e642cb346713f168a1457`），
 尚无可解析的 `0.22.5`。基线刷新时工作区 50 个模块已统一解析到 0.22.4，并通过

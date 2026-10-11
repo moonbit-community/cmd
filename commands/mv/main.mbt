@@ -55,6 +55,27 @@ async fn move_one(
   if options.no_clobber && target_kind is Some(_) {
     return false
   }
+  if target_kind is Some(_) &&
+    options.update != @fsops.UpdateNone &&
+    options.update != @fsops.UpdateNoneFail {
+    // Resolve parent aliases without following a final symlink entry.
+    let source_entry = @fsops.join(
+      @fs.realpath(@fsops.dirname(source)),
+      @fsops.basename(source),
+    )
+    let target_entry = @fsops.join(
+      @fs.realpath(@fsops.dirname(target)),
+      @fsops.basename(target),
+    )
+    if source_entry == target_entry ||
+      (
+        source_kind == Regular &&
+        target_kind == Some(Regular) &&
+        @fs.realpath(source) == @fs.realpath(target)
+      ) {
+      raise @fsops.FsOpError("source and destination are the same file")
+    }
+  }
   if target_kind is Some(_) && target_kind != Some(Directory) {
     let source_time = @fsops.read_file_timestamp(source, ModificationTime)
     let target_time = @fsops.read_file_timestamp(
@@ -62,6 +83,15 @@ async fn move_one(
       ModificationTime,
       follow_symlink=false,
     )
+    if source_time == target_time &&
+      (
+        options.update == @fsops.UpdateOlder ||
+        (options.interactive && options.update == @fsops.UpdateAll)
+      ) {
+      raise @fsops.FsOpError(
+        "unsupported capability: file identity for equal-time interactive/update targets",
+      )
+    }
     match
       @fsops.overwrite_decision(options.update, source_time, Some(target_time)) {
       SkipDestination => return false
@@ -86,6 +116,13 @@ async fn move_one(
     None => ()
   })
   @fs.rename(source, target, replace=backup is None)
+  if @fsops.kind_if_exists(source) is Some(_) {
+    // POSIX rename of hard-link aliases succeeds without removing the source.
+    // Verify the operation's postcondition; never infer identity from contents.
+    raise @fsops.FsOpError(
+      "rename left the source entry in place (possible same file)",
+    )
+  }
   true
 }
 
@@ -112,7 +149,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n",
+      "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\nEqual-time interactive/update targets require unavailable file identity metadata.\n",
     )
     return
   }

@@ -3,9 +3,28 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-10-11
-Revision: Complete realpath/tree/mktemp/unlink and splitting decisions; separate implementable path/format work from identity, metadata and link API gates.
+Revision: Repair unlink preflight, ln overwrite ordering and mv same-entry/no-op behavior; record the remaining identity gate before interactive/update decisions.
 
 ## Target and decision
+
+The 2026-10-11 second review (issue #25, coreutils 9.11) requires the last ln
+`-f/-i` selector to win. For mv, canonical parent paths identify the same entry
+before prompting/backups; ordinary rename must remove the source entry. A
+hard-link no-op therefore fails with both names intact. Never delete the source
+again to force the postcondition: a concurrent actor may have recreated it.
+
+Public async 0.22.4 has no file identity read before the operation. An equal-mtime
+target with interactive or older-only update selection cannot be distinguished
+from a hard-link alias before a prompt/skip. Refuse that ambiguous case explicitly,
+including separate files with matching times; no-clobber/update-none remain valid
+skips. Timestamp equality is not treated as proof of identity. Rejected alternatives
+are success on an unverified alias, guessing identity from content/time, private
+runtime access and host mv delegation. The compatibility cost is conservative
+refusal for that equal-time subset and a reported error if concurrent source
+recreation defeats the rename postcondition. Public identity/handle metadata plus
+Native/Wasm hard-link, symlink, backup, interaction and race tests can lift the
+restriction. JSON regressions retain source bytes, mode, link relations and backup
+absence; Linux fixed GNU is the independent oracle, Windows contracts are separate.
 
 Implement each backend's maximum correct subset. Public async 0.22.4 lacks identity, mode reads and handle truncation. Default cp therefore fails instead of creating wrong permissions. GNU --no-preserve=mode supports new destinations with 0666/0777 subject to umask; existing regular-file overwrite is rejected. No-clobber/update no-ops remain. Touch creates missing files and implements -c for missing operands; existing timestamp updates fail without content writes. Numeric chmod follows command-line symlinks and skips recursively encountered symlinks. mkdir -p -m applies the requested mode only to the leaf. Exotic umasks requiring temporary owner permissions remain uncertified.
 

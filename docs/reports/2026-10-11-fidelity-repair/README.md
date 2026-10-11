@@ -32,6 +32,7 @@ published manifests are preserved.
 | F16 locale / platform text | [#21](https://github.com/moonbit-community/cmd/issues/21) |
 | F17 diagnostics / extensions | [#22](https://github.com/moonbit-community/cmd/issues/22) |
 | F18 missing commands | [#23](https://github.com/moonbit-community/cmd/issues/23) |
+| ln/mv second-review errors | [#25](https://github.com/moonbit-community/cmd/issues/25) |
 
 ## Working evidence
 
@@ -81,7 +82,7 @@ Wasm-GC **2/2** each. Native and Wasm CLI contracts each produced **592 semantic
 passes** in the first complete pass; the final Native/Wasm pass has **594**
 semantic passes each with zero failures, including signed-year and ANSI-width
 regressions. Boundaries and platform exclusions are separate.
-The candidate manifest selects **819** cases across **78** exact command
+The candidate manifest selects **839** cases across **78** exact command
 coordinates. Every current command retains its tests; no old assertion was
 deleted to get the repair through.
 
@@ -93,3 +94,23 @@ as semantic parity. Historical 554-case release evidence remains unchanged.
 Required remaining gates: Linux/macOS/Windows CI, serial publication, exact
 MoonX acceptance, final evidence and issue closure. No package has been published
 by this repair yet.
+
+The filesystem follow-up additionally reproduced ln's ignored last `-f` and
+mv's same-path false success against coreutils 9.11. These fixes add `ln/mv@0.2.1`
+to the release set. Shared contracts exercise overwrite ordering, backup suffixes,
+target directories, no-dereference, same-path/update/no-clobber and hard-link
+effects. ADR-0004 records the precise equal-time interactive/update identity gate;
+that refusal is a boundary result, not an upstream pass.
+
+First remote run `38115930687` passed macOS. Windows exposed invalid-filename
+probing of inline POSIX TZ rules; the parser now recognizes that form before
+filesystem lookup. Linux exposed the oracle entrypoint overriding fixture TZ
+and the runners forwarding host-expanded paths into containers. Both were
+corrected while keeping the failing assertions. Two new ls alias cases were
+also wrongly marked GNU differential: GNU does not accept those existing project
+long spellings, so their local contracts remain while retained `-u/-c` cases
+continue to check upstream parity. This run is failure evidence, not a release gate.
+
+The updated candidate passed **613 semantic contracts per backend** locally,
+including the 18 added positive filesystem regressions and the new inline DST
+timezone case. The equal-time mv case adds one explicit boundary contract.

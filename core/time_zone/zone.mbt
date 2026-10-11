@@ -24,7 +24,19 @@ pub async fn load(utc? : Bool = false) -> Zone {
     return from_rules(parse_rules(name + "0"))
   }
   let name = tz.unwrap_or(":/etc/localtime")
+  let force_file = name.has_prefix(":")
   let name = name.strip_prefix(":").unwrap_or(name[:]).to_owned()
+  // A POSIX rule can contain <, > and : that Windows rejects as filename
+  // components. Recognize that unambiguous inline form before filesystem I/O.
+  // Explicit ':'/absolute paths still retain file lookup and its real errors.
+  if @async.platform is Windows &&
+    !force_file &&
+    !name.has_prefix("/") &&
+    !name.contains("\\") &&
+    !(name.length() > 1 && name[1] == ':') &&
+    name.iter().any(c => c is ('<' | '>' | ':')) {
+    return from_rules(parse_rules(name))
+  }
   let file = if name.has_prefix("/") ||
     name.contains("\\") ||
     (name.length() > 1 && name[1] == ':') {

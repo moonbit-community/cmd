@@ -1,6 +1,6 @@
 name = "cli/mv"
 
-version = "0.2.0"
+version = "0.2.1"
 
 readme = "README.md"
 
@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "mv command for MoonX."
 
 import {
-  "cli/core@0.2.0",
+  "cli/core@0.5.0",
   "moonbitlang/async@0.22.4",
   "moonbitlang/x@0.5.5",
 }
