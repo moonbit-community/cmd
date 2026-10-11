@@ -27,6 +27,12 @@ argv, and records Windows as a platform skip when that fixture is unavailable.
 This keeps published network contracts aligned with workspace contracts while
 preserving the pure-MoonBit product boundary.
 
+Cases that create fixed timestamp fixtures or observe timestamp relations use a
+dedicated serial slot in the published runner. Parallel ordinary cases retain
+the configured job limit. This is a test-observation constraint: concurrent
+host timestamp setup can make `ls` ordering and rejection-side-effect checks
+nondeterministic on macOS, while the command contract itself remains unchanged.
+
 All product code, shared runtime code, test runners, fixtures, and automation
 must be pure MoonBit. Project-owned C/C++/Rust/JavaScript/TypeScript, FFI,
 native stubs, and host-command delegation are prohibited as implementation

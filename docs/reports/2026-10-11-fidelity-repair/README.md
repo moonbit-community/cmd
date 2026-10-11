@@ -157,3 +157,11 @@ POSIX-only `chmod` symbolic-assignment contract lacked its `host_platforms`
 condition even though the command README rejects Windows permission mutation.
 The case is corrected to skip on Windows with an explicit reason; the next
 three-platform run is the release gate for this test-only repair.
+
+Run `38135713734` then exposed a second runner issue on macOS: six timestamp
+contracts were nondeterministic only under the release runner's default four
+jobs. The same cases passed serially and the workspace runners, which already
+execute command contracts with one job. The release runner now serializes
+fixed-timestamp and timestamp-observation cases while retaining parallelism for
+ordinary cases; this preserves the assertions and records the host-observation
+constraint.

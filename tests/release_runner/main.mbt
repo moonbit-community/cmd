@@ -137,6 +137,17 @@ fn case_supported_on_host(fixture : ReleaseCase, platform : String) -> Bool {
 }
 
 ///|
+fn requires_serial_fixture(fixture : ReleaseCase) -> Bool {
+  fixture.command == "ls" ||
+  fixture.files.any(file => file.atime is Some(_) || file.mtime is Some(_)) ||
+  fixture.observe
+  .unwrap_or([])
+  .any(dimension => {
+    dimension == "atime" || dimension == "mtime" || dimension == "ctime"
+  })
+}
+
+///|
 fn failure_category(result : @testkit.RunResult) -> String {
   let stderr = @utf8.decode(result.stderr) catch { _ => "" }
   if result.status == 255 &&
@@ -752,14 +763,20 @@ async fn run_selected_cases(
 ) -> Unit {
   let platform = host_platform()
   let slots = @async.Semaphore(jobs)
+  let serial_slots = @async.Semaphore(1)
   @async.with_task_group <| group => {
     let tasks : Array[@async.Task[Array[CaseReport]]] = []
     for fixture in fixtures {
       tasks.push(
         group.spawn(() => {
           let reports : Array[CaseReport] = []
-          slots.acquire()
-          defer slots.release()
+          let serial = requires_serial_fixture(fixture)
+          if serial {
+            serial_slots.acquire()
+          } else {
+            slots.acquire()
+          }
+          defer (if serial { serial_slots.release() } else { slots.release() })
           let started = @async.now()
           defer {
             timings[fixture.id] = @async.now() - started

@@ -17,6 +17,29 @@ test "published network argv expands both fixture schemes" {
 }
 
 ///|
+test "timestamp fixtures are serialized" {
+  let timestamped = {
+    ..release_case_for_test("timestamped", "ls"),
+    files: [
+      {
+        path: "input",
+        content_text: Some("x"),
+        content_hex: None,
+        kind: None,
+        target: None,
+        mode: None,
+        atime: Some("202001010000.00"),
+        mtime: None,
+      },
+    ],
+  }
+  let ordinary = release_case_for_test("ordinary", "echo")
+  assert_true(requires_serial_fixture(timestamped))
+  assert_false(requires_serial_fixture(ordinary))
+  assert_true(requires_serial_fixture({ ..ordinary, command: "ls", }))
+}
+
+///|
 test "release manifest version validation" {
   assert_true(valid_version("0.1.4"))
   assert_true(valid_version("12.0.7"))
