@@ -1,4 +1,4 @@
-# Command fidelity repair — in progress
+# Command fidelity repair — final acceptance record
 
 Started 2026-10-11 from `f48398d6d7d4ca20d45bce22e107962612513c73`, on
 `codex/command-fidelity-repair`. This report is not release acceptance.
@@ -144,12 +144,13 @@ This repair publishes `cli/core@0.5.0`, `column/date/diff/strings/which@0.1.1`, 
 All 78 selected command asset caches were moved to a recoverable local backup before published acceptance, forcing fresh downloads. The release runner now starts the fixed HTTPS fixture used by the workspace runner, expands `${HTTPS_BASE}` for candidate and oracle invocations, and records the POSIX-only Windows boundary. Receipts and reports are under `test-reports/fidelity-repair`.
 
 Published-consumer review found that ls link/time source corrections had not been
-released in `cli/ls@0.2.0`; five time-order contracts failed. `cli/ls@0.2.1` is
-therefore an additional required upload after its three-platform source gate.
+released in `cli/ls@0.2.0`; five time-order contracts failed. `cli/ls@0.2.1` was
+uploaded after its three-platform source gate.
 Release case directories now append a case-sensitive ID encoding, preventing
 `strings -e b/B` and `-e l/L` evidence from colliding on case-insensitive hosts.
 Both TLS contracts passed locally on Native, Wasm and exact published curl/wget.
-The new 841-case selection remains subject to full final MoonX acceptance.
+The new 841-case selection was subsequently covered by the full final MoonX
+acceptance recorded below.
 
 Remote published run `38131874801` passed Linux, including the pinned
 differential gate, and macOS. Windows reported one false failure because the
