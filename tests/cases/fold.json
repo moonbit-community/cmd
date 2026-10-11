@@ -178,6 +178,50 @@
       "diagnostic_reason": "The read error wording comes from the host; status and subsequent file output are exact.",
       "comparison": "contract",
       "normalizations": []
+    },
+    {
+      "id": "repair-alias-fold-spaces",
+      "command": "fold",
+      "args": [
+        "--spaces",
+        "--width=5"
+      ],
+      "stdin_text": "aa bb cccccc",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "aa \nbb \nccccc\nc",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "-s",
+        "--spaces"
+      ],
+      "oracle": true,
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+    },
+    {
+      "id": "repair-alias-fold-bytes",
+      "command": "fold",
+      "args": [
+        "--bytes",
+        "-w2"
+      ],
+      "stdin_hex": "6100ff62",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "61000aff62",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
     }
   ]
 }

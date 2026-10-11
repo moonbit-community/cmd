@@ -124,6 +124,43 @@
       "aliases": [
         "compat-stdin-uniq"
       ]
+    },
+    {
+      "id": "repair-alias-uniq-count",
+      "command": "uniq",
+      "args": [
+        "--count",
+        "-f1",
+        "-s1",
+        "-w1"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "stdin_text": "1 xa\n2 xb\n3 yy\n",
+      "expected_stdout_text": "      2 1 xa\n      1 3 yy\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "repair-alias-uniq-zero-terminated",
+      "command": "uniq",
+      "args": [
+        "--zero-terminated",
+        "-s1",
+        "-w1"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "stdin_hex": "6178310061783200627900",
+      "expected_stdout_hex": "61783100627900",
+      "expected_stderr_text": ""
     }
   ]
 }

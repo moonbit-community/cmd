@@ -189,7 +189,7 @@ async fn main {
       separator = arg[12:].to_owned()
     } else if options && arg == "--help" {
       @stdio.stdout.write(
-        "Usage: seq [-w] [-s STRING] [FIRST [INCREMENT]] LAST\n",
+        "Usage: seq [-w] [-s STRING] [FIRST [INCREMENT]] LAST\nPrint an exact decimal sequence; the default increment is 1.\n  -w, --equal-width       pad numbers with leading zeroes\n  -s, --separator=STRING  separate numbers with STRING\n      --help              display this help and exit\n      --version           display version and exit\nNumeric operands are limited to 4096 characters; exponent and decimal scale must be within -4096..4096.\n",
       )
       return
     } else if options && arg == "--version" {
@@ -243,29 +243,20 @@ async fn main {
     last_text.length()
   }
   let mut current = first
-  let mut emitted = 0
+  let mut emitted = false
+  let output = @io.BufferedWriter::new(@stdio.stdout, size=65536)
   while (step_direction > 0 && current.compare(last) <= 0) ||
         (step_direction < 0 && current.compare(last) >= 0) {
-    if emitted > 0 {
-      @stdio.stdout.write(separator)
+    if emitted {
+      output.write(separator)
     }
     let rendered = current.render()
-    @stdio.stdout.write(
-      if equal_width {
-        zero_pad(rendered, width)
-      } else {
-        rendered
-      },
-    )
-    emitted += 1
-    if emitted > 10_000_000 {
-      @stdio.stderr.write("seq: output limit exceeded\n")
-      @sys.exit(1)
-      return
-    }
+    output.write(if equal_width { zero_pad(rendered, width) } else { rendered })
+    emitted = true
     current = current.add(step)
   }
-  if emitted > 0 {
-    @stdio.stdout.write("\n")
+  if emitted {
+    output.write("\n")
   }
+  output.flush()
 }

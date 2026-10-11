@@ -177,6 +177,32 @@
       "stdin_text": "left\nright\n",
       "expected_stdout_text": "left\tright\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "repair-alias-paste-zero-terminated",
+      "command": "paste",
+      "args": [
+        "--zero-terminated",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "31003200"
+        },
+        {
+          "path": "right",
+          "content_hex": "61006200"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "expected_stdout_hex": "3109610032096200",
+      "expected_stderr_text": ""
     }
   ]
 }

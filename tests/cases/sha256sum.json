@@ -186,6 +186,33 @@
       "stdin_text": "",
       "expected_stdout_text": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  -\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "repair-alias-sha256sum-check",
+      "command": "sha256sum",
+      "args": [
+        "--check",
+        "--warn",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad  payload\nmalformed\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "expected_stdout_text": "payload: OK\n",
+      "expected_stderr_contains": "improperly formatted",
+      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted."
     }
   ]
 }

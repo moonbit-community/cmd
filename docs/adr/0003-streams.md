@@ -3,7 +3,7 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-10-11
-Revision: Record migrated text/binary profiles and buffering/locale costs; distinguish column/strings fidelity defects from intentional boundaries.
+Revision: Repair strings and column against pinned oracles; remove seq's arbitrary output-count limit and document its numeric bounds.
 
 ## Target and decision
 
@@ -39,10 +39,29 @@ reports are separate from full upstream differential certification.
 | expand, unexpand, fold | C-byte columns, explicit tab stops and control-byte rules; fold preserves input bytes and uses space breaks only when requested. Deterministic byte contracts require no terminal discovery. | Reject UTF-8 replacement decoding and assuming one code point occupies one display column. Non-C widths remain unimplemented; fold handles tabs/backspace/CR in column mode. | Their JSON contracts and fold package tests; expand locale claims only after wide/combining/malformed input and tab/control interactions pass the selected upstream oracle. |
 | od, hexdump | Concatenate operands, zero-pad partial words, preserve duplicate-block and final-offset output. Default integer endian is explicitly little endian on tested targets. | No host delegation or pretending little endian is universal host-native format. od float/string/legacy-offset forms and hexdump `-e/-f` are project work. hexdump stdin seek rejects without a reliable seekability contract. | `od.json`, `hexdump.json` and formatter tests. Add endian-target evidence, format grammar and float edge cases; reopen stdin seek only when seekability is established. |
 | fmt | Width/goal-based paragraph formatting with C-byte indentation, sentence spacing and no file rewrite; independent of terminal state. | Do not substitute fold or discard long words. Crown/tagged margins and prefix selection are deferred algorithm work; full GNU paragraph choices and locale widths are not certified. | `fmt.json`, `format_wbtest.mbt`; expand with exact paragraph/oracle fixtures covering margins, tabs, long words and goal ties. |
-| strings | Initial whole-file C-byte scanning avoids an object-format dependency. Wide decoding and object-section selection are separately implementable. | No BFD/FFI or system strings fallback. Shipped `-t b` / `-e b` meanings, rejection of `-t d` / `-e s`, and TAB termination are **known fidelity defects**, not accepted GNU replacements. Automatic multiple-file prefixes also need correction/verification. | 2026-10-11 Native/Wasm/exact MoonX probes and GNU strings manual. Correct radix/encoding, TAB/minimum-length, offset padding and file prefixes against pinned binutils before closing; self-authored contracts alone are insufficient. |
-| column | Initial `-t` field alignment buffers input for widths. Terminal-width discovery and Unicode display widths are not claimed. | Copy-through without `-t`, single-space padding conventions, per-file tables and dropped final LF are shipped behavior, **not faithful default columnation**. Layout/newlines are project work; do not label them async blockers. | 2026-10-11 probes record copy-through and missing LF on Native/Wasm/MoonX. Correct using fixed util-linux default/table, empty-field, multi-file, invalid-byte and newline comparisons; automatic terminal width remains a separate API gate. |
+| strings | Whole-file C-byte scanning; GNU d/o/x offsets, last -o/-t selection, seven-column padding, TAB, explicit filename prefixes, s/S raw byte encodings. | Reject b/l/B/L before input until wide decoding is implemented. Reject the former binary-radix / single-byte -e b reinterpretations. No BFD/FFI or host fallback. Input is still buffered; locale/object sections remain project work. | Binutils 2.44, corrected JSON and package contracts; [repair evidence](../reports/2026-10-11-fidelity-repair/README.md). Open wide modes only after endian/minimum-length/offset/invalid-input differentials, and streaming only with equivalent partial-output behavior. |
+| column | Default vertical column layout; -x row layout, explicit -c/COLUMNS/80 width; -t combines all files, preserves empty fields and emits LF with two-space defaults. | Buffer records to determine global widths. Reject copying input as default columnation and per-file independent tables. GNU/Linux C-locale non-ASCII bytes are escaped; non-ASCII delimiters reject. Terminal width discovery and full Unicode widths remain separate capabilities. | Util-linux 2.40, Native/Wasm byte contracts and Linux oracle; [repair evidence](../reports/2026-10-11-fidelity-repair/README.md). Add terminal discovery only with public terminal APIs; expand locale widths against versioned Unicode/locale data. |
 
 Raw observations and exact invocations are in
 [the follow-up audit](../reports/2026-10-11-command-followups/README.md).
+
+`seq` streams without an arbitrary ten-million-record cutoff. Counting records
+is unnecessary for separator placement; a boolean avoids both that semantic
+limit and eventual counter overflow. Keep the explicit 4096-character numeric
+operand bound and exponent/scale range -4096..4096 to bound BigInt allocation;
+README/help and rejection contracts describe them. Arbitrary-precision input
+growth remains project work, not async work. Remove these bounds only with
+measured resource behavior and pre-output error tests; do not weaken normal
+sequence output to enforce a test runner's budget.
+The over-cap stress probe exposed the cost of two unbuffered writes per record.
+Use the released public `io.BufferedWriter` with a 64 KiB buffer and an explicit
+final flush. This bounds extra storage and preserves output bytes; partial
+buffer visibility follows normal buffered CLI output. Per-record syscalls and
+buffering the complete sequence were rejected. Retain the large-record-count
+stress gate and ordinary separator/fraction/error contracts when changing this.
+The second column review also compares controls and ANSI color sequences against
+util-linux 2.40: table widths ignore complete control + `[` ... `m` sequences,
+while the default grid retains its printable-character width rule. Output bytes
+are preserved; this is not terminal detection or automatic color generation.
 The [prioritized register](../command-followups.md) tracks fixes without
 turning known defects into positive compatibility claims.

@@ -22,22 +22,23 @@ fn radix_string(value : Int, radix : Int) -> String {
 }
 
 ///|
-fn printable(byte : Byte) -> Bool {
-  byte >= 0x20 && byte <= 0x7E
+fn printable(byte : Byte, eight_bit : Bool) -> Bool {
+  byte == 0x09 || (byte >= 0x20 && byte <= 0x7E) || (eight_bit && byte >= 0x80)
 }
 
 ///|
-fn records(data : Bytes, minimum : Int) -> Array[(Int, String)] {
-  let result : Array[(Int, String)] = []
+fn records(
+  data : Bytes,
+  minimum : Int,
+  eight_bit? : Bool = false,
+) -> Array[(Int, Bytes)] {
+  let result : Array[(Int, Bytes)] = []
   let mut start = 0
   let mut index = 0
   while index <= data.length() {
-    if index == data.length() || !printable(data[index]) {
+    if index == data.length() || !printable(data[index], eight_bit) {
       if index - start >= minimum {
-        let text = @utf8.decode(data[start:index].to_owned()) catch { _ => "" }
-        if text != "" {
-          result.push((start, text))
-        }
+        result.push((start, data[start:index].to_owned()))
       }
       index += 1
       start = index
@@ -57,7 +58,9 @@ fn help_message() -> String {
     #|  -f, --print-file-name print the file name before each string
     #|  -n, --bytes=N         print sequences at least N bytes long
     #|  -o                    display offsets in octal
-    #|  -t, --radix=RADIX     display offsets in b, o, or x radix
+    #|  -t, --radix=RADIX     display offsets in d, o, or x radix
+    #|  -e, --encoding=ENC    s: 7-bit bytes (default); S: 8-bit bytes
+    #|                        wide encodings b/l/B/L are unsupported
     #|      --help            display this help and exit
     #|      --version         display version and exit
   message
@@ -66,7 +69,7 @@ fn help_message() -> String {
 ///|
 fn parse_radix(value : String) -> Int? {
   match value {
-    "b" => Some(2)
+    "d" => Some(10)
     "o" => Some(8)
     "x" => Some(16)
     _ => None
@@ -80,17 +83,23 @@ async fn emit(
   minimum : Int,
   prefix : Bool,
   radix : Int?,
+  eight_bit : Bool,
 ) -> Unit {
-  for (offset, text) in records(data, minimum) {
+  for (offset, text) in records(data, minimum, eight_bit~) {
     let mut line = ""
     if prefix {
-      line += path + ": "
+      line += (if path == "-" { "{standard input}" } else { path }) + ": "
     }
     match radix {
-      Some(base) => line += "\{radix_string(offset, base)} "
+      Some(base) => {
+        let address = radix_string(offset, base)
+        line += " ".repeat((7 - address.length()).max(0)) + address + " "
+      }
       None => ()
     }
-    @stdio.stdout.write(line + text + "\n")
+    @stdio.stdout.write(line)
+    @stdio.stdout.write(text)
+    @stdio.stdout.write("\n")
   }
 }
 
@@ -108,7 +117,7 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("strings: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -125,17 +134,22 @@ async fn main {
   }
   if minimum < 1 {
     @stdio.stderr.write("strings: invalid minimum string length\n")
-    @sys.exit(2)
+    @sys.exit(1)
     return
   }
-  if parsed.contains("encoding") && parsed.last_value("encoding") != Some("b") {
+  if parsed.values("encoding").any(value => value != "s" && value != "S") {
     @stdio.stderr.write(
-      "strings: unsupported encoding; only C-locale bytes are supported\n",
+      "strings: unsupported encoding; use s (7-bit) or S (8-bit)\n",
     )
     @sys.exit(2)
     return
   }
-  let radix = if parsed.contains("octal") {
+  if parsed.values("radix").any(value => parse_radix(value) is None) {
+    @stdio.stderr.write("strings: invalid radix\n")
+    @sys.exit(1)
+    return
+  }
+  let radix = if parsed.last_occurrence(["octal", "radix"]) == Some("octal") {
     Some(8)
   } else if parsed.contains("radix") {
     match parse_radix(parsed.last_value("radix").unwrap_or("")) {
@@ -149,8 +163,11 @@ async fn main {
   } else {
     None
   }
-  let sources = if parsed.operands.is_empty() { ["-"] } else { parsed.operands }
-  let prefix = parsed.contains("print-file-name") || sources.length() > 1
+  // GNU's bare '-' selects whole-file scanning, rather than adding stdin
+  // between file operands. With no remaining files, read stdin once.
+  let files = parsed.operands.filter(path => path != "-")
+  let sources = if files.is_empty() { ["-"] } else { files }
+  let prefix = parsed.contains("print-file-name")
   let mut failed = false
   for path in sources {
     let data = read_source(path) catch {
@@ -160,7 +177,14 @@ async fn main {
         continue
       }
     }
-    emit(path, data, minimum, prefix, radix)
+    emit(
+      path,
+      data,
+      minimum,
+      prefix,
+      radix,
+      parsed.last_value("encoding") == Some("S"),
+    )
   }
   if failed {
     @sys.exit(1)

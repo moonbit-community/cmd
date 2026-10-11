@@ -193,6 +193,22 @@
       "stdin_text": "",
       "expected_stdout_text": "",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "repair-alias-base64-decode",
+      "command": "base64",
+      "args": [
+        "--decode"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "stdin_text": "aGk=",
+      "expected_stdout_text": "hi",
+      "expected_stderr_text": ""
     }
   ]
 }

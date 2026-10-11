@@ -43,7 +43,26 @@ priv suberror ArgError {
 
 ///|
 fn help_message() -> String {
-  "Usage: jq [-CjcnrRseSM] [-f FILTER_FILE] [--arg NAME VALUE] [--argjson NAME JSON] [--indent -1..7 | --tab] [FILTER] [FILE...]\n  -C, --color-output       emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output  disable colors, including when -C is present"
+  let help =
+    #|Usage: jq [OPTION]... [FILTER] [FILE...]
+    #|  -c, --compact-output    print compact JSON
+    #|  -r, --raw-output        print strings without JSON quotes
+    #|  -j, --join-output       raw output without result separators
+    #|  -n, --null-input        evaluate once with null; do not read inputs
+    #|  -s, --slurp             collect input values in an array
+    #|  -R, --raw-input         read text lines; -Rs reads all text
+    #|  -l, --logs              skip non-JSON lines (project extension)
+    #|  -S, --sort-keys         sort object keys recursively
+    #|  -e, --exit-status       return 1 for false/null, 4 for no result
+    #|  -f, --from-file FILE    read the filter from FILE
+    #|      --arg NAME VALUE   bind a string variable
+    #|      --argjson NAME JSON bind a JSON variable
+    #|      --indent N         indentation -1 (tabs) through 7
+    #|      --tab              indent with tabs
+    #|  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)
+    #|  -M, --monochrome-output disable colors, including when -C is present
+    #|      --help             display this help and exit
+  help
 }
 
 ///|
@@ -56,7 +75,7 @@ fn compile_query(
   query : String,
   arguments : Map[String, String],
 ) -> @ast.Expr raise {
-  let mut expr = @moonjq.parse(query).expr
+  let mut expr = @jq_filter.parse(query)
   for name, value in arguments {
     expr = @ast.Expr::As(@moonjq.parse(value).expr, name, expr)
   }

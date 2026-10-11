@@ -17,6 +17,49 @@ pub fn oracle_request_name(request : @http.Request) -> String {
 pub async fn run_http_fixture(server : @http.Server) -> Unit {
   server.run_forever() <| ((request, body, connection) => {
     match request.path {
+      "/auth-cookie-challenge" if request.headers.get("Authorization") is None =>
+        connection
+        ..send_response(401, "Unauthorized", extra_headers={
+          "WWW-Authenticate": "Basic realm=\"fixture\"",
+          "Content-Length": "0",
+        })
+        .end_response()
+      "/auth-cookie" | "/auth-cookie-challenge" => {
+        let response = "auth=" +
+          request.headers.get("Authorization").unwrap_or("") +
+          "\ncookie=" +
+          request.headers.get("Cookie").unwrap_or("") +
+          "\n"
+        connection
+        ..send_response(200, "OK", extra_headers={
+          "Content-Length": response.length().to_string(),
+        })
+        ..write(response)
+        .end_response()
+      }
+      "/set-cookie" | "/set-cookie-path" | "/set-cookie-domain" => {
+        let cookie = match request.path {
+          "/set-cookie-path" => @http.Cookie("sid", "fixture", path="/private")
+          "/set-cookie-domain" =>
+            @http.Cookie("sid", "fixture", path="/", domain="example.invalid")
+          _ => @http.Cookie("sid", "fixture", path="/")
+        }
+        connection
+        ..send_response(
+          302,
+          "Found",
+          extra_headers={ "Location": "/auth-cookie", "Content-Length": "0" },
+          cookies=[cookie],
+        )
+        .end_response()
+      }
+      "/cross-cookie" =>
+        connection
+        ..send_response(302, "Found", extra_headers={
+          "Location": "http://localhost:\{server.addr.port()}/auth-cookie",
+          "Content-Length": "0",
+        })
+        .end_response()
       "/fixed" | "/named.txt" => {
         connection.send_response(200, "OK", extra_headers={
           "Content-Length": "5",

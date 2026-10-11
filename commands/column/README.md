@@ -1,23 +1,29 @@
 # column
 
-Version **0.1.0** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
+Version **0.1.1**. See the [support record](../../docs/compatibility.md) for release evidence.
 
-Format delimited input as an aligned table:
+Arrange input into columns or an aligned table:
 
 ```sh
-printf 'name\tage\nAda\t36\n' | moonx cli/column -t
+printf 'one\ntwo\nthree\n' | moonx cli/column -c 40
+printf 'name age\nAda 36\n' | moonx cli/column -t
 printf 'a:b\ncc:ddd\n' | moonx cli/column -t -s : -o ' | '
 ```
 
-`-t`/`--table` splits rows into fields and aligns each column. `-s` selects a
-single-character input separator and `-o` selects the output separator. Without
-`-t`, input records are copied unchanged. The implementation uses byte-oriented
-field widths and does not claim terminal-width discovery, locale display widths,
-or the full util-linux table grammar.
+The default fills columns vertically and separates them with TABs.
+`-c`/`--output-width` selects a width; the default is positive `COLUMNS`
+or 80. A width of `0` or `unlimited` prints one input record per line.
+`-x`/`--fillrows` fills rows first.
 
-Version 0.1.0 has known compatibility gaps: default copy-through differs from
-upstream columnation, and table output omits the final newline. See the
-[follow-up record](../../docs/command-followups.md) before relying on exact
-upstream formatting.
+`-t`/`--table` aligns fields from all input files in one table.
+`-s`/`--separator` supplies a set of delimiter bytes and preserves empty
+fields; the default splits runs of space and TAB. `-o`/`--output-separator`
+replaces the default two spaces between table columns. Table alignment excludes
+complete ANSI color sequences from the display width while preserving their bytes.
+Empty input lines are skipped and every output record ends with a newline. Omit file
+operands for stdin; a literal `-` is a filename, as in util-linux 2.40.
+
+Layout follows the GNU/Linux C locale: non-ASCII bytes are escaped as
+`\xHH`. Non-ASCII input delimiters are rejected. Automatic terminal width,
+locale display widths, tree/JSON output and the full util-linux table
+grammar are not implemented. `--help` and `--version` are available.

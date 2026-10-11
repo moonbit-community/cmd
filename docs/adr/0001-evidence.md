@@ -3,9 +3,22 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-10-11
-Revision: Map all 31 migrated commands to canonical decisions and inventory 79 command follow-ups; distinguish new fidelity findings from the frozen successful release selections.
+Revision: Correct self-authored expected outputs, pin new strings/column oracles, and expand real CLI/alias/edge coverage before a repaired release.
 
 ## Target and decision
+
+The 2026-10-11 repair treats an upstream disagreement as a failed contract,
+even when old package tests encoded the same defect. Pin binutils 2.44 and
+util-linux 2.40 alongside coreutils 9.11/jq 1.8.2. Correct known wrong golden
+values with retained upstream evidence; do not auto-bless candidate output.
+Separate semantic, availability and explicit rejection results throughout.
+Review every command README/help, then execute long-option aliases against the
+retained short-option byte/status/file contract rather than assuming parser
+aliases work. Source review and case counts do not prove all possible inputs.
+The cost is maintaining independent expected behavior and fixtures; retire
+duplicate assertions only when their entrypoint/backend/observation survives.
+Release requires second review, three-platform CI and exact-version MoonX,
+as recorded in [the repair report](../reports/2026-10-11-fidelity-repair/README.md).
 
 All product code, shared runtime code, test runners, fixtures, and automation
 must be pure MoonBit. Project-owned C/C++/Rust/JavaScript/TypeScript, FFI,

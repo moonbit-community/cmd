@@ -243,6 +243,217 @@
       "expected_stdout_contains": "Usage:",
       "expected_stderr_text": "",
       "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "repair-final-curl-basic",
+      "command": "curl",
+      "args": [
+        "-sS",
+        "-u",
+        "user:pass",
+        "${HTTP_BASE}/auth-cookie-challenge"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "jar",
+          "content_text": "# Netscape HTTP Cookie File\n127.0.0.1\tFALSE\t/\tFALSE\t0\tsid\tfixture\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "auth=Basic dXNlcjpwYXNz\ncookie=\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled",
+      "oracle": true
+    },
+    {
+      "id": "repair-final-curl-cookie-header",
+      "command": "curl",
+      "args": [
+        "-sS",
+        "-b",
+        "jar",
+        "-H",
+        "Cookie: sid=header",
+        "${HTTP_BASE}/auth-cookie"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "jar",
+          "content_text": "# Netscape HTTP Cookie File\n127.0.0.1\tFALSE\t/\tFALSE\t0\tsid\tfixture\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "auth=\ncookie=sid=fixture,sid=header\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled",
+      "oracle": true
+    },
+    {
+      "id": "repair-final-curl-cookie-session",
+      "command": "curl",
+      "args": [
+        "-sS",
+        "-b",
+        "jar",
+        "${HTTP_BASE}/auth-cookie"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "jar",
+          "content_text": "# Netscape HTTP Cookie File\n127.0.0.1\tFALSE\t/\tFALSE\t0\tsid\tfixture\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "auth=\ncookie=sid=fixture\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled",
+      "oracle": true
+    },
+    {
+      "id": "repair-final-curl-cookie-redirect",
+      "command": "curl",
+      "args": [
+        "-sS",
+        "-L",
+        "-b",
+        "",
+        "${HTTP_BASE}/set-cookie"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "jar",
+          "content_text": "# Netscape HTTP Cookie File\n127.0.0.1\tFALSE\t/\tFALSE\t0\tsid\tfixture\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "auth=\ncookie=sid=fixture\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled",
+      "oracle": true
+    },
+    {
+      "id": "repair-final-curl-cookie-path",
+      "command": "curl",
+      "args": [
+        "-sS",
+        "-L",
+        "-b",
+        "",
+        "${HTTP_BASE}/set-cookie-path"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "jar",
+          "content_text": "# Netscape HTTP Cookie File\n127.0.0.1\tFALSE\t/\tFALSE\t0\tsid\tfixture\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "auth=\ncookie=\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled",
+      "oracle": true
+    },
+    {
+      "id": "repair-final-curl-cookie-domain",
+      "command": "curl",
+      "args": [
+        "-sS",
+        "-L",
+        "-b",
+        "",
+        "${HTTP_BASE}/set-cookie-domain"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "jar",
+          "content_text": "# Netscape HTTP Cookie File\n127.0.0.1\tFALSE\t/\tFALSE\t0\tsid\tfixture\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "auth=\ncookie=\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled",
+      "oracle": true
+    },
+    {
+      "id": "repair-final-curl-cross-host-auth",
+      "command": "curl",
+      "args": [
+        "-sS",
+        "-L",
+        "-u",
+        "user:pass",
+        "${HTTP_BASE}/cross-cookie"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "auth=\ncookie=\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled",
+      "oracle": true
     }
   ]
 }

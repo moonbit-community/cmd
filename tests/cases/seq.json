@@ -61,7 +61,7 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "seq (moonbit cmd) 0.2.0\n",
+      "expected_stdout_text": "seq (moonbit cmd) 0.2.1\n",
       "expected_stderr_text": ""
     },
     {
@@ -253,9 +253,74 @@
       "normalizations": [],
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "0.2.0",
+      "expected_stdout_contains": "0.2.1",
       "expected_stderr_text": "",
       "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "repair-edge-seq-long-aliases",
+      "command": "seq",
+      "args": [
+        "--equal-width",
+        "--separator=,",
+        "1",
+        "3"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1,2,3\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 command repair edge contract",
+      "oracle": true
+    },
+    {
+      "id": "repair-edge-seq-precision-1e4097",
+      "command": "seq",
+      "args": [
+        "1e4097"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "comparison": "boundary",
+      "normalizations": [],
+      "source_version": "2026-10-11 command repair edge contract",
+      "expected_stderr_contains": "seq:",
+      "diagnostic_reason": "Documented numeric resource bound rejects before output.",
+      "expected_rejection": "seq:"
+    },
+    {
+      "id": "repair-edge-seq-precision-1e-4097",
+      "command": "seq",
+      "args": [
+        "1e-4097"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "comparison": "boundary",
+      "normalizations": [],
+      "source_version": "2026-10-11 command repair edge contract",
+      "expected_stderr_contains": "seq:",
+      "diagnostic_reason": "Documented numeric resource bound rejects before output.",
+      "expected_rejection": "seq:"
     }
   ]
 }

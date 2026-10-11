@@ -137,9 +137,13 @@ async fn main {
     Run(options) =>
       try {
         let input = read_input(options.input)
-        let query = @moonjq.parse(options.query)
-        let results = query.eval_logs(input)
-        write_results(results)
+        let query = @jq_filter.parse(options.query)
+        for line in input.split("\n") {
+          let value = @json.parse(line.strip_suffix("\r").unwrap_or(line)) catch {
+            _ => continue
+          }
+          write_results(@ast.eval(query, value))
+        }
       } catch {
         err => {
           @stdio.stderr.write("Error: \{err}\n")

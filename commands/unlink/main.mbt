@@ -28,12 +28,14 @@ async fn main {
   let parsed = @cli.parse(args, [@cli.flag("help"), @cli.flag("version")]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("unlink: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write("Usage: unlink FILE...\n")
+    @stdio.stdout.write(
+      "Usage: unlink FILE\nRemove exactly one non-directory name.\n      --help     display this help and exit\n      --version  display version and exit\n",
+    )
     return
   }
   if parsed.contains("version") {
@@ -45,17 +47,15 @@ async fn main {
     @sys.exit(1)
     return
   }
-  let mut failed = false
-  for path in parsed.operands {
-    unlink_one(path) catch {
-      UnlinkError(message) => {
-        @stdio.stderr.write("unlink: \{message}\n")
-        failed = true
-        continue
-      }
-    }
-  }
-  if failed {
+  if parsed.operands.length() != 1 {
+    @stdio.stderr.write("unlink: extra operand '\{parsed.operands[1]}'\n")
     @sys.exit(1)
+    return
+  }
+  unlink_one(parsed.operands[0]) catch {
+    UnlinkError(message) => {
+      @stdio.stderr.write("unlink: \{message}\n")
+      @sys.exit(1)
+    }
   }
 }

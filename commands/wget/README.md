@@ -1,6 +1,6 @@
 # wget
 
-Pure-MoonBit GNU Wget 1.25 HTTP/HTTPS profile, version **0.2.0**. See the
+Pure-MoonBit GNU Wget 1.25 HTTP/HTTPS profile, version **0.2.1**. See the
 [support record](../../docs/compatibility.md) for platform verification and
 exact-version publication evidence.
 

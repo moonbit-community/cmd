@@ -458,6 +458,120 @@
       "aliases": [
         "compat-stdin-sort"
       ]
+    },
+    {
+      "id": "repair-alias-sort-general-numeric-sort",
+      "command": "sort",
+      "args": [
+        "--general-numeric-sort"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "stdin_text": "inf\n1\n-inf\nnan\ntext\n",
+      "expected_stdout_text": "text\nnan\n-inf\n1\ninf\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "repair-alias-sort-unique",
+      "command": "sort",
+      "args": [
+        "--unique",
+        "-t:",
+        "-k2,2"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "stdin_text": "b:1\na:1\n",
+      "expected_stdout_text": "b:1\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "repair-alias-sort-human-numeric-sort",
+      "command": "sort",
+      "args": [
+        "--human-numeric-sort"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "stdin_text": "999999K\n1M\n10K\n",
+      "expected_stdout_text": "10K\n999999K\n1M\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "repair-alias-sort-ignore-case",
+      "command": "sort",
+      "args": [
+        "--ignore-case"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "stdin_text": "[\na\n",
+      "expected_stdout_text": "a\n[\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "repair-alias-sort-version-sort",
+      "command": "sort",
+      "args": [
+        "--version-sort"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "stdin_text": "file10\nfile2\nfile1\n",
+      "expected_stdout_text": "file1\nfile2\nfile10\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "repair-alias-sort-zero-terminated",
+      "command": "sort",
+      "args": [
+        "--zero-terminated"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "stdin_hex": "62006100",
+      "expected_stdout_hex": "61006200",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "repair-alias-sort-check",
+      "command": "sort",
+      "args": [
+        "--check"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "stdin_text": "a\nb\n",
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
     }
   ]
 }

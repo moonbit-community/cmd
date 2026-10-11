@@ -389,6 +389,68 @@
       "expected_stdout_contains": "Usage:",
       "expected_stderr_text": "",
       "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "repair-alias-grep-line-number",
+      "command": "grep",
+      "args": [
+        "--line-number",
+        "-b",
+        "-C1",
+        "hit"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "stdin_text": "a\nhit\nc\nd\ne\nhit\ng\n",
+      "expected_stdout_text": "1-0-a\n2:2:hit\n3-6-c\n--\n5-10-e\n6:12:hit\n7-16-g\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "repair-alias-grep-recursive",
+      "command": "grep",
+      "args": [
+        "--recursive",
+        "--include=*.txt",
+        "--exclude=skip*",
+        "needle",
+        "${WORK}"
+      ],
+      "files": [
+        {
+          "path": "nested/keep.txt",
+          "content_text": "needle\n"
+        },
+        {
+          "path": "nested/skip.txt",
+          "content_text": "needle\n"
+        },
+        {
+          "path": "nested/keep.log",
+          "content_text": "needle\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "temporary-path",
+          "comment": "Only the fresh fixture prefix varies."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Platform path separators differ."
+        }
+      ],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "expected_stdout_text": "<TMP>/nested/keep.txt:needle\n",
+      "expected_stderr_text": ""
     }
   ]
 }

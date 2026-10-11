@@ -121,6 +121,44 @@
       "aliases": [
         "compat-stdin-xxd"
       ]
+    },
+    {
+      "id": "repair-alias-xxd-seek",
+      "command": "xxd",
+      "args": [
+        "--seek",
+        "4",
+        "-l",
+        "4"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "stdin_text": "0123456789",
+      "expected_stdout_text": "00000004: 3435 3637                                4567\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "repair-alias-xxd-reverse",
+      "command": "xxd",
+      "args": [
+        "--reverse",
+        "-p",
+        "-s",
+        "2"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "stdin_text": "6162\n",
+      "expected_stdout_hex": "00006162",
+      "expected_stderr_text": ""
     }
   ]
 }

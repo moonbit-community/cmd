@@ -1,0 +1,25 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/core/time_zone"
+
+import {
+  "moonbitlang/x/time",
+}
+
+// Values
+pub fn decode(Bytes) -> Zone raise
+
+pub async fn load(utc? : Bool) -> Zone
+
+// Errors
+
+// Types and methods
+pub struct Zone {
+  // private fields
+}
+pub fn Zone::abbreviation(Self, Int64) -> String raise
+pub fn Zone::at_local(Self, @time.PlainDateTime) -> @time.ZonedDateTime raise
+pub fn Zone::at_unix(Self, Int64, nanosecond? : Int) -> @time.ZonedDateTime raise
+
+// Type aliases
+
+// Traits

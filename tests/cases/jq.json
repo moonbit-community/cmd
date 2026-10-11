@@ -725,6 +725,258 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "null\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "repair-jq-tostring",
+      "command": "jq",
+      "args": [
+        "-cr",
+        "tostring"
+      ],
+      "stdin_text": "1\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "COLUMNS": "80"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "repair-jq-map-tostring",
+      "command": "jq",
+      "args": [
+        "-cr",
+        "map(tostring)"
+      ],
+      "stdin_text": "[1,true,null]",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "COLUMNS": "80"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[\"1\",\"true\",\"null\"]\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "repair-jq-negative-slice",
+      "command": "jq",
+      "args": [
+        "-cr",
+        ".[1:-1]"
+      ],
+      "stdin_text": "\"abcd\"",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "COLUMNS": "80"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "bc\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "repair-jq-unicode-slice",
+      "command": "jq",
+      "args": [
+        "-cr",
+        ".[1:3]"
+      ],
+      "stdin_text": "\"a😀文z\"",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "COLUMNS": "80"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "😀文\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "repair-jq-nested-slice",
+      "command": "jq",
+      "args": [
+        "-cr",
+        "map(.[-2:])"
+      ],
+      "stdin_text": "[\"abc\",\"😀文z\"]",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "COLUMNS": "80"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[\"bc\",\"文z\"]\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "repair-jq-tojson",
+      "command": "jq",
+      "args": [
+        "-cr",
+        "tojson"
+      ],
+      "stdin_text": "{\"a\":1}",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "COLUMNS": "80"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "{\"a\":1}\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "repair-jq-tojson-slice",
+      "command": "jq",
+      "args": [
+        "-cr",
+        "tojson | .[1:-1]"
+      ],
+      "stdin_text": "\"a\\n\\\"b\"",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "COLUMNS": "80"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a\\n\\\"b\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "repair-alias-jq-compact-output",
+      "command": "jq",
+      "args": [
+        "--compact-output",
+        "."
+      ],
+      "stdin_text": "1 2 {\"a\":3}",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "1\n2\n{\"a\":3}\n",
+      "expected_stderr_text": "",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+    },
+    {
+      "id": "repair-alias-jq-null-input",
+      "command": "jq",
+      "args": [
+        "--null-input",
+        "-c",
+        "null"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "expected_stdout_text": "null\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "repair-edge-jq-slice-type-error",
+      "command": "jq",
+      "args": [
+        ".[1:2]"
+      ],
+      "stdin_text": "42\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 5,
+      "expected_stdout_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 command repair edge contract",
+      "expected_stderr_contains": "string",
+      "diagnostic_reason": "Evaluator wording differs; status, type-error token and empty stdout are required."
+    },
+    {
+      "id": "repair-edge-jq-open-empty-slices",
+      "command": "jq",
+      "args": [
+        "-c",
+        "[.[:2], .[1:], .[9:], .[-99:2], .[3:1]]"
+      ],
+      "stdin_text": "\"a😀文z\"",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[\"a😀\",\"😀文z\",\"\",\"a😀\",\"\"]\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 command repair edge contract",
+      "oracle": true
+    },
+    {
+      "id": "repair-final-jq-issue4-expression",
+      "command": "jq",
+      "args": [
+        "-r",
+        ".matched_source | tojson | .[1:-1]"
+      ],
+      "stdin_text": "{\"matched_source\":\"a\\\"b\\nc\"}",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a\\\"b\\nc\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled",
+      "oracle": true
     }
   ]
 }

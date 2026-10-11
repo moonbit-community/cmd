@@ -31,6 +31,27 @@ link、句柄截断、isatty、PTY、进程组和 exec 仍未公开，相关命�
 本表供上游讨论 API 语义；建议的 API 名称不是当前已存在的接口。
 Native/Wasm 的“缺失”指公开 MoonBit API，不能据此推断 OS 或 Wasm
 宿主没有底层能力。源码路径均相对 `.mooncakes/moonbitlang/async/src/`。
+
+### 2026-10-11 修复复核：时区和 JSON 不等待 async
+
+修复候选已接入 `fs.can_execute`，并修正 strings/column 的命令层行为。
+这些功能在 Native/Wasm 都可通过正式公开接口实现；高级终端宽度发现仍需
+isatty/window-size。详见[正在执行的修复记录](reports/2026-10-11-fidelity-repair/README.md)，
+该记录的本地结果不能替代修复版本的 CI 或发布验收。
+
+对 `x/time 0.5.5` 的进一步复核发现：`Zone::from_tzif2` 只读取 32 位兼容区，
+不能据其名称宣称 64 位 TZif/DST 完整；`ZoneOffset::from_seconds(0, ...)`
+会返回共享 UTC 值，丢失 GMT 等缩写。最小复现是 Dublin 的 2038/2050 冬季
+`date +%Z`。这属于 x/time 的公开实现行为，不是宿主授权或 async 文件读取
+能力缺口。候选通过纯 MoonBit 的有边界检查的 TZif/POSIX 解码和单独缩写查询
+绕开，date 与 diff 共用，35 条 coreutils 9.11 时区调用已对照通过。
+上游若增加经过范围/截断校验的完整 TZif v2+ 解析、未来规则和保留零偏移
+缩写的构造语义，可用同一组测试替换此适配层。
+
+正式 `moonjq 0.2.0` 已修复 tostring/tojson；字符串切片仍返回 null。候选
+使用公开 AST 将字符串切片转为 Unicode scalar 数组切片再组装，覆盖嵌套
+filter、负数/开放端点和类型错误。它是项目的语义适配，不应列成 async
+阻塞；上游通过相同回归后可移除。没有修改依赖缓存、添加 FFI 或调用宿主 jq。
 本轮结果与已发布 0.2.0 的三平台验收分开记录，见
 [公开接口复查](reports/2026-09-21-public-api-recheck.md)；不将旧版 CI
 或 macOS 结果冒充新工具链的 Linux/Windows 验收。

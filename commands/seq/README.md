@@ -1,6 +1,6 @@
 # seq
 
-This documents version 0.2.0. The [support record](../../docs/compatibility.md)
+This documents version 0.2.1. The [support record](../../docs/compatibility.md)
 tracks platform verification and exact-version publication evidence separately.
 
 Print a numeric sequence using `LAST`, `FIRST LAST`, or
@@ -8,6 +8,9 @@ Print a numeric sequence using `LAST`, `FIRST LAST`, or
 produces no output; use `seq 3 -1 1` to count down. Supports custom separators (`-s`) and
 equal-width zero padding (`-w`). Decimal and exponent inputs use exact
 fixed-point arithmetic, avoiding cumulative floating-point drift.
+Numeric operands are limited to 4096 characters; their decimal exponent and
+scale must each lie within -4096..4096. Larger values fail before output.
+Output is streamed through a bounded 64 KiB buffer without a fixed record-count cap.
 `--version` reports the built package version. The published `cli/seq@0.1.5`
 uses the earlier automatic descending-step behavior; version 0.2.0 uses the
 GNU-compatible default `+1`.

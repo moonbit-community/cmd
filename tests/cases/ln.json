@@ -151,6 +151,45 @@
       "expected_stdout_contains": "Usage:",
       "expected_stderr_text": "",
       "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "repair-alias-ln-symbolic",
+      "command": "ln",
+      "args": [
+        "--symbolic",
+        "source",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "policy-fixture\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "policy-fixture\n"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ],
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "expected_stderr_text": "",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
     }
   ]
 }

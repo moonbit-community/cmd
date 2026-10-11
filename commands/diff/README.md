@@ -1,6 +1,6 @@
 # diff
 
-Version **0.1.0** behavior is documented here. The
+Version **0.1.1** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -20,8 +20,10 @@ left and right names, including brief, identical and binary reports.
 
 Exit status is 0 for identical files, 1 for a difference, and 2 for an input
 or option error. Directory recursion, whitespace transformations, and locale
-collation are outside this release. Timestamp headers use `TZ=UTC` or public
-TZif files; unified output uses ISO timestamps and context output uses the
+collation are outside this release. Timestamp headers honor `TZ`, `TZDIR`,
+64-bit TZif transitions and explicit POSIX DST rules, including dates after
+2038. With no `TZ`, the host's `/etc/localtime` is used. Missing timezone
+data is an error. Unified output uses ISO timestamps and context output uses the
 traditional weekday/month/day format. Use `--label` for stdin or hosts without
 a timezone database. `--help` and `--version` are available.
 Both files are buffered. Edit-trace storage grows with the number of changes;

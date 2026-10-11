@@ -161,6 +161,45 @@
           "content_text": "keep"
         }
       ]
+    },
+    {
+      "id": "repair-alias-csplit-silent",
+      "command": "csplit",
+      "args": [
+        "--silent",
+        "-z",
+        "-fpart-",
+        "-n3",
+        "-",
+        "/^a/",
+        "{*}"
+      ],
+      "stdin_text": "a\nb\na\nc\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "-s",
+        "-z",
+        "-f",
+        "-n"
+      ],
+      "expected_files": [
+        {
+          "path": "part-000",
+          "content_text": "a\nb\n"
+        },
+        {
+          "path": "part-001",
+          "content_text": "a\nc\n"
+        }
+      ],
+      "oracle": true,
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
     }
   ]
 }

@@ -3,6 +3,13 @@
 Date: 2026-09-05
 Updated: 2026-10-11
 
+Repair in progress: `core@0.5.0`, `column/date/diff/strings/which@0.1.1`,
+`unlink@0.1.2`, and `curl/jq/jqlog/seq/wget@0.2.1` are **unpublished candidates**.
+They correct known implementation errors and deliver the previously local
+Cookie fixes. The following published baseline remains distinct until the
+[repair gates and MoonX acceptance](reports/2026-10-11-fidelity-repair/README.md)
+are complete. Other command package coordinates stay unchanged.
+
 `cli/core@0.4.0` is published and adds four command modules at **0.1.0**
 (`column`, `date`, `strings`, `which`), which passed exact MoonX acceptance. The
 original 47 command modules remain at **0.2.0**, the first eleven P0 command

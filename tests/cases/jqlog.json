@@ -109,6 +109,67 @@
       "expected_stdout_contains": "Usage:",
       "expected_stderr_text": "",
       "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "repair-jqlog-slice-lines",
+      "command": "jqlog",
+      "args": [
+        ".[1:-1]"
+      ],
+      "stdin_text": "diagnostic\n\"abcd\"\n\"a😀文z\"\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "COLUMNS": "80"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "\"bc\"\n\"😀文\"\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "moonjq 0.2.0 plus scalar slice adapter"
+    },
+    {
+      "id": "repair-edge-jqlog-slice-type-error",
+      "command": "jqlog",
+      "args": [
+        ".[1:2]"
+      ],
+      "stdin_text": "42\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 command repair edge contract",
+      "expected_stderr_contains": "string",
+      "diagnostic_reason": "Evaluator wording differs; status, type-error token and empty stdout are required."
+    },
+    {
+      "id": "repair-final-jqlog-non-json-whitespace",
+      "command": "jqlog",
+      "args": [
+        "."
+      ],
+      "stdin_text": " 42\n1\r\n 2 \n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n2\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled"
     }
   ]
 }

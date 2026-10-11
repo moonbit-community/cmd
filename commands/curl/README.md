@@ -1,6 +1,6 @@
 # curl
 
-Pure-MoonBit curl 8.22 HTTP/HTTPS profile, version **0.2.0**. See the
+Pure-MoonBit curl 8.22 HTTP/HTTPS profile, version **0.2.1**. See the
 [support record](../../docs/compatibility.md) for platform verification and
 exact-version publication evidence.
 

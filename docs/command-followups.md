@@ -2,8 +2,10 @@
 
 Updated: 2026-10-11
 
-本表覆盖 **79 个本地命令（78 个已发布，timeout 仅本地）**。本轮只盘点、
-纠正文档归因和补 ADR，没有实现下列修复，也没有创建 issue。新迁移的 31 个
+本表覆盖 **79 个本地命令（78 个已发布，timeout 仅本地）**。F01–F19 已建立
+issues #5–#23；jq 的既有 issue #4 一并进入当前修复。具体映射、候选实现和
+尚未完成的发布门禁见[修复记录](reports/2026-10-11-fidelity-repair/README.md)。
+本表的原始偏差描述对应已发布版本，不代表修复候选已经发布。新迁移的 31 个
 命令均已映射到 [canonical ADR](adr/README.md#recent-command-decision-coverage)。
 版本：首批 11 个 0.1.1，后续 20 个 0.1.0，原有 47 个 0.2.0；共享 core 0.4.0。
 工作区基线为 MoonBit 2026-09-20、async 0.22.4、x 0.5.5、moonjq 0.1.2。
@@ -31,7 +33,7 @@ P2：高价值功能/效率扩展；P3：低优先级细节或独立新命令排
 | F06 | P1：gzip 实现实际压缩与流式解码 | 项目算法。当前 stored blocks 有 gzip 格式但通常变大；实现 LZ/Huffman 和级别策略，随后减少解码对整个压缩输入的缓冲。 | 独立 gzip 互通、CRC/多 member/部分输出不退化；可压缩语料有实际压缩效果，记录压缩比、吞吐与内存。 |
 | F07 | P1：sed 与共享 BRE/ERE 的常用语法 | 项目算法。分开推进 hold space、分支/分组、多行/插入追加命令与 backreference/word assertions；共享 matcher 可服务 expr、csplit、tac、nl。`sed -i` 独立依赖 F05。 | 固定 GNU 脚本、最长匹配/捕获、空匹配、部分输出、非法脚本及长行复杂度；不能仅通过解析即宣布支持。 |
 | F08 | P1：补已接受文件/进程操作的证据 | 验证债务。优先 ln 目标/覆盖、mv interactive/backup/update、find 时间/access、test 特殊文件与时间比较、mkdir 异常 umask。源码接受不算完整验证。 | Linux 全 POSIX 元数据 oracle + Windows 对应合同；每个适用维度有观察结果，无法观测为 infra/skip，不降级成 pass。 |
-| F09 | P1：单独交付尚未发布的已有命令修正 | 发布债务。curl/wget 自定义 Cookie 修正在工作区/新 core 中，但已发布 cli/curl、cli/wget@0.2.0 未包含。保留旧坐标，不因本轮分支合并宣称已发布。 | 用户另行确认发布范围后只更迭受影响包，三平台 gate、串行发布和精确版本 wire/CLI 回归；本轮不发布。 |
+| F09 | P1：单独交付尚未发布的已有命令修正 | 发布债务。curl/wget 自定义 Cookie 修正在工作区/新 core 中，但已发布 cli/curl、cli/wget@0.2.0 未包含。保留旧坐标，不因本轮分支合并宣称已发布。 | 已获用户授权，本修复轮只更迭受影响包；要求三平台 gate、串行发布和精确版本 wire/CLI 回归后关闭。 |
 | F10 | P2：diff/patch 完整工作流 | diff 目录/空白模式、最短编辑等价解与内存属于项目工作；patch fuzz/offset/.rej/部分成功也属项目工作。写回权限受 F05 限制，不混为同一问题。 | 固定 GNU diffutils/patch 的多文件、多 hunk 混合成功、offset/fuzz、rejection 文件和 inode/mode；stdout/dry-run 保持可用。 |
 | F11 | P2：sh 解释器与 make 语言补齐 | 项目工作。sh 算术赋值/++/?:、反引号、here-doc 展开、fd 重定向、循环层数、内建 printf/test；make 变量/export 递归、secondary expansion 等。持续行式会话已经可用。 | 按语法逐项 oracle，失败前输出/状态、管道作用域和会话恢复；jobserver 需另定继承与协议合同，不借 -j 并发冒称兼容。 |
 | F12 | P2：大型输入、计数上限和流式处理 | 项目资源选择。split/csplit、sort、tac/rev、diff、column/strings、gzip decoder 的缓存及数值上限；seq 人为输出上限也需复核。先固定内存预算、失败副作用，再流式/外部排序。 | 大输入/超限/中断的时间内存证据与字节等价；取消测试侧额度限制和产品语义的混淆。 |
@@ -42,7 +44,7 @@ P2：高价值功能/效率扩展；P3：低优先级细节或独立新命令排
 | F17 | P3：诊断字节与项目扩展治理 | 命令原样迁移优先。ls -P、jq -l、rmdir -I 等扩展明确标注，不能当 GNU 参数。剩余诊断/别名逐项补；unlink 的副作用另提至 F19。 | 扩展有明确名称/帮助/合同；通用诊断不掩盖状态与效果。 |
 | F18 | P3：其余 28 个未建模块的命令 | 单独的新命令路线，见 command-coverage；awk/归档等算法可先行，stat/du/df/身份/终端按公共能力拆分。 | 每个新模块先确定 upstream、子集、拒绝条件、README/ADR/CLI 合同；不把本轮 79 个包的选项清单和新包排期混计。 |
 
-建议首先建立 **F01–F09、F19** 的修复/上游跟踪项，再按需求拆 F10–F16；
+当前优先修复已有功能错误和 README/help 含义不一致，其余扩展留在 issues；
 其中 F05 与 F15 需要上游协作，其余不应统一等待 async。ID 保持稳定，
 表格按优先级排列，因此补充的 F19 位于 P1 区域。
 

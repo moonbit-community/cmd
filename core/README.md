@@ -1,10 +1,11 @@
 # cli/core
 
 Shared runtime packages used by the independently published command modules.
-The published **0.4.0** module adds catalog contracts for `strings`, `column`,
-`which` and `date` on top of the shared incremental MD5/SHA-1/SHA-512, C-byte
-regular-expression adaptation and gzip stream codecs. Earlier command packages
-continue to use their published core-compatible versions.
+Version **0.5.0** adds checked 64-bit TZif/POSIX timezone
+conversion and a public-AST jq string-slice adapter, using released MoonJQ 0.2.0.
+It retains the shared incremental MD5/SHA-1/SHA-512, C-byte regular-expression
+adaptation and gzip stream codecs. Earlier command packages continue to use
+their published core-compatible versions.
 This module is published as `cli/core` and is an implementation dependency for
 `cli/<command>` modules. The portable filesystem layer exposes file-kind and
 regular-file-size reads, atime/mtime/ctime timestamps, access checks, and

@@ -4,8 +4,20 @@
     {
       "id": "rm-final-parent-slash",
       "command": "rm",
-      "args": ["-r", "dir/../"],
-      "files": [{"path": "dir", "kind": "directory"}, {"path": "kept", "content_text": "safe"}],
+      "args": [
+        "-r",
+        "dir/../"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "kept",
+          "content_text": "safe"
+        }
+      ],
       "environment": {},
       "expected_status": 1,
       "normalizations": [],
@@ -14,23 +26,55 @@
       "expected_stdout_text": "",
       "expected_stderr_contains": "protected path",
       "diagnostic_reason": "The path spelling is platform dependent; the refusal, status and complete retained fixture are required.",
-      "expected_files": [{"path": "dir", "kind": "directory"}, {"path": "kept", "content_text": "safe"}]
+      "expected_files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "kept",
+          "content_text": "safe"
+        }
+      ]
     },
     {
       "id": "rm-final-parent-backslash",
       "command": "rm",
-      "args": ["-r", "dir\\..\\"],
-      "files": [{"path": "dir", "kind": "directory"}, {"path": "kept", "content_text": "safe"}],
+      "args": [
+        "-r",
+        "dir\\..\\"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "kept",
+          "content_text": "safe"
+        }
+      ],
       "environment": {},
       "expected_status": 1,
       "normalizations": [],
       "comparison": "contract",
       "source_version": "Windows final-dot operand regression",
-      "host_platforms": ["windows"],
+      "host_platforms": [
+        "windows"
+      ],
       "expected_stdout_text": "",
       "expected_stderr_contains": "protected path",
       "diagnostic_reason": "The refusal, status and complete retained fixture are required; command branding differs from upstream.",
-      "expected_files": [{"path": "dir", "kind": "directory"}, {"path": "kept", "content_text": "safe"}]
+      "expected_files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "kept",
+          "content_text": "safe"
+        }
+      ]
     },
     {
       "id": "phase4-rm-regular",
@@ -192,6 +236,48 @@
       "expected_stdout_contains": "Usage:",
       "expected_stderr_text": "",
       "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "repair-alias-rm-recursive",
+      "command": "rm",
+      "args": [
+        "--recursive",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "policy-fixture\n"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "policy-fixture\n"
+        },
+        {
+          "path": "link",
+          "exists": false
+        }
+      ],
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "expected_stderr_text": "",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
     }
   ]
 }

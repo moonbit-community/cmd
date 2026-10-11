@@ -1,0 +1,9 @@
+import {
+  "moonbitlang/async/fs",
+  "moonbitlang/core/env",
+  "moonbitlang/core/string",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/x/time",
+}
+
+supported_targets = "native+wasm"

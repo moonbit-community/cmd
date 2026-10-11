@@ -59,23 +59,20 @@ is still unverified and is distinct from observing EOF/termination. Evidence:
 async 0.22.4 / MoonBit 2026-09-20. Expand the signal claim only after closed-pipe
 status/cleanup comparisons on Native/Wasm per host; ordinary output is usable.
 
-`which@0.1.0` currently splits PATH by actual host platform, preserves its
-ordering, checks direct operands and supports `-a/-s`. The initial regular-file
-test was chosen to avoid depending on absent mode metadata, but that reasoning
-overlooked public `fs.can_execute`: access permission is different from reading
-mode bits. A mode-0644 file returns success from all three current entrypoints
-(Native, Wasm and exact MoonX) while public can_execute and macOS which reject
-it. This is a **known defect**, not an accepted approximation or async blocker.
-Evidence: [2026-10-11 probe](../reports/2026-10-11-command-followups/README.md),
-async 0.22.4 `fs/pkg.generated.mbti` and `access_test.mbt`.
+`which` uses public `fs.can_execute` plus regular-file kind on POSIX. Access
+checks do not require missing mode metadata. Preserve PATH ordering, direct
+operands, empty PATH entries, symlink following and POSIX backslash filenames.
+Reject the former regular-file-only approximation and never launch a candidate
+to test whether it is executable. Windows uses PATHEXT, with the default
+`.COM;.EXE;.BAT;.CMD`; this explicit platform contract does not emulate shell
+aliases/functions, which belong to a different process's state.
 
-Use public access checks plus file kind for a future POSIX fix; do not infer
-executable access from suffixes or read mode through host tools. PATH errors,
-symlinks, empty entries and backslash filenames need separate tests. Windows
-PATHEXT/executable lookup is a platform-specific project decision, not solved
-by POSIX chmod/access. Shell aliases/functions belong to shell state and cannot
-be inferred from an unrelated process. Close the issue only after pinned POSIX
-oracle cases and explicit Windows lookup fixtures pass. Mode-query absence
+The change intentionally stops reporting mode-0644 POSIX files as commands.
+Evidence: async 0.22.4 public access APIs, the original
+[Native/Wasm/MoonX probe](../reports/2026-10-11-command-followups/README.md),
+and repaired 0644/0755/symlink/PATH/backslash/Windows fixtures. Add shell-aware
+lookup only through an explicitly supplied shell session; ordinary PATH lookup
+does not depend on a future metadata API. Mode-query absence
 remains real for cp/chmod, but must not be reused to justify this false success.
 
 ## Revisit when
