@@ -3,7 +3,7 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-10-11
-Revision: Add four pure-MoonBit P2 command candidates, repair environment placeholder expansion in the shared testkit, and keep candidate core 0.4.0 separate from published core 0.3.0; validate candidate completeness without invalidating frozen published inventories.
+Revision: Publish the four pure-MoonBit P2 command packages with core 0.4.0 after the three-platform source gate, repair environment placeholder expansion in the shared testkit, and record exact-version MoonX acceptance without invalidating frozen published inventories.
 
 ## Target and decision
 
@@ -92,15 +92,19 @@ the 50 pre-existing workspace modules. The current published index did not conta
 released 0.22.5. Native and Wasm warning-denied checks passed after the
 refresh; command completion evidence remains per-package and per-backend.
 
-The 2026-10-11 P2 candidate adds `strings`, `column`, `which` and `date` as
-independent 0.1.0 command modules. Their Native and Wasm contract selections
-pass 19 semantic cases plus the explicit encoding boundary; the release
-manifest contains 78 command coordinates and remains validation-only until the
-three-platform source gate and registry checks pass. The shared testkit now
-expands the `${WORK}` placeholder in environment values as it already does in
-arguments and fixture text. This is a test-observation correction, not a
-product authorization rule; candidate status remains until exact MoonX
-acceptance is complete.
+The 2026-10-11 P2 release adds `strings`, `column`, `which` and `date` as
+independent 0.1.0 command modules and publishes `cli/core@0.4.0`. Their Native
+and Wasm contract selections pass 19 semantic cases plus the explicit encoding
+boundary. The published manifest contains 78 command coordinates and 554
+selected cases. After clearing the account's 78 cached command assets, the
+published-consumer runner re-downloaded every exact coordinate; the final smoke
+run passed 447 semantic, 81 availability and 23 boundary observations, with 3
+macOS platform skips and no failures. A transient TLS handshake failure for
+`chmod@0.2.0` was rerun after its asset was re-downloaded and passed; it is
+retained in the first redownload report as infrastructure evidence. The shared
+testkit now expands the `${WORK}` placeholder in environment values as it
+already does in arguments and fixture text. This is a test-observation
+correction, not a product authorization rule.
 
 Baseline: moon/moonrun 0.1.20260920; moonc/core 0.10.14+7d59c7ec9;
 async 0.22.4; x 0.5.5; moonjq 0.1.2. The dependency refresh found no older external
@@ -158,3 +162,10 @@ exact-version published-consumer gates before promoting support. Expand observer
 capabilities when public APIs or fixed test oracles can measure a missing
 dimension reliably. Change test frequency only after measured cost and a mapping
 show that required behavior/platform coverage is preserved.
+
+2026-10-11: The P2 candidate was promoted only after CI run
+`38103982048` passed Linux, macOS and Windows. Publication was serialized as
+`cli/core@0.4.0`, then `column`, `date`, `strings` and `which` at `0.1.0`; each
+registry upload returned `Server status: 200 OK` and exact `moon view` checks
+confirmed immutable coordinates. The preparation manifest remains frozen; the
+published manifest and final smoke report are the current release evidence.
