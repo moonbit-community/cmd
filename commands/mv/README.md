@@ -5,6 +5,10 @@ This describes version 0.2.1. See the
 and backend limits; accepted options do not establish full compatibility.
 
 Move files and directories with the policy-checked atomic rename operation.
+Declining an interactive overwrite, including EOF, returns status 1 and leaves
+both paths unchanged; other operands are still processed. A no-clobber skip
+remains a successful no-op.
+
 Supports force/no-clobber/interactive selection (`-f`/`-n`/`-i`), update modes
 (`-u`/`--update`), backup controls (`-b`/`--backup`, `-S`), explicit target
 paths (`-T`), directory destinations, and verbose output. Cross-filesystem

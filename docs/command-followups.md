@@ -1,150 +1,132 @@
-# 命令兼容缺口与后续决策
+# Command compatibility gaps and follow-up decisions
 
 Updated: 2026-10-11
 
-本表覆盖 **79 个本地命令（78 个已发布，timeout 仅本地）**。F01–F19 已建立
-issues #5–#23；jq 的既有 issue #4 一并进入当前修复。具体映射、候选实现和
-尚未完成的发布门禁见[修复记录](reports/2026-10-11-fidelity-repair/README.md)。
-本表的原始偏差描述对应已发布版本，不代表修复候选已经发布。新迁移的 31 个
-命令均已映射到 [canonical ADR](adr/README.md#recent-command-decision-coverage)。
-版本：首批 11 个 0.1.1，后续 20 个 0.1.0，原有 47 个 0.2.0；共享 core 0.4.0。
-工作区基线为 MoonBit 2026-09-20、async 0.22.4、x 0.5.5、moonjq 0.1.2。
-这里没有重新宣布这些依赖是当前 registry 最新版本。
+This register covers **79 local commands: 78 published and local-only timeout**. F01-F19 are tracked by issues #5-#23; existing jq issue #4 and second-review issue #25 are also in the repair. See the [repair record](reports/2026-10-11-fidelity-repair/README.md) for implementation and outstanding release gates. Historical defect descriptions refer to published versions, not completed candidate publication. All 31 newly migrated commands map to [canonical ADRs](adr/README.md#recent-command-decision-coverage).
 
-范围是当前源码、README、help、支持记录与已知常见上游参数。不是逐一穷举
-GNU/curl/jq 的所有历史或平台选项；未列出的选项不因此获得认证。
-**“已实现但验证不足”不等于“不支持”，“明确拒绝”不等于兼容通过。**
-无新缺陷的命令保留在表中，不为凑数虚构功能缺口。
+Before repair, versions were 47 commands at 0.2.0, 11 at 0.1.1 and 20 at 0.1.0, with core 0.4.0. The repair uses MoonBit 2026-09-20, async 0.22.4, x 0.5.5 and moonjq 0.2.0. This is a verified baseline, not a claim that every dependency is the registry's current latest release.
 
-## 建议提 issue 的顺序
+Scope includes source, README, help, support records and common upstream options; it does not enumerate every historical/platform GNU/curl/jq option. Omission does not certify support. **Implemented but under-verified is not unsupported; explicit rejection is not parity.** Commands without new defects remain listed without invented gaps.
 
-P0：已有常用请求被错误解释或成功输出不保真；P1：日常主流程、正确性门禁；
-P2：高价值功能/效率扩展；P3：低优先级细节或独立新命令排期。
-这套优先级用于项目工作，与上游 API 文档中的接口优先级分开。
+## Prioritized tracking
 
-| 顺序 / ID | 优先级与建议标题 | 归因与预先选定的方向 | 关闭条件 |
+P0: incorrect interpretation or successful output for common requests. P1: ordinary workflows and correctness gates. P2: valuable feature/performance extensions. P3: details or independently scheduled new commands. These project priorities differ from upstream API priorities.
+
+| ID / issue | Priority and title | Direction | Acceptance |
 | --- | --- | --- | --- |
-| F01 | P0：修正 strings 的 radix/encoding 与默认字节合同 | 项目错误。`-t d` 应为十进制；`-e b` 不能当单字节，未实现宽编码应拒绝而非执行错误模式。修复默认 TAB、offset padding、`-o/-t` 优先级及多文件前缀。 | 固定 binutils 对照，Native/Wasm/精确 MoonX 对 flags、TAB、UTF-16、前缀、状态逐字节验收；替换错误合同预期时注明 upstream 依据。 |
-| F02 | P0：which 必须验证可执行访问权 | 项目错误。公开 `can_execute` 已存在，先修 POSIX 非可执行文件误命中、路径分隔符及错误分类；Windows 单独定义 PATHEXT 和大小写查找，不能把任意普通文件当命令。 | 0644/0755、链接、空 PATH 项、含反斜杠 POSIX 名称、不可访问目录与 Windows 可执行名查找；普通文件不再错误成功。 |
-| F03 | P0：恢复 column 默认列排版和 -t 输出合同 | 项目错误。无 `-t` 当前原样复制；`-t` 丢末尾 LF、以单空格为默认分隔并逐文件独立成表。宽度显式配置、字段分隔/空字段均可纯 MoonBit 完成。 | 固定 util-linux 的无参数、`-t/-s/-o`、多文件、空行、最后 LF、非法字节对照；自动 TTY 宽度单独保留 API 门禁。 |
-| F04 | P1：date 的 TZ、输入和格式语义 | 项目工作。保留显式 `-u`；复用公开 x/time、TZif 能力实现已知 TZ/offset，无法解析应报错，不能默认忽略调用者 TZ。相对日期、额外格式字段另分子项；设置时钟仍为 API 缺口。 | 非 UTC/DST、缺少 zoneinfo、负数/小数 epoch、格式字段/修饰符与选项冲突固定 oracle；当前 UTC 默认偏差关闭。 |
-| F19 | P1：unlink 多余参数必须在删除前拒绝 | 项目偏差。当前多操作数逐个删除，GNU 接受恰好一个。采用命令保真方向，先校验参数数量；不再把额外删除当便利扩展。 | 两个真实 fixture 的 extra-operand 调用返回非零且均保持；单文件、symlink 和按参数拒绝的 CLI 合同独立验收。 |
-| F05 | P1：公开文件 identity/mode/truncate/time/link 能力及接入 | 真正上游接口门禁；按能力拆子项。影响 cp 默认/覆盖、touch、ln 硬链接、chmod、ls、tree、tail -F、mv 跨设备、patch/sed/gzip 写回。保留各自不同的 inode 合同。 | 正式发布 API + Native/Wasm 文件内容、权限、链接关系、时间和失败副作用差分；不以临时 rename 替代 cp 覆盖。 |
-| F06 | P1：gzip 实现实际压缩与流式解码 | 项目算法。当前 stored blocks 有 gzip 格式但通常变大；实现 LZ/Huffman 和级别策略，随后减少解码对整个压缩输入的缓冲。 | 独立 gzip 互通、CRC/多 member/部分输出不退化；可压缩语料有实际压缩效果，记录压缩比、吞吐与内存。 |
-| F07 | P1：sed 与共享 BRE/ERE 的常用语法 | 项目算法。分开推进 hold space、分支/分组、多行/插入追加命令与 backreference/word assertions；共享 matcher 可服务 expr、csplit、tac、nl。`sed -i` 独立依赖 F05。 | 固定 GNU 脚本、最长匹配/捕获、空匹配、部分输出、非法脚本及长行复杂度；不能仅通过解析即宣布支持。 |
-| F08 | P1：补已接受文件/进程操作的证据 | 验证债务。优先 ln 目标/覆盖、mv interactive/backup/update、find 时间/access、test 特殊文件与时间比较、mkdir 异常 umask。源码接受不算完整验证。 | Linux 全 POSIX 元数据 oracle + Windows 对应合同；每个适用维度有观察结果，无法观测为 infra/skip，不降级成 pass。 |
-| F09 | P1：单独交付尚未发布的已有命令修正 | 发布债务。curl/wget 自定义 Cookie 修正在工作区/新 core 中，但已发布 cli/curl、cli/wget@0.2.0 未包含。保留旧坐标，不因本轮分支合并宣称已发布。 | 已获用户授权，本修复轮只更迭受影响包；要求三平台 gate、串行发布和精确版本 wire/CLI 回归后关闭。 |
-| F10 | P2：diff/patch 完整工作流 | diff 目录/空白模式、最短编辑等价解与内存属于项目工作；patch fuzz/offset/.rej/部分成功也属项目工作。写回权限受 F05 限制，不混为同一问题。 | 固定 GNU diffutils/patch 的多文件、多 hunk 混合成功、offset/fuzz、rejection 文件和 inode/mode；stdout/dry-run 保持可用。 |
-| F11 | P2：sh 解释器与 make 语言补齐 | 项目工作。sh 算术赋值/++/?:、反引号、here-doc 展开、fd 重定向、循环层数、内建 printf/test；make 变量/export 递归、secondary expansion 等。持续行式会话已经可用。 | 按语法逐项 oracle，失败前输出/状态、管道作用域和会话恢复；jobserver 需另定继承与协议合同，不借 -j 并发冒称兼容。 |
-| F12 | P2：大型输入、计数上限和流式处理 | 项目资源选择。split/csplit、sort、tac/rev、diff、column/strings、gzip decoder 的缓存及数值上限；seq 人为输出上限也需复核。先固定内存预算、失败副作用，再流式/外部排序。 | 大输入/超限/中断的时间内存证据与字节等价；取消测试侧额度限制和产品语义的混淆。 |
-| F13 | P2：常用纯算法参数和路径选项 | 项目工作。cut complement/output delimiter、uniq 分组、seq 格式、sort 输出/merge/stable、split chunk/filter、fmt margins、od 浮点、hexdump format、cksum/tag 等；rev/tac 多文件不依赖上游 API。 | 按命令拆小 issue，支持/冲突/错误副作用一起验收；readlink 相关 path 模式另经 F05，不能全部按字符串消去处理。 |
-| F14 | P2：网络与 JSON 扩展 | PSL/IDNA、cookie-prefix、Wget challenge cache/replay、HTTP 配置/更多认证，以及 jq 模块/--stream 属项目或公共 evaluator 集成；任意重复头需要 ordered headers，HTTP/2 要独立核对传输能力。 | 固定 wire fixture + 命令 oracle；响应、凭据域、cookie jar 和失败行为一起测，禁止代理到宿主 curl/jq。 |
-| F15 | P2：真实终端、可恢复信号、exec/进程组 | 真正公共接口门禁：isatty/termios/resize/信号订阅/PTY/exec/组及状态事件。影响 sh 高级交互、jq 自动颜色、test -t、timeout 发布、tee -i/yes 信号语义。 | 正式 API + 真实终端和后代生命周期测试。行式 Session、固定 ANSI 输出与直接子进程取消均不能替代。 |
-| F16 | P2：locale、显示宽度与平台文本模式 | 项目数据/算法及平台合同。先保留 C-byte 边界，不改调用者 locale。统一宽字符/组合字符/排序规则，避免各命令自建不同半实现。 | 原始字节、UTF-8 非法序列、locale 数据版本、宽度/大小写/排序差分和 Windows 文本模式独立证据。 |
-| F17 | P3：诊断字节与项目扩展治理 | 命令原样迁移优先。ls -P、jq -l、rmdir -I 等扩展明确标注，不能当 GNU 参数。剩余诊断/别名逐项补；unlink 的副作用另提至 F19。 | 扩展有明确名称/帮助/合同；通用诊断不掩盖状态与效果。 |
-| F18 | P3：其余 28 个未建模块的命令 | 单独的新命令路线，见 command-coverage；awk/归档等算法可先行，stat/du/df/身份/终端按公共能力拆分。 | 每个新模块先确定 upstream、子集、拒绝条件、README/ADR/CLI 合同；不把本轮 79 个包的选项清单和新包排期混计。 |
+| [#5](https://github.com/moonbit-community/cmd/issues/5) | [F01] P0: Correct strings radix, encoding and default byte behavior | Project defect: -t d must select decimal offsets; -e b must not act as a single-byte encoding. Reject unimplemented wide encodings instead of running the wrong mode. Correct TAB handling, offset padding, -o/-t precedence and multi-file prefixes. | Compare with pinned binutils. Check flags, TAB, UTF-16 rejection, prefixes, bytes and status on Native, Wasm and exact MoonX versions. Cite upstream evidence when replacing incorrect expected outputs. |
+| [#6](https://github.com/moonbit-community/cmd/issues/6) | [F02] P0: Check executable access in which | The public can_execute API already exists. Correct POSIX matches for non-executable files, path separators and error classification. Define Windows PATHEXT and case-insensitive executable suffix lookup separately; an arbitrary regular file is not a command. | Cover mode 0644/0755, links, empty PATH entries, POSIX filenames containing backslashes, inaccessible directories and Windows executable lookup. Non-executable files must no longer produce false success. |
+| [#7](https://github.com/moonbit-community/cmd/issues/7) | [F03] P0: Restore column default layout and table output | Without -t, the current published implementation copies input. With -t, it loses the final LF, uses one space as its default separator and formats files separately. Explicit width, delimiters and empty fields can all be implemented in pure MoonBit. | Compare default output, -t/-s/-o, multiple files, blank lines, final LF and invalid bytes against pinned util-linux. Automatic terminal width remains a separate public API requirement. |
+| [#8](https://github.com/moonbit-community/cmd/issues/8) | [F04] P1: Correct date timezone, input and formatting semantics | Keep explicit -u. Use public x/time and TZif facilities for known timezones and offsets; invalid timezone input must fail instead of silently ignoring caller TZ. Relative dates and additional formatting fields are separate follow-ups. Setting the system clock still requires a public setter. | Use a pinned oracle for non-UTC/DST zones, missing zoneinfo, negative/fractional epochs, format fields/modifiers and conflicting options. Eliminate the incorrect implicit UTC behavior. |
+| [#9](https://github.com/moonbit-community/cmd/issues/9) | [F19] P1: Reject extra unlink operands before deleting anything | The published implementation deletes multiple operands in sequence, whereas GNU accepts exactly one. Validate operand count before mutation; extra deletion is not a convenience extension consistent with command fidelity. | An extra-operand call must return nonzero and preserve both real fixture files. Independently verify single-file deletion, symlinks and argument rejection through CLI contracts. |
+| [#10](https://github.com/moonbit-community/cmd/issues/10) | [F05] P1: Expose and integrate file identity, mode, truncate, time and link APIs | These are public API gaps; split follow-ups by capability. They affect cp defaults/overwrite, touch, hard links, chmod, ls, tree, tail -F, cross-device mv and patch/sed/gzip writeback. Preserve each command's distinct inode contract. | Require released public APIs plus Native/Wasm differential evidence for contents, permissions, links, timestamps and failure effects. A temporary file followed by rename must not substitute for cp's existing-inode overwrite semantics. |
+| [#11](https://github.com/moonbit-community/cmd/issues/11) | [F06] P1: Add actual gzip compression and streaming decoding | This is project algorithm work. Stored blocks produce valid gzip but usually increase size. Implement LZ/Huffman compression and level selection, then reduce whole-input buffering during decoding. | Preserve independent gzip interoperability, CRC checks, multiple members and partial output. Compressible corpora must actually shrink; record ratio, throughput and memory. |
+| [#12](https://github.com/moonbit-community/cmd/issues/12) | [F07] P1: Extend sed and the shared BRE/ERE matcher | Implement hold space, branches/groups, multiline commands and append/insert operations separately from pattern backreferences and word assertions. The shared matcher can also serve expr, csplit, tac and nl. sed -i independently depends on F05. | Use pinned GNU scripts to verify longest matches/captures, empty matches, partial output, invalid scripts and long-line complexity. Successful parsing alone does not establish support. |
+| [#13](https://github.com/moonbit-community/cmd/issues/13) | [F08] P1: Verify accepted filesystem and process operations | Verification debt includes ln target/overwrite combinations, mv interactive/backup/update, find time/access predicates, test special files/time comparisons and mkdir under unusual umasks. Accepted source paths are not complete behavioral evidence. | Require full POSIX metadata observation on Linux and corresponding Windows contracts. Record every applicable observation. Missing measurements must be infrastructure failures or justified skips, never downgraded to passes. |
+| [#14](https://github.com/moonbit-community/cmd/issues/14) | [F09] P1: Release existing command fixes that are still unpublished | Custom Cookie fixes for curl/wget exist in the workspace/new core but are absent from cli/curl@0.2.0 and cli/wget@0.2.0. Preserve old coordinates; merging a branch does not publish packages. | The user has now authorized release after repair and second review. Bump only affected packages, pass all three platform gates, publish serially and verify exact-version wire/CLI behavior. Do not mark this complete before publication and acceptance. |
+| [#15](https://github.com/moonbit-community/cmd/issues/15) | [F10] P2: Complete diff and patch workflows | Directory/whitespace modes, equivalent shortest edit scripts and memory use are diff project work. Patch fuzz, offsets, .rej files and partial success are also project work. Writeback permissions are independently blocked by F05. | Compare multiple files/hunks, mixed success, offsets/fuzz, rejection files and inode/mode effects against pinned GNU diffutils/patch. Preserve usable stdout and dry-run modes. |
+| [#16](https://github.com/moonbit-community/cmd/issues/16) | [F11] P2: Extend shell interpretation and make language support | Project work includes shell arithmetic assignment/++/?:, backticks, here-document expansion, descriptor redirection, loop levels and printf/test builtins; make variable/export recursion and secondary expansion are separate work. Persistent line sessions already exist. | Compare each syntax feature with an oracle, including output before failure, status, pipeline scope and session recovery. Jobserver compatibility needs its own inheritance/protocol contract; -j concurrency alone does not establish it. |
+| [#17](https://github.com/moonbit-community/cmd/issues/17) | [F12] P2: Improve large-input handling, numeric limits and streaming | Review buffering and numeric limits in split/csplit, sort, tac/rev, diff, column/strings and the gzip decoder, as well as seq's artificial output cap. Establish memory budgets and failure effects before streaming or external sorting. | Record time/memory and byte equivalence for large input, limits and interruption. Keep test resource limits separate from product semantics. |
+| [#18](https://github.com/moonbit-community/cmd/issues/18) | [F13] P2: Add common algorithmic and path options | Project work includes cut complement/output delimiters, uniq groups, seq formatting, sort output/merge/stability, split chunk/filter modes, fmt margins, od floats, hexdump formats and cksum/tag support. Multiple-file rev/tac support needs no new upstream API. | Split work into command-specific issues and test success, conflicts and failure effects together. Path modes that require readlink depend separately on F05; string normalization cannot replace filesystem semantics. |
+| [#19](https://github.com/moonbit-community/cmd/issues/19) | [F14] P2: Extend network and JSON functionality | PSL/IDNA, cookie prefixes, Wget challenge caching/replay, HTTP configuration/authentication and jq modules/--stream are project or public-evaluator integration work. Arbitrary duplicate headers require an ordered representation. Audit HTTP/2 transport support separately. | Use fixed wire fixtures and command oracles. Verify responses, credential scope, cookie jars and failures together. Never delegate implementation to host curl or jq. |
+| [#20](https://github.com/moonbit-community/cmd/issues/20) | [F15] P2: Add real terminal APIs, recoverable signals and process control | Public API requirements include isatty, terminal attributes/resize, signal subscriptions, PTY, exec, process groups and process-state events. They affect advanced sh interaction, jq automatic color, test -t, timeout publication and tee -i/yes signal behavior. | Require released APIs and real-terminal/descendant lifecycle tests. A line Session, explicit ANSI output or direct-child cancellation cannot replace these contracts. |
+| [#21](https://github.com/moonbit-community/cmd/issues/21) | [F16] P2: Define locale, display width and platform text behavior | This requires project data/algorithms and explicit platform contracts. Preserve the C-byte subset without rewriting caller locale. Share wide/combining-character and collation behavior instead of building inconsistent partial implementations per command. | Record raw-byte and invalid UTF-8 behavior, locale data versions, width/case/collation comparisons and independent Windows text-mode evidence. |
+| [#22](https://github.com/moonbit-community/cmd/issues/22) | [F17] P3: Govern diagnostics, aliases and project extensions | Command fidelity takes priority. Label extensions such as ls -P, jq -l and rmdir -I explicitly; they are not GNU options. Add remaining diagnostics/alias coverage incrementally. Unlink side effects are tracked separately as F19. | Give every extension a clear name, help entry and contract. Generic diagnostics must not hide incorrect status or effects. |
+| [#23](https://github.com/moonbit-community/cmd/issues/23) | [F18] P3: Plan the remaining 28 commands without modules | Track new commands separately through command-coverage. Algorithmic work such as awk and archives can proceed; stat/du/df, identity and terminal commands must be divided by public capability. | Choose upstream behavior, subset, rejection conditions, README, ADR and CLI contracts before each new module. Do not combine the current 79-command option inventory with new-package scheduling. |
 
-当前优先修复已有功能错误和 README/help 含义不一致，其余扩展留在 issues；
-其中 F05 与 F15 需要上游协作，其余不应统一等待 async。ID 保持稳定，
-表格按优先级排列，因此补充的 F19 位于 P1 区域。
+Existing defects and README/help mismatches are repaired first; other expansion stays in issues. F05/F15 require upstream collaboration; unrelated work must not all wait for async. Stable IDs are retained, so later-added F19 appears in the P1 group.
 
-## 全部命令逐项记录
+## Per-command register
 
-每行命令名链接当前 README；对应源文件及 `tests/cases/<cmd>.json` 可进一步
-核对。分类：**缺陷**（已有含义有偏差）、**项目**（可在项目补）、**API**
-（正式公开能力缺口）、**验证**（已接受但未充分认证）、**平台**（需单独合同）。
-F 编号对应上述优先队列；一行可涉及多个原因。没有独立高优先项时标为维护。
+Command names link to README; source and tests/cases/<cmd>.json provide further detail. Categories distinguish Defect, Project work, public API gaps, Verification debt and Platform contracts. A row may have several causes. Maintenance means no separate urgent gap was found.
 
-| 命令 | 当前不支持、偏差或待补证据 | 分类 / 优先队列 | ADR |
+| Command | Unsupported behavior, defects or remaining evidence | Category / queue | ADR |
 | --- | --- | --- | --- |
-| [base32](../commands/base32/README.md) | 已覆盖常用 `-d/-i/-w`；本次未发现额外标准参数阻塞。非标准 alphabet 不作为 GNU 缺陷凑数；locale 诊断未全比对。 | 维护 / F16–17 | 0003、0008 |
-| [base64](../commands/base64/README.md) | 常用 decode/ignore/wrap 已有；非标准 alphabet 不在基线，完整诊断未认证。 | 维护 / F17 | 0003、0008 |
-| [basename](../commands/basename/README.md) | 常用多操作数/suffix/NUL 已有；多字节路径 locale 与平台极端形式待证据。 | 验证、平台 / F16 | 0003 |
-| [cat](../commands/cat/README.md) | 常见格式 flags 已有，`-u` 是兼容 no-op；本次无新独立缺口。 | 维护 | 0003 |
-| [chmod](../commands/chmod/README.md) | 增量/省略类别、权限复制、`X/s/t`、`--reference`；符号赋值只接受全类别闭合形式。命令行目录 symlink 的递归只改目标自身；Windows mutation 不可用。 | API、验证、平台 / F05、F08 | 0004 |
-| [cksum](../commands/cksum/README.md) | 仅 POSIX CRC+长度；GNU 算法选择、check/tag 等模式未补。 | 项目 / F13 | 0008 |
-| [cmp](../commands/cmp/README.md) | `-s/-l/-n/-i` 已有；`-b/--print-bytes` 等额外显示及完整诊断待补。 | 项目、验证 / F13、F17 | 0003 |
-| [column](../commands/column/README.md) | 默认 copy-through；`-t` 缺 LF、单空格约定、多文件独立表；完整 util-linux 表格/字段/输出宽度、display-width 均未补。 | **缺陷**、项目、API / F03、F15–16 | 0003 |
-| [comm](../commands/comm/README.md) | 自定义输出 delimiter、`--total`；非 C collation 未实现。 | 项目 / F13、F16 | 0003 |
-| [cp](../commands/cp/README.md) | 默认复制、所有已有 regular-file 覆盖、`-a/-p/--preserve` 拒绝；只支持 `--no-preserve=mode` 新建。`-f/-i/backup` 接受不代表覆盖已实现。 | API / F05 | 0004、0009 |
-| [csplit](../commands/csplit/README.md) | 已有输出拒绝；自定义 suffix、`--suppress-matched`、BRE backrefs/word assertions/非 ASCII pattern；整输入缓存。 | API、项目 / F05、F07、F12–13 | 0004、0008–0009 |
-| [curl](../commands/curl/README.md) | 非 HTTP、HTTP/2、config、非 Basic/交互密码、PSL/IDNA/raw Set-Cookie/prefix、任意有序重复头；工作区 Cookie 修正未进入 0.2.0。 | 项目、API、发布 / F09、F14 | 0005 |
-| [cut](../commands/cut/README.md) | `--complement`、`--output-delimiter`；`-c` 当前同 byte；空 delimiter 拒绝。 | 项目 / F13、F16 | 0003 |
-| [date](../commands/date/README.md) | 忽略调用者 TZ，默认/无 `-u` 仍 UTC；relative date、小数 epoch、更多格式/修饰符、`-f/-r` 等未实现；设置时钟缺 API。 | **偏差**、项目、API / F04 | 0008 |
-| [diff](../commands/diff/README.md) | 目录递归、空白/大小写模式；等价编辑序列的精确 hunk、很大差异输入内存待补。 | 项目、验证 / F10、F12 | 0008 |
-| [dirname](../commands/dirname/README.md) | 多操作数和 NUL 已有；多字节/平台边界未全认证。 | 验证 / F16 | 0003 |
-| [echo](../commands/echo/README.md) | GNU `POSIXLY_CORRECT` 环境选择未声明兼容；选项歧义保留且已说明。 | 项目 / F17 | 0002–0003 |
-| [env](../commands/env/README.md) | `-S/--split-string`、argv0 及信号相关扩展不在当前 `-i/-u/-0/-C` 子集；子进程 launch ≠ exec 替换。 | 项目、API / F13、F15 | 0002、0006 |
-| [expand](../commands/expand/README.md) | 非 C display-width；GNU 相对/重复 tab-stop 扩展需逐形式复核。 | 项目、验证 / F13、F16 | 0003 |
-| [expr](../commands/expr/README.md) | pattern backrefs/word assertions、locale 字符操作；BigInt 算术已实现，不属数值上游阻塞。 | 项目 / F07、F16 | 0008 |
-| [false](../commands/false/README.md) | 本次无新功能缺口；保留 metadata/参数歧义合同。 | 维护 | 0001、0009 |
-| [find](../commands/find/README.md) | 不跟随链接；owner/inode/nlink/link-target predicates、完整表达式/动作组合缺失；birth/literal time selector 不在 `-newerXY` 范围。已有 time/access/特殊文件需补证据。 | API、项目、验证 / F05、F08 | 0004、0006 |
-| [fmt](../commands/fmt/README.md) | `-c` crown、`-t` tagged、`-p` prefix；非 C 宽度与全部段落选择未认证。 | 项目、验证 / F13、F16 | 0003 |
-| [fold](../commands/fold/README.md) | 已有 byte/control-column/spaces；非 C 多字节计数和 display-width。 | 项目 / F16 | 0003 |
-| [grep](../commands/grep/README.md) | Backrefs/更多 GNU regex、非 C classes/case fold；`-P` 不在当前引擎，长行最坏性能待量化。 | 项目 / F07、F12、F16 | 0003、0008 |
-| [gunzip](../commands/gunzip/README.md) | 非 `-c` named replacement、恢复元数据；其他压缩格式、force/pass-through、递归/listing；compressed input 全缓存。 | API、项目 / F05–06、F12 | 0004、0008–0009 |
-| [gzip](../commands/gzip/README.md) | Stored blocks，尚无真正压缩级别；named compression 要 `-cn`，原地替换/元数据、递归/listing/force 未实现。 | 项目、API / F05–06 | 0004、0008–0009 |
-| [head](../commands/head/README.md) | 计数受 signed Int64 限制；超大后缀/无界记录的资源行为须按预算测，不以解析成功认证。 | 验证 / F12 | 0003 |
-| [hexdump](../commands/hexdump/README.md) | `-e/-f` 自定义格式、color directives；stdin skip 拒绝；默认 little-endian 平台边界。 | 项目、API、平台 / F13 | 0003 |
-| [join](../commands/join/README.md) | ignore-case/header/完整 output-format 扩展待补；非 C collation/诊断未认证。 | 项目、验证 / F13、F16 | 0003 |
-| [jq](../commands/jq/README.md) | `--stream`、模块及完整 evaluator/diagnostics；自动 TTY 颜色缺 isatty。显式 `-C/-M` 已有，不能再列成 blocker。 | 项目、API / F14–15 | 0008 |
-| [jqlog](../commands/jqlog/README.md) | 独立 JSONL 合同，跳过非法行是其设计；继承 moonjq evaluator 范围，不按系统 jq 全参数计缺口。 | 项目 / F14 | 0008 |
-| [ln](../commands/ln/README.md) | Hard link 不可用；symlink 仅 POSIX；target/interactive/backup/overwrite 组合已接受但差分不足。 | API、验证、平台 / F05、F08 | 0004 |
-| [ls](../commands/ls/README.md) | 长格式/owner/mode/inode/nlink/blocks、目录 size sort；color/多列/quoting 等布局可独立实现。`-P` 是项目扩展。 | API、项目 / F05、F13、F15–17 | 0003–0004 |
-| [make](../commands/make/README.md) | 完整 GNU grammar/builtins、secondary expansion、jobserver；裸 export/unexport、shell-function export recursion 未补。 | 项目、平台 / F11 | 0006–0007 |
-| [md5sum](../commands/md5sum/README.md) | BSD tagged/`--tag`、Windows text translation；`-z` verification 非当前合同。 | 项目、平台 / F13、F16 | 0008 |
-| [mkdir](../commands/mkdir/README.md) | Symbolic modes；异常 umask 需临时 owner write/search 权限；Windows mode 语义未认证。 | 项目、验证、平台 / F08、F13 | 0004 |
-| [mktemp](../commands/mktemp/README.md) | 当前只 trailing-X 模板及 `-d`；`-p`、suffix/模板扩展/quiet 等；owner 与 Windows modes 未认证。 | 项目、平台 / F13 | 0004 |
-| [mv](../commands/mv/README.md) | EXDEV copy-delete 缺元数据保持；已有 interactive/backup/suffix/其余 update 组合和 Windows 错误分类待证据。 | API、验证 / F05、F08 | 0004、0009 |
-| [nl](../commands/nl/README.md) | `pBRE` 编号选择尚拒绝；C-byte regex 部分可用共享 matcher 补，不应把全部归为 locale 阻塞。 | 项目 / F07、F16 | 0003、0008 |
-| [od](../commands/od/README.md) | Float types、字符串提取、传统 offset operands；默认 little-endian 而非任意主机 endian。 | 项目、平台 / F13 | 0003 |
-| [paste](../commands/paste/README.md) | 主用 `-s/-d/-z` 已有；非法 delimiter 完整诊断及非 C 行为未全比对。 | 验证 / F16–17 | 0003 |
-| [patch](../commands/patch/README.md) | 普通现有文件写回/named `-o` 缺 mode；fuzz、offset、`.rej`、mixed-success、binary/rename/mode patch、interactive 未实现。 | API、项目 / F05、F10 | 0004、0009 |
-| [printenv](../commands/printenv/README.md) | 无新参数 blocker；只能观察宿主提供的环境，宿主授权拒绝不是实现缺失。 | 维护 / 平台 | 0002 |
-| [printf](../commands/printf/README.md) | 文档之外的转换（如 hex float/quoting）与 locale 数字格式未声明；所有诊断字节未全比对。Shell 内建范围另计。 | 项目、验证 / F11、F13、F16 | 0003、0007 |
-| [pwd](../commands/pwd/README.md) | `-L/-P` 已有；cwd、逻辑路径依赖宿主合同，无新已知参数 blocker。 | 维护 / 平台 | 0002、0004 |
-| [realpath](../commands/realpath/README.md) | 仅 existing；GNU 默认允许 final missing 的行为、`-m`、`--relative-to/base`、`-s` 未补。词法模式可实现，symlink-aware missing 模式需另证。 | 项目、API / F05、F13 | 0004 |
-| [rev](../commands/rev/README.md) | 多文件拒绝、整输入缓存、非 C 字符反转未补。 | 项目 / F12–13、F16 | 0003 |
-| [rm](../commands/rm/README.md) | `-i/-I` 未实现；完整 device-boundary/扩展 root flags 不在当前范围；真实 root 删除不在测试承诺中。 | 项目、API、验证 / F05、F13 | 0004、0009 |
-| [rmdir](../commands/rmdir/README.md) | 常用行为已有；完整 path diagnostics 未认证。`-I` 为当前额外短拼写，不能当 GNU 标准参数。 | 验证 / F17 | 0004、0009 |
-| [sed](../commands/sed/README.md) | `-i`、hold space、branches/groups、multiline、append/insert/change 等；pattern backrefs/word assertions、locale。 | 项目、API / F05、F07 | 0004、0008–0009 |
-| [seq](../commands/seq/README.md) | `-f` 未实现；precision/output 数量存在项目上限，需同步帮助/文档并评估流式解除。默认 +1 已修复。 | 项目 / F12–13 | 0003、0009 |
-| [sh](../commands/sh/README.md) | 算术赋值/++/?:、反引号、fd duplication、here-doc 展开、多层 break/continue、完整 builtins；exec/fg/bg/jobs/wait、高级终端未开放。 | 项目、API / F11、F15 | 0006–0007 |
-| [sha1sum](../commands/sha1sum/README.md) | 同 md5sum：tagged records、Windows text mode。 | 项目、平台 / F13、F16 | 0008 |
-| [sha256sum](../commands/sha256sum/README.md) | Tagged/binary manifest 扩展及完整 warnings 待补；与新 hash 公共合同去重需先保持现有行为。 | 项目、验证 / F13 | 0008 |
-| [sha512sum](../commands/sha512sum/README.md) | 同 md5sum：tagged records、Windows text mode。 | 项目、平台 / F13、F16 | 0008 |
-| [sleep](../commands/sleep/README.md) | Signal/cancellation parity 未认证；duration 精度/上限属运行时合同，不是无限范围。 | API、验证 / F15 | 0006 |
-| [sort](../commands/sort/README.md) | `-R` 当前以无 seed 合同拒绝；随机算法本可实现。输出文件、merge/stable 额外模式、外部排序、locale 未补。 | 项目 / F12–13、F16 | 0003 |
-| [split](../commands/split/README.md) | 已有输出拒绝；`-n` chunk、`-C` line-byte、filter、numeric start、hex suffix；整输入缓存、Int32 count/1024 suffix bounds。 | API、项目 / F05、F12–13 | 0004、0009 |
-| [strings](../commands/strings/README.md) | `-t d/-e s` 错误拒绝，`-e b` 错误单字节、TAB 与前缀/offset 格式；wide/Unicode/object sections/自定义分隔等未补。 | **缺陷**、项目 / F01、F12–13、F16 | 0003 |
-| [tac](../commands/tac/README.md) | Regex separator、多文件拒绝；整输入缓存。多文件不依赖 regex，字节 matcher 可在项目实现。 | 项目 / F07、F12–13 | 0003 |
-| [tail](../commands/tail/README.md) | `-F`/name-follow 与 rotation reopen 缺 identity；其余 GNU pid/retry/record 选项不在当前子集。 | API、项目 / F05、F13 | 0003–0004 |
-| [tee](../commands/tee/README.md) | `-i`、`-p/--output-error` 等信号/错误选择不在当前 append 子集；pipe 错误状态需明确。 | 项目、API、验证 / F13、F15 | 0003、0006 |
-| [test](../commands/test/README.md) | `-t`、mode/owner、`-ef` 缺 API；已实现时间/特殊文件与完整参数歧义仍需独立 probes。 | API、验证 / F05、F08、F15 | 0004、0007 |
-| [timeout](../commands/timeout/README.md) | 未发布；无 process groups、signal selection、kill-after、foreground、preserve-status 完整合同；仅 owned direct child。 | API / F15 | 0006 |
-| [touch](../commands/touch/README.md) | 已有文件更新时间、`-a/-m/-d/-r/-t/--time` 拒绝；只创建缺失文件和 `-c` missing no-op。 | API / F05 | 0004、0009 |
-| [tr](../commands/tr/README.md) | C-byte sets/转换已有；locale 字符/分类数据未实现。 | 项目 / F16 | 0003 |
-| [tree](../commands/tree/README.md) | 遇 symlink 拒绝；follow/link text、owner/mode/device、JSON/HTML/filters/colors/更多报告未补，其中输出格式并不依赖 readlink。 | API、项目 / F05、F13、F16 | 0004 |
-| [true](../commands/true/README.md) | 本次无新功能缺口；metadata 版本合同保留。 | 维护 | 0001 |
-| [unexpand](../commands/unexpand/README.md) | 相对/重复 tab-stop 形式需逐项核对；非 C display-width。 | 项目、验证 / F13、F16 | 0003 |
-| [uniq](../commands/uniq/README.md) | `-D/--all-repeated`、`--group` 等分组模式；locale collation。 | 项目 / F13、F16 | 0003 |
-| [unlink](../commands/unlink/README.md) | 当前多个操作数会顺序删除，GNU 应先因 extra operand 拒绝；项目扩展需改为保真参数检查。目录拒绝不属缺陷。 | **偏差** / F19 | 0004、0009 |
-| [wc](../commands/wc/README.md) | `--total` 策略与完整 locale/display-width；`-m` 固定 UTF-8 与 caller locale 的关系需明确。 | 项目、验证 / F13、F16 | 0003 |
-| [wget](../commands/wget/README.md) | 递归镜像/FTP/非 Basic/HSTS、timestamp restore、PSL/IDNA、stdin challenge replay、跨 port/URL auth cache；Cookie 修正未入已发布 0.2.0。 | 项目、API、发布 / F05、F09、F14 | 0005 |
-| [which](../commands/which/README.md) | 普通文件误判可执行；POSIX 反斜杠视为分隔符；Windows PATHEXT、alias/function/lookup 扩展尚无合同。 | **缺陷**、平台 / F02 | 0006 |
-| [xargs](../commands/xargs/README.md) | 当前有 bounded `-P`、token/batch/replacement；任意 delimiter、交互提示、完整 GNU 调度/locale 扩展未补，进程组取消不由 direct-child API 保证。 | 项目、API / F13、F15–16 | 0002、0006 |
-| [xxd](../commands/xxd/README.md) | Negative/end-relative seek 拒绝；更多 bit/endian/group/case 等格式、输出文件语义未在当前参数集；reverse 稀疏输出有分配上限。 | 项目、验证 / F12–13 | 0003 |
-| [yes](../commands/yes/README.md) | 普通 producer/pipe closure 已测；精确 SIGPIPE 状态/诊断与 terminal 交互未认证。 | 验证、API / F15 | 0006 |
-| [zcat](../commands/zcat/README.md) | 只 gzip；其他格式、suffix searching、force/pass-through；compressed input 全缓存。 | 项目 / F06、F12–13 | 0008–0009 |
+| [base32](../commands/base32/README.md) | Common -d/-i/-w are covered; no additional standard option blocker was found. Nonstandard alphabets are not GNU defects. Locale diagnostics are not fully compared. | Maintenance / F16–17 | 0003, 0008 |
+| [base64](../commands/base64/README.md) | Common decode/ignore/wrap work; nonstandard alphabets are outside the baseline and full diagnostics remain uncertified. | Maintenance / F17 | 0003, 0008 |
+| [basename](../commands/basename/README.md) | Multiple operands, suffix and NUL work; multibyte locale paths and extreme platform forms need evidence. | Verification, Platform / F16 | 0003 |
+| [cat](../commands/cat/README.md) | Common formatting flags work; -u is a compatibility no-op. No new independent gap found. | Maintenance | 0003 |
+| [chmod](../commands/chmod/README.md) | Incremental/omitted classes, permission copying, X/s/t and --reference are unavailable; symbolic assignments require complete classes. Recursive command-line directory symlinks change only the target itself. Windows mutation is unavailable. | API, Verification, Platform / F05, F08 | 0004 |
+| [cksum](../commands/cksum/README.md) | POSIX CRC plus length only; GNU algorithm selection, check/tag modes remain unimplemented. | Project / F13 | 0008 |
+| [cmp](../commands/cmp/README.md) | -s/-l/-n/-i work; -b/--print-bytes, extra display and complete diagnostics remain follow-ups. | Project, Verification / F13, F17 | 0003 |
+| [column](../commands/column/README.md) | Published 0.1.0 copies by default and has missing final LF, single-space table separation and per-file tables. The repair corrects these; broader util-linux layouts and display width remain. | **Defect**, Project, API / F03, F15–16 | 0003 |
+| [comm](../commands/comm/README.md) | Custom output delimiters, --total and non-C collation remain unimplemented. | Project / F13, F16 | 0003 |
+| [cp](../commands/cp/README.md) | Default copying, existing regular-file overwrite and -a/-p/--preserve reject. New files require --no-preserve=mode. Accepted -f/-i/backup syntax does not establish overwrite support. | API / F05 | 0004, 0009 |
+| [csplit](../commands/csplit/README.md) | Existing outputs reject; custom suffix, --suppress-matched, BRE backreferences/word assertions/non-ASCII patterns remain. Whole-input buffering persists. | API, Project / F05, F07, F12–13 | 0004, 0008–0009 |
+| [curl](../commands/curl/README.md) | Non-HTTP, HTTP/2, config, non-Basic/interactive authentication, PSL/IDNA/raw Set-Cookie/prefix rules and arbitrary ordered duplicate headers remain. Cookie repairs are absent from published 0.2.0. | Project, API, Release / F09, F14 | 0005 |
+| [cut](../commands/cut/README.md) | --complement and --output-delimiter remain; -c currently means bytes and empty delimiters reject. | Project / F13, F16 | 0003 |
+| [date](../commands/date/README.md) | Published 0.1.0 ignores caller TZ and uses UTC without -u. The repair adds TZ and fractional epochs; relative dates, additional fields/modifiers, -f/-r and setting the clock remain separate work/API limits. | **Deviation**, Project, API / F04 | 0008 |
+| [diff](../commands/diff/README.md) | Directory recursion, whitespace/case modes, exact equivalent-edit hunk choices and large-difference memory use remain follow-ups. | Project, Verification / F10, F12 | 0008 |
+| [dirname](../commands/dirname/README.md) | Multiple operands and NUL work; multibyte/platform boundaries are not fully certified. | Verification / F16 | 0003 |
+| [echo](../commands/echo/README.md) | GNU POSIXLY_CORRECT environment selection is not claimed; option ambiguity is retained and documented. | Project / F17 | 0002–0003 |
+| [env](../commands/env/README.md) | -S/--split-string, argv0 and signal extensions are outside -i/-u/-0/-C. Child launch is not exec replacement. | Project, API / F13, F15 | 0002, 0006 |
+| [expand](../commands/expand/README.md) | Non-C display width and GNU relative/repeating tab-stop forms need separate review. | Project, Verification / F13, F16 | 0003 |
+| [expr](../commands/expr/README.md) | Pattern backreferences/word assertions and locale character operations remain. BigInt arithmetic already works and is not an upstream numeric blocker. | Project / F07, F16 | 0008 |
+| [false](../commands/false/README.md) | No new functional gap; retain metadata and argument-ambiguity contracts. | Maintenance | 0001, 0009 |
+| [find](../commands/find/README.md) | No link following; owner/inode/nlink/link-target predicates and complete expression/action combinations are missing. Birth/literal time selectors are outside -newerXY. Existing time/access/special-file behavior needs more evidence. | API, Project, Verification / F05, F08 | 0004, 0006 |
+| [fmt](../commands/fmt/README.md) | -c crown, -t tagged and -p prefix remain; non-C width and full paragraph selection are not certified. | Project, Verification / F13, F16 | 0003 |
+| [fold](../commands/fold/README.md) | Byte/control-column/space behavior works; non-C multibyte counting and display width remain. | Project / F16 | 0003 |
+| [grep](../commands/grep/README.md) | Backreferences, more GNU regex, non-C classes/case folding remain. -P is outside the engine; quantify worst-case long-line performance. | Project / F07, F12, F16 | 0003, 0008 |
+| [gunzip](../commands/gunzip/README.md) | Named replacement without -c, metadata restoration, other formats, force/pass-through, recursion/listing remain; compressed input is buffered in full. | API, Project / F05–06, F12 | 0004, 0008–0009 |
+| [gzip](../commands/gzip/README.md) | Stored blocks, without real compression levels. Named compression requires -cn; in-place replacement/metadata, recursion/listing/force remain. | Project, API / F05–06 | 0004, 0008–0009 |
+| [head](../commands/head/README.md) | Counts are bounded by signed Int64. Measure huge suffix/unbounded-record resources against budgets; parsing success is insufficient. | Verification / F12 | 0003 |
+| [hexdump](../commands/hexdump/README.md) | -e/-f custom formats and color directives remain; stdin skip rejects; default little-endian is a platform boundary. | Project, API, Platform / F13 | 0003 |
+| [join](../commands/join/README.md) | Ignore-case/header/full output-format extensions remain; non-C collation and diagnostics are not certified. | Project, Verification / F13, F16 | 0003 |
+| [jq](../commands/jq/README.md) | --stream, modules and complete evaluator/diagnostics remain. Automatic TTY color needs isatty; explicit -C/-M already work. | Project, API / F14–15 | 0008 |
+| [jqlog](../commands/jqlog/README.md) | Separate JSONL contract intentionally skips invalid lines. Evaluator scope follows moonjq, not all system jq options. | Project / F14 | 0008 |
+| [ln](../commands/ln/README.md) | Hard links unavailable; symlinks POSIX-only. The repair adds target/interactive/backup/overwrite comparisons and corrects option order and declined-prompt status; broader combinations still need evidence. | API, Verification, Platform / F05, F08 | 0004 |
+| [ls](../commands/ls/README.md) | Long format/owner/mode/inode/nlink/blocks and directory size sorting remain. Color, columns and quoting are independent layout work. -P is a project extension. | API, Project / F05, F13, F15–17 | 0003–0004 |
+| [make](../commands/make/README.md) | Complete GNU grammar/builtins, secondary expansion and jobserver remain; bare export/unexport and shell-function export recursion are incomplete. | Project, Platform / F11 | 0006–0007 |
+| [md5sum](../commands/md5sum/README.md) | BSD tagged/--tag and Windows text translation remain; -z verification is outside the current contract. | Project, Platform / F13, F16 | 0008 |
+| [mkdir](../commands/mkdir/README.md) | Symbolic modes remain; unusual umasks may require temporary owner write/search access. Windows modes are not certified. | Project, Verification, Platform / F08, F13 | 0004 |
+| [mktemp](../commands/mktemp/README.md) | Trailing-X templates and -d only; -p, suffix/template/quiet extensions, ownership and Windows modes remain. | Project, Platform / F13 | 0004 |
+| [mv](../commands/mv/README.md) | EXDEV copy-delete lacks metadata preservation. The repair covers selected interactive/backup/suffix/update cases and same-file failures. Equal-time interactive/update targets reject without public identity; Windows error classification remains separate. | API, Verification / F05, F08 | 0004, 0009 |
+| [nl](../commands/nl/README.md) | pBRE numbering rejects. C-byte regex can use the shared matcher; do not attribute all of it to locale APIs. | Project / F07, F16 | 0003, 0008 |
+| [od](../commands/od/README.md) | Float types, string extraction and traditional offset operands remain. Default little-endian is not arbitrary host endian. | Project, Platform / F13 | 0003 |
+| [paste](../commands/paste/README.md) | Common -s/-d/-z work; complete invalid-delimiter diagnostics and non-C behavior remain unverified. | Verification / F16–17 | 0003 |
+| [patch](../commands/patch/README.md) | Ordinary existing-file writeback/named -o lacks mode preservation. Fuzz, offsets, .rej, mixed success, binary/rename/mode patches and interaction remain. | API, Project / F05, F10 | 0004, 0009 |
+| [printenv](../commands/printenv/README.md) | No new option blocker. It observes host-provided environment; host denial is not missing implementation. | Maintenance / Platform | 0002 |
+| [printf](../commands/printf/README.md) | Undocumented conversions such as hex float/quoting and locale numeric formatting are not claimed. Full diagnostics are not compared; shell builtins have separate scope. | Project, Verification / F11, F13, F16 | 0003, 0007 |
+| [pwd](../commands/pwd/README.md) | -L/-P work; cwd/logical paths depend on the host contract. No new known option blocker. | Maintenance / Platform | 0002, 0004 |
+| [realpath](../commands/realpath/README.md) | Existing paths only. GNU default final-missing behavior, -m, --relative-to/base and -s remain. Lexical modes are implementable; symlink-aware missing paths need separate evidence. | Project, API / F05, F13 | 0004 |
+| [rev](../commands/rev/README.md) | Multiple files reject, input is buffered in full and non-C character reversal remains. | Project / F12–13, F16 | 0003 |
+| [rm](../commands/rm/README.md) | -i/-I remain; complete device-boundary/extended root flags are outside scope. Tests do not promise real-root deletion coverage. | Project, API, Verification / F05, F13 | 0004, 0009 |
+| [rmdir](../commands/rmdir/README.md) | Common behavior works; complete path diagnostics remain uncertified. -I is an extra project spelling, not GNU standard. | Verification / F17 | 0004, 0009 |
+| [sed](../commands/sed/README.md) | -i, hold space, branches/groups, multiline, append/insert/change, pattern backreferences/word assertions and locale remain. | Project, API / F05, F07 | 0004, 0008–0009 |
+| [seq](../commands/seq/README.md) | -f remains. The repair removes the output-count cap and documents 4096-character/numeric-scale bounds. Default +1 is already corrected. | Project / F12–13 | 0003, 0009 |
+| [sh](../commands/sh/README.md) | Arithmetic assignment/++/?:, backticks, fd duplication, here-document expansion, multilevel break/continue and full builtins remain. exec/fg/bg/jobs/wait and advanced terminals are unavailable. | Project, API / F11, F15 | 0006–0007 |
+| [sha1sum](../commands/sha1sum/README.md) | As md5sum: tagged records and Windows text mode remain. | Project, Platform / F13, F16 | 0008 |
+| [sha256sum](../commands/sha256sum/README.md) | Tagged/binary manifest extensions and complete warnings remain. Shared hash-contract cleanup must preserve existing behavior. | Project, Verification / F13 | 0008 |
+| [sha512sum](../commands/sha512sum/README.md) | As md5sum: tagged records and Windows text mode remain. | Project, Platform / F13, F16 | 0008 |
+| [sleep](../commands/sleep/README.md) | Signal/cancellation parity is uncertified. Duration precision/limits are runtime contracts, not unlimited ranges. | API, Verification / F15 | 0006 |
+| [sort](../commands/sort/README.md) | -R rejects without a seed contract, though randomization is implementable. Output files, merge/stability extensions, external sorting and locale remain. | Project / F12–13, F16 | 0003 |
+| [split](../commands/split/README.md) | Existing outputs reject. -n chunks, -C line-bytes, filters, numeric start and hex suffix remain; full input buffering, Int32 counts and 1024 suffix bounds persist. | API, Project / F05, F12–13 | 0004, 0009 |
+| [strings](../commands/strings/README.md) | Published 0.1.0 misinterprets radix/encoding/TAB/prefix/offset behavior; corrected in the repair candidate. Wide/Unicode encodings, object sections and custom separators remain. | **Defect**, Project / F01, F12–13, F16 | 0003 |
+| [tac](../commands/tac/README.md) | Regex separators and multiple files reject; full input buffering persists. Multiple-file support needs no regex API; byte matching is project work. | Project / F07, F12–13 | 0003 |
+| [tail](../commands/tail/README.md) | -F/name-follow and rotation reopening need identity. Other GNU pid/retry/record options are outside the subset. | API, Project / F05, F13 | 0003–0004 |
+| [tee](../commands/tee/README.md) | -i and -p/--output-error signal/error choices are outside the append subset. Pipe failure status needs an explicit contract. | Project, API, Verification / F13, F15 | 0003, 0006 |
+| [test](../commands/test/README.md) | -t, mode/owner and -ef lack APIs. Existing time/special-file predicates and complete argument ambiguity need independent probes. | API, Verification / F05, F08, F15 | 0004, 0007 |
+| [timeout](../commands/timeout/README.md) | Unpublished; no complete process-group/signal-selection/kill-after/foreground/preserve-status contract. Owned direct children only. | API / F15 | 0006 |
+| [touch](../commands/touch/README.md) | Existing-file timestamp changes and -a/-m/-d/-r/-t/--time reject; missing-file creation and -c missing no-op only. | API / F05 | 0004, 0009 |
+| [tr](../commands/tr/README.md) | C-byte sets/conversion work; locale character/classification data remain unimplemented. | Project / F16 | 0003 |
+| [tree](../commands/tree/README.md) | Symlinks reject. Following/link text, owner/mode/device, JSON/HTML/filters/colors/reporting remain; output formats do not depend on readlink. | API, Project / F05, F13, F16 | 0004 |
+| [true](../commands/true/README.md) | No new functional gap; retain metadata/version contracts. | Maintenance | 0001 |
+| [unexpand](../commands/unexpand/README.md) | Review relative/repeating tab stops individually; non-C display width remains. | Project, Verification / F13, F16 | 0003 |
+| [uniq](../commands/uniq/README.md) | -D/--all-repeated and --group grouping modes, plus locale collation, remain. | Project / F13, F16 | 0003 |
+| [unlink](../commands/unlink/README.md) | Published multiple-operand deletion violates GNU preflight rejection. The repair requires exactly one operand before mutation; directory rejection is intentional. | **Deviation** / F19 | 0004, 0009 |
+| [wc](../commands/wc/README.md) | --total and full locale/display width remain. Define fixed UTF-8 -m relative to caller locale. | Project, Verification / F13, F16 | 0003 |
+| [wget](../commands/wget/README.md) | Recursive mirroring/FTP/non-Basic/HSTS, timestamp restoration, PSL/IDNA, stdin challenge replay and cross-port/URL authentication caching remain. Cookie repairs are absent from 0.2.0. | Project, API, Release / F05, F09, F14 | 0005 |
+| [which](../commands/which/README.md) | Published 0.1.0 mistakes regular files for executables and treats POSIX backslashes as separators. The repair uses access checks and Windows PATHEXT; alias/function extensions remain. | **Defect**, Platform / F02 | 0006 |
+| [xargs](../commands/xargs/README.md) | Bounded -P, token/batch/replacement work. Arbitrary delimiters, prompts, full GNU scheduling/locale extensions remain; direct-child cancellation does not guarantee process-group cleanup. | Project, API / F13, F15–16 | 0002, 0006 |
+| [xxd](../commands/xxd/README.md) | Negative/end-relative seek rejects. Additional bit/endian/group/case formats and output-file semantics remain; sparse reverse output has allocation limits. | Project, Verification / F12–13 | 0003 |
+| [yes](../commands/yes/README.md) | Ordinary producer/pipe closure tested; exact SIGPIPE status/diagnostics and terminal interaction remain uncertified. | Verification, API / F15 | 0006 |
+| [zcat](../commands/zcat/README.md) | Gzip only; other formats, suffix searching, force/pass-through remain. Compressed input is buffered in full. | Project / F06, F12–13 | 0008–0009 |
 
-## 证据与使用方法
+## Evidence and use
 
-- 原始支持与版本：[compatibility](compatibility.md)；未建模块：[28 个缺口](command-coverage.md)。
-- 新发现的 Native/Wasm/精确 MoonX 调用：[本轮复现与输出](reports/2026-10-11-command-followups/README.md)。
-- 真正公共 API 缺口与建议语义：[async-upstream-gaps](async-upstream-gaps.md)。
-- 31 个新增包的决定、放弃方案、兼容代价、证据和解除条件：[ADR 索引](adr/README.md)。
+- Versions and support: [compatibility](compatibility.md); absent modules: [28 gaps](command-coverage.md).
+- Actual Native/Wasm/exact MoonX reproduction: [follow-up audit](reports/2026-10-11-command-followups/README.md).
+- Public API gaps and proposed semantics: [async-upstream-gaps](async-upstream-gaps.md).
+- Decisions, rejected alternatives, costs, evidence and unlock conditions for 31 new packages: [ADR index](adr/README.md).
 
-现有 554-case 发布验收只对所选合同、availability 和 boundary 有效；上述
-新发现未被旧用例覆盖，原报告不重写，当前支持记录明确加注偏差。
-后续 issue 应引用稳定的 F 编号，再拆具体命令/接口；修复完成必须带实际结果，
-不能仅凭“加了选项”或“升级了 async”关闭。
+Historical 554-case acceptance applies only to its selected contracts, availability and boundaries. Newly discovered failures were not covered by those cases; historical evidence is retained and current support records identify the differences. Follow-ups reference stable F IDs and may split by command/API. Closure requires actual results, not merely adding an option or upgrading async.

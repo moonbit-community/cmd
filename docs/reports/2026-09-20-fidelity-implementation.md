@@ -1,104 +1,121 @@
-# 0.2.0 命令语义保真候选实现
+# 0.2.0 command fidelity candidate
 
-日期：2026-09-20。状态：本地候选，未发布。
-宿主：macOS 26.5.2 / Darwin arm64。Native 与 Wasm 均在该宿主运行，
-不能外推为 Linux/Windows 认证。原始发布版本的
-[审计与证据](2026-09-19-command-fidelity-audit.md)保留不变。
+Date: 2026-09-20. Status at the time: local candidate, unpublished.
+Host: macOS 26.5.2 / Darwin arm64. Both Native and Wasm ran on this host;
+these results do not certify Linux or Windows. The original
+[audit and evidence](2026-09-19-command-fidelity-audit.md) remain historical records.
+Language revision: 2026-10-11; results and historical limitations retained.
 
-## 依赖与实现基线
+## Dependencies and implementation
 
-工具链与官方 version.json 核对后保持 moon/moonrun 0.1.20260915、
-moonc/core 0.10.13+cbb11c36f。全部工作区模块统一 async 0.22.1 和 x 0.5.5，
-moonjq 仍为 0.1.2。[完整解析树](2026-09-20-fidelity-evidence/dependency-tree.json)
-确认没有残留旧版传递依赖。
+The toolchain was checked against official version.json and remained
+moon/moonrun 0.1.20260915 and moonc/core 0.10.13+cbb11c36f. Workspace modules
+were aligned to async 0.22.1 and x 0.5.5; moonjq remained 0.1.2.
+The [resolved tree](2026-09-20-fidelity-evidence/dependency-tree.json) contained
+no old transitive dependencies.
 
-依赖升级首先单独验证：Native 104/104、Wasm 91/91；
-[升级阶段补丁](2026-09-20-fidelity-evidence/dependency-upgrade.patch)保留了行为修改前的状态。
-新版取消模型下，fixture 清理先取消所有子进程，再在不可取消区域 wait。
-所有项目实现和新增自动化均为 MoonBit；没有新增项目 C/Rust/JS/FFI，
-没有调用宿主同名命令代替实现。测试用系统 ln/stat 构建和检查链接、权限，
-宿主 curl/wget 仅作为 oracle。
+The dependency upgrade was validated separately: Native 104/104 and Wasm 91/91.
+The [upgrade patch](2026-09-20-fidelity-evidence/dependency-upgrade.patch)
+preserves the state before behavior changes. Under the new cancellation model,
+fixture cleanup cancels all children before waiting in an uncancelable region.
+All implementation and new automation use MoonBit, with no project C/Rust/JS/FFI
+or delegation to host commands. Host ln/stat construct and observe links and
+permissions for tests; curl/wget serve only as oracles.
 
-## 实际调用结果
+## Actual calls
 
-[Native 逐条结果](2026-09-20-fidelity-evidence/native.jsonl)与
-[Wasm 逐条结果](2026-09-20-fidelity-evidence/wasm.jsonl)记录 argv、status、
-stdout、stderr；对应可执行断言在 `tests/fidelity.mbtx`。
+[Native](2026-09-20-fidelity-evidence/native.jsonl) and
+[Wasm](2026-09-20-fidelity-evidence/wasm.jsonl) records contain argv, status,
+stdout and stderr. Executable assertions were in `tests/fidelity.mbtx`.
 
-| 原审计问题 | 候选实测行为 |
+| Original finding | Observed candidate behavior |
 | --- | --- |
-| cp 同 inode 别名被截断 | 同路径、硬链接、已存在目标均非零拒绝；源/目标内容和链接身份保持；显式 `--no-preserve=mode` 新目标复制成功 |
-| cp 新文件权限不正确 | 默认复制明确报告缺少 mode reader；不以错误权限宣布成功 |
-| touch 写回内容模拟时间 | 已有文件非零拒绝，mtime/内容保持；创建、`-c` 缺失 no-op、前面成功操作在后续失败后保留 |
-| 环境过滤与 locale 重写 | env 子进程保留任意变量；`LC_ALL=POSIX` 保持 POSIX；sh 局部变量不自动 export |
-| grep 分隔符/BRE/-o | 无 context 不插入 `--`；默认 BRE；`-Eo 'a|aa'` 输出最长 `aa` |
-| base64 / seq | `-w0` 无末尾 LF；`seq 3 1` 空输出；显式负步长仍输出倒序 |
-| jq 单文档及 --arg 文本替换 | 连续 JSON、slurp/raw/null/exit、lexical shadowing 通过；后续解析失败保留早先输出并返回 4 |
-| sh 错误成功 | 算术除零返回 2；赋值命令中的失败 substitution 返回非零；替换仅删末尾换行 |
-| mkdir/chmod | `mkdir -p -m700` 普通 umask 下 parent=755、leaf=700；命令行 symlink chmod 修改目标 |
-| make shell/-j | shell 函数得到 `one two`；并发 start 标记先于 finish，shared prerequisite 只执行一次；失败 prerequisite 阻止后续目标 |
-| rm 额外策略 | `--no-preserve-root` 普通临时文件操作成功；最终 dot/dot-dot 仍按命令语义拒绝 |
+| cp truncates same-inode aliases | Same path, hard links and existing targets reject nonzero; contents and identity remain intact. Explicit `--no-preserve=mode` copies to a new target. |
+| Incorrect new-file cp permissions | Default copying reports the missing mode reader instead of succeeding with incorrect permissions. |
+| touch rewrites contents to simulate timestamps | Existing files reject nonzero without changing content/mtime. Creation and missing-file `-c` no-op work; earlier successes survive a later operand failure. |
+| Environment filtering and locale rewriting | env children retain arbitrary variables and `LC_ALL=POSIX`; shell-local variables are not automatically exported. |
+| grep separators/BRE/-o | No `--` separator without context; BRE is the default; `-Eo 'a|aa'` selects longest `aa`. |
+| base64 / seq | `-w0` has no final LF; `seq 3 1` is empty; explicit negative steps still descend. |
+| jq single-document parsing / textual --arg replacement | Consecutive JSON, slurp/raw/null/exit and lexical shadowing pass; later parse failure preserves earlier output and returns 4. |
+| Shell false success | Arithmetic division by zero returns 2; failed substitution in an assignment returns nonzero; substitution removes only trailing newlines. |
+| mkdir/chmod | Under ordinary umask, `mkdir -p -m700` creates parent 755 and leaf 700; command-line symlink chmod affects its target. |
+| make shell/-j | shell expansion yields `one two`; overlapping start markers precede completion, shared prerequisites execute once, failed prerequisites prevent dependent targets. |
+| Extra rm policy | `--no-preserve-root` works on ordinary temporary files; final dot/dot-dot components still reject according to command semantics. |
 
-普通 cp 与已有文件 touch 的拒绝是明确的功能收缩，不是完整上游行为。
-解除条件见 [ADR-0004](../adr/0004-filesystem.md) 和
-[上游缺口文档](../async-upstream-gaps.md)。
+Ordinary cp and touch on existing files are explicit reductions in capability,
+not complete upstream behavior. Unlock conditions are in
+[ADR-0004](../adr/0004-filesystem.md) and [API gaps](../async-upstream-gaps.md).
 
-## 交互与网络
+## Interaction and networking
 
-`commands/sh/interactive_probe.mbtx` 在 stdin 一直打开时逐轮验证 ENV、
-PS1/PS2、变量、多行、read、前台 head、语法恢复、EOF。
-[Native](2026-09-20-fidelity-evidence/repl-native.log) 和
-[Wasm](2026-09-20-fidelity-evidence/repl-wasm.log)均通过。
-公共 Session 的 feed/finish API 不要求输入 EOF 才执行完整命令。
+`commands/sh/interactive_probe.mbtx` keeps stdin open while exercising ENV,
+PS1/PS2, variables, multiline input, read, foreground head, syntax recovery and EOF.
+[Native](2026-09-20-fidelity-evidence/repl-native.log) and
+[Wasm](2026-09-20-fidelity-evidence/repl-wasm.log) passed.
+Public Session feed/finish executes complete commands without waiting for EOF.
 
-`core/netops/verify_cli.mbtx` 使用纯 MoonBit loopback HTTP fixture，
-每个后端完成 30 次与本地 oracle 相符的调用，以及 1 次明确拒绝的组合。
-[Native 网络结果](2026-09-20-fidelity-evidence/network-native.log)、
-[Wasm 网络结果](2026-09-20-fidelity-evidence/network-wasm.log)覆盖 Basic 请求、
-Wget challenge、cookie 重复/重定向/保存加载、文件权限和 jar 写失败状态。
-Oracle 为 Apple curl 8.7.1 与 GNU Wget 1.25.0，不能写成 Linux curl 8.22 认证。
-curl 字面量 -b 跨主机仍发送；自定义 Cookie header 跨主机移除。
-自定义 Cookie header 与匹配 jar 同时使用需重复请求字段，公开 Map 接口不能
-表达，因此发送前拒绝。响应侧多个 Set-Cookie 已通过公开 cookies 数组支持。
+`core/netops/verify_cli.mbtx` uses a pure MoonBit loopback HTTP fixture. Per backend,
+30 calls matched local oracles and one combination was explicitly rejected.
+[Native](2026-09-20-fidelity-evidence/network-native.log) and
+[Wasm](2026-09-20-fidelity-evidence/network-wasm.log) cover Basic requests, Wget
+challenge, cookie duplicates/redirects/load/save, permissions and jar-write
+failure. Oracles were Apple curl 8.7.1 and GNU Wget 1.25.0, not Linux curl 8.22.
+Curl literal -b cookies cross host boundaries; explicit Cookie headers are
+removed across hosts. At this stage, an explicit header plus a matching jar
+was rejected before sending because duplicate request fields were believed
+unrepresentable through the public Map. Multiple response Set-Cookie fields
+were supported through the public cookies array. Later API rechecks supersede
+the request-header limitation, not these historical observations.
 
-## 回归与发布边界
+## Regression and release boundaries
 
-最终全工作区结果：Native **132/132**，Wasm **119/119**；两后端 check/build
-通过，Native compat 与 Wasm policy runner 通过。网络与 REPL 实际调用独立于
-单元测试计数。没有以单元测试通过代替命令差分或交互验收。
+Final workspace results were Native **132/132**, Wasm **119/119**, passing
+check/build for both, Native compat and Wasm policy. Network and REPL calls are
+separate from unit-test counts; unit passes do not replace differential or
+interactive acceptance.
 
-全工作区检查与测试、兼容性 runner、Wasm 授权 runner 的最终结果见同目录
-`check-*.log`、`test-*.log`、[compat.log](2026-09-20-fidelity-evidence/compat.log)
-及 [policy.log](2026-09-20-fidelity-evidence/policy.log)。授权测试使用真正外部
-命令测试进程拒绝；shell 内建 printf 不再被错误地要求具有 ProcessSpawn。
-`moon fmt`、`moon info` 已运行；接口变化是 Session/capture、CookieJar/transfer
-参数、精确 cp 选项与平台 EXDEV 分类。最后清理了新版工具链识别出的无用导入，
-旧 jq raw 测试改为经过实际输入读取路径；`moon check --target all --deny-warn`
-通过。最后受影响包的定向回归另通过 Native 15/15、Wasm 11/11。
+Final outputs are in `check-*.log`, `test-*.log`,
+[compat.log](2026-09-20-fidelity-evidence/compat.log) and
+[policy.log](2026-09-20-fidelity-evidence/policy.log). Authorization tests use
+real external commands for process denial; shell builtin printf is no longer
+incorrectly required to have ProcessSpawn. `moon fmt` and `moon info` ran.
+Interface changes cover Session/capture, CookieJar/transfer parameters, precise
+cp options and platform EXDEV classification. Unused imports identified by the
+new compiler were removed; old jq raw tests now use actual input reading.
+`moon check --target all --deny-warn` passed, followed by affected-package
+Native 15/15 and Wasm 11/11 regressions.
 
-所有 cli 模块已设为 0.2.0。发布候选清单
-`tests/release_runner/candidate-0.2.0.json` 标记 candidate=true、published=false，
-仅允许 validate，不能被当成已发布 MoonX 包调用。
-`tests/release_runner/manifest.json` 仍固定历史 0.1.x 版本用于重放。
-它引用冻结的 `published-0.1-base.json`，因此候选 fixture 修订不会改写历史含义。
-工作区 oracle 的新建 cp 用例显式使用 `--no-preserve=mode`；已有目标 backup
-用例继续保留，并验证上游成功、候选明确拒绝及内容不变，输出为 verified
-rejection 而不是兼容通过。该 Linux oracle 分支尚待 CI 实跑。
-smoke 未比较语义时输出 unverified_smoke 并使门禁非零；非零命令结果不再
-自动要求整个 fixture 无副作用。differential 才比较 stdout/stderr 和最终文件。
+All cli modules were set to 0.2.0. The preparation manifest
+`tests/release_runner/candidate-0.2.0.json` has candidate=true/published=false
+and permits validation only, not published MoonX execution.
+`manifest.json` stays pinned to historical 0.1.x and the frozen
+`published-0.1-base.json`; candidate fixture changes do not rewrite that record.
+The new-target cp oracle case explicitly uses `--no-preserve=mode`.
+Existing-target backup cases retain upstream success versus explicit candidate
+rejection with unchanged contents, classified as verified rejection rather than
+parity. That Linux oracle path still awaited CI execution.
 
-本轮再次真实执行了旧版 `moonx cli/seq@0.1.5`、`cli/sh@0.1.7`、
-`cli/env@0.1.4`：[结果](2026-09-20-fidelity-evidence/published-moonx.jsonl)
-仍分别表现为自动倒序、算术失败但状态 0、help 状态 125。
-这些结果证明候选与发布版本有区别，不代表候选发布验证完成。
+At this historical stage, uncompared smoke was classified unverified_smoke and
+failed the gate; later runner repairs supersede that classification. A command's
+nonzero status no longer universally requires an unchanged fixture.
+Differential checks compare both streams and final files.
 
-当前宿主没有 Docker，因此未运行固定 GNU/Linux oracle，也未运行 Windows。
-0.2.0 尚未发布，精确版本 MoonX release gate 必须在实际发布后执行。
-没有将这三个门禁写成已通过。
+Old published `moonx cli/seq@0.1.5`, `cli/sh@0.1.7` and `cli/env@0.1.4`
+were [actually rerun](2026-09-20-fidelity-evidence/published-moonx.jsonl):
+automatic descending output, arithmetic failure with status 0 and help status
+125 remained. These distinguish candidates from published versions; they do
+not constitute candidate release acceptance.
 
-## 复现
+Docker was unavailable locally, so fixed GNU/Linux and Windows checks had not
+run. 0.2.0 remained unpublished; exact MoonX acceptance required actual
+publication. None of these three outstanding gates was claimed as passed.
 
-在仓库根目录串行执行 Moon 工作区命令，避免 `_build/.moon-lock` 冲突：
+## Historical reproduction
+
+Serialize workspace operations to avoid `_build/.moon-lock` conflicts.
+For current local execution, prefix every Moon command with
+`MOON_HOME="$HOME/.moon-accounts/cli"`; retain the PATH toolchain.
+These paths describe the historical layout:
 
 ```text
 moon check --target native
@@ -118,7 +135,7 @@ CMD_NETWORK_BACKEND=wasm moon run core/netops/verify_cli.mbtx
 moon run --target native tests/release_runner -- --manifest tests/release_runner/candidate-0.2.0.json --suite validate
 ```
 
-后续范围仍由 [兼容表](../compatibility.md)、九份 canonical ADR 和
-[上游反馈文档](../async-upstream-gaps.md)约束。高级终端/exec/job-control
-需要公开接口；更完整的 grep、shell/make 语法、PSL/IDNA 则属于项目工作，
-不能伪装成 async 的永久限制。
+The [compatibility table](../compatibility.md), nine canonical ADRs and
+[upstream feedback](../async-upstream-gaps.md) define follow-up scope.
+Advanced terminals, exec and job control require public APIs; fuller grep,
+shell/make syntax and PSL/IDNA are project work, not permanent async limitations.

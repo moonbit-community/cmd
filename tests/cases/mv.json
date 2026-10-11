@@ -502,13 +502,13 @@
         "LC_ALL": "C",
         "TZ": "UTC"
       },
-      "expected_status": 0,
+      "expected_status": 1,
       "expected_stdout_text": "",
       "expected_stderr_text": "mv: overwrite 'destination'? ",
       "normalizations": [],
       "comparison": "contract",
       "oracle": true,
-      "source_version": "GNU coreutils 9.11 second review",
+      "source_version": "GNU coreutils 9.11 Linux CI 38117528667: interactive refusal returns 1",
       "host_platforms": [
         "posix"
       ],
@@ -651,6 +651,52 @@
       "expected_stderr_contains": "unsupported capability: file identity",
       "diagnostic_reason": "Equal timestamps cannot establish identity; reject the ambiguous early-return decision without mutation.",
       "expected_rejection": "unsupported capability: file identity",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ]
+    },
+    {
+      "id": "repair-fs-mv-interactive-no-eof",
+      "command": "mv",
+      "args": [
+        "-i",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "mtime": "202601020000.00"
+        },
+        {
+          "path": "destination",
+          "content_text": "old",
+          "mtime": "202601010000.00"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mv: overwrite 'destination'? ",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 Linux CI 38117528667: interactive refusal returns 1",
+      "host_platforms": [
+        "posix"
+      ],
       "expected_files": [
         {
           "path": "source",

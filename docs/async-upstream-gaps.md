@@ -1,251 +1,283 @@
-# MoonBit async 公开能力缺口反馈
+# MoonBit async public API gaps and upstream feedback
 
-强制实现边界：项目命令、共享库、测试 runner、fixture 和自动化必须使用
-纯 MoonBit。不得新增项目自有 C/C++/Rust/JavaScript/TypeScript、FFI、
-native stub，或调用宿主同名命令来绕过公开 MoonBit API。宿主工具只能用于
-固定版本 oracle、测试观察、CI 设置和诊断采集。无法实现的操作必须保持明确
-拒绝，并记录缺失 API、兼容性代价和解除条件。
+Updated: 2026-10-11
 
-Updated: 2026-10-11（确认 strings、column、which、date 的纯 MoonBit 数据与格式子集不构成 async 阻塞；四个包已发布并完成精确 MoonX smoke）。此前 2026-09-21 的复核针对正式发布的 `moonbitlang/async 0.22.1`、
-`moonbitlang/x 0.5.5`、`moonjq 0.1.2`；工具链为 moon/moonrun
-`0.1.20260920`、moonc/core `0.10.14+7d59c7ec9`。这里的版本结论对应当时复核日期；
-moonjq 的传递依赖解析到相同 async/x 版本，没有残留旧版本。
-未将 upstream main 的未发布代码算作可用能力。
+All product commands, shared libraries, test runners, fixtures and automation
+must use pure MoonBit. Do not add project-owned C/C++/Rust/JavaScript/TypeScript,
+FFI or native stubs, or delegate to host commands to bypass public APIs.
+Host tools are allowed only as pinned oracles, test observers, CI setup or
+diagnostics. Unsupported operations require explicit rejection, the missing API,
+compatibility cost and a testable unlock condition.
 
-2026-10-11 修复复检补充：公开 `rename` 在源/目标为同 inode 的硬链接时可以
-成功但不移除源。`mv` 候选现在检查“源路径消失”的后置条件，保留别名并报告失败，
-不会再尝试删除源。相同目录项可经父目录 canonicalization 提前识别；但 `-i/-u`
-必须在 rename 之前决定交互或跳过，仍缺公共 identity。相同 mtime 不能证明 identity，
-候选对此歧义子集明确拒绝（包括时间相同但独立的文件）。解除条件为公共 identity/
-handle 元数据和相应 Native/Wasm 对照；不能将这个 gate 写成所有 mv 均不可实现。
-详见 ADR-0004 和 issue #25。并发进程重建源路径会导致后置条件失败而不会被再次删除。
+## Verified baselines
 
-2026-09-26 的补充复核发现公开 registry 当时正式最新为 async `0.22.4`（checksum
-`2ffdb85cb229cfe9219161a7f2b959215a79a0d75b7e642cb346713f168a1457`），
-尚无可解析的 `0.22.5`。基线刷新时工作区 50 个模块已统一解析到 0.22.4，并通过
-`moon check --target all --deny-warn`；不得把未来版本或 upstream main 的接口
-写成当前能力。详细基线见
-[`reports/2026-09-26-async-0.22.4-baseline.md`](reports/2026-09-26-async-0.22.4-baseline.md)。
+The 2026-09-21 recheck used released async 0.22.1, x 0.5.5 and moonjq 0.1.2,
+with moon/moonrun 0.1.20260920 and moonc/core 0.10.14+7d59c7ec9. Transitive
+moonjq dependencies resolved to the same async/x versions. These version claims
+are dated observations, not claims about today's registry. Unreleased upstream
+main code does not count as available capability.
 
-### 2026-09-26：0.22.4 可用能力迁移
+The 2026-09-26 registry recheck found async **0.22.4**, checksum
+`2ffdb85cb229cfe9219161a7f2b959215a79a0d75b7e642cb346713f168a1457`;
+0.22.5 was not resolvable. All 50 modules at that baseline resolved 0.22.4 and
+passed strict all-target checking. See the
+[baseline report](reports/2026-09-26-async-0.22.4-baseline.md).
 
-0.22.4 的公开包已提供 `mkdir` 的幂等参数、文件和管道的 Reader/Writer
-流式接口，以及 gzip Decoder/Encoder 的流式接口。这些能力解除了解析、
-分帧、临时目录创建和 gzip 命令的原有阻塞；后续实现必须直接使用公开接口，
-不能继续把它们列为 async 限制。文件 identity、mode 读取、readlink、hard
-link、句柄截断、isatty、PTY、进程组和 exec 仍未公开，相关命令继续保留
-明确拒绝及解除条件。
+Async 0.22.4 provides idempotent mkdir options, file/pipe Reader/Writer streams
+and streaming gzip Decoder/Encoder interfaces. Parsing, framing, temporary
+directory creation and basic gzip integration must use these public facilities,
+not remain classified as blocked. Identity, mode readers, readlink, hard links,
+handle truncate, isatty, PTY, process groups and exec remain unavailable through
+the required public interfaces.
 
-本表供上游讨论 API 语义；建议的 API 名称不是当前已存在的接口。
-Native/Wasm 的“缺失”指公开 MoonBit API，不能据此推断 OS 或 Wasm
-宿主没有底层能力。源码路径均相对 `.mooncakes/moonbitlang/async/src/`。
+This document proposes API semantics; proposed names are not existing APIs.
+Native/Wasm gaps refer to public MoonBit interfaces, not absence of OS or host
+capabilities. Source paths are relative to
+`.mooncakes/moonbitlang/async/src/`.
 
-### 2026-10-11 修复复核：时区和 JSON 不等待 async
+## Repair recheck: project solutions do not wait for async
 
-修复候选已接入 `fs.can_execute`，并修正 strings/column 的命令层行为。
-这些功能在 Native/Wasm 都可通过正式公开接口实现；高级终端宽度发现仍需
-isatty/window-size。详见[正在执行的修复记录](reports/2026-10-11-fidelity-repair/README.md)，
-该记录的本地结果不能替代修复版本的 CI 或发布验收。
+The 2026-10-11 candidate integrates fs.can_execute and corrects strings/column
+behavior through released public APIs on Native/Wasm. Terminal-width discovery
+still needs isatty/window-size. Local results in the
+[repair record](reports/2026-10-11-fidelity-repair/README.md) do not replace
+CI or published acceptance for the repair versions.
 
-对 `x/time 0.5.5` 的进一步复核发现：`Zone::from_tzif2` 只读取 32 位兼容区，
-不能据其名称宣称 64 位 TZif/DST 完整；`ZoneOffset::from_seconds(0, ...)`
-会返回共享 UTC 值，丢失 GMT 等缩写。最小复现是 Dublin 的 2038/2050 冬季
-`date +%Z`。这属于 x/time 的公开实现行为，不是宿主授权或 async 文件读取
-能力缺口。候选通过纯 MoonBit 的有边界检查的 TZif/POSIX 解码和单独缩写查询
-绕开，date 与 diff 共用，35 条 coreutils 9.11 时区调用已对照通过。
-上游若增加经过范围/截断校验的完整 TZif v2+ 解析、未来规则和保留零偏移
-缩写的构造语义，可用同一组测试替换此适配层。
+Further x/time 0.5.5 review found that Zone::from_tzif2 reads only the 32-bit
+compatibility block; its name does not establish full 64-bit TZif/DST support.
+ZoneOffset::from_seconds(0, ...) returns shared UTC and loses abbreviations such
+as GMT. Dublin winter date +%Z in 2038/2050 is a minimal example. These are
+x/time implementation behaviors, not host authorization or async read limits.
+The candidate shares a bounds-checked pure MoonBit TZif/POSIX decoder and
+separate abbreviation lookup between date and diff. Thirty-five coreutils 9.11
+timezone calls matched. A released complete TZif v2+ parser with bounds/
+truncation checks, future rules and zero-offset abbreviation preservation can
+replace this adapter after passing the same regressions.
 
-正式 `moonjq 0.2.0` 已修复 tostring/tojson；字符串切片仍返回 null。候选
-使用公开 AST 将字符串切片转为 Unicode scalar 数组切片再组装，覆盖嵌套
-filter、负数/开放端点和类型错误。它是项目的语义适配，不应列成 async
-阻塞；上游通过相同回归后可移除。没有修改依赖缓存、添加 FFI 或调用宿主 jq。
-本轮结果与已发布 0.2.0 的三平台验收分开记录，见
-[公开接口复查](reports/2026-09-21-public-api-recheck.md)；不将旧版 CI
-或 macOS 结果冒充新工具链的 Linux/Windows 验收。
+Released moonjq 0.2.0 fixes tostring/tojson, while an isolated string slice still
+returns null. The candidate lowers string slices through public AST Unicode
+scalar-array slicing and reconstruction, covering nested filters, negative/open
+bounds and type errors. This is project adaptation, not an async blocker.
+Remove it when upstream passes the same tests. No dependency-cache edits, FFI
+or host jq delegation are used. Keep these new-toolchain results separate from
+old 0.2.0 CI and macOS-only evidence; see the historical
+[API recheck](reports/2026-09-21-public-api-recheck.md).
 
-| 优先级 | 能力 | Native / Wasm 公开状态 | 分类与影响 |
+A second review found that public rename can succeed on hard-link aliases
+without removing the source. The mv candidate checks the postcondition that
+the source entry disappeared, reports failure with aliases retained and never
+attempts a second deletion. Parent canonicalization detects identical directory
+entries early. However, -i/-u decisions precede rename and still need identity.
+Equal mtime does not prove identity: the ambiguous equal-time interactive/update
+subset explicitly rejects, including separate files with equal times. Unlock
+requires public identity/handle metadata and Native/Wasm comparisons.
+Concurrent recreation of the source also fails the postcondition without
+deleting the recreated entry. This is a specific mv restriction, not a claim that
+all mv behavior is impossible. See ADR-0004 and issue #25.
+
+| Priority | Capability | Native / Wasm public status | Classification and effect |
 | --- | --- | --- | --- |
-| P0 | 文件 identity、句柄元数据、句柄截断 | 两者均无公开 identity/mode/truncate；句柄已有 kind/size/时间读取 | identity 内部已有但未公开；cp 无法安全保持已有 inode 的覆盖语义 |
-| P1 | mode、所有者、link count、时间戳设置 | 两者均缺完整公共接口；已有路径 chmod | 元数据读取需扩展，setter 尚无可用实现；cp/mv/ls/chmod/touch |
-| P1 | hard link、readlink、必要的句柄权限操作 | 两者均无公开接口；symlink 已有 | ln、cp/mv 链接保持；不能把 symlink 的存在当 readlink/hardlink 已支持 |
-| P1 | isatty、终端属性与窗口大小 | 两者无公开终端 API；stdio fd 不是 isatty | sh 真实交互检测、raw mode、编辑、补全、resize |
-| P1 | 可恢复信号订阅 | 仅全局取消信号配置 | sh Ctrl-C 后继续下一轮不能保证 |
-| P2 | exec、进程组、前台终端归属、停止/继续事件、PTY | 两者无满足语义的公开 API | exec、fg/bg、job control、终端子进程、完整 timeout |
+| P0 | File identity, handle metadata/truncate | Neither exposes identity/mode/truncate; handles expose kind/size/times | Identity exists internally; faithful existing-inode cp overwrite is blocked |
+| P1 | Mode, owner, link count, timestamp setters | Complete interfaces missing; path chmod exists | Metadata readers need expansion; setters unavailable; cp/mv/ls/chmod/touch |
+| P1 | Hard links, readlink, handle permissions | Missing; symlink exists | ln and cp/mv link preservation; symlink is not readlink/hardlink |
+| P1 | isatty, terminal attributes/window size | No public terminal API; stdio fd is insufficient | sh terminal detection, raw mode, editing/completion/resize |
+| P1 | Recoverable signal subscription | Global cancellation signal configuration only | No guarantee of a fresh shell prompt after Ctrl-C |
+| P2 | exec, groups, foreground ownership, stopped/continued events, PTY | No complete public chain | exec, fg/bg, job control, terminal children and complete timeout |
 
-## P0：identity 与基于同一句柄的操作
+## P0: identity and operations on the same handle
 
-目标：打开 source 和 destination 后比较稳定 identity；确认不同文件后，
-在同一 destination 句柄上截断并写入，保留已有 inode 和硬链接关系。
-新文件还需要 source mode，并遵循 umask。
+Target: open source/destination, compare stable identities, then truncate and
+write through the same distinct destination handle, preserving the existing
+inode and hard links. New files also require source mode and umask semantics.
 
-公开证据：`fs/pkg.generated.mbti` 的 `File` 有 kind、size、时间、
-position、seek、read/write，没有 identity、metadata/mode 或 truncate。
-`File::fd` 已公开，但 Unix Native 是 OS fd，Windows 是 HANDLE，Wasm
-是 opaque UInt64 host handle；不能把后者当 Linux `/proc/self/fd` 编号。
-`CreateOrTruncate` 是打开时截断，发生在调用者能够比较 identity 之前。
-内部证据：`internal/event_loop` 定义并使用 `FileIdentity`，watch 使用该类型；
-Native statx/fstatx 路径和 Wasm 相关宿主导入已经存在。
-因此准确分类是“identity 内部已有但未公开”，不是“Wasm 没有 inode”。
+Public fs/File methods expose kind, size, times, position, seek and read/write,
+but no identity, mode/metadata or truncate. File::fd is public, with Unix OS fd,
+Windows HANDLE and opaque Wasm UInt64 host-resource representations; the latter
+must not be used as a Linux /proc/self/fd number. CreateOrTruncate truncates
+during open, before callers can compare identity.
 
-最小行为复现由 workspace runner 的 `filesystem-fidelity` 场景驱动：创建 source，
-用测试 fixture 的系统 ln 建立硬链接 alias，执行候选 `cp source alias`，
-再检查两个路径的内容。实现本身不调用系统 cp/ln。
-旧发布包曾返回 0 并把 17 字节源文件变成 0 字节，见原审计。
-候选 Native/Wasm 均非零拒绝，内容保持；`cp --no-preserve=mode source new`
-在两后端复制成功。拒绝是暂时的严格子集，不是完成 GNU cp 覆盖语义。
+Internally, event_loop defines/uses FileIdentity, including watch; Native
+statx/fstatx paths and Wasm host imports exist. The accurate classification is
+**internal identity is not public**, not “Wasm has no inode capability.”
 
-建议：公开不透明、可比较的 `FileIdentity`；`File.metadata()` 返回
-identity/mode/kind/size；`File.truncate(length)` 操作已打开对象。
-明确 identity 的设备/卷作用域、生命周期、nofollow、race 和权限失败语义。
-解除条件：有这些正式发布接口，且 same-file/hardlink、竞争替换、普通覆盖、
-新文件权限、已有 inode 保留的测试全部通过。路径 realpath 或临时文件 rename
-不能替代该条件。决策见 ADR-0004。
+Minimal behavior probe: the workspace filesystem-fidelity scenario creates a
+source, uses a host ln fixture to create a hard-link alias, runs cp source alias
+and observes both contents. Product code never invokes host cp/ln.
+An old published version returned 0 and cleared a 17-byte source. Native/Wasm
+candidates reject nonzero and preserve contents; cp --no-preserve=mode source
+new succeeds on both. Rejection is a temporary strict subset, not implemented
+GNU overwrite semantics.
 
-**替代路径复查**：Linux Native 可考虑从 `fdinfo` 的 inode/mount ID 与
-`mountinfo` 的设备号获得 identity，再从 `/proc/self/fd/<fd>` 重开持有对象。
-这不是跨后端方案，也仍缺普通 cp 的源 mode。当前 macOS 没有 procfs，
-未验证 Linux bind mount、路径替换与权限失败，所以未开放覆盖；完整探针
-验收条件和拒绝原因见公开接口复查报告。不能用 `(mnt_id, ino)` 代替
-`(device, ino)`，也不采用 realpath、内容相等或 advisory lock 伪造 identity。
+Suggested public API: opaque comparable FileIdentity; File.metadata() returning
+identity/mode/kind/size; File.truncate(length) operating on the open object.
+Define device/volume scope, lifetime, nofollow, races and permission failures.
+Unlock requires released APIs and tests for same-file/hard links, concurrent
+replacement, ordinary overwrite, new-file mode and retained destination inode.
+realpath and temporary-file rename are not substitutes. See ADR-0004.
 
-## P1：元数据、时间、链接和权限
+Alternative research: Linux Native could derive identity from fdinfo inode/
+mount ID plus mountinfo device number, then reopen the held object through
+/proc/self/fd/<fd>. This is not cross-backend and still lacks source mode.
+macOS has no procfs; bind-mount, replacement-race and permission failures were
+not validated on Linux, so overwrite remains closed. See the recheck for
+required probes. (mnt_id, ino) is not (device, ino); contents, realpath and
+advisory locks are not identity.
 
-公开证据：`fs/pkg.generated.mbti` 有路径/句柄 atime、mtime、ctime 读取，
-路径 chmod、symlink、rename，没有公开 mode/uid/gid/nlink 读取、utime、
-readlink、hardlink 或句柄 chmod。`x/fs` 也没有补齐这些语义。
-`can_read/write/execute` 只能判断当前凭据访问权，不能还原 mode；realpath
-会丢失相对链接原文且不能保留断链目标，不能代替 readlink。Windows chmod
-属于“入口公开、运行时不支持”，与缺少公开入口分别记录。
+## P1: metadata, times, links and permissions
 
-最小复现：`filesystem-fidelity` 创建文件，记录 mtime 和 bytes，执行
-`touch existing`，验证非零且两者保持；`touch new` 和 `touch -c absent`
-成功。Native/Wasm 结果相同。其目的在于证明当前候选没有伪造更新时间，
-不能把该拒绝当成上游已有 timestamp setter 的运行错误。
+Public fs provides path/handle atime/mtime/ctime readers, path chmod, symlink
+and rename. It lacks mode/uid/gid/nlink readers, utime, readlink, hardlink and
+handle chmod; x/fs does not fill these gaps. Access queries answer only current
+credentials, not mode bits. realpath loses relative link text and dangling
+targets. Windows chmod is a public entrypoint with unsupported runtime behavior,
+a different category from no public entrypoint.
 
-预期接口：明确 atime/mtime 的 Now、Omit、指定纳秒值和 follow_symlink，
-提供 path 与 handle 两类设置；metadata 返回权限/类型/链接计数/身份；
-hard_link 和 read_link 不隐式转成内容复制；句柄 chmod 不重新按路径解析。
-ctime 的更新由宿主文件系统决定，不应提供随意写 ctime 的伪接口。
+Minimal probe: filesystem-fidelity records an existing file's mtime/bytes, runs
+touch existing and verifies nonzero with both unchanged. touch new and touch -c
+absent succeed on Native/Wasm. This proves no fabricated timestamp update; it
+is not an upstream setter failing at runtime.
 
-兼容性代价：普通 cp 的源权限、cp -p/-a、mv 跨设备保真、ls 长格式、
-增量 chmod、touch 已有文件及 ln 硬链接仍受影响。解除条件是对应公开能力
-正式发布，并分别完成权限、时间精度、链接关系和失败副作用的差分验证。
+Suggested semantics: explicit atime/mtime Now, Omit and nanosecond values with
+follow_symlink, for paths and handles; metadata includes permissions/kind/link
+count/identity; hard_link/read_link never silently copy contents; handle chmod
+does not resolve the pathname again. The filesystem controls ctime; do not
+invent an arbitrary ctime setter.
 
-EXDEV 已不再是绝对 blocker：`@async.platform` 区分真实 Linux/MacOS/Windows，
-POSIX `OSError(18, ...)` 可分类。候选 `core/platform.is_cross_device_error`
-已实现 POSIX 分类。Windows 错误域未经运行验证，不把 POSIX errno 套过去。
-即使能识别 EXDEV，也不能在缺少 mode/link/time 保持时宣布 mv fallback 正确。
+Costs include ordinary cp source modes, cp -p/-a, faithful cross-device mv,
+ls long format, incremental chmod, existing-file touch and hard links.
+Unlock each operation only after released APIs and differential permission,
+timestamp-precision, link-relation and failure-effect tests.
 
-## P1：基础交互之后的终端与信号
+EXDEV is no longer an absolute blocker: @async.platform identifies actual
+Linux/MacOS/Windows, and POSIX OSError(18, ...) is classifiable through
+core/platform.is_cross_device_error. Windows error domains need separate runtime
+evidence; do not apply POSIX errno there. Recognizing EXDEV alone cannot make a
+metadata/link/time-losing mv fallback faithful.
 
-`stdio/pkg.generated.mbti` 公开 Input/Output 和 fd，未公开 isatty、
-termios/raw、窗口尺寸或事件。`signal/pkg.generated.mbti` 只有
-`set_global_cancellation_signals`，信号为 INT/TERM/HUP/BREAK。
-字符设备可能是 `/dev/null`，不能代替 TTY 检测；fd 值也不是终端 API。
+## P1: terminals and signals beyond line interaction
 
-最小可运行复现：`sh-interactive-session` 保持子进程 stdin
-打开，逐轮等待 stderr 提示符和 stdout，发送多行、read、纯 MoonBit 前台读行进程、语法错误
-和 EOF。Native/Wasm 已通过。这证明行式 REPL 可实现，不能归入上游 blocker。
-高级终端能力的验证方法是用真实终端检查属性/窗口变化与 Ctrl-C 后下一轮；
-目前没有公开订阅接口，所以未声称该验收通过，也不通过构造函数名制造运行失败。
+stdio exposes Input/Output and fd, but not isatty, termios/raw mode or window
+size/events. signal exposes set_global_cancellation_signals for INT/TERM/HUP/BREAK.
+A character device can be /dev/null, so kind is not TTY detection; descriptors
+alone are not terminal control.
 
-建议公开 `isatty(stream)`、终端属性读取/恢复、作用域化 raw mode、窗口大小和
-变化事件。信号订阅应允许把 SIGINT 交给前台任务，在 shell 主会话未取消的
-情况下等待/清理并继续。必须定义订阅与全局取消处理器的优先级和恢复语义。
-`handle_cancellation` 能执行取消清理，但不能撤销当前任务取消；仅增加 catch
-不能实现恢复。解除条件是正式公开 API 和真实终端的交互验收通过。
+Minimal runnable probe: sh-interactive-session keeps child stdin open, waits for
+stderr prompts/stdout and sends multiline commands, read, a pure MoonBit
+foreground line-reader, syntax errors and EOF. It passes on Native/Wasm and
+establishes the implementable line REPL. Advanced verification needs real
+terminal attributes, resize and the next prompt after Ctrl-C. No public
+subscription API currently satisfies that test; no such pass is claimed, and
+invented API names are not runtime-failure evidence.
 
-## P2：进程替换与作业控制
+Suggested APIs: isatty(stream), attribute read/restore, scoped raw mode,
+window size/events and subscriptions routing SIGINT to the foreground task
+while the shell session remains active to wait/clean up/continue. Specify
+subscription/global-cancellation precedence and restoration.
+handle_cancellation performs cleanup but cannot undo task cancellation; adding
+catch does not restore the REPL. Unlock requires a released API and real-terminal
+acceptance.
 
-公开证据：`process/pkg.generated.mbti` 提供 spawn、collect_output、wait、
-取消处理与管道，缺 exec、set/get process group、terminal foreground group、
-stopped/continued wait events 和 PTY。Native 有底层 fd 并不等于已公开这些 API。
+## P2: process replacement and job control
 
-最小复现：候选 `sh -c 'exec printf x'` 明确拒绝，不把 exec 当可执行文件，
-也不 spawn+wait 伪造 PID、信号、退出和文件描述符继承语义。基础命令调用和管道
-仍可使用公开 process API。没有终端分组接口时不声称 fg/bg 验收通过。
+process exposes spawn, collect_output, wait, cancellation and pipes, without
+exec, process-group get/set, foreground-terminal ownership, stopped/continued
+wait events or PTY. Native low-level fds do not expose those missing operations.
 
-建议 API 需分别表达 replace-current-process、建立/加入进程组、组信号、
-前台终端归属、wait Exit/Stopped/Continued 和 PTY master/slave 的关闭规则。
-定义取消作用域与 wait/reap 所有权，避免 kill 后遗留 zombie 或 pipe drain 挂起。
-额外复查了公开 `CancellationHandler` 的函数值：Native `hard_cancel()`
-内部会调用 kill，但丢弃其返回值。macOS
-[负向探针](reports/2026-09-21-api-probes/cancellation-is-not-kill.mbtx) 中，
-宿主确认不存在的 PID 在这个接口仍正常返回 Unit。`graceful_cancel` 还会
-在延迟后升级 SIGKILL，并不是单次信号发送。因此不能据此实现保真的 kill；
-建议新增带 OSError/权限/不存在反馈的 `send_signal`，不能把“内部已调用 kill”
-写成“完整 kill 命令可用”，也不能反过来说完全没有信号发送的底层能力。
-解除条件：Native/Wasm 各自具备完整公开链条，并验证直接子进程、后代、停止恢复、
-终端 Ctrl-C 和取消后回收，不能仅靠一个 PID 的消失判定通过。
+Minimal probe: sh -c 'exec printf x' explicitly rejects. It neither looks up an
+executable named exec nor substitutes spawn+wait for PID/signal/status/fd
+inheritance. Ordinary calls and pipes still use public process APIs; fg/bg
+cannot be accepted without terminal-group APIs.
 
-## 不应向 async 归因的项目工作
+Suggested operations must separately express replace-current-process,
+create/join groups, group signals, foreground ownership, Exit/Stopped/Continued
+wait events and PTY master/slave close rules. Define cancellation scope and
+wait/reap ownership to prevent zombies or hung pipe draining.
 
-**2026-10-11：修正新增包的归因。** `which@0.1.0` 当前只检查 kind，
-对 mode 0644 文件也成功。公开 `fs.can_execute` 已存在；同一 macOS fixture
-实测返回 false，Native/Wasm/精确 MoonX 的 which 则返回 0。这是项目未接入
-访问检查，不是缺 mode metadata 阻塞；Windows PATHEXT 与访问语义另立合同。
-模式位读取仍然是 cp/chmod 的真实缺口，不能反向用 can_execute 还原 mode。
+Public CancellationHandler function values were also checked. Native
+hard_cancel invokes kill but discards its result. The macOS
+[negative probe](reports/2026-09-21-api-probes/cancellation-is-not-kill.mbtx)
+returns Unit for a PID the host confirms nonexistent. graceful_cancel later
+escalates to SIGKILL and is not one-shot signal delivery. Suggest send_signal
+with OSError/permission/nonexistence feedback. Internal kill does not make a
+complete kill command available, nor does this imply no low-level signal
+capability. Unlock requires each backend's public chain plus direct-child,
+descendant, stop/resume, terminal Ctrl-C and post-cancellation reaping tests;
+one disappearing PID is insufficient.
 
-`column` 默认复制、表格末尾 LF、字段排版，`strings` 的 radix/encoding/TAB
-错误，`date` 忽略 TZ，以及 rev/tac 多文件均属项目工作。date 可研究复用
-diff 已采用的 public x/time/TZif；设置时钟才需要额外 setter。tac regex、
-nl pBRE 可研究复用 core/bytere，不能将 matcher 尚未集成写成 async 阻塞。
-tree 的 JSON/HTML/filters/显式颜色同样独立于 readlink/mode 缺口。
-这次记录没有实现这些修复。版本和原始结果见
-[本轮实际调用](reports/2026-10-11-command-followups/README.md)，完整排序见
-[79 个命令清单](command-followups.md)。
+## Project work that must not be blamed on async
 
-**2026-10-10：gzip 编解码可用纯 MoonBit 补齐。** 0.22.4 的公开
-`gzip.Decoder` 只处理无可选 header 的单 member；同一 read 中遇到 CRC 或
-截断 trailer 会抛错，调用者不能总是取得该 read 已产生的输出。公开
-`MemoryReader` 能辅助多 member 定位，却不能恢复被异常隐藏的输出。
-这些限制在 Native/Wasm 均适用；不是宿主授权拒绝。
+The 2026-10-11 audit found which@0.1.0 checking only kind and succeeding on mode
+0644. Public fs.can_execute returned false for the same macOS fixture while
+Native/Wasm/exact MoonX which returned 0. This was missing integration, not a
+mode-reader blocker. The repair now uses access checks and separately defines
+Windows PATHEXT. Mode readers remain a real cp/chmod gap; access cannot recover
+mode bits.
 
-本轮在 `core/gzipops` 实现 RFC 1951 stored/fixed/dynamic Huffman 解码、
-32 KiB 滑动窗口与重叠回溯，复用公开 Encoder 编码。可选字段、header CRC、
-多个 member、payload CRC/size 和失败前缀由纯 MoonBit 完成，不再把 gzip
-流格式列为阻塞。最小复现是 `gzip -dc` 输入
-`1f8b08000000000000034b4c4a0600c2412435`：预期输出 `abc` 后返回 1，
-候选测试固定该行为；上游 Decoder 小 buffer 路径曾仅交付 `a`。
-最小回归位于 `core/gzipops/codec_wbtest.mbt`；固定 GNU 1.14 对照脚本为
-[`reports/2026-10-10-gzip-oracle.mbtx`](reports/2026-10-10-gzip-oracle.mbtx)。
+Column defaults/final LF/layout, strings radix/encoding/TAB, date TZ handling
+and multiple-file rev/tac are project work. Date can adapt public x/time/TZif;
+only setting the clock needs a setter. tac regex and nl pBRE can adapt core/bytere.
+Tree JSON/HTML/filters/explicit colors are independent of readlink/mode.
+The original [audit](reports/2026-10-11-command-followups/README.md) did not
+implement these corrections; the later repair status is separate. See the
+[79-command register](command-followups.md).
 
-上游仍可改进 Decoder：支持 RFC 1952 optional header 与连续 member，
-并将错误推迟至已解码字节交付后的下一次读取，或返回包含 partial bytes
-的错误。解除自有 decoder 维护负担的条件是正式公开版本通过这些回归。
-当前解码缓冲压缩输入，超大输入的流式内存优化属于项目工作。
+### Gzip codec workaround, 2026-10-10
 
-**patch 与拆分输出的限制应分开描述。** patch 正常写回可使用 rename 替换
-inode，不能把 cp 所需的“保留目标 inode”直接套用。实际 blocker 是源 mode
-等元数据读取/保持；`-o new` 也需要源权限。普通更新及 named output 暂拒绝，
-支持 `-o -`、`--dry-run` 和明确创建/删除。macOS inode/mode 观察证据见
-[`reports/2026-10-10-patch-file-semantics.md`](reports/2026-10-10-patch-file-semantics.md)，
-这不是 GNU/Linux 完整认证。公开 metadata + 安全替换通过固定 GNU metadata
-差分后解除限制。split/csplit 新文件可排他创建；已有输出缺句柄 identity
-和 truncate，故明确拒绝，避免截断输入硬链接。它们的 suffix、正则分割、
-cleanup 以及 patch context/unified 解析都属于项目实现，不能归因上游。
+Async 0.22.4 gzip.Decoder handles one member without optional headers. CRC or
+truncated-trailer errors during a read can hide bytes already produced in that
+read. MemoryReader can help locate members but cannot recover hidden output.
+This affects Native/Wasm and is not host denial.
 
-**已解除：curl 自定义 Cookie + jar**。此前仅检查单个 Map，漏看了公开
-`Client(headers=...)` 与 `Client::request(extra_headers=...)` 两层独立参数。
-async 0.22.4 会先发 client 字段、再发 request 字段。纯 MoonBit raw TCP
-[探针](reports/2026-09-21-api-probes/http-header-layers.mbtx) 实测两个独立
-Cookie 字段，与 macOS curl 8.7.1 同序；Wget 1.25.0 则只发送显式字段，
-且跨源重定向继续发送显式字段，curl 会移除它。该区别另有 raw TCP 探针。
-当前工作区已实现两种命令各自的行为，覆盖原始字节、同源/跨源重定向和真实
-CLI，0.2.0 已发布包不包含此修正。没有拼接 CRLF、导入 internal、替换 HTTP
-栈或加入 FFI。此组合不再作为上游 blocker。
+core/gzipops implements RFC 1951 stored/fixed/dynamic Huffman decoding, a 32 KiB
+window and overlapping backreferences in pure MoonBit, while reusing the public
+Encoder. Optional fields, header CRC, concatenated members, payload CRC/size
+and failure prefixes are handled locally; gzip framing is no longer a blocker.
+For gzip -dc input `1f8b08000000000000034b4c4a0600c2412435`, expected output is
+abc followed by status 1. The candidate fixes that contract; the upstream small
+buffer path had delivered only a. Regressions: core/gzipops/codec_wbtest.mbt;
+[GNU gzip 1.14 comparisons](reports/2026-10-10-gzip-oracle.mbtx).
 
-**仍缺通用表达能力**：两层 Map 不能表达任意数量、任意顺序的重复字段，
-所以不能从这个修复推断所有重复 `-H` 已保真。建议 ordered header list
-仍有价值，但只适用于这部分剩余表达限制。响应侧 `Response.cookies` 已
-保留多个 Set-Cookie。PSL/IDNA/cookie-prefix 规则仍属于项目实现工作。
+Upstream could support RFC 1952 optional headers/continuous members and defer
+errors until produced bytes have been delivered, or include partial bytes in an
+error. A released decoder passing the same regressions would remove the local
+maintenance need. Full compressed-input buffering and streaming-memory
+improvement remain project work.
 
-Shell 解析、引号/分词/glob、JSON 输入分帧与 AST 变量绑定、cookie 管理、
-make DAG 调度都已列入项目实现。grep 全部 GNU BRE/ERE 扩展、shell 完整
-printf/test、反引号、算术赋值等剩余语法属于项目或正则/解释器适配范围。
-不能用本表把可实现功能永久排除。
+### Patch and split outputs have different inode contracts
 
-宿主拒绝是第三类结果：同一已公开操作在明确授权策略下运行，若被拒绝，
-记录策略、原始错误与状态；这既不是缺公开 API，也不是缺底层运行时。
-候选仅使用官方依赖提供的底层运行时，无项目自有 C/Rust/JS/FFI。
+Ordinary patch writeback may replace an inode through rename; cp's retained-inode
+requirement does not apply. The blocker is source metadata/mode preservation,
+also required by -o new. Ordinary update/named output reject; -o -, --dry-run
+and explicit creation/deletion work. See [macOS inode/mode observations](reports/2026-10-10-patch-file-semantics.md),
+which are not full GNU/Linux certification. Released metadata plus safe
+replacement and pinned GNU metadata comparisons unlock the restriction.
+split/csplit exclusively create new outputs; existing outputs reject without
+identity/handle-truncate to avoid clearing an input hard link. Suffixes, regex
+splitting, cleanup and patch context/unified parsing are project responsibilities.
+
+### Resolved: explicit curl Cookie plus jar
+
+Earlier review examined one Map and missed independent public Client(headers=...)
+and Client::request(extra_headers=...) layers. Async 0.22.4 emits client fields
+then request fields. A pure MoonBit [raw TCP probe](reports/2026-09-21-api-probes/http-header-layers.mbtx)
+observed two Cookie fields in the same order as macOS curl 8.7.1. Wget 1.25.0
+sends only the explicit field and retains it across origins; curl removes it,
+also confirmed by raw TCP. Workspace implementations cover bytes, same/cross
+origin redirects and real CLI; published 0.2.0 does not include the correction.
+There is no CRLF injection, internal import, transport replacement or FFI.
+This combination is no longer an upstream blocker.
+
+Two Maps still cannot express arbitrary ordered duplicate fields, so this does
+not establish full repeated -H fidelity. An ordered header list remains useful
+for that narrower gap. Response.cookies already preserves multiple Set-Cookie
+fields. PSL/IDNA/cookie-prefix rules remain project work.
+
+Shell parsing/quoting/splitting/glob, JSON framing/AST bindings, cookies and make
+DAG scheduling are project implementation. Remaining GNU BRE/ERE extensions,
+full shell printf/test, backticks and arithmetic assignment belong to project
+or interpreter adaptation; this table must not permanently exclude feasible work.
+
+Host denial is a third category: record the authorization policy, original
+error and status when a public operation is denied. It is neither missing API
+nor missing runtime implementation. Official dependencies may supply their
+underlying runtime; the project adds no C/Rust/JS/FFI.

@@ -17,6 +17,11 @@ You can browse and install extra skills here:
 
 ## Coding convention
 
+- Repository documentation, issue titles/bodies, PR descriptions and new
+  explanatory comments must be written in English. Historical document
+  translations preserve recorded versions, results and limitations; language
+  revisions must not turn old evidence into current acceptance claims.
+
 - MoonBit code is organized in block style, each block is separated by `///|`,
   the order of each block is irrelevant. In some refactorings, you can process
   block by block independently.

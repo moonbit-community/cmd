@@ -3,6 +3,12 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-10-11
+
+The pinned GNU coreutils 9.11 Linux run also establishes status 1 when an
+interactive ln/mv overwrite is declined, including EOF. Preserve both paths,
+continue other operands, and aggregate the failure. A no-clobber/update skip
+remains a distinct successful no-op. Earlier golden status 0 was wrong;
+real Native/Wasm and published regressions retain the corrected upstream status.
 Revision: Repair unlink preflight, ln overwrite ordering and mv same-entry/no-op behavior; record the remaining identity gate before interactive/update decisions.
 
 ## Target and decision

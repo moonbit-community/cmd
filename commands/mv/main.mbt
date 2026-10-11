@@ -10,6 +10,13 @@ priv struct MvOptions {
 }
 
 ///|
+priv enum MoveResult {
+  Moved
+  Skipped
+  Declined
+}
+
+///|
 fn normalized_args(args : ArrayView[String]) -> Array[String] {
   let result : Array[String] = []
   let mut options = true
@@ -46,14 +53,14 @@ async fn move_one(
   source : String,
   target : String,
   options : MvOptions,
-) -> Bool {
+) -> MoveResult {
   let source_kind = @fs.kind(source, follow_symlink=false)
   if source_kind == Directory {
     @fsops.ensure_not_nested_destination(source, target)
   }
   let target_kind = @fsops.kind_if_exists(target)
   if options.no_clobber && target_kind is Some(_) {
-    return false
+    return Skipped
   }
   if target_kind is Some(_) &&
     options.update != @fsops.UpdateNone &&
@@ -94,14 +101,14 @@ async fn move_one(
     }
     match
       @fsops.overwrite_decision(options.update, source_time, Some(target_time)) {
-      SkipDestination => return false
+      SkipDestination => return Skipped
       RejectDestination =>
         raise @fsops.FsOpError("destination exists under update=none-fail")
       ReplaceDestination => ()
     }
     if options.interactive {
       if !confirm_overwrite(target) {
-        return false
+        return Declined
       }
     }
   }
@@ -123,7 +130,7 @@ async fn move_one(
       "rename left the source entry in place (possible same file)",
     )
   }
-  true
+  Moved
 }
 
 ///|
@@ -149,7 +156,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\nEqual-time interactive/update targets require unavailable file identity metadata.\n",
+      "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\nDeclining an interactive overwrite returns status 1 and preserves both files.\nEqual-time interactive/update targets require unavailable file identity metadata.\n",
     )
     return
   }
@@ -239,7 +246,10 @@ async fn main {
         continue
       }
     }
-    if moved && options.verbose {
+    if moved is Declined {
+      failed = true
+    }
+    if moved is Moved && options.verbose {
       @stdio.stdout.write("renamed '\{source}' -> '\{target}'\n")
     }
   }

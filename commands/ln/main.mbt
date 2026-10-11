@@ -124,7 +124,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: ln -s [-f|-i] [-r] [-n|-T] [-t DIRECTORY] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\nThe last -f/--force or -i/--interactive selects overwrite behavior.\n",
+      "Usage: ln -s [-f|-i] [-r] [-n|-T] [-t DIRECTORY] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\nThe last -f/--force or -i/--interactive selects overwrite behavior.\nDeclining an interactive overwrite returns status 1 without replacing the link.\n",
     )
     return
   }
@@ -226,22 +226,21 @@ async fn main {
     } else {
       destination
     }
-    ignore(
-      create_link(target, link_path, options) catch {
-        @fsops.FsOpError(message) => {
-          @stdio.stderr.write(
-            "ln: failed to create '\{link_path}': \{message}\n",
-          )
-          failed = true
-          continue
-        }
-        err => {
-          @stdio.stderr.write("ln: failed to create '\{link_path}': \{err}\n")
-          failed = true
-          continue
-        }
-      },
-    )
+    let created = create_link(target, link_path, options) catch {
+      @fsops.FsOpError(message) => {
+        @stdio.stderr.write("ln: failed to create '\{link_path}': \{message}\n")
+        failed = true
+        continue
+      }
+      err => {
+        @stdio.stderr.write("ln: failed to create '\{link_path}': \{err}\n")
+        failed = true
+        continue
+      }
+    }
+    if !created {
+      failed = true
+    }
   }
   if failed {
     @sys.exit(1)

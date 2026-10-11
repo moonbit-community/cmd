@@ -120,3 +120,17 @@ the oracle comparison. Differential release runs now honor that marker and
 require both the contract and pinned comparison; smoke retains golden contracts.
 Classification regressions cover smoke, differential and boundary selection.
 The release gate will exercise the marked cases through actual MoonX on Linux.
+
+Runs `38117528667` and `38118162089` passed macOS/Windows but exposed two Linux
+oracle disagreements: declined ln/mv interactive prompts return 1 in coreutils
+9.11. The candidate now distinguishes declines from successful no-clobber skips,
+preserves the prompt and files, and continues other operands. Both corrected
+contracts and additional EOF variants pass on Native/Wasm (25 selected semantic
+passes each); the candidate now selects 841 cases. These failed remote runs
+remain evidence and are not release acceptance.
+
+At the user's request, all Chinese Markdown prose and the 19 new F-series issue
+titles/bodies were translated into English. Issue #25 was already English.
+Historical reports retain dates, measurements and limitations, with language
+revision notes; a historical erroneous seq/GNU statement is explicitly identified
+as superseded. AGENTS.md now requires English documentation and issue content.
