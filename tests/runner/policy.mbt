@@ -59,8 +59,8 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
   ]
   let catalog = @cli.command_catalog()
   record(
-    catalog.length() == 75,
-    "catalog must contain exactly 75 commands",
+    catalog.length() == 79,
+    "catalog must contain exactly 79 commands",
     failures,
   )
   let mut default_count = 0
