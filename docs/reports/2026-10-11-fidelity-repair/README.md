@@ -91,9 +91,8 @@ every input/option combination or complete GNU/POSIX compatibility. Unimplemente
 features remain in issues #10–#23; availability and explicit refusal never count
 as semantic parity. Historical 554-case release evidence remains unchanged.
 
-Required remaining gates: Linux/macOS/Windows CI, serial publication, exact
-MoonX acceptance, final evidence and issue closure. No package has been published
-by this repair yet.
+At this initial checkpoint, Linux/macOS/Windows CI, publication and exact MoonX
+acceptance were pending. Later gates and uploads are recorded below.
 
 The filesystem follow-up additionally reproduced ln's ignored last `-f` and
 mv's same-path false success against coreutils 9.11. These fixes add `ln/mv@0.2.1`
@@ -143,3 +142,11 @@ Source commit `b11ade8fab0a7fb4c95051e051cdafd90515da94` passed [CI 38119870855]
 This repair publishes `cli/core@0.5.0`, `column/date/diff/strings/which@0.1.1`, `unlink@0.1.2`, and `curl/jq/jqlog/ln/mv/seq/wget@0.2.1`. Unchanged commands retain their existing coordinates. Every upload returned `Server status: 200 OK` and exact registry metadata was verified before advancing. Core was first, then commands in lexical order. The first column packaging check stopped before upload because the local registry index lacked the just-published core; `moon update` resolved it, and core was not republished.
 
 All 78 selected command asset caches were moved to a recoverable local backup before published acceptance, forcing fresh downloads. The release runner now starts the fixed HTTPS fixture used by the workspace runner, expands `${HTTPS_BASE}` for candidate and oracle invocations, and records the POSIX-only Windows boundary. Receipts and reports are under `test-reports/fidelity-repair`.
+
+Published-consumer review found that ls link/time source corrections had not been
+released in `cli/ls@0.2.0`; five time-order contracts failed. `cli/ls@0.2.1` is
+therefore an additional required upload after its three-platform source gate.
+Release case directories now append a case-sensitive ID encoding, preventing
+`strings -e b/B` and `-e l/L` evidence from colliding on case-insensitive hosts.
+Both TLS contracts passed locally on Native, Wasm and exact published curl/wget.
+The new 841-case selection remains subject to full final MoonX acceptance.

@@ -13,6 +13,16 @@ Revision: Repair unlink preflight, ln overwrite ordering and mv same-entry/no-op
 
 ## Target and decision
 
+The retained ls link/time corrections must also be released as `cli/ls@0.2.1`:
+the old 0.2.0 coordinate fails the new time-order contracts. Follow command-line
+links with `-H`, all selected links with `-L`, and preserve the documented `-P`
+extension. `-u/-c/--time` imply time ordering unless an explicit `-S/-t` selects
+sorting; retain GNU 9.11 tie, dangling-link and precedence contracts. Reject
+metadata-dependent long listings and unsupported directory-size sorting instead
+of inventing values. Public mode/owner/link APIs plus differential fixtures are
+the conditions for expanding that subset. Passing local source tests never
+substitutes for rerunning the exact published coordinate.
+
 The 2026-10-11 second review (issue #25, coreutils 9.11) requires the last ln
 `-f/-i` selector to win. For mv, canonical parent paths identify the same entry
 before prompting/backups; ordinary rename must remove the source entry. A

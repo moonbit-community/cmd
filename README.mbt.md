@@ -6,7 +6,7 @@ system for preserving GNU/POSIX and command-upstream behavior. Authorization
 belongs to the caller or host; commands preserve the caller's environment and
 stream semantics.
 
-This repair publishes `cli/core@0.5.0`, `column/date/diff/strings/which@0.1.1`, `unlink@0.1.2`, and `curl/jq/jqlog/ln/mv/seq/wget@0.2.1`. Unchanged commands retain their existing coordinates.
+This repair publishes `cli/core@0.5.0`, `column/date/diff/strings/which@0.1.1`, `unlink@0.1.2`, and `curl/jq/jqlog/ln/ls/mv/seq/wget@0.2.1`. Unchanged commands retain their existing coordinates.
 
 The workspace contains **79 command modules**, with **78 published** and local-only `timeout`. Published command versions are **39 at 0.2.0, 8 at 0.2.1, 15 at 0.1.0, 15 at 0.1.1 and 1 at 0.1.2**. Shared `cli/core` is **0.5.0** and is not counted as a command.
 

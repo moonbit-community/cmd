@@ -3,7 +3,7 @@
 Date: 2026-09-05
 Updated: 2026-10-11
 
-This repair publishes `cli/core@0.5.0`, `column/date/diff/strings/which@0.1.1`, `unlink@0.1.2`, and `curl/jq/jqlog/ln/mv/seq/wget@0.2.1`. Unchanged commands retain their existing coordinates.
+This repair publishes `cli/core@0.5.0`, `column/date/diff/strings/which@0.1.1`, `unlink@0.1.2`, and `curl/jq/jqlog/ln/ls/mv/seq/wget@0.2.1`. Unchanged commands retain their existing coordinates.
 
 The workspace contains **79 command modules**, with **78 published** and local-only `timeout`. Published command versions are **39 at 0.2.0, 8 at 0.2.1, 15 at 0.1.0, 15 at 0.1.1 and 1 at 0.1.2**. Shared `cli/core` is **0.5.0** and is not counted as a command.
 
@@ -87,8 +87,9 @@ semantic mismatches, side-effect violations, timeouts and runner failures are
 reported separately. Asset or infrastructure failures are hard failures, not
 skips. macOS and Windows use the same exact-version published smoke suite;
 only the pinned Linux oracle result promotes a strict differential claim.
-HTTP cases use a shared pure-MoonBit loopback fixture; HTTPS fixture cases stay
-outside the published selection until their TLS fixture is pinned.
+HTTP cases use a shared pure-MoonBit loopback fixture. Published HTTPS contracts
+reuse the fixed certificate fixture through the testkit on POSIX hosts and are
+recorded as platform skips on Windows, where that host fixture is unavailable.
 The Windows smoke profile explicitly records POSIX-only permission and symbolic
 link cases as `skipped_platform`; Linux/macOS run those cases, and the pinned
 Linux oracle remains the strict filesystem authority.
