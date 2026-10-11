@@ -114,3 +114,9 @@ continue to check upstream parity. This run is failure evidence, not a release g
 The updated candidate passed **613 semantic contracts per backend** locally,
 including the 18 added positive filesystem regressions and the new inline DST
 timezone case. The equal-time mv case adds one explicit boundary contract.
+
+Reviewing the release path found that `oracle: true` contracts returned before
+the oracle comparison. Differential release runs now honor that marker and
+require both the contract and pinned comparison; smoke retains golden contracts.
+Classification regressions cover smoke, differential and boundary selection.
+The release gate will exercise the marked cases through actual MoonX on Linux.

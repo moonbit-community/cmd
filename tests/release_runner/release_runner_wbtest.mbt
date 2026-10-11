@@ -102,6 +102,10 @@ test "contracts need an assertion and preserve binary exact output" {
   )
   assert_true(has_contract_assertion(exact))
   assert_eq(verification_level(exact, false), "contract")
+  assert_eq(verification_level(exact, true), "contract")
+  let compared = { ..exact, oracle: Some(true), }
+  assert_eq(verification_level(compared, false), "contract")
+  assert_eq(verification_level(compared, true), "differential")
   let empty = release_case_for_test(
     "empty",
     "true",
@@ -114,6 +118,10 @@ test "contracts need an assertion and preserve binary exact output" {
     extra=",\"expected_rejection\":\"file identity unavailable\"",
   )
   assert_eq(verification_level(rejection, true), "boundary")
+  assert_eq(
+    verification_level({ ..rejection, oracle: Some(true), }, true),
+    "boundary",
+  )
 }
 
 ///|

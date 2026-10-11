@@ -84,6 +84,8 @@ fn verification_level(fixture : ReleaseCase, differential : Bool) -> String {
   if fixture.expected_rejection is Some(_) ||
     fixture.comparison == Some("boundary") {
     "boundary"
+  } else if differential && fixture.oracle == Some(true) {
+    "differential"
   } else if fixture.comparison == Some("contract") {
     "contract"
   } else if differential {
@@ -321,9 +323,9 @@ async fn run_case_inner(
   let oracle_root = @path.Path(root).join(Path("oracle")).to_string()
   @fs.mkdir(candidate_root)
   prepare_fixture(candidate_root, fixture, http_base?)
-  if differential &&
-    fixture.comparison != Some("contract") &&
-    fixture.expected_rejection is None {
+  let compare_oracle = verification_level(fixture, differential) ==
+    "differential"
+  if compare_oracle {
     @fs.mkdir(oracle_root)
     prepare_fixture(oracle_root, fixture, http_base?)
   }
@@ -478,7 +480,7 @@ async fn run_case_inner(
     })
     return
   }
-  if fixture.comparison == Some("contract") {
+  if fixture.comparison == Some("contract") && !compare_oracle {
     reports.push({
       id: fixture.id,
       command: fixture.command,
@@ -542,6 +544,20 @@ async fn run_case_inner(
     })
     return
   }
+  if fixture.comparison == Some("contract") {
+    let errors = @testkit.check_contract(fixture, oracle, oracle_root)
+    errors.append(@testkit.check_expected_files(fixture, oracle_root))
+    if !errors.is_empty() {
+      reports.push({
+        id: fixture.id,
+        command: fixture.command,
+        version: row.version,
+        category: "oracle_failure",
+        detail: "pinned oracle violates contract: " + errors.join("; "),
+      })
+      return
+    }
+  }
   let candidate_stdout = normalize_text(
     candidate.stdout,
     "stdout",
@@ -576,7 +592,13 @@ async fn run_case_inner(
     })
     return
   }
-  if !@testkit.bytes_equal(candidate_stderr, oracle_stderr) {
+  let stderr_matches = match fixture.expected_stderr_contains {
+    Some(reason) if fixture.diagnostic_reason is Some(_) =>
+      @testkit.contains_bytes(candidate_stderr, reason) &&
+      @testkit.contains_bytes(oracle_stderr, reason)
+    _ => @testkit.bytes_equal(candidate_stderr, oracle_stderr)
+  }
+  if !stderr_matches {
     reports.push({
       id: fixture.id,
       command: fixture.command,

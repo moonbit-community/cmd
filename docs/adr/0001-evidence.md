@@ -49,6 +49,13 @@ Contracts assert both output streams and status; diagnostic fragments require a
 reason. Absence of internal errors alone is not a behavioral contract.
 
 Passing a self-authored contract proves that contract, not upstream equivalence.
+The published runner honors a contract's explicit `oracle: true` marker in
+differential mode, requiring both the golden contract and an upstream comparison.
+Previously those cases returned early as contract-only. Smoke intentionally
+keeps its Docker-free contract checks, while boundary and unmarked contracts
+remain separate classifications. Classification self-tests and published Linux
+oracle execution verify this distinction; no oracle-selected case may silently
+fall back to a golden-only pass.
 The [2026-10-11 follow-up audit](../reports/2026-10-11-command-followups/README.md)
 finds missing GNU meanings in strings, executable access in which, default/LF
 behavior in column and caller TZ handling in date despite passing published

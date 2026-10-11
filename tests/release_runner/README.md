@@ -56,6 +56,12 @@ status, a diagnostic and preserved fixture observations; they do not count as
 upstream agreement.
 
 Differential cases compare status, stdout, stderr, file contents and types.
+In `differential`/`all`, a contract marked `oracle: true` also runs the pinned
+oracle and reports `differential`; both executions must satisfy the contract.
+It stays a contract in `smoke`. Contract cases without the marker remain
+contract-only, and rejection boundaries never become upstream parity claims.
+Justified diagnostic fragments are checked in both results; all other stream
+comparisons use complete normalized bytes.
 Cases explicitly request additional mode, symlink-target and within-fixture
 identity observations. A missing required observation is infrastructure failure.
 Timestamp relations belong to stateful scenarios; independent wall-clock
