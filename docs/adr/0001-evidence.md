@@ -56,6 +56,8 @@ keeps its Docker-free contract checks, while boundary and unmarked contracts
 remain separate classifications. Classification self-tests and published Linux
 oracle execution verify this distinction; no oracle-selected case may silently
 fall back to a golden-only pass.
+Reports label justified diagnostic fragments as `stderr-contract`, not full
+byte equality, and retain metadata dimensions inferred from file expectations.
 The [2026-10-11 follow-up audit](../reports/2026-10-11-command-followups/README.md)
 finds missing GNU meanings in strings, executable access in which, default/LF
 behavior in column and caller TZ handling in date despite passing published

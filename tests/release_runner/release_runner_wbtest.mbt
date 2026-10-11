@@ -266,6 +266,32 @@ test "contract output and status mismatches cannot pass" {
 }
 
 ///|
+test "differential reports preserve partial diagnostics and inferred metadata" {
+  let fixture = release_case_for_test(
+    "diagnostic",
+    "ln",
+    extra=",\"comparison\":\"contract\",\"oracle\":true,\"expected_stdout_text\":\"\",\"expected_stderr_contains\":\"ln:\",\"diagnostic_reason\":\"Platform wording differs; both must identify ln.\",\"expected_files\":[{\"path\":\"file\",\"mode\":420}]",
+  )
+  let report = shared_report(
+    {
+      id: fixture.id,
+      command: "ln",
+      version: "0.2.1",
+      category: "passed",
+      detail: "candidate and pinned oracle agree",
+    },
+    [fixture],
+    true,
+    Map([]),
+  )
+  assert_eq(report.verification, "differential")
+  assert_true(report.observations.contains("stderr-contract"))
+  assert_false(report.observations.contains("stderr-bytes"))
+  assert_true(report.observations.contains("mode"))
+  assert_true(report.observations.contains("stdout-bytes"))
+}
+
+///|
 async test "availability success does not make the runner summary fail" {
   let fixture = release_case_for_test("true-status", "true")
   print_reports(
