@@ -115,8 +115,8 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
     }
   }
   record(
-    default_count == 66,
-    "default allow tier must contain 66 commands",
+    default_count == 70,
+    "default allow tier must contain 70 commands",
     failures,
   )
   record(
