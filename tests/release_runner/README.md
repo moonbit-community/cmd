@@ -96,9 +96,9 @@ The 2026-10-11 P2 publication was validated by
 `docs/reports/2026-10-11-p2-release-0.1.0/README.md`.
 
 The fidelity repair is published in `published-2026-10-11-repair.json`: 78 exact
-command coordinates and 839 selected cases. The two HTTPS cases remain in the
-active source suite, but are excluded from this published manifest until a
-portable pinned TLS fixture is available. The earlier P2 manifest remains
-historical. Source gate 38119870855 passed all three platforms; the repair report
-tracks fresh-download and remote published acceptance separately. CI resolves
-the MoonX launcher to an absolute path before fixture PATH overrides.
+command coordinates and 841 selected cases. The two HTTPS cases use the fixed
+certificate fixture on POSIX hosts and are skipped on Windows, where the native
+TLS fixture is unavailable. The earlier P2 manifest remains historical. Source
+gate 38119870855 passed all three platforms; the repair report tracks
+fresh-download and remote published acceptance separately. CI resolves the
+MoonX launcher to an absolute path before fixture PATH overrides.

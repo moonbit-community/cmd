@@ -3,7 +3,7 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-10-11
-Revision: Correct self-authored expected outputs, pin new strings/column oracles, and expand real CLI/alias/edge coverage before a repaired release.
+Revision: Correct self-authored expected outputs, pin new strings/column oracles, expand real CLI/alias/edge coverage before a repaired release, and run published HTTPS cases through the same fixed POSIX fixture as the workspace runner.
 
 ## Target and decision
 
@@ -19,6 +19,13 @@ The cost is maintaining independent expected behavior and fixtures; retire
 duplicate assertions only when their entrypoint/backend/observation survives.
 Release requires second review, three-platform CI and exact-version MoonX,
 as recorded in [the repair report](../reports/2026-10-11-fidelity-repair/README.md).
+
+The release runner owns no separate network implementation. HTTP and HTTPS cases
+share the testkit fixtures; HTTPS uses the repository's fixed certificate through
+the host observation layer, expands `${HTTPS_BASE}` in both candidate and oracle
+argv, and records Windows as a platform skip when that fixture is unavailable.
+This keeps published network contracts aligned with workspace contracts while
+preserving the pure-MoonBit product boundary.
 
 All product code, shared runtime code, test runners, fixtures, and automation
 must be pure MoonBit. Project-owned C/C++/Rust/JavaScript/TypeScript, FFI,

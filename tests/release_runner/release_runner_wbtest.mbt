@@ -1,4 +1,22 @@
 ///|
+test "published network argv expands both fixture schemes" {
+  assert_eq(
+    expand_network_args(
+      ["${HTTP_BASE}/fixed", "${HTTPS_BASE}/fixed", "literal"],
+      Some("http://127.0.0.1:1234"),
+      Some("https://127.0.0.1:4321"),
+    ),
+    ["http://127.0.0.1:1234/fixed", "https://127.0.0.1:4321/fixed", "literal"],
+  )
+  let fixture = {
+    ..release_case_for_test("tls", "curl"),
+    args: ["${HTTPS_BASE}/fixed.txt"],
+  }
+  assert_false(case_supported_on_host(fixture, "windows"))
+  assert_true(case_supported_on_host(fixture, "linux"))
+}
+
+///|
 test "release manifest version validation" {
   assert_true(valid_version("0.1.4"))
   assert_true(valid_version("12.0.7"))

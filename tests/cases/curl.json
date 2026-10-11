@@ -203,6 +203,7 @@
     },
     {
       "id": "phase2-curl-https-insecure",
+      "host_platforms": ["posix"],
       "command": "curl",
       "args": [
         "-sk",
@@ -212,7 +213,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "hello\n",
+      "expected_stderr_text": ""
     },
     {
       "id": "network-auth-cookie",

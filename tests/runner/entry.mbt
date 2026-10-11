@@ -4,6 +4,9 @@ fn usage() -> String {
 }
 
 ///|
+using @testkit {spawn_https_fixture_process}
+
+///|
 fn suite_report(
   name : String,
   backend : String,
@@ -203,6 +206,7 @@ async fn run_driver() -> Unit {
         }
         @async.with_task_group(group => {
           let mut base : String? = None
+          let mut https_base : String? = None
           if cases.any(item => @testkit.is_network_case(item)) {
             let (child, reader, url) = @testkit.spawn_http_fixture_process(
               group,
@@ -214,10 +218,33 @@ async fn run_driver() -> Unit {
               @async.protect_from_cancel(() => ignore(child.wait()))
             })
           }
+          if cases.any(item => {
+              item.platform_applies() &&
+              item.args.any(arg => arg.contains("${HTTPS_BASE}"))
+            }) {
+            let root = @fs.tmpdir(prefix="mooncmd-contract-https-")
+            let (child, url) = spawn_https_fixture_process(group, root)
+            https_base = Some(url)
+            group.add_defer(() => {
+              child.cancel()
+              @async.protect_from_cancel(() => ignore(child.wait()))
+              @fs.rmdir(root, recursive=true)
+            })
+          }
           let tasks : Array[async () -> @testkit.CaseReport] = cases.map(item => {
             () => {
+              let transformed = match https_base {
+                Some(url) =>
+                  {
+                    ..item,
+                    args: item.args.map(arg => {
+                      arg.replace_all(old="${HTTPS_BASE}", new=url)
+                    }),
+                  }
+                None => item
+              }
               @testkit.execute_contract(
-                item,
+                transformed,
                 bin_root,
                 backend == "wasm",
                 report_dir,

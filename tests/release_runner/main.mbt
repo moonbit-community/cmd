@@ -124,6 +124,10 @@ fn host_platform() -> String {
 
 ///|
 fn case_supported_on_host(fixture : ReleaseCase, platform : String) -> Bool {
+  if platform == "windows" &&
+    fixture.args.any(arg => arg.contains("${HTTPS_BASE}")) {
+    return false
+  }
   match fixture.host_platforms {
     Some(platforms) =>
       platforms.contains(platform) ||
@@ -171,18 +175,43 @@ fn first_difference(left : Bytes, right : Bytes) -> String {
 }
 
 ///|
+fn expand_network_args(
+  args : ArrayView[String],
+  http_base : String?,
+  https_base : String?,
+) -> Array[String] {
+  args.map(arg => {
+    let with_http = match http_base {
+      Some(base) => arg.replace_all(old="${HTTP_BASE}", new=base)
+      None => arg
+    }
+    match https_base {
+      Some(base) => with_http.replace_all(old="${HTTPS_BASE}", new=base)
+      None => with_http
+    }
+  })
+}
+
+///|
 async fn run_candidate(
   moonx : String,
   row : ReleaseCommand,
   fixture : ReleaseCase,
   root : String,
   http_base : String?,
+  https_base : String?,
   timeout_ms : Int,
 ) -> @testkit.TimedRun {
   // MoonX consumes its first `--`. Supply the launcher's separator so a
   // command's own `--` remains part of its argv.
   let args = [row.package_name + "@" + row.version, "--"]
-  args.append(expand_args(fixture.args, root, http_base?))
+  args.append(
+    expand_args(
+      expand_network_args(fixture.args, http_base, https_base),
+      root,
+      http_base?,
+    ),
+  )
   let stdin = fixture.input(root~, http_base?)
   let environment = controlled_environment(
     @testkit.expand_environment(fixture.environment, root, http_base?),
@@ -205,6 +234,7 @@ async fn run_oracle(
   fixture : ReleaseCase,
   root : String,
   http_base : String?,
+  https_base : String?,
   networked : Bool,
   docker_user : String?,
   timeout_ms : Int,
@@ -247,7 +277,13 @@ async fn run_oracle(
     }
   }
   args.append(["-e", "PATH=/oracle/bin", image, fixture.command])
-  args.append(expand_args(fixture.args, "/work", http_base?))
+  args.append(
+    expand_args(
+      expand_network_args(fixture.args, http_base, https_base),
+      "/work",
+      http_base?,
+    ),
+  )
   let stdin = fixture.input(root="/work", http_base?)
   @testkit.run_with_deadline(docker, args, timeout_ms, stdin~, inherit_env=true)
 }
@@ -262,6 +298,7 @@ async fn run_case_inner(
   differential : Bool,
   timeout_ms : Int,
   http_base : String?,
+  https_base : String?,
   docker_user : String?,
   reports : Array[CaseReport],
   report_root : String?,
@@ -348,7 +385,7 @@ async fn run_case_inner(
     []
   }
   let candidate_run = run_candidate(
-    moonx, row, fixture, candidate_root, http_base, case_timeout_ms,
+    moonx, row, fixture, candidate_root, http_base, https_base, case_timeout_ms,
   ) catch {
     err => {
       reports.push({
@@ -503,8 +540,8 @@ async fn run_case_inner(
     return
   }
   let oracle_run = run_oracle(
-    docker, oracle_image, fixture, oracle_root, http_base, networked, docker_user,
-    case_timeout_ms,
+    docker, oracle_image, fixture, oracle_root, http_base, https_base, networked,
+    docker_user, case_timeout_ms,
   ) catch {
     err => {
       reports.push({
@@ -651,23 +688,26 @@ async fn run_case(
   differential : Bool,
   timeout_ms : Int,
   http_base : String?,
+  https_base : String?,
   docker_user : String?,
   reports : Array[CaseReport],
   report_root : String?,
 ) -> Unit {
-  if is_network_case(fixture) && http_base is None {
+  let needs_http = is_network_case(fixture)
+  let needs_https = fixture.args.any(arg => arg.contains("${HTTPS_BASE}"))
+  if (needs_http && http_base is None) || (needs_https && https_base is None) {
     reports.push({
       id: fixture.id,
       command: fixture.command,
       version: row.version,
       category: "runner_infra",
-      detail: "loopback HTTP fixture is unavailable",
+      detail: "required loopback HTTP or HTTPS fixture is unavailable",
     })
     return
   }
   run_case_inner(
     moonx, docker, oracle_image, row, fixture, differential, timeout_ms, http_base,
-    docker_user, reports, report_root,
+    https_base, docker_user, reports, report_root,
   ) catch {
     err =>
       if reports.any(report => report.id == fixture.id) {
@@ -703,6 +743,7 @@ async fn run_selected_cases(
   differential : Bool,
   timeout_ms : Int,
   http_base : String?,
+  https_base : String?,
   docker_user : String?,
   reports : Array[CaseReport],
   timings : Map[String, Int64],
@@ -733,7 +774,12 @@ async fn run_selected_cases(
               command: fixture.command,
               version,
               category: "skipped_platform",
-              detail: "case is not supported on host platform " + platform,
+              detail: if platform == "windows" &&
+                fixture.args.any(arg => arg.contains("${HTTPS_BASE}")) {
+                "fixed OpenSSL TLS fixture is not provisioned on Windows"
+              } else {
+                "case is not supported on host platform " + platform
+              },
             })
             return reports
           }
@@ -741,7 +787,7 @@ async fn run_selected_cases(
             Some(row) =>
               run_case(
                 moonx, docker, oracle_image, row, fixture, differential, timeout_ms,
-                http_base, docker_user, reports, report_root,
+                http_base, https_base, docker_user, reports, report_root,
               )
             None => ()
           }
@@ -974,42 +1020,61 @@ async fn run_driver() -> Unit {
   } else {
     None
   }
-  if fixtures.any(fixture => {
-      case_supported_on_host(fixture, host_platform()) &&
-      is_network_case(fixture)
-    }) {
+  let needs_http = fixtures.any(fixture => {
+    case_supported_on_host(fixture, host_platform()) && is_network_case(fixture)
+  })
+  let needs_https = fixtures.any(fixture => {
+    case_supported_on_host(fixture, host_platform()) &&
+    fixture.args.any(arg => arg.contains("${HTTPS_BASE}"))
+  })
+  if needs_http || needs_https {
     @async.with_task_group <| group => {
-      let (server, reader, http_base) = spawn_http_fixture_process(group)
-      group.add_defer(() => {
-        reader.close()
-        server.cancel()
-        @async.protect_from_cancel(() => {
-          ignore(server.wait()) catch {
-            err =>
-              reports.push({
-                id: "http-fixture-cleanup",
-                command: "fixture",
-                version: "",
-                category: "runner_infra",
-                detail: "HTTP fixture wait failed during cleanup: \{err}",
-              })
-          }
+      let mut http_base : String? = None
+      let mut https_base : String? = None
+      if needs_http {
+        let (server, reader, url) = spawn_http_fixture_process(group)
+        http_base = Some(url)
+        group.add_defer(() => {
+          reader.close()
+          server.cancel()
+          @async.protect_from_cancel(() => {
+            ignore(server.wait()) catch {
+              err =>
+                reports.push({
+                  id: "http-fixture-cleanup",
+                  command: "fixture",
+                  version: "",
+                  category: "runner_infra",
+                  detail: "HTTP fixture cleanup failed: \{err}",
+                })
+            }
+          })
         })
-      })
+      }
+      if needs_https {
+        let fixture_root = @fs.tmpdir(prefix="mooncmd-release-https-")
+        let (server, url) = spawn_https_fixture_process(group, fixture_root)
+        https_base = Some(url)
+        group.add_defer(() => {
+          server.cancel()
+          @async.protect_from_cancel(() => {
+            ignore(server.wait()) catch {
+              err =>
+                reports.push({
+                  id: "https-fixture-cleanup",
+                  command: "fixture",
+                  version: "",
+                  category: "runner_infra",
+                  detail: "HTTPS fixture cleanup failed: \{err}",
+                })
+            }
+            @fs.rmdir(fixture_root, recursive=true)
+          })
+        })
+      }
       run_selected_cases(
-        manifest,
-        fixtures,
-        moonx,
-        docker,
-        oracle_image,
-        differential,
-        timeout_ms,
-        Some(http_base),
-        docker_user,
-        reports,
-        timings,
-        jobs,
-        report_dir,
+        manifest, fixtures, moonx, docker, oracle_image, differential, timeout_ms,
+        http_base, https_base, docker_user, reports, timings, jobs, report_dir,
       )
     }
   } else {
@@ -1021,6 +1086,7 @@ async fn run_driver() -> Unit {
       oracle_image,
       differential,
       timeout_ms,
+      None,
       None,
       docker_user,
       reports,

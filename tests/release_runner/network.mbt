@@ -1,2 +1,6 @@
 ///|
-using @testkit {run_http_fixture_process, spawn_http_fixture_process}
+using @testkit {
+  run_http_fixture_process,
+  spawn_http_fixture_process,
+  spawn_https_fixture_process,
+}

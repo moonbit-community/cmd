@@ -82,7 +82,7 @@ Wasm-GC **2/2** each. Native and Wasm CLI contracts each produced **592 semantic
 passes** in the first complete pass; the final Native/Wasm pass has **594**
 semantic passes each with zero failures, including signed-year and ANSI-width
 regressions. Boundaries and platform exclusions are separate.
-The candidate manifest selects **839** cases across **78** exact command
+The candidate manifest selects **841** cases across **78** exact command
 coordinates. Every current command retains its tests; no old assertion was
 deleted to get the repair through.
 
@@ -126,8 +126,8 @@ oracle disagreements: declined ln/mv interactive prompts return 1 in coreutils
 9.11. The candidate now distinguishes declines from successful no-clobber skips,
 preserves the prompt and files, and continues other operands. Both corrected
 contracts and additional EOF variants pass on Native/Wasm (25 selected semantic
-passes each). The two HTTPS cases remain source-suite scenarios but are excluded
-from the published manifest until a portable pinned TLS fixture is available.
+passes each). The two HTTPS cases use the fixed certificate fixture on POSIX
+hosts and are skipped on Windows, where the native TLS fixture is unavailable.
 These failed remote runs remain evidence and are not release acceptance.
 
 At the user's request, all Chinese Markdown prose and the 19 new F-series issue
@@ -138,8 +138,8 @@ as superseded. AGENTS.md now requires English documentation and issue content.
 
 ## Publication and final acceptance
 
-Source commit `b11ade8fab0a7fb4c95051e051cdafd90515da94` passed [CI 38119870855](https://github.com/moonbit-community/cmd/actions/runs/38119870855) on Linux/macOS/Windows. Final local Native and Wasm contracts each passed **615** semantic cases. The published selection is **839** cases across **78** command coordinates; the two HTTPS cases remain in the source suite and are excluded pending a portable pinned TLS fixture.
+Source commit `b11ade8fab0a7fb4c95051e051cdafd90515da94` passed [CI 38119870855](https://github.com/moonbit-community/cmd/actions/runs/38119870855) on Linux/macOS/Windows. Final local Native and Wasm contracts each passed **615** semantic cases. The published selection is **841** cases across **78** command coordinates; HTTPS uses the fixed POSIX certificate fixture and is skipped only on Windows.
 
 This repair publishes `cli/core@0.5.0`, `column/date/diff/strings/which@0.1.1`, `unlink@0.1.2`, and `curl/jq/jqlog/ln/mv/seq/wget@0.2.1`. Unchanged commands retain their existing coordinates. Every upload returned `Server status: 200 OK` and exact registry metadata was verified before advancing. Core was first, then commands in lexical order. The first column packaging check stopped before upload because the local registry index lacked the just-published core; `moon update` resolved it, and core was not republished.
 
-All 78 selected command asset caches were moved to a recoverable local backup before published acceptance, forcing fresh downloads. The first local smoke run completed the original 841-case selection; all selected cases passed except the two HTTPS scenarios, which were then removed from the published manifest because the release runner has no portable pinned TLS fixture. A rerun of the 839-case published selection and remote three-platform published smoke/Linux differential remain required before final acceptance. Receipts and reports are under `test-reports/fidelity-repair`.
+All 78 selected command asset caches were moved to a recoverable local backup before published acceptance, forcing fresh downloads. The release runner now starts the fixed HTTPS fixture used by the workspace runner, expands `${HTTPS_BASE}` for candidate and oracle invocations, and records the POSIX-only Windows boundary. Receipts and reports are under `test-reports/fidelity-repair`.

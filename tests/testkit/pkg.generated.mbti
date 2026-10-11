@@ -82,6 +82,8 @@ pub fn snapshots_equal(ArrayView[SnapshotEntry], ArrayView[SnapshotEntry]) -> Bo
 
 pub async fn spawn_http_fixture_process(@async.TaskGroup[Unit]) -> (@process.Process, @process.ReadFromProcess, String)
 
+pub async fn spawn_https_fixture_process(@async.TaskGroup[Unit], String) -> (@process.Process, String)
+
 pub fn wasm_path(String, String) -> String
 
 pub async fn write_reports(String, ArrayView[CaseReport]) -> Unit
