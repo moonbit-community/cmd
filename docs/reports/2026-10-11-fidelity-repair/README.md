@@ -165,3 +165,23 @@ execute command contracts with one job. The release runner now serializes
 fixed-timestamp and timestamp-observation cases while retaining parallelism for
 ordinary cases; this preserves the assertions and records the host-observation
 constraint.
+
+The follow-up runner repair is commit `a944eb60aba9942e69769f021f0c4f13fd5028af`.
+Its pull-request gate `38139810316` passed Linux, macOS and Windows. The full
+manual gate `38140928875` passed the same three platforms, including published
+smoke, published differential, pinned GNU comparison, stress, policy and
+scenario suites. The published smoke was rerun locally from exact registry
+coordinates with fresh asset downloads and completed with **616 semantic
+passes, 185 availability passes, 36 boundary passes, 4 explicit skips and 0
+failures** across 841 selected cases. The four skips are the documented
+platform boundaries; they are not semantic passes.
+
+`cli/ls@0.2.1` was uploaded after the source gate, returned `Server status: 200
+OK`, and its exact registry metadata was verified before the final published
+checks. No unchanged command was republished. The final local checks used
+`MOON_HOME="$HOME/.moon-accounts/cli"` for `moon fmt`, `moon info`,
+`moon check --target all --deny-warn`, `moon test`, and the release runner.
+Every Markdown document and all issue titles, bodies and comments created or
+updated during this repair were scanned for CJK characters; the scan returned
+no matches. Remaining unsupported behavior is still tracked in the English
+issues and compatibility records.
