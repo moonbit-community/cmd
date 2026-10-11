@@ -106,6 +106,18 @@ fn contains_any(text : String, needles : Array[String]) -> Bool {
 }
 
 ///|
+fn report_directory_name(id : String) -> String {
+  let digits = "0123456789abcdef"
+  let suffix = StringBuilder()
+  for character in id {
+    let code = character.to_int()
+    suffix.write_char(digits[code >> 4].unsafe_to_char())
+    suffix.write_char(digits[code & 0xF].unsafe_to_char())
+  }
+  id + "-" + suffix.to_string()
+}
+
+///|
 fn host_platform() -> String {
   @testkit.host_platform()
 }
@@ -277,7 +289,7 @@ async fn run_case_inner(
         @fs.mkdir(directory, recursive=true)
       }
       let work = @path.Path(@fs.realpath(directory))
-        .join(Path(fixture.id))
+        .join(Path(report_directory_name(fixture.id)))
         .to_string()
       guard !@fs.exists(work) else {
         fail("evidence already exists: \{work}; choose a fresh --report-dir")

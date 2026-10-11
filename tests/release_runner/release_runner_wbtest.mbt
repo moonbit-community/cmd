@@ -8,6 +8,18 @@ test "release manifest version validation" {
 }
 
 ///|
+test "report directories remain unique on case-insensitive filesystems" {
+  assert_true(
+    report_directory_name("repair-strings-wide-B") !=
+    report_directory_name("repair-strings-wide-b"),
+  )
+  assert_true(
+    report_directory_name("repair-strings-wide-L") !=
+    report_directory_name("repair-strings-wide-l"),
+  )
+}
+
+///|
 test "frozen release inventory survives catalog growth but candidates remain complete" {
   let row : ReleaseCommand = {
     name: "true",
