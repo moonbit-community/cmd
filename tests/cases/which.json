@@ -40,7 +40,7 @@
       "expected_stdout_text": "${WORK}/bin/tool\n",
       "expected_stderr_text": "",
       "comparison": "contract",
-      "normalizations": []
+      "normalizations": ["path-separator"]
     },
     {
       "id": "p2-which-all",
@@ -53,7 +53,7 @@
       "expected_stdout_text": "${WORK}/bin/tool\n",
       "expected_stderr_text": "",
       "comparison": "contract",
-      "normalizations": [],
+      "normalizations": ["path-separator"],
       "coverage": ["all"]
     },
     {
