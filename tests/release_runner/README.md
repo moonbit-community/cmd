@@ -71,7 +71,10 @@ when applicable selected cases need it.
 Repeat `--command NAME` or `--case ID` to select unions within each filter;
 command and case filters intersect. `--list` prints command/ID pairs before
 launching MoonX, Docker or HTTP fixtures. Unknown selectors and empty selections
-exit 2. `--jobs` defaults to 4 independent cases. There are no automatic retries.
+exit 2. `--jobs` defaults to 4 independent cases. Published `smoke` execution
+is serialized because the MoonX launcher may share dependency extraction state
+between concurrent child invocations; workspace runners retain their normal
+parallelism. There are no automatic retries.
 The default deadline is 120 seconds, overridable by positive `--timeout-ms` or
 case `timeout_ms`. A command's own exit 124 differs from a runner deadline.
 Platform-excluded cases report `skip` with a reason. Schema 1 `posix` remains

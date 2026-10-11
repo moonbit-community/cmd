@@ -1025,6 +1025,10 @@ async fn run_driver() -> Unit {
   }
   let timings : Map[String, Int64] = Map([])
   let differential = suite == "differential" || suite == "all"
+  // MoonX may compile or extract shared published dependencies concurrently;
+  // serialize the published smoke gate so launcher state cannot leak between
+  // otherwise isolated command fixtures. Workspace runners keep parallelism.
+  let execution_jobs = if suite == "smoke" { 1 } else { jobs }
   let needs_oracle = differential &&
     fixtures.any(fixture => {
       case_supported_on_host(fixture, host_platform()) &&
@@ -1091,7 +1095,7 @@ async fn run_driver() -> Unit {
       }
       run_selected_cases(
         manifest, fixtures, moonx, docker, oracle_image, differential, timeout_ms,
-        http_base, https_base, docker_user, reports, timings, jobs, report_dir,
+        http_base, https_base, docker_user, reports, timings, execution_jobs, report_dir,
       )
     }
   } else {
@@ -1108,7 +1112,7 @@ async fn run_driver() -> Unit {
       docker_user,
       reports,
       timings,
-      jobs,
+      execution_jobs,
       report_dir,
     )
   }

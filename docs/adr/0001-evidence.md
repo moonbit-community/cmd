@@ -32,6 +32,10 @@ dedicated serial slot in the published runner. Parallel ordinary cases retain
 the configured job limit. This is a test-observation constraint: concurrent
 host timestamp setup can make `ls` ordering and rejection-side-effect checks
 nondeterministic on macOS, while the command contract itself remains unchanged.
+The exact published MoonX smoke gate is fully serialized for the same reason:
+the launcher can share dependency extraction state across concurrent children.
+This is limited to release observation and does not reduce workspace runner
+parallelism.
 
 All product code, shared runtime code, test runners, fixtures, and automation
 must be pure MoonBit. Project-owned C/C++/Rust/JavaScript/TypeScript, FFI,
