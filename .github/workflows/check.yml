@@ -74,12 +74,12 @@ jobs:
       - name: Native command contracts
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
-          --suite contract --backend native --report-dir test-reports/contract-native
+          --suite contract --backend native --jobs 1 --report-dir test-reports/contract-native
 
       - name: Wasm command contracts
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
-          --suite contract --backend wasm --report-dir test-reports/contract-wasm
+          --suite contract --backend wasm --jobs 1 --report-dir test-reports/contract-wasm
 
       - name: Native interactive, network and lifecycle scenarios
         timeout-minutes: 3
