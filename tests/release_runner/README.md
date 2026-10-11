@@ -72,9 +72,11 @@ Repeat `--command NAME` or `--case ID` to select unions within each filter;
 command and case filters intersect. `--list` prints command/ID pairs before
 launching MoonX, Docker or HTTP fixtures. Unknown selectors and empty selections
 exit 2. `--jobs` defaults to 4 independent cases. Published `smoke` execution
-is serialized because the MoonX launcher may share dependency extraction state
-between concurrent child invocations; workspace runners retain their normal
-parallelism. There are no automatic retries.
+is serialized after macOS time contracts showed unexpected atime changes during
+concurrent runs; the source of those changes is not yet established. In
+differential runs, fixed-time, time-observation and delayed fixtures execute
+serially after all ordinary cases finish. No assertion is weakened and there
+are no automatic retries. Workspace runners retain their normal parallelism.
 The default deadline is 120 seconds, overridable by positive `--timeout-ms` or
 case `timeout_ms`. A command's own exit 124 differs from a runner deadline.
 Platform-excluded cases report `skip` with a reason. Schema 1 `posix` remains

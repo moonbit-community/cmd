@@ -27,15 +27,16 @@ argv, and records Windows as a platform skip when that fixture is unavailable.
 This keeps published network contracts aligned with workspace contracts while
 preserving the pure-MoonBit product boundary.
 
-Cases that create fixed timestamp fixtures or observe timestamp relations use a
-dedicated serial slot in the published runner. Parallel ordinary cases retain
-the configured job limit. This is a test-observation constraint: concurrent
-host timestamp setup can make `ls` ordering and rejection-side-effect checks
-nondeterministic on macOS, while the command contract itself remains unchanged.
-The exact published MoonX smoke gate is fully serialized for the same reason:
-the launcher can share dependency extraction state across concurrent children.
-This is limited to release observation and does not reduce workspace runner
-parallelism.
+Published time contracts produced intermittent atime changes on macOS under
+concurrent execution (runs 38135713734 and retained local reports). Their
+assertions remain unchanged. Smoke runs serially; differential runs complete
+ordinary cases first, then execute fixed-time, delayed and time-observation
+cases serially. A separate serial semaphore was rejected because it still let
+ordinary cases overlap them. The cost is longer release checks. The source of
+the observed atime changes remains unconfirmed; no MoonX extraction or product
+defect is inferred from this correlation. Restore parallel execution only after
+an isolated reproduction identifies and fixes the cause and repeated concurrent
+Native/Wasm/MoonX runs preserve the time contracts. No automatic retries.
 
 All product code, shared runtime code, test runners, fixtures, and automation
 must be pure MoonBit. Project-owned C/C++/Rust/JavaScript/TypeScript, FFI,

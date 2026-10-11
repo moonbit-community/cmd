@@ -36,7 +36,7 @@ test "timestamp fixtures are serialized" {
   let ordinary = release_case_for_test("ordinary", "echo")
   assert_true(requires_serial_fixture(timestamped))
   assert_false(requires_serial_fixture(ordinary))
-  assert_true(requires_serial_fixture({ ..ordinary, command: "ls", }))
+  assert_true(requires_serial_fixture({ ..ordinary, delay_ms: Some(5), }))
 }
 
 ///|

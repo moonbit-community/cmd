@@ -138,7 +138,7 @@ fn case_supported_on_host(fixture : ReleaseCase, platform : String) -> Bool {
 
 ///|
 fn requires_serial_fixture(fixture : ReleaseCase) -> Bool {
-  fixture.command == "ls" ||
+  fixture.delay_ms.unwrap_or(0) > 0 ||
   fixture.files.any(file => file.atime is Some(_) || file.mtime is Some(_)) ||
   fixture.observe
   .unwrap_or([])
@@ -761,22 +761,51 @@ async fn run_selected_cases(
   jobs : Int,
   report_root : String?,
 ) -> Unit {
+  if jobs > 1 && fixtures.any(requires_serial_fixture) {
+    run_selected_cases(
+      manifest,
+      fixtures.filter(fixture => !requires_serial_fixture(fixture)),
+      moonx,
+      docker,
+      oracle_image,
+      differential,
+      timeout_ms,
+      http_base,
+      https_base,
+      docker_user,
+      reports,
+      timings,
+      jobs,
+      report_root,
+    )
+    run_selected_cases(
+      manifest,
+      fixtures.filter(requires_serial_fixture),
+      moonx,
+      docker,
+      oracle_image,
+      differential,
+      timeout_ms,
+      http_base,
+      https_base,
+      docker_user,
+      reports,
+      timings,
+      1,
+      report_root,
+    )
+    return
+  }
   let platform = host_platform()
   let slots = @async.Semaphore(jobs)
-  let serial_slots = @async.Semaphore(1)
   @async.with_task_group <| group => {
     let tasks : Array[@async.Task[Array[CaseReport]]] = []
     for fixture in fixtures {
       tasks.push(
         group.spawn(() => {
           let reports : Array[CaseReport] = []
-          let serial = requires_serial_fixture(fixture)
-          if serial {
-            serial_slots.acquire()
-          } else {
-            slots.acquire()
-          }
-          defer (if serial { serial_slots.release() } else { slots.release() })
+          slots.acquire()
+          defer slots.release()
           let started = @async.now()
           defer {
             timings[fixture.id] = @async.now() - started
@@ -1025,9 +1054,9 @@ async fn run_driver() -> Unit {
   }
   let timings : Map[String, Int64] = Map([])
   let differential = suite == "differential" || suite == "all"
-  // MoonX may compile or extract shared published dependencies concurrently;
-  // serialize the published smoke gate so launcher state cannot leak between
-  // otherwise isolated command fixtures. Workspace runners keep parallelism.
+  // macOS published time contracts failed intermittently under concurrent
+  // launchers. Preserve their assertions and run smoke serially while the
+  // source of the observed atime changes remains under investigation.
   let execution_jobs = if suite == "smoke" { 1 } else { jobs }
   let needs_oracle = differential &&
     fixtures.any(fixture => {
