@@ -36,6 +36,8 @@ pub async fn execute_contract(Case, String, Bool, String, http_base? : String) -
 
 pub fn expand_args(ArrayView[String], String, http_base? : String) -> Array[String]
 
+pub fn expand_environment(Map[String, String], String, http_base? : String) -> Map[String, String]
+
 pub fn expand_fixture_content(Bytes, http_base? : String) -> Bytes
 
 pub fn expand_text(String, String, http_base? : String) -> String

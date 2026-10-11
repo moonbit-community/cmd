@@ -2,8 +2,8 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-10
-Revision: Add 16 local command candidates and pinned oracle comparisons; validate candidate completeness without invalidating frozen published inventories.
+Updated: 2026-10-11
+Revision: Add four pure-MoonBit P2 command candidates, repair environment placeholder expansion in the shared testkit, and keep candidate core 0.4.0 separate from published core 0.3.0; validate candidate completeness without invalidating frozen published inventories.
 
 ## Target and decision
 
@@ -91,6 +91,16 @@ Current refresh (2026-09-26): the public registry resolves
 the 50 pre-existing workspace modules. The current published index did not contain a
 released 0.22.5. Native and Wasm warning-denied checks passed after the
 refresh; command completion evidence remains per-package and per-backend.
+
+The 2026-10-11 P2 candidate adds `strings`, `column`, `which` and `date` as
+independent 0.1.0 command modules. Their Native and Wasm contract selections
+pass 19 semantic cases plus the explicit encoding boundary; the release
+manifest contains 78 command coordinates and remains validation-only until the
+three-platform source gate and registry checks pass. The shared testkit now
+expands the `${WORK}` placeholder in environment values as it already does in
+arguments and fixture text. This is a test-observation correction, not a
+product authorization rule; candidate status remains until exact MoonX
+acceptance is complete.
 
 Baseline: moon/moonrun 0.1.20260920; moonc/core 0.10.14+7d59c7ec9;
 async 0.22.4; x 0.5.5; moonjq 0.1.2. The dependency refresh found no older external

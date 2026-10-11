@@ -76,6 +76,10 @@
     "../cases/fmt.json",
     "../cases/gzip.json",
     "../cases/gunzip.json",
-    "../cases/zcat.json"
+    "../cases/zcat.json",
+    "../cases/strings.json",
+    "../cases/column.json",
+    "../cases/which.json",
+    "../cases/date.json"
   ]
 }

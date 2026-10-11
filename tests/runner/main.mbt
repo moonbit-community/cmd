@@ -288,7 +288,9 @@ async fn run_case(
   @testkit.prepare_fixture(candidate_root, fixture, http_base~)
   @testkit.prepare_fixture(oracle_root, fixture, http_base~)
   let stdin = fixture.input(root=candidate_root, http_base~)
-  let environment = controlled_environment(fixture.environment)
+  let environment = controlled_environment(
+    @testkit.expand_environment(fixture.environment, candidate_root, http_base~),
+  )
   let args = @testkit.expand_args(
     expand_fixture_args(fixture.args, http_base, https_base),
     candidate_root,

@@ -76,4 +76,8 @@ members = [
   "./commands/xargs",
   "./commands/xxd",
   "./commands/yes",
+  "./commands/strings",
+  "./commands/column",
+  "./commands/which",
+  "./commands/date",
 ]

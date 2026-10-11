@@ -21,6 +21,19 @@ pub fn expand_args(
 }
 
 ///|
+pub fn expand_environment(
+  values : Map[String, String],
+  root : String,
+  http_base? : String,
+) -> Map[String, String] {
+  let expanded : Map[String, String] = Map([])
+  for name, value in values {
+    expanded[name] = expand_text(value, root, http_base?)
+  }
+  expanded
+}
+
+///|
 pub fn expand_fixture_content(content : Bytes, http_base? : String) -> Bytes {
   guard http_base is Some(base) else { return content }
   let text = @utf8.decode(content) catch { _ => return content }

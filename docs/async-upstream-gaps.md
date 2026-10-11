@@ -6,7 +6,7 @@ native stub，或调用宿主同名命令来绕过公开 MoonBit API。宿主工
 固定版本 oracle、测试观察、CI 设置和诊断采集。无法实现的操作必须保持明确
 拒绝，并记录缺失 API、兼容性代价和解除条件。
 
-Updated: 2026-10-10（补充 gzip 纯 MoonBit 解码替代路径，以及 patch/split 的精确元数据边界）。此前 2026-09-21 的复核针对正式发布的 `moonbitlang/async 0.22.1`、
+Updated: 2026-10-11（确认 strings、column、which、date 的纯 MoonBit 数据与格式子集不构成 async 阻塞；候选进入发布门禁）。此前 2026-09-21 的复核针对正式发布的 `moonbitlang/async 0.22.1`、
 `moonbitlang/x 0.5.5`、`moonjq 0.1.2`；工具链为 moon/moonrun
 `0.1.20260920`、moonc/core `0.10.14+7d59c7ec9`。这里的版本结论对应当时复核日期；
 moonjq 的传递依赖解析到相同 async/x 版本，没有残留旧版本。

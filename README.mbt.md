@@ -6,10 +6,11 @@ system for preserving GNU/POSIX and command-upstream behavior. Authorization
 belongs to the caller or host; commands preserve the caller's environment and
 stream semantics.
 
-**0.3.0 is published** as `cli/core`. The original 47 command modules remain at
+`cli/core@0.3.0` remains published. The workspace candidate advances core to
+**0.4.0** for four new command contracts. The original 47 command modules remain at
 **0.2.0**, the first eleven P0 modules remain at **0.1.1**, and the second
-sixteen-command batch is published at **0.1.0**. The workspace contains 75
-command modules: 74 published commands and local-only `timeout`. Linux, macOS
+sixteen-command batch is published at **0.1.0**. The workspace contains 79
+command modules: 74 published commands, four local 0.1.0 candidates and local-only `timeout`. Linux, macOS
 and Windows passed the release source checks, including Linux Native/Wasm
 pinned oracle comparisons. Exact-version MoonX acceptance for the second batch
 is recorded in the [release evidence](docs/reports/2026-10-11-release-0.1.0/README.md);
@@ -38,18 +39,19 @@ MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/jq@0.2.0 -- -r '.name'
 
 ## Commands
 
-The repository contains 75 executable commands for local builds. The current
+The repository contains 79 executable commands for local builds. The current
 Mooncakes registry exposes 74 of them through MoonX: 47 commands at 0.2.0, the
 eleven first-batch commands at 0.1.1, and the sixteen second-batch commands at
-0.1.0. `timeout` remains outside the releasable
+0.1.0. `strings`, `column`, `which` and `date` are local 0.1.0 candidates;
+`timeout` remains outside the releasable
 profile because portable process-group cancellation is not available.
 
 ### Text and data
 
 ```text
-base32 base64 cat cksum cmp comm cut diff expand expr fmt fold grep gunzip gzip
-head hexdump join jq jqlog md5sum nl od paste printf rev sed sha1sum sha256sum
-sha512sum sort tac tail tr uniq wc xxd zcat
+base32 base64 cat cksum cmp column comm cut date diff expand expr fmt fold grep
+gunzip gzip head hexdump join jq jqlog md5sum nl od paste printf rev sed sha1sum
+sha256sum sha512sum sort strings tac tail tr uniq wc xxd zcat
 ```
 
 ### Files and paths
@@ -63,7 +65,7 @@ unexpand unlink
 
 ```text
 chmod echo env false make printenv seq sh sleep test timeout true wget curl
-xargs yes
+which xargs yes
 ```
 
 Commands implement their behavior in MoonBit and use explicit runtime APIs for

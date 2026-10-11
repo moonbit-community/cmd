@@ -343,6 +343,24 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("zcat", Core, FileOrStdin, ByteStream, [FileRead], [
       "stdout", "decompress", "test", "no-name", "quiet",
     ]),
+    contract("strings", Core, FileOrStdin, LineStream, [FileRead], [
+      "all", "bytes", "encoding", "octal", "print-file-name", "radix", "version",
+    ]),
+    contract("column", Core, FileOrStdin, LineStream, [FileRead], [
+      "table", "separator", "output-separator", "version",
+    ]),
+    contract(
+      "which",
+      Core,
+      NoInput,
+      LineStream,
+      [FileRead],
+      ["all", "silent", "version"],
+      exit_codes=[0, 1, 2],
+    ),
+    contract("date", Core, NoInput, LineStream, [], [
+      "utc", "date", "iso-8601", "rfc-email", "version",
+    ]),
     contract(
       "xargs",
       Restricted,

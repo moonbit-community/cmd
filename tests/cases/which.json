@@ -1,0 +1,88 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "p2-which-direct",
+      "command": "which",
+      "args": ["./tool"],
+      "stdin_text": "",
+      "files": [{"path": "tool", "content_text": "placeholder\n"}],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "./tool\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": []
+    },
+    {
+      "id": "p2-which-version",
+      "command": "which",
+      "args": ["--version"],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_contains": "which (cli)",
+      "diagnostic_reason": "The command/version prefix is stable; exact package version is checked separately.",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": ["version"]
+    },
+    {
+      "id": "p2-which-path",
+      "command": "which",
+      "args": ["tool"],
+      "stdin_text": "",
+      "files": [{"path": "bin/tool", "content_text": "placeholder\n"}],
+      "environment": {"PATH": "${WORK}/bin"},
+      "expected_status": 0,
+      "expected_stdout_text": "${WORK}/bin/tool\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": []
+    },
+    {
+      "id": "p2-which-all",
+      "command": "which",
+      "args": ["-a", "tool"],
+      "stdin_text": "",
+      "files": [{"path": "bin/tool", "content_text": "placeholder\n"}],
+      "environment": {"PATH": "${WORK}/bin"},
+      "expected_status": 0,
+      "expected_stdout_text": "${WORK}/bin/tool\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": ["all"]
+    },
+    {
+      "id": "p2-which-silent",
+      "command": "which",
+      "args": ["-s", "missing-command"],
+      "stdin_text": "",
+      "files": [],
+      "environment": {"PATH": "${WORK}"},
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": ["silent"]
+    },
+    {
+      "id": "p2-which-missing",
+      "command": "which",
+      "args": ["missing-command"],
+      "stdin_text": "",
+      "files": [],
+      "environment": {"PATH": "${WORK}"},
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "missing-command",
+      "diagnostic_reason": "The missing-command token and nonzero status are stable; wording is command-owned.",
+      "comparison": "contract",
+      "normalizations": []
+    }
+  ]
+}

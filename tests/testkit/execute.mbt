@@ -76,7 +76,9 @@ pub async fn execute_contract(
       fixture.timeout_ms.unwrap_or(15000),
       stdin=fixture.input(root=fixture_root, http_base?),
       cwd=fixture.working_directory(fixture_root),
-      extra_env=controlled_environment(fixture.environment),
+      extra_env=controlled_environment(
+        expand_environment(fixture.environment, fixture_root, http_base?),
+      ),
     )
     let observed = completed.output
     result = Some(observed)

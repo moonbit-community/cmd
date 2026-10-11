@@ -805,6 +805,49 @@
         "stdin",
         "files"
       ]
+    },
+    {
+      "name": "strings",
+      "baseline": "binutils-2.44",
+      "status": "partial",
+      "native": "p2-candidate",
+      "wasm": "p2-candidate",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "column",
+      "baseline": "util-linux-2.40",
+      "status": "partial",
+      "native": "p2-candidate",
+      "wasm": "p2-candidate",
+      "capabilities": [
+        "stdin",
+        "files"
+      ]
+    },
+    {
+      "name": "which",
+      "baseline": "which-2.23",
+      "status": "partial",
+      "native": "p2-candidate",
+      "wasm": "p2-candidate",
+      "capabilities": [
+        "environment",
+        "files"
+      ]
+    },
+    {
+      "name": "date",
+      "baseline": "coreutils-9.11",
+      "status": "partial",
+      "native": "p2-candidate",
+      "wasm": "p2-candidate",
+      "capabilities": [
+        "clock"
+      ]
     }
   ],
   "cases": [],
@@ -883,6 +926,10 @@
     "../../cases/fmt.json",
     "../../cases/gzip.json",
     "../../cases/gunzip.json",
-    "../../cases/zcat.json"
+    "../../cases/zcat.json",
+    "../../cases/strings.json",
+    "../../cases/column.json",
+    "../../cases/which.json",
+    "../../cases/date.json"
   ]
 }
