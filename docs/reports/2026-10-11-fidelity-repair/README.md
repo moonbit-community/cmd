@@ -1,7 +1,10 @@
 # Command fidelity repair — final acceptance record
 
 Started 2026-10-11 from `f48398d6d7d4ca20d45bce22e107962612513c73`, on
-`codex/command-fidelity-repair`. This report is not release acceptance.
+`codex/command-fidelity-repair`.
+
+The opening sections preserve the historical repair evidence; the final
+acceptance record is at the end of this document.
 
 The user authorized issue creation, repair, second review, three-platform CI,
 serial publication of changed packages and exact-version MoonX acceptance.
@@ -156,23 +159,31 @@ Remote published run `38131874801` passed Linux, including the pinned
 differential gate, and macOS. Windows reported one false failure because the
 POSIX-only `chmod` symbolic-assignment contract lacked its `host_platforms`
 condition even though the command README rejects Windows permission mutation.
-The case is corrected to skip on Windows with an explicit reason; the next
-three-platform run is the release gate for this test-only repair.
+The case was corrected to skip on Windows with an explicit reason and was
+included in the later three-platform acceptance run recorded below.
 
 Run `38135713734` then exposed a second runner issue on macOS: six timestamp
 contracts were nondeterministic only under the release runner's default four
-jobs. The same cases passed serially and the workspace runners, which already
-execute command contracts with one job. The release runner now serializes
-fixed-timestamp and timestamp-observation cases while retaining parallelism for
-ordinary cases; this preserves the assertions and records the host-observation
-constraint.
+jobs. The same cases passed serially and in the workspace runners, which already
+execute command contracts with one job. Published smoke now runs serially.
+Differential runs finish ordinary cases first, then run fixed-time, delayed and
+time-observation cases serially. Assertions remain unchanged. The source of the
+atime changes is unconfirmed; ADR-0001 records the cost and conditions for
+restoring concurrency.
 
 The follow-up runner repair is commit `a944eb60aba9942e69769f021f0c4f13fd5028af`.
 Its pull-request gate `38139810316` passed Linux, macOS and Windows. The full
-manual gate `38140928875` passed the same three platforms, including published
-smoke, published differential, pinned GNU comparison, stress, policy and
-scenario suites. The published smoke was rerun locally from exact registry
-coordinates with fresh asset downloads and completed with **616 semantic
+manual gate `38140928875` passed published smoke, policy and scenario suites
+on the same three platforms. Linux additionally passed published differential,
+pinned GNU comparisons and stress. Linux published differential reported
+**801 semantic passes, 36 boundary passes, 4 skips and 0 failures**. Windows
+published smoke reported **561 semantic passes, 174 availability passes,
+36 boundary passes, 70 platform skips and 0 failures**. Linux and macOS
+published smoke each reported **616 semantic passes, 185 availability passes,
+36 boundary passes, 4 skips and 0 failures**.
+
+After the fresh-download checks above, published smoke was rerun locally from
+the exact registry coordinates and completed with **616 semantic
 passes, 185 availability passes, 36 boundary passes, 4 explicit skips and 0
 failures** across 841 selected cases. The four skips are the documented
 platform boundaries; they are not semantic passes.
@@ -183,6 +194,6 @@ checks. No unchanged command was republished. The final local checks used
 `MOON_HOME="$HOME/.moon-accounts/cli"` for `moon fmt`, `moon info`,
 `moon check --target all --deny-warn`, `moon test`, and the release runner.
 Every Markdown document and all issue titles, bodies and comments created or
-updated during this repair were scanned for CJK characters; the scan returned
+updated during this repair were scanned for Han characters; the scan returned
 no matches. Remaining unsupported behavior is still tracked in the English
 issues and compatibility records.
