@@ -126,11 +126,20 @@ oracle disagreements: declined ln/mv interactive prompts return 1 in coreutils
 9.11. The candidate now distinguishes declines from successful no-clobber skips,
 preserves the prompt and files, and continues other operands. Both corrected
 contracts and additional EOF variants pass on Native/Wasm (25 selected semantic
-passes each); the candidate now selects 841 cases. These failed remote runs
-remain evidence and are not release acceptance.
+passes each). The two HTTPS cases remain source-suite scenarios but are excluded
+from the published manifest until a portable pinned TLS fixture is available.
+These failed remote runs remain evidence and are not release acceptance.
 
 At the user's request, all Chinese Markdown prose and the 19 new F-series issue
 titles/bodies were translated into English. Issue #25 was already English.
 Historical reports retain dates, measurements and limitations, with language
 revision notes; a historical erroneous seq/GNU statement is explicitly identified
 as superseded. AGENTS.md now requires English documentation and issue content.
+
+## Publication and final acceptance
+
+Source commit `b11ade8fab0a7fb4c95051e051cdafd90515da94` passed [CI 38119870855](https://github.com/moonbit-community/cmd/actions/runs/38119870855) on Linux/macOS/Windows. Final local Native and Wasm contracts each passed **615** semantic cases. The published selection is **839** cases across **78** command coordinates; the two HTTPS cases remain in the source suite and are excluded pending a portable pinned TLS fixture.
+
+This repair publishes `cli/core@0.5.0`, `column/date/diff/strings/which@0.1.1`, `unlink@0.1.2`, and `curl/jq/jqlog/ln/mv/seq/wget@0.2.1`. Unchanged commands retain their existing coordinates. Every upload returned `Server status: 200 OK` and exact registry metadata was verified before advancing. Core was first, then commands in lexical order. The first column packaging check stopped before upload because the local registry index lacked the just-published core; `moon update` resolved it, and core was not republished.
+
+All 78 selected command asset caches were moved to a recoverable local backup before published acceptance, forcing fresh downloads. The first local smoke run completed the original 841-case selection; all selected cases passed except the two HTTPS scenarios, which were then removed from the published manifest because the release runner has no portable pinned TLS fixture. A rerun of the 839-case published selection and remote three-platform published smoke/Linux differential remain required before final acceptance. Receipts and reports are under `test-reports/fidelity-repair`.

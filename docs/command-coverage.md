@@ -9,11 +9,11 @@ Missing released public APIs require explicit boundaries, ADRs and unlock
 conditions.
 
 The directory/catalog/manifest/registry inventory contains **79 local commands,
-78 published and local-only timeout**. Before the fidelity repair, published
-versions were 47 at 0.2.0, 11 at 0.1.1 and 20 at 0.1.0; core was 0.4.0.
-The in-progress repair changes existing package versions, not these counts.
-Core is a library and is excluded. Publication does not imply complete GNU/POSIX
-compatibility; per-command limits are in the [support record](compatibility.md).
+78 published and local-only timeout**. The fidelity repair is published with
+core 0.5.0, `ls@0.2.1`, and the changed command coordinates listed in the
+[support record](compatibility.md). The historical counts below describe the
+inventory snapshot that established these priorities. Core is a library and is
+excluded. Publication does not imply complete GNU/POSIX compatibility.
 
 Of 59 selected common gaps, **31/59 (52.5%)** now have published modules:
 the first 11 (`base32, mktemp, realpath, rev, tac, tree, unlink, yes, cksum,
