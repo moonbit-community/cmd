@@ -152,6 +152,21 @@ stopped/continued wait events 和 PTY。Native 有底层 fd 并不等于已公�
 
 ## 不应向 async 归因的项目工作
 
+**2026-10-11：修正新增包的归因。** `which@0.1.0` 当前只检查 kind，
+对 mode 0644 文件也成功。公开 `fs.can_execute` 已存在；同一 macOS fixture
+实测返回 false，Native/Wasm/精确 MoonX 的 which 则返回 0。这是项目未接入
+访问检查，不是缺 mode metadata 阻塞；Windows PATHEXT 与访问语义另立合同。
+模式位读取仍然是 cp/chmod 的真实缺口，不能反向用 can_execute 还原 mode。
+
+`column` 默认复制、表格末尾 LF、字段排版，`strings` 的 radix/encoding/TAB
+错误，`date` 忽略 TZ，以及 rev/tac 多文件均属项目工作。date 可研究复用
+diff 已采用的 public x/time/TZif；设置时钟才需要额外 setter。tac regex、
+nl pBRE 可研究复用 core/bytere，不能将 matcher 尚未集成写成 async 阻塞。
+tree 的 JSON/HTML/filters/显式颜色同样独立于 readlink/mode 缺口。
+这次记录没有实现这些修复。版本和原始结果见
+[本轮实际调用](reports/2026-10-11-command-followups/README.md)，完整排序见
+[79 个命令清单](command-followups.md)。
+
 **2026-10-10：gzip 编解码可用纯 MoonBit 补齐。** 0.22.4 的公开
 `gzip.Decoder` 只处理无可选 header 的单 member；同一 read 中遇到 CRC 或
 截断 trailer 会抛错，调用者不能总是取得该 read 已产生的输出。公开

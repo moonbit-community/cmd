@@ -13,5 +13,6 @@ printf 'a--b--' | moonx cli/tac -b -s --
 
 `-s`/`--separator` selects a fixed separator and `-b`/`--before` places
 separators before records. Standard input or one file is accepted. The
-`-r`/`--regex` form and multiple input files are rejected because the released
-public APIs do not provide the required byte-oriented regex contract.
+`-r`/`--regex` form and multiple input files are not implemented and are
+rejected. These are command implementation gaps; multiple-file reading is
+available, and a byte-oriented matcher can be implemented in MoonBit.

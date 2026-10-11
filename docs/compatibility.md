@@ -16,6 +16,14 @@ MoonX acceptance, recorded in the
 0.1.x manifests remain unchanged for replay. See
 [public API gaps](async-upstream-gaps.md).
 
+The follow-up audit found **known fidelity deviations** in the shipped
+`strings`, `column`, `which` and `date` profiles. Native, Wasm and exact MoonX
+0.1.0 observations agree; passing the earlier selected contracts did not cover
+these inputs. The rows below now identify the defects instead of presenting
+them as upstream API restrictions. See the [prioritized 79-command register](command-followups.md)
+and [raw observations](reports/2026-10-11-command-followups/README.md).
+No product fix or new release is implied by this documentation correction.
+
 The current workspace uses async 0.22.4 and retains only the documented
 local-only `timeout` profile. It also corrects custom Cookie plus jar handling:
 curl sends two separate fields; wget sends the explicit field instead of the
@@ -134,10 +142,10 @@ claiming success; `local-only` is absent from MoonX by design.
 | Command | Status | Measured profile | Observed boundary or open evidence |
 | --- | --- | --- | --- |
 | `fold` | subset verified | Byte/control-column folding, width, space breaks, files/stdin | C-locale profile; verify UTF-8 separately |
-| `strings` | subset verified | Printable C-locale byte sequences, minimum length, radix and file-name prefixes | Wide/multibyte encodings and non-C locale behavior are boundary cases; published 0.1.0 |
-| `column` | subset verified | Whitespace/delimiter table alignment and copy-through mode | Terminal-width and full util-linux grammar are not claimed; published 0.1.0 |
-| `which` | subset verified | Direct and PATH regular-file lookup, `-a`, `-s` and version | Executable mode, aliases and shell functions require public metadata/runtime support; published 0.1.0 |
-| `date` | subset verified | Deterministic UTC `-d`, common format fields, ISO seconds, RFC email and version | Local timezone DB, relative dates and clock mutation are not claimed; published 0.1.0 |
+| `strings` | known deviations | Basic printable-byte extraction has selected contracts; published 0.1.0 | `-t d/-e s` wrongly reject, `-e b` uses the wrong encoding; TAB handling, offset/prefix rules need correction. Wide/object/locale modes are project work |
+| `column` | known deviations | Selected `-t/-s/-o` contracts; published 0.1.0 | Default copy-through differs from columnation; `-t` loses final LF. Table padding, multi-file layout and full grammar are project work; auto terminal width needs public APIs |
+| `which` | known deviations | Direct/PATH regular-file lookup, `-a/-s`; published 0.1.0 | Non-executable files falsely match. Public can_execute exists: POSIX access filtering is project work, not a mode-metadata blocker. Windows lookup and shell-state extensions need separate contracts |
+| `date` | known deviations | Explicit UTC `-d`, selected formats, ISO/RFC modes; published 0.1.0 | Without `-u`, caller TZ is still ignored. TZif/calendar parsing is implementable; relative dates/directives are project work; clock setting needs an API |
 | `od`, `hexdump` | subset verified | Integer and character formats, offsets, lengths, duplicate blocks, raw byte input | Floating od types and custom hexdump format language are project work; default integers use little endian |
 | `md5sum`, `sha1sum`, `sha512sum` | subset verified | Incremental hashes, file/stdin, GNU check records and check flags | Tagged formats and platform text transformations are not claimed |
 | `sed` | subset verified | BRE/ERE substitution, captures, address/range selection, p/d/q/=, ordered scripts | No in-place edit, hold space, branching or complete GNU grammar; unsupported syntax rejects |
@@ -192,13 +200,13 @@ claiming success; `local-only` is absent from MoonX by design.
 | `tac` | subset verified | Reverse records from stdin or one file, `-s/--separator`, `-b/--before` | Regex separators and multiple input files are rejected; locale diagnostics not claimed |
 | `tee` | subset verified | stdin to stdout/files and `-a` append, partial-output ordering | Signal diagnostics not claimed |
 | `test` | subset verified | string/integer, file kinds, access, regular-file size, `!`, `-a`, `-o`, and the exercised dangling-link path | `-N`/`-nt`/`-ot` and special-file positive fixtures need independent probes; complete unary/binary ambiguity not claimed |
-| `tree` | subset verified | Sorted recursive display, `-a -d -f -L --noreport`, multiple roots | Symlink targets, color, permissions, device metadata and extended reports are rejected or not claimed because public async fs lacks readlink and mode APIs |
+| `tree` | subset verified | Sorted recursive display, `-a -d -f -L --noreport`, multiple roots | Symlink targets and metadata need readlink/mode/identity APIs; color, filters and extended output formats are separate project work |
 | `timeout` | local-only | local duration and expiry returned 124 | No published process-group cancellation |
 | `touch` | subset verified | Create missing files; `-c` missing-file no-op | Existing-file timestamp updates and setters explicitly fail without content rewrites |
 | `tr` | subset verified | translate/delete/squeeze/`-c/-C` complement, `-t`, ranges, C-locale classes, octal/equivalence/repetition forms | Verified profile is byte-oriented; locale data beyond C is not claimed |
 | `true` | subset verified | any args: no output, status 0; help/version | Metadata text is package-versioned |
 | `uniq` | subset verified | adjacent filtering, `-c -d -u -i`, `-f -s -w -z`, exact count spacing | Fixed C-locale field/character comparison; locale collation not claimed |
-| `unlink` | subset verified | Multiple regular-file or symlink operands, ordered partial failure, `--help`/`--version` | Directories are rejected; owner metadata and every diagnostic byte are not claimed |
+| `unlink` | subset verified | Regular-file/symlink removal, `--help`/`--version` | Multiple operands are a project extension with ordered effects; GNU rejects extras before mutation. Track fidelity correction separately; directories reject |
 | `unexpand` | subset verified | Leading/all blank conversion, `--first-only`, `-t` stops, stdin or multiple files | Locale display widths and non-byte tab semantics are not claimed |
 | `wc` | subset verified | `-l -w -c -m -L`, combinations, aligned multi-file totals, `--files0-from`, files/stdin | `-L` is the C-locale display-width profile; full locale diagnostics not claimed |
 | `wget` | subset verified | Existing transfer profile plus challenge-based Basic credentials across destinations; `--auth-no-challenge` sends explicit credentials on every request, including redirects; load/save cookies, session-cookie option, shared redirect jar; workspace lets explicit Cookie override stored cookies | No recursive mirror/FTP/HSTS/PSL/IDNA; consumed stdin bodies cannot replay an auth challenge; cross-port and cross-operand authentication caching and full progress text not claimed; explicit Cookie override is not in published 0.2.0 |

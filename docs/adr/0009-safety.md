@@ -2,8 +2,8 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-10
-Revision: Preserve gzip trailer-error output and distinguish exact patch preflight boundaries from GNU partial-hunk application.
+Updated: 2026-10-11
+Revision: Record observed successful-but-wrong profiles as defects; do not bless them through retrospective ADRs or passing local contracts.
 
 ## Target and decision
 
@@ -33,5 +33,18 @@ Historical results remain in [the audit](../reports/2026-09-19-command-fidelity-
 Candidate runtime results are recorded separately from published versions.
 
 ## Revisit when
+
+The 2026-10-11 inventory found accepted requests with wrong meaning in shipped
+strings/column/which and a caller-timezone deviation in date. They are recorded
+in ADR-0003/0006/0008 and the prioritized register with actual Native/Wasm/MoonX
+observations. Retain historical release reports, but annotate current support
+claims and add upstream fixtures when fixing. Do not downgrade a wrong result
+to availability or call a parser reinterpretation an accepted boundary merely
+because a previous self-authored contract passed. GNU unlink's extra-operand
+rejection must also remain distinct from the current multi-operand extension;
+future fidelity correction must check that neither file is removed.
+
+This audit documents rather than fixes those behaviors. Merging the historical
+implementation does not close the follow-ups or authorize another publication.
 
 Document actual partial-effect rules for newly supported operations. Reopen rejected operations when public APIs can implement them correctly; record alternatives, cost and measured evidence.

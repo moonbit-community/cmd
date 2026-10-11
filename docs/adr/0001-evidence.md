@@ -3,7 +3,7 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-10-11
-Revision: Publish the four pure-MoonBit P2 command packages with core 0.4.0 after the three-platform source gate, repair environment placeholder expansion in the shared testkit, and record exact-version MoonX acceptance without invalidating frozen published inventories.
+Revision: Map all 31 migrated commands to canonical decisions and inventory 79 command follow-ups; distinguish new fidelity findings from the frozen successful release selections.
 
 ## Target and decision
 
@@ -34,6 +34,15 @@ Neither, nor a platform skip, contributes to semantic compatibility. Only a
 passing contract or differential with every required observation contributes.
 Contracts assert both output streams and status; diagnostic fragments require a
 reason. Absence of internal errors alone is not a behavioral contract.
+
+Passing a self-authored contract proves that contract, not upstream equivalence.
+The [2026-10-11 follow-up audit](../reports/2026-10-11-command-followups/README.md)
+finds missing GNU meanings in strings, executable access in which, default/LF
+behavior in column and caller TZ handling in date despite passing published
+selections. These are explicit follow-ups in current support records. Keep old
+reports immutable and correct faulty expectations only with upstream evidence.
+The [79-command register](../command-followups.md) separates defects, project
+work, public API gaps, platform behavior and missing measurements.
 
 Validate option coverage against the actual selected cases, then report platform
 applicability, execution and passing observations separately. An empty option

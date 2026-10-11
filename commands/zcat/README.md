@@ -1,8 +1,8 @@
 # zcat
 
-Version **0.1.0** is a local candidate. The
-[support record](../../docs/compatibility.md) distinguishes workspace checks from
-published MoonX behavior; the examples become available after publication.
+Version **0.1.0** behavior is documented here. The
+[support record](../../docs/compatibility.md) separates local verification from
+published MoonX behavior; `moonx` examples use registry releases.
 
 Write the decoded contents of gzip files to stdout, keeping the input files:
 

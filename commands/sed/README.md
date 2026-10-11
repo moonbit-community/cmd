@@ -2,7 +2,7 @@
 
 Version **0.1.0** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; this version is an unpublished candidate.
+published MoonX behavior; `moonx` examples use registry releases.
 
 Edit byte-oriented text streams with `p`, `d`, `q`, `=`, and substitution
 `s/REGEXP/REPLACEMENT/`. Read stdin when no input file is given or an operand

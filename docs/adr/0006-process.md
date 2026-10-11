@@ -2,8 +2,8 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-09-21
-Revision: Recheck public cancellation callbacks as a signal workaround; retain direct-child cleanup and deadline/status separation.
+Updated: 2026-10-11
+Revision: Record yes pipe termination and which lookup choices; correct the executable-access API attribution without claiming platform-complete command resolution.
 
 ## Target and decision
 
@@ -47,6 +47,36 @@ Baseline: async 0.22.4, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-20.
 Upgrade-only Native 104/104 and Wasm 91/91 tests passed after adapting fixture cleanup. Shell/process tests and continuous-input probes cover owned pipes and waiting. The upstream gap register separates exec, group signalling, terminal ownership and lifecycle events.
 Historical results remain in [the audit](../reports/2026-09-19-command-fidelity-audit.md).
 Candidate runtime results are recorded separately from published versions.
+
+## Migrated process-adjacent profiles
+
+`yes@0.1.1` uses a repeated byte producer, public stream writes and downstream
+closure to terminate. The target is an unbounded producer without unbounded
+allocation. Reject generating an infinite in-memory string, swallowing a write
+failure as success, or invoking host yes. Exact SIGPIPE status/diagnostic parity
+is still unverified and is distinct from observing EOF/termination. Evidence:
+`tests/cases/yes.json`, pipe lifecycle coverage and the 0.1.1 release report on
+async 0.22.4 / MoonBit 2026-09-20. Expand the signal claim only after closed-pipe
+status/cleanup comparisons on Native/Wasm per host; ordinary output is usable.
+
+`which@0.1.0` currently splits PATH by actual host platform, preserves its
+ordering, checks direct operands and supports `-a/-s`. The initial regular-file
+test was chosen to avoid depending on absent mode metadata, but that reasoning
+overlooked public `fs.can_execute`: access permission is different from reading
+mode bits. A mode-0644 file returns success from all three current entrypoints
+(Native, Wasm and exact MoonX) while public can_execute and macOS which reject
+it. This is a **known defect**, not an accepted approximation or async blocker.
+Evidence: [2026-10-11 probe](../reports/2026-10-11-command-followups/README.md),
+async 0.22.4 `fs/pkg.generated.mbti` and `access_test.mbt`.
+
+Use public access checks plus file kind for a future POSIX fix; do not infer
+executable access from suffixes or read mode through host tools. PATH errors,
+symlinks, empty entries and backslash filenames need separate tests. Windows
+PATHEXT/executable lookup is a platform-specific project decision, not solved
+by POSIX chmod/access. Shell aliases/functions belong to shell state and cannot
+be inferred from an unrelated process. Close the issue only after pinned POSIX
+oracle cases and explicit Windows lookup fixtures pass. Mode-query absence
+remains real for cp/chmod, but must not be reused to justify this false success.
 
 ## Revisit when
 

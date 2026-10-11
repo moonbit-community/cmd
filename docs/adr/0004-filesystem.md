@@ -2,8 +2,8 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-10
-Revision: Distinguish patch inode replacement from cp overwrite, and require exclusive new outputs for split/csplit under the released metadata API.
+Updated: 2026-10-11
+Revision: Complete realpath/tree/mktemp/unlink and splitting decisions; separate implementable path/format work from identity, metadata and link API gates.
 
 ## Target and decision
 
@@ -65,6 +65,22 @@ oracle validation remains a separate gate from local macOS results. See
 ../async-upstream-gaps.md for public versus internal capabilities.
 Historical results remain in [the audit](../reports/2026-09-19-command-fidelity-audit.md).
 Candidate runtime results are recorded separately from published versions.
+
+## Migrated filesystem profiles
+
+Target: preserve upstream path effects and fail without destructive guesses.
+Version evidence is async 0.22.4 on MoonBit 2026-09-20, the public fs interface,
+per-command `tests/cases/<command>.json` and the 0.1.1/0.1.0 release reports.
+Every row retains the pure MoonBit boundary; host observers never implement it.
+
+| Commands | Choice and reason | Rejected alternative / compatibility cost | Evidence and unlock condition |
+| --- | --- | --- | --- |
+| realpath | Reuse public realpath for existing paths; `-e/-z` and ordered operands are supported. | Do not lexically remove components and call it symlink-aware canonicalization. Missing-last/default behavior, `-m`, relative output and `-s` need separate work; lexical `-s` is implementable, full missing-path link resolution may need readlink. | `realpath.json`, 0.1.1 release. Add missing intermediate/final components, broken links, `..` after links and relative-base cases before expanding. |
+| tree | Deterministic ordinary-directory traversal with depth/hidden/type selection and totals; preflight unsupported links. | Do not silently omit symlinks or use realpath as original link text. This restricts even default tree on common linked directories. JSON/HTML/filters/colors are project work; link arrows/loops and owner/mode/device output need specific APIs. | `tree.json`, first-batch report and public readlink/identity absence. Add exact link text, dangling/loop fixtures and metadata observers when APIs appear; algorithm-only output modes need no upstream wait. |
+| mktemp | Public randomness plus exclusive creation, collision retries and 0600/0700 creation permissions; use one trailing-X template. | Reject predictable time names and exists-then-create races. `-p`, suffix/template variants and quiet mode are deferred parsing work; owner/Windows mode parity is unverified. | `mktemp.json` and first-batch report. Expand with deterministic collision injection, template/env precedence, umask and per-platform permission observations. |
+| unlink | Directly remove non-directory operands without following symlinks; current multi-operand form preserves order and earlier removals. | Multiple operands are a project extension: GNU unlink accepts exactly one and rejects extra operands before mutation. Do not count multi-operand success as GNU compatibility. No ownership API is needed for the ordinary operation. | `unlink.json`, source parser and 0.1.1 profile. Decide compatibility by rejecting extras before removal (preferred command-fidelity direction), then add an untouched-two-files regression; no async blocker. |
+| split, csplit | Exclusive new pieces; buffered input, byte/line or regex boundaries and deterministic suffixes. csplit cleans only files this invocation created unless `-k` requests retention. | Do not truncate collisions or remove pre-existing files during cleanup. Input-sized memory, split Int32 counts and suffix bounds are costs; chunk/filter/custom-suffix modes are implementation work. | Their JSON/package tests, collision/cleanup fixtures. Add streaming/counter and suffix-exhaustion tests for algorithm expansion; existing-name overwrite still requires the handle identity/truncation gate above. |
+| patch | Exact-hunk stdout/dry-run and explicit create/delete are usable now; existing pathname or named-output replacement remains unavailable. | Rename can replace inode, but not preserve unknown source mode. Reject both unguarded in-place writes and wrong-mode replacement; fuzz/offset/reject files are separate algorithm work. | Mode/link observation and contracts cited above. Public mode + safe replacement and GNU hard-link/mode/mixed-failure fixtures unlock writeback; hunk algorithms follow ADR-0009. |
 
 ## Revisit when
 

@@ -2,7 +2,7 @@
 
 Version **0.1.0** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; this version is an unpublished candidate.
+published MoonX behavior; `moonx` examples use registry releases.
 
 Compute SHA-512 digests for binary input and verify standard GNU checksum
 files with `-c`. With no file operand, or with `-`, read stdin until EOF.

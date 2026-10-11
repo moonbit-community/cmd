@@ -2,7 +2,7 @@
 
 Version **0.1.0** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; this version is an unpublished candidate.
+published MoonX behavior; `moonx` examples use registry releases.
 
 Evaluate integer and string expressions. Pass each operator and operand as a
 separate argument; quote operators that the calling shell would interpret.

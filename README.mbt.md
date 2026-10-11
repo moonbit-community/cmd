@@ -160,6 +160,10 @@ scenario probes; it is not the complete release acceptance suite.
 See [Compatibility](docs/compatibility.md) for measured command support and
 platform behavior, and [Provenance](docs/provenance.md) for the source of
 the imported command implementations.
+The [prioritized follow-up register](docs/command-followups.md) covers known
+defects, unsupported options and verification gaps across all 79 local commands;
+the [ADR index](docs/adr/README.md#recent-command-decision-coverage) maps all
+31 recently added packages to their technical decisions.
 
 ## License
 
