@@ -20,3 +20,7 @@ an unsorted input and exits nonzero. By default, disorder is diagnosed once
 unpairable input is observed, matching GNU's conditional check.
 `-z` reads and writes NUL-delimited records; `--nocheck-order` explicitly
 selects permissive order handling whenever both order flags are present.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

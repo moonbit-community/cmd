@@ -34,6 +34,11 @@ fn dir_name(path : String) -> String {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("dirname 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.flag("zero", short='z'),
@@ -46,7 +51,9 @@ async fn main {
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write("Usage: dirname [-z] NAME...\n")
+    @stdio.stdout.write(
+      "Usage: dirname [-z] NAME...\n      --help      display this help and exit\n      --version   display version and exit\n",
+    )
     return
   }
   let operands = parsed.operands

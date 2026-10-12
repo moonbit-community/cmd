@@ -342,6 +342,11 @@ fn ls_options(parsed : @cli.ParsedArgs) -> LsOptions raise @cli.CliError {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("ls 0.2.1\n")
+    return
+  }
   let parsed = parse_arguments(@env.args()[1:]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("ls: \{message}: '\{option}'\n")
@@ -351,7 +356,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: ls [-aAdF1RrtucS] [-H|-L|-P] [--time=WORD] [FILE...]\n  -H follows command-line links; -L follows all links; -P follows none (extension).\n  -u, -c and --time select and imply time sorting unless -S or -t selects a sort.\n  -S requires regular files; metadata-rich long listing is not supported.\n",
+      "Usage: ls [-aAdF1RrtucS] [-H|-L|-P] [--time=WORD] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -H follows command-line links; -L follows all links; -P follows none (extension).\n  -u, -c and --time select and imply time sorting unless -S or -t selects a sort.\n  -S requires regular files; metadata-rich long listing is not supported.\n",
     )
     return
   }

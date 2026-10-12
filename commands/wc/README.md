@@ -20,3 +20,7 @@ cannot be combined with positional file operands.
 
 With no file operand, the command silently reads stdin until EOF; terminal,
 pipe, and redirection paths do not receive a repository-specific prompt.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

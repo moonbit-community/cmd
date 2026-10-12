@@ -207,10 +207,15 @@ fn evaluate(args : Array[String]) -> String raise {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("expr 0.1.0\n")
+    return
+  }
   let args = @env.args()[1:].to_owned()
   if args == ["--help"] {
     @stdio.stdout.write(
-      "Usage: expr EXPRESSION\nEvaluate integer/string expressions: | & comparisons + - * / % :\nFunctions: match, substr, index, length; + quotes one operand.\nC-locale byte strings; regex backreferences and locale collation are unsupported.\n",
+      "Usage: expr EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nEvaluate integer/string expressions: | & comparisons + - * / % :\nFunctions: match, substr, index, length; + quotes one operand.\nC-locale byte strings; regex backreferences and locale collation are unsupported.\n",
     )
     return
   }

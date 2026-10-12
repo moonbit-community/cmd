@@ -96,8 +96,8 @@ The unified filesystem scenarios retain the former standalone fidelity probe's
 same-file/hard-link source preservation, new-file copy, unchanged mtime/content
 on touch rejection, parent/leaf permissions and chmod symlink assertions. Their
 reports identify the tested backend and observed dimensions. Linux pinned
-oracle validation remains a separate gate from local macOS results. See
-../async-upstream-gaps.md for public versus internal capabilities.
+oracle validation remains a separate gate from local macOS results. The
+support record distinguishes public from internal capabilities.
 Historical results remain in [the audit](../reports/2026-09-19-command-fidelity-audit.md).
 Candidate runtime results are recorded separately from published versions.
 

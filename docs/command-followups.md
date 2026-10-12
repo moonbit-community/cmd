@@ -32,7 +32,7 @@ P0: incorrect interpretation or successful output for common requests. P1: ordin
 | [#20](https://github.com/moonbit-community/cmd/issues/20) | [F15] P2: Add real terminal APIs, recoverable signals and process control | Public API requirements include isatty, terminal attributes/resize, signal subscriptions, PTY, exec, process groups and process-state events. They affect advanced sh interaction, jq automatic color, test -t, timeout publication and tee -i/yes signal behavior. | Require released APIs and real-terminal/descendant lifecycle tests. A line Session, explicit ANSI output or direct-child cancellation cannot replace these contracts. |
 | [#21](https://github.com/moonbit-community/cmd/issues/21) | [F16] P2: Define locale, display width and platform text behavior | This requires project data/algorithms and explicit platform contracts. Preserve the C-byte subset without rewriting caller locale. Share wide/combining-character and collation behavior instead of building inconsistent partial implementations per command. | Record raw-byte and invalid UTF-8 behavior, locale data versions, width/case/collation comparisons and independent Windows text-mode evidence. |
 | [#22](https://github.com/moonbit-community/cmd/issues/22) | [F17] P3: Govern diagnostics, aliases and project extensions | Command fidelity takes priority. Label extensions such as ls -P, jq -l and rmdir -I explicitly; they are not GNU options. Add remaining diagnostics/alias coverage incrementally. Unlink side effects are tracked separately as F19. | Give every extension a clear name, help entry and contract. Generic diagnostics must not hide incorrect status or effects. |
-| [#23](https://github.com/moonbit-community/cmd/issues/23) | [F18] P3: Plan the remaining 28 commands without modules | Track new commands separately through command-coverage. Algorithmic work such as awk and archives can proceed; stat/du/df, identity and terminal commands must be divided by public capability. | Choose upstream behavior, subset, rejection conditions, README, ADR and CLI contracts before each new module. Do not combine the current 79-command option inventory with new-package scheduling. |
+| [#23](https://github.com/moonbit-community/cmd/issues/23) | [F18] P3: Plan the remaining 28 commands without modules | Track new commands separately from the current support record. Algorithmic work such as awk and archives can proceed; stat/du/df, identity and terminal commands must be divided by public capability. | Choose upstream behavior, subset, rejection conditions, README, ADR and CLI contracts before each new module. Do not combine the current 79-command option inventory with new-package scheduling. |
 
 Existing defects and README/help mismatches are repaired first; other expansion stays in issues. F05/F15 require upstream collaboration; unrelated work must not all wait for async. Stable IDs are retained, so later-added F19 appears in the P1 group.
 
@@ -124,9 +124,9 @@ Command names link to README; source and tests/cases/<cmd>.json provide further 
 
 ## Evidence and use
 
-- Versions and support: [compatibility](compatibility.md); absent modules: [28 gaps](command-coverage.md).
+- Versions and support: [compatibility](compatibility.md); absent modules are listed in issue [#23](https://github.com/moonbit-community/cmd/issues/23).
 - Actual Native/Wasm/exact MoonX reproduction: [follow-up audit](reports/2026-10-11-command-followups/README.md).
-- Public API gaps and proposed semantics: [async-upstream-gaps](async-upstream-gaps.md).
+- Public API boundaries and unlock conditions are recorded in the canonical ADRs linked from the support record.
 - Decisions, rejected alternatives, costs, evidence and unlock conditions for 31 new packages: [ADR index](adr/README.md).
 
 Historical 554-case acceptance applies only to its selected contracts, availability and boundaries. Newly discovered failures were not covered by those cases; historical evidence is retained and current support records identify the differences. Follow-ups reference stable F IDs and may split by command/API. Closure requires actual results, not merely adding an option or upgrading async.

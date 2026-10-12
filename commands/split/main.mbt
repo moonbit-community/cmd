@@ -103,8 +103,8 @@ fn help_message() -> String {
     #|  -a, --suffix-length=N     Use fixed-width suffixes of N characters.
     #|  -d, --numeric-suffixes    Use numeric suffixes starting at zero.
     #|      --additional-suffix=SUFFIX  Append SUFFIX after generated suffixes.
-    #|      --help               Show this help.
-    #|      --version            Show version.
+    #|      --help               display this help and exit
+    #|      --version            display version and exit
     #|
     #|Existing output paths are refused. Chunk distribution, filters, and
     #|line-byte mode are unsupported.
@@ -113,6 +113,11 @@ fn help_message() -> String {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("split 0.1.0\n")
+    return
+  }
   let parsed = @cli.parse(@env.args()[1:], [
     @cli.option("lines", short='l'),
     @cli.option("bytes", short='b'),

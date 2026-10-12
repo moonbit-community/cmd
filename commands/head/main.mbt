@@ -247,6 +247,11 @@ async fn head_reader(
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("head 0.2.0\n")
+    return
+  }
   let args = legacy_count_args(@env.args()[1:])
   let parsed = @cli.parse(args, [
     @cli.flag("quiet", short='q'),
@@ -263,7 +268,9 @@ async fn main {
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write("Usage: head [-qvz] [-n NUM|-c NUM] [FILE...]\n")
+    @stdio.stdout.write(
+      "Usage: head [-qvz] [-n NUM|-c NUM] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+    )
     return
   }
   let (spec, bytes_mode) = try {

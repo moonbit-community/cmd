@@ -8,3 +8,7 @@ Remove empty directories. Supports parent removal (`-p`), verbose output
 (`-v`), and ignoring failures caused only by non-empty directories
 (`-I`/`--ignore-fail-on-non-empty`). Failed operands do not stop later
 directories from being attempted.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

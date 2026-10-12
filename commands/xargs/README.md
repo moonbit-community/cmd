@@ -24,3 +24,7 @@ to the host or caller. Environment names and locale variables are not filtered
 or rewritten by this command.
 `xargs` always reads stdin silently until EOF, including on a terminal. Native
 behavior is measured separately from Wasm host authorization.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

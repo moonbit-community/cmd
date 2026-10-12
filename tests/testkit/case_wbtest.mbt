@@ -12,6 +12,56 @@ fn sample_case(id : String, command : String) -> Case raise {
 }
 
 ///|
+async test "published case overrides preserve old bytes and reject invalid mappings" {
+  let root = @fs.tmpdir(prefix="mooncmd-case-overrides")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let current = {
+    ..sample_case("version", "true"),
+    expected_stdout_text: Some("true 0.2.0\n"),
+  }
+  let historical = {
+    ..current,
+    expected_stdout_text: Some("true (moonbit cmd) 0.2.0\n"),
+  }
+  @fs.write_file(
+    root + "/current.json",
+    Json({ "cases": [current] }).stringify(),
+  )
+  @fs.write_file(
+    root + "/old.json",
+    Json({ "cases": [historical] }).stringify(),
+  )
+  @fs.write_file(
+    root + "/base.json",
+    Json({ "case_files": ["current.json"], "case_overrides": ["old.json"] }).stringify(),
+  )
+  assert_eq(
+    load_cases(root + "/current.json")[0].expected_stdout_text,
+    current.expected_stdout_text,
+  )
+  assert_eq(
+    load_cases(root + "/base.json")[0].expected_stdout_text,
+    historical.expected_stdout_text,
+  )
+  for
+    replacements in [
+      [{ ..historical, id: "unknown", }],
+      [{ ..historical, command: "false", }],
+      [historical, historical],
+    ] {
+    @fs.write_file(
+      root + "/old.json",
+      Json({ "cases": replacements }).stringify(),
+    )
+    try load_cases(root + "/base.json") catch {
+      _ => ()
+    } noraise {
+      _ => fail("invalid published case override accepted")
+    }
+  }
+}
+
+///|
 test "declared unordered output preserves duplicates and final newline" {
   assert_true(unordered_lines_equal(b"b\na\na\n", b"a\nb\na\n"))
   assert_false(unordered_lines_equal(b"b\na\n", b"a\nb\na\n"))

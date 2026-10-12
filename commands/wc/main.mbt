@@ -249,6 +249,11 @@ async fn count_source(path : String) -> Counts {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("wc 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.flag("lines", short='l'),
@@ -266,7 +271,9 @@ async fn main {
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write("Usage: wc [-lwcmL] [--files0-from=FILE] [FILE...]\n")
+    @stdio.stdout.write(
+      "Usage: wc [-lwcmL] [--files0-from=FILE] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+    )
     return
   }
   let lines = parsed.contains("lines")

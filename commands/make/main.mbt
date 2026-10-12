@@ -883,7 +883,7 @@ async fn run(arguments : Array[String]) -> Unit {
       jobs = @string.parse_int(argument[2:])
     } else if options && (argument == "-h" || argument == "--help") {
       @stdio.stdout.write(
-        "Usage: make [-Bkns] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n",
+        "Usage: make [-Bkns] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\n",
       )
       return
     } else if options && argument.has_prefix("-") && argument != "-" {
@@ -943,6 +943,11 @@ async fn run(arguments : Array[String]) -> Unit {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("make 0.2.0\n")
+    return
+  }
   run(@env.args()[1:].to_owned()) catch {
     MakeError(message) => {
       if message == "unexpected endif" {

@@ -29,7 +29,7 @@ Known explicit limits: existing-output split/csplit needs safe handle
 truncation; patch writeback needs source mode preservation; named gzip
 replacement needs metadata; unsupported regex, sed grammar, diff recursion,
 fmt margin modes and compression levels remain project work. See canonical
-ADR-0004/0008/0009 and docs/async-upstream-gaps.md for alternatives and unlock
+ADR-0004/0008/0009 and the compatibility record for alternatives and unlock
 conditions. A present command module is not full GNU/POSIX compatibility.
 
 The final probe programs are `docs/reports/2026-10-10-*-oracle.mbtx` and

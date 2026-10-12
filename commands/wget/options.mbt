@@ -42,6 +42,8 @@ suberror WgetUsageError {
 fn usage() -> String {
   let text =
     #|Usage: wget [OPTION]... [URL]...
+    #|      --help      display this help and exit
+    #|      --version   display version and exit
     #|  -q, --quiet                     quiet (no output)
     #|  -O, --output-document=FILE      write documents to FILE
     #|  -o, --output-file=FILE          log messages to FILE
@@ -77,7 +79,7 @@ fn usage() -> String {
     #|Compatibility limits: HTTP/HTTPS only; --method accepts GET, HEAD, POST,
     #|PUT, DELETE, CONNECT, OPTIONS, TRACE, and PATCH. Timer values are bounded
     #|by the runtime millisecond timer range.
-  text
+  text + "\n"
 }
 
 ///|

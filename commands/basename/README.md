@@ -9,3 +9,7 @@ Remove directory components from path operands. Supports `-a`/`--multiple`,
 
 An empty operand produces an empty record; repeated separators and root paths
 follow the coreutils byte-oriented path rules.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

@@ -153,6 +153,11 @@ async fn chmod_numeric_path(
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("chmod 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.flag("recursive", short='R'),
@@ -168,7 +173,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: chmod [-R] [-v] MODE FILE...\n       chmod [-R] [-v] --reference=RFILE FILE...\nMODE may be numeric or a complete symbolic '=' assignment such as a=rwx or u=rw,g=r,o=.\n",
+      "Usage: chmod [-R] [-v] MODE FILE...\n      --help      display this help and exit\n      --version   display version and exit\n       chmod [-R] [-v] --reference=RFILE FILE...\nMODE may be numeric or a complete symbolic '=' assignment such as a=rwx or u=rw,g=r,o=.\n",
     )
     return
   }

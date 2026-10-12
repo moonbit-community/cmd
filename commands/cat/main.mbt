@@ -2,6 +2,8 @@
 fn help_message() -> String {
   let message =
     #|Usage: cat [OPTION]... [FILE]...
+    #|  -h, --help      display this help and exit
+    #|      --version   display version and exit
     #|
     #|Concatenate FILEs (or stdin) to standard output, byte-transparently:
     #|no decoding, no newline normalization. Use '-' or no file for stdin.
@@ -16,7 +18,6 @@ fn help_message() -> String {
     #|  -e                       Equivalent to -vE.
     #|  -t                       Equivalent to -vT.
     #|  -u, --unbuffered         Accepted for GNU compatibility.
-    #|  -h, --help               Show this help message.
   message
 }
 
@@ -184,6 +185,11 @@ async fn CatRenderer::copy(self : CatRenderer, reader : &@io.Reader) -> Unit {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("cat 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.flag("number", short='n'),

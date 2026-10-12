@@ -85,13 +85,14 @@ fn expand_bytes(data : Bytes, initial_only : Bool, stops : Array[Int]) -> Bytes 
 fn help_message() -> String {
   let message =
     #|Usage: expand [OPTION]... [FILE]...
+    #|      --help      display this help and exit
+    #|      --version   display version and exit
     #|
     #|Convert tabs in each FILE to spaces, writing to standard output.
     #|With no FILE, or when FILE is -, read standard input.
     #|
     #|  -i, --initial       do not convert tabs after nonblank characters
     #|  -t, --tabs=LIST     use comma-separated tab stops (positive, ascending)
-    #|      --help          display this help and exit
   message
 }
 
@@ -106,6 +107,11 @@ async fn read_input(path : String) -> Bytes {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("expand 0.1.1\n")
+    return
+  }
   let parsed = @cli.parse(@env.args()[1:], [
     @cli.flag("initial", short='i'),
     @cli.option("tabs", short='t'),

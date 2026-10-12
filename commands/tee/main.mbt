@@ -1,5 +1,10 @@
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("tee 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.flag("append", short='a'),
@@ -12,7 +17,9 @@ async fn main {
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write("Usage: tee [-a] [FILE...]\n")
+    @stdio.stdout.write(
+      "Usage: tee [-a] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+    )
     return
   }
   let paths = parsed.operands

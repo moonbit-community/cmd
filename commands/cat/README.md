@@ -21,3 +21,7 @@ without an additional user-space buffer.
 
 With no file operand, the command silently reads stdin until EOF, matching the
 upstream terminal, pipe, redirection, and explicit `-` behavior.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

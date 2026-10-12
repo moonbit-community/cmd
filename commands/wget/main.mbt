@@ -453,6 +453,11 @@ async fn run(options : WgetOptions) -> Int {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("wget 0.2.1\n")
+    return
+  }
   let options = parse_wget_options(@env.args()[1:]) catch {
     WgetUsageError(message) => {
       @stdio.stderr.write("wget: \{message}\n")

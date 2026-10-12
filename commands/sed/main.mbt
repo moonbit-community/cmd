@@ -12,7 +12,7 @@ async fn run(args : ArrayView[String]) -> Int {
   ])
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: sed [-nE] [-e SCRIPT] [-f SCRIPTFILE] [SCRIPT] [FILE...]\nStream editor: p, d, q, =, s/RE/REPLACEMENT/[gNp].\nAddresses: line number, $, /RE/, ranges and !. BRE default; -E enables ERE.\nIn-place editing, hold space, branches, groups and regex backreferences are not supported.\n",
+      "Usage: sed [-nE] [-e SCRIPT] [-f SCRIPTFILE] [SCRIPT] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nStream editor: p, d, q, =, s/RE/REPLACEMENT/[gNp].\nAddresses: line number, $, /RE/, ranges and !. BRE default; -E enables ERE.\nIn-place editing, hold space, branches, groups and regex backreferences are not supported.\n",
     )
     return 0
   }

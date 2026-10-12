@@ -69,6 +69,6 @@ the existing Linux pinned-oracle scenario.
 
 At the time there were 48 local commands, 47 published and local-only timeout.
 Of 59 explicitly selected missing common commands, 57 had no active plan and
-two had been explicitly excluded. The [inventory and tree-first proposal](../../command-coverage.md)
+two had been explicitly excluded. The [inventory and tree-first proposal](../../compatibility.md)
 retain counting rules and per-command capability boundaries. Unimplemented
 does not mean impossible in pure MoonBit.

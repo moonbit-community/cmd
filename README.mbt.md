@@ -1,151 +1,38 @@
 # cmd
 
-`cmd` is an integrated collection of command-line utilities implemented in
-MoonBit. It provides executable command modules, a shared runtime, and a test
-system for preserving GNU/POSIX and command-upstream behavior. Authorization
-belongs to the caller or host; commands preserve the caller's environment and
-stream semantics.
+Pure-MoonBit command-line utilities for Native and Wasm. Each published
+command is an independent `cli/<command>` MoonX module. The support listed here
+is a measured subset of the corresponding upstream command; it does not claim
+complete GNU/POSIX compatibility. See the [support record](docs/compatibility.md)
+for exact versions, observed behavior and boundaries.
 
-This repair publishes `cli/core@0.5.0`, `column/date/diff/strings/which@0.1.1`, `unlink@0.1.2`, and `curl/jq/jqlog/ln/ls/mv/seq/wget@0.2.1`. Unchanged commands retain their existing coordinates.
+## Features
 
-The workspace contains **79 command modules**, with **78 published** and local-only `timeout`. Published command versions are **39 at 0.2.0, 8 at 0.2.1, 15 at 0.1.0, 15 at 0.1.1 and 1 at 0.1.2**. Shared `cli/core` is **0.5.0** and is not counted as a command.
+- [x] Text, data and archives: `base32`, `base64`, `cat`, `cksum`, `cmp`,
+  `column`, `comm`, `cut`, `date`, `diff`, `echo`, `expand`, `expr`, `fmt`,
+  `fold`, `grep`, `gunzip`, `gzip`, `head`, `hexdump`, `join`, `jq`, `jqlog`,
+  `md5sum`, `nl`, `od`, `paste`, `printf`, `rev`, `sed`, `seq`, `sha1sum`,
+  `sha256sum`, `sha512sum`, `sort`, `strings`, `tac`, `tail`, `tr`, `uniq`,
+  `wc`, `xxd`, and `zcat`.
+- [x] Files and paths: `basename`, `chmod`, `cp`, `csplit`, `dirname`, `find`,
+  `ln`, `ls`, `mkdir`, `mktemp`, `mv`, `patch`, `realpath`, `rm`, `rmdir`,
+  `split`, `tee`, `touch`, `tree`, `unexpand`, and `unlink`.
+- [x] Environment, execution and network: `curl`, `env`, `false`, `make`,
+  `printenv`, `pwd`, `sh`, `sleep`, `test`, `true`, `wget`, `which`, `xargs`,
+  and `yes`.
+- [ ] Planned command modules: `awk`, `chgrp`, `chown`, `clear`, `df`, `du`,
+  `free`, `groups`, `hostname`, `id`, `install`, `kill`, `link`, `nproc`,
+  `ps`, `readlink`, `stat`, `stty`, `tar`, `truncate`, `tput`, `tty`, `uname`,
+  `unzip`, `uptime`, `watch`, `whoami`, and `zip`. These are planned work only;
+  no published module or support claim exists for them yet.
 
-Source CI passed on Linux, macOS and Windows, including pinned Linux Native/Wasm comparisons. Published-consumer acceptance is recorded in the [repair report](docs/reports/2026-10-11-fidelity-repair/README.md). See the [support record](docs/compatibility.md), [API gaps](docs/async-upstream-gaps.md) and [remaining command inventory](docs/command-coverage.md).
+The `timeout` package is local-only while a portable public process-group
+interface is unavailable. Its status is recorded in the support record and it
+is not a published MoonX feature.
 
-The documented subset includes persistent line-oriented sh -i, real make -j scheduling, JSON framing, Basic HTTP auth and cookies. Default cp and existing-file touch remain explicit public-metadata boundaries; mv equal-time interactive/update decisions require identity. Native/Wasm use released public APIs and pure MoonBit implementations.
-
-Releasable commands are available as independent modules under
-`cli/<command>`:
-
-```text
-MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/base64@0.2.0
-MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/grep@0.2.0 -- pattern input.txt
-MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/jq@0.2.1 -- -r '.name'
-```
-
-## Commands
-
-The workspace contains **79 command modules**, with **78 published** and local-only `timeout`. Published command versions are **39 at 0.2.0, 8 at 0.2.1, 15 at 0.1.0, 15 at 0.1.1 and 1 at 0.1.2**. Shared `cli/core` is **0.5.0** and is not counted as a command. `timeout` remains outside the release profile because portable process-group cancellation is unavailable.
-
-### Text and data
-
-```text
-base32 base64 cat cksum cmp column comm cut date diff expand expr fmt fold grep
-gunzip gzip head hexdump join jq jqlog md5sum nl od paste printf rev sed sha1sum
-sha256sum sha512sum sort strings tac tail tr uniq wc xxd zcat
-```
-
-### Files and paths
-
-```text
-basename cp csplit dirname find ln ls mkdir mktemp mv patch realpath rm rmdir split tee touch tree
-unexpand unlink
-```
-
-### Environment and execution
-
-```text
-chmod echo env false make printenv seq sh sleep test timeout true wget curl
-which xargs yes
-```
-
-Commands implement their behavior in MoonBit and use explicit runtime APIs for
-filesystem, streams, processes, networking, and platform capabilities. They do
-not delegate their implementation to a same-named host command.
-
-## Controlled execution
-
-The command set is designed for native and Wasm execution. Under Wasm, commands
-can run with explicit policies that limit filesystem access, mutations,
-processes, network access, and permission changes.
-
-The caller configures host authorization. Command capability declarations
-describe their requirements and do not add a command-level policy. Host-denied
-operations fail with a nonzero status; the policy suite checks the resulting
-effects independently of command compatibility.
-
-The repository does not yet provide `chown` or `kill`: public owner mutation
-and signal sending with observable errors are missing. These are implementation
-boundaries; the host remains responsible for authorization.
-
-## Structure
-
-```text
-cmd/
-|-- core/                 # shared command runtime
-|   |-- cli/              # option parsing and command catalog
-|   |-- fsops/            # filesystem helpers
-|   |-- netops/           # network helpers
-|   |-- platform/         # platform capability boundary
-|   |-- process/          # child-process specifications
-|   |-- shell/            # shell parsing and execution
-|   `-- stream/           # byte and line-stream helpers
-|-- commands/             # one executable module per command
-|-- tests/
-|   |-- runner/           # workspace compat, policy, and oracle runner
-|   |-- release_runner/   # exact published MoonX versions
-|   |-- cases/            # shared active command contracts and oracle fixtures
-|   |-- testkit/          # process test utilities
-|   `-- fixtures/         # runner manifests and policy profiles
-|-- docs/                 # behavior and provenance documentation
-`-- moon.work             # MoonBit workspace manifest
-```
-
-The `core` module provides the shared packages used by command implementations.
-The `tests` module remains repository-internal and contains no user-facing
-command packages.
-
-## Test system
-
-The project combines package tests and two runners sharing a Native testkit:
-
-- MoonBit unit and white-box tests for parsers and shared runtime packages.
-- `compat` retains the Native compatibility groups with stable selectable IDs.
-- `contract` runs shared per-command input/output/status contracts against
-  Native or Wasm artifacts; explicit rejection boundaries are counted separately.
-- `policy` executes pre-built Wasm artifacts through `moonrun --policy` and
-  verifies allowed and denied resource access.
-- `oracle` compares Native and Wasm commands with the pinned upstream image,
-  including declared metadata observations. GNU and stress are independent suites.
-- `release_runner` validates candidate manifests and checks exact published
-  MoonX versions selected by `published-2026-10-11.json`; the 0.1.x, 0.2.0 and
-  prior 2026-10-10 manifests remain available for historical replay.
-- `scenarios` covers persistent shell input, HTTP auth/cookies, filesystem
-  boundaries and process/make lifecycle on both backends in CI. Former standalone
-  probes are archived with their assertion migration maps.
-
-Generic filesystem snapshots cover paths, kinds and regular-file bytes;
-explicit observers cover mode, fixed timestamps, symlink targets and fixture
-link relationships. Missing required observations cannot certify compatibility.
-See the
-[test entry-point guide](tests/README.md) for coverage and execution limits.
-
-Run the standard local checks from the repository root, serially:
-
-```bash
-MOON_HOME="$HOME/.moon-accounts/cli" moon update
-MOON_HOME="$HOME/.moon-accounts/cli" moon check --target all --deny-warn
-MOON_HOME="$HOME/.moon-accounts/cli" moon test --target all
-MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --release --deny-warn
-MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release --deny-warn
-./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite compat
-./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite policy
-./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe --manifest tests/release_runner/candidate-2026-10-11-repair.json --suite validate
-MOON_HOME="$HOME/.moon-accounts/cli" moon info
-MOON_HOME="$HOME/.moon-accounts/cli" moon fmt
-```
-
-This sequence excludes the Docker oracle, published-package checks and manual
-scenario probes; it is not the complete release acceptance suite.
-
-See [Compatibility](docs/compatibility.md) for measured command support and
-platform behavior, and [Provenance](docs/provenance.md) for the source of
-the imported command implementations.
-The [prioritized follow-up register](docs/command-followups.md) covers known
-defects, unsupported options and verification gaps across all 79 local commands;
-the [ADR index](docs/adr/README.md#recent-command-decision-coverage) maps all
-31 recently added packages to their technical decisions.
-
-## License
-
-Licensed under the [Apache License 2.0](LICENSE).
+Every workspace command also follows one metadata contract: standalone
+`--help` prints usage and exits 0, while standalone `--version` prints
+`<command> <package-version>` and exits 0. Both paths leave
+stdin untouched. The current Native and Wasm regressions pass all 79 workspace
+commands; published coordinates are promoted only through the release and
+exact MoonX checks described in the support record.

@@ -1,7 +1,7 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-10-11
+Updated: 2026-10-12
 
 This repair publishes `cli/core@0.5.0`, `column/date/diff/strings/which@0.1.1`, `unlink@0.1.2`, and `curl/jq/jqlog/ln/ls/mv/seq/wget@0.2.1`. Unchanged commands retain their existing coordinates.
 
@@ -13,6 +13,25 @@ The known strings/column/which/date/unlink/jq and ln/mv errors are corrected in 
 
 Authorization belongs to the caller/host. Catalog capabilities and the older
 restricted label describe requirements, not command-local policy.
+
+## Workspace metadata contract
+
+The current workspace candidate gives every command the same standalone
+metadata contract. With exactly one metadata argument, `--help` writes usage
+text to stdout, ends with a newline, and exits 0; `--version` writes
+`<command> <package-version>` followed by one newline and exits
+0. Help text uses the phrases `display this help and exit` and `display version
+and exit`. Metadata is handled before command input is opened, so these calls do
+not consume stdin or create command fixtures. The Native probe
+`tests/metadata/verify.mbtx` passed **79/79** commands on 2026-10-12, including
+the local-only `timeout` package. The corresponding Wasm probe also passed
+79/79 commands. The command catalog declares `help` and `version` for every
+contract.
+
+This is workspace-candidate evidence. Existing registry coordinates remain
+immutable until a release is prepared and published; the exact published
+MoonX audit in `docs/reports/2026-10-12-readme-audit/` records the older
+coordinate behavior separately.
 
 This is the single support record for the `cmd` repository. It replaces the
 former matrix. Historical implementation stages are archived in

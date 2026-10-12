@@ -26,3 +26,7 @@ requested suffix plus one input chunk.
 
 With no file operand, the command silently reads stdin until EOF or the quota
 is satisfied; terminal, pipe, redirection, and explicit `-` paths are clean.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

@@ -2,8 +2,8 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-11
-Revision: Correct self-authored expected outputs, pin new strings/column oracles, expand real CLI/alias/edge coverage before a repaired release, and run published HTTPS cases through the same fixed POSIX fixture as the workspace runner.
+Updated: 2026-10-12
+Revision: Correct self-authored expected outputs, pin new strings/column oracles, expand real CLI/alias/edge coverage before a repaired release, run published HTTPS cases through the same fixed POSIX fixture as the workspace runner, and add a single metadata contract for all workspace commands.
 
 ## Target and decision
 
@@ -50,6 +50,28 @@ are separate from local artifacts. Pinned GNU/Linux is the strict oracle;
 label installed macOS-tool evidence. Use released public APIs and pure MoonBit
 code and automation. Host tools may observe test fixtures or act as an oracle,
 but cannot implement a product command.
+
+The workspace also standardizes command metadata. A standalone `--help` must
+return status 0, write usage to stdout with a final newline, and include the
+canonical `display this help and exit` wording. A standalone `--version` must
+return status 0 without consuming input and write exactly
+`<command> <package-version>` plus one newline. The shared
+catalog declares both options for every command. The choice removes branding
+and spacing drift across packages while preserving command-specific option
+aliases elsewhere in each help page. The compatibility cost is that changed
+command packages need new versions and exact published-consumer checks before
+this workspace contract can be promoted to registry support; old coordinates
+remain historical evidence. Reopen this decision if a command needs a
+documented upstream-specific version format or if a release consumer proves a
+breaking metadata dependency.
+
+The selected version line is command name, one space, package version and
+one newline, with no implementation branding. Native and Wasm metadata probes
+cover every local module and existing parser-level version branches. Keep
+published output contracts in a frozen metadata overlay: changing workspace
+help/version strings must not change the expected bytes for old MoonX
+coordinates. The overlay is limited to known case IDs for the same command;
+unknown or duplicate mappings fail validation.
 
 Keep three test layers: package behavior, real CLI contracts and stateful
 scenarios. The workspace and published-consumer drivers share one Native

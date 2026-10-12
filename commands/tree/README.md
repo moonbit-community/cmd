@@ -16,3 +16,4 @@ The verified profile supports `-a`/`--all`, `-d`/`--dirs-only`,
 Symbolic-link entries are rejected explicitly because the released public
 filesystem API does not expose link targets. Color, ownership, permissions,
 device metadata and extended reports are outside this profile.
+`--help` prints usage and `--version` prints the command and package version.

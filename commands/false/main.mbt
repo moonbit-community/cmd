@@ -3,11 +3,13 @@
 async fn main {
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--help" {
-    @stdio.stdout.write("Usage: false [ignored command line arguments]\n")
+    @stdio.stdout.write(
+      "Usage: false [ignored command line arguments]\n      --help      display this help and exit\n      --version   display version and exit\n",
+    )
     return
   }
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("false (moonbit cmd) \{command_version}\n")
+    @stdio.stdout.write("false \{command_version}\n")
     return
   }
   @sys.exit(1)

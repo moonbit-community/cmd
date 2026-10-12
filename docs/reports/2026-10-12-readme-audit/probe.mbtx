@@ -1,0 +1,30 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/shell",
+  "moonbitlang/core/json",
+}
+
+///|
+async fn main {
+  let manifest = @json.parse(@fs.read_file("tests/release_runner/published-2026-10-11-repair.json").text())
+  guard manifest is { "commands": Array(commands), .. } else { fail("missing commands") }
+  let output_dir = "test-reports/readme-audit-2026-10-12"
+  @fs.mkdir(output_dir, recursive=true)
+  let records : Array[Json] = []
+  for command in commands {
+    guard command is { "name": String(name), "version": String(version), .. } else { fail("invalid command") }
+    for flag in ["--help", "--version"] {
+      let output = @shell.Cmd("moonx", ["cli/\{name}@\{version}", "--", flag], stdin=Binary(b""), env={"LC_ALL": "C"}).output(timeout_ms=120000)
+      let record : Json = {
+        "command": name, "version": version, "argument": flag,
+        "status": output.exit_code(), "stdout": output.stdout(), "stderr": output.stderr(),
+      }
+      records.push(record)
+      @fs.write_file(output_dir + "/" + name + flag + ".stdout", output.stdout_bytes())
+      @fs.write_file(output_dir + "/" + name + flag + ".stderr", output.stderr())
+    }
+    println("captured \{name}@\{version}")
+  }
+  @fs.write_file(output_dir + "/metadata.json", records.to_json().stringify(indent=2) + "\n")
+}

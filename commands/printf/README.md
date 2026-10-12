@@ -24,3 +24,7 @@ Float conversions use the exact decimal expansion of the double with
 round-half-even, matching GNU printf digit for digit. Use `--` before a
 FORMAT that starts with `-`. Invalid numeric prefixes produce the converted
 prefix plus a diagnostic and status 1; the format is still repeated as needed.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

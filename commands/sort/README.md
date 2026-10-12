@@ -29,3 +29,7 @@ seed contract.
 
 The implementation remains bounded to in-process sorting and never creates
 temporary files. With no file operand, it silently reads stdin until EOF.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

@@ -14,3 +14,7 @@ is applied after creation so the requested leaf mode is not reduced by umask.
 Symbolic modes are not implemented. The parent-permission behavior is verified
 under ordinary POSIX umasks; unusual umasks requiring temporary owner
 write/search permissions and Windows mode semantics remain unverified.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

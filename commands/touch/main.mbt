@@ -1,5 +1,10 @@
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("touch 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.flag("no-create", short='c'),
@@ -19,7 +24,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: touch [-c] [-a|-m] [-d STRING|-r FILE|-t STAMP] FILE...\nNote: -a/-m/-d/-r/-t are recognized but unavailable without a portable timestamp setter.\n",
+      "Usage: touch [-c] [-a|-m] [-d STRING|-r FILE|-t STAMP] FILE...\n      --help      display this help and exit\n      --version   display version and exit\nNote: -a/-m/-d/-r/-t are recognized but unavailable without a portable timestamp setter.\n",
     )
     return
   }

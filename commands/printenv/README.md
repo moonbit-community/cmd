@@ -9,3 +9,7 @@ are supplied. `-0` emits NUL-delimited records. Existing names are emitted in
 operand order; any missing name makes the final status 1 without suppressing
 values found earlier or later. It reads the environment exposed by the host;
 the command does not filter variable names or force locale values.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

@@ -40,7 +40,7 @@ Historical provenance and upstream version pins remain separate documents in
 
 ## Recent command decision coverage
 
-Updated: 2026-10-11. All **31** command additions from the recent three batches
+Updated: 2026-10-12. All **31** command additions from the recent three batches
 are mapped below. The canonical sections record target, choice/reason, rejected
 alternatives, cost, version/evidence and reopening condition. This index is not
 a second set of ADRs. New findings for column/strings/which/date are recorded as

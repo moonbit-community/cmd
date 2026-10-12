@@ -7,6 +7,8 @@ priv suberror JoinError {
 fn help_message() -> String {
   let message =
     #|Usage: join [options] FILE1 FILE2
+    #|  -h, --help      display this help and exit
+    #|      --version   display version and exit
     #|
     #|Join lines of two files sorted on their join fields.
     #|
@@ -22,7 +24,6 @@ fn help_message() -> String {
     #|      --check-order  Diagnose unsorted input.
     #|      --nocheck-order  Do not diagnose unsorted input.
     #|  -z           End records with NUL instead of newline.
-    #|  -h, --help  Show this help message.
     #|
     #|Use '-' as a file name to read stdin.
   message
@@ -409,6 +410,11 @@ async fn merge_readers(
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("join 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.option("field1", short='1'),

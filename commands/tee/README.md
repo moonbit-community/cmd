@@ -11,3 +11,7 @@ the remaining outputs, then exits nonzero.
 
 `tee` always reads stdin silently until EOF. Terminal, pipe, and redirection
 paths do not receive a repository-specific prompt.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

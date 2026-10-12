@@ -61,7 +61,7 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "seq (moonbit cmd) 0.2.1\n",
+      "expected_stdout_text": "seq 0.2.1\n",
       "expected_stderr_text": ""
     },
     {

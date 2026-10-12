@@ -22,10 +22,11 @@ priv enum CliParseResult {
 fn help_message() -> String {
   let message =
     #|Usage: jqlog [options] <query> [input]
+    #|  -h, --help      display this help and exit
+    #|      --version   display version and exit
     #|
     #|Options:
     #|  -f, --file <path>   Read input text from a file.
-    #|  -h, --help          Show this help message.
     #|
     #|Notes:
     #|  - Input is treated as JSONL/NDJSON with possible non-JSON lines.
@@ -122,6 +123,11 @@ async fn write_results(results : Iter[Json]) -> Unit {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("jqlog 0.2.1\n")
+    return
+  }
   let args = @env.args()[1:]
   match parse_cli(args) {
     Help => {

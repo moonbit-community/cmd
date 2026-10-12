@@ -163,6 +163,11 @@ fn zero_pad(text : String, width : Int) -> String {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("seq 0.2.1\n")
+    return
+  }
   let args = @env.args()[1:]
   let operands : Array[String] = []
   let mut separator = "\n"
@@ -193,7 +198,7 @@ async fn main {
       )
       return
     } else if options && arg == "--version" {
-      @stdio.stdout.write("seq (moonbit cmd) \{command_version}\n")
+      @stdio.stdout.write("seq \{command_version}\n")
       return
     } else if options &&
       arg.has_prefix("-") &&

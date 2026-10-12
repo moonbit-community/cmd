@@ -97,7 +97,7 @@ fn help_message(algorithm : Algorithm) -> String {
   "      --strict          fail if a checksum line is malformed\n" +
   "  -w, --warn            warn for each malformed checksum line\n" +
   "      --help            display this help and exit\n" +
-  "      --version         output version information and exit\n\n" +
+  "      --version         display version and exit\n\n" +
   "Checks use standard GNU untagged records. BSD tagged records are not supported.\n" +
   "Input bytes are unchanged by -b or -t on every supported platform.\n"
 }
@@ -134,7 +134,7 @@ pub async fn run(
     return 0
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("\{command} (moonbit cmd) \{version}\n")
+    @stdio.stdout.write("\{command} \{version}\n")
     return 0
   }
   let check = parsed.contains("check")

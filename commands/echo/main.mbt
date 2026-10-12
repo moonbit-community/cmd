@@ -84,13 +84,20 @@ fn decode_escapes(text : String) -> (Bytes, Bool) {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("echo 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--help" {
-    @stdio.stdout.write("Usage: echo [-n] [-e|-E] [STRING...]\n")
+    @stdio.stdout.write(
+      "Usage: echo [-n] [-e|-E] [STRING...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+    )
     return
   }
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("echo (moonbit cmd) \{command_version}\n")
+    @stdio.stdout.write("echo \{command_version}\n")
     return
   }
   let mut newline = true

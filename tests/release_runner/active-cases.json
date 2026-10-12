@@ -81,5 +81,8 @@
     "../cases/column.json",
     "../cases/which.json",
     "../cases/date.json"
+  ],
+  "case_overrides": [
+    "published-metadata-2026-10-11.json"
   ]
 }

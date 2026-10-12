@@ -102,6 +102,11 @@ async fn create_link(
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("ln 0.2.1\n")
+    return
+  }
   let parsed = @cli.parse(normalized_args(@env.args()[1:]), [
     @cli.flag("symbolic", short='s'),
     @cli.flag("force", short='f'),
@@ -124,7 +129,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: ln -s [-f|-i] [-r] [-n|-T] [-t DIRECTORY] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\nThe last -f/--force or -i/--interactive selects overwrite behavior.\nDeclining an interactive overwrite returns status 1 without replacing the link.\n",
+      "Usage: ln -s [-f|-i] [-r] [-n|-T] [-t DIRECTORY] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\n      --help      display this help and exit\n      --version   display version and exit\nThe last -f/--force or -i/--interactive selects overwrite behavior.\nDeclining an interactive overwrite returns status 1 without replacing the link.\n",
     )
     return
   }

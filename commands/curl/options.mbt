@@ -55,6 +55,8 @@ suberror CurlUsageError {
 fn curl_usage() -> String {
   let text =
     #|Usage: curl [options...] <url>
+    #|      --help      display this help and exit
+    #|      --version   display version and exit
     #|  -s, --silent                 silent mode
     #|  -S, --show-error             show errors with --silent
     #|  -f, --fail                   fail on HTTP response codes >= 400
@@ -91,7 +93,7 @@ fn curl_usage() -> String {
     #|Compatibility limits: HTTP/HTTPS only; -X accepts GET, HEAD, POST, PUT,
     #|DELETE, CONNECT, OPTIONS, TRACE, and PATCH. Timer values are bounded by
     #|the runtime millisecond timer range.
-  text
+  text + "\n"
 }
 
 ///|

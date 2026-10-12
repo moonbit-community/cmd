@@ -17,3 +17,7 @@ uses uppercase symbols and wraps at 76 columns by default. Lowercase input is
 rejected, and a valid decoded prefix is written before a later malformed group
 is reported. Nonstandard alphabets and locale-specific diagnostics are not
 claimed.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

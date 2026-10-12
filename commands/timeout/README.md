@@ -23,3 +23,7 @@ returns 125, and child launch errors return 126/127.
 ```sh
 moon run --target wasm --release commands/timeout -- 1s printf ok
 ```
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

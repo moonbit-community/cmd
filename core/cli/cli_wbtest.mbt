@@ -12,6 +12,14 @@ test "catalog contains exactly 79 unique commands" {
 }
 
 ///|
+test "every command contract declares common metadata options" {
+  for item in command_catalog() {
+    assert_true(item.options.contains("help"))
+    assert_true(item.options.contains("version"))
+  }
+}
+
+///|
 test "only timeout requires process-group cancellation" {
   for name in ["make", "sh", "xargs"] {
     guard find_contract(name) is Some(contract) else {

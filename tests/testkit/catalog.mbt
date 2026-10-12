@@ -18,6 +18,38 @@ pub async fn load_cases(path : String) -> Array[Case] {
       cases.append(selected)
     }
   }
+  if value is { "case_overrides": Array(files), .. } {
+    let replaced : Map[String, Bool] = Map([])
+    for file in files {
+      guard file is String(file) else {
+        fail("case_overrides must contain paths")
+      }
+      let source = @path.Path(path).dirname().join(Path(file)).to_string()
+      let contents = @json.parse(@fs.read_file(source).text())
+      guard contents is { "cases": selected, .. } else {
+        fail("missing cases: \{source}")
+      }
+      let selected : Array[Case] = @json.from_json(selected)
+      for replacement in selected {
+        guard !replaced.contains(replacement.id) else {
+          fail("duplicate case override: \{replacement.id}")
+        }
+        let mut found = false
+        for index, current in cases {
+          if current.id == replacement.id {
+            guard current.command == replacement.command else {
+              fail("case override changes command: \{replacement.id}")
+            }
+            cases[index] = replacement
+            found = true
+            break
+          }
+        }
+        guard found else { fail("unknown case override: \{replacement.id}") }
+        replaced[replacement.id] = true
+      }
+    }
+  }
   let seen : Map[String, Bool] = Map([])
   for item in cases {
     for id in [item.id, ..item.aliases.unwrap_or([])] {

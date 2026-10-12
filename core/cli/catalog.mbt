@@ -8,7 +8,22 @@ fn contract(
   options : Array[String],
   exit_codes? : Array[Int] = [0, 1, 2],
 ) -> CommandContract {
-  { name, tier, input, output, exit_codes, capabilities, options, }
+  let declared_options = options.copy()
+  if !declared_options.contains("help") {
+    declared_options.push("help")
+  }
+  if !declared_options.contains("version") {
+    declared_options.push("version")
+  }
+  {
+    name,
+    tier,
+    input,
+    output,
+    exit_codes,
+    capabilities,
+    options: declared_options,
+  }
 }
 
 ///|

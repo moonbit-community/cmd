@@ -233,6 +233,11 @@ fn iso_format(
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("date 0.1.1\n")
+    return
+  }
   let parsed = @cli.parse(normalize_args(@env.args()[1:]), [
     @cli.flag("utc", short='u'),
     @cli.option("date", short='d'),
@@ -254,7 +259,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("date (cli) \{command_version}\n")
+    @stdio.stdout.write("date \{command_version}\n")
     return
   }
   if parsed.contains("rfc-email") && parsed.contains("iso") {

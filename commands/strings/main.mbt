@@ -105,6 +105,11 @@ async fn emit(
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("strings 0.1.1\n")
+    return
+  }
   let parsed = @cli.parse(@env.args()[1:], [
     @cli.flag("all", short='a'),
     @cli.flag("print-file-name", short='f'),
@@ -122,11 +127,11 @@ async fn main {
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(help_message())
+    @stdio.stdout.write(help_message() + "\n")
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("strings (cli) \{command_version}\n")
+    @stdio.stdout.write("strings \{command_version}\n")
     return
   }
   let minimum = @string.parse_int(parsed.last_value("bytes").unwrap_or("4")) catch {

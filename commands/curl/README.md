@@ -52,3 +52,7 @@ can be combined with stored cookies and preserve curl's ordering. Explicit
 custom Cookie headers and literal `-b` data are scoped to the initial origin,
 matching curl 8.22. Jar cookies are selected again for the
 destination.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

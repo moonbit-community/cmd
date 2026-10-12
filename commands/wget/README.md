@@ -47,3 +47,7 @@ remain project implementation gaps. A challenge cannot replay an already
 consumed stdin request body and fails explicitly; file and in-memory bodies
 can be replayed. As in GNU Wget, cookie-jar write failures do not change the
 transfer exit status; non-quiet runs print a diagnostic.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

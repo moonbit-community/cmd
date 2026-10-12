@@ -27,3 +27,7 @@ entries share one fixed current-time sample.
 Time/reference/access combinations and special-file predicates remain
 partially verified; option acceptance is not a claim of complete findutils
 compatibility.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

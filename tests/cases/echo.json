@@ -56,7 +56,7 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "echo (moonbit cmd) 0.2.0\n",
+      "expected_stdout_text": "echo 0.2.0\n",
       "expected_stderr_text": ""
     },
     {
@@ -74,7 +74,7 @@
       "coverage": [
         "help"
       ],
-      "expected_stdout_text": "Usage: echo [-n] [-e|-E] [STRING...]\n",
+      "expected_stdout_text": "Usage: echo [-n] [-e|-E] [STRING...]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
     {

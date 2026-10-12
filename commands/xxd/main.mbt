@@ -393,6 +393,11 @@ async fn write_zero_prefix(count : Int64) -> Unit {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("xxd 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:].map(arg => {
     if arg == "--revert" {
       "--reverse"
@@ -418,7 +423,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: xxd [-ipr] [-c COLS] [-l LEN] [-s OFFSET] [FILE]\n",
+      "Usage: xxd [-ipr] [-c COLS] [-l LEN] [-s OFFSET] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\n",
     )
     return
   }

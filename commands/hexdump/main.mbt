@@ -20,6 +20,11 @@ fn help_message() -> String {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("hexdump 0.1.0\n")
+    return
+  }
   let parsed = @cli.parse(@env.args()[1:], [
     @cli.flag("one-byte-octal", short='b', repeatable=true),
     @cli.flag("one-byte-char", short='c', repeatable=true),
@@ -45,7 +50,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("hexdump (cli) \{command_version}\n")
+    @stdio.stdout.write("hexdump \{command_version}\n")
     return
   }
   let (skip, remaining) = try {

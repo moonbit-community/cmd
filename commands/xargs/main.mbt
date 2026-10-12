@@ -278,6 +278,11 @@ async fn run_xargs_batches(
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("xargs 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:]
   let mut null_mode = false
   let mut run_empty = false
@@ -386,7 +391,7 @@ async fn main {
       max_procs = value
     } else if options && arg == "--help" {
       @stdio.stdout.write(
-        "Usage: xargs [-0rt] [-n N] [-L N] [-s BYTES] [-P N] [-E EOF] [-I REPLACE] [COMMAND [ARG...]]\n",
+        "Usage: xargs [-0rt] [-n N] [-L N] [-s BYTES] [-P N] [-E EOF] [-I REPLACE] [COMMAND [ARG...]]\n      --help      display this help and exit\n      --version   display version and exit\n",
       )
       return
     } else if options && arg.has_prefix("-") && arg != "-" {

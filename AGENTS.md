@@ -89,6 +89,11 @@ module and version before any release operation.
   catalog, compatibility record and relevant regression together. Record
   tradeoffs in the existing canonical ADR with an Updated date, evidence and
   conditions for lifting limitations. Keep historical reports immutable.
+- Standalone `--version` prints exactly `<command> <package-version>` and one
+  newline, without an implementation banner. Standalone `--help` starts with
+  `Usage: <command>`, includes both metadata options, and ends with a newline.
+  Both write to stdout, leave stdin untouched, and exit 0. Preserve frozen
+  published expectations when changing workspace metadata contracts.
 
 #### Version evolution and publication order
 
@@ -141,5 +146,7 @@ module and version before any release operation.
   They must never be delegated to as the implementation of `cli/<cmd>`.
 - If a required behavior cannot be implemented through released public MoonBit
   APIs, keep the command or option in an explicit boundary state, record the
-  missing API and unlock condition in `docs/async-upstream-gaps.md` and the
-  applicable ADR, and add a rejection regression test.
+  missing API and unlock condition in the applicable canonical ADR and the
+  support record, and add a rejection regression test. Historical API-gap
+  reports remain immutable; record current unlock conditions in the applicable
+  canonical ADR and `docs/compatibility.md`.

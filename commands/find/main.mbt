@@ -650,10 +650,15 @@ fn begins_expression(token : String) -> Bool {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("find 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--help" {
     @stdio.stdout.write(
-      "Usage: find [PATH...] [EXPRESSION]\nPredicates include names, portable kinds, size, a/c/m times, newerXY, access checks, -used, -xtype, depth controls, actions, and boolean operators.\n",
+      "Usage: find [PATH...] [EXPRESSION]\n      --help      display this help and exit\n      --version   display version and exit\nPredicates include names, portable kinds, size, a/c/m times, newerXY, access checks, -used, -xtype, depth controls, actions, and boolean operators.\n",
     )
     return
   }

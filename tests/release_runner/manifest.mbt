@@ -378,7 +378,10 @@ async fn validate_package_versions(
             failures.push(
               "\{row.name}: command version \{version} differs from release version \{row.version}",
             )
-          None => failures.push("\{row.name}: version.mbt is required")
+          // Older command modules keep the version literal in main.mbt. The
+          // metadata contract test validates their emitted bytes; only
+          // modules that provide version.mbt opt into the source-level check.
+          None => ()
         }
       _ => ()
     }

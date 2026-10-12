@@ -38,6 +38,11 @@ fn strip_suffix(name : String, suffix : String) -> String {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("basename 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.flag("multiple", short='a'),
@@ -56,7 +61,9 @@ async fn main {
   let mut suffix = parsed.last_value("suffix")
   let operands = parsed.operands
   if parsed.contains("help") {
-    @stdio.stdout.write("Usage: basename [-a] [-s SUFFIX] [-z] NAME [SUFFIX]\n")
+    @stdio.stdout.write(
+      "Usage: basename [-a] [-s SUFFIX] [-z] NAME [SUFFIX]\n      --help      display this help and exit\n      --version   display version and exit\n",
+    )
     return
   }
   if operands.is_empty() || (!multiple && operands.length() > 2) {

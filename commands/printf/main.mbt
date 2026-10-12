@@ -13,6 +13,8 @@ priv struct Ctx {
 fn help_message() -> String {
   let message =
     #|Usage: printf FORMAT [ARGUMENT...]
+    #|      --help      display this help and exit
+    #|      --version   display version and exit
     #|
     #|Format and print ARGUMENTs under control of FORMAT, like printf(1).
     #|The FORMAT is reused as necessary to consume all arguments.
@@ -891,6 +893,11 @@ fn scan_format(ctx : Ctx, chars : Array[Char]) -> Unit {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("printf 0.2.0\n")
+    return
+  }
   let argv = @env.args()[1:]
   if argv.length() > 0 && argv[0] == "--help" {
     @stdio.stdout.write(help_message() + "\n")

@@ -35,3 +35,4 @@ on a mismatch the current file produces no output, no `.rej` file is created,
 and later file patches continue. Binary, mode, rename, fuzz, offset, and
 interactive patches are not implemented. Errors return 2 for a malformed or
 unsupported request and 1 for a hunk mismatch.
+`--help` prints usage and `--version` prints the command and package version.

@@ -23,6 +23,25 @@ scenarios protect different boundaries; similar inputs alone are not a reason
 to delete one. Historical reports and the frozen 0.1.x release manifest remain
 replayable and are not active duplicate test definitions.
 
+The metadata regression covers the common command surface independently of
+behavioral cases:
+
+```sh
+MOON_HOME="$HOME/.moon-accounts/cli" moon run --target native tests/metadata/verify.mbtx native
+MOON_HOME="$HOME/.moon-accounts/cli" moon run --target native tests/metadata/verify.mbtx wasm
+```
+
+It checks the exact standalone `--help` and `--version` output contract for
+every workspace command on both Native and Wasm, including the local-only
+`timeout` module.
+
+`tests/cases/` describes the workspace. The historical release base
+`release_runner/active-cases.json` overlays 21 frozen metadata contracts from
+`published-metadata-2026-10-11.json`, preserving older help/version bytes.
+New release candidates must use the workspace cases, rather than inheriting
+that historical metadata overlay. Overrides must refer to an existing case
+with the same command, and duplicate overrides are rejected.
+
 ## Running locally
 
 Keep the current PATH toolchain and use the publishing account for every local

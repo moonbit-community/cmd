@@ -185,6 +185,11 @@ async fn copy_one(
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("cp 0.2.0\n")
+    return
+  }
   let parsed = @cli.parse(normalized_args(@env.args()[1:]), [
     @cli.flag("recursive", short='R'),
     @cli.flag("recursive", short='r'),
@@ -214,7 +219,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: cp [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n",
+      "Usage: cp [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\n",
     )
     return
   }

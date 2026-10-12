@@ -16,3 +16,7 @@ any failure. File access authorization belongs to the caller or host. Accepting
 `--no-preserve-root` does not establish a tested root-deletion contract; that
 destructive operation is not part of the validation fixtures. Interactive
 `-i`/`-I` modes are not implemented.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

@@ -17,3 +17,7 @@ but their complete backend/host combinations still need independent probes.
 are not implemented. Public async file kind/time/access reads do not imply
 public file identity or mode reads. File-access authorization belongs to the
 caller or host.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

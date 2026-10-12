@@ -26,7 +26,7 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "false (moonbit cmd) 0.2.0\n",
+      "expected_stdout_text": "false 0.2.0\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-text-line-762"
@@ -47,7 +47,7 @@
       "coverage": [
         "help"
       ],
-      "expected_stdout_text": "Usage: false [ignored command line arguments]\n",
+      "expected_stdout_text": "Usage: false [ignored command line arguments]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
     {

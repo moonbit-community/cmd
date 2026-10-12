@@ -16,3 +16,7 @@ moonx cli/expand -t 4,8 input.txt
 With no file operand, or with `-`, input is read from standard input. Multiple
 files are processed in order and a read error does not discard earlier output.
 Locale-dependent display widths are outside this byte-oriented profile.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

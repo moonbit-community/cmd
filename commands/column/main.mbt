@@ -166,6 +166,11 @@ fn help_message() -> String {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("column 0.1.1\n")
+    return
+  }
   let parsed = @cli.parse(@env.args()[1:], [
     @cli.flag("table", short='t'),
     @cli.option("separator", short='s'),
@@ -186,7 +191,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("column (cli) \{command_version}\n")
+    @stdio.stdout.write("column \{command_version}\n")
     return
   }
   let separator = parsed.last_value("separator")

@@ -21,3 +21,7 @@ not roll back earlier successful changes on a later error.
 does not expose current permission bits. Windows permission mutation is
 unavailable in this profile. Host permission denial is reported separately
 from these implementation limits.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

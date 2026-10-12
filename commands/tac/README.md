@@ -16,3 +16,7 @@ separators before records. Standard input or one file is accepted. The
 `-r`/`--regex` form and multiple input files are not implemented and are
 rejected. These are command implementation gaps; multiple-file reading is
 available, and a byte-oriented matcher can be implemented in MoonBit.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

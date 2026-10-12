@@ -15,3 +15,4 @@ moonx cli/realpath -z input.txt other.txt
 `-z`/`--zero` terminates records with NUL bytes. Operands are handled
 independently; a failed operand does not erase earlier output. Missing-path `-m`
 semantics and other metadata-dependent modes are not included.
+`--help` prints usage and `--version` prints the command and package version.

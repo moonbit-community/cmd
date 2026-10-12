@@ -20,3 +20,7 @@ join/output fields. `--check-order` rejects an out-of-order input key;
 `--nocheck-order` disables order checks. The default reports disorder when an
 unpairable row makes it observable.
 The merge streams both inputs and retains only the current equal-key runs.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

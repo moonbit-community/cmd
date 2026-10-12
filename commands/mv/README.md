@@ -28,3 +28,7 @@ identity metadata is unavailable before the operation. Equal-time targets with
 an alias from a separate file. This includes separate files whose mtimes happen
 to match. Other processes recreating the source during rename also cause a
 postcondition error; no second deletion is attempted.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

@@ -150,6 +150,11 @@ fn pad_left(text : String, width : Int) -> String {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("cmp 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.flag("silent", short='s'),
@@ -167,7 +172,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: cmp [-s|-l] [-n LIMIT] [-i SKIP[:SKIP2]] FILE1 FILE2\n",
+      "Usage: cmp [-s|-l] [-n LIMIT] [-i SKIP[:SKIP2]] FILE1 FILE2\n      --help      display this help and exit\n      --version   display version and exit\n",
     )
     return
   }

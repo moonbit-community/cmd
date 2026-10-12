@@ -23,6 +23,11 @@ fn parse_mode(text : String) -> Int raise {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("mkdir 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.flag("parents", short='p'),
@@ -38,7 +43,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\nNote: MODE currently accepts numeric octal permissions only.\n",
+      "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\nNote: MODE currently accepts numeric octal permissions only.\n",
     )
     return
   }

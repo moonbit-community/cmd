@@ -18,3 +18,7 @@ composed with other command-line tools.
 ```sh
 cat logs.ndjson | moon run --target wasm --release commands/jqlog -- '.message'
 ```
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

@@ -24,3 +24,7 @@ context options. Backreferences are explicitly rejected because the public
 regex engine cannot represent their semantics. Locale-sensitive collation and
 multibyte case folding are not currently implemented. Exit statuses are 0 for a selected
 line/file, 1 for no selection, and 2 for an error.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

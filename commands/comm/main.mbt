@@ -7,6 +7,8 @@ priv suberror CommError {
 fn help_message() -> String {
   let message =
     #|Usage: comm [-123] [-z] FILE1 FILE2
+    #|  -h, --help      display this help and exit
+    #|      --version   display version and exit
     #|
     #|Compare two sorted files line by line, producing three columns:
     #|lines only in FILE1, lines only in FILE2, and lines in both.
@@ -18,7 +20,6 @@ fn help_message() -> String {
     #|      --check-order  Diagnose unsorted input.
     #|      --nocheck-order  Do not diagnose unsorted input.
     #|  -z, --zero-terminated  End records with NUL instead of newline.
-    #|  -h, --help  Show this help message.
     #|
     #|Use '-' as a file name to read stdin.
   message
@@ -152,6 +153,11 @@ async fn merge_readers(
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("comm 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.flag("suppress-1", short='1'),

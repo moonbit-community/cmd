@@ -45,6 +45,8 @@ priv suberror ArgError {
 fn help_message() -> String {
   let help =
     #|Usage: jq [OPTION]... [FILTER] [FILE...]
+    #|      --help      display this help and exit
+    #|      --version   display version and exit
     #|  -c, --compact-output    print compact JSON
     #|  -r, --raw-output        print strings without JSON quotes
     #|  -j, --join-output       raw output without result separators
@@ -61,7 +63,6 @@ fn help_message() -> String {
     #|      --tab              indent with tabs
     #|  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)
     #|  -M, --monochrome-output disable colors, including when -C is present
-    #|      --help             display this help and exit
   help
 }
 
@@ -340,6 +341,11 @@ fn status_for_results(values : Array[Json]) -> Int {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("jq 0.2.1\n")
+    return
+  }
   let args = @env.args()[1:]
   match parse_cli(args) {
     Help => {

@@ -39,3 +39,7 @@ rewritten.
 Shell functions receive explicit exports as well. Recursive exported values
 that themselves invoke `$(shell ...)` are explicitly rejected; GNU's special
 export-recursion fallback remains project interpreter work.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

@@ -169,6 +169,11 @@ async fn decode_stream(reader : &@io.Reader, ignore_garbage : Bool) -> Unit {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("base64 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.flag("decode", short='d'),
@@ -184,7 +189,9 @@ async fn main {
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write("Usage: base64 [-d|-D] [-i] [-w COLS] [FILE]\n")
+    @stdio.stdout.write(
+      "Usage: base64 [-d|-D] [-i] [-w COLS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\n",
+    )
     return
   }
   if parsed.operands.length() > 1 {

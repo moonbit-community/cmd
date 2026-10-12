@@ -135,6 +135,11 @@ async fn move_one(
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("mv 0.2.1\n")
+    return
+  }
   let parsed = @cli.parse(normalized_args(@env.args()[1:]), [
     @cli.flag("force", short='f'),
     @cli.flag("no-clobber", short='n'),
@@ -156,7 +161,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\nDeclining an interactive overwrite returns status 1 and preserves both files.\nEqual-time interactive/update targets require unavailable file identity metadata.\n",
+      "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nDeclining an interactive overwrite returns status 1 and preserves both files.\nEqual-time interactive/update targets require unavailable file identity metadata.\n",
     )
     return
   }

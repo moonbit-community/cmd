@@ -19,3 +19,7 @@ ranges, C-locale character and equivalence classes, and `[CHAR*COUNT]` or
 SET2-filling `[CHAR*]` repetition. Operates on raw bytes with C-locale rules;
 locale data beyond that profile is not implemented. The command does not
 rewrite environment locale variables.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

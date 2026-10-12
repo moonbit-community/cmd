@@ -9,13 +9,20 @@ fn output_line(args : ArrayView[String]) -> String {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("yes 0.1.1\n")
+    return
+  }
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--help" {
-    @stdio.stdout.write("Usage: yes [STRING]...\n")
+    @stdio.stdout.write(
+      "Usage: yes [STRING]...\n      --help      display this help and exit\n      --version   display version and exit\n",
+    )
     return
   }
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("yes (moonbit cmd) \{command_version}\n")
+    @stdio.stdout.write("yes \{command_version}\n")
     return
   }
   let line = output_line(args)

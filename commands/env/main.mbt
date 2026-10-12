@@ -13,6 +13,11 @@ fn split_assignment(value : String) -> (String, String)? {
 
 ///|
 async fn main {
+  let metadata_args = @core_env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("env 0.2.0\n")
+    return
+  }
   let args = @core_env.args()[1:]
   let mut ignore_environment = false
   let mut null_output = false
@@ -33,11 +38,11 @@ async fn main {
       options = false
     } else if options && arg == "--help" {
       @stdio.stdout.write(
-        "Usage: env [-i] [-0] [-u NAME] [-C DIR] [NAME=VALUE]... [COMMAND [ARG]...]\n",
+        "Usage: env [-i] [-0] [-u NAME] [-C DIR] [NAME=VALUE]... [COMMAND [ARG]...]\n      --help      display this help and exit\n      --version   display version and exit\n",
       )
       return
     } else if options && arg == "--version" {
-      @stdio.stdout.write("env (cli/env) \{command_version}\n")
+      @stdio.stdout.write("env \{command_version}\n")
       return
     } else if options && (arg == "-i" || arg == "--ignore-environment") {
       ignore_environment = true

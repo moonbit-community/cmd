@@ -25,7 +25,7 @@ async fn run(args : ArrayView[String]) -> Int {
   ])
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: fmt [-WIDTH] [-w WIDTH] [-g GOAL] [-su] [FILE...]\nReformat paragraphs, preserving indentation; default width 75.\n-s splits lines without joining; -u uses uniform spacing.\nC-locale byte columns. Crown/tagged margins and prefixes are not supported.\n",
+      "Usage: fmt [-WIDTH] [-w WIDTH] [-g GOAL] [-su] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nReformat paragraphs, preserving indentation; default width 75.\n-s splits lines without joining; -u uses uniform spacing.\nC-locale byte columns. Crown/tagged margins and prefixes are not supported.\n",
     )
     return 0
   }

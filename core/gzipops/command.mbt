@@ -7,14 +7,18 @@ pub fn help(command : String) -> String {
   "  -t, --test         Validate compressed input without output.\n" +
   "  -n, --no-name      Omit name/time metadata when compressing.\n" +
   "  -q, --quiet        Suppress trailing-garbage warnings.\n" +
-  "      --help         Show this help.\n" +
-  "      --version      Show version.\n\n" +
+  "      --help         display this help and exit\n" +
+  "      --version      display version and exit\n\n" +
   "Named-file compression requires -cn; decompression requires -c.\n" +
   "In-place replacement, saved-name metadata, levels, and recursion are unsupported.\n"
 }
 
 ///|
-pub async fn run(command : String, args : ArrayView[String]) -> Int {
+pub async fn run(
+  command : String,
+  args : ArrayView[String],
+  version : String,
+) -> Int {
   let parsed = @cli.parse(args, [
     @cli.flag("stdout", short='c'),
     @cli.flag("decompress", short='d'),
@@ -34,7 +38,7 @@ pub async fn run(command : String, args : ArrayView[String]) -> Int {
     return 0
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("\{command} 0.1.0\n")
+    @stdio.stdout.write("\{command} \{version}\n")
     return 0
   }
   let test_only = parsed.contains("test")

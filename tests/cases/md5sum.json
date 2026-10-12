@@ -86,7 +86,7 @@
     {
       "id": "checksum-md5sum-version", "command": "md5sum", "args": ["--version"],
       "files": [], "environment": {}, "normalizations": [],
-      "expected_status": 0, "expected_stdout_text": "md5sum (moonbit cmd) 0.1.0\n",
+      "expected_status": 0, "expected_stdout_text": "md5sum 0.1.0\n",
       "expected_stderr_text": "", "comparison": "contract"
     },
     {

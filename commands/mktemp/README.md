@@ -15,3 +15,7 @@ The template ends in at least three `X` characters. Names use the released
 MoonBit random source and exclusive creation, so collisions are retried before
 failure; files use mode 0600 and directories 0700. Template extensions,
 owner metadata and platform-specific mode details are not claimed.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

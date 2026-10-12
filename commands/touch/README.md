@@ -14,4 +14,8 @@ remain when a later operand fails.
 `-a`, `-m`, `-d`, `-r`, `-t`, and `--time` are recognized but fail before mutation:
 the portable API cannot select or assign arbitrary access/modification times.
 These public API limits apply to both Native and Wasm; see the
-[upstream gap record](../../docs/async-upstream-gaps.md).
+filesystem decision record in [ADR-0004](../../docs/adr/0004-filesystem.md).
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

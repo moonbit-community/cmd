@@ -24,11 +24,15 @@ descriptor remains open across renames, matching `tail -f`; deleting and
 recreating a path is not followed, because `-F` is not implemented.
 
 `-F` remains a tested status-2 rejection. Faithful replacement detection needs
-public file identity, which async 0.22.4 does not expose; reopening a path is
-available but alone does not establish that the file was replaced. See the
-[upstream gap record](../../docs/async-upstream-gaps.md).
+public file identity, which the released filesystem API does not expose;
+reopening a path is available but alone does not establish that the file was
+replaced. See [ADR-0004](../../docs/adr/0004-filesystem.md).
 
 With no file operand, `-f` silently reads stdin through EOF and exits, matching
 the upstream finite-pipe behavior. Regular-file follow is polling-based and
 works on the native and Wasm targets; it does not require host file-notify
 APIs.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

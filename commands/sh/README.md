@@ -73,7 +73,7 @@ Here-documents retain their existing literal-body subset.
 resize events, recoverable Ctrl-C, or job control. Async 0.22.4 does not expose
 the complete public terminal/process-group interfaces needed for these
 behaviors. `exec`, `fg`, `bg`, `jobs` and `wait` reject the request explicitly.
-See the [upstream gap record](../../docs/async-upstream-gaps.md) and ADR-0007.
+See [ADR-0007](../../docs/adr/0007-language.md) for the terminal boundary.
 
 The workspace runner's `sh-interactive-session` scenario verifies persistent
 open stdin, ENV, PS1/PS2, immediate execution, multiline input, variables,
@@ -82,3 +82,7 @@ foreground helper reads one line in pure MoonBit. Run the prebuilt driver with
 `--suite scenarios --case sh-interactive-session --backend native` or `wasm`.
 See [test instructions](../../tests/runner/README.md). The original probe is
 retained under `docs/reports/2026-09-21-test-cleanup-evidence/repro/`.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Standalone `--help` also prints the supported invocation forms.

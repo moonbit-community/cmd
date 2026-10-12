@@ -197,10 +197,15 @@ async fn Parser::parse_or(self : Parser) -> Bool {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("test 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:].to_owned()
   if args == ["--help"] {
     @stdio.stdout.write(
-      "Usage: test EXPRESSION\nSupports string, integer, portable file-kind, access, size, and timestamp expressions.\n",
+      "Usage: test EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nSupports string, integer, portable file-kind, access, size, and timestamp expressions.\n",
     )
     return
   }

@@ -25,3 +25,7 @@ with these flags does not establish their overwrite semantics.
 recognized but fail before creating output because the portable API cannot
 read and restore complete links, modes, ownership, and timestamps. See the
 [support record](../../docs/compatibility.md).
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

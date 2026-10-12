@@ -7,6 +7,8 @@ priv suberror CliError {
 fn usage() -> String {
   let message =
     #|Usage: sleep NUMBER[SUFFIX]...
+    #|      --help      display this help and exit
+    #|      --version   display version and exit
     #|
     #|Pause for NUMBER seconds, like sleep(1). NUMBER may be fractional.
     #|SUFFIX may be 's' (seconds, default), 'm' (minutes), 'h' (hours), or
@@ -47,6 +49,11 @@ fn parse_duration(text : String) -> Double raise CliError {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("sleep 0.2.0\n")
+    return
+  }
   let raw_args = @env.args()[1:]
   let args = if raw_args.length() > 0 && raw_args[0] == "--" {
     raw_args[1:]
@@ -58,7 +65,7 @@ async fn main {
     return
   }
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("sleep (moonbit cmd) \{command_version}\n")
+    @stdio.stdout.write("sleep \{command_version}\n")
     return
   }
   if args.is_empty() {

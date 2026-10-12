@@ -110,8 +110,8 @@ fn help_message() -> String {
     #|  -q, --quiet              Same as --silent.
     #|  -k, --keep-files         Keep created fragments after a split error.
     #|  -z, --elide-empty-files  Omit empty output fragments.
-    #|      --help               Show this help.
-    #|      --version            Show version.
+    #|      --help               display this help and exit
+    #|      --version            display version and exit
     #|
     #|Existing output paths, custom suffix formats, backreferences, non-ASCII
     #|regex patterns, and locale-specific matching are unsupported.
@@ -120,6 +120,11 @@ fn help_message() -> String {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("csplit 0.1.0\n")
+    return
+  }
   let parsed = @cli.parse(@env.args()[1:], [
     @cli.option("prefix", short='f'),
     @cli.option("digits", short='n'),

@@ -10,7 +10,7 @@ equal-width zero padding (`-w`). Decimal and exponent inputs use exact
 fixed-point arithmetic, avoiding cumulative floating-point drift.
 Numeric operands are limited to 4096 characters; their decimal exponent and
 scale must each lie within -4096..4096. Larger values fail before output.
-Output is streamed through a bounded 64 KiB buffer without a fixed record-count cap.
-`--version` reports the built package version. The published `cli/seq@0.1.5`
-uses the earlier automatic descending-step behavior; version 0.2.0 uses the
-GNU-compatible default `+1`.
+Output is streamed through a bounded 64 KiB buffer without a fixed record-count
+cap. `--version` reports the published package version. The current release is
+`cli/seq@0.2.1` and uses the GNU-compatible default `+1`.
+`--help` prints usage and `--version` prints the command and package version.

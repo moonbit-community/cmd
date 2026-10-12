@@ -136,6 +136,8 @@ fn unexpand_bytes(
 fn help_message() -> String {
   let message =
     #|Usage: unexpand [OPTION]... [FILE]...
+    #|      --help      display this help and exit
+    #|      --version   display version and exit
     #|
     #|Convert spaces in each FILE to tabs, writing to standard output.
     #|With no FILE, or when FILE is -, read standard input.
@@ -143,7 +145,6 @@ fn help_message() -> String {
     #|  -a, --all          convert all blanks, not just leading blanks
     #|      --first-only   convert only leading blank sequences
     #|  -t, --tabs=LIST    use comma-separated tab stops (implies --all)
-    #|      --help         display this help and exit
   message
 }
 
@@ -158,6 +159,11 @@ async fn read_input(path : String) -> Bytes {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("unexpand 0.1.1\n")
+    return
+  }
   let parsed = @cli.parse(@env.args()[1:], [
     @cli.flag("all", short='a'),
     @cli.flag("first-only"),

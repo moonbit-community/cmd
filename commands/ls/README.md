@@ -33,3 +33,7 @@ size is also rejected because public directory size metadata is unavailable.
 The byte-order implementation
 does not rewrite locale environment variables; file-access authorization
 belongs to the caller or host.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

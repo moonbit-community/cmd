@@ -28,6 +28,11 @@ fn parse_duration(value : String) -> Int raise {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("timeout 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:]
   let mut duration : Int? = None
   let command : Array[String] = []
@@ -40,7 +45,9 @@ async fn main {
     } else if options && arg == "--" {
       options = false
     } else if options && arg == "--help" {
-      @stdio.stdout.write("Usage: timeout DURATION COMMAND [ARG...]\n")
+      @stdio.stdout.write(
+        "Usage: timeout DURATION COMMAND [ARG...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      )
       return
     } else if options && (arg == "--preserve-status" || arg == "--foreground") {
       @stdio.stderr.write("timeout: unsupported option: \{arg}\n")

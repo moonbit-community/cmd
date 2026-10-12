@@ -20,3 +20,7 @@ input order.
 
 An empty `-d` value is rejected because the delimiter must be one byte.
 Delimiter and `-s` options are rejected outside field mode.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

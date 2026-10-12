@@ -266,11 +266,18 @@ fn add_counts(left : TreeCounts, right : TreeCounts) -> TreeCounts {
 
 ///|
 fn usage() -> String {
-  "Usage: tree [-adf] [-L level] [--noreport] [--] [directory ...]\n"
+  "Usage: tree [-adf] [-L level] [--noreport] [--] [directory ...]\n" +
+  "      --help      display this help and exit\n" +
+  "      --version   display version and exit\n"
 }
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("tree 0.1.1\n")
+    return
+  }
   let invocation = parse_arguments(@env.args()[1:].to_owned()) catch {
     TreeError(message) => {
       @stdio.stderr.write("tree: \{message}\n")
@@ -283,7 +290,7 @@ async fn main {
     return
   }
   if invocation.options.version {
-    @stdio.stdout.write("tree (moonbit cmd) \{command_version}\n")
+    @stdio.stdout.write("tree \{command_version}\n")
     return
   }
   let roots : Array[TreeNode] = []

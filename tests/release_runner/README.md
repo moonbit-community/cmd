@@ -40,6 +40,12 @@ package versions. The retained preparation manifest accepts `validate` and
 `published-0.1.0.json` and the frozen
 `published-0.2.0.json` remain available for historical replay.
 
+The shared historical base preserves pre-2026-10-12 metadata output in
+`published-metadata-2026-10-11.json`. Its `case_overrides` replace only the
+listed existing cases; active workspace contracts use the new help text and
+`<command> <version>` line. Use workspace cases for future candidates so this
+historical overlay cannot certify a new package against old metadata bytes.
+
 The process argv is `moonx cli/<command>@<version> -- <command arguments>`.
 The inserted separator preserves a command's own leading `--`; such an operand
 must not be consumed as MoonX's separator. Local launchers inherit

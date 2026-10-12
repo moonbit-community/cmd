@@ -44,7 +44,8 @@ stdout and stderr. Executable assertions were in `tests/fidelity.mbtx`.
 
 Ordinary cp and touch on existing files are explicit reductions in capability,
 not complete upstream behavior. Unlock conditions are in
-[ADR-0004](../adr/0004-filesystem.md) and [API gaps](../async-upstream-gaps.md).
+[ADR-0004](../adr/0004-filesystem.md) and the current API-boundary entries in
+[the compatibility record](../compatibility.md).
 
 ## Interaction and networking
 
@@ -136,6 +137,6 @@ moon run --target native tests/release_runner -- --manifest tests/release_runner
 ```
 
 The [compatibility table](../compatibility.md), nine canonical ADRs and
-[upstream feedback](../async-upstream-gaps.md) define follow-up scope.
+[upstream feedback](../compatibility.md) define follow-up scope.
 Advanced terminals, exec and job control require public APIs; fuller grep,
 shell/make syntax and PSL/IDNA are project work, not permanent async limitations.

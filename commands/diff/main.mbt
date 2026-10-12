@@ -37,7 +37,7 @@ async fn run(args : ArrayView[String]) -> Int {
   ])
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: diff [-qsauc] [-U LINES | -C LINES] [--label LABEL] FILE1 FILE2\nCompare regular files or one stdin operand. Normal, unified and context output.\n-q reports differences only; -s reports equality; -a treats binary input as text.\nTimestamp headers use TZ=UTC or public TZif files; label stdin explicitly.\nDirectory recursion and whitespace/locale options are unsupported.\n",
+      "Usage: diff [-qsauc] [-U LINES | -C LINES] [--label LABEL] FILE1 FILE2\n      --help      display this help and exit\n      --version   display version and exit\nCompare regular files or one stdin operand. Normal, unified and context output.\n-q reports differences only; -s reports equality; -a treats binary input as text.\nTimestamp headers use TZ=UTC or public TZif files; label stdin explicitly.\nDirectory recursion and whitespace/locale options are unsupported.\n",
     )
     return 0
   }

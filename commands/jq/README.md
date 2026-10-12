@@ -59,3 +59,7 @@ including negative and open bounds, in nested filters as well as at the top
 level. Numeric/boolean/object slices fail instead of silently returning null.
 Map, reduce, assignment and try/catch use the evaluator's public AST; modules,
 the `--stream` event representation, and every jq 1.8.2 diagnostic are not claimed.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

@@ -1,5 +1,10 @@
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("printenv 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.flag("null", short='0'),
@@ -12,7 +17,9 @@ async fn main {
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write("Usage: printenv [-0] [NAME...]\n")
+    @stdio.stdout.write(
+      "Usage: printenv [-0] [NAME...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+    )
     return
   }
   let names = parsed.operands

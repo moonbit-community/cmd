@@ -143,6 +143,11 @@ async fn process_reader(
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("uniq 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.flag("count", short='c'),
@@ -163,7 +168,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: uniq [-cduiz] [-f FIELDS] [-s CHARS] [-w CHARS] [FILE]\n",
+      "Usage: uniq [-cduiz] [-f FIELDS] [-s CHARS] [-w CHARS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\n",
     )
     return
   }

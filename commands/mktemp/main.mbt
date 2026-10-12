@@ -97,6 +97,11 @@ async fn create_unique(
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("mktemp 0.1.1\n")
+    return
+  }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.flag("directory", short='d'),
@@ -110,7 +115,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: mktemp [-d] [TEMPLATE]\nCreate a uniquely named temporary file or directory.\n",
+      "Usage: mktemp [-d] [TEMPLATE]\n      --help      display this help and exit\n      --version   display version and exit\nCreate a uniquely named temporary file or directory.\n",
     )
     return
   }

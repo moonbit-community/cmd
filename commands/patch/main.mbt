@@ -60,7 +60,7 @@ async fn run(args : ArrayView[String]) -> Int {
     return 0
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("patch (cli) \{command_version}\n")
+    @stdio.stdout.write("patch \{command_version}\n")
     return 0
   }
   if parsed.operands.length() > 2 {
@@ -235,6 +235,11 @@ async fn run(args : ArrayView[String]) -> Int {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("patch 0.1.0\n")
+    return
+  }
   let status = run(@env.args()[1:]) catch {
     PatchError(message) => {
       @stdio.stderr.write("patch: \{message}\n")

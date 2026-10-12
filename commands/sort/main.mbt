@@ -802,6 +802,11 @@ fn normalized_args(args : ArrayView[String]) -> Array[String] {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("sort 0.2.0\n")
+    return
+  }
   let parsed = @cli.parse(normalized_args(@env.args()[1:]), [
     @cli.flag("reverse", short='r'),
     @cli.flag("numeric-sort", short='n'),
@@ -830,7 +835,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: sort [-bcdfghinMruVz] [-k KEY] [-t CHAR] [-c|-C] [FILE...]\n",
+      "Usage: sort [-bcdfghinMruVz] [-k KEY] [-t CHAR] [-c|-C] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
     )
     return
   }

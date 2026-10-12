@@ -56,6 +56,11 @@ jobs:
       - name: Build Wasm release commands
         run: moon build --target wasm --release --deny-warn
 
+      - name: Verify command metadata contract
+        run: |
+          moon run --target native tests/metadata/verify.mbtx native
+          moon run --target native tests/metadata/verify.mbtx wasm
+
       - name: Validate workspace cases
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe

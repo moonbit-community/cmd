@@ -22,6 +22,11 @@ async fn canonicalize(
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("realpath 0.1.1\n")
+    return
+  }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.flag("canonicalize-existing", short='e'),
@@ -38,13 +43,15 @@ async fn main {
   if parsed.contains("help") {
     let message =
       #|Usage: realpath [-e] [-z] NAME...
+      #|      --help      display this help and exit
+      #|      --version   display version and exit
       #|  -e, --canonicalize-existing  require every path component to exist
       #|  -z, --zero                   separate output with NUL bytes
-    @stdio.stdout.write(message)
+    @stdio.stdout.write(message + "\n")
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("realpath (moonbit cmd) \{command_version}\n")
+    @stdio.stdout.write("realpath \{command_version}\n")
     return
   }
   if parsed.operands.is_empty() {

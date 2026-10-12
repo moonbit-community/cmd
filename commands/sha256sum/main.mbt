@@ -179,6 +179,11 @@ async fn check_manifest(
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("sha256sum 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.flag("check", short='c'),
@@ -200,7 +205,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: sha256sum [-c] [-z] [--quiet] [--status] [--strict] [--warn] [--ignore-missing] [FILE...]\n",
+      "Usage: sha256sum [-c] [-z] [--quiet] [--status] [--strict] [--warn] [--ignore-missing] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
     )
     return
   }

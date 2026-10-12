@@ -9,3 +9,7 @@ host cwd contract. `-L` uses `PWD` only when it is an
 absolute, dot-free path resolving to the current directory; otherwise it falls
 back to the physical cwd. The default is `-P`, or `-L` when
 `POSIXLY_CORRECT` is present; the last explicit `-L`/`-P` wins.
+
+The unreleased workspace adds standalone `--version`, which prints the command
+name and package version and exits successfully without reading input.
+Use `--help` to display usage.

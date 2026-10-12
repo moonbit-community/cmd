@@ -41,7 +41,7 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "sleep (moonbit cmd) 0.2.0\n",
+      "expected_stdout_text": "sleep 0.2.0\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-text-line-736"
@@ -62,7 +62,7 @@
       "coverage": [
         "help"
       ],
-      "expected_stdout_text": "Usage: sleep NUMBER[SUFFIX]...\n\nPause for NUMBER seconds, like sleep(1). NUMBER may be fractional.\nSUFFIX may be 's' (seconds, default), 'm' (minutes), 'h' (hours), or\n'd' (days). With multiple arguments, sleep for their sum.\n",
+      "expected_stdout_text": "Usage: sleep NUMBER[SUFFIX]...\n      --help      display this help and exit\n      --version   display version and exit\n\nPause for NUMBER seconds, like sleep(1). NUMBER may be fractional.\nSUFFIX may be 's' (seconds, default), 'm' (minutes), 'h' (hours), or\n'd' (days). With multiple arguments, sleep for their sum.\n",
       "expected_stderr_text": ""
     },
     {

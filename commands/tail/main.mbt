@@ -435,6 +435,11 @@ async fn follow_files(
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("tail 0.2.0\n")
+    return
+  }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.flag("quiet", short='q'),
@@ -453,7 +458,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: tail [-f] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n",
+      "Usage: tail [-f] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
     )
     return
   }

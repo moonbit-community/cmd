@@ -24,6 +24,11 @@ async fn unlink_one(path : String) -> Unit raise UnlinkError {
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("unlink 0.1.2\n")
+    return
+  }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, [@cli.flag("help"), @cli.flag("version")]) catch {
     @cli.CliError(option~, message~, ..) => {
@@ -39,7 +44,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("unlink (moonbit cmd) \{command_version}\n")
+    @stdio.stdout.write("unlink \{command_version}\n")
     return
   }
   if parsed.operands.is_empty() {

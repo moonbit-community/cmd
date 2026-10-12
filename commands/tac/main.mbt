@@ -64,6 +64,8 @@ fn reverse_records(data : Bytes, separator : Bytes, before : Bool) -> Bytes {
 fn help_message() -> String {
   let message =
     #|Usage: tac [OPTION]... [FILE]...
+    #|      --help      display this help and exit
+    #|      --version   display version and exit
     #|
     #|Write each FILE to standard output, last line first.
     #|With no FILE, or when FILE is -, read standard input.
@@ -72,12 +74,16 @@ fn help_message() -> String {
     #|  -s, --separator=STRING   Use STRING instead of newline.
     #|  -r, --regex              Not supported: regular separators need a public
     #|                            regular-expression API with byte semantics.
-    #|      --help               Show this help message.
   message
 }
 
 ///|
 async fn main {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("tac 0.1.1\n")
+    return
+  }
   let parsed = @cli.parse(@env.args()[1:], [
     @cli.flag("before", short='b'),
     @cli.option("separator", short='s'),

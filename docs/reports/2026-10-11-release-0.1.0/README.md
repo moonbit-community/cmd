@@ -81,7 +81,7 @@ Availability remains a startup check and does not promote an untested option
 to semantic compatibility. Boundary cases remain explicit unsupported-subset
 decisions. The command profiles and their remaining limits are recorded in
 [`docs/compatibility.md`](../../compatibility.md) and
-[`docs/async-upstream-gaps.md`](../../async-upstream-gaps.md).
+the current API-boundary entries in [`docs/compatibility.md`](../../compatibility.md).
 
 The earlier `published-0.1.1.json` manifest and its release report remain
 frozen for historical replay.

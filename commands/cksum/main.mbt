@@ -72,7 +72,7 @@ fn help_message() -> String {
     #|Print CRC checksum and byte count for each FILE.
     #|With no FILE, or when FILE is -, read standard input.
     #|      --help       display this help and exit
-    #|      --version    output version information and exit
+    #|      --version    display version and exit
     #|
     #|This release implements the POSIX CRC-32 form. GNU alternate
     #|algorithms and tagged output are not included in this strict subset.
@@ -96,7 +96,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("cksum (moonbit cmd) \{command_version}\n")
+    @stdio.stdout.write("cksum \{command_version}\n")
     return
   }
   if parsed.operands.is_empty() {
