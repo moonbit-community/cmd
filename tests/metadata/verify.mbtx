@@ -41,8 +41,14 @@ async fn main {
     let manifest_text = @fs.read_file("commands/" + name + "/moon.mod").text()
     let mut version = ""
     for line in manifest_text.split("\n") {
-      if line.has_prefix("version = \"") {
-        version = line.strip_prefix("version = \"").unwrap().strip_suffix("\"").unwrap().to_owned()
+      let normalized = line.trim()
+      if normalized.has_prefix("version = \"") {
+        version = normalized
+          .strip_prefix("version = \"")
+          .unwrap()
+          .strip_suffix("\"")
+          .unwrap()
+          .to_owned()
       }
     }
     guard version != "" else { fail("missing version for " + name) }
