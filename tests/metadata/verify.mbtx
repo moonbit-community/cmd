@@ -1,97 +1,26 @@
+///|
 import {
   "moonbitlang/async",
-  "moonbitlang/async/fs",
   "moonbitlang/async/shell",
   "moonbitlang/core/env",
 }
 
 ///|
-fn invocation(name : String, backend : String, args : Array[String]) -> @shell.Cmd {
-  if backend == "wasm" {
-    @shell.Cmd(
-      "moonrun",
-      ["_build/wasm/release/build/cli/" + name + "/" + name + ".wasm", "--", ..args],
-      stdin=Binary(b""),
-    )
-  } else {
-    @shell.Cmd(
-      "_build/native/release/build/cli/" + name + "/" + name + ".exe",
-      args,
-      stdin=Binary(b""),
-    )
-  }
-}
-
-///|
 async fn main {
-  let backend = @env.args()[1:].get(0).unwrap_or("native")
-  guard backend == "native" || backend == "wasm" else {
-    fail("expected native or wasm backend")
-  }
-  let names : Array[String] = []
-  for name in @fs.readdir("commands", sort=true) {
-    if @fs.kind("commands/" + name) == Directory &&
-      @fs.exists("commands/" + name + "/moon.mod") {
-      names.push(name)
-    }
-  }
-  guard !names.is_empty() else { fail("no command modules found") }
-  let mut failures = 0
-  for name in names {
-    let manifest_text = @fs.read_file("commands/" + name + "/moon.mod").text()
-    let mut version = ""
-    for line in manifest_text.split("\n") {
-      let normalized = line.trim()
-      if normalized.has_prefix("version = \"") {
-        version = normalized
-          .strip_prefix("version = \"")
-          .unwrap()
-          .strip_suffix("\"")
-          .unwrap()
-          .to_owned()
-      }
-    }
-    guard version != "" else { fail("missing version for " + name) }
-    let help = invocation(name, backend, ["--help"]).output(timeout_ms=15000)
-    let help_text = help.stdout()
-    let help_ok = help.exit_code() == 0 && help.stderr() == "" &&
-      help_text.has_prefix("Usage: " + name) && help_text.has_suffix("\n") &&
-      help_text.contains("--help") && help_text.contains("--version") &&
-      help_text.contains("display this help and exit") &&
-      help_text.contains("display version and exit") &&
-      !help_text.contains("Show this help") &&
-      !help_text.contains("Show version") &&
-      !help_text.contains("package version") &&
-      !help_text.contains("output version information")
-    let actual_version = invocation(name, backend, ["--version"]).output(timeout_ms=15000)
-    let mut version_ok = actual_version.exit_code() == 0 && actual_version.stderr() == "" &&
-      actual_version.stdout() == name + " " + version + "\n"
-    // Commands with existing parser-level metadata keep the same output when
-    // an operand is present. Operand-oriented commands such as echo differ.
-    if [
-      "cksum", "column", "csplit", "date", "diff", "env", "fmt", "fold",
-      "gunzip", "gzip", "hexdump", "md5sum", "od", "patch", "realpath",
-      "sed", "seq", "sha1sum", "sha512sum", "split", "strings", "tree",
-      "unlink", "which", "zcat",
-    ].contains(name) {
-      let combined = invocation(name, backend, ["--version", "metadata-unused-operand"]).output(timeout_ms=15000)
-      version_ok = version_ok && combined.exit_code() == 0 &&
-        combined.stderr() == "" && combined.stdout() == name + " " + version + "\n"
-    }
-    if name == "hexdump" {
-      let alias_result = invocation(name, backend, ["-V"]).output(timeout_ms=15000)
-      version_ok = version_ok && alias_result.exit_code() == 0 && alias_result.stderr() == "" &&
-        alias_result.stdout() == name + " " + version + "\n"
-    }
-    if !help_ok || !version_ok {
-      failures += 1
-      println(
-        "\{name}: help=\{help_ok} version=\{version_ok} help_lines=\{help_text.contains("--help")}/\{help_text.contains("--version")} newline=\{help_text.has_suffix("\n")} help_status=\{help.exit_code()} version_status=\{actual_version.exit_code()}",
-      )
-    }
-  }
-  println("metadata (\{backend}): \{names.length() - failures}/\{names.length()} commands passed")
-  if failures > 0 {
-    fail("\{failures} metadata contracts failed")
+  let result = @shell.Cmd(
+    "moon",
+    [
+      "run",
+      "tests/metadata",
+      "--target",
+      "native",
+      "--",
+      ..@env.args()[1:].to_owned(),
+    ],
+  ).output()
+  println(result.stdout())
+  if result.exit_code() != 0 {
+    println(result.stderr())
+    fail("metadata verification failed with status \{result.exit_code()}")
   }
 }

@@ -62,6 +62,9 @@ fn case_in_suites(fixture : @testkit.Case, suites : Array[String]) -> Bool {
   suites.any(suite => {
     match suite {
       "contract" => kind == "contract" || fixture.expected_rejection is Some(_)
+      "backend-pair" =>
+        (kind == "contract" || kind == "scenario") &&
+        fixture.expected_rejection is None
       "oracle" =>
         kind == "differential" ||
         kind == "exact" ||
@@ -87,12 +90,17 @@ async fn execute_cohort(
   let level = if kind == "policy" {
     "boundary"
   } else if kind == "gnu" {
-    "differential"
+    "supplementary"
   } else {
     "contract"
   }
+  let report_id = if kind == "policy" {
+    "policy:" + fixture.id
+  } else {
+    "cohort:" + fixture.id
+  }
   let base : @testkit.CaseReport = {
-    id: fixture.id,
+    id: report_id,
     command: fixture.command,
     result: "pass",
     verification: level,
@@ -171,7 +179,7 @@ async fn execute_cohort(
     detail: failures.join("; "),
     duration_ms: @async.now() - start,
     observations: if failures.is_empty() {
-      ["retained-cohort-assertions"]
+      ["status", "stdout", "stderr"]
     } else {
       []
     },

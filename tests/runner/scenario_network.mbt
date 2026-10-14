@@ -20,11 +20,12 @@ async fn network_request(
   let prefix = work + "/call-\{@fs.readdir(work).length()}"
   @fs.write_file(prefix + ".stdout.bin", result.stdout)
   @fs.write_file(prefix + ".stderr.bin", result.stderr)
+  @fs.write_file(prefix + ".status.txt", result.status.to_string())
   @fs.write_file(
     prefix + ".request.json",
-    { "command": command.to_json(), "args": args.to_json() }
-    .to_json()
-    .stringify(indent=2),
+    ({ "command": Json(command), "args": Json(args) } : Json).stringify(
+      indent=2,
+    ),
   )
   if oracle_image is Some(image) {
     let docker_user = @testkit.docker_user()
@@ -200,7 +201,10 @@ async fn network_cli_scenario(
       })
     }
     let base = "http://127.0.0.1:\{server.addr.port()}"
-    let cases : Array[(String, Array[String], String, Int)] = [
+    // The allocated listener origin is the only network normalization used
+    // when comparing this scenario's independently isolated backend fixtures.
+    @fs.write_file(work + "/../network-origin.txt", base)
+    let cases : Array[(String, Array[String], String, Int32)] = [
       (
         "curl",
         ["-sS", "-u", "user:pass", base + "/inspect"],
@@ -511,6 +515,16 @@ async fn network_cli_scenario(
       "auth=\ncookie=sid=fixture\n",
     )
     assert_false(@fs.read_file(session_jar).text().contains("\tsid\tfixture"))
+    @fs.write_file(
+      work + "/../requests.json",
+      @testkit.canonical_json(
+        Json(
+          requests.map(item => {
+            ({ "path": Json(item.0), "authorization": Json(item.1) } : Json)
+          }),
+        ),
+      ),
+    )
     if !oracle_failures.is_empty() {
       fail(oracle_failures.join("; "))
     }

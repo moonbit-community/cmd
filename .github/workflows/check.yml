@@ -13,6 +13,7 @@ on:
 jobs:
   check:
     name: ${{ matrix.os }}
+    timeout-minutes: 360
     strategy:
       fail-fast: false
       matrix:
@@ -33,8 +34,8 @@ jobs:
       - name: Setup MoonBit
         uses: hustcer/setup-moonbit@v1.23
         with:
-          version: 0.10.14+7d59c7ec9
-          core-version: 0.10.14+7d59c7ec9
+          version: 0.10.15+943464bfa
+          core-version: 0.10.15+943464bfa
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -45,76 +46,109 @@ jobs:
         run: moon update
 
       - name: Check
+        id: check_source
         run: moon check --target all --deny-warn
 
       - name: Test
         run: moon test --target all
 
       - name: Build Native release commands and test drivers
+        id: build_native
+        if: ${{ !cancelled() && steps.check_source.outcome == 'success' }}
         run: moon build --target native --release --deny-warn
 
       - name: Build Wasm release commands
+        id: build_wasm
+        if: ${{ !cancelled() && steps.check_source.outcome == 'success' }}
         run: moon build --target wasm --release --deny-warn
 
-      - name: Verify command metadata contract
-        run: |
-          moon run --target native tests/metadata/verify.mbtx native
-          moon run --target native tests/metadata/verify.mbtx wasm
+      - name: Compare Native and Wasm command metadata
+        if: ${{ !cancelled() && steps.build_native.outcome == 'success' && steps.build_wasm.outcome == 'success' }}
+        timeout-minutes: 10
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/metadata/metadata.exe
+          pair --report-dir test-reports/metadata-pair
 
       - name: Validate workspace cases
+        if: ${{ !cancelled() && steps.build_native.outcome == 'success' }}
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
           --manifest tests/fixtures/runner/cases.json --validate-only
 
       - name: Validate unpublished candidate manifest
+        if: ${{ !cancelled() && steps.build_native.outcome == 'success' }}
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
-          --manifest tests/release_runner/candidate-2026-10-11-repair.json --suite validate
+          --manifest tests/release_runner/current/candidate.json --suite validate
+          --report-dir test-reports/candidate-validation
 
       - name: Native compatibility
+        if: ${{ !cancelled() && steps.build_native.outcome == 'success' }}
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
           --suite compat --report-dir test-reports/compat-native
 
       - name: Native command contracts
+        if: ${{ !cancelled() && steps.build_native.outcome == 'success' }}
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
           --suite contract --backend native --jobs 1 --report-dir test-reports/contract-native
 
       - name: Wasm command contracts
+        if: ${{ !cancelled() && steps.build_native.outcome == 'success' && steps.build_wasm.outcome == 'success' }}
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
           --suite contract --backend wasm --jobs 1 --report-dir test-reports/contract-wasm
 
       - name: Native interactive, network and lifecycle scenarios
+        if: ${{ !cancelled() && steps.build_native.outcome == 'success' }}
         timeout-minutes: 3
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
           --suite scenarios --backend native --report-dir test-reports/scenarios-native
 
       - name: Wasm interactive, network and lifecycle scenarios
+        if: ${{ !cancelled() && steps.build_native.outcome == 'success' && steps.build_wasm.outcome == 'success' }}
         timeout-minutes: 3
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
           --suite scenarios --backend wasm --report-dir test-reports/scenarios-wasm
 
+      - name: Compare Native and Wasm contracts and stateful scenarios
+        if: ${{ !cancelled() && steps.build_native.outcome == 'success' && steps.build_wasm.outcome == 'success' }}
+        timeout-minutes: 20
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
+          --suite backend-pair --jobs 1 --report-dir test-reports/backend-pair
+
+      - name: Compare all applicable registered package tests on Native and Wasm
+        if: ${{ !cancelled() && steps.build_native.outcome == 'success' && steps.build_wasm.outcome == 'success' }}
+        timeout-minutes: 90
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/packages/packages.exe
+          --backend pair --all --report-dir test-reports/package-pair
+
       - name: GNU differential
-        if: runner.os == 'Linux'
+        if: ${{ !cancelled() && runner.os == 'Linux' && steps.build_native.outcome == 'success' }}
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
           --suite gnu --report-dir test-reports/gnu-native
 
       - name: Wasm policy
+        if: ${{ !cancelled() && steps.build_native.outcome == 'success' && steps.build_wasm.outcome == 'success' }}
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
           --suite policy --report-dir test-reports/policy-wasm
 
       - name: Setup Docker Buildx
-        if: runner.os == 'Linux'
+        id: setup_docker
+        if: ${{ !cancelled() && runner.os == 'Linux' && steps.build_native.outcome == 'success' }}
         uses: docker/setup-buildx-action@v3
 
       - name: Build pinned oracle image
-        if: runner.os == 'Linux'
+        id: build_oracle
+        if: ${{ !cancelled() && runner.os == 'Linux' && steps.setup_docker.outcome == 'success' }}
+        timeout-minutes: 45
         uses: docker/build-push-action@v6
         with:
           context: tests/runner/image
@@ -123,56 +157,94 @@ jobs:
           cache-from: type=gha,scope=mooncmd-oracle
           cache-to: type=gha,mode=max,scope=mooncmd-oracle
 
-      - name: Record oracle versions and image digest
-        if: runner.os == 'Linux'
+      - name: Seal copied oracle profile and retain image identity
+        id: seal_oracle
+        if: ${{ !cancelled() && runner.os == 'Linux' && steps.build_oracle.outcome == 'success' }}
+        shell: bash
+        timeout-minutes: 5
         run: |
-          docker run --rm mooncmd-oracle:phase0 /usr/local/bin/versions.sh > test-reports/oracle-versions.txt
-          docker image inspect --format='{{.Id}}' mooncmd-oracle:phase0 > test-reports/oracle-image.txt
+          mkdir -p test-reports/oracle-profile
+          cp tests/runner/image/profile.json tests/runner/image/Dockerfile tests/runner/image/versions.sh test-reports/oracle-profile/
+          oracle_image_id=$(docker image inspect --format='{{.Id}}' mooncmd-oracle:phase0)
+          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --seal-oracle "$oracle_image_id" --oracle-profile test-reports/oracle-profile/profile.json
+          docker run --rm "$oracle_image_id" /usr/local/bin/versions.sh > test-reports/oracle-versions.txt
+          docker image inspect --format='{{.Id}}' "$oracle_image_id" > test-reports/oracle-image.txt
+          printf 'image_id=%s\n' "$oracle_image_id" >> "$GITHUB_OUTPUT"
 
-      - name: Compare pinned upstream fixtures on Native and Wasm
-        if: runner.os == 'Linux'
+      - name: Compare pinned upstream fixtures on Native
+        if: ${{ !cancelled() && runner.os == 'Linux' && steps.seal_oracle.outcome == 'success' }}
+        timeout-minutes: 30
+        shell: bash
         run: |
           umask 022
-          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite oracle --oracle-image mooncmd-oracle:phase0 --report-dir test-reports/oracle-native
-          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite oracle --backend wasm --oracle-image mooncmd-oracle:phase0 --report-dir test-reports/oracle-wasm
+          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite oracle --oracle-image "${{ steps.seal_oracle.outputs.image_id }}" --oracle-profile test-reports/oracle-profile/profile.json --report-dir test-reports/oracle-native
+
+      - name: Compare pinned upstream fixtures on Wasm
+        if: ${{ !cancelled() && runner.os == 'Linux' && steps.seal_oracle.outcome == 'success' && steps.build_wasm.outcome == 'success' }}
+        timeout-minutes: 30
+        shell: bash
+        run: |
+          umask 022
+          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite oracle --backend wasm --oracle-image "${{ steps.seal_oracle.outputs.image_id }}" --oracle-profile test-reports/oracle-profile/profile.json --report-dir test-reports/oracle-wasm
 
       - name: Resolve published-test launcher
-        if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+        id: moonx
+        if: ${{ !cancelled() && steps.build_native.outcome == 'success' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
         shell: pwsh
         run: |
           $moonxPath = (Get-Command moonx -CommandType Application).Source
           "CMD_MOONX=$moonxPath" >> $env:GITHUB_ENV
 
       - name: Published-version smoke
-        if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+        if: ${{ !cancelled() && steps.moonx.outcome == 'success' }}
+        timeout-minutes: 60
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
-          --manifest tests/release_runner/published-2026-10-11-repair.json --suite smoke
+          --manifest tests/release_runner/current/published.json --suite smoke
           --moonx "${{ env.CMD_MOONX }}"
+          --jobs 1 --timeout-ms 120000
           --report-dir test-reports/published-smoke
 
       - name: Published-version differential
-        if: runner.os == 'Linux' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
+        if: ${{ !cancelled() && runner.os == 'Linux' && steps.moonx.outcome == 'success' && steps.seal_oracle.outcome == 'success' }}
+        timeout-minutes: 60
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
-          --manifest tests/release_runner/published-2026-10-11-repair.json --suite differential
+          --manifest tests/release_runner/current/published.json --suite differential
           --moonx "${{ env.CMD_MOONX }}"
-          --oracle-image mooncmd-oracle:phase0
+          --oracle-image "${{ steps.seal_oracle.outputs.image_id }}"
+          --oracle-profile test-reports/oracle-profile/profile.json
+          --jobs 4 --timeout-ms 120000
           --report-dir test-reports/published-differential
 
       - name: Stress scenarios
-        if: runner.os == 'Linux' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
+        if: ${{ !cancelled() && runner.os == 'Linux' && steps.build_native.outcome == 'success' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
           --suite stress --report-dir test-reports/stress-native
 
       - name: Generated interfaces
+        if: ${{ !cancelled() && steps.check_source.outcome == 'success' }}
         run: moon info
 
-      - name: Format
-        run: moon fmt
+      # Stage the new compiler's formatting migration in the harness. Its
+      # rewrites of untouched core/command syntax belong to a separate change.
+      - name: Format test harness packages
+        if: ${{ !cancelled() && steps.check_source.outcome == 'success' }}
+        run: >-
+          moon fmt tests/testkit tests/runner tests/release_runner tests/registry
+          tests/registry/cli tests/coverage tests/coverage/cli tests/metadata tests/packages
+
+      - name: Check automation script formatting
+        if: ${{ !cancelled() && steps.check_source.outcome == 'success' }}
+        run: >-
+          moon fmt --check tests/coverage/audit.mbtx tests/coverage/push.mbtx
+          tests/metadata/verify.mbtx tests/packages/run.mbtx
+          tests/registry/baseline.mbtx tests/registry/migrate_release_metadata.mbtx
+          tests/registry/refresh.mbtx tests/release_runner/migrate_historical.mbtx
 
       - name: Verify generated files
+        if: ${{ !cancelled() && steps.check_source.outcome == 'success' }}
         run: git diff --exit-code
 
       - name: Upload reports and failed fixtures

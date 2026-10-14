@@ -1,0 +1,62 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "p2-date-epoch-format",
+      "command": "date",
+      "args": ["-u", "-d", "@0", "+%Y-%m-%dT%H:%M:%SZ"],
+      "stdin_text": "",
+      "files": [],
+      "environment": {"TZ": "UTC"},
+      "expected_status": 0,
+      "expected_stdout_text": "1970-01-01T00:00:00Z\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": ["utc", "date"]
+    },
+    {
+      "id": "p2-date-iso-seconds",
+      "command": "date",
+      "args": ["-u", "-d", "1970-01-02 03:04:05", "--iso-8601=seconds"],
+      "stdin_text": "",
+      "files": [],
+      "environment": {"TZ": "UTC"},
+      "expected_status": 0,
+      "expected_stdout_text": "1970-01-02T03:04:05+00:00\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": ["iso-8601"]
+    },
+    {
+      "id": "p2-date-rfc-email",
+      "command": "date",
+      "args": ["-u", "-d", "@0", "-R"],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "Thu, 01 Jan 1970 00:00:00 +0000\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": ["rfc-email"]
+    },
+    {
+      "id": "p2-date-version",
+      "command": "date",
+      "args": ["--version"],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_contains": "date (cli)",
+      "diagnostic_reason": "The command/version prefix is stable; exact package version is checked separately.",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": ["version"]
+    }
+  ]
+}

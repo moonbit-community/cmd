@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "affected_commands": ["echo"],
+  "affected_behaviors": ["case:p9-echo-double-dash-literal"],
+  "affected_options": [],
+  "affected_operands": [],
+  "case_ids": ["p9-echo-double-dash-literal"],
+  "core_impact": null,
+  "published_manifest_affected": false,
+  "required_backends": ["native", "wasm"],
+  "required_evidence": ["upstream-differential"],
+  "required_observations": ["status", "stdout", "stderr"],
+  "coverage": [
+    {
+      "behavior_id": "case:p9-echo-double-dash-literal",
+      "backends": ["native", "wasm"],
+      "evidence": ["upstream-differential"],
+      "observations": ["status", "stdout", "stderr"],
+      "result": "pass",
+      "reports": [
+        "tests/reports/<native-run>/summary.jsonl",
+        "tests/reports/<wasm-run>/summary.jsonl"
+      ]
+    }
+  ],
+  "boundaries": [],
+  "deferred": [],
+  "uncovered": []
+}

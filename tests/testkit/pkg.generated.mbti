@@ -10,11 +10,23 @@ import {
 }
 
 // Values
+pub async fn artifact_digest(String) -> String
+
+pub fn artifact_id(RunMetadata) -> String
+
+pub fn begin_environment_capture() -> Unit
+
 pub fn bytes_equal(Bytes, Bytes) -> Bool
+
+pub fn canonical_json(Json) -> String
 
 pub fn check_contract(Case, RunResult, String) -> Array[String]
 
 pub async fn check_expected_files(Case, String) -> Array[String]
+
+pub fn check_oracle_identity(OracleProfile, String, String) -> Array[String]
+
+pub async fn collect_run_metadata(String, manifest_path? : String, case_corpus_path? : String, native_root? : String, wasm_root? : String, registry_path? : String, oracle_profile_id? : String, oracle_image_digest? : String, oracle_versions_path? : String, policy_path? : String, moonx_coordinates? : ArrayView[String], started_at_ms? : Int64, ended_at_ms? : Int64) -> RunMetadata
 
 pub fn contains_bytes(Bytes, String) -> Bool
 
@@ -32,7 +44,9 @@ pub fn ends_with_newline(Bytes) -> Bool
 
 pub fn executable_path(String, String) -> String
 
-pub async fn execute_contract(Case, String, Bool, String, http_base? : String) -> CaseReport
+pub async fn execute_contract(Case, String, Bool, String, http_base? : String, retain_success? : Bool) -> CaseReport
+
+pub fn execution_environment_digest(Array[ExecutionEnvironment]) -> String
 
 pub fn expand_args(ArrayView[String], String, http_base? : String) -> Array[String]
 
@@ -42,13 +56,23 @@ pub fn expand_fixture_content(Bytes, http_base? : String) -> Bytes
 
 pub fn expand_text(String, String, http_base? : String) -> String
 
+pub async fn file_digest(String) -> String
+
+pub fn finalize_run_metadata(RunMetadata, RunMetadata) -> RunMetadata
+
 pub fn host_platform() -> String
 
 pub fn input_bytes(String?, String?, String) -> Bytes raise Failure
 
 pub fn is_network_case(Case) -> Bool
 
+pub fn json_digest(Json) -> String
+
 pub async fn load_cases(String) -> Array[Case]
+
+pub async fn manifest_digest(String) -> String
+
+pub async fn moonx_artifact_digest(ArrayView[String]) -> String
 
 pub fn normalize_diagnostic(String, temporary_root? : String) -> String
 
@@ -56,9 +80,19 @@ pub fn normalize_lf(String) -> String
 
 pub fn normalize_text(Bytes, String, ArrayView[Normalization], String) -> Bytes
 
+pub fn oracle_profile_binding_errors(OracleProfile, OracleProfile, required_profile_ids? : Array[String]) -> Array[String]
+
+pub fn oracle_profile_errors(OracleProfile) -> Array[String]
+
 pub fn oracle_request_name(@http.Request) -> String
 
+pub fn parse_oracle_options(ArrayView[String]) -> OracleOptions raise Failure
+
 pub async fn prepare_fixture(String, Case, http_base? : String) -> Unit
+
+pub async fn read_oracle_profile(String) -> OracleProfile
+
+pub fn record_execution_environment(String, extra_env? : Map[String, String], inherit_env? : Bool) -> Unit
 
 pub async fn run(String, Array[String], stdin? : Bytes, cwd? : String, extra_env? : Map[String, String], inherit_env? : Bool) -> RunResult
 
@@ -68,25 +102,45 @@ pub async fn run_http_fixture(@http.Server) -> Unit
 
 pub async fn run_http_fixture_process() -> Unit
 
-pub async fn run_with_deadline(String, Array[String], Int, stdin? : Bytes, cwd? : String, extra_env? : Map[String, String], inherit_env? : Bool) -> TimedRun
+pub fn run_metadata_errors(RunMetadata) -> Array[String]
+
+pub async fn run_with_deadline(String, Array[String], Int, stdin? : Bytes, cwd? : String, extra_env? : Map[String, String], inherit_env? : Bool, capture_environment? : Bool) -> TimedRun
 
 pub fn safe_relative_path(String) -> Bool
 
 pub fn safe_symlink_target(String) -> Bool
 
+pub async fn seal_oracle_profile(String, String, expected_profile_path? : String) -> Unit
+
 pub fn select_cases(ArrayView[Case], ArrayView[String], ArrayView[String]) -> Array[Case] raise Failure
 
-pub async fn snapshot(String, observe? : ArrayView[String], baseline? : Bool) -> Array[SnapshotEntry]
+pub fn sha256_bytes(Bytes) -> String
+
+pub fn sha256_text(String) -> String
+
+pub async fn snapshot(String, observe? : ArrayView[String], baseline? : Bool, preserve_identity? : Bool, stat_path? : String, readlink_path? : String) -> Array[SnapshotEntry]
+
+pub fn snapshot_fingerprint(ArrayView[SnapshotEntry]) -> String
 
 pub fn snapshots_equal(ArrayView[SnapshotEntry], ArrayView[SnapshotEntry]) -> Bool
 
-pub async fn spawn_http_fixture_process(@async.TaskGroup[Unit]) -> (@process.Process, @process.ReadFromProcess, String)
+pub async fn spawn_http_fixture_process(@async.TaskGroup[Unit], timeout_ms? : Int) -> (@process.Process, @process.ReadFromProcess, String)
 
-pub async fn spawn_https_fixture_process(@async.TaskGroup[Unit], String) -> (@process.Process, String)
+pub async fn spawn_https_fixture_process(@async.TaskGroup[Unit], String, fixture_directory? : String, timeout_ms? : Int) -> (@process.Process, String)
+
+pub fn unordered_lines_equal(Bytes, Bytes) -> Bool
+
+pub async fn verify_oracle_image(String, docker_path? : String, profile_path? : String, expected_profile_path? : String, required_profile_ids? : Array[String]) -> OracleIdentity
 
 pub fn wasm_path(String, String) -> String
 
+pub fn with_oracle_versions_hash(RunMetadata, String) -> RunMetadata
+
+pub fn with_wasm_artifact_hash(RunMetadata, String) -> RunMetadata
+
 pub async fn write_reports(String, ArrayView[CaseReport]) -> Unit
+
+pub async fn write_reports_with_metadata(String, ArrayView[CaseReport], RunMetadata) -> Unit
 
 // Errors
 
@@ -154,6 +208,15 @@ pub fn CaseReport::semantic_pass(Self) -> Bool
 pub fn CaseReport::to_json(Self) -> Json
 pub fn CaseReport::to_repr(Self) -> @debug.Repr
 
+pub(all) struct ExecutionEnvironment {
+  program : String
+  inherit_env : Bool
+  values : Map[String, String]
+} derive(ToJson, @debug.Debug, @json.FromJson)
+pub fn ExecutionEnvironment::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn ExecutionEnvironment::to_json(Self) -> Json
+pub fn ExecutionEnvironment::to_repr(Self) -> @debug.Repr
+
 pub(all) struct ExpectedFile {
   path : String
   exists : Bool?
@@ -190,6 +253,77 @@ pub(all) struct Normalization {
 pub fn Normalization::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 pub fn Normalization::to_json(Self) -> Json
 pub fn Normalization::to_repr(Self) -> @debug.Repr
+
+pub(all) struct OracleIdentity {
+  image : String
+  digest : String
+  versions : String
+  profile_id : String
+}
+
+pub(all) struct OracleOptions {
+  arguments : Array[String]
+  profile_path : String
+  seal_digest : String?
+}
+
+pub(all) struct OracleProfile {
+  schema : Int
+  id : String
+  profile_version : Int
+  image : String
+  base_image_digest : String
+  image_digest : String
+  versions : String
+  versions_sha256 : String
+  dockerfile_sha256 : String
+  versions_script_sha256 : String
+  sources : Array[OracleSource]
+} derive(ToJson, @json.FromJson)
+pub fn OracleProfile::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn OracleProfile::to_json(Self) -> Json
+
+pub(all) struct OracleSource {
+  project : String
+  version : String
+  sha256 : String
+} derive(ToJson, @json.FromJson)
+pub fn OracleSource::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn OracleSource::to_json(Self) -> Json
+
+pub(all) struct RunMetadata {
+  schema : Int
+  run_id : String
+  git_revision : String
+  git_dirty : String
+  toolchain : String
+  runner_version : String
+  registry_hash : String
+  manifest_hash : String
+  case_corpus_hash : String
+  native_artifact_hash : String
+  wasm_artifact_hash : String
+  oracle_profile_id : String
+  oracle_image_digest : String
+  oracle_versions_hash : String
+  moonx_coordinates : Array[String]
+  platform : String
+  os : String
+  architecture : String
+  locale : String
+  timezone : String
+  docker_version : String
+  policy_hash : String
+  environment_fingerprint : String
+  host_environment_fingerprint : String
+  execution_environments : Array[ExecutionEnvironment]
+  started_at_ms : Int64
+  ended_at_ms : Int64
+  reproducibility_status : String
+} derive(ToJson, @debug.Debug, @json.FromJson)
+pub fn RunMetadata::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn RunMetadata::to_json(Self) -> Json
+pub fn RunMetadata::to_repr(Self) -> @debug.Repr
 
 pub(all) struct RunResult {
   status : Int

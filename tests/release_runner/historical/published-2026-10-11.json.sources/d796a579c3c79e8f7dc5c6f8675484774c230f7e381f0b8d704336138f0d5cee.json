@@ -1,0 +1,198 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase0-base64-stdin",
+      "command": "base64",
+      "args": [],
+      "stdin_text": "hello\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-base64-ignore-garbage",
+      "command": "base64",
+      "args": [
+        "-di"
+      ],
+      "stdin_text": "aG!k=",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-base64-wrap-boundary",
+      "command": "base64",
+      "args": [
+        "-w4"
+      ],
+      "stdin_text": "abcdef",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "base64-zero-wrap",
+      "command": "base64",
+      "args": [
+        "-w0"
+      ],
+      "stdin_text": "abc",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "YWJj",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-632",
+      "command": "base64",
+      "args": [
+        "-di"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "YQ== \r\n\t",
+      "expected_stdout_text": "a",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-633",
+      "command": "base64",
+      "args": [
+        "-d"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "YQ==YQ==",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "invalid",
+      "diagnostic_reason": "The preserved failure contract checks decoder rejection; diagnostic wording is project specific."
+    },
+    {
+      "id": "compat-text-line-641",
+      "command": "base64",
+      "args": [
+        "-di"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "aG!k=",
+      "expected_stdout_text": "hi",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-642",
+      "command": "base64",
+      "args": [
+        "-D"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "aGk=",
+      "expected_stdout_text": "hi",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-643",
+      "command": "base64",
+      "args": [
+        "-w4"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "abcdef",
+      "expected_stdout_text": "YWJj\nZGVm\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-652",
+      "command": "base64",
+      "args": [
+        "-d"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "!",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "invalid",
+      "diagnostic_reason": "The preserved failure contract checks decoder rejection; diagnostic wording is project specific."
+    },
+    {
+      "id": "compat-catalog-line-4",
+      "command": "base64",
+      "args": [
+        "-w0"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "hello world",
+      "expected_stdout_text": "aGVsbG8gd29ybGQ=",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-catalog-line-366",
+      "command": "base64",
+      "args": [
+        "--wrap=-1"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "invalid wrap size",
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+    },
+    {
+      "id": "compat-stdin-base64",
+      "command": "base64",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
+    }
+  ]
+}

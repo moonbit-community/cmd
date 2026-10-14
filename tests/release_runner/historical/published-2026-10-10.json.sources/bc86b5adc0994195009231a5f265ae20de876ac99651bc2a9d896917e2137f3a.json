@@ -1,0 +1,121 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase4-chmod-numeric",
+      "command": "chmod",
+      "args": [
+        "600",
+        "file"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "host_platforms": [
+        "posix"
+      ]
+    },
+    {
+      "id": "p8-chmod-symbolic-assignment",
+      "command": "chmod",
+      "args": [
+        "a=rwx",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "x"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-text-chmod-reference-rejected",
+      "command": "chmod",
+      "args": [
+        "--reference=left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "left"
+        },
+        {
+          "path": "right",
+          "content_text": "right"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "cannot read permission bits",
+      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted.",
+      "expected_rejection": "cannot read permission bits"
+    },
+    {
+      "id": "compat-filesystem-windows-chmod-boundary",
+      "command": "chmod",
+      "args": [
+        "600",
+        "source"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "policy-fixture\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "policy-fixture\n"
+        }
+      ],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_contains": "unsupported capability",
+      "diagnostic_reason": "OS path formatting may vary; status, empty stdout and declared filesystem effects remain exact.",
+      "host_platforms": [
+        "windows"
+      ],
+      "expected_rejection": "unsupported capability"
+    },
+    {
+      "id": "compat-catalog-line-32",
+      "command": "chmod",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    }
+  ]
+}

@@ -1,4 +1,53 @@
 ///|
+async test "release reports retain the verified oracle profile identity" {
+  let root = @fs.tmpdir(prefix="mooncmd-release-profile-report-")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let registry_path = root + "/archived-registry.json"
+  @fs.write_file(
+    registry_path, "{\"schema\":2,\"entries\":[],\"release_commands\":[],\"identity\":\"frozen\"}\n",
+  )
+  let registry_hash = @testkit.manifest_digest(registry_path)
+  let fixture = release_case_for_test("profile-report", "echo")
+  let report : CaseReport = {
+    id: fixture.id,
+    command: fixture.command,
+    version: "0.1.5",
+    category: "passed",
+    detail: "",
+  }
+  write_report(
+    root + "/report",
+    [report],
+    [fixture],
+    true,
+    Map([]),
+    "",
+    "",
+    @async.now(),
+    "sha256:verified-image",
+    "verified-versions",
+    oracle_profile_id="reviewed-oracle-v2",
+    registry_path~,
+  )
+  for name in ["run-metadata.json", "summary.jsonl", "coverage.jsonl"] {
+    let content = @fs.read_file(root + "/report/" + name).text()
+    let value = @json.parse(content.trim().to_owned())
+    match value {
+      { "oracle_profile_id": String(id), .. } =>
+        assert_eq(id, "reviewed-oracle-v2")
+      _ => fail("report must retain the verified oracle profile ID")
+    }
+    assert_false(content.contains("pinned-oracle-v1"))
+    match value {
+      { "registry_hash": String(hash), .. }
+      | { "registry_revision": String(hash), .. } =>
+        assert_eq(hash, registry_hash)
+      _ => fail("report must retain the selected registry identity")
+    }
+  }
+}
+
+///|
 test "published network argv expands both fixture schemes" {
   assert_eq(
     expand_network_args(
@@ -61,7 +110,7 @@ test "report directories remain unique on case-insensitive filesystems" {
 }
 
 ///|
-test "frozen release inventory survives catalog growth but candidates remain complete" {
+async test "frozen release inventory survives catalog growth but candidates remain complete" {
   let row : ReleaseCommand = {
     name: "true",
     package_name: "cli/true",
@@ -78,6 +127,7 @@ test "frozen release inventory survives catalog growth but candidates remain com
   let frozen : ReleaseManifest = {
     schema: 2,
     candidate: None,
+    core_version: None,
     base_manifest: "active-cases.json",
     commands: [row],
     case_ids: ["frozen-true"],
@@ -89,10 +139,14 @@ test "frozen release inventory survives catalog growth but candidates remain com
     candidate: Some(true),
     commands: [{ ..row, published: false, }],
   }
+  let root = workspace_root()
   assert_true(
-    validate_release_manifest(candidate, base).any(message => {
-      message.contains("missing candidate command")
-    }),
+    validate_candidate_bindings(
+      root,
+      candidate,
+      base,
+      root + "/tests/registry/registry.json",
+    ).any(message => message.contains("registry release command missing")),
   )
 }
 
@@ -101,6 +155,7 @@ test "release manifest selects explicit cases" {
   let manifest : ReleaseManifest = {
     schema: 1,
     candidate: None,
+    core_version: None,
     base_manifest: "tests/fixtures/runner/cases.json",
     commands: [],
     case_ids: [],
@@ -119,7 +174,7 @@ test "release manifest selects explicit cases" {
 fn release_case_for_test(
   id : String,
   command : String,
-  extra? : String = "",
+  extra~ : String = "",
 ) -> ReleaseCase raise {
   @json.from_json(
     @json.parse(
@@ -235,6 +290,7 @@ test "support coverage uses selected cases only" {
   let manifest : ReleaseManifest = {
     schema: 1,
     candidate: None,
+    core_version: None,
     base_manifest: "cases.json",
     commands: [
       {
@@ -278,6 +334,13 @@ test "report serialization preserves evidence without semantic promotion" {
   assert_eq(report.verification, "availability")
   assert_eq(report.source_version, "cli/true@0.1.5")
   assert_eq(report.duration_ms, 12L)
+  assert_false(report.observations.contains("stdout"))
+  assert_false(report.observations.contains("stderr"))
+  assert_eq(release_oracle_profile_id([observation], ""), "")
+  assert_eq(
+    release_oracle_profile_id([observation], "sha256:verified"),
+    "pinned-oracle-v1",
+  )
   assert_false(report.semantic_pass())
   observation.category = "runner_infra"
   observation.detail = "observation failed; artifacts: /tmp/fixture; cause: stat unavailable"
@@ -342,6 +405,8 @@ test "differential reports preserve partial diagnostics and inferred metadata" {
   assert_false(report.observations.contains("stderr-bytes"))
   assert_true(report.observations.contains("mode"))
   assert_true(report.observations.contains("stdout-bytes"))
+  assert_true(report.observations.contains("stdout"))
+  assert_true(report.observations.contains("stderr"))
 }
 
 ///|
@@ -360,4 +425,205 @@ async test "availability success does not make the runner summary fail" {
     [fixture],
     false,
   )
+}
+
+///|
+async test "oracle preflight failure retains infrastructure report with partial provenance" {
+  let root = workspace_root()
+  let directory = @fs.tmpdir(prefix="mooncmd-release-preflight")
+  defer (@fs.rmdir(directory, recursive=true) catch { _ => () })
+  write_oracle_preflight_failure(
+    Some(directory),
+    [release_case_for_test("not-started", "true")],
+    root + "/tests/release_runner/current/candidate.json",
+    root + "/tests/release_runner/current/active-cases.json",
+    @async.now(),
+    "Docker identity could not be verified",
+  )
+  let result = @json.parse(@fs.read_file(directory + "/summary.jsonl").text())
+  match result {
+    {
+      "id": String(id),
+      "result": String(class),
+      "stage": String(stage),
+      "observations": Array(observations),
+      ..
+    } => {
+      assert_eq(id, "oracle-preflight")
+      assert_eq(class, "infra")
+      assert_eq(stage, "oracle_failure")
+      assert_true(observations.is_empty())
+    }
+    _ => fail("oracle preflight summary lost infrastructure classification")
+  }
+  let metadata = @json.parse(
+    @fs.read_file(directory + "/run-metadata.json").text(),
+  )
+  match metadata {
+    {
+      "reproducibility_status": String(status),
+      "oracle_image_digest": String(digest),
+      "oracle_versions_hash": String(versions),
+      ..
+    } => {
+      assert_eq(status, "partial")
+      assert_eq(digest, "")
+      assert_eq(versions, "")
+    }
+    _ => fail("oracle preflight metadata lost missing identity fields")
+  }
+}
+
+///|
+async test "candidate generation follows module versions and reviewed release metadata" {
+  let root = workspace_root()
+  let candidate = generate_candidate_manifest(
+    root,
+    root + "/tests/release_runner/current/candidate.json",
+    root + "/tests/registry/release-profiles.json",
+    registry_path=root + "/tests/registry/registry.json",
+  )
+  assert_eq(candidate.candidate, Some(true))
+  assert_eq(candidate.core_version, read_module_field(root, "core", "version"))
+  assert_false(candidate.commands.any(row => row.name == "timeout"))
+  assert_true(candidate.commands.all(row => !row.published))
+  let metadata = read_release_metadata(
+    root + "/tests/registry/release-profiles.json",
+  )
+  for row in candidate.commands {
+    assert_eq(Some(row.version), read_package_version(root, row.name))
+    let reviewed = metadata.commands
+      .filter(item => item.name == row.name)
+      .get(0)
+    guard reviewed is Some(reviewed) else {
+      fail("generated command lacks reviewed release metadata")
+    }
+    assert_eq(row.supported_options, reviewed.supported_options)
+    assert_eq(row.compare_profile, reviewed.compare_profile)
+  }
+  let base = read_base_manifest(
+    root + "/tests/release_runner/current/active-cases.json",
+  )
+  assert_true(validate_release_manifest(candidate, base).is_empty())
+}
+
+///|
+async test "active case compatibility index is generated from registry without frozen overrides" {
+  let root = workspace_root()
+  let directory = @fs.tmpdir(prefix="mooncmd-active-case-index")
+  defer (@fs.rmdir(directory, recursive=true) catch { _ => () })
+  let output = directory + "/active-cases.json"
+  let registry_path = root + "/tests/registry/registry.json"
+  write_active_cases_index(registry_path, output)
+  let source = @json.parse(@fs.read_file(output).text())
+  match source {
+    { "case_overrides": Array(overrides), .. } =>
+      assert_true(overrides.is_empty())
+    _ => fail("generated case index lacks case_overrides")
+  }
+  let base = read_base_manifest(output)
+  let registry = @registry.load(registry_path)
+  assert_true(
+    @registry.validate_case_bindings(
+      registry,
+      base.cases.map(fixture => fixture.id),
+    ).is_empty(),
+  )
+}
+
+///|
+test "active case generation rejects unexpected source paths" {
+  assert_eq(current_case_path("../cases/echo.json"), "../../cases/echo.json")
+  assert_true(
+    (current_case_path("../cases/../echo.json") catch { _ => "" }) == "",
+  )
+  assert_true((current_case_path("/tmp/echo.json") catch { _ => "" }) == "")
+}
+
+///|
+async test "module coordinate parsing rejects duplicate and malformed assignments" {
+  let root = @fs.tmpdir(prefix="mooncmd-module-identity")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  @fs.mkdir(root + "/commands/example", recursive=true)
+  let path = root + "/commands/example/moon.mod"
+  @fs.write_file(path, "name = \"cli/example\"\nversion = \"1.2.3\"\n")
+  assert_eq(read_package_version(root, "example"), Some("1.2.3"))
+  @fs.write_file(path, "version = \"1.2.3\"\nversion = \"9.9.9\"\n")
+  assert_eq(read_package_version(root, "example"), None)
+  @fs.write_file(path, "version = 1.2.3\n")
+  assert_eq(read_package_version(root, "example"), None)
+}
+
+///|
+async test "candidate writer validates generated output corpus and ignores template base location" {
+  let root = workspace_root()
+  let temporary = @fs.tmpdir(prefix="mooncmd-candidate-output")
+  defer (@fs.rmdir(temporary, recursive=true) catch { _ => () })
+  let registry_path = root + "/tests/registry/registry.json"
+  let template = read_release_manifest(
+    root + "/tests/release_runner/current/candidate.json",
+  )
+  let misplaced = {
+    ..template,
+    base_manifest: "missing-historical-corpus.json",
+  }
+  let template_path = temporary + "/template.json"
+  @fs.write_file(template_path, ToJson::to_json(misplaced).stringify())
+  let active_path = temporary + "/generated-cases.json"
+  write_active_cases_index(registry_path, active_path, root~)
+  let output = temporary + "/candidate.json"
+  write_candidate_manifest(
+    root,
+    template_path,
+    registry_path,
+    output,
+    registry_path~,
+    active_path~,
+  )
+  let candidate = read_release_manifest(output)
+  assert_eq(candidate.base_manifest, "generated-cases.json")
+  let base = read_base_manifest(active_path)
+  assert_true(
+    validate_candidate_bindings(root, candidate, base, registry_path).is_empty(),
+  )
+  let registry = @registry.load(registry_path)
+  let reviewed = {
+    ..registry,
+    release_commands: registry.release_commands.map(row => {
+      if row.name == "base32" {
+        { ..row, releasable: false, case_ids: Some([]), }
+      } else {
+        row
+      }
+    }),
+  }
+  let reviewed_path = temporary + "/reviewed-registry.json"
+  @fs.write_file(reviewed_path, reviewed.to_json().stringify())
+  let restricted = generate_candidate_manifest(
+    root,
+    template_path,
+    reviewed_path,
+    registry_path=reviewed_path,
+  )
+  assert_false(restricted.commands.any(row => row.name == "base32"))
+  assert_true(
+    validate_candidate_bindings(root, restricted, base, reviewed_path).is_empty(),
+  )
+  @fs.write_file(
+    template_path,
+    ToJson::to_json({ ..template, candidate: Some(false), }).stringify(),
+  )
+  let rejected = try
+    generate_candidate_manifest(
+      root,
+      template_path,
+      registry_path,
+      registry_path~,
+    )
+  catch {
+    _ => None
+  } noraise {
+    _ => Some(true)
+  }
+  assert_eq(rejected, None)
 }

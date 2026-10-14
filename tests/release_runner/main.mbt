@@ -1,8 +1,13 @@
 ///|
 fn usage() -> String {
   "Usage: release-runner --manifest FILE [--suite differential|smoke|validate|all] " +
-  "[--moonx PATH] [--docker PATH] [--oracle-image IMAGE] [--report-dir DIR] " +
-  "[--command NAME] [--case ID] [--list] [--jobs N] [--timeout-ms N]"
+  "[--moonx PATH] [--docker PATH] [--oracle-image IMAGE] [--oracle-profile FILE] [--report-dir DIR] " +
+  "[--command NAME] [--case ID] [--list] [--jobs N] [--timeout-ms N] [--historical-replay]\n" +
+  "       release-runner --generate-candidate [--template FILE] [--metadata FILE] " +
+  "[--registry FILE] [--active-output FILE] [--output FILE]\n" +
+  "       release-runner --manifest FILE --verify-candidate --freeze-evidence FILE [run options]\n" +
+  "       release-runner --manifest FILE --freeze-published --freeze-evidence FILE --release-id ID\n" +
+  "       release-runner --seal-oracle sha256:IMAGE-ID [--oracle-profile FILE]"
 }
 
 ///|
@@ -211,7 +216,8 @@ async fn run_candidate(
   root : String,
   http_base : String?,
   https_base : String?,
-  timeout_ms : Int,
+  timeout_ms : Int32,
+  candidate_executor~ : async (CandidateInvocation) -> @testkit.TimedRun = execute_candidate_process,
 ) -> @testkit.TimedRun {
   // MoonX consumes its first `--`. Supply the launcher's separator so a
   // command's own `--` remains part of its argv.
@@ -227,15 +233,14 @@ async fn run_candidate(
   let environment = controlled_environment(
     @testkit.expand_environment(fixture.environment, root, http_base?),
   )
-  @testkit.run_with_deadline(
-    moonx,
+  candidate_executor({
+    program: moonx,
     args,
     timeout_ms,
-    stdin~,
-    cwd=fixture.working_directory(root),
-    extra_env=environment,
-    inherit_env=true,
-  )
+    stdin,
+    cwd: fixture.working_directory(root),
+    environment,
+  })
 }
 
 ///|
@@ -248,7 +253,7 @@ async fn run_oracle(
   https_base : String?,
   networked : Bool,
   docker_user : String?,
-  timeout_ms : Int,
+  timeout_ms : Int32,
 ) -> @testkit.TimedRun {
   let args = ["run", "--rm", "-i"]
   match docker_user {
@@ -276,12 +281,12 @@ async fn run_oracle(
     "-e",
     "TZ=UTC",
   ])
-  for
-    name, value in @testkit.expand_environment(
-      fixture.environment,
-      "/work",
-      http_base?,
-    ) {
+  let environment = @testkit.expand_environment(
+    fixture.environment,
+    "/work",
+    http_base?,
+  )
+  for name, value in environment {
     if name != "PATH" {
       args.push("-e")
       args.push(name + "=" + value)
@@ -296,6 +301,11 @@ async fn run_oracle(
     ),
   )
   let stdin = fixture.input(root="/work", http_base?)
+  @testkit.record_execution_environment(
+    fixture.command,
+    extra_env=controlled_environment(environment),
+    inherit_env=false,
+  )
   @testkit.run_with_deadline(docker, args, timeout_ms, stdin~, inherit_env=true)
 }
 
@@ -307,12 +317,13 @@ async fn run_case_inner(
   row : ReleaseCommand,
   fixture : ReleaseCase,
   differential : Bool,
-  timeout_ms : Int,
+  timeout_ms : Int32,
   http_base : String?,
   https_base : String?,
   docker_user : String?,
   reports : Array[CaseReport],
   report_root : String?,
+  candidate_executor~ : async (CandidateInvocation) -> @testkit.TimedRun = execute_candidate_process,
 ) -> Unit {
   let networked = is_network_case(fixture)
   let case_timeout_ms = fixture.timeout_ms.unwrap_or(timeout_ms)
@@ -391,12 +402,24 @@ async fn run_case_inner(
   }
   let observed = @testkit.contract_observations(fixture)
   let before = if fixture.expected_rejection is Some(_) {
-    snapshot(candidate_root, observe=observed[:], baseline=true)
+    snapshot(
+      candidate_root,
+      observe=observed[:],
+      baseline=true,
+      preserve_identity=true,
+    )
   } else {
     []
   }
   let candidate_run = run_candidate(
-    moonx, row, fixture, candidate_root, http_base, https_base, case_timeout_ms,
+    moonx,
+    row,
+    fixture,
+    candidate_root,
+    http_base,
+    https_base,
+    case_timeout_ms,
+    candidate_executor~,
   ) catch {
     err => {
       reports.push({
@@ -508,7 +531,7 @@ async fn run_case_inner(
       })
     } else if !snapshots_equal(
         before,
-        snapshot(candidate_root, observe=observed[:]),
+        snapshot(candidate_root, observe=observed[:], preserve_identity=true),
       ) {
       reports.push({
         id: fixture.id,
@@ -697,12 +720,13 @@ async fn run_case(
   row : ReleaseCommand,
   fixture : ReleaseCase,
   differential : Bool,
-  timeout_ms : Int,
+  timeout_ms : Int32,
   http_base : String?,
   https_base : String?,
   docker_user : String?,
   reports : Array[CaseReport],
   report_root : String?,
+  candidate_executor~ : async (CandidateInvocation) -> @testkit.TimedRun = execute_candidate_process,
 ) -> Unit {
   let needs_http = is_network_case(fixture)
   let needs_https = fixture.args.any(arg => arg.contains("${HTTPS_BASE}"))
@@ -717,8 +741,19 @@ async fn run_case(
     return
   }
   run_case_inner(
-    moonx, docker, oracle_image, row, fixture, differential, timeout_ms, http_base,
-    https_base, docker_user, reports, report_root,
+    moonx,
+    docker,
+    oracle_image,
+    row,
+    fixture,
+    differential,
+    timeout_ms,
+    http_base,
+    https_base,
+    docker_user,
+    reports,
+    report_root,
+    candidate_executor~,
   ) catch {
     err =>
       if reports.any(report => report.id == fixture.id) {
@@ -751,16 +786,21 @@ async fn run_selected_cases(
   moonx : String,
   docker : String,
   oracle_image : String,
-  differential : Bool,
-  timeout_ms : Int,
+  suite : String,
+  timeout_ms : Int32,
   http_base : String?,
   https_base : String?,
   docker_user : String?,
   reports : Array[CaseReport],
   timings : Map[String, Int64],
-  jobs : Int,
+  jobs : Int32,
   report_root : String?,
+  candidate_executor~ : async (CandidateInvocation) -> @testkit.TimedRun = execute_candidate_process,
 ) -> Unit {
+  let differential = suite == "differential" || suite == "all"
+  // Published smoke retains serial process ownership even when callers ask
+  // for more jobs. Keep this rule in the execution path, not only CLI parsing.
+  let jobs = if suite == "smoke" { 1 } else { jobs }
   if jobs > 1 && fixtures.any(requires_serial_fixture) {
     run_selected_cases(
       manifest,
@@ -768,7 +808,7 @@ async fn run_selected_cases(
       moonx,
       docker,
       oracle_image,
-      differential,
+      suite,
       timeout_ms,
       http_base,
       https_base,
@@ -777,6 +817,7 @@ async fn run_selected_cases(
       timings,
       jobs,
       report_root,
+      candidate_executor~,
     )
     run_selected_cases(
       manifest,
@@ -784,7 +825,7 @@ async fn run_selected_cases(
       moonx,
       docker,
       oracle_image,
-      differential,
+      suite,
       timeout_ms,
       http_base,
       https_base,
@@ -793,6 +834,7 @@ async fn run_selected_cases(
       timings,
       1,
       report_root,
+      candidate_executor~,
     )
     return
   }
@@ -832,8 +874,19 @@ async fn run_selected_cases(
           match find_command(manifest, fixture.command) {
             Some(row) =>
               run_case(
-                moonx, docker, oracle_image, row, fixture, differential, timeout_ms,
-                http_base, https_base, docker_user, reports, report_root,
+                moonx,
+                docker,
+                oracle_image,
+                row,
+                fixture,
+                differential,
+                timeout_ms,
+                http_base,
+                https_base,
+                docker_user,
+                reports,
+                report_root,
+                candidate_executor~,
               )
             None => ()
           }
@@ -894,19 +947,114 @@ async fn main {
 }
 
 ///|
+/// Resolve frozen manifests after published files were moved under the
+/// historical directory. A freeze-created resolved sidecar takes precedence;
+/// otherwise the direct path and then basename fallback keep legacy schema-1
+/// manifests byte-identical without rewriting their recorded paths.
+async fn resolve_base_manifest(
+  base_directory : String,
+  base_manifest : String,
+  manifest_path? : String,
+) -> String {
+  // Newly archived manifests keep their original bytes and carry a separate
+  // resolved corpus, so replay never follows the current mutable case files.
+  if manifest_path is Some(path) {
+    let frozen_cases = path + ".cases.json"
+    if @fs.exists(frozen_cases) {
+      return frozen_cases
+    }
+  }
+  let direct = @path.Path(base_directory).join(Path(base_manifest)).to_string()
+  let direct_exists = @fs.exists(direct) catch { _ => false }
+  if direct_exists {
+    return direct
+  }
+  let root = workspace_root() catch { _ => @fs.realpath(".") }
+  let release_root = @path.Path(root)
+    .join(Path("tests/release_runner"))
+    .to_string()
+  let historical = @path.Path(release_root)
+    .join(Path("historical"))
+    .join(Path(@path.Path(base_manifest).basename().to_owned()))
+    .to_string()
+  let historical_exists = @fs.exists(historical) catch { _ => false }
+  if historical_exists {
+    return historical
+  }
+  direct
+}
+
+///|
+/// Find the module root when Moon runs this package's tests from the package
+/// directory.  The release CLI normally starts at the root, but test runners
+/// may use `tests/release_runner` as their working directory.
+async fn workspace_root() -> String {
+  let candidates = [".", "..", "../..", "../../..", "../../../.."]
+  for candidate in candidates {
+    if (@fs.exists(candidate + "/commands") catch { _ => false }) &&
+      (@fs.exists(candidate + "/tests") catch { _ => false }) {
+      return @fs.realpath(candidate)
+    }
+  }
+  fail("cannot locate cmd workspace root")
+}
+
+///|
+async fn workspace_input(root : String, configured : String) -> String {
+  let configured_path = @path.Path(configured)
+  if configured_path.is_absolute() ||
+    (@fs.exists(configured) catch { _ => false }) {
+    configured
+  } else {
+    @path.Path(root).join(configured_path).to_string()
+  }
+}
+
+///|
 async fn run_driver() -> Unit {
+  @testkit.begin_environment_capture()
   let raw_args = @env.args()
   if raw_args.length() == 2 && raw_args[1] == "--http-fixture-server" {
     run_http_fixture_process()
     return
   }
-  let args = raw_args[1:]
+  let oracle_options = @testkit.parse_oracle_options(raw_args[1:]) catch {
+    error => {
+      @stdio.stderr.write(error.to_string() + "\n" + usage() + "\n")
+      @sys.exit(2)
+      return
+    }
+  }
+  let args = oracle_options.arguments[:]
+  let oracle_profile_path = oracle_options.profile_path
+  if oracle_options.seal_digest is Some(digest) {
+    @testkit.seal_oracle_profile(
+      oracle_profile_path,
+      digest,
+      expected_profile_path="tests/runner/image/profile.json",
+    )
+    return
+  }
   let mut manifest_path : String? = None
   let mut suite = "differential"
   let mut moonx = "moonx"
   let mut docker = "docker"
   let mut oracle_image = "mooncmd-oracle:phase0"
-  let mut report_dir : String? = None
+  let mut report_dir : String? = Some(
+    "test-reports/release-" + @async.now().to_string(),
+  )
+  let mut generate_candidate = false
+  let mut verify_candidate = false
+  let mut freeze_published = false
+  let mut historical_replay = false
+  let mut migrate_historical_revision = ""
+  let mut freeze_evidence = ""
+  let mut release_id = ""
+  let mut registry_path = "tests/registry/registry.json"
+  let mut active_output_path = "tests/release_runner/current/active-cases.json"
+  let mut template_path = "tests/release_runner/current/candidate.json"
+  let mut metadata_path = ""
+  let mut output_path = "tests/release_runner/current/candidate.json"
   let mut timeout_ms = 120000
   let commands : Array[String] = []
   let ids : Array[String] = []
@@ -918,6 +1066,42 @@ async fn run_driver() -> Unit {
       "--manifest" if index + 1 < args.length() => {
         index = index + 1
         manifest_path = Some(args[index])
+      }
+      "--generate-candidate" => generate_candidate = true
+      "--verify-candidate" => verify_candidate = true
+      "--freeze-published" => freeze_published = true
+      "--historical-replay" => historical_replay = true
+      "--migrate-historical" if index + 1 < args.length() => {
+        index += 1
+        migrate_historical_revision = args[index]
+      }
+      "--freeze-evidence" if index + 1 < args.length() => {
+        index += 1
+        freeze_evidence = args[index]
+      }
+      "--release-id" if index + 1 < args.length() => {
+        index += 1
+        release_id = args[index]
+      }
+      "--registry" if index + 1 < args.length() => {
+        index = index + 1
+        registry_path = args[index]
+      }
+      "--active-output" if index + 1 < args.length() => {
+        index = index + 1
+        active_output_path = args[index]
+      }
+      "--template" if index + 1 < args.length() => {
+        index = index + 1
+        template_path = args[index]
+      }
+      "--metadata" if index + 1 < args.length() => {
+        index = index + 1
+        metadata_path = args[index]
+      }
+      "--output" if index + 1 < args.length() => {
+        index = index + 1
+        output_path = args[index]
       }
       "--suite" if index + 1 < args.length() => {
         index = index + 1
@@ -971,10 +1155,104 @@ async fn run_driver() -> Unit {
     @sys.exit(2)
     return
   }
+  if migrate_historical_revision != "" {
+    let root = workspace_root()
+    migrate_historical_snapshots(
+      root,
+      migrate_historical_revision,
+      registry_path=workspace_input(root, registry_path),
+    )
+    return
+  }
+  if generate_candidate {
+    let root = workspace_root()
+    let resolved_template = workspace_input(root, template_path)
+    let resolved_registry = workspace_input(root, registry_path)
+    let resolved_metadata = if metadata_path == "" {
+      resolved_registry
+    } else {
+      workspace_input(root, metadata_path)
+    }
+    let resolved_active_output = workspace_input(root, active_output_path)
+    let resolved_output = workspace_input(root, output_path)
+    write_active_cases_index(resolved_registry, resolved_active_output, root~) catch {
+      error => {
+        @stdio.stderr.write(
+          "release-runner: active case generation failed: \{error}\n",
+        )
+        @sys.exit(1)
+        return
+      }
+    }
+    write_candidate_manifest(
+      root,
+      resolved_template,
+      resolved_metadata,
+      resolved_output,
+      registry_path=resolved_registry,
+      active_path=resolved_active_output,
+    ) catch {
+      error => {
+        @stdio.stderr.write(
+          "release-runner: candidate generation failed: \{error}\n",
+        )
+        @sys.exit(1)
+        return
+      }
+    }
+    @stdio.stdout.write("Generated candidate manifest: \{resolved_output}\n")
+    return
+  }
   guard manifest_path is Some(manifest_path) else {
     @stdio.stderr.write(usage() + "\n")
     @sys.exit(2)
     return
+  }
+  let root = workspace_root()
+  let manifest_path = workspace_input(root, manifest_path)
+  registry_path = workspace_input(root, registry_path)
+  let oracle_profile_path = workspace_input(root, oracle_profile_path)
+  let run_started = @async.now()
+  if freeze_published || verify_candidate {
+    guard freeze_evidence != "" else { fail("--freeze-evidence is required") }
+    let root = workspace_root()
+    if freeze_published {
+      freeze_published_snapshot(
+        root,
+        manifest_path,
+        freeze_evidence,
+        release_id,
+        registry_path=workspace_input(root, registry_path),
+        oracle_profile_path=workspace_input(root, oracle_profile_path),
+        docker_path=docker,
+      )
+      println(
+        "Published snapshot frozen after exact registry and MoonX verification",
+      )
+      return
+    }
+    validate_candidate_registry(
+      root,
+      manifest_path,
+      freeze_evidence,
+      registry_path=workspace_input(root, registry_path),
+    ) catch {
+      error => {
+        write_release_preflight_failure(
+          report_dir,
+          manifest_path,
+          "",
+          registry_path,
+          run_started,
+          "candidate registry verification failed: " + error.to_string(),
+        )
+        @stdio.stderr.write(
+          "release-runner: candidate registry verification failed: \{error}\n",
+        )
+        @sys.exit(1)
+        return
+      }
+    }
   }
   if suite != "differential" &&
     suite != "smoke" &&
@@ -986,6 +1264,14 @@ async fn run_driver() -> Unit {
   }
   let manifest = read_release_manifest(manifest_path) catch {
     err => {
+      write_release_preflight_failure(
+        report_dir,
+        manifest_path,
+        "",
+        registry_path,
+        run_started,
+        "manifest infrastructure error: " + err.to_string(),
+      )
       @stdio.stderr.write(
         "release-runner: manifest infrastructure error: \{err}\n",
       )
@@ -993,7 +1279,10 @@ async fn run_driver() -> Unit {
       return
     }
   }
-  if manifest.candidate == Some(true) && suite != "validate" && !list_only {
+  if manifest.candidate == Some(true) &&
+    suite != "validate" &&
+    !list_only &&
+    !verify_candidate {
     @stdio.stderr.write(
       "release-runner: unpublished candidates can only be validated; use local artifact probes until publication\n",
     )
@@ -1005,9 +1294,37 @@ async fn run_driver() -> Unit {
   } else {
     @path.Path(@fs.realpath("."))
   }
-  let base_path = base_directory.join(Path(manifest.base_manifest)).to_string()
+  let base_path = resolve_base_manifest(
+    base_directory.to_string(),
+    manifest.base_manifest,
+    manifest_path~,
+  ) catch {
+    error => {
+      write_release_preflight_failure(
+        report_dir,
+        manifest_path,
+        "",
+        registry_path,
+        run_started,
+        "case source resolution failed: " + error.to_string(),
+      )
+      @stdio.stderr.write(
+        "release-runner: case source resolution failed: \{error}\n",
+      )
+      @sys.exit(1)
+      return
+    }
+  }
   let base = read_base_manifest(base_path) catch {
     err => {
+      write_release_preflight_failure(
+        report_dir,
+        manifest_path,
+        base_path,
+        registry_path,
+        run_started,
+        "case infrastructure error: " + err.to_string(),
+      )
       @stdio.stderr.write("release-runner: case infrastructure error: \{err}\n")
       @sys.exit(1)
       return
@@ -1015,6 +1332,14 @@ async fn run_driver() -> Unit {
   }
   let fixtures = filter_cases(selected_cases(manifest, base), commands, ids) catch {
     err => {
+      write_release_preflight_failure(
+        report_dir,
+        manifest_path,
+        base_path,
+        registry_path,
+        run_started,
+        "selection invalid: " + err.to_string(),
+      )
       @stdio.stderr.write("release-runner: \{err}\n")
       @sys.exit(2)
       return
@@ -1024,12 +1349,93 @@ async fn run_driver() -> Unit {
   // the working tree advances to a new candidate. Validate is the release-time
   // check that deliberately compares the manifest to local package versions.
   let validation = validate_release_manifest(manifest, base) +
-    (if suite == "validate" {
-      validate_package_versions(@fs.realpath("."), manifest)
+    (if suite == "validate" && manifest.candidate == Some(true) {
+      validate_package_versions(root, manifest) catch {
+        error => ["package coordinate validation failed: " + error.to_string()]
+      }
     } else {
       []
     })
+  let resolved_path = @fs.realpath(manifest_path)
+  let historical_root = root + "/tests/release_runner/historical/"
+  let current_path = root + "/tests/release_runner/current/published.json"
+  let frozen = manifest.candidate != Some(true) &&
+    (resolved_path.has_prefix(historical_root) || resolved_path == current_path)
+  if frozen {
+    if resolved_path.has_prefix(historical_root) && !historical_replay {
+      validation.push("historical manifests require --historical-replay")
+    }
+    validation.append(
+      validate_frozen_case_binding(root, resolved_path, base_path),
+    )
+    registry_path = resolved_path + ".registry.json"
+  }
+  let registry = @registry.load(registry_path) catch {
+    error => {
+      write_release_preflight_failure(
+        report_dir,
+        manifest_path,
+        base_path,
+        registry_path,
+        run_started,
+        "registry infrastructure error: " + error.to_string(),
+      )
+      @stdio.stderr.write(
+        "release-runner: registry infrastructure error: \{error}\n",
+      )
+      @sys.exit(1)
+      return
+    }
+  }
+  if frozen {
+    if validation.is_empty() {
+      validation.append(@registry.validate_frozen_registry(registry))
+    }
+  } else {
+    validation.append(@registry.validate(registry))
+  }
+  try {
+    if manifest.candidate == Some(true) {
+      validation.append(
+        validate_candidate_bindings(root, manifest, base, registry_path),
+      )
+    } else if !frozen {
+      validation.append(@registry.validate_source_bindings(registry, root~))
+      validation.append(
+        @registry.validate_selected_cases(
+          registry,
+          selected_cases(manifest, base),
+          root~,
+        ),
+      )
+      for row in manifest.commands {
+        if !registry.release_commands.any(reviewed => {
+            reviewed.releasable &&
+            reviewed.name == row.name &&
+            reviewed.package_name == row.package_name &&
+            reviewed.compare_profile == row.compare_profile &&
+            reviewed.supported_options == row.supported_options &&
+            reviewed.policy_sensitive == row.policy_sensitive
+          }) {
+          validation.push(
+            row.name + ": published profile differs from authoritative registry",
+          )
+        }
+      }
+    }
+  } catch {
+    error =>
+      validation.push("release source binding failed: " + error.to_string())
+  }
   if !validation.is_empty() {
+    write_release_preflight_failure(
+      report_dir,
+      manifest_path,
+      base_path,
+      registry_path,
+      run_started,
+      "release validation failed: " + validation.join("; "),
+    )
     for failure in validation {
       @stdio.stderr.write("FAIL: \{failure}\n")
     }
@@ -1043,6 +1449,21 @@ async fn run_driver() -> Unit {
     return
   }
   if suite == "validate" {
+    if report_dir is Some(directory) {
+      write_report(
+        directory,
+        [],
+        fixtures,
+        false,
+        Map([]),
+        manifest_path,
+        base_path,
+        run_started,
+        "",
+        "",
+        registry_path~,
+      )
+    }
     @stdio.stdout.write(
       "Release manifest valid: \{manifest.commands.length()} packages, \{fixtures.length()} selected cases.\n",
     )
@@ -1054,15 +1475,73 @@ async fn run_driver() -> Unit {
   }
   let timings : Map[String, Int64] = Map([])
   let differential = suite == "differential" || suite == "all"
-  // macOS published time contracts failed intermittently under concurrent
-  // launchers. Preserve their assertions and run smoke serially while the
-  // source of the observed atime changes remains under investigation.
-  let execution_jobs = if suite == "smoke" { 1 } else { jobs }
   let needs_oracle = differential &&
     fixtures.any(fixture => {
       case_supported_on_host(fixture, host_platform()) &&
       verification_level(fixture, true) == "differential"
     })
+  let mut oracle_image_digest = ""
+  let mut oracle_versions_hash = ""
+  let mut oracle_profile_id = ""
+  if needs_oracle {
+    let identity = try {
+      oracle_profile_id = @testkit.read_oracle_profile(oracle_profile_path).id
+      for fixture in fixtures {
+        if case_supported_on_host(fixture, host_platform()) &&
+          verification_level(fixture, true) == "differential" {
+          guard registry.entries.any(entry => {
+            entry.is_case() &&
+            entry.case_id == fixture.id &&
+            entry.oracle_profile != ""
+          }) else {
+            fail(
+              fixture.id + ": differential requires a registered oracle profile",
+            )
+          }
+        }
+      }
+      let required_profiles = registry.entries
+        .filter(entry => {
+          entry.oracle_profile != "" &&
+          fixtures.any(fixture => entry.case_id == fixture.id)
+        })
+        .map(entry => entry.oracle_profile)
+      @testkit.verify_oracle_image(
+        oracle_image,
+        docker_path=docker,
+        profile_path=oracle_profile_path,
+        expected_profile_path=root + "/tests/runner/image/profile.json",
+        required_profile_ids=required_profiles,
+      )
+    } catch {
+      error => {
+        let detail = "oracle preflight failed: " + error.to_string()
+        write_oracle_preflight_failure(
+          report_dir,
+          fixtures,
+          manifest_path,
+          base_path,
+          run_started,
+          detail,
+          oracle_profile_id~,
+          registry_path~,
+        ) catch {
+          report_error =>
+            @stdio.stderr.write(
+              "release-runner: cannot retain oracle preflight report: \{report_error}\n",
+            )
+        }
+        @stdio.stderr.write("release-runner: " + detail + "\n")
+        @sys.exit(1)
+        return
+      }
+    }
+    oracle_image_digest = identity.digest
+    oracle_profile_id = identity.profile_id
+    oracle_versions_hash = @testkit.sha256_text(identity.versions)
+    // Pin all later Docker calls to the verified immutable image identity.
+    oracle_image = identity.digest
+  }
   let docker_user = if needs_oracle && !@platform.is_windows() {
     detect_docker_user() catch {
       _ => None
@@ -1077,77 +1556,142 @@ async fn run_driver() -> Unit {
     case_supported_on_host(fixture, host_platform()) &&
     fixture.args.any(arg => arg.contains("${HTTPS_BASE}"))
   })
-  if needs_http || needs_https {
-    @async.with_task_group <| group => {
-      let mut http_base : String? = None
-      let mut https_base : String? = None
-      if needs_http {
-        let (server, reader, url) = spawn_http_fixture_process(group)
-        http_base = Some(url)
-        group.add_defer(() => {
-          reader.close()
-          server.cancel()
-          @async.protect_from_cancel(() => {
-            ignore(server.wait()) catch {
-              err =>
-                reports.push({
-                  id: "http-fixture-cleanup",
-                  command: "fixture",
-                  version: "",
-                  category: "runner_infra",
-                  detail: "HTTP fixture cleanup failed: \{err}",
-                })
-            }
+  let executed_rows = manifest.commands.filter(row => {
+    fixtures.any(fixture => {
+      fixture.command == row.name &&
+      case_supported_on_host(fixture, host_platform())
+    })
+  })
+  let coordinates = executed_rows.map(row => {
+    row.package_name + "@" + row.version
+  })
+  if report_dir is Some(directory) {
+    retain_release_execution_failure(reports, () => {
+      prepare_release_assets(executed_rows, moonx, timeout_ms, directory)
+    })
+    if !reports.is_empty() {
+      write_report(
+        directory,
+        reports,
+        fixtures,
+        differential,
+        timings,
+        manifest_path,
+        base_path,
+        run_started,
+        oracle_image_digest,
+        oracle_versions_hash,
+        oracle_profile_id~,
+        registry_path~,
+      )
+      print_reports(reports, fixtures, differential)
+      return
+    }
+  }
+  let start_metadata = @testkit.collect_run_metadata(
+    "release-" + run_started.to_string(),
+    manifest_path~,
+    case_corpus_path=base_path,
+    registry_path~,
+    oracle_profile_id~,
+    oracle_image_digest~,
+    moonx_coordinates=coordinates,
+    started_at_ms=run_started,
+  )
+  let start_metadata = @testkit.with_oracle_versions_hash(
+    start_metadata, oracle_versions_hash,
+  )
+  let start_metadata = @testkit.with_wasm_artifact_hash(
+    start_metadata,
+    @testkit.moonx_artifact_digest(coordinates),
+  )
+  retain_release_execution_failure(reports, () => {
+    if needs_http || needs_https {
+      @async.with_task_group <| group => {
+        let mut http_base : String? = None
+        let mut https_base : String? = None
+        if needs_http {
+          let (server, reader, url) = spawn_http_fixture_process(group)
+          http_base = Some(url)
+          group.add_defer(() => {
+            reader.close()
+            server.cancel()
+            @async.protect_from_cancel(() => {
+              ignore(server.wait()) catch {
+                err =>
+                  reports.push({
+                    id: "http-fixture-cleanup",
+                    command: "fixture",
+                    version: "",
+                    category: "runner_infra",
+                    detail: "HTTP fixture cleanup failed: \{err}",
+                  })
+              }
+            })
           })
-        })
-      }
-      if needs_https {
-        let fixture_root = @fs.tmpdir(prefix="mooncmd-release-https-")
-        let (server, url) = spawn_https_fixture_process(group, fixture_root)
-        https_base = Some(url)
-        group.add_defer(() => {
-          server.cancel()
-          @async.protect_from_cancel(() => {
-            ignore(server.wait()) catch {
-              err =>
-                reports.push({
-                  id: "https-fixture-cleanup",
-                  command: "fixture",
-                  version: "",
-                  category: "runner_infra",
-                  detail: "HTTPS fixture cleanup failed: \{err}",
-                })
-            }
-            @fs.rmdir(fixture_root, recursive=true)
+        }
+        if needs_https {
+          let fixture_root = @fs.tmpdir(prefix="mooncmd-release-https-")
+          let (server, url) = spawn_https_fixture_process(group, fixture_root)
+          https_base = Some(url)
+          group.add_defer(() => {
+            server.cancel()
+            @async.protect_from_cancel(() => {
+              ignore(server.wait()) catch {
+                err =>
+                  reports.push({
+                    id: "https-fixture-cleanup",
+                    command: "fixture",
+                    version: "",
+                    category: "runner_infra",
+                    detail: "HTTPS fixture cleanup failed: \{err}",
+                  })
+              }
+              @fs.rmdir(fixture_root, recursive=true)
+            })
           })
-        })
+        }
+        run_selected_cases(
+          manifest, fixtures, moonx, docker, oracle_image, suite, timeout_ms, http_base,
+          https_base, docker_user, reports, timings, jobs, report_dir,
+        )
       }
+    } else {
       run_selected_cases(
-        manifest, fixtures, moonx, docker, oracle_image, differential, timeout_ms,
-        http_base, https_base, docker_user, reports, timings, execution_jobs, report_dir,
+        manifest,
+        fixtures,
+        moonx,
+        docker,
+        oracle_image,
+        suite,
+        timeout_ms,
+        None,
+        None,
+        docker_user,
+        reports,
+        timings,
+        jobs,
+        report_dir,
       )
     }
-  } else {
-    run_selected_cases(
-      manifest,
-      fixtures,
-      moonx,
-      docker,
-      oracle_image,
-      differential,
-      timeout_ms,
-      None,
-      None,
-      docker_user,
-      reports,
-      timings,
-      execution_jobs,
-      report_dir,
-    )
-  }
+  })
   match report_dir {
     Some(directory) =>
-      write_report(directory, reports, fixtures, differential, timings)
+      write_report(
+        directory,
+        reports,
+        fixtures,
+        differential,
+        timings,
+        manifest_path,
+        base_path,
+        run_started,
+        oracle_image_digest,
+        oracle_versions_hash,
+        oracle_profile_id~,
+        registry_path~,
+        start_metadata~,
+      )
     None => ()
   }
   print_reports(reports, fixtures, differential)

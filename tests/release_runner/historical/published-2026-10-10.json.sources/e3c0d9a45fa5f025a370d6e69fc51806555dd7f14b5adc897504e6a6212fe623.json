@@ -1,0 +1,242 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-comm-columns",
+      "command": "comm",
+      "args": [
+        "left",
+        "right"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "left",
+          "content_text": "a\nb\n"
+        },
+        {
+          "path": "right",
+          "content_text": "b\nc\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-comm-zero-terminated",
+      "command": "comm",
+      "args": [
+        "-z",
+        "left",
+        "right"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "61006300"
+        },
+        {
+          "path": "right",
+          "content_hex": "62006300"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-text-comm-nul-records",
+      "command": "comm",
+      "args": [
+        "-z",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "61006300"
+        },
+        {
+          "path": "right",
+          "content_hex": "62006300"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_hex": "610009620009096300",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-comm-check-order",
+      "command": "comm",
+      "args": [
+        "--check-order",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "b\na\n"
+        },
+        {
+          "path": "right",
+          "content_text": "z\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "b\n",
+      "expected_stderr_contains": "not in sorted order",
+      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted."
+    },
+    {
+      "id": "compat-text-comm-nocheck-precedence",
+      "command": "comm",
+      "args": [
+        "--check-order",
+        "--nocheck-order",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "b\na\n"
+        },
+        {
+          "path": "right",
+          "content_text": "z\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "b\na\n\tz\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-comm-default-order",
+      "command": "comm",
+      "args": [
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "b\na\n"
+        },
+        {
+          "path": "right",
+          "content_text": "z\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "b\n",
+      "expected_stderr_contains": "not in sorted order",
+      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted."
+    },
+    {
+      "id": "compat-text-comm-pairable-unsorted",
+      "command": "comm",
+      "args": [
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "b\na\n"
+        },
+        {
+          "path": "right",
+          "content_text": "b\na\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "\t\tb\n\t\ta\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-merge-comm",
+      "command": "comm",
+      "args": [
+        "-23",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "a\nb\nc\n"
+        },
+        {
+          "path": "right",
+          "content_text": "b\nc\nd\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "a\n",
+      "expected_files": [],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-catalog-line-48",
+      "command": "comm",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "compat-catalog-line-375",
+      "command": "comm",
+      "args": [
+        "-",
+        "-"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "both inputs",
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+    }
+  ]
+}

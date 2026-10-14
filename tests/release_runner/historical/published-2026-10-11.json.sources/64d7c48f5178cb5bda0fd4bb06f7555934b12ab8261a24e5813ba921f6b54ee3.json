@@ -1,0 +1,138 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-find-exec-status",
+      "command": "find",
+      "args": [
+        ".",
+        "-maxdepth",
+        "0",
+        "-exec",
+        "false",
+        ";"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase4-find-metadata",
+      "command": "find",
+      "args": [
+        ".",
+        "-maxdepth",
+        "1",
+        "-type",
+        "f",
+        "-size",
+        "1c",
+        "-print"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "one",
+          "content_text": "x"
+        },
+        {
+          "path": "two",
+          "content_text": "xx"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase4-find-prune-depth",
+      "command": "find",
+      "args": [
+        ".",
+        "-name",
+        "skip",
+        "-prune",
+        "-o",
+        "-type",
+        "f",
+        "-print"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "keep",
+          "content_text": "k"
+        },
+        {
+          "path": "skip/hidden",
+          "content_text": "h"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-find-readable",
+      "command": "find",
+      "args": [
+        ".",
+        "-readable",
+        "-print"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "x"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-find-xtype-link",
+      "command": "find",
+      "args": [
+        ".",
+        "-xtype",
+        "l",
+        "-print"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "dangling",
+          "content_text": "",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "host_platforms": [
+        "posix"
+      ]
+    },
+    {
+      "id": "compat-catalog-line-91",
+      "command": "find",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    }
+  ]
+}

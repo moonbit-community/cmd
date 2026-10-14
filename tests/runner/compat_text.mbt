@@ -1,5 +1,5 @@
 ///|
-fn patterned_bytes(length : Int) -> Bytes {
+fn patterned_bytes(length : Int32) -> Bytes {
   let data : Array[Byte] = []
   for index = 0; index < length; index = index + 1 {
     data.push((index & 0xFF).to_byte())
@@ -40,7 +40,7 @@ async fn run_text_process_composition_cases(
     "find: -exec ... + batching mismatch",
     failures,
   )
-  let xargs_cases : Array[(String, Array[String], Bytes, Int, Bytes)] = [
+  let xargs_cases : Array[(String, Array[String], Bytes, Int32, Bytes)] = [
     (
       "replace-lines",
       ["-I{}", printf, "<%s>\\n", "{}"],
@@ -122,18 +122,18 @@ async fn run_sleep_cancel_case(
   failures : Array[String],
 ) -> Unit {
   let sleep_cancelled = @async.with_task_group <| group => {
+    let program = @testkit.executable_path(bin_root, "sleep")
+    @testkit.record_execution_environment(program)
     let child = @process.spawn(
       group,
-      @testkit.executable_path(bin_root, "sleep"),
+      program,
       ["60"],
       cancel_handler=@process.hard_cancel(),
       no_wait=true,
     )
     @async.sleep(20)
     child.cancel()
-    ignore(child.wait()) catch {
-      _ => ()
-    }
+    wait_for_direct_child("sleep cancellation", () => child.wait())
     true
   }
   record_result(

@@ -1,0 +1,21 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "compat-catalog-line-277",
+      "command": "timeout",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    }
+  ]
+}

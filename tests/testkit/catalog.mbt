@@ -128,7 +128,7 @@ pub async fn run_artifact(
   args : Array[String],
   stdin? : Bytes,
   cwd? : String,
-  extra_env? : Map[String, String] = Map([]),
+  extra_env~ : Map[String, String] = Map([]),
 ) -> RunResult {
   let program = if wasm { "moonrun" } else { executable_path(root, command) }
   let args = if wasm { [wasm_path(root, command), "--", ..args] } else { args }

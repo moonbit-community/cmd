@@ -1,0 +1,117 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-sleep-zero",
+      "command": "sleep",
+      "args": [
+        "0"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-sleep-double-dash",
+      "command": "sleep",
+      "args": [
+        "--",
+        "0"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p0-sleep-version",
+      "command": "sleep",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "expected_stdout_text": "sleep (moonbit cmd) 0.2.0\n",
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-text-line-736"
+      ]
+    },
+    {
+      "id": "p0-sleep-help",
+      "command": "sleep",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "expected_stdout_text": "Usage: sleep NUMBER[SUFFIX]...\n\nPause for NUMBER seconds, like sleep(1). NUMBER may be fractional.\nSUFFIX may be 's' (seconds, default), 'm' (minutes), 'h' (hours), or\n'd' (days). With multiple arguments, sleep for their sum.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-727",
+      "command": "sleep",
+      "args": [
+        "0",
+        "0s"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-728",
+      "command": "sleep",
+      "args": [
+        "-1"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "invalid time interval",
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+    },
+    {
+      "id": "compat-catalog-line-235",
+      "command": "sleep",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    }
+  ]
+}

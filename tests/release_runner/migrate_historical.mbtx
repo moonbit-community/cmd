@@ -1,0 +1,30 @@
+///|
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+  "moonbitlang/core/env",
+}
+
+///|
+async fn main {
+  guard @env.args().length() >= 2 else {
+    fail("Usage: migrate_historical.mbtx BASELINE_REVISION [--registry FILE]")
+  }
+  let result = @shell.Cmd(
+    "moon",
+    [
+      "run",
+      "tests/release_runner",
+      "--target",
+      "native",
+      "--",
+      "--migrate-historical",
+      ..@env.args()[1:].to_owned(),
+    ],
+  ).output()
+  if result.exit_code() != 0 {
+    println(result.stderr())
+    fail("historical migration failed")
+  }
+  println(result.stdout())
+}

@@ -1,0 +1,26 @@
+///|
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+  "moonbitlang/core/env",
+}
+
+///|
+async fn main {
+  let result = @shell.Cmd(
+    "moon",
+    [
+      "run",
+      "tests/coverage/cli",
+      "--target",
+      "native",
+      "--",
+      ..@env.args()[1:].to_owned(),
+    ],
+  ).output()
+  if result.exit_code() != 0 {
+    println(result.stderr())
+    fail("coverage audit failed with exit status \{result.exit_code()}")
+  }
+  println(result.stdout())
+}

@@ -1,0 +1,100 @@
+///|
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+  "moonbitlang/core/env",
+}
+
+///|
+/// Audit first, then push only the resolved audited commit. This launcher
+/// intentionally requires explicit remote and branch arguments.
+async fn main {
+  let args = @env.args()[1:]
+  guard args.length() % 2 == 0 else {
+    fail("every push/audit option requires a value")
+  }
+  let audit_args : Array[String] = []
+  let mut remote = ""
+  let mut branch = ""
+  let mut head = ""
+  let mut report = ""
+  for index = 0; index < args.length(); index = index + 2 {
+    let name = args[index]
+    let value = args[index + 1]
+    match name {
+      "--remote" => {
+        guard remote == "" else { fail("duplicate --remote") }
+        remote = value
+      }
+      "--branch" => {
+        guard branch == "" else { fail("duplicate --branch") }
+        branch = value
+      }
+      _ => {
+        audit_args.push(name)
+        audit_args.push(value)
+        if name == "--head" {
+          head = value
+        }
+        if name == "--report" {
+          report = value
+        }
+      }
+    }
+  }
+  guard remote != "" &&
+    !remote.has_prefix("-") &&
+    branch != "" &&
+    !branch.has_prefix("-") &&
+    head != "" &&
+    report != "" else {
+    fail(
+      "push requires --remote NAME --branch NAME and explicit audit --head/--report options",
+    )
+  }
+  let remote_check = @shell.Cmd("git", ["remote", "get-url", remote]).output()
+  guard remote_check.exit_code() == 0 else { fail("unknown Git remote") }
+  let branch_check = @shell.Cmd("git", [
+    "check-ref-format",
+    "refs/heads/" + branch,
+  ]).output()
+  guard branch_check.exit_code() == 0 else {
+    fail("invalid destination branch")
+  }
+  let resolved = @shell.Cmd("git", [
+    "rev-parse",
+    "--verify",
+    "--end-of-options",
+    head + "^{commit}",
+  ]).output()
+  guard resolved.exit_code() == 0 else { fail("cannot resolve audited head") }
+  let commit = resolved.stdout().trim().to_owned()
+  let exact_args : Array[String] = []
+  for index = 0; index < audit_args.length(); index = index + 2 {
+    exact_args.push(audit_args[index])
+    exact_args.push(
+      if audit_args[index] == "--head" {
+        commit
+      } else {
+        audit_args[index + 1]
+      },
+    )
+  }
+  let audit = @shell.Cmd(
+    "moon",
+    ["run", "tests/coverage/cli", "--target", "native", "--", ..exact_args],
+  ).output()
+  if audit.exit_code() != 0 {
+    println(audit.stdout())
+    println(audit.stderr())
+    fail("coverage audit rejected push; status \{audit.exit_code()}")
+  }
+  let push = @shell.Cmd("git", [
+    "push",
+    remote,
+    commit + ":refs/heads/" + branch,
+  ]).output()
+  println(push.stdout())
+  println(push.stderr())
+  guard push.exit_code() == 0 else { fail("Git push failed") }
+}

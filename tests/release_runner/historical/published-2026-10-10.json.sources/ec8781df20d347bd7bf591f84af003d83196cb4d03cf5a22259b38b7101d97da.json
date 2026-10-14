@@ -1,0 +1,231 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "files": [
+        {
+          "path": "a",
+          "content_text": "one\nold\n"
+        },
+        {
+          "path": "b",
+          "content_text": "one\nnew\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "id": "p1-diff-normal",
+      "command": "diff",
+      "args": [
+        "a",
+        "b"
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "2c2\n< old\n---\n> new\n",
+      "oracle": true,
+      "source_version": "diffutils-3.12"
+    },
+    {
+      "files": [
+        {
+          "path": "a",
+          "content_text": "old\n"
+        },
+        {
+          "path": "b",
+          "content_text": "new\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "id": "p1-diff-unified",
+      "command": "diff",
+      "args": [
+        "-u",
+        "--label=a",
+        "--label=b",
+        "a",
+        "b"
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "--- a\n+++ b\n@@ -1 +1 @@\n-old\n+new\n",
+      "oracle": true,
+      "source_version": "diffutils-3.12"
+    },
+    {
+      "files": [
+        {
+          "path": "a",
+          "content_text": "old\n"
+        },
+        {
+          "path": "b",
+          "content_text": "new\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "id": "p1-diff-context",
+      "command": "diff",
+      "args": [
+        "-c",
+        "--label=a",
+        "--label=b",
+        "a",
+        "b"
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "*** a\n--- b\n***************\n*** 1 ****\n! old\n--- 1 ----\n! new\n",
+      "oracle": true,
+      "source_version": "diffutils-3.12"
+    },
+    {
+      "files": [
+        {
+          "path": "a",
+          "content_text": ""
+        },
+        {
+          "path": "b",
+          "content_text": "new\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "id": "p1-diff-empty-add",
+      "command": "diff",
+      "args": [
+        "-U0",
+        "--label=a",
+        "--label=b",
+        "a",
+        "b"
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "--- a\n+++ b\n@@ -0,0 +1 @@\n+new\n",
+      "oracle": true,
+      "source_version": "diffutils-3.12"
+    },
+    {
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a"
+        },
+        {
+          "path": "b",
+          "content_text": "a\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "id": "p1-diff-no-final-lf",
+      "command": "diff",
+      "args": [
+        "a",
+        "b"
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "1c1\n< a\n\\ No newline at end of file\n---\n> a\n",
+      "oracle": true,
+      "source_version": "diffutils-3.12"
+    },
+    {
+      "files": [
+        {
+          "path": "a",
+          "content_text": "same\n"
+        },
+        {
+          "path": "b",
+          "content_text": "same\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "id": "p1-diff-identical",
+      "command": "diff",
+      "args": [
+        "-s",
+        "a",
+        "b"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "Files a and b are identical\n",
+      "oracle": true,
+      "source_version": "diffutils-3.12"
+    },
+    {
+      "id": "p1-diff-label-brief", "command": "diff", "args": ["-q", "--label=LEFT", "--label=RIGHT", "a", "b"],
+      "files": [{"path": "a", "content_text": "old\n"}, {"path": "b", "content_text": "new\n"}],
+      "environment": {}, "normalizations": [], "expected_status": 1,
+      "expected_stdout_text": "Files LEFT and RIGHT differ\n", "expected_stderr_text": "",
+      "comparison": "contract", "oracle": true, "source_version": "GNU diffutils 3.12"
+    },
+    {
+      "id": "p1-diff-label-binary", "command": "diff", "args": ["--label=LEFT", "--label=RIGHT", "a", "b"],
+      "files": [{"path": "a", "content_hex": "00ff"}, {"path": "b", "content_hex": "00fe"}],
+      "environment": {}, "normalizations": [], "expected_status": 1,
+      "expected_stdout_text": "Binary files LEFT and RIGHT differ\n", "expected_stderr_text": "",
+      "comparison": "contract", "oracle": true, "source_version": "GNU diffutils 3.12"
+    },
+    {
+      "id": "p1-diff-label-identical", "command": "diff", "args": ["-s", "--label=LEFT", "--label=RIGHT", "a", "b"],
+      "files": [{"path": "a", "content_text": "same\n"}, {"path": "b", "content_text": "same\n"}],
+      "environment": {}, "normalizations": [], "expected_status": 0,
+      "expected_stdout_text": "Files LEFT and RIGHT are identical\n", "expected_stderr_text": "",
+      "comparison": "contract", "oracle": true, "source_version": "GNU diffutils 3.12"
+    },
+    {
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "comparison": "contract",
+      "normalizations": [],
+      "id": "p1-diff-directory-boundary",
+      "command": "diff",
+      "args": [
+        "-r",
+        "a",
+        "b"
+      ],
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "unknown short option",
+      "diagnostic_reason": "Parser wording includes the unsupported option.",
+      "expected_rejection": "unknown short option"
+    }
+  ]
+}

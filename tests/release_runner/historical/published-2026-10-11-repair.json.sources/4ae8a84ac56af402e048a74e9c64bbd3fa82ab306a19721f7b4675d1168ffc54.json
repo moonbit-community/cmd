@@ -1,0 +1,55 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "checksum-sha1sum-stdin", "command": "sha1sum", "args": [], "oracle": true, "source_version": "GNU coreutils 9.11",
+      "files": [], "environment": {}, "normalizations": [],
+      "stdin_text": "abc", "expected_status": 0,
+      "expected_stdout_text": "a9993e364706816aba3e25717850c26c9cd0d89d  -\n",
+      "expected_stderr_text": "", "comparison": "contract"
+    },
+    {
+      "id": "checksum-sha1sum-empty", "command": "sha1sum", "args": [], "oracle": true, "source_version": "GNU coreutils 9.11",
+      "files": [], "environment": {}, "normalizations": [],
+      "stdin_text": "", "expected_status": 0,
+      "expected_stdout_text": "da39a3ee5e6b4b0d3255bfef95601890afd80709  -\n",
+      "expected_stderr_text": "", "comparison": "contract"
+    },
+    {
+      "id": "checksum-sha1sum-last-text", "command": "sha1sum", "args": ["-bt", "payload"], "oracle": true, "source_version": "GNU coreutils 9.11",
+      "environment": {}, "normalizations": [],
+      "files": [{"path": "payload", "content_text": "abc"}], "expected_status": 0,
+      "expected_stdout_text": "a9993e364706816aba3e25717850c26c9cd0d89d  payload\n",
+      "expected_stderr_text": "", "comparison": "contract"
+    },
+    {
+      "id": "checksum-sha1sum-check", "command": "sha1sum", "args": ["-c", "checks"], "oracle": true, "source_version": "GNU coreutils 9.11",
+      "environment": {}, "normalizations": [],
+      "files": [
+        {"path": "payload", "content_text": "abc"},
+        {"path": "checks", "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  payload\n"}
+      ],
+      "expected_status": 0, "expected_stdout_text": "payload: OK\n",
+      "expected_stderr_text": "", "comparison": "contract"
+    },
+    {
+      "id": "checksum-sha1sum-wrong-length", "command": "sha1sum", "args": ["-c", "checks"],
+      "environment": {}, "normalizations": [],
+      "files": [{"path": "checks", "content_text": "900150983cd24fb0d6963f7d28e17f72  payload\n"}],
+      "expected_status": 1, "expected_stdout_text": "",
+      "expected_stderr_text": "sha1sum: checks: no properly formatted checksum lines found\n", "comparison": "contract"
+    },
+    {
+      "id": "checksum-sha1sum-zero-check", "command": "sha1sum", "args": ["-cz"],
+      "files": [], "environment": {}, "normalizations": [],
+      "expected_status": 1, "expected_stdout_text": "",
+      "expected_stderr_text": "sha1sum: the --zero option is not supported when verifying checksums\n", "comparison": "contract"
+    },
+    {
+      "id": "checksum-sha1sum-version", "command": "sha1sum", "args": ["--version"],
+      "files": [], "environment": {}, "normalizations": [],
+      "expected_status": 0, "expected_stdout_text": "sha1sum (moonbit cmd) 0.1.0\n",
+      "expected_stderr_text": "", "comparison": "contract"
+    }
+  ]
+}

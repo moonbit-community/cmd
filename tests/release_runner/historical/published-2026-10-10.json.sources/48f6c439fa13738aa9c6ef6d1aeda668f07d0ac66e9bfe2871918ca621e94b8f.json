@@ -1,0 +1,96 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase4-mv-regular",
+      "command": "mv",
+      "args": [
+        "source",
+        "moved"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "payload\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-mv-update-none",
+      "command": "mv",
+      "args": [
+        "--update=none",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "old"
+        },
+        {
+          "path": "destination",
+          "content_text": "new"
+        }
+      ],
+      "delay_ms": 2,
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-filesystem-rename",
+      "command": "mv",
+      "args": [
+        "copy",
+        "moved"
+      ],
+      "files": [
+        {
+          "path": "copy",
+          "content_text": "policy-fixture\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "copy",
+          "exists": false
+        },
+        {
+          "path": "moved",
+          "kind": "file",
+          "content_text": "policy-fixture\n"
+        }
+      ],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-catalog-line-166",
+      "command": "mv",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    }
+  ]
+}

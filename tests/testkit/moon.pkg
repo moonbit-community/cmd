@@ -13,7 +13,12 @@ import {
   "moonbitlang/core/json",
   "moonbitlang/core/string",
   "moonbitlang/core/encoding/utf8",
+  "moonbitlang/x/crypto",
   "moonbitlang/x/path",
 }
+
+import {
+  "moonbitlang/async/tls",
+} for "wbtest"
 
 supported_targets = "native"

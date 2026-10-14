@@ -1,0 +1,9 @@
+import {
+  "mooxCLI/cmd-tests/testkit",
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+}
+
+supported_targets = "native"

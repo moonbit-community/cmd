@@ -23,7 +23,7 @@ struct CommandRow {
 
 ///|
 struct Manifest {
-  schema : Int
+  schema : Int32
   commands : Array[CommandRow]
   cases : Array[OracleCase]
 } derive(FromJson, Debug)
@@ -184,7 +184,7 @@ fn first_byte_difference(left : Bytes, right : Bytes) -> String {
 }
 
 ///|
-async fn run_external_https_fixture(args : ArrayView[String]) -> Int {
+async fn run_external_https_fixture(args : ArrayView[String]) -> Int32 {
   guard args.length() == 4 else { return 2 }
   let output = @process.redirect_to_file(args[3])
   @process.run(
@@ -339,6 +339,11 @@ async fn run_case(
       expand_fixture_args(fixture.args, http_base, https_base),
       "/work",
     ),
+  )
+  @testkit.record_execution_environment(
+    fixture.command,
+    extra_env=oracle_environment,
+    inherit_env=false,
   )
   let oracle_run = @testkit.run_with_deadline(
     "docker",

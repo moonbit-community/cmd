@@ -1,0 +1,196 @@
+///|
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/shell",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+  "moonbitlang/x/crypto",
+}
+
+///|
+fn sha256(bytes : Bytes) -> String {
+  @crypto.bytes_to_hex_string(@crypto.sha256(bytes))
+}
+
+///|
+async fn git(args : Array[String]) -> @shell.Output {
+  let output = @shell.Cmd("git", args).output()
+  output.check()
+  output
+}
+
+///|
+async fn freeze(revision : String, output_path : String) -> Unit {
+  guard !@fs.exists(output_path) else {
+    fail("baseline already exists; refusing overwrite")
+  }
+  let revision = git(["rev-parse", "--verify", revision + "^{commit}"])
+    .stdout()
+    .trim()
+    .to_owned()
+  let files = git([
+      "ls-tree", "-r", "--name-only", revision, "--", "commands", "core", "tests",
+      "docs/reports",
+    ])
+    .stdout()
+    .split("\n")
+    .filter(path => !path.is_empty())
+    .map(path => path.to_owned())
+    .collect()
+  let records : Array[Json] = []
+  let mut commands = 0
+  let mut cases = 0
+  let mut scenarios = 0
+  let mut published = 0
+  let mut reports = 0
+  let mut cohorts = 0
+  let mut package_tests = 0
+  for path in files {
+    let command_module = path.has_prefix("commands/") &&
+      path.has_suffix("/moon.mod")
+    let case_file = path.has_prefix("tests/cases/") && path.has_suffix(".json")
+    let historical = path.has_prefix("tests/release_runner/published-") &&
+      path.has_suffix(".json")
+    let report = path.has_prefix("docs/reports/")
+    let cohort = path == "tests/runner/cohorts.mbt"
+    let package_test = path.has_suffix("_test.mbt") ||
+      path.has_suffix("_wbtest.mbt")
+    if !command_module &&
+      !case_file &&
+      !historical &&
+      !report &&
+      !cohort &&
+      !package_test {
+      continue
+    }
+    let content = git(["show", revision + ":" + path])
+    if command_module {
+      commands += 1
+    }
+    if historical {
+      published += 1
+    }
+    if report {
+      reports += 1
+    }
+    if package_test {
+      package_tests += content
+        .stdout()
+        .split("\n")
+        .filter(line => {
+          line.trim().has_prefix("test \"") ||
+          line.trim().has_prefix("async test \"")
+        })
+        .collect()
+        .length()
+    }
+    if cohort {
+      let mut inside = false
+      let mut next_line = false
+      for line in content.stdout().split("\n") {
+        let line = line.trim()
+        if line.has_prefix("let specs :") {
+          inside = true
+          continue
+        }
+        if !inside {
+          continue
+        }
+        if line == "]" {
+          break
+        }
+        if line == "(" {
+          next_line = true
+        } else if line.has_prefix("(\"") || (next_line && line.has_prefix("\"")) {
+          cohorts += 1
+          next_line = false
+        }
+      }
+    }
+    if case_file {
+      guard @json.parse(content.stdout()) is { "cases": Array(items), .. } else {
+        fail("invalid baseline case file: " + path)
+      }
+      cases += items.length()
+      for item in items {
+        if item is { "comparison": String(comparison), .. } &&
+          ["scenario", "oracle-scenario"].contains(comparison) {
+          scenarios += 1
+        }
+      }
+    }
+    records.push({
+      "original_path": Json(path),
+      "current_path": Json(
+        if historical {
+          "tests/release_runner/historical/" +
+          path.strip_prefix("tests/release_runner/").unwrap().to_owned()
+        } else {
+          path
+        },
+      ),
+      "immutable": Json(historical || report),
+      "sha256": Json(sha256(content.stdout_bytes())),
+    })
+  }
+  let document : Json = {
+    "schema": 1,
+    "git_revision": Json(revision),
+    "counts": {
+      "commands": Json(commands),
+      "workspace_cases": Json(cases),
+      "stateful_scenarios": Json(scenarios),
+      "cohorts_including_policy": Json(cohorts),
+      "metadata_probes": Json(commands),
+      "package_test_declarations": Json(package_tests),
+      "historical_manifests": Json(published),
+      "report_files": Json(reports),
+    },
+    "files": Json(records),
+  }
+  @fs.write_file(output_path, document.stringify(indent=2) + "\n")
+  println(
+    "frozen " +
+    revision +
+    ": \{commands} commands, \{cases} cases, \{scenarios} scenarios, \{published} published manifests",
+  )
+}
+
+///|
+async fn verify(path : String) -> Unit {
+  guard @json.parse(@fs.read_file(path).text()) is { "files": Array(files), .. } else {
+    fail("invalid baseline")
+  }
+  let failures : Array[String] = []
+  let mut verified = 0
+  for record in files {
+    if record
+      is {
+        "immutable": True,
+        "current_path": String(path),
+        "sha256": String(expected),
+        ..
+      } {
+      if !@fs.exists(path) {
+        failures.push("missing immutable file: " + path)
+      } else if sha256(@fs.read_file(path).binary()) != expected {
+        failures.push("immutable file changed: " + path)
+      } else {
+        verified += 1
+      }
+    }
+  }
+  guard failures.is_empty() else { fail(failures.join("\n")) }
+  println("verified \{verified} immutable historical manifest/report files")
+}
+
+///|
+async fn main {
+  match @env.args()[1:] {
+    ["--freeze", revision] => freeze(revision, "tests/registry/baseline.json")
+    ["--verify"] => verify("tests/registry/baseline.json")
+    _ =>
+      fail("usage: baseline.mbtx --freeze <explicit-git-revision> | --verify")
+  }
+}

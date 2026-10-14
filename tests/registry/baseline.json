@@ -1,0 +1,2812 @@
+{
+  "schema": 1,
+  "git_revision": "f54baac45730f5ded956ceb41f353b77fdd5c34e",
+  "counts": {
+    "commands": 79,
+    "workspace_cases": 848,
+    "stateful_scenarios": 6,
+    "cohorts_including_policy": 12,
+    "metadata_probes": 79,
+    "package_test_declarations": 253,
+    "historical_manifests": 8,
+    "report_files": 234
+  },
+  "files": [
+    {
+      "original_path": "commands/base32/main_wbtest.mbt",
+      "current_path": "commands/base32/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "93fa581e6db5dd4e73d0c09fd8e00c0c222f86f519e610964adb91aebdee79dc"
+    },
+    {
+      "original_path": "commands/base32/moon.mod",
+      "current_path": "commands/base32/moon.mod",
+      "immutable": false,
+      "sha256": "acf972236b9b590693c09f1d3f81bf86b6e58d99d9e7a52a36cd53bcb2723c63"
+    },
+    {
+      "original_path": "commands/base64/main_wbtest.mbt",
+      "current_path": "commands/base64/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "a142ae7b80324231f26b49b2880262e3b8c0994cb3694eb157c955d7e4a7c925"
+    },
+    {
+      "original_path": "commands/base64/moon.mod",
+      "current_path": "commands/base64/moon.mod",
+      "immutable": false,
+      "sha256": "d7b0368a1ef433b63770573682130c09cf2f3a8e9f753baf4dae522a2131eed2"
+    },
+    {
+      "original_path": "commands/basename/moon.mod",
+      "current_path": "commands/basename/moon.mod",
+      "immutable": false,
+      "sha256": "8f2cbe432291966a775ece06774583228013345b318143adaca6a580e03b533c"
+    },
+    {
+      "original_path": "commands/cat/moon.mod",
+      "current_path": "commands/cat/moon.mod",
+      "immutable": false,
+      "sha256": "57a4565903f512b310cb085d08b3245c44c1041fdb69147db35cd7b165fa43f9"
+    },
+    {
+      "original_path": "commands/chmod/main_wbtest.mbt",
+      "current_path": "commands/chmod/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "63c5bcc6ccf750127d044480fd3cf0b1416065e8bc010fd5901cbc6a952fa453"
+    },
+    {
+      "original_path": "commands/chmod/moon.mod",
+      "current_path": "commands/chmod/moon.mod",
+      "immutable": false,
+      "sha256": "36103fc4168199a354c8b373663b1fdb1a5e76dead180415d48e14c5f2df5a3d"
+    },
+    {
+      "original_path": "commands/cksum/main_wbtest.mbt",
+      "current_path": "commands/cksum/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "751ca934dcdf1fda41d286a1d47b4c4491a16270fa607f1739edf60e13e4b7b7"
+    },
+    {
+      "original_path": "commands/cksum/moon.mod",
+      "current_path": "commands/cksum/moon.mod",
+      "immutable": false,
+      "sha256": "d6e9117efe47cbbf3aa5de0a5df720b4248409a59a5583e5357f2a19917c2a3c"
+    },
+    {
+      "original_path": "commands/cmp/moon.mod",
+      "current_path": "commands/cmp/moon.mod",
+      "immutable": false,
+      "sha256": "16c74db6f7f93de75fcd2d5b5f8d76c5e4b1464b085871794c617ac99825d598"
+    },
+    {
+      "original_path": "commands/column/main_wbtest.mbt",
+      "current_path": "commands/column/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "91d4af0c80d866bef367ba1037c5bb13c812cddb21d561746127bdb28e19bc5d"
+    },
+    {
+      "original_path": "commands/column/moon.mod",
+      "current_path": "commands/column/moon.mod",
+      "immutable": false,
+      "sha256": "635c41367a7b18fc9b736f911099f6321aaf23121564a150e12e21e21a46a1ec"
+    },
+    {
+      "original_path": "commands/comm/moon.mod",
+      "current_path": "commands/comm/moon.mod",
+      "immutable": false,
+      "sha256": "4f3fb992f38973d607af0c18890255849920e0c29b21910f5cf6e0fc6ce7cb77"
+    },
+    {
+      "original_path": "commands/cp/main_wbtest.mbt",
+      "current_path": "commands/cp/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "219891db69e09b6229769ee142a083e97731a1da515744f3152776d7a808ca4a"
+    },
+    {
+      "original_path": "commands/cp/moon.mod",
+      "current_path": "commands/cp/moon.mod",
+      "immutable": false,
+      "sha256": "0a420aab0a61197d0032a111c9a2fa17e9316bfee161a6283e2fc0b935c39131"
+    },
+    {
+      "original_path": "commands/csplit/main_wbtest.mbt",
+      "current_path": "commands/csplit/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "8ab7405f69c292b01fe281badd247ef342a3f95b94cbcfd525da5a6ae759d72d"
+    },
+    {
+      "original_path": "commands/csplit/moon.mod",
+      "current_path": "commands/csplit/moon.mod",
+      "immutable": false,
+      "sha256": "2acf7f40a13f04cf7ddf6c75db683b780c656b055070276741a2352a42c1dfa0"
+    },
+    {
+      "original_path": "commands/curl/moon.mod",
+      "current_path": "commands/curl/moon.mod",
+      "immutable": false,
+      "sha256": "4ca458bf275a02db9a61e4c864d2de69d8079090f1ad85c0234e56c37f99d8eb"
+    },
+    {
+      "original_path": "commands/curl/options_wbtest.mbt",
+      "current_path": "commands/curl/options_wbtest.mbt",
+      "immutable": false,
+      "sha256": "5198d3a83110787e3c3cd427483d61b62205383869d15437e47291a2174e46f0"
+    },
+    {
+      "original_path": "commands/cut/moon.mod",
+      "current_path": "commands/cut/moon.mod",
+      "immutable": false,
+      "sha256": "b52daf6e836beda59a505ee293beeec139a09c3a5b2735c0d1a8aca58e58a455"
+    },
+    {
+      "original_path": "commands/date/main_wbtest.mbt",
+      "current_path": "commands/date/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "69ed1bea154232b1b0aa0847554751800ec8d36d6ec3156c899e4db53fe88326"
+    },
+    {
+      "original_path": "commands/date/moon.mod",
+      "current_path": "commands/date/moon.mod",
+      "immutable": false,
+      "sha256": "fb0597b4c63dfe61bf32d9d86a66e2e518db21d93924fc229d5f1b105ab1456d"
+    },
+    {
+      "original_path": "commands/diff/compare_wbtest.mbt",
+      "current_path": "commands/diff/compare_wbtest.mbt",
+      "immutable": false,
+      "sha256": "c58c3147adc5f720ebefac8d2afd51975e4e2871832e85078bb8cbfcc5703160"
+    },
+    {
+      "original_path": "commands/diff/moon.mod",
+      "current_path": "commands/diff/moon.mod",
+      "immutable": false,
+      "sha256": "e2ceff0e5971afb76edc0493a341a8a6eb9031c03ba91cd18a506670e9c3281a"
+    },
+    {
+      "original_path": "commands/dirname/moon.mod",
+      "current_path": "commands/dirname/moon.mod",
+      "immutable": false,
+      "sha256": "4f0f491536bbbda2d549f64d0fd485e37bf265f74055234f8c627af73cc7a9cc"
+    },
+    {
+      "original_path": "commands/echo/moon.mod",
+      "current_path": "commands/echo/moon.mod",
+      "immutable": false,
+      "sha256": "e15463897d3ed154973e210225a88d82b750c489e5cc50bfea435d3249855789"
+    },
+    {
+      "original_path": "commands/env/moon.mod",
+      "current_path": "commands/env/moon.mod",
+      "immutable": false,
+      "sha256": "d0b0614ac694e9ebaea627953fccd263ade52e5da1b76b43a626e581286d8ceb"
+    },
+    {
+      "original_path": "commands/expand/main_wbtest.mbt",
+      "current_path": "commands/expand/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "e2adfcfdf8d80fe82b610330e922a2d9a37117c52164087158ee6fc680947d94"
+    },
+    {
+      "original_path": "commands/expand/moon.mod",
+      "current_path": "commands/expand/moon.mod",
+      "immutable": false,
+      "sha256": "452f9329ba3cead4ea36000d1c0e6951682d1241ea57b2310b46d367ac609c25"
+    },
+    {
+      "original_path": "commands/expr/expr_wbtest.mbt",
+      "current_path": "commands/expr/expr_wbtest.mbt",
+      "immutable": false,
+      "sha256": "d5c65f777e8bccdda0825face4a014cc4b735b154e437df1770f02b7e0c63b4f"
+    },
+    {
+      "original_path": "commands/expr/moon.mod",
+      "current_path": "commands/expr/moon.mod",
+      "immutable": false,
+      "sha256": "cbd383e179ccd05670e6be7f33eef3fb604941cdfbe01399331870d0f91416b7"
+    },
+    {
+      "original_path": "commands/false/moon.mod",
+      "current_path": "commands/false/moon.mod",
+      "immutable": false,
+      "sha256": "9f9c3130d529e1b9de73f61800ca610962a4dfe1fc0839e24ad87cbf879a99ee"
+    },
+    {
+      "original_path": "commands/find/main_wbtest.mbt",
+      "current_path": "commands/find/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "20acb23747a8be32f2790bc80bf9bb55353537bfb1d3f404d54aa9c4e73f5bec"
+    },
+    {
+      "original_path": "commands/find/moon.mod",
+      "current_path": "commands/find/moon.mod",
+      "immutable": false,
+      "sha256": "e971abd0e737e4d3790ca3e028a9c7e1be5dfc1fb0f597f2e10c87e35dde0a59"
+    },
+    {
+      "original_path": "commands/fmt/format_wbtest.mbt",
+      "current_path": "commands/fmt/format_wbtest.mbt",
+      "immutable": false,
+      "sha256": "66e04ea1859533eb844757d7dae1bf9abb15424a56a9684933a5b76e2bff6636"
+    },
+    {
+      "original_path": "commands/fmt/moon.mod",
+      "current_path": "commands/fmt/moon.mod",
+      "immutable": false,
+      "sha256": "c10ef9f7ff62d73b9dfdd351d19d810906c57b3278afe963585f6b0730996ed3"
+    },
+    {
+      "original_path": "commands/fold/fold_wbtest.mbt",
+      "current_path": "commands/fold/fold_wbtest.mbt",
+      "immutable": false,
+      "sha256": "8a4023957ff07f2a7038b0f7a39286f95d3d191a5296067a5797492c1fe0075f"
+    },
+    {
+      "original_path": "commands/fold/moon.mod",
+      "current_path": "commands/fold/moon.mod",
+      "immutable": false,
+      "sha256": "a058fe3456a37fb473ce21378954847f1268d4726aa8d18d064ebf33f569bd2d"
+    },
+    {
+      "original_path": "commands/grep/grep_wbtest.mbt",
+      "current_path": "commands/grep/grep_wbtest.mbt",
+      "immutable": false,
+      "sha256": "057f75bd5248e57d59ac79343fc7b46951b44334ee5b5f06e27fc35ab783d411"
+    },
+    {
+      "original_path": "commands/grep/moon.mod",
+      "current_path": "commands/grep/moon.mod",
+      "immutable": false,
+      "sha256": "7629de0bfb8dbbce3d2d07779e6ecf1584566d0eec204650c80b510476141db8"
+    },
+    {
+      "original_path": "commands/gunzip/moon.mod",
+      "current_path": "commands/gunzip/moon.mod",
+      "immutable": false,
+      "sha256": "1b103018789437b832fd36ce0df3c3408e4eef9e4bf6496ddd9291255b5fe6dd"
+    },
+    {
+      "original_path": "commands/gzip/moon.mod",
+      "current_path": "commands/gzip/moon.mod",
+      "immutable": false,
+      "sha256": "f41e884f675f0c7c9b363c27e7b86d7f09133fc193d0af0d79d704fc611bbbe6"
+    },
+    {
+      "original_path": "commands/head/head_wbtest.mbt",
+      "current_path": "commands/head/head_wbtest.mbt",
+      "immutable": false,
+      "sha256": "aae57813c8998cc36e51d0d556c38429757ce1c474684fc3a1ecb4bc01ce0f8d"
+    },
+    {
+      "original_path": "commands/head/moon.mod",
+      "current_path": "commands/head/moon.mod",
+      "immutable": false,
+      "sha256": "539a8d29e025d2f7dcb49ca3849ce75c0eea7548c02d66ddc6847ac0cd958eab"
+    },
+    {
+      "original_path": "commands/hexdump/format_wbtest.mbt",
+      "current_path": "commands/hexdump/format_wbtest.mbt",
+      "immutable": false,
+      "sha256": "94262851fb408936dc8d4bd0f8eb7798829df0863703efeaac8d9430acd744a1"
+    },
+    {
+      "original_path": "commands/hexdump/moon.mod",
+      "current_path": "commands/hexdump/moon.mod",
+      "immutable": false,
+      "sha256": "1921df1be5a9f776a6648bdbf8b09ebe77042b3dbbc9dbae55f8a16968aabdaa"
+    },
+    {
+      "original_path": "commands/join/moon.mod",
+      "current_path": "commands/join/moon.mod",
+      "immutable": false,
+      "sha256": "1443cc15308aa2afe46fcdf02039df2dd38be395c9a1d19fe744ff2b3acbc6e8"
+    },
+    {
+      "original_path": "commands/jq/main_wbtest.mbt",
+      "current_path": "commands/jq/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "053404af79fcb34239e369d7374f712f84e66d5f99a0969fb331a19d9ca7707b"
+    },
+    {
+      "original_path": "commands/jq/moon.mod",
+      "current_path": "commands/jq/moon.mod",
+      "immutable": false,
+      "sha256": "ba45f7988860e901b608f1ad290b2c9f369fdf36bbef0d0f874ff2833eedf32d"
+    },
+    {
+      "original_path": "commands/jqlog/moon.mod",
+      "current_path": "commands/jqlog/moon.mod",
+      "immutable": false,
+      "sha256": "80629eaf1257366c43f9cbdbc567e240131abdcce5d280b42364f8be60406c12"
+    },
+    {
+      "original_path": "commands/ln/moon.mod",
+      "current_path": "commands/ln/moon.mod",
+      "immutable": false,
+      "sha256": "3a8e71866e7b0f9cb41528af22111e005c34c87037488e92e92b73ccdae2c061"
+    },
+    {
+      "original_path": "commands/ls/main_wbtest.mbt",
+      "current_path": "commands/ls/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "af11c9715d5851473e5d9649115c64233a18dea04704b311ca09d58bba58cabb"
+    },
+    {
+      "original_path": "commands/ls/moon.mod",
+      "current_path": "commands/ls/moon.mod",
+      "immutable": false,
+      "sha256": "e9d1ff7f28897c73571012f3d036b1cd1a88732d4f372e0b55f2af0302fc9faf"
+    },
+    {
+      "original_path": "commands/make/main_wbtest.mbt",
+      "current_path": "commands/make/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "09440f7929c6087c9a597ae72fba2262f74ebb2611dd57f056959d60d5a84d74"
+    },
+    {
+      "original_path": "commands/make/moon.mod",
+      "current_path": "commands/make/moon.mod",
+      "immutable": false,
+      "sha256": "b60e4e192650a421edf0eca6c0420d45f9ed9e284b6f915743eb7516619da2f4"
+    },
+    {
+      "original_path": "commands/md5sum/moon.mod",
+      "current_path": "commands/md5sum/moon.mod",
+      "immutable": false,
+      "sha256": "a278c5801801c483e246b78c05af34d2ee4ce5c6cec6361863c466ddd28fb982"
+    },
+    {
+      "original_path": "commands/mkdir/moon.mod",
+      "current_path": "commands/mkdir/moon.mod",
+      "immutable": false,
+      "sha256": "2a767c17c81183fa3872a3a9f4fb219f3c655142384db509200b60ed6d648b15"
+    },
+    {
+      "original_path": "commands/mktemp/main_wbtest.mbt",
+      "current_path": "commands/mktemp/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "67fe23a471a49cef996cb53fec2a2200b6cbf759ef396cbf9052b34a78cf1519"
+    },
+    {
+      "original_path": "commands/mktemp/moon.mod",
+      "current_path": "commands/mktemp/moon.mod",
+      "immutable": false,
+      "sha256": "448bf84fda08ff33f533cc66d81d4d952b9081174e1577cb7a41bb862a787417"
+    },
+    {
+      "original_path": "commands/mv/moon.mod",
+      "current_path": "commands/mv/moon.mod",
+      "immutable": false,
+      "sha256": "3a27226e4dff678944c1c939157628127eaa408d1ab4748933d89ed4105eada3"
+    },
+    {
+      "original_path": "commands/nl/moon.mod",
+      "current_path": "commands/nl/moon.mod",
+      "immutable": false,
+      "sha256": "c259ca8b5ec180f9303b44f9fab329d14458298cb71b0965484a3f255ed21e42"
+    },
+    {
+      "original_path": "commands/od/format_wbtest.mbt",
+      "current_path": "commands/od/format_wbtest.mbt",
+      "immutable": false,
+      "sha256": "495d189a79f9f63683b97e13b568ee17f1749a200847bfc81ba6cee9ca57ca28"
+    },
+    {
+      "original_path": "commands/od/moon.mod",
+      "current_path": "commands/od/moon.mod",
+      "immutable": false,
+      "sha256": "b0e9f79accbb8df6a09dad2f262109eadedafb619de838d024510b59c876f4b0"
+    },
+    {
+      "original_path": "commands/paste/moon.mod",
+      "current_path": "commands/paste/moon.mod",
+      "immutable": false,
+      "sha256": "330bee9d837b5e0752469b5325b3eb9856fff2e444a922acd8609549b2e2dc24"
+    },
+    {
+      "original_path": "commands/patch/moon.mod",
+      "current_path": "commands/patch/moon.mod",
+      "immutable": false,
+      "sha256": "0deee9a9e84261851ae87d49bafa4891bf5bfde52c582942c8768d80b80db35b"
+    },
+    {
+      "original_path": "commands/patch/patch_wbtest.mbt",
+      "current_path": "commands/patch/patch_wbtest.mbt",
+      "immutable": false,
+      "sha256": "3439de69abb0e9c89835df37f5008d2ee8b7c9ae4e033e9e46c61a21aa4b4a03"
+    },
+    {
+      "original_path": "commands/printenv/moon.mod",
+      "current_path": "commands/printenv/moon.mod",
+      "immutable": false,
+      "sha256": "77a72b8a028fa7e8d628a1d10a4c120bfe465a7fd23e29285a23aed92cdaf3cd"
+    },
+    {
+      "original_path": "commands/printf/moon.mod",
+      "current_path": "commands/printf/moon.mod",
+      "immutable": false,
+      "sha256": "2d4527120dc6d85833d4f64cc1c2818f9a8a0a9116e47c0f4f38602bbebcee45"
+    },
+    {
+      "original_path": "commands/pwd/moon.mod",
+      "current_path": "commands/pwd/moon.mod",
+      "immutable": false,
+      "sha256": "caea97fa1b481285927123ca9fd0b7476a7f3bff1bf518039c00e948321fd80a"
+    },
+    {
+      "original_path": "commands/realpath/main_wbtest.mbt",
+      "current_path": "commands/realpath/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "76c3f0ca7974209b91ece66656e23077da189d7aa13fbbcb321eb643191afa2e"
+    },
+    {
+      "original_path": "commands/realpath/moon.mod",
+      "current_path": "commands/realpath/moon.mod",
+      "immutable": false,
+      "sha256": "390dab7699ce72883b29b77cff3245ca77a68283c26dc7e6cc91d8761c071d81"
+    },
+    {
+      "original_path": "commands/rev/main_wbtest.mbt",
+      "current_path": "commands/rev/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "15e43c22065a22e9ce133536ab76b8ba55d467731cc3c9d02165b650dced6505"
+    },
+    {
+      "original_path": "commands/rev/moon.mod",
+      "current_path": "commands/rev/moon.mod",
+      "immutable": false,
+      "sha256": "4c75cadac18dc7ec6f7a9d78dbbe6373a867721d04abdedd1689dfa0c2014c7e"
+    },
+    {
+      "original_path": "commands/rm/moon.mod",
+      "current_path": "commands/rm/moon.mod",
+      "immutable": false,
+      "sha256": "cf10e5a46e567ce006fc8ef390f07064416572b5591fdfe579913e508739792f"
+    },
+    {
+      "original_path": "commands/rmdir/moon.mod",
+      "current_path": "commands/rmdir/moon.mod",
+      "immutable": false,
+      "sha256": "82286a1bac56da50c061f463f8bb599fe9b0bc67b20196e1fe40826ff44a6485"
+    },
+    {
+      "original_path": "commands/sed/moon.mod",
+      "current_path": "commands/sed/moon.mod",
+      "immutable": false,
+      "sha256": "ea3bc11d7bc2f5920c8d8aa593a84984db3a7be6fe9ce59dcd1dedb89fcd96c6"
+    },
+    {
+      "original_path": "commands/sed/sed_wbtest.mbt",
+      "current_path": "commands/sed/sed_wbtest.mbt",
+      "immutable": false,
+      "sha256": "a9ee53864cf826b62402d4f480aa49cafc6b4fc2dbc259940161b5fd12f67a9f"
+    },
+    {
+      "original_path": "commands/seq/main_wbtest.mbt",
+      "current_path": "commands/seq/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "16eae2a7d55815d79fb18c3beace90c290d8c6c21f6611653288f2ccadebb0f7"
+    },
+    {
+      "original_path": "commands/seq/moon.mod",
+      "current_path": "commands/seq/moon.mod",
+      "immutable": false,
+      "sha256": "c690f5f8a9b599fab4bdf1f541fbba47ce0c4267cb62e8a5b6722a9c6835c183"
+    },
+    {
+      "original_path": "commands/sh/moon.mod",
+      "current_path": "commands/sh/moon.mod",
+      "immutable": false,
+      "sha256": "330a1dd758ce769efc6c2824f510a665c7b7049459bf3c92481c637cce4b47e0"
+    },
+    {
+      "original_path": "commands/sha1sum/moon.mod",
+      "current_path": "commands/sha1sum/moon.mod",
+      "immutable": false,
+      "sha256": "ceb84fe3629a2ff03bd160981a5076331817f54f9e7928fa144aea57ddaa9aaa"
+    },
+    {
+      "original_path": "commands/sha256sum/moon.mod",
+      "current_path": "commands/sha256sum/moon.mod",
+      "immutable": false,
+      "sha256": "23bd31df23ddc79f5e8094ec6af99d577f69165582abae2d3d775c01548bde97"
+    },
+    {
+      "original_path": "commands/sha512sum/moon.mod",
+      "current_path": "commands/sha512sum/moon.mod",
+      "immutable": false,
+      "sha256": "6947638c843a163fa6829e1ee835e0d1a17bced23bf49d7cf200262fbb33f09b"
+    },
+    {
+      "original_path": "commands/sleep/moon.mod",
+      "current_path": "commands/sleep/moon.mod",
+      "immutable": false,
+      "sha256": "10e59ca02f0839078b5ee1e762c8bc36f721ece198a1ede432047609319961a1"
+    },
+    {
+      "original_path": "commands/sort/moon.mod",
+      "current_path": "commands/sort/moon.mod",
+      "immutable": false,
+      "sha256": "2ec25034415643507c7e8f0225a105df352d605c91e33ff15d22c092cb227147"
+    },
+    {
+      "original_path": "commands/sort/sort_wbtest.mbt",
+      "current_path": "commands/sort/sort_wbtest.mbt",
+      "immutable": false,
+      "sha256": "b779cc5f056f2a3657e83c8666747e872ed441009141ba5a8b9ba7dc9dd2a167"
+    },
+    {
+      "original_path": "commands/split/main_wbtest.mbt",
+      "current_path": "commands/split/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "c6186339998472fe508fed4080706ccbe26f8f9c94b6e6a47695a65f49210162"
+    },
+    {
+      "original_path": "commands/split/moon.mod",
+      "current_path": "commands/split/moon.mod",
+      "immutable": false,
+      "sha256": "789721a96d650eadf1d68f89b23ebedeb61b35fa0fc585782c5819cab8a2e0d0"
+    },
+    {
+      "original_path": "commands/strings/main_wbtest.mbt",
+      "current_path": "commands/strings/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "12e82d2670de5bfc28f72cd19b9f88008deb834e0398f5ec84e5b8ae23ae85f2"
+    },
+    {
+      "original_path": "commands/strings/moon.mod",
+      "current_path": "commands/strings/moon.mod",
+      "immutable": false,
+      "sha256": "d0f52203133fb2671c7885421c1c1233ac2e3d7ca8865efc6537e0408fdee9d5"
+    },
+    {
+      "original_path": "commands/tac/main_wbtest.mbt",
+      "current_path": "commands/tac/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "fc1255683ad88ba0a6baf2edd81d8df3b87aa40b7dda7ae423bce6a5fd3bddba"
+    },
+    {
+      "original_path": "commands/tac/moon.mod",
+      "current_path": "commands/tac/moon.mod",
+      "immutable": false,
+      "sha256": "33e9bf4cb37ca93e87a9e3c0eddfd1845ab2273b21fd7a15bc5187774c434cc6"
+    },
+    {
+      "original_path": "commands/tail/moon.mod",
+      "current_path": "commands/tail/moon.mod",
+      "immutable": false,
+      "sha256": "f70d880fbc74b80135c65eb7ad088d267f203e7bbc4e2480760493d148e6f8e7"
+    },
+    {
+      "original_path": "commands/tee/moon.mod",
+      "current_path": "commands/tee/moon.mod",
+      "immutable": false,
+      "sha256": "dc8e5bb9ff70b24f99cf39b0b932be81a217e5a1b238b9e34b5c2aab9f1caad9"
+    },
+    {
+      "original_path": "commands/test/main_wbtest.mbt",
+      "current_path": "commands/test/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "a3a436fbb55cd2ad8465a3f2d5d62238402b3ac800115293da523982606c0ed2"
+    },
+    {
+      "original_path": "commands/test/moon.mod",
+      "current_path": "commands/test/moon.mod",
+      "immutable": false,
+      "sha256": "a8d6a7641298671047c03b77fdbfbf09fd3d9e7a41bbf8cc5c8720e40e769c6d"
+    },
+    {
+      "original_path": "commands/timeout/moon.mod",
+      "current_path": "commands/timeout/moon.mod",
+      "immutable": false,
+      "sha256": "23d01390e7dfba64d319a6bbeccb88d970ce32167cb6b4ffc7640e131841802e"
+    },
+    {
+      "original_path": "commands/touch/moon.mod",
+      "current_path": "commands/touch/moon.mod",
+      "immutable": false,
+      "sha256": "6b614a342e36e81ae693dc2e5453e8d76cdbc90153b99b549318cf680eadf823"
+    },
+    {
+      "original_path": "commands/tr/main_wbtest.mbt",
+      "current_path": "commands/tr/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "472999485f7dadcc49ed5a83dddfe0b07db15c6a7fc587c917383acc86e18ede"
+    },
+    {
+      "original_path": "commands/tr/moon.mod",
+      "current_path": "commands/tr/moon.mod",
+      "immutable": false,
+      "sha256": "ff236189725f7aa1833c9207a51d125ad92055bd631a8d9b07ee187f8481ff79"
+    },
+    {
+      "original_path": "commands/tree/main_wbtest.mbt",
+      "current_path": "commands/tree/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "18f1d6b7396c580e53b808e681dec5713e97df53454227eb89fc6b94942a5422"
+    },
+    {
+      "original_path": "commands/tree/moon.mod",
+      "current_path": "commands/tree/moon.mod",
+      "immutable": false,
+      "sha256": "fbf816bf6972ca14ea746ddcb4f0c9f15aa1ae0e806d2f05aabf7f33b47beaf9"
+    },
+    {
+      "original_path": "commands/true/moon.mod",
+      "current_path": "commands/true/moon.mod",
+      "immutable": false,
+      "sha256": "d90c131a3314177a4d95f4bdb27f0d787cc4f1670bc80d5ca5054a4f01e496d9"
+    },
+    {
+      "original_path": "commands/unexpand/main_wbtest.mbt",
+      "current_path": "commands/unexpand/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "6c3c0ac60554d57a514978b69d7aff39e1ffe98eae7aaab350baba4023734f20"
+    },
+    {
+      "original_path": "commands/unexpand/moon.mod",
+      "current_path": "commands/unexpand/moon.mod",
+      "immutable": false,
+      "sha256": "b00d765647bcea85fbdaa19a9e8d1313cba72f061d5f7f235da0042a51f8f67f"
+    },
+    {
+      "original_path": "commands/uniq/moon.mod",
+      "current_path": "commands/uniq/moon.mod",
+      "immutable": false,
+      "sha256": "b44dc74736faff56df2b597c07a4b5e9c39fd3b5ea9bd30fb443b54dbab2563f"
+    },
+    {
+      "original_path": "commands/uniq/uniq_wbtest.mbt",
+      "current_path": "commands/uniq/uniq_wbtest.mbt",
+      "immutable": false,
+      "sha256": "6c73ffc2162b446046decd896c3af75c06b9f25dbbe2658f5fd86c11c4efa465"
+    },
+    {
+      "original_path": "commands/unlink/main_wbtest.mbt",
+      "current_path": "commands/unlink/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "cdaf7346aae2c5e4b875cac5e1215571598bc1cad9c614c77d25130de4de5057"
+    },
+    {
+      "original_path": "commands/unlink/moon.mod",
+      "current_path": "commands/unlink/moon.mod",
+      "immutable": false,
+      "sha256": "b52f910347c2052c29c9ce0222fb18749ddc6e238098398eaff7582c44dc8640"
+    },
+    {
+      "original_path": "commands/wc/count_wbtest.mbt",
+      "current_path": "commands/wc/count_wbtest.mbt",
+      "immutable": false,
+      "sha256": "8bd50b7621f8f824ca1048a1101add11dded014a66291d8b246887e011b9db22"
+    },
+    {
+      "original_path": "commands/wc/moon.mod",
+      "current_path": "commands/wc/moon.mod",
+      "immutable": false,
+      "sha256": "da6f486ed64a8f1d80ef5065947e6c09b156cc260c7a35324c7081520250ffce"
+    },
+    {
+      "original_path": "commands/wget/moon.mod",
+      "current_path": "commands/wget/moon.mod",
+      "immutable": false,
+      "sha256": "d792bf112862715c3af237ba8031ffe729be1adeaf0d4d2e35a9a960bbe78b25"
+    },
+    {
+      "original_path": "commands/wget/options_wbtest.mbt",
+      "current_path": "commands/wget/options_wbtest.mbt",
+      "immutable": false,
+      "sha256": "a59873551dd857a35411d6ed39dcf1f259bd38a6b8809b455a0ec410ddcf7cc4"
+    },
+    {
+      "original_path": "commands/which/main_wbtest.mbt",
+      "current_path": "commands/which/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "f20f32f9d1c857eefea429c03e0c579da228d16a89320f76014c4d85546e35ed"
+    },
+    {
+      "original_path": "commands/which/moon.mod",
+      "current_path": "commands/which/moon.mod",
+      "immutable": false,
+      "sha256": "af1d2d0b2dce4b9ad948a90731638b2b3bd1b8c873142f70ae243cd88c06e30c"
+    },
+    {
+      "original_path": "commands/xargs/main_wbtest.mbt",
+      "current_path": "commands/xargs/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "5d0a0c29a8e8b0cfb82f8dfbb15622e5fbdaeb36e3ae59aa52122465ed4fe79f"
+    },
+    {
+      "original_path": "commands/xargs/moon.mod",
+      "current_path": "commands/xargs/moon.mod",
+      "immutable": false,
+      "sha256": "9e609f3189dfc9ee2f4bf580fb5b495efc185551010a346bdff7d42621c2afd7"
+    },
+    {
+      "original_path": "commands/xxd/main_wbtest.mbt",
+      "current_path": "commands/xxd/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "f8e7b7165cdc07b98618ad22cedff78a9c5fc27837a21854b0076e60dcf76870"
+    },
+    {
+      "original_path": "commands/xxd/moon.mod",
+      "current_path": "commands/xxd/moon.mod",
+      "immutable": false,
+      "sha256": "f9c5907c7772ae4820876a3f5b8ae601c8b1e59753c6521475e2401f2d2bb8f8"
+    },
+    {
+      "original_path": "commands/yes/main_wbtest.mbt",
+      "current_path": "commands/yes/main_wbtest.mbt",
+      "immutable": false,
+      "sha256": "73ee78a844cc1dfec73cd911d89efe16570f89b442c02169eb5403133b0ecc02"
+    },
+    {
+      "original_path": "commands/yes/moon.mod",
+      "current_path": "commands/yes/moon.mod",
+      "immutable": false,
+      "sha256": "e694503cce852bda570b9cad1026e6aa4dac7575c82b2eb09c27b1422e731515"
+    },
+    {
+      "original_path": "commands/zcat/moon.mod",
+      "current_path": "commands/zcat/moon.mod",
+      "immutable": false,
+      "sha256": "3e6baa3b8a7ee7c009ad14a9f72cea909f2697ff160be0e6e82a479212ab9832"
+    },
+    {
+      "original_path": "core/bytere/bytere_test.mbt",
+      "current_path": "core/bytere/bytere_test.mbt",
+      "immutable": false,
+      "sha256": "5daabf1bb0342bc80c3887adb24eebd0737f6ef6a3c58490d8d0526b278250e6"
+    },
+    {
+      "original_path": "core/checksum/checksum_wbtest.mbt",
+      "current_path": "core/checksum/checksum_wbtest.mbt",
+      "immutable": false,
+      "sha256": "27a359a7c53ba8ead11bd85ebb202eb3aa318a998e9b56a59744c865a96b2e9a"
+    },
+    {
+      "original_path": "core/cli/cli_wbtest.mbt",
+      "current_path": "core/cli/cli_wbtest.mbt",
+      "immutable": false,
+      "sha256": "f26239a6c0ab42cc2fe0dbf0b02a5c9b1d12f9bb921be5e9bc142402fafa0e9b"
+    },
+    {
+      "original_path": "core/fsops/fsops_test.mbt",
+      "current_path": "core/fsops/fsops_test.mbt",
+      "immutable": false,
+      "sha256": "81eaad024325ab055fc1655708401664b32164cfbee256ca2d0f62dbe2672c30"
+    },
+    {
+      "original_path": "core/gzipops/codec_wbtest.mbt",
+      "current_path": "core/gzipops/codec_wbtest.mbt",
+      "immutable": false,
+      "sha256": "e9d857b6dae476b0542061570c2c424aa53ce240e5171a05e837e36731552e2b"
+    },
+    {
+      "original_path": "core/jq_filter/filter_test.mbt",
+      "current_path": "core/jq_filter/filter_test.mbt",
+      "immutable": false,
+      "sha256": "7aadae597c379b2b963345ccac46f80756bfdb2c2a8c963a73f964a1dc1894f4"
+    },
+    {
+      "original_path": "core/netops/cookies_wbtest.mbt",
+      "current_path": "core/netops/cookies_wbtest.mbt",
+      "immutable": false,
+      "sha256": "969525b21b6bc87664ec9cb2357640cd66028a5d13453bcb7512720f400ee3c6"
+    },
+    {
+      "original_path": "core/netops/credentials_wbtest.mbt",
+      "current_path": "core/netops/credentials_wbtest.mbt",
+      "immutable": false,
+      "sha256": "be5599826067a17130b8115288159a06f49c8acf8763fba411016c4e3a2d6316"
+    },
+    {
+      "original_path": "core/netops/header_layers_wbtest.mbt",
+      "current_path": "core/netops/header_layers_wbtest.mbt",
+      "immutable": false,
+      "sha256": "9d121498e7371cfe52ce4e75b6f913dbdfbb5fd0a58d34204020652844fad45c"
+    },
+    {
+      "original_path": "core/netops/netops_wbtest.mbt",
+      "current_path": "core/netops/netops_wbtest.mbt",
+      "immutable": false,
+      "sha256": "51e1069ccfbcee714ab6fd72f9311fedf6de7555839035bbcfc9db3c7b9c6d8a"
+    },
+    {
+      "original_path": "core/platform/platform_wbtest.mbt",
+      "current_path": "core/platform/platform_wbtest.mbt",
+      "immutable": false,
+      "sha256": "42164a0c03aed0d58400b1e28363fa104acef6d52914cc05bce8087bdd70dee9"
+    },
+    {
+      "original_path": "core/process/process_wbtest.mbt",
+      "current_path": "core/process/process_wbtest.mbt",
+      "immutable": false,
+      "sha256": "490f1f55f78a5d7afdd9447aa7b615fd9d34a1abd957986c61b11405b70d58f2"
+    },
+    {
+      "original_path": "core/shell/shell_test.mbt",
+      "current_path": "core/shell/shell_test.mbt",
+      "immutable": false,
+      "sha256": "e04204f8f4a5b6c0e7d8f72403cbc33c07550d41062c7a516de97d8937f41e30"
+    },
+    {
+      "original_path": "core/shell/shell_wbtest.mbt",
+      "current_path": "core/shell/shell_wbtest.mbt",
+      "immutable": false,
+      "sha256": "f29cd06c65dd26651c5184700b30c28297989958b40287ec9cb75deb18761f50"
+    },
+    {
+      "original_path": "core/stream/stream_wbtest.mbt",
+      "current_path": "core/stream/stream_wbtest.mbt",
+      "immutable": false,
+      "sha256": "e32d8a5b77f3d5ebb1fd9a72e732e8d17a22f4adb882e1d6f11151e3a4c80fad"
+    },
+    {
+      "original_path": "core/time_zone/zone_wbtest.mbt",
+      "current_path": "core/time_zone/zone_wbtest.mbt",
+      "immutable": false,
+      "sha256": "048f2475b192ade1809bff529d33909a9fb1375d6d7c1a01ef6dbb6a50b28c68"
+    },
+    {
+      "original_path": "docs/reports/2026-08-26-foundation.md",
+      "current_path": "docs/reports/2026-08-26-foundation.md",
+      "immutable": true,
+      "sha256": "d13bd6e8118f03c7940a714a719ee194c3df2e5ccaabc01b2123f37797edd71d"
+    },
+    {
+      "original_path": "docs/reports/2026-09-02-oracle-runner.md",
+      "current_path": "docs/reports/2026-09-02-oracle-runner.md",
+      "immutable": true,
+      "sha256": "b219397802751a27d228bb33465eb7631bc8911b9ece7fa8645d8fb9248d40bb"
+    },
+    {
+      "original_path": "docs/reports/2026-09-04-p1-p5.md",
+      "current_path": "docs/reports/2026-09-04-p1-p5.md",
+      "immutable": true,
+      "sha256": "c6a260916ab154d4206cf89dd7702e69cb67261b96369ca9796472892f5d9ae3"
+    },
+    {
+      "original_path": "docs/reports/2026-09-05-final-audit.md",
+      "current_path": "docs/reports/2026-09-05-final-audit.md",
+      "immutable": true,
+      "sha256": "47e841625a6808700d8fb4e2f83ad4c625368e07ce866111c3d21a185e03208c"
+    },
+    {
+      "original_path": "docs/reports/2026-09-05-p6-p8.md",
+      "current_path": "docs/reports/2026-09-05-p6-p8.md",
+      "immutable": true,
+      "sha256": "aededc2b4abc9798f3f176f93fe3c6d6d5874b197d465695db892d36daa480f8"
+    },
+    {
+      "original_path": "docs/reports/2026-09-05-p9.md",
+      "current_path": "docs/reports/2026-09-05-p9.md",
+      "immutable": true,
+      "sha256": "f6e1f74e5e489eb189d4683249e4d8e2e589221c658477ca1383d7744870faa0"
+    },
+    {
+      "original_path": "docs/reports/2026-09-06-p0-fixes.md",
+      "current_path": "docs/reports/2026-09-06-p0-fixes.md",
+      "immutable": true,
+      "sha256": "27933622353ad5ac0f2049aa2bb15d2fd03653cc98547944af1d6444f55bd7de"
+    },
+    {
+      "original_path": "docs/reports/2026-09-06-published-runner-baseline.md",
+      "current_path": "docs/reports/2026-09-06-published-runner-baseline.md",
+      "immutable": true,
+      "sha256": "6d5c5a3e1268c33fb1c737f8a2426adfa352ddcb616263a8a9f10cb841506749"
+    },
+    {
+      "original_path": "docs/reports/2026-09-06-published-smoke-regression.md",
+      "current_path": "docs/reports/2026-09-06-published-smoke-regression.md",
+      "immutable": true,
+      "sha256": "0380cbd88a99ac3092efab70ba2e923e442980b017314867a69bb27ed5df44ea"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-audit.md",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-audit.md",
+      "immutable": true,
+      "sha256": "aee5cbb953a61da2c4bffdcf11331ad18c517cc0a1d0ce1a898ec02fa3293ad6"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/assets.sha256",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/assets.sha256",
+      "immutable": true,
+      "sha256": "24861d8b4392cafc1a55f1f04fbb51f1ee011e304cd41aadcce0385669b4675a"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/environment.txt",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/environment.txt",
+      "immutable": true,
+      "sha256": "9b43a094919d7516ca6517e76c198a5be4c8aad2a25d5b67a1236c4f40af6561"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/filesystem/evidence-validation.txt",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/filesystem/evidence-validation.txt",
+      "immutable": true,
+      "sha256": "2fcc3b653422255d6063480d58def11365d94cb01da6176bdae3226a91077363"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/filesystem/followup.log",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/filesystem/followup.log",
+      "immutable": true,
+      "sha256": "49e3a05848f6d4ff23dfb437a85594abab03f6eecdd977a676774eb3c20dd0e1"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/filesystem/followup.mbtx",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/filesystem/followup.mbtx",
+      "immutable": true,
+      "sha256": "565965df7c6d88ebf31a54b9cadb8b069f305bdddefe22c38d2c7580cde6c47c"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/filesystem/raw-evidence.tar.gz",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/filesystem/raw-evidence.tar.gz",
+      "immutable": true,
+      "sha256": "1200ec5d8d9591fa756a812410ff1c76a3baa77fa0533324570d1c3626df8cd7"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/filesystem/restore-evidence.mbtx",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/filesystem/restore-evidence.mbtx",
+      "immutable": true,
+      "sha256": "663fbf301375050d99d87fcd905ee91fd584e437f51ed431e190dc960902bdda"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/filesystem/results.jsonl",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/filesystem/results.jsonl",
+      "immutable": true,
+      "sha256": "6889d0e69662ac44321956185109bc61d966b3f047e2d381f94e69537f9e7aa4"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/filesystem/run.mbtx",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/filesystem/run.mbtx",
+      "immutable": true,
+      "sha256": "a34e48d82f0174a111c9c3e22c7f53df52ca64e07b76220578aff22d76c1590a"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/filesystem/runner.log",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/filesystem/runner.log",
+      "immutable": true,
+      "sha256": "34a9ad4d8705dd8389fd27068d84935931c5ba109f859d045a5daf2fdd5c0f7c"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/filesystem/summary.md",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/filesystem/summary.md",
+      "immutable": true,
+      "sha256": "9bde226f7c4c246337c875b01f1ff7f0011d3112187ceba8779cb670a6fbbbe9"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/network/REPORT.md",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/network/REPORT.md",
+      "immutable": true,
+      "sha256": "76bd051c92ec3db59c19339ca2303e82fc0c38cb454a21c13dedab4ae6579646"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/network/followup.jsonl",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/network/followup.jsonl",
+      "immutable": true,
+      "sha256": "bcdb697a3cc6af504d656fc3d48b8adac047467e1ef6a5f3cdcf632bc0a030ff"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/network/jq-followup.mbtx",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/network/jq-followup.mbtx",
+      "immutable": true,
+      "sha256": "47de24b63b16a9b8d59478242546c385ffc5a5b30703a6cf1b91a9506f86b68a"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/network/probe.mbtx",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/network/probe.mbtx",
+      "immutable": true,
+      "sha256": "4d66f33234d7ce34fb9d279bab6af670dd4ff8844b9edc089d8bb1aa0e30edad"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/network/raw-evidence.tar.gz",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/network/raw-evidence.tar.gz",
+      "immutable": true,
+      "sha256": "81807881a677476d92753de1950609092a1811d7eedd5dbd351aac56b03e4527"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/network/recover-evidence.mbtx",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/network/recover-evidence.mbtx",
+      "immutable": true,
+      "sha256": "4d01bfe4b9e2fd4b34f617d957e21e2508dfb4e041861fbbc01c47e6697e9232"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/network/recovery-summary.json",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/network/recovery-summary.json",
+      "immutable": true,
+      "sha256": "dc2f1e49b95e34691947f95a3d94a9023925b354b3cc72129d8405a380b3d44e"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/network/results.jsonl",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/network/results.jsonl",
+      "immutable": true,
+      "sha256": "7e383c0a78e9170cf15f1fd48689018ca67d8cf0557ac1f53cf21d6dfb193f96"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/inventory.jsonl",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/inventory.jsonl",
+      "immutable": true,
+      "sha256": "70e259f1d318c6bb6579405b8583984c07353bf90fe7606c87cf085662e87ef3"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/inventory.log",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/inventory.log",
+      "immutable": true,
+      "sha256": "4a6053b4cb63fc597a171ac7a03799bfe4cfff452db69dd098b786ba6fa4e2b7"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/inventory.mbtx",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/inventory.mbtx",
+      "immutable": true,
+      "sha256": "80184f32c3ecc71e754f23ae86763e474f7cedf4cb1db712f2a582c4f904b139"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/policy-allow.json",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/policy-allow.json",
+      "immutable": true,
+      "sha256": "66da2117fcfbaf9a1ec23a0b032c3b4e7c434f303aeafd7a1f8f411b001b56d2"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/policy-audit.mbtx",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/policy-audit.mbtx",
+      "immutable": true,
+      "sha256": "483f21abec5ba183204c142ab89c8b12b771e11e522f443ffbfce638924ada7a"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/policy-deny.json",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/policy-deny.json",
+      "immutable": true,
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/policy-results.jsonl",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/policy-results.jsonl",
+      "immutable": true,
+      "sha256": "8f9ba58a4b1deb827b221a441a93cc7bf92c05bac52aeed32b85c5193086cee5"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/process-audit.mbtx",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/process-audit.mbtx",
+      "immutable": true,
+      "sha256": "c274d586790a64fd288b4627aa501d40e945aaab94bbffc64c5a32e07e801d71"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/results.jsonl",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/results.jsonl",
+      "immutable": true,
+      "sha256": "5b61f9162a61958dfc1e08759edf279f90c5a8e374737e572cc00d35fe8d8332"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/run.log",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/run.log",
+      "immutable": true,
+      "sha256": "5b61f9162a61958dfc1e08759edf279f90c5a8e374737e572cc00d35fe8d8332"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/seq-results.jsonl",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/process/seq-results.jsonl",
+      "immutable": true,
+      "sha256": "7963c54cb1a9c0a7ecb2a43a1e2e8115725fe8b54bd5fb5b699e876658120075"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/release/run.log",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/release/run.log",
+      "immutable": true,
+      "sha256": "ce4e57b47c0f3e35686f997c2e60215927e07962ec7f489056e862e1b2ab39fc"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/release/summary.jsonl",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/release/summary.jsonl",
+      "immutable": true,
+      "sha256": "c94d2d3a717a326bb58e83cb73d23e18d7839faeb3c71040090c68db8d6863c5"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/release/summary.md",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/release/summary.md",
+      "immutable": true,
+      "sha256": "d34a94b3d578f8695bb62538d35ec0af0d9a48fcca2417d2bfb834a98443f585"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/text/audit.mbtx",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/text/audit.mbtx",
+      "immutable": true,
+      "sha256": "3a676c7c35f2b9899ef04d3bc2902500ad0ac1e01b9f21eae7bc6d3f9b0faa00"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/text/raw-evidence.tar.gz",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/text/raw-evidence.tar.gz",
+      "immutable": true,
+      "sha256": "64650fdc9d8697d9f7a632a10c86eff38899dd0b62622256fca8807dcc930cec"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/text/report.md",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/text/report.md",
+      "immutable": true,
+      "sha256": "ee738af840e7bd71744df3be15329b89ef472b2f37488e38c7879560c2a5d1be"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/text/results.json",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/text/results.json",
+      "immutable": true,
+      "sha256": "c214404b3d4f2647218db5e340be095e5309acfb922bc880674827a4e15f3e18"
+    },
+    {
+      "original_path": "docs/reports/2026-09-19-command-fidelity-evidence/text/versions.txt",
+      "current_path": "docs/reports/2026-09-19-command-fidelity-evidence/text/versions.txt",
+      "immutable": true,
+      "sha256": "88b529ef3671a1a4fb738c86f0825a7df3eb77f26dc865cf649133687111606f"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/build-native.log",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/build-native.log",
+      "immutable": true,
+      "sha256": "07c259e1640144f91b6df23e6fc5e6e94ba04399cd6d51966f69ce534070595a"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/build-wasm.log",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/build-wasm.log",
+      "immutable": true,
+      "sha256": "d7a67a2e9ea6fc47ac95713f061de45e97062d6ec288f74efed06178c866da4c"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/candidate-validation.log",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/candidate-validation.log",
+      "immutable": true,
+      "sha256": "30056162bee3f1812792a0bb887a790da999eeb852dabef6324aae945175616f"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/check-all.log",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/check-all.log",
+      "immutable": true,
+      "sha256": "546f107572cdc036741119abfdbfb2f76e14d9a3c7923507aada48bdfef7ab66"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/check-native.log",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/check-native.log",
+      "immutable": true,
+      "sha256": "3090840e175dbdba3a2a61030052683c9d6fed601e303589ea3d601f2cc84160"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/check-wasm.log",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/check-wasm.log",
+      "immutable": true,
+      "sha256": "e33aaaa250e851379f2e6889261f584a76d76d6f67328c41745df0a8877add06"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/compat.log",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/compat.log",
+      "immutable": true,
+      "sha256": "f3b8e5e9ba8508bef8f18cecbd6cd919f1013f0a59665bb7fc4b34b3929e8b6e"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/dependency-tree.json",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/dependency-tree.json",
+      "immutable": true,
+      "sha256": "7eab819559091e68672267193eac864e977785a8b0de9a12a8d8210f8cacbc2a"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/dependency-upgrade.patch",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/dependency-upgrade.patch",
+      "immutable": true,
+      "sha256": "d24425ea781acc238b4ab92d696204a72d2bb128045e9cc939f8fdcde880224c"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/final-focused-native.log",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/final-focused-native.log",
+      "immutable": true,
+      "sha256": "686b9b14c85d2538e21f68d672ea4a69c6004f135403e64ee586de14ad84ac15"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/final-focused-wasm.log",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/final-focused-wasm.log",
+      "immutable": true,
+      "sha256": "17887031a7aa9f2bccb11df85b137e0ff631bcb09d86c7326636bfb88e33a89e"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/make-final-wasm.log",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/make-final-wasm.log",
+      "immutable": true,
+      "sha256": "ebe98412a136b95bdc22c75c18e929fadeb9ec296c460c32add263026b7b25bd"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/native.jsonl",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/native.jsonl",
+      "immutable": true,
+      "sha256": "f988b17d1f0854634c2e034bb2f06dad6424b3bf4c86512b65cd7cbf58196ac8"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/network-native.log",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/network-native.log",
+      "immutable": true,
+      "sha256": "ef81fd1ba394d32977d761a5c05772ea18f78245766c8cd6b8a1f50cd64b20c0"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/network-wasm.log",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/network-wasm.log",
+      "immutable": true,
+      "sha256": "ef81fd1ba394d32977d761a5c05772ea18f78245766c8cd6b8a1f50cd64b20c0"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/policy.log",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/policy.log",
+      "immutable": true,
+      "sha256": "220346a3a76fe64eaa6c103cd129330ba8a7391ee069264e852aca7c71cecb49"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/published-moonx.jsonl",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/published-moonx.jsonl",
+      "immutable": true,
+      "sha256": "9befe6746acf7fb75e67a6ec3fe3ebc198aceb1fef4afcd706ce3df384b4d57b"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/repl-native.log",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/repl-native.log",
+      "immutable": true,
+      "sha256": "08104510824283c1fdce7746db1d7a328bd651433ec6435ff906efabb6e0bb13"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/repl-wasm.log",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/repl-wasm.log",
+      "immutable": true,
+      "sha256": "08104510824283c1fdce7746db1d7a328bd651433ec6435ff906efabb6e0bb13"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/test-native.log",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/test-native.log",
+      "immutable": true,
+      "sha256": "46035e41c32b5780e1e3d858bc97dedb6f1416f99bcd4b31f124489732a40cee"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/test-wasm.log",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/test-wasm.log",
+      "immutable": true,
+      "sha256": "568d9b7b3c40334eca8df9a63e2ea1922e4d89c22e385b3810f8856758835c00"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/toolchain.txt",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/toolchain.txt",
+      "immutable": true,
+      "sha256": "cf15b03f50d7f3c852629a486b83a02d34015869034f778a19dfff7647dc1791"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-evidence/wasm.jsonl",
+      "current_path": "docs/reports/2026-09-20-fidelity-evidence/wasm.jsonl",
+      "immutable": true,
+      "sha256": "715a7703f95f8c10aebd068bb3962d92d7206280356275c39256e73daf5b73c1"
+    },
+    {
+      "original_path": "docs/reports/2026-09-20-fidelity-implementation.md",
+      "current_path": "docs/reports/2026-09-20-fidelity-implementation.md",
+      "immutable": true,
+      "sha256": "356fec62d7fbff6c19101d35f8accc021350946de6dff2d2e93d671b5a1f1a8e"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/README.md",
+      "current_path": "docs/reports/2026-09-21-api-probes/README.md",
+      "immutable": true,
+      "sha256": "fe6ea4178387ef42c0a2712e329fc1dbdd7b4a22dcffcb22f94a6fa72397b2e7"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/build-cross-cookie-native.log",
+      "current_path": "docs/reports/2026-09-21-api-probes/build-cross-cookie-native.log",
+      "immutable": true,
+      "sha256": "791b287bc2a4911520abe4e4b90aa81f7afc1f2bde296ceee9757ff6cc92690d"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/build-cross-cookie-wasm.log",
+      "current_path": "docs/reports/2026-09-21-api-probes/build-cross-cookie-wasm.log",
+      "immutable": true,
+      "sha256": "164d01af6c3fd9b3564c78b163b3e10cfe051b4570103bb5e87cf72f16872e85"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/build-native.log",
+      "current_path": "docs/reports/2026-09-21-api-probes/build-native.log",
+      "immutable": true,
+      "sha256": "30ec13dbdad8330682289e0f37415033da68d27500ec282757b7d943ce8227b5"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/build-wasm.log",
+      "current_path": "docs/reports/2026-09-21-api-probes/build-wasm.log",
+      "immutable": true,
+      "sha256": "d7a67a2e9ea6fc47ac95713f061de45e97062d6ec288f74efed06178c866da4c"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/cancellation-is-not-kill.log",
+      "current_path": "docs/reports/2026-09-21-api-probes/cancellation-is-not-kill.log",
+      "immutable": true,
+      "sha256": "fafcb1d3e75b04dd2849ee0012231bf6a9d4f3f0c5ed4020de029a13f8f182a2"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/cancellation-is-not-kill.mbtx",
+      "current_path": "docs/reports/2026-09-21-api-probes/cancellation-is-not-kill.mbtx",
+      "immutable": true,
+      "sha256": "9b7b08f95cf117fc2d88772e8e6356b4c09967f98da22230a34a486f511d8b98"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/check-all.log",
+      "current_path": "docs/reports/2026-09-21-api-probes/check-all.log",
+      "immutable": true,
+      "sha256": "9e26964ba1557d7060c5325e32ccdcbac6263064878fbd3f1d4df3b5282be438"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/check-cross-cookie-all.log",
+      "current_path": "docs/reports/2026-09-21-api-probes/check-cross-cookie-all.log",
+      "immutable": true,
+      "sha256": "6689500fc51416bcdb5c84c964bdc64b6142dcee051cbe7ec79e1be1d4aad8cf"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/collect.mbtx",
+      "current_path": "docs/reports/2026-09-21-api-probes/collect.mbtx",
+      "immutable": true,
+      "sha256": "a74666f69d758a2d8d0b54cd4c35cfcc7876ec1ef69b9d5fa3fd3166ccb3bd9f"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/contracts-native.jsonl",
+      "current_path": "docs/reports/2026-09-21-api-probes/contracts-native.jsonl",
+      "immutable": true,
+      "sha256": "897d05f5266818da1bbbc8ffe67b3626f5991e67616cdd8b5b2b032c29497f04"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/contracts-wasm.jsonl",
+      "current_path": "docs/reports/2026-09-21-api-probes/contracts-wasm.jsonl",
+      "immutable": true,
+      "sha256": "ee37643865fd31c96b6ba579bf0902d567fe46295e5dc4414f2f331ec7bb0ab1"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/cookie-redirects.log",
+      "current_path": "docs/reports/2026-09-21-api-probes/cookie-redirects.log",
+      "immutable": true,
+      "sha256": "80bf480742d92d49972a981285179d2266d9091b80f54c8300dd8ebe71a72ed4"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/cookie-redirects.mbtx",
+      "current_path": "docs/reports/2026-09-21-api-probes/cookie-redirects.mbtx",
+      "immutable": true,
+      "sha256": "e7125ad1b972baf8c7bed749dc805a322d9606d6013a39610223ae01a4572d9f"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/cross-cookie-native.jsonl",
+      "current_path": "docs/reports/2026-09-21-api-probes/cross-cookie-native.jsonl",
+      "immutable": true,
+      "sha256": "791c542d7b592c112aaa45aef622c4a61dd5d82556216c5c506bba534390b491"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/cross-cookie-tests-native.log",
+      "current_path": "docs/reports/2026-09-21-api-probes/cross-cookie-tests-native.log",
+      "immutable": true,
+      "sha256": "4a9e15c05605fecaa5caebbb582b737f49bcc287b3baa55643b3b084e7e0b54a"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/cross-cookie-tests-wasm.log",
+      "current_path": "docs/reports/2026-09-21-api-probes/cross-cookie-tests-wasm.log",
+      "immutable": true,
+      "sha256": "4a9e15c05605fecaa5caebbb582b737f49bcc287b3baa55643b3b084e7e0b54a"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/cross-cookie-wasm.jsonl",
+      "current_path": "docs/reports/2026-09-21-api-probes/cross-cookie-wasm.jsonl",
+      "immutable": true,
+      "sha256": "bb56a1d4e0cf3bc8bfe66265eb49e47e0405eaea0c85a41774a909c7d34eb877"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/dependency-tree.txt",
+      "current_path": "docs/reports/2026-09-21-api-probes/dependency-tree.txt",
+      "immutable": true,
+      "sha256": "b70182767f2e5a5d9aae2bdac05f3b913cba9fffca8cc7e158e742cd60b53745"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/fmt.log",
+      "current_path": "docs/reports/2026-09-21-api-probes/fmt.log",
+      "immutable": true,
+      "sha256": "ccb5fcb4fbf5670a73ce74718af72bcba5f152843e780563cb8474ed6347b38c"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/http-header-layers.log",
+      "current_path": "docs/reports/2026-09-21-api-probes/http-header-layers.log",
+      "immutable": true,
+      "sha256": "dc5e7ef42641b2e7589e6ec84daf12cfee52c6c874492dc02e20a6b96dbde803"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/http-header-layers.mbtx",
+      "current_path": "docs/reports/2026-09-21-api-probes/http-header-layers.mbtx",
+      "immutable": true,
+      "sha256": "e0e1aa22f312975b74de73ba979fad7fc0694c495785f834034e225b3e4e67a1"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/info.log",
+      "current_path": "docs/reports/2026-09-21-api-probes/info.log",
+      "immutable": true,
+      "sha256": "e6671fd875d6fdb06174515be458d9b6902763ec5452c774f6138d372fbd8fd3"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/inventory.json",
+      "current_path": "docs/reports/2026-09-21-api-probes/inventory.json",
+      "immutable": true,
+      "sha256": "053850ed2fae8da6e13f30e491753e6f0ea1dfc5a2f1224d891dabea1b0de9d0"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/inventory.mbtx",
+      "current_path": "docs/reports/2026-09-21-api-probes/inventory.mbtx",
+      "immutable": true,
+      "sha256": "9191683c921314e90e939e4f79260967e5940a5b94ff300c333468d3ebaf1442"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/scenarios-native.jsonl",
+      "current_path": "docs/reports/2026-09-21-api-probes/scenarios-native.jsonl",
+      "immutable": true,
+      "sha256": "ca1477b6e40b0abf94b6b6436db7ed04ee5e88fcc3d28296dc9329ff426c809e"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/scenarios-wasm.jsonl",
+      "current_path": "docs/reports/2026-09-21-api-probes/scenarios-wasm.jsonl",
+      "immutable": true,
+      "sha256": "a31922c07e38b0a2becf9b69a5ef2757ee4b96cc81a4d8146f3c6f41a4c9e821"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/tests-native.log",
+      "current_path": "docs/reports/2026-09-21-api-probes/tests-native.log",
+      "immutable": true,
+      "sha256": "08e5ab887a809262a61dcdbba2bd7182c9107b0259bff131dc8f1878c38e5ed1"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/tests-wasm.log",
+      "current_path": "docs/reports/2026-09-21-api-probes/tests-wasm.log",
+      "immutable": true,
+      "sha256": "e319564564f61ea04373ab5fdee1a84b8068cf2e1ebf8e88858ead14efe44df6"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-api-probes/toolchain.txt",
+      "current_path": "docs/reports/2026-09-21-api-probes/toolchain.txt",
+      "immutable": true,
+      "sha256": "10d48f2767e8de05ca6a6e7a022458bcd450ad4f40dc8473106b54444098ae44"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-json-migration/README.md",
+      "current_path": "docs/reports/2026-09-21-json-migration/README.md",
+      "immutable": true,
+      "sha256": "e76ced39687fab5d00197c8f25bb6f3f18f63da273b77eeedb7c13f1a6c3bad0"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-json-migration/assertion-map.json",
+      "current_path": "docs/reports/2026-09-21-json-migration/assertion-map.json",
+      "immutable": true,
+      "sha256": "e85cd1d5a8d4bd826ca1bad981560aedfc0ad091df0e01e3fd62213e313e58a7"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-json-migration/inventory.json",
+      "current_path": "docs/reports/2026-09-21-json-migration/inventory.json",
+      "immutable": true,
+      "sha256": "282d8c0df97765ec605820080ee44cf1c0afba7411ae8ea231fa41ca0b47c521"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-json-migration/json-cohorts-final.jsonl",
+      "current_path": "docs/reports/2026-09-21-json-migration/json-cohorts-final.jsonl",
+      "immutable": true,
+      "sha256": "11b4880146c55a88da24955b01d9d44e54f717465f6b46beb05de20c59bc3e45"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-json-migration/json-contract-native-final.jsonl",
+      "current_path": "docs/reports/2026-09-21-json-migration/json-contract-native-final.jsonl",
+      "immutable": true,
+      "sha256": "b5abaf033e3e32e8c09089e9b63fd52edce4eabb7321e1114d9ebd73f76478f6"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-json-migration/json-contract-wasm-final.jsonl",
+      "current_path": "docs/reports/2026-09-21-json-migration/json-contract-wasm-final.jsonl",
+      "immutable": true,
+      "sha256": "6b53c91115f4496d71944fac47c72e3fb62666a6508854bd5116cb9e568a0649"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-json-migration/json-migration-tests-native.log",
+      "current_path": "docs/reports/2026-09-21-json-migration/json-migration-tests-native.log",
+      "immutable": true,
+      "sha256": "347fe68a41b1837ac71e7dec234806f69e7946d1ff37895654eb865f122ce2dd"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-json-migration/json-migration-tests-wasm.log",
+      "current_path": "docs/reports/2026-09-21-json-migration/json-migration-tests-wasm.log",
+      "immutable": true,
+      "sha256": "531621e40158417040659e36f72b059a76e66e55c4cb347bcec800b565d1edad"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-json-migration/text-map.md",
+      "current_path": "docs/reports/2026-09-21-json-migration/text-map.md",
+      "immutable": true,
+      "sha256": "d3839f84774df18111bf928dc6de3b2a44ff70c4f7808d64ce28a73359d165cb"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-public-api-recheck.md",
+      "current_path": "docs/reports/2026-09-21-public-api-recheck.md",
+      "immutable": true,
+      "sha256": "218f6a3d99af29e14bca39af4e861513246a1fc54afd348812d2e5ff57f01604"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/README.md",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/README.md",
+      "immutable": true,
+      "sha256": "35a7175bb14b0695f906c30d5549200d0216e0ef1a9f756f5052fb4685f1c316"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/macos-15-contract-native.jsonl",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/macos-15-contract-native.jsonl",
+      "immutable": true,
+      "sha256": "348d528a5fea4a50053c487354c3e0eb433c8564cb72138398831c86f6733064"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/macos-15-contract-wasm.jsonl",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/macos-15-contract-wasm.jsonl",
+      "immutable": true,
+      "sha256": "5ef06b594c28f1993d0ab5f413931e9c4192a46137da1064c7b641ae4345803c"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/macos-15-scenarios-native.jsonl",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/macos-15-scenarios-native.jsonl",
+      "immutable": true,
+      "sha256": "36b625833186e99cbe0d20cea12ad01858aaad3e223ce0446e953322203f363c"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/macos-15-scenarios-wasm.jsonl",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/macos-15-scenarios-wasm.jsonl",
+      "immutable": true,
+      "sha256": "ad7c5cfb7f5afead879e60c89dc678e41cbbeaeb4d006fa54bcb030adce3fb73"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/moonx-results.jsonl",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/moonx-results.jsonl",
+      "immutable": true,
+      "sha256": "256f6fce0782175bbca777ebeaf60ea3d0b677940f6f85d26164335a6a08cabe"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/moonx-summary.json",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/moonx-summary.json",
+      "immutable": true,
+      "sha256": "2ce8a5d91eeca3c814f54a9415b643efb91a927b4bd6b9cf8f416d01c16c0e39"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/oracle-image.txt",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/oracle-image.txt",
+      "immutable": true,
+      "sha256": "de0cbfae5d1f3162eddb1b4c50893e101993379e2b568daa9dde552be1320a49"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/oracle-versions.txt",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/oracle-versions.txt",
+      "immutable": true,
+      "sha256": "29187b6a0cabe0c9a52cd79f6ee3bab3fa2094cea1c1f22b0c804f1b1b0b32d9"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication.json",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication.json",
+      "immutable": true,
+      "sha256": "c06ec42cfec43b071287adae7bd2a53d4f79618560dea977408efc879056f41f"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/base64.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/base64.log",
+      "immutable": true,
+      "sha256": "73bd3c0577b7f345ac003b9a255a9a16151c690ab46291aeb9c73326712a6278"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/basename.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/basename.log",
+      "immutable": true,
+      "sha256": "b60dbda473ed941e293105433382d6e30ee6f96e420f7e9b4e888976a2885461"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/cat.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/cat.log",
+      "immutable": true,
+      "sha256": "6a65f7b257cea97bdcee3080e4d9cc5f535f054587e952a70fb07963adc8d378"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/chmod.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/chmod.log",
+      "immutable": true,
+      "sha256": "1ded9ea54250e062d67f1f151d547ab7b77711fd68ce5c3cf4c9d5e03b39fa65"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/cmp.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/cmp.log",
+      "immutable": true,
+      "sha256": "248b8de29617326185c27c7ddd915f728060ed146e8908160db26f7c0ef47dc0"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/comm.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/comm.log",
+      "immutable": true,
+      "sha256": "ec9b59225d568c0b4cccca25b718732d95b1ee811823c78efe1361bdb0a5488c"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/core.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/core.log",
+      "immutable": true,
+      "sha256": "e548543c9236d7f47e668ec207b264e138009eb8d8e36da252903bef5a0d1a96"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/cp.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/cp.log",
+      "immutable": true,
+      "sha256": "2553fcf21ee81c9b4fe8f92f0592f2580e2f65a920aacb63ed3623909740822d"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/curl.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/curl.log",
+      "immutable": true,
+      "sha256": "1b88e5b7e23581de759918ecd380a1d2ed97d2a385a5be40a31be91b510a3d20"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/cut.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/cut.log",
+      "immutable": true,
+      "sha256": "85085cc3995c80be2ca3de1517d8e85809378d830da1d636052aa2bab3dfed0c"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/dirname.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/dirname.log",
+      "immutable": true,
+      "sha256": "1c159f36130723606c7b5a96b9d1907cc8cdd487527c2f4add5f9f3e07b8499e"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/echo.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/echo.log",
+      "immutable": true,
+      "sha256": "08ac8f657447334770e0eb68a48caba4132459793362bb5fb11f631de9b815d4"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/env.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/env.log",
+      "immutable": true,
+      "sha256": "7f3d449e501b6040cac572c1e1c0ed1f6ea798b961e15898e1d22f9f9f63e346"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/false.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/false.log",
+      "immutable": true,
+      "sha256": "9757c995c23c3858309cb7f41cab556a4caaf3c1fd4239206c7078038ef28c1d"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/find.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/find.log",
+      "immutable": true,
+      "sha256": "bda253888289bedccac690ab30a5149886cdbac2b88bf23b2b5c20c93e33ac13"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/grep.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/grep.log",
+      "immutable": true,
+      "sha256": "45dc8a5ce4175b43bf3e2c9ecfa6cbfc86569f79dc3a7c2fe6f0bc3888b8eec7"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/head.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/head.log",
+      "immutable": true,
+      "sha256": "2eb7b0ff00beb939a63df6461833d58840d1077c0f99e2940806913b7fb907d3"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/join.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/join.log",
+      "immutable": true,
+      "sha256": "b1f0aa415af888ade78b87516c764fe908f8fb3c78c9b7c9ffa1f814dcdbc3c6"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/jq.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/jq.log",
+      "immutable": true,
+      "sha256": "8da54fd36b06877363e0c87e17290bdea507b41a2ba056ae3c41bf38c17b2015"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/jqlog.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/jqlog.log",
+      "immutable": true,
+      "sha256": "4cf48543568d3ac2d9362de90815f2230e8ab11f35051808c6468a32b9e73a94"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/ln.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/ln.log",
+      "immutable": true,
+      "sha256": "a58bd0de0b2de707009b540a1d3ee9107d2c83b364b7bfbc4cc2d419401b42a9"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/ls.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/ls.log",
+      "immutable": true,
+      "sha256": "4aba5d32ef4023bf96763472bbdecaae19351fa9243e6647ccba6080af3f4943"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/make.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/make.log",
+      "immutable": true,
+      "sha256": "919b3887f3ab8b85df82b70cc96c2d8067c5cd6269291513f8fa67b805a1ef36"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/mkdir.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/mkdir.log",
+      "immutable": true,
+      "sha256": "80a751d03ac8e35cd657580f5f32f521b957a19fd647eda6f8088b3a1d64ebf0"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/mv.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/mv.log",
+      "immutable": true,
+      "sha256": "a1b25a4f774bfc0d0ed991ef41acfb0f179fe63f065a401f02b1d8f984cfe699"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/nl.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/nl.log",
+      "immutable": true,
+      "sha256": "17945d375927a4ebdef74517601e0402051c2495aa34d3e48a4515e7c69251e4"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/paste.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/paste.log",
+      "immutable": true,
+      "sha256": "f559396aca51497469b52b6702207149421af13b3a7f3ff95637dc846f00e165"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/printenv.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/printenv.log",
+      "immutable": true,
+      "sha256": "f99f7201c113d4b87b1796a4deabf6de1259f9de5190330254d77fe73c058314"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/printf.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/printf.log",
+      "immutable": true,
+      "sha256": "f4af1f9039036686f5daefa0ae1170766c77b9597ce5e5eb73a8b548531ebc73"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/pwd.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/pwd.log",
+      "immutable": true,
+      "sha256": "4d7cbf421528fe88b716de1242b670b7f1893ec97c6cf56dc5b052dec53ed4bd"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/rm.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/rm.log",
+      "immutable": true,
+      "sha256": "da45111c2d902edfb683bb1d540d7c2d960232456ec07c157b55cf7a58b437c4"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/rmdir.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/rmdir.log",
+      "immutable": true,
+      "sha256": "6ff3dd5187e540f07d9f96d5d5746b12b64f4cef2f2a684762a41fd480ee14c2"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/seq.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/seq.log",
+      "immutable": true,
+      "sha256": "225d57e8f88cee49cef0913e434019a9dd7b3bbec6768acffef93781250aed1f"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/sh.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/sh.log",
+      "immutable": true,
+      "sha256": "e824e01c2266b5309d07def12c3f697daaf2b9c95762976c444426fe874ec2e9"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/sha256sum.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/sha256sum.log",
+      "immutable": true,
+      "sha256": "d67a46d0515654c9023c4d7c74c36f40ffdd8e3a02d9be97020cb6bbe943eeb2"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/sleep.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/sleep.log",
+      "immutable": true,
+      "sha256": "4c278d8f1597ab6630bc79c2986c08e249080830c01bdd313cf0af9e94395463"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/sort.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/sort.log",
+      "immutable": true,
+      "sha256": "caa5025a79884905326d50232d2642e0f3c1d40414a9f1886d90efd804f2fc5f"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/tail.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/tail.log",
+      "immutable": true,
+      "sha256": "de989322b08a23b92994c4553c0b5df61e5ebafe50fe649f0b484e4c2b0a157b"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/tee.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/tee.log",
+      "immutable": true,
+      "sha256": "a59ac520404c62237a151b9f5dcbb6862614dd4ed632b7997d18ce12b31acf3e"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/test.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/test.log",
+      "immutable": true,
+      "sha256": "9094d2746afaa6f45b094615ca722efe1cf07d5a704b8d39133f0fd7f1621455"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/touch.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/touch.log",
+      "immutable": true,
+      "sha256": "32c56b92c1772efcc9fab8e512d67ac347331d5edb6363e32b1b47062e13396c"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/tr.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/tr.log",
+      "immutable": true,
+      "sha256": "96d717a82cbb84ac4c89b42d1aac8475194dccf2cdc5c337329fa04cf48f4846"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/true.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/true.log",
+      "immutable": true,
+      "sha256": "b2468abe11d25abec367345d3ee7d34910fca0337159c9bc1b7a70dfcc5dc490"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/uniq.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/uniq.log",
+      "immutable": true,
+      "sha256": "af56e7373a9a5f82247e37efc1305adc68c515f2651f03c1c3ba505851a07bd8"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/wc.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/wc.log",
+      "immutable": true,
+      "sha256": "e3fd2ce49278f49f044f8bd0dcae8943cad2e57c1a8cdb4927be6ef71ceb7097"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/wget.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/wget.log",
+      "immutable": true,
+      "sha256": "03cdc7aae54575358f3078cda79386048e1639c7936c05b9820a6d15a4b3da48"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/xargs.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/xargs.log",
+      "immutable": true,
+      "sha256": "2a257c9bb4ebd27ed7305ec09822ec4f7afdd32abf03c996117ae48876813e36"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/publication/xxd.log",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/publication/xxd.log",
+      "immutable": true,
+      "sha256": "fa1aa95fec1a5149dc8e42c288b9b5c808cb9a8af2e2518513a496272021f449"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/source-ci.json",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/source-ci.json",
+      "immutable": true,
+      "sha256": "63e6f0ad75bb8ae1155d51c1422033223c5aec19e5b0be94294cdfe23ed2dd15"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/ubuntu-24.04-contract-native.jsonl",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/ubuntu-24.04-contract-native.jsonl",
+      "immutable": true,
+      "sha256": "2992b1a9ff88d8d801515701c67e46a4ecc8b8ad0d11ec8a3f08cfa2e512f00a"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/ubuntu-24.04-contract-wasm.jsonl",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/ubuntu-24.04-contract-wasm.jsonl",
+      "immutable": true,
+      "sha256": "1dcc12943f1ecbaad9c96446b6557589c45bd940380b8537281fcebd06a7e19a"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/ubuntu-24.04-oracle-native.jsonl",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/ubuntu-24.04-oracle-native.jsonl",
+      "immutable": true,
+      "sha256": "2830b4743e707da455ed961a0f13daf2c1a8a4720be7ad93c6b676f42af3e7ff"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/ubuntu-24.04-oracle-wasm.jsonl",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/ubuntu-24.04-oracle-wasm.jsonl",
+      "immutable": true,
+      "sha256": "c1bf5d6456e561f4b8300103a0b79a0f769939096add2a0df5d0c0d61fce9f4a"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/ubuntu-24.04-scenarios-native.jsonl",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/ubuntu-24.04-scenarios-native.jsonl",
+      "immutable": true,
+      "sha256": "e6521ef686b7c30d012dee7c44e1e421d460abac6540696bb889cafe54da1217"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/ubuntu-24.04-scenarios-wasm.jsonl",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/ubuntu-24.04-scenarios-wasm.jsonl",
+      "immutable": true,
+      "sha256": "d619e1209cebf1e824bb5f6c8afe7d5d9ad24b9f8995fdd527d5d9497d11ce75"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/windows-2025-contract-native.jsonl",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/windows-2025-contract-native.jsonl",
+      "immutable": true,
+      "sha256": "0fb2067a7fd21814d1a84b8500fc1a5633b80d965799a33b6edaa30e7042a20e"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/windows-2025-contract-wasm.jsonl",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/windows-2025-contract-wasm.jsonl",
+      "immutable": true,
+      "sha256": "76bf96f78a8a2ec825b706e18872932662b07d88585ff84a2b6f55a442f38d8b"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/windows-2025-scenarios-native.jsonl",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/windows-2025-scenarios-native.jsonl",
+      "immutable": true,
+      "sha256": "baea3cd881c80c6dd7e37371fb362708e68a4014cfac4e911045317f68258a15"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/windows-2025-scenarios-wasm.jsonl",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/windows-2025-scenarios-wasm.jsonl",
+      "immutable": true,
+      "sha256": "9fd651df22ad7e5f5d25aae089f22a0f847d5b6b9a7ce440cb183b49e6456f7c"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-release-0.2.0/workspace-summary.json",
+      "current_path": "docs/reports/2026-09-21-release-0.2.0/workspace-summary.json",
+      "immutable": true,
+      "sha256": "71f0d825d3004f3c66fd5b11edc1f1e4dde9507a8adeadf74ecf0226a52224de"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/baseline-diff-numstat.txt",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/baseline-diff-numstat.txt",
+      "immutable": true,
+      "sha256": "be960dd40274c009678f9341ff414e3f2cedde926ac13245c3190c832eaa3baf"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/baseline-lines.txt",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/baseline-lines.txt",
+      "immutable": true,
+      "sha256": "64bb8e09439ae445c1582d119ffb24bb19b53713bbd144ce3a16acff77390694"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/baseline-tests-native.log",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/baseline-tests-native.log",
+      "immutable": true,
+      "sha256": "bedb91fdd214aee904bacb40def6c1c43b836148bac034cceea06ccaf303c3dc"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/baseline-tests-wasm.log",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/baseline-tests-wasm.log",
+      "immutable": true,
+      "sha256": "8f74c4b60535de512041707f6fe41dade5d67e058fcb346095afddc42ade51d5"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/case-deduplication.md",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/case-deduplication.md",
+      "immutable": true,
+      "sha256": "377a487190bd87a1710880c560e8af966d27a5935ce4afb00704abc5b897dd3e"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/cohorts.jsonl",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/cohorts.jsonl",
+      "immutable": true,
+      "sha256": "8f0159e6030cbf8e4947ec4165a80333e850f8ba7417b991906d3826022be9fb"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/compat-migration.md",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/compat-migration.md",
+      "immutable": true,
+      "sha256": "23eaa760bdf66e0871d69da06ac6a61d727f2861165fea9d9710c9333cf8fafd"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/contracts-native.jsonl",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/contracts-native.jsonl",
+      "immutable": true,
+      "sha256": "8303ff0e9ff87a08f0f60016b6f0f435ad6996ae4db94440548bea35665d3093"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/contracts-wasm.jsonl",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/contracts-wasm.jsonl",
+      "immutable": true,
+      "sha256": "0b45035009b7072aaeee92305ef92d115c3e6b3327d88e141abd391156dee246"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/final-inventory.json",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/final-inventory.json",
+      "immutable": true,
+      "sha256": "0978c93667d7d3e6ed46b20150edcfeba488009fd4e2eb4784c9f84c6804d049"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/final-tests-native.log",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/final-tests-native.log",
+      "immutable": true,
+      "sha256": "f6402cedc04d0488e6aff548cda3bae84110c22a7dc91db732c517586de68432"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/final-tests-wasm.log",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/final-tests-wasm.log",
+      "immutable": true,
+      "sha256": "531621e40158417040659e36f72b059a76e66e55c4cb347bcec800b565d1edad"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/historical-sha256.txt",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/historical-sha256.txt",
+      "immutable": true,
+      "sha256": "3a32c8861ab1edb9ea5a11b04f1177375f24ffe30efd3f30a56685a82c961952"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/oracle-infra.jsonl",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/oracle-infra.jsonl",
+      "immutable": true,
+      "sha256": "33b26fd3e42c40334c2ac3742a229a557b3700fa97f8460e80d42991192603b3"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/platform-skip.jsonl",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/platform-skip.jsonl",
+      "immutable": true,
+      "sha256": "223e033bdb422850ac297b7a976e824fbf90a3e48a8b7b9c13685a8e780829b2"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/probe-migration.md",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/probe-migration.md",
+      "immutable": true,
+      "sha256": "34832407a7cef5e6e7a06d7c76ff420729d80e88dee423da53374c972f4337b3"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/repro/collect-evidence.mbtx",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/repro/collect-evidence.mbtx",
+      "immutable": true,
+      "sha256": "f1a40b0b7d44c3a8d748c414c1fb76839e9e0018ab99362b0d55c160b386475c"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/repro/fidelity.mbtx",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/repro/fidelity.mbtx",
+      "immutable": true,
+      "sha256": "2a53c8f516f9b40a791130f1b04905014a4c72e20193ec31e4367cdd643ab106"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/repro/interactive_probe.mbtx",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/repro/interactive_probe.mbtx",
+      "immutable": true,
+      "sha256": "f7072f74350c6a834b8cab399dc7ce1dc4f351435ffa915445c957c0c0aeb248"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/repro/runner-selection.mbtx",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/repro/runner-selection.mbtx",
+      "immutable": true,
+      "sha256": "d0aae9f4077b54826a56bb2e2fd83d67fc7cf8b75a7d10b7bbfd26519409b0ba"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/repro/verify_cli.mbtx",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/repro/verify_cli.mbtx",
+      "immutable": true,
+      "sha256": "d4d1ae6520b5c35e47c6f646fb7d232dd87c5b897d750d6219d85be0ab4e5214"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/runner-selection.txt",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/runner-selection.txt",
+      "immutable": true,
+      "sha256": "24787700437d90faa98c48da263de639c63adcaf58ca7ef933d3c30f544d8e95"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/scenarios-native.jsonl",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/scenarios-native.jsonl",
+      "immutable": true,
+      "sha256": "5dc56092b6be8c3fc2709492e05e0e7ac525bebf578141ffdd451812b64149b8"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/scenarios-wasm.jsonl",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/scenarios-wasm.jsonl",
+      "immutable": true,
+      "sha256": "a29f1d5d5336fb19c81676c4c907969b48a04243f5170f361b462bb98cf97732"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/toolchain.txt",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/toolchain.txt",
+      "immutable": true,
+      "sha256": "cf15b03f50d7f3c852629a486b83a02d34015869034f778a19dfff7647dc1791"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-evidence/unit-migration.md",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-evidence/unit-migration.md",
+      "immutable": true,
+      "sha256": "9f592b744b7581f449e0f698f3462aaaf6a9358e9ac26d714a1476cb24107e31"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-cleanup-implementation.md",
+      "current_path": "docs/reports/2026-09-21-test-cleanup-implementation.md",
+      "immutable": true,
+      "sha256": "032438c648023458f909b71ba2514cfc7f69db71eb56b1ea0c93b3688fb1de8a"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-system-audit.md",
+      "current_path": "docs/reports/2026-09-21-test-system-audit.md",
+      "immutable": true,
+      "sha256": "82b115cbcd191149d8a14cd90b22ab0da3c7f8c99bc42cb2d7941268ccbd9582"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-system-evidence/probe.mbtx",
+      "current_path": "docs/reports/2026-09-21-test-system-evidence/probe.mbtx",
+      "immutable": true,
+      "sha256": "0fc38fe289477761f2fcabd620301f48df074002d2aa5ed54e23d5b02e2e9deb"
+    },
+    {
+      "original_path": "docs/reports/2026-09-21-test-system-evidence/smoke.log",
+      "current_path": "docs/reports/2026-09-21-test-system-evidence/smoke.log",
+      "immutable": true,
+      "sha256": "ab8769a9315d3708457fce20e4c7c9921b4dee86afc8fd67808c34dc7f6e81b8"
+    },
+    {
+      "original_path": "docs/reports/2026-09-26-async-0.22.4-baseline.md",
+      "current_path": "docs/reports/2026-09-26-async-0.22.4-baseline.md",
+      "immutable": true,
+      "sha256": "b624106e7f4353c597f9521c74cf92bfa8a1c1df911d1ecb5d44ef8aa62353ff"
+    },
+    {
+      "original_path": "docs/reports/2026-09-26-p0-command-completion.md",
+      "current_path": "docs/reports/2026-09-26-p0-command-completion.md",
+      "immutable": true,
+      "sha256": "b3cb86cfd0a2c655872d8ee2ac904285f292f92cd6f1a47b6e42d43dc5303d01"
+    },
+    {
+      "original_path": "docs/reports/2026-09-26-release-0.1.0/README.md",
+      "current_path": "docs/reports/2026-09-26-release-0.1.0/README.md",
+      "immutable": true,
+      "sha256": "81dfbb965f4ded10b2418bcc5066916cbfb2edaf1fd6ce99af3dad65eb45eda2"
+    },
+    {
+      "original_path": "docs/reports/2026-09-27-release-0.1.1/README.md",
+      "current_path": "docs/reports/2026-09-27-release-0.1.1/README.md",
+      "immutable": true,
+      "sha256": "3f5b4a087056eb0730b541df599d8eb09055d0c948e2b5c836d20f0e481b85ca"
+    },
+    {
+      "original_path": "docs/reports/2026-10-10-command-batch.md",
+      "current_path": "docs/reports/2026-10-10-command-batch.md",
+      "immutable": true,
+      "sha256": "7544a40feda23e5993dfb5848ec3a261d2421631fe459fb37607d58bb27b4721"
+    },
+    {
+      "original_path": "docs/reports/2026-10-10-diff-oracle.mbtx",
+      "current_path": "docs/reports/2026-10-10-diff-oracle.mbtx",
+      "immutable": true,
+      "sha256": "1afc2080932d5a0b3c8c8d775b0535e05935ec4dd06a3e6271d6dcccff40d03c"
+    },
+    {
+      "original_path": "docs/reports/2026-10-10-fmt-oracle.mbtx",
+      "current_path": "docs/reports/2026-10-10-fmt-oracle.mbtx",
+      "immutable": true,
+      "sha256": "da63cf377eea55670c04f3e0f6d81ba8c4781c3701fe95ec90d9145f1161b310"
+    },
+    {
+      "original_path": "docs/reports/2026-10-10-fold-od-oracle.mbtx",
+      "current_path": "docs/reports/2026-10-10-fold-od-oracle.mbtx",
+      "immutable": true,
+      "sha256": "d662e789c995cf488a9320e974a70d02645670cdabb080ff24cd31d6a20174fd"
+    },
+    {
+      "original_path": "docs/reports/2026-10-10-gzip-oracle.mbtx",
+      "current_path": "docs/reports/2026-10-10-gzip-oracle.mbtx",
+      "immutable": true,
+      "sha256": "8d8a92e0be79c17207bcc0d8def9025eede3de2d65f8401461f635bc5af24429"
+    },
+    {
+      "original_path": "docs/reports/2026-10-10-gzip-oracle.txt",
+      "current_path": "docs/reports/2026-10-10-gzip-oracle.txt",
+      "immutable": true,
+      "sha256": "6f810f41bd9a68aae8639cee7e959a46403699342a634923378be9a6b64e68e0"
+    },
+    {
+      "original_path": "docs/reports/2026-10-10-patch-file-semantics.md",
+      "current_path": "docs/reports/2026-10-10-patch-file-semantics.md",
+      "immutable": true,
+      "sha256": "f52566d419c0418d564860144e413207414791e47ef1363f7bfb49ac0c36973c"
+    },
+    {
+      "original_path": "docs/reports/2026-10-11-command-followups/README.md",
+      "current_path": "docs/reports/2026-10-11-command-followups/README.md",
+      "immutable": true,
+      "sha256": "28be273452d5e47f8543eb37bf53f77935bf023460c2e715cf062cda0a64bf0c"
+    },
+    {
+      "original_path": "docs/reports/2026-10-11-command-followups/observations.jsonl",
+      "current_path": "docs/reports/2026-10-11-command-followups/observations.jsonl",
+      "immutable": true,
+      "sha256": "845bdad476a66f8e4dbf7c7581302b55d953b81747cf35c9642a7f79fbd43d11"
+    },
+    {
+      "original_path": "docs/reports/2026-10-11-command-followups/probe.mbtx",
+      "current_path": "docs/reports/2026-10-11-command-followups/probe.mbtx",
+      "immutable": true,
+      "sha256": "4e23380b8bf1f819bface1cd565977b48bdaddf64674eb9625f04899b7326e49"
+    },
+    {
+      "original_path": "docs/reports/2026-10-11-fidelity-repair/README.md",
+      "current_path": "docs/reports/2026-10-11-fidelity-repair/README.md",
+      "immutable": true,
+      "sha256": "c515459a14e22518a0f92c4208785b81ee3bc416be8e8afd1b82550674ccad3a"
+    },
+    {
+      "original_path": "docs/reports/2026-10-11-p2-command-candidate.md",
+      "current_path": "docs/reports/2026-10-11-p2-command-candidate.md",
+      "immutable": true,
+      "sha256": "ff07a1ed9c30bb5b29ffcc31963e1fe15ed7fccf53d011f7f9bbec71b1e02c49"
+    },
+    {
+      "original_path": "docs/reports/2026-10-11-p2-release-0.1.0/README.md",
+      "current_path": "docs/reports/2026-10-11-p2-release-0.1.0/README.md",
+      "immutable": true,
+      "sha256": "7d0480bc483cce3f796355d4ecdd07081670ddaaff2749cc70ae3b8184956186"
+    },
+    {
+      "original_path": "docs/reports/2026-10-11-patch-oracle.mbtx",
+      "current_path": "docs/reports/2026-10-11-patch-oracle.mbtx",
+      "immutable": true,
+      "sha256": "da2fda7069e8c63983c39ef006cf4afdf542ee395fe932efb1c1b50eac2b589a"
+    },
+    {
+      "original_path": "docs/reports/2026-10-11-release-0.1.0/README.md",
+      "current_path": "docs/reports/2026-10-11-release-0.1.0/README.md",
+      "immutable": true,
+      "sha256": "8558a1a6258ab63bd12df460fb84a9f6b8a3ebd40dbd14895fb8e6eacf8628ce"
+    },
+    {
+      "original_path": "docs/reports/2026-10-12-readme-audit/README.md",
+      "current_path": "docs/reports/2026-10-12-readme-audit/README.md",
+      "immutable": true,
+      "sha256": "42538f9ac51bf2323261571acd13c637b9b6ccf6b5dbbb44b03a6a946d007b5b"
+    },
+    {
+      "original_path": "docs/reports/2026-10-12-readme-audit/probe.mbtx",
+      "current_path": "docs/reports/2026-10-12-readme-audit/probe.mbtx",
+      "immutable": true,
+      "sha256": "ca7b40a77fa21fc5b729ea2c781659d4b4cf6e61b8031d66c91ab3e3da62e835"
+    },
+    {
+      "original_path": "docs/reports/README.md",
+      "current_path": "docs/reports/README.md",
+      "immutable": true,
+      "sha256": "92e8b937b64d2134e319cc1cdc1778dea82c090cdf539ef9550cc001279cd08f"
+    },
+    {
+      "original_path": "tests/cases/base32.json",
+      "current_path": "tests/cases/base32.json",
+      "immutable": false,
+      "sha256": "57ae97f2b1209aed102138f957b53ebb72407426db655b5851fc29ff281a16ba"
+    },
+    {
+      "original_path": "tests/cases/base64.json",
+      "current_path": "tests/cases/base64.json",
+      "immutable": false,
+      "sha256": "914c0968aa8eec689b3b29e04ba604bb2b61959366e1739975676af571f5ed22"
+    },
+    {
+      "original_path": "tests/cases/basename.json",
+      "current_path": "tests/cases/basename.json",
+      "immutable": false,
+      "sha256": "6a28edf6af7a6f8a5abe9fc308ca4a2ed50807b0d3a9178f23144b36aa679ed9"
+    },
+    {
+      "original_path": "tests/cases/cat.json",
+      "current_path": "tests/cases/cat.json",
+      "immutable": false,
+      "sha256": "878d500d788de38506aa4d246102a76728d49289cabda698c6701a9308ceeb04"
+    },
+    {
+      "original_path": "tests/cases/chmod.json",
+      "current_path": "tests/cases/chmod.json",
+      "immutable": false,
+      "sha256": "7ff911967bb6a74637a94fa9afc0ee260d87fbb1993f258da82e68c5cfa62fde"
+    },
+    {
+      "original_path": "tests/cases/cksum.json",
+      "current_path": "tests/cases/cksum.json",
+      "immutable": false,
+      "sha256": "267e1aa09306e80e7ac9256bddfa3eb80ebf03861324d1e8782b8f9d46bd1bd8"
+    },
+    {
+      "original_path": "tests/cases/cmp.json",
+      "current_path": "tests/cases/cmp.json",
+      "immutable": false,
+      "sha256": "2b7764ea8fc5ee89df175a88b7455bce0941918b40b26ef3e254d0e1c464ee0c"
+    },
+    {
+      "original_path": "tests/cases/column.json",
+      "current_path": "tests/cases/column.json",
+      "immutable": false,
+      "sha256": "eb026bd0b40a7c94538e3531bb701b942a568a5981055966f039c540aeb3ea12"
+    },
+    {
+      "original_path": "tests/cases/comm.json",
+      "current_path": "tests/cases/comm.json",
+      "immutable": false,
+      "sha256": "76d95e07cab57a7058c0370428da418ecf5a1e2371e253c8dbc8efcfb03ba326"
+    },
+    {
+      "original_path": "tests/cases/cp.json",
+      "current_path": "tests/cases/cp.json",
+      "immutable": false,
+      "sha256": "268ef99e2f71e8b98d8466513300b8756c5d8f4d369e3b77c3a91e42c63656bd"
+    },
+    {
+      "original_path": "tests/cases/csplit.json",
+      "current_path": "tests/cases/csplit.json",
+      "immutable": false,
+      "sha256": "cadcd6d6917baf2e53af1a6289697f724ce87770444f6a625310eb4ade13929e"
+    },
+    {
+      "original_path": "tests/cases/curl.json",
+      "current_path": "tests/cases/curl.json",
+      "immutable": false,
+      "sha256": "e412ac5f1d37d9be75ea459ffc9304fcd9a65431c2058343d8baa9cef2b06fce"
+    },
+    {
+      "original_path": "tests/cases/cut.json",
+      "current_path": "tests/cases/cut.json",
+      "immutable": false,
+      "sha256": "ecefc46a44b84ca75a2ed37b865134438662765730cfad0c5d33805ae8e92e82"
+    },
+    {
+      "original_path": "tests/cases/date.json",
+      "current_path": "tests/cases/date.json",
+      "immutable": false,
+      "sha256": "f2cd56bbc21e2eaa7324b11dfaa4b611679fc7b7703b984dea3d7853e15f3d94"
+    },
+    {
+      "original_path": "tests/cases/diff.json",
+      "current_path": "tests/cases/diff.json",
+      "immutable": false,
+      "sha256": "a82f65d8899488ea0d2fb0b190352bdba41ee5a95086a94eb6a26cb2936252fd"
+    },
+    {
+      "original_path": "tests/cases/dirname.json",
+      "current_path": "tests/cases/dirname.json",
+      "immutable": false,
+      "sha256": "60bba687f673a26b395454a8ac3822f4386df9895dca840d299fbbbed3a46287"
+    },
+    {
+      "original_path": "tests/cases/echo.json",
+      "current_path": "tests/cases/echo.json",
+      "immutable": false,
+      "sha256": "b879e04ed6bbdbbf40811d15f185021d5f9e0492895b320e5af56893de7afe4a"
+    },
+    {
+      "original_path": "tests/cases/env.json",
+      "current_path": "tests/cases/env.json",
+      "immutable": false,
+      "sha256": "e4bcd35078432b60c1748c77adea7dfd48877498643bb55c17c043addf0887a7"
+    },
+    {
+      "original_path": "tests/cases/expand.json",
+      "current_path": "tests/cases/expand.json",
+      "immutable": false,
+      "sha256": "a08eb6b237bffbaa818e82e0b539585e7c8fe1dc659d11a88164ee7bd14b1de5"
+    },
+    {
+      "original_path": "tests/cases/expr.json",
+      "current_path": "tests/cases/expr.json",
+      "immutable": false,
+      "sha256": "4369aabd334325cd33c95c39bbaff8fff939dde3d8d803c1e7953e1d4bfd90e7"
+    },
+    {
+      "original_path": "tests/cases/false.json",
+      "current_path": "tests/cases/false.json",
+      "immutable": false,
+      "sha256": "ebe4366aee32e2b703dad12245422a69e8bf53262ed6962c4ad149ea454f379d"
+    },
+    {
+      "original_path": "tests/cases/find.json",
+      "current_path": "tests/cases/find.json",
+      "immutable": false,
+      "sha256": "64d7c48f5178cb5bda0fd4bb06f7555934b12ab8261a24e5813ba921f6b54ee3"
+    },
+    {
+      "original_path": "tests/cases/fmt.json",
+      "current_path": "tests/cases/fmt.json",
+      "immutable": false,
+      "sha256": "fc6a92b9022b80fb01d52c201d7e3f711b0d7b06dcb5e0aed8797ad0e42c7df4"
+    },
+    {
+      "original_path": "tests/cases/fold.json",
+      "current_path": "tests/cases/fold.json",
+      "immutable": false,
+      "sha256": "000468367d79653c023dc394cd5398999b93e685501e5c4294fb932c1255fe5a"
+    },
+    {
+      "original_path": "tests/cases/grep.json",
+      "current_path": "tests/cases/grep.json",
+      "immutable": false,
+      "sha256": "032fd7be79c022a89ffe74aebe4450adce07a1338e2fa2d41e817afd7eb12324"
+    },
+    {
+      "original_path": "tests/cases/gunzip.json",
+      "current_path": "tests/cases/gunzip.json",
+      "immutable": false,
+      "sha256": "f3a12d60e08d38dea850131cfba04ac09687d48372728334861672fce34c91a0"
+    },
+    {
+      "original_path": "tests/cases/gzip.json",
+      "current_path": "tests/cases/gzip.json",
+      "immutable": false,
+      "sha256": "d4c621e8183d34dc0d724c099fffa281751b1b185da1866ea256be11cf4a3494"
+    },
+    {
+      "original_path": "tests/cases/head.json",
+      "current_path": "tests/cases/head.json",
+      "immutable": false,
+      "sha256": "b88bfea00a2201d0d9c48a8ac53effe57451a342bfae186cfd510e4a3122475f"
+    },
+    {
+      "original_path": "tests/cases/hexdump.json",
+      "current_path": "tests/cases/hexdump.json",
+      "immutable": false,
+      "sha256": "5906a88b2205c7cd6f9f53b4bd5c8f727e1be23ffa5f48007937fb9933c4f175"
+    },
+    {
+      "original_path": "tests/cases/join.json",
+      "current_path": "tests/cases/join.json",
+      "immutable": false,
+      "sha256": "51efd3950d7481497c8e3feae74e5f5764a63a33da14325e9b2c1f1abdeb2bb0"
+    },
+    {
+      "original_path": "tests/cases/jq.json",
+      "current_path": "tests/cases/jq.json",
+      "immutable": false,
+      "sha256": "be10a075cd0bd8009fd47a63dc09bbd0369bf63f3480c66a28195171270c9c58"
+    },
+    {
+      "original_path": "tests/cases/jqlog.json",
+      "current_path": "tests/cases/jqlog.json",
+      "immutable": false,
+      "sha256": "57ee19a416a3303556fc67998e161878822b9be69b5fffe5c656efe35150451c"
+    },
+    {
+      "original_path": "tests/cases/ln.json",
+      "current_path": "tests/cases/ln.json",
+      "immutable": false,
+      "sha256": "32a1b9269a4913b7c4c938c6cdc443ed7b07a4deebec19c892dfb838a88a71fc"
+    },
+    {
+      "original_path": "tests/cases/ls.json",
+      "current_path": "tests/cases/ls.json",
+      "immutable": false,
+      "sha256": "6f3becd02e749afcc3a15281274033d3a91bee5ea2da124c301d6f31bd4e65ad"
+    },
+    {
+      "original_path": "tests/cases/make.json",
+      "current_path": "tests/cases/make.json",
+      "immutable": false,
+      "sha256": "67c2bb056ec06425dae6f656c9866fca858df5c5069ecda08557b3bc2be33f51"
+    },
+    {
+      "original_path": "tests/cases/md5sum.json",
+      "current_path": "tests/cases/md5sum.json",
+      "immutable": false,
+      "sha256": "a3b066688165a5401e3530b1af04310b4c95dba5c5593c1342b06e323d33aa27"
+    },
+    {
+      "original_path": "tests/cases/mkdir.json",
+      "current_path": "tests/cases/mkdir.json",
+      "immutable": false,
+      "sha256": "ffad02cf062eb2066079ea9c8b30fc681c5003736940515c081c1eaaac4c8ec4"
+    },
+    {
+      "original_path": "tests/cases/mktemp.json",
+      "current_path": "tests/cases/mktemp.json",
+      "immutable": false,
+      "sha256": "bd6b3016a943707f7da67598deaee479df066ec807f5f51354e10426d0fbec16"
+    },
+    {
+      "original_path": "tests/cases/mv.json",
+      "current_path": "tests/cases/mv.json",
+      "immutable": false,
+      "sha256": "3247cd1e4d27aeeac2ce2fd5989aae9e8dc8cd4e20a5770d2cafd24f476be196"
+    },
+    {
+      "original_path": "tests/cases/nl.json",
+      "current_path": "tests/cases/nl.json",
+      "immutable": false,
+      "sha256": "d57a58c21319eeee54851b0368f231ddb823eccde1911ec3ab77adf6257d7c93"
+    },
+    {
+      "original_path": "tests/cases/od.json",
+      "current_path": "tests/cases/od.json",
+      "immutable": false,
+      "sha256": "7c7dde5ae29ce1fa3f25b5a1a2954bd261cb6a2d27c4c4a2ee0f6b5fc5a8e8f3"
+    },
+    {
+      "original_path": "tests/cases/paste.json",
+      "current_path": "tests/cases/paste.json",
+      "immutable": false,
+      "sha256": "cc5786422a59073933cdcd791e99727ae37fe796d9d55e989babe104f569de42"
+    },
+    {
+      "original_path": "tests/cases/patch.json",
+      "current_path": "tests/cases/patch.json",
+      "immutable": false,
+      "sha256": "52adab40de0239b1b95688da40c95268ae0b886e65f2c5add5c21acbbafb8cab"
+    },
+    {
+      "original_path": "tests/cases/printenv.json",
+      "current_path": "tests/cases/printenv.json",
+      "immutable": false,
+      "sha256": "179a167975bc2f98d828e2d7b3a672ca740b6d7927cec3537efedee7e89b7449"
+    },
+    {
+      "original_path": "tests/cases/printf.json",
+      "current_path": "tests/cases/printf.json",
+      "immutable": false,
+      "sha256": "9e482bec6a5a6b7807446e9bf095e3802a35d0d9c97a9e707e2f921cbf13a9ce"
+    },
+    {
+      "original_path": "tests/cases/pwd.json",
+      "current_path": "tests/cases/pwd.json",
+      "immutable": false,
+      "sha256": "ca7b51306ce365fdef03da45517c1dbc7953e70f6d89bb52508e711d15c60341"
+    },
+    {
+      "original_path": "tests/cases/realpath.json",
+      "current_path": "tests/cases/realpath.json",
+      "immutable": false,
+      "sha256": "fc2a3ce580f661e286eccce3661c57151ac49301758cbde82eb727ea4174414c"
+    },
+    {
+      "original_path": "tests/cases/rev.json",
+      "current_path": "tests/cases/rev.json",
+      "immutable": false,
+      "sha256": "520a1d9aa6d78c660c24b30187bac36dc56f303fb069c992211d820c5251526c"
+    },
+    {
+      "original_path": "tests/cases/rm.json",
+      "current_path": "tests/cases/rm.json",
+      "immutable": false,
+      "sha256": "0b4110852cf2556b4e97a4f4988d8dc21f3a6254ffc65fea1a6a38a2b84b80d0"
+    },
+    {
+      "original_path": "tests/cases/rmdir.json",
+      "current_path": "tests/cases/rmdir.json",
+      "immutable": false,
+      "sha256": "d7678f9b85b35db510b4d9163d773fec6f268a4e5fb40c9cc40e577cbae67fcf"
+    },
+    {
+      "original_path": "tests/cases/sed.json",
+      "current_path": "tests/cases/sed.json",
+      "immutable": false,
+      "sha256": "53a3f3a34ae222cb4267cbd92bae2e9a8c88386b8c1a8ec91bd273171faf1a68"
+    },
+    {
+      "original_path": "tests/cases/seq.json",
+      "current_path": "tests/cases/seq.json",
+      "immutable": false,
+      "sha256": "0ac4de599d766f17f902314157c3a34d4e3cd54a4cf4b6991cbfbe5524006404"
+    },
+    {
+      "original_path": "tests/cases/sh.json",
+      "current_path": "tests/cases/sh.json",
+      "immutable": false,
+      "sha256": "1c570b451589e509b30708f9df4f1f5155c11807804edc80ff41e5dff745d838"
+    },
+    {
+      "original_path": "tests/cases/sha1sum.json",
+      "current_path": "tests/cases/sha1sum.json",
+      "immutable": false,
+      "sha256": "297b1555cf962f2588569a64f2f0fd5106a713b3dd44c36a546b735fa635e111"
+    },
+    {
+      "original_path": "tests/cases/sha256sum.json",
+      "current_path": "tests/cases/sha256sum.json",
+      "immutable": false,
+      "sha256": "e5f1ea5d704657929d4ffcd303d7d6a242e7a9139be7e3a3654bab3aa92a98d5"
+    },
+    {
+      "original_path": "tests/cases/sha512sum.json",
+      "current_path": "tests/cases/sha512sum.json",
+      "immutable": false,
+      "sha256": "0c82fec3d24bfa856059797a745573d7fadf5b85e5a1607fb3782c441d43c8eb"
+    },
+    {
+      "original_path": "tests/cases/sleep.json",
+      "current_path": "tests/cases/sleep.json",
+      "immutable": false,
+      "sha256": "e66d9797135c43a0f442914a1334278d2ef28e2bd97261c27857b7ac0ba5f6d4"
+    },
+    {
+      "original_path": "tests/cases/sort.json",
+      "current_path": "tests/cases/sort.json",
+      "immutable": false,
+      "sha256": "87c4917104adaed6abb90f9f16bd6547cb605c06f6c823038cb3749904d59c61"
+    },
+    {
+      "original_path": "tests/cases/split.json",
+      "current_path": "tests/cases/split.json",
+      "immutable": false,
+      "sha256": "bc2d80a680d91e7e31b45f58368d3e483ea3b20faaa85b2492e9d89553bf23ec"
+    },
+    {
+      "original_path": "tests/cases/strings.json",
+      "current_path": "tests/cases/strings.json",
+      "immutable": false,
+      "sha256": "c76a751aa5f9c46835875072614d701842680e449e8927c33d78b89a6acbab8b"
+    },
+    {
+      "original_path": "tests/cases/tac.json",
+      "current_path": "tests/cases/tac.json",
+      "immutable": false,
+      "sha256": "c85182c8f69f1a7081963bb76358d66da7aa07bd7a133ea5c2a76ce3d13efea2"
+    },
+    {
+      "original_path": "tests/cases/tail.json",
+      "current_path": "tests/cases/tail.json",
+      "immutable": false,
+      "sha256": "2ee07050f6be688d07c9f8359b7a3e9c8c864320b1488e7dd9d10fa5e8fe13c6"
+    },
+    {
+      "original_path": "tests/cases/tee.json",
+      "current_path": "tests/cases/tee.json",
+      "immutable": false,
+      "sha256": "8d7c186e8ca1f10b132142646bcd7939899514268691bc214033e0c14cb8c3f3"
+    },
+    {
+      "original_path": "tests/cases/test.json",
+      "current_path": "tests/cases/test.json",
+      "immutable": false,
+      "sha256": "fb4ab549be59912178b14964237d07746587fc52b4a2e453117d2c3e87f878bc"
+    },
+    {
+      "original_path": "tests/cases/timeout.json",
+      "current_path": "tests/cases/timeout.json",
+      "immutable": false,
+      "sha256": "0f5a897e390e595041667c58d7e42e00143b312ad6d3e5313d66b3c704308063"
+    },
+    {
+      "original_path": "tests/cases/touch.json",
+      "current_path": "tests/cases/touch.json",
+      "immutable": false,
+      "sha256": "7ce44e0aa55979b1bb3026edef80a732f9a32d90f1176928e2cbce9751c36fae"
+    },
+    {
+      "original_path": "tests/cases/tr.json",
+      "current_path": "tests/cases/tr.json",
+      "immutable": false,
+      "sha256": "efc9d898a8357faf95d2fa27557612b229a5597561608ecd6d708685c2f4fc07"
+    },
+    {
+      "original_path": "tests/cases/tree.json",
+      "current_path": "tests/cases/tree.json",
+      "immutable": false,
+      "sha256": "32b95f7cf09d1194ce0890aeee500d1414a6b764592efca9e4f47da73b7849f2"
+    },
+    {
+      "original_path": "tests/cases/true.json",
+      "current_path": "tests/cases/true.json",
+      "immutable": false,
+      "sha256": "2e0c3179843cb95dbda479abd71c0b95ef0c6459d2a1b0ba4673ff9c65d19f2f"
+    },
+    {
+      "original_path": "tests/cases/unexpand.json",
+      "current_path": "tests/cases/unexpand.json",
+      "immutable": false,
+      "sha256": "40428d6c81f541e87fb5d06fbdbbf1feb88d818a242aab14f937c4d26df7628a"
+    },
+    {
+      "original_path": "tests/cases/uniq.json",
+      "current_path": "tests/cases/uniq.json",
+      "immutable": false,
+      "sha256": "3f5a69cb58aa3ec0d6115eca9f5f86b8374d3067b27ac8fc4fcdab1f0261b55e"
+    },
+    {
+      "original_path": "tests/cases/unlink.json",
+      "current_path": "tests/cases/unlink.json",
+      "immutable": false,
+      "sha256": "9c0cda9517bdf1d463540cb90ed20970416609d0ab9dcda0b3c3c43476001ac8"
+    },
+    {
+      "original_path": "tests/cases/wc.json",
+      "current_path": "tests/cases/wc.json",
+      "immutable": false,
+      "sha256": "98a935af7efbf399c4da2e1a8248fc22fed5ecc99668aaddcb1af27fd0310709"
+    },
+    {
+      "original_path": "tests/cases/wget.json",
+      "current_path": "tests/cases/wget.json",
+      "immutable": false,
+      "sha256": "ad5e3c31b7b6b2e3a5eab244a469a3a455db9e9b824b8c5f135a6d546f99353d"
+    },
+    {
+      "original_path": "tests/cases/which.json",
+      "current_path": "tests/cases/which.json",
+      "immutable": false,
+      "sha256": "b8c4f6682d9dab4f03c91c198c0dfc4b03eb266d62f4075d263260e521bfde4c"
+    },
+    {
+      "original_path": "tests/cases/xargs.json",
+      "current_path": "tests/cases/xargs.json",
+      "immutable": false,
+      "sha256": "80b7e870c48d403853cbef970efa19a62564abbd6adc131518c429facdc4d773"
+    },
+    {
+      "original_path": "tests/cases/xxd.json",
+      "current_path": "tests/cases/xxd.json",
+      "immutable": false,
+      "sha256": "da3af4cd66406ed8bf1666c6f8430602b3381a92d05fcb934e6516c3bc156d99"
+    },
+    {
+      "original_path": "tests/cases/yes.json",
+      "current_path": "tests/cases/yes.json",
+      "immutable": false,
+      "sha256": "5003d35a5fba954a8e60bfd4a633d507959e64393abade9a4d3785425e7f1612"
+    },
+    {
+      "original_path": "tests/cases/zcat.json",
+      "current_path": "tests/cases/zcat.json",
+      "immutable": false,
+      "sha256": "94d4177fba863a9190b8883ab9398dcd89ebc29db9469549936a51a61ca52c05"
+    },
+    {
+      "original_path": "tests/release_runner/published-0.1-base.json",
+      "current_path": "tests/release_runner/historical/published-0.1-base.json",
+      "immutable": true,
+      "sha256": "a1b26d40d9937417c1d1af076f439da9a3fea063bd30df68102ffa17413bdbc5"
+    },
+    {
+      "original_path": "tests/release_runner/published-0.1.0.json",
+      "current_path": "tests/release_runner/historical/published-0.1.0.json",
+      "immutable": true,
+      "sha256": "de9d373c124b0ff639ddc4a0a36d02cd53914a001176135dca4bffba6e13a73b"
+    },
+    {
+      "original_path": "tests/release_runner/published-0.1.1.json",
+      "current_path": "tests/release_runner/historical/published-0.1.1.json",
+      "immutable": true,
+      "sha256": "954a48d726c0247bdf4a33f5436272ade31619000e3f2f3680fbbb3fb580ca91"
+    },
+    {
+      "original_path": "tests/release_runner/published-0.2.0.json",
+      "current_path": "tests/release_runner/historical/published-0.2.0.json",
+      "immutable": true,
+      "sha256": "e80cb34b9c27eb7dcf7b9437d918aab30b2631027be9e99501501d64241b9f24"
+    },
+    {
+      "original_path": "tests/release_runner/published-2026-10-10.json",
+      "current_path": "tests/release_runner/historical/published-2026-10-10.json",
+      "immutable": true,
+      "sha256": "c80d237eecc8cc17f1f520cf61a5fe065a6008b795ca4691a61ed4d8a17c58d4"
+    },
+    {
+      "original_path": "tests/release_runner/published-2026-10-11-repair.json",
+      "current_path": "tests/release_runner/historical/published-2026-10-11-repair.json",
+      "immutable": true,
+      "sha256": "48d0565a4d455ae9e0f614c9007918fb822ddd99f8260358f3bd540fe5e3d3cb"
+    },
+    {
+      "original_path": "tests/release_runner/published-2026-10-11.json",
+      "current_path": "tests/release_runner/historical/published-2026-10-11.json",
+      "immutable": true,
+      "sha256": "1485ba0e082966d7ed03f7a0903aa5665c8bf2f327585ba44c42a07545ddc833"
+    },
+    {
+      "original_path": "tests/release_runner/published-metadata-2026-10-11.json",
+      "current_path": "tests/release_runner/historical/published-metadata-2026-10-11.json",
+      "immutable": true,
+      "sha256": "721b36170da531fdce03e8cf96f8128c032bf43d6954a02cb2975b8dc9044d82"
+    },
+    {
+      "original_path": "tests/release_runner/release_runner_wbtest.mbt",
+      "current_path": "tests/release_runner/release_runner_wbtest.mbt",
+      "immutable": false,
+      "sha256": "cb48ec66c0e6c6d0aadba844d551bfc3d4aab51dabc2c4b98c823a432c4ebef0"
+    },
+    {
+      "original_path": "tests/runner/cohorts.mbt",
+      "current_path": "tests/runner/cohorts.mbt",
+      "immutable": false,
+      "sha256": "4271ef9097006ce61f89a58197784203c0a27e76eace38c19c3df4dcde39885b"
+    },
+    {
+      "original_path": "tests/runner/runner_wbtest.mbt",
+      "current_path": "tests/runner/runner_wbtest.mbt",
+      "immutable": false,
+      "sha256": "dd5f659a85fd3d947394b883b0afbb6304b87493a602bed4ed673d8840c6ae6b"
+    },
+    {
+      "original_path": "tests/testkit/case_wbtest.mbt",
+      "current_path": "tests/testkit/case_wbtest.mbt",
+      "immutable": false,
+      "sha256": "6eba6b6511b75209f9d760515fb9f1c46848580ace338e7f119dfefc193a4d48"
+    },
+    {
+      "original_path": "tests/testkit/fixture_wbtest.mbt",
+      "current_path": "tests/testkit/fixture_wbtest.mbt",
+      "immutable": false,
+      "sha256": "3d3b63063a8584701eb875b5509a99e400fc4f43dc526dc14a3e82b2aaac1bd6"
+    },
+    {
+      "original_path": "tests/testkit/testkit_wbtest.mbt",
+      "current_path": "tests/testkit/testkit_wbtest.mbt",
+      "immutable": false,
+      "sha256": "f9ea5465aeebdd17381b8f3241d9194bff94f3bb0273c4f27b463972042c7c4a"
+    }
+  ]
+}

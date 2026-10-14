@@ -18,7 +18,11 @@ pub(all) struct CaseReport {
 ///|
 pub fn CaseReport::semantic_pass(self : CaseReport) -> Bool {
   self.result == "pass" &&
-  (self.verification == "contract" || self.verification == "differential") &&
+  (
+    self.verification == "contract" ||
+    self.verification == "differential" ||
+    self.verification == "backend-pair"
+  ) &&
   self.missing_observations.is_empty()
 }
 
@@ -27,14 +31,49 @@ pub async fn write_reports(
   directory : String,
   reports : ArrayView[CaseReport],
 ) -> Unit {
-  if !@fs.exists(directory) {
-    @fs.mkdir(directory, recursive=true)
+  let metadata = collect_run_metadata("run-" + @async.now().to_string())
+  write_reports_with_metadata(directory, reports, metadata)
+}
+
+///|
+/// Write reports together with one run-level reproducibility record.  The
+/// report rows repeat only the stable run references; full fingerprints live
+/// in `run-metadata.json`.
+pub async fn write_reports_with_metadata(
+  directory : String,
+  reports : ArrayView[CaseReport],
+  metadata : RunMetadata,
+) -> Unit {
+  @fs.mkdir(directory, recursive=true, allow_exist=true)
+  let lock = directory + "/.report-write-lock"
+  @fs.mkdir(lock) catch {
+    _ => fail("report directory already has an active writer: " + directory)
+  }
+  defer (@fs.rmdir(lock) catch { _ => () })
+  for name in ["run-metadata.json", "summary.jsonl", "summary.md"] {
+    if @fs.exists(directory + "/" + name) {
+      fail(
+        "report already exists: " +
+        directory +
+        "; choose a fresh report directory",
+      )
+    }
   }
   @fs.write_file(
+    directory + "/run-metadata.json",
+    canonical_json(@json.to_json(metadata)),
+  )
+  @fs.write_file(
     directory + "/summary.jsonl",
-    reports.map(item => ToJson::to_json(item).stringify()).join("\n") + "\n",
+    reports
+    .map(item => enriched_case_report_json(item, metadata).stringify())
+    .join("\n") +
+    "\n",
   )
   let lines = StringBuilder()
+  lines.write(
+    "Run: \{metadata.run_id} | reproducibility: \{metadata.reproducibility_status} | metadata: run-metadata.json\n\n",
+  )
   lines.write(
     "| Case | Result | Verification | Backend | ms | Stage | Detail |\n| --- | --- | --- | --- | --- | --- | --- |\n",
   )
@@ -47,6 +86,26 @@ pub async fn write_reports(
     )
   }
   @fs.write_file(directory + "/summary.md", lines.to_string())
+}
+
+///|
+fn enriched_case_report_json(
+  report : CaseReport,
+  metadata : RunMetadata,
+) -> Json {
+  let value = ToJson::to_json(report)
+  match value {
+    Object(fields) => {
+      fields["run_id"] = Json(metadata.run_id)
+      fields["registry_revision"] = Json(metadata.registry_hash)
+      fields["artifact_id"] = Json(artifact_id(metadata))
+      fields["oracle_profile_id"] = Json(metadata.oracle_profile_id)
+      fields["reproducibility_status"] = Json(metadata.reproducibility_status)
+      fields["run_metadata"] = Json("run-metadata.json")
+      Json::object(fields)
+    }
+    _ => value
+  }
 }
 
 ///|
@@ -224,7 +283,7 @@ pub fn check_contract(
 }
 
 ///|
-fn unordered_lines_equal(left : Bytes, right : Bytes) -> Bool {
+pub fn unordered_lines_equal(left : Bytes, right : Bytes) -> Bool {
   if ends_with_newline(left) != ends_with_newline(right) {
     return false
   }

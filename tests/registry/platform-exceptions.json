@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "exceptions": [
+    {
+      "source": "tests/testkit/snapshot_lifecycle_wbtest.mbt::rejection detects same-content replacement of an existing file",
+      "platforms": ["posix"],
+      "reason": "The rejection observer requires /bin/sh, /bin/mv and POSIX device/inode identity. Missing observers fail prerequisites; Windows is excluded before semantic execution."
+    },
+    {
+      "source": "tests/testkit/network_lifecycle_wbtest.mbt::network fixture startup deadline reaps the actual direct child",
+      "platforms": ["posix"],
+      "reason": "The direct-child reaping observer uses POSIX process and signal facilities. Missing observers fail prerequisites; Windows is excluded before semantic execution."
+    },
+    {
+      "source": "tests/testkit/environment_wbtest.mbt::spawn boundary records controlled environment instead of host defaults",
+      "platforms": ["posix"],
+      "reason": "The environment observer launches fixed /usr/bin/true. Missing observer prerequisites fail; Windows is excluded before semantic execution."
+    },
+    {
+      "source": "tests/testkit/lifecycle_wbtest.mbt::HTTPS fixture rejects untrusted TLS and releases its subprocess port",
+      "platforms": ["posix"],
+      "reason": "The native lifecycle test requires the OpenSSL s_server observer. Windows CI does not provision or validate this fixture; the registered package adapter must skip it before reporting evidence."
+    },
+    {
+      "source": "tests/testkit/lifecycle_wbtest.mbt::missing metadata observer never produces a partial snapshot",
+      "platforms": ["posix"],
+      "reason": "POSIX stat observer failure is exercised only on POSIX hosts."
+    },
+    {
+      "source": "tests/testkit/lifecycle_wbtest.mbt::snapshot failure after success retains streams and infrastructure classification",
+      "platforms": ["posix"],
+      "reason": "The observer fixture requires /bin/rm."
+    },
+    {
+      "source": "tests/testkit/lifecycle_wbtest.mbt::deadline returns only after the direct child is reaped",
+      "platforms": ["posix"],
+      "reason": "The process observer requires /bin/sh and /bin/kill; grandchildren remain outside this assertion."
+    },
+    {
+      "source": "tests/testkit/lifecycle_wbtest.mbt::cleanup permission failure retains candidate evidence",
+      "platforms": ["posix"],
+      "reason": "Permission fault injection requires a non-root POSIX user and /bin/chmod plus /usr/bin/id."
+    },
+    {
+      "source": "commands/ls/main_wbtest.mbt::command-line dereferencing differs from traversal and reports broken links",
+      "platforms": ["posix"],
+      "reason": "The test returns before assertions on Windows because symlink traversal fixtures require POSIX support."
+    },
+    {
+      "source": "tests/testkit/reproducibility_wbtest.mbt::successful execution removes temporary evidence",
+      "platforms": ["posix"],
+      "reason": "The observer launches /usr/bin/true and the test returns before assertions on Windows."
+    },
+    {
+      "source": "tests/testkit/reproducibility_wbtest.mbt::deadline cancellation preserves both partial streams",
+      "platforms": ["posix"],
+      "reason": "The observer requires /bin/sh and the test returns before assertions on Windows. A missing POSIX shell is not a passing lifecycle observation."
+    }
+  ]
+}

@@ -1,0 +1,1683 @@
+{
+  "schema": 1,
+  "commands": [
+    {
+      "name": "timeout",
+      "package_name": "cli/timeout",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": true,
+      "releasable": false,
+      "case_ids": []
+    },
+    {
+      "name": "base32",
+      "package_name": "cli/base32",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "base32-negative-wrap",
+        "base32-nonzero-tail-bits-accepted",
+        "base32-prefix-before-malformed-padding",
+        "base32-rfc4648-decode",
+        "base32-rfc4648-foobar",
+        "base32-uppercase-only",
+        "repair-alias-base32-decode"
+      ]
+    },
+    {
+      "name": "cksum",
+      "package_name": "cli/cksum",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p0-cksum-stdin"
+      ]
+    },
+    {
+      "name": "expand",
+      "package_name": "cli/expand",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p0-expand-basic-tabs",
+        "p0-expand-explicit-stops",
+        "p0-expand-initial",
+        "p0-expand-rejects-unsorted-stops"
+      ]
+    },
+    {
+      "name": "mktemp",
+      "package_name": "cli/mktemp",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p0-mktemp-help"
+      ]
+    },
+    {
+      "name": "realpath",
+      "package_name": "cli/realpath",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p0-realpath-help"
+      ]
+    },
+    {
+      "name": "rev",
+      "package_name": "cli/rev",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p0-rev-lines"
+      ]
+    },
+    {
+      "name": "tac",
+      "package_name": "cli/tac",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p0-tac-lines"
+      ]
+    },
+    {
+      "name": "tree",
+      "package_name": "cli/tree",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p0-tree-help"
+      ]
+    },
+    {
+      "name": "unexpand",
+      "package_name": "cli/unexpand",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p0-unexpand-all",
+        "p0-unexpand-explicit-stops",
+        "p0-unexpand-first-only",
+        "p0-unexpand-leading",
+        "repair-alias-unexpand-tabs"
+      ]
+    },
+    {
+      "name": "unlink",
+      "package_name": "cli/unlink",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p0-unlink-help",
+        "repair-edge-unlink-dash-name",
+        "repair-edge-unlink-symlink-directory",
+        "repair-unlink-extra-operands",
+        "repair-unlink-one"
+      ]
+    },
+    {
+      "name": "yes",
+      "package_name": "cli/yes",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p0-yes-help"
+      ]
+    },
+    {
+      "name": "base64",
+      "package_name": "cli/base64",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "base64-zero-wrap",
+        "compat-catalog-line-366",
+        "compat-catalog-line-4",
+        "compat-stdin-base64",
+        "compat-text-line-632",
+        "compat-text-line-633",
+        "compat-text-line-641",
+        "compat-text-line-642",
+        "compat-text-line-643",
+        "compat-text-line-652",
+        "p9-base64-ignore-garbage",
+        "p9-base64-wrap-boundary",
+        "phase0-base64-stdin",
+        "repair-alias-base64-decode"
+      ]
+    },
+    {
+      "name": "basename",
+      "package_name": "cli/basename",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-14",
+        "compat-text-line-653",
+        "compat-text-line-654",
+        "compat-text-line-655",
+        "p9-basename-empty",
+        "p9-basename-repeated-separators",
+        "p9-basename-root",
+        "phase3-basename-suffix"
+      ]
+    },
+    {
+      "name": "cat",
+      "package_name": "cli/cat",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "cat-fixed-mtime-hardlink",
+        "compat-catalog-line-22",
+        "compat-stdin-cat",
+        "compat-text-line-33",
+        "compat-text-line-675",
+        "p9-cat-unbuffered-binary",
+        "phase0-cat-double-dash",
+        "phase3-cat-formatting",
+        "repair-alias-cat-number-nonblank",
+        "repair-alias-cat-unbuffered"
+      ]
+    },
+    {
+      "name": "chmod",
+      "package_name": "cli/chmod",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-32",
+        "compat-filesystem-windows-chmod-boundary",
+        "compat-text-chmod-reference-rejected",
+        "p8-chmod-symbolic-assignment",
+        "phase4-chmod-numeric"
+      ]
+    },
+    {
+      "name": "cmp",
+      "package_name": "cli/cmp",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-40",
+        "compat-text-cmp-different-status",
+        "compat-text-cmp-equal-status",
+        "compat-text-cmp-error-status",
+        "p9-cmp-different",
+        "p9-cmp-implicit-stdin",
+        "phase3-cmp-equal"
+      ]
+    },
+    {
+      "name": "comm",
+      "package_name": "cli/comm",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-375",
+        "compat-catalog-line-48",
+        "compat-merge-comm",
+        "compat-text-comm-check-order",
+        "compat-text-comm-default-order",
+        "compat-text-comm-nocheck-precedence",
+        "compat-text-comm-nul-records",
+        "compat-text-comm-pairable-unsorted",
+        "p9-comm-zero-terminated",
+        "phase3-comm-columns",
+        "repair-alias-comm-zero-terminated"
+      ]
+    },
+    {
+      "name": "cp",
+      "package_name": "cli/cp",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-56",
+        "compat-filesystem-copy",
+        "compat-filesystem-nested-copy",
+        "compat-text-cp-preserve-rejected",
+        "p8-cp-command-line-link",
+        "p8-cp-numbered-backup",
+        "p8-cp-update-older",
+        "phase4-cp-regular"
+      ]
+    },
+    {
+      "name": "curl",
+      "package_name": "cli/curl",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-64",
+        "p1-curl-binary-data-file",
+        "p1-curl-explicit-method-redirect",
+        "p1-curl-redirect-limit-zero",
+        "phase2-curl-does-not-follow",
+        "phase2-curl-fail-status-22",
+        "phase2-curl-https-insecure",
+        "phase2-curl-last-transfer-status",
+        "phase2-curl-location",
+        "phase2-curl-multiple-urls",
+        "phase2-curl-output-file",
+        "phase2-curl-post-data",
+        "phase2-curl-remote-name",
+        "phase2-curl-upload-file",
+        "repair-final-curl-basic",
+        "repair-final-curl-cookie-domain",
+        "repair-final-curl-cookie-header",
+        "repair-final-curl-cookie-path",
+        "repair-final-curl-cookie-redirect",
+        "repair-final-curl-cookie-session",
+        "repair-final-curl-cross-host-auth"
+      ]
+    },
+    {
+      "name": "cut",
+      "package_name": "cli/cut",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-374",
+        "compat-catalog-line-72",
+        "compat-text-line-605",
+        "compat-text-line-684",
+        "compat-text-line-693",
+        "compat-text-line-694",
+        "p9-cut-bytes",
+        "p9-cut-zero-terminated",
+        "phase3-cut-field",
+        "repair-alias-cut-zero-terminated"
+      ]
+    },
+    {
+      "name": "dirname",
+      "package_name": "cli/dirname",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-340",
+        "compat-catalog-line-349",
+        "compat-catalog-line-73",
+        "compat-text-line-664",
+        "compat-text-line-665",
+        "compat-text-line-666",
+        "p9-dirname-empty",
+        "p9-dirname-repeated-separators",
+        "p9-dirname-root",
+        "phase3-dirname-basic"
+      ]
+    },
+    {
+      "name": "echo",
+      "package_name": "cli/echo",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "enable-escapes",
+        "disable-escapes",
+        "help",
+        "no-newline",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-243",
+        "compat-catalog-line-81",
+        "compat-text-line-717",
+        "compat-text-line-718",
+        "p0-echo-disable-escapes",
+        "p0-echo-enable-escapes",
+        "p0-echo-help",
+        "p0-echo-no-newline",
+        "p0-echo-version",
+        "p9-echo-double-dash-literal",
+        "p9-echo-octal-per-argument",
+        "phase3-echo-basic"
+      ]
+    },
+    {
+      "name": "env",
+      "package_name": "cli/env",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-89",
+        "compat-text-env-help",
+        "compat-text-line-128",
+        "compat-text-line-321",
+        "compat-text-line-330",
+        "compat-text-line-331",
+        "compat-text-line-332",
+        "compat-text-line-353",
+        "compat-text-line-361",
+        "compat-text-line-371",
+        "p2-env-long-aliases",
+        "p2-env-non-shell-assignment-name",
+        "phase5-env-chdir",
+        "phase5-env-clean-null"
+      ]
+    },
+    {
+      "name": "false",
+      "package_name": "cli/false",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "help",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-90",
+        "compat-text-line-745",
+        "p0-false-help",
+        "p0-false-version",
+        "phase0-false-status"
+      ]
+    },
+    {
+      "name": "find",
+      "package_name": "cli/find",
+      "compare_profile": "findutils",
+      "supported_options": [],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-91",
+        "p8-find-readable",
+        "p8-find-xtype-link",
+        "phase3-find-exec-status",
+        "phase4-find-metadata",
+        "phase4-find-prune-depth"
+      ]
+    },
+    {
+      "name": "grep",
+      "package_name": "cli/grep",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-99",
+        "compat-text-grep-binary-stderr",
+        "compat-text-grep-silent-missing",
+        "compat-text-line-209",
+        "compat-text-line-218",
+        "compat-text-line-227",
+        "compat-text-line-236",
+        "compat-text-line-260",
+        "compat-text-line-269",
+        "compat-text-line-270",
+        "compat-text-line-278",
+        "compat-text-line-286",
+        "compat-text-line-312",
+        "grep-basic-plus-literal",
+        "grep-extended-longest-only",
+        "grep-no-context-separator",
+        "p2-grep-binary-report",
+        "p2-grep-context-byte-offset",
+        "p2-grep-recursive-selection",
+        "p2-grep-repeated-context",
+        "p2-grep-zero-records",
+        "phase3-grep-stdin",
+        "repair-alias-grep-line-number",
+        "repair-alias-grep-recursive"
+      ]
+    },
+    {
+      "name": "head",
+      "package_name": "cli/head",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-107",
+        "compat-text-line-552",
+        "compat-text-line-561",
+        "compat-text-line-570",
+        "compat-text-line-579",
+        "compat-text-line-580",
+        "compat-text-line-581",
+        "compat-text-line-590",
+        "compat-text-line-591",
+        "p3-head-binary-prefix-count",
+        "p3-head-exclude-tail",
+        "p3-head-explicit-positive-count",
+        "p3-head-multiple-file-headers",
+        "p3-head-zero-records",
+        "phase3-head-line-count",
+        "repair-alias-head-lines",
+        "repair-alias-head-zero-terminated"
+      ]
+    },
+    {
+      "name": "join",
+      "package_name": "cli/join",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-108",
+        "compat-merge-join",
+        "compat-text-join-check-order",
+        "compat-text-join-nocheck-precedence",
+        "compat-text-join-nul-records",
+        "compat-text-join-output-list",
+        "p9-join-check-order",
+        "p9-join-zero-terminated",
+        "phase3-join-unpaired-output-list",
+        "repair-alias-join-after",
+        "repair-alias-join-zero-terminated"
+      ]
+    },
+    {
+      "name": "jq",
+      "package_name": "cli/jq",
+      "compare_profile": "jq",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-116",
+        "jq-color-0",
+        "jq-color-1",
+        "jq-color-10",
+        "jq-color-11",
+        "jq-color-12",
+        "jq-color-13",
+        "jq-color-14",
+        "jq-color-15",
+        "jq-color-16",
+        "jq-color-17",
+        "jq-color-18",
+        "jq-color-19",
+        "jq-color-2",
+        "jq-color-20",
+        "jq-color-21",
+        "jq-color-22",
+        "jq-color-3",
+        "jq-color-4",
+        "jq-color-5",
+        "jq-color-6",
+        "jq-color-7",
+        "jq-color-8",
+        "jq-color-9",
+        "jq-false-exit",
+        "jq-partial-before-parse-error",
+        "jq-raw-slurp",
+        "jq-slurp-stream",
+        "jq-stream-framing",
+        "jq-variable-scope",
+        "p6-jq-exit-status",
+        "p6-jq-invalid-argjson",
+        "p6-jq-invalid-indent",
+        "p6-jq-slurp-raw-input",
+        "p6-jq-sort-keys",
+        "phase3-jq-property",
+        "repair-alias-jq-compact-output",
+        "repair-alias-jq-null-input",
+        "repair-edge-jq-open-empty-slices",
+        "repair-edge-jq-slice-type-error",
+        "repair-final-jq-issue4-expression",
+        "repair-jq-map-tostring",
+        "repair-jq-negative-slice",
+        "repair-jq-nested-slice",
+        "repair-jq-tojson",
+        "repair-jq-tojson-slice",
+        "repair-jq-tostring",
+        "repair-jq-unicode-slice"
+      ]
+    },
+    {
+      "name": "jqlog",
+      "package_name": "cli/jqlog",
+      "compare_profile": "jqlog",
+      "supported_options": [
+        "file",
+        "help"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-126",
+        "compat-text-jqlog-error-newline",
+        "compat-text-jqlog-help-newline",
+        "p0-jqlog-error-newline",
+        "p0-jqlog-file",
+        "p0-jqlog-help-newline",
+        "repair-edge-jqlog-slice-type-error",
+        "repair-final-jqlog-non-json-whitespace",
+        "repair-jqlog-slice-lines"
+      ]
+    },
+    {
+      "name": "ln",
+      "package_name": "cli/ln",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-134",
+        "compat-filesystem-symbolic-link",
+        "compat-filesystem-windows-ln-boundary",
+        "p8-ln-relative",
+        "phase4-ln-symbolic",
+        "repair-alias-ln-symbolic",
+        "repair-fs-ln-backup",
+        "repair-fs-ln-force-last",
+        "repair-fs-ln-force-long-last",
+        "repair-fs-ln-interactive-last",
+        "repair-fs-ln-interactive-last-eof",
+        "repair-fs-ln-no-dereference",
+        "repair-fs-ln-target-directory"
+      ]
+    },
+    {
+      "name": "ls",
+      "package_name": "cli/ls",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-142",
+        "ls-links-times-0",
+        "ls-links-times-1",
+        "ls-links-times-10",
+        "ls-links-times-11",
+        "ls-links-times-12",
+        "ls-links-times-13",
+        "ls-links-times-14",
+        "ls-links-times-15",
+        "ls-links-times-16",
+        "ls-links-times-17",
+        "ls-links-times-18",
+        "ls-links-times-19",
+        "ls-links-times-2",
+        "ls-links-times-20",
+        "ls-links-times-21",
+        "ls-links-times-3",
+        "ls-links-times-4",
+        "ls-links-times-5",
+        "ls-links-times-6",
+        "ls-links-times-7",
+        "ls-links-times-8",
+        "ls-links-times-9",
+        "p8-ls-dangling-classify",
+        "p8-ls-size-reverse",
+        "phase3-ls-basic",
+        "repair-alias-ls-access-time",
+        "repair-alias-ls-change-time",
+        "repair-alias-ls-classify",
+        "repair-alias-ls-dereference-command-line"
+      ]
+    },
+    {
+      "name": "make",
+      "package_name": "cli/make",
+      "compare_profile": "make",
+      "supported_options": [],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-150",
+        "compat-text-make-include-cli-override",
+        "p7-make-conditional",
+        "p7-make-unbounded-jobs-keeps-target",
+        "p7-make-unexpected-endif",
+        "p7-make-what-if-dependency",
+        "phase5-make-include-cli-variable"
+      ]
+    },
+    {
+      "name": "mkdir",
+      "package_name": "cli/mkdir",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-158",
+        "compat-text-mkdir-partial-order",
+        "mkdir-parent-leaf-mode",
+        "phase4-mkdir-parents"
+      ]
+    },
+    {
+      "name": "mv",
+      "package_name": "cli/mv",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-166",
+        "compat-filesystem-rename",
+        "p8-mv-update-none",
+        "phase4-mv-regular",
+        "repair-fs-mv-backup",
+        "repair-fs-mv-equal-time-boundary",
+        "repair-fs-mv-hardlink-no-op",
+        "repair-fs-mv-interactive-no",
+        "repair-fs-mv-interactive-no-eof",
+        "repair-fs-mv-interactive-yes",
+        "repair-fs-mv-same-backup",
+        "repair-fs-mv-same-interactive",
+        "repair-fs-mv-same-no-clobber",
+        "repair-fs-mv-same-path",
+        "repair-fs-mv-same-path-alias",
+        "repair-fs-mv-same-update",
+        "repair-fs-mv-same-update-none",
+        "repair-fs-mv-update-older"
+      ]
+    },
+    {
+      "name": "nl",
+      "package_name": "cli/nl",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-174",
+        "compat-text-line-623",
+        "compat-text-line-945",
+        "p9-nl-number-format",
+        "p9-nl-sections",
+        "phase3-nl-empty"
+      ]
+    },
+    {
+      "name": "paste",
+      "package_name": "cli/paste",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-175",
+        "compat-catalog-line-376",
+        "compat-merge-paste",
+        "compat-text-line-719",
+        "compat-text-paste-nul-records",
+        "p9-paste-escaped-delimiters",
+        "p9-paste-serial-empty",
+        "p9-paste-zero-terminated",
+        "phase3-paste-parallel",
+        "repair-alias-paste-zero-terminated"
+      ]
+    },
+    {
+      "name": "printenv",
+      "package_name": "cli/printenv",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-176",
+        "compat-catalog-line-350",
+        "compat-text-printenv-present-missing",
+        "p9-printenv-mixed-status",
+        "phase3-printenv-selected"
+      ]
+    },
+    {
+      "name": "printf",
+      "package_name": "cli/printf",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-184",
+        "compat-text-line-695",
+        "compat-text-line-704",
+        "compat-text-line-705",
+        "p9-printf-repeated-format",
+        "phase3-printf-format"
+      ]
+    },
+    {
+      "name": "pwd",
+      "package_name": "cli/pwd",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-194",
+        "compat-text-pwd-invalid-logical-fallback",
+        "phase3-pwd-working-directory",
+        "repair-alias-pwd-logical"
+      ]
+    },
+    {
+      "name": "rm",
+      "package_name": "cli/rm",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-202",
+        "compat-filesystem-remove-link",
+        "compat-filesystem-rm-current-directory",
+        "compat-filesystem-rm-dash",
+        "compat-text-rm-partial-order",
+        "phase4-rm-regular",
+        "repair-alias-rm-recursive",
+        "rm-final-parent-backslash",
+        "rm-final-parent-slash"
+      ]
+    },
+    {
+      "name": "rmdir",
+      "package_name": "cli/rmdir",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-210",
+        "compat-text-rmdir-partial-order",
+        "phase4-rmdir-ignore-nonempty"
+      ]
+    },
+    {
+      "name": "seq",
+      "package_name": "cli/seq",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "equal-width",
+        "separator",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-218",
+        "compat-catalog-line-251",
+        "compat-text-line-707",
+        "compat-text-line-709",
+        "p0-seq-equal-width",
+        "p0-seq-one-number",
+        "p0-seq-separator",
+        "p0-seq-three-number",
+        "p0-seq-two-number",
+        "p0-seq-two-operand-descending",
+        "p0-seq-version",
+        "p9-seq-descending",
+        "phase3-seq-basic",
+        "repair-edge-seq-long-aliases",
+        "repair-edge-seq-precision-1e-4097",
+        "repair-edge-seq-precision-1e4097",
+        "seq-descending-default",
+        "seq-descending-explicit"
+      ]
+    },
+    {
+      "name": "sh",
+      "package_name": "cli/sh",
+      "compare_profile": "posix",
+      "supported_options": [
+        "command",
+        "stdin-script"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-234",
+        "compat-shell-array-boundary",
+        "compat-shell-line-103",
+        "compat-shell-line-12",
+        "compat-shell-line-21",
+        "compat-shell-line-3",
+        "compat-shell-line-30",
+        "compat-shell-line-39",
+        "compat-shell-line-48",
+        "compat-shell-line-59",
+        "compat-shell-line-68",
+        "compat-shell-line-77",
+        "compat-shell-line-86",
+        "compat-shell-line-95",
+        "compat-stdin-sh",
+        "compat-text-line-165",
+        "p0-sh-public-error",
+        "p0-sh-stdin-script",
+        "phase5-sh-case",
+        "phase5-sh-command-positional",
+        "phase5-sh-command-substitution",
+        "phase5-sh-for",
+        "phase5-sh-function-return",
+        "phase5-sh-grouping",
+        "phase5-sh-heredoc",
+        "phase5-sh-if",
+        "phase5-sh-parameter-length",
+        "phase5-sh-shift",
+        "phase5-sh-stdin-positional",
+        "phase5-sh-while-until",
+        "sh-arithmetic-error-status",
+        "sh-command-substitution-trailing-newlines",
+        "sh-substitution-failure-status"
+      ]
+    },
+    {
+      "name": "sha256sum",
+      "package_name": "cli/sha256sum",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-226",
+        "compat-stdin-sha256sum",
+        "compat-text-sha256sum-ignore-missing",
+        "compat-text-sha256sum-last-binary",
+        "compat-text-sha256sum-last-text",
+        "compat-text-sha256sum-strict-status",
+        "compat-text-sha256sum-warn-malformed",
+        "p9-sha256sum-quiet-check",
+        "phase3-sha256sum-stdin",
+        "repair-alias-sha256sum-check"
+      ]
+    },
+    {
+      "name": "sleep",
+      "package_name": "cli/sleep",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "help",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-235",
+        "compat-text-line-727",
+        "compat-text-line-728",
+        "p0-sleep-help",
+        "p0-sleep-version",
+        "p9-sleep-double-dash",
+        "phase3-sleep-zero"
+      ]
+    },
+    {
+      "name": "sort",
+      "package_name": "cli/sort",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-259",
+        "compat-text-line-372",
+        "compat-text-line-381",
+        "compat-text-line-390",
+        "compat-text-line-399",
+        "compat-text-line-408",
+        "compat-text-line-417",
+        "compat-text-line-426",
+        "compat-text-line-435",
+        "compat-text-line-436",
+        "compat-text-line-445",
+        "compat-text-line-454",
+        "compat-text-line-467",
+        "compat-text-line-468",
+        "compat-text-line-544",
+        "compat-text-sort-check-diagnostic",
+        "p3-sort-blank-field-boundaries",
+        "p3-sort-character-modifiers",
+        "p3-sort-check-quiet",
+        "p3-sort-general-numeric",
+        "p3-sort-general-numeric-classes",
+        "p3-sort-human-numeric",
+        "p3-sort-ignore-case-c-locale",
+        "p3-sort-ignore-nonprinting",
+        "p3-sort-local-key-modifier-combination",
+        "p3-sort-month",
+        "p3-sort-multiple-key-modifiers",
+        "p3-sort-unique-key-stability",
+        "p3-sort-version",
+        "p3-sort-zero-records",
+        "phase3-sort-basic",
+        "repair-alias-sort-check",
+        "repair-alias-sort-general-numeric-sort",
+        "repair-alias-sort-human-numeric-sort",
+        "repair-alias-sort-ignore-case",
+        "repair-alias-sort-unique",
+        "repair-alias-sort-version-sort",
+        "repair-alias-sort-zero-terminated"
+      ]
+    },
+    {
+      "name": "tail",
+      "package_name": "cli/tail",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-260",
+        "compat-tail-follow-name-boundary",
+        "compat-tail-follow-stdin",
+        "compat-tail-infinite-interval",
+        "compat-tail-interval-without-follow",
+        "compat-tail-negative-interval",
+        "compat-tail-zero-interval",
+        "phase3-tail-line-count",
+        "repair-alias-tail-follow",
+        "repair-alias-tail-sleep-interval"
+      ]
+    },
+    {
+      "name": "tee",
+      "package_name": "cli/tee",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-261",
+        "compat-stdin-tee",
+        "compat-text-tee-partial-output",
+        "phase0-tee-filesystem"
+      ]
+    },
+    {
+      "name": "test",
+      "package_name": "cli/test",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-269",
+        "p8-test-dangling-link",
+        "p8-test-regular-size",
+        "phase3-test-string"
+      ]
+    },
+    {
+      "name": "touch",
+      "package_name": "cli/touch",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-285",
+        "compat-catalog-line-358",
+        "compat-text-touch-date-rejected",
+        "phase4-touch-create",
+        "touch-existing-boundary"
+      ]
+    },
+    {
+      "name": "tr",
+      "package_name": "cli/tr",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-293",
+        "compat-catalog-line-385",
+        "compat-chunk-squeeze",
+        "compat-text-line-823",
+        "compat-text-line-824",
+        "compat-text-line-825",
+        "compat-text-line-826",
+        "compat-text-line-835",
+        "compat-text-line-836",
+        "compat-text-line-837",
+        "compat-text-line-838",
+        "p9-tr-equivalence-repeat",
+        "p9-tr-lower-upper-classes",
+        "p9-tr-middle-repeat",
+        "p9-tr-octal-escape",
+        "p9-tr-octal-overflow-consumption",
+        "p9-tr-punctuation-class",
+        "p9-tr-truncate-set1",
+        "phase3-tr-range",
+        "repair-alias-tr-complement",
+        "repair-alias-tr-delete",
+        "repair-alias-tr-squeeze-repeats",
+        "repair-alias-tr-truncate-set1"
+      ]
+    },
+    {
+      "name": "true",
+      "package_name": "cli/true",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "help",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-294",
+        "compat-text-line-744",
+        "p0-true-help",
+        "p0-true-version",
+        "phase3-true-status"
+      ]
+    },
+    {
+      "name": "uniq",
+      "package_name": "cli/uniq",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-295",
+        "compat-text-line-476",
+        "compat-text-line-485",
+        "compat-text-line-494",
+        "compat-text-line-614",
+        "p3-uniq-field-character-selection",
+        "p3-uniq-zero-records",
+        "phase3-uniq-adjacent",
+        "repair-alias-uniq-count",
+        "repair-alias-uniq-zero-terminated"
+      ]
+    },
+    {
+      "name": "wc",
+      "package_name": "cli/wc",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-296",
+        "compat-stdin-wc",
+        "compat-text-line-495",
+        "compat-text-line-496",
+        "compat-text-line-536",
+        "compat-text-line-596",
+        "compat-text-wc-aligned-files",
+        "compat-text-wc-files0-accounting",
+        "compat-text-wc-partial-counts",
+        "p3-wc-files0-alignment",
+        "p3-wc-max-line-length",
+        "phase3-wc-lines",
+        "repair-alias-wc-bytes",
+        "repair-alias-wc-lines",
+        "repair-alias-wc-max-line-length"
+      ]
+    },
+    {
+      "name": "wget",
+      "package_name": "cli/wget",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-306",
+        "p1-wget-binary-body-file",
+        "p1-wget-content-disposition-collision",
+        "p1-wget-continue-range",
+        "p1-wget-method-and-repeated-header",
+        "p1-wget-timestamp-not-modified",
+        "phase2-wget-http-status-8",
+        "phase2-wget-https-no-check-certificate",
+        "phase2-wget-input-file",
+        "phase2-wget-multiple-urls",
+        "phase2-wget-relative-redirect",
+        "phase2-wget-remote-file",
+        "phase2-wget-request-body",
+        "repair-final-wget-basic",
+        "repair-final-wget-cookie-domain",
+        "repair-final-wget-cookie-header",
+        "repair-final-wget-cookie-path",
+        "repair-final-wget-cookie-redirect",
+        "repair-final-wget-cookie-session"
+      ]
+    },
+    {
+      "name": "xargs",
+      "package_name": "cli/xargs",
+      "compare_profile": "findutils",
+      "supported_options": [],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-314",
+        "compat-stdin-xargs",
+        "compat-text-line-110",
+        "phase4-xargs-lines-eof",
+        "phase5-xargs-child-status",
+        "phase5-xargs-replace"
+      ]
+    },
+    {
+      "name": "xxd",
+      "package_name": "cli/xxd",
+      "compare_profile": "vim",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "compat-catalog-line-324",
+        "compat-text-line-42",
+        "compat-text-line-51",
+        "p7-xxd-addressed-reverse",
+        "p7-xxd-include",
+        "p7-xxd-malformed-address",
+        "phase3-xxd-reverse-seek",
+        "phase3-xxd-seek",
+        "repair-alias-xxd-reverse",
+        "repair-alias-xxd-seek"
+      ]
+    },
+    {
+      "name": "fold",
+      "package_name": "cli/fold",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "fold-binary-byte-profile",
+        "fold-byte-count-control",
+        "fold-independent-file-columns",
+        "fold-invalid-width",
+        "fold-missing-then-good",
+        "fold-space-break",
+        "fold-tab-column",
+        "fold-width-newline",
+        "repair-alias-fold-bytes",
+        "repair-alias-fold-spaces"
+      ]
+    },
+    {
+      "name": "od",
+      "package_name": "cli/od",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "od-big-endian",
+        "od-default-partial-word",
+        "od-duplicate-blocks",
+        "od-empty-address",
+        "od-escaped-characters",
+        "od-float-boundary",
+        "od-hex-byte-address",
+        "od-signed-bytes",
+        "od-skip-limit-concatenation",
+        "od-skip-past-eof",
+        "od-verbose-blocks"
+      ]
+    },
+    {
+      "name": "hexdump",
+      "package_name": "cli/hexdump",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "hexdump-binary-ascii",
+        "hexdump-canonical-short",
+        "hexdump-default-partial",
+        "hexdump-duplicate-blocks",
+        "hexdump-empty",
+        "hexdump-format-boundary",
+        "hexdump-one-byte-hex",
+        "hexdump-skip-limit-files",
+        "hexdump-skip-stdin-boundary",
+        "hexdump-two-byte-hex",
+        "repair-alias-hexdump-canonical",
+        "repair-alias-hexdump-one-byte-hex",
+        "repair-alias-hexdump-two-bytes-hex"
+      ]
+    },
+    {
+      "name": "md5sum",
+      "package_name": "cli/md5sum",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "checksum-md5sum-check",
+        "checksum-md5sum-empty",
+        "checksum-md5sum-ignore-missing",
+        "checksum-md5sum-mismatch",
+        "checksum-md5sum-missing-all",
+        "checksum-md5sum-requires-check",
+        "checksum-md5sum-stdin",
+        "checksum-md5sum-strict-status",
+        "checksum-md5sum-tag-boundary",
+        "checksum-md5sum-version",
+        "checksum-md5sum-warn",
+        "checksum-md5sum-zero-binary"
+      ]
+    },
+    {
+      "name": "sha1sum",
+      "package_name": "cli/sha1sum",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "checksum-sha1sum-check",
+        "checksum-sha1sum-empty",
+        "checksum-sha1sum-last-text",
+        "checksum-sha1sum-stdin",
+        "checksum-sha1sum-version",
+        "checksum-sha1sum-wrong-length",
+        "checksum-sha1sum-zero-check"
+      ]
+    },
+    {
+      "name": "sha512sum",
+      "package_name": "cli/sha512sum",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "checksum-sha512sum-binary",
+        "checksum-sha512sum-check",
+        "checksum-sha512sum-status-mismatch",
+        "checksum-sha512sum-stdin",
+        "checksum-sha512sum-version"
+      ]
+    },
+    {
+      "name": "sed",
+      "package_name": "cli/sed",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p1-sed-bytes",
+        "p1-sed-cross-file-last",
+        "p1-sed-cross-file-numbering",
+        "p1-sed-delete",
+        "p1-sed-empty-pattern-runtime",
+        "p1-sed-empty-regex-error",
+        "p1-sed-extended-capture",
+        "p1-sed-hold-boundary",
+        "p1-sed-nth-global",
+        "p1-sed-ordered-scripts",
+        "p1-sed-overlapping-capture",
+        "p1-sed-quit",
+        "p1-sed-range-print",
+        "p1-sed-substitution",
+        "p1-sed-unterminated-repeat",
+        "repair-alias-sed-expression",
+        "repair-alias-sed-quiet",
+        "repair-alias-sed-regexp-extended"
+      ]
+    },
+    {
+      "name": "diff",
+      "package_name": "cli/diff",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p1-diff-context",
+        "p1-diff-directory-boundary",
+        "p1-diff-empty-add",
+        "p1-diff-identical",
+        "p1-diff-label-binary",
+        "p1-diff-label-brief",
+        "p1-diff-label-identical",
+        "p1-diff-no-final-lf",
+        "p1-diff-normal",
+        "p1-diff-unified",
+        "repair-alias-diff-report-identical-files"
+      ]
+    },
+    {
+      "name": "patch",
+      "package_name": "cli/patch",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "patch-context-addition",
+        "patch-context-output-stdout",
+        "patch-create-null",
+        "patch-delete-null",
+        "patch-existing-write-boundary",
+        "patch-fuzz-boundary",
+        "patch-hunk-mismatch",
+        "patch-named-output-boundary",
+        "patch-no-final-newline",
+        "patch-reverse-output-stdout",
+        "patch-unified-dry-run",
+        "patch-unified-output-stdout",
+        "patch-unsafe-path-boundary",
+        "repair-alias-patch-context",
+        "repair-alias-patch-quiet",
+        "repair-alias-patch-reverse"
+      ]
+    },
+    {
+      "name": "split",
+      "package_name": "cli/split",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p1-split-binary",
+        "p1-split-empty",
+        "p1-split-existing-boundary",
+        "p1-split-lines"
+      ]
+    },
+    {
+      "name": "csplit",
+      "package_name": "cli/csplit",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p1-csplit-cleanup-failure",
+        "p1-csplit-existing-boundary",
+        "p1-csplit-keep-failure",
+        "p1-csplit-lines",
+        "p1-csplit-regex-repeat",
+        "repair-alias-csplit-silent"
+      ]
+    },
+    {
+      "name": "expr",
+      "package_name": "cli/expr",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p1-expr-backreference-boundary",
+        "p1-expr-big-integer",
+        "p1-expr-byte-length",
+        "p1-expr-capture",
+        "p1-expr-division-error",
+        "p1-expr-empty-capture",
+        "p1-expr-index",
+        "p1-expr-length-keyword",
+        "p1-expr-overlapping-capture",
+        "p1-expr-parentheses",
+        "p1-expr-precedence",
+        "p1-expr-short-circuit-and",
+        "p1-expr-short-circuit-or",
+        "p1-expr-short-circuit-syntax",
+        "p1-expr-substr"
+      ]
+    },
+    {
+      "name": "fmt",
+      "package_name": "cli/fmt",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p1-fmt-control-word-boundaries",
+        "p1-fmt-goal-only",
+        "p1-fmt-indent",
+        "p1-fmt-join-paragraph",
+        "p1-fmt-prefix-boundary",
+        "p1-fmt-split-only",
+        "p1-fmt-uniform",
+        "p1-fmt-width",
+        "p1-fmt-zero-width",
+        "repair-alias-fmt-split-only",
+        "repair-alias-fmt-uniform-spacing"
+      ]
+    },
+    {
+      "name": "gzip",
+      "package_name": "cli/gzip",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p1-gzip-concatenated",
+        "p1-gzip-inplace-boundary",
+        "p1-gzip-named-header",
+        "p1-gzip-truncated-prefix",
+        "p1-gzip-validate"
+      ]
+    },
+    {
+      "name": "gunzip",
+      "package_name": "cli/gunzip",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p1-gunzip-concatenated",
+        "p1-gunzip-inplace-boundary",
+        "p1-gunzip-named-header",
+        "p1-gunzip-truncated-prefix",
+        "p1-gunzip-validate"
+      ]
+    },
+    {
+      "name": "zcat",
+      "package_name": "cli/zcat",
+      "compare_profile": "gnu",
+      "supported_options": [],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p1-zcat-concatenated",
+        "p1-zcat-named-header",
+        "p1-zcat-truncated-prefix",
+        "p1-zcat-validate"
+      ]
+    },
+    {
+      "name": "column",
+      "package_name": "cli/column",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "table",
+        "separator",
+        "output-separator",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p2-column-copy",
+        "p2-column-delimiter",
+        "p2-column-table",
+        "p2-column-version",
+        "repair-alias-column-table",
+        "repair-column-default",
+        "repair-column-delimiter-set",
+        "repair-column-empty",
+        "repair-column-empty-separator",
+        "repair-column-fillrows",
+        "repair-column-multi-file",
+        "repair-column-nul",
+        "repair-column-table-final-lf",
+        "repair-column-uneven",
+        "repair-column-width",
+        "repair-edge-column-invalid-bytes",
+        "repair-final-column-ansi-width"
+      ]
+    },
+    {
+      "name": "date",
+      "package_name": "cli/date",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "utc",
+        "date",
+        "iso-8601",
+        "rfc-email",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p2-date-epoch-format",
+        "p2-date-iso-seconds",
+        "p2-date-rfc-email",
+        "p2-date-version",
+        "repair-alias-date-date",
+        "repair-alias-date-utc",
+        "repair-date-dst-future",
+        "repair-date-fixed-offset",
+        "repair-date-gmt-abbreviation",
+        "repair-date-iso-ns",
+        "repair-date-negative-fraction",
+        "repair-date-utc-override",
+        "repair-edge-date-Asia-Shanghai",
+        "repair-edge-date-Europe-Dublin",
+        "repair-edge-date-dst-fold",
+        "repair-edge-date-dst-gap",
+        "repair-edge-date-extra-operand",
+        "repair-edge-date-unsupported-format",
+        "repair-final-date-date-fraction",
+        "repair-final-date-date-midnight",
+        "repair-final-date-inline-dst-offset",
+        "repair-final-date-invalid-diagnostic",
+        "repair-final-date-negative-year"
+      ]
+    },
+    {
+      "name": "strings",
+      "package_name": "cli/strings",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "all",
+        "bytes",
+        "encoding",
+        "octal",
+        "print-file-name",
+        "radix",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p2-strings-default",
+        "p2-strings-file-name",
+        "p2-strings-minimum-and-radix",
+        "p2-strings-octal",
+        "p2-strings-unsupported-encoding",
+        "p2-strings-version",
+        "repair-alias-strings-all",
+        "repair-alias-strings-bytes",
+        "repair-alias-strings-octal",
+        "repair-alias-strings-print-file-name",
+        "repair-strings-decimal",
+        "repair-strings-encoding-S",
+        "repair-strings-encoding-s-tab",
+        "repair-strings-multi-file-no-prefix",
+        "repair-strings-radix-last-o",
+        "repair-strings-radix-last-x",
+        "repair-strings-stdin-prefix",
+        "repair-strings-whole-input",
+        "repair-strings-wide-B",
+        "repair-strings-wide-L",
+        "repair-strings-wide-b",
+        "repair-strings-wide-l"
+      ]
+    },
+    {
+      "name": "which",
+      "package_name": "cli/which",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "all",
+        "silent",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "p2-which-all",
+        "p2-which-direct",
+        "p2-which-missing",
+        "p2-which-path",
+        "p2-which-silent",
+        "p2-which-version",
+        "repair-alias-which-all",
+        "repair-alias-which-silent",
+        "repair-edge-which-backslash",
+        "repair-edge-which-directory",
+        "repair-edge-which-empty-path",
+        "repair-edge-which-symlink",
+        "repair-final-which-duplicate-path",
+        "repair-which-executable",
+        "repair-which-not-executable",
+        "repair-which-windows-pathext"
+      ]
+    }
+  ]
+}

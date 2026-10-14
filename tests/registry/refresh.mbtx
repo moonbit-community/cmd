@@ -1,0 +1,20 @@
+///|
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+}
+
+///|
+async fn main {
+  let result = @shell.Cmd("moon", [
+    "run", "tests/registry/cli", "--target", "native", "--", "refresh",
+  ]).output()
+  if result.exit_code() != 0 {
+    println(result.stderr())
+    fail(
+      "registry refresh failed with exit status " +
+      result.exit_code().to_string(),
+    )
+  }
+  println(result.stdout())
+}

@@ -59,6 +59,13 @@ async fn process_lifecycle_scenario(
     ["--test-helper", "capture-then-wait"],
     1000,
   )
+  @fs.write_file(work + "/../deadline.stdout.bin", deadline.output.stdout)
+  @fs.write_file(work + "/../deadline.stderr.bin", deadline.output.stderr)
+  @fs.write_file(
+    work + "/../deadline.state.txt",
+    "timed_out=\{deadline.timed_out};cleanup=" +
+    deadline.cleanup_error.unwrap_or("none"),
+  )
   assert_true(deadline.timed_out)
   assert_eq(deadline.output.stdout, b"partial stdout\n")
   assert_eq(deadline.output.stderr, b"partial stderr\n")
@@ -70,6 +77,12 @@ async fn process_lifecycle_scenario(
     15000,
     stdin=@utf8.encode("x".repeat(100000)),
   )
+  @fs.write_file(work + "/../status-124.stdout.bin", status_124.output.stdout)
+  @fs.write_file(work + "/../status-124.stderr.bin", status_124.output.stderr)
+  @fs.write_file(
+    work + "/../status-124.status.txt",
+    status_124.output.status.to_string(),
+  )
   assert_false(status_124.timed_out)
   assert_eq(status_124.output.status, 124)
   assert_eq(status_124.cleanup_error, None)
@@ -77,6 +90,7 @@ async fn process_lifecycle_scenario(
   @async.with_task_group(group => {
     let (reader, output) = @process.read_from_process()
     defer reader.close()
+    @testkit.record_execution_environment(helper)
     let child = @process.spawn(
       group,
       helper,

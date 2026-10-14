@@ -12,12 +12,16 @@ pub(all) struct TimedRun {
 pub async fn run_with_deadline(
   program : String,
   args : Array[String],
-  timeout_ms : Int,
-  stdin? : Bytes = b"",
+  timeout_ms : Int32,
+  stdin~ : Bytes = b"",
   cwd? : String,
-  extra_env? : Map[String, String] = Map([]),
-  inherit_env? : Bool = true,
+  extra_env~ : Map[String, String] = Map([]),
+  inherit_env~ : Bool = true,
+  capture_environment~ : Bool = true,
 ) -> TimedRun {
+  if capture_environment {
+    record_execution_environment(program, extra_env~, inherit_env~)
+  }
   let stdout_buffer = @buffer.Buffer()
   let stderr_buffer = @buffer.Buffer()
   let exit_status = Ref(-1)
