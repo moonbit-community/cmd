@@ -197,6 +197,9 @@ jobs:
         run: |
           $moonxPath = (Get-Command moonx -CommandType Application).Source
           "CMD_MOONX=$moonxPath" >> $env:GITHUB_ENV
+          # Pin the runner's own cache root for both MoonX and artifact hashing.
+          $publishedMoonHome = Split-Path (Split-Path $moonxPath -Parent) -Parent
+          "MOON_HOME=$publishedMoonHome" >> $env:GITHUB_ENV
 
       - name: Published-version smoke
         if: ${{ !cancelled() && steps.moonx.outcome == 'success' }}

@@ -77,6 +77,21 @@ The all-target warning-denied check, harness formatting, generated interfaces
 and workflow syntax checks also passed. This is local repair validation;
 cross-platform acceptance still requires the subsequent CI run.
 
+The second run, [38706627835](https://github.com/moonbit-community/cmd/actions/runs/38706627835),
+tested `894f21251013d6a269bf97aee588cd930bd1a594`. Its macOS historical replay
+and full backend-pair suite passed (627 passing rows and two registered skips),
+but the HTTP lifecycle test still observed a live listener. The fixture now
+owns an explicit listener-close defer, while the refused-connection assertion
+remains strict. Official async 0.22.4 archive and local cached archive SHA-256
+matched; dependency-source drift was not established. The focused local
+testkit suite passed all 54 tests after this ownership repair.
+
+The second run also exposed an absent `MOON_HOME` in CI: exact MoonX warmup
+exited successfully, but artifact hashing could not locate its cache. The
+workflow now explicitly uses the hosted runner's Moon installation root for
+both operations. These additional repairs require a new remote run; neither
+failed run is final acceptance.
+
 The mandatory product-change coverage gate in `AGENTS.md` applies to changes
 under `core/` or `commands/` that affect behavior, APIs, support or versions.
 This repair changes the harness only. The audit's integration tests still
