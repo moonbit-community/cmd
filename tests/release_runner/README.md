@@ -194,9 +194,13 @@ cached MoonX Wasm assets; unavailable artifact bytes make provenance partial.
 Validation-only runs and source/registry preflight failures also retain metadata.
 They cannot claim execution completeness or semantic case coverage.
 Missing assets are resolved serially with exact-coordinate `--help` invocations
-before recording the initial fingerprints. These availability warmups retain
-their output under `asset-preflight/` and never satisfy semantic case coverage.
-An unsuccessful warmup stops the run with retained infrastructure evidence.
+before recording the initial fingerprints. These resolution warmups retain
+their original exit status and output under `asset-preflight/` and never
+satisfy selected case coverage. A historical package may reject `--help`;
+resolution succeeds once the invocation ends without timeout or cleanup error
+and the exact cached Wasm bytes are available. Missing bytes or uncertain
+cleanup stop the run with infrastructure evidence. The subsequently selected
+smoke and contract cases keep their own strict status and output assertions.
 The run compares its source, registry, corpus, environment and artifact inputs
 before and after execution; changes prevent complete evidence. Coverage records
 with selected, platform-applicable, executed and semantically verified options.

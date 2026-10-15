@@ -35,7 +35,10 @@ coordinate changes are part of this repair.
 | Windows scenario request JSON escaped temporary paths | Only harness-authored network request arguments are decoded and normalized; other arguments and raw captures remain comparison evidence. |
 | Timestamp observation could perturb a later hard-link alias | Snapshot metadata is collected before any content reads. Baseline reads synchronize timestamps before the baseline is resampled. |
 | Repository reads interfered with the rejected-touch interval | The exact atime/mtime assertion runs in a private temporary fixture. Raw timestamps and bytes are retained; pair evidence compares the validated unchanged relation. |
-| HTTP listener cleanup was conflated with socket address reuse | A real HTTP request is followed by task cancellation and joining. A bounded connection probe must observe refusal after cleanup; retries and skipped assertions are not used. |
+| HTTP listener cleanup was conflated with socket address reuse | A real HTTP request is followed by task cancellation, joining and owner-scoped listener cleanup, matching the network, compatibility and policy scenarios. A bounded connection probe must observe refusal; retries and skipped assertions are not used. |
+| Generated indexes could not read sources on another Windows drive | The live case loader and corpus fingerprint share absolute-aware reference resolution. Frozen Git snapshots still reject absolute, UNC and drive-relative references. |
+| Windows regression fixtures used inconsistent path separators | Handcrafted coverage bundles and workspace path expectations use the same host normalization as the real loaders; the missing-pair rejection remains strict. |
+| Cold asset resolution imposed a new help contract on old releases | Warmup records the historical exit status and requires exact asset bytes with confirmed cleanup. Actual selected smoke and contract assertions remain independent and strict. |
 
 ## Verification boundaries
 
@@ -91,6 +94,21 @@ exited successfully, but artifact hashing could not locate its cache. The
 workflow now explicitly uses the hosted runner's Moon installation root for
 both operations. These additional repairs require a new remote run; neither
 failed run is final acceptance.
+
+The third run, [38709128636](https://github.com/moonbit-community/cmd/actions/runs/38709128636),
+tested `454bd34`. Linux passed all package tests, both fixed-oracle runs and
+the exact published differential (801 semantic, 36 boundary, four registered
+skips, zero failures). Cold smoke stopped at the frozen `sh@0.2.0` package,
+whose unsupported `--help` returns status 2; its actual invocation and diagnostic
+were retained. Resolution now avoids treating this warmup as a new help contract.
+
+macOS still rejected cancellation-only listener ownership, so the lifecycle
+test now follows the explicit group-owned cleanup already used by production
+scenarios. Its refusal assertion remains unchanged. Windows additionally found
+cross-drive corpus loading and two path-expectation defects; the repairs above
+keep historical provenance and coverage validation strict. Package-test logs
+are uploaded immediately after that stage so later diagnostics do not depend
+on completion of the entire workflow.
 
 The mandatory product-change coverage gate in `AGENTS.md` applies to changes
 under `core/` or `commands/` that affect behavior, APIs, support or versions.

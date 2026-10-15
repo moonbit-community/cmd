@@ -73,6 +73,18 @@ test "snapshot Git paths retain repository separators on every host" {
     ),
     "tests/release_runner/historical/cases.json",
   )
+  for
+    child in [
+      "/outside.json", "D:\\outside.json", "\\\\host\\share\\outside.json", "D:outside.json",
+    ] {
+    let rejected = try {
+      ignore(snapshot_child("tests/current.json", child))
+      false
+    } catch {
+      _ => true
+    }
+    assert_true(rejected)
+  }
 }
 
 ///|

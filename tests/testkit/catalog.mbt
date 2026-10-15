@@ -1,4 +1,16 @@
 ///|
+/// Generated indexes may refer to a source on another Windows drive. Such a
+/// reference is absolute because no relative path exists between the roots.
+fn case_reference_path(index_path : String, reference : String) -> String {
+  let reference = @path.Path(reference)
+  if reference.is_absolute() {
+    reference.normalize().to_string()
+  } else {
+    @path.Path(index_path).dirname().join(reference).to_string()
+  }
+}
+
+///|
 /// Read both frozen schema 1 manifests and schema 2 per-command collections.
 pub async fn load_cases(path : String) -> Array[Case] {
   let value = @json.parse(@fs.read_file(path).text())
@@ -9,7 +21,7 @@ pub async fn load_cases(path : String) -> Array[Case] {
   if value is { "case_files": Array(files), .. } {
     for file in files {
       guard file is String(file) else { fail("case_files must contain paths") }
-      let source = @path.Path(path).dirname().join(Path(file)).to_string()
+      let source = case_reference_path(path, file)
       let contents = @json.parse(@fs.read_file(source).text())
       guard contents is { "cases": selected, .. } else {
         fail("missing cases: \{source}")
@@ -24,7 +36,7 @@ pub async fn load_cases(path : String) -> Array[Case] {
       guard file is String(file) else {
         fail("case_overrides must contain paths")
       }
-      let source = @path.Path(path).dirname().join(Path(file)).to_string()
+      let source = case_reference_path(path, file)
       let contents = @json.parse(@fs.read_file(source).text())
       guard contents is { "cases": selected, .. } else {
         fail("missing cases: \{source}")

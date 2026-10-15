@@ -294,10 +294,13 @@ async test "HTTP fixture serves requests and releases its listening port" {
     error => fail("HTTP lifecycle fixture could not start: \{error}")
   }
   // This fallback runs after the closure assertion; successful cleanup must
-  // come from the fixture's cancelled task and its joined connection handlers.
+  // come from the owning group after its connection handlers have joined.
   defer server.close()
   @async.with_timeout(5000, () => {
     @async.with_task_group <| group => {
+      // Match the owner-scoped cleanup used by the network, compatibility
+      // and policy scenarios. A child-local defer alone is not this contract.
+      group.add_defer(() => server.close())
       group.spawn_bg(no_wait=true, () => run_http_fixture(server))
       let (response, body) = @http.get(
         "http://127.0.0.1:\{server.addr.port()}/fixed",

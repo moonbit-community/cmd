@@ -687,15 +687,14 @@ async fn manifest_digest_at(path : String, ancestors : Array[String]) -> String 
   let ancestors = [..ancestors, resolved]
   let value = @json.parse(@fs.read_file(path).text()) catch { _ => return "" }
   let children : Array[(String, String)] = []
-  let directory = @path.Path(path).dirname()
   for field in ["case_files", "case_overrides"] {
     if value is Object(fields) && fields.get(field) is Some(Array(paths)) {
-      for path in paths {
-        guard path is String(path) else { return "" }
-        let child = directory.join(Path(path)).to_string()
+      for reference in paths {
+        guard reference is String(reference) else { return "" }
+        let child = case_reference_path(path, reference)
         let digest = manifest_digest_at(child, ancestors)
         guard digest != "" else { return "" }
-        children.push((path, digest))
+        children.push((reference, digest))
       }
     }
   }

@@ -39342,6 +39342,60 @@
         "status"
       ],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/case_wbtest.mbt::absolute corpus references load and fingerprint the selected source files",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/case_wbtest.mbt::absolute corpus references load and fingerprint the selected source files",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "absolute corpus references load and fingerprint the selected source files"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/release_runner/release_integrity_wbtest.mbt::cold historical assets resolve even when help is rejected",
+      "command": "",
+      "owner": "tests/release_runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/release_runner/release_integrity_wbtest.mbt::cold historical assets resolve even when help is rejected",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "cold historical assets resolve even when help is rejected"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
     }
   ],
   "release_commands": [

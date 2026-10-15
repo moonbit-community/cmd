@@ -69,6 +69,12 @@ async fn snapshot_source(
 
 ///|
 fn snapshot_child(parent : String, child : String) -> String raise Failure {
+  let normalized = child.replace_all(old="\\", new="/")
+  guard !normalized.is_empty() &&
+    !normalized.has_prefix("/") &&
+    !(normalized.length() >= 2 && normalized[1] == ':') else {
+    fail("snapshot corpus references must be repository-relative")
+  }
   let path = @path.Path(parent)
     .dirname()
     .join(Path(child))

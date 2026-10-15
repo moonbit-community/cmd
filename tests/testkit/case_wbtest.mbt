@@ -62,6 +62,45 @@ async test "published case overrides preserve old bytes and reject invalid mappi
 }
 
 ///|
+async test "absolute corpus references load and fingerprint the selected source files" {
+  let root = @fs.tmpdir(prefix="mooncmd-absolute-corpus")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  @fs.mkdir(root + "/sources")
+  @fs.mkdir(root + "/output")
+  let source = root + "/sources/current.json"
+  let replacement = root + "/sources/override.json"
+  let index = root + "/output/cases.json"
+  let fixture = sample_case("absolute-reference", "true")
+  @fs.write_file(source, Json({ "cases": [fixture] }).stringify())
+  let original = { ..fixture, expected_stdout_text: Some("original\n"), }
+  @fs.write_file(replacement, Json({ "cases": [original] }).stringify())
+  @fs.write_file(
+    index,
+    Json({
+      "case_files": [@fs.realpath(source)],
+      "case_overrides": [@fs.realpath(replacement)],
+    }).stringify(),
+  )
+  let selected = load_cases(index)
+  assert_eq(selected.length(), 1)
+  assert_eq(selected[0].expected_stdout_text, Some("original\n"))
+  let before = manifest_digest(index)
+  assert_true(before != "")
+  let changed = { ..fixture, expected_stdout_text: Some("changed\n"), }
+  @fs.write_file(replacement, Json({ "cases": [changed] }).stringify())
+  assert_eq(load_cases(index)[0].expected_stdout_text, Some("changed\n"))
+  let after = manifest_digest(index)
+  assert_true(after != "" && after != before)
+  // Relative references keep their existing resolution from the index parent.
+  @fs.write_file(
+    index,
+    Json({ "case_files": ["../sources/current.json"] }).stringify(),
+  )
+  assert_eq(load_cases(index)[0].id, fixture.id)
+  assert_true(manifest_digest(index) != "")
+}
+
+///|
 test "declared unordered output preserves duplicates and final newline" {
   assert_true(unordered_lines_equal(b"b\na\na\n", b"a\nb\na\n"))
   assert_false(unordered_lines_equal(b"b\na\n", b"a\nb\na\n"))

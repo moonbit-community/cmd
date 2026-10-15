@@ -1,6 +1,7 @@
 ///|
-/// Resolve missing exact assets before freezing execution inputs. Help is only
-/// an availability warmup; its output never counts as case semantic evidence.
+/// Resolve missing exact assets before freezing execution inputs. The help
+/// invocation only resolves the asset; historical commands may reject it.
+/// Its exit status and output never count as selected case evidence.
 async fn prepare_release_assets(
   rows : Array[ReleaseCommand],
   moonx : String,
@@ -42,6 +43,7 @@ async fn prepare_release_assets(
     @fs.write_file(evidence + "/stderr", observed.output.stderr)
     let receipt : Json = {
       "coordinate": Json(coordinate),
+      "purpose": "asset-resolution",
       "verification": "availability",
       "status": Json(observed.output.status),
       "timed_out": Json(observed.timed_out),
@@ -51,11 +53,9 @@ async fn prepare_release_assets(
       evidence + "/result.json",
       @testkit.canonical_json(receipt) + "\n",
     )
-    guard !observed.timed_out &&
-      observed.cleanup_error is None &&
-      observed.output.status == 0 else {
+    guard !observed.timed_out && observed.cleanup_error is None else {
       fail(
-        "MoonX asset preflight did not complete successfully: " +
+        "MoonX asset preflight did not complete with confirmed cleanup: " +
         coordinate +
         "; artifacts: " +
         evidence,

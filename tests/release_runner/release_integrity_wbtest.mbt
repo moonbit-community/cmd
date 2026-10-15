@@ -272,43 +272,151 @@ async test "cold exact assets resolve before fingerprints and cached assets skip
 }
 
 ///|
+async test "cold historical assets resolve even when help is rejected" {
+  let directory = @fs.tmpdir(prefix="mooncmd-historical-asset-preflight")
+  defer (@fs.rmdir(directory, recursive=true) catch { _ => () })
+  let row = {
+    ..lifecycle_release_command(),
+    name: "sh",
+    package_name: "cli/sh",
+    version: "0.2.0",
+    compare_profile: "posix",
+    supported_options: ["command", "stdin-script"],
+  }
+  let cached = Ref(false)
+  let digest = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+  prepare_release_assets(
+    [row],
+    "injected-moonx",
+    500,
+    directory,
+    candidate_executor=invocation => {
+      assert_eq(invocation.args, ["cli/sh@0.2.0", "--", "--help"])
+      cached.val = true
+      {
+        output: {
+          status: 2,
+          stdout: b"",
+          stderr: b"sh: unsupported option --help\n",
+        },
+        timed_out: false,
+        cleanup_error: None,
+      }
+    },
+    asset_digest=coordinates => {
+      assert_eq(coordinates.to_owned(), ["cli/sh@0.2.0"])
+      if cached.val {
+        digest
+      } else {
+        ""
+      }
+    },
+  )
+  let evidence = directory + "/asset-preflight/sh"
+  let retained = @json.parse(@fs.read_file(evidence + "/result.json").text())
+  assert_true(
+    retained
+    is {
+      "purpose": String("asset-resolution"),
+      "status": Number(2, ..),
+      "timed_out": False,
+      ..
+    },
+  )
+  assert_eq(
+    @fs.read_file(evidence + "/stderr").binary(),
+    b"sh: unsupported option --help\n",
+  )
+  assert_false(@fs.exists(directory + "/summary.jsonl"))
+  let selected = {
+    ..release_case_for_test("strict-selected-contract", "sh"),
+    comparison: Some("contract"),
+    expected_stdout_text: Some(""),
+    expected_stderr_text: Some(""),
+  }
+  assert_false(
+    @testkit.check_contract(
+      selected,
+      { status: 2, stdout: b"", stderr: b"sh: unsupported option --help\n", },
+      directory,
+    ).is_empty(),
+  )
+}
+
+///|
 async test "asset preflight failure retains partial streams as infrastructure evidence" {
   let directory = @fs.tmpdir(prefix="mooncmd-asset-preflight-failure")
   defer (@fs.rmdir(directory, recursive=true) catch { _ => () })
-  let reports : Array[CaseReport] = []
-  retain_release_execution_failure(reports, () => {
-    prepare_release_assets(
-      [lifecycle_release_command()],
-      "injected-moonx",
-      500,
-      directory,
-      candidate_executor=_ => {
-        output: {
-          status: -1,
-          stdout: b"partial\xff",
-          stderr: b"registry unavailable",
+  for
+    (name, timed_out, cleanup_error, resolved) in [
+      ("missing", false, None, false),
+      ("timeout-after-download", true, None, true),
+      ("cleanup-after-download", false, Some("wait failed"), true),
+    ] {
+    let reports : Array[CaseReport] = []
+    let invoked = Ref(false)
+    retain_release_execution_failure(reports, () => {
+      prepare_release_assets(
+        [lifecycle_release_command()],
+        "injected-moonx",
+        500,
+        directory + "/" + name,
+        candidate_executor=_ => {
+          invoked.val = true
+          {
+            output: {
+              status: 2,
+              stdout: b"partial\xff",
+              stderr: b"resolution diagnostic",
+            },
+            timed_out,
+            cleanup_error,
+          }
         },
-        timed_out: true,
-        cleanup_error: None,
-      },
-      asset_digest=_ => "",
+        asset_digest=_ => {
+          if invoked.val && resolved {
+            "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+          } else {
+            ""
+          }
+        },
+      )
+    })
+    assert_eq(reports.length(), 1)
+    assert_eq(reports[0].category, "runner_infra")
+    assert_true(
+      reports[0].detail.contains(
+        if resolved {
+          "confirmed cleanup"
+        } else {
+          "exact cached Wasm bytes"
+        },
+      ),
     )
-  })
-  assert_eq(reports.length(), 1)
-  assert_eq(reports[0].category, "runner_infra")
-  let result = shared_report(reports[0], [], false, Map([]))
-  assert_eq(result.verification, "availability")
-  assert_false(result.semantic_pass())
-  guard result.evidence is Some(evidence) else {
-    fail("asset preflight evidence missing")
+    let result = shared_report(reports[0], [], false, Map([]))
+    assert_eq(result.verification, "availability")
+    assert_false(result.semantic_pass())
+    guard result.evidence is Some(evidence) else {
+      fail("asset preflight evidence missing")
+    }
+    assert_eq(@fs.read_file(evidence + "/stdout").binary(), b"partial\xff")
+    assert_eq(
+      @fs.read_file(evidence + "/stderr").binary(),
+      b"resolution diagnostic",
+    )
+    let retained = @json.parse(@fs.read_file(evidence + "/result.json").text())
+    guard retained
+      is {
+        "status": Number(2, ..),
+        "timed_out": actual_timeout,
+        "cleanup_error": actual_cleanup,
+        ..
+      } else {
+      fail("asset resolution receipt lost failure state")
+    }
+    assert_eq(actual_timeout, Json(timed_out))
+    assert_eq(actual_cleanup, ToJson::to_json(cleanup_error))
   }
-  assert_eq(@fs.read_file(evidence + "/stdout").binary(), b"partial\xff")
-  assert_eq(
-    @fs.read_file(evidence + "/stderr").binary(),
-    b"registry unavailable",
-  )
-  let retained = @json.parse(@fs.read_file(evidence + "/result.json").text())
-  assert_true(retained is { "timed_out": True, .. })
 }
 
 ///|

@@ -132,7 +132,7 @@ test "Native and Wasm passing independently do not prove backend pairing" {
   }
   let bundles : Array[EvidenceBundle] = [
     {
-      report_path: "native/summary.jsonl",
+      report_path: @path.Path("native/summary.jsonl").normalize().to_string(),
       metadata: audit_metadata("native"),
       rows: [audit_row("native", "native", "contract")],
       selected_ids: ["echo"],
@@ -140,7 +140,7 @@ test "Native and Wasm passing independently do not prove backend pairing" {
       published_coordinates: [],
     },
     {
-      report_path: "wasm/summary.jsonl",
+      report_path: @path.Path("wasm/summary.jsonl").normalize().to_string(),
       metadata: audit_metadata("wasm"),
       rows: [audit_row("wasm", "wasm", "contract")],
       selected_ids: ["echo"],
@@ -150,6 +150,9 @@ test "Native and Wasm passing independently do not prove backend pairing" {
   ]
   let failures = validate_report_evidence(declaration, registry, bundles)
   assert_true(failures.any(value => value.contains("backend-pair")))
+  assert_false(
+    failures.any(value => value.contains("no supplied run metadata")),
+  )
   assert_true(!failures.any(value => value.contains("lacks 'contract'")))
 }
 

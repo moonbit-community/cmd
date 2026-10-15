@@ -37,33 +37,24 @@ async test "workspace inputs preserve caller paths and default outputs stay expl
   @fs.mkdir(root + "/_build/native", recursive=true)
   @fs.write_file(root + "/tests/cases.json", "{}")
   @fs.write_file(caller + "/local.json", "{}")
-  assert_eq(
-    workspace_input(root, "tests/cases.json", start=caller),
-    root + "/tests/cases.json",
-  )
-  assert_eq(
-    workspace_input(root, "../cases.json", start=caller),
-    root + "/tests/cases.json",
-  )
-  assert_eq(
-    workspace_input(root, "local.json", start=caller),
-    caller + "/local.json",
-  )
-  assert_eq(
-    workspace_input(root, "_build/native", start=caller),
-    root + "/_build/native",
-  )
+  let cases_path = @fs.realpath(root + "/tests/cases.json")
+  let local_path = @fs.realpath(caller + "/local.json")
+  let native_path = @fs.realpath(root + "/_build/native")
+  assert_eq(workspace_input(root, "tests/cases.json", start=caller), cases_path)
+  assert_eq(workspace_input(root, "../cases.json", start=caller), cases_path)
+  assert_eq(workspace_input(root, "local.json", start=caller), local_path)
+  assert_eq(workspace_input(root, "_build/native", start=caller), native_path)
   assert_eq(
     workspace_input(root, root + "/tests/cases.json", start=caller),
-    root + "/tests/cases.json",
+    cases_path,
   )
   assert_eq(
     workspace_output("reports/new-run", start=caller),
-    caller + "/reports/new-run",
+    @path.Path(caller + "/reports/new-run").normalize().to_string(),
   )
   assert_eq(
     workspace_output(root + "/test-reports/default", start=caller),
-    root + "/test-reports/default",
+    @path.Path(root + "/test-reports/default").normalize().to_string(),
   )
 }
 
