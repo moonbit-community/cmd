@@ -177,13 +177,18 @@ pub fn finalize_run_metadata(
   start : RunMetadata,
   finish : RunMetadata,
 ) -> RunMetadata {
-  let stable = start.git_revision == finish.git_revision &&
+  let stable = start.reproducibility_status != "changed-during-run" &&
+    finish.reproducibility_status != "changed-during-run" &&
+    start.git_revision == finish.git_revision &&
     start.git_dirty == finish.git_dirty &&
     start.registry_hash == finish.registry_hash &&
     start.manifest_hash == finish.manifest_hash &&
     start.case_corpus_hash == finish.case_corpus_hash &&
     start.native_artifact_hash == finish.native_artifact_hash &&
     start.wasm_artifact_hash == finish.wasm_artifact_hash &&
+    start.oracle_profile_id == finish.oracle_profile_id &&
+    start.oracle_image_digest == finish.oracle_image_digest &&
+    start.oracle_versions_hash == finish.oracle_versions_hash &&
     start.policy_hash == finish.policy_hash &&
     start.host_environment_fingerprint == finish.host_environment_fingerprint &&
     start.toolchain == finish.toolchain
@@ -484,6 +489,46 @@ pub fn run_metadata_errors(metadata : RunMetadata) -> Array[String] {
     failures.push("invalid run timestamps")
   }
   failures
+}
+
+///|
+/// Bind the complete identity returned by successful oracle preflight before
+/// any differential cases execute. Rebinding an observed identity is drift.
+pub fn with_oracle_identity(
+  metadata : RunMetadata,
+  identity : OracleIdentity,
+) -> RunMetadata {
+  let inventory_hash = sha256_text(identity.versions)
+  let changed = metadata.reproducibility_status == "changed-during-run" ||
+    (
+      metadata.oracle_profile_id != "" &&
+      metadata.oracle_profile_id != identity.profile_id
+    ) ||
+    (
+      metadata.oracle_image_digest != "" &&
+      metadata.oracle_image_digest != identity.digest
+    ) ||
+    (
+      metadata.oracle_versions_hash != "" &&
+      metadata.oracle_versions_hash != inventory_hash
+    )
+  if changed {
+    return { ..metadata, reproducibility_status: "changed-during-run", }
+  }
+  let updated = {
+    ..metadata,
+    oracle_profile_id: identity.profile_id,
+    oracle_image_digest: identity.digest,
+    oracle_versions_hash: inventory_hash,
+  }
+  {
+    ..updated,
+    reproducibility_status: if complete_enough(updated) {
+      "complete"
+    } else {
+      "partial"
+    },
+  }
 }
 
 ///|

@@ -134,6 +134,8 @@ pub async fn verify_oracle_image(String, docker_path? : String, profile_path? : 
 
 pub fn wasm_path(String, String) -> String
 
+pub fn with_oracle_identity(RunMetadata, OracleIdentity) -> RunMetadata
+
 pub fn with_oracle_versions_hash(RunMetadata, String) -> RunMetadata
 
 pub fn with_wasm_artifact_hash(RunMetadata, String) -> RunMetadata

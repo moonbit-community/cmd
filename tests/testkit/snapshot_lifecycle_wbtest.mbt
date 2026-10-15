@@ -44,3 +44,44 @@ async test "rejection detects same-content replacement of an existing file" {
   )
   assert_false(@fs.exists(root + "/replacement"))
 }
+
+///|
+async test "snapshot timestamps separate completed baseline reads from final observations" {
+  if host_platform() == "windows" {
+    return
+  }
+  require_lifecycle_observers(["/bin/ln", "/usr/bin/touch", "/usr/bin/true"])
+  let root = @fs.tmpdir(prefix="mooncmd-snapshot-atime-")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let source = root + "/source"
+  let linked_path = root + "/alias"
+  @fs.write_file(source, b"timestamp fixture")
+  assert_eq(run("/bin/ln", [source, linked_path]).status, 0)
+  // A fixed observer sets an old access time so the content read has a
+  // measurable effect. The filesystem must actually expose that effect.
+  assert_eq(
+    run("/usr/bin/touch", ["-a", "-t", "200001010000.00", source]).status,
+    0,
+  )
+  let (seconds, nanos) = @fs.atime(source)
+  let before_read = "\{seconds}:\{nanos}"
+  let final_observation = snapshot(root, observe=["atime"])
+  assert_eq(final_observation.length(), 2)
+  for entry in final_observation {
+    assert_eq(entry.content, b"timestamp fixture")
+    assert_eq(entry.metadata["atime"], before_read)
+  }
+  ignore(@fs.read_file(source, sync_timestamp=true))
+  let (seconds, nanos) = @fs.atime(source)
+  assert_true(
+    "\{seconds}:\{nanos}" != before_read,
+    msg="fixture precondition: filesystem must expose content-read atime changes",
+  )
+  let baseline = snapshot(root, observe=["atime"], baseline=true)
+  let (seconds, nanos) = @fs.atime(source)
+  for entry in baseline {
+    assert_eq(entry.metadata["atime"], "\{seconds}:\{nanos}")
+  }
+  assert_eq(run("/usr/bin/true", []).status, 0)
+  assert_true(snapshots_equal(baseline, snapshot(root, observe=["atime"])))
+}

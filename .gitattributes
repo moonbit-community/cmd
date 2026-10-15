@@ -1,0 +1,2 @@
+# Preserve exact bytes used by registry and immutable snapshot hashes on Windows.
+tests/**/*.json -text

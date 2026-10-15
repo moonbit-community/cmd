@@ -103,8 +103,8 @@
       "id": "http-fixture-lifecycle",
       "status": "proven",
       "test_ref": "tests/testkit/lifecycle_wbtest.mbt::HTTP fixture serves requests and releases its listening port",
-      "proves": ["http-loopback-startup", "response-body-observed", "listening-port-rebind-after-cleanup"],
-      "limitations": ["in-process HTTP fixture; HTTPS subprocess lifecycle is registered separately"]
+      "proves": ["http-loopback-startup", "response-body-observed", "bounded-connect-refused-after-cleanup"],
+      "limitations": ["in-process HTTP fixture; HTTPS subprocess lifecycle is registered separately", "listener closure is verified; OS address-reuse timing is not measured"]
     },
     {
       "id": "https-fixture-lifecycle",

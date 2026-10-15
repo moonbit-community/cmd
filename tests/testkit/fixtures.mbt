@@ -237,15 +237,10 @@ async fn snapshot_into(
         _ => fail("unknown observation dimension: \{dimension}")
       }
     }
-    let content = if kind == Regular {
-      @fs.read_file(child).binary()
-    } else {
-      b""
-    }
     entries.push({
       path: child_relative,
       kind: kind_name(kind),
-      content,
+      content: b"",
       metadata,
     })
     if kind == Directory {
@@ -267,9 +262,22 @@ pub async fn snapshot(
 ) -> Array[SnapshotEntry] {
   let entries : Array[SnapshotEntry] = []
   snapshot_into(root, "", entries, observe, stat_path, readlink_path)
+  // Read content only after every path's metadata is captured. Otherwise
+  // reading one hard-link name could change a later alias's observed atime.
+  for index in 0..<entries.length() {
+    let entry = entries[index]
+    if entry.kind == "file" {
+      let content = @fs.read_file(
+        @path.Path(root).join(Path(entry.path)).to_string(),
+        sync_timestamp=baseline && observe.contains("atime"),
+      ).binary()
+      entries[index] = { ..entry, content, }
+    }
+  }
   // Only the baseline includes accesses caused by preparing its content
-  // observation. The final snapshot must retain atime measured before reading
-  // content; otherwise the observer's own read becomes a candidate side effect.
+  // observation. Those reads synchronize timestamps before this resampling:
+  // otherwise a delayed observer update could look like a candidate mutation.
+  // The final snapshot retains atime measured before reading content.
   if baseline && observe.contains("atime") {
     for entry in entries {
       let (s, n) = @fs.atime(

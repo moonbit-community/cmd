@@ -324,7 +324,7 @@ async fn run_driver() -> Unit {
   let mut oracle_image_digest = ""
   let mut oracle_versions_hash = ""
   let mut oracle_profile_id = ""
-  let start_metadata = @testkit.collect_run_metadata(
+  let mut start_metadata = @testkit.collect_run_metadata(
     "workspace-" + run_started.to_string(),
     manifest_path~,
     case_corpus_path=manifest_path,
@@ -493,6 +493,7 @@ async fn run_driver() -> Unit {
             oracle_profile_id = @testkit.read_oracle_profile(
                 expected_oracle_profile_path,
               ).id
+            start_metadata = { ..start_metadata, oracle_profile_id, }
             @testkit.verify_oracle_image(
               oracle_image,
               profile_path=oracle_profile_path,
@@ -531,9 +532,12 @@ async fn run_driver() -> Unit {
           oracle_image_digest = oracle_identity.digest
           oracle_profile_id = oracle_identity.profile_id
           oracle_versions_hash = @testkit.sha256_text(oracle_identity.versions)
+          start_metadata = @testkit.with_oracle_identity(
+            start_metadata, oracle_identity,
+          )
           oracle_image = oracle_identity.digest
           println(
-            "oracle identity: {oracle_identity.image}@{oracle_identity.digest}",
+            "oracle identity: \{oracle_identity.profile_id}@\{oracle_identity.digest}",
           )
           let docker_user = @testkit.docker_user()
           run_scenario_batch(
@@ -718,10 +722,10 @@ async fn run_driver() -> Unit {
     started_at_ms=run_started,
     ended_at_ms=@async.now(),
   )
-  let metadata = @testkit.finalize_run_metadata(start_metadata, metadata)
   let metadata = @testkit.with_oracle_versions_hash(
     metadata, oracle_versions_hash,
   )
+  let metadata = @testkit.finalize_run_metadata(start_metadata, metadata)
   @testkit.write_reports_with_metadata(report_dir, reports, metadata)
   for report in reports {
     println(

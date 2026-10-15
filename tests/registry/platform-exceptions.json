@@ -7,6 +7,11 @@
       "reason": "The rejection observer requires /bin/sh, /bin/mv and POSIX device/inode identity. Missing observers fail prerequisites; Windows is excluded before semantic execution."
     },
     {
+      "source": "tests/testkit/snapshot_lifecycle_wbtest.mbt::snapshot timestamps separate completed baseline reads from final observations",
+      "platforms": ["posix"],
+      "reason": "The hardlink timestamp observer requires /bin/ln, /usr/bin/touch, /usr/bin/true and observable file access-time updates after a synchronized content read. Missing observers or unobservable timestamp updates fail prerequisites; Windows is excluded before semantic execution."
+    },
+    {
       "source": "tests/testkit/network_lifecycle_wbtest.mbt::network fixture startup deadline reaps the actual direct child",
       "platforms": ["posix"],
       "reason": "The direct-child reaping observer uses POSIX process and signal facilities. Missing observers fail prerequisites; Windows is excluded before semantic execution."

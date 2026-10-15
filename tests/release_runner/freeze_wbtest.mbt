@@ -34,6 +34,48 @@ test "registry receipt requires exact non-yanked checksummed version" {
 }
 
 ///|
+test "frozen replay locations recognize Windows paths without accepting live candidates" {
+  for separator in ["/", "\\"] {
+    let path = "tests/release_runner/current/published.json".replace_all(
+      old="/",
+      new=separator,
+    )
+    assert_eq(frozen_manifest_location(path), Some("current"))
+    let historical = "tests/release_runner/historical/published-2026-10-11-repair.json".replace_all(
+      old="/",
+      new=separator,
+    )
+    assert_eq(frozen_manifest_location(historical), Some("historical"))
+    for
+      other in [
+        "tests/release_runner/current/candidate.json", "tests/release_runner/custom/published.json",
+        "../tests/release_runner/current/published.json", "tests/release_runner/historical/published-../../candidate.json",
+      ] {
+      assert_eq(
+        frozen_manifest_location(other.replace_all(old="/", new=separator)),
+        None,
+      )
+    }
+  }
+}
+
+///|
+test "snapshot Git paths retain repository separators on every host" {
+  assert_eq(
+    snapshot_repository_path(
+      "/workspace", "/workspace/tests/release_runner/current/published.json",
+    ),
+    "tests/release_runner/current/published.json",
+  )
+  assert_eq(
+    snapshot_child(
+      "tests/release_runner/current/candidate.json", "../historical/cases.json",
+    ),
+    "tests/release_runner/historical/cases.json",
+  )
+}
+
+///|
 test "freeze distinguishes availability from semantic evidence" {
   let fixture = release_case_for_test("true-exit", "true")
   let candidate : ReleaseManifest = {

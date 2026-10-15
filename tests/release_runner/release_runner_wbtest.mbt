@@ -410,9 +410,9 @@ test "differential reports preserve partial diagnostics and inferred metadata" {
 }
 
 ///|
-async test "availability success does not make the runner summary fail" {
+test "availability success does not make the runner summary fail" {
   let fixture = release_case_for_test("true-status", "true")
-  print_reports(
+  let (output, failures) = render_reports(
     [
       {
         id: fixture.id,
@@ -424,6 +424,33 @@ async test "availability success does not make the runner summary fail" {
     ],
     [fixture],
     false,
+  )
+  assert_eq(failures, 0)
+  assert_eq(
+    output,
+    "[pass/availability/availability_passed] true@0.1.5 true-status: versioned invocation completed\n" +
+    "Summary: 0 semantic, 1 availability, 0 boundary, 0 skipped, 0 failed.\n",
+  )
+}
+
+///|
+test "runner summary counts failures without writing to the test protocol stream" {
+  let fixture = release_case_for_test("true-status", "true")
+  let reports = [
+    "availability_passed", "semantic_mismatch", "runner_infra", "skipped_platform",
+  ].map(category => {
+    id: fixture.id,
+    command: fixture.command,
+    version: "0.1.5",
+    category,
+    detail: "fixture",
+  })
+  let (output, failures) = render_reports(reports, [fixture], false)
+  assert_eq(failures, 2)
+  assert_true(
+    output.has_suffix(
+      "Summary: 0 semantic, 1 availability, 0 boundary, 1 skipped, 2 failed.\n",
+    ),
   )
 }
 

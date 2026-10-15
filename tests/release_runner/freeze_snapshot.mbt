@@ -21,6 +21,30 @@ priv struct FrozenProvenance {
 } derive(FromJson, ToJson)
 
 ///|
+/// Git tree paths and frozen manifest identities always use forward slashes,
+/// including when the filesystem returns Windows paths.
+fn snapshot_repository_path(root : String, path : String) -> String {
+  @path.Path(path)
+  .relative(base=Path(root))
+  .to_string()
+  .replace_all(old="\\", new="/")
+}
+
+///|
+fn frozen_manifest_location(relative : String) -> String? {
+  let relative = relative.replace_all(old="\\", new="/")
+  if relative == "tests/release_runner/current/published.json" {
+    Some("current")
+  } else if relative.has_prefix("tests/release_runner/historical/published-") &&
+    relative.has_suffix(".json") &&
+    @testkit.safe_relative_path(relative) {
+    Some("historical")
+  } else {
+    None
+  }
+}
+
+///|
 async fn snapshot_git(root : String, args : Array[String]) -> Bytes {
   let result = @testkit.run("git", ["-C", root, ..args])
   guard result.status == 0 else {
@@ -50,6 +74,7 @@ fn snapshot_child(parent : String, child : String) -> String raise Failure {
     .join(Path(child))
     .normalize()
     .to_string()
+    .replace_all(old="\\", new="/")
   guard @testkit.safe_relative_path(path) else {
     fail("snapshot corpus escapes repository")
   }
@@ -253,13 +278,8 @@ async fn validate_frozen_case_binding_checked(
 ) -> Unit {
   let root = @fs.realpath(root)
   let actual = @fs.realpath(manifest_path)
-  let relative = @path.Path(actual).relative(base=Path(root)).to_string()
-  let current = relative == "tests/release_runner/current/published.json"
-  guard current ||
-    (
-      relative.has_prefix("tests/release_runner/historical/published-") &&
-      relative.has_suffix(".json")
-    ) else {
+  let relative = snapshot_repository_path(root, actual)
+  guard frozen_manifest_location(relative) is Some(_) else {
     fail("unrecognized frozen manifest location")
   }
   guard @fs.realpath(base_path) == @fs.realpath(actual + ".cases.json") else {
@@ -457,12 +477,14 @@ async fn prepare_current_snapshot(
   published_bytes : Bytes,
   selected : Array[ReleaseCase],
 ) -> (Array[(String, Bytes)], Array[(String, Bytes)]) {
-  let candidate_source = @path.Path(@fs.realpath(candidate_path))
-    .relative(base=Path(@fs.realpath(root)))
-    .to_string()
-  let registry_source = @path.Path(@fs.realpath(registry_path))
-    .relative(base=Path(@fs.realpath(root)))
-    .to_string()
+  let candidate_source = snapshot_repository_path(
+    @fs.realpath(root),
+    @fs.realpath(candidate_path),
+  )
+  let registry_source = snapshot_repository_path(
+    @fs.realpath(root),
+    @fs.realpath(registry_path),
+  )
   let candidate_bytes = snapshot_source(root, revision, candidate_source)
   guard candidate_bytes == @fs.read_file(candidate_path).binary() else {
     fail("freeze candidate is not the committed evidence revision")

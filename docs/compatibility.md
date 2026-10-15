@@ -1,7 +1,7 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-10-12
+Updated: 2026-10-14
 
 This repair publishes `cli/core@0.5.0`, `column/date/diff/strings/which@0.1.1`, `unlink@0.1.2`, and `curl/jq/jqlog/ln/ls/mv/seq/wget@0.2.1`. Unchanged commands retain their existing coordinates.
 
@@ -66,11 +66,14 @@ runner that starts exact `moonx cli/<command>@<version>` invocations through
 MoonBit's process API and compares them with the pinned Linux oracle. It never
 builds a command package during a case. The selected versions and case IDs for
 the current release are recorded in
-`tests/release_runner/published-2026-10-11-repair.json`; the preparation candidate is
-`tests/release_runner/candidate-2026-10-11-repair.json`; the previous
-`tests/release_runner/published-0.1.1.json`, `tests/release_runner/published-0.1.0.json`
-and frozen `tests/release_runner/published-0.2.0.json` remain replayable; `latest`, version ranges and
-implicit package resolution are forbidden.
+[`tests/release_runner/current/published.json`](../tests/release_runner/current/published.json).
+The next release is prepared through
+[`tests/release_runner/current/candidate.json`](../tests/release_runner/current/candidate.json),
+generated from the reviewed registry and local module versions. Earlier
+published manifests are preserved under `tests/release_runner/historical/` and
+require `--historical-replay`. Their frozen corpus and registry sidecars retain
+the original source identity; replay does not recreate historical acceptance.
+`latest`, version ranges and implicit package resolution are forbidden.
 
 The release manifest must cover every published command (78 commands; the
 `timeout` package remains local-only), and every option/operand form promoted in
@@ -81,25 +84,40 @@ authorization is separate and continues to run through `moonrun --policy` in
 the unified runner.
 
 For every release, update the package version, command README, release
-manifest and case coverage together. After the Wasm asset is available, run:
-
-The published `published-2026-10-11-repair.json` manifest covers the current release;
-`candidate-2026-10-11-repair.json` is the frozen validation-only preparation record.
-The earlier `published-2026-10-10.json` manifest covers the second-batch release;
-`candidate-2026-10-10.json` remains its preparation record.
-The earlier `published-0.1.1.json` and `published-0.2.0.json` manifests remain
-frozen historical records, and `published-0.1.0.json` remains the oldest replay
-record. Candidate flags do not describe release status. The consumer driver inserts `--` after the exact MoonX
-coordinate so the command's own leading `--` is preserved. The frozen schema 1
-`manifest.json` and `published-0.1-base.json` retain the historical release.
+manifest and case coverage together. Validate the generated candidate before
+publication. Exact candidate execution additionally requires verified registry
+receipts through `--verify-candidate`; preparation alone does not authorize
+publication. Use the current published pointer for subsequent consumer checks.
+The consumer driver inserts `--` after the exact MoonX coordinate so the
+command's own leading `--` is preserved.
 
 ```sh
 MOON_HOME="$HOME/.moon-accounts/cli" moon run --target native tests/release_runner -- \
-  --manifest tests/release_runner/published-0.2.0.json --suite validate
+  --manifest tests/release_runner/current/candidate.json --suite validate \
+  --report-dir test-reports/release-candidate-validation
 MOON_HOME="$HOME/.moon-accounts/cli" moon run --target native tests/release_runner -- \
-  --manifest tests/release_runner/published-0.2.0.json --suite differential \
-  --oracle-image mooncmd-oracle:phase0
+  --manifest tests/release_runner/current/published.json --suite smoke \
+  --report-dir test-reports/release-published-smoke
 ```
+
+Historical differential replay requires a sealed immutable oracle profile,
+verified image digest, version inventory and reviewed recipe checksums. Prepare
+the profile using the [workspace runner guide](../tests/runner/README.md#upstream-and-ci)
+before running this example with the verified image ID and a fresh report directory:
+
+```sh
+MOON_HOME="$HOME/.moon-accounts/cli" moon run --target native tests/release_runner -- \
+  --manifest tests/release_runner/historical/published-0.2.0.json \
+  --historical-replay --suite differential \
+  --oracle-image "sha256:<verified-image-id>" \
+  --oracle-profile test-reports/oracle-profile/profile.json \
+  --report-dir test-reports/release-historical-differential
+```
+
+The [release runner guide](../tests/release_runner/README.md) documents exact
+registry receipts, candidate verification, publication freezing and report
+requirements. These examples do not establish new publication or differential
+acceptance evidence by themselves.
 
 Asset/registry transport errors, candidate failures, oracle failures,
 semantic mismatches, side-effect violations, timeouts and runner failures are
@@ -116,7 +134,7 @@ Linux oracle remains the strict filesystem authority.
 ## Inventory
 
 The workspace contains **79 command modules**, with **78 published** and local-only `timeout`. Published command versions are **39 at 0.2.0, 8 at 0.2.1, 15 at 0.1.0, 15 at 0.1.1 and 1 at 0.1.2**. Shared `cli/core` is **0.5.0** and is not counted as a command.
-Exact coordinates and selected cases are in [the current manifest](../tests/release_runner/published-2026-10-11-repair.json) and [repair report](reports/2026-10-11-fidelity-repair/README.md). Earlier manifests remain historical records.
+Exact coordinates and selected cases are in [the current manifest](../tests/release_runner/current/published.json) and [repair report](reports/2026-10-11-fidelity-repair/README.md). Earlier manifests remain historical records under `tests/release_runner/historical/`.
 
 `timeout` is intentionally local-only because portable
 `ProcessGroupCancellation` is unavailable:

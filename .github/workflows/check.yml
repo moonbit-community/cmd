@@ -30,6 +30,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+          # Frozen bindings verify the baseline's historical source commits.
+          # A shallow checkout cannot establish those immutable associations.
+          fetch-depth: 0
 
       - name: Setup MoonBit
         uses: hustcer/setup-moonbit@v1.23

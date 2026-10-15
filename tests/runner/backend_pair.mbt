@@ -248,9 +248,20 @@ fn pair_stream(
 ///|
 // Only values allocated by the scenario harness are rewritten. Product output,
 // diagnostics and file bytes otherwise retain their exact representation.
-fn scenario_pair_bytes(data : Bytes, work : String, origin : String?) -> Bytes {
+fn scenario_pair_bytes(
+  data : Bytes,
+  work : String,
+  origin : String?,
+  filesystem_root? : String,
+) -> Bytes {
   let text = @utf8.decode(data) catch { _ => return data }
   let mut normalized = text.replace_all(old=work, new="${WORK}")
+  if filesystem_root is Some(filesystem_root) {
+    normalized = normalized.replace_all(
+      old=filesystem_root,
+      new="${FILESYSTEM_ROOT}",
+    )
+  }
   if origin is Some(origin) {
     normalized = normalized.replace_all(old=origin, new="${HTTP_BASE}")
     let authority = origin
@@ -265,6 +276,18 @@ fn scenario_pair_bytes(data : Bytes, work : String, origin : String?) -> Bytes {
 }
 
 ///|
+fn scenario_timestamp_pair_relation(data : Bytes) -> Bytes raise {
+  let observed : ScenarioTimestampObservation = @json.from_json(
+    @json.parse(@utf8.decode(data)),
+  )
+  guard observed.before_atime == observed.after_atime &&
+    observed.before_mtime == observed.after_mtime else {
+    fail("timestamp observation changed during rejected touch")
+  }
+  b"atime unchanged\nmtime unchanged\n"
+}
+
+///|
 async fn scenario_pair_snapshot(
   evidence : String,
   fixture : @testkit.Case,
@@ -273,6 +296,12 @@ async fn scenario_pair_snapshot(
   let origin_path = evidence + "/network-origin.txt"
   let origin = if @fs.exists(origin_path) {
     Some(@fs.read_file(origin_path).text())
+  } else {
+    None
+  }
+  let filesystem_origin_path = evidence + "/filesystem-origin.txt"
+  let filesystem_root = if @fs.exists(filesystem_origin_path) {
+    Some(@fs.read_file(filesystem_origin_path).text())
   } else {
     None
   }
@@ -288,16 +317,28 @@ async fn scenario_pair_snapshot(
     let metadata : Map[String, String] = Map([])
     for key, value in item.metadata {
       metadata[key] = @utf8.decode(
-        scenario_pair_bytes(@utf8.encode(value), work, origin),
+        scenario_pair_bytes(@utf8.encode(value), work, origin, filesystem_root?),
       ) catch {
         _ => value
       }
     }
-    {
-      ..item,
-      content: scenario_pair_bytes(item.content, work, origin),
-      metadata,
+    // Compare this dedicated timestamp record by its exact before/after
+    // relation. Each backend retains its unmodified absolute values on disk;
+    // independently created fixtures cannot share wall-clock timestamps.
+    let content = if fixture.id == "filesystem-fidelity" &&
+      item.path == "timestamp-observations.json" {
+      scenario_timestamp_pair_relation(item.content)
+    } else if (
+        fixture.id == "network-auth-cookie" ||
+        fixture.id == "network-auth-cookie-oracle"
+      ) &&
+      item.path.has_prefix("work/call-") &&
+      item.path.has_suffix(".request.json") {
+      scenario_request_pair_bytes(item.content, work, origin, filesystem_root?)
+    } else {
+      scenario_pair_bytes(item.content, work, origin, filesystem_root?)
     }
+    { ..item, content, metadata, }
   })
   @testkit.snapshot_fingerprint(normalized)
 }

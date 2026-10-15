@@ -28,6 +28,70 @@ test "scenario pairing normalizes only allocated fixture roots and listener orig
     ),
     b"http://other:1234",
   )
+  assert_eq(
+    scenario_pair_bytes(
+      b"touch: /private/native/source unchanged /unrelated/source",
+      "/native/work",
+      None,
+      filesystem_root="/private/native",
+    ),
+    scenario_pair_bytes(
+      b"touch: /private/wasm/source unchanged /unrelated/source",
+      "/wasm/work",
+      None,
+      filesystem_root="/private/wasm",
+    ),
+  )
+  assert_true(
+    scenario_pair_bytes(
+      b"touch: /private/native/source /unrelated/changed",
+      "/native/work",
+      None,
+      filesystem_root="/private/native",
+    ) !=
+    scenario_pair_bytes(
+      b"touch: /private/wasm/source /unrelated/source",
+      "/wasm/work",
+      None,
+      filesystem_root="/private/wasm",
+    ),
+  )
+}
+
+///|
+test "timestamp pairing compares exact unchanged relations and rejects mutations" {
+  let native : ScenarioTimestampObservation = {
+    before_atime: "100:2",
+    after_atime: "100:2",
+    before_mtime: "90:3",
+    after_mtime: "90:3",
+  }
+  let wasm : ScenarioTimestampObservation = {
+    before_atime: "200:4",
+    after_atime: "200:4",
+    before_mtime: "190:5",
+    after_mtime: "190:5",
+  }
+  let encode = (value : ScenarioTimestampObservation) => {
+    @utf8.encode(@testkit.canonical_json(ToJson::to_json(value)))
+  }
+  assert_eq(
+    scenario_timestamp_pair_relation(encode(native)),
+    scenario_timestamp_pair_relation(encode(wasm)),
+  )
+  for
+    changed in [
+      { ..native, after_atime: "100:3", },
+      { ..native, after_mtime: "90:4", },
+    ] {
+    let rejected = try {
+      ignore(scenario_timestamp_pair_relation(encode(changed)))
+      false
+    } catch {
+      _ => true
+    }
+    assert_true(rejected)
+  }
 }
 
 ///|

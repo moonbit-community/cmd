@@ -290,24 +290,35 @@ async test "cleanup permission failure retains candidate evidence" {
 
 ///|
 async test "HTTP fixture serves requests and releases its listening port" {
-  let port = Ref(0)
-  @async.with_task_group <| group => {
-    let server = @http.Server(
-      @socket.Addr::parse("127.0.0.1:0"),
-      reuse_addr=true,
-    )
-    port.val = server.addr.port()
-    group.spawn_bg(no_wait=true, () => run_http_fixture(server))
-    let (response, body) = @http.get("http://127.0.0.1:\{port.val}/fixed")
-    assert_eq(response.code, 200)
-    assert_eq(body.binary(), b"hello")
-    server.close()
+  let server = @http.Server(@socket.Addr::parse("127.0.0.1:0")) catch {
+    error => fail("HTTP lifecycle fixture could not start: \{error}")
   }
-  let replacement = @http.Server(
-    @socket.Addr::parse("127.0.0.1:\{port.val}"),
-    reuse_addr=true,
-  )
-  replacement.close()
+  // This fallback runs after the closure assertion; successful cleanup must
+  // come from the fixture's cancelled task and its joined connection handlers.
+  defer server.close()
+  @async.with_timeout(5000, () => {
+    @async.with_task_group <| group => {
+      group.spawn_bg(no_wait=true, () => run_http_fixture(server))
+      let (response, body) = @http.get(
+        "http://127.0.0.1:\{server.addr.port()}/fixed",
+      )
+      assert_eq(response.code, 200)
+      assert_eq(body.binary(), b"hello")
+    }
+  })
+  // A refused connection observes listener closure directly. Rebinding also
+  // measures OS socket-reuse rules and residual TCP state after the real GET.
+  @async.with_timeout(5000, () => {
+    try {
+      let connection = @socket.Tcp::connect(server.addr)
+      connection.close()
+    } catch {
+      @os_error.OSError(_, ..) as error if error.is_ECONNREFUSED() => ()
+      error => fail("listener closure probe failed unexpectedly: \{error}")
+    } noraise {
+      _ => fail("HTTP fixture still accepts connections after task cleanup")
+    }
+  })
 }
 
 ///|

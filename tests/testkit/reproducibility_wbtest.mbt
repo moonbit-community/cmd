@@ -117,6 +117,55 @@ test "metadata completeness is recomputed and coordinates do not replace artifac
   assert_true(
     run_metadata_errors({ ..oracle, docker_version: "Docker fixture", }).is_empty(),
   )
+  let identity : OracleIdentity = {
+    image: "sha256:" + digest,
+    digest: "sha256:" + digest,
+    versions: "observed inventory\n",
+    profile_id: "profile",
+  }
+  let bound = with_oracle_identity(
+    { ..metadata, docker_version: "Docker fixture", },
+    identity,
+  )
+  let oracle_finish = with_oracle_versions_hash(
+    {
+      ..finish,
+      docker_version: "Docker fixture",
+      oracle_profile_id: identity.profile_id,
+      oracle_image_digest: identity.digest,
+    },
+    sha256_text(identity.versions),
+  )
+  let accepted = finalize_run_metadata(bound, oracle_finish)
+  assert_eq(accepted.reproducibility_status, "complete")
+  assert_eq(accepted.oracle_profile_id, identity.profile_id)
+  assert_eq(accepted.oracle_image_digest, identity.digest)
+  assert_eq(accepted.oracle_versions_hash, sha256_text(identity.versions))
+  assert_true(run_metadata_errors(accepted).is_empty())
+  for
+    drift in [
+      { ..oracle_finish, oracle_profile_id: "different-profile", },
+      {
+        ..oracle_finish,
+        oracle_image_digest: "sha256:" + sha256_text("other"),
+      },
+      { ..oracle_finish, oracle_versions_hash: sha256_text("other inventory"), },
+    ] {
+    let rejected = finalize_run_metadata(bound, drift)
+    assert_eq(rejected.reproducibility_status, "changed-during-run")
+    assert_eq(rejected.oracle_image_digest, identity.digest)
+    assert_false(run_metadata_errors(rejected).is_empty())
+  }
+  let rebound = with_oracle_identity(bound, {
+    ..identity,
+    digest: "sha256:" + sha256_text("other"),
+  })
+  assert_eq(rebound.oracle_image_digest, identity.digest)
+  assert_eq(rebound.reproducibility_status, "changed-during-run")
+  assert_eq(
+    finalize_run_metadata(rebound, oracle_finish).reproducibility_status,
+    "changed-during-run",
+  )
   for
     field in [
       "toolchain", "policy_hash", "docker_version", "environment_fingerprint", "host_environment_fingerprint",

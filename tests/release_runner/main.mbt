@@ -901,11 +901,12 @@ async fn run_selected_cases(
 }
 
 ///|
-async fn print_reports(
+fn render_reports(
   reports : Array[CaseReport],
   fixtures : Array[ReleaseCase],
   differential : Bool,
-) -> Unit {
+) -> (String, Int32) {
+  let output : Array[String] = []
   let mut failures = 0
   let mut semantic_passes = 0
   let mut availability_passes = 0
@@ -923,13 +924,24 @@ async fn print_reports(
         semantic_passes += 1
       _ => ()
     }
-    @stdio.stdout.write(
+    output.push(
       "[\{result}/\{verification}/\{report.category}] \{report.command}@\{report.version} \{report.id}: \{report.detail}\n",
     )
   }
-  @stdio.stdout.write(
+  output.push(
     "Summary: \{semantic_passes} semantic, \{availability_passes} availability, \{boundary_passes} boundary, \{skipped} skipped, \{failures} failed.\n",
   )
+  (output.join(""), failures)
+}
+
+///|
+async fn print_reports(
+  reports : Array[CaseReport],
+  fixtures : Array[ReleaseCase],
+  differential : Bool,
+) -> Unit {
+  let (output, failures) = render_reports(reports, fixtures, differential)
+  @stdio.stdout.write(output)
   if failures > 0 {
     @stdio.stderr.write("\{failures} release runner case(s) failed\n")
     @sys.exit(1)
@@ -1357,12 +1369,12 @@ async fn run_driver() -> Unit {
       []
     })
   let resolved_path = @fs.realpath(manifest_path)
-  let historical_root = root + "/tests/release_runner/historical/"
-  let current_path = root + "/tests/release_runner/current/published.json"
-  let frozen = manifest.candidate != Some(true) &&
-    (resolved_path.has_prefix(historical_root) || resolved_path == current_path)
+  let frozen_location = frozen_manifest_location(
+    snapshot_repository_path(root, resolved_path),
+  )
+  let frozen = manifest.candidate != Some(true) && frozen_location is Some(_)
   if frozen {
-    if resolved_path.has_prefix(historical_root) && !historical_replay {
+    if frozen_location == Some("historical") && !historical_replay {
       validation.push("historical manifests require --historical-replay")
     }
     validation.append(

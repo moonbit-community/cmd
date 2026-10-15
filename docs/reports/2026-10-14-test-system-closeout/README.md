@@ -28,6 +28,14 @@ coordinate changes are part of this repair.
 | Staged oracle profile was ignored | Workspace, release and freeze paths validate the staged profile against the reviewed recipe and immutable image identity. |
 | Historical replay depended on mutable current cases | Provenance-verified archived corpus, sources and registry are used for replay. Recursive references and overrides are resolved; cycles and tampering fail. Original manifests remain byte-identical. |
 | Cyclic corpus fingerprinting could prevent failure reports | Fingerprinting detects recursive references and returns unavailable provenance instead of recursing indefinitely. |
+| The first CI run could not recover historical Git sources | CI fetches full history; frozen bindings still compare against the original committed bytes. Windows checkout preserves JSON bytes without line-ending conversion. |
+| Windows paths misclassified frozen published manifests | Frozen selection and Git source lookup use normalized repository-relative paths. Tests retain rejection of live, custom and candidate locations. |
+| A report-summary test corrupted the Moon test event stream | Summary rendering is pure and separately asserted; the CLI still writes the same summary and exit status. |
+| Successful oracle comparisons lost their verified identity | Preflight binds the complete immutable oracle identity before execution. Finalization verifies the same identity and inventory, and rejects drift. |
+| Windows scenario request JSON escaped temporary paths | Only harness-authored network request arguments are decoded and normalized; other arguments and raw captures remain comparison evidence. |
+| Timestamp observation could perturb a later hard-link alias | Snapshot metadata is collected before any content reads. Baseline reads synchronize timestamps before the baseline is resampled. |
+| Repository reads interfered with the rejected-touch interval | The exact atime/mtime assertion runs in a private temporary fixture. Raw timestamps and bytes are retained; pair evidence compares the validated unchanged relation. |
+| HTTP listener cleanup was conflated with socket address reuse | A real HTTP request is followed by task cancellation and joining. A bounded connection probe must observe refusal after cleanup; retries and skipped assertions are not used. |
 
 ## Verification boundaries
 
@@ -45,6 +53,29 @@ seals a copied profile, and passes the resulting SHA-256 image ID to workspace
 and exact published-consumer differential runs. A missing or mismatched oracle
 must remain infrastructure failure. CI success must be established from an
 actual run and uploaded reports before the complete plan is declared closed.
+
+The first remote run, [38571227661](https://github.com/moonbit-community/cmd/actions/runs/38571227661),
+tested `a69d39b4175f099365437f3562b4aaff5bca3d63` and failed. Its Linux oracle
+comparisons passed 418 cases on each backend, but the run metadata had lost
+the verified profile ID and digest, so these runs were correctly not accepted
+as reproducible evidence. The Windows and macOS failures above were recovered
+from the uploaded artifacts and job logs. This failed run remains diagnostic
+evidence, not final acceptance.
+
+Local timestamp controls found changes in 17 of 21 repository-directory
+trials, including synchronized reads, and zero of 21 equivalent temporary-
+directory trials. This isolates a directory-dependent interference condition;
+it does not identify a particular indexing or synchronization service. The
+original failure, controls, and subsequent isolated scenario results remain
+under the local evidence directory.
+
+After these CI repairs, local package validation passed 387 Native, 217 Wasm,
+2 JavaScript and 2 WasmGC tests. The affected filesystem and network scenarios
+passed direct Native/Wasm comparison (four report rows, including the two
+registered legacy aliases). Registry refresh records 1,332 behavior entries.
+The all-target warning-denied check, harness formatting, generated interfaces
+and workflow syntax checks also passed. This is local repair validation;
+cross-platform acceptance still requires the subsequent CI run.
 
 The mandatory product-change coverage gate in `AGENTS.md` applies to changes
 under `core/` or `commands/` that affect behavior, APIs, support or versions.

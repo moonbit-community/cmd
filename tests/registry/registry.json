@@ -39178,6 +39178,170 @@
         "status"
       ],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/runner/backend_pair_wbtest.mbt::timestamp pairing compares exact unchanged relations and rejects mutations",
+      "command": "",
+      "owner": "tests/runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/runner/backend_pair_wbtest.mbt::timestamp pairing compares exact unchanged relations and rejects mutations",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "timestamp pairing compares exact unchanged relations and rejects mutations"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/runner/scenario_request_wbtest.mbt::scenario request pairs normalize decoded Windows roots without rewriting other arguments",
+      "command": "",
+      "owner": "tests/runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/runner/scenario_request_wbtest.mbt::scenario request pairs normalize decoded Windows roots without rewriting other arguments",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scenario request pairs normalize decoded Windows roots without rewriting other arguments"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/snapshot_lifecycle_wbtest.mbt::snapshot timestamps separate completed baseline reads from final observations",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/snapshot_lifecycle_wbtest.mbt::snapshot timestamps separate completed baseline reads from final observations",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "snapshot timestamps separate completed baseline reads from final observations"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [
+        "posix"
+      ],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/release_runner/freeze_wbtest.mbt::frozen replay locations recognize Windows paths without accepting live candidates",
+      "command": "",
+      "owner": "tests/release_runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/release_runner/freeze_wbtest.mbt::frozen replay locations recognize Windows paths without accepting live candidates",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "frozen replay locations recognize Windows paths without accepting live candidates"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/release_runner/freeze_wbtest.mbt::snapshot Git paths retain repository separators on every host",
+      "command": "",
+      "owner": "tests/release_runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/release_runner/freeze_wbtest.mbt::snapshot Git paths retain repository separators on every host",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "snapshot Git paths retain repository separators on every host"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/release_runner/release_runner_wbtest.mbt::runner summary counts failures without writing to the test protocol stream",
+      "command": "",
+      "owner": "tests/release_runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/release_runner/release_runner_wbtest.mbt::runner summary counts failures without writing to the test protocol stream",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "runner summary counts failures without writing to the test protocol stream"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
     }
   ],
   "release_commands": [
