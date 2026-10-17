@@ -122,6 +122,77 @@ fn ci_scope_errors(
 }
 
 ///|
+fn ci_local_harness_scope_errors(
+  paths : ArrayView[String],
+  declaration : ChangeDeclaration,
+  impact : CiImpact,
+  registry : @registry.Registry,
+) -> Array[String] {
+  let failures = ci_scope_errors(paths, impact, registry)
+  if !impact.affected_commands.is_empty() {
+    failures.push(
+      "scope: reviewed harness-only impact must have no affected commands",
+    )
+  }
+  if !declaration.boundaries.is_empty() ||
+    !declaration.deferred.is_empty() ||
+    !declaration.uncovered.unwrap_or([]).is_empty() ||
+    !impact.boundaries.is_empty() ||
+    !impact.deferred.is_empty() ||
+    !impact.uncovered.is_empty() {
+    failures.push(
+      "scope: harness-only coverage requires passing package tests without boundaries, deferrals or uncovered behaviors",
+    )
+  }
+  if canonical_ids(registry, declaration.affected_behaviors) !=
+    canonical_ids(registry, impact.affected_behaviors) {
+    failures.push(
+      "scope: local harness behaviors differ from reviewed CI impact",
+    )
+  }
+  if declaration.published_manifest_affected !=
+    Some(impact.published_manifest_affected) {
+    failures.push(
+      "scope: local published manifest impact differs from reviewed CI impact",
+    )
+  }
+  for
+    (name, supplied, reviewed) in [
+      (
+        "required_backends",
+        declaration.required_backends,
+        impact.required_backends,
+      ),
+      (
+        "required_evidence",
+        declaration.required_evidence,
+        impact.required_evidence,
+      ),
+      (
+        "required_observations",
+        declaration.required_observations,
+        impact.required_observations,
+      ),
+      (
+        "affected_options",
+        declaration.affected_options.unwrap_or([]),
+        impact.affected_options,
+      ),
+      (
+        "affected_operands",
+        declaration.affected_operands.unwrap_or([]),
+        impact.affected_operands,
+      ),
+      ("case_ids", declaration.case_ids.unwrap_or([]), impact.case_ids),
+    ] {
+    if sorted_unique(supplied.copy()) != sorted_unique(reviewed.copy()) {
+      failures.push("scope: local " + name + " differs from reviewed CI impact")
+    }
+  }
+  failures
+}
+
+///|
 fn ci_declaration(
   impact : CiImpact,
   registry : @registry.Registry,

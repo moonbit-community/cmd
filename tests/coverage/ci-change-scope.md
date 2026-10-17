@@ -12,8 +12,16 @@ that the executor did not perform. A boundary pass remains rejection evidence.
 The existing registered serialization regression covers exact byte assertions,
 stream contracts, legacy rejection handling, failed rows and the distinction
 between boundary and semantic passes. Its Native evidence is required on Linux,
-macOS and Windows. The reviewed path bindings cover the serializer and this
-scope description; the modified test source is owned by the declared behavior.
+macOS and Windows.
+
+The local push audit now accepts the same empty command scope for a genuine
+harness-only range. The existing harness-only audit regression covers the
+accepted local declaration and rejection of product or shared-runtime changes,
+command-owned behaviors, unbound paths, mismatched reviewed impact and missing
+evidence. This behavior also requires Native evidence on all three platforms.
+Reviewed path bindings cover the serializer, audit validator and entry, impact
+parser, documentation and this scope description; both modified test sources
+are owned by their declared behaviors.
 
 No command behavior, package version, frozen input or recorded report changes.
 The CI declaration contains impact and requirements only. After merging, current

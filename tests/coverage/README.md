@@ -48,6 +48,18 @@ Changed registered test sources must have at least one owned affected behavior
 in the declaration, and a changed published manifest requires an explicit true
 published-manifest impact decision.
 
+The local push audit also accepts an empty `affected_commands` array for a
+harness-only range. Every affected behavior must be a registered package test
+under `tests/` without a command owner, and the range must not change `core/`
+or `commands/`. Nonempty affected behaviors and actual passing evidence remain
+required. This exception also checks the committed `ci-change.json` path
+bindings below and requires its reviewed impact and evidence requirements to
+match the local declaration. A dummy command is neither needed nor accepted as
+a substitute for harness evidence. Existing command-scoped local declarations
+keep their original interface.
+This exception requires both declarations to contain no boundaries, deferred
+behaviors or uncovered items; it accepts passing harness evidence only.
+
 Use `change.example.json` as a shape example, replacing every case, tag, and
 report reference with the actual change. Report paths are repository-relative
 and must identify supplied evidence bundles. `report` preserves the earlier

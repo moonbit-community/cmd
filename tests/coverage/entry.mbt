@@ -186,6 +186,14 @@ async fn audit_declared(
     paths, declaration, registry,
   )
   failures.append(scope_failures)
+  if !ci && declaration.affected_commands.is_empty() {
+    let impact = ci_impact(
+      @json.parse(@fs.read_file(root + "/tests/coverage/ci-change.json").text()),
+    )
+    failures.append(
+      ci_local_harness_scope_errors(paths, declaration, impact, registry),
+    )
+  }
   failures.append(validate_coverage(declaration, registry, ci~))
   failures.append(validate_boundaries(declaration, registry))
   let registry_hash = @testkit.manifest_digest(options.registry_path)

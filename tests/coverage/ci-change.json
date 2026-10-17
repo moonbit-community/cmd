@@ -2,7 +2,8 @@
   "schema": 1,
   "affected_commands": [],
   "affected_behaviors": [
-    "package-test:tests/release_runner/release_runner_wbtest.mbt::report serialization preserves evidence without semantic promotion"
+    "package-test:tests/release_runner/release_runner_wbtest.mbt::report serialization preserves evidence without semantic promotion",
+    "package-test:tests/coverage/ci_wbtest.mbt::CI harness-only impact needs reviewed bindings and real evidence without dummy commands"
   ],
   "affected_options": [],
   "affected_operands": [],
@@ -24,7 +25,32 @@
     {
       "path": "tests/coverage/ci-change-scope.md",
       "behavior_ids": [
-        "package-test:tests/release_runner/release_runner_wbtest.mbt::report serialization preserves evidence without semantic promotion"
+        "package-test:tests/release_runner/release_runner_wbtest.mbt::report serialization preserves evidence without semantic promotion",
+        "package-test:tests/coverage/ci_wbtest.mbt::CI harness-only impact needs reviewed bindings and real evidence without dummy commands"
+      ]
+    },
+    {
+      "path": "tests/coverage/audit.mbt",
+      "behavior_ids": [
+        "package-test:tests/coverage/ci_wbtest.mbt::CI harness-only impact needs reviewed bindings and real evidence without dummy commands"
+      ]
+    },
+    {
+      "path": "tests/coverage/README.md",
+      "behavior_ids": [
+        "package-test:tests/coverage/ci_wbtest.mbt::CI harness-only impact needs reviewed bindings and real evidence without dummy commands"
+      ]
+    },
+    {
+      "path": "tests/coverage/entry.mbt",
+      "behavior_ids": [
+        "package-test:tests/coverage/ci_wbtest.mbt::CI harness-only impact needs reviewed bindings and real evidence without dummy commands"
+      ]
+    },
+    {
+      "path": "tests/coverage/ci_input.mbt",
+      "behavior_ids": [
+        "package-test:tests/coverage/ci_wbtest.mbt::CI harness-only impact needs reviewed bindings and real evidence without dummy commands"
       ]
     }
   ]

@@ -141,6 +141,7 @@ test "CI harness-only impact needs reviewed bindings and real evidence without d
     ..audit_entry(),
     behavior_id: "package-test:tests/coverage/fixture_wbtest.mbt::gate",
     command: "",
+    owner: "tests/coverage",
     implementation: "package-test",
     source: "tests/coverage/fixture_wbtest.mbt::gate",
     case_id: "",
@@ -168,6 +169,128 @@ test "CI harness-only impact needs reviewed bindings and real evidence without d
   assert_true(validate_declaration_shape(declaration, ci=true).is_empty())
   assert_false(validate_declaration_shape(declaration).is_empty())
   assert_true(validate_coverage(declaration, registry, ci=true).is_empty())
+  let supplied = {
+    ..declaration,
+    coverage: declaration.coverage.map(record => { ..record, result: "pass", }),
+  }
+  assert_true(validate_declaration_shape(supplied).is_empty())
+  assert_true(validate_coverage(supplied, registry).is_empty())
+  let (_, _, harness_failures) = validate_changed_scope(
+    paths, supplied, registry,
+  )
+  assert_true(harness_failures.is_empty())
+  assert_true(
+    ci_local_harness_scope_errors(paths, supplied, impact, registry).is_empty(),
+  )
+  assert_false(
+    validate_declaration_shape({ ..supplied, affected_behaviors: [], }).is_empty(),
+  )
+  assert_false(
+    validate_coverage({ ..supplied, coverage: [], }, registry).is_empty(),
+  )
+  assert_false(validate_report_evidence(supplied, registry, []).is_empty())
+  let evidence : EvidenceBundle = {
+    report_path: @path.Path("native/summary.jsonl").normalize().to_string(),
+    metadata: audit_metadata("harness"),
+    rows: [
+      {
+        ..audit_row("harness", "native", "contract"),
+        id: entry.behavior_id,
+        observations: ["status"],
+      },
+    ],
+    selected_ids: [],
+    oracle_verified: false,
+    published_coordinates: [],
+  }
+  assert_true(
+    validate_report_evidence(supplied, registry, [evidence]).is_empty(),
+  )
+  assert_false(
+    validate_report_evidence(supplied, registry, [
+      { ..evidence, rows: [{ ..evidence.rows[0], result: "fail", }], },
+    ]).is_empty(),
+  )
+  for core_impact in [None, Some("explicit"), Some("all")] {
+    let (_, _, rejected) = validate_changed_scope(
+      ["core/cli/options.mbt"],
+      { ..supplied, core_impact, },
+      registry,
+    )
+    assert_true(
+      rejected.any(error => error.contains("cannot change core or commands")),
+    )
+  }
+  for
+    masquerade in [
+      { ..entry, command: "echo", },
+      { ..entry, command: "all", },
+      { ..entry, owner: "core/cli", },
+      { ..entry, source: "commands/echo/main_wbtest.mbt::gate", },
+      { ..entry, implementation: "metadata-probe", },
+    ] {
+    let (_, _, rejected) = validate_changed_scope(paths, supplied, {
+      ..registry,
+      entries: [masquerade],
+    })
+    assert_true(
+      rejected.any(error => error.contains("tests-owned package behaviors")),
+    )
+  }
+  let boundary : BoundaryRecord = {
+    behavior_id: entry.behavior_id,
+    support_record: "docs/compatibility.md",
+    adr: "docs/adr/0001-runtime-contract.md",
+    current_limit: "fixture boundary",
+    unlock_condition: "fixture unlock",
+  }
+  for
+    changed in [
+      { ..impact, affected_commands: ["echo"], },
+      { ..impact, affected_behaviors: ["package-test:other"], },
+      { ..impact, published_manifest_affected: true, },
+      { ..impact, required_backends: ["wasm"], },
+      { ..impact, required_evidence: ["backend-pair"], },
+      { ..impact, required_observations: ["stdout"], },
+      { ..impact, affected_options: ["help"], },
+      { ..impact, affected_operands: ["operand"], },
+      { ..impact, case_ids: ["case"], },
+      { ..impact, boundaries: [boundary], },
+      { ..impact, deferred: [entry.behavior_id], },
+      { ..impact, uncovered: [entry.behavior_id], },
+      { ..impact, harness_bindings: [], },
+      {
+        ..impact,
+        harness_bindings: [
+          { path: "tests/absent.mbt", behavior_ids: [entry.behavior_id], },
+        ],
+      },
+    ] {
+    assert_false(
+      ci_local_harness_scope_errors(paths, supplied, changed, registry).is_empty(),
+    )
+  }
+  assert_false(
+    ci_local_harness_scope_errors([paths[0]], supplied, impact, registry).is_empty(),
+  )
+  for
+    changed in [
+      { ..supplied, boundaries: [boundary], },
+      { ..supplied, deferred: [entry.behavior_id], },
+      { ..supplied, uncovered: Some([entry.behavior_id]), },
+    ] {
+    assert_false(
+      ci_local_harness_scope_errors(paths, changed, impact, registry).is_empty(),
+    )
+  }
+  assert_false(
+    ci_local_harness_scope_errors(
+      [..paths, "tests/unbound.mbt"],
+      supplied,
+      impact,
+      registry,
+    ).is_empty(),
+  )
   assert_false(
     validate_report_evidence(declaration, registry, [], platforms=[
       "linux", "macos", "windows",
