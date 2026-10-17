@@ -1,6 +1,6 @@
 # diff
 
-Version **0.1.1** behavior is documented here. The
+Version **0.1.2** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -29,3 +29,11 @@ a timezone database. `--help` and `--version` are available.
 Both files are buffered. Edit-trace storage grows with the number of changes;
 this first version is intended for modest text files, not large unrelated
 inputs. Different equally short edit scripts can select different hunk boundaries.
+
+## Standalone metadata
+
+Standalone `--version` prints exactly `diff 0.1.2` followed by one
+newline. Standalone `--help` starts with `Usage: diff`, lists both
+metadata options, and ends with a newline. Both write to stdout, leave stdin
+unread, and exit with status 0. Exact-version publication and verification
+remain recorded separately in the [support record](../../docs/compatibility.md).

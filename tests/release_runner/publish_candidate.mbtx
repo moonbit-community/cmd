@@ -1,0 +1,603 @@
+///|
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/http",
+  "moonbitlang/async/shell",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+  "moonbitlang/x/crypto",
+}
+
+///|
+struct Release {
+  name : String
+  version : String
+  directory : String
+}
+
+///|
+fn digest(bytes : Bytes) -> String {
+  @crypto.bytes_to_hex_string(@crypto.sha256(bytes))
+}
+
+///|
+fn field(value : Json, key : String) -> String raise {
+  guard value is Object(fields) && fields.get(key) is Some(String(text)) else {
+    fail("missing field: " + key)
+  }
+  text
+}
+
+///|
+fn version_valid(version : String) -> Bool {
+  let parts = version.split(".").collect()
+  parts.length() == 3 &&
+  parts.all(part => !part.is_empty() && part.iter().all(c => c is ('0'..<='9')))
+}
+
+///|
+async fn command(program : String, args : Array[String]) -> String {
+  let result = @shell.Cmd(program, args, stdin=Text("")).output(
+    timeout_ms=60000,
+  )
+  guard result.exit_code() == 0 else {
+    fail(program + " failed: " + result.stderr())
+  }
+  result.stdout()
+}
+
+///|
+async fn check_source(source : String, candidate_hash : String) -> Unit {
+  guard command("git", ["rev-parse", "HEAD"]).trim() == source &&
+    command("git", ["status", "--porcelain=v1", "--untracked-files=normal"]).is_empty() else {
+    fail(
+      "publication requires the approved source revision in a clean checkout",
+    )
+  }
+  guard digest(
+      @fs.read_file("tests/release_runner/current/candidate.json").binary(),
+    ) ==
+    candidate_hash else {
+    fail("candidate bytes changed during publication")
+  }
+}
+
+///|
+async fn fetch(url : String) -> (Int32, Bytes, String?) {
+  @async.with_timeout(120000, () => {
+    let (response, body) = @http.get(url)
+    (response.code, body.binary(), response.headers.get("Location"))
+  })
+}
+
+///|
+fn manifest_url(release : Release) -> String {
+  "https://mooncakes.io/api/v0/manifest/cli/" +
+  release.name +
+  "@" +
+  release.version
+}
+
+///|
+fn exact_checksum(value : Json, release : Release) -> String raise {
+  let name = "cli/" + release.name
+  guard value
+    is {
+      "module": String(module_name),
+      "version": String(version),
+      "yanked": False,
+      "metadata": {
+        "name": String(metadata_name),
+        "version": String(metadata_version),
+        "checksum": String(checksum),
+        ..
+      },
+      ..
+    } &&
+    module_name == name &&
+    version == release.version &&
+    metadata_name == name &&
+    metadata_version == release.version &&
+    checksum.length() == 64 &&
+    checksum.iter().all(c => c is ('0'..<='9' | 'a'..<='f')) else {
+    fail(
+      "registry did not confirm the exact non-yanked checksummed coordinate: " +
+      name,
+    )
+  }
+  checksum
+}
+
+///|
+async fn verify_registry(release : Release, directory : String) -> String {
+  let (status, bytes, _) = fetch(manifest_url(release))
+  guard status == 200 else {
+    fail("exact registry confirmation failed for " + release.name)
+  }
+  let checksum = exact_checksum(@json.parse(@utf8.decode(bytes)), release)
+  let suffix = "/user/cli/" + release.name + "/" + release.version + ".zip"
+  let archive_url = "https://download.mooncakes.io" + suffix
+  let (initial_status, initial_body, location) = fetch(archive_url)
+  let archive = if initial_status == 200 {
+    initial_body
+  } else {
+    let allowed = "https://d15l9c1mnzh3r.cloudfront.net" + suffix
+    guard [301, 302, 303, 307, 308].contains(initial_status) &&
+      location == Some(allowed) else {
+      fail("official archive returned an unexpected status or redirect")
+    }
+    let (final_status, final_body, _) = fetch(allowed)
+    guard final_status == 200 else {
+      fail("archive redirect did not end in a 200 response")
+    }
+    final_body
+  }
+  guard digest(archive) == checksum else {
+    fail("official source archive checksum mismatch")
+  }
+  @fs.write_file(directory + "/manifest.json", bytes, create_mode=@fs.CreateNew)
+  @fs.write_file(directory + "/archive.zip", archive, create_mode=@fs.CreateNew)
+  let observation : Json = {
+    "manifest_url": manifest_url(release),
+    "manifest_status": status,
+    "manifest_sha256": digest(bytes),
+    "archive_url": archive_url,
+    "archive_initial_status": initial_status,
+    "archive_redirect": Json(location),
+    "archive_sha256": checksum,
+  }
+  @fs.write_file(
+    directory + "/registry-verification.json",
+    observation.stringify(indent=2) + "\n",
+    create_mode=@fs.CreateNew,
+  )
+  checksum
+}
+
+///|
+async fn validate_ci(source : String, run : String, directory : String) -> Unit {
+  let endpoint = "repos/moonbit-community/cmd/actions/runs/" + run
+  let response = command("gh", ["api", endpoint])
+  let record = @json.parse(response)
+  guard record
+    is {
+      "head_sha": String(head),
+      "path": String(path),
+      "status": String(status),
+      "conclusion": String(conclusion),
+      ..
+    } &&
+    head == source &&
+    path == ".github/workflows/check.yml" &&
+    status == "completed" &&
+    conclusion == "success" else {
+    fail(
+      "required workflow did not complete successfully for the exact source revision",
+    )
+  }
+  let jobs_response = command("gh", [
+    "api",
+    endpoint + "/jobs?per_page=100&filter=latest",
+  ])
+  guard @json.parse(jobs_response) is { "jobs": Array(jobs), .. } else {
+    fail("CI response does not contain validation jobs")
+  }
+  let platforms = ["ubuntu-24.04", "macos-15", "windows-2025"]
+  for platform in platforms {
+    guard jobs.filter(job => {
+        job is { "name": String(name), .. } && name == platform
+      })
+      is [job] &&
+      job
+      is {
+        "status": String(job_status),
+        "conclusion": String(job_conclusion),
+        "steps": Array(steps),
+        ..
+      } &&
+      job_status == "completed" &&
+      job_conclusion == "success" else {
+      fail("platform CI is not successful: " + platform)
+    }
+    let required = [
+      "Check", "Test", "Build Native release commands and test drivers", "Build Wasm release commands",
+      "Compare Native and Wasm command metadata", "Validate workspace cases", "Validate unpublished candidate manifest",
+      "Native compatibility", "Native command contracts", "Wasm command contracts",
+      "Native interactive, network and lifecycle scenarios", "Wasm interactive, network and lifecycle scenarios",
+      "Compare Native and Wasm contracts and stateful scenarios", "Compare all applicable registered package tests on Native and Wasm",
+      "Published-version smoke", "Wasm policy", "Generated interfaces", "Format test harness packages",
+      "Check automation script formatting", "Verify generated files", "Upload reports and failed fixtures",
+    ]
+    if platform == "ubuntu-24.04" {
+      required.append([
+        "GNU differential", "Stress scenarios", "Build pinned oracle image", "Seal copied oracle profile and retain image identity",
+        "Compare pinned upstream fixtures on Native", "Compare pinned upstream fixtures on Wasm",
+        "Published-version differential",
+      ])
+    }
+    for step in required {
+      guard steps.any(item => {
+        item is { "name": String(name), "conclusion": String(result), .. } &&
+        name == step &&
+        result == "success"
+      }) else {
+        fail("required CI step was not successful: " + platform + ": " + step)
+      }
+    }
+  }
+  @fs.write_file(directory + "/ci-run.json", response)
+  @fs.write_file(directory + "/ci-jobs.json", jobs_response)
+}
+
+///|
+async fn main {
+  let args = @env.args()[1:]
+  guard args.length() == 8 else {
+    fail(
+      "Usage: publish_candidate.mbtx --mode preflight|publish|resume --source SHA --ci-run RUN_ID --evidence-dir IGNORED_DIRECTORY",
+    )
+  }
+  let options : Map[String, String] = Map([])
+  for index = 0; index < args.length(); index = index + 2 {
+    guard ["--mode", "--source", "--ci-run", "--evidence-dir"].contains(
+        args[index],
+      ) &&
+      !options.contains(args[index]) else {
+      fail("unknown or duplicate publication option")
+    }
+    options[args[index]] = args[index + 1]
+  }
+  let mode = options.get("--mode").unwrap_or("")
+  let source = options.get("--source").unwrap_or("")
+  let run = options.get("--ci-run").unwrap_or("")
+  let directory = options.get("--evidence-dir").unwrap_or("")
+  guard ["preflight", "publish", "resume"].contains(mode) &&
+    source.length() == 40 &&
+    source.iter().all(c => c is ('0'..<='9' | 'a'..<='f')) &&
+    !run.is_empty() &&
+    run.iter().all(c => c is ('0'..<='9')) else {
+    fail("invalid publication mode, source revision or CI run ID")
+  }
+  guard directory.has_prefix("_build/verification/") &&
+    !directory.split("/").any(part => part == ".." || part.is_empty()) &&
+    !directory.contains("\\") else {
+    fail("publication evidence must use a safe ignored verification directory")
+  }
+  let ignored = @shell.Cmd("git", [
+    "check-ignore",
+    "-q",
+    "--",
+    directory + "/session.json",
+  ]).output()
+  guard ignored.exit_code() == 0 else {
+    fail("publication evidence directory is not ignored")
+  }
+  guard @env.get_env_var("HOME") is Some(home) &&
+    @env.get_env_var("MOON_HOME") is Some(moon_home) &&
+    @fs.realpath(moon_home) == @fs.realpath(home + "/.moon-accounts/cli") else {
+    fail("publication must inherit the configured CLI MOON_HOME")
+  }
+  let candidate_path = "tests/release_runner/current/candidate.json"
+  let candidate_bytes = @fs.read_file(candidate_path).binary()
+  let candidate_hash = digest(candidate_bytes)
+  check_source(source, candidate_hash)
+  guard @json.parse(@utf8.decode(candidate_bytes))
+    is {
+      "schema": 2,
+      "candidate": True,
+      "core_version": String(core_version),
+      "commands": Array(commands),
+      ..
+    } &&
+    commands.length() == 78 &&
+    version_valid(core_version) else {
+    fail("invalid full release candidate")
+  }
+  let releases : Array[Release] = []
+  let names : Map[String, Bool] = Map([])
+  for item in commands {
+    let name = field(item, "name")
+    let version = field(item, "version")
+    guard name != "timeout" &&
+      name != "core" &&
+      !name.is_empty() &&
+      name.iter().all(c => c is ('a'..<='z' | '0'..<='9')) &&
+      !names.contains(name) &&
+      field(item, "package_name") == "cli/" + name &&
+      version_valid(version) else {
+      fail("invalid command coordinate in candidate")
+    }
+    names[name] = true
+    releases.push({ name, version, directory: "commands/" + name, })
+  }
+  releases.sort_by((left, right) => left.name.lexical_compare(right.name))
+  let ordered = [
+    { name: "core", version: core_version, directory: "core", },
+    ..releases,
+  ]
+  for release in ordered {
+    let module_source = @fs.read_file(release.directory + "/moon.mod").text()
+    guard module_source.contains("name = \"cli/" + release.name + "\"") &&
+      module_source.contains("version = \"" + release.version + "\"") else {
+      fail("source module differs from the candidate: " + release.name)
+    }
+  }
+  let session : Json = {
+    "schema": 1,
+    "source_revision": source,
+    "candidate_sha256": candidate_hash,
+    "ci_run": run,
+    "coordinates": Json(
+      ordered.map(item => "cli/" + item.name + "@" + item.version),
+    ),
+  }
+  if mode == "resume" {
+    guard @fs.exists(directory + "/session.json") &&
+      @json.parse(@fs.read_file(directory + "/session.json").text()) == session else {
+      fail(
+        "resume evidence does not identify this source, candidate and successful CI run",
+      )
+    }
+  } else {
+    guard !@fs.exists(directory) else {
+      fail("new publication requires a fresh evidence directory")
+    }
+    @fs.mkdir(directory, recursive=true)
+    @fs.write_file(
+      directory + "/session.json",
+      session.stringify(indent=2) + "\n",
+    )
+  }
+  // Initial absence, upload and verification evidence is immutable. Every
+  // resume records fresh observations separately and checks the first receipt's
+  // archive identity before reusing an upload; unknown uploads remain stopped.
+  let attempt_directory = if mode == "resume" {
+    let path = directory + "/resume-" + @env.now().to_string()
+    @fs.mkdir(path)
+    path
+  } else {
+    directory
+  }
+  validate_ci(source, run, attempt_directory)
+  let account = command("moon", ["whoami"])
+  guard account.trim() == "Logged in as cli" else {
+    fail("Moon account is not cli")
+  }
+  @fs.write_file(attempt_directory + "/account.txt", account)
+  @fs.write_file(
+    attempt_directory + "/toolchain.txt",
+    command("moon", ["version", "--all"]),
+  )
+  let confirmed : Map[String, Bool] = Map([])
+  // Complete the entire absence/receipt preflight before uploading the first
+  // module. Existing coordinates without same-source upload evidence stop here.
+  for release in ordered {
+    let package_dir = directory + "/" + release.name
+    @fs.mkdir(package_dir, recursive=true, allow_exist=mode == "resume")
+    let observation_dir = if mode == "resume" {
+      let path = attempt_directory + "/" + release.name
+      @fs.mkdir(path)
+      path
+    } else {
+      package_dir
+    }
+    let (status, body, _) = fetch(manifest_url(release))
+    @fs.write_file(
+      observation_dir + "/preflight-manifest.json",
+      body,
+      create_mode=@fs.CreateNew,
+    )
+    if @fs.exists(package_dir + "/upload.json") {
+      guard mode == "resume" else {
+        fail("unexpected existing upload evidence")
+      }
+      let upload = @json.parse(
+        @fs.read_file(package_dir + "/upload.json").text(),
+      )
+      guard upload
+        is {
+          "source_revision": String(upload_source),
+          "candidate_sha256": String(upload_candidate),
+          "coordinate": String(coordinate),
+          "status": 0,
+          "stdout_sha256": String(stdout_hash),
+          "stderr_sha256": String(stderr_hash),
+          ..
+        } &&
+        upload_source == source &&
+        upload_candidate == candidate_hash &&
+        coordinate == "cli/" + release.name + "@" + release.version &&
+        digest(@fs.read_file(package_dir + "/publish.stdout").binary()) ==
+        stdout_hash &&
+        digest(@fs.read_file(package_dir + "/publish.stderr").binary()) ==
+        stderr_hash else {
+        fail("resume upload receipt does not match this source and coordinate")
+      }
+      let output = @fs.read_file(package_dir + "/publish.stdout").text() +
+        @fs.read_file(package_dir + "/publish.stderr").text()
+      guard output.contains("Server status: 200 OK") && status == 200 else {
+        fail("resume upload is not confirmed")
+      }
+      let prior_checksum = if @fs.exists(package_dir + "/receipt.json") {
+        let prior = @json.parse(
+          @fs.read_file(package_dir + "/receipt.json").text(),
+        )
+        guard prior
+          is {
+            "source_revision": String(prior_source),
+            "coordinate": String(prior_coordinate),
+            "archive_sha256": String(prior_hash),
+            "verified": True,
+            ..
+          } &&
+          prior_source == source &&
+          prior_coordinate == coordinate &&
+          prior_hash.length() == 64 &&
+          prior_hash.iter().all(c => c is ('0'..<='9' | 'a'..<='f')) else {
+          fail(
+            "existing verification receipt does not match this source and coordinate",
+          )
+        }
+        Some(prior_hash)
+      } else {
+        None
+      }
+      let checksum = verify_registry(release, observation_dir)
+      guard prior_checksum is None || prior_checksum == Some(checksum) else {
+        fail(
+          "immutable registry archive changed since the first verified receipt",
+        )
+      }
+      let receipt : Json = {
+        "source_revision": source,
+        "coordinate": coordinate,
+        "archive_sha256": checksum,
+        "verified": true,
+        "verification_directory": observation_dir,
+      }
+      @fs.write_file(
+        observation_dir + "/receipt.json",
+        receipt.stringify(indent=2) + "\n",
+        create_mode=@fs.CreateNew,
+      )
+      if prior_checksum is None {
+        @fs.write_file(
+          package_dir + "/receipt.json",
+          receipt.stringify(indent=2) + "\n",
+          create_mode=@fs.CreateNew,
+        )
+      }
+      confirmed[release.name] = true
+    } else {
+      guard status == 404 else {
+        fail(
+          "candidate coordinate is not confirmed absent: cli/" +
+          release.name +
+          "@" +
+          release.version,
+        )
+      }
+      guard !@fs.exists(package_dir + "/publish.started.json") else {
+        fail(
+          "a prior upload has an unknown outcome; inspect it before retrying",
+        )
+      }
+    }
+  }
+  if mode == "preflight" {
+    println(
+      "Preflight passed for core and 78 commands. No package was uploaded.",
+    )
+    return
+  }
+  let mut registry_updated = false
+  for release in ordered {
+    if confirmed.contains(release.name) {
+      continue
+    }
+    if release.name != "core" && !registry_updated {
+      // Core was verified in this loop or by resume preflight. Refresh once
+      // before the first pending command, inheriting the validated MOON_HOME.
+      let update = @shell.Cmd("moon", ["update"], stdin=Text("")).output(
+        timeout_ms=600000,
+      )
+      @fs.write_file(
+        attempt_directory + "/registry-update.stdout",
+        update.stdout_bytes(),
+        create_mode=@fs.CreateNew,
+      )
+      @fs.write_file(
+        attempt_directory + "/registry-update.stderr",
+        update.stderr(),
+        create_mode=@fs.CreateNew,
+      )
+      @fs.write_file(
+        attempt_directory + "/registry-update.status",
+        update.exit_code().to_string() + "\n",
+        create_mode=@fs.CreateNew,
+      )
+      guard update.exit_code() == 0 else {
+        fail("registry refresh failed; no pending command was uploaded")
+      }
+      registry_updated = true
+    }
+    check_source(source, candidate_hash)
+    let (status, _, _) = fetch(manifest_url(release))
+    guard status == 404 else {
+      fail("coordinate appeared after preflight; publication stopped")
+    }
+    let package_dir = directory + "/" + release.name
+    let started : Json = {
+      "source_revision": source,
+      "coordinate": "cli/" + release.name + "@" + release.version,
+    }
+    @fs.write_file(
+      package_dir + "/publish.started.json",
+      started.stringify(indent=2) + "\n",
+    )
+    println("Publishing cli/" + release.name + "@" + release.version)
+    let output = @shell.Cmd(
+      "moon",
+      ["publish"],
+      cwd=release.directory,
+      stdin=Text(""),
+    ).output(timeout_ms=600000) catch {
+      error => {
+        @fs.write_file(package_dir + "/publish.error.txt", "\{error}\n")
+        fail(
+          "publication failed with an unknown upload outcome; inspect retained evidence",
+        )
+      }
+    }
+    @fs.write_file(package_dir + "/publish.stdout", output.stdout_bytes())
+    let stderr_bytes = @utf8.encode(output.stderr())
+    @fs.write_file(package_dir + "/publish.stderr", stderr_bytes)
+    let outcome : Json = {
+      "status": output.exit_code(),
+      "stdout_sha256": digest(output.stdout_bytes()),
+      "stderr_sha256": digest(stderr_bytes),
+      "stderr_encoding": "UTF-8 from shell.Output.stderr()",
+    }
+    @fs.write_file(
+      package_dir + "/publish.result.json",
+      outcome.stringify(indent=2) + "\n",
+    )
+    guard output.exit_code() == 0 &&
+      (output.stdout() + output.stderr()).contains("Server status: 200 OK") else {
+      fail("publication did not return status 0 and Server status: 200 OK")
+    }
+    let upload : Json = {
+      "source_revision": source,
+      "candidate_sha256": candidate_hash,
+      "coordinate": "cli/" + release.name + "@" + release.version,
+      "status": output.exit_code(),
+      "stdout_sha256": digest(output.stdout_bytes()),
+      "stderr_sha256": digest(stderr_bytes),
+      "stderr_encoding": "UTF-8 from shell.Output.stderr()",
+    }
+    @fs.write_file(
+      package_dir + "/upload.json",
+      upload.stringify(indent=2) + "\n",
+    )
+    let checksum = verify_registry(release, package_dir)
+    let receipt : Json = {
+      "source_revision": source,
+      "coordinate": "cli/" + release.name + "@" + release.version,
+      "archive_sha256": checksum,
+      "verified": true,
+      "verification_directory": package_dir,
+    }
+    @fs.write_file(
+      package_dir + "/receipt.json",
+      receipt.stringify(indent=2) + "\n",
+      create_mode=@fs.CreateNew,
+    )
+    println("Verified cli/" + release.name + "@" + release.version)
+  }
+  check_source(source, candidate_hash)
+  println(
+    "Core and all 78 command uploads are verified. Published-consumer acceptance and snapshot freezing remain required.",
+  )
+}

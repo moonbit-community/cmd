@@ -6,7 +6,7 @@ pub(all) struct FixtureFile {
   content_text : String?
   kind : String?
   target : String?
-  mode : Int?
+  mode : Int32?
   atime : String?
   mtime : String?
 } derive(FromJson, ToJson, Debug)
@@ -25,7 +25,7 @@ pub(all) struct ExpectedFile {
   kind : String?
   content_text : String?
   content_hex : String?
-  mode : Int?
+  mode : Int32?
   target : String?
   same_identity_as : String?
 } derive(FromJson, ToJson, Debug)
@@ -41,12 +41,12 @@ pub(all) struct Case {
   stdin_hex : String?
   stdin_text : String?
   files : Array[FixtureFile]
-  delay_ms : Int?
+  delay_ms : Int32?
   environment : Map[String, String]
-  expected_status : Int
+  expected_status : Int32
   expected_rejection : String?
   normalizations : Array[Normalization]
-  timeout_ms : Int?
+  timeout_ms : Int32?
   comparison : String?
   oracle : Bool?
   expected_stdout_hex : String?
@@ -71,11 +71,11 @@ pub(all) struct Case {
 } derive(FromJson, ToJson, Debug)
 
 ///|
-fn hex_nibble(char : Char) -> Int? {
+fn hex_nibble(char : Char) -> Int32? {
   match char {
-    '0'..='9' => Some(char.to_int() - '0'.to_int())
-    'a'..='f' => Some(char.to_int() - 'a'.to_int() + 10)
-    'A'..='F' => Some(char.to_int() - 'A'.to_int() + 10)
+    '0'..<='9' => Some(char.to_int() - '0'.to_int())
+    'a'..<='f' => Some(char.to_int() - 'a'.to_int() + 10)
+    'A'..<='F' => Some(char.to_int() - 'A'.to_int() + 10)
     _ => None
   }
 }

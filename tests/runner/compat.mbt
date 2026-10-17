@@ -37,7 +37,7 @@ async fn expect(
   command : String,
   args : Array[String],
   stdin : Bytes?,
-  status : Int,
+  status : Int32,
   stdout : Bytes,
   failures : Array[String],
 ) -> Unit {
@@ -72,8 +72,8 @@ async fn run_tail_follow_process(
   initial : Array[Bytes],
   append : Array[Bytes],
   replacement : Array[Bytes?],
-  ready_marker? : String = "",
-  poll_wait_ms? : Int = 160,
+  ready_marker~ : String = "",
+  poll_wait_ms~ : Int32 = 160,
 ) -> (Bytes, Bytes) {
   let root = @fs.tmpdir(prefix="mooncmd-tail-follow")
   defer (@fs.rmdir(root, recursive=true) catch { _ => () })
@@ -90,6 +90,7 @@ async fn run_tail_follow_process(
   let stdout = @process.redirect_to_file(stdout_path)
   let stderr = @process.redirect_to_file(stderr_path)
   @async.with_task_group <| group => {
+    @testkit.record_execution_environment(program)
     let child = @process.spawn(
       group,
       program,
@@ -133,9 +134,7 @@ async fn run_tail_follow_process(
       @async.sleep(poll_wait_ms)
     }
     child.cancel()
-    ignore(child.wait()) catch {
-      _ => ()
-    }
+    wait_for_direct_child("tail follow", () => child.wait())
   }
   (@fs.read_file(stdout_path).binary(), @fs.read_file(stderr_path).binary())
 }

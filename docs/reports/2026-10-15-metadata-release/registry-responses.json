@@ -1,0 +1,3853 @@
+[
+  {
+    "module": "cli/base32",
+    "version": "0.1.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/base32",
+      "version": "0.1.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "base32 command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "cedb350390d0e1910b756fe291da9d2fed12c5d512a17ab2b303f11a30137cc1",
+      "created_at": "2026-09-27T05:26:29.713672+00:00"
+    },
+    "latest_version": "0.1.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/base32",
+    "downloads": 5,
+    "has_package": true
+  },
+  {
+    "module": "cli/base64",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/base64",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "base64 command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "bcbffa7064f1c78f074cb47aa2c71207a2d2150e4d52495f885f4b3aa991865e",
+      "created_at": "2026-09-21T10:06:31.595353+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/base64",
+    "downloads": 20,
+    "has_package": true
+  },
+  {
+    "module": "cli/basename",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/basename",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "basename command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "58ad7a9c538287ba75f46590a339a7a78ea1f4d9489a942273fa949dcdbe2ca4",
+      "created_at": "2026-09-21T10:06:33.674814+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/basename",
+    "downloads": 15,
+    "has_package": true
+  },
+  {
+    "module": "cli/cat",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/cat",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "cat command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "d9f8e3c0535b0e05e5a7f2ba0098f903c4e8be0b32cca61a3151d3c65c44ddde",
+      "created_at": "2026-09-21T10:06:35.742970+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/cat",
+    "downloads": 19,
+    "has_package": true
+  },
+  {
+    "module": "cli/chmod",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/chmod",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "chmod command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "8085e8f3ffb2c5ccaa9a50fcaa4f044c67cbcc87664933d950c0055f8e189d4c",
+      "created_at": "2026-09-21T10:06:37.889029+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/chmod",
+    "downloads": 16,
+    "has_package": true
+  },
+  {
+    "module": "cli/cksum",
+    "version": "0.1.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/cksum",
+      "version": "0.1.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "cksum command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "88dcbc2f0ac4e8dcce5b7cd01064e090fe36799e18e646ede3d7a4ca99eb716d",
+      "created_at": "2026-09-27T05:43:33.503869+00:00"
+    },
+    "latest_version": "0.1.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/cksum",
+    "downloads": 5,
+    "has_package": true
+  },
+  {
+    "module": "cli/cmp",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/cmp",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "cmp command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "680910590935101f5686adb897a2f4e5c9a28a6c065f2ca28d01d2b55d9f41dc",
+      "created_at": "2026-09-21T10:06:40.131783+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/cmp",
+    "downloads": 16,
+    "has_package": true
+  },
+  {
+    "module": "cli/column",
+    "version": "0.1.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/column",
+      "version": "0.1.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "column command for MoonX.",
+      "deps": {
+        "cli/core": "0.5.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "9ca63ec335ef60dab006f02e930af0b8cbca95d2b62cadb464fefc95b0ab0408",
+      "created_at": "2026-10-11T07:22:09.459496+00:00"
+    },
+    "latest_version": "0.1.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/column",
+    "downloads": 6,
+    "has_package": true
+  },
+  {
+    "module": "cli/comm",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/comm",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "comm command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "8b5e5ae7e23198f62fa1c34fe973ed537831458b01131d5b7f580aa11ffec64f",
+      "created_at": "2026-09-21T10:06:42.275714+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/comm",
+    "downloads": 15,
+    "has_package": true
+  },
+  {
+    "module": "cli/core",
+    "version": "0.5.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/core",
+      "version": "0.5.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "Shared runtime core for cli command modules.",
+      "deps": {
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5",
+        "bobzhang/moonjq": "0.2.0"
+      },
+      "checksum": "b863a50fe038b4dc9cf97be63e5801e6aadce8c1cd9724942c934019d4ccca69",
+      "created_at": "2026-10-11T07:18:01.113837+00:00"
+    },
+    "latest_version": "0.5.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.5.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.4.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.3.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.3",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.2",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/core",
+    "downloads": 143,
+    "has_package": false
+  },
+  {
+    "module": "cli/cp",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/cp",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "cp command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "2da39dcb1adc3098caddd254394c69a7d0d451ab9569dab50ddc926f1ef10a08",
+      "created_at": "2026-09-21T10:06:44.511735+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/cp",
+    "downloads": 16,
+    "has_package": true
+  },
+  {
+    "module": "cli/csplit",
+    "version": "0.1.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/csplit",
+      "version": "0.1.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "csplit command for MoonX.",
+      "deps": {
+        "cli/core": "0.3.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "275c6b7a6a3baa7cf98e135368f47040470f239d06584216e60533b308cef038",
+      "created_at": "2026-10-10T22:52:11.561385+00:00"
+    },
+    "latest_version": "0.1.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/csplit",
+    "downloads": 3,
+    "has_package": true
+  },
+  {
+    "module": "cli/curl",
+    "version": "0.2.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/curl",
+      "version": "0.2.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "curl command for MoonX.",
+      "deps": {
+        "cli/core": "0.5.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "15581595e78d7439defa872d19a2230a866f505a9a4d680140c8659224e6249a",
+      "created_at": "2026-10-11T07:22:29.899891+00:00"
+    },
+    "latest_version": "0.2.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.2",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/curl",
+    "downloads": 24,
+    "has_package": true
+  },
+  {
+    "module": "cli/cut",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/cut",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "cut command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "f0282ab79671021901c5c9de6003f02c3c838a0dd8105d84098cd9c82451b1f3",
+      "created_at": "2026-09-21T10:06:48.958058+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/cut",
+    "downloads": 16,
+    "has_package": true
+  },
+  {
+    "module": "cli/date",
+    "version": "0.1.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/date",
+      "version": "0.1.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "date command for MoonX.",
+      "deps": {
+        "cli/core": "0.5.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "ac67611e11b53be0d70b0eda0b2654596470d17c00d9418b7368357a4b21ecb0",
+      "created_at": "2026-10-11T07:22:51.262995+00:00"
+    },
+    "latest_version": "0.1.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/date",
+    "downloads": 7,
+    "has_package": true
+  },
+  {
+    "module": "cli/diff",
+    "version": "0.1.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/diff",
+      "version": "0.1.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "diff command for MoonX.",
+      "deps": {
+        "cli/core": "0.5.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "76d734b47f37c0f1f850b3d8371e90523300d526da8990032416c961b26fdba3",
+      "created_at": "2026-10-11T07:23:11.995818+00:00"
+    },
+    "latest_version": "0.1.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/diff",
+    "downloads": 6,
+    "has_package": true
+  },
+  {
+    "module": "cli/dirname",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/dirname",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "dirname command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "8735b75eff33eb11bbd3668733fdb93c193caf5150bc66c98595a9e246eec30f",
+      "created_at": "2026-09-21T10:06:51.057520+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/dirname",
+    "downloads": 16,
+    "has_package": true
+  },
+  {
+    "module": "cli/echo",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/echo",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "echo command for MoonX.",
+      "deps": {
+        "moonbitlang/async": "0.22.1"
+      },
+      "checksum": "6aa242b223ef0fe08de30dfdd42bcbbcb76433c9bc17f397c0188d6e8c22cfe6",
+      "created_at": "2026-09-21T10:06:53.147592+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.5",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/echo",
+    "downloads": 20,
+    "has_package": true
+  },
+  {
+    "module": "cli/env",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/env",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "env command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "ae7a639a329f8410bc820b344c28a4422b6ea7df3cb500780c485900665ea452",
+      "created_at": "2026-09-21T10:06:55.420376+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/env",
+    "downloads": 15,
+    "has_package": true
+  },
+  {
+    "module": "cli/expand",
+    "version": "0.1.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/expand",
+      "version": "0.1.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "expand command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "ce5837eb0e056839d18be41d90f38fc3c162cb084848752c962ec3fb1ee9dc15",
+      "created_at": "2026-09-27T05:53:27.450181+00:00"
+    },
+    "latest_version": "0.1.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/expand",
+    "downloads": 5,
+    "has_package": true
+  },
+  {
+    "module": "cli/expr",
+    "version": "0.1.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/expr",
+      "version": "0.1.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "expr command for MoonX.",
+      "deps": {
+        "cli/core": "0.3.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "9e41f294e8006487600971934479a960061d0d5cbc8e4660246a676c1e7a8013",
+      "created_at": "2026-10-10T22:52:28.217092+00:00"
+    },
+    "latest_version": "0.1.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/expr",
+    "downloads": 3,
+    "has_package": true
+  },
+  {
+    "module": "cli/false",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/false",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "false command for MoonX.",
+      "deps": {
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "da699c1db44315a3438642669d253488bb691165369fdae4b65c4ff93f5e02d6",
+      "created_at": "2026-09-21T10:06:57.512559+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.5",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/false",
+    "downloads": 17,
+    "has_package": true
+  },
+  {
+    "module": "cli/find",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/find",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "find command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "8da687509fe93a0fc034b450edbc22edd2382a4ae080544e16eee6e9251ec9d9",
+      "created_at": "2026-09-21T10:06:59.735149+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/find",
+    "downloads": 15,
+    "has_package": true
+  },
+  {
+    "module": "cli/fmt",
+    "version": "0.1.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/fmt",
+      "version": "0.1.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "fmt command for MoonX.",
+      "deps": {
+        "cli/core": "0.3.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "1f003efa9ef6b711779e1c41a2b57d50dc6fe8152b6467a8f85daaa5e3c0dc12",
+      "created_at": "2026-10-10T22:52:31.163513+00:00"
+    },
+    "latest_version": "0.1.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/fmt",
+    "downloads": 3,
+    "has_package": true
+  },
+  {
+    "module": "cli/fold",
+    "version": "0.1.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/fold",
+      "version": "0.1.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "fold command for MoonX.",
+      "deps": {
+        "cli/core": "0.3.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "0fbfe548a2d883972823c3b787278ad8283575cd7bf3b1279f20915ce3d3d2e6",
+      "created_at": "2026-10-10T22:52:34.137303+00:00"
+    },
+    "latest_version": "0.1.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/fold",
+    "downloads": 3,
+    "has_package": true
+  },
+  {
+    "module": "cli/grep",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/grep",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "grep command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "921ce4a936f2854549385548b9b8fa98214e4d8907c6996ce34a28a226964a95",
+      "created_at": "2026-09-21T10:07:02.022309+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/grep",
+    "downloads": 17,
+    "has_package": true
+  },
+  {
+    "module": "cli/gunzip",
+    "version": "0.1.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/gunzip",
+      "version": "0.1.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "gunzip command for MoonX.",
+      "deps": {
+        "cli/core": "0.3.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "f8beb86cfee3e5ae7397bb89bfcf360301e8c40167f8b1a8322c7695c53f42de",
+      "created_at": "2026-10-10T22:52:37.082849+00:00"
+    },
+    "latest_version": "0.1.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/gunzip",
+    "downloads": 3,
+    "has_package": true
+  },
+  {
+    "module": "cli/gzip",
+    "version": "0.1.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/gzip",
+      "version": "0.1.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "gzip command for MoonX.",
+      "deps": {
+        "cli/core": "0.3.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "422bf9c0782aa26323d30e4faa27664f2ab21a3133c928542370c69680ac8b5d",
+      "created_at": "2026-10-10T22:52:39.842133+00:00"
+    },
+    "latest_version": "0.1.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/gzip",
+    "downloads": 3,
+    "has_package": true
+  },
+  {
+    "module": "cli/head",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/head",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "head command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "74832d65d994cd98dfe37b2d45930c99ab995759578b4147a78a496c1a91e0cd",
+      "created_at": "2026-09-21T10:07:04.151716+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/head",
+    "downloads": 19,
+    "has_package": true
+  },
+  {
+    "module": "cli/hexdump",
+    "version": "0.1.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/hexdump",
+      "version": "0.1.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "hexdump command for MoonX.",
+      "deps": {
+        "cli/core": "0.3.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "8962ce90bc26fcca66441c2669c0ef80279d58fc6408f22c8106b66915e58878",
+      "created_at": "2026-10-10T22:52:42.865184+00:00"
+    },
+    "latest_version": "0.1.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/hexdump",
+    "downloads": 3,
+    "has_package": true
+  },
+  {
+    "module": "cli/join",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/join",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "join command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "1e620cbfec6ac591884094cfc845a0973b8db98d44d1bc0c3299dd8dcfb4af73",
+      "created_at": "2026-09-21T10:07:06.365093+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/join",
+    "downloads": 15,
+    "has_package": true
+  },
+  {
+    "module": "cli/jq",
+    "version": "0.2.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/jq",
+      "version": "0.2.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "jq command for MoonX.",
+      "deps": {
+        "cli/core": "0.5.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5",
+        "bobzhang/moonjq": "0.2.0"
+      },
+      "checksum": "7dbf97b13de83506be4a021c3b23272a93ad7b4ff026cac4526d2ec06e1b5604",
+      "created_at": "2026-10-11T07:23:32.078312+00:00"
+    },
+    "latest_version": "0.2.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/jq",
+    "downloads": 20,
+    "has_package": true
+  },
+  {
+    "module": "cli/jqlog",
+    "version": "0.2.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/jqlog",
+      "version": "0.2.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "jqlog command for MoonX.",
+      "deps": {
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5",
+        "bobzhang/moonjq": "0.2.0",
+        "cli/core": "0.5.0"
+      },
+      "checksum": "3589871a76d8d6e48bc6e8de2aa640c477d6f0769b9a9cd0c1bc0ab24ce24d67",
+      "created_at": "2026-10-11T07:23:51.469815+00:00"
+    },
+    "latest_version": "0.2.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.5",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/jqlog",
+    "downloads": 19,
+    "has_package": true
+  },
+  {
+    "module": "cli/ln",
+    "version": "0.2.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/ln",
+      "version": "0.2.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "ln command for MoonX.",
+      "deps": {
+        "cli/core": "0.5.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "69ca323963adfa9cb22c1bbc92a59e338b33db549d3d99acad034302acde67a7",
+      "created_at": "2026-10-11T07:24:09.720981+00:00"
+    },
+    "latest_version": "0.2.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/ln",
+    "downloads": 18,
+    "has_package": true
+  },
+  {
+    "module": "cli/ls",
+    "version": "0.2.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/ls",
+      "version": "0.2.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "ls command for MoonX.",
+      "deps": {
+        "cli/core": "0.5.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "2a1426a47d7ea81d917b1ca135d3bd14edd8c55d6f47e12ffe6c80d60c2149d5",
+      "created_at": "2026-10-11T10:01:12.159333+00:00"
+    },
+    "latest_version": "0.2.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/ls",
+    "downloads": 19,
+    "has_package": true
+  },
+  {
+    "module": "cli/make",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/make",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "make command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "8ac35fadbc126119a03898afb5bcf38f29e371bb05e5f16a2b91e2635ae89fd2",
+      "created_at": "2026-09-21T10:07:17.467511+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/make",
+    "downloads": 15,
+    "has_package": true
+  },
+  {
+    "module": "cli/md5sum",
+    "version": "0.1.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/md5sum",
+      "version": "0.1.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "md5sum command for MoonX.",
+      "deps": {
+        "cli/core": "0.3.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "0d37fb9869459259183ea5db23e27405da86fd8cbe5894ca3ff37c293a4bcab6",
+      "created_at": "2026-10-10T22:52:45.786122+00:00"
+    },
+    "latest_version": "0.1.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/md5sum",
+    "downloads": 3,
+    "has_package": true
+  },
+  {
+    "module": "cli/mkdir",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/mkdir",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "mkdir command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "59d0a78d6278fcd034adb96543b1f02c44574af4a19e8b08f4d3a7a2461ab85c",
+      "created_at": "2026-09-21T10:07:19.682640+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/mkdir",
+    "downloads": 15,
+    "has_package": true
+  },
+  {
+    "module": "cli/mktemp",
+    "version": "0.1.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/mktemp",
+      "version": "0.1.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "mktemp command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "0efa73076f8b516524e6f722a0f761c5a069f7827335dd3c7b12d5e2b55e2852",
+      "created_at": "2026-09-27T06:00:43.308475+00:00"
+    },
+    "latest_version": "0.1.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/mktemp",
+    "downloads": 6,
+    "has_package": true
+  },
+  {
+    "module": "cli/mv",
+    "version": "0.2.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/mv",
+      "version": "0.2.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "mv command for MoonX.",
+      "deps": {
+        "cli/core": "0.5.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "7754578908cf01da4578802aa2aae61c0186df2ac7247b8dddaad25e83daa157",
+      "created_at": "2026-10-11T07:24:30.924811+00:00"
+    },
+    "latest_version": "0.2.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/mv",
+    "downloads": 18,
+    "has_package": true
+  },
+  {
+    "module": "cli/nl",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/nl",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "nl command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "0e0fb6df0500c7b43c0b0fa6ac4f5363b17e07ee81740d5527c8687b44b4716c",
+      "created_at": "2026-09-21T10:07:24.182925+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/nl",
+    "downloads": 19,
+    "has_package": true
+  },
+  {
+    "module": "cli/od",
+    "version": "0.1.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/od",
+      "version": "0.1.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "od command for MoonX.",
+      "deps": {
+        "cli/core": "0.3.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "c1059c23388796ad6ad325072cc188406889c32c35bc6b706d795e47db051abd",
+      "created_at": "2026-10-10T22:52:48.648023+00:00"
+    },
+    "latest_version": "0.1.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/od",
+    "downloads": 3,
+    "has_package": true
+  },
+  {
+    "module": "cli/paste",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/paste",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "paste command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "d6b3d85152a5ef6d4f085c249ecc403d29faeea23d02dc2b4031844d61078304",
+      "created_at": "2026-09-21T10:07:26.219487+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/paste",
+    "downloads": 19,
+    "has_package": true
+  },
+  {
+    "module": "cli/patch",
+    "version": "0.1.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/patch",
+      "version": "0.1.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "patch command for MoonX.",
+      "deps": {
+        "cli/core": "0.3.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "e20f980984158e8afc4411e5d0b5056cd2999c313f758280d7b08db6732ef717",
+      "created_at": "2026-10-10T22:52:51.597862+00:00"
+    },
+    "latest_version": "0.1.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/patch",
+    "downloads": 3,
+    "has_package": true
+  },
+  {
+    "module": "cli/printenv",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/printenv",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "printenv command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "cbcb34fc7c465b9c0a6e3b68da4233e56cd91d848d25261fbf6ccf3975738a30",
+      "created_at": "2026-09-21T10:07:28.375875+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/printenv",
+    "downloads": 16,
+    "has_package": true
+  },
+  {
+    "module": "cli/printf",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/printf",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "printf command for MoonX.",
+      "deps": {
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "2ec212257f5f0c95938cc7f26f80f7f5f4565c93bdb00357b2fa7c6983511026",
+      "created_at": "2026-09-21T10:07:30.653962+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/printf",
+    "downloads": 17,
+    "has_package": true
+  },
+  {
+    "module": "cli/pwd",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/pwd",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "pwd command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "c40792d55d73e390b1a24211300d2a370564f9534cb257def548ca434ddc4751",
+      "created_at": "2026-09-21T10:07:32.840044+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/pwd",
+    "downloads": 15,
+    "has_package": true
+  },
+  {
+    "module": "cli/realpath",
+    "version": "0.1.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/realpath",
+      "version": "0.1.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "realpath command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "8ee203ea0bf88c9557e14e4345fb5f75b5213f38f4f9c0f831c967e77a9f7c15",
+      "created_at": "2026-09-27T06:06:43.379609+00:00"
+    },
+    "latest_version": "0.1.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/realpath",
+    "downloads": 6,
+    "has_package": true
+  },
+  {
+    "module": "cli/rev",
+    "version": "0.1.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/rev",
+      "version": "0.1.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "rev command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "96eb2fec6a3c5fc8351a9710a0e70343f95d77afc6cd952fd444a35c2210c835",
+      "created_at": "2026-09-27T06:06:57.238942+00:00"
+    },
+    "latest_version": "0.1.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/rev",
+    "downloads": 6,
+    "has_package": true
+  },
+  {
+    "module": "cli/rm",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/rm",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "rm command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "d560a0373b8171d9e9ab238a1a74177f0ba2675b948c9f427c3fceff3e773bd7",
+      "created_at": "2026-09-21T10:07:35.117659+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/rm",
+    "downloads": 15,
+    "has_package": true
+  },
+  {
+    "module": "cli/rmdir",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/rmdir",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "rmdir command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "72674432bd1f223eef2767f264f9a686f6c556e42c0aad452edfc10f4c055fe5",
+      "created_at": "2026-09-21T10:07:37.285499+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/rmdir",
+    "downloads": 15,
+    "has_package": true
+  },
+  {
+    "module": "cli/sed",
+    "version": "0.1.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/sed",
+      "version": "0.1.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "sed command for MoonX.",
+      "deps": {
+        "cli/core": "0.3.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "6b91375743f3b135d10acf1108a8677568ad976a244a0fdf1aafab6f34eb2426",
+      "created_at": "2026-10-10T22:52:54.552372+00:00"
+    },
+    "latest_version": "0.1.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/sed",
+    "downloads": 3,
+    "has_package": true
+  },
+  {
+    "module": "cli/seq",
+    "version": "0.2.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/seq",
+      "version": "0.2.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "seq command for MoonX.",
+      "deps": {
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "82be673a9b106df97698a982b268b24fe74d105a2773b3f5dd1a1d511f4da16d",
+      "created_at": "2026-10-11T07:24:49.258095+00:00"
+    },
+    "latest_version": "0.2.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.5",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/seq",
+    "downloads": 22,
+    "has_package": true
+  },
+  {
+    "module": "cli/sh",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/sh",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "sh command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "d0619bdb33303ff5f068fd93f691affcfc31b019ab2d1a9d2b1216a0069f2aea",
+      "created_at": "2026-09-21T10:07:41.755378+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.7",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.6",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.5",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/sh",
+    "downloads": 24,
+    "has_package": true
+  },
+  {
+    "module": "cli/sha1sum",
+    "version": "0.1.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/sha1sum",
+      "version": "0.1.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "sha1sum command for MoonX.",
+      "deps": {
+        "cli/core": "0.3.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "9e3030c07a3733f1603431209c2dfddeb071f5e10868cc0c6dcb7b48fc26d8a7",
+      "created_at": "2026-10-10T22:52:57.527453+00:00"
+    },
+    "latest_version": "0.1.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/sha1sum",
+    "downloads": 3,
+    "has_package": true
+  },
+  {
+    "module": "cli/sha256sum",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/sha256sum",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "sha256sum command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "9d5bc5243d1014c9484a1d1cc0c14e000bf1c1368f872b73735e67f2b040b495",
+      "created_at": "2026-09-21T10:07:44.012548+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/sha256sum",
+    "downloads": 17,
+    "has_package": true
+  },
+  {
+    "module": "cli/sha512sum",
+    "version": "0.1.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/sha512sum",
+      "version": "0.1.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "sha512sum command for MoonX.",
+      "deps": {
+        "cli/core": "0.3.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "9480748c1e2aa41b939d0b5a3594e07b3e9f631cc801ac72e77d6f04d6420831",
+      "created_at": "2026-10-10T22:53:00.513183+00:00"
+    },
+    "latest_version": "0.1.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/sha512sum",
+    "downloads": 3,
+    "has_package": true
+  },
+  {
+    "module": "cli/sleep",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/sleep",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "sleep command for MoonX.",
+      "deps": {
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "e604a2deb929f71c6d9d99f5a9da384b1d744ab37a9c377877fb3708c305dbcb",
+      "created_at": "2026-09-21T10:07:46.200956+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.5",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/sleep",
+    "downloads": 18,
+    "has_package": true
+  },
+  {
+    "module": "cli/sort",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/sort",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "sort command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "cfc73dd6f8dcdc36df5187e0c4b587dfe7ae3093b0aca483bf066d39454b3084",
+      "created_at": "2026-09-21T10:07:48.495090+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/sort",
+    "downloads": 19,
+    "has_package": true
+  },
+  {
+    "module": "cli/split",
+    "version": "0.1.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/split",
+      "version": "0.1.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "split command for MoonX.",
+      "deps": {
+        "cli/core": "0.3.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "45157f8e92194c048d75a2c7a849ffea0fc43e8212bd33fa31a43f67438d5656",
+      "created_at": "2026-10-10T22:53:03.527563+00:00"
+    },
+    "latest_version": "0.1.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/split",
+    "downloads": 3,
+    "has_package": true
+  },
+  {
+    "module": "cli/strings",
+    "version": "0.1.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/strings",
+      "version": "0.1.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "strings command for MoonX.",
+      "deps": {
+        "cli/core": "0.5.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "6f15c035c9676c0293aa6c3b893e3119417aa85fc50052a9f9b7485033071329",
+      "created_at": "2026-10-11T07:25:09.035362+00:00"
+    },
+    "latest_version": "0.1.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/strings",
+    "downloads": 7,
+    "has_package": true
+  },
+  {
+    "module": "cli/tac",
+    "version": "0.1.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/tac",
+      "version": "0.1.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "tac command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "450bd56cecd68b426de7fce2823a8cb42672f8f7c9a78fd277a85900e982b632",
+      "created_at": "2026-09-27T06:07:09.236592+00:00"
+    },
+    "latest_version": "0.1.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/tac",
+    "downloads": 5,
+    "has_package": true
+  },
+  {
+    "module": "cli/tail",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/tail",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "tail command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "ea9c863c1d48fb42dcb653ce094b55578250e40907ebceb9a9d7570fde614cfa",
+      "created_at": "2026-09-21T10:07:50.710000+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.3",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/tail",
+    "downloads": 22,
+    "has_package": true
+  },
+  {
+    "module": "cli/tee",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/tee",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "tee command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "231dce3d879772dfc2cfc22ead1b8723bae8d0c356b4733fa9bb0a2d37bb34e3",
+      "created_at": "2026-09-21T10:07:52.979960+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/tee",
+    "downloads": 22,
+    "has_package": true
+  },
+  {
+    "module": "cli/test",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/test",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "test command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "86ed205dabf5e6c52f4a85f6ec0a5ba3372d2d41d73b797d6710c66b95a9279b",
+      "created_at": "2026-09-21T10:07:55.232323+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/test",
+    "downloads": 15,
+    "has_package": true
+  },
+  {
+    "module": "cli/touch",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/touch",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "touch command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "f03cae7f3c99bedbf7304c138d7a2fd92d3f1c4c32884c0faaaf7e7c3ff0acf6",
+      "created_at": "2026-09-21T10:07:57.456511+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/touch",
+    "downloads": 17,
+    "has_package": true
+  },
+  {
+    "module": "cli/tr",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/tr",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "tr command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "dbb3d6d436bd484fb8afd4695ee0ac19331c96b7f0699c7abc65dc654afbcd29",
+      "created_at": "2026-09-21T10:07:59.645234+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/tr",
+    "downloads": 16,
+    "has_package": true
+  },
+  {
+    "module": "cli/tree",
+    "version": "0.1.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/tree",
+      "version": "0.1.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "tree command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "66cbb5239ccc3121968f45467d64a8f8372f44867e270a9e6106c21dc71c0daf",
+      "created_at": "2026-09-27T06:07:22.588557+00:00"
+    },
+    "latest_version": "0.1.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/tree",
+    "downloads": 6,
+    "has_package": true
+  },
+  {
+    "module": "cli/true",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/true",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "true command for MoonX.",
+      "deps": {
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "ae62d56e84dacd6be82e48bba5fbc1ce497036737f552ef4047669380ffd836a",
+      "created_at": "2026-09-21T10:08:01.811169+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.5",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/true",
+    "downloads": 18,
+    "has_package": true
+  },
+  {
+    "module": "cli/unexpand",
+    "version": "0.1.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/unexpand",
+      "version": "0.1.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "unexpand command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "79d87d31eba0dd03b418d26a951d020343c9ba93b3917dda7587b773c7d46336",
+      "created_at": "2026-09-27T06:07:36.931400+00:00"
+    },
+    "latest_version": "0.1.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/unexpand",
+    "downloads": 5,
+    "has_package": true
+  },
+  {
+    "module": "cli/uniq",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/uniq",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "uniq command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "4b783ea9431ee99c100ef7f8f50facb891a0aa9f9edf69f5d17e05ca421f2e9f",
+      "created_at": "2026-09-21T10:08:04.041269+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/uniq",
+    "downloads": 21,
+    "has_package": true
+  },
+  {
+    "module": "cli/unlink",
+    "version": "0.1.2",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/unlink",
+      "version": "0.1.2",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "unlink command for MoonX.",
+      "deps": {
+        "cli/core": "0.5.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "0d200e9733baa23de661aa8fed5cdbe1e574fe14688ef0d1519adc36570b9a80",
+      "created_at": "2026-10-11T07:25:27.302938+00:00"
+    },
+    "latest_version": "0.1.2",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.2",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/unlink",
+    "downloads": 10,
+    "has_package": true
+  },
+  {
+    "module": "cli/wc",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/wc",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "wc command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "4b20c6286fb0ba58d8e19cc13e37ea12e902dae255852fafcefa8fb13466479b",
+      "created_at": "2026-09-21T10:08:06.304803+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/wc",
+    "downloads": 18,
+    "has_package": true
+  },
+  {
+    "module": "cli/wget",
+    "version": "0.2.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/wget",
+      "version": "0.2.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "wget command for MoonX.",
+      "deps": {
+        "cli/core": "0.5.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "aca721148f75508830d2443541874e5fbfdb4895643070a98cfe1e19a9a66da7",
+      "created_at": "2026-10-11T07:25:48.677896+00:00"
+    },
+    "latest_version": "0.2.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.2",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/wget",
+    "downloads": 30,
+    "has_package": true
+  },
+  {
+    "module": "cli/which",
+    "version": "0.1.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/which",
+      "version": "0.1.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "which command for MoonX.",
+      "deps": {
+        "cli/core": "0.5.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "8243e1e102c1832b2dfc6aa79d05d3e3851b92aff7ae89af845fe2b24ec0980a",
+      "created_at": "2026-10-11T07:26:08.441209+00:00"
+    },
+    "latest_version": "0.1.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/which",
+    "downloads": 6,
+    "has_package": true
+  },
+  {
+    "module": "cli/xargs",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/xargs",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "xargs command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "04908bfd1c1f66512010938e24585c3709a863691b36fbad2f6334055e92cb4e",
+      "created_at": "2026-09-21T10:08:10.812717+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/xargs",
+    "downloads": 20,
+    "has_package": true
+  },
+  {
+    "module": "cli/xxd",
+    "version": "0.2.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/xxd",
+      "version": "0.2.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "xxd command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.1",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "a96869c2195e1c80a854155d289a3eb9a40bfaa84663f8f503c6e60cbe9586bc",
+      "created_at": "2026-09-21T10:08:13.020134+00:00"
+    },
+    "latest_version": "0.2.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.2.0",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.4",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/xxd",
+    "downloads": 20,
+    "has_package": true
+  },
+  {
+    "module": "cli/yes",
+    "version": "0.1.1",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/yes",
+      "version": "0.1.1",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "yes command for MoonX.",
+      "deps": {
+        "cli/core": "0.2.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "23f5802c9395410ae15c39f2d5f6b500ec74c25fb6f42148bd5a0a8b9b8f1f3d",
+      "created_at": "2026-09-27T06:08:03.691642+00:00"
+    },
+    "latest_version": "0.1.1",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.1",
+        "yanked": false,
+        "yanked_reason": null
+      },
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/yes",
+    "downloads": 5,
+    "has_package": true
+  },
+  {
+    "module": "cli/zcat",
+    "version": "0.1.0",
+    "yanked": false,
+    "yanked_reason": null,
+    "metadata": {
+      "name": "cli/zcat",
+      "version": "0.1.0",
+      "readme": "README.md",
+      "repository": "https://github.com/moonbit-community/cmd",
+      "license": "Apache-2.0",
+      "keywords": [
+        "command-line",
+        "moonx",
+        "wasm"
+      ],
+      "preferred_target": "wasm",
+      "description": "zcat command for MoonX.",
+      "deps": {
+        "cli/core": "0.3.0",
+        "moonbitlang/async": "0.22.4",
+        "moonbitlang/x": "0.5.5"
+      },
+      "checksum": "781ce3327dac5566ae01404282c8c68553d73ae78bdff4ccb0e9a8995c43a5e5",
+      "created_at": "2026-10-10T22:53:06.488389+00:00"
+    },
+    "latest_version": "0.1.0",
+    "build_status": "success",
+    "versions": [
+      {
+        "version": "0.1.0",
+        "yanked": false,
+        "yanked_reason": null
+      }
+    ],
+    "name": "cli/zcat",
+    "downloads": 3,
+    "has_package": true
+  }
+]

@@ -1,0 +1,61 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "p0-unexpand-leading",
+      "command": "unexpand",
+      "args": [],
+      "stdin_text": "        x\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "\tx\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": ["default-stops", "leading"]
+    },
+    {
+      "id": "p0-unexpand-all",
+      "command": "unexpand",
+      "args": ["--all"],
+      "stdin_text": "x        y\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "x\t y\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": ["all-blanks"]
+    },
+    {
+      "id": "p0-unexpand-first-only",
+      "command": "unexpand",
+      "args": ["--all", "--first-only"],
+      "stdin_text": "        x        y\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "\tx        y\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": ["first-only"]
+    },
+    {
+      "id": "p0-unexpand-explicit-stops",
+      "command": "unexpand",
+      "args": ["-t", "4,10"],
+      "stdin_text": "          x\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "\t\tx\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": ["explicit-stops"]
+    }
+  ]
+}

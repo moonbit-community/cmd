@@ -5,6 +5,7 @@ pub async fn execute_contract(
   wasm : Bool,
   report_dir : String,
   http_base? : String,
+  retain_success~ : Bool = false,
 ) -> CaseReport {
   let start = @async.now()
   let verification = if fixture.expected_rejection is Some(_) {
@@ -52,11 +53,17 @@ pub async fn execute_contract(
   let errors : Array[String] = []
   let mut outcome = "pass"
   let mut result : RunResult? = None
+  let mut evidence_path = work
   let dimensions = contract_observations(fixture)
   try {
     prepare_fixture(fixture_root, fixture, http_base?)
     let before = if fixture.expected_rejection is Some(_) {
-      snapshot(fixture_root, observe=dimensions, baseline=true)
+      snapshot(
+        fixture_root,
+        observe=dimensions,
+        baseline=true,
+        preserve_identity=true,
+      )
     } else {
       []
     }
@@ -94,7 +101,11 @@ pub async fn execute_contract(
       stage = "assertion"
       match fixture.expected_rejection {
         Some(reason) => {
-          let after = snapshot(fixture_root, observe=dimensions)
+          let after = snapshot(
+            fixture_root,
+            observe=dimensions,
+            preserve_identity=true,
+          )
           if observed.status == 0 || !contains_bytes(observed.stderr, reason) {
             errors.push("expected rejection: " + reason)
           }
@@ -133,12 +144,52 @@ pub async fn execute_contract(
       @fs.write_file(work + "/stdout.bin", observed.stdout)
       @fs.write_file(work + "/stderr.bin", observed.stderr)
     }
+  } else if retain_success {
+    stage = "snapshot"
+    try {
+      if result is Some(observed) {
+        @fs.write_file(work + "/stdout.bin", observed.stdout)
+        @fs.write_file(work + "/stderr.bin", observed.stderr)
+        @fs.write_file(work + "/status.txt", observed.status.to_string())
+        @fs.write_file(
+          work + "/snapshot.txt",
+          snapshot_fingerprint(snapshot(fixture_root, observe=dimensions)),
+        )
+      }
+    } catch {
+      error => {
+        outcome = "infra"
+        errors.push(error.to_string())
+      }
+    }
   } else {
     stage = "cleanup"
     @async.protect_from_cancel(() => @fs.rmdir(work, recursive=true)) catch {
       error => {
         outcome = "infra"
         errors.push(error.to_string())
+        // The fixture may itself have removed write access from `work`.
+        // Preserve the completed candidate result in a sibling directory so
+        // cleanup failure cannot erase the only stream/status evidence.
+        if result is Some(observed) {
+          let fallback = report_dir + "/" + fixture.id + ".cleanup-evidence"
+          try {
+            @fs.mkdir(fallback)
+            @fs.write_file(fallback + "/stdout.bin", observed.stdout)
+            @fs.write_file(fallback + "/stderr.bin", observed.stderr)
+            @fs.write_file(
+              fallback + "/status.txt",
+              observed.status.to_string(),
+            )
+            @fs.write_file(fallback + "/fixture-path.txt", work + "\n")
+            evidence_path = fallback
+          } catch {
+            write_error =>
+              errors.push(
+                "cleanup evidence write failed: " + write_error.to_string(),
+              )
+          }
+        }
       }
     }
   }
@@ -157,10 +208,10 @@ pub async fn execute_contract(
     } else {
       []
     },
-    evidence: if outcome == "pass" {
+    evidence: if outcome == "pass" && !retain_success {
       None
     } else {
-      Some(work)
+      Some(evidence_path)
     },
   }
 }

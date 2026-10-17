@@ -1,0 +1,462 @@
+///|
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+}
+
+///|
+fn fields(value : Json, context : String) -> Map[String, Json] raise {
+  guard value is Object(value) else { fail(context + ": expected object") }
+  value
+}
+
+///|
+fn text_field(value : Json, name : String, context : String) -> String raise {
+  guard fields(value, context).get(name) is Some(String(text)) else {
+    fail(context + ": missing string " + name)
+  }
+  text
+}
+
+///|
+fn array_field(
+  value : Json,
+  name : String,
+  context : String,
+) -> Array[Json] raise {
+  guard fields(value, context).get(name) is Some(Array(items)) else {
+    fail(context + ": missing array " + name)
+  }
+  items
+}
+
+///|
+fn string_array(
+  value : Json,
+  name : String,
+  context : String,
+) -> Array[String] raise {
+  array_field(value, name, context).map(item => {
+    guard item is String(text) else { fail(context + ": invalid " + name) }
+    text
+  })
+}
+
+///|
+async fn module_version(name : String) -> String {
+  let path = "commands/" + name + "/moon.mod"
+  let values : Map[String, String] = Map([])
+  for line in @fs.read_file(path).text().split("\n") {
+    let line = line.trim()
+    for field in ["name", "version"] {
+      let prefix = field + " = \""
+      if line.has_prefix(prefix) {
+        guard line.strip_prefix(prefix).unwrap().strip_suffix("\"")
+          is Some(value) else {
+          fail(path + ": invalid " + field)
+        }
+        guard !values.contains(field) else {
+          fail(path + ": duplicate " + field)
+        }
+        values[field] = value.to_owned()
+      }
+    }
+  }
+  guard values.get("name") == Some("cli/" + name) else {
+    fail(path + ": module name mismatch")
+  }
+  guard values.get("version") is Some(version) && version != "" else {
+    fail(path + ": missing version")
+  }
+  version
+}
+
+///|
+async fn checked_capture(
+  directory : String,
+  name : String,
+  probe : String,
+) -> String {
+  let native = directory + "/native/" + name + "/" + probe
+  let wasm = directory + "/wasm/" + name + "/" + probe
+  for suffix in [".status.txt", ".stdout.bin", ".stderr.bin"] {
+    guard @fs.read_file(native + suffix).binary() ==
+      @fs.read_file(wasm + suffix).binary() else {
+      fail(name + " " + probe + ": Native/Wasm bytes differ in " + suffix)
+    }
+  }
+  guard @fs.read_file(native + ".status.txt").binary() == b"0" else {
+    fail(name + " " + probe + ": expected status 0")
+  }
+  guard @fs.read_file(native + ".stderr.bin").binary() == b"" else {
+    fail(name + " " + probe + ": expected empty stderr")
+  }
+  let stdout = @fs.read_file(native + ".stdout.bin").binary()
+  let text = @utf8.decode(stdout)
+  guard @utf8.encode(text) == stdout else {
+    fail(name + " " + probe + ": stdout is not lossless UTF-8")
+  }
+  text
+}
+
+///|
+fn validate_help(name : String, help : String) -> Unit raise {
+  guard help.has_prefix("Usage: " + name) &&
+    help.has_suffix("\n") &&
+    help.contains("--help") &&
+    help.contains("--version") &&
+    help.contains("display this help and exit") &&
+    help.contains("display version and exit") &&
+    !help.contains("Show this help") &&
+    !help.contains("Show version") &&
+    !help.contains("package version") &&
+    !help.contains("output version information") else {
+    fail(name + ": help capture violates the reviewed metadata contract")
+  }
+}
+
+///|
+async fn validate_report(directory : String, names : Array[String]) -> Unit {
+  let metadata = @json.parse(
+    @fs.read_file(directory + "/run-metadata.json").text(),
+  )
+  let context = "metadata pair report"
+  guard text_field(metadata, "reproducibility_status", context) == "complete" &&
+    text_field(metadata, "native_artifact_hash", context) != "" &&
+    text_field(metadata, "wasm_artifact_hash", context) != "" else {
+    fail(context + ": complete artifact provenance is required")
+  }
+  let run_id = text_field(metadata, "run_id", context)
+  let registry_hash = text_field(metadata, "registry_hash", context)
+  let seen : Map[String, Bool] = Map([])
+  for line in @fs.read_file(directory + "/summary.jsonl").text().split("\n") {
+    if line.trim().is_empty() {
+      continue
+    }
+    let row = @json.parse(line.to_owned())
+    let name = text_field(row, "command", context)
+    if !names.contains(name) {
+      continue
+    }
+    let backend = text_field(row, "backend", name)
+    let key = name + ":" + backend
+    guard ["native", "wasm", "native+wasm"].contains(backend) &&
+      !seen.contains(key) else {
+      fail("unexpected or duplicate metadata row: " + key)
+    }
+    seen[key] = true
+    guard text_field(row, "id", key) == "metadata:" + name &&
+      text_field(row, "result", key) == "pass" &&
+      text_field(row, "stage", key) == "complete" &&
+      text_field(row, "source_version", key) == "workspace" &&
+      text_field(row, "reproducibility_status", key) == "complete" &&
+      text_field(row, "run_id", key) == run_id &&
+      text_field(row, "registry_revision", key) == registry_hash &&
+      text_field(row, "verification", key) ==
+      (if backend == "native+wasm" { "backend-pair" } else { "contract" }) &&
+      array_field(row, "missing_observations", key).is_empty() else {
+      fail("metadata row is not complete passing evidence: " + key)
+    }
+    let observations = string_array(row, "observations", key)
+    for observation in ["status", "stdout", "stderr"] {
+      guard observations.contains(observation) else {
+        fail(key + ": missing " + observation)
+      }
+    }
+  }
+  for name in names {
+    for backend in ["native", "wasm", "native+wasm"] {
+      guard seen.contains(name + ":" + backend) else {
+        fail("missing metadata pair row: " + name + ":" + backend)
+      }
+    }
+  }
+}
+
+///|
+fn metadata_case(
+  name : String,
+  version : String,
+  probe : String,
+  stdout : String,
+) -> Json {
+  {
+    "id": "release-metadata-" + name + "-" + probe,
+    "command": name,
+    "args": [Json("--" + probe)],
+    "stdin_text": "",
+    "files": [],
+    "environment": {},
+    "expected_status": 0,
+    "normalizations": [],
+    "comparison": "contract",
+    "coverage": [Json(probe)],
+    "source_version": "workspace cli/" +
+    name +
+    "@" +
+    version +
+    " metadata contract",
+    "expected_stdout_text": stdout,
+    "expected_stderr_text": "",
+  }
+}
+
+///|
+fn metadata_binding(name : String, probe : String) -> Json {
+  let id = "release-metadata-" + name + "-" + probe
+  {
+    "behavior_id": "case:" + id,
+    "command": name,
+    "owner": "commands/" + name,
+    "surface": ["metadata", "options"],
+    "status": "supported",
+    "implementation": "json-case",
+    "source": "tests/cases/" + name + ".json",
+    "case_id": id,
+    "aliases": [],
+    "coverage": [Json(probe)],
+    "required_backends": ["native", "wasm"],
+    "platforms": [],
+    "required_evidence": ["contract", "backend-pair"],
+    "observations": ["status", "stderr", "stdout"],
+    "oracle_profile": "",
+  }
+}
+
+///|
+fn register_metadata(
+  entries : Array[Json],
+  name : String,
+  probe : String,
+) -> Unit raise {
+  let binding = metadata_binding(name, probe)
+  let id = text_field(binding, "behavior_id", name)
+  let matches = entries.filter(entry => {
+    text_field(entry, "behavior_id", id) == id
+  })
+  guard matches.length() <= 1 else { fail("duplicate registry binding: " + id) }
+  if matches.is_empty() {
+    entries.push(binding)
+    return
+  }
+  // Regeneration preserves reviewed requirements instead of replacing them.
+  let existing = matches[0]
+  for field in ["command", "implementation", "source", "case_id"] {
+    guard text_field(existing, field, id) == text_field(binding, field, id) else {
+      fail("existing registry binding has another owner: " + id)
+    }
+  }
+  for
+    (field, required) in [
+      ("required_backends", ["native", "wasm"]),
+      ("required_evidence", ["contract", "backend-pair"]),
+      ("observations", ["status", "stdout", "stderr"]),
+    ] {
+    let actual = string_array(existing, field, id)
+    guard required.all(item => actual.contains(item)) else {
+      fail(
+        "existing registry binding is weaker than the generated contract: " + id,
+      )
+    }
+  }
+  let coverage = string_array(existing, "coverage", id)
+  if coverage == ["--" + probe] {
+    // Repair only the literal flag tag emitted by the first unpublished
+    // version of this generator. Catalog option identities are normalized.
+    let updated = fields(existing, id)
+    updated["coverage"] = Json([probe])
+  } else {
+    guard coverage.contains(probe) else {
+      fail("existing generated binding has an unreviewed option tag: " + id)
+    }
+  }
+}
+
+///|
+fn update_version_case(
+  value : Json,
+  name : String,
+  version : String,
+) -> Json raise {
+  let old = fields(value, name)
+  guard old.get("comparison") == Some(Json("contract")) &&
+    old.get("expected_status") == Some(Json(0)) &&
+    old.get("oracle") != Some(Json(true)) else {
+    fail(
+      name +
+      ": existing standalone version case is not a status-0 local contract",
+    )
+  }
+  let updated = old.copy()
+  updated.remove("expected_stdout_contains")
+  updated.remove("expected_stdout_hex")
+  updated["expected_stdout_text"] = Json(name + " " + version + "\n")
+  updated["source_version"] = Json(
+    "workspace cli/" + name + "@" + version + " metadata contract",
+  )
+  if !updated.contains("expected_stderr_contains") {
+    updated.remove("diagnostic_reason")
+  }
+  Json(updated)
+}
+
+///|
+async fn main {
+  let args = @env.args()[1:]
+  guard args.length() == 1 || (args.length() == 2 && args[1] == "--write") else {
+    fail("Usage: generate_release_cases.mbtx METADATA_PAIR_REPORT [--write]")
+  }
+  let directory = args[0]
+  let write = args.length() == 2
+  let registry_path = "tests/registry/registry.json"
+  let registry_original = @fs.read_file(registry_path).text()
+  let registry = @json.parse(registry_original)
+  guard fields(registry, "registry").get("schema") == Some(Json(2)) else {
+    fail("release metadata generation requires registry schema 2")
+  }
+  let releases = array_field(registry, "release_commands", "registry")
+  let names : Array[String] = []
+  for release in releases {
+    if fields(release, "release command").get("releasable") == Some(Json(true)) {
+      let name = text_field(release, "name", "release command")
+      guard name != "" &&
+        !name.contains("/") &&
+        !name.contains("\\") &&
+        name != "." &&
+        name != ".." &&
+        !names.contains(name) &&
+        text_field(release, "package_name", name) == "cli/" + name else {
+        fail("invalid or duplicate release command: " + name)
+      }
+      names.push(name)
+    }
+  }
+  names.sort()
+  guard names.length() == 78 && !names.contains("timeout") else {
+    fail(
+      "this reviewed release requires exactly 78 commands and excludes timeout",
+    )
+  }
+  validate_report(directory, names)
+  let entries = array_field(registry, "entries", "registry").copy()
+  let writes : Array[(String, String, String)] = []
+  let updated_ids : Array[String] = []
+  let generated_ids : Array[String] = []
+  let mut existing_version_cases = 0
+  for name in names {
+    let version = module_version(name)
+    let help = checked_capture(directory, name, "help")
+    validate_help(name, help)
+    let actual_version = checked_capture(directory, name, "version")
+    guard actual_version == name + " " + version + "\n" else {
+      fail(name + ": capture does not match the current module version")
+    }
+    let path = "tests/cases/" + name + ".json"
+    let original = @fs.read_file(path).text()
+    let document = @json.parse(original)
+    let seen : Map[String, Bool] = Map([])
+    let cases : Array[Json] = []
+    for value in array_field(document, "cases", path) {
+      let id = text_field(value, "id", path)
+      guard !seen.contains(id) else { fail(path + ": duplicate case " + id) }
+      seen[id] = true
+      if id == "release-metadata-" + name + "-help" ||
+        id == "release-metadata-" + name + "-version" {
+        guard text_field(value, "command", id) == name else {
+          fail("generated case identity belongs to another command: " + id)
+        }
+        continue
+      }
+      if text_field(value, "command", id) == name &&
+        fields(value, id).get("args") == Some(Json(["--version"])) {
+        cases.push(update_version_case(value, name, version))
+        updated_ids.push(id)
+        existing_version_cases += 1
+      } else {
+        cases.push(value)
+      }
+    }
+    cases.push(metadata_case(name, version, "help", help))
+    cases.push(metadata_case(name, version, "version", actual_version))
+    let updated = fields(document, path).copy()
+    updated["cases"] = Json(cases)
+    writes.push((path, original, Json(updated).stringify(indent=2) + "\n"))
+    for probe in ["help", "version"] {
+      generated_ids.push("release-metadata-" + name + "-" + probe)
+      register_metadata(entries, name, probe)
+    }
+  }
+  let updated_releases = releases.map(release => {
+    let name = text_field(release, "name", "release command")
+    if !names.contains(name) {
+      return release
+    }
+    let updated = fields(release, name).copy()
+    let ids = string_array(release, "case_ids", name).copy()
+    // These two literal flags were introduced by this unpublished generator;
+    // replace them with the catalog's reviewed normalized option identities.
+    let options = string_array(release, "supported_options", name).filter(option => {
+      option != "--help" && option != "--version"
+    })
+    for probe in ["help", "version"] {
+      let id = "release-metadata-" + name + "-" + probe
+      if !ids.contains(id) {
+        ids.push(id)
+      }
+      // Explicitly reviewed release support, not inferred from case labels.
+      let option = probe
+      if !options.contains(option) {
+        options.push(option)
+      }
+    }
+    ids.sort()
+    options.sort()
+    updated["case_ids"] = Json(ids)
+    updated["supported_options"] = Json(options)
+    Json(updated)
+  })
+  let updated_registry = fields(registry, "registry").copy()
+  updated_registry["entries"] = Json(entries)
+  updated_registry["release_commands"] = Json(updated_releases)
+  writes.push(
+    (
+      registry_path,
+      registry_original,
+      Json(updated_registry).stringify(indent=2) + "\n",
+    ),
+  )
+  let changed = writes.filter(item => item.1 != item.2)
+  // Finish every validation and detect concurrent edits before the first write.
+  for (path, original, _) in changed {
+    guard @fs.read_file(path).text() == original else {
+      fail("input changed during preparation: " + path)
+    }
+  }
+  println(
+    "validated 156 exact metadata cases for 78 commands; refreshed \{existing_version_cases} existing version cases",
+  )
+  println(
+    "\{changed.length()} files would change; published snapshots are untouched",
+  )
+  updated_ids.sort()
+  generated_ids.sort()
+  let coverage : Json = {
+    "preparation_only": true,
+    "updated_version_case_ids": Json(updated_ids),
+    "generated_metadata_case_ids": Json(generated_ids),
+  }
+  println(coverage.stringify())
+  if write {
+    for (path, _, updated) in changed {
+      @fs.write_file(path, updated)
+    }
+    println(
+      "wrote current cases and registry; refresh the registry and generate/validate the candidate next",
+    )
+  } else {
+    println("dry run only; pass --write to apply the reviewed preparation")
+  }
+}

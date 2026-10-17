@@ -1,6 +1,6 @@
 name = "cli/column"
 
-version = "0.1.1"
+version = "0.1.2"
 
 readme = "README.md"
 
@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "column command for MoonX."
 
 import {
-  "cli/core@0.5.0",
+  "cli/core@0.6.0",
   "moonbitlang/async@0.22.4",
   "moonbitlang/x@0.5.5",
 }

@@ -1,0 +1,182 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-paste-parallel",
+      "command": "paste",
+      "args": [
+        "left",
+        "right"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "left",
+          "content_text": "1\n2\n"
+        },
+        {
+          "path": "right",
+          "content_text": "a\nb\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-paste-zero-terminated",
+      "command": "paste",
+      "args": [
+        "-z",
+        "left",
+        "right"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "31003200"
+        },
+        {
+          "path": "right",
+          "content_hex": "61006200"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-paste-serial-empty",
+      "command": "paste",
+      "args": [
+        "-s"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-paste-escaped-delimiters",
+      "command": "paste",
+      "args": [
+        "-s",
+        "-d",
+        "\\n\\t"
+      ],
+      "stdin_text": "a\nb\nc\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-text-line-719",
+      "command": "paste",
+      "args": [
+        "-s",
+        "-d",
+        "\\"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "unescaped backslash",
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+    },
+    {
+      "id": "compat-text-paste-nul-records",
+      "command": "paste",
+      "args": [
+        "-z",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "31003200"
+        },
+        {
+          "path": "right",
+          "content_hex": "61006200"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_hex": "3109610032096200",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-merge-paste",
+      "command": "paste",
+      "args": [
+        "-d,",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "1\n2\n"
+        },
+        {
+          "path": "right",
+          "content_text": "a\nb\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "1,a\n2,b\n",
+      "expected_files": [],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-catalog-line-175",
+      "command": "paste",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-stdin-paste"
+      ]
+    },
+    {
+      "id": "compat-catalog-line-376",
+      "command": "paste",
+      "args": [
+        "-",
+        "-"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "left\nright\n",
+      "expected_stdout_text": "left\tright\n",
+      "expected_stderr_text": ""
+    }
+  ]
+}

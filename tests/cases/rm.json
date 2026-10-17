@@ -278,6 +278,44 @@
         "linux",
         "macos"
       ]
+    },
+    {
+      "id": "release-metadata-rm-help",
+      "command": "rm",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/rm@0.2.1 metadata contract",
+      "expected_stdout_text": "Usage: rm [-f] [-r|-R] [-d] [-v] [--preserve-root|--no-preserve-root] FILE...\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-rm-version",
+      "command": "rm",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/rm@0.2.1 metadata contract",
+      "expected_stdout_text": "rm 0.2.1\n",
+      "expected_stderr_text": ""
     }
   ]
 }

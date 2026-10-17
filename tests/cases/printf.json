@@ -96,6 +96,44 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "answer=42\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-printf-help",
+      "command": "printf",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/printf@0.2.1 metadata contract",
+      "expected_stdout_text": "Usage: printf FORMAT [ARGUMENT...]\n      --help      display this help and exit\n      --version   display version and exit\n\nFormat and print ARGUMENTs under control of FORMAT, like printf(1).\nThe FORMAT is reused as necessary to consume all arguments.\n\nEscapes: \\a \\b \\e \\f \\n \\r \\t \\v \\\\ \\\" \\' \\NNN \\0NNN \\xHH \\uHHHH\n\\UHHHHHHHH, and \\c (stop all output).\n\nConversions: %s %c %b %d %i %u %o %x %X %f %e %E %g %G %%, with the\nflags -+ 0#, field width, and precision (both accept *).\n%b interprets escapes in its argument.\n\nUse -- before a FORMAT that starts with '-'.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-printf-version",
+      "command": "printf",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/printf@0.2.1 metadata contract",
+      "expected_stdout_text": "printf 0.2.1\n",
+      "expected_stderr_text": ""
     }
   ]
 }

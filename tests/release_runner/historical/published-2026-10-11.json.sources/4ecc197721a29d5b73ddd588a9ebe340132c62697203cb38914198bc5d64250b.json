@@ -1,0 +1,730 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-jq-property",
+      "command": "jq",
+      "args": [
+        ".name"
+      ],
+      "stdin_text": "{\"name\":\"moon\"}\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p6-jq-sort-keys",
+      "command": "jq",
+      "args": [
+        "-S",
+        "-c",
+        "."
+      ],
+      "stdin_text": "{\"z\":1,\"a\":2}\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p6-jq-slurp-raw-input",
+      "command": "jq",
+      "args": [
+        "-R",
+        "-s",
+        "-c",
+        "."
+      ],
+      "stdin_text": "one\ntwo\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p6-jq-exit-status",
+      "command": "jq",
+      "args": [
+        "-e",
+        "-n",
+        "false"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": []
+    },
+    {
+      "id": "p6-jq-invalid-indent",
+      "command": "jq",
+      "args": [
+        "--indent",
+        "-1",
+        "."
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p6-jq-invalid-argjson",
+      "command": "jq",
+      "args": [
+        "--argjson",
+        "value",
+        "not-json",
+        "-n",
+        "$value"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": []
+    },
+    {
+      "id": "jq-stream-framing",
+      "command": "jq",
+      "args": [
+        "-c",
+        "."
+      ],
+      "stdin_text": "1 2 {\"a\":3}",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "1\n2\n{\"a\":3}\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-slurp-stream",
+      "command": "jq",
+      "args": [
+        "-cs",
+        "."
+      ],
+      "stdin_text": "1\n2",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "[1,2]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-raw-slurp",
+      "command": "jq",
+      "args": [
+        "-Rrs",
+        "."
+      ],
+      "stdin_text": "a\nb",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "a\nb\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-variable-scope",
+      "command": "jq",
+      "args": [
+        "-nr",
+        "--arg",
+        "x",
+        "outer",
+        "\"inner\" as $x | $x"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "inner\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-false-exit",
+      "command": "jq",
+      "args": [
+        "-e",
+        "."
+      ],
+      "stdin_text": "false",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "false\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-color-0",
+      "command": "jq",
+      "args": [
+        "-nC",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "\u001b[1;39m{\u001b[0m\n  \u001b[1;34m\"z\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[1;39m[\u001b[0m\n    \u001b[0;90mnull\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;39mfalse\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;39mtrue\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;39m1.5\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;32m\"escaped\\n尾\"\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[1;39m[]\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[1;39m{}\u001b[0m\n  \u001b[1;39m]\u001b[0m\u001b[1;39m,\u001b[0m\n  \u001b[1;34m\"a\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[0;39m1\u001b[0m\n\u001b[1;39m}\u001b[0m\n",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-1",
+      "command": "jq",
+      "args": [
+        "-nCc",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "\u001b[1;39m{\u001b[0m\u001b[1;34m\"z\"\u001b[0m\u001b[1;39m:\u001b[0m\u001b[1;39m[\u001b[0m\u001b[0;90mnull\u001b[0m\u001b[1;39m,\u001b[0m\u001b[0;39mfalse\u001b[0m\u001b[1;39m,\u001b[0m\u001b[0;39mtrue\u001b[0m\u001b[1;39m,\u001b[0m\u001b[0;39m1.5\u001b[0m\u001b[1;39m,\u001b[0m\u001b[0;32m\"escaped\\n尾\"\u001b[0m\u001b[1;39m,\u001b[0m\u001b[1;39m[]\u001b[0m\u001b[1;39m,\u001b[0m\u001b[1;39m{}\u001b[0m\u001b[1;39m]\u001b[0m\u001b[1;39m,\u001b[0m\u001b[1;34m\"a\"\u001b[0m\u001b[1;39m:\u001b[0m\u001b[0;39m1\u001b[0m\u001b[1;39m}\u001b[0m\n",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-2",
+      "command": "jq",
+      "args": [
+        "-nCS",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "\u001b[1;39m{\u001b[0m\n  \u001b[1;34m\"a\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[0;39m1\u001b[0m\u001b[1;39m,\u001b[0m\n  \u001b[1;34m\"z\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[1;39m[\u001b[0m\n    \u001b[0;90mnull\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;39mfalse\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;39mtrue\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;39m1.5\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;32m\"escaped\\n尾\"\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[1;39m[]\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[1;39m{}\u001b[0m\n  \u001b[1;39m]\u001b[0m\n\u001b[1;39m}\u001b[0m\n",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-3",
+      "command": "jq",
+      "args": [
+        "-nC",
+        "--tab",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "\u001b[1;39m{\u001b[0m\n\t\u001b[1;34m\"z\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[1;39m[\u001b[0m\n\t\t\u001b[0;90mnull\u001b[0m\u001b[1;39m,\u001b[0m\n\t\t\u001b[0;39mfalse\u001b[0m\u001b[1;39m,\u001b[0m\n\t\t\u001b[0;39mtrue\u001b[0m\u001b[1;39m,\u001b[0m\n\t\t\u001b[0;39m1.5\u001b[0m\u001b[1;39m,\u001b[0m\n\t\t\u001b[0;32m\"escaped\\n尾\"\u001b[0m\u001b[1;39m,\u001b[0m\n\t\t\u001b[1;39m[]\u001b[0m\u001b[1;39m,\u001b[0m\n\t\t\u001b[1;39m{}\u001b[0m\n\t\u001b[1;39m]\u001b[0m\u001b[1;39m,\u001b[0m\n\t\u001b[1;34m\"a\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[0;39m1\u001b[0m\n\u001b[1;39m}\u001b[0m\n",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-4",
+      "command": "jq",
+      "args": [
+        "-nC",
+        "--indent",
+        "0",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "\u001b[1;39m{\u001b[0m\n\u001b[1;34m\"z\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[1;39m[\u001b[0m\n\u001b[0;90mnull\u001b[0m\u001b[1;39m,\u001b[0m\n\u001b[0;39mfalse\u001b[0m\u001b[1;39m,\u001b[0m\n\u001b[0;39mtrue\u001b[0m\u001b[1;39m,\u001b[0m\n\u001b[0;39m1.5\u001b[0m\u001b[1;39m,\u001b[0m\n\u001b[0;32m\"escaped\\n尾\"\u001b[0m\u001b[1;39m,\u001b[0m\n\u001b[1;39m[]\u001b[0m\u001b[1;39m,\u001b[0m\n\u001b[1;39m{}\u001b[0m\n\u001b[1;39m]\u001b[0m\u001b[1;39m,\u001b[0m\n\u001b[1;34m\"a\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[0;39m1\u001b[0m\n\u001b[1;39m}\u001b[0m\n",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-5",
+      "command": "jq",
+      "args": [
+        "-nC",
+        "--indent",
+        "-1",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "\u001b[1;39m{\u001b[0m\n\t\u001b[1;34m\"z\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[1;39m[\u001b[0m\n\t\t\u001b[0;90mnull\u001b[0m\u001b[1;39m,\u001b[0m\n\t\t\u001b[0;39mfalse\u001b[0m\u001b[1;39m,\u001b[0m\n\t\t\u001b[0;39mtrue\u001b[0m\u001b[1;39m,\u001b[0m\n\t\t\u001b[0;39m1.5\u001b[0m\u001b[1;39m,\u001b[0m\n\t\t\u001b[0;32m\"escaped\\n尾\"\u001b[0m\u001b[1;39m,\u001b[0m\n\t\t\u001b[1;39m[]\u001b[0m\u001b[1;39m,\u001b[0m\n\t\t\u001b[1;39m{}\u001b[0m\n\t\u001b[1;39m]\u001b[0m\u001b[1;39m,\u001b[0m\n\t\u001b[1;34m\"a\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[0;39m1\u001b[0m\n\u001b[1;39m}\u001b[0m\n",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-6",
+      "command": "jq",
+      "args": [
+        "-nC",
+        "--indent",
+        "7",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "\u001b[1;39m{\u001b[0m\n       \u001b[1;34m\"z\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[1;39m[\u001b[0m\n              \u001b[0;90mnull\u001b[0m\u001b[1;39m,\u001b[0m\n              \u001b[0;39mfalse\u001b[0m\u001b[1;39m,\u001b[0m\n              \u001b[0;39mtrue\u001b[0m\u001b[1;39m,\u001b[0m\n              \u001b[0;39m1.5\u001b[0m\u001b[1;39m,\u001b[0m\n              \u001b[0;32m\"escaped\\n尾\"\u001b[0m\u001b[1;39m,\u001b[0m\n              \u001b[1;39m[]\u001b[0m\u001b[1;39m,\u001b[0m\n              \u001b[1;39m{}\u001b[0m\n       \u001b[1;39m]\u001b[0m\u001b[1;39m,\u001b[0m\n       \u001b[1;34m\"a\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[0;39m1\u001b[0m\n\u001b[1;39m}\u001b[0m\n",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-7",
+      "command": "jq",
+      "args": [
+        "-nC",
+        "--tab",
+        "-c",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "\u001b[1;39m{\u001b[0m\u001b[1;34m\"z\"\u001b[0m\u001b[1;39m:\u001b[0m\u001b[1;39m[\u001b[0m\u001b[0;90mnull\u001b[0m\u001b[1;39m,\u001b[0m\u001b[0;39mfalse\u001b[0m\u001b[1;39m,\u001b[0m\u001b[0;39mtrue\u001b[0m\u001b[1;39m,\u001b[0m\u001b[0;39m1.5\u001b[0m\u001b[1;39m,\u001b[0m\u001b[0;32m\"escaped\\n尾\"\u001b[0m\u001b[1;39m,\u001b[0m\u001b[1;39m[]\u001b[0m\u001b[1;39m,\u001b[0m\u001b[1;39m{}\u001b[0m\u001b[1;39m]\u001b[0m\u001b[1;39m,\u001b[0m\u001b[1;34m\"a\"\u001b[0m\u001b[1;39m:\u001b[0m\u001b[0;39m1\u001b[0m\u001b[1;39m}\u001b[0m\n",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-8",
+      "command": "jq",
+      "args": [
+        "-nC",
+        "-c",
+        "--tab",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "\u001b[1;39m{\u001b[0m\n\t\u001b[1;34m\"z\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[1;39m[\u001b[0m\n\t\t\u001b[0;90mnull\u001b[0m\u001b[1;39m,\u001b[0m\n\t\t\u001b[0;39mfalse\u001b[0m\u001b[1;39m,\u001b[0m\n\t\t\u001b[0;39mtrue\u001b[0m\u001b[1;39m,\u001b[0m\n\t\t\u001b[0;39m1.5\u001b[0m\u001b[1;39m,\u001b[0m\n\t\t\u001b[0;32m\"escaped\\n尾\"\u001b[0m\u001b[1;39m,\u001b[0m\n\t\t\u001b[1;39m[]\u001b[0m\u001b[1;39m,\u001b[0m\n\t\t\u001b[1;39m{}\u001b[0m\n\t\u001b[1;39m]\u001b[0m\u001b[1;39m,\u001b[0m\n\t\u001b[1;34m\"a\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[0;39m1\u001b[0m\n\u001b[1;39m}\u001b[0m\n",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-9",
+      "command": "jq",
+      "args": [
+        "-nC",
+        "--indent",
+        "4",
+        "-c",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "\u001b[1;39m{\u001b[0m\u001b[1;34m\"z\"\u001b[0m\u001b[1;39m:\u001b[0m\u001b[1;39m[\u001b[0m\u001b[0;90mnull\u001b[0m\u001b[1;39m,\u001b[0m\u001b[0;39mfalse\u001b[0m\u001b[1;39m,\u001b[0m\u001b[0;39mtrue\u001b[0m\u001b[1;39m,\u001b[0m\u001b[0;39m1.5\u001b[0m\u001b[1;39m,\u001b[0m\u001b[0;32m\"escaped\\n尾\"\u001b[0m\u001b[1;39m,\u001b[0m\u001b[1;39m[]\u001b[0m\u001b[1;39m,\u001b[0m\u001b[1;39m{}\u001b[0m\u001b[1;39m]\u001b[0m\u001b[1;39m,\u001b[0m\u001b[1;34m\"a\"\u001b[0m\u001b[1;39m:\u001b[0m\u001b[0;39m1\u001b[0m\u001b[1;39m}\u001b[0m\n",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-10",
+      "command": "jq",
+      "args": [
+        "-nC",
+        "-c",
+        "--indent",
+        "4",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "\u001b[1;39m{\u001b[0m\n    \u001b[1;34m\"z\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[1;39m[\u001b[0m\n        \u001b[0;90mnull\u001b[0m\u001b[1;39m,\u001b[0m\n        \u001b[0;39mfalse\u001b[0m\u001b[1;39m,\u001b[0m\n        \u001b[0;39mtrue\u001b[0m\u001b[1;39m,\u001b[0m\n        \u001b[0;39m1.5\u001b[0m\u001b[1;39m,\u001b[0m\n        \u001b[0;32m\"escaped\\n尾\"\u001b[0m\u001b[1;39m,\u001b[0m\n        \u001b[1;39m[]\u001b[0m\u001b[1;39m,\u001b[0m\n        \u001b[1;39m{}\u001b[0m\n    \u001b[1;39m]\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[1;34m\"a\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[0;39m1\u001b[0m\n\u001b[1;39m}\u001b[0m\n",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-11",
+      "command": "jq",
+      "args": [
+        "-nCr",
+        "\"raw\\nstring\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "raw\nstring\n",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-12",
+      "command": "jq",
+      "args": [
+        "-nCj",
+        "\"raw\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "raw",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-13",
+      "command": "jq",
+      "args": [
+        "-nCr",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "\u001b[1;39m{\u001b[0m\n  \u001b[1;34m\"z\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[1;39m[\u001b[0m\n    \u001b[0;90mnull\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;39mfalse\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;39mtrue\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;39m1.5\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;32m\"escaped\\n尾\"\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[1;39m[]\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[1;39m{}\u001b[0m\n  \u001b[1;39m]\u001b[0m\u001b[1;39m,\u001b[0m\n  \u001b[1;34m\"a\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[0;39m1\u001b[0m\n\u001b[1;39m}\u001b[0m\n",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-14",
+      "command": "jq",
+      "args": [
+        "-nCM",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "{\n  \"z\": [\n    null,\n    false,\n    true,\n    1.5,\n    \"escaped\\n尾\",\n    [],\n    {}\n  ],\n  \"a\": 1\n}\n",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-15",
+      "command": "jq",
+      "args": [
+        "-nMC",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "{\n  \"z\": [\n    null,\n    false,\n    true,\n    1.5,\n    \"escaped\\n尾\",\n    [],\n    {}\n  ],\n  \"a\": 1\n}\n",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-16",
+      "command": "jq",
+      "args": [
+        "-nC",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "31:32",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "\u001b[1;39m{\u001b[0m\n  \u001b[1;34m\"z\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[1;39m[\u001b[0m\n    \u001b[31mnull\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[32mfalse\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;39mtrue\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;39m1.5\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;32m\"escaped\\n尾\"\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[1;39m[]\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[1;39m{}\u001b[0m\n  \u001b[1;39m]\u001b[0m\u001b[1;39m,\u001b[0m\n  \u001b[1;34m\"a\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[0;39m1\u001b[0m\n\u001b[1;39m}\u001b[0m\n",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-17",
+      "command": "jq",
+      "args": [
+        "-nC",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": ":",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "\u001b[1;39m{\u001b[0m\n  \u001b[1;34m\"z\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[1;39m[\u001b[0m\n    \u001b[mnull\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;39mfalse\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;39mtrue\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;39m1.5\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;32m\"escaped\\n尾\"\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[1;39m[]\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[1;39m{}\u001b[0m\n  \u001b[1;39m]\u001b[0m\u001b[1;39m,\u001b[0m\n  \u001b[1;34m\"a\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[0;39m1\u001b[0m\n\u001b[1;39m}\u001b[0m\n",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-18",
+      "command": "jq",
+      "args": [
+        "-nC",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "31:32:",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "\u001b[1;39m{\u001b[0m\n  \u001b[1;34m\"z\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[1;39m[\u001b[0m\n    \u001b[31mnull\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[32mfalse\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;39mtrue\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;39m1.5\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;32m\"escaped\\n尾\"\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[1;39m[]\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[1;39m{}\u001b[0m\n  \u001b[1;39m]\u001b[0m\u001b[1;39m,\u001b[0m\n  \u001b[1;34m\"a\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[0;39m1\u001b[0m\n\u001b[1;39m}\u001b[0m\n",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-19",
+      "command": "jq",
+      "args": [
+        "-nC",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "31:32:33:34:35:36:37:38;5;123",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "\u001b[37m{\u001b[0m\n  \u001b[38;5;123m\"z\"\u001b[0m\u001b[37m:\u001b[0m \u001b[36m[\u001b[0m\n    \u001b[31mnull\u001b[0m\u001b[36m,\u001b[0m\n    \u001b[32mfalse\u001b[0m\u001b[36m,\u001b[0m\n    \u001b[33mtrue\u001b[0m\u001b[36m,\u001b[0m\n    \u001b[34m1.5\u001b[0m\u001b[36m,\u001b[0m\n    \u001b[35m\"escaped\\n尾\"\u001b[0m\u001b[36m,\u001b[0m\n    \u001b[36m[]\u001b[0m\u001b[36m,\u001b[0m\n    \u001b[37m{}\u001b[0m\n  \u001b[36m]\u001b[0m\u001b[37m,\u001b[0m\n  \u001b[38;5;123m\"a\"\u001b[0m\u001b[37m:\u001b[0m \u001b[34m1\u001b[0m\n\u001b[37m}\u001b[0m\n",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-20",
+      "command": "jq",
+      "args": [
+        "-nC",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "31:32:33:34:35:36:37:38;5;123:ignored",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "\u001b[37m{\u001b[0m\n  \u001b[38;5;123m\"z\"\u001b[0m\u001b[37m:\u001b[0m \u001b[36m[\u001b[0m\n    \u001b[31mnull\u001b[0m\u001b[36m,\u001b[0m\n    \u001b[32mfalse\u001b[0m\u001b[36m,\u001b[0m\n    \u001b[33mtrue\u001b[0m\u001b[36m,\u001b[0m\n    \u001b[34m1.5\u001b[0m\u001b[36m,\u001b[0m\n    \u001b[35m\"escaped\\n尾\"\u001b[0m\u001b[36m,\u001b[0m\n    \u001b[36m[]\u001b[0m\u001b[36m,\u001b[0m\n    \u001b[37m{}\u001b[0m\n  \u001b[36m]\u001b[0m\u001b[37m,\u001b[0m\n  \u001b[38;5;123m\"a\"\u001b[0m\u001b[37m:\u001b[0m \u001b[34m1\u001b[0m\n\u001b[37m}\u001b[0m\n",
+      "expected_stderr_text": "",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-21",
+      "command": "jq",
+      "args": [
+        "-nC",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "31:bad",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "\u001b[1;39m{\u001b[0m\n  \u001b[1;34m\"z\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[1;39m[\u001b[0m\n    \u001b[0;90mnull\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;39mfalse\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;39mtrue\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;39m1.5\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[0;32m\"escaped\\n尾\"\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[1;39m[]\u001b[0m\u001b[1;39m,\u001b[0m\n    \u001b[1;39m{}\u001b[0m\n  \u001b[1;39m]\u001b[0m\u001b[1;39m,\u001b[0m\n  \u001b[1;34m\"a\"\u001b[0m\u001b[1;39m:\u001b[0m \u001b[0;39m1\u001b[0m\n\u001b[1;39m}\u001b[0m\n",
+      "expected_stderr_text": "Failed to set $JQ_COLORS\n",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-color-22",
+      "command": "jq",
+      "args": [
+        "-nM",
+        "{z:[null,false,true,1.5,\"escaped\\n尾\",[],{}],a:1}"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "JQ_COLORS": "bad",
+        "LC_ALL": "C",
+        "NO_COLOR": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "{\n  \"z\": [\n    null,\n    false,\n    true,\n    1.5,\n    \"escaped\\n尾\",\n    [],\n    {}\n  ],\n  \"a\": 1\n}\n",
+      "expected_stderr_text": "Failed to set $JQ_COLORS\n",
+      "source_version": "jq 1.8.2",
+      "oracle": true
+    },
+    {
+      "id": "jq-partial-before-parse-error",
+      "command": "jq",
+      "args": [
+        "-c",
+        "."
+      ],
+      "stdin_text": "1 invalid",
+      "files": [],
+      "environment": {},
+      "expected_status": 4,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "1\n",
+      "expected_stderr_contains": "jq:",
+      "diagnostic_reason": "The JSON parser diagnostic includes implementation-specific wording; status 4 and the preceding complete output are exact."
+    },
+    {
+      "id": "compat-catalog-line-116",
+      "command": "jq",
+      "args": [
+        "-n",
+        "-c",
+        "null"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "null\n",
+      "expected_stderr_text": ""
+    }
+  ]
+}

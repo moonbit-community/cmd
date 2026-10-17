@@ -1,4 +1,63 @@
 ///|
+struct ScenarioTimestampObservation {
+  before_atime : String
+  after_atime : String
+  before_mtime : String
+  after_mtime : String
+} derive(ToJson, FromJson)
+
+///|
+fn scenario_timestamp_text(value : (Int64, Int32)) -> String {
+  let (seconds, nanos) = value
+  "\{seconds}:\{nanos}"
+}
+
+///|
+async fn rejected_touch_timestamp_scenario(
+  root : String,
+  wasm : Bool,
+  work : String,
+) -> Unit {
+  // Repository paths can be read by unrelated indexing or synchronization
+  // services. Keep the sensitive observation interval in a private fixture.
+  let isolated = @fs.tmpdir(prefix="mooncmd-touch-timestamps-")
+  defer (@async.protect_from_cancel(() => @fs.rmdir(isolated, recursive=true)) catch {
+    error => fail("cleanup infrastructure: \{error}")
+  })
+  let source = isolated + "/source"
+  @fs.write_file(source, "preserve source", permission=0o640)
+  assert_eq(
+    @fs.read_file(source, sync_timestamp=true).text(),
+    "preserve source",
+  )
+  let atime = @fs.atime(source)
+  let mtime = @fs.mtime(source)
+  let touched = scenario_run(work, root, wasm, "touch", [source], stdin=b"")
+  let observed_atime = @fs.atime(source)
+  let observed_mtime = @fs.mtime(source)
+  // Capture both timestamps before reading bytes or copying any evidence.
+  // These exact values survive assertion failures; cross-volume rename is not
+  // involved in retaining the isolated file.
+  let captured : ScenarioTimestampObservation = {
+    before_atime: scenario_timestamp_text(atime),
+    after_atime: scenario_timestamp_text(observed_atime),
+    before_mtime: scenario_timestamp_text(mtime),
+    after_mtime: scenario_timestamp_text(observed_mtime),
+  }
+  @fs.write_file(work + "/../filesystem-origin.txt", isolated)
+  @fs.write_file(
+    work + "/../timestamp-observations.json",
+    @testkit.canonical_json(ToJson::to_json(captured)),
+  )
+  let content = @fs.read_file(source).binary()
+  @fs.write_file(work + "/timestamp-source", content)
+  assert_true(touched.status != 0)
+  assert_eq(observed_atime, atime)
+  assert_eq(observed_mtime, mtime)
+  assert_eq(content, b"preserve source")
+}
+
+///|
 async fn filesystem_fidelity_scenario(
   root : String,
   wasm : Bool,
@@ -66,12 +125,8 @@ async fn filesystem_fidelity_scenario(
     snapshot.iter().find_first(item => item.path == "new").unwrap().metadata["mode"],
     snapshot.iter().find_first(item => item.path == "mode-reference").unwrap().metadata["mode"],
   )
-  let atime = @fs.atime(source)
+  rejected_touch_timestamp_scenario(root, wasm, work)
   let mtime = @fs.mtime(source)
-  let touched = scenario_run(work, root, wasm, "touch", [source], stdin=b"")
-  assert_true(touched.status != 0)
-  assert_eq(@fs.atime(source), atime)
-  assert_eq(@fs.mtime(source), mtime)
   assert_eq(@fs.read_file(source).text(), "preserve source")
   let absent = scenario_run(
     work,

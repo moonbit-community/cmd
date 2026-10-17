@@ -154,6 +154,8 @@ async fn snapshot_into(
   relative : String,
   entries : Array[SnapshotEntry],
   observe : ArrayView[String],
+  stat_path : String,
+  readlink_path : String,
 ) -> Unit {
   let directory = if relative == "" {
     root
@@ -194,7 +196,10 @@ async fn snapshot_into(
             "%d:%i"
           }
           let flag = if @async.platform is MacOS { "-f" } else { "-c" }
-          let result = run("stat", [flag, format, child])
+          let result = run(stat_path, [flag, format, child]) catch {
+            error =>
+              fail("required observation unavailable: \{dimension}: \{error}")
+          }
           guard result.status == 0 else {
             fail("host stat failed: \{dimension}")
           }
@@ -202,7 +207,12 @@ async fn snapshot_into(
         }
         "symlink-target" =>
           if kind == SymLink {
-            let result = run("readlink", [child])
+            let result = run(readlink_path, [child]) catch {
+              error =>
+                fail(
+                  "required observation unavailable: symlink-target: \{error}",
+                )
+            }
             guard result.status == 0 else { fail("host readlink failed") }
             let target = @utf8.decode(result.stdout)
             metadata[dimension] = if target.has_suffix("\n") {
@@ -227,19 +237,16 @@ async fn snapshot_into(
         _ => fail("unknown observation dimension: \{dimension}")
       }
     }
-    let content = if kind == Regular {
-      @fs.read_file(child).binary()
-    } else {
-      b""
-    }
     entries.push({
       path: child_relative,
       kind: kind_name(kind),
-      content,
+      content: b"",
       metadata,
     })
     if kind == Directory {
-      snapshot_into(root, child_relative, entries, observe)
+      snapshot_into(
+        root, child_relative, entries, observe, stat_path, readlink_path,
+      )
     }
   }
 }
@@ -247,14 +254,30 @@ async fn snapshot_into(
 ///|
 pub async fn snapshot(
   root : String,
-  observe? : ArrayView[String] = [],
-  baseline? : Bool = false,
+  observe~ : ArrayView[String] = [],
+  baseline~ : Bool = false,
+  preserve_identity~ : Bool = false,
+  stat_path~ : String = "stat",
+  readlink_path~ : String = "readlink",
 ) -> Array[SnapshotEntry] {
   let entries : Array[SnapshotEntry] = []
-  snapshot_into(root, "", entries, observe)
+  snapshot_into(root, "", entries, observe, stat_path, readlink_path)
+  // Read content only after every path's metadata is captured. Otherwise
+  // reading one hard-link name could change a later alias's observed atime.
+  for index in 0..<entries.length() {
+    let entry = entries[index]
+    if entry.kind == "file" {
+      let content = @fs.read_file(
+        @path.Path(root).join(Path(entry.path)).to_string(),
+        sync_timestamp=baseline && observe.contains("atime"),
+      ).binary()
+      entries[index] = { ..entry, content, }
+    }
+  }
   // Only the baseline includes accesses caused by preparing its content
-  // observation. The final snapshot must retain atime measured before reading
-  // content; otherwise the observer's own read becomes a candidate side effect.
+  // observation. Those reads synchronize timestamps before this resampling:
+  // otherwise a delayed observer update could look like a candidate mutation.
+  // The final snapshot retains atime measured before reading content.
   if baseline && observe.contains("atime") {
     for entry in entries {
       let (s, n) = @fs.atime(
@@ -264,13 +287,19 @@ pub async fn snapshot(
       entry.metadata["atime"] = "\{s}:\{n}"
     }
   }
-  // Identity is meaningful only as a relation within one fixture.
-  let representatives : Map[String, String] = Map([])
-  for entry in entries {
-    if entry.metadata.get("identity") is Some(identity) {
-      let representative = representatives.get_or_default(identity, entry.path)
-      representatives[identity] = representative
-      entry.metadata["identity"] = representative
+  // Independent fixtures compare their identity relations. Before/after
+  // rejection checks preserve device/inode values to detect file replacement.
+  if !preserve_identity {
+    let representatives : Map[String, String] = Map([])
+    for entry in entries {
+      if entry.metadata.get("identity") is Some(identity) {
+        let representative = representatives.get_or_default(
+          identity,
+          entry.path,
+        )
+        representatives[identity] = representative
+        entry.metadata["identity"] = representative
+      }
     }
   }
   entries
@@ -295,6 +324,39 @@ pub fn snapshots_equal(
     }
   }
   true
+}
+
+///|
+/// Produce a deterministic, byte-oriented representation for backend-pair
+/// comparisons. Metadata keys are sorted so the representation is independent
+/// of map insertion order.
+pub fn snapshot_fingerprint(entries : ArrayView[SnapshotEntry]) -> String {
+  let digits = "0123456789abcdef"
+  let lines = StringBuilder()
+  for entry in entries {
+    lines.write(entry.path)
+    lines.write("\t")
+    lines.write(entry.kind)
+    lines.write("\t")
+    for byte in entry.content {
+      let value = byte.to_int()
+      lines.write_char(digits[value >> 4].unsafe_to_char())
+      lines.write_char(digits[value & 0xF].unsafe_to_char())
+    }
+    let keys : Array[String] = []
+    for key, _ in entry.metadata {
+      keys.push(key)
+    }
+    keys.sort()
+    for key in keys {
+      lines.write("\t")
+      lines.write(key)
+      lines.write("=")
+      lines.write(entry.metadata[key])
+    }
+    lines.write("\n")
+  }
+  lines.to_string()
 }
 
 ///|

@@ -296,6 +296,44 @@
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
       "expected_stdout_text": " 1 short\n10 long\n11 total\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-wc-help",
+      "command": "wc",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/wc@0.2.1 metadata contract",
+      "expected_stdout_text": "Usage: wc [-lwcmL] [--files0-from=FILE] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-wc-version",
+      "command": "wc",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/wc@0.2.1 metadata contract",
+      "expected_stdout_text": "wc 0.2.1\n",
+      "expected_stderr_text": ""
     }
   ]
 }

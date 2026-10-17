@@ -159,6 +159,44 @@
       "stdin_text": "6162\n",
       "expected_stdout_hex": "00006162",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-xxd-help",
+      "command": "xxd",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/xxd@0.2.1 metadata contract",
+      "expected_stdout_text": "Usage: xxd [-ipr] [-c COLS] [-l LEN] [-s OFFSET] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-xxd-version",
+      "command": "xxd",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/xxd@0.2.1 metadata contract",
+      "expected_stdout_text": "xxd 0.2.1\n",
+      "expected_stderr_text": ""
     }
   ]
 }

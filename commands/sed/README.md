@@ -1,6 +1,6 @@
 # sed
 
-Version **0.1.0** behavior is documented here. The
+Version **0.1.1** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -31,3 +31,11 @@ pattern backreferences, word assertions and locale-aware matching are not
 included. Unsupported syntax is rejected before input is processed.
 `--help` and `--version` are available. Exit status is 0 on success, 1 for an
 invalid script or evaluation error, and 2 for an unreadable input file.
+
+## Standalone metadata
+
+Standalone `--version` prints exactly `sed 0.1.1` followed by one
+newline. Standalone `--help` starts with `Usage: sed`, lists both
+metadata options, and ends with a newline. Both write to stdout, leave stdin
+unread, and exit with status 0. Exact-version publication and verification
+remain recorded separately in the [support record](../../docs/compatibility.md).

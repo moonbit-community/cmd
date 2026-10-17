@@ -1,6 +1,6 @@
 # printenv
 
-Version **0.2.0** behavior is documented here. The
+Version **0.2.1** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -10,6 +10,10 @@ operand order; any missing name makes the final status 1 without suppressing
 values found earlier or later. It reads the environment exposed by the host;
 the command does not filter variable names or force locale values.
 
-The unreleased workspace adds standalone `--version`, which prints the command
-name and package version and exits successfully without reading input.
-Use `--help` to display usage.
+## Standalone metadata
+
+Standalone `--version` prints exactly `printenv 0.2.1` followed by one
+newline. Standalone `--help` starts with `Usage: printenv`, lists both
+metadata options, and ends with a newline. Both write to stdout, leave stdin
+unread, and exit with status 0. Exact-version publication and verification
+remain recorded separately in the [support record](../../docs/compatibility.md).

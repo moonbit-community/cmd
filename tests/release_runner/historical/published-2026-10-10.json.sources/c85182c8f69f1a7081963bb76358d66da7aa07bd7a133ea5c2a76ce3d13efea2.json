@@ -1,0 +1,16 @@
+{
+  "schema": 2,
+  "cases": [{
+    "id": "p0-tac-lines",
+    "command": "tac",
+    "args": [],
+    "stdin_text": "one\ntwo\n",
+    "files": [],
+    "environment": {},
+    "expected_status": 0,
+    "expected_stdout_text": "two\none\n",
+    "expected_stderr_text": "",
+    "comparison": "contract",
+    "normalizations": []
+  }]
+}

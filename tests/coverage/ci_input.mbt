@@ -1,0 +1,181 @@
+///|
+priv struct CiHarnessBinding {
+  path : String
+  behavior_ids : Array[String]
+} derive(FromJson)
+
+///|
+// This input describes impact and requirements, never observed outcomes.
+priv struct CiImpact {
+  schema : Int32
+  affected_commands : Array[String]
+  affected_behaviors : Array[String]
+  affected_options : Array[String]
+  affected_operands : Array[String]
+  case_ids : Array[String]
+  core_impact : String?
+  published_manifest_affected : Bool
+  required_backends : Array[String]
+  required_evidence : Array[String]
+  required_observations : Array[String]
+  boundaries : Array[BoundaryRecord]
+  deferred : Array[String]
+  uncovered : Array[String]
+  harness_bindings : Array[CiHarnessBinding]
+} derive(FromJson)
+
+///|
+fn ci_impact(value : Json) -> CiImpact raise {
+  guard value is Object(fields) else { fail("CI impact must be an object") }
+  let allowed = [
+    "schema", "affected_commands", "affected_behaviors", "affected_options", "affected_operands",
+    "case_ids", "core_impact", "published_manifest_affected", "required_backends",
+    "required_evidence", "required_observations", "boundaries", "deferred", "uncovered",
+    "harness_bindings",
+  ]
+  for key in fields.keys() {
+    guard allowed.contains(key) else {
+      fail("CI impact contains an unknown field or execution claim: " + key)
+    }
+  }
+  let impact : CiImpact = @json.from_json(value)
+  guard impact.schema == 1 else { fail("CI impact requires schema 1") }
+  impact
+}
+
+///|
+fn ci_documentation_path(path : String) -> Bool {
+  // Current support records, ADRs, agent rules and executable docs stay gated.
+  path.has_prefix("docs/reports/") &&
+  !path.has_suffix(".mbt.md") &&
+  path.has_suffix(".md")
+}
+
+///|
+fn ci_scope_errors(
+  paths : ArrayView[String],
+  impact : CiImpact,
+  registry : @registry.Registry,
+) -> Array[String] {
+  let failures : Array[String] = []
+  if !paths.contains("tests/coverage/ci-change.json") {
+    failures.push("CI impact must be updated within the audited change range")
+  }
+  let affected = canonical_ids(registry, impact.affected_behaviors)
+  let bound : Map[String, Bool] = Map([])
+  for binding in impact.harness_bindings {
+    if bound.contains(binding.path) ||
+      !paths.contains(binding.path) ||
+      binding.behavior_ids.is_empty() {
+      failures.push(
+        "invalid, stale or duplicate harness binding: " + binding.path,
+      )
+    }
+    bound[binding.path] = true
+    for id in binding.behavior_ids {
+      match find_entry(registry, id) {
+        Some(entry) if affected.contains(entry.behavior_id) &&
+          entry.implementation == "package-test" &&
+          entry.source.has_prefix("tests/") => ()
+        _ =>
+          failures.push(
+            "harness binding requires an affected registered harness test: " +
+            id,
+          )
+      }
+    }
+  }
+  for path in paths {
+    if ci_documentation_path(path) ||
+      path == "tests/coverage/ci-change.json" ||
+      path.has_prefix("commands/") ||
+      path.has_prefix("core/") {
+      continue
+    }
+    let owned = registry.entries.any(entry => {
+      entry.source
+      .split("::")
+      .next()
+      .map(source => source == path)
+      .unwrap_or(false)
+    })
+    let frozen = path.has_suffix(".json") &&
+      (
+        path.has_prefix("tests/release_runner/historical/published-") ||
+        path.has_prefix("tests/release_runner/current/published")
+      )
+    if frozen {
+      if !impact.published_manifest_affected {
+        failures.push(
+          "frozen release record changes require published_manifest_affected: " +
+          path,
+        )
+      }
+    } else if !owned && !bound.contains(path) {
+      failures.push(
+        "changed harness/configuration path requires a reviewed harness binding: " +
+        path,
+      )
+    }
+  }
+  failures
+}
+
+///|
+fn ci_declaration(
+  impact : CiImpact,
+  registry : @registry.Registry,
+  report_paths : Array[String],
+) -> ChangeDeclaration raise {
+  let records : Array[CoverageRecord] = []
+  let seen : Set[String] = Set([])
+  for id in impact.affected_behaviors {
+    guard find_entry(registry, id) is Some(entry) else {
+      fail("CI impact names an unknown behavior: " + id)
+    }
+    guard !seen.contains(entry.behavior_id) else {
+      fail("CI impact repeats a canonical behavior: " + id)
+    }
+    seen.add(entry.behavior_id)
+    let boundary = impact.deferred.any(id => {
+        find_entry(registry, id) is Some(deferred) &&
+        deferred.behavior_id == entry.behavior_id
+      }) &&
+      entry.status == "boundary"
+    records.push({
+      behavior_id: entry.behavior_id,
+      backends: sorted_unique(
+        entry.required_backends + impact.required_backends,
+      ),
+      evidence: if boundary {
+        ["boundary"]
+      } else {
+        sorted_unique(entry.required_evidence + impact.required_evidence)
+      },
+      observations: sorted_unique(
+        entry.observations + impact.required_observations,
+      ),
+      // An obligation is not a supplied result. Only evidence rows can pass it.
+      result: "required",
+      report: None,
+      reports: Some(report_paths),
+    })
+  }
+  {
+    schema: 1,
+    affected_commands: impact.affected_commands,
+    affected_behaviors: impact.affected_behaviors,
+    affected_options: Some(impact.affected_options),
+    affected_operands: Some(impact.affected_operands),
+    case_ids: Some(impact.case_ids),
+    core_impact: impact.core_impact,
+    published_manifest_affected: Some(impact.published_manifest_affected),
+    required_backends: impact.required_backends,
+    required_evidence: impact.required_evidence,
+    required_observations: impact.required_observations,
+    coverage: records,
+    boundaries: impact.boundaries,
+    deferred: impact.deferred,
+    uncovered: Some(impact.uncovered),
+  }
+}

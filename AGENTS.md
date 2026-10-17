@@ -89,6 +89,38 @@ module and version before any release operation.
   catalog, compatibility record and relevant regression together. Record
   tradeoffs in the existing canonical ADR with an Updated date, evidence and
   conditions for lifting limitations. Keep historical reports immutable.
+- Before every push, if any file under `core/` or `commands/` changes command
+  behavior, accepted options or operands, output streams, filesystem/network/
+  process effects, capability policy, platform support, dependency resolution,
+  metadata, or package version, perform the command-by-command coverage audit.
+  The audit must map each changed behavior to a stable registry entry and to
+  the required package, contract, scenario, policy, backend-pair,
+  upstream-differential, published-differential, or boundary evidence. Record
+  affected commands, case IDs, required Native/Wasm runs, oracle profile, and
+  any uncovered or deferred boundary. A passing test command or a larger case
+  count does not prove coverage completeness. Do not push applicable changes
+  while the audit report is missing or the audit returns nonzero. An explicit
+  boundary/rejection case must pass the audit with its rejection evidence and
+  ADR/support-record unlock condition; it does not bypass the gate. Use the
+  reviewed `tests/coverage/push.mbtx` workflow documented in
+  `tests/coverage/README.md` to audit and push the exact committed revision.
+- Mainline changes must use a PR and the required three-platform checks plus
+  `coverage-audit`. Keep `tests/coverage/ci-change.json` current for the complete
+  proposed range. It declares impact, never passing results or report paths;
+  CI binds real evidence at its exact checked-out revision. Harness-only changes
+  still require registered harness regression evidence. Do not bypass branch
+  protection or substitute a feature-branch run for the final main commit.
+- Verification serves the current workspace and current published coordinates.
+  Retain this CI run's reports, required source/artifact/oracle identities and
+  failure diagnostics. These identities prevent stale or substituted evidence;
+  they are not a requirement to archive every release or recover old images.
+  Historical evidence backfill and GitHub Release verification archives are
+  outside the test system's maintenance scope.
+- Upstream differential evidence must use a verified immutable oracle profile
+  containing the image digest, tool-version inventory, and source or
+  distribution checksums. A mutable Docker tag, host PATH tool, handwritten
+  source label, availability result, or ordinary contract expectation cannot
+  establish upstream parity.
 - Standalone `--version` prints exactly `<command> <package-version>` and one
   newline, without an implementation banner. Standalone `--help` starts with
   `Usage: <command>`, includes both metadata options, and ends with a newline.
@@ -125,13 +157,13 @@ module and version before any release operation.
   Update the published manifest and release report with those results, then
   commit and push the documentation. Do not publish from a failing or
   unverified candidate.
-- Current baseline after the 2026-10-11 fidelity repair: core is 0.5.0;
-  column/date/diff/strings/which are 0.1.1; unlink is 0.1.2;
-  curl/jq/jqlog/ln/mv/seq/wget are 0.2.1. Other command versions are unchanged.
-  `ls` is also 0.2.1 after the published ls sorting/link fixes. There are 78
-  published commands and local-only timeout. Exact coordinates
-  are in tests/release_runner/published-2026-10-11-repair.json; acceptance is
-  recorded in docs/reports/2026-10-11-fidelity-repair/README.md.
+- Current baseline after the 2026-10-18 metadata release closeout: core is
+  0.6.0. There are 78 published commands: 39 at 0.2.1, eight at 0.2.2, 15 at 0.1.1,
+  15 at 0.1.2 and one at 0.1.3. `timeout` remains local-only. Exact coordinates
+  are in tests/release_runner/current/published.json; source, upload and
+  published acceptance are recorded in
+  docs/reports/2026-10-15-metadata-release/README.md. Earlier coordinates remain
+  frozen under tests/release_runner/historical/, including the 2026-10-11 repair.
   Update this baseline whenever a later release changes it.
 
 ### Mandatory pure MoonBit boundary

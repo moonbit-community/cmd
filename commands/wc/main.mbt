@@ -251,7 +251,7 @@ async fn count_source(path : String) -> Counts {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("wc 0.2.0\n")
+    @stdio.stdout.write("wc 0.2.1\n")
     return
   }
   let args = @env.args()[1:]

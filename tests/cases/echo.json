@@ -56,8 +56,9 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "echo 0.2.0\n",
-      "expected_stderr_text": ""
+      "expected_stdout_text": "echo 0.2.1\n",
+      "expected_stderr_text": "",
+      "source_version": "workspace cli/echo@0.2.1 metadata contract"
     },
     {
       "id": "p0-echo-help",
@@ -187,10 +188,47 @@
       "expected_status": 0,
       "normalizations": [],
       "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "0.2.0",
+      "source_version": "workspace cli/echo@0.2.1 metadata contract",
       "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+      "expected_stdout_text": "echo 0.2.1\n"
+    },
+    {
+      "id": "release-metadata-echo-help",
+      "command": "echo",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/echo@0.2.1 metadata contract",
+      "expected_stdout_text": "Usage: echo [-n] [-e|-E] [STRING...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-echo-version",
+      "command": "echo",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/echo@0.2.1 metadata contract",
+      "expected_stdout_text": "echo 0.2.1\n",
+      "expected_stderr_text": ""
     }
   ]
 }

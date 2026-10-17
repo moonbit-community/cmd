@@ -1,0 +1,154 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-cmp-equal",
+      "command": "cmp",
+      "args": [
+        "left",
+        "right"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "left",
+          "content_text": "same\n"
+        },
+        {
+          "path": "right",
+          "content_text": "same\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-cmp-different",
+      "command": "cmp",
+      "args": [
+        "left",
+        "right"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "left",
+          "content_text": "a\n"
+        },
+        {
+          "path": "right",
+          "content_text": "b\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": []
+    },
+    {
+      "id": "p9-cmp-implicit-stdin",
+      "command": "cmp",
+      "args": [
+        "left"
+      ],
+      "stdin_text": "same\n",
+      "files": [
+        {
+          "path": "left",
+          "content_text": "same\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-text-cmp-equal-status",
+      "command": "cmp",
+      "args": [
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "same\n"
+        },
+        {
+          "path": "right",
+          "content_text": "same\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-cmp-different-status",
+      "command": "cmp",
+      "args": [
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "same\n"
+        },
+        {
+          "path": "right",
+          "content_text": "different\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "left right differ: char 1, line 1\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-cmp-error-status",
+      "command": "cmp",
+      "args": [
+        "left",
+        "missing"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "same\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "missing",
+      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted."
+    },
+    {
+      "id": "compat-catalog-line-40",
+      "command": "cmp",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    }
+  ]
+}

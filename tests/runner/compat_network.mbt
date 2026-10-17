@@ -1200,7 +1200,7 @@ async fn run_https_cases(bin_root : String, failures : Array[String]) -> Unit {
     return
   }
   @async.with_task_group <| group => {
-    let current = @env.current_dir().unwrap_or(".")
+    let current = workspace_root()
     let cert = @path.Path(current)
       .join(Path("tests/fixtures/http/cert.pem"))
       .to_string()
@@ -1210,14 +1210,16 @@ async fn run_https_cases(bin_root : String, failures : Array[String]) -> Unit {
     let output_root = @fs.tmpdir(prefix="mooncmd-https")
     defer (@fs.rmdir(output_root, recursive=true) catch { _ => () })
     let log = @path.Path(output_root).join(Path("server.log")).to_string()
+    let program = @env.args()[0]
+    @testkit.record_execution_environment(program)
     let server = @process.spawn(
       group,
-      @env.args()[0],
+      program,
       ["--https-server", cert, key, log],
       no_console_window=true,
       no_wait=true,
     )
-    let mut port : Int? = None
+    let mut port : Int32? = None
     for attempt = 0; attempt < 100; attempt = attempt + 1 {
       if @fs.exists(log) {
         let text = @fs.read_file(log).text()
@@ -1273,7 +1275,7 @@ async fn run_https_cases(bin_root : String, failures : Array[String]) -> Unit {
 ///|
 async fn run_connect_proxy(
   server : @socket.TcpServer,
-  requests : Ref[Int],
+  requests : Ref[Int32],
 ) -> Unit {
   server.run_forever() <| ((client, _) => {
     requests.val = requests.val + 1

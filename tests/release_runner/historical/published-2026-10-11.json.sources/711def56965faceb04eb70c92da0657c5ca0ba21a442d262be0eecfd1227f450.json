@@ -1,0 +1,248 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "network-auth-cookie-oracle",
+      "command": "curl",
+      "related_commands": [
+        "wget"
+      ],
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "oracle-scenario",
+      "host_platforms": [
+        "linux"
+      ],
+      "timeout_ms": 120000,
+      "source_version": "curl 8.22.0 and wget 1.25.0 in pinned oracle image"
+    },
+    {
+      "id": "phase2-curl-does-not-follow",
+      "command": "curl",
+      "args": [
+        "-s",
+        "${HTTP_BASE}/redirect"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-curl-location",
+      "command": "curl",
+      "args": [
+        "-sL",
+        "${HTTP_BASE}/redirect"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-curl-fail-status-22",
+      "command": "curl",
+      "args": [
+        "-sf",
+        "${HTTP_BASE}/missing"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 22,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-curl-output-file",
+      "command": "curl",
+      "args": [
+        "-s",
+        "-o",
+        "response.bin",
+        "${HTTP_BASE}/fixed"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-curl-post-data",
+      "command": "curl",
+      "args": [
+        "-s",
+        "-d",
+        "alpha=one",
+        "${HTTP_BASE}/echo"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-curl-upload-file",
+      "command": "curl",
+      "args": [
+        "-s",
+        "-T",
+        "upload.bin",
+        "${HTTP_BASE}/echo"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "upload.bin",
+          "content_hex": "0062696e617279ff"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-curl-multiple-urls",
+      "command": "curl",
+      "args": [
+        "-s",
+        "${HTTP_BASE}/fixed",
+        "${HTTP_BASE}/second"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-curl-last-transfer-status",
+      "command": "curl",
+      "args": [
+        "-sf",
+        "${HTTP_BASE}/missing",
+        "${HTTP_BASE}/fixed"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-curl-remote-name",
+      "command": "curl",
+      "args": [
+        "-sO",
+        "${HTTP_BASE}/named.txt"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p1-curl-explicit-method-redirect",
+      "command": "curl",
+      "args": [
+        "-sL",
+        "-X",
+        "POST",
+        "--data-raw",
+        "payload",
+        "${HTTP_BASE}/redirect-explicit"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p1-curl-binary-data-file",
+      "command": "curl",
+      "args": [
+        "-s",
+        "--data-binary",
+        "@payload.bin",
+        "${HTTP_BASE}/echo"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload.bin",
+          "content_hex": "0062696e617279ff"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p1-curl-redirect-limit-zero",
+      "command": "curl",
+      "args": [
+        "-sL",
+        "--max-redirs",
+        "0",
+        "${HTTP_BASE}/redirect"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 47,
+      "normalizations": []
+    },
+    {
+      "id": "phase2-curl-https-insecure",
+      "command": "curl",
+      "args": [
+        "-sk",
+        "${HTTPS_BASE}/fixed.txt"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "network-auth-cookie",
+      "command": "curl",
+      "related_commands": [
+        "wget"
+      ],
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "timeout_ms": 30000
+    },
+    {
+      "id": "compat-catalog-line-64",
+      "command": "curl",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    }
+  ]
+}

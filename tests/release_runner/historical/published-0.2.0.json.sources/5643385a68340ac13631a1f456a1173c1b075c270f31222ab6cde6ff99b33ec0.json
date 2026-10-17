@@ -1,0 +1,98 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase4-touch-create",
+      "command": "touch",
+      "args": [
+        "created"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "touch-existing-boundary",
+      "command": "touch",
+      "args": [
+        "existing"
+      ],
+      "files": [
+        {
+          "path": "existing",
+          "content_text": "preserve\n",
+          "atime": "202001010000.00",
+          "mtime": "202101010000.00",
+          "mode": 384
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_rejection": "timestamp setters are unavailable",
+      "observe": [
+        "mode",
+        "identity",
+        "atime",
+        "mtime"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "source_version": "GNU coreutils 9.11; candidate async 0.22.1 boundary"
+    },
+    {
+      "id": "compat-text-touch-date-rejected",
+      "command": "touch",
+      "args": [
+        "-d",
+        "2020-01-01",
+        "dated"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "timestamp",
+      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted.",
+      "expected_rejection": "timestamp"
+    },
+    {
+      "id": "compat-catalog-line-285",
+      "command": "touch",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "compat-catalog-line-358",
+      "command": "touch",
+      "args": [
+        "--no-create=value"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "does not accept a value",
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+    }
+  ]
+}

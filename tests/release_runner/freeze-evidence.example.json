@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "candidate_hash": "",
+  "git_revision": "",
+  "registry_verification": "Receipts are retained inputs only. Freeze independently fetches the exact official HTTPS manifest and source archive, rejects yanked releases and verifies matching SHA-256. Transport failure blocks freezing.",
+  "registry": [
+    {
+      "package_name": "cli/core",
+      "version": "0.5.0",
+      "status": 200,
+      "response_file": "registry/core.index",
+      "response_sha256": ""
+    }
+  ],
+  "smoke_report_dirs": ["smoke"],
+  "semantic_report_dirs": ["differential"]
+}

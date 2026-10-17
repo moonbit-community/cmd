@@ -1,6 +1,6 @@
 # split
 
-Version **0.1.0** behavior is documented here. The
+Version **0.1.1** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -26,3 +26,11 @@ Input is buffered before splitting. Counts are limited to a positive signed
 Existing output paths are refused and left unchanged. Chunk distribution,
 line-byte mode, filters, numeric starting offsets and hexadecimal suffixes are
 not implemented. `--help` and `--version` provide command information.
+
+## Standalone metadata
+
+Standalone `--version` prints exactly `split 0.1.1` followed by one
+newline. Standalone `--help` starts with `Usage: split`, lists both
+metadata options, and ends with a newline. Both write to stdout, leave stdin
+unread, and exit with status 0. Exact-version publication and verification
+remain recorded separately in the [support record](../../docs/compatibility.md).

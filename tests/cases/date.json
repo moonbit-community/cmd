@@ -79,13 +79,14 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "expected_stdout_text": "date 0.1.1\n",
+      "expected_stdout_text": "date 0.1.2\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
         "version"
-      ]
+      ],
+      "source_version": "workspace cli/date@0.1.2 metadata contract"
     },
     {
       "id": "repair-date-fixed-offset",
@@ -530,6 +531,44 @@
       "comparison": "contract",
       "normalizations": [],
       "source_version": "2026-10-11 second review; pinned oracle where enabled"
+    },
+    {
+      "id": "release-metadata-date-help",
+      "command": "date",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/date@0.1.2 metadata contract",
+      "expected_stdout_text": "Usage: date [OPTION]... [+FORMAT]\nPrint time in TZ or the host local timezone.\n  -u, --utc           use UTC\n  -d, --date=TEXT     ISO date/time or @SECONDS (up to 9 fractional digits)\n  -I[PRECISION], --iso-8601[=PRECISION]\n                      date, hours, minutes, seconds, or ns\n  -R, --rfc-email     RFC email timestamp\n      --help          display this help and exit\n      --version       display version and exit\nFormats: %Y %y %m %d %e %H %M %S %j %a %A %b %h %B %F %T %R %s %N %z %Z %%\nRelative date parsing and setting the clock are unsupported.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-date-version",
+      "command": "date",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/date@0.1.2 metadata contract",
+      "expected_stdout_text": "date 0.1.2\n",
+      "expected_stderr_text": ""
     }
   ]
 }

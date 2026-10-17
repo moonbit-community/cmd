@@ -1,0 +1,7 @@
+Usage: sh [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]
+  -c SOURCE   execute shell source
+  -s          read commands from standard input
+  -i          enable a persistent line-oriented interactive session
+  --help      display this help and exit
+  --version   display version and exit
+Supports a bounded shell language; terminal job control is unavailable.

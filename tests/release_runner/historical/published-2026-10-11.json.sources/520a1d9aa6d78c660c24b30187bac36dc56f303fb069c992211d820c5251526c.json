@@ -1,0 +1,16 @@
+{
+  "schema": 2,
+  "cases": [{
+    "id": "p0-rev-lines",
+    "command": "rev",
+    "args": [],
+    "stdin_text": "abc\n123\n",
+    "files": [],
+    "environment": {},
+    "expected_status": 0,
+    "expected_stdout_text": "cba\n321\n",
+    "expected_stderr_text": "",
+    "comparison": "contract",
+    "normalizations": []
+  }]
+}

@@ -1,0 +1,332 @@
+///|
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/shell",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+}
+
+///|
+fn fields(value : Json) -> Map[String, Json] raise {
+  guard value is Object(fields) else { fail("expected a JSON object") }
+  fields
+}
+
+///|
+fn text(value : Json, key : String) -> String raise {
+  guard fields(value).get(key) is Some(String(value)) else {
+    fail("missing string: " + key)
+  }
+  value
+}
+
+///|
+fn array(value : Json, key : String) -> Array[Json] raise {
+  guard fields(value).get(key) is Some(Array(value)) else {
+    fail("missing array: " + key)
+  }
+  value
+}
+
+///|
+fn strings(value : Json, key : String) -> Array[String] raise {
+  array(value, key).map(item => {
+    guard item is String(value) else { fail("invalid string array: " + key) }
+    value
+  })
+}
+
+///|
+fn sorted(values : Array[String]) -> Array[String] {
+  let result = Set::from_array(values).iter().collect()
+  result.sort()
+  result
+}
+
+///|
+async fn git_paths(args : Array[String]) -> Array[String] {
+  let result = @shell.Cmd("git", args).output(timeout_ms=15000)
+  guard result.exit_code() == 0 else { fail(result.stderr()) }
+  result
+  .stdout()
+  .split("\u0000")
+  .filter(path => path != "")
+  .map(path => path.to_owned())
+  .collect()
+}
+
+///|
+fn source_path(entry : Json) -> String raise {
+  text(entry, "source").split("::").next().unwrap().to_owned()
+}
+
+///|
+fn ordinary_report(path : String) -> Bool {
+  path.has_prefix("docs/reports/") &&
+  !path.has_suffix(".mbt.md") &&
+  path.has_suffix(".md")
+}
+
+///|
+fn frozen_record(path : String) -> Bool {
+  path.has_suffix(".json") &&
+  (
+    path.has_prefix("tests/release_runner/historical/published-") ||
+    path.has_prefix("tests/release_runner/current/published")
+  )
+}
+
+///|
+// These subsystem mappings are reviewed impact decisions, not passing-row discovery.
+fn binding_packages(path : String) -> Array[String] raise {
+  for
+    package_name in [
+      "coverage", "metadata", "packages", "registry", "release_runner", "runner",
+      "testkit",
+    ] {
+    if path.has_prefix("tests/" + package_name + "/") {
+      return ["tests/" + package_name + "/"]
+    }
+  }
+  match path {
+    ".github/workflows/check.yml" => ["tests/coverage/", "tests/packages/"]
+    ".github/workflows/release-acceptance.yml" => ["tests/release_runner/"]
+    ".gitattributes" => ["tests/testkit/"]
+    "AGENTS.md" | "tests/README.md" | "docs/adr/0001-evidence.md" =>
+      ["tests/coverage/", "tests/registry/", "tests/release_runner/"]
+    "docs/compatibility.md" => ["tests/metadata/", "tests/release_runner/"]
+    _ =>
+      if path.has_prefix("docs/reports/2026-10-15-metadata-release/") {
+        ["tests/release_runner/", "tests/testkit/"]
+      } else {
+        fail("unreviewed harness/configuration path: " + path)
+      }
+  }
+}
+
+///|
+fn binding_ids(path : String, entries : Array[Json]) -> Array[String] raise {
+  let recorded = path.has_prefix("docs/reports/2026-10-15-metadata-release/") &&
+    (
+      [".json", ".jsonl", ".txt", ".log", ".stdout", ".stderr", ".status"].any(suffix => {
+        path.has_suffix(suffix)
+      }) ||
+      path.has_suffix("/stdout") ||
+      path.has_suffix("/stderr")
+    )
+  if recorded {
+    return [
+      "package-test:tests/release_runner/release_runner_wbtest.mbt::report serialization preserves evidence without semantic promotion",
+      "package-test:tests/release_runner/freeze_wbtest.mbt::frozen replay rejects modified corpus even with a matching local hash",
+    ]
+  }
+  let packages = binding_packages(path)
+  sorted(
+    entries
+    .filter(entry => {
+      text(entry, "implementation") == "package-test" &&
+      (
+        packages.any(package_name => source_path(entry).has_prefix(package_name)) ||
+        (
+          path == ".gitattributes" &&
+          text(entry, "behavior_id") ==
+          "package-test:tests/coverage/integration_wbtest.mbt::coverage audit accepts a clean exact head and rejects dirty or mismatched revisions"
+        )
+      )
+    })
+    .map(entry => text(entry, "behavior_id")),
+  )
+}
+
+///|
+fn report_roles(entry : Json) -> Array[String] raise {
+  let id = text(entry, "behavior_id")
+  match text(entry, "implementation") {
+    "metadata-probe" => ["metadata-pair"]
+    "json-case" => ["pair"]
+    "package-test" =>
+      if strings(entry, "required_backends") == ["native"] {
+        ["package-native-only"]
+      } else {
+        ["package-pair"]
+      }
+    "stateful-scenario" => ["scenarios-native", "scenarios-wasm", "pair"]
+    "policy-test" => ["policy-wasm"]
+    "compatibility-cohort" =>
+      if id == "cohort:stress-streams" {
+        ["stress-native"]
+      } else {
+        ["compat-native"]
+      }
+    _ => fail("unreviewed evidence producer: " + id)
+  }
+}
+
+///|
+async fn main {
+  guard @env.args().length() == 1 else {
+    fail("Usage: prepare_ci_change.mbtx (after final registry refresh)")
+  }
+  let base = "f54baac45730f5ded956ceb41f353b77fdd5c34e"
+  let report_root = "_build/verification/2026-10-18-hardening"
+  let intent_path = "tests/coverage/ci-change.json"
+  let scope_path = "tests/coverage/ci-change-scope.md"
+  let local_path = report_root + "/change.json"
+  let prior_path = "docs/reports/2026-10-15-metadata-release/change.json"
+  let prior = @json.parse(@fs.read_file(prior_path).text())
+  let prior_ids = strings(prior, "affected_behaviors")
+  guard prior_ids.length() == 252 &&
+    strings(prior, "case_ids").length() == 170 &&
+    strings(prior, "affected_commands").length() == 79 else {
+    fail("the reviewed 252-behavior metadata preparation input changed")
+  }
+  let registry = @json.parse(
+    @fs.read_file("tests/registry/registry.json").text(),
+  )
+  let entries = array(registry, "entries")
+  let index : Map[String, Json] = Map([])
+  for entry in entries {
+    let id = text(entry, "behavior_id")
+    guard !index.contains(id) else { fail("duplicate registry ID: " + id) }
+    index[id] = entry
+  }
+  let paths = sorted(
+    git_paths(["diff", "--name-only", "--no-renames", "-z", base, "--"]) +
+    git_paths(["ls-files", "--others", "--exclude-standard", "-z"]) +
+    [intent_path, scope_path],
+  )
+  let selected = Set::from_array(prior_ids)
+  let cohorts = [
+    "cohort:compat-catalog", "cohort:compat-environment", "cohort:compat-chunks",
+    "cohort:compat-process-composition", "cohort:compat-sleep-cancellation", "cohort:compat-tail-follow",
+    "cohort:compat-http", "cohort:compat-https", "cohort:compat-proxy", "cohort:stress-streams",
+    "policy:policy-host", "scenario:sh-interactive-session", "scenario:make-ready-ack",
+    "scenario:filesystem-fidelity", "scenario:process-lifecycle", "scenario:network-auth-cookie",
+  ]
+  for id in cohorts {
+    selected.add(id)
+  }
+  for entry in entries {
+    if text(entry, "implementation") == "package-test" &&
+      paths.contains(source_path(entry)) {
+      selected.add(text(entry, "behavior_id"))
+    }
+  }
+  let bindings : Array[Json] = []
+  for path in paths {
+    if path == intent_path ||
+      ordinary_report(path) ||
+      frozen_record(path) ||
+      path.has_prefix("commands/") ||
+      path.has_prefix("core/") {
+      continue
+    }
+    let owned = entries.filter(entry => source_path(entry) == path)
+    if !owned.is_empty() {
+      guard owned.any(entry => selected.contains(text(entry, "behavior_id"))) else {
+        fail("changed registered source lacks reviewed impact: " + path)
+      }
+      continue
+    }
+    let ids = binding_ids(path, entries)
+    guard !ids.is_empty() else {
+      fail("refresh missing harness test bindings: " + path)
+    }
+    for id in ids {
+      selected.add(id)
+    }
+    bindings.push({ "path": Json(path), "behavior_ids": Json(ids) })
+  }
+  for
+    source in [
+      "tests/coverage/ci_wbtest.mbt", "tests/coverage/ci_published_wbtest.mbt", "tests/packages/selection_wbtest.mbt",
+      "tests/registry/lifecycle_required_wbtest.mbt",
+    ] {
+    guard entries.any(entry => {
+      source_path(entry) == source &&
+      selected.contains(text(entry, "behavior_id"))
+    }) else {
+      fail("refresh the final new test source before preparation: " + source)
+    }
+  }
+  let behaviors = sorted(selected.iter().collect())
+  let coverage : Array[Json] = []
+  let roles : Array[String] = []
+  for id in behaviors {
+    guard index.get(id) is Some(entry) else {
+      fail("missing reviewed behavior: " + id)
+    }
+    guard text(entry, "status") == "supported" &&
+      strings(entry, "required_evidence").all(kind => {
+        ["contract", "backend-pair", "boundary"].contains(kind)
+      }) else {
+      fail("a new boundary or oracle requirement needs explicit review: " + id)
+    }
+    let required_roles = report_roles(entry)
+    roles.append(required_roles)
+    coverage.push({
+      "behavior_id": Json(id),
+      "backends": Json(strings(entry, "required_backends")),
+      "evidence": Json(strings(entry, "required_evidence")),
+      "observations": Json(strings(entry, "observations")),
+      "result": "pass",
+      "reports": Json(
+        required_roles.map(role => report_root + "/" + role + "/summary.jsonl"),
+      ),
+    })
+  }
+  let intent = fields(prior).copy()
+  intent.remove("coverage")
+  intent["affected_behaviors"] = Json(behaviors)
+  intent["published_manifest_affected"] = Json(true)
+  intent["harness_bindings"] = Json(bindings)
+  let local_declaration = intent.copy()
+  local_declaration.remove("harness_bindings")
+  local_declaration["coverage"] = Json(coverage)
+  let scope = "# Reviewed current-version CI impact\n\n" +
+    "Base: `" +
+    base +
+    "`. The declared range includes the metadata release and test-system changes awaiting main integration.\n\n" +
+    "This change serves validation of the current tested revision: exact-source coverage auditing, lifecycle completeness, Native-only package evidence and explicitly required current published-version differential checks. GitHub Release archival, image restoration and historical evidence uploads are outside the implementation.\n\n" +
+    "The original 252 behaviors, 170 metadata case IDs, all 79 command identities, and help/version option tags are preserved. Every changed registered package-test source and each explicitly mapped harness subsystem contributes its current registered tests. Sixteen existing scenario/cohort/policy obligations cover typed identities, observations, execution environment and lifecycle changes. Existing publication snapshots remain verification inputs, covered by release snapshot and registry protocol tests; published_manifest_affected is true for the pending metadata-release integration.\n\n" +
+    "The existing network oracle command invocations and semantic assertions, upstream fixtures and image recipe are unchanged. Oracle identity/sealing infrastructure is bound to lifecycle, oracle-options and audit regressions; Linux CI independently runs the complete immutable oracle suite on both backends. This declaration adds no upstream-parity claim. GNU host comparisons remain supplementary, with report-classification regression coverage.\n\n" +
+    "The CI input contains impact and requirements only. Local legacy coverage result=pass is a required outcome, not supplied evidence; the audit must verify every fresh report against the clean exact committed head. No old report or successful row was used to derive impact.\n\n" +
+    "Required local report roles: " +
+    sorted(roles).join(", ") +
+    ".\n\n" +
+    "Selected behaviors: " +
+    behaviors.length().to_string() +
+    "; reviewed path bindings: " +
+    bindings.length().to_string() +
+    ".\n"
+  let outputs = [
+    (intent_path, Json::object(intent).stringify(indent=2) + "\n"),
+    (local_path, Json::object(local_declaration).stringify(indent=2) + "\n"),
+    (scope_path, scope),
+  ]
+  for (path, content) in outputs {
+    if @fs.exists(path) {
+      guard @fs.read_file(path).text() == content else {
+        fail("refusing to overwrite different reviewed output: " + path)
+      }
+    }
+  }
+  @fs.mkdir(report_root, recursive=true, allow_exist=true)
+  for (path, content) in outputs {
+    if !@fs.exists(path) {
+      @fs.write_file(path, content, create_mode=CreateNew)
+    }
+  }
+  println(
+    "prepared " +
+    behaviors.length().to_string() +
+    " impact requirements and " +
+    bindings.length().to_string() +
+    " harness bindings",
+  )
+  println("required report roles: " + sorted(roles).join(", "))
+  println(
+    "No report was generated or accepted. Review the declarations before committing and auditing.",
+  )
+}

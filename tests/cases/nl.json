@@ -98,6 +98,44 @@
       "aliases": [
         "compat-stdin-nl"
       ]
+    },
+    {
+      "id": "release-metadata-nl-help",
+      "command": "nl",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/nl@0.2.1 metadata contract",
+      "expected_stdout_text": "Usage: nl [-b STYLE] [-h STYLE] [-f STYLE] [-v NUMBER] [-i NUMBER] [-l NUMBER] [-n FORMAT] [-w NUMBER] [-s STRING] [-d CC] [-p] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-nl-version",
+      "command": "nl",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/nl@0.2.1 metadata contract",
+      "expected_stdout_text": "nl 0.2.1\n",
+      "expected_stderr_text": ""
     }
   ]
 }

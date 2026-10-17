@@ -1,6 +1,6 @@
 # env
 
-This documents version 0.2.0. The [support record](../../docs/compatibility.md)
+This documents version 0.2.1. The [support record](../../docs/compatibility.md)
 tracks platform verification and exact-version publication evidence separately.
 
 Print the environment or execute one command with explicit environment
@@ -23,3 +23,11 @@ Both backends start from the complete environment made available by the host,
 then apply the requested removals and assignments. `LANG`, `LC_ALL`, and other
 names are neither filtered nor rewritten. Host authorization still applies to
 the child working directory and executable.
+
+## Standalone metadata
+
+Standalone `--version` prints exactly `env 0.2.1` followed by one
+newline. Standalone `--help` starts with `Usage: env`, lists both
+metadata options, and ends with a newline. Both write to stdout, leave stdin
+unread, and exit with status 0. Exact-version publication and verification
+remain recorded separately in the [support record](../../docs/compatibility.md).

@@ -203,7 +203,9 @@
     },
     {
       "id": "phase2-curl-https-insecure",
-      "host_platforms": ["posix"],
+      "host_platforms": [
+        "posix"
+      ],
       "command": "curl",
       "args": [
         "-sk",
@@ -459,6 +461,44 @@
       "normalizations": [],
       "source_version": "2026-10-11 second review; pinned oracle where enabled",
       "oracle": true
+    },
+    {
+      "id": "release-metadata-curl-help",
+      "command": "curl",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/curl@0.2.2 metadata contract",
+      "expected_stdout_text": "Usage: curl [options...] <url>\n      --help      display this help and exit\n      --version   display version and exit\n  -s, --silent                 silent mode\n  -S, --show-error             show errors with --silent\n  -f, --fail                   fail on HTTP response codes >= 400\n  -o, --output <file>          write to file instead of stdout\n  -O, --remote-name            use the remote file name\n  -J, --remote-header-name     use Content-Disposition with -O\n  -L, --location               follow redirects\n      --max-redirs <num>       maximum redirects (default 50)\n  -I, --head                   show response headers only\n  -H, --header <header>        pass a custom header to the server\n  -u, --user <user:password>   HTTP Basic authentication\n  -b, --cookie <data|file>     send cookies or load a Netscape jar\n  -c, --cookie-jar <file>      write a Netscape cookie jar\n      -H 'Cookie: ...'       send a separate field after stored jar cookies\n  -X, --request <method>       specify a supported HTTP method\n  -d, --data <data>            HTTP POST data\n      --data-raw <data>        HTTP POST data without @ expansion\n      --data-binary <data>     HTTP POST data without conversion\n      --data-urlencode <data>  URL-encode HTTP POST data\n  -T, --upload-file <file>     stream file as an upload\n      --retry <num>            retry transient failures\n      --retry-delay <seconds>  wait between retries\n      --retry-max-time <secs>  maximum time spent retrying\n      --retry-connrefused      retry connection refused failures\n      --retry-all-errors       retry all transfer errors\n      --connect-timeout <secs> maximum connection setup time\n  -m, --max-time <seconds>     maximum time for one transfer\n      --idle-timeout <seconds> extension: inactivity timeout\n  -k, --insecure               allow insecure TLS connections\n  -x, --proxy <url>            use this proxy\n      --noproxy <list>         bypass proxy for matching hosts\n      --remove-on-error        remove output file after transfer failure\n\nCompatibility limits: HTTP/HTTPS only; -X accepts GET, HEAD, POST, PUT,\nDELETE, CONNECT, OPTIONS, TRACE, and PATCH. Timer values are bounded by\nthe runtime millisecond timer range.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-curl-version",
+      "command": "curl",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/curl@0.2.2 metadata contract",
+      "expected_stdout_text": "curl 0.2.2\n",
+      "expected_stderr_text": ""
     }
   ]
 }

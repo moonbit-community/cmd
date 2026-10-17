@@ -522,6 +522,44 @@
           "content_text": "old"
         }
       ]
+    },
+    {
+      "id": "release-metadata-ln-help",
+      "command": "ln",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/ln@0.2.2 metadata contract",
+      "expected_stdout_text": "Usage: ln -s [-f|-i] [-r] [-n|-T] [-t DIRECTORY] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\n      --help      display this help and exit\n      --version   display version and exit\nThe last -f/--force or -i/--interactive selects overwrite behavior.\nDeclining an interactive overwrite returns status 1 without replacing the link.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-ln-version",
+      "command": "ln",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/ln@0.2.2 metadata contract",
+      "expected_stdout_text": "ln 0.2.2\n",
+      "expected_stderr_text": ""
     }
   ]
 }

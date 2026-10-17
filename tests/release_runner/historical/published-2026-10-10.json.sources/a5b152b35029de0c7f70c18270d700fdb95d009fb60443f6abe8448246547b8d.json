@@ -1,0 +1,244 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-head-line-count",
+      "command": "head",
+      "args": [
+        "-n",
+        "1"
+      ],
+      "stdin_text": "one\ntwo\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-head-zero-records",
+      "command": "head",
+      "args": [
+        "-z",
+        "-n2"
+      ],
+      "stdin_hex": "616263006465660067686900",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-head-exclude-tail",
+      "command": "head",
+      "args": [
+        "-n",
+        "-2"
+      ],
+      "stdin_text": "1\n2\n3\n4\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-head-binary-prefix-count",
+      "command": "head",
+      "args": [
+        "-n",
+        "1KiB"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-head-explicit-positive-count",
+      "command": "head",
+      "args": [
+        "-n",
+        "+3"
+      ],
+      "stdin_text": "1\n2\n3\n4\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-head-multiple-file-headers",
+      "command": "head",
+      "args": [
+        "-n1",
+        "a",
+        "b"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "one\ntwo\n"
+        },
+        {
+          "path": "b",
+          "content_text": "three\nfour\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-text-line-552",
+      "command": "head",
+      "args": [
+        "-z",
+        "-n2"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_hex": "616263006465660067686900",
+      "expected_stdout_hex": "6162630064656600",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-561",
+      "command": "head",
+      "args": [
+        "-n",
+        "-2"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "1\n2\n3\n4\n",
+      "expected_stdout_text": "1\n2\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-570",
+      "command": "head",
+      "args": [
+        "-n",
+        "+3"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "1\n2\n3\n4\n",
+      "expected_stdout_text": "1\n2\n3\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-579",
+      "command": "head",
+      "args": [
+        "-2"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "1\n2\n3\n",
+      "expected_stdout_text": "1\n2\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-580",
+      "command": "head",
+      "args": [
+        "-2c"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "abc\n",
+      "expected_stdout_text": "ab",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-581",
+      "command": "head",
+      "args": [
+        "-n",
+        "1KiB"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "1\n2\n",
+      "expected_stdout_text": "1\n2\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-590",
+      "command": "head",
+      "args": [
+        "-n1",
+        "-c2"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "abc\n",
+      "expected_stdout_text": "ab",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-591",
+      "command": "head",
+      "args": [
+        "-n",
+        "bad"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "invalid count",
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+    },
+    {
+      "id": "compat-catalog-line-107",
+      "command": "head",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-stdin-head"
+      ]
+    }
+  ]
+}

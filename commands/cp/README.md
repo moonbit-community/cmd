@@ -1,6 +1,6 @@
 # cp
 
-This documents version 0.2.0. The [support record](../../docs/compatibility.md)
+This documents version 0.2.1. The [support record](../../docs/compatibility.md)
 tracks platform verification and exact-version publication evidence separately.
 
 Copy regular files and directory trees to new destinations with
@@ -26,6 +26,10 @@ recognized but fail before creating output because the portable API cannot
 read and restore complete links, modes, ownership, and timestamps. See the
 [support record](../../docs/compatibility.md).
 
-The unreleased workspace adds standalone `--version`, which prints the command
-name and package version and exits successfully without reading input.
-Use `--help` to display usage.
+## Standalone metadata
+
+Standalone `--version` prints exactly `cp 0.2.1` followed by one
+newline. Standalone `--help` starts with `Usage: cp`, lists both
+metadata options, and ends with a newline. Both write to stdout, leave stdin
+unread, and exit with status 0. Exact-version publication and verification
+remain recorded separately in the [support record](../../docs/compatibility.md).

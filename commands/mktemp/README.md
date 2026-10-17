@@ -1,6 +1,6 @@
 # mktemp
 
-Version **0.1.1** behavior is documented here. The
+Version **0.1.2** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -16,6 +16,10 @@ MoonBit random source and exclusive creation, so collisions are retried before
 failure; files use mode 0600 and directories 0700. Template extensions,
 owner metadata and platform-specific mode details are not claimed.
 
-The unreleased workspace adds standalone `--version`, which prints the command
-name and package version and exits successfully without reading input.
-Use `--help` to display usage.
+## Standalone metadata
+
+Standalone `--version` prints exactly `mktemp 0.1.2` followed by one
+newline. Standalone `--help` starts with `Usage: mktemp`, lists both
+metadata options, and ends with a newline. Both write to stdout, leave stdin
+unread, and exit with status 0. Exact-version publication and verification
+remain recorded separately in the [support record](../../docs/compatibility.md).

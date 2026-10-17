@@ -93,6 +93,44 @@
       "expected_stdout_text": "",
       "expected_stderr_contains": "does not accept a value",
       "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+    },
+    {
+      "id": "release-metadata-touch-help",
+      "command": "touch",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/touch@0.2.1 metadata contract",
+      "expected_stdout_text": "Usage: touch [-c] [-a|-m] [-d STRING|-r FILE|-t STAMP] FILE...\n      --help      display this help and exit\n      --version   display version and exit\nNote: -a/-m/-d/-r/-t are recognized but unavailable without a portable timestamp setter.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-touch-version",
+      "command": "touch",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/touch@0.2.1 metadata contract",
+      "expected_stdout_text": "touch 0.2.1\n",
+      "expected_stderr_text": ""
     }
   ]
 }

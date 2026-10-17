@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "id": "pinned-oracle-v1",
+  "profile_version": 1,
+  "image": "mooncmd-oracle:phase0",
+  "base_image_digest": "sha256:2e863c44b718727c860746568e1d54afd13b2fa71b160f5cd9058fc436217b30",
+  "image_digest": "",
+  "versions": "",
+  "versions_sha256": "",
+  "dockerfile_sha256": "af7fb2e15d73f144c06d279b57d5c434f623f4e341002987ffce2effaa20a3bf",
+  "versions_script_sha256": "dbb3eac17eaffacea25f6674f8b2b3fed379fbc9b166d5141a17a8012b11e642",
+  "sources": [],
+  "binding_status": "unsealed: collect current image identity and upstream inventory with seal-oracle; historical image identities are not reused"
+}

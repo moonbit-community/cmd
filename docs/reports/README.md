@@ -14,6 +14,8 @@ they are not an alternative support matrix.
 
 | Date | Report | Scope |
 | --- | --- | --- |
+| 2026-10-18 | [Unified metadata release](2026-10-15-metadata-release/README.md) | Core 0.6.0, 78 command patch releases, 79 verified uploads on October 17 UTC, exact-source three-platform CI, published acceptance and immutable freezing |
+| 2026-10-18 | [Test-system recheck repairs](2026-10-14-test-system-closeout/README.md) | Unified coverage/provenance gates, lifecycle ownership, direct backend pairs and final three-platform source acceptance |
 | 2026-10-11 | [Command follow-up audit](2026-10-11-command-followups/README.md) | 79-command inventory, 31 new-package ADR mappings and Native/Wasm/exact MoonX observations of four known fidelity deviations |
 | 2026-10-11 | [P2 command release 0.1.0](2026-10-11-p2-release-0.1.0/README.md) | Four pure MoonBit command packages, core 0.4.0, three-platform CI, clean-cache exact MoonX redownload and 554-case final smoke acceptance |
 | 2026-10-11 | [P2 command candidate](2026-10-11-p2-command-candidate.md) | Local-only strings, column, which and date packages, shared testkit environment expansion, candidate manifest validation and Native/Wasm contracts |

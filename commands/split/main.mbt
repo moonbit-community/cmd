@@ -115,7 +115,7 @@ fn help_message() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("split 0.1.0\n")
+    @stdio.stdout.write("split 0.1.1\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [
@@ -138,7 +138,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("split 0.1.0\n")
+    @stdio.stdout.write("split 0.1.1\n")
     return
   }
   let (size, lines, width, additional) = try {

@@ -321,6 +321,44 @@
       "expected_stdout_text": "Files a and b are identical\n",
       "oracle": true,
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+    },
+    {
+      "id": "release-metadata-diff-help",
+      "command": "diff",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/diff@0.1.2 metadata contract",
+      "expected_stdout_text": "Usage: diff [-qsauc] [-U LINES | -C LINES] [--label LABEL] FILE1 FILE2\n      --help      display this help and exit\n      --version   display version and exit\nCompare regular files or one stdin operand. Normal, unified and context output.\n-q reports differences only; -s reports equality; -a treats binary input as text.\nTimestamp headers use TZ=UTC or public TZif files; label stdin explicitly.\nDirectory recursion and whitespace/locale options are unsupported.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-diff-version",
+      "command": "diff",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/diff@0.1.2 metadata contract",
+      "expected_stdout_text": "diff 0.1.2\n",
+      "expected_stderr_text": ""
     }
   ]
 }

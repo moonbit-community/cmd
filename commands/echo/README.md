@@ -1,6 +1,6 @@
 # echo
 
-Version **0.2.0** behavior is documented here. The
+Version **0.2.1** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -13,3 +13,11 @@ package version in `moon.mod`.
 
 The normally special `--` operand is printed literally, matching GNU echo's
 historical ambiguity. Use `printf` when option-like input must be unambiguous.
+
+## Standalone metadata
+
+Standalone `--version` prints exactly `echo 0.2.1` followed by one
+newline. Standalone `--help` starts with `Usage: echo`, lists both
+metadata options, and ends with a newline. Both write to stdout, leave stdin
+unread, and exit with status 0. Exact-version publication and verification
+remain recorded separately in the [support record](../../docs/compatibility.md).

@@ -1,6 +1,6 @@
 # sha512sum
 
-Version **0.1.0** behavior is documented here. The
+Version **0.1.1** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -29,3 +29,11 @@ success and 1 for an invalid option, unreadable input or failed verification.
 
 On Windows, text mode does not translate CRLF or treat Ctrl-Z as EOF. Use
 binary mode for portable checksums of the same bytes.
+
+## Standalone metadata
+
+Standalone `--version` prints exactly `sha512sum 0.1.1` followed by one
+newline. Standalone `--help` starts with `Usage: sha512sum`, lists both
+metadata options, and ends with a newline. Both write to stdout, leave stdin
+unread, and exit with status 0. Exact-version publication and verification
+remain recorded separately in the [support record](../../docs/compatibility.md).

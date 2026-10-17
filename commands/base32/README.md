@@ -1,6 +1,6 @@
 # base32 for moonx
 
-Version **0.1.1** behavior is documented here. The
+Version **0.1.2** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -18,6 +18,10 @@ rejected, and a valid decoded prefix is written before a later malformed group
 is reported. Nonstandard alphabets and locale-specific diagnostics are not
 claimed.
 
-The unreleased workspace adds standalone `--version`, which prints the command
-name and package version and exits successfully without reading input.
-Use `--help` to display usage.
+## Standalone metadata
+
+Standalone `--version` prints exactly `base32 0.1.2` followed by one
+newline. Standalone `--help` starts with `Usage: base32`, lists both
+metadata options, and ends with a newline. Both write to stdout, leave stdin
+unread, and exit with status 0. Exact-version publication and verification
+remain recorded separately in the [support record](../../docs/compatibility.md).

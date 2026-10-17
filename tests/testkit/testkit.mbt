@@ -1,6 +1,6 @@
 ///|
 pub(all) struct RunResult {
-  status : Int
+  status : Int32
   stdout : Bytes
   stderr : Bytes
 }
@@ -49,8 +49,8 @@ pub async fn run(
   args : Array[String],
   stdin? : Bytes,
   cwd? : String,
-  extra_env? : Map[String, String] = Map([]),
-  inherit_env? : Bool = true,
+  extra_env~ : Map[String, String] = Map([]),
+  inherit_env~ : Bool = true,
 ) -> RunResult {
   let timeout_ms = if program == "docker" ||
     program == "moonx" ||

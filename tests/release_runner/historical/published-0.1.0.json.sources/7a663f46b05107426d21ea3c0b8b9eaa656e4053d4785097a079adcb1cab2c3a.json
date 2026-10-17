@@ -1,0 +1,129 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-uniq-adjacent",
+      "command": "uniq",
+      "args": [],
+      "stdin_text": "a\na\nb\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-uniq-field-character-selection",
+      "command": "uniq",
+      "args": [
+        "-c",
+        "-f1",
+        "-s1",
+        "-w1"
+      ],
+      "stdin_text": "1 xa\n2 xb\n3 yy\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p3-uniq-zero-records",
+      "command": "uniq",
+      "args": [
+        "-z",
+        "-s1",
+        "-w1"
+      ],
+      "stdin_hex": "6178310061783200627900",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-text-line-476",
+      "command": "uniq",
+      "args": [
+        "-c",
+        "-f1",
+        "-s1",
+        "-w1"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "1 xa\n2 xb\n3 yy\n",
+      "expected_stdout_text": "      2 1 xa\n      1 3 yy\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-485",
+      "command": "uniq",
+      "args": [
+        "-z",
+        "-s1",
+        "-w1"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_hex": "6178310061783200627900",
+      "expected_stdout_hex": "61783100627900",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-line-494",
+      "command": "uniq",
+      "args": [
+        "-f",
+        "bad"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "invalid number",
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+    },
+    {
+      "id": "compat-text-line-614",
+      "command": "uniq",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_hex": "ff73616d650aff73616d65",
+      "expected_stdout_hex": "ff73616d650a",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-catalog-line-295",
+      "command": "uniq",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-stdin-uniq"
+      ]
+    }
+  ]
+}

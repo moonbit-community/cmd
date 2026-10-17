@@ -1,0 +1,712 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase4-mv-regular",
+      "command": "mv",
+      "args": [
+        "source",
+        "moved"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "payload\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-mv-update-none",
+      "command": "mv",
+      "args": [
+        "--update=none",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "old"
+        },
+        {
+          "path": "destination",
+          "content_text": "new"
+        }
+      ],
+      "delay_ms": 2,
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-filesystem-rename",
+      "command": "mv",
+      "args": [
+        "copy",
+        "moved"
+      ],
+      "files": [
+        {
+          "path": "copy",
+          "content_text": "policy-fixture\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "copy",
+          "exists": false
+        },
+        {
+          "path": "moved",
+          "kind": "file",
+          "content_text": "policy-fixture\n"
+        }
+      ],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-catalog-line-166",
+      "command": "mv",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "repair-fs-mv-same-path",
+      "command": "mv",
+      "args": [
+        "source",
+        "source"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "source~",
+          "exists": false
+        }
+      ],
+      "expected_stderr_contains": "same file",
+      "diagnostic_reason": "GNU and candidate identify a same-file no-op; status, empty stdout and preserved contents are exact."
+    },
+    {
+      "id": "repair-fs-mv-same-path-alias",
+      "command": "mv",
+      "args": [
+        "source",
+        "./source"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "source~",
+          "exists": false
+        }
+      ],
+      "expected_stderr_contains": "same file",
+      "diagnostic_reason": "GNU and candidate identify a same-file no-op; status, empty stdout and preserved contents are exact."
+    },
+    {
+      "id": "repair-fs-mv-same-update",
+      "command": "mv",
+      "args": [
+        "-u",
+        "source",
+        "source"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "source~",
+          "exists": false
+        }
+      ],
+      "expected_stderr_contains": "same file",
+      "diagnostic_reason": "GNU and candidate identify a same-file no-op; status, empty stdout and preserved contents are exact."
+    },
+    {
+      "id": "repair-fs-mv-same-interactive",
+      "command": "mv",
+      "args": [
+        "-i",
+        "source",
+        "source"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "source~",
+          "exists": false
+        }
+      ],
+      "expected_stderr_contains": "same file",
+      "diagnostic_reason": "GNU and candidate identify a same-file no-op; status, empty stdout and preserved contents are exact."
+    },
+    {
+      "id": "repair-fs-mv-same-backup",
+      "command": "mv",
+      "args": [
+        "-b",
+        "source",
+        "source"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "source~",
+          "exists": false
+        }
+      ],
+      "expected_stderr_contains": "same file",
+      "diagnostic_reason": "GNU and candidate identify a same-file no-op; status, empty stdout and preserved contents are exact."
+    },
+    {
+      "id": "repair-fs-mv-same-no-clobber",
+      "command": "mv",
+      "args": [
+        "-n",
+        "source",
+        "source"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "source~",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "repair-fs-mv-same-update-none",
+      "command": "mv",
+      "args": [
+        "--update=none",
+        "source",
+        "source"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "source~",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "repair-fs-mv-hardlink-no-op",
+      "command": "mv",
+      "args": [
+        "source",
+        "alias"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "mode": 416
+        },
+        {
+          "path": "alias",
+          "kind": "hardlink",
+          "target": "source"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_contains": "same file",
+      "diagnostic_reason": "Public rename permits a same-inode no-op; the command verifies source removal and reports failure, preserving both links.",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "mode": 416
+        },
+        {
+          "path": "alias",
+          "same_identity_as": "source",
+          "content_text": "new"
+        }
+      ]
+    },
+    {
+      "id": "repair-fs-mv-backup",
+      "command": "mv",
+      "args": [
+        "-b",
+        "-S",
+        ".save",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "expected_files": [
+        {
+          "path": "source",
+          "exists": false
+        },
+        {
+          "path": "destination",
+          "content_text": "new"
+        },
+        {
+          "path": "destination.save",
+          "content_text": "old"
+        }
+      ]
+    },
+    {
+      "id": "repair-fs-mv-interactive-no",
+      "command": "mv",
+      "args": [
+        "-i",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "n\n",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "mtime": "202601020000.00"
+        },
+        {
+          "path": "destination",
+          "content_text": "old",
+          "mtime": "202601010000.00"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mv: overwrite 'destination'? ",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 Linux CI 38117528667: interactive refusal returns 1",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ]
+    },
+    {
+      "id": "repair-fs-mv-interactive-yes",
+      "command": "mv",
+      "args": [
+        "-i",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "y\n",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "mtime": "202601020000.00"
+        },
+        {
+          "path": "destination",
+          "content_text": "old",
+          "mtime": "202601010000.00"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mv: overwrite 'destination'? ",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "exists": false
+        },
+        {
+          "path": "destination",
+          "content_text": "new"
+        }
+      ]
+    },
+    {
+      "id": "repair-fs-mv-update-older",
+      "command": "mv",
+      "args": [
+        "-u",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "mtime": "202601020000.00"
+        },
+        {
+          "path": "destination",
+          "content_text": "old",
+          "mtime": "202601010000.00"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 second review",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "exists": false
+        },
+        {
+          "path": "destination",
+          "content_text": "new"
+        }
+      ]
+    },
+    {
+      "id": "repair-fs-mv-equal-time-boundary",
+      "command": "mv",
+      "args": [
+        "-u",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "mtime": "202601010000.00"
+        },
+        {
+          "path": "destination",
+          "content_text": "old",
+          "mtime": "202601010000.00"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "boundary",
+      "source_version": "GNU coreutils 9.11 second review",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_contains": "unsupported capability: file identity",
+      "diagnostic_reason": "Equal timestamps cannot establish identity; reject the ambiguous early-return decision without mutation.",
+      "expected_rejection": "unsupported capability: file identity",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ]
+    },
+    {
+      "id": "repair-fs-mv-interactive-no-eof",
+      "command": "mv",
+      "args": [
+        "-i",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "mtime": "202601020000.00"
+        },
+        {
+          "path": "destination",
+          "content_text": "old",
+          "mtime": "202601010000.00"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mv: overwrite 'destination'? ",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 Linux CI 38117528667: interactive refusal returns 1",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        }
+      ]
+    }
+  ]
+}

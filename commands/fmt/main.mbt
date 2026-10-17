@@ -30,7 +30,7 @@ async fn run(args : ArrayView[String]) -> Int {
     return 0
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("fmt 0.1.0\n")
+    @stdio.stdout.write("fmt 0.1.1\n")
     return 0
   }
   let requested_width = parsed.last_value("width")

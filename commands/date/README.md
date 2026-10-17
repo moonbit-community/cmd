@@ -1,6 +1,6 @@
 # date
 
-Version **0.1.1**. See the [support record](../../docs/compatibility.md) for release evidence.
+Version **0.1.2**. See the [support record](../../docs/compatibility.md) for release evidence.
 
 Print or format a timestamp:
 
@@ -33,3 +33,11 @@ precision; supplied fractional epochs retain nanoseconds. Relative-date
 parsing, leap-second TZif files and setting the system clock are not
 implemented. The released date/time API accepts offsets within ±18 hours;
 larger offsets fail explicitly. `--help` and `--version` are available.
+
+## Standalone metadata
+
+Standalone `--version` prints exactly `date 0.1.2` followed by one
+newline. Standalone `--help` starts with `Usage: date`, lists both
+metadata options, and ends with a newline. Both write to stdout, leave stdin
+unread, and exit with status 0. Exact-version publication and verification
+remain recorded separately in the [support record](../../docs/compatibility.md).

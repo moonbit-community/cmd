@@ -13,12 +13,17 @@
       "expected_stderr_text": "",
       "comparison": "contract",
       "normalizations": [],
-      "coverage": ["default-stops", "stdin"]
+      "coverage": [
+        "default-stops",
+        "stdin"
+      ]
     },
     {
       "id": "p0-expand-initial",
       "command": "expand",
-      "args": ["--initial"],
+      "args": [
+        "--initial"
+      ],
       "stdin_text": "\t\tA\tB\n",
       "files": [],
       "environment": {},
@@ -27,12 +32,16 @@
       "expected_stderr_text": "",
       "comparison": "contract",
       "normalizations": [],
-      "coverage": ["initial-only"]
+      "coverage": [
+        "initial-only"
+      ]
     },
     {
       "id": "p0-expand-explicit-stops",
       "command": "expand",
-      "args": ["--tabs=4,10"],
+      "args": [
+        "--tabs=4,10"
+      ],
       "stdin_text": "1234\tX\t\n",
       "files": [],
       "environment": {},
@@ -41,12 +50,18 @@
       "expected_stderr_text": "",
       "comparison": "contract",
       "normalizations": [],
-      "coverage": ["explicit-stops", "post-final-stop"]
+      "coverage": [
+        "explicit-stops",
+        "post-final-stop"
+      ]
     },
     {
       "id": "p0-expand-rejects-unsorted-stops",
       "command": "expand",
-      "args": ["-t", "8,4"],
+      "args": [
+        "-t",
+        "8,4"
+      ],
       "stdin_text": "x\n",
       "files": [],
       "environment": {},
@@ -55,7 +70,47 @@
       "expected_stderr_text": "expand: tab sizes must be ascending\n",
       "comparison": "contract",
       "normalizations": [],
-      "coverage": ["invalid-option-value"]
+      "coverage": [
+        "invalid-option-value"
+      ]
+    },
+    {
+      "id": "release-metadata-expand-help",
+      "command": "expand",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/expand@0.1.2 metadata contract",
+      "expected_stdout_text": "Usage: expand [OPTION]... [FILE]...\n      --help      display this help and exit\n      --version   display version and exit\n\nConvert tabs in each FILE to spaces, writing to standard output.\nWith no FILE, or when FILE is -, read standard input.\n\n  -i, --initial       do not convert tabs after nonblank characters\n  -t, --tabs=LIST     use comma-separated tab stops (positive, ascending)\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-expand-version",
+      "command": "expand",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/expand@0.1.2 metadata contract",
+      "expected_stdout_text": "expand 0.1.2\n",
+      "expected_stderr_text": ""
     }
   ]
 }

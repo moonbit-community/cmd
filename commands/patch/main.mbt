@@ -237,7 +237,7 @@ async fn run(args : ArrayView[String]) -> Int {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("patch 0.1.0\n")
+    @stdio.stdout.write("patch 0.1.1\n")
     return
   }
   let status = run(@env.args()[1:]) catch {

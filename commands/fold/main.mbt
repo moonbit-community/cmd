@@ -16,7 +16,7 @@ fn help_message() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("fold 0.1.0\n")
+    @stdio.stdout.write("fold 0.1.1\n")
     return
   }
   let args : Array[String] = []

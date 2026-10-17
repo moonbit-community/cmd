@@ -1,0 +1,92 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "p2-strings-default",
+      "command": "strings",
+      "args": [],
+      "stdin_hex": "787868656c6c6f00776f726c640a",
+      "files": [],
+      "environment": {"LC_ALL": "C"},
+      "expected_status": 0,
+      "expected_stdout_text": "xxhello\nworld\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": ["all"]
+    },
+    {
+      "id": "p2-strings-minimum-and-radix",
+      "command": "strings",
+      "args": ["-n", "6", "-t", "x"],
+      "stdin_hex": "616263646500666768696a6b",
+      "files": [],
+      "environment": {"LC_ALL": "C"},
+      "expected_status": 0,
+      "expected_stdout_text": "6 fghijk\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": ["bytes", "radix"]
+    },
+    {
+      "id": "p2-strings-unsupported-encoding",
+      "command": "strings",
+      "args": ["-e", "l"],
+      "stdin_text": "hello",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "unsupported encoding",
+      "diagnostic_reason": "The rejection category is stable while host diagnostics may vary.",
+      "comparison": "boundary",
+      "expected_rejection": "unsupported encoding",
+      "normalizations": [],
+      "coverage": ["encoding"]
+    },
+    {
+      "id": "p2-strings-version",
+      "command": "strings",
+      "args": ["--version"],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_contains": "strings (cli)",
+      "diagnostic_reason": "The command/version prefix is stable; exact package version is checked separately.",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": ["version"]
+    },
+    {
+      "id": "p2-strings-octal",
+      "command": "strings",
+      "args": ["-o"],
+      "stdin_text": "hello",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "0 hello\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": ["octal"]
+    },
+    {
+      "id": "p2-strings-file-name",
+      "command": "strings",
+      "args": ["-f", "sample"],
+      "stdin_text": "",
+      "files": [{"path": "sample", "content_text": "hello"}],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "sample: hello\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": ["print-file-name"]
+    }
+  ]
+}

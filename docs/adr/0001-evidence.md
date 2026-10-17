@@ -2,8 +2,8 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-12
-Revision: Correct self-authored expected outputs, pin new strings/column oracles, expand real CLI/alias/edge coverage before a repaired release, run published HTTPS cases through the same fixed POSIX fixture as the workspace runner, and add a single metadata contract for all workspace commands.
+Updated: 2026-10-18
+Revision: Require current-version mainline coverage audit and lifecycle completeness while keeping evidence retention scoped to the current CI execution.
 
 ## Target and decision
 
@@ -73,6 +73,22 @@ help/version strings must not change the expected bytes for old MoonX
 coordinates. The overlay is limited to known case IDs for the same command;
 unknown or duplicate mappings fail validation.
 
+The metadata publication adds exact standalone help and version contracts for
+every releasable command. Full help bytes are retained from reviewed matching
+Native/Wasm captures after the declared help invariants pass; version bytes are
+derived from each module's declared version. This establishes the project's
+metadata contract, not upstream byte parity. The existing closed-stdin process
+adapter does not measure unread input, so its status and stream observations
+must not claim that additional dimension. Published dependency composition is
+checked through exact MoonX coordinates after upload; a workspace build cannot
+prove which registry core version a command resolves.
+
+Published freezing combines applicable Linux and Windows results: Windows-only
+cases require their passing Windows rows rather than accepting a Linux skip.
+The freezing host must still verify the actual immutable oracle image. These
+requirements may be revised only when an equivalent observation mechanism
+preserves exact source, registry, artifact and platform identity.
+
 Keep three test layers: package behavior, real CLI contracts and stateful
 scenarios. The workspace and published-consumer drivers share one Native
 `testkit` for case schemas, bytes, fixtures, processes, HTTP, observations and
@@ -114,8 +130,9 @@ fixture state, backend, platform, source version and elapsed time.
 
 Retain Linux/macOS/Windows PR checks. Build each release backend once per host
 and reuse it for contracts, scenarios, policy and manifest validation. Linux
-runs pinned oracle and independent GNU checks; scheduled/manual checks add
-stress and exact published consumers using the same builds. Duplicate compat
+runs pinned oracle and independent GNU checks; all three platforms run Native
+stress, while scheduled/manual checks add exact published consumers using the
+same builds. Duplicate compat
 runs are removed. This changes execution cost, not the required platform gates.
 
 ## Alternatives and compatibility cost
@@ -155,6 +172,63 @@ candidate. Cross-root mtime equality requires fixed fixture times; ctime and
 atime relations use the same fixture in a boundary or stateful scenario.
 
 ## Versions and evidence
+
+### Long-term verification maintenance
+
+The local audited push remains necessary, but direct Git commands do not invoke
+it. Main therefore requires PRs, up-to-date three-platform checks and the
+`coverage-audit` status with no administrator bypass. CI uses the event's real
+base/head range and the same clean source identity across platform bundles.
+Impact remains reviewed input; passing rows cannot define what a change affects.
+Contracts, pairs and rejection evidence must cover every applicable platform;
+fixed upstream comparison remains Linux-specific. The cost is additional exact
+Native-only package evidence and cross-platform aggregation. Lift these checks
+only when an equally strict mechanism preserves source and observation coverage.
+
+The lifecycle registry has a fixed minimum of 26 proven conditions plus the
+explicit deferred grandchild-ownership boundary. Completeness is checked apart
+from individual bindings so focused unit fixtures remain small. Removing or
+demoting a required condition is an error, not an automatic reduction in scope.
+The grandchild limitation can change only with a reviewed public-API unlock and
+new execution evidence; this maintenance does not implement that missing API.
+
+The testing system serves the current workspace and current published packages.
+Mooncakes retains package release records; maintaining another version archive,
+historical image-recovery catalog or GitHub Release evidence store is outside this
+system's scope. CI keeps the current run's reports and failure diagnostics under
+its normal artifact retention policy. Required source, artifact and oracle hashes
+remain execution-integrity checks: removing them would allow stale or substituted
+results to satisfy a current gate. They do not promise indefinite reproduction of
+every previous release. Revisit long-term storage only when a concrete historical
+replay requirement justifies that additional maintenance.
+
+Existing historical reports keep their recorded meaning. Current acceptance
+requires fresh execution at the exact source under review, not old successful
+reports or a record that a package was published. Workflow execution receipts and
+GitHub protection reads establish operational completion; this ADR alone does
+not claim that setup or remote execution has completed.
+
+The unified metadata source at `c619ae71ae92706d6d56cdd6c73c17f270a17230`
+passed [three-platform CI](https://github.com/moonbit-community/cmd/actions/runs/39041842874).
+Core 0.6.0 and 78 command versions then received successful uploads and exact
+registry/archive verification; every official archive matched the retained
+local ZIP. The [release record](../reports/2026-10-15-metadata-release/README.md)
+retains the initial absence checks, reviewed interrupted attempts and receipts.
+Published run 39045905149 passed on attempt 2 with exact smoke on Linux,
+macOS and Windows. Full Linux differential plus Windows-only cases cover
+997 unique applicable semantic/boundary IDs, and the immutable freeze passed.
+Its failed first macOS attempt
+stopped during asset download before selected-case execution; the original
+infrastructure evidence remains separate from the successful second attempt.
+The reviewed snapshot has been imported. Its outgoing manifest,
+`published-2026-10-17-before-metadata.json`, preserves the previous current
+bytes exactly; all pre-existing historical files remain unchanged. The new
+record commit must pass its separate exact-head coverage audit before pushing.
+The metadata contract remains project-specific; closed-stdin observations do
+not prove unread open input, and existing support limits are unchanged.
+The official archive endpoint may redirect once to its observed HTTPS
+distribution host with the identical coordinate path. Host, path or scheme
+changes, further redirects and checksum mismatches fail verification.
 
 Current refresh (2026-09-26): the public registry resolves
 `moonbitlang/async 0.22.4` (checksum

@@ -23,9 +23,9 @@ async fn scenario_run(
   wasm : Bool,
   command : String,
   args : Array[String],
-  stdin? : Bytes = b"",
+  stdin~ : Bytes = b"",
   cwd? : String,
-  extra_env? : Map[String, String] = Map([]),
+  extra_env~ : Map[String, String] = Map([]),
 ) -> @testkit.RunResult {
   let traces = @path.Path(work).dirname().join(Path("streams")).to_string()
   if !@fs.exists(traces) {
@@ -50,6 +50,7 @@ async fn scenario_run(
   )
   @fs.write_file(prefix + ".stdout.bin", completed.output.stdout)
   @fs.write_file(prefix + ".stderr.bin", completed.output.stderr)
+  @fs.write_file(prefix + ".status.txt", completed.output.status.to_string())
   if completed.cleanup_error is Some(error) {
     fail("cleanup infrastructure: " + error)
   }
@@ -122,6 +123,11 @@ async fn shell_interactive_scenario(
     let (stdin, writer) = @process.write_to_process()
     let (stdout, output) = @process.read_from_process()
     let (stderr, error) = @process.read_from_process()
+    @testkit.record_execution_environment(program, extra_env={
+      "PS1": "P> ",
+      "PS2": "C> ",
+      "ENV": startup,
+    })
     let child = @process.spawn(
       group,
       program,
@@ -197,7 +203,9 @@ async fn shell_interactive_scenario(
     scenario_read_exact(stdout, work + "/../stdout.bin", "recovered\n")
     scenario_read_exact(stderr, work + "/../stderr.bin", "P> ")
     writer.close()
-    assert_eq(child.wait(), 0)
+    let status = child.wait()
+    @fs.write_file(work + "/../interactive.status.txt", status.to_string())
+    assert_eq(status, 0)
     assert_eq(stdout.read_all().binary(), b"")
     assert_eq(stderr.read_all().binary(), b"")
   })
@@ -303,11 +311,13 @@ async fn execute_scenario(
   wasm : Bool,
   report_dir : String,
   oracle_image? : String,
+  retain_success~ : Bool = false,
 ) -> @testkit.CaseReport {
   let start = @async.now()
+  let report_id = "scenario:" + fixture.id
   if !fixture.platform_applies() {
     let report = suite_report(
-      fixture.id,
+      report_id,
       if wasm {
         "wasm"
       } else {
@@ -369,7 +379,7 @@ async fn execute_scenario(
     failures.push("scenario deadline expired")
   }
   let report = suite_report(
-    fixture.id,
+    report_id,
     if wasm {
       "wasm"
     } else {
@@ -379,7 +389,7 @@ async fn execute_scenario(
     failures,
   )
   let mut cleanup_error = false
-  if failures.is_empty() {
+  if failures.is_empty() && !retain_success {
     @async.protect_from_cancel(() => @fs.rmdir(evidence, recursive=true)) catch {
       error => {
         cleanup_error = true
@@ -419,7 +429,7 @@ async fn execute_scenario(
     } else {
       "assertion"
     },
-    evidence: if failures.is_empty() {
+    evidence: if failures.is_empty() && !retain_success {
       None
     } else {
       Some(evidence)

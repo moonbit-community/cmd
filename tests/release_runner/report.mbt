@@ -23,6 +23,101 @@ fn result_class(category : String) -> String {
 }
 
 ///|
+fn oracle_preflight_report(detail : String) -> CaseReport {
+  {
+    id: "oracle-preflight",
+    command: "runner",
+    version: "",
+    category: "oracle_failure",
+    detail,
+  }
+}
+
+///|
+fn release_oracle_profile_id(
+  reports : Array[CaseReport],
+  oracle_image_digest : String,
+) -> String {
+  if oracle_image_digest != "" ||
+    reports.any(report => report.id == "oracle-preflight") {
+    "pinned-oracle-v1"
+  } else {
+    ""
+  }
+}
+
+///|
+/// Retain a machine-readable infrastructure result even when no case started.
+/// The run metadata stays partial because the oracle identity was not proved.
+async fn write_oracle_preflight_failure(
+  directory : String?,
+  fixtures : Array[ReleaseCase],
+  manifest_path : String,
+  case_corpus_path : String,
+  started_at_ms : Int64,
+  detail : String,
+  oracle_profile_id? : String,
+  registry_path~ : String = "tests/registry/registry.json",
+) -> Unit {
+  match directory {
+    Some(path) => {
+      if !@fs.exists(path) {
+        @fs.mkdir(path, recursive=true)
+      }
+      write_report(
+        path,
+        [oracle_preflight_report(detail)],
+        fixtures,
+        true,
+        Map([]),
+        manifest_path,
+        case_corpus_path,
+        started_at_ms,
+        "",
+        "",
+        oracle_profile_id?,
+        registry_path~,
+      )
+    }
+    None => ()
+  }
+}
+
+///|
+async fn write_release_preflight_failure(
+  directory : String?,
+  manifest_path : String,
+  case_corpus_path : String,
+  registry_path : String,
+  started_at_ms : Int64,
+  detail : String,
+) -> Unit {
+  if directory is Some(directory) {
+    write_report(
+      directory,
+      [
+        {
+          id: "release:validation-infrastructure",
+          command: "runner",
+          version: "",
+          category: "runner_infra",
+          detail,
+        },
+      ],
+      [],
+      false,
+      Map([]),
+      manifest_path,
+      case_corpus_path,
+      started_at_ms,
+      "",
+      "",
+      registry_path~,
+    )
+  }
+}
+
+///|
 fn report_verification(
   report : CaseReport,
   fixtures : Array[ReleaseCase],
@@ -73,7 +168,7 @@ fn shared_report(
         }
         "boundary" => {
           observations.append([
-            "nonzero-status", "diagnostic", "content", "type",
+            "nonzero-status", "diagnostic", "stderr", "content", "type",
           ])
           observations.append(@testkit.contract_observations(fixture))
         }
@@ -91,6 +186,16 @@ fn shared_report(
         }
       }
     }
+  }
+  // Coverage uses canonical stream dimensions; detailed forms retain whether
+  // the assertion compared complete bytes or a documented contract.
+  if observations.contains("stdout-bytes") ||
+    observations.contains("stdout-contract") {
+    observations.push("stdout")
+  }
+  if observations.contains("stderr-bytes") ||
+    observations.contains("stderr-contract") {
+    observations.push("stderr")
   }
   let detail_parts = report.detail.split("; artifacts: ").collect()
   let evidence = if detail_parts.length() > 1 {
@@ -136,33 +241,77 @@ async fn write_report(
   fixtures : Array[ReleaseCase],
   differential : Bool,
   timings : Map[String, Int64],
+  manifest_path : String,
+  case_corpus_path : String,
+  started_at_ms : Int64,
+  oracle_image_digest : String,
+  oracle_versions_hash : String,
+  oracle_profile_id? : String,
+  registry_path~ : String = "tests/registry/registry.json",
+  start_metadata? : @testkit.RunMetadata,
 ) -> Unit {
   let shared = reports.map(report => {
     shared_report(report, fixtures, differential, timings)
   })
-  @testkit.write_reports(directory, shared)
+  let coordinates = reports
+    .filter(report => result_class(report.category) != "skip")
+    .map(report => "cli/" + report.command + "@" + report.version)
+    .filter(value => !value.has_suffix("@"))
+  coordinates.sort()
+  let metadata = @testkit.collect_run_metadata(
+    "release-" + @async.now().to_string(),
+    manifest_path~,
+    case_corpus_path~,
+    registry_path~,
+    oracle_profile_id=oracle_profile_id.unwrap_or(
+      release_oracle_profile_id(reports, oracle_image_digest),
+    ),
+    oracle_image_digest~,
+    moonx_coordinates=coordinates,
+    started_at_ms~,
+    ended_at_ms=@async.now(),
+  )
+  let metadata = @testkit.with_oracle_versions_hash(
+    metadata, oracle_versions_hash,
+  )
+  let metadata = @testkit.with_wasm_artifact_hash(
+    metadata,
+    @testkit.moonx_artifact_digest(coordinates),
+  )
+  let metadata = match start_metadata {
+    Some(start) => @testkit.finalize_run_metadata(start, metadata)
+    None => metadata
+  }
+  @testkit.write_reports_with_metadata(directory, shared, metadata)
   let coverage = fixtures.map(fixture => {
     let semantic = shared.any(report => {
       report.id == fixture.id && report.semantic_pass()
     })
-    let record : Map[String, Json] = {
-      "id": fixture.id.to_json(),
-      "command": fixture.command.to_json(),
-      "selected": true.to_json(),
-      "platform_applies": case_supported_on_host(fixture, host_platform()).to_json(),
-      "executed": reports
-      .any(report => {
-        report.id == fixture.id && result_class(report.category) != "skip"
-      })
-      .to_json(),
-      "options_declared": fixture.coverage.unwrap_or([]).to_json(),
-      "options_verified": (if semantic {
-        fixture.coverage.unwrap_or([])
-      } else {
-        []
-      }).to_json(),
+    let record : Json = {
+      "id": Json(fixture.id),
+      "command": Json(fixture.command),
+      "run_id": Json(metadata.run_id),
+      "registry_revision": Json(metadata.registry_hash),
+      "artifact_id": Json(@testkit.artifact_id(metadata)),
+      "oracle_profile_id": Json(metadata.oracle_profile_id),
+      "reproducibility_status": Json(metadata.reproducibility_status),
+      "selected": Json(true),
+      "platform_applies": Json(case_supported_on_host(fixture, host_platform())),
+      "executed": Json(
+        reports.any(report => {
+          report.id == fixture.id && result_class(report.category) != "skip"
+        }),
+      ),
+      "options_declared": Json(fixture.coverage.unwrap_or([])),
+      "options_verified": Json(
+        if semantic {
+          fixture.coverage.unwrap_or([])
+        } else {
+          []
+        },
+      ),
     }
-    record.to_json().stringify()
+    record.stringify()
   })
   @fs.write_file(directory + "/coverage.jsonl", coverage.join("\n") + "\n")
 }
