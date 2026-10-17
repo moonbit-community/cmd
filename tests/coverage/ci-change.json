@@ -843,6 +843,7 @@
     {
       "path": ".gitattributes",
       "behavior_ids": [
+        "package-test:tests/coverage/integration_wbtest.mbt::coverage audit accepts a clean exact head and rejects dirty or mismatched revisions",
         "package-test:tests/testkit/testkit_wbtest.mbt::compares arbitrary bytes",
         "package-test:tests/testkit/testkit_wbtest.mbt::normalizes line endings and paths",
         "package-test:tests/testkit/fixture_wbtest.mbt::hex fixtures preserve arbitrary bytes",

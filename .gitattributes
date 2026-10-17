@@ -1,2 +1,10 @@
+# Moon tools emit LF; keep checkout bytes identical before and after generation.
+*.mbt text eol=lf
+*.mbti text eol=lf
+*.mbtx text eol=lf
+moon.pkg text eol=lf
+moon.mod text eol=lf
+moon.work text eol=lf
+
 # Preserve exact bytes used by registry and immutable snapshot hashes on Windows.
 tests/**/*.json -text

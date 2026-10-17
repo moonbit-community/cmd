@@ -74,6 +74,25 @@ async fn ci_git(args : Array[String]) -> String {
 }
 
 ///|
+async fn ci_require_clean_checkout() -> Unit {
+  let result = @shell.Cmd("git", [
+    "status", "--porcelain=v1", "--untracked-files=normal",
+  ]).output(timeout_ms=15000)
+  guard result.exit_code() == 0 else {
+    fail("CI Git status failed: " + result.stderr())
+  }
+  guard result.stdout() == "" else {
+    fail(
+      "CI evidence requires a clean exact checkout\n" +
+      "git status --porcelain=v1:\n" +
+      result.stdout() +
+      "git status stderr:\n" +
+      result.stderr(),
+    )
+  }
+}
+
+///|
 async fn ci_report_history_errors(
   base : String,
   head : String,
@@ -126,9 +145,7 @@ async fn ci_context() -> CiContext {
     }
     ignore(ci_git(["merge-base", "--is-ancestor", context.base, context.head]))
   }
-  guard ci_git(["status", "--porcelain=v1", "--untracked-files=normal"]) == "" else {
-    fail("CI evidence requires a clean exact checkout")
-  }
+  ci_require_clean_checkout()
   context
 }
 

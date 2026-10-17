@@ -330,6 +330,7 @@ async fn audit_fixture_at_current_directory(executable : String) -> Unit {
   let restored = audit(options)
   assert_eq(restored.status, "passed", msg=restored.findings.join("\n"))
   ci_report_history_fixture(head)
+  ci_checkout_eol_fixture()
   @fs.write_file(
     "reports/fixture-complete.json",
     @testkit.canonical_json({
@@ -392,6 +393,72 @@ async fn ci_report_history_fixture(base : String) -> Unit {
 }
 
 ///|
+async fn ci_checkout_eol_fixture() -> Unit {
+  let paths = [
+    "eol-fixture/source.mbt", "eol-fixture/pkg.generated.mbti", "eol-fixture/script.mbtx",
+    "eol-fixture/moon.pkg", "eol-fixture/moon.mod", "eol-fixture/moon.work",
+  ]
+  let contents = "first line\nsecond line\n"
+  let json_path = "tests/eol-fixture.json"
+  let json_bytes = b"{\r\n  \"fixture\": true\r\n}\r\n"
+  @fs.mkdir("eol-fixture")
+  for path in paths {
+    @fs.write_file(path, contents)
+  }
+  @fs.write_file(json_path, json_bytes)
+  @fs.write_file(
+    ".gitattributes",
+    @fs.read_file("attributes-template").binary(),
+  )
+  ignore(fixture_git(["config", "core.autocrlf", "true"]))
+  ignore(
+    fixture_git(
+      ["-c", "core.autocrlf=true", "add", ".gitattributes", json_path, ..paths],
+    ),
+  )
+  ignore(fixture_git(["commit", "--quiet", "-m", "canonical checkout fixture"]))
+  for path in paths + [json_path] {
+    @fs.remove(path)
+  }
+  // Refresh the isolated fixture's checkout and index as a fresh clone does.
+  // The production CI never resets its checkout to satisfy the clean gate.
+  ignore(
+    fixture_git(
+      [
+        "-c", "core.autocrlf=true", "checkout-index", "--force", "--index", "--",
+        ..paths, json_path,
+      ],
+    ),
+  )
+  for path in paths {
+    assert_eq(@fs.read_file(path).text(), contents, msg=path)
+  }
+  assert_eq(@fs.read_file(json_path).binary(), json_bytes)
+  ci_require_clean_checkout()
+  for path in paths {
+    @fs.write_file(path, contents)
+  }
+  ignore(fixture_git(["-c", "core.autocrlf=true", "diff", "--exit-code"]))
+  ci_require_clean_checkout()
+  @fs.write_file(paths[0], "changed content\n")
+  try ci_require_clean_checkout() catch {
+    error => assert_true(error.to_string().contains(" M " + paths[0]))
+  } noraise {
+    _ => fail("CI accepted changed tracked content")
+  }
+  @fs.write_file(paths[0], contents)
+  @fs.write_file("untracked-ci-fixture.txt", "untracked\n")
+  try ci_require_clean_checkout() catch {
+    error =>
+      assert_true(error.to_string().contains("?? untracked-ci-fixture.txt"))
+  } noraise {
+    _ => fail("CI accepted an untracked file")
+  }
+  @fs.remove("untracked-ci-fixture.txt")
+  ci_require_clean_checkout()
+}
+
+///|
 async test "coverage audit accepts a clean exact head and rejects dirty or mismatched revisions" {
   guard @env.args().get(0) is Some(program) else {
     fail("missing test executable path")
@@ -427,6 +494,16 @@ async test "coverage audit accepts a clean exact head and rejects dirty or misma
   @fs.write_file(
     root + "/lifecycle-template.json",
     @fs.read_file(lifecycle_path).binary(),
+  )
+  let attributes_path = @path.Path(@fs.realpath(lifecycle_path))
+    .dirname()
+    .dirname()
+    .dirname()
+    .join(Path(".gitattributes"))
+    .to_string()
+  @fs.write_file(
+    root + "/attributes-template",
+    @fs.read_file(attributes_path).binary(),
   )
   let environment : Map[String, String] = Map([])
   for name, value in @env.get_env_vars() {

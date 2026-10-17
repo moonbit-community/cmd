@@ -126,7 +126,14 @@ fn binding_ids(path : String, entries : Array[Json]) -> Array[String] raise {
     entries
     .filter(entry => {
       text(entry, "implementation") == "package-test" &&
-      packages.any(package_name => source_path(entry).has_prefix(package_name))
+      (
+        packages.any(package_name => source_path(entry).has_prefix(package_name)) ||
+        (
+          path == ".gitattributes" &&
+          text(entry, "behavior_id") ==
+          "package-test:tests/coverage/integration_wbtest.mbt::coverage audit accepts a clean exact head and rejects dirty or mismatched revisions"
+        )
+      )
     })
     .map(entry => text(entry, "behavior_id")),
   )
