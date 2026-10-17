@@ -104,6 +104,18 @@ module and version before any release operation.
   ADR/support-record unlock condition; it does not bypass the gate. Use the
   reviewed `tests/coverage/push.mbtx` workflow documented in
   `tests/coverage/README.md` to audit and push the exact committed revision.
+- Mainline changes must use a PR and the required three-platform checks plus
+  `coverage-audit`. Keep `tests/coverage/ci-change.json` current for the complete
+  proposed range. It declares impact, never passing results or report paths;
+  CI binds real evidence at its exact checked-out revision. Harness-only changes
+  still require registered harness regression evidence. Do not bypass branch
+  protection or substitute a feature-branch run for the final main commit.
+- Verification serves the current workspace and current published coordinates.
+  Retain this CI run's reports, required source/artifact/oracle identities and
+  failure diagnostics. These identities prevent stale or substituted evidence;
+  they are not a requirement to archive every release or recover old images.
+  Historical evidence backfill and GitHub Release verification archives are
+  outside the test system's maintenance scope.
 - Upstream differential evidence must use a verified immutable oracle profile
   containing the image digest, tool-version inventory, and source or
   distribution checksums. A mutable Docker tag, host PATH tool, handwritten

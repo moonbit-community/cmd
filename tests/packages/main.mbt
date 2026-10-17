@@ -4,7 +4,7 @@ async fn main {
   let args = @env.args()[1:]
   if args.contains("--help") {
     println(
-      "Usage: packages --backend native|wasm|pair (--all | --case stable-id | --package path) [--report-dir path]",
+      "Usage: packages --backend native|wasm|pair (--all | --case stable-id | --package path) [--native-only] [--report-dir path]",
     )
     return
   }
@@ -14,10 +14,16 @@ async fn main {
   let mut package_path = ""
   let mut directory = ""
   let mut all = false
+  let mut native_only = false
   let mut index = 0
   while index < args.length() {
     if args[index] == "--all" {
       all = true
+      index += 1
+      continue
+    }
+    if args[index] == "--native-only" {
+      native_only = true
       index += 1
       continue
     }
@@ -42,6 +48,7 @@ async fn main {
   guard selectors == 1 else {
     fail("select exactly one --all, --case or --package")
   }
+  validate_native_only_selection(backend, all, native_only)
   let registry_path = "tests/registry/registry.json"
   let registry = @registry.load(registry_path)
   let errors = @registry.validate(registry)
@@ -53,12 +60,12 @@ async fn main {
     (
       (
         all &&
-        platform_applies(entry.platforms, @testkit.host_platform()) &&
-        (if backend == "pair" {
-          entry.requires_backend_pair()
-        } else {
-          entry.required_backends.contains(backend)
-        })
+        package_all_selected(
+          entry,
+          backend,
+          @testkit.host_platform(),
+          native_only,
+        )
       ) ||
       entry.behavior_id == case_id ||
       entry.aliases.contains(case_id) ||

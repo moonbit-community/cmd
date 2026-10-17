@@ -142,8 +142,24 @@ The archived [0.2.0 source gate](https://github.com/moonbit-community/cmd/action
 and [0.2.0 release evidence](../docs/reports/2026-09-21-release-0.2.0/README.md)
 describe that historical revision. The
 [2026-10-11 repair report](../docs/reports/2026-10-11-fidelity-repair/README.md)
-records the current published baseline. Those reports do not validate this
-test-system revision or seal its current oracle profile.
+records the earlier repair. The current core 0.6.0 and 78-command baseline is
+recorded in the [metadata release report](../docs/reports/2026-10-15-metadata-release/README.md).
+Historical acceptance never validates a later harness revision or seals a newly
+built oracle image.
+
+PR and main-push verification additionally require the `coverage-audit` job.
+Its reviewed impact input is `coverage/ci-change.json`; CI binds evidence from
+that exact execution and checks every applicable platform, not merely any one
+passing host. Native-only package evidence complements the existing package
+pairs. The required main-branch checks and PR protection are operational settings
+that must be verified against GitHub; workflow text alone does not enable them.
+
+Verification serves the current workspace and current published coordinates.
+CI retains its reports, required identity checks and failed fixtures using the
+normal Actions artifact retention policy. Source, artifact and oracle hashes
+bind the current results to what actually ran; no GitHub Release archive,
+historical evidence backfill or old-image recovery is required. Existing old
+reports retain their historical meaning and do not establish current acceptance.
 
 When changing a behavior, update its package README, help, support records and
 regression together. Remove an assertion only after mapping it to retained

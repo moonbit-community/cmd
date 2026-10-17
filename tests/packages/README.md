@@ -32,6 +32,18 @@ MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/packages/run.mbtx -- \
   --backend pair --all --report-dir test-reports/package-pairs
 ```
 
+Use `--backend native --all --native-only` for the complementary Native-only
+harness bindings. This flag requires Native `--all` mode and selects only
+package-test entries whose required backend set is exactly `["native"]`, while
+preserving their platform restrictions. It rejects Wasm or pair mode and
+cannot be combined with `--case` or `--package`. Run it serially with pair mode
+to cover the Native-only harness without repeating dual-backend package tests:
+
+```text
+MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/packages/run.mbtx -- \
+  --backend native --all --native-only --report-dir test-reports/packages-native-only
+```
+
 The package selector is an
 exact repository-relative package directory, not a recursive prefix. A new
 report directory is required for every invocation. The adapter runs selected

@@ -38310,33 +38310,6 @@
       "oracle_profile": ""
     },
     {
-      "behavior_id": "package-test:tests/release_runner/freeze_wbtest.mbt::all migrated historical release corpora verify against recorded Git sources",
-      "command": "",
-      "owner": "tests/release_runner",
-      "surface": [
-        "package-api"
-      ],
-      "status": "supported",
-      "implementation": "package-test",
-      "source": "tests/release_runner/freeze_wbtest.mbt::all migrated historical release corpora verify against recorded Git sources",
-      "case_id": "",
-      "aliases": [],
-      "coverage": [
-        "all migrated historical release corpora verify against recorded Git sources"
-      ],
-      "required_backends": [
-        "native"
-      ],
-      "platforms": [],
-      "required_evidence": [
-        "contract"
-      ],
-      "observations": [
-        "status"
-      ],
-      "oracle_profile": ""
-    },
-    {
       "behavior_id": "package-test:tests/release_runner/release_runner_wbtest.mbt::candidate writer validates generated output corpus and ignores template base location",
       "command": "",
       "owner": "tests/release_runner",
@@ -44484,6 +44457,438 @@
       "aliases": [],
       "coverage": [
         "audit uncovered classification keeps collective tags separate from individual evidence"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_wbtest.mbt::CI change ranges require the exact PR merge parents and push before commit",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_wbtest.mbt::CI change ranges require the exact PR merge parents and push before commit",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "CI change ranges require the exact PR merge parents and push before commit"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_wbtest.mbt::CI receipts reject another run source platform or future attempt",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_wbtest.mbt::CI receipts reject another run source platform or future attempt",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "CI receipts reject another run source platform or future attempt"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_wbtest.mbt::CI impact rejects supplied outcomes and keeps documentation exclusions narrow",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_wbtest.mbt::CI impact rejects supplied outcomes and keeps documentation exclusions narrow",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "CI impact rejects supplied outcomes and keeps documentation exclusions narrow"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_wbtest.mbt::CI harness-only impact needs reviewed bindings and real evidence without dummy commands",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_wbtest.mbt::CI harness-only impact needs reviewed bindings and real evidence without dummy commands",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "CI harness-only impact needs reviewed bindings and real evidence without dummy commands"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_wbtest.mbt::CI coverage requires every applicable platform rather than any passing host",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_wbtest.mbt::CI coverage requires every applicable platform rather than any passing host",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "CI coverage requires every applicable platform rather than any passing host"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/packages/selection_wbtest.mbt::package native-only selection requires native all mode",
+      "command": "",
+      "owner": "tests/packages",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/packages/selection_wbtest.mbt::package native-only selection requires native all mode",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "package native-only selection requires native all mode"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/packages/selection_wbtest.mbt::package native-only and pair selectors partition applicable native tests",
+      "command": "",
+      "owner": "tests/packages",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/packages/selection_wbtest.mbt::package native-only and pair selectors partition applicable native tests",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "package native-only and pair selectors partition applicable native tests"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/packages/selection_wbtest.mbt::package native-only selection preserves platform and implementation restrictions",
+      "command": "",
+      "owner": "tests/packages",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/packages/selection_wbtest.mbt::package native-only selection preserves platform and implementation restrictions",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "package native-only selection preserves platform and implementation restrictions"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/registry/lifecycle_required_wbtest.mbt::lifecycle completeness preserves the reviewed minimum and allows additional evidence",
+      "command": "",
+      "owner": "tests/registry",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/registry/lifecycle_required_wbtest.mbt::lifecycle completeness preserves the reviewed minimum and allows additional evidence",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "lifecycle completeness preserves the reviewed minimum and allows additional evidence"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/registry/lifecycle_required_wbtest.mbt::lifecycle completeness rejects deletion demotion and loss of every required assertion",
+      "command": "",
+      "owner": "tests/registry",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/registry/lifecycle_required_wbtest.mbt::lifecycle completeness rejects deletion demotion and loss of every required assertion",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "lifecycle completeness rejects deletion demotion and loss of every required assertion"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/registry/lifecycle_required_wbtest.mbt::lifecycle completeness requires the deferred grandchild ownership boundary",
+      "command": "",
+      "owner": "tests/registry",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/registry/lifecycle_required_wbtest.mbt::lifecycle completeness requires the deferred grandchild ownership boundary",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "lifecycle completeness requires the deferred grandchild ownership boundary"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/registry/lifecycle_required_wbtest.mbt::lifecycle completeness does not replace executable reference validation",
+      "command": "",
+      "owner": "tests/registry",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/registry/lifecycle_required_wbtest.mbt::lifecycle completeness does not replace executable reference validation",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "lifecycle completeness does not replace executable reference validation"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_published_wbtest.mbt::CI published requirements come from reviewed intent and registry obligations",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_published_wbtest.mbt::CI published requirements come from reviewed intent and registry obligations",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "CI published requirements come from reviewed intent and registry obligations"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_published_wbtest.mbt::CI frozen registry exception requires the exact manifest corpus platform and coordinates",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_published_wbtest.mbt::CI frozen registry exception requires the exact manifest corpus platform and coordinates",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "CI frozen registry exception requires the exact manifest corpus platform and coordinates"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_published_wbtest.mbt::CI frozen cases cannot prove current behavior after canonical expectations change",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_published_wbtest.mbt::CI frozen cases cannot prove current behavior after canonical expectations change",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "CI frozen cases cannot prove current behavior after canonical expectations change"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_published_wbtest.mbt::CI published differential requires actual rows exact coordinates and sealed oracle evidence",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_published_wbtest.mbt::CI published differential requires actual rows exact coordinates and sealed oracle evidence",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "CI published differential requires actual rows exact coordinates and sealed oracle evidence"
       ],
       "required_backends": [
         "native"

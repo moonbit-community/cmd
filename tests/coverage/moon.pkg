@@ -8,10 +8,7 @@ import {
   "moonbitlang/async/stdio",
   "moonbitlang/x/sys",
   "moonbitlang/x/path",
-}
-
-import {
   "moonbitlang/core/env",
-} for "wbtest"
+}
 
 supported_targets = "native"

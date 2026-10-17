@@ -39,7 +39,28 @@ async fn audit_fixture_at_current_directory(executable : String) -> Unit {
   @fs.write_file(
     "tests/registry/platform-exceptions.json", "{\"schema\":1,\"exceptions\":[]}",
   )
-  @fs.write_file("tests/registry/lifecycle.json", "{\"schema\":1,\"cases\":[]}")
+  // Preserve the production completeness schema in this synthetic audit fixture.
+  // Rebound names prove only the audit protocol, not harness lifecycle behavior.
+  let lifecycle = @json.parse(@fs.read_file("lifecycle-template.json").text())
+  guard lifecycle is Object(lifecycle_fields) &&
+    lifecycle_fields.get("cases") is Some(Array(lifecycle_cases)) else {
+    fail("invalid lifecycle protocol template")
+  }
+  let anchor = "tests/registry/lifecycle_fixture_wbtest.mbt::protocol lifecycle anchor"
+  for item in lifecycle_cases {
+    guard item is Object(fields) else { fail("invalid lifecycle protocol row") }
+    if fields.get("status") == Some(Json::string("proven")) {
+      fields["test_ref"] = Json::string(anchor)
+    }
+  }
+  @fs.write_file(
+    "tests/registry/lifecycle.json",
+    @testkit.canonical_json(lifecycle),
+  )
+  @fs.write_file(
+    "tests/registry/lifecycle_fixture_wbtest.mbt", "///|\ntest \"protocol lifecycle anchor\" {\n  assert_true(true)\n}\n",
+  )
+  @fs.write_file("tests/registry/moon.pkg", "supported_targets = \"native\"\n")
   let corpus : Json = {
     "schema": 2,
     "cases": [
@@ -65,6 +86,19 @@ async fn audit_fixture_at_current_directory(executable : String) -> Unit {
         aliases: [],
         required_backends: ["native"],
         required_evidence: ["contract"],
+      },
+      {
+        ..audit_entry(),
+        behavior_id: "package-test:" + anchor,
+        command: "",
+        owner: "tests/registry",
+        implementation: "package-test",
+        source: anchor,
+        case_id: "",
+        aliases: [],
+        required_backends: ["native"],
+        required_evidence: ["contract"],
+        observations: ["status"],
       },
     ],
   }
@@ -330,6 +364,21 @@ async test "coverage audit accepts a clean exact head and rejects dirty or misma
   defer (@fs.rmdir(root, recursive=true) catch { _ => () })
   @fs.mkdir(root + "/empty-hooks")
   @fs.write_file(root + "/empty-gitconfig", "")
+  let mut lifecycle_path = ""
+  for
+    path in [
+      "tests/registry/lifecycle.json", "registry/lifecycle.json", "../../tests/registry/lifecycle.json",
+    ] {
+    if @fs.exists(path) {
+      lifecycle_path = path
+      break
+    }
+  }
+  guard lifecycle_path != "" else { fail("missing lifecycle fixture template") }
+  @fs.write_file(
+    root + "/lifecycle-template.json",
+    @fs.read_file(lifecycle_path).binary(),
+  )
   let environment : Map[String, String] = Map([])
   for name, value in @env.get_env_vars() {
     if !name.has_prefix("GIT_") {

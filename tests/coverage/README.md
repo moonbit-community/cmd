@@ -96,3 +96,71 @@ Moon build or a process-wide directory change during concurrent tests. It
 disables inherited Git configuration and hooks and removes the fixture after
 execution. Its controlled report proves the audit protocol, not acceptance of
 any command or published package.
+
+## Required CI audit
+
+The `check` workflow runs the stable `coverage-audit` job after all three
+platform jobs. Branch protection must require `coverage-audit`, `ubuntu-24.04`,
+`macos-15`, and `windows-2025`. A skipped or failed platform cannot establish
+coverage. Pull requests audit the target-base SHA to GitHub's exact synthetic
+merge SHA and verify both merge parents; pushes audit the event's exact
+`before` SHA to its new SHA. A manual dispatch may supply `audit_base` as an
+exact SHA. Scheduled runs and manual dispatches without a base validate the
+regression evidence and explicitly report change coverage as not applicable.
+
+For an impactful range, update the reviewed `tests/coverage/ci-change.json` in
+that range. Its schema is the impact portion of the local declaration:
+`schema`, `affected_commands`, `affected_behaviors`, `affected_options`,
+`affected_operands`, `case_ids`, optional `core_impact`,
+`published_manifest_affected`, `required_backends`, `required_evidence`,
+`required_observations`, `boundaries`, `deferred`, and `uncovered`. Add
+`harness_bindings`, an array of objects containing a changed `path` and its
+affected registered package-test `behavior_ids`. Do not supply `coverage`,
+report paths, pass labels, or other execution outcomes: the CI input rejects
+them. Requirements come from this reviewed impact and the registry; successful
+rows never generate the declared scope.
+
+Harness-only changes use their registered tests with an empty
+`affected_commands` array. Nonregistered harness/configuration paths need
+explicit bindings to affected harness tests. Changed registered test sources
+must still declare their owned behaviors. Frozen published JSON snapshots
+require `published_manifest_affected`, without one binding per source blob;
+executable files in those directories remain gated. Only narrative `.md`
+files below `docs/reports/` qualify for the documentation-only path.
+Executable documentation, manifests, recorded data, current support records,
+ADRs, agent instructions, and command documentation require impact. The documentation-only decision is
+derived from the actual Git diff and remains separate from semantic acceptance.
+
+| Evidence | Linux | macOS | Windows |
+| --- | --- | --- | --- |
+| Metadata pair, Native compatibility, Native/Wasm contracts and scenarios | Required | Required | Required |
+| Command/backend pair, package pair, Native-only registered package tests | Required | Required | Required |
+| Wasm policy and Native stress scenarios | Required | Required | Required |
+| Pinned immutable upstream differential, Native and Wasm | Required | Not applicable | Not applicable |
+| Exact published-version differential | When declared; also manual/scheduled runs | Not applicable | Not applicable |
+
+The CI audit requires each declared backend/evidence combination on every
+applicable platform; oracle comparisons use Linux. The local audit's existing
+interface remains unchanged. Requirements without an applicable CI evidence
+producer fail rather than being inferred from an availability result.
+
+The `ci.mbtx requirements` probe enables published verification from the
+reviewed intent and registry requirements before any results exist. Its Linux
+bundle retains the exact published manifest, resolved corpus, frozen registry,
+provenance and sealed oracle profile. Both the platform stamp and aggregation
+reuse the release runner's complete Git-backed frozen-snapshot validation.
+Only that validated manifest/corpus/registry combination may use its frozen
+registry fingerprint in the CI audit; the local interface retains its current
+registry check. Published rows must name exact manifest coordinates and use
+the sealed Linux oracle. A frozen fixture whose canonical body differs from
+the current registered case cannot prove the changed behavior.
+
+`ci.mbtx stamp test-reports` binds each fixed report bundle, its source corpus,
+and the Linux oracle profile to the workflow run, exact source/range, platform,
+and file checksums. The aggregation step downloads the three named platform
+artifacts and calls `ci.mbtx audit test-reports/ci <report.md>`. It rejects
+missing, stale, substituted, dirty, incomplete, or foreign-run bundles, checks
+their current registry/manifest/corpus fingerprints, then uses the normal audit
+validators. Failed-job reruns may retain successful bundles from earlier
+attempts of the same run and exact source. The `coverage-audit` artifact retains
+the result, context, or infrastructure-failure diagnostic.

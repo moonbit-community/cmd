@@ -221,6 +221,7 @@ fn validate_report_evidence(
   declaration : ChangeDeclaration,
   registry : @registry.Registry,
   bundles : ArrayView[EvidenceBundle],
+  platforms~ : Array[String] = [],
 ) -> Array[String] {
   let failures : Array[String] = []
   for record in declaration.coverage {
@@ -294,36 +295,73 @@ fn validate_report_evidence(
         )
       }
       for backend in targets {
-        if !selected.any(bundle => {
-            (
-              entry.implementation != "json-case" ||
-              bundle.selected_ids.any(id => evidence_id_matches(entry, id))
-            ) &&
-            bundle.rows.any(row => {
-              evidence_id_matches(entry, row.id) &&
-              (row.verification != "differential" || bundle.oracle_verified) &&
-              (
-                row.backend != "published-wasm" ||
-                bundle.published_coordinates.contains(row.source_version)
-              ) &&
-              row_proves(
-                row,
-                bundle.metadata,
-                entry,
-                requirement,
-                backend,
-                observations,
-              )
-            })
-          }) {
+        let required_platforms = evidence_platforms(
+          entry, requirement, platforms,
+        )
+        if required_platforms.is_empty() {
           failures.push(
-            "evidence: '\{entry.behavior_id}' lacks '\{requirement}' on '\{backend}' with every required observation",
+            "evidence: '\{entry.behavior_id}' has no applicable platform for '\{requirement}'",
           )
+        }
+        for platform in required_platforms {
+          if !selected.any(bundle => {
+              (platform == "" || bundle.metadata.platform == platform) &&
+              (
+                entry.implementation != "json-case" ||
+                bundle.selected_ids.any(id => evidence_id_matches(entry, id))
+              ) &&
+              bundle.rows.any(row => {
+                evidence_id_matches(entry, row.id) &&
+                (row.verification != "differential" || bundle.oracle_verified) &&
+                (
+                  row.backend != "published-wasm" ||
+                  bundle.published_coordinates.contains(row.source_version)
+                ) &&
+                row_proves(
+                  row,
+                  bundle.metadata,
+                  entry,
+                  requirement,
+                  backend,
+                  observations,
+                )
+              })
+            }) {
+            failures.push(
+              "evidence: '\{entry.behavior_id}' lacks '\{requirement}' on '\{backend}' with every required observation" +
+              (if platform == "" {
+                ""
+              } else {
+                " on platform '" + platform + "'"
+              }),
+            )
+          }
         }
       }
     }
   }
   failures
+}
+
+///|
+fn evidence_platforms(
+  entry : @registry.RegistryEntry,
+  requirement : String,
+  platforms : ArrayView[String],
+) -> Array[String] {
+  if platforms.is_empty() {
+    return [""]
+  }
+  platforms.filter(platform => {
+    platform_applies(entry, platform) &&
+    (if ["upstream-differential", "published-differential"].contains(
+        requirement,
+      ) {
+      platform == "linux"
+    } else {
+      true
+    })
+  })
 }
 
 ///|

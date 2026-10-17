@@ -218,6 +218,7 @@ pub async fn validate_source_bindings(
     failures.append(
       validate_lifecycle_bindings(lifecycle, registry, package_tests),
     )
+    failures.append(validate_lifecycle_completeness(lifecycle))
   } else {
     failures.push("registry: missing lifecycle registry")
   }

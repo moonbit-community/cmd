@@ -20,8 +20,16 @@ on:
         description: Unique archive name for the outgoing published snapshot
         type: string
         default: ''
+      audit_base:
+        description: Optional exact base SHA for a manual change audit
+        type: string
+        default: ''
   schedule:
     - cron: '17 3 * * *'
+
+env:
+  CMD_AUDIT_BASE: ${{ github.event.pull_request.base.sha || github.event.before || inputs.audit_base || '' }}
+  CMD_AUDIT_PR_HEAD: ${{ github.event.pull_request.head.sha || '' }}
 
 jobs:
   check:
@@ -43,9 +51,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.sha }}
           submodules: recursive
-          # Frozen bindings verify the baseline's historical source commits.
-          # A shallow checkout cannot establish those immutable associations.
+          # Current published provenance verifies its recorded source commit.
+          # A shallow checkout cannot establish that immutable association.
           fetch-depth: 0
 
       - name: Setup MoonBit
@@ -69,6 +78,10 @@ jobs:
 
       - name: Update registry
         run: moon update
+
+      - name: Resolve reviewed coverage requirements
+        id: coverage_requirements
+        run: moon run tests/coverage/ci.mbtx requirements
 
       - name: Check
         id: check_source
@@ -163,6 +176,14 @@ jobs:
           ./_build/native/release/build/mooxCLI/cmd-tests/packages/packages.exe
           --backend pair --all --report-dir test-reports/package-pair
 
+      - name: Record all applicable Native-only harness package tests
+        if: ${{ !cancelled() && steps.build_native.outcome == 'success' }}
+        timeout-minutes: 90
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/packages/packages.exe
+          --backend native --all --native-only
+          --report-dir test-reports/package-native-only
+
       - name: GNU differential
         if: ${{ !cancelled() && runner.os == 'Linux' && steps.build_native.outcome == 'success' }}
         run: >-
@@ -224,7 +245,7 @@ jobs:
 
       - name: Resolve published-test launcher
         id: moonx
-        if: ${{ !cancelled() && steps.build_native.outcome == 'success' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
+        if: ${{ !cancelled() && steps.build_native.outcome == 'success' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || (runner.os == 'Linux' && steps.coverage_requirements.outputs.published_differential == 'true')) }}
         shell: pwsh
         run: |
           $moonxPath = (Get-Command moonx -CommandType Application).Source
@@ -255,8 +276,23 @@ jobs:
           --jobs 4 --timeout-ms 120000
           --report-dir test-reports/published-differential
 
+      - name: Current published Windows contracts and boundaries
+        if: ${{ !cancelled() && runner.os == 'Windows' && steps.moonx.outcome == 'success' }}
+        timeout-minutes: 15
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
+          --manifest tests/release_runner/current/published.json --suite differential
+          --moonx "${{ env.CMD_MOONX }}"
+          --jobs 1 --timeout-ms 120000
+          --case compat-filesystem-windows-chmod-boundary
+          --case compat-filesystem-windows-ln-boundary
+          --case rm-final-parent-backslash
+          --case repair-which-windows-pathext
+          --report-dir test-reports/published-windows-contracts
+
       - name: Stress scenarios
-        if: ${{ !cancelled() && runner.os == 'Linux' && steps.build_native.outcome == 'success' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
+        if: ${{ !cancelled() && steps.build_native.outcome == 'success' }}
+        timeout-minutes: 15
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
           --suite stress --report-dir test-reports/stress-native
@@ -277,17 +313,19 @@ jobs:
         if: ${{ !cancelled() && steps.check_source.outcome == 'success' }}
         run: >-
           moon fmt --check tests/coverage/audit.mbtx tests/coverage/push.mbtx
+          tests/coverage/ci.mbtx tests/coverage/prepare_ci_change.mbtx
           tests/metadata/verify.mbtx tests/packages/run.mbtx
-          tests/registry/baseline.mbtx tests/registry/migrate_release_metadata.mbtx
-          tests/registry/refresh.mbtx tests/release_runner/migrate_historical.mbtx
+          tests/registry/refresh.mbtx
           tests/metadata/generate_release_cases.mbtx
           tests/release_runner/prepare_metadata_release.mbtx
           tests/release_runner/publish_candidate.mbtx
-          docs/reports/2026-10-15-metadata-release/prepare_coverage.mbtx
 
       - name: Verify generated files
         if: ${{ !cancelled() && steps.check_source.outcome == 'success' }}
         run: git diff --exit-code
+
+      - name: Bind complete platform evidence to this workflow run
+        run: moon run tests/coverage/ci.mbtx stamp test-reports
 
       - name: Upload reports and failed fixtures
         if: always()
@@ -296,6 +334,55 @@ jobs:
           name: cmd-test-reports-${{ matrix.os }}
           path: test-reports
           if-no-files-found: ignore
+
+  coverage-audit:
+    name: coverage-audit
+    needs: check
+    if: ${{ always() && !inputs.release_acceptance }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
+    env:
+      CMD_MATRIX_RESULT: ${{ needs.check.result }}
+      LANG: C
+      LC_ALL: C
+      TZ: UTC
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          submodules: recursive
+          fetch-depth: 0
+      - uses: hustcer/setup-moonbit@v1.23
+        with:
+          version: 0.10.15+943464bfa
+          core-version: 0.10.15+943464bfa
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cmd-test-reports-*
+          path: test-reports/ci
+      - run: moon update
+      - name: Resolve reviewed coverage requirements
+        id: coverage_requirements
+        run: moon run tests/coverage/ci.mbtx requirements
+      - name: Build the frozen publication validator when required
+        if: steps.coverage_requirements.outputs.published_differential == 'true'
+        run: moon build --target native --release --deny-warn tests/release_runner
+      - name: Audit reviewed impact against all exact-source platform evidence
+        run: >-
+          moon run tests/coverage/ci.mbtx audit test-reports/ci
+          test-reports/coverage-audit/audit.md
+      - name: Preserve coverage audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-audit
+          path: test-reports/coverage-audit
+          if-no-files-found: error
 
   release_acceptance:
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.release_acceptance }}

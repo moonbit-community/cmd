@@ -130,6 +130,20 @@ fn profile_matches(value : Json, metadata : AuditRunMetadata) -> Bool {
 
 ///|
 pub async fn audit(options : AuditOptions) -> AuditReport {
+  let declaration : ChangeDeclaration = parse_json_file(
+    options.declaration_path,
+  )
+  audit_declared(options, declaration)
+}
+
+///|
+async fn audit_declared(
+  options : AuditOptions,
+  declaration : ChangeDeclaration,
+  platforms~ : Array[String] = [],
+  ci~ : Bool = false,
+  frozen~ : CiFrozenBinding? = None,
+) -> AuditReport {
   ignore(@async.platform)
   let root_result = @shell.Cmd("git", ["rev-parse", "--show-toplevel"]).output(
     timeout_ms=15000,
@@ -141,11 +155,8 @@ pub async fn audit(options : AuditOptions) -> AuditReport {
   let base = resolve_revision(options.base)
   let head = resolve_revision(options.head)
   let paths = git_changed_paths(base, head)
-  let declaration : ChangeDeclaration = parse_json_file(
-    options.declaration_path,
-  )
   let registry = @registry.load(options.registry_path)
-  let failures = validate_declaration_shape(declaration)
+  let failures = validate_declaration_shape(declaration, ci~)
   if resolve_revision("HEAD") != head {
     failures.push("source: checked-out HEAD must equal the audited head")
   }
@@ -175,7 +186,7 @@ pub async fn audit(options : AuditOptions) -> AuditReport {
     paths, declaration, registry,
   )
   failures.append(scope_failures)
-  failures.append(validate_coverage(declaration, registry))
+  failures.append(validate_coverage(declaration, registry, ci~))
   failures.append(validate_boundaries(declaration, registry))
   let registry_hash = @testkit.manifest_digest(options.registry_path)
   let corpus_hashes : Array[String] = []
@@ -210,6 +221,14 @@ pub async fn audit(options : AuditOptions) -> AuditReport {
       failures.push("coverage: declared updated case does not exist '\{id}'")
     }
   }
+  if ci && frozen is Some(binding) {
+    corpus_hashes.push(binding.corpus_hash)
+    manifest_hashes.push(binding.manifest_hash)
+    selections[binding.manifest_hash] = ci_frozen_selected_ids(
+      binding, registry, root,
+    )
+    coordinates[binding.manifest_hash] = binding.coordinates
+  }
   let run_ids : Map[String, Bool] = Map([])
   let bundles : Array[EvidenceBundle] = []
   let profiles : Array[Json] = []
@@ -224,7 +243,17 @@ pub async fn audit(options : AuditOptions) -> AuditReport {
     run_ids[metadata.run_id] = true
     for
       problem in validate_metadata(
-        metadata, registry_hash, corpus_hashes, manifest_hashes, head,
+        metadata,
+        if ci &&
+          frozen is Some(binding) &&
+          ci_frozen_metadata_matches(metadata, binding) {
+          binding.registry_hash
+        } else {
+          registry_hash
+        },
+        corpus_hashes,
+        manifest_hashes,
+        head,
       ) {
       failures.push(metadata.run_id + ": " + problem)
     }
@@ -246,7 +275,9 @@ pub async fn audit(options : AuditOptions) -> AuditReport {
       .unwrap_or([]),
     })
   }
-  failures.append(validate_report_evidence(declaration, registry, bundles))
+  failures.append(
+    validate_report_evidence(declaration, registry, bundles, platforms~),
+  )
   let affected = canonical_ids(registry, declaration.affected_behaviors)
   let unsupported = affected.filter(id => {
     find_entry(registry, id) is Some(entry) && entry.status == "unsupported"
@@ -254,7 +285,13 @@ pub async fn audit(options : AuditOptions) -> AuditReport {
   let boundary = affected.filter(id => {
     find_entry(registry, id) is Some(entry) && entry.status == "boundary"
   })
-  let uncovered = uncovered_behaviors(declaration, registry, bundles)
+  let uncovered = uncovered_behaviors(
+    declaration,
+    registry,
+    bundles,
+    platforms~,
+    ci~,
+  )
   {
     base,
     head,
@@ -280,6 +317,8 @@ fn uncovered_behaviors(
   declaration : ChangeDeclaration,
   registry : @registry.Registry,
   bundles : ArrayView[EvidenceBundle],
+  platforms~ : Array[String] = [],
+  ci~ : Bool = false,
 ) -> Array[String] {
   let affected = canonical_ids(registry, declaration.affected_behaviors)
   let uncovered = affected.filter(id => {
@@ -295,8 +334,8 @@ fn uncovered_behaviors(
         entry.behavior_id == id
       }),
     }
-    !validate_coverage(individual, registry).is_empty() ||
-    !validate_report_evidence(individual, registry, bundles).is_empty()
+    !validate_coverage(individual, registry, ci~).is_empty() ||
+    !validate_report_evidence(individual, registry, bundles, platforms~).is_empty()
   })
   uncovered.append(declaration.uncovered.unwrap_or([]))
   sorted_unique(uncovered)
@@ -370,6 +409,10 @@ fn parse_arguments(
 
 ///|
 pub async fn run(args : Array[String]) -> Unit {
+  if args.get(0) == Some("--ci") {
+    run_ci(args[1:].to_owned())
+    return
+  }
   let values = parse_arguments(args) catch {
     error => {
       @stdio.stderr.write("\{error}\n")

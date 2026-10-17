@@ -143,12 +143,15 @@ fn report_references(record : CoverageRecord) -> Array[String] {
 }
 
 ///|
-fn validate_declaration_shape(declaration : ChangeDeclaration) -> Array[String] {
+fn validate_declaration_shape(
+  declaration : ChangeDeclaration,
+  ci~ : Bool = false,
+) -> Array[String] {
   let failures : Array[String] = []
   if declaration.schema != 1 {
     failures.push("declaration: expected schema 1")
   }
-  if declaration.affected_commands.is_empty() ||
+  if (!ci && declaration.affected_commands.is_empty()) ||
     declaration.affected_behaviors.is_empty() {
     failures.push(
       "declaration: affected_commands and affected_behaviors are required",
@@ -203,7 +206,8 @@ fn validate_declaration_shape(declaration : ChangeDeclaration) -> Array[String] 
       record.reports.unwrap_or([]).any(path => path.trim() == "") {
       failures.push("declaration: report references must be nonempty paths")
     }
-    if !["pass", "deferred"].contains(record.result) {
+    if !(ci && record.result == "required") &&
+      !["pass", "deferred"].contains(record.result) {
       failures.push(
         "declaration: coverage '\{record.behavior_id}' must be pass or deferred",
       )
@@ -364,6 +368,7 @@ fn required_evidence(
 fn validate_coverage(
   declaration : ChangeDeclaration,
   registry : @registry.Registry,
+  ci~ : Bool = false,
 ) -> Array[String] {
   let failures : Array[String] = []
   let records : Map[String, CoverageRecord] = Map([])
@@ -396,7 +401,8 @@ fn validate_coverage(
         match records.get(id) {
           None => failures.push("coverage: missing evidence for '\{id}'")
           Some(record) => {
-            if record.result != "pass" &&
+            if !(ci && record.result == "required") &&
+              record.result != "pass" &&
               !(record.result == "deferred" &&
               is_deferred(declaration, registry, entry)) {
               failures.push(

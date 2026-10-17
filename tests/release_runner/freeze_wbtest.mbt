@@ -593,22 +593,3 @@ async test "frozen replay rejects modified corpus even with a matching local has
   let errors = validate_frozen_case_binding(root, manifest, corpus)
   assert_false(errors.is_empty())
 }
-
-///|
-async test "all migrated historical release corpora verify against recorded Git sources" {
-  let root = workspace_root()
-  let historical = root + "/tests/release_runner/historical"
-  for
-    name in [
-      "published-0.1.0.json", "published-0.1.1.json", "published-0.2.0.json", "published-2026-10-10.json",
-      "published-2026-10-11.json", "published-2026-10-11-repair.json",
-    ] {
-    let path = historical + "/" + name
-    let failures = validate_frozen_case_binding(
-      root,
-      path,
-      path + ".cases.json",
-    )
-    assert_eq(failures, [])
-  }
-}
