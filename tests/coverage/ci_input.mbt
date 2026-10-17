@@ -134,6 +134,9 @@ fn ci_local_harness_scope_errors(
       "scope: reviewed harness-only impact must have no affected commands",
     )
   }
+  if declaration.core_impact is Some(_) || impact.core_impact is Some(_) {
+    failures.push("scope: harness-only coverage cannot declare core impact")
+  }
   if !declaration.boundaries.is_empty() ||
     !declaration.deferred.is_empty() ||
     !declaration.uncovered.unwrap_or([]).is_empty() ||

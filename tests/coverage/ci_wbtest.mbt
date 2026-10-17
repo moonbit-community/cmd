@@ -247,6 +247,8 @@ test "CI harness-only impact needs reviewed bindings and real evidence without d
   for
     changed in [
       { ..impact, affected_commands: ["echo"], },
+      { ..impact, core_impact: Some("explicit"), },
+      { ..impact, core_impact: Some("all"), },
       { ..impact, affected_behaviors: ["package-test:other"], },
       { ..impact, published_manifest_affected: true, },
       { ..impact, required_backends: ["wasm"], },
@@ -276,6 +278,8 @@ test "CI harness-only impact needs reviewed bindings and real evidence without d
   for
     changed in [
       { ..supplied, boundaries: [boundary], },
+      { ..supplied, core_impact: Some("explicit"), },
+      { ..supplied, core_impact: Some("all"), },
       { ..supplied, deferred: [entry.behavior_id], },
       { ..supplied, uncovered: Some([entry.behavior_id]), },
     ] {

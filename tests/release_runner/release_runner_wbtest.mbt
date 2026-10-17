@@ -425,6 +425,10 @@ test "report serialization preserves evidence without semantic promotion" {
       assert_eq(report.verification, "boundary")
       assert_eq(report.result, "pass")
       assert_false(report.semantic_pass())
+      assert_eq(
+        Set::from_array(report.observations).length(),
+        report.observations.length(),
+      )
       for name in ["status", "nonzero-status", "stderr", ..expected] {
         assert_true(report.observations.contains(name), msg=name)
       }
@@ -443,6 +447,10 @@ test "report serialization preserves evidence without semantic promotion" {
       assert_true(legacy.observations.contains("nonzero-status"))
       assert_true(legacy.observations.contains("stderr"))
       assert_false(legacy.observations.contains("stdout"))
+      assert_eq(
+        Set::from_array(legacy.observations).length(),
+        legacy.observations.length(),
+      )
       for name in expected {
         assert_false(legacy.observations.contains(name), msg=name)
       }

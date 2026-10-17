@@ -200,12 +200,18 @@ fn shared_report(
   }
   // Coverage uses canonical stream dimensions; detailed forms retain whether
   // the assertion compared complete bytes or a documented contract.
-  if observations.contains("stdout-bytes") ||
-    observations.contains("stdout-contract") {
+  if !observations.contains("stdout") &&
+    (
+      observations.contains("stdout-bytes") ||
+      observations.contains("stdout-contract")
+    ) {
     observations.push("stdout")
   }
-  if observations.contains("stderr-bytes") ||
-    observations.contains("stderr-contract") {
+  if !observations.contains("stderr") &&
+    (
+      observations.contains("stderr-bytes") ||
+      observations.contains("stderr-contract")
+    ) {
     observations.push("stderr")
   }
   let detail_parts = report.detail.split("; artifacts: ").collect()
