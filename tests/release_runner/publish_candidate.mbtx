@@ -492,9 +492,36 @@ async fn main {
     )
     return
   }
+  let mut registry_updated = false
   for release in ordered {
     if confirmed.contains(release.name) {
       continue
+    }
+    if release.name != "core" && !registry_updated {
+      // Core was verified in this loop or by resume preflight. Refresh once
+      // before the first pending command, inheriting the validated MOON_HOME.
+      let update = @shell.Cmd("moon", ["update"], stdin=Text("")).output(
+        timeout_ms=600000,
+      )
+      @fs.write_file(
+        attempt_directory + "/registry-update.stdout",
+        update.stdout_bytes(),
+        create_mode=@fs.CreateNew,
+      )
+      @fs.write_file(
+        attempt_directory + "/registry-update.stderr",
+        update.stderr(),
+        create_mode=@fs.CreateNew,
+      )
+      @fs.write_file(
+        attempt_directory + "/registry-update.status",
+        update.exit_code().to_string() + "\n",
+        create_mode=@fs.CreateNew,
+      )
+      guard update.exit_code() == 0 else {
+        fail("registry refresh failed; no pending command was uploaded")
+      }
+      registry_updated = true
     }
     check_source(source, candidate_hash)
     let (status, _, _) = fetch(manifest_url(release))

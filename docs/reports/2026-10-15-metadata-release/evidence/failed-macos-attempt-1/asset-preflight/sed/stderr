@@ -1,0 +1,5 @@
+Error: failed to download registry asset from https://download.mooncakes.io/prebuild/cli/sed@0.1.1/sed.wasm.sha256
+
+Caused by:
+    0: error sending request for url (https://download.mooncakes.io/prebuild/cli/sed@0.1.1/sed.wasm.sha256)
+    1: operation timed out

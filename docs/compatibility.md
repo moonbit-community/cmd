@@ -1,13 +1,29 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-10-17
+Updated: 2026-10-18
 
-This repair publishes `cli/core@0.5.0`, `column/date/diff/strings/which@0.1.1`, `unlink@0.1.2`, and `curl/jq/jqlog/ln/ls/mv/seq/wget@0.2.1`. Unchanged commands retain their existing coordinates.
+The unified metadata release publishes `cli/core@0.6.0` and new patch versions
+of all 78 published commands. Exact coordinates, 79 verified upload receipts
+and source/archive evidence are recorded in the
+[metadata release report](reports/2026-10-15-metadata-release/README.md).
 
-The workspace contains **79 command modules**, with **78 published** and local-only `timeout`. Published command versions are **39 at 0.2.0, 8 at 0.2.1, 15 at 0.1.0, 15 at 0.1.1 and 1 at 0.1.2**. Shared `cli/core` is **0.5.0** and is not counted as a command.
+The workspace contains **79 command modules**, with **78 published** and local-only `timeout`. Published command versions are **39 at 0.2.1, 8 at 0.2.2, 15 at 0.1.1, 15 at 0.1.2 and 1 at 0.1.3**. Shared `cli/core` is **0.6.0** and is not counted as a command.
 
-All uploads returned 200 and their exact registry coordinates were verified after [three-platform source CI](https://github.com/moonbit-community/cmd/actions/runs/38119870855) passed. Fresh-download exact MoonX and remote published differential acceptance are recorded separately in the [repair report](reports/2026-10-11-fidelity-repair/README.md).
+All 79 uploads returned 200 and their exact official source archives matched
+the retained local ZIPs after
+[three-platform source CI](https://github.com/moonbit-community/cmd/actions/runs/39041842874)
+passed at `c619ae71ae92706d6d56cdd6c73c17f270a17230`.
+[Published acceptance run 39045905149](https://github.com/moonbit-community/cmd/actions/runs/39045905149)
+passed on attempt 2: exact MoonX smoke succeeded on all three platforms,
+Linux full differential and the Windows-only semantic cases jointly cover
+all 997 selected IDs, and the immutable publication freeze passed.
+The reviewed snapshot is imported; all pre-existing historical files are
+preserved. The new record commit requires its own exact-head coverage audit
+before the final audited push, as specified by the report's
+[record-update declaration](reports/2026-10-15-metadata-release/record-update-coverage.json).
+The [2026-10-11 fidelity repair](reports/2026-10-11-fidelity-repair/README.md)
+remains historical evidence for its original coordinates.
 
 The known strings/column/which/date/unlink/jq and ln/mv errors are corrected in these versions. Earlier defective results remain in [historical observations](reports/2026-10-11-command-followups/README.md). Current dependencies are async 0.22.4, x 0.5.5 and moonjq 0.2.0. Curl/wget now deliver the previously local explicit-Cookie fixes.
 
@@ -16,7 +32,7 @@ restricted label describe requirements, not command-local policy.
 
 ## Workspace metadata contract
 
-The current workspace candidate gives every command the same standalone
+The current workspace gives every command the same standalone
 metadata contract. With exactly one metadata argument, `--help` writes usage
 text to stdout, ends with a newline, and exits 0; `--version` writes
 `<command> <package-version>` followed by one newline and exits
@@ -28,22 +44,19 @@ the local-only `timeout` package. The corresponding Wasm probe also passed
 79/79 commands. The command catalog declares `help` and `version` for every
 contract.
 
-This is workspace-candidate evidence. Existing registry coordinates remain
-immutable until a release is prepared and published; the exact published
-MoonX audit in `docs/reports/2026-10-12-readme-audit/` records the older
-coordinate behavior separately.
+The dated 2026-10-12 probes are workspace evidence. The exact published MoonX
+audit in `docs/reports/2026-10-12-readme-audit/` records older immutable
+coordinates, including the old metadata behavior, separately.
 
-The authorized metadata release is being prepared with `cli/core@0.6.0` and
-the next unused patch version of all 78 published commands. The candidate
-distribution is 39 commands at 0.2.1, eight at 0.2.2, 15 at 0.1.1, 15 at
-0.1.2 and one at 0.1.3. Existing core-dependent commands must pin 0.6.0 so
-published consumers receive the shared metadata changes that workspace module
-resolution already sees. Commands without a core dependency retain that
-independence; `timeout` remains local-only. These are preparation coordinates,
-not publication claims. The current published manifest above remains the
-accepted release until verified uploads, exact MoonX contracts and the frozen
-snapshot replace it. The retained preparation record is in
-[`reports/2026-10-15-metadata-release/`](reports/2026-10-15-metadata-release/).
+The metadata release has verified all new coordinates with core 0.6.0. The 72
+existing core-dependent commands request that version; six independent
+commands remain independent and `timeout` stays local-only. New exact help
+and version cases cover all 78 published commands. The local exact
+`cli/sh@0.2.1` probe passes both metadata operations, fixing the reported
+`sh@0.2.0` limitation. Full published acceptance and the current frozen pointer
+are recorded in the [release report](reports/2026-10-15-metadata-release/README.md).
+These closed-stdin captures prove status and output bytes; they do not measure
+whether an open input stream remains unread.
 
 This is the single support record for the `cmd` repository. It replaces the
 former matrix. Historical implementation stages are archived in
@@ -145,8 +158,8 @@ Linux oracle remains the strict filesystem authority.
 
 ## Inventory
 
-The workspace contains **79 command modules**, with **78 published** and local-only `timeout`. Published command versions are **39 at 0.2.0, 8 at 0.2.1, 15 at 0.1.0, 15 at 0.1.1 and 1 at 0.1.2**. Shared `cli/core` is **0.5.0** and is not counted as a command.
-Exact coordinates and selected cases are in [the current manifest](../tests/release_runner/current/published.json) and [repair report](reports/2026-10-11-fidelity-repair/README.md). Earlier manifests remain historical records under `tests/release_runner/historical/`.
+The workspace contains **79 command modules**, with **78 published** and local-only `timeout`. Published command versions are **39 at 0.2.1, 8 at 0.2.2, 15 at 0.1.1, 15 at 0.1.2 and 1 at 0.1.3**. Shared `cli/core` is **0.6.0** and is not counted as a command.
+Exact coordinates and selected cases are in [the current manifest](../tests/release_runner/current/published.json) and [metadata release report](reports/2026-10-15-metadata-release/README.md). Earlier manifests remain historical records under `tests/release_runner/historical/`.
 
 `timeout` is intentionally local-only because portable
 `ProcessGroupCancellation` is unavailable:

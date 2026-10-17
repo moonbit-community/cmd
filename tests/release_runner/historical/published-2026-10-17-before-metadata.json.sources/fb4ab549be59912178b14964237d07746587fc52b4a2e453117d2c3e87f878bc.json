@@ -1,0 +1,76 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-test-string",
+      "command": "test",
+      "args": [
+        "value",
+        "=",
+        "value"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-test-regular-size",
+      "command": "test",
+      "args": [
+        "-s",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "x"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p8-test-dangling-link",
+      "command": "test",
+      "args": [
+        "-L",
+        "dangling"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "dangling",
+          "content_text": "",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "host_platforms": [
+        "posix"
+      ]
+    },
+    {
+      "id": "compat-catalog-line-269",
+      "command": "test",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    }
+  ]
+}

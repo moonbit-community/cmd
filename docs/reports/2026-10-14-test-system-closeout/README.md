@@ -135,3 +135,20 @@ boundaries, four registered skips and no failures. The corrected listener-table
 test passed all 56 local Native testkit tests. Registry refresh now records
 1,335 behaviors. These facts do not substitute for a new remote run of the
 listener-table correction.
+
+Final source acceptance is now established by
+[run 39041842874](https://github.com/moonbit-community/cmd/actions/runs/39041842874)
+at `c619ae71ae92706d6d56cdd6c73c17f270a17230`. Linux, macOS and Windows each
+passed 393 Native, 217 Wasm, two JavaScript and two WasmGC package tests,
+including the listener-table correction. Linux passed 418 immutable-oracle
+differentials and two boundaries on each backend with complete provenance.
+The exact-source coverage audit has no findings or uncovered entries. Later
+harness repairs keep collective option tags separate from individual coverage
+classification and verify exact official archive redirects and receipt identity.
+
+This accepting source also contains the separately authorized metadata-release
+preparation. Its 79 successful uploads and subsequent published acceptance are
+recorded in the [metadata release report](../2026-10-15-metadata-release/README.md).
+They do not change the harness-only scope or the failed outcomes of the earlier
+commits above. Grandchild ownership and the other stated observation limits
+remain explicit boundaries.

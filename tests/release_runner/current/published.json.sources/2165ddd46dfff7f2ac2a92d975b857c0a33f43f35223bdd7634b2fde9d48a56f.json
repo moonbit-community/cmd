@@ -1,0 +1,56 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "p0-tac-lines",
+      "command": "tac",
+      "args": [],
+      "stdin_text": "one\ntwo\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "two\none\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": []
+    },
+    {
+      "id": "release-metadata-tac-help",
+      "command": "tac",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/tac@0.1.2 metadata contract",
+      "expected_stdout_text": "Usage: tac [OPTION]... [FILE]...\n      --help      display this help and exit\n      --version   display version and exit\n\nWrite each FILE to standard output, last line first.\nWith no FILE, or when FILE is -, read standard input.\n\n  -b, --before             Attach the separator before records.\n  -s, --separator=STRING   Use STRING instead of newline.\n  -r, --regex              Not supported: regular separators need a public\n                            regular-expression API with byte semantics.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-tac-version",
+      "command": "tac",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/tac@0.1.2 metadata contract",
+      "expected_stdout_text": "tac 0.1.2\n",
+      "expected_stderr_text": ""
+    }
+  ]
+}

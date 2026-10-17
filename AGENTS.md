@@ -145,14 +145,13 @@ module and version before any release operation.
   Update the published manifest and release report with those results, then
   commit and push the documentation. Do not publish from a failing or
   unverified candidate.
-- Current baseline after the 2026-10-11 fidelity repair: core is 0.5.0;
-  column/date/diff/strings/which are 0.1.1; unlink is 0.1.2;
-  curl/jq/jqlog/ln/mv/seq/wget are 0.2.1. Other command versions are unchanged.
-  `ls` is also 0.2.1 after the published ls sorting/link fixes. There are 78
-  published commands and local-only timeout. Exact coordinates
-  are in tests/release_runner/current/published.json; the frozen repair manifest
-  is tests/release_runner/historical/published-2026-10-11-repair.json. Acceptance is
-  recorded in docs/reports/2026-10-11-fidelity-repair/README.md.
+- Current baseline after the 2026-10-18 metadata release closeout: core is
+  0.6.0. There are 78 published commands: 39 at 0.2.1, eight at 0.2.2, 15 at 0.1.1,
+  15 at 0.1.2 and one at 0.1.3. `timeout` remains local-only. Exact coordinates
+  are in tests/release_runner/current/published.json; source, upload and
+  published acceptance are recorded in
+  docs/reports/2026-10-15-metadata-release/README.md. Earlier coordinates remain
+  frozen under tests/release_runner/historical/, including the 2026-10-11 repair.
   Update this baseline whenever a later release changes it.
 
 ### Mandatory pure MoonBit boundary

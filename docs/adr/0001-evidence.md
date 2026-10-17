@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-17
+Updated: 2026-10-18
 Revision: Correct self-authored expected outputs, pin new strings/column oracles, expand real CLI/alias/edge coverage before a repaired release, run published HTTPS cases through the same fixed POSIX fixture as the workspace runner, and add a single metadata contract for all workspace commands.
 
 ## Target and decision
@@ -171,6 +171,28 @@ candidate. Cross-root mtime equality requires fixed fixture times; ctime and
 atime relations use the same fixture in a boundary or stateful scenario.
 
 ## Versions and evidence
+
+The unified metadata source at `c619ae71ae92706d6d56cdd6c73c17f270a17230`
+passed [three-platform CI](https://github.com/moonbit-community/cmd/actions/runs/39041842874).
+Core 0.6.0 and 78 command versions then received successful uploads and exact
+registry/archive verification; every official archive matched the retained
+local ZIP. The [release record](../reports/2026-10-15-metadata-release/README.md)
+retains the initial absence checks, reviewed interrupted attempts and receipts.
+Published run 39045905149 passed on attempt 2 with exact smoke on Linux,
+macOS and Windows. Full Linux differential plus Windows-only cases cover
+997 unique applicable semantic/boundary IDs, and the immutable freeze passed.
+Its failed first macOS attempt
+stopped during asset download before selected-case execution; the original
+infrastructure evidence remains separate from the successful second attempt.
+The reviewed snapshot has been imported. Its outgoing manifest,
+`published-2026-10-17-before-metadata.json`, preserves the previous current
+bytes exactly; all pre-existing historical files remain unchanged. The new
+record commit must pass its separate exact-head coverage audit before pushing.
+The metadata contract remains project-specific; closed-stdin observations do
+not prove unread open input, and existing support limits are unchanged.
+The official archive endpoint may redirect once to its observed HTTPS
+distribution host with the identical coordinate path. Host, path or scheme
+changes, further redirects and checksum mismatches fail verification.
 
 Current refresh (2026-09-26): the public registry resolves
 `moonbitlang/async 0.22.4` (checksum

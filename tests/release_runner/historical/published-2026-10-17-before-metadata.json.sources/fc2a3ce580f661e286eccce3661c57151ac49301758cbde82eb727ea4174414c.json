@@ -1,0 +1,17 @@
+{
+  "schema": 2,
+  "cases": [{
+    "id": "p0-realpath-help",
+    "command": "realpath",
+    "args": ["--help"],
+    "stdin_text": "",
+    "files": [],
+    "environment": {},
+    "expected_status": 0,
+    "expected_stdout_contains": "Usage: realpath",
+    "diagnostic_reason": "The Usage heading is stable; command-specific help prose may vary.",
+    "expected_stderr_text": "",
+    "comparison": "contract",
+    "normalizations": []
+  }]
+}
