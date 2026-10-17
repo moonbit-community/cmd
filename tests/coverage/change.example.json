@@ -5,7 +5,6 @@
   "affected_options": [],
   "affected_operands": [],
   "case_ids": ["p9-echo-double-dash-literal"],
-  "core_impact": null,
   "published_manifest_affected": false,
   "required_backends": ["native", "wasm"],
   "required_evidence": ["upstream-differential"],

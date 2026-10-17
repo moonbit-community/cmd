@@ -41,6 +41,8 @@ stored outside the source tree or in an ignored report directory. Changes under
 also require `core_impact` to be `explicit` or `all`. `all` must name every
 registered command. Impact declarations still require human review: Git paths
 and a registry cannot infer every semantic effect of a source change.
+Omit `core_impact` when core is unchanged. Optional fields use omission for
+absence; an explicit JSON `null` is not accepted by the derived decoder.
 The audit itself must also run from a clean checkout at the resolved head.
 Changed registered test sources must have at least one owned affected behavior
 in the declaration, and a changed published manifest requires an explicit true

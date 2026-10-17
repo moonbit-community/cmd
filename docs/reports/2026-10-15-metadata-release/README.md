@@ -233,6 +233,14 @@ entrypoint must audit that exact new head before pushing. This record does not
 claim that final gate has already passed; its outcome is reported separately
 without embedding a self-referential commit hash in this document.
 
+The first record-update audit rejected `b0bda18` before pushing because the
+declaration used JSON `null` for optional `core_impact`. The decoder requires
+omission for an absent optional field. The declaration and repository example
+were corrected together; the rejected attempt is retained in
+[`evidence/record-audit-attempt-1.log`](evidence/record-audit-attempt-1.log).
+Fresh metadata and frozen-pointer evidence are required at the corrected head;
+the earlier record-commit results cannot certify it.
+
 The follow-up publisher helper refreshes the account-scoped registry once after
 core verification and before the first pending command, preserving update
 status and streams in a fresh attempt directory. The changed helper passed its
