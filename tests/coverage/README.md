@@ -126,7 +126,12 @@ explicit bindings to affected harness tests. Changed registered test sources
 must still declare their owned behaviors. Frozen published JSON snapshots
 require `published_manifest_affected`, without one binding per source blob;
 executable files in those directories remain gated. Only narrative `.md`
-files below `docs/reports/` qualify for the documentation-only path.
+files newly added below `docs/reports/`, plus the live `docs/reports/README.md`
+index, qualify for the documentation-only path. Before either that shortcut
+or a mixed-change audit, CI rejects edits, deletions, type changes and renames
+of narrative reports already present at the audited base. This check uses
+only the current base-to-head Git diff and fails if the comparison is
+unavailable; it does not run a historical baseline or maintain an archive.
 Executable documentation, manifests, recorded data, current support records,
 ADRs, agent instructions, and command documentation require impact. The documentation-only decision is
 derived from the actual Git diff and remains separate from semantic acceptance.

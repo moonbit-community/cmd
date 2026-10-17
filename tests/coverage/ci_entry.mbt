@@ -13,7 +13,10 @@ async fn ci_audit(
   let paths = if context.base == "" {
     []
   } else {
-    git_changed_paths(context.base, context.head)
+    let paths = git_changed_paths(context.base, context.head)
+    let history_errors = ci_report_history_errors(context.base, context.head)
+    guard history_errors.is_empty() else { fail(history_errors.join("\n")) }
+    paths
   }
   let regression_only = context.base == ""
   let documentation_only = !paths.is_empty() && paths.all(ci_documentation_path)

@@ -74,6 +74,33 @@ async fn ci_git(args : Array[String]) -> String {
 }
 
 ///|
+async fn ci_report_history_errors(
+  base : String,
+  head : String,
+) -> Array[String] {
+  // Compare only the current range; disabling renames exposes removal of an
+  // existing report even when identical bytes appear at a new path.
+  let result = @shell.Cmd("git", [
+    "diff", "--name-only", "--no-renames", "--diff-filter=MDT", "-z", base, head,
+    "--", "docs/reports/",
+  ]).output(timeout_ms=15000)
+  guard result.exit_code() == 0 else {
+    fail("CI historical report lookup failed: " + result.stderr())
+  }
+  result
+  .stdout()
+  .split("\u0000")
+  .map(path => path.to_owned())
+  .filter(path => {
+    ci_documentation_path(path) && path != "docs/reports/README.md"
+  })
+  .map(path => {
+    "existing historical report cannot be modified, deleted or renamed: " + path
+  })
+  .collect()
+}
+
+///|
 async fn ci_context() -> CiContext {
   let context : CiContext = {
     event: @env.get_env_var("GITHUB_EVENT_NAME").unwrap_or(""),

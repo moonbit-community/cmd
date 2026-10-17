@@ -29,11 +29,13 @@ async fn fixture_git(args : Array[String]) -> String {
 async fn audit_fixture_at_current_directory(executable : String) -> Unit {
   for
     directory in [
-      "core", "commands/echo", "tests/cases", "tests/registry", "tests/runner",
+      "core", "commands/echo", "tests/cases", "tests/registry", "tests/runner", "docs/reports/history",
     ] {
     @fs.mkdir(directory, recursive=true, allow_exist=true)
   }
-  @fs.write_file(".gitignore", "reports/\nempty-hooks/\nempty-gitconfig\n")
+  @fs.write_file(".gitignore", "/reports/\nempty-hooks/\nempty-gitconfig\n")
+  @fs.write_file("docs/reports/README.md", "# Reports\n")
+  @fs.write_file("docs/reports/history/README.md", "# Recorded result\n")
   @fs.write_file("tests/runner/cohorts.mbt", "")
   @fs.write_file("tests/runner/scenarios.mbt", "")
   @fs.write_file(
@@ -327,6 +329,7 @@ async fn audit_fixture_at_current_directory(executable : String) -> Unit {
   )
   let restored = audit(options)
   assert_eq(restored.status, "passed", msg=restored.findings.join("\n"))
+  ci_report_history_fixture(head)
   @fs.write_file(
     "reports/fixture-complete.json",
     @testkit.canonical_json({
@@ -340,6 +343,52 @@ async fn audit_fixture_at_current_directory(executable : String) -> Unit {
       "restored": Json(restored.status),
     }),
   )
+}
+
+///|
+async fn ci_report_history_fixture(base : String) -> Unit {
+  let historical = "docs/reports/history/README.md"
+  let refusal = "existing historical report cannot be modified, deleted or renamed: " +
+    historical
+  @fs.mkdir("docs/reports/current")
+  @fs.write_file("docs/reports/current/README.md", "# New result\n")
+  @fs.write_file(
+    "docs/reports/README.md", "# Reports\n\nNew result recorded.\n",
+  )
+  ignore(fixture_git(["add", "docs/reports"]))
+  ignore(fixture_git(["commit", "--quiet", "-m", "new report and live index"]))
+  let added = fixture_git(["rev-parse", "HEAD"])
+  assert_true(ci_report_history_errors(base, added).is_empty())
+  @fs.write_file(historical, "# Rewritten result\n")
+  ignore(fixture_git(["add", historical]))
+  ignore(fixture_git(["commit", "--quiet", "-m", "rewrite existing report"]))
+  let edited = fixture_git(["rev-parse", "HEAD"])
+  assert_eq(ci_report_history_errors(added, edited), [refusal])
+  @fs.write_file(
+    "commands/echo/main.mbt", "///|\nfn fixture_value() -> Int { 2 }\n",
+  )
+  ignore(fixture_git(["add", "commands/echo/main.mbt"]))
+  ignore(
+    fixture_git(["commit", "--quiet", "-m", "mixed code and report range"]),
+  )
+  let mixed = fixture_git(["rev-parse", "HEAD"])
+  assert_eq(ci_report_history_errors(added, mixed), [refusal])
+  ignore(fixture_git(["mv", historical, "docs/reports/history/renamed.md"]))
+  ignore(fixture_git(["commit", "--quiet", "-m", "rename existing report"]))
+  let renamed = fixture_git(["rev-parse", "HEAD"])
+  assert_eq(ci_report_history_errors(mixed, renamed), [refusal])
+  ignore(fixture_git(["rm", "docs/reports/history/renamed.md"]))
+  ignore(fixture_git(["commit", "--quiet", "-m", "delete historical report"]))
+  let deleted = fixture_git(["rev-parse", "HEAD"])
+  assert_eq(ci_report_history_errors(added, deleted), [refusal])
+  try ci_report_history_errors("missing-fixture-base", deleted) catch {
+    error =>
+      assert_true(
+        error.to_string().contains("CI historical report lookup failed"),
+      )
+  } noraise {
+    _ => fail("CI accepted an unavailable historical report comparison")
+  }
 }
 
 ///|
