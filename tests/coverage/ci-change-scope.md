@@ -1,15 +1,40 @@
 # Reviewed current-version CI impact
 
-Base: `f54baac45730f5ded956ceb41f353b77fdd5c34e`. The declared range includes the metadata release and test-system changes awaiting main integration.
+Base: `03cc8a5c9283e859e55bd2ae3faf2dd1b0e4df05`.
 
-This change serves validation of the current tested revision: exact-source coverage auditing, lifecycle completeness, Native-only package evidence and explicitly required current published-version differential checks. GitHub Release archival, image restoration and historical evidence uploads are outside the implementation.
+This harness-only change repairs published boundary-report observations. The
+executor already checks rejection status, diagnostics and fixture preservation;
+when a nonzero expected status is declared, it also checks the explicit stream
+contracts. The serializer must record those executed assertions. Legacy
+rejection fixtures with expected status zero must not claim stream assertions
+that the executor did not perform. A boundary pass remains rejection evidence.
 
-The original 252 behaviors, 170 metadata case IDs, all 79 command identities, and help/version option tags are preserved. Every changed registered package-test source and each explicitly mapped harness subsystem contributes its current registered tests. Sixteen existing scenario/cohort/policy obligations cover typed identities, observations, execution environment and lifecycle changes. Existing publication snapshots remain verification inputs, covered by release snapshot and registry protocol tests; published_manifest_affected is true for the pending metadata-release integration.
+The existing registered serialization regression covers exact byte assertions,
+stream contracts, legacy rejection handling, failed rows and the distinction
+between boundary and semantic passes. Its Native evidence is required on Linux,
+macOS and Windows.
 
-The existing network oracle command invocations and semantic assertions, upstream fixtures and image recipe are unchanged. Oracle identity/sealing infrastructure is bound to lifecycle, oracle-options and audit regressions; Linux CI independently runs the complete immutable oracle suite on both backends. This declaration adds no upstream-parity claim. GNU host comparisons remain supplementary, with report-classification regression coverage.
+The local push audit now accepts the same empty command scope for a genuine
+harness-only range. The existing harness-only audit regression covers the
+accepted local declaration and rejection of product or shared-runtime changes,
+command-owned behaviors, unbound paths, mismatched reviewed impact and missing
+evidence. This behavior also requires Native evidence on all three platforms.
+Reviewed path bindings cover the serializer, audit validator and entry, impact
+parser, documentation and this scope description; modified test sources
+are owned by their declared behaviors.
 
-The CI input contains impact and requirements only. Local legacy coverage result=pass is a required outcome, not supplied evidence; the audit must verify every fresh report against the clean exact committed head. No old report or successful row was used to derive impact.
+The Windows HTTP lifecycle observer uses the system TCP listener table through
+the existing PowerShell diagnostic boundary. It reports actual loopback
+endpoints, with strict status, stderr and endpoint validation. The existing
+observer regression rejects timeout and cleanup errors separately, including
+apparently valid partial output. The real HTTP lifecycle regression retains its
+active-listener control, response/body assertions and joined-cleanup absence
+check. Its five-second fixture deadline and the observer's fifteen-second
+deadline are unchanged. Both registered behaviors require Native evidence on
+Linux, macOS and Windows; the canonical ADR records the observation boundary.
 
-Required local report roles: pair, policy-wasm, compat-native, metadata-pair, stress-native, scenarios-wasm, scenarios-native, package-native-only.
-
-Selected behaviors: 456; reviewed path bindings: 240.
+No command behavior, package version, frozen input or recorded report changes.
+The CI declaration contains impact and requirements only. After merging, current
+published regression and downloaded-report verification must establish the
+observations from a fresh run at the actual main commit. Existing reports are
+not rewritten to add missing observations.

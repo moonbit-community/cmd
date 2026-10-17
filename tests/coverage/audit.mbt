@@ -151,11 +151,8 @@ fn validate_declaration_shape(
   if declaration.schema != 1 {
     failures.push("declaration: expected schema 1")
   }
-  if (!ci && declaration.affected_commands.is_empty()) ||
-    declaration.affected_behaviors.is_empty() {
-    failures.push(
-      "declaration: affected_commands and affected_behaviors are required",
-    )
+  if declaration.affected_behaviors.is_empty() {
+    failures.push("declaration: affected_behaviors are required")
   }
   if declaration.affected_options is None ||
     declaration.affected_operands is None ||
@@ -287,6 +284,27 @@ fn validate_changed_scope(
   }
   let changed_commands = sorted_unique(changed_commands)
   let declared_commands = sorted_unique(declaration.affected_commands.copy())
+  if declared_commands.is_empty() {
+    if core_changed ||
+      paths.any(path => path == "commands" || path.has_prefix("commands/")) {
+      failures.push(
+        "scope: harness-only declarations cannot change core or commands",
+      )
+    }
+    for id in declaration.affected_behaviors {
+      match find_entry(registry, id) {
+        Some(entry) if entry.command == "" &&
+          entry.implementation == "package-test" &&
+          entry.owner.has_prefix("tests/") &&
+          entry.source.has_prefix("tests/") => ()
+        _ =>
+          failures.push(
+            "scope: harness-only declarations require registered tests-owned package behaviors: " +
+            id,
+          )
+      }
+    }
+  }
   let all_commands = sorted_unique(
     registry.entries
     .filter(entry => entry.implementation == "json-case" && entry.command != "")
