@@ -1,6 +1,6 @@
 # curl
 
-Pure-MoonBit curl 8.22 HTTP/HTTPS profile, version **0.2.1**. See the
+Pure-MoonBit curl 8.22 HTTP/HTTPS profile, version **0.2.2**. See the
 [support record](../../docs/compatibility.md) for platform verification and
 exact-version publication evidence.
 
@@ -53,6 +53,10 @@ custom Cookie headers and literal `-b` data are scoped to the initial origin,
 matching curl 8.22. Jar cookies are selected again for the
 destination.
 
-The unreleased workspace adds standalone `--version`, which prints the command
-name and package version and exits successfully without reading input.
-Use `--help` to display usage.
+## Standalone metadata
+
+Standalone `--version` prints exactly `curl 0.2.2` followed by one
+newline. Standalone `--help` starts with `Usage: curl`, lists both
+metadata options, and ends with a newline. Both write to stdout, leave stdin
+unread, and exit with status 0. Exact-version publication and verification
+remain recorded separately in the [support record](../../docs/compatibility.md).

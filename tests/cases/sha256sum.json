@@ -213,6 +213,44 @@
       "expected_stdout_text": "payload: OK\n",
       "expected_stderr_contains": "improperly formatted",
       "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted."
+    },
+    {
+      "id": "release-metadata-sha256sum-help",
+      "command": "sha256sum",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/sha256sum@0.2.1 metadata contract",
+      "expected_stdout_text": "Usage: sha256sum [-c] [-z] [--quiet] [--status] [--strict] [--warn] [--ignore-missing] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-sha256sum-version",
+      "command": "sha256sum",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/sha256sum@0.2.1 metadata contract",
+      "expected_stdout_text": "sha256sum 0.2.1\n",
+      "expected_stderr_text": ""
     }
   ]
 }

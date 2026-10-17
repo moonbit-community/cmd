@@ -7,11 +7,25 @@ on:
       - main
   pull_request:
   workflow_dispatch:
+    inputs:
+      release_acceptance:
+        description: Verify already published candidate packages and freeze evidence
+        type: boolean
+        default: false
+      source_gate_run_id:
+        description: Successful three-platform check run for this exact source
+        type: string
+        default: ''
+      outgoing_release_id:
+        description: Unique archive name for the outgoing published snapshot
+        type: string
+        default: ''
   schedule:
     - cron: '17 3 * * *'
 
 jobs:
   check:
+    if: ${{ !inputs.release_acceptance }}
     name: ${{ matrix.os }}
     timeout-minutes: 360
     strategy:
@@ -266,6 +280,10 @@ jobs:
           tests/metadata/verify.mbtx tests/packages/run.mbtx
           tests/registry/baseline.mbtx tests/registry/migrate_release_metadata.mbtx
           tests/registry/refresh.mbtx tests/release_runner/migrate_historical.mbtx
+          tests/metadata/generate_release_cases.mbtx
+          tests/release_runner/prepare_metadata_release.mbtx
+          tests/release_runner/publish_candidate.mbtx
+          docs/reports/2026-10-15-metadata-release/prepare_coverage.mbtx
 
       - name: Verify generated files
         if: ${{ !cancelled() && steps.check_source.outcome == 'success' }}
@@ -278,3 +296,14 @@ jobs:
           name: cmd-test-reports-${{ matrix.os }}
           path: test-reports
           if-no-files-found: ignore
+
+  release_acceptance:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.release_acceptance }}
+    uses: ./.github/workflows/release-acceptance.yml
+    permissions:
+      contents: read
+      actions: read
+    with:
+      source_sha: ${{ github.sha }}
+      source_gate_run_id: ${{ inputs.source_gate_run_id }}
+      outgoing_release_id: ${{ inputs.outgoing_release_id }}

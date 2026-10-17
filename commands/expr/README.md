@@ -1,6 +1,6 @@
 # expr
 
-Version **0.1.0** behavior is documented here. The
+Version **0.1.1** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -27,3 +27,11 @@ not included. `--help`, `--version`, and the leading `--` separator are availabl
 
 Exit status is 0 for a nonempty, nonzero result, 1 for an empty or zero result,
 and 2 for invalid expressions or evaluation errors.
+
+## Standalone metadata
+
+Standalone `--version` prints exactly `expr 0.1.1` followed by one
+newline. Standalone `--help` starts with `Usage: expr`, lists both
+metadata options, and ends with a newline. Both write to stdout, leave stdin
+unread, and exit with status 0. Exact-version publication and verification
+remain recorded separately in the [support record](../../docs/compatibility.md).

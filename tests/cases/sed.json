@@ -352,6 +352,44 @@
       "expected_stdout_text": "d\n",
       "expected_stderr_text": "",
       "comparison": "contract"
+    },
+    {
+      "id": "release-metadata-sed-help",
+      "command": "sed",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/sed@0.1.1 metadata contract",
+      "expected_stdout_text": "Usage: sed [-nE] [-e SCRIPT] [-f SCRIPTFILE] [SCRIPT] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nStream editor: p, d, q, =, s/RE/REPLACEMENT/[gNp].\nAddresses: line number, $, /RE/, ranges and !. BRE default; -E enables ERE.\nIn-place editing, hold space, branches, groups and regex backreferences are not supported.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-sed-version",
+      "command": "sed",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/sed@0.1.1 metadata contract",
+      "expected_stdout_text": "sed 0.1.1\n",
+      "expected_stderr_text": ""
     }
   ]
 }

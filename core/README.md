@@ -1,7 +1,9 @@
 # cli/core
 
 Shared runtime packages used by the independently published command modules.
-Version **0.5.0** adds checked 64-bit TZif/POSIX timezone
+Version **0.6.0** adds a package-version argument to the public gzip runner,
+standardizes checksum help/version output, and exposes standalone metadata
+options in the shared command catalog. Version **0.5.0** added checked 64-bit TZif/POSIX timezone
 conversion and a public-AST jq string-slice adapter, using released MoonJQ 0.2.0.
 It retains the shared incremental MD5/SHA-1/SHA-512, C-byte regular-expression
 adaptation and gzip stream codecs. Earlier command packages continue to use

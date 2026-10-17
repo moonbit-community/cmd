@@ -125,6 +125,44 @@
       ],
       "oracle": true,
       "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "release-metadata-split-help",
+      "command": "split",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/split@0.1.1 metadata contract",
+      "expected_stdout_text": "Usage: split [OPTION]... [FILE [PREFIX]]\nSplit FILE (or stdin) into pieces named PREFIXaa, PREFIXab, ...\nThe default PREFIX is x; the default piece size is 1000 lines.\n\n  -l, --lines=NUMBER        Put NUMBER lines in each output.\n  -b, --bytes=SIZE          Put SIZE bytes in each output (K, M, G, kB, MB, GB).\n  -a, --suffix-length=N     Use fixed-width suffixes of N characters.\n  -d, --numeric-suffixes    Use numeric suffixes starting at zero.\n      --additional-suffix=SUFFIX  Append SUFFIX after generated suffixes.\n      --help               display this help and exit\n      --version            display version and exit\n\nExisting output paths are refused. Chunk distribution, filters, and\nline-byte mode are unsupported.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-split-version",
+      "command": "split",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/split@0.1.1 metadata contract",
+      "expected_stdout_text": "split 0.1.1\n",
+      "expected_stderr_text": ""
     }
   ]
 }

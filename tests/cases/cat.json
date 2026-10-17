@@ -169,6 +169,44 @@
       "stdin_hex": "62696e61727900ff",
       "expected_stdout_hex": "62696e61727900ff",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-cat-help",
+      "command": "cat",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/cat@0.2.1 metadata contract",
+      "expected_stdout_text": "Usage: cat [OPTION]... [FILE]...\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nConcatenate FILEs (or stdin) to standard output, byte-transparently:\nno decoding, no newline normalization. Use '-' or no file for stdin.\n\n  -n, --number             Number all output lines.\n  -b, --number-nonblank    Number nonempty output lines (overrides -n).\n  -s, --squeeze-blank      Suppress repeated empty output lines.\n  -T, --show-tabs          Display TAB as ^I.\n  -E, --show-ends          Display '$' at the end of each line.\n  -v, --show-nonprinting   Display nonprinting bytes visibly.\n  -A, --show-all           Equivalent to -vET.\n  -e                       Equivalent to -vE.\n  -t                       Equivalent to -vT.\n  -u, --unbuffered         Accepted for GNU compatibility.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-cat-version",
+      "command": "cat",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/cat@0.2.1 metadata contract",
+      "expected_stdout_text": "cat 0.2.1\n",
+      "expected_stderr_text": ""
     }
   ]
 }

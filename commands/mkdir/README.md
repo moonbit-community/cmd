@@ -1,6 +1,6 @@
 # mkdir
 
-This documents version 0.2.0. The [support record](../../docs/compatibility.md)
+This documents version 0.2.1. The [support record](../../docs/compatibility.md)
 tracks platform verification and exact-version publication evidence separately.
 
 Create one or more directories. Supports recursive parent creation (`-p`),
@@ -15,6 +15,10 @@ Symbolic modes are not implemented. The parent-permission behavior is verified
 under ordinary POSIX umasks; unusual umasks requiring temporary owner
 write/search permissions and Windows mode semantics remain unverified.
 
-The unreleased workspace adds standalone `--version`, which prints the command
-name and package version and exits successfully without reading input.
-Use `--help` to display usage.
+## Standalone metadata
+
+Standalone `--version` prints exactly `mkdir 0.2.1` followed by one
+newline. Standalone `--help` starts with `Usage: mkdir`, lists both
+metadata options, and ends with a newline. Both write to stdout, leave stdin
+unread, and exit with status 0. Exact-version publication and verification
+remain recorded separately in the [support record](../../docs/compatibility.md).

@@ -1,0 +1,5536 @@
+{
+  "schema": 1,
+  "affected_commands": [
+    "cp",
+    "jq",
+    "ln",
+    "ls",
+    "mv",
+    "nl",
+    "od",
+    "rm",
+    "sh",
+    "tr",
+    "wc",
+    "cat",
+    "cmp",
+    "cut",
+    "env",
+    "fmt",
+    "pwd",
+    "rev",
+    "sed",
+    "seq",
+    "tac",
+    "tee",
+    "xxd",
+    "yes",
+    "comm",
+    "curl",
+    "date",
+    "diff",
+    "echo",
+    "expr",
+    "find",
+    "fold",
+    "grep",
+    "gzip",
+    "head",
+    "join",
+    "make",
+    "sort",
+    "tail",
+    "test",
+    "tree",
+    "true",
+    "uniq",
+    "wget",
+    "zcat",
+    "chmod",
+    "cksum",
+    "false",
+    "jqlog",
+    "mkdir",
+    "paste",
+    "patch",
+    "rmdir",
+    "sleep",
+    "split",
+    "touch",
+    "which",
+    "xargs",
+    "base32",
+    "base64",
+    "column",
+    "csplit",
+    "expand",
+    "gunzip",
+    "md5sum",
+    "mktemp",
+    "printf",
+    "unlink",
+    "dirname",
+    "hexdump",
+    "sha1sum",
+    "strings",
+    "timeout",
+    "basename",
+    "printenv",
+    "realpath",
+    "unexpand",
+    "sha256sum",
+    "sha512sum"
+  ],
+  "affected_behaviors": [
+    "metadata:cp",
+    "metadata:jq",
+    "metadata:ln",
+    "metadata:ls",
+    "metadata:mv",
+    "metadata:nl",
+    "metadata:od",
+    "metadata:rm",
+    "metadata:sh",
+    "metadata:tr",
+    "metadata:wc",
+    "metadata:cat",
+    "metadata:cmp",
+    "metadata:cut",
+    "metadata:env",
+    "metadata:fmt",
+    "metadata:pwd",
+    "metadata:rev",
+    "metadata:sed",
+    "metadata:seq",
+    "metadata:tac",
+    "metadata:tee",
+    "metadata:xxd",
+    "metadata:yes",
+    "metadata:comm",
+    "metadata:curl",
+    "metadata:date",
+    "metadata:diff",
+    "metadata:echo",
+    "metadata:expr",
+    "metadata:find",
+    "metadata:fold",
+    "metadata:grep",
+    "metadata:gzip",
+    "metadata:head",
+    "metadata:join",
+    "metadata:make",
+    "metadata:sort",
+    "metadata:tail",
+    "metadata:test",
+    "metadata:tree",
+    "metadata:true",
+    "metadata:uniq",
+    "metadata:wget",
+    "metadata:zcat",
+    "metadata:chmod",
+    "metadata:cksum",
+    "metadata:false",
+    "metadata:jqlog",
+    "metadata:mkdir",
+    "metadata:paste",
+    "metadata:patch",
+    "metadata:rmdir",
+    "metadata:sleep",
+    "metadata:split",
+    "metadata:touch",
+    "metadata:which",
+    "metadata:xargs",
+    "metadata:base32",
+    "metadata:base64",
+    "metadata:column",
+    "metadata:csplit",
+    "metadata:expand",
+    "metadata:gunzip",
+    "metadata:md5sum",
+    "metadata:mktemp",
+    "metadata:printf",
+    "metadata:unlink",
+    "metadata:dirname",
+    "metadata:hexdump",
+    "metadata:sha1sum",
+    "metadata:strings",
+    "metadata:timeout",
+    "metadata:basename",
+    "metadata:printenv",
+    "metadata:realpath",
+    "metadata:unexpand",
+    "metadata:sha256sum",
+    "metadata:sha512sum",
+    "case:p0-seq-version",
+    "case:p0-echo-version",
+    "case:p0-true-version",
+    "case:p2-date-version",
+    "case:p0-false-version",
+    "case:p0-sleep-version",
+    "case:p2-which-version",
+    "case:p2-column-version",
+    "case:p2-strings-version",
+    "case:checksum-md5sum-version",
+    "case:compat-catalog-line-243",
+    "case:compat-catalog-line-251",
+    "case:checksum-sha1sum-version",
+    "case:release-metadata-cp-help",
+    "case:release-metadata-jq-help",
+    "case:release-metadata-ln-help",
+    "case:release-metadata-ls-help",
+    "case:release-metadata-mv-help",
+    "case:release-metadata-nl-help",
+    "case:release-metadata-od-help",
+    "case:release-metadata-rm-help",
+    "case:release-metadata-sh-help",
+    "case:release-metadata-tr-help",
+    "case:release-metadata-wc-help",
+    "case:release-metadata-cat-help",
+    "case:release-metadata-cmp-help",
+    "case:release-metadata-cut-help",
+    "case:release-metadata-env-help",
+    "case:release-metadata-fmt-help",
+    "case:release-metadata-pwd-help",
+    "case:release-metadata-rev-help",
+    "case:release-metadata-sed-help",
+    "case:release-metadata-seq-help",
+    "case:release-metadata-tac-help",
+    "case:release-metadata-tee-help",
+    "case:release-metadata-xxd-help",
+    "case:release-metadata-yes-help",
+    "case:checksum-sha512sum-version",
+    "case:release-metadata-comm-help",
+    "case:release-metadata-curl-help",
+    "case:release-metadata-date-help",
+    "case:release-metadata-diff-help",
+    "case:release-metadata-echo-help",
+    "case:release-metadata-expr-help",
+    "case:release-metadata-find-help",
+    "case:release-metadata-fold-help",
+    "case:release-metadata-grep-help",
+    "case:release-metadata-gzip-help",
+    "case:release-metadata-head-help",
+    "case:release-metadata-join-help",
+    "case:release-metadata-make-help",
+    "case:release-metadata-sort-help",
+    "case:release-metadata-tail-help",
+    "case:release-metadata-test-help",
+    "case:release-metadata-tree-help",
+    "case:release-metadata-true-help",
+    "case:release-metadata-uniq-help",
+    "case:release-metadata-wget-help",
+    "case:release-metadata-zcat-help",
+    "case:release-metadata-chmod-help",
+    "case:release-metadata-cksum-help",
+    "case:release-metadata-cp-version",
+    "case:release-metadata-false-help",
+    "case:release-metadata-jq-version",
+    "case:release-metadata-jqlog-help",
+    "case:release-metadata-ln-version",
+    "case:release-metadata-ls-version",
+    "case:release-metadata-mkdir-help",
+    "case:release-metadata-mv-version",
+    "case:release-metadata-nl-version",
+    "case:release-metadata-od-version",
+    "case:release-metadata-paste-help",
+    "case:release-metadata-patch-help",
+    "case:release-metadata-rm-version",
+    "case:release-metadata-rmdir-help",
+    "case:release-metadata-sh-version",
+    "case:release-metadata-sleep-help",
+    "case:release-metadata-split-help",
+    "case:release-metadata-touch-help",
+    "case:release-metadata-tr-version",
+    "case:release-metadata-wc-version",
+    "case:release-metadata-which-help",
+    "case:release-metadata-xargs-help",
+    "case:release-metadata-base32-help",
+    "case:release-metadata-base64-help",
+    "case:release-metadata-cat-version",
+    "case:release-metadata-cmp-version",
+    "case:release-metadata-column-help",
+    "case:release-metadata-csplit-help",
+    "case:release-metadata-cut-version",
+    "case:release-metadata-env-version",
+    "case:release-metadata-expand-help",
+    "case:release-metadata-fmt-version",
+    "case:release-metadata-gunzip-help",
+    "case:release-metadata-md5sum-help",
+    "case:release-metadata-mktemp-help",
+    "case:release-metadata-printf-help",
+    "case:release-metadata-pwd-version",
+    "case:release-metadata-rev-version",
+    "case:release-metadata-sed-version",
+    "case:release-metadata-seq-version",
+    "case:release-metadata-tac-version",
+    "case:release-metadata-tee-version",
+    "case:release-metadata-unlink-help",
+    "case:release-metadata-xxd-version",
+    "case:release-metadata-yes-version",
+    "case:release-metadata-comm-version",
+    "case:release-metadata-curl-version",
+    "case:release-metadata-date-version",
+    "case:release-metadata-diff-version",
+    "case:release-metadata-dirname-help",
+    "case:release-metadata-echo-version",
+    "case:release-metadata-expr-version",
+    "case:release-metadata-find-version",
+    "case:release-metadata-fold-version",
+    "case:release-metadata-grep-version",
+    "case:release-metadata-gzip-version",
+    "case:release-metadata-head-version",
+    "case:release-metadata-hexdump-help",
+    "case:release-metadata-join-version",
+    "case:release-metadata-make-version",
+    "case:release-metadata-sha1sum-help",
+    "case:release-metadata-sort-version",
+    "case:release-metadata-strings-help",
+    "case:release-metadata-tail-version",
+    "case:release-metadata-test-version",
+    "case:release-metadata-tree-version",
+    "case:release-metadata-true-version",
+    "case:release-metadata-uniq-version",
+    "case:release-metadata-wget-version",
+    "case:release-metadata-zcat-version",
+    "case:release-metadata-basename-help",
+    "case:release-metadata-chmod-version",
+    "case:release-metadata-cksum-version",
+    "case:release-metadata-false-version",
+    "case:release-metadata-jqlog-version",
+    "case:release-metadata-mkdir-version",
+    "case:release-metadata-paste-version",
+    "case:release-metadata-patch-version",
+    "case:release-metadata-printenv-help",
+    "case:release-metadata-realpath-help",
+    "case:release-metadata-rmdir-version",
+    "case:release-metadata-sleep-version",
+    "case:release-metadata-split-version",
+    "case:release-metadata-touch-version",
+    "case:release-metadata-unexpand-help",
+    "case:release-metadata-which-version",
+    "case:release-metadata-xargs-version",
+    "case:release-metadata-base32-version",
+    "case:release-metadata-base64-version",
+    "case:release-metadata-column-version",
+    "case:release-metadata-csplit-version",
+    "case:release-metadata-expand-version",
+    "case:release-metadata-gunzip-version",
+    "case:release-metadata-md5sum-version",
+    "case:release-metadata-mktemp-version",
+    "case:release-metadata-printf-version",
+    "case:release-metadata-sha256sum-help",
+    "case:release-metadata-sha512sum-help",
+    "case:release-metadata-unlink-version",
+    "case:release-metadata-dirname-version",
+    "case:release-metadata-hexdump-version",
+    "case:release-metadata-sha1sum-version",
+    "case:release-metadata-strings-version",
+    "case:release-metadata-basename-version",
+    "case:release-metadata-printenv-version",
+    "case:release-metadata-realpath-version",
+    "case:release-metadata-unexpand-version",
+    "case:release-metadata-sha256sum-version",
+    "case:release-metadata-sha512sum-version",
+    "package-test:tests/release_runner/acceptance_evidence_wbtest.mbt::official archive redirects preserve exact coordinates and stop after one hop",
+    "package-test:tests/release_runner/acceptance_evidence_wbtest.mbt::freeze receipts accept original exact API responses and reject identity drift"
+  ],
+  "affected_options": [
+    "help",
+    "version"
+  ],
+  "affected_operands": [],
+  "case_ids": [
+    "p0-seq-version",
+    "p0-echo-version",
+    "p0-true-version",
+    "p2-date-version",
+    "p0-false-version",
+    "p0-sleep-version",
+    "p2-which-version",
+    "p2-column-version",
+    "p2-strings-version",
+    "checksum-md5sum-version",
+    "compat-catalog-line-243",
+    "compat-catalog-line-251",
+    "checksum-sha1sum-version",
+    "release-metadata-cp-help",
+    "release-metadata-jq-help",
+    "release-metadata-ln-help",
+    "release-metadata-ls-help",
+    "release-metadata-mv-help",
+    "release-metadata-nl-help",
+    "release-metadata-od-help",
+    "release-metadata-rm-help",
+    "release-metadata-sh-help",
+    "release-metadata-tr-help",
+    "release-metadata-wc-help",
+    "release-metadata-cat-help",
+    "release-metadata-cmp-help",
+    "release-metadata-cut-help",
+    "release-metadata-env-help",
+    "release-metadata-fmt-help",
+    "release-metadata-pwd-help",
+    "release-metadata-rev-help",
+    "release-metadata-sed-help",
+    "release-metadata-seq-help",
+    "release-metadata-tac-help",
+    "release-metadata-tee-help",
+    "release-metadata-xxd-help",
+    "release-metadata-yes-help",
+    "checksum-sha512sum-version",
+    "release-metadata-comm-help",
+    "release-metadata-curl-help",
+    "release-metadata-date-help",
+    "release-metadata-diff-help",
+    "release-metadata-echo-help",
+    "release-metadata-expr-help",
+    "release-metadata-find-help",
+    "release-metadata-fold-help",
+    "release-metadata-grep-help",
+    "release-metadata-gzip-help",
+    "release-metadata-head-help",
+    "release-metadata-join-help",
+    "release-metadata-make-help",
+    "release-metadata-sort-help",
+    "release-metadata-tail-help",
+    "release-metadata-test-help",
+    "release-metadata-tree-help",
+    "release-metadata-true-help",
+    "release-metadata-uniq-help",
+    "release-metadata-wget-help",
+    "release-metadata-zcat-help",
+    "release-metadata-chmod-help",
+    "release-metadata-cksum-help",
+    "release-metadata-cp-version",
+    "release-metadata-false-help",
+    "release-metadata-jq-version",
+    "release-metadata-jqlog-help",
+    "release-metadata-ln-version",
+    "release-metadata-ls-version",
+    "release-metadata-mkdir-help",
+    "release-metadata-mv-version",
+    "release-metadata-nl-version",
+    "release-metadata-od-version",
+    "release-metadata-paste-help",
+    "release-metadata-patch-help",
+    "release-metadata-rm-version",
+    "release-metadata-rmdir-help",
+    "release-metadata-sh-version",
+    "release-metadata-sleep-help",
+    "release-metadata-split-help",
+    "release-metadata-touch-help",
+    "release-metadata-tr-version",
+    "release-metadata-wc-version",
+    "release-metadata-which-help",
+    "release-metadata-xargs-help",
+    "release-metadata-base32-help",
+    "release-metadata-base64-help",
+    "release-metadata-cat-version",
+    "release-metadata-cmp-version",
+    "release-metadata-column-help",
+    "release-metadata-csplit-help",
+    "release-metadata-cut-version",
+    "release-metadata-env-version",
+    "release-metadata-expand-help",
+    "release-metadata-fmt-version",
+    "release-metadata-gunzip-help",
+    "release-metadata-md5sum-help",
+    "release-metadata-mktemp-help",
+    "release-metadata-printf-help",
+    "release-metadata-pwd-version",
+    "release-metadata-rev-version",
+    "release-metadata-sed-version",
+    "release-metadata-seq-version",
+    "release-metadata-tac-version",
+    "release-metadata-tee-version",
+    "release-metadata-unlink-help",
+    "release-metadata-xxd-version",
+    "release-metadata-yes-version",
+    "release-metadata-comm-version",
+    "release-metadata-curl-version",
+    "release-metadata-date-version",
+    "release-metadata-diff-version",
+    "release-metadata-dirname-help",
+    "release-metadata-echo-version",
+    "release-metadata-expr-version",
+    "release-metadata-find-version",
+    "release-metadata-fold-version",
+    "release-metadata-grep-version",
+    "release-metadata-gzip-version",
+    "release-metadata-head-version",
+    "release-metadata-hexdump-help",
+    "release-metadata-join-version",
+    "release-metadata-make-version",
+    "release-metadata-sha1sum-help",
+    "release-metadata-sort-version",
+    "release-metadata-strings-help",
+    "release-metadata-tail-version",
+    "release-metadata-test-version",
+    "release-metadata-tree-version",
+    "release-metadata-true-version",
+    "release-metadata-uniq-version",
+    "release-metadata-wget-version",
+    "release-metadata-zcat-version",
+    "release-metadata-basename-help",
+    "release-metadata-chmod-version",
+    "release-metadata-cksum-version",
+    "release-metadata-false-version",
+    "release-metadata-jqlog-version",
+    "release-metadata-mkdir-version",
+    "release-metadata-paste-version",
+    "release-metadata-patch-version",
+    "release-metadata-printenv-help",
+    "release-metadata-realpath-help",
+    "release-metadata-rmdir-version",
+    "release-metadata-sleep-version",
+    "release-metadata-split-version",
+    "release-metadata-touch-version",
+    "release-metadata-unexpand-help",
+    "release-metadata-which-version",
+    "release-metadata-xargs-version",
+    "release-metadata-base32-version",
+    "release-metadata-base64-version",
+    "release-metadata-column-version",
+    "release-metadata-csplit-version",
+    "release-metadata-expand-version",
+    "release-metadata-gunzip-version",
+    "release-metadata-md5sum-version",
+    "release-metadata-mktemp-version",
+    "release-metadata-printf-version",
+    "release-metadata-sha256sum-help",
+    "release-metadata-sha512sum-help",
+    "release-metadata-unlink-version",
+    "release-metadata-dirname-version",
+    "release-metadata-hexdump-version",
+    "release-metadata-sha1sum-version",
+    "release-metadata-strings-version",
+    "release-metadata-basename-version",
+    "release-metadata-printenv-version",
+    "release-metadata-realpath-version",
+    "release-metadata-unexpand-version",
+    "release-metadata-sha256sum-version",
+    "release-metadata-sha512sum-version"
+  ],
+  "core_impact": "all",
+  "published_manifest_affected": false,
+  "required_backends": [],
+  "required_evidence": [],
+  "required_observations": [],
+  "coverage": [
+    {
+      "behavior_id": "metadata:cp",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:jq",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:ln",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:ls",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:mv",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:nl",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:od",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:rm",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:sh",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:tr",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:wc",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:cat",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:cmp",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:cut",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:env",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:fmt",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:pwd",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:rev",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:sed",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:seq",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:tac",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:tee",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:xxd",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:yes",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:comm",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:curl",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:date",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:diff",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:echo",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:expr",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:find",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:fold",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:grep",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:gzip",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:head",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:join",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:make",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:sort",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:tail",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:test",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:tree",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:true",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:uniq",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:wget",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:zcat",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:chmod",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:cksum",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:false",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:jqlog",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:mkdir",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:paste",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:patch",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:rmdir",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:sleep",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:split",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:touch",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:which",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:xargs",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:base32",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:base64",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:column",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:csplit",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:expand",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:gunzip",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:md5sum",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:mktemp",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:printf",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:unlink",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:dirname",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:hexdump",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:sha1sum",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:strings",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:timeout",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:basename",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:printenv",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:realpath",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:unexpand",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:sha256sum",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "metadata:sha512sum",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-metadata/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:p0-seq-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:p0-echo-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:p0-true-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:p2-date-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:p0-false-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:p0-sleep-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:p2-which-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:p2-column-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:p2-strings-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:checksum-md5sum-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:compat-catalog-line-243",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:compat-catalog-line-251",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:checksum-sha1sum-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-cp-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-jq-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-ln-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-ls-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-mv-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-nl-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-od-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-rm-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-sh-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-tr-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-wc-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-cat-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-cmp-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-cut-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-env-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-fmt-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-pwd-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-rev-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-sed-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-seq-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-tac-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-tee-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-xxd-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-yes-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:checksum-sha512sum-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-comm-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-curl-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-date-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-diff-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-echo-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-expr-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-find-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-fold-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-grep-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-gzip-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-head-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-join-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-make-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-sort-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-tail-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-test-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-tree-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-true-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-uniq-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-wget-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-zcat-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-chmod-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-cksum-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-cp-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-false-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-jq-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-jqlog-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-ln-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-ls-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-mkdir-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-mv-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-nl-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-od-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-paste-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-patch-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-rm-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-rmdir-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-sh-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-sleep-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-split-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-touch-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-tr-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-wc-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-which-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-xargs-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-base32-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-base64-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-cat-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-cmp-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-column-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-csplit-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-cut-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-env-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-expand-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-fmt-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-gunzip-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-md5sum-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-mktemp-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-printf-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-pwd-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-rev-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-sed-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-seq-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-tac-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-tee-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-unlink-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-xxd-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-yes-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-comm-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-curl-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-date-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-diff-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-dirname-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-echo-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-expr-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-find-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-fold-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-grep-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-gzip-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-head-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-hexdump-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-join-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-make-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-sha1sum-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-sort-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-strings-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-tail-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-test-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-tree-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-true-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-uniq-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-wget-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-zcat-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-basename-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-chmod-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-cksum-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-false-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-jqlog-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-mkdir-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-paste-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-patch-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-printenv-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-realpath-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-rmdir-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-sleep-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-split-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-touch-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-unexpand-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-which-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-xargs-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-base32-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-base64-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-column-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-csplit-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-expand-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-gunzip-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-md5sum-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-mktemp-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-printf-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-sha256sum-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-sha512sum-help",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-unlink-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-dirname-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-hexdump-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-sha1sum-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-strings-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-basename-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-printenv-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-realpath-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-unexpand-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-sha256sum-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "case:release-metadata-sha512sum-version",
+      "backends": [
+        "native",
+        "wasm"
+      ],
+      "evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "package-test:tests/release_runner/acceptance_evidence_wbtest.mbt::official archive redirects preserve exact coordinates and stop after one hop",
+      "backends": [
+        "native"
+      ],
+      "evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-receipt/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "package-test:tests/release_runner/acceptance_evidence_wbtest.mbt::freeze receipts accept original exact API responses and reject identity drift",
+      "backends": [
+        "native"
+      ],
+      "evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-receipt/summary.jsonl"
+      ]
+    }
+  ],
+  "boundaries": [],
+  "deferred": [],
+  "uncovered": []
+}

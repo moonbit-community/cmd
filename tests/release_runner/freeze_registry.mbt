@@ -52,11 +52,65 @@ fn live_registry_checksum(
 }
 
 ///|
+fn official_archive_redirect(
+  url : String,
+  location : String,
+) -> String raise Failure {
+  let prefix = "https://download.mooncakes.io/user/cli/"
+  guard url.strip_prefix(prefix) is Some(relative) else {
+    fail("only official archive downloads may redirect")
+  }
+  let parts = relative.split("/").collect()
+  guard parts.length() == 2 && parts[1].strip_suffix(".zip") is Some(version) else {
+    fail("invalid official archive path")
+  }
+  let (_, expected) = freeze_registry_urls(
+    "cli/" + parts[0].to_owned(),
+    version.to_owned(),
+  )
+  guard url == expected else { fail("invalid official archive URL") }
+  // This is the distribution host returned by the official archive endpoint.
+  // Keep the coordinate path exact; no scheme, credentials, query or host drift.
+  let destination = "https://d15l9c1mnzh3r.cloudfront.net/user/cli/" +
+    relative.to_owned()
+  guard location == destination else {
+    fail(
+      "official archive redirect changed its distribution host or coordinate",
+    )
+  }
+  destination
+}
+
+///|
+async fn fetch_official_registry_with(
+  url : String,
+  fetch : async (String) -> (Int32, String?, Bytes),
+) -> (Int32, Bytes) {
+  let (status, location, body) = fetch(url)
+  if [301, 302, 303, 307, 308].contains(status) &&
+    url.has_prefix("https://download.mooncakes.io/") {
+    guard location is Some(location) else {
+      fail("official archive redirect has no Location header")
+    }
+    let destination = official_archive_redirect(url, location)
+    let (final_status, _, final_body) = fetch(destination)
+    guard final_status == 200 else {
+      fail("official archive distribution must return 200 after one redirect")
+    }
+    (final_status, final_body)
+  } else {
+    (status, body)
+  }
+}
+
+///|
 async fn fetch_official_registry(url : String) -> (Int32, Bytes) {
   @async.with_timeout(30000, () => {
-    // async/http uses system-root TLS validation and does not follow redirects.
-    let (response, body) = @http.get(url)
-    (response.code, body.binary())
+    fetch_official_registry_with(url, destination => {
+      // Public HTTPS requests use system trust roots and carry no credentials.
+      let (response, body) = @http.get(destination)
+      (response.code, response.headers.get("Location"), body.binary())
+    })
   })
 }
 

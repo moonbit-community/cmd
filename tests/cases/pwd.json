@@ -89,6 +89,44 @@
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
       "expected_stdout_text": "<TMP>\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-pwd-help",
+      "command": "pwd",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/pwd@0.2.1 metadata contract",
+      "expected_stdout_text": "Usage: pwd [-L|-P]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-pwd-version",
+      "command": "pwd",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/pwd@0.2.1 metadata contract",
+      "expected_stdout_text": "pwd 0.2.1\n",
+      "expected_stderr_text": ""
     }
   ]
 }

@@ -1,6 +1,6 @@
 # nl for moonx
 
-Version **0.2.0** behavior is documented here. The
+Version **0.2.1** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -24,6 +24,10 @@ C-locale profile and is rejected.
 With no file operand, the command silently reads stdin until EOF, matching the
 upstream terminal, pipe, redirection, and explicit `-` behavior.
 
-The unreleased workspace adds standalone `--version`, which prints the command
-name and package version and exits successfully without reading input.
-Use `--help` to display usage.
+## Standalone metadata
+
+Standalone `--version` prints exactly `nl 0.2.1` followed by one
+newline. Standalone `--help` starts with `Usage: nl`, lists both
+metadata options, and ends with a newline. Both write to stdout, leave stdin
+unread, and exit with status 0. Exact-version publication and verification
+remain recorded separately in the [support record](../../docs/compatibility.md).

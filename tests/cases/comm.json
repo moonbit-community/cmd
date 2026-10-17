@@ -263,6 +263,44 @@
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
       "expected_stdout_hex": "610009620009096300",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-comm-help",
+      "command": "comm",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/comm@0.2.1 metadata contract",
+      "expected_stdout_text": "Usage: comm [-123] [-z] FILE1 FILE2\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nCompare two sorted files line by line, producing three columns:\nlines only in FILE1, lines only in FILE2, and lines in both.\n\nOptions:\n  -1  Suppress column 1 (lines unique to FILE1).\n  -2  Suppress column 2 (lines unique to FILE2).\n  -3  Suppress column 3 (lines in both files).\n      --check-order  Diagnose unsorted input.\n      --nocheck-order  Do not diagnose unsorted input.\n  -z, --zero-terminated  End records with NUL instead of newline.\n\nUse '-' as a file name to read stdin.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-comm-version",
+      "command": "comm",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/comm@0.2.1 metadata contract",
+      "expected_stdout_text": "comm 0.2.1\n",
+      "expected_stderr_text": ""
     }
   ]
 }

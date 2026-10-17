@@ -1,0 +1,1029 @@
+[
+  {
+    "module": "cli/base32",
+    "published_version": "0.1.1",
+    "proposed_version": "0.1.2",
+    "published_archive_sha256": "cedb350390d0e1910b756fe291da9d2fed12c5d512a17ab2b303f11a30137cc1",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/base64",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "bcbffa7064f1c78f074cb47aa2c71207a2d2150e4d52495f885f4b3aa991865e",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/basename",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "58ad7a9c538287ba75f46590a339a7a78ea1f4d9489a942273fa949dcdbe2ca4",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/cat",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "d9f8e3c0535b0e05e5a7f2ba0098f903c4e8be0b32cca61a3151d3c65c44ddde",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/chmod",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "8085e8f3ffb2c5ccaa9a50fcaa4f044c67cbcc87664933d950c0055f8e189d4c",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/cksum",
+    "published_version": "0.1.1",
+    "proposed_version": "0.1.2",
+    "published_archive_sha256": "88dcbc2f0ac4e8dcce5b7cd01064e090fe36799e18e646ede3d7a4ca99eb716d",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/cmp",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "680910590935101f5686adb897a2f4e5c9a28a6c065f2ca28d01d2b55d9f41dc",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/column",
+    "published_version": "0.1.1",
+    "proposed_version": "0.1.2",
+    "published_archive_sha256": "9ca63ec335ef60dab006f02e930af0b8cbca95d2b62cadb464fefc95b0ab0408",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 2
+  },
+  {
+    "module": "cli/comm",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "8b5e5ae7e23198f62fa1c34fe973ed537831458b01131d5b7f580aa11ffec64f",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/core",
+    "published_version": "0.5.0",
+    "proposed_version": "0.6.0",
+    "published_archive_sha256": "b863a50fe038b4dc9cf97be63e5801e6aadce8c1cd9724942c934019d4ccca69",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "checksum/run.mbt",
+      "cli/catalog.mbt",
+      "gzipops/command.mbt"
+    ],
+    "changed_public_interfaces": [
+      "gzipops/pkg.generated.mbti"
+    ],
+    "core_dependency_changed": false,
+    "version_declaration_files": 0
+  },
+  {
+    "module": "cli/cp",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "2da39dcb1adc3098caddd254394c69a7d0d451ab9569dab50ddc926f1ef10a08",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/csplit",
+    "published_version": "0.1.0",
+    "proposed_version": "0.1.1",
+    "published_archive_sha256": "275c6b7a6a3baa7cf98e135368f47040470f239d06584216e60533b308cef038",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/curl",
+    "published_version": "0.2.1",
+    "proposed_version": "0.2.2",
+    "published_archive_sha256": "15581595e78d7439defa872d19a2230a866f505a9a4d680140c8659224e6249a",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt",
+      "options.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/cut",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "f0282ab79671021901c5c9de6003f02c3c838a0dd8105d84098cd9c82451b1f3",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/date",
+    "published_version": "0.1.1",
+    "proposed_version": "0.1.2",
+    "published_archive_sha256": "ac67611e11b53be0d70b0eda0b2654596470d17c00d9418b7368357a4b21ecb0",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 2
+  },
+  {
+    "module": "cli/diff",
+    "published_version": "0.1.1",
+    "proposed_version": "0.1.2",
+    "published_archive_sha256": "76d734b47f37c0f1f850b3d8371e90523300d526da8990032416c961b26fdba3",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/dirname",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "8735b75eff33eb11bbd3668733fdb93c193caf5150bc66c98595a9e246eec30f",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/echo",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "6aa242b223ef0fe08de30dfdd42bcbbcb76433c9bc17f397c0188d6e8c22cfe6",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": false,
+    "version_declaration_files": 2
+  },
+  {
+    "module": "cli/env",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "ae7a639a329f8410bc820b344c28a4422b6ea7df3cb500780c485900665ea452",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 2
+  },
+  {
+    "module": "cli/expand",
+    "published_version": "0.1.1",
+    "proposed_version": "0.1.2",
+    "published_archive_sha256": "ce5837eb0e056839d18be41d90f38fc3c162cb084848752c962ec3fb1ee9dc15",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/expr",
+    "published_version": "0.1.0",
+    "proposed_version": "0.1.1",
+    "published_archive_sha256": "9e41f294e8006487600971934479a960061d0d5cbc8e4660246a676c1e7a8013",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/false",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "da699c1db44315a3438642669d253488bb691165369fdae4b65c4ff93f5e02d6",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": false,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/find",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "8da687509fe93a0fc034b450edbc22edd2382a4ae080544e16eee6e9251ec9d9",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/fmt",
+    "published_version": "0.1.0",
+    "proposed_version": "0.1.1",
+    "published_archive_sha256": "1f003efa9ef6b711779e1c41a2b57d50dc6fe8152b6467a8f85daaa5e3c0dc12",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/fold",
+    "published_version": "0.1.0",
+    "proposed_version": "0.1.1",
+    "published_archive_sha256": "0fbfe548a2d883972823c3b787278ad8283575cd7bf3b1279f20915ce3d3d2e6",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 2
+  },
+  {
+    "module": "cli/grep",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "921ce4a936f2854549385548b9b8fa98214e4d8907c6996ce34a28a226964a95",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/gunzip",
+    "published_version": "0.1.0",
+    "proposed_version": "0.1.1",
+    "published_archive_sha256": "f8beb86cfee3e5ae7397bb89bfcf360301e8c40167f8b1a8322c7695c53f42de",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/gzip",
+    "published_version": "0.1.0",
+    "proposed_version": "0.1.1",
+    "published_archive_sha256": "422bf9c0782aa26323d30e4faa27664f2ab21a3133c928542370c69680ac8b5d",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/head",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "74832d65d994cd98dfe37b2d45930c99ab995759578b4147a78a496c1a91e0cd",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/hexdump",
+    "published_version": "0.1.0",
+    "proposed_version": "0.1.1",
+    "published_archive_sha256": "8962ce90bc26fcca66441c2669c0ef80279d58fc6408f22c8106b66915e58878",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 2
+  },
+  {
+    "module": "cli/join",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "1e620cbfec6ac591884094cfc845a0973b8db98d44d1bc0c3299dd8dcfb4af73",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/jq",
+    "published_version": "0.2.1",
+    "proposed_version": "0.2.2",
+    "published_archive_sha256": "7dbf97b13de83506be4a021c3b23272a93ad7b4ff026cac4526d2ec06e1b5604",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main_native.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/jqlog",
+    "published_version": "0.2.1",
+    "proposed_version": "0.2.2",
+    "published_archive_sha256": "3589871a76d8d6e48bc6e8de2aa640c477d6f0769b9a9cd0c1bc0ab24ce24d67",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main_native.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/ln",
+    "published_version": "0.2.1",
+    "proposed_version": "0.2.2",
+    "published_archive_sha256": "69ca323963adfa9cb22c1bbc92a59e338b33db549d3d99acad034302acde67a7",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/ls",
+    "published_version": "0.2.1",
+    "proposed_version": "0.2.2",
+    "published_archive_sha256": "2a1426a47d7ea81d917b1ca135d3bd14edd8c55d6f47e12ffe6c80d60c2149d5",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/make",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "8ac35fadbc126119a03898afb5bcf38f29e371bb05e5f16a2b91e2635ae89fd2",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/md5sum",
+    "published_version": "0.1.0",
+    "proposed_version": "0.1.1",
+    "published_archive_sha256": "0d37fb9869459259183ea5db23e27405da86fd8cbe5894ca3ff37c293a4bcab6",
+    "proposed_absent": true,
+    "changed_source_files": [],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/mkdir",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "59d0a78d6278fcd034adb96543b1f02c44574af4a19e8b08f4d3a7a2461ab85c",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/mktemp",
+    "published_version": "0.1.1",
+    "proposed_version": "0.1.2",
+    "published_archive_sha256": "0efa73076f8b516524e6f722a0f761c5a069f7827335dd3c7b12d5e2b55e2852",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/mv",
+    "published_version": "0.2.1",
+    "proposed_version": "0.2.2",
+    "published_archive_sha256": "7754578908cf01da4578802aa2aae61c0186df2ac7247b8dddaad25e83daa157",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/nl",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "0e0fb6df0500c7b43c0b0fa6ac4f5363b17e07ee81740d5527c8687b44b4716c",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/od",
+    "published_version": "0.1.0",
+    "proposed_version": "0.1.1",
+    "published_archive_sha256": "c1059c23388796ad6ad325072cc188406889c32c35bc6b706d795e47db051abd",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 2
+  },
+  {
+    "module": "cli/paste",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "d6b3d85152a5ef6d4f085c249ecc403d29faeea23d02dc2b4031844d61078304",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/patch",
+    "published_version": "0.1.0",
+    "proposed_version": "0.1.1",
+    "published_archive_sha256": "e20f980984158e8afc4411e5d0b5056cd2999c313f758280d7b08db6732ef717",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 2
+  },
+  {
+    "module": "cli/printenv",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "cbcb34fc7c465b9c0a6e3b68da4233e56cd91d848d25261fbf6ccf3975738a30",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/printf",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "2ec212257f5f0c95938cc7f26f80f7f5f4565c93bdb00357b2fa7c6983511026",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": false,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/pwd",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "c40792d55d73e390b1a24211300d2a370564f9534cb257def548ca434ddc4751",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/realpath",
+    "published_version": "0.1.1",
+    "proposed_version": "0.1.2",
+    "published_archive_sha256": "8ee203ea0bf88c9557e14e4345fb5f75b5213f38f4f9c0f831c967e77a9f7c15",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 2
+  },
+  {
+    "module": "cli/rev",
+    "published_version": "0.1.1",
+    "proposed_version": "0.1.2",
+    "published_archive_sha256": "96eb2fec6a3c5fc8351a9710a0e70343f95d77afc6cd952fd444a35c2210c835",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/rm",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "d560a0373b8171d9e9ab238a1a74177f0ba2675b948c9f427c3fceff3e773bd7",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/rmdir",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "72674432bd1f223eef2767f264f9a686f6c556e42c0aad452edfc10f4c055fe5",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/sed",
+    "published_version": "0.1.0",
+    "proposed_version": "0.1.1",
+    "published_archive_sha256": "6b91375743f3b135d10acf1108a8677568ad976a244a0fdf1aafab6f34eb2426",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/seq",
+    "published_version": "0.2.1",
+    "proposed_version": "0.2.2",
+    "published_archive_sha256": "82be673a9b106df97698a982b268b24fe74d105a2773b3f5dd1a1d511f4da16d",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": false,
+    "version_declaration_files": 2
+  },
+  {
+    "module": "cli/sh",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "d0619bdb33303ff5f068fd93f691affcfc31b019ab2d1a9d2b1216a0069f2aea",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/sha1sum",
+    "published_version": "0.1.0",
+    "proposed_version": "0.1.1",
+    "published_archive_sha256": "9e3030c07a3733f1603431209c2dfddeb071f5e10868cc0c6dcb7b48fc26d8a7",
+    "proposed_absent": true,
+    "changed_source_files": [],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/sha256sum",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "9d5bc5243d1014c9484a1d1cc0c14e000bf1c1368f872b73735e67f2b040b495",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/sha512sum",
+    "published_version": "0.1.0",
+    "proposed_version": "0.1.1",
+    "published_archive_sha256": "9480748c1e2aa41b939d0b5a3594e07b3e9f631cc801ac72e77d6f04d6420831",
+    "proposed_absent": true,
+    "changed_source_files": [],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/sleep",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "e604a2deb929f71c6d9d99f5a9da384b1d744ab37a9c377877fb3708c305dbcb",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": false,
+    "version_declaration_files": 2
+  },
+  {
+    "module": "cli/sort",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "cfc73dd6f8dcdc36df5187e0c4b587dfe7ae3093b0aca483bf066d39454b3084",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/split",
+    "published_version": "0.1.0",
+    "proposed_version": "0.1.1",
+    "published_archive_sha256": "45157f8e92194c048d75a2c7a849ffea0fc43e8212bd33fa31a43f67438d5656",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/strings",
+    "published_version": "0.1.1",
+    "proposed_version": "0.1.2",
+    "published_archive_sha256": "6f15c035c9676c0293aa6c3b893e3119417aa85fc50052a9f9b7485033071329",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 2
+  },
+  {
+    "module": "cli/tac",
+    "published_version": "0.1.1",
+    "proposed_version": "0.1.2",
+    "published_archive_sha256": "450bd56cecd68b426de7fce2823a8cb42672f8f7c9a78fd277a85900e982b632",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/tail",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "ea9c863c1d48fb42dcb653ce094b55578250e40907ebceb9a9d7570fde614cfa",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/tee",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "231dce3d879772dfc2cfc22ead1b8723bae8d0c356b4733fa9bb0a2d37bb34e3",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/test",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "86ed205dabf5e6c52f4a85f6ec0a5ba3372d2d41d73b797d6710c66b95a9279b",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/touch",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "f03cae7f3c99bedbf7304c138d7a2fd92d3f1c4c32884c0faaaf7e7c3ff0acf6",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/tr",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "dbb3d6d436bd484fb8afd4695ee0ac19331c96b7f0699c7abc65dc654afbcd29",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/tree",
+    "published_version": "0.1.1",
+    "proposed_version": "0.1.2",
+    "published_archive_sha256": "66cbb5239ccc3121968f45467d64a8f8372f44867e270a9e6106c21dc71c0daf",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 2
+  },
+  {
+    "module": "cli/true",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "ae62d56e84dacd6be82e48bba5fbc1ce497036737f552ef4047669380ffd836a",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": false,
+    "version_declaration_files": 2
+  },
+  {
+    "module": "cli/unexpand",
+    "published_version": "0.1.1",
+    "proposed_version": "0.1.2",
+    "published_archive_sha256": "79d87d31eba0dd03b418d26a951d020343c9ba93b3917dda7587b773c7d46336",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/uniq",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "4b783ea9431ee99c100ef7f8f50facb891a0aa9f9edf69f5d17e05ca421f2e9f",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/unlink",
+    "published_version": "0.1.2",
+    "proposed_version": "0.1.3",
+    "published_archive_sha256": "0d200e9733baa23de661aa8fed5cdbe1e574fe14688ef0d1519adc36570b9a80",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 2
+  },
+  {
+    "module": "cli/wc",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "4b20c6286fb0ba58d8e19cc13e37ea12e902dae255852fafcefa8fb13466479b",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/wget",
+    "published_version": "0.2.1",
+    "proposed_version": "0.2.2",
+    "published_archive_sha256": "aca721148f75508830d2443541874e5fbfdb4895643070a98cfe1e19a9a66da7",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt",
+      "options.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/which",
+    "published_version": "0.1.1",
+    "proposed_version": "0.1.2",
+    "published_archive_sha256": "8243e1e102c1832b2dfc6aa79d05d3e3851b92aff7ae89af845fe2b24ec0980a",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 2
+  },
+  {
+    "module": "cli/xargs",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "04908bfd1c1f66512010938e24585c3709a863691b36fbad2f6334055e92cb4e",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/xxd",
+    "published_version": "0.2.0",
+    "proposed_version": "0.2.1",
+    "published_archive_sha256": "a96869c2195e1c80a854155d289a3eb9a40bfaa84663f8f503c6e60cbe9586bc",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  },
+  {
+    "module": "cli/yes",
+    "published_version": "0.1.1",
+    "proposed_version": "0.1.2",
+    "published_archive_sha256": "23f5802c9395410ae15c39f2d5f6b500ec74c25fb6f42148bd5a0a8b9b8f1f3d",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 2
+  },
+  {
+    "module": "cli/zcat",
+    "published_version": "0.1.0",
+    "proposed_version": "0.1.1",
+    "published_archive_sha256": "781ce3327dac5566ae01404282c8c68553d73ae78bdff4ccb0e9a8995c43a5e5",
+    "proposed_absent": true,
+    "changed_source_files": [
+      "main.mbt"
+    ],
+    "changed_public_interfaces": [],
+    "core_dependency_changed": true,
+    "version_declaration_files": 1
+  }
+]

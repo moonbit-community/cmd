@@ -286,6 +286,44 @@
       ],
       "oracle": true,
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+    },
+    {
+      "id": "release-metadata-hexdump-help",
+      "command": "hexdump",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/hexdump@0.1.1 metadata contract",
+      "expected_stdout_text": "Usage: hexdump [OPTION]... [FILE]...\nDisplay concatenated files as numbers and characters; no FILE reads stdin.\n  -b, --one-byte-octal     one-byte octal\n  -c, --one-byte-char      escaped characters\n  -C, --canonical         hexadecimal bytes with ASCII\n  -d, --two-bytes-decimal  two-byte unsigned decimal\n  -o, --two-bytes-octal    two-byte octal\n  -x, --two-bytes-hex      two-byte hexadecimal\n  -X, --one-byte-hex       one-byte hexadecimal\n  -n, --length=N          display at most N input bytes\n  -s, --skip=N            skip N input bytes in named files\n  -v, --no-squeezing      display duplicate blocks\n  -h, --help              display this help and exit\n  -V, --version           display version and exit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-hexdump-version",
+      "command": "hexdump",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/hexdump@0.1.1 metadata contract",
+      "expected_stdout_text": "hexdump 0.1.1\n",
+      "expected_stderr_text": ""
     }
   ]
 }

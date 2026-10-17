@@ -977,6 +977,44 @@
       "normalizations": [],
       "source_version": "2026-10-11 second review; pinned oracle where enabled",
       "oracle": true
+    },
+    {
+      "id": "release-metadata-jq-help",
+      "command": "jq",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/jq@0.2.2 metadata contract",
+      "expected_stdout_text": "Usage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file FILE    read the filter from FILE\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-jq-version",
+      "command": "jq",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/jq@0.2.2 metadata contract",
+      "expected_stdout_text": "jq 0.2.2\n",
+      "expected_stderr_text": ""
     }
   ]
 }

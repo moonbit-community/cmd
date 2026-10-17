@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-12
+Updated: 2026-10-17
 Revision: Correct self-authored expected outputs, pin new strings/column oracles, expand real CLI/alias/edge coverage before a repaired release, run published HTTPS cases through the same fixed POSIX fixture as the workspace runner, and add a single metadata contract for all workspace commands.
 
 ## Target and decision
@@ -72,6 +72,22 @@ published output contracts in a frozen metadata overlay: changing workspace
 help/version strings must not change the expected bytes for old MoonX
 coordinates. The overlay is limited to known case IDs for the same command;
 unknown or duplicate mappings fail validation.
+
+The metadata publication adds exact standalone help and version contracts for
+every releasable command. Full help bytes are retained from reviewed matching
+Native/Wasm captures after the declared help invariants pass; version bytes are
+derived from each module's declared version. This establishes the project's
+metadata contract, not upstream byte parity. The existing closed-stdin process
+adapter does not measure unread input, so its status and stream observations
+must not claim that additional dimension. Published dependency composition is
+checked through exact MoonX coordinates after upload; a workspace build cannot
+prove which registry core version a command resolves.
+
+Published freezing combines applicable Linux and Windows results: Windows-only
+cases require their passing Windows rows rather than accepting a Linux skip.
+The freezing host must still verify the actual immutable oracle image. These
+requirements may be revised only when an equivalent observation mechanism
+preserves exact source, registry, artifact and platform identity.
 
 Keep three test layers: package behavior, real CLI contracts and stateful
 scenarios. The workspace and published-consumer drivers share one Native

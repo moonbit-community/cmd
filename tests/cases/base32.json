@@ -109,6 +109,44 @@
       "expected_stdout_text": "foo",
       "expected_stderr_text": "",
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+    },
+    {
+      "id": "release-metadata-base32-help",
+      "command": "base32",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/base32@0.1.2 metadata contract",
+      "expected_stdout_text": "Usage: base32 [-d] [-i] [-w COLS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-base32-version",
+      "command": "base32",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/base32@0.1.2 metadata contract",
+      "expected_stdout_text": "base32 0.1.2\n",
+      "expected_stderr_text": ""
     }
   ]
 }

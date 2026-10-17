@@ -7,6 +7,7 @@ fn usage() -> String {
   "[--registry FILE] [--active-output FILE] [--output FILE]\n" +
   "       release-runner --manifest FILE --verify-candidate --freeze-evidence FILE [run options]\n" +
   "       release-runner --manifest FILE --freeze-published --freeze-evidence FILE --release-id ID\n" +
+  "       release-runner --prepare-freeze-evidence DIRECTORY --smoke-report PATH --semantic-report PATH\n" +
   "       release-runner --seal-oracle sha256:IMAGE-ID [--oracle-profile FILE]"
 }
 
@@ -1028,6 +1029,10 @@ async fn run_driver() -> Unit {
   let raw_args = @env.args()
   if raw_args.length() == 2 && raw_args[1] == "--http-fixture-server" {
     run_http_fixture_process()
+    return
+  }
+  if raw_args.get(1) == Some("--prepare-freeze-evidence") {
+    prepare_acceptance_evidence(raw_args[2:])
     return
   }
   let oracle_options = @testkit.parse_oracle_options(raw_args[1:]) catch {

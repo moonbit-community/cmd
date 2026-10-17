@@ -1,6 +1,6 @@
 name = "cli/sha256sum"
 
-version = "0.2.0"
+version = "0.2.1"
 
 readme = "README.md"
 
@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "sha256sum command for MoonX."
 
 import {
-  "cli/core@0.2.0",
+  "cli/core@0.6.0",
   "moonbitlang/async@0.22.4",
   "moonbitlang/x@0.5.5",
 }

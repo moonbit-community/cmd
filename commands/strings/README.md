@@ -1,6 +1,6 @@
 # strings
 
-Version **0.1.1**. See the [support record](../../docs/compatibility.md) for release evidence.
+Version **0.1.2**. See the [support record](../../docs/compatibility.md) for release evidence.
 
 Print printable byte sequences from files or standard input:
 
@@ -23,3 +23,11 @@ scanning. With no files, stdin is read once.
 
 `--help` and `--version` are available. Object-section selection, locale
 decoding and GNU Unicode rendering modes are not implemented.
+
+## Standalone metadata
+
+Standalone `--version` prints exactly `strings 0.1.2` followed by one
+newline. Standalone `--help` starts with `Usage: strings`, lists both
+metadata options, and ends with a newline. Both write to stdout, leave stdin
+unread, and exit with status 0. Exact-version publication and verification
+remain recorded separately in the [support record](../../docs/compatibility.md).

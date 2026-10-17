@@ -37,7 +37,9 @@
         }
       ],
       "environment": {},
-      "host_platforms": ["posix"],
+      "host_platforms": [
+        "posix"
+      ],
       "expected_status": 0,
       "normalizations": []
     },
@@ -117,6 +119,44 @@
       "expected_stdout_contains": "Usage:",
       "expected_stderr_text": "",
       "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "release-metadata-chmod-help",
+      "command": "chmod",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/chmod@0.2.1 metadata contract",
+      "expected_stdout_text": "Usage: chmod [-R] [-v] MODE FILE...\n      --help      display this help and exit\n      --version   display version and exit\n       chmod [-R] [-v] --reference=RFILE FILE...\nMODE may be numeric or a complete symbolic '=' assignment such as a=rwx or u=rw,g=r,o=.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-chmod-version",
+      "command": "chmod",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/chmod@0.2.1 metadata contract",
+      "expected_stdout_text": "chmod 0.2.1\n",
+      "expected_stderr_text": ""
     }
   ]
 }

@@ -161,6 +161,44 @@
       "stdin_hex": "6178310061783200627900",
       "expected_stdout_hex": "61783100627900",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-uniq-help",
+      "command": "uniq",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/uniq@0.2.1 metadata contract",
+      "expected_stdout_text": "Usage: uniq [-cduiz] [-f FIELDS] [-s CHARS] [-w CHARS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-uniq-version",
+      "command": "uniq",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/uniq@0.2.1 metadata contract",
+      "expected_stdout_text": "uniq 0.2.1\n",
+      "expected_stderr_text": ""
     }
   ]
 }

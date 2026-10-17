@@ -190,6 +190,44 @@
       "expected_files": [],
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-tail-help",
+      "command": "tail",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/tail@0.2.1 metadata contract",
+      "expected_stdout_text": "Usage: tail [-f] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-tail-version",
+      "command": "tail",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/tail@0.2.1 metadata contract",
+      "expected_stdout_text": "tail 0.2.1\n",
+      "expected_stderr_text": ""
     }
   ]
 }

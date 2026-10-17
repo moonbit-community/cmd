@@ -1,6 +1,6 @@
 # fold
 
-Version **0.1.0** behavior is documented here. The
+Version **0.1.1** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -24,3 +24,11 @@ unterminated final line stays unterminated. Input bytes, including NUL and
 invalid UTF-8, are preserved. Locale-dependent Unicode display widths and
 multibyte character counting are outside the current C-locale profile.
 `--help` and `--version` are available. Errors return status 1.
+
+## Standalone metadata
+
+Standalone `--version` prints exactly `fold 0.1.1` followed by one
+newline. Standalone `--help` starts with `Usage: fold`, lists both
+metadata options, and ends with a newline. Both write to stdout, leave stdin
+unread, and exit with status 0. Exact-version publication and verification
+remain recorded separately in the [support record](../../docs/compatibility.md).

@@ -1,6 +1,6 @@
 # which
 
-Version **0.1.1**. See the [support record](../../docs/compatibility.md) for release evidence.
+Version **0.1.2**. See the [support record](../../docs/compatibility.md) for release evidence.
 
 Find executable files using the caller's `PATH`:
 
@@ -21,3 +21,11 @@ Windows uses semicolon-separated PATH and PATHEXT (default
 `.COM;.EXE;.BAT;.CMD`) to resolve executable suffixes. Files are inspected,
 never launched during lookup. Shell aliases and functions are outside
 this command's scope. `--help` and `--version` are available.
+
+## Standalone metadata
+
+Standalone `--version` prints exactly `which 0.1.2` followed by one
+newline. Standalone `--help` starts with `Usage: which`, lists both
+metadata options, and ends with a newline. Both write to stdout, leave stdin
+unread, and exit with status 0. Exact-version publication and verification
+remain recorded separately in the [support record](../../docs/compatibility.md).

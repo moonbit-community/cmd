@@ -523,6 +523,44 @@
         "ShellError",
         "cli/core/shell"
       ]
+    },
+    {
+      "id": "release-metadata-sh-help",
+      "command": "sh",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/sh@0.2.1 metadata contract",
+      "expected_stdout_text": "Usage: sh [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]\n  -c SOURCE   execute shell source\n  -s          read commands from standard input\n  -i          enable a persistent line-oriented interactive session\n  --help      display this help and exit\n  --version   display version and exit\nSupports a bounded shell language; terminal job control is unavailable.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-sh-version",
+      "command": "sh",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/sh@0.2.1 metadata contract",
+      "expected_stdout_text": "sh 0.2.1\n",
+      "expected_stderr_text": ""
     }
   ]
 }

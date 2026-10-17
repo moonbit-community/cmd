@@ -1,6 +1,6 @@
 # gunzip
 
-Version **0.1.0** behavior is documented here. The
+Version **0.1.1** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -26,3 +26,11 @@ is buffered, while decoded output is written in chunks.
 Named-file replacement without `-c` is rejected. Other compression formats,
 force/pass-through behavior, metadata restoration, recursive operation and
 listing are not implemented. Use `--help` or `--version` for command information.
+
+## Standalone metadata
+
+Standalone `--version` prints exactly `gunzip 0.1.1` followed by one
+newline. Standalone `--help` starts with `Usage: gunzip`, lists both
+metadata options, and ends with a newline. Both write to stdout, leave stdin
+unread, and exit with status 0. Exact-version publication and verification
+remain recorded separately in the [support record](../../docs/compatibility.md).

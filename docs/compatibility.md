@@ -1,7 +1,7 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-10-14
+Updated: 2026-10-17
 
 This repair publishes `cli/core@0.5.0`, `column/date/diff/strings/which@0.1.1`, `unlink@0.1.2`, and `curl/jq/jqlog/ln/ls/mv/seq/wget@0.2.1`. Unchanged commands retain their existing coordinates.
 
@@ -32,6 +32,18 @@ This is workspace-candidate evidence. Existing registry coordinates remain
 immutable until a release is prepared and published; the exact published
 MoonX audit in `docs/reports/2026-10-12-readme-audit/` records the older
 coordinate behavior separately.
+
+The authorized metadata release is being prepared with `cli/core@0.6.0` and
+the next unused patch version of all 78 published commands. The candidate
+distribution is 39 commands at 0.2.1, eight at 0.2.2, 15 at 0.1.1, 15 at
+0.1.2 and one at 0.1.3. Existing core-dependent commands must pin 0.6.0 so
+published consumers receive the shared metadata changes that workspace module
+resolution already sees. Commands without a core dependency retain that
+independence; `timeout` remains local-only. These are preparation coordinates,
+not publication claims. The current published manifest above remains the
+accepted release until verified uploads, exact MoonX contracts and the frozen
+snapshot replace it. The retained preparation record is in
+[`reports/2026-10-15-metadata-release/`](reports/2026-10-15-metadata-release/).
 
 This is the single support record for the `cmd` repository. It replaces the
 former matrix. Historical implementation stages are archived in

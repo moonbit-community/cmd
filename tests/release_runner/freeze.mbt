@@ -63,6 +63,15 @@ fn registry_response_checksum(
   name : String,
   version : String,
 ) -> String? {
+  // The official exact-version API returns an envelope rather than an index
+  // line. Retain its original response bytes instead of synthesizing receipts.
+  let response = @json.parse(text) catch { _ => Json::null() }
+  if response is { "module": _, "metadata": _, .. } {
+    let checksum = live_registry_checksum(response, name, version) catch {
+      _ => return None
+    }
+    return Some(checksum)
+  }
   let mut matches = 0
   let mut selected_checksum = None
   for line in text.split("\n") {

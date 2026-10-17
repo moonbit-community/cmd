@@ -1612,6 +1612,44 @@
       ],
       "expected_stderr_text": "",
       "source_version": "Existing project long alias, not a GNU ls spelling. The retained -u/-c cases provide GNU differential coverage; this case checks the same command-local bytes and status."
+    },
+    {
+      "id": "release-metadata-ls-help",
+      "command": "ls",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/ls@0.2.2 metadata contract",
+      "expected_stdout_text": "Usage: ls [-aAdF1RrtucS] [-H|-L|-P] [--time=WORD] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -H follows command-line links; -L follows all links; -P follows none (extension).\n  -u, -c and --time select and imply time sorting unless -S or -t selects a sort.\n  -S requires regular files; metadata-rich long listing is not supported.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-ls-version",
+      "command": "ls",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/ls@0.2.2 metadata contract",
+      "expected_stdout_text": "ls 0.2.2\n",
+      "expected_stderr_text": ""
     }
   ]
 }

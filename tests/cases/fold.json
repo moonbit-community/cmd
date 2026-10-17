@@ -222,6 +222,44 @@
       "normalizations": [],
       "oracle": true,
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+    },
+    {
+      "id": "release-metadata-fold-help",
+      "command": "fold",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/fold@0.1.1 metadata contract",
+      "expected_stdout_text": "Usage: fold [OPTION]... [FILE]...\nWrap each input line, reading stdin with no FILE or FILE -.\n  -b, --bytes          count bytes rather than columns\n  -c, --characters     count characters in the C-locale byte profile\n  -s, --spaces         break after the last available blank\n  -w, --width=WIDTH    use WIDTH columns instead of 80\n      --help           display this help and exit\n      --version        display version and exit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-fold-version",
+      "command": "fold",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/fold@0.1.1 metadata contract",
+      "expected_stdout_text": "fold 0.1.1\n",
+      "expected_stderr_text": ""
     }
   ]
 }
