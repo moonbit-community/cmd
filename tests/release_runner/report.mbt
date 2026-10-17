@@ -132,6 +132,31 @@ fn report_verification(
 }
 
 ///|
+fn contract_stream_observations(fixture : ReleaseCase) -> Array[String] {
+  let observations : Array[String] = []
+  if fixture.expected_stdout_hex is Some(_) ||
+    fixture.expected_stdout_text is Some(_) {
+    observations.push("stdout-bytes")
+  }
+  if fixture.expected_stderr_hex is Some(_) ||
+    fixture.expected_stderr_text is Some(_) {
+    observations.push("stderr-bytes")
+  }
+  if fixture.expected_stdout_contains is Some(_) ||
+    !fixture.expected_stdout_contains_all.unwrap_or([]).is_empty() ||
+    fixture.expected_stdout_ends_with_newline is Some(_) {
+    observations.push("stdout-contract")
+  }
+  if fixture.expected_stderr_contains is Some(_) ||
+    !fixture.expected_stderr_contains_all.unwrap_or([]).is_empty() ||
+    fixture.expected_stderr_ends_with_newline is Some(_) ||
+    fixture.forbidden_stderr is Some(_) {
+    observations.push("stderr-contract")
+  }
+  observations
+}
+
+///|
 fn shared_report(
   report : CaseReport,
   fixtures : Array[ReleaseCase],
@@ -146,31 +171,17 @@ fn shared_report(
         "contract" => {
           observations.append(@testkit.contract_observations(fixture))
           observations.push("status")
-          if fixture.expected_stdout_hex is Some(_) ||
-            fixture.expected_stdout_text is Some(_) {
-            observations.push("stdout-bytes")
-          }
-          if fixture.expected_stderr_hex is Some(_) ||
-            fixture.expected_stderr_text is Some(_) {
-            observations.push("stderr-bytes")
-          }
-          if fixture.expected_stdout_contains is Some(_) ||
-            !fixture.expected_stdout_contains_all.unwrap_or([]).is_empty() ||
-            fixture.expected_stdout_ends_with_newline is Some(_) {
-            observations.push("stdout-contract")
-          }
-          if fixture.expected_stderr_contains is Some(_) ||
-            !fixture.expected_stderr_contains_all.unwrap_or([]).is_empty() ||
-            fixture.expected_stderr_ends_with_newline is Some(_) ||
-            fixture.forbidden_stderr is Some(_) {
-            observations.push("stderr-contract")
-          }
+          observations.append(contract_stream_observations(fixture))
         }
         "boundary" => {
           observations.append([
-            "nonzero-status", "diagnostic", "stderr", "content", "type",
+            "status", "nonzero-status", "diagnostic", "stderr", "content", "type",
           ])
           observations.append(@testkit.contract_observations(fixture))
+          // Legacy zero-status rejection fixtures skip check_contract.
+          if fixture.expected_status != 0 {
+            observations.append(contract_stream_observations(fixture))
+          }
         }
         _ => {
           observations.append(["status", "stdout-bytes", "content", "type"])

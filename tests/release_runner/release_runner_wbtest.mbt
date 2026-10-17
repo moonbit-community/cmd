@@ -349,6 +349,114 @@ test "report serialization preserves evidence without semantic promotion" {
   assert_eq(report.evidence, Some("/tmp/fixture"))
   assert_false(report.missing_observations.is_empty())
   assert_false(report.semantic_pass())
+  let rejection = {
+    ..fixture,
+    expected_status: 1,
+    expected_rejection: Some("denied"),
+  }
+  let boundary : CaseReport = {
+    ..observation,
+    category: "boundary_passed",
+    detail: "rejected with preserved fixture",
+  }
+  for
+    (checked, expected) in [
+      (
+        {
+          ..rejection,
+          expected_stdout_hex: Some("6f75740a"),
+          expected_stderr_text: Some("denied\n"),
+        },
+        ["stdout-bytes", "stderr-bytes"],
+      ),
+      (
+        {
+          ..rejection,
+          expected_stdout_text: Some("out\n"),
+          expected_stderr_hex: Some("64656e6965640a"),
+        },
+        ["stdout-bytes", "stderr-bytes"],
+      ),
+      (
+        {
+          ..rejection,
+          expected_stdout_contains: Some("out"),
+          expected_stderr_contains: Some("denied"),
+        },
+        ["stdout-contract", "stderr-contract"],
+      ),
+      (
+        {
+          ..rejection,
+          expected_stdout_contains_all: Some(["out"]),
+          expected_stderr_contains_all: Some(["denied"]),
+        },
+        ["stdout-contract", "stderr-contract"],
+      ),
+      (
+        {
+          ..rejection,
+          expected_stdout_ends_with_newline: Some(true),
+          expected_stderr_ends_with_newline: Some(true),
+        },
+        ["stdout-contract", "stderr-contract"],
+      ),
+      (
+        { ..rejection, forbidden_stderr: Some(["forbidden"]), },
+        ["stderr-contract"],
+      ),
+    ] {
+    assert_true(
+      @testkit.check_contract(
+        checked,
+        { status: 1, stdout: b"out\n", stderr: b"denied\n", },
+        "/fixture",
+      ).is_empty(),
+    )
+    assert_false(
+      @testkit.check_contract(
+        checked,
+        { status: 1, stdout: b"wrong", stderr: b"forbidden", },
+        "/fixture",
+      ).is_empty(),
+    )
+    for differential in [false, true] {
+      let report = shared_report(boundary, [checked], differential, Map([]))
+      assert_eq(report.verification, "boundary")
+      assert_eq(report.result, "pass")
+      assert_false(report.semantic_pass())
+      for name in ["status", "nonzero-status", "stderr", ..expected] {
+        assert_true(report.observations.contains(name), msg=name)
+      }
+      assert_eq(
+        report.observations.contains("stdout"),
+        expected.contains("stdout-bytes") ||
+        expected.contains("stdout-contract"),
+      )
+      let legacy = shared_report(
+        boundary,
+        [{ ..checked, expected_status: 0, }],
+        differential,
+        Map([]),
+      )
+      assert_true(legacy.observations.contains("status"))
+      assert_true(legacy.observations.contains("nonzero-status"))
+      assert_true(legacy.observations.contains("stderr"))
+      assert_false(legacy.observations.contains("stdout"))
+      for name in expected {
+        assert_false(legacy.observations.contains(name), msg=name)
+      }
+      assert_false(legacy.semantic_pass())
+      let failed = shared_report(
+        { ..boundary, category: "semantic_mismatch", },
+        [checked],
+        differential,
+        Map([]),
+      )
+      assert_true(failed.observations.is_empty())
+      assert_false(failed.semantic_pass())
+    }
+  }
 }
 
 ///|
