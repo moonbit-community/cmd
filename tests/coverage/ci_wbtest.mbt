@@ -217,7 +217,7 @@ test "CI coverage requires every applicable platform rather than any passing hos
     entries: [entry],
   }
   let platforms = ["linux", "macos", "windows"]
-  let reports = platforms.map(platform => platform + "/summary.jsonl")
+  let reports = platforms.map(platform => "./" + platform + "/summary.jsonl")
   let declaration = {
     ..declaration_for_test(entry.behavior_id, "pass"),
     coverage: [
@@ -229,7 +229,8 @@ test "CI coverage requires every applicable platform rather than any passing hos
     ],
   }
   let bundles : Array[EvidenceBundle] = platforms.map(platform => {
-    report_path: platform + "/summary.jsonl",
+    // Loaded report paths use the host syntax, independently of evidence platform.
+    report_path: @path.Path(platform + "/summary.jsonl").normalize().to_string(),
     metadata: { ..audit_metadata(platform), platform, },
     rows: [{ ..audit_row(platform, "native+wasm", "backend-pair"), platform, }],
     selected_ids: ["echo"],

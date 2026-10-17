@@ -131,7 +131,7 @@ test "CI published differential requires actual rows exact coordinates and seale
         ..declaration_for_test(entry.behavior_id, "pass").coverage[0],
         backends: ["wasm"],
         evidence: ["published-differential"],
-        report: Some("published/summary.jsonl"),
+        report: Some("published/./summary.jsonl"),
       },
     ],
   }
@@ -154,7 +154,7 @@ test "CI published differential requires actual rows exact coordinates and seale
     oracle_profile_id: entry.oracle_profile,
   }
   let bundle : EvidenceBundle = {
-    report_path: "published/summary.jsonl",
+    report_path: @path.Path("published/summary.jsonl").normalize().to_string(),
     metadata,
     rows: [row],
     selected_ids: ["echo"],
@@ -172,6 +172,12 @@ test "CI published differential requires actual rows exact coordinates and seale
       { ..bundle, published_coordinates: ["cli/echo@9.9.9"], },
       { ..bundle, oracle_verified: false, },
       { ..bundle, selected_ids: [], },
+      {
+        ..bundle,
+        report_path: @path.Path("published/another-summary.jsonl")
+        .normalize()
+        .to_string(),
+      },
     ] {
     assert_false(
       validate_report_evidence(declaration, registry, [changed], platforms=[
