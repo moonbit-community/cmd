@@ -132,6 +132,7 @@ async fn main {
   let metadata_report = report_root + "/audit-metadata/summary.jsonl"
   let pair_report = report_root + "/audit-pairs/summary.jsonl"
   let receipt_report = report_root + "/audit-receipt/summary.jsonl"
+  let gate_report = report_root + "/audit-gate/summary.jsonl"
   let registry = @json.parse(
     @fs.read_file("tests/registry/registry.json").text(),
   )
@@ -146,6 +147,10 @@ async fn main {
   ]
   let receipt_counts : Map[String, Int32] = Map([])
   let mut receipt_count = 0
+  let gate_ids = [
+    "package-test:tests/coverage/entry_wbtest.mbt::audit uncovered classification keeps collective tags separate from individual evidence",
+  ]
+  let mut gate_count = 0
   for entry in array(registry, "entries", "registry") {
     let id = text(entry, "behavior_id", "registry entry")
     guard !entries.contains(id) else {
@@ -178,6 +183,17 @@ async fn main {
           receipt_count += 1
         }
       }
+      if gate_ids.contains(id) {
+        guard id == "package-test:" + source &&
+          strings(entry, "required_backends", id) == ["native"] &&
+          strings(entry, "required_evidence", id) == ["contract"] else {
+          fail(
+            "audit gate regression requires its reviewed Native binding: " + id,
+          )
+        }
+        add_requirement(selected, entry, gate_report)
+        gate_count += 1
+      }
     }
   }
   commands.sort()
@@ -193,6 +209,11 @@ async fn main {
   }
   guard receipt_counts.get(receipt_sources[0]).unwrap_or(0) > 0 else {
     fail("missing acceptance-evidence receipt regression")
+  }
+  guard gate_count == gate_ids.length() else {
+    fail(
+      "refresh the registry for the audit uncovered-classification regression",
+    )
   }
   let cases : Map[String, Json] = Map([])
   for command in commands {
@@ -259,7 +280,8 @@ async fn main {
   case_ids.sort()
   let behaviors = selected.keys().collect()
   behaviors.sort()
-  guard behaviors.length() == 249 + receipt_count && case_ids.length() == 170 else {
+  guard behaviors.length() == 249 + receipt_count + gate_count &&
+    case_ids.length() == 170 else {
     fail("declaration selection count does not match the reviewed scope")
   }
   let declaration : Json = {
@@ -302,7 +324,14 @@ async fn main {
     #|The selected evidence requirements are the 79 metadata probes, 156 new
     #|exact help/version JSON contracts, 14 refreshed existing version contracts,
     #|and every registered receipt-validation test in acceptance_evidence_wbtest.mbt
-    #|and freeze_registry_wbtest.mbt when present. The latter are Native-only.
+    #|and freeze_registry_wbtest.mbt when present, plus the Native audit regression
+    #|"audit uncovered classification keeps collective tags separate from individual
+    #|evidence" in entry_wbtest.mbt. Receipt and audit regressions are Native-only.
+    #|The audit repair keeps collective option/operand validation at declaration
+    #|scope while classifying each behavior by its own evidence requirements.
+    #|It must still reject missing global tags, missing report rows and missing
+    #|observations. Earlier reports with contradictory uncovered classifications
+    #|are retained separately and do not satisfy this declaration's fresh reports.
     #|Requirements are copied from each registry row; global backend, evidence
     #|and observation arrays stay empty so Native-only tests do not acquire a
     #|Wasm requirement. Normalized help and version option identities are checked
@@ -310,8 +339,9 @@ async fn main {
     #|and --version. Closed-input captures do not prove unread open stdin.
     #|
     #|Expected evidence files under _build/verification/2026-10-17-metadata-release:
-    #|audit-metadata/summary.jsonl, audit-pairs/summary.jsonl and
-    #|audit-receipt/summary.jsonl, each with its matching run-metadata.json.
+    #|audit-metadata/summary.jsonl, audit-pairs/summary.jsonl,
+    #|audit-receipt/summary.jsonl and audit-gate/summary.jsonl, each with its
+    #|matching run-metadata.json.
     #|This helper neither creates nor accepts those reports. Missing, failed,
     #|dirty, stale or incomplete execution evidence must fail the coverage audit.
     #|
@@ -338,7 +368,7 @@ async fn main {
     }
   }
   println(
-    "prepared \{behaviors.length()} behavior requirements, 170 case IDs and \{receipt_count} receipt regressions",
+    "prepared \{behaviors.length()} behavior requirements, 170 case IDs, \{receipt_count} receipt regressions and \{gate_count} audit gate regressions",
   )
   println("declaration: " + output)
   println("scope: " + scope_output)

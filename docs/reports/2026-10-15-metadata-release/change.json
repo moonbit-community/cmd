@@ -331,6 +331,7 @@
     "case:release-metadata-unexpand-version",
     "case:release-metadata-sha256sum-version",
     "case:release-metadata-sha512sum-version",
+    "package-test:tests/coverage/entry_wbtest.mbt::audit uncovered classification keeps collective tags separate from individual evidence",
     "package-test:tests/release_runner/acceptance_evidence_wbtest.mbt::official archive redirects preserve exact coordinates and stop after one hop",
     "package-test:tests/release_runner/acceptance_evidence_wbtest.mbt::freeze receipts accept original exact API responses and reject identity drift"
   ],
@@ -5495,6 +5496,22 @@
       "result": "pass",
       "reports": [
         "_build/verification/2026-10-17-metadata-release/audit-pairs/summary.jsonl"
+      ]
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/entry_wbtest.mbt::audit uncovered classification keeps collective tags separate from individual evidence",
+      "backends": [
+        "native"
+      ],
+      "evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "result": "pass",
+      "reports": [
+        "_build/verification/2026-10-17-metadata-release/audit-gate/summary.jsonl"
       ]
     },
     {

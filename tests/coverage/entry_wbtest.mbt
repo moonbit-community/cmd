@@ -152,3 +152,106 @@ test "mutable or unsealed oracle profiles cannot authorize differential evidence
     ),
   )
 }
+
+///|
+test "audit uncovered classification keeps collective tags separate from individual evidence" {
+  let help = {
+    ..audit_entry(),
+    behavior_id: "case:help",
+    case_id: "help",
+    aliases: [],
+    coverage: ["help"],
+  }
+  let version = {
+    ..help,
+    behavior_id: "case:version",
+    case_id: "version",
+    coverage: ["version", "metadata-operand"],
+  }
+  let metadata = {
+    ..help,
+    behavior_id: "metadata:echo",
+    implementation: "metadata-probe",
+    source: "tests/metadata/verify.mbtx::echo",
+    case_id: "",
+    coverage: [],
+    observations: ["status"],
+  }
+  let registry : @registry.Registry = {
+    schema: 2,
+    release_commands: [],
+    entries: [help, version, metadata],
+  }
+  let declaration = {
+    ..declaration_for_test(help.behavior_id, "pass"),
+    affected_behaviors: [
+      help.behavior_id,
+      version.behavior_id,
+      metadata.behavior_id,
+    ],
+    affected_options: Some(["help", "version"]),
+    affected_operands: Some(["metadata-operand"]),
+    required_observations: [],
+    coverage: registry.entries.map(entry => {
+      ..declaration_for_test(entry.behavior_id, "pass").coverage[0],
+      observations: entry.observations,
+    }),
+  }
+  let bundle : EvidenceBundle = {
+    report_path: "summary.jsonl",
+    metadata: audit_metadata("pair"),
+    rows: [
+      { ..audit_row("pair", "native+wasm", "backend-pair"), id: "help", },
+      { ..audit_row("pair", "native+wasm", "backend-pair"), id: "version", },
+      {
+        ..audit_row("pair", "native+wasm", "backend-pair"),
+        id: "metadata:echo",
+        observations: ["status"],
+      },
+    ],
+    selected_ids: ["help", "version"],
+    oracle_verified: false,
+    published_coordinates: [],
+  }
+  assert_eq(validate_coverage(declaration, registry), [])
+  assert_eq(validate_report_evidence(declaration, registry, [bundle]), [])
+  assert_eq(uncovered_behaviors(declaration, registry, [bundle]), [])
+  let unknown_option = {
+    ..declaration,
+    affected_options: Some(["help", "version", "uncovered-option"]),
+  }
+  assert_true(
+    validate_coverage(unknown_option, registry).any(finding => {
+      finding.contains("uncovered-option")
+    }),
+  )
+  let unknown_operand = {
+    ..declaration,
+    affected_operands: Some(["uncovered-operand"]),
+  }
+  assert_true(
+    validate_coverage(unknown_operand, registry).any(finding => {
+      finding.contains("uncovered-operand")
+    }),
+  )
+  let missing_version = {
+    ..bundle,
+    rows: bundle.rows.filter(row => row.id != "version"),
+  }
+  assert_eq(uncovered_behaviors(declaration, registry, [missing_version]), [
+    "case:version",
+  ])
+  let missing_status = {
+    ..bundle,
+    rows: bundle.rows.map(row => {
+      if row.id == "metadata:echo" {
+        { ..row, observations: [], }
+      } else {
+        row
+      }
+    }),
+  }
+  assert_eq(uncovered_behaviors(declaration, registry, [missing_status]), [
+    "metadata:echo",
+  ])
+}

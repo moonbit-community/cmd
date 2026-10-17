@@ -44469,6 +44469,33 @@
         "status"
       ],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/entry_wbtest.mbt::audit uncovered classification keeps collective tags separate from individual evidence",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/entry_wbtest.mbt::audit uncovered classification keeps collective tags separate from individual evidence",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "audit uncovered classification keeps collective tags separate from individual evidence"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
     }
   ],
   "release_commands": [

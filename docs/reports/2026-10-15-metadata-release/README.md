@@ -48,6 +48,9 @@ CI, including Linux immutable-oracle verification, must then succeed.
 Publication is serial: core first, then commands in lexical order. Every upload
 must return status 200 and be verified against the exact official registry and
 archive checksum before the next upload.
+The publisher preserves initial absence, upload and verification records.
+Resuming creates a separate observation directory and compares each previously
+verified archive with its first receipt; an unknown upload outcome stops.
 
 After publication, `release-acceptance.yml` requires that exact successful
 source SHA, runs three-platform exact MoonX smoke, and combines Linux full
@@ -68,13 +71,21 @@ mismatches fail verification.
 - All 242 immutable historical manifest/report files still match the migration
   baseline.
 - Candidate generation validates 78 coordinates and 997 selected cases. The
-  refreshed registry contains 1,493 behaviors. The declaration maps 251 affected
-  behaviors, including 170 JSON metadata cases and two receipt regressions;
+  refreshed registry contains 1,494 behaviors. The declaration maps 252 affected
+  behaviors, including 170 JSON metadata cases, two receipt regressions and one
+  coverage-classification regression;
   these counts are scope records, not acceptance evidence by themselves.
 - Local package tests passed 392 Native, 217 Wasm, two JavaScript and two WasmGC
   tests. The all-target warning-denied check, generated interfaces and workflow
   syntax checks passed. No generated public interface changed in this release
   preparation relative to its source base.
+- Exact-source runs at `a32cc8c` passed 237 metadata rows, 783 backend-pair
+  semantic rows (plus two registered platform skips), and 53 release-runner
+  package tests. The audit incorrectly listed every behavior as uncovered by
+  applying collective option tags to each individual row. The repair preserves
+  declaration-wide tag validation and tests missing tags, rows and observations.
+  The earlier reports are retained; fresh reports are required for the repaired
+  source revision before pushing.
 - The preceding HTTP listener repair is tracked separately in the
   [test-system closeout report](../2026-10-14-test-system-closeout/README.md).
 

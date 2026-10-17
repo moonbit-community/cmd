@@ -254,19 +254,7 @@ pub async fn audit(options : AuditOptions) -> AuditReport {
   let boundary = affected.filter(id => {
     find_entry(registry, id) is Some(entry) && entry.status == "boundary"
   })
-  let uncovered = affected.filter(id => {
-    let individual = {
-      ..declaration,
-      affected_behaviors: [id],
-      coverage: declaration.coverage.filter(record => {
-        find_entry(registry, record.behavior_id) is Some(entry) &&
-        entry.behavior_id == id
-      }),
-    }
-    !validate_coverage(individual, registry).is_empty() ||
-    !validate_report_evidence(individual, registry, bundles).is_empty()
-  })
-  uncovered.append(declaration.uncovered.unwrap_or([]))
+  let uncovered = uncovered_behaviors(declaration, registry, bundles)
   {
     base,
     head,
@@ -280,11 +268,38 @@ pub async fn audit(options : AuditOptions) -> AuditReport {
     },
     findings: failures,
     run_ids: sorted_unique(run_ids.keys().collect()),
-    uncovered: sorted_unique(uncovered),
+    uncovered,
     unsupported,
     boundary,
     deferred: canonical_ids(registry, declaration.deferred),
   }
+}
+
+///|
+fn uncovered_behaviors(
+  declaration : ChangeDeclaration,
+  registry : @registry.Registry,
+  bundles : ArrayView[EvidenceBundle],
+) -> Array[String] {
+  let affected = canonical_ids(registry, declaration.affected_behaviors)
+  let uncovered = affected.filter(id => {
+    let individual = {
+      ..declaration,
+      affected_behaviors: [id],
+      // Tags describe the complete change and are validated against all affected
+      // behaviors above. A single behavior need not prove every change-wide tag.
+      affected_options: Some([]),
+      affected_operands: Some([]),
+      coverage: declaration.coverage.filter(record => {
+        find_entry(registry, record.behavior_id) is Some(entry) &&
+        entry.behavior_id == id
+      }),
+    }
+    !validate_coverage(individual, registry).is_empty() ||
+    !validate_report_evidence(individual, registry, bundles).is_empty()
+  })
+  uncovered.append(declaration.uncovered.unwrap_or([]))
+  sorted_unique(uncovered)
 }
 
 ///|

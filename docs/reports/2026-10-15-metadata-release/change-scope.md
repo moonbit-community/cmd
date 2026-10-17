@@ -20,7 +20,14 @@ existing rejection boundary is declared by this source range.
 The selected evidence requirements are the 79 metadata probes, 156 new
 exact help/version JSON contracts, 14 refreshed existing version contracts,
 and every registered receipt-validation test in acceptance_evidence_wbtest.mbt
-and freeze_registry_wbtest.mbt when present. The latter are Native-only.
+and freeze_registry_wbtest.mbt when present, plus the Native audit regression
+"audit uncovered classification keeps collective tags separate from individual
+evidence" in entry_wbtest.mbt. Receipt and audit regressions are Native-only.
+The audit repair keeps collective option/operand validation at declaration
+scope while classifying each behavior by its own evidence requirements.
+It must still reject missing global tags, missing report rows and missing
+observations. Earlier reports with contradictory uncovered classifications
+are retained separately and do not satisfy this declaration's fresh reports.
 Requirements are copied from each registry row; global backend, evidence
 and observation arrays stay empty so Native-only tests do not acquire a
 Wasm requirement. Normalized help and version option identities are checked
@@ -28,8 +35,9 @@ against the catalog and new JSON bindings; command arguments remain --help
 and --version. Closed-input captures do not prove unread open stdin.
 
 Expected evidence files under _build/verification/2026-10-17-metadata-release:
-audit-metadata/summary.jsonl, audit-pairs/summary.jsonl and
-audit-receipt/summary.jsonl, each with its matching run-metadata.json.
+audit-metadata/summary.jsonl, audit-pairs/summary.jsonl,
+audit-receipt/summary.jsonl and audit-gate/summary.jsonl, each with its
+matching run-metadata.json.
 This helper neither creates nor accepts those reports. Missing, failed,
 dirty, stale or incomplete execution evidence must fail the coverage audit.
 

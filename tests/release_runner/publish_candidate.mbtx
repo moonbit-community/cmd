@@ -137,8 +137,8 @@ async fn verify_registry(release : Release, directory : String) -> String {
   guard digest(archive) == checksum else {
     fail("official source archive checksum mismatch")
   }
-  @fs.write_file(directory + "/manifest.json", bytes)
-  @fs.write_file(directory + "/archive.zip", archive)
+  @fs.write_file(directory + "/manifest.json", bytes, create_mode=@fs.CreateNew)
+  @fs.write_file(directory + "/archive.zip", archive, create_mode=@fs.CreateNew)
   let observation : Json = {
     "manifest_url": manifest_url(release),
     "manifest_status": status,
@@ -151,6 +151,7 @@ async fn verify_registry(release : Release, directory : String) -> String {
   @fs.write_file(
     directory + "/registry-verification.json",
     observation.stringify(indent=2) + "\n",
+    create_mode=@fs.CreateNew,
   )
   checksum
 }
@@ -349,14 +350,24 @@ async fn main {
       session.stringify(indent=2) + "\n",
     )
   }
-  validate_ci(source, run, directory)
+  // Initial absence, upload and verification evidence is immutable. Every
+  // resume records fresh observations separately and checks the first receipt's
+  // archive identity before reusing an upload; unknown uploads remain stopped.
+  let attempt_directory = if mode == "resume" {
+    let path = directory + "/resume-" + @env.now().to_string()
+    @fs.mkdir(path)
+    path
+  } else {
+    directory
+  }
+  validate_ci(source, run, attempt_directory)
   let account = command("moon", ["whoami"])
   guard account.trim() == "Logged in as cli" else {
     fail("Moon account is not cli")
   }
-  @fs.write_file(directory + "/account.txt", account)
+  @fs.write_file(attempt_directory + "/account.txt", account)
   @fs.write_file(
-    directory + "/toolchain.txt",
+    attempt_directory + "/toolchain.txt",
     command("moon", ["version", "--all"]),
   )
   let confirmed : Map[String, Bool] = Map([])
@@ -364,9 +375,20 @@ async fn main {
   // module. Existing coordinates without same-source upload evidence stop here.
   for release in ordered {
     let package_dir = directory + "/" + release.name
-    @fs.mkdir(package_dir, recursive=true)
+    @fs.mkdir(package_dir, recursive=true, allow_exist=mode == "resume")
+    let observation_dir = if mode == "resume" {
+      let path = attempt_directory + "/" + release.name
+      @fs.mkdir(path)
+      path
+    } else {
+      package_dir
+    }
     let (status, body, _) = fetch(manifest_url(release))
-    @fs.write_file(package_dir + "/preflight-manifest.json", body)
+    @fs.write_file(
+      observation_dir + "/preflight-manifest.json",
+      body,
+      create_mode=@fs.CreateNew,
+    )
     if @fs.exists(package_dir + "/upload.json") {
       guard mode == "resume" else {
         fail("unexpected existing upload evidence")
@@ -398,17 +420,55 @@ async fn main {
       guard output.contains("Server status: 200 OK") && status == 200 else {
         fail("resume upload is not confirmed")
       }
-      let checksum = verify_registry(release, package_dir)
+      let prior_checksum = if @fs.exists(package_dir + "/receipt.json") {
+        let prior = @json.parse(
+          @fs.read_file(package_dir + "/receipt.json").text(),
+        )
+        guard prior
+          is {
+            "source_revision": String(prior_source),
+            "coordinate": String(prior_coordinate),
+            "archive_sha256": String(prior_hash),
+            "verified": True,
+            ..
+          } &&
+          prior_source == source &&
+          prior_coordinate == coordinate &&
+          prior_hash.length() == 64 &&
+          prior_hash.iter().all(c => c is ('0'..<='9' | 'a'..<='f')) else {
+          fail(
+            "existing verification receipt does not match this source and coordinate",
+          )
+        }
+        Some(prior_hash)
+      } else {
+        None
+      }
+      let checksum = verify_registry(release, observation_dir)
+      guard prior_checksum is None || prior_checksum == Some(checksum) else {
+        fail(
+          "immutable registry archive changed since the first verified receipt",
+        )
+      }
       let receipt : Json = {
         "source_revision": source,
         "coordinate": coordinate,
         "archive_sha256": checksum,
         "verified": true,
+        "verification_directory": observation_dir,
       }
       @fs.write_file(
-        package_dir + "/receipt.json",
+        observation_dir + "/receipt.json",
         receipt.stringify(indent=2) + "\n",
+        create_mode=@fs.CreateNew,
       )
+      if prior_checksum is None {
+        @fs.write_file(
+          package_dir + "/receipt.json",
+          receipt.stringify(indent=2) + "\n",
+          create_mode=@fs.CreateNew,
+        )
+      }
       confirmed[release.name] = true
     } else {
       guard status == 404 else {
@@ -500,10 +560,12 @@ async fn main {
       "coordinate": "cli/" + release.name + "@" + release.version,
       "archive_sha256": checksum,
       "verified": true,
+      "verification_directory": package_dir,
     }
     @fs.write_file(
       package_dir + "/receipt.json",
       receipt.stringify(indent=2) + "\n",
+      create_mode=@fs.CreateNew,
     )
     println("Verified cli/" + release.name + "@" + release.version)
   }
