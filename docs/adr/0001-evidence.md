@@ -192,6 +192,21 @@ demoting a required condition is an error, not an automatic reduction in scope.
 The grandchild limitation can change only with a reviewed public-API unlock and
 new execution evidence; this maintenance does not implement that missing API.
 
+[CI run 39068003767](https://github.com/moonbit-community/cmd/actions/runs/39068003767)
+exposed an abnormal Windows listener-observer completion. The old diagnostic
+did not distinguish timeout from child cleanup failure, so it cannot establish
+the cause or prove a leaked HTTP listener. The Windows observer now queries
+real loopback endpoints with .NET `GetActiveTcpListeners` through the existing
+PowerShell test-observation boundary. The [framework implementation](https://raw.githubusercontent.com/microsoft/referencesource/main/System/net/System/Net/NetworkInformation/SystemIPGlobalProperties.cs)
+reads the TCP table and selects listeners. This removes the CIM query dependency;
+it does not infer the original failure's cause. Missing tools, nonzero status,
+stderr, malformed endpoints, timeout and cleanup errors still reject evidence.
+Diagnostics retain the observation phase, port, timing and captured result.
+The active-listener control, HTTP response, five-second joined-cleanup deadline
+and post-cleanup absence assertion remain required; the observer deadline stays
+fifteen seconds. Revisit this host observer when released public MoonBit APIs
+can inspect listener state with the same positive and negative controls.
+
 The testing system serves the current workspace and current published packages.
 Mooncakes retains package release records; maintaining another version archive,
 historical image-recovery catalog or GitHub Release evidence store is outside this

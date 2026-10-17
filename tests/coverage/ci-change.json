@@ -3,7 +3,9 @@
   "affected_commands": [],
   "affected_behaviors": [
     "package-test:tests/release_runner/release_runner_wbtest.mbt::report serialization preserves evidence without semantic promotion",
-    "package-test:tests/coverage/ci_wbtest.mbt::CI harness-only impact needs reviewed bindings and real evidence without dummy commands"
+    "package-test:tests/coverage/ci_wbtest.mbt::CI harness-only impact needs reviewed bindings and real evidence without dummy commands",
+    "package-test:tests/testkit/lifecycle_wbtest.mbt::listener observation rejects unavailable and malformed diagnostics",
+    "package-test:tests/testkit/lifecycle_wbtest.mbt::HTTP fixture serves requests and releases its listening port"
   ],
   "affected_options": [],
   "affected_operands": [],
@@ -26,7 +28,9 @@
       "path": "tests/coverage/ci-change-scope.md",
       "behavior_ids": [
         "package-test:tests/release_runner/release_runner_wbtest.mbt::report serialization preserves evidence without semantic promotion",
-        "package-test:tests/coverage/ci_wbtest.mbt::CI harness-only impact needs reviewed bindings and real evidence without dummy commands"
+        "package-test:tests/coverage/ci_wbtest.mbt::CI harness-only impact needs reviewed bindings and real evidence without dummy commands",
+        "package-test:tests/testkit/lifecycle_wbtest.mbt::listener observation rejects unavailable and malformed diagnostics",
+        "package-test:tests/testkit/lifecycle_wbtest.mbt::HTTP fixture serves requests and releases its listening port"
       ]
     },
     {
@@ -51,6 +55,13 @@
       "path": "tests/coverage/ci_input.mbt",
       "behavior_ids": [
         "package-test:tests/coverage/ci_wbtest.mbt::CI harness-only impact needs reviewed bindings and real evidence without dummy commands"
+      ]
+    },
+    {
+      "path": "docs/adr/0001-evidence.md",
+      "behavior_ids": [
+        "package-test:tests/testkit/lifecycle_wbtest.mbt::listener observation rejects unavailable and malformed diagnostics",
+        "package-test:tests/testkit/lifecycle_wbtest.mbt::HTTP fixture serves requests and releases its listening port"
       ]
     }
   ]

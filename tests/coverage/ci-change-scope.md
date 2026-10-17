@@ -20,8 +20,18 @@ accepted local declaration and rejection of product or shared-runtime changes,
 command-owned behaviors, unbound paths, mismatched reviewed impact and missing
 evidence. This behavior also requires Native evidence on all three platforms.
 Reviewed path bindings cover the serializer, audit validator and entry, impact
-parser, documentation and this scope description; both modified test sources
+parser, documentation and this scope description; modified test sources
 are owned by their declared behaviors.
+
+The Windows HTTP lifecycle observer uses the system TCP listener table through
+the existing PowerShell diagnostic boundary. It reports actual loopback
+endpoints, with strict status, stderr and endpoint validation. The existing
+observer regression rejects timeout and cleanup errors separately, including
+apparently valid partial output. The real HTTP lifecycle regression retains its
+active-listener control, response/body assertions and joined-cleanup absence
+check. Its five-second fixture deadline and the observer's fifteen-second
+deadline are unchanged. Both registered behaviors require Native evidence on
+Linux, macOS and Windows; the canonical ADR records the observation boundary.
 
 No command behavior, package version, frozen input or recorded report changes.
 The CI declaration contains impact and requirements only. After merging, current

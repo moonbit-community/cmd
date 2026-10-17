@@ -289,19 +289,16 @@ async test "cleanup permission failure retains candidate evidence" {
 }
 
 ///|
-fn lifecycle_listener_owners(
-  result : RunResult,
-  windows : Bool,
-) -> Array[Int32] raise {
+fn lifecycle_listener_owners(result : RunResult) -> Array[Int32] raise {
   let output = @utf8.decode(result.stdout).trim().to_owned()
   guard result.stderr == b"" &&
-    (result.status == 0 || (!windows && result.status == 1 && output == "")) else {
+    (result.status == 0 || (result.status == 1 && output == "")) else {
     fail(
       "listener observer infrastructure failure: status=\{result.status}, stderr=\{@utf8.decode(result.stderr)}",
     )
   }
   if output == "" {
-    guard windows || result.status == 1 else {
+    guard result.status == 1 else {
       fail(
         "listener observer infrastructure failure: empty successful lsof output",
       )
@@ -326,7 +323,81 @@ fn lifecycle_listener_owners(
 }
 
 ///|
-async fn observe_lifecycle_listener(port : Int32) -> Array[Int32] {
+fn lifecycle_windows_listener_present(
+  result : RunResult,
+  port : Int32,
+) -> Bool raise {
+  guard result.status == 0 && result.stderr == b"" else {
+    fail("listener observer infrastructure failure: Windows query failed")
+  }
+  if result.stdout == b"" {
+    return false
+  }
+  let endpoint = "127.0.0.1:\{port}"
+  let lines = @utf8.decode(result.stdout)
+    .split("\n")
+    .map(line => line.to_owned())
+    .collect()
+  guard lines.last() == Some("") else {
+    fail("listener observer infrastructure failure: incomplete endpoint output")
+  }
+  for index = 0; index + 1 < lines.length(); index = index + 1 {
+    guard lines[index] == endpoint || lines[index] == endpoint + "\r" else {
+      fail(
+        "listener observer infrastructure failure: unexpected endpoint output",
+      )
+    }
+  }
+  true
+}
+
+///|
+fn lifecycle_listener_observation(
+  observed : TimedRun,
+  windows : Bool,
+  port : Int32,
+  phase : String,
+  elapsed_ms : Int64,
+) -> Bool raise {
+  let diagnostic : Json = {
+    "phase": Json(phase),
+    "port": Json(port),
+    "budget_ms": 15000,
+    "elapsed_ms": Json(elapsed_ms),
+    "timed_out": Json(observed.timed_out),
+    "cleanup_error": match observed.cleanup_error {
+      Some(error) => Json(error)
+      None => null
+    },
+    "status": Json(observed.output.status),
+    "stdout": Json(@utf8.decode_lossy(observed.output.stdout)),
+    "stderr": Json(@utf8.decode_lossy(observed.output.stderr)),
+    "stdout_hex": Json(@crypto.bytes_to_hex_string(observed.output.stdout)),
+    "stderr_hex": Json(@crypto.bytes_to_hex_string(observed.output.stderr)),
+  }
+  guard !observed.timed_out && observed.cleanup_error is None else {
+    fail(
+      "listener observer infrastructure incomplete: " +
+      canonical_json(diagnostic),
+    )
+  }
+  try {
+    if windows {
+      lifecycle_windows_listener_present(observed.output, port)
+    } else {
+      !lifecycle_listener_owners(observed.output).is_empty()
+    }
+  } catch {
+    error =>
+      fail(
+        "listener observer infrastructure failure: \{error}; diagnostic: " +
+        canonical_json(diagnostic),
+      )
+  }
+}
+
+///|
+async fn observe_lifecycle_listener(port : Int32, phase : String) -> Bool {
   let windows = host_platform() == "windows"
   let program = if windows {
     "powershell.exe"
@@ -341,56 +412,120 @@ async fn observe_lifecycle_listener(port : Int32) -> Array[Int32] {
       "-NoProfile",
       "-NonInteractive",
       "-Command",
-      "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue'; Get-NetTCPConnection -ErrorAction Stop | Where-Object { $_.State -eq 'Listen' -and $_.LocalAddress -eq '127.0.0.1' -and $_.LocalPort -eq \{port} } | ForEach-Object { $_.OwningProcess.ToString() }",
+      "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue'; [System.Net.NetworkInformation.IPGlobalProperties]::GetIPGlobalProperties().GetActiveTcpListeners() | Where-Object { $_.Address.Equals([System.Net.IPAddress]::Loopback) -and $_.Port -eq \{port} } | ForEach-Object { $_.ToString() }",
     ]
   } else {
     ["-nP", "-a", "-iTCP@127.0.0.1:\{port}", "-sTCP:LISTEN", "-t"]
   }
+  let start = @async.now()
   let observed = run_with_deadline(program, args, 15000) catch {
-    error => fail("listener observer infrastructure unavailable: \{error}")
+    error =>
+      fail(
+        "listener observer infrastructure unavailable: phase=\{phase}, port=\{port}, budget_ms=15000, elapsed_ms=\{@async.now() - start}, error=\{error}",
+      )
   }
-  guard !observed.timed_out && observed.cleanup_error is None else {
-    fail("listener observer infrastructure did not complete cleanup")
-  }
-  lifecycle_listener_owners(observed.output, windows)
+  lifecycle_listener_observation(
+    observed,
+    windows,
+    port,
+    phase,
+    @async.now() - start,
+  )
 }
 
 ///|
 test "listener observation rejects unavailable and malformed diagnostics" {
   assert_eq(
-    lifecycle_listener_owners(
-      { status: 0, stdout: b"123\n", stderr: b"", },
-      false,
-    ),
+    lifecycle_listener_owners({ status: 0, stdout: b"123\n", stderr: b"", }),
     [123],
   )
   assert_eq(
-    lifecycle_listener_owners({ status: 1, stdout: b"", stderr: b"", }, false),
-    [],
-  )
-  assert_eq(
-    lifecycle_listener_owners(
-      { status: 0, stdout: b"123\r\n", stderr: b"", },
-      true,
-    ),
-    [123],
-  )
-  assert_eq(
-    lifecycle_listener_owners({ status: 0, stdout: b"", stderr: b"", }, true),
+    lifecycle_listener_owners({ status: 1, stdout: b"", stderr: b"", }),
     [],
   )
   for
-    (result, windows) in [
-      ({ status: 0, stdout: b"", stderr: b"", }, false),
-      ({ status: 1, stdout: b"123\n", stderr: b"", }, false),
-      ({ status: 1, stdout: b"", stderr: b"", }, true),
-      ({ status: 0, stdout: b"warning\n", stderr: b"", }, false),
-      ({ status: 0, stdout: b"0\n", stderr: b"", }, true),
-      ({ status: 0, stdout: b"123\n", stderr: b"unavailable", }, false),
-      ({ status: 0, stdout: b"p123\nf32\n", stderr: b"", }, false),
+    result in [
+      { status: 0, stdout: b"", stderr: b"", },
+      { status: 1, stdout: b"123\n", stderr: b"", },
+      { status: 0, stdout: b"warning\n", stderr: b"", },
+      { status: 0, stdout: b"0\n", stderr: b"", },
+      { status: 0, stdout: b"123\n", stderr: b"unavailable", },
+      { status: 0, stdout: b"p123\nf32\n", stderr: b"", },
     ] {
-    try ignore(lifecycle_listener_owners(result, windows)) catch {
+    try ignore(lifecycle_listener_owners(result)) catch {
       error => assert_true(error.to_string().contains("infrastructure"))
+    } noraise {
+      _ => fail("invalid listener diagnostics must not prove closure")
+    }
+  }
+  for
+    (stdout, expected) in [
+      (b"", false),
+      (b"127.0.0.1:43210\n", true),
+      (b"127.0.0.1:43210\r\n", true),
+    ] {
+    assert_eq(
+      lifecycle_listener_observation(
+        {
+          output: { status: 0, stdout, stderr: b"", },
+          timed_out: false,
+          cleanup_error: None,
+        },
+        true,
+        43210,
+        "before-request",
+        2L,
+      ),
+      expected,
+    )
+  }
+  let success : RunResult = {
+    status: 0,
+    stdout: b"127.0.0.1:43210\r\n",
+    stderr: b"",
+  }
+  for
+    (output, timed_out, cleanup_error) in [
+      ({ status: 1, stdout: b"", stderr: b"", }, false, None),
+      ({ ..success, stderr: b"unavailable", }, false, None),
+      ({ ..success, stdout: b"123\r\n", }, false, None),
+      ({ ..success, stdout: b"127.0.0.1:43211\r\n", }, false, None),
+      ({ ..success, stdout: b"0.0.0.0:43210\r\n", }, false, None),
+      ({ ..success, stdout: b"127.0.0.1:43210", }, false, None),
+      ({ ..success, stdout: b"127.0.0.1:43210\r\n\r\n", }, false, None),
+      ({ ..success, stdout: b"\n", }, false, None),
+      ({ ..success, stdout: b"\xff", }, false, None),
+      (success, true, None),
+      (success, false, Some("synthetic child wait failure")),
+    ] {
+    try
+      ignore(
+        lifecycle_listener_observation(
+          { output, timed_out, cleanup_error, },
+          true,
+          43210,
+          "after-joined-cleanup",
+          15001L,
+        ),
+      )
+    catch {
+      error => {
+        let detail = error.to_string()
+        for
+          expected in [
+            "infrastructure", "after-joined-cleanup", "43210", "budget_ms", "15000",
+            "elapsed_ms", "15001", "timed_out", "cleanup_error", "status", "stdout_hex",
+            "stderr_hex",
+          ] {
+          assert_true(detail.contains(expected))
+        }
+        if timed_out {
+          assert_true(detail.contains("\"timed_out\":true"))
+        }
+        if cleanup_error is Some(reason) {
+          assert_true(detail.contains(reason))
+        }
+      }
     } noraise {
       _ => fail("invalid listener diagnostics must not prove closure")
     }
@@ -405,10 +540,10 @@ async test "HTTP fixture serves requests and releases its listening port" {
   // This fallback runs after the closure assertion; successful cleanup must
   // come from the owning group after its connection handlers have joined.
   defer server.close()
-  // Establish that this observer sees the fixture's actual LISTEN owner.
+  // Establish that this observer sees the fixture's actual LISTEN endpoint.
   // Missing tools or malformed observations are failed prerequisites.
-  assert_false(
-    observe_lifecycle_listener(server.addr.port()).is_empty(),
+  assert_true(
+    observe_lifecycle_listener(server.addr.port(), "before-request"),
     msg="listener observer infrastructure cannot see the active fixture",
   )
   @async.with_timeout(5000, () => {
@@ -424,12 +559,11 @@ async test "HTTP fixture serves requests and releases its listening port" {
       assert_eq(body.binary(), b"hello")
     }
   })
-  // Inspect LISTEN ownership directly. A client connection to a recently
+  // Inspect LISTEN endpoints directly. A client connection to a recently
   // freed ephemeral port can self-connect; TIME_WAIT also is not a listener.
-  assert_eq(
-    observe_lifecycle_listener(server.addr.port()),
-    [],
-    msg="HTTP fixture retains a LISTEN owner after joined task cleanup",
+  assert_false(
+    observe_lifecycle_listener(server.addr.port(), "after-joined-cleanup"),
+    msg="HTTP fixture retains a LISTEN endpoint after joined task cleanup",
   )
 }
 
