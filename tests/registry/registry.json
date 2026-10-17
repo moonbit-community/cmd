@@ -39396,6 +39396,33 @@
         "status"
       ],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/lifecycle_wbtest.mbt::listener observation rejects unavailable and malformed diagnostics",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/lifecycle_wbtest.mbt::listener observation rejects unavailable and malformed diagnostics",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "listener observation rejects unavailable and malformed diagnostics"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
     }
   ],
   "release_commands": [

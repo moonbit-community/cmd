@@ -35,7 +35,7 @@ coordinate changes are part of this repair.
 | Windows scenario request JSON escaped temporary paths | Only harness-authored network request arguments are decoded and normalized; other arguments and raw captures remain comparison evidence. |
 | Timestamp observation could perturb a later hard-link alias | Snapshot metadata is collected before any content reads. Baseline reads synchronize timestamps before the baseline is resampled. |
 | Repository reads interfered with the rejected-touch interval | The exact atime/mtime assertion runs in a private temporary fixture. Raw timestamps and bytes are retained; pair evidence compares the validated unchanged relation. |
-| HTTP listener cleanup was conflated with socket address reuse | A real HTTP request is followed by task cancellation, joining and owner-scoped listener cleanup, matching the network, compatibility and policy scenarios. A bounded connection probe must observe refusal; retries and skipped assertions are not used. |
+| HTTP listener cleanup was conflated with socket address reuse | A real HTTP request is followed by task cancellation, joining and owner-scoped listener cleanup. A listener-table observer must see the active fixture before the request and no LISTEN owner after cleanup. Missing or malformed observer results fail; retries and skipped assertions are not used. |
 | Generated indexes could not read sources on another Windows drive | The live case loader and corpus fingerprint share absolute-aware reference resolution. Frozen Git snapshots still reject absolute, UNC and drive-relative references. |
 | Windows regression fixtures used inconsistent path separators | Handcrafted coverage bundles and workspace path expectations use the same host normalization as the real loaders; the missing-pair rejection remains strict. |
 | Cold asset resolution imposed a new help contract on old releases | Warmup records the historical exit status and requires exact asset bytes with confirmed cleanup. Actual selected smoke and contract assertions remain independent and strict. |
@@ -83,7 +83,7 @@ cross-platform acceptance still requires the subsequent CI run.
 The second run, [38706627835](https://github.com/moonbit-community/cmd/actions/runs/38706627835),
 tested `894f21251013d6a269bf97aee588cd930bd1a594`. Its macOS historical replay
 and full backend-pair suite passed (627 passing rows and two registered skips),
-but the HTTP lifecycle test still observed a live listener. The fixture now
+but the HTTP lifecycle connection probe still succeeded after cleanup. The fixture now
 owns an explicit listener-close defer, while the refused-connection assertion
 remains strict. Official async 0.22.4 archive and local cached archive SHA-256
 matched; dependency-source drift was not established. The focused local
@@ -102,7 +102,7 @@ skips, zero failures). Cold smoke stopped at the frozen `sh@0.2.0` package,
 whose unsupported `--help` returns status 2; its actual invocation and diagnostic
 were retained. Resolution now avoids treating this warmup as a new help contract.
 
-macOS still rejected cancellation-only listener ownership, so the lifecycle
+macOS still failed the connection probe after cancellation-only ownership, so the lifecycle
 test now follows the explicit group-owned cleanup already used by production
 scenarios. Its refusal assertion remains unchanged. Windows additionally found
 cross-drive corpus loading and two path-expectation defects; the repairs above
@@ -115,5 +115,23 @@ under `core/` or `commands/` that affect behavior, APIs, support or versions.
 This repair changes the harness only. The audit's integration tests still
 exercise real committed Git ranges, clean/dirty checkout checks, substituted
 case bodies and missing evidence; their success proves the gate protocol, not
-command or release compatibility. No package publication is authorized or
-performed by this work.
+command or release compatibility. No package publication was performed by
+these harness repairs. The user subsequently authorized publication of the
+upgraded command packages; its candidate, coverage and registry acceptance are
+tracked separately in the 2026-10-15 metadata-release report.
+
+The fourth run, [38711916498](https://github.com/moonbit-community/cmd/actions/runs/38711916498),
+tested `bd359d1`. macOS and Windows passed all 389 Native, 217 Wasm, two
+JavaScript and two WasmGC package tests. Linux still reported a successful
+post-cleanup TCP connection. That probe cannot distinguish a retained listener
+from a connection established using the freed ephemeral port. The test now
+observes LISTEN ownership directly with a positive control before the real HTTP
+request. This change still requires three-platform acceptance.
+
+On resumption on 2026-10-17, the fourth run was complete: macOS and Windows
+passed every workflow stage; Linux failed only the HTTP package test. Linux
+also passed the exact published differential with 801 semantic results, 36
+boundaries, four registered skips and no failures. The corrected listener-table
+test passed all 56 local Native testkit tests. Registry refresh now records
+1,335 behaviors. These facts do not substitute for a new remote run of the
+listener-table correction.

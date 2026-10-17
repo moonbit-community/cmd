@@ -45,6 +45,14 @@ jobs:
       - name: Record toolchain
         run: moon version --all
 
+      - name: Install Linux listener observer
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install --yes lsof
+
+      - name: Verify macOS listener observer
+        if: runner.os == 'macOS'
+        run: test -x /usr/sbin/lsof
+
       - name: Update registry
         run: moon update
 

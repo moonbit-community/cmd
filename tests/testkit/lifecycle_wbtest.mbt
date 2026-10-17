@@ -289,6 +289,115 @@ async test "cleanup permission failure retains candidate evidence" {
 }
 
 ///|
+fn lifecycle_listener_owners(
+  result : RunResult,
+  windows : Bool,
+) -> Array[Int32] raise {
+  let output = @utf8.decode(result.stdout).trim().to_owned()
+  guard result.stderr == b"" &&
+    (result.status == 0 || (!windows && result.status == 1 && output == "")) else {
+    fail(
+      "listener observer infrastructure failure: status=\{result.status}, stderr=\{@utf8.decode(result.stderr)}",
+    )
+  }
+  if output == "" {
+    guard windows || result.status == 1 else {
+      fail(
+        "listener observer infrastructure failure: empty successful lsof output",
+      )
+    }
+    return []
+  }
+  let owners : Array[Int32] = []
+  for line in output.split("\n") {
+    let pid = line.trim().to_owned()
+    guard pid != "" && pid.iter().all(char => char is ('0'..<='9')) else {
+      fail("listener observer infrastructure failure: invalid owner PID")
+    }
+    let pid = @string.parse_int(pid) catch {
+      _ => fail("listener observer infrastructure failure: invalid owner PID")
+    }
+    guard pid > 0 else {
+      fail("listener observer infrastructure failure: nonpositive owner PID")
+    }
+    owners.push(pid)
+  }
+  owners
+}
+
+///|
+async fn observe_lifecycle_listener(port : Int32) -> Array[Int32] {
+  let windows = host_platform() == "windows"
+  let program = if windows {
+    "powershell.exe"
+  } else if host_platform() == "macos" {
+    "/usr/sbin/lsof"
+  } else {
+    "/usr/bin/lsof"
+  }
+  let args = if windows {
+    [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-Command",
+      "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue'; Get-NetTCPConnection -ErrorAction Stop | Where-Object { $_.State -eq 'Listen' -and $_.LocalAddress -eq '127.0.0.1' -and $_.LocalPort -eq \{port} } | ForEach-Object { $_.OwningProcess.ToString() }",
+    ]
+  } else {
+    ["-nP", "-a", "-iTCP@127.0.0.1:\{port}", "-sTCP:LISTEN", "-t"]
+  }
+  let observed = run_with_deadline(program, args, 15000) catch {
+    error => fail("listener observer infrastructure unavailable: \{error}")
+  }
+  guard !observed.timed_out && observed.cleanup_error is None else {
+    fail("listener observer infrastructure did not complete cleanup")
+  }
+  lifecycle_listener_owners(observed.output, windows)
+}
+
+///|
+test "listener observation rejects unavailable and malformed diagnostics" {
+  assert_eq(
+    lifecycle_listener_owners(
+      { status: 0, stdout: b"123\n", stderr: b"", },
+      false,
+    ),
+    [123],
+  )
+  assert_eq(
+    lifecycle_listener_owners({ status: 1, stdout: b"", stderr: b"", }, false),
+    [],
+  )
+  assert_eq(
+    lifecycle_listener_owners(
+      { status: 0, stdout: b"123\r\n", stderr: b"", },
+      true,
+    ),
+    [123],
+  )
+  assert_eq(
+    lifecycle_listener_owners({ status: 0, stdout: b"", stderr: b"", }, true),
+    [],
+  )
+  for
+    (result, windows) in [
+      ({ status: 0, stdout: b"", stderr: b"", }, false),
+      ({ status: 1, stdout: b"123\n", stderr: b"", }, false),
+      ({ status: 1, stdout: b"", stderr: b"", }, true),
+      ({ status: 0, stdout: b"warning\n", stderr: b"", }, false),
+      ({ status: 0, stdout: b"0\n", stderr: b"", }, true),
+      ({ status: 0, stdout: b"123\n", stderr: b"unavailable", }, false),
+      ({ status: 0, stdout: b"p123\nf32\n", stderr: b"", }, false),
+    ] {
+    try ignore(lifecycle_listener_owners(result, windows)) catch {
+      error => assert_true(error.to_string().contains("infrastructure"))
+    } noraise {
+      _ => fail("invalid listener diagnostics must not prove closure")
+    }
+  }
+}
+
+///|
 async test "HTTP fixture serves requests and releases its listening port" {
   let server = @http.Server(@socket.Addr::parse("127.0.0.1:0")) catch {
     error => fail("HTTP lifecycle fixture could not start: \{error}")
@@ -296,6 +405,12 @@ async test "HTTP fixture serves requests and releases its listening port" {
   // This fallback runs after the closure assertion; successful cleanup must
   // come from the owning group after its connection handlers have joined.
   defer server.close()
+  // Establish that this observer sees the fixture's actual LISTEN owner.
+  // Missing tools or malformed observations are failed prerequisites.
+  assert_false(
+    observe_lifecycle_listener(server.addr.port()).is_empty(),
+    msg="listener observer infrastructure cannot see the active fixture",
+  )
   @async.with_timeout(5000, () => {
     @async.with_task_group <| group => {
       // Match the owner-scoped cleanup used by the network, compatibility
@@ -309,19 +424,13 @@ async test "HTTP fixture serves requests and releases its listening port" {
       assert_eq(body.binary(), b"hello")
     }
   })
-  // A refused connection observes listener closure directly. Rebinding also
-  // measures OS socket-reuse rules and residual TCP state after the real GET.
-  @async.with_timeout(5000, () => {
-    try {
-      let connection = @socket.Tcp::connect(server.addr)
-      connection.close()
-    } catch {
-      @os_error.OSError(_, ..) as error if error.is_ECONNREFUSED() => ()
-      error => fail("listener closure probe failed unexpectedly: \{error}")
-    } noraise {
-      _ => fail("HTTP fixture still accepts connections after task cleanup")
-    }
-  })
+  // Inspect LISTEN ownership directly. A client connection to a recently
+  // freed ephemeral port can self-connect; TIME_WAIT also is not a listener.
+  assert_eq(
+    observe_lifecycle_listener(server.addr.port()),
+    [],
+    msg="HTTP fixture retains a LISTEN owner after joined task cleanup",
+  )
 }
 
 ///|
