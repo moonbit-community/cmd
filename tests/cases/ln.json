@@ -194,6 +194,9 @@
     {
       "id": "repair-fs-ln-force-last",
       "command": "ln",
+      "observe": [
+        "symlink-target"
+      ],
       "args": [
         "-s",
         "-i",
@@ -288,6 +291,9 @@
     {
       "id": "repair-fs-ln-force-long-last",
       "command": "ln",
+      "observe": [
+        "symlink-target"
+      ],
       "args": [
         "--symbolic",
         "--interactive",
@@ -335,6 +341,9 @@
     {
       "id": "repair-fs-ln-backup",
       "command": "ln",
+      "observe": [
+        "symlink-target"
+      ],
       "args": [
         "-s",
         "-b",
@@ -387,6 +396,9 @@
     {
       "id": "repair-fs-ln-target-directory",
       "command": "ln",
+      "observe": [
+        "symlink-target"
+      ],
       "args": [
         "-s",
         "-t",
@@ -429,6 +441,9 @@
     {
       "id": "repair-fs-ln-no-dereference",
       "command": "ln",
+      "observe": [
+        "symlink-target"
+      ],
       "args": [
         "-sfn",
         "source",

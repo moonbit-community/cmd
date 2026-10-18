@@ -91,6 +91,15 @@ package-test exceptions exclude non-Windows hosts only. Missing Windows creation
 or PowerShell link observations are infrastructure failures; a macOS package
 test cannot establish the Windows result.
 
+Eight existing POSIX oracle cases now explicitly request their missing metadata
+observations. The five `ln` force/backup/target-directory/no-dereference cases and
+the two async 0.22.5 `mv` symbolic-link cases require `symlink-target`; the `mv`
+hard-link no-op case requires `mode` and `identity`. Acceptance requires these
+dimensions in the actual snapshots and strict candidate/oracle comparison on
+both Native and Wasm. Content/type snapshots and successful status alone do
+not satisfy those requirements. Existing file assertions, registry requirements
+and the full reviewed impact remain unchanged.
+
 Harness bindings name the affected tests for each changed source: raw wire
 framing and Range fixtures, Windows observer parsing, source/registry integrity,
 scenario report/pair identity, and release selection. These tests supplement

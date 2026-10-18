@@ -421,6 +421,10 @@
     {
       "id": "repair-fs-mv-hardlink-no-op",
       "command": "mv",
+      "observe": [
+        "mode",
+        "identity"
+      ],
       "args": [
         "source",
         "alias"
@@ -747,6 +751,9 @@
     {
       "id": "async-0225-mv-file-symbolic-link",
       "command": "mv",
+      "observe": [
+        "symlink-target"
+      ],
       "args": [
         "source",
         "moved"
@@ -796,6 +803,9 @@
     {
       "id": "async-0225-mv-directory-symbolic-link",
       "command": "mv",
+      "observe": [
+        "symlink-target"
+      ],
       "args": [
         "-T",
         "source",
