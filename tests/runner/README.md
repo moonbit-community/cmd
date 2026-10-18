@@ -193,6 +193,15 @@ HTTP and HTTPS fixtures are local; command contracts do not depend on a public
 service. Installed host curl/wget results are separate evidence from this pinned
 oracle.
 
+Launch the entire host runner with `umask 022` for oracle comparisons, matching
+the image entrypoint and existing CI setup. This gives Native/Wasm candidates
+and host-created fixtures the same creation mask while preserving actual file
+mode observations.
+Cross-architecture execution must also preserve the supplied command name in
+`argv[0]`. Record the emulator version and binfmt flags; Rosetta registrations
+without preserve-argv0 can replace it with an absolute path. Correct that test
+environment before comparison instead of normalizing diagnostics or shell `$0`.
+
 The CI workflow configures package checks on Linux/macOS/Windows, reuses one
 Native/Wasm release build per host, and executes contracts/scenarios on both
 backends. Linux oracle, GNU checks and candidate manifest validation reuse those

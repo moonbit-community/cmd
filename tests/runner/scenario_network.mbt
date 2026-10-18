@@ -1668,9 +1668,10 @@ async fn network_cli_scenario(
         },
       )
       if !(@async.platform is Windows) {
-        // A newly created ordinary file observes this process's real umask.
+        // Match the jar's requested creation mode so both files observe the
+        // process's real umask, including group-writable configurations.
         let control = work + "/mode-control-" + command
-        @fs.write_file(control, "")
+        @fs.write_file(control, "", permission=0o666)
         let stat_args = if @async.platform is MacOS {
           ["-f", "%Lp"]
         } else {

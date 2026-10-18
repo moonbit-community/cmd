@@ -132,3 +132,11 @@ platform and are explicitly bound to policy.mbt; runner documentation also
 retains that binding. These harness checks supplement the existing Wasm policy
 execution. All 79 affected commands, Native/Wasm evidence, immutable oracle
 requirements and actual Windows link/referent evidence remain required.
+
+The cookie scenario's control file requests the same `0666` creation mode as
+the jar before comparing real `stat` observations. Its registered
+`network-auth-cookie` contract/pair and `network-auth-cookie-oracle`
+differential remain required on their declared backends. Fixed-oracle runs
+must use the image's `022` creation mask and preserve command `argv[0]` across
+any emulator; correcting the test environment does not authorize altered
+output bytes, post-creation chmod or weaker filesystem comparisons.
