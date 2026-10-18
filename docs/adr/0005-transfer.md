@@ -3,7 +3,7 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-10-18
-Revision: Own HTTP/1 framing through the released passthrough API and apply explicit command profiles for the fixed oracle's EOF, file buffering and retry behavior in the async 0.22.5 candidate.
+Revision: Own HTTP/1 framing through the released passthrough API and apply explicit command profiles for the fixed oracle's EOF, file buffering, retry reset and selected-filename lifetime in the async 0.22.5 candidate.
 
 ## Target and decision
 
@@ -71,22 +71,51 @@ gzip success/truncation fixtures check the actual byte counts and retained
 output on both default and explicit-header paths.
 
 The candidate curl maps empty replies to status 52, partial bodies to status 18
-and other receive failures to 56. Its file destination opens on the first
-payload or successful completion, so an empty failed body does not create,
-truncate or remove an unopened destination, including with `--remove-on-error`.
+and other receive failures to 56. Its ordinary file destination opens on the
+first payload or successful completion, so an initial empty failed body does
+not create, truncate or remove an unopened destination, including with
+`--remove-on-error`.
 A successful empty response still creates its selected output. File writes use
 a 4096-byte buffer: a write failure reached before a network failure returns 23;
 a short buffered tail after a partial-body failure is flushed while preserving
 18 if that flush also fails. Successfully flushed tails remain observable.
 This buffering profile is limited to file output; stdout buffering/error
 precedence has not been calibrated by these cases. Bytes already delivered to
-stdout remain visible, and an opened partial file remains unless
-`--remove-on-error` selects cleanup. Ordinary `--retry` does not retry these body
-failures, while `--retry-all-errors` can. A restarted file and repeated stdout
-prefixes have distinct observable effects. With `-sS`, each failed attempt keeps
-its error diagnostic even if a later retry succeeds. Fixed-length truncation
-reports the missing byte count from the structured response context; internal
+stdout remain visible. Once the command accepts a retry, it resets an already
+opened regular file to empty before the next request. If that retry then fails
+without payload, the file remains empty rather than retaining the earlier
+attempt's prefix. An unopened ordinary destination retains its lazy behavior.
+`--remove-on-error` cleans up an opened selected file only after final failure,
+not between attempts; a successful retry keeps its result. Ordinary `--retry`
+does not retry these body failures, while `--retry-all-errors` can. A reset file
+and repeated stdout prefixes have distinct observable effects. With `-sS`, each
+failed attempt keeps its error diagnostic even if a later retry succeeds.
+Fixed-length truncation reports the missing byte count from the structured response context; internal
 HTTP-status retries without `-f` do not manufacture error 22 diagnostics.
+
+For curl `-O -J`, a valid Content-Disposition filename on a 2xx/3xx response
+causes exclusive creation before body delivery. An existing selected filename fails with status 23 and
+stays unchanged. A newly created selected file can remain empty after a body
+failure; it is subject to final-failure cleanup when requested. Retries retain
+the first server-selected filename even when a later response changes or omits
+that header. These are curl-specific output decisions; the strict and Wget
+profiles retain their own existing rules. The calibrated 404/500 responses ignore
+Content-Disposition and use ordinary lazy URL-derived output; `-f` rejects them
+with 22 before transfer output opens. The status-selection observations are
+retained in `cmd-curl-cd-status-oracle-1`; they are expectations for fresh
+registered Native/Wasm and sealed-oracle acceptance, not candidate pass results.
+
+The fixed curl 8.22 observations in `cmd-curl-retry-empty-oracle-1` and
+`cmd-curl-retry-lifecycle-oracle-1` retain streams, request sequences and file
+bytes, including the empty file observed before the retry response. They define
+the expected lifecycle; fresh registered Native/Wasm command and sealed-oracle
+comparisons remain required before acceptance. Retry reset is implemented with
+released path-based open operations. Public descriptor truncation and file
+identity are still absent, so reset does not guarantee the same descriptor or
+inode after concurrent pathname replacement. This narrower boundary remains in
+[#10](https://github.com/moonbit-community/cmd/issues/10). Lifting it requires
+released handle-based truncation/identity support and adversarial path-replacement
+tests; it does not block the ordinary retry algorithm.
 
 Wget accepts EOF while reading an announced chunk's remaining payload,
 including zero payload bytes, and while reading trailers. It still fails on EOF

@@ -202,8 +202,13 @@ pub fn command_catalog() -> Array[CommandContract] {
     ]),
     // Explicit Cookie follows the jar as a separate field. Candidate CurlProfile
     // maps partial bodies/receive/empty replies to 18/56/52. Accepted 200 header
-    // EOF retains known framing checks. Lazy file output buffers 4096 bytes;
-    // an earlier body failure survives a secondary final-flush failure.
+    // EOF retains known framing checks. Ordinary lazy file output buffers
+    // 4096 bytes; an earlier body failure survives a secondary final-flush failure.
+    // Accepted retries reset opened regular files before the next request;
+    // remove-on-error cleans up only after final failure. A valid -OJ name on
+    // 2xx/3xx creates exclusively before body delivery and stays fixed across retries.
+    // Other response statuses keep ordinary URL-derived output selection.
+    // Path-based reset does not establish descriptor/inode identity under races.
     // A redirect requiring consumed stdin to rewind fails with 65; a separate
     // retry-all attempt may instead upload the now-empty input. Show-error
     // retains each failed attempt's diagnostic even after retry success.

@@ -1,4 +1,42 @@
 ///|
+test "transfer disposition status fixture preserves status and incomplete wire bodies" {
+  for
+    (status, reason) in [
+      (200, "OK"),
+      (304, "Not Modified"),
+      (404, "Not Found"),
+      (500, "Internal Server Error"),
+    ] {
+    for
+      (completion, content) in [
+        ("empty-complete", "Content-Length: 0\r\n\r\n"),
+        ("empty-incomplete", "Content-Length: 9\r\n\r\n"),
+        ("body-complete", "Content-Length: 5\r\n\r\nhello"),
+      ] {
+      assert_eq(
+        transfer_fixture_response(
+          "/transfer-cd-status-\{status}-\{completion}",
+          None,
+        ),
+        Some(
+          "HTTP/1.1 \{status} \{reason}\r\nConnection: close\r\n" +
+          "Content-Disposition: attachment; filename=\"selected.bin\"\r\n" +
+          content,
+        ),
+      )
+    }
+  }
+  assert_eq(
+    transfer_fixture_response("/transfer-cd-status-201-body-complete", None),
+    None,
+  )
+  assert_eq(
+    transfer_fixture_response("/transfer-cd-status-200-unknown", None),
+    None,
+  )
+}
+
+///|
 test "transfer fixture does not repair deliberately incomplete framing" {
   let prefix = transfer_fixture_response("/transfer-fixed-prefix", None).unwrap()
   assert_true(prefix.contains("Content-Length: 9\r\n\r\nhello"))
@@ -63,6 +101,12 @@ test "transfer fixture does not repair deliberately incomplete framing" {
     ),
   )
   assert_eq(transfer_fixture_response("/fixed", None), None)
+  assert_eq(
+    transfer_fixture_response("/transfer-named-empty", None),
+    Some(
+      "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Disposition: attachment; filename=\"first.bin\"\r\nContent-Length: 9\r\n\r\n",
+    ),
+  )
   for count in [4095, 4096] {
     for complete in [false, true] {
       let endpoint = if complete { "complete" } else { "partial" }
@@ -231,5 +275,154 @@ async test "transfer fixture sends uncompleted wire bytes and closes the socket"
       })
     }
     assert_eq(requests, expected_requests)
+  })
+}
+
+///|
+async test "transfer fixture captures framed GET bytes before entering passthrough mode" {
+  @async.with_task_group(group => {
+    let server = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
+    group.add_defer(() => server.close())
+    let requests : Array[TransferFixtureRequest] = []
+    group.spawn_bg(no_wait=true, () => {
+      server.run_forever() <| ((request, _, connection) => {
+        assert_true(serve_transfer_fixture(request, connection, requests~))
+      })
+    })
+    let body = b"\x00bin\xff"
+    for chunked in [false, true] {
+      let completed = @async.with_timeout_opt(2000, () => {
+        let client = @socket.Tcp::connect(server.addr)
+        defer client.close()
+        client.write(
+          "GET /transfer-fixed-complete HTTP/1.1\r\nHost: fixture\r\nExpect: 100-continue\r\n" +
+          (if chunked {
+            "Transfer-Encoding: chunked"
+          } else {
+            "Content-Length: 5"
+          }) +
+          "\r\n\r\n",
+        )
+        assert_eq(client.read_until("\r\n"), Some("HTTP/1.1 100 Continue"))
+        assert_eq(client.read_until("\r\n"), Some(""))
+        client.write(
+          if chunked {
+            b"5\r\n" + body + b"\r\n0\r\n\r\n"
+          } else {
+            body
+          },
+        )
+        client.read_all().text()
+      })
+      assert_eq(
+        completed,
+        Some(
+          "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Length: 5\r\n\r\nhello",
+        ),
+      )
+    }
+    assert_eq(
+      requests,
+      Array::makei(2, _ => {
+        request_method: "GET",
+        path: "/transfer-fixed-complete",
+        range: None,
+        body,
+      }),
+    )
+  })
+}
+
+///|
+test "transfer retry lifecycle fixture requires a bounded per-run request capture" {
+  let missing_error = try {
+    ignore(transfer_retry_fixture_response("/transfer-retry-empty", None))
+    None
+  } catch {
+    error => Some(error.to_string())
+  }
+  assert_true(
+    missing_error.unwrap_or("").contains("requires per-run request capture"),
+  )
+  let requests : Array[TransferFixtureRequest] = Array::makei(2, _ => {
+    request_method: "GET",
+    path: "/transfer-retry-empty",
+    range: None,
+    body: b"",
+  })
+  let exhausted_error = try {
+    ignore(
+      transfer_retry_fixture_response("/transfer-retry-empty", Some(requests)),
+    )
+    None
+  } catch {
+    error => Some(error.to_string())
+  }
+  assert_true(
+    exhausted_error.unwrap_or("").contains("exactly two requests per run"),
+  )
+}
+
+///|
+async test "transfer retry lifecycle fixture replays independently after request capture reset" {
+  @async.with_task_group(group => {
+    let server = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
+    group.add_defer(() => server.close())
+    let requests : Array[TransferFixtureRequest] = []
+    let observed_before_response : Array[Int32] = []
+    group.spawn_bg(no_wait=true, () => {
+      server.run_forever() <| ((request, _, connection) => {
+        assert_true(
+          serve_transfer_fixture(request, connection, requests~, before_response=() => {
+            observed_before_response.push(requests.length())
+          }),
+        )
+      })
+    })
+    let fixed = "HTTP/1.1 200 OK\r\nConnection: close\r\n"
+    let first_name = "Content-Disposition: attachment; filename=\"first.bin\"\r\n"
+    let second_name = "Content-Disposition: attachment; filename=\"second.bin\"\r\n"
+    for
+      (path, first_headers, second_headers, second_body) in [
+        ("/transfer-retry-empty", "", "", "Content-Length: 9\r\n\r\n"),
+        ("/transfer-retry-complete", "", "", "Content-Length: 2\r\n\r\nok"),
+        (
+          "/transfer-retry-named-empty-changed", first_name, second_name, "Content-Length: 9\r\n\r\n",
+        ),
+        (
+          "/transfer-retry-named-complete-changed", first_name, second_name, "Content-Length: 2\r\n\r\nok",
+        ),
+        (
+          "/transfer-retry-named-complete-missing", first_name, "", "Content-Length: 2\r\n\r\nok",
+        ),
+      ] {
+      for _ in 0..<2 {
+        requests.clear()
+        observed_before_response.clear()
+        for
+          expected in [
+            fixed + first_headers + "Content-Length: 9\r\n\r\nhello",
+            fixed + second_headers + second_body,
+          ] {
+          let completed = @async.with_timeout_opt(2000, () => {
+            let client = @socket.Tcp::connect(server.addr)
+            defer client.close()
+            client.write("GET " + path + " HTTP/1.1\r\nHost: fixture\r\n\r\n")
+            client.read_all().text()
+          })
+          assert_eq(completed, Some(expected))
+        }
+        assert_eq(observed_before_response, [1, 2])
+        assert_eq(
+          requests,
+          Array::makei(2, _ => {
+            request_method: "GET",
+            path,
+            range: None,
+            body: b"",
+          }),
+        )
+      }
+    }
   })
 }

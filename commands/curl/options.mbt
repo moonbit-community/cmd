@@ -88,11 +88,14 @@ fn curl_usage() -> String {
     #|  -k, --insecure               allow insecure TLS connections
     #|  -x, --proxy <url>            use this proxy
     #|      --noproxy <list>         bypass proxy for matching hosts
-    #|      --remove-on-error        remove output file after transfer failure
-    #|Already written stdout remains; partial files remain without cleanup.
+    #|      --remove-on-error        remove opened output after final failure
+    #|Already written stdout remains; final partial files remain without cleanup.
     #|Cookie values containing CR/LF are rejected before request bytes are sent.
     #|An empty HTTP reply exits 52; incomplete bodies exit 18; receive errors exit 56.
-    #|A failed transfer with no body leaves the output file untouched.
+    #|An initial empty failure leaves ordinary unopened output untouched.
+    #|An accepted retry resets an opened regular file before the next request.
+    #|-O -J creates valid Content-Disposition filenames exclusively for 2xx/3xx.
+    #|An existing selected filename exits 23 untouched; retries retain the first name.
     #|File write errors exit 23; an earlier transfer failure keeps its exit status.
     #|A redirect requiring already uploaded stdin to rewind exits 65.
     #|-sS keeps each failed attempt's error visible even if a later retry succeeds.

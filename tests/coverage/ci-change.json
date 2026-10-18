@@ -1526,7 +1526,17 @@
     "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission separates complete test scopes from production imports",
     "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission rejects unknown incomplete and mixed import syntax",
     "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission decodes import paths and ignores only actual comments",
-    "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission accepts the mv test observer without production process authority"
+    "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission accepts the mv test observer without production process authority",
+    "package-test:commands/curl/output_retry_wbtest.mbt::curl accepted retries reset opened files before a later empty failure",
+    "package-test:commands/curl/output_retry_wbtest.mbt::curl leaves partial files intact when a retry is not accepted",
+    "package-test:commands/curl/output_retry_wbtest.mbt::curl first empty failures preserve unopened files with final cleanup enabled",
+    "package-test:commands/curl/output_retry_wbtest.mbt::curl retries retain the selected content disposition path and defer removal",
+    "package-test:core/netops/transfer_buffer_wbtest.mbt::curl content disposition creates exclusive output before empty body failures",
+    "package-test:core/netops/transfer_buffer_wbtest.mbt::curl content disposition selection follows response status and fail policy",
+    "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer disposition status fixture preserves status and incomplete wire bodies",
+    "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture requires a bounded per-run request capture",
+    "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture replays independently after request capture reset",
+    "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture captures framed GET bytes before entering passthrough mode"
   ],
   "affected_options": [
     "help",
@@ -1537,6 +1547,10 @@
     "-c",
     "--content-disposition",
     "-O",
+    "-o",
+    "-J",
+    "-f",
+    "--fail",
     "--backup",
     "-n",
     "-i",
@@ -2927,7 +2941,9 @@
       "path": "docs/adr/0005-transfer.md",
       "behavior_ids": [
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture does not repair deliberately incomplete framing",
-        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture sends uncompleted wire bytes and closes the socket"
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture sends uncompleted wire bytes and closes the socket",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture replays independently after request capture reset",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer disposition status fixture preserves status and incomplete wire bodies"
       ]
     },
     {
@@ -3098,6 +3114,10 @@
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture does not repair deliberately incomplete framing",
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry fixture depends on the actual Range rather than call order",
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture sends uncompleted wire bytes and closes the socket",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture requires a bounded per-run request capture",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture replays independently after request capture reset",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer disposition status fixture preserves status and incomplete wire bodies",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture captures framed GET bytes before entering passthrough mode",
         "package-test:tests/runner/backend_pair_wbtest.mbt::scenario pairing normalizes only allocated fixture roots and listener origins",
         "package-test:tests/runner/scenario_network_wbtest.mbt::transfer file checks retain independent failures"
       ]
@@ -3128,14 +3148,20 @@
       "behavior_ids": [
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture does not repair deliberately incomplete framing",
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry fixture depends on the actual Range rather than call order",
-        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture sends uncompleted wire bytes and closes the socket"
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture sends uncompleted wire bytes and closes the socket",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture requires a bounded per-run request capture",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture replays independently after request capture reset",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer disposition status fixture preserves status and incomplete wire bodies",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture captures framed GET bytes before entering passthrough mode"
       ]
     },
     {
       "path": "tests/testkit/pkg.generated.mbti",
       "behavior_ids": [
         "package-test:tests/testkit/fixture_wbtest.mbt::Windows link observer distinguishes symbolic links and junction targets",
-        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture sends uncompleted wire bytes and closes the socket"
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture sends uncompleted wire bytes and closes the socket",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture requires a bounded per-run request capture",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture replays independently after request capture reset"
       ]
     }
   ]

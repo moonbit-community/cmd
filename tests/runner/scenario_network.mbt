@@ -1,4 +1,28 @@
 ///|
+priv struct TransferFileObservation {
+  mut work : String?
+  snapshots : Array[Array[(String, Bool, Bytes)]]
+}
+
+///|
+async fn TransferFileObservation::capture(
+  self : TransferFileObservation,
+) -> Unit {
+  guard self.work is Some(work) else { return }
+  let names = @fs.readdir(work).filter(name => name != "oracle")
+  names.sort()
+  let snapshot : Array[(String, Bool, Bytes)] = []
+  for name in names {
+    let path = work + "/" + name
+    let regular = @fs.kind(path, follow_symlink=false) == @fs.Regular
+    snapshot.push(
+      (name, regular, if regular { @fs.read_file(path).binary() } else { b"" }),
+    )
+  }
+  self.snapshots.push(snapshot)
+}
+
+///|
 async fn network_request(
   root : String,
   wasm : Bool,
@@ -13,7 +37,14 @@ async fn network_request(
   expected_methods? : Array[String],
   expected_bodies? : Array[Bytes],
   expected_files? : Array[(String, String?)],
+  transfer_files? : TransferFileObservation,
+  expected_files_before_response? : Array[Array[(String, String)]],
 ) -> @testkit.RunResult {
+  if transfer_files is Some(observation) {
+    observation.work = Some(work)
+    observation.snapshots.clear()
+  }
+  defer (if transfer_files is Some(observation) { observation.work = None })
   if transfer_requests is Some(requests) {
     requests.clear()
   }
@@ -53,6 +84,15 @@ async fn network_request(
     ),
   )
   let actual_requests = transfer_requests.map(requests => requests.copy())
+  let actual_files_before_response = transfer_files.map(observation => {
+    observation.snapshots.copy()
+  })
+  if actual_files_before_response is Some(snapshots) {
+    @fs.write_file(
+      prefix + ".files-before-response.json",
+      @json.to_json(snapshots).stringify(indent=2),
+    )
+  }
   if actual_requests is Some(requests) {
     @fs.write_file(
       prefix + ".requests.json",
@@ -74,6 +114,10 @@ async fn network_request(
     let oracle_args = args.map(arg => arg.replace_all(old=work, new=oracle_work))
     if transfer_requests is Some(requests) {
       requests.clear()
+    }
+    if transfer_files is Some(observation) {
+      observation.work = Some(oracle_work)
+      observation.snapshots.clear()
     }
     let run = @testkit.run_with_deadline(
       "docker",
@@ -113,6 +157,15 @@ async fn network_request(
       }),
     )
     let oracle_requests = transfer_requests.map(requests => requests.copy())
+    let oracle_files_before_response = transfer_files.map(observation => {
+      observation.snapshots.copy()
+    })
+    if oracle_files_before_response is Some(snapshots) {
+      @fs.write_file(
+        prefix + ".oracle.files-before-response.json",
+        @json.to_json(snapshots).stringify(indent=2),
+      )
+    }
     if oracle_requests is Some(requests) {
       @fs.write_file(
         prefix + ".oracle.requests.json",
@@ -155,6 +208,9 @@ async fn network_request(
         differences.push("request methods, paths, Range, or body bytes differ")
       }
     }
+    if oracle_files_before_response != actual_files_before_response {
+      differences.push("file states before response bytes differ")
+    }
     if expected_files is Some(files) &&
       oracle_output_names is Some(oracle_names) {
       check_transfer_files(oracle_work, files, oracle_names) catch {
@@ -174,6 +230,18 @@ async fn network_request(
     }
   }
   let contract_failures : Array[String] = []
+  if expected_files_before_response is Some(expected) {
+    let expected = expected.map(files => {
+      let files = files.map(file => (file.0, true, @utf8.encode(file.1)))
+      files.sort_by((left, right) => left.0.compare(right.0))
+      files
+    })
+    if actual_files_before_response != Some(expected) {
+      contract_failures.push(
+        "candidate file states before response bytes differ from the scenario contract",
+      )
+    }
+  }
   if actual_requests is Some(requests) && expected_bodies is Some(bodies) {
     let actual_bodies = requests.map(request => request.body)
     if actual_bodies != bodies {
@@ -289,6 +357,24 @@ fn transfer_oracle_status(command : String, label : String) -> Int32 raise {
         | "stdin-retry-256"
         | "stdin-retry-65537"
         | "stdin-retry-show-error-256"
+        | "remove-partial-complete-new"
+        | "cd-partial-complete-changed"
+        | "cd-partial-complete-missing"
+        | "cd-partial-complete-changed-remove"
+        | "cd-status-200-empty-complete-fail-false"
+        | "cd-status-200-empty-complete-fail-true"
+        | "cd-status-200-body-complete-fail-false"
+        | "cd-status-200-body-complete-fail-true"
+        | "cd-status-304-empty-complete-fail-false"
+        | "cd-status-304-empty-complete-fail-true"
+        | "cd-status-304-empty-incomplete-fail-false"
+        | "cd-status-304-empty-incomplete-fail-true"
+        | "cd-status-304-body-complete-fail-false"
+        | "cd-status-304-body-complete-fail-true"
+        | "cd-status-404-empty-complete-fail-false"
+        | "cd-status-404-body-complete-fail-false"
+        | "cd-status-500-empty-complete-fail-false"
+        | "cd-status-500-body-complete-fail-false"
         | "fixed-complete"
         | "fixed-prefix-then-fixed-complete"
         | "head-length"
@@ -324,8 +410,27 @@ fn transfer_oracle_status(command : String, label : String) -> Int32 raise {
         | "remove-named"
         | "remove-partial"
         | "retry-all-file"
-        | "retry-all-stdout" => 18
-        "output-full-complete"
+        | "retry-all-stdout"
+        | "retry-partial-empty-file-new"
+        | "retry-partial-empty-file-existing"
+        | "retry-partial-empty-stdout"
+        | "remove-partial-empty-new"
+        | "remove-partial-empty-existing"
+        | "cd-partial-empty-changed"
+        | "cd-partial-empty-changed-remove"
+        | "cd-first-empty-new"
+        | "cd-status-200-empty-incomplete-fail-false"
+        | "cd-status-200-empty-incomplete-fail-true"
+        | "cd-status-404-empty-incomplete-fail-false"
+        | "cd-status-500-empty-incomplete-fail-false" => 18
+        "cd-status-404-empty-complete-fail-true"
+        | "cd-status-404-empty-incomplete-fail-true"
+        | "cd-status-404-body-complete-fail-true"
+        | "cd-status-500-empty-complete-fail-true"
+        | "cd-status-500-empty-incomplete-fail-true"
+        | "cd-status-500-body-complete-fail-true" => 22
+        "cd-first-empty-existing"
+        | "output-full-complete"
         | "output-full-complete-4095"
         | "output-full-complete-4096"
         | "output-full-partial-4096" => 23
@@ -426,6 +531,8 @@ async fn transfer_scenario_call(
   expected_stderr~ : String = "",
   bodies? : Array[Bytes],
   methods? : Array[String],
+  transfer_files? : TransferFileObservation,
+  expected_files_before_response? : Array[Array[(String, String)]],
   oracle_image? : String,
 ) -> Unit {
   try {
@@ -456,6 +563,8 @@ async fn transfer_scenario_call(
       expected_methods~,
       expected_bodies?=bodies,
       expected_files=files,
+      transfer_files?,
+      expected_files_before_response?,
     )
     if result.stdout != @utf8.encode(stdout) {
       call_failures.push(
@@ -486,6 +595,9 @@ async fn transfer_scenario_call(
         "expected_status": Json(expected_status),
         "expected_stdout": Json(stdout),
         "expected_stderr": Json(expected_stderr),
+        "expected_files_before_response": expected_files_before_response
+        .map(value => Json(value))
+        .unwrap_or(Json::null()),
         "expected_methods": Json(expected_methods),
         "expected_bodies": bodies
         .map(value => Json(value))
@@ -508,8 +620,8 @@ async fn transfer_scenario_call(
 }
 
 ///|
-/// The wire fixture is stateless: retries are selected by Range or upload bytes,
-/// so candidate and oracle calls cannot change one another's response sequence.
+/// Range and upload fixtures are stateless. The retry lifecycle sequences use the
+/// request capture reset before each candidate and oracle execution.
 async fn network_transfer_scenario(
   root : String,
   wasm : Bool,
@@ -521,9 +633,15 @@ async fn network_transfer_scenario(
     let server = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
     group.add_defer(() => server.close())
     let requests : Array[@testkit.TransferFixtureRequest] = []
+    let transfer_files : TransferFileObservation = {
+      work: None,
+      snapshots: [],
+    }
     group.spawn_bg(no_wait=true, () => {
       server.run_forever() <| ((request, _, connection) => {
-        if !@testkit.serve_transfer_fixture(request, connection, requests~) {
+        if !@testkit.serve_transfer_fixture(request, connection, requests~, before_response=() => {
+            transfer_files.capture()
+          }) {
           fail("unknown transfer fixture path: " + request.path)
         }
       })
@@ -1001,6 +1119,258 @@ async fn network_transfer_scenario(
         files=if file { [("partial.bin", Some("hello"))] } else { [] },
         oracle_image?,
       )
+    }
+    for mode in ["file-new", "file-existing", "stdout"] {
+      let file = mode != "stdout"
+      let initial_files = if mode == "file-existing" {
+        [("partial.bin", "preserve")]
+      } else {
+        []
+      }
+      transfer_scenario_call(
+        root,
+        wasm,
+        work,
+        "curl",
+        "retry-partial-empty-" + mode,
+        [
+          "-sS",
+          "--retry",
+          "1",
+          "--retry-all-errors",
+          "--retry-delay",
+          "1",
+          ..if file {
+            ["-o", "partial.bin"]
+          } else {
+            []
+          },
+          base + "/transfer-retry-empty",
+        ],
+        if file {
+          ""
+        } else {
+          "hello"
+        },
+        [None, None],
+        requests,
+        oracle_failures,
+        initial_files~,
+        files=if file { [("partial.bin", Some(""))] } else { [] },
+        expected_stderr="curl: (18) end of response with 4 bytes missing\n" +
+          "curl: (18) end of response with 9 bytes missing\n",
+        methods=["GET", "GET"],
+        bodies=[b"", b""],
+        transfer_files~,
+        expected_files_before_response=[
+          initial_files,
+          if file {
+            [("partial.bin", "")]
+          } else {
+            []
+          },
+        ],
+        oracle_image?,
+      )
+    }
+    for
+      (label, complete, existing) in [
+        ("remove-partial-empty-new", false, false),
+        ("remove-partial-empty-existing", false, true),
+        ("remove-partial-complete-new", true, false),
+      ] {
+      let initial_files = if existing {
+        [("output.bin", "preserve")]
+      } else {
+        []
+      }
+      transfer_scenario_call(
+        root,
+        wasm,
+        work,
+        "curl",
+        label,
+        [
+          "-sS",
+          "--retry",
+          "1",
+          "--retry-all-errors",
+          "--retry-delay",
+          "1",
+          "-o",
+          "output.bin",
+          "--remove-on-error",
+          base +
+          (if complete {
+            "/transfer-retry-complete"
+          } else {
+            "/transfer-retry-empty"
+          }),
+        ],
+        "",
+        [None, None],
+        requests,
+        oracle_failures,
+        initial_files~,
+        files=[("output.bin", if complete { Some("ok") } else { None })],
+        expected_stderr="curl: (18) end of response with 4 bytes missing\n" +
+          (if complete {
+            ""
+          } else {
+            "curl: (18) end of response with 9 bytes missing\n"
+          }),
+        methods=["GET", "GET"],
+        bodies=[b"", b""],
+        transfer_files~,
+        expected_files_before_response=[initial_files, [("output.bin", "")]],
+        oracle_image?,
+      )
+    }
+    for
+      (label, endpoint, complete, remove) in [
+        ("cd-partial-empty-changed", "empty-changed", false, false),
+        ("cd-partial-complete-changed", "complete-changed", true, false),
+        ("cd-partial-complete-missing", "complete-missing", true, false),
+        ("cd-partial-empty-changed-remove", "empty-changed", false, true),
+        ("cd-partial-complete-changed-remove", "complete-changed", true, true),
+      ] {
+      transfer_scenario_call(
+        root,
+        wasm,
+        work,
+        "curl",
+        label,
+        [
+          "-s",
+          "--retry",
+          "1",
+          "--retry-all-errors",
+          "--retry-delay",
+          "1",
+          "-O",
+          "-J",
+          ..if remove {
+            ["--remove-on-error"]
+          } else {
+            []
+          },
+          base + "/transfer-retry-named-" + endpoint,
+        ],
+        "",
+        [None, None],
+        requests,
+        oracle_failures,
+        files=[
+          (
+            "first.bin",
+            if complete {
+              Some("ok")
+            } else if remove {
+              None
+            } else {
+              Some("")
+            },
+          ),
+          ("second.bin", None),
+          ("transfer-retry-named-" + endpoint, None),
+        ],
+        methods=["GET", "GET"],
+        bodies=[b"", b""],
+        transfer_files~,
+        expected_files_before_response=[[], [("first.bin", "")]],
+        oracle_image?,
+      )
+    }
+    for existing in [false, true] {
+      let initial_files = if existing {
+        [("first.bin", "preserve")]
+      } else {
+        []
+      }
+      transfer_scenario_call(
+        root,
+        wasm,
+        work,
+        "curl",
+        if existing {
+          "cd-first-empty-existing"
+        } else {
+          "cd-first-empty-new"
+        },
+        ["-s", "--retry", "0", "-O", "-J", base + "/transfer-named-empty"],
+        "",
+        [None],
+        requests,
+        oracle_failures,
+        initial_files~,
+        files=[
+          ("first.bin", Some(if existing { "preserve" } else { "" })),
+          ("transfer-named-empty", None),
+        ],
+        methods=["GET"],
+        bodies=[b""],
+        transfer_files~,
+        expected_files_before_response=[initial_files],
+        oracle_image?,
+      )
+    }
+    for status in [200, 304, 404, 500] {
+      for completion in ["empty-complete", "empty-incomplete", "body-complete"] {
+        for fail_http in [false, true] {
+          let endpoint = "transfer-cd-status-\{status}-\{completion}"
+          let selected_name = status == 200 || status == 304
+          let content = if completion == "body-complete" { "hello" } else { "" }
+          transfer_scenario_call(
+            root,
+            wasm,
+            work,
+            "curl",
+            "cd-status-\{status}-\{completion}-fail-\{fail_http}",
+            [
+              "-s",
+              "--retry",
+              "0",
+              "-O",
+              "-J",
+              ..if fail_http {
+                ["--fail"]
+              } else {
+                []
+              },
+              base + "/" + endpoint,
+            ],
+            "",
+            [None],
+            requests,
+            oracle_failures,
+            files=[
+              (
+                "selected.bin",
+                if selected_name {
+                  Some(if status == 304 { "" } else { content })
+                } else {
+                  None
+                },
+              ),
+              (
+                endpoint,
+                if selected_name ||
+                  fail_http ||
+                  completion == "empty-incomplete" {
+                  None
+                } else {
+                  Some(content)
+                },
+              ),
+            ],
+            methods=["GET"],
+            bodies=[b""],
+            transfer_files~,
+            expected_files_before_response=[[]],
+            oracle_image?,
+          )
+        }
+      }
     }
     for endpoint in ["retry-range", "retry-ignore", "retry-ignore-changed"] {
       for file in [false, true] {

@@ -651,6 +651,7 @@ priv enum OutputSink {
 async fn open_sink(
   output : TransferOutput,
   response : @http.Response,
+  exclusive~ : Bool = false,
 ) -> OutputSink {
   match output {
     StandardOutput => StdoutSink
@@ -658,10 +659,14 @@ async fn open_sink(
     FileOutput(mode~, remove_on_error~, ..) => {
       let path = output_path(output, response).unwrap()
       let opened = try {
-        match mode {
-          Truncate => (path, @fsops.open_output(path, CreateOrTruncate))
-          Append => (path, @fsops.open_output(path, AppendOrCreate))
-          Unique => @fsops.open_unique_numbered_output(path)
+        if exclusive {
+          (path, @fsops.open_output(path, CreateNew))
+        } else {
+          match mode {
+            Truncate => (path, @fsops.open_output(path, CreateOrTruncate))
+            Append => (path, @fsops.open_output(path, AppendOrCreate))
+            Unique => @fsops.open_unique_numbered_output(path)
+          }
         }
       } catch {
         err =>

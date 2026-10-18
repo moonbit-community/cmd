@@ -114,7 +114,7 @@ pub async fn seal_oracle_profile(String, String, expected_profile_path? : String
 
 pub fn select_cases(ArrayView[Case], ArrayView[String], ArrayView[String]) -> Array[Case] raise Failure
 
-pub async fn serve_transfer_fixture(@http.Request, @http.ServerConnection, requests? : Array[TransferFixtureRequest]) -> Bool
+pub async fn serve_transfer_fixture(@http.Request, @http.ServerConnection, requests? : Array[TransferFixtureRequest], before_response? : async () -> Unit) -> Bool
 
 pub fn sha256_bytes(Bytes) -> String
 

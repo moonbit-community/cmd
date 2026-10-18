@@ -28,11 +28,17 @@ request-header option semantics remain project work; no new byte or list API
 is required to implement them. Protocol lines are bounded to 64 KiB, cumulative
 headers to 1 MiB, fields to 1024 per block, interim responses to 128 and trailer
 fields to 1024, with explicit rejection regressions.
-Curl file output opens on first payload or successful completion and uses a
+Ordinary curl file output opens on first payload or successful completion and uses a
 4096-byte buffer. A network failure remains primary if flushing its pending
 tail also fails; the context still records uncertain write effects. An earlier
 file write failure remains an output failure. Stdout buffering is outside this
-calibrated file profile. Both command profiles accept EOF after complete 200
+calibrated file profile. Valid Content-Disposition names on 2xx/3xx responses in
+`CurlProfile` instead create exclusively before body delivery, preserving an existing selected path
+on failure. The curl command resets an opened regular file before an accepted
+retry, retains its selected filename and applies requested cleanup only after
+final failure. Path-based reset does not guarantee retained descriptor/inode
+identity under pathname replacement; see the [transfer profile](netops/README.md).
+Both command profiles accept EOF after complete 200
 status and unfinished headers, retaining already parsed framing checks. Wget
 also accepts EOF in chunk payload or trailers, but rejects missing chunk-size
 or completed-chunk separators. Its 416 handling does not open transfer output

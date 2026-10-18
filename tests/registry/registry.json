@@ -46159,7 +46159,48 @@
         "--content-disposition",
         "-O",
         "curl:URL",
-        "wget:URL"
+        "wget:URL",
+        "-o",
+        "-J",
+        "-f",
+        "--fail",
+        "curl:retry-partial-empty-file-new",
+        "curl:retry-partial-empty-file-existing",
+        "curl:retry-partial-empty-stdout",
+        "curl:remove-partial-empty-new",
+        "curl:remove-partial-empty-existing",
+        "curl:remove-partial-complete-new",
+        "curl:cd-partial-empty-changed",
+        "curl:cd-partial-complete-changed",
+        "curl:cd-partial-complete-missing",
+        "curl:cd-partial-empty-changed-remove",
+        "curl:cd-partial-complete-changed-remove",
+        "curl:cd-first-empty-new",
+        "curl:cd-first-empty-existing",
+        "curl:cd-status-200-empty-complete-fail-false",
+        "curl:cd-status-200-empty-complete-fail-true",
+        "curl:cd-status-200-empty-incomplete-fail-false",
+        "curl:cd-status-200-empty-incomplete-fail-true",
+        "curl:cd-status-200-body-complete-fail-false",
+        "curl:cd-status-200-body-complete-fail-true",
+        "curl:cd-status-304-empty-complete-fail-false",
+        "curl:cd-status-304-empty-complete-fail-true",
+        "curl:cd-status-304-empty-incomplete-fail-false",
+        "curl:cd-status-304-empty-incomplete-fail-true",
+        "curl:cd-status-304-body-complete-fail-false",
+        "curl:cd-status-304-body-complete-fail-true",
+        "curl:cd-status-404-empty-complete-fail-false",
+        "curl:cd-status-404-empty-complete-fail-true",
+        "curl:cd-status-404-empty-incomplete-fail-false",
+        "curl:cd-status-404-empty-incomplete-fail-true",
+        "curl:cd-status-404-body-complete-fail-false",
+        "curl:cd-status-404-body-complete-fail-true",
+        "curl:cd-status-500-empty-complete-fail-false",
+        "curl:cd-status-500-empty-complete-fail-true",
+        "curl:cd-status-500-empty-incomplete-fail-false",
+        "curl:cd-status-500-empty-incomplete-fail-true",
+        "curl:cd-status-500-body-complete-fail-false",
+        "curl:cd-status-500-body-complete-fail-true"
       ],
       "required_backends": [
         "native",
@@ -46199,7 +46240,48 @@
         "--content-disposition",
         "-O",
         "curl:URL",
-        "wget:URL"
+        "wget:URL",
+        "-o",
+        "-J",
+        "-f",
+        "--fail",
+        "curl:retry-partial-empty-file-new",
+        "curl:retry-partial-empty-file-existing",
+        "curl:retry-partial-empty-stdout",
+        "curl:remove-partial-empty-new",
+        "curl:remove-partial-empty-existing",
+        "curl:remove-partial-complete-new",
+        "curl:cd-partial-empty-changed",
+        "curl:cd-partial-complete-changed",
+        "curl:cd-partial-complete-missing",
+        "curl:cd-partial-empty-changed-remove",
+        "curl:cd-partial-complete-changed-remove",
+        "curl:cd-first-empty-new",
+        "curl:cd-first-empty-existing",
+        "curl:cd-status-200-empty-complete-fail-false",
+        "curl:cd-status-200-empty-complete-fail-true",
+        "curl:cd-status-200-empty-incomplete-fail-false",
+        "curl:cd-status-200-empty-incomplete-fail-true",
+        "curl:cd-status-200-body-complete-fail-false",
+        "curl:cd-status-200-body-complete-fail-true",
+        "curl:cd-status-304-empty-complete-fail-false",
+        "curl:cd-status-304-empty-complete-fail-true",
+        "curl:cd-status-304-empty-incomplete-fail-false",
+        "curl:cd-status-304-empty-incomplete-fail-true",
+        "curl:cd-status-304-body-complete-fail-false",
+        "curl:cd-status-304-body-complete-fail-true",
+        "curl:cd-status-404-empty-complete-fail-false",
+        "curl:cd-status-404-empty-complete-fail-true",
+        "curl:cd-status-404-empty-incomplete-fail-false",
+        "curl:cd-status-404-empty-incomplete-fail-true",
+        "curl:cd-status-404-body-complete-fail-false",
+        "curl:cd-status-404-body-complete-fail-true",
+        "curl:cd-status-500-empty-complete-fail-false",
+        "curl:cd-status-500-empty-complete-fail-true",
+        "curl:cd-status-500-empty-incomplete-fail-false",
+        "curl:cd-status-500-empty-incomplete-fail-true",
+        "curl:cd-status-500-body-complete-fail-false",
+        "curl:cd-status-500-body-complete-fail-true"
       ],
       "required_backends": [
         "native",
@@ -47971,6 +48053,288 @@
       "aliases": [],
       "coverage": [
         "policy admission accepts the mv test observer without production process authority"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/curl/output_retry_wbtest.mbt::curl accepted retries reset opened files before a later empty failure",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/curl/output_retry_wbtest.mbt::curl accepted retries reset opened files before a later empty failure",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl accepted retries reset opened files before a later empty failure"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/curl/output_retry_wbtest.mbt::curl leaves partial files intact when a retry is not accepted",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/curl/output_retry_wbtest.mbt::curl leaves partial files intact when a retry is not accepted",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl leaves partial files intact when a retry is not accepted"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/curl/output_retry_wbtest.mbt::curl first empty failures preserve unopened files with final cleanup enabled",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/curl/output_retry_wbtest.mbt::curl first empty failures preserve unopened files with final cleanup enabled",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl first empty failures preserve unopened files with final cleanup enabled"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/curl/output_retry_wbtest.mbt::curl retries retain the selected content disposition path and defer removal",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/curl/output_retry_wbtest.mbt::curl retries retain the selected content disposition path and defer removal",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl retries retain the selected content disposition path and defer removal"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/transfer_buffer_wbtest.mbt::curl content disposition creates exclusive output before empty body failures",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/transfer_buffer_wbtest.mbt::curl content disposition creates exclusive output before empty body failures",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl content disposition creates exclusive output before empty body failures"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/transfer_buffer_wbtest.mbt::curl content disposition selection follows response status and fail policy",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/transfer_buffer_wbtest.mbt::curl content disposition selection follows response status and fail policy",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl content disposition selection follows response status and fail policy"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer disposition status fixture preserves status and incomplete wire bodies",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/network_transfer_wbtest.mbt::transfer disposition status fixture preserves status and incomplete wire bodies",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "transfer disposition status fixture preserves status and incomplete wire bodies"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture requires a bounded per-run request capture",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture requires a bounded per-run request capture",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "transfer retry lifecycle fixture requires a bounded per-run request capture"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture replays independently after request capture reset",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture replays independently after request capture reset",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "transfer retry lifecycle fixture replays independently after request capture reset"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture captures framed GET bytes before entering passthrough mode",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/network_transfer_wbtest.mbt::transfer fixture captures framed GET bytes before entering passthrough mode",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "transfer fixture captures framed GET bytes before entering passthrough mode"
       ],
       "required_backends": [
         "native"

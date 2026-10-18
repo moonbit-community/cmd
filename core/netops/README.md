@@ -51,14 +51,39 @@ network failure is followed by a failed buffered-tail flush, that earlier kind
 remains primary and `write_outcome_uncertain` records the secondary write
 failure; the completed-write count remains a lower bound.
 
-`CurlProfile` defers file creation until the first payload or successful empty
-completion and buffers file output in 4096-byte blocks. A failed zero-byte body
-therefore leaves an absent or existing destination untouched, including with
-cleanup enabled. After a network error, an already opened file receives any
-buffered tail if possible. A block write that fails before EOF is an output
+`CurlProfile` defers ordinary file creation until the first payload or successful
+empty completion and buffers file output in 4096-byte blocks. An initial failed
+zero-byte body therefore leaves an unopened absent or existing destination
+untouched, including with cleanup enabled. After a network error, an already
+opened file receives any buffered tail if possible. A block write that fails before EOF is an output
 failure; a final-tail failure does not replace an earlier network failure.
 This calibrated file policy does not change stdout buffering. Other profiles
 retain immediate file creation and writes.
+
+For a `CurlProfile` file destination with Content-Disposition selection enabled,
+a valid server filename on a 2xx/3xx response instead opens with exclusive creation before body
+delivery. An existing selected path fails with `OutputFailure` without changing
+it; a new selected file may remain empty after a body failure. `OutputStarted`
+reports the opened path. Other response statuses ignore Content-Disposition and
+use ordinary output selection; enabled HTTP failure policy rejects before opening
+output. This rule does not change the strict or Wget profiles.
+
+The curl command retains that actual path across attempts and disables further
+Content-Disposition selection after opening it. Before an accepted retry, it
+resets an opened regular file to empty; later changed or missing headers cannot
+redirect output to another name. Curl passes per-transfer cleanup as false and
+performs requested cleanup only after final failure, preserving a successful
+retry's result. The shared `FileOutput.remove_on_error` option still controls
+cleanup for its individual transfer; other callers retain that existing API
+behavior. Ordinary initial empty failures must remain separate from empty
+failures after a previous attempt opened and reset the file.
+
+Reset uses released path-based open APIs. It cannot guarantee that a replaced
+pathname still identifies the original descriptor or inode. Public handle-based
+truncation and identity, plus path-replacement regressions, are the unlock
+condition for that narrower [#10 boundary](https://github.com/moonbit-community/cmd/issues/10);
+ordinary file retry is implemented without waiting for those APIs. Current
+Native/Wasm command and fixed-oracle acceptance remains required.
 
 Without a caller-supplied `Accept-Encoding`, requests explicitly use `identity`.
 Caller-supplied values are preserved. The wire adapter does not decode content,

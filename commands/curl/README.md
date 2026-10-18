@@ -39,24 +39,44 @@ The workspace candidate returns status 18 for an incomplete fixed-length or
 chunked response body, 52 for an EOF before any response bytes, and 56 for other
 response-read failures. Connection
 setup failures retain status 7. Bytes already written to stdout remain visible;
-partial files remain unless `--remove-on-error` selects cleanup. Ordinary
-`--retry` does not retry these body failures; `--retry-all-errors` can retry
-them, restarting file output while stdout retains each emitted prefix.
+partial files remain unless `--remove-on-error` selects cleanup after the final
+failed attempt. Ordinary `--retry` does not retry these body failures;
+`--retry-all-errors` can retry
+them. Once a retry is accepted, an already opened regular output file is reset
+to empty before the next request, while stdout retains each emitted prefix.
+An empty failed retry therefore leaves an empty file rather than the previous
+attempt's prefix. Cleanup does not remove the file between retry attempts.
 The pure MoonBit HTTP/1 adapter preserves chunk payload before checking its
 following CRLF and distinguishes an empty reply from an incomplete header.
 The calibrated EOF after a complete 200 status line accepts the complete
 header fields and ignores the unfinished field; malformed complete fields and
 incomplete status lines still fail.
 
-File output opens on the first payload or successful empty completion and uses
-4096-byte buffering. A failed empty body leaves an existing file untouched and
-does not create an absent file, including with `--remove-on-error`. After a
-network error, a buffered tail is flushed if possible; a secondary flush error
+Ordinary file output opens on the first payload or successful empty completion
+and uses 4096-byte buffering. An initial failed empty body leaves an unopened
+existing file untouched and does not create an absent file, including with
+`--remove-on-error`. After a network error, a buffered tail is flushed if possible;
+a secondary flush error
 does not replace the earlier network error. The fixed Linux oracle consequently
 returns 18 for `/dev/full` with an incomplete body below 4096 bytes, but 23 when
 4096 bytes trigger a write failure first. Successful nonempty bodies whose final
 flush fails return 23; successful empty bodies create an empty destination.
-These behaviors still require the current candidate acceptance checks.
+
+With `-O -J`, a valid Content-Disposition filename on a 2xx/3xx response selects
+exclusive file creation before body delivery. An existing selected filename returns 23 and
+remains untouched; a newly created file can remain empty after body failure.
+The calibrated 404/500 responses ignore that filename and use ordinary lazy
+URL-derived output; `-f` returns 22 without opening a transfer file.
+Retries keep the first server-selected filename even if a later response changes
+or omits Content-Disposition. `--remove-on-error` removes an opened selected
+file only after the final failed attempt; a successful retry keeps its result.
+
+Retry reset uses the released path-based file-open APIs. It does not prove that
+the pathname still refers to the same descriptor or inode if another process
+replaces it. Descriptor-based truncation and public file identity remain a
+separate [filesystem boundary](https://github.com/moonbit-community/cmd/issues/10),
+not a prerequisite for the implemented retry algorithm. These behaviors still
+require current Native/Wasm command and fixed-oracle acceptance checks.
 
 A redirect that must resend an already consumed stdin upload fails with status
 65. A separate `--retry-all-errors` attempt can upload the now-empty stdin;

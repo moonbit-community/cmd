@@ -17,16 +17,34 @@ async fn TransferSink::new(
   response : @http.Response,
   profile : TransferProfile,
 ) -> TransferSink {
-  let deferred_open = profile == CurlProfile && output is FileOutput(..)
+  let output = if profile == CurlProfile &&
+    (response.code < 200 || response.code >= 400) {
+    match output {
+      FileOutput(path~, mode~, remove_on_error~, ..) =>
+        FileOutput(path~, mode~, content_disposition=false, remove_on_error~)
+      _ => output
+    }
+  } else {
+    output
+  }
+  let buffered = profile == CurlProfile && output is FileOutput(..)
+  let exclusive = buffered &&
+    output is FileOutput(content_disposition=true, ..) &&
+    response.headers.get("Content-Disposition") is Some(disposition) &&
+    content_disposition_filename(disposition) is Some(filename) &&
+    filename != "" &&
+    @fsops.basename(filename) != "." &&
+    @fsops.basename(filename) != ".."
+  let deferred_open = buffered && !exclusive
   {
     output,
     response,
     deferred_open,
-    buffered: deferred_open,
+    buffered,
     sink: if deferred_open {
       None
     } else {
-      Some(open_sink(output, response))
+      Some(open_sink(output, response, exclusive~))
     },
     started: false,
     pending: [],

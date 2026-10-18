@@ -40,7 +40,7 @@ request/header phases and metadata-limit rejection effects. Those limits are
 interim responses and 1024 trailer fields. These changes remain subject to the
 same command and immutable-oracle evidence; no fixture label establishes
 parity. Proxy CONNECT diagnostics and ordinary repeated request-header option
-semantics remain project work, not unavailable byte APIs. Continued GET with
+semantics remain project work, not unavailable byte APIs. Wget continued GET with
 Content-Disposition now requires HEAD discovery before selecting the destination
 and its resume offset. Observe request order, selected-name reuse and both file
 paths; the lower-level transfer still rejects a direct resumed switch to a
@@ -61,8 +61,24 @@ and trailer EOF acceptance, Wget 416 transfer-output preservation, wrong-Range f
 and complete shorter known-length 200 resume behavior. Curl file cases must observe delayed
 opening, the 4096-byte buffering boundary, retained tail bytes and the order of
 network and output failures. A failed secondary flush records uncertain file
-effects without replacing an earlier network failure; unopened destinations
-remain unchanged, including with remove-on-error. Wget's explicit aggregate
+effects without replacing an earlier network failure. Ordinary unopened
+destinations remain unchanged after an initial empty failure, including with
+remove-on-error. Curl retries additionally require filesystem observations
+before the next response: an accepted retry resets an already opened regular
+file to empty, and remove-on-error removes an opened selected file only after
+final failure. A valid `-O -J` filename on a 2xx/3xx response creates exclusively before body delivery;
+an existing selected filename returns 23 unchanged. Retries keep the first
+server-selected filename when later headers change or omit it. Observe final
+failure, successful retry and absent/existing controls independently. These
+curl-specific lifecycle corrections do not alter strict or Wget profiles.
+Status-selection controls include 200/304 and 404/500: the latter ignore
+Content-Disposition and retain ordinary lazy output, while `-f` returns 22
+without creating a transfer file. Fixed status probes supply expectations only.
+Path-based reset uses released open operations but does not claim descriptor or
+inode identity under concurrent pathname replacement; that remains the narrower
+[#10](https://github.com/moonbit-community/cmd/issues/10) boundary. Fixed-oracle
+probes establish expectations, not candidate Native/Wasm acceptance.
+Wget's explicit aggregate
 `-O` file initialization occurs before requests and requires separate effects
 from the shared 416 path. File buffering does not claim
 stdout parity. Wget does not retry stdin; curl retry-all may send an empty body

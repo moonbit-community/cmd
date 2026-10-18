@@ -205,3 +205,212 @@ async test "curl lazy cleanup leaves unopened destinations untouched after an em
     })
   })
 }
+
+///|
+async test "curl content disposition creates exclusive output before empty body failures" {
+  @async.with_timeout(10000, () => {
+    @async.with_task_group(group => {
+      let token = @async.now().to_string()
+      for profile in [StrictProfile, CurlProfile, WgetProfile] {
+        for existing in [false, true] {
+          let suffix = if profile == StrictProfile {
+            "strict"
+          } else if profile == CurlProfile {
+            "curl"
+          } else {
+            "wget"
+          }
+          let path = "netops-cd-empty-\{token}-\{suffix}-\{existing}.bin"
+          defer @async.protect_from_cancel(() => {
+            if @fs.exists(path) {
+              @fs.remove(path)
+            }
+          })
+          if existing {
+            @fs.write_file(path, b"preserve")
+          }
+          let server = serve_raw_response(
+            group,
+            "HTTP/1.1 200 OK\r\nContent-Disposition: attachment; filename=\"\{path}\"\r\nContent-Length: 9\r\n\r\n",
+          )
+          let opened : Array[String?] = []
+          try
+            transfer(
+              "http://127.0.0.1:\{server.addr.port()}/body",
+              FileOutput(
+                path=path + ".fallback",
+                mode=Truncate,
+                content_disposition=true,
+                remove_on_error=false,
+              ),
+              transfer_options(profile~),
+              observer=event => {
+                if event is OutputStarted(path~, ..) {
+                  opened.push(path)
+                }
+              },
+            )
+          catch {
+            TransferError(kind~, ..) =>
+              assert_eq(
+                kind,
+                if profile == CurlProfile && existing {
+                  OutputFailure
+                } else {
+                  PartialBodyFailure
+                },
+              )
+            error => raise error
+          } noraise {
+            _ =>
+              fail(
+                "an incomplete body or an existing curl destination must fail",
+              )
+          }
+          assert_eq(
+            opened,
+            if profile == CurlProfile && existing {
+              []
+            } else {
+              [Some(path)]
+            },
+          )
+          assert_eq(
+            @fs.read_file(path).binary(),
+            if profile == CurlProfile && existing {
+              b"preserve"
+            } else {
+              b""
+            },
+          )
+          assert_false(@fs.exists(path + ".fallback"))
+        }
+      }
+    })
+  })
+}
+
+///|
+async test "curl content disposition selection follows response status and fail policy" {
+  @async.with_timeout(10000, () => {
+    @async.with_task_group(group => {
+      let token = @async.now().to_string()
+      for status in [200, 304, 404, 500] {
+        for framing in ["empty", "partial", "complete"] {
+          for fail_on_http_error in [false, true] {
+            let stem = "netops-cd-status-\{token}-\{status}-\{framing}-\{fail_on_http_error}"
+            let selected = stem + ".selected"
+            let fallback = stem + ".url"
+            defer @async.protect_from_cancel(() => {
+              for path in [selected, fallback] {
+                if @fs.exists(path) {
+                  @fs.remove(path)
+                }
+              }
+            })
+            let payload = if framing == "complete" { "hello" } else { "" }
+            let length = if framing == "partial" { 9 } else { payload.length() }
+            let server = serve_raw_response(
+              group,
+              "HTTP/1.1 \{status} Fixture\r\nContent-Disposition: attachment; filename=\"\{selected}\"\r\nContent-Length: \{length}\r\n\r\n" +
+              payload,
+            )
+            let opened : Array[String?] = []
+            let failure = try
+              transfer(
+                "http://127.0.0.1:\{server.addr.port()}/" + fallback,
+                FileOutput(
+                  path=fallback,
+                  mode=Truncate,
+                  content_disposition=true,
+                  remove_on_error=false,
+                ),
+                transfer_options(profile=CurlProfile, fail_on_http_error~),
+                observer=event => {
+                  if event is OutputStarted(path~, ..) {
+                    opened.push(path)
+                  }
+                },
+              )
+            catch {
+              TransferError(kind~, ..) => Some(kind)
+              error => raise error
+            } noraise {
+              result => {
+                assert_eq(result.status, status)
+                assert_eq(
+                  result.received,
+                  if status == 304 {
+                    0L
+                  } else {
+                    payload.length().to_int64()
+                  },
+                )
+                None
+              }
+            }
+            let http_failure = fail_on_http_error && status >= 400
+            let partial_failure = status != 304 && framing == "partial"
+            assert_eq(
+              failure,
+              if http_failure {
+                Some(HttpStatusFailure)
+              } else if partial_failure {
+                Some(PartialBodyFailure)
+              } else {
+                None
+              },
+            )
+            let use_disposition = status < 400
+            let creates_output = !http_failure &&
+              (use_disposition || !partial_failure)
+            let chosen = if use_disposition { selected } else { fallback }
+            let untouched = if use_disposition { fallback } else { selected }
+            assert_false(@fs.exists(untouched))
+            assert_eq(@fs.exists(chosen), creates_output)
+            assert_eq(opened, if creates_output { [Some(chosen)] } else { [] })
+            if creates_output {
+              assert_eq(
+                @fs.read_file(chosen).text(),
+                if status == 304 {
+                  ""
+                } else {
+                  payload
+                },
+              )
+            }
+          }
+        }
+      }
+      for profile in [StrictProfile, WgetProfile] {
+        let suffix = if profile == StrictProfile { "strict" } else { "wget" }
+        let selected = "netops-cd-status-\{token}-\{suffix}.selected"
+        let fallback = selected + ".url"
+        defer @async.protect_from_cancel(() => {
+          for path in [selected, fallback] {
+            if @fs.exists(path) {
+              @fs.remove(path)
+            }
+          }
+        })
+        let server = serve_raw_response(
+          group,
+          "HTTP/1.1 404 Not Found\r\nContent-Disposition: attachment; filename=\"\{selected}\"\r\nContent-Length: 5\r\n\r\nhello",
+        )
+        let result = transfer(
+          "http://127.0.0.1:\{server.addr.port()}/" + fallback,
+          FileOutput(
+            path=fallback,
+            mode=Truncate,
+            content_disposition=true,
+            remove_on_error=false,
+          ),
+          transfer_options(profile~),
+        )
+        assert_eq(result.output_path, Some(selected))
+        assert_eq(@fs.read_file(selected).binary(), b"hello")
+        assert_false(@fs.exists(fallback))
+      }
+    })
+  })
+}

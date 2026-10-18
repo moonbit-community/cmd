@@ -16,6 +16,34 @@ pub extend TransferFixtureRequest with Eq::{equal, not_equal}
 pub extend TransferFixtureRequest with ToJson::{to_json}
 
 ///|
+fn transfer_disposition_status_response(path : String) -> String? {
+  for
+    (status, reason) in [
+      (200, "OK"),
+      (304, "Not Modified"),
+      (404, "Not Found"),
+      (500, "Internal Server Error"),
+    ] {
+    for
+      (completion, length, body) in [
+        ("empty-complete", 0, ""),
+        ("empty-incomplete", 9, ""),
+        ("body-complete", 5, "hello"),
+      ] {
+      if path == "/transfer-cd-status-\{status}-\{completion}" {
+        return Some(
+          "HTTP/1.1 \{status} \{reason}\r\nConnection: close\r\n" +
+          "Content-Disposition: attachment; filename=\"selected.bin\"\r\n" +
+          "Content-Length: \{length}\r\n\r\n" +
+          body,
+        )
+      }
+    }
+  }
+  None
+}
+
+///|
 /// These are complete wire responses, including deliberately absent framing
 /// bytes. They must never pass through the HTTP response encoder.
 fn transfer_fixture_response(
@@ -23,6 +51,9 @@ fn transfer_fixture_response(
   range : String?,
   request_method~ : String = "GET",
 ) -> String? {
+  if transfer_disposition_status_response(path) is Some(response) {
+    return Some(response)
+  }
   let fixed = "HTTP/1.1 200 OK\r\nConnection: close\r\n"
   let chunked = fixed + "Transfer-Encoding: chunked\r\n\r\n"
   match path {
@@ -68,6 +99,11 @@ fn transfer_fixture_response(
       Some(
         fixed +
         "Content-Length: 9\r\nContent-Disposition: attachment; filename=wire-partial.bin\r\n\r\nhello",
+      )
+    "/transfer-named-empty" =>
+      Some(
+        fixed +
+        "Content-Disposition: attachment; filename=\"first.bin\"\r\nContent-Length: 9\r\n\r\n",
       )
     "/transfer-resume-name-change" =>
       Some(
@@ -161,30 +197,71 @@ fn transfer_fixture_response(
 }
 
 ///|
+fn transfer_retry_fixture_response(
+  path : String,
+  requests : Array[TransferFixtureRequest]?,
+) -> String? raise {
+  guard [
+    "/transfer-retry-empty", "/transfer-retry-complete", "/transfer-retry-named-empty-changed",
+    "/transfer-retry-named-complete-changed", "/transfer-retry-named-complete-missing",
+  ].contains(path) else {
+    return None
+  }
+  guard requests is Some(requests) else {
+    fail("retry lifecycle fixture requires per-run request capture")
+  }
+  let count = requests.filter(previous => previous.path == path).length()
+  guard count < 2 else {
+    fail("retry lifecycle fixture expects exactly two requests per run")
+  }
+  let disposition = if !path.contains("-named-") {
+    ""
+  } else if count == 0 {
+    "Content-Disposition: attachment; filename=\"first.bin\"\r\n"
+  } else if path.has_suffix("-changed") {
+    "Content-Disposition: attachment; filename=\"second.bin\"\r\n"
+  } else {
+    ""
+  }
+  let content = if count == 0 {
+    "Content-Length: 9\r\n\r\nhello"
+  } else if path.contains("-complete") {
+    "Content-Length: 2\r\n\r\nok"
+  } else {
+    "Content-Length: 9\r\n\r\n"
+  }
+  Some("HTTP/1.1 200 OK\r\nConnection: close\r\n" + disposition + content)
+}
+
+///|
 /// Public passthrough mode writes directly to the underlying TCP connection.
 /// Closing here prevents run_forever from completing a truncated response.
 pub async fn serve_transfer_fixture(
   request : @http.Request,
   connection : @http.ServerConnection,
   requests? : Array[TransferFixtureRequest],
+  before_response? : async () -> Unit,
 ) -> Bool {
   let range = request.headers.get("Range")
   let request_method = oracle_request_name(request)
   let upload = request.path == "/transfer-stdin-retry" ||
     request.path == "/transfer-stdin-redirect" ||
     request.path == "/transfer-stdin-replayed"
-  let body = if upload {
-    if request.headers
-      .get("Expect")
-      .unwrap_or("")
-      .to_lower()
-      .contains("100-continue") {
-      connection..send_response(100, "Continue").end_response()
-    }
-    connection.read_all().binary()
+  let response = if transfer_retry_fixture_response(request.path, requests)
+    is Some(response) {
+    Some(response)
   } else {
-    b""
+    transfer_fixture_response(request.path, range, request_method~)
   }
+  guard upload || response is Some(_) else { return false }
+  if request.headers
+    .get("Expect")
+    .unwrap_or("")
+    .to_lower()
+    .contains("100-continue") {
+    connection..send_response(100, "Continue").end_response()
+  }
+  let body = connection.read_all().binary()
   let response = if upload {
     Some(
       if request.path == "/transfer-stdin-redirect" {
@@ -196,11 +273,14 @@ pub async fn serve_transfer_fixture(
       },
     )
   } else {
-    transfer_fixture_response(request.path, range, request_method~)
+    response
   }
   guard response is Some(response) else { return false }
   if requests is Some(requests) {
     requests.push({ request_method, path: request.path, range, body, })
+  }
+  if before_response is Some(observe) {
+    observe()
   }
   connection.enter_passthrough_mode()
   defer connection.close()

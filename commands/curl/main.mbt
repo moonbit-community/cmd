@@ -339,6 +339,75 @@ fn curl_retry_delay(options : CurlOptions, attempt : Int32) -> Int32 {
 }
 
 ///|
+priv struct CurlTransferOutput {
+  original : @netops.TransferOutput
+  mut opened_path : String?
+}
+
+///|
+fn CurlTransferOutput::for_attempt(
+  self : CurlTransferOutput,
+) -> @netops.TransferOutput {
+  match (self.original, self.opened_path) {
+    (@netops.FileOutput(..), Some(path)) =>
+      @netops.FileOutput(
+        path~,
+        mode=@netops.Append,
+        content_disposition=false,
+        remove_on_error=false,
+      )
+    (@netops.FileOutput(path~, mode~, content_disposition~, ..), None) =>
+      @netops.FileOutput(
+        path~,
+        mode~,
+        content_disposition~,
+        remove_on_error=false,
+      )
+    (output, _) => output
+  }
+}
+
+///|
+fn CurlTransferOutput::observe(
+  self : CurlTransferOutput,
+  event : @netops.TransferEvent,
+) -> Unit {
+  if event is @netops.OutputStarted(path=Some(path), ..) {
+    self.opened_path = Some(path)
+  }
+}
+
+///|
+async fn CurlTransferOutput::reset_for_retry(self : CurlTransferOutput) -> Unit {
+  if self.opened_path is Some(path) {
+    let path = @platform.normalize_input_separators(path)
+    // Released fs APIs reset by pathname; this does not pin the prior handle's
+    // identity across replacement or rename races.
+    if @fs.kind(path, follow_symlink=true) == Regular {
+      let file = @fs.open(path, mode=WriteOnly, create_mode=TruncateExisting)
+      file.close()
+    }
+  }
+}
+
+///|
+async fn CurlTransferOutput::cleanup_after_failure(
+  self : CurlTransferOutput,
+) -> Unit {
+  if self.original is @netops.FileOutput(remove_on_error=true, ..) &&
+    self.opened_path is Some(path) {
+    let path = @platform.normalize_input_separators(path)
+    try {
+      if @fs.kind(path, follow_symlink=true) == Regular {
+        @fs.remove(path)
+      }
+    } catch {
+      _ => ()
+    }
+  }
+}
+
+///|
 async fn curl_transfer_one(
   options : CurlOptions,
   url : String,
@@ -387,6 +456,10 @@ async fn curl_transfer_one(
       return code
     }
   }
+  let transfer_output : CurlTransferOutput = {
+    original: output,
+    opened_path: None,
+  }
   let stdout_terminal = @platform.terminal_output_enabled(
     @platform.IfTerminal,
     @platform.Stdout,
@@ -412,7 +485,7 @@ async fn curl_transfer_one(
     let result = try
       @netops.transfer(
         url,
-        output,
+        transfer_output.for_attempt(),
         @netops.transfer_options(
           profile=@netops.CurlProfile,
           request_method=curl_request_method(options),
@@ -442,6 +515,7 @@ async fn curl_transfer_one(
           basic_credentials?=options.user,
         ),
         observer=event => {
+          transfer_output.observe(event)
           curl_observer(options.head, show_progress, stderr_terminal, event)
         },
       )
@@ -466,10 +540,22 @@ async fn curl_transfer_one(
                 "Warning: transient problem: \{message}. Retrying...\n",
               )
             }
+            transfer_output.reset_for_retry() catch {
+              error => {
+                transfer_output.cleanup_after_failure()
+                if !options.silent || options.show_error {
+                  @stdio.stderr.write(
+                    "curl: (23) cannot reset output for retry: \{error}\n",
+                  )
+                }
+                return 23
+              }
+            }
             @async.sleep(retry_delay)
             continue
           }
         }
+        transfer_output.cleanup_after_failure()
         let code = curl_exit_kind(kind)
         if !options.silent || options.show_error {
           @stdio.stderr.write("curl: (\{code}) \{diagnostic}\n")
@@ -477,6 +563,7 @@ async fn curl_transfer_one(
         return code
       }
       err => {
+        transfer_output.cleanup_after_failure()
         if !options.silent || options.show_error {
           @stdio.stderr.write("curl: (1) \{err}\n")
         }
