@@ -84,7 +84,9 @@ stdin held open, observed exit before closing it, no prompt, and an unchanged
 complete snapshot. The Windows-only rollback package test observes completed
 Native link/junction backups before fault injection and independently checks
 restored link type, target and referents; Wasm must reject before injection.
-No timestamp-based `-u` link-skip acceptance is claimed. The Wasm case and scenario require passing rejection rows,
+Scenario option tags name only their executed CLI rounds; `--update=none`
+retains its existing package regression without a claim that these scenarios
+execute it. No timestamp-based `-u` link-skip acceptance is claimed. The Wasm case and scenario require passing rejection rows,
 ADR-0004, the current support record and the issue #38 host-fix
 unlock condition. They are not backend-pair claims. The junction and link-backup
 package-test exceptions exclude non-Windows hosts only. Missing Windows creation privileges

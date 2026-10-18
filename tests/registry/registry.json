@@ -46234,7 +46234,6 @@
       "coverage": [
         "--backup",
         "-n",
-        "--update=none",
         "mv:SOURCE",
         "mv:DEST"
       ],
@@ -46273,7 +46272,6 @@
       "coverage": [
         "--backup",
         "-n",
-        "--update=none",
         "mv:SOURCE",
         "mv:DEST",
         "-i"
