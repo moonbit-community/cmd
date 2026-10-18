@@ -16,7 +16,9 @@ import {
 
 import {
   "moonbitlang/async/cond_var",
+  "moonbitlang/async/process",
   "moonbitlang/async/socket",
+  "moonbitlang/core/env",
   "moonbitlang/x/fs" @sync_fs,
 } for "wbtest"
 

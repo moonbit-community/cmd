@@ -1,5 +1,68 @@
 ///|
 async test "transfer timeouts identify stalled request headers and body phases" {
+  let marker_name = "MOONCMD_NETOPS_TIMEOUT_PHASE_CHILD"
+  let completed = b"Request:stdin-timeout\nResponseHeaders:timeout\nResponseBody:partial-timeout\n"
+  guard @env.get_env_var(marker_name) is Some(marker_directory) else {
+    guard @env.args().get(0) is Some(program) else {
+      fail("missing timeout phase test artifact path")
+    }
+    let artifact = @fs.realpath(program)
+    let directory = @fs.tmpdir(prefix="netops-timeout-phase-child-")
+    defer @async.protect_from_cancel(() => @fs.rmdir(directory, recursive=true))
+    let directory = @fs.realpath(directory)
+    let marker = directory + "/completed"
+    let stdout_path = directory + "/stdout"
+    let stderr_path = directory + "/stderr"
+    let (input, writer) = @process.write_to_process()
+    // The empty pipe stays open until the child has exited. Request timeout is
+    // therefore caused by real stdin input, independently of socket buffering.
+    defer writer.close()
+    let stdout = @process.redirect_to_file(stdout_path)
+    let stderr = @process.redirect_to_file(stderr_path)
+    let environment : Map[String, String] = Map([])
+    environment[marker_name] = directory
+    let wasm = artifact.has_suffix(".wasm")
+    let args = if wasm {
+      [
+        "--test-args", "{\"package\":\"cli/core/netops\",\"file_and_index\":[[\"phase_wbtest.mbt\",[{\"start\":0,\"end\":1}]]]}",
+        artifact, "--",
+      ]
+    } else {
+      ["phase_wbtest.mbt:0-1"]
+    }
+    // run cancels and reaps the child before the timeout returns. Keep captured
+    // driver records out of the parent test stream to avoid duplicate results.
+    let status = @async.with_timeout_opt(30000, () => {
+      @process.run(
+        if wasm {
+          "moonrun"
+        } else {
+          artifact
+        },
+        args,
+        stdin=input,
+        stdout~,
+        stderr~,
+        extra_env=environment,
+        no_console_window=true,
+        cancel_handler=@process.hard_cancel(),
+      )
+    })
+    // A generated test driver can exit successfully after reporting a failed
+    // assertion, so require a fresh marker written after every child assertion.
+    guard status == Some(0) &&
+      @fs.exists(marker) &&
+      @fs.read_file(marker).binary() == completed else {
+      fail(
+        "isolated timeout phase test did not complete: \{Repr(status)}\n" +
+        @fs.read_file(stdout_path).text() +
+        @fs.read_file(stderr_path).text(),
+      )
+    }
+    return
+  }
+  let marker = marker_directory + "/completed"
+  assert_false(@fs.exists(marker))
   @async.with_timeout(15000, () => {
     @async.with_task_group(group => {
       let directory = @fs.tmpdir(prefix="netops-timeout-phases-")
@@ -31,11 +94,7 @@ async test "transfer timeouts identify stalled request headers and body phases" 
             @async.sleep(10000)
           })
         })
-        let body = if phase == Request {
-          BytesBody(Bytes::from_array(Array::make(32 * 1024 * 1024, b'x')))
-        } else {
-          EmptyBody
-        }
+        let body = if phase == Request { StdinBody } else { EmptyBody }
         let failure = try
           transfer(
             "http://127.0.0.1:\{server.addr.port()}/stall",
@@ -52,12 +111,15 @@ async test "transfer timeouts identify stalled request headers and body phases" 
             ),
           )
         catch {
-          TransferError(kind~, context~, ..) => {
+          TransferError(kind~, message~, context~, ..) => {
             assert_eq(kind, TimeoutFailure)
             guard context is Some(context) else {
               fail("missing timeout context")
             }
             assert_eq(context.phase, phase)
+            if phase == Request {
+              assert_true(message.contains("request body input"))
+            }
             if phase == ResponseBody {
               assert_eq(context.framing, Some(FixedLength(9L)))
               assert_eq(context.received_bytes, 3L)
@@ -84,4 +146,5 @@ async test "transfer timeouts identify stalled request headers and body phases" 
       }
     })
   })
+  @fs.write_file(marker, completed)
 }
