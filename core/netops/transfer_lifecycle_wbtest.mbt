@@ -55,7 +55,7 @@ async test "transfer sink scope closes real files on cancellation and repeated c
         let other = @fs.create(other_path)
         defer other.close()
         sink.close()
-        assert_eq(file.fd(), closed_descriptor)
+        assert_true(file.fd() == closed_descriptor)
         other.write(b"still open")
         assert_eq(@fs.read_file(other_path).binary(), b"still open")
       }
