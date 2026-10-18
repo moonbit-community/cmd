@@ -25551,7 +25551,12 @@
       "source": "tests/runner/scenarios.mbt::network-auth-cookie",
       "case_id": "",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "--cookie-jar",
+        "--load-cookies",
+        "--save-cookies",
+        "--keep-session-cookies"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -25582,7 +25587,12 @@
       "source": "tests/runner/scenarios.mbt::network-auth-cookie-oracle",
       "case_id": "",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "--cookie-jar",
+        "--load-cookies",
+        "--save-cookies",
+        "--keep-session-cookies"
+      ],
       "required_backends": [
         "native",
         "wasm"
