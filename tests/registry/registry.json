@@ -45033,7 +45033,8 @@
       "case_id": "",
       "aliases": [],
       "coverage": [
-        "mv no-clobber and update-none leave a source link and its referent unchanged"
+        "mv no-clobber and update-none leave a source link and its referent unchanged",
+        "--update=none"
       ],
       "required_backends": [
         "native",
