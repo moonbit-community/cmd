@@ -186,7 +186,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/jqlog@0.2.2 metadata contract",
+      "source_version": "workspace cli/jqlog@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: jqlog [options] <query> [input]\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nOptions:\n  -f, --file <path>   Read input text from a file.\n\nNotes:\n  - Input is treated as JSONL/NDJSON with possible non-JSON lines.\n  - Non-JSON lines are skipped.\n  - If [input] is omitted, stdin is used.\n  - If [input] is provided without --file, it is treated as raw text.\n\nExamples:\n  cat logs.ndjson | jqlog '.message'\n  jqlog -f output.txt '.a'\n",
       "expected_stderr_text": ""
     },
@@ -205,8 +205,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/jqlog@0.2.2 metadata contract",
-      "expected_stdout_text": "jqlog 0.2.2\n",
+      "source_version": "workspace cli/jqlog@0.2.3 metadata contract",
+      "expected_stdout_text": "jqlog 0.2.3\n",
       "expected_stderr_text": ""
     }
   ]

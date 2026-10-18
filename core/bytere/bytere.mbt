@@ -26,20 +26,20 @@ pub fn argument(value : String) -> String {
 ///|
 pub struct Pattern {
   regex : Regex
-  groups : Int
+  groups : Int32
 }
 
 ///|
 pub(all) struct Hit {
-  start : Int
-  end : Int
+  start : Int32
+  end : Int32
   groups : Array[String?]
 }
 
 ///|
 /// Compile the regular BRE/ERE subset. Backreferences and non-POSIX engine
 /// extensions are rejected instead of silently changing their meaning.
-pub fn compile(pattern : String, extended? : Bool = false) -> Pattern raise {
+pub fn compile(pattern : String, extended~ : Bool = false) -> Pattern raise {
   let out = StringBuilder()
   let mut i = 0
   let mut bracket = false
@@ -52,7 +52,7 @@ pub fn compile(pattern : String, extended? : Bool = false) -> Pattern raise {
         raise PatternError("trailing backslash in regular expression")
       }
       let e = pattern[i].to_int().unsafe_to_char()
-      if e is ('1'..='9' | '<' | '>' | 'b' | 'B') {
+      if e is ('1'..<='9' | '<' | '>' | 'b' | 'B') {
         raise PatternError(
           "backreferences and word assertions are not supported",
         )
@@ -97,13 +97,17 @@ pub fn compile(pattern : String, extended? : Bool = false) -> Pattern raise {
 }
 
 ///|
-pub fn Pattern::group_count(self : Pattern) -> Int {
+pub fn Pattern::group_count(self : Pattern) -> Int32 {
   self.groups
 }
 
 ///|
 /// Choose the earliest start, then longest match, retaining captures.
-pub fn Pattern::find(self : Pattern, value : String, start? : Int = 0) -> Hit? {
+pub fn Pattern::find(
+  self : Pattern,
+  value : String,
+  start~ : Int32 = 0,
+) -> Hit? {
   if start > value.length() {
     return None
   }

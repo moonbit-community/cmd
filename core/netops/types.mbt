@@ -33,7 +33,7 @@ pub(all) enum RequestBody {
 ///|
 pub(all) enum RedirectPolicy {
   NoRedirects
-  FollowRedirects(Int)
+  FollowRedirects(Int32)
 } derive(Eq, Debug)
 
 ///|
@@ -49,6 +49,19 @@ pub(all) enum TransferFileMode {
   Append
   Unique
 } derive(Eq, Debug)
+
+///|
+pub(all) enum TransferProfile {
+  StrictProfile
+  CurlProfile
+  WgetProfile
+} derive(Eq, Debug)
+
+///|
+pub extend TransferProfile with Eq::{equal, not_equal}
+
+///|
+pub extend TransferProfile with @debug.Debug::{to_repr}
 
 ///|
 pub(all) enum TransferOutput {
@@ -68,19 +81,73 @@ pub(all) enum TransferErrorKind {
   UnsupportedProtocol
   InvalidMethod
   ConnectionFailure
+  EmptyReplyFailure
+  ReceiveFailure
+  PartialBodyFailure
   TlsFailure
   ProxyFailure
   TimeoutFailure
   RedirectFailure
   HttpStatusFailure
   InputFailure
+  RewindFailure
   OutputFailure
   ProtocolFailure
 } derive(Eq, Debug)
 
 ///|
+pub(all) enum TransferPhase {
+  Connection
+  Request
+  ResponseHeaders
+  ResponseBody
+} derive(Eq, Debug)
+
+///|
+pub extend TransferPhase with Eq::{equal, not_equal}
+
+///|
+pub extend TransferPhase with @debug.Debug::{to_repr}
+
+///|
+pub(all) enum ResponseFraming {
+  Bodyless
+  FixedLength(Int64)
+  Chunked
+  CloseDelimited
+} derive(Eq, Debug)
+
+///|
+pub extend ResponseFraming with Eq::{equal, not_equal}
+
+///|
+pub extend ResponseFraming with @debug.Debug::{to_repr}
+
+///|
+/// Counts include only bytes returned by the reader and completed sink writes.
+/// A failed write may have additional effects that the Writer API cannot report.
+pub(all) struct TransferFailureContext {
+  phase : TransferPhase
+  framing : ResponseFraming?
+  received_bytes : Int64
+  committed_bytes : Int64
+  write_outcome_uncertain : Bool
+} derive(Eq, Debug)
+
+///|
+pub extend TransferFailureContext with Eq::{equal, not_equal}
+
+///|
+pub extend TransferFailureContext with @debug.Debug::{to_repr}
+
+///|
 pub(all) suberror TransferError {
-  TransferError(kind~ : TransferErrorKind, message~ : String, status~ : Int?)
+  TransferError(
+    kind~ : TransferErrorKind,
+    message~ : String,
+    status~ : Int32?,
+    context~ : TransferFailureContext?
+  )
 } derive(Eq, Debug)
 
 ///|
@@ -100,22 +167,8 @@ pub fn parse_http_method(value : String) -> HttpMethod raise TransferError {
         kind=InvalidMethod,
         message="unsupported HTTP method '\{value}'",
         status=None,
+        context=None,
       )
-  }
-}
-
-///|
-fn HttpMethod::to_runtime(self : HttpMethod) -> @http.RequestMethod {
-  match self {
-    Get => @http.Get
-    Head => @http.Head
-    Post => @http.Post
-    Put => @http.Put
-    Delete => @http.Delete
-    Connect => @http.Connect
-    Options => @http.Options
-    Trace => @http.Trace
-    Patch => @http.Patch
   }
 }
 
@@ -128,6 +181,7 @@ pub(all) enum CustomCookieMode {
 
 ///|
 pub(all) struct TransferOptions {
+  profile : TransferProfile
   request_method : HttpMethod
   headers : Array[HttpHeader]
   body : RequestBody
@@ -135,12 +189,13 @@ pub(all) struct TransferOptions {
   preserve_method_on_redirect : Bool
   verify_tls : Bool
   proxy_url : String?
-  connect_timeout_ms : Int
-  idle_timeout_ms : Int
-  max_time_ms : Int?
+  connect_timeout_ms : Int32
+  idle_timeout_ms : Int32
+  max_time_ms : Int32?
   fail_on_http_error : Bool
-  http_error_statuses : Array[Int]
+  http_error_statuses : Array[Int32]
   resume_from : Int64?
+  resume_skip_existing : Bool
   keep_output_on_not_modified : Bool
   cookie_jar : CookieJar?
   cookie_data : String?
@@ -152,30 +207,35 @@ pub(all) struct TransferOptions {
 }
 
 ///|
+/// With `resume_skip_existing`, a full response to an ignored Range is consumed
+/// past the retained prefix before appending new bytes. File output must append.
 pub fn transfer_options(
-  request_method? : HttpMethod = Get,
-  headers? : Array[HttpHeader] = [],
-  body? : RequestBody = EmptyBody,
-  redirects? : RedirectPolicy = NoRedirects,
-  preserve_method_on_redirect? : Bool = false,
-  verify_tls? : Bool = true,
+  profile~ : TransferProfile = StrictProfile,
+  request_method~ : HttpMethod = Get,
+  headers~ : Array[HttpHeader] = [],
+  body~ : RequestBody = EmptyBody,
+  redirects~ : RedirectPolicy = NoRedirects,
+  preserve_method_on_redirect~ : Bool = false,
+  verify_tls~ : Bool = true,
   proxy_url? : String,
-  connect_timeout_ms? : Int = 30_000,
-  idle_timeout_ms? : Int = 30_000,
-  max_time_ms? : Int,
-  fail_on_http_error? : Bool = false,
-  http_error_statuses? : Array[Int] = [],
+  connect_timeout_ms~ : Int32 = 30_000,
+  idle_timeout_ms~ : Int32 = 30_000,
+  max_time_ms? : Int32,
+  fail_on_http_error~ : Bool = false,
+  http_error_statuses~ : Array[Int32] = [],
   resume_from? : Int64,
-  keep_output_on_not_modified? : Bool = false,
+  resume_skip_existing~ : Bool = false,
+  keep_output_on_not_modified~ : Bool = false,
   cookie_jar? : CookieJar,
   cookie_data? : String,
-  custom_cookie_mode? : CustomCookieMode = SeparateFields,
-  custom_cookie_cross_origin? : Bool = false,
+  custom_cookie_mode~ : CustomCookieMode = SeparateFields,
+  custom_cookie_cross_origin~ : Bool = false,
   basic_credentials? : String,
-  basic_preemptive? : Bool = true,
-  basic_credential_scope? : BasicCredentialScope = InitialOrigin,
+  basic_preemptive~ : Bool = true,
+  basic_credential_scope~ : BasicCredentialScope = InitialOrigin,
 ) -> TransferOptions {
   {
+    profile,
     request_method,
     headers,
     body,
@@ -189,6 +249,7 @@ pub fn transfer_options(
     fail_on_http_error,
     http_error_statuses,
     resume_from,
+    resume_skip_existing,
     keep_output_on_not_modified,
     cookie_jar,
     cookie_data,
@@ -204,12 +265,13 @@ pub fn transfer_options(
 pub(all) enum TransferEvent {
   ResponseStarted(
     url~ : String,
-    status~ : Int,
+    status~ : Int32,
     reason~ : String,
     headers~ : Array[HttpHeader],
     content_length~ : Int64?
   )
-  Redirected(status~ : Int, from~ : String, to~ : String)
+  Redirected(status~ : Int32, from~ : String, to~ : String)
+  OutputStarted(path~ : String?, response_offset~ : Int64)
   Progress(received~ : Int64, content_length~ : Int64?)
   Completed(received~ : Int64, content_length~ : Int64?)
 } derive(Debug)
@@ -218,12 +280,12 @@ pub(all) enum TransferEvent {
 pub(all) struct TransferResult {
   requested_url : String
   effective_url : String
-  status : Int
+  status : Int32
   reason : String
   headers : Array[HttpHeader]
   received : Int64
   output_path : String?
-  redirects : Int
+  redirects : Int32
 }
 
 ///|
@@ -235,6 +297,16 @@ pub fn TransferResult::header(self : TransferResult, name : String) -> String? {
     }
   }
   None
+}
+
+///|
+pub fn TransferResult::content_disposition_filename(
+  self : TransferResult,
+) -> String? {
+  match self.header("Content-Disposition") {
+    Some(value) => content_disposition_filename(value).map(@fsops.basename)
+    None => None
+  }
 }
 
 ///|

@@ -124,7 +124,7 @@ fn validate_manifest(manifest : Manifest) -> Array[String] {
               "\{fixture.id}: regular fixture cannot have a symlink target",
             )
           }
-        Some("symlink") | Some("hardlink") => {
+        Some("symlink" | "symbolic-link" | "junction" | "hardlink") => {
           guard file.target is Some(target) && target != "" else {
             failures.push("\{fixture.id}: symlink fixture needs a target")
             continue

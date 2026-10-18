@@ -225,9 +225,9 @@ async fn expand_startup_path(
 async fn expand_word(
   word : Word,
   context : Context,
-  split? : Bool = true,
-  pathname? : Bool = true,
-  preserve_pattern? : Bool = false,
+  split~ : Bool = true,
+  pathname~ : Bool = true,
+  preserve_pattern~ : Bool = false,
 ) -> Array[String] raise ShellError {
   let fields : Array[String] = []
   let current = StringBuilder()

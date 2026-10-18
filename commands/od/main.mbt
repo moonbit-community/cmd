@@ -91,7 +91,7 @@ fn settings(parsed : @cli.ParsedArgs) -> DumpState raise OdError {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("od 0.1.1\n")
+    @stdio.stdout.write("od 0.1.2\n")
     return
   }
   let args : Array[String] = []

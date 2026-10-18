@@ -9,20 +9,20 @@ priv enum SetToken {
   Dash
   Class(String, Array[Byte])
   Equiv(Byte)
-  Repeat(Byte, Int?)
+  Repeat(Byte, Int32?)
 }
 
 ///|
 priv struct ExpandedSet {
   bytes : Array[Byte]
-  classes : Array[(Int, String)]
+  classes : Array[(Int32, String)]
   has_equivalence : Bool
-  indefinite_repeats : Int
+  indefinite_repeats : Int32
   warnings : Array[String]
 }
 
 ///|
-fn bytes_to_ascii(raw : Bytes, start : Int, end : Int) -> String {
+fn bytes_to_ascii(raw : Bytes, start : Int32, end : Int32) -> String {
   let out = StringBuilder()
   for index in start..<end {
     out.write_char(raw[index].to_int().unsafe_to_char())
@@ -38,10 +38,10 @@ fn is_octal(byte : Byte) -> Bool {
 ///|
 fn parse_escaped_byte(
   raw : Bytes,
-  start : Int,
+  start : Int32,
   spec : String,
   warnings : Array[String],
-) -> (Byte, Int) raise CliError {
+) -> (Byte, Int32) raise CliError {
   if start + 1 >= raw.length() {
     raise CliError("tr: missing character after backslash in: '\{spec}'")
   }
@@ -84,11 +84,11 @@ fn parse_escaped_byte(
 }
 
 ///|
-fn parse_repeat_count(text : String, spec : String) -> Int raise CliError {
+fn parse_repeat_count(text : String, spec : String) -> Int32 raise CliError {
   let base = if text.length() > 1 && text[0] == '0' { 8 } else { 10 }
   let mut value = 0
   for char in text {
-    let digit = if char is ('0'..='9') {
+    let digit = if char is ('0'..<='9') {
       char.to_int() - '0'.to_int()
     } else {
       -1
@@ -104,7 +104,7 @@ fn parse_repeat_count(text : String, spec : String) -> Int raise CliError {
 ///|
 fn class_bytes(name : String) -> Array[Byte] raise CliError {
   let out : Array[Byte] = []
-  fn push_range(lo : Int, hi : Int) {
+  fn push_range(lo : Int32, hi : Int32) {
     for code in lo..<=hi {
       out.push(code.to_byte())
     }
@@ -242,7 +242,7 @@ fn parse_set_tokens(
 ///|
 fn expand_set_details(
   spec : String,
-  fill_length : Int?,
+  fill_length : Int32?,
 ) -> ExpandedSet raise CliError {
   let warnings : Array[String] = []
   let tokens = parse_set_tokens(spec, warnings)
@@ -285,7 +285,7 @@ fn expand_set_details(
     raise CliError("tr: only one [c*] repeat construct may appear in SET2")
   }
   let bytes : Array[Byte] = []
-  let classes : Array[(Int, String)] = []
+  let classes : Array[(Int32, String)] = []
   let mut has_equivalence = false
   let mut k = 0
   while k < tokens.length() {
@@ -443,7 +443,7 @@ async fn transform_stream(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("tr 0.2.1\n")
+    @stdio.stdout.write("tr 0.2.2\n")
     return
   }
   let args = @env.args()[1:]

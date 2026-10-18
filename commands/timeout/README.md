@@ -1,6 +1,6 @@
 # timeout
 
-Workspace version: **0.2.0 candidate, unpublished**. This package remains
+Workspace version: **0.2.1 candidate, unpublished**. This package remains
 local-only; see the [support record](../../docs/compatibility.md).
 
 Run one command with a millisecond-precise wall-clock limit. Durations accept

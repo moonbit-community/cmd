@@ -1,13 +1,13 @@
 ///|
 enum Pattern {
-  Line(Int)
-  Expression(Regex, Int, Bool)
+  Line(Int32)
+  Expression(Regex, Int32, Bool)
 }
 
 ///|
 struct Control {
   pattern : Pattern
-  repeats : Int?
+  repeats : Int32?
 }
 
 ///|
@@ -27,7 +27,7 @@ fn basic_expression(value : String) -> String raise {
         fail("trailing backslash in expression")
       }
       let escaped = chars[index]
-      if escaped is ('1'..='9' | 'b' | 'B' | '<' | '>' | 'w' | 'W' | 's' | 'S') {
+      if escaped is ('1'..<='9' | 'b' | 'B' | '<' | '>' | 'w' | 'W' | 's' | 'S') {
         fail("backreferences and word extensions are unsupported")
       }
       if escaped is ('(' | ')' | '{' | '}' | '+' | '?' | '|') {
@@ -116,7 +116,7 @@ fn parse_controls(values : ArrayView[String]) -> Array[Control] raise {
 }
 
 ///|
-fn line_starts(data : Bytes) -> Array[Int] {
+fn line_starts(data : Bytes) -> Array[Int32] {
   let result = [0]
   for index in 0..<data.length() {
     if data[index] == b'\n' {
@@ -130,7 +130,7 @@ fn line_starts(data : Bytes) -> Array[Int] {
 }
 
 ///|
-fn line_text(data : Bytes, start : Int, end : Int) -> String {
+fn line_text(data : Bytes, start : Int32, end : Int32) -> String {
   let output = StringBuilder()
   let end = if end > start && data[end - 1] == b'\n' { end - 1 } else { end }
   for index in start..<end {

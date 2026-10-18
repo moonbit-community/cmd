@@ -3,7 +3,7 @@
 Malformed `--argjson` input returns status 2 and the jq 1.8.2 argument-error
 diagnostic, including its help/manual guidance; no filter output is emitted.
 
-Version **0.2.2** behavior is documented here. The
+Version **0.2.3** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -62,7 +62,7 @@ the `--stream` event representation, and every jq 1.8.2 diagnostic are not claim
 
 ## Standalone metadata
 
-Standalone `--version` prints exactly `jq 0.2.2` followed by one
+Standalone `--version` prints exactly `jq 0.2.3` followed by one
 newline. Standalone `--help` starts with `Usage: jq`, lists both
 metadata options, and ends with a newline. Both write to stdout, leave stdin
 unread, and exit with status 0. Exact-version publication and verification

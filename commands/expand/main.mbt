@@ -4,11 +4,11 @@ priv suberror ExpandError {
 }
 
 ///|
-fn parse_stops(text : String) -> Array[Int] raise ExpandError {
+fn parse_stops(text : String) -> Array[Int32] raise ExpandError {
   if text == "" {
     raise ExpandError("invalid tab size")
   }
-  let stops : Array[Int] = []
+  let stops : Array[Int32] = []
   for part in text.split(",") {
     if part.trim() == "" {
       raise ExpandError("invalid tab size")
@@ -28,7 +28,7 @@ fn parse_stops(text : String) -> Array[Int] raise ExpandError {
 }
 
 ///|
-fn next_stop(column : Int, stops : Array[Int]) -> Int? {
+fn next_stop(column : Int32, stops : Array[Int32]) -> Int32? {
   for stop in stops {
     if stop > column {
       return Some(stop)
@@ -42,7 +42,11 @@ fn next_stop(column : Int, stops : Array[Int]) -> Int? {
 }
 
 ///|
-fn expand_bytes(data : Bytes, initial_only : Bool, stops : Array[Int]) -> Bytes {
+fn expand_bytes(
+  data : Bytes,
+  initial_only : Bool,
+  stops : Array[Int32],
+) -> Bytes {
   let output : Array[Byte] = []
   let mut column = 0
   let mut seen_nonblank = false
@@ -109,7 +113,7 @@ async fn read_input(path : String) -> Bytes {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("expand 0.1.2\n")
+    @stdio.stdout.write("expand 0.1.3\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [

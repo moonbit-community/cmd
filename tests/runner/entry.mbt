@@ -253,7 +253,8 @@ async fn run_driver() -> Unit {
     }
     let available = [..all, ..registered_cohort_cases(registry)]
     let selected = @testkit.select_cases(available, commands, ids).filter(item => {
-      case_in_suites(item, suites)
+      case_in_suites(item, suites) &&
+      registered_scenario_backend_selected(registry, item, backend, ids)
     })
     if selected.is_empty() {
       fail("empty selection for requested suites")

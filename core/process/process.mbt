@@ -32,7 +32,7 @@ pub(all) enum LaunchFailure {
 } derive(Eq, Debug)
 
 ///|
-pub fn launch_failure_status(failure : LaunchFailure) -> Int {
+pub fn launch_failure_status(failure : LaunchFailure) -> Int32 {
   match failure {
     CommandNotFound => 127
     CommandNotInvokable => 126
@@ -43,7 +43,7 @@ pub fn launch_failure_status(failure : LaunchFailure) -> Int {
 pub fn child(
   program : String,
   args : Array[String],
-  context? : ExecutionContext = ExecutionContext::current(),
+  context~ : ExecutionContext = ExecutionContext::current(),
 ) -> ChildSpec {
   { program, args, context, }
 }
@@ -54,7 +54,7 @@ pub async fn run(
   stdin? : &@async_process.ProcessInput,
   stdout? : &@async_process.ProcessOutput,
   stderr? : &@async_process.ProcessOutput,
-) -> Int {
+) -> Int32 {
   @async_process.run(
     spec.program,
     spec.args,
@@ -77,7 +77,7 @@ pub async fn redirect_from_file(path : String) -> &@async_process.ProcessInput {
 ///|
 pub async fn redirect_to_file(
   path : String,
-  append? : Bool = false,
+  append~ : Bool = false,
 ) -> &@async_process.ProcessOutput {
   @async_process.redirect_to_file(path, append~)
 }

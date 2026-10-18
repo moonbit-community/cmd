@@ -4,7 +4,7 @@ priv suberror CliError {
 }
 
 ///|
-fn pad_left(text : String, width : Int) -> String {
+fn pad_left(text : String, width : Int32) -> String {
   let sb = StringBuilder()
   for _ in 0..<(width - text.length()) {
     sb.write_char(' ')
@@ -14,7 +14,7 @@ fn pad_left(text : String, width : Int) -> String {
 }
 
 ///|
-fn parse_count(text : String, option : String) -> Int raise CliError {
+fn parse_count(text : String, option : String) -> Int32 raise CliError {
   let count = @string.parse_int(text) catch {
     _ => raise CliError("uniq: invalid number of \{option}: '\{text}'")
   }
@@ -32,9 +32,9 @@ fn is_blank(byte : Byte) -> Bool {
 ///|
 fn comparison_key(
   line : Bytes,
-  skip_fields : Int,
-  skip_chars : Int,
-  check_chars : Int?,
+  skip_fields : Int32,
+  skip_chars : Int32,
+  check_chars : Int32?,
   ignore_case : Bool,
 ) -> Bytes {
   let mut start = 0
@@ -46,9 +46,9 @@ fn comparison_key(
       start += 1
     }
   }
-  start = Int::min(line.length(), start + skip_chars)
+  start = Int32::min(line.length(), start + skip_chars)
   let end = match check_chars {
-    Some(width) => Int::min(line.length(), start + width)
+    Some(width) => Int32::min(line.length(), start + width)
     None => line.length()
   }
   if !ignore_case {
@@ -71,7 +71,7 @@ fn comparison_key(
 ///|
 async fn write_group(
   line : Bytes,
-  count : Int,
+  count : Int32,
   show_count : Bool,
   only_repeated : Bool,
   only_unique : Bool,
@@ -102,9 +102,9 @@ async fn process_reader(
   only_repeated : Bool,
   only_unique : Bool,
   ignore_case : Bool,
-  skip_fields : Int,
-  skip_chars : Int,
-  check_chars : Int?,
+  skip_fields : Int32,
+  skip_chars : Int32,
+  check_chars : Int32?,
   delimiter : Byte,
 ) -> Unit {
   let scanner = @stream.LineScanner::new(reader, delimiter~)
@@ -145,7 +145,7 @@ async fn process_reader(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("uniq 0.2.1\n")
+    @stdio.stdout.write("uniq 0.2.2\n")
     return
   }
   let args = @env.args()[1:]

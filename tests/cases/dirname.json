@@ -159,7 +159,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/dirname@0.2.1 metadata contract",
+      "source_version": "workspace cli/dirname@0.2.2 metadata contract",
       "expected_stdout_text": "Usage: dirname [-z] NAME...\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -178,8 +178,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/dirname@0.2.1 metadata contract",
-      "expected_stdout_text": "dirname 0.2.1\n",
+      "source_version": "workspace cli/dirname@0.2.2 metadata contract",
+      "expected_stdout_text": "dirname 0.2.2\n",
       "expected_stderr_text": ""
     }
   ]

@@ -6,16 +6,16 @@ priv suberror OdError {
 ///|
 struct Format {
   kind : Char
-  size : Int
+  size : Int32
   trailer : Bool
 }
 
 ///|
 fn number(
   value : UInt64,
-  radix : Int,
-  width : Int,
-  fill? : Char = '0',
+  radix : Int32,
+  width : Int32,
+  fill~ : Char = '0',
 ) -> String {
   let digits = "0123456789abcdef"
   let out : Array[Char] = []
@@ -38,7 +38,7 @@ fn number(
 }
 
 ///|
-fn spaces(count : Int) -> String {
+fn spaces(count : Int32) -> String {
   let sb = StringBuilder()
   for _ in 0..<count {
     sb.write_char(' ')
@@ -98,7 +98,7 @@ fn parse_formats(text : String) -> Array[Format] raise OdError {
 }
 
 ///|
-fn Format::width(self : Format) -> Int {
+fn Format::width(self : Format) -> Int32 {
   match self.kind {
     'a' | 'c' => 3
     'x' => self.size * 2
@@ -151,7 +151,7 @@ fn character(byte : Byte, named : Bool) -> String {
 }
 
 ///|
-fn value_at(data : Bytes, start : Int, size : Int, big : Bool) -> UInt64 {
+fn value_at(data : Bytes, start : Int32, size : Int32, big : Bool) -> UInt64 {
   let mut result = 0UL
   for i in 0..<size {
     let byte = if start + i < data.length() {
@@ -169,7 +169,7 @@ fn value_at(data : Bytes, start : Int, size : Int, big : Bool) -> UInt64 {
 fn Format::field(
   self : Format,
   data : Bytes,
-  start : Int,
+  start : Int32,
   big : Bool,
 ) -> String {
   if self.kind == 'a' || self.kind == 'c' {
@@ -199,7 +199,7 @@ fn Format::field(
 }
 
 ///|
-fn address(offset : Int64, base : Int) -> String {
+fn address(offset : Int64, base : Int32) -> String {
   if base == 0 {
     ""
   } else {
@@ -211,9 +211,9 @@ fn address(offset : Int64, base : Int) -> String {
 fn render_row(
   data : Bytes,
   offset : Int64,
-  width : Int,
+  width : Int32,
   formats : Array[Format],
-  base : Int,
+  base : Int32,
   big : Bool,
 ) -> String {
   let mut line_width = 0

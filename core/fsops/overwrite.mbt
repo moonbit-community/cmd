@@ -76,7 +76,7 @@ fn is_numbered_backup(name : String, base : String) -> Bool {
     return false
   }
   for digit in digits {
-    if !(digit is ('0'..='9')) {
+    if !(digit is ('0'..<='9')) {
       return false
     }
   }
@@ -112,7 +112,7 @@ async fn next_numbered_backup(path : String) -> String {
 pub async fn select_backup_path(
   path : String,
   control : BackupControl,
-  suffix? : String = "~",
+  suffix~ : String = "~",
 ) -> String? {
   match control {
     NoBackup => None
@@ -131,7 +131,7 @@ pub async fn select_backup_path(
 pub async fn backup_destination(
   path : String,
   control : BackupControl,
-  suffix? : String = "~",
+  suffix~ : String = "~",
 ) -> String? {
   guard kind_if_exists(path) is Some(_) else { return None }
   guard select_backup_path(path, control, suffix~) is Some(backup) else {

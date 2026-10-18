@@ -114,6 +114,8 @@ pub async fn seal_oracle_profile(String, String, expected_profile_path? : String
 
 pub fn select_cases(ArrayView[Case], ArrayView[String], ArrayView[String]) -> Array[Case] raise Failure
 
+pub async fn serve_transfer_fixture(@http.Request, @http.ServerConnection, requests? : Array[TransferFixtureRequest]) -> Bool
+
 pub fn sha256_bytes(Bytes) -> String
 
 pub fn sha256_text(String) -> String
@@ -346,6 +348,17 @@ pub(all) struct TimedRun {
   timed_out : Bool
   cleanup_error : String?
 }
+
+pub(all) struct TransferFixtureRequest {
+  request_method : String
+  path : String
+  range : String?
+  body : Bytes
+} derive(Eq, ToJson, @debug.Debug)
+pub fn TransferFixtureRequest::equal(Self, Self) -> Bool
+pub fn TransferFixtureRequest::not_equal(Self, Self) -> Bool
+pub fn TransferFixtureRequest::to_json(Self) -> Json
+pub fn TransferFixtureRequest::to_repr(Self) -> @debug.Repr
 
 // Type aliases
 

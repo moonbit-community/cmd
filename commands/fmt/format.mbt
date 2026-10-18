@@ -1,13 +1,13 @@
 ///|
 struct Word {
   value : String
-  space : Int
+  space : Int32
   period : Bool
   sentence_end : Bool
 }
 
 ///|
-fn words(line : String, indent : Int, uniform : Bool) -> Array[Word] {
+fn words(line : String, indent : Int32, uniform : Bool) -> Array[Word] {
   let result : Array[Word] = []
   let mut i = 0
   let mut col = 0
@@ -52,20 +52,20 @@ fn words(line : String, indent : Int, uniform : Bool) -> Array[Word] {
 
 ///|
 fn punctuation(c : UInt16) -> Bool {
-  c is ('!'..='/' | ':'..='@' | '['..='`' | '{'..='~')
+  c is ('!'..<='/' | ':'..<='@' | '['..<='`' | '{'..<='~')
 }
 
 ///|
-fn square(value : Int) -> Int64 {
+fn square(value : Int32) -> Int64 {
   value.to_int64() * value.to_int64()
 }
 
 ///|
 fn paragraph(
   items : Array[Word],
-  indent : Int,
-  width : Int,
-  goal : Int,
+  indent : Int32,
+  width : Int32,
+  goal : Int32,
   tabs : Bool,
 ) -> String {
   if items.is_empty() {
@@ -151,8 +151,8 @@ fn paragraph(
 ///|
 fn format(
   data : Bytes,
-  width : Int,
-  goal : Int,
+  width : Int32,
+  goal : Int32,
   split : Bool,
   uniform : Bool,
 ) -> Bytes {

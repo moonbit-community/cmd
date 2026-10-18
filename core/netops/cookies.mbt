@@ -74,10 +74,10 @@ fn cookie_date(value : String) -> Int64? {
   if !token.is_empty() {
     tokens.push(token.to_string())
   }
-  let mut day : Int? = None
-  let mut month : Int? = None
-  let mut year : Int? = None
-  let mut clock : (Int, Int, Int)? = None
+  let mut day : Int32? = None
+  let mut month : Int32? = None
+  let mut year : Int32? = None
+  let mut clock : (Int32, Int32, Int32)? = None
   let months = [
     "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov",
     "dec",
@@ -155,7 +155,7 @@ fn CookieJar::replace(
   cookie : StoredCookie,
   now : Int64,
 ) -> Unit {
-  let mut index : Int? = None
+  let mut index : Int32? = None
   for position, old in self.entries {
     if old.name == cookie.name &&
       old.domain == cookie.domain &&
@@ -313,7 +313,7 @@ pub fn CookieJar::load_netscape(self : CookieJar, text : String) -> Unit {
 ///|
 pub fn CookieJar::netscape(
   self : CookieJar,
-  include_session? : Bool = true,
+  include_session~ : Bool = true,
 ) -> String {
   let now = @fsops.current_timestamp().seconds
   let out = StringBuilder()
@@ -350,7 +350,7 @@ pub async fn CookieJar::load(self : CookieJar, path : String) -> Unit {
 pub async fn CookieJar::save(
   self : CookieJar,
   path : String,
-  include_session? : Bool = true,
+  include_session~ : Bool = true,
 ) -> Unit {
   let text = self.netscape(include_session~)
   if path == "-" {

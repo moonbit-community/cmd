@@ -20,7 +20,7 @@ fn split_fields(line : String, separator : String?) -> Array[String] {
 ///|
 // Input is converted to the GNU/Linux C-locale byte representation before
 // layout. Control bytes are preserved but occupy no printable cells.
-fn display_width(field : String, table? : Bool = false) -> Int {
+fn display_width(field : String, table~ : Bool = false) -> Int32 {
   let mut width = 0
   let mut i = 0
   while i < field.length() {
@@ -50,7 +50,7 @@ fn table(
   output_separator : String,
 ) -> String {
   let rows = lines.map(line => split_fields(line, separator))
-  let widths : Array[Int] = []
+  let widths : Array[Int32] = []
   for row in rows {
     for index, field in row {
       while widths.length() <= index {
@@ -77,7 +77,7 @@ fn table(
 }
 
 ///|
-fn columns(lines : Array[String], width : Int, fill_rows : Bool) -> String {
+fn columns(lines : Array[String], width : Int32, fill_rows : Bool) -> String {
   if lines.is_empty() {
     return ""
   }
@@ -168,7 +168,7 @@ fn help_message() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("column 0.1.2\n")
+    @stdio.stdout.write("column 0.1.3\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [

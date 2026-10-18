@@ -16,7 +16,7 @@ fn help_message() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("fold 0.1.1\n")
+    @stdio.stdout.write("fold 0.1.2\n")
     return
   }
   let args : Array[String] = []
@@ -28,7 +28,7 @@ async fn main {
     if !operands_only &&
       arg.length() > 1 &&
       arg[0] == '-' &&
-      arg[1] is ('0'..='9') {
+      arg[1] is ('0'..<='9') {
       args.push("--width=" + arg[1:].to_owned())
     } else {
       args.push(arg)

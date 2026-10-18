@@ -25,7 +25,7 @@ pub(all) struct FileMetadata {
   kind : @fs.FileKind
   size : Int64?
   mtime_seconds : Int64
-  mtime_nanoseconds : Int
+  mtime_nanoseconds : Int32
 } derive(Eq, Debug)
 
 ///|
@@ -121,7 +121,7 @@ pub fn protects_working_directory(path : String) -> Bool {
 /// by default. An explicitly named working directory is not an extra policy.
 pub fn protects_removal_operand(
   path : String,
-  preserve_root? : Bool = true,
+  preserve_root~ : Bool = true,
 ) -> Bool {
   let normalized = if @platform.is_windows() {
     path.replace_all(old="\\", new="/")
@@ -153,7 +153,7 @@ pub async fn kind_if_exists(path : String) -> @fs.FileKind? {
 ///|
 pub async fn metadata_if_exists(
   path : String,
-  follow_symlink? : Bool = false,
+  follow_symlink~ : Bool = false,
 ) -> FileMetadata? {
   let path = @platform.normalize_input_separators(path)
   let kind = @fs.kind(path, follow_symlink~) catch {
@@ -175,7 +175,7 @@ pub async fn metadata_if_exists(
 pub async fn open_output(
   path : String,
   output_mode : OutputMode,
-  permission? : Int = 0o644,
+  permission~ : Int32 = 0o644,
 ) -> @fs.File {
   let path = @platform.normalize_input_separators(path)
   match output_mode {
@@ -201,7 +201,7 @@ pub async fn open_output(
 /// appropriate for their upstream.
 pub async fn open_unique_numbered_output(
   path : String,
-  permission? : Int = 0o644,
+  permission~ : Int32 = 0o644,
 ) -> (String, @fs.File) {
   let path = @platform.normalize_input_separators(path)
   for suffix = 0; ; suffix = suffix + 1 {
@@ -240,7 +240,7 @@ pub async fn cleanup_file_if_exists(path : String) -> Unit {
 pub async fn commit_temporary_file(
   temporary : String,
   destination : String,
-  replace? : Bool = true,
+  replace~ : Bool = true,
 ) -> Unit {
   errdefer (cleanup_file_if_exists(temporary) catch { _ => () })
   @fs.rename(temporary, destination, replace~)
@@ -454,7 +454,7 @@ pub async fn copy_path_with_links(
   recursive : Bool,
   replace : Bool,
   traversal : LinkTraversal,
-  preserve_permissions? : Bool = true,
+  preserve_permissions~ : Bool = true,
 ) -> Bool {
   preflight_copy_path(
     source,
@@ -478,7 +478,7 @@ pub async fn preflight_copy_path(
   destination : String,
   recursive : Bool,
   traversal : LinkTraversal,
-  preserve_permissions? : Bool = true,
+  preserve_permissions~ : Bool = true,
 ) -> Unit {
   let source = @platform.normalize_input_separators(source)
   let destination = @platform.normalize_input_separators(destination)

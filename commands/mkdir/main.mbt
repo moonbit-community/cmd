@@ -1,5 +1,5 @@
 ///|
-fn parse_mode(text : String) -> Int raise {
+fn parse_mode(text : String) -> Int32 raise {
   let digits = if text.has_prefix("0o") || text.has_prefix("0O") {
     text[2:].to_owned()
   } else {
@@ -10,7 +10,7 @@ fn parse_mode(text : String) -> Int raise {
   }
   let mut value = 0
   for digit in digits {
-    if !(digit is ('0'..='7')) {
+    if !(digit is ('0'..<='7')) {
       fail("invalid mode")
     }
     value = value * 8 + digit.to_int() - '0'.to_int()
@@ -25,7 +25,7 @@ fn parse_mode(text : String) -> Int raise {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("mkdir 0.2.1\n")
+    @stdio.stdout.write("mkdir 0.2.2\n")
     return
   }
   let args = @env.args()[1:]

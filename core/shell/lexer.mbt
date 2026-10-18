@@ -1,11 +1,11 @@
 ///|
 fn is_name_start(char : Char) -> Bool {
-  char == '_' || char is ('a'..='z' | 'A'..='Z')
+  char == '_' || char is ('a'..<='z' | 'A'..<='Z')
 }
 
 ///|
 fn is_name_char(char : Char) -> Bool {
-  is_name_start(char) || char is ('0'..='9')
+  is_name_start(char) || char is ('0'..<='9')
 }
 
 ///|
@@ -17,7 +17,7 @@ fn is_shell_space(char : Char) -> Bool {
 fn flush_literal(
   parts : Array[WordPart],
   literal : StringBuilder,
-  quoted? : Bool = false,
+  quoted~ : Bool = false,
 ) -> Unit {
   if !literal.is_empty() {
     parts.push(
@@ -49,9 +49,9 @@ fn push_word(
 ///|
 fn parse_dollar(
   chars : Array[Char],
-  start : Int,
+  start : Int32,
   quoted : Bool,
-) -> (WordPart?, Int) raise ShellError {
+) -> (WordPart?, Int32) raise ShellError {
   if start + 1 >= chars.length() {
     return (None, start + 1)
   }
@@ -60,7 +60,7 @@ fn parse_dollar(
     '#' => (Some(ArgCount(quoted)), start + 2)
     '@' => (Some(AllArgs(quoted, false)), start + 2)
     '*' => (Some(AllArgs(quoted, true)), start + 2)
-    '0'..='9' as digit =>
+    '0'..<='9' as digit =>
       (Some(Positional(digit.to_int() - '0'.to_int(), quoted)), start + 2)
     '(' => {
       let arithmetic = chars.get(start + 2) == Some('(')
@@ -191,7 +191,7 @@ fn parse_dollar(
 ///|
 fn lex(
   script : String,
-  fragment? : Bool = false,
+  fragment~ : Bool = false,
 ) -> Array[Token] raise ShellError {
   let chars : Array[Char] = script.iter().collect()
   let tokens : Array[Token] = []

@@ -3,7 +3,7 @@
 /// uses checked 64-bit TZif transitions, including POSIX future rules.
 pub struct Zone {
   priv types : Array[Offset]
-  priv transitions : Array[(Int64, Int)]
+  priv transitions : Array[(Int64, Int32)]
   priv future : Rules?
 }
 
@@ -17,7 +17,7 @@ fn from_rules(rules : Rules) -> Zone {
 }
 
 ///|
-pub async fn load(utc? : Bool = false) -> Zone {
+pub async fn load(utc~ : Bool = false) -> Zone {
   let tz = @env.get_env_var("TZ")
   if utc || tz is Some("" | "UTC" | "UTC0" | "GMT" | "GMT0") {
     let name = if !utc && tz is Some("GMT" | "GMT0") { "GMT" } else { "UTC" }
@@ -75,7 +75,7 @@ fn Zone::offset(self : Zone, seconds : Int64) -> Offset raise {
 pub fn Zone::at_unix(
   self : Zone,
   seconds : Int64,
-  nanosecond? : Int = 0,
+  nanosecond~ : Int32 = 0,
 ) -> @time.ZonedDateTime raise {
   let offset = self.offset(seconds)
   let zone = @time.fixed_zone(

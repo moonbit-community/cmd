@@ -2,18 +2,187 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-09-21
-Revision: Use both public HTTP header layers for curl's explicit-plus-jar Cookie fields; preserve Wget's explicit Cookie override and command-specific credential scopes.
+Updated: 2026-10-18
+Revision: Own HTTP/1 framing through the released passthrough API and apply explicit command profiles for the fixed oracle's EOF, file buffering and retry behavior in the async 0.22.5 candidate.
 
 ## Target and decision
 
-Implement curl/wget HTTP/HTTPS with public async APIs. Basic auth, cookie selection/persistence and redirect state are project responsibilities. async 0.22.4 Response.cookies exposes repeated Set-Cookie separately from the header map. Preserve command-specific credential challenge/redirect rules and cookie domain/path/Secure/expiry behavior within the documented subset.
+Implement curl/wget HTTP/HTTPS with public async APIs. Basic auth, cookie selection/persistence and redirect state are project responsibilities. Collect repeated Set-Cookie fields separately from the ordinary header map. Preserve command-specific credential challenge/redirect rules and cookie domain/path/Secure/expiry behavior within the documented subset.
+
+## Candidate: response failures and retry output
+
+The unpublished stage-0 candidate uses async 0.22.5 and a project-owned pure
+MoonBit HTTP/1 wire adapter. A fresh public `Client` establishes the connection,
+TLS and configured proxy tunnel, then enters its released passthrough mode
+before the origin request. The project serializes that request and parses its
+response through public byte reads and writes. This is project implementation
+work using existing APIs, with no host-command fallback or private transport
+access. Planned core 0.7.0 adds `EmptyReplyFailure`, `PartialBodyFailure`,
+`ReceiveFailure` and `RewindFailure` to the public transfer error model.
+The public `TransferProfile` selects `StrictProfile` by default; the command
+callers explicitly select `CurlProfile` or `WgetProfile`. In the strict profile,
+fixed-length or chunked premature EOF is a partial-body failure; other
+response-read errors are receive failures. The command profiles preserve the
+specific fixed-oracle differences below rather than imposing strict failure on
+responses that the corresponding tool accepts. Connection setup and
+request-write failures retain their separate classification. Ordinary
+close-delimited responses and HEAD/204/304 responses require successful controls
+and must not become partial failures merely because the connection closes.
+
+`TransferFailureContext` records the processing phase, response framing and
+fixed expected length, reader-delivered bytes and completed sink-write bytes.
+Skipping an existing resume prefix does not count as a new output write.
+An output failure that occurs first keeps its distinct kind; a failed Writer call sets
+`write_outcome_uncertain` because the public API cannot report its partial
+write count. This makes the completed-write count an explicit lower bound on
+that path, instead of asserting that an unsuccessful call had no file effects.
+Curl's final buffered-file flush after an earlier network failure preserves
+that primary failure even if the flush also fails, while recording the uncertain
+write outcome. The error kind does not imply that no secondary write was tried.
+
+The adapter completes request headers, payload and framing before reading origin
+response headers. Request-write and body-length failures identify `Request`;
+header-read failures identify `ResponseHeaders`. No combined-phase uncertainty
+is needed for those origin operations. Proxy CONNECT establishment still uses
+async's high-level client path and retains connection-stage classification;
+finer proxy response diagnostics are separate project work rather than a claim
+that the public byte APIs are unavailable.
+
+The final persistent and per-request fields are validated before serialization,
+including generated Cookie fields. Invalid names and CR/LF values are rejected
+before writing request bytes. This applies the existing explicit-header input
+validation to generated fields; it is not a missing-API boundary or a claim of
+GNU handling for malformed cookie input. Raw TCP and command regressions observe
+the rejected bytes and unchanged output separately.
+
+An owned output sink closes on every exit from its private scope, including
+task cancellation. This lifetime guarantee does not define GNU signal behavior,
+buffered-tail delivery, or remove-on-error cleanup under cancellation; those
+failure-effect contracts remain part of the resource stage.
+
+Requests without an explicit `Accept-Encoding` use `identity`; explicit caller
+values remain unchanged. The wire adapter preserves content-coded bytes without
+implicit decoding. Output bytes, Content-Length checks and
+retry Range offsets consequently use the encoded representation, including
+gzip-coded responses. No decompression option is added. The previous implicit
+gzip path removed Content-Length and delivered decoded bytes, which hid known
+wire framing and made those bytes unsafe as encoded Range offsets. Fixed-length
+gzip success/truncation fixtures check the actual byte counts and retained
+output on both default and explicit-header paths.
+
+The candidate curl maps empty replies to status 52, partial bodies to status 18
+and other receive failures to 56. Its file destination opens on the first
+payload or successful completion, so an empty failed body does not create,
+truncate or remove an unopened destination, including with `--remove-on-error`.
+A successful empty response still creates its selected output. File writes use
+a 4096-byte buffer: a write failure reached before a network failure returns 23;
+a short buffered tail after a partial-body failure is flushed while preserving
+18 if that flush also fails. Successfully flushed tails remain observable.
+This buffering profile is limited to file output; stdout buffering/error
+precedence has not been calibrated by these cases. Bytes already delivered to
+stdout remain visible, and an opened partial file remains unless
+`--remove-on-error` selects cleanup. Ordinary `--retry` does not retry these body
+failures, while `--retry-all-errors` can. A restarted file and repeated stdout
+prefixes have distinct observable effects. With `-sS`, each failed attempt keeps
+its error diagnostic even if a later retry succeeds. Fixed-length truncation
+reports the missing byte count from the structured response context; internal
+HTTP-status retries without `-f` do not manufacture error 22 diagnostics.
+
+Wget accepts EOF while reading an announced chunk's remaining payload,
+including zero payload bytes, and while reading trailers. It still fails on EOF
+while reading the next chunk-size line or the CRLF after a completed chunk.
+Malformed framing and fixed-length truncation remain failures. Exhausted
+network retries return 4. These are explicit Wget-profile decisions matching
+the calibrated fixtures; `StrictProfile` and `CurlProfile` retain chunk EOF
+failures. Wget tracks the delivered offset and actual selected output path.
+`OutputStarted` reports that path and response offset; resumed 206
+responses must have a matching Content-Range before writing, and a completed
+body must match the declared byte span even when it is chunked or close
+delimited without Content-Length. Bodyless responses never require replaying
+a retained prefix. If a server replies
+200 instead, Wget uses `resume_skip_existing` to discard the already delivered
+prefix and retain stdout or earlier URL output in a shared `-O` file. A complete
+known-length 200 response shorter than that retained prefix succeeds and leaves
+the prefix unchanged. The shared Wget-profile transfer treats 416 as successful
+completion without opening its destination, independently of Content-Range
+metadata or whether resume was requested. An ordinary named output is therefore
+preserved; explicit `-O` still performs the command's existing aggregate-file
+creation/truncation before any request. Those effects require separate file
+observations. A mismatched 206 Content-Range is a receive failure and
+returns 4 after retries. This does not establish that the remote prefix has
+remained unchanged. Wget does not retry a `StdinBody`. Curl's
+`--retry-all-errors` may retry after consuming stdin and send an empty body on
+the next attempt, as the fixed curl oracle does; this is not a replay of the
+original bytes. A curl redirect that requires replay of already uploaded stdin
+instead fails with request-phase `RewindFailure` (status 65); an empty original
+upload does not require rewinding. Redirect and authentication rewind behavior
+retain their own wire cases and must not be inferred from retry results.
+
+For ordinary GET with `-c --content-disposition` and no explicit `-O`, Wget first
+makes a bodyless HEAD request without an automatic Range header; explicitly
+supplied headers remain in effect. It selects the response filename,
+then reads that selected file's size for the subsequent GET; an unrelated
+URL-derived file cannot supply the resume prefix. The selected name stays fixed
+across GET retries. An unexpected unrequested 206 during name discovery fails
+before either candidate path is changed. Registered cases observe HEAD/GET order,
+Range offset and both files; fixed-oracle command acceptance is still required.
+The lower-level transfer API continues to reject a different Content-Disposition
+path when a caller directly asks to retain or append an existing prefix. Such
+callers must first resolve the destination and its own offset, rather than
+skipping bytes from another file. Broader method/redirect combinations require
+their own wire and filesystem cases.
+
+Header rejection occurs before transfer output creation; Wget's explicit `-O`
+initialization remains a separate earlier effect. EOF before any origin response
+header byte is an empty reply. Strict transfer rejects incomplete headers.
+Both command profiles accept EOF while collecting headers after a complete 200
+status line, while any already parsed framing fields still govern body
+completion. The calibrated `200 OK` plus unfinished `Content-Len` fixture thus
+completes with zero bytes; it is not a claim that every incomplete response
+succeeds. Other incomplete or malformed headers remain receive failures.
+The parser exposes chunk payload before checking the following CRLF,
+next chunk or trailers, so delivered bytes remain observable when later framing
+fails. Complete trailers and bodyless/close-delimited responses remain separate
+success controls. These are implemented candidate contracts requiring fresh
+Native/Wasm command and immutable-oracle evidence; neither header distinction
+nor chunk payload preservation is now blocked on a new async API.
+
+Untrusted protocol metadata is bounded: protocol lines are limited to 64 KiB,
+cumulative response headers to 1 MiB, fields to 1024 per header block, interim
+responses to 128 and trailer fields to 1024. Oversized metadata is a receive
+failure; header rejection precedes output opening, while trailer rejection
+retains already delivered body bytes. Registered wire fixtures cover each
+limit and its effects. These limits define a bounded profile, not complete
+HTTP compatibility or an upstream API limitation.
+
+The existing command path still collects ordinary request fields in maps;
+arbitrary ordered repeated request headers remain unimplemented. The project
+wire adapter can serialize such fields, so lifting that restriction requires
+project option/redirect semantics and fixed-oracle wire tests, tracked in
+[#34](https://github.com/moonbit-community/cmd/issues/34), rather than a new
+upstream header-list API. The previously supported separate Cookie fields and
+repeated response Set-Cookie behavior remain required regression contracts.
+
+The raw loopback fixture, command scenarios and package tests cover fixed and
+chunked truncation, malformed chunks, bodyless/close-delimited controls, file
+retention/cleanup, retries, Range requests and output-name reuse. Registration or
+a passing focused parser probe does not certify command parity: retain Native,
+Wasm, fixed curl/Wget oracle and exact published-consumer results with their
+real statuses, output files and wire requests. Published core remains 0.6.0 and
+the existing command coordinates remain unchanged until the release gates pass.
+The dated cookie/authentication evidence below retains its original baseline.
 
 ## Alternatives and compatibility cost
 
 Reject host curl/wget delegation, own FFI and permanent exclusion of implementable protocol state. Explicit Basic credentials use a command-specific scope: the public transport defaults to the initial origin, while Wget selects all origins for `--user/--password`. Custom authorization headers retain their separate redirect behavior. Applying curl's scope to Wget was rejected because it changes authenticated redirects despite the caller supplying explicit credentials. Basic auth tests do not imply all protocols, authentication mechanisms, browser cookie policy or exact progress bytes.
 
-## Versions and evidence
+## Retained cookie/authentication evidence
+
+This section preserves the earlier version checks and candidate status at the
+time they were recorded. Subsequent publication of the Cookie corrections is
+recorded in the support record; these paragraphs are not stage-0 acceptance.
+Its two-map/public-list discussion records the earlier transport design; the
+current project-work boundary for ordinary repeated headers is defined above.
 
 The fixed GNU Wget 1.25.0 Linux oracle in CI run `35575026875` sends
 `--user/--password --auth-no-challenge` credentials through a redirect from

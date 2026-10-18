@@ -1,8 +1,8 @@
 ///|
 struct DumpState {
   formats : Array[Format]
-  base : Int
-  width : Int
+  base : Int32
+  width : Int32
   big : Bool
   verbose : Bool
   pending : Array[Byte]

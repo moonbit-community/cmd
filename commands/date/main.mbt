@@ -4,7 +4,7 @@ priv suberror DateError {
 }
 
 ///|
-fn pad(value : Int, width : Int) -> String {
+fn pad(value : Int32, width : Int32) -> String {
   let text = value.to_string()
   if text.length() >= width {
     text
@@ -42,7 +42,7 @@ fn weekday_long(value : @time.Weekday) -> String {
 }
 
 ///|
-fn month_short(month : Int) -> String {
+fn month_short(month : Int32) -> String {
   [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
     "Dec",
@@ -50,7 +50,7 @@ fn month_short(month : Int) -> String {
 }
 
 ///|
-fn month_long(month : Int) -> String {
+fn month_long(month : Int32) -> String {
   [
     "January", "February", "March", "April", "May", "June", "July", "August", "September",
     "October", "November", "December",
@@ -82,7 +82,7 @@ fn parse_instant(
       let fraction = parts[1]
       guard fraction.length() >= 1 &&
         fraction.length() <= 9 &&
-        fraction.iter().all(c => c is ('0'..='9')) else {
+        fraction.iter().all(c => c is ('0'..<='9')) else {
         raise DateError("invalid fractional timestamp")
       }
       nanos = @string.parse_int(fraction + "0".repeat(9 - fraction.length()))
@@ -181,7 +181,7 @@ fn format_date(
       | '^'
       | '#'
       | '+'
-      | '0'..='9'
+      | '0'..<='9'
       | 'E'
       | 'O' =>
         raise DateError(
@@ -235,7 +235,7 @@ fn iso_format(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("date 0.1.2\n")
+    @stdio.stdout.write("date 0.1.3\n")
     return
   }
   let parsed = @cli.parse(normalize_args(@env.args()[1:]), [

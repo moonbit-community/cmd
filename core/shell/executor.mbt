@@ -1,5 +1,5 @@
 ///|
-fn normalize_status(status : Int) -> Int {
+fn normalize_status(status : Int32) -> Int32 {
   if status < 0 {
     128 - status
   } else {
@@ -42,7 +42,7 @@ fn clone_context(context : Context, capture? : StringBuilder) -> Context {
 async fn write_output(
   context : Context,
   value : String,
-  error? : Bool = false,
+  error~ : Bool = false,
 ) -> Unit {
   if error {
     match context.error {
@@ -62,13 +62,13 @@ async fn write_output(
 }
 
 ///|
-async fn builtin_error(context : Context, message : String) -> Int {
+async fn builtin_error(context : Context, message : String) -> Int32 {
   write_output(context, "sh: \{message}\n", error=true)
   2
 }
 
 ///|
-async fn run_external(prepared : Prepared, context : Context) -> Int {
+async fn run_external(prepared : Prepared, context : Context) -> Int32 {
   @async.with_task_group() <| group => {
     let stdin : &@async_process.ProcessInput? = match context.input {
       None => None
@@ -145,7 +145,7 @@ async fn run_external(prepared : Prepared, context : Context) -> Int {
 fn glob_match(pattern : String, value : String) -> Bool {
   let p = pattern.iter().collect()
   let v = value.iter().collect()
-  fn go(p : Array[Char], i : Int, v : Array[Char], j : Int) -> Bool {
+  fn go(p : Array[Char], i : Int32, v : Array[Char], j : Int32) -> Bool {
     if i == p.length() {
       return j == v.length()
     }
@@ -189,8 +189,8 @@ fn glob_match(pattern : String, value : String) -> Bool {
 async fn run_jobs(
   jobs : Array[Job],
   context : Context,
-  ignore_errexit? : Bool = false,
-) -> Int {
+  ignore_errexit~ : Bool = false,
+) -> Int32 {
   let mut status = context.last_status
   for index, job in jobs {
     if context.exited ||
@@ -220,7 +220,7 @@ async fn run_jobs(
 }
 
 ///|
-async fn eval_statement(statement : Statement, context : Context) -> Int {
+async fn eval_statement(statement : Statement, context : Context) -> Int32 {
   match statement {
     Pipeline(pipeline) => run_pipeline(pipeline, context)
     IfStatement(condition, then_body, else_body) => {
@@ -321,7 +321,7 @@ async fn eval_statement(statement : Statement, context : Context) -> Int {
 async fn run_substitution(
   script : String,
   parent : Context,
-) -> (Int, String) raise ShellError {
+) -> (Int32, String) raise ShellError {
   let buffer = StringBuilder()
   let nested = clone_context(parent, capture=buffer)
   nested.output = None
@@ -332,7 +332,7 @@ async fn run_substitution(
 }
 
 ///|
-async fn execute_prepared(prepared : Prepared, context : Context) -> Int {
+async fn execute_prepared(prepared : Prepared, context : Context) -> Int32 {
   if prepared.argv.is_empty() {
     context.env.merge_in_place(prepared.assignments)
     return context.substitution_status.unwrap_or(0)
@@ -395,7 +395,7 @@ async fn execute_prepared(prepared : Prepared, context : Context) -> Int {
 }
 
 ///|
-async fn run_command(command : Command, context : Context) -> Int {
+async fn run_command(command : Command, context : Context) -> Int32 {
   let prepared = prepare(command, context) catch {
     ShellError(message) => {
       context.exited = true
@@ -461,7 +461,7 @@ async fn run_command(command : Command, context : Context) -> Int {
 }
 
 ///|
-async fn run_pipeline(pipeline : Pipeline, context : Context) -> Int {
+async fn run_pipeline(pipeline : Pipeline, context : Context) -> Int32 {
   if pipeline.commands.length() == 1 {
     return run_command(pipeline.commands[0], context)
   }
@@ -470,7 +470,7 @@ async fn run_pipeline(pipeline : Pipeline, context : Context) -> Int {
     for _ in 1..<pipeline.commands.length() {
       pipes.push(@io.pipe())
     }
-    let tasks : Array[@async.Task[Int]] = []
+    let tasks : Array[@async.Task[Int32]] = []
     for index, command in pipeline.commands {
       let child = clone_context(context)
       if index > 0 {

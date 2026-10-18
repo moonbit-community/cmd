@@ -6,11 +6,11 @@ priv suberror SeqError {
 ///|
 priv struct Decimal {
   coefficient : BigInt
-  scale : Int
+  scale : Int32
 }
 
 ///|
-fn pow10(exponent : Int) -> BigInt {
+fn pow10(exponent : Int32) -> BigInt {
   let mut value = BigInt::from_int(1)
   for _ in 0..<exponent {
     value = value * BigInt::from_int(10)
@@ -75,7 +75,7 @@ fn parse_decimal(text : String) -> Decimal raise SeqError {
   let mut fractional_digits = 0
   for index in start..<mantissa_end {
     match chars[index] {
-      '0'..='9' as digit => {
+      '0'..<='9' as digit => {
         digits.write_char(digit)
         if decimal_seen {
           fractional_digits += 1
@@ -106,7 +106,7 @@ fn parse_decimal(text : String) -> Decimal raise SeqError {
 }
 
 ///|
-fn Decimal::at_scale(self : Decimal, scale : Int) -> BigInt {
+fn Decimal::at_scale(self : Decimal, scale : Int32) -> BigInt {
   if scale == self.scale {
     self.coefficient
   } else {
@@ -115,7 +115,7 @@ fn Decimal::at_scale(self : Decimal, scale : Int) -> BigInt {
 }
 
 ///|
-fn Decimal::compare(self : Decimal, other : Decimal) -> Int {
+fn Decimal::compare(self : Decimal, other : Decimal) -> Int32 {
   let scale = if self.scale > other.scale { self.scale } else { other.scale }
   self.at_scale(scale).compare(other.at_scale(scale))
 }
@@ -149,7 +149,7 @@ fn Decimal::render(self : Decimal) -> String {
 }
 
 ///|
-fn zero_pad(text : String, width : Int) -> String {
+fn zero_pad(text : String, width : Int32) -> String {
   if text.length() >= width {
     return text
   }
@@ -165,7 +165,7 @@ fn zero_pad(text : String, width : Int) -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("seq 0.2.2\n")
+    @stdio.stdout.write("seq 0.2.3\n")
     return
   }
   let args = @env.args()[1:]
@@ -203,7 +203,7 @@ async fn main {
     } else if options &&
       arg.has_prefix("-") &&
       arg.length() > 1 &&
-      !(arg[1] is ('0'..='9' | '.')) {
+      !(arg[1] is ('0'..<='9' | '.')) {
       @stdio.stderr.write("seq: invalid option: '\{arg}'\n")
       @sys.exit(1)
       return

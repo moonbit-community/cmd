@@ -101,6 +101,36 @@ passes cannot replace this direct comparison. Registry platform exclusions
 remain explicit skips. Every report directory includes `run-metadata.json`;
 each case references its run, registry and artifact identities.
 
+Windows `mv` uses two independent scenario identities:
+`mv-windows-native-links` checks Native support and
+`mv-windows-wasm-links-boundary` checks Wasm refusal before mutation. Selecting
+the other backend produces an explicit skip; neither scenario is a backend-pair
+claim. Both cover file, directory and dangling symlinks plus actual junctions,
+with absent/existing targets, no-clobber, backup, and backup-failure recovery.
+Separate rounds back up each destination link type while moving a regular source.
+Regular-source replacement of each destination link type without backup remains
+allowed and must succeed with the expected file effects on both backends.
+Wasm additionally checks both rejection paths with `-i`, holding stdin open and
+sending no bytes: exit must be observed within five seconds, without an overwrite
+prompt or mutation. The lifecycle record distinguishes observed exit from timeout
+and retains redirected streams even when the deadline expires. These cases do
+not claim `-u` timestamp-based link skipping; the Wasm guard runs before it.
+Before those rounds, existing runner helper modes check immediate exit with
+stdin open, blocked input, and retained partial streams after cancellation.
+A package regression rejects timeout, cleanup failure and unobserved exit
+independently; it does not substitute for these actual process controls.
+Every round compares the complete fixture snapshot, including referent bytes,
+link targets, and PowerShell-observed `SymbolicLink` versus `Junction` type.
+The fixed observer records its version and raw output; an unavailable observer
+or missing symlink privilege fails verification. CLI backup-failure recovery
+means a failed backup attempt preserves state and a later valid attempt works.
+Post-backup commit rollback, including Windows link/junction type, target and
+referent preservation, is tested separately through package fault injection;
+these scenarios do not claim a real CLI post-backup filesystem failure.
+Successful Windows `mv` scenarios retain their snapshots and command/observer
+streams alongside the report so the supported and rejected effects remain
+reviewable without rerunning the host.
+
 JSON contracts declare partial filesystem expectations in `expected_files`:
 each entry names a relative `path` and may assert `exists`, `kind`,
 `content_text`/`content_hex`, octal-valued integer `mode`, symlink `target`, or

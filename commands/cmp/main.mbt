@@ -140,7 +140,7 @@ fn display_name(path : String) -> String {
 }
 
 ///|
-fn pad_left(text : String, width : Int) -> String {
+fn pad_left(text : String, width : Int32) -> String {
   if text.length() >= width {
     text
   } else {
@@ -152,7 +152,7 @@ fn pad_left(text : String, width : Int) -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("cmp 0.2.1\n")
+    @stdio.stdout.write("cmp 0.2.2\n")
     return
   }
   let args = @env.args()[1:]

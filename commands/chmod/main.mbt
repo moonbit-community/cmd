@@ -1,5 +1,5 @@
 ///|
-fn parse_mode(text : String) -> Int raise {
+fn parse_mode(text : String) -> Int32 raise {
   let digits = if text.has_prefix("0o") || text.has_prefix("0O") {
     text[2:].to_owned()
   } else {
@@ -10,7 +10,7 @@ fn parse_mode(text : String) -> Int raise {
   }
   let mut value = 0
   for digit in digits {
-    if !(digit is ('0'..='7')) {
+    if !(digit is ('0'..<='7')) {
       fail("invalid mode")
     }
     value = value * 8 + digit.to_int() - '0'.to_int()
@@ -22,7 +22,7 @@ fn parse_mode(text : String) -> Int raise {
 }
 
 ///|
-fn mode_text(mode : Int) -> String {
+fn mode_text(mode : Int32) -> String {
   let digits = "01234567"
   let out = StringBuilder()
   out.write_char('0')
@@ -40,7 +40,7 @@ priv suberror ChmodError {
 }
 
 ///|
-fn parse_symbolic_mode(text : String) -> Int raise ChmodError {
+fn parse_symbolic_mode(text : String) -> Int32 raise ChmodError {
   if text == "" {
     raise ChmodError("empty symbolic mode")
   }
@@ -104,10 +104,10 @@ fn parse_symbolic_mode(text : String) -> Int raise ChmodError {
 ///|
 async fn chmod_numeric_path(
   path : String,
-  mode : Int,
+  mode : Int32,
   recursive : Bool,
   verbose : Bool,
-  command_line? : Bool = true,
+  command_line~ : Bool = true,
 ) -> Unit {
   match @fs.kind(path, follow_symlink=false) {
     SymLink =>
@@ -155,7 +155,7 @@ async fn chmod_numeric_path(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("chmod 0.2.1\n")
+    @stdio.stdout.write("chmod 0.2.2\n")
     return
   }
   let args = @env.args()[1:]

@@ -35,8 +35,8 @@ priv struct Modifiers {
 
 ///|
 priv struct Position {
-  field : Int
-  character : Int
+  field : Int32
+  character : Int32
   skip_blanks : Bool
 }
 
@@ -51,7 +51,7 @@ priv struct KeySpec {
 priv struct Entry {
   record : Bytes
   keys : Array[Bytes]
-  index : Int
+  index : Int32
 }
 
 ///|
@@ -61,12 +61,12 @@ fn byte_is_blank(byte : Byte) -> Bool {
 
 ///|
 fn byte_is_digit(byte : Byte) -> Bool {
-  byte is (b'0'..=b'9')
+  byte is (b'0'..<=b'9')
 }
 
 ///|
 fn byte_is_alphanumeric(byte : Byte) -> Bool {
-  byte is (b'0'..=b'9' | b'a'..=b'z' | b'A'..=b'Z')
+  byte is (b'0'..<=b'9' | b'a'..<=b'z' | b'A'..<=b'Z')
 }
 
 ///|
@@ -176,7 +176,7 @@ fn parse_position(
   end_position : Bool,
 ) -> (Position, Modifiers, Bool) raise CliError {
   let mut index = 0
-  while index < text.length() && text[index] is ('0'..='9') {
+  while index < text.length() && text[index] is ('0'..<='9') {
     index += 1
   }
   if index == 0 {
@@ -192,7 +192,7 @@ fn parse_position(
   if index < text.length() && text[index] is '.' {
     index += 1
     let start = index
-    while index < text.length() && text[index] is ('0'..='9') {
+    while index < text.length() && text[index] is ('0'..<='9') {
       index += 1
     }
     if start == index {
@@ -306,8 +306,8 @@ fn parse_key(spec : String, inherited : Modifiers) -> KeySpec raise CliError {
 }
 
 ///|
-fn field_ranges(line : Bytes, separator : Byte?) -> Array[(Int, Int)] {
-  let ranges : Array[(Int, Int)] = []
+fn field_ranges(line : Bytes, separator : Byte?) -> Array[(Int32, Int32)] {
+  let ranges : Array[(Int32, Int32)] = []
   match separator {
     Some(delimiter) => {
       let mut start = 0
@@ -347,8 +347,8 @@ fn field_ranges(line : Bytes, separator : Byte?) -> Array[(Int, Int)] {
 fn key_start(
   line : Bytes,
   position : Position,
-  ranges : Array[(Int, Int)],
-) -> Int {
+  ranges : Array[(Int32, Int32)],
+) -> Int32 {
   if position.field > ranges.length() {
     return line.length()
   }
@@ -359,15 +359,15 @@ fn key_start(
       start += 1
     }
   }
-  Int::min(field_end, start + Int::max(0, position.character - 1))
+  Int32::min(field_end, start + Int32::max(0, position.character - 1))
 }
 
 ///|
 fn key_end(
   line : Bytes,
   position : Position,
-  ranges : Array[(Int, Int)],
-) -> Int {
+  ranges : Array[(Int32, Int32)],
+) -> Int32 {
   if position.field > ranges.length() {
     return line.length()
   }
@@ -381,7 +381,7 @@ fn key_end(
   if position.character == 0 {
     field_end
   } else {
-    Int::min(field_end, start + position.character)
+    Int32::min(field_end, start + position.character)
   }
 }
 
@@ -500,7 +500,7 @@ fn ascii_lower_byte(byte : Byte) -> Byte {
 }
 
 ///|
-fn ascii_prefix_at(key : Bytes, index : Int, prefix : Bytes) -> Bool {
+fn ascii_prefix_at(key : Bytes, index : Int32, prefix : Bytes) -> Bool {
   if index + prefix.length() > key.length() {
     return false
   }
@@ -553,7 +553,7 @@ fn general_number(key : Bytes) -> GeneralNumber {
 }
 
 ///|
-fn general_compare(left : Bytes, right : Bytes) -> Int {
+fn general_compare(left : Bytes, right : Bytes) -> Int32 {
   match (general_number(left), general_number(right)) {
     (NonNumber, NonNumber) | (NotANumber, NotANumber) => 0
     (NonNumber, _) => -1
@@ -571,7 +571,7 @@ fn general_compare(left : Bytes, right : Bytes) -> Int {
 }
 
 ///|
-fn human_parts(key : Bytes) -> (Int, Int, Double) {
+fn human_parts(key : Bytes) -> (Int32, Int32, Double) {
   let mut index = 0
   while index < key.length() && byte_is_blank(key[index]) {
     index += 1
@@ -622,7 +622,7 @@ fn human_parts(key : Bytes) -> (Int, Int, Double) {
 }
 
 ///|
-fn human_compare(left : Bytes, right : Bytes) -> Int {
+fn human_compare(left : Bytes, right : Bytes) -> Int32 {
   let (left_sign, left_power, left_value) = human_parts(left)
   let (right_sign, right_power, right_value) = human_parts(right)
   if left_sign != right_sign {
@@ -639,7 +639,7 @@ fn human_compare(left : Bytes, right : Bytes) -> Int {
 }
 
 ///|
-fn month_value(key : Bytes) -> Int {
+fn month_value(key : Bytes) -> Int32 {
   let text = transformed_key(key, {
     ignore_leading_blanks: true,
     dictionary_order: false,
@@ -670,7 +670,7 @@ fn month_value(key : Bytes) -> Int {
 }
 
 ///|
-fn version_compare(left : Bytes, right : Bytes) -> Int {
+fn version_compare(left : Bytes, right : Bytes) -> Int32 {
   let mut li = 0
   let mut ri = 0
   while li < left.length() || ri < right.length() {
@@ -731,7 +731,7 @@ fn version_compare(left : Bytes, right : Bytes) -> Int {
 }
 
 ///|
-fn compare_key(left : Bytes, right : Bytes, modifiers : Modifiers) -> Int {
+fn compare_key(left : Bytes, right : Bytes, modifiers : Modifiers) -> Int32 {
   let left = transformed_key(left, modifiers)
   let right = transformed_key(right, modifiers)
   let result = match modifiers.mode {
@@ -757,7 +757,7 @@ fn compare_entries(
   specs : Array[KeySpec],
   global : Modifiers,
   last_resort : Bool,
-) -> Int {
+) -> Int32 {
   if specs.is_empty() {
     let result = compare_key(left.record, right.record, global)
     if result != 0 || !last_resort {
@@ -804,7 +804,7 @@ fn normalized_args(args : ArrayView[String]) -> Array[String] {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("sort 0.2.1\n")
+    @stdio.stdout.write("sort 0.2.2\n")
     return
   }
   let parsed = @cli.parse(normalized_args(@env.args()[1:]), [

@@ -61,9 +61,9 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "seq 0.2.2\n",
+      "expected_stdout_text": "seq 0.2.3\n",
       "expected_stderr_text": "",
-      "source_version": "workspace cli/seq@0.2.2 metadata contract"
+      "source_version": "workspace cli/seq@0.2.3 metadata contract"
     },
     {
       "id": "p0-seq-equal-width",
@@ -253,9 +253,9 @@
       "expected_status": 0,
       "normalizations": [],
       "comparison": "contract",
-      "source_version": "workspace cli/seq@0.2.2 metadata contract",
+      "source_version": "workspace cli/seq@0.2.3 metadata contract",
       "expected_stderr_text": "",
-      "expected_stdout_text": "seq 0.2.2\n"
+      "expected_stdout_text": "seq 0.2.3\n"
     },
     {
       "id": "repair-edge-seq-long-aliases",
@@ -337,7 +337,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/seq@0.2.2 metadata contract",
+      "source_version": "workspace cli/seq@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: seq [-w] [-s STRING] [FIRST [INCREMENT]] LAST\nPrint an exact decimal sequence; the default increment is 1.\n  -w, --equal-width       pad numbers with leading zeroes\n  -s, --separator=STRING  separate numbers with STRING\n      --help              display this help and exit\n      --version           display version and exit\nNumeric operands are limited to 4096 characters; exponent and decimal scale must be within -4096..4096.\n",
       "expected_stderr_text": ""
     },
@@ -356,8 +356,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/seq@0.2.2 metadata contract",
-      "expected_stdout_text": "seq 0.2.2\n",
+      "source_version": "workspace cli/seq@0.2.3 metadata contract",
+      "expected_stdout_text": "seq 0.2.3\n",
       "expected_stderr_text": ""
     }
   ]

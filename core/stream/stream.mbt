@@ -1,5 +1,5 @@
 ///|
-pub let chunk_size : Int = 65536
+pub let chunk_size : Int32 = 65536
 
 ///|
 pub async fn read_chunk(reader : &@io.Reader) -> Bytes? {
@@ -23,7 +23,7 @@ pub struct LineScanner {
 ///|
 pub fn LineScanner::new(
   reader : &@io.Reader,
-  delimiter? : Byte = b'\n',
+  delimiter~ : Byte = b'\n',
 ) -> LineScanner {
   { reader, pending: [], delimiter, eof: false, }
 }
@@ -31,7 +31,7 @@ pub fn LineScanner::new(
 ///|
 fn LineScanner::take(
   self : LineScanner,
-  length : Int,
+  length : Int32,
   terminated : Bool,
 ) -> Line {
   let data = Bytes::from_array(self.pending[0:length].to_owned())

@@ -1,17 +1,17 @@
 ///|
 struct FoldState {
-  width : Int
+  width : Int32
   bytes : Bool
   characters : Bool
   spaces : Bool
   mut pending : Array[Byte]
-  mut column : Int
-  mut last_width : Int
+  mut column : Int32
+  mut last_width : Int32
 }
 
 ///|
 fn FoldState::new(
-  width : Int,
+  width : Int32,
   bytes : Bool,
   characters : Bool,
   spaces : Bool,
@@ -20,7 +20,7 @@ fn FoldState::new(
 }
 
 ///|
-fn FoldState::advance(self : FoldState, byte : Byte) -> Int {
+fn FoldState::advance(self : FoldState, byte : Byte) -> Int32 {
   if self.bytes {
     return self.column + 1
   }

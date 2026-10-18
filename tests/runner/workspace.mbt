@@ -77,3 +77,28 @@ fn registered_cohort_cases(
   }
   fixtures
 }
+
+///|
+/// Default scenario suites run only the backends declared by their typed
+/// registry owner. Explicit case selection keeps the scenario's diagnostic
+/// rejection path available without reporting that skip as ordinary evidence.
+fn registered_scenario_backend_selected(
+  registry : @registry.Registry,
+  fixture : @testkit.Case,
+  backend : String,
+  explicit_ids : Array[String],
+) -> Bool raise {
+  if ![Some("scenario"), Some("oracle-scenario")].contains(fixture.comparison) {
+    return true
+  }
+  let binding = "tests/runner/scenarios.mbt::" + fixture.id
+  let owners = registry.entries.filter(entry => {
+    entry.implementation == "stateful-scenario" && entry.source == binding
+  })
+  guard owners.length() == 1 else {
+    fail(
+      "scenario selection requires one registered typed binding: " + fixture.id,
+    )
+  }
+  !explicit_ids.is_empty() || owners[0].required_backends.contains(backend)
+}

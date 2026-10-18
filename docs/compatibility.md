@@ -25,10 +25,46 @@ before the final audited push, as specified by the report's
 The [2026-10-11 fidelity repair](reports/2026-10-11-fidelity-repair/README.md)
 remains historical evidence for its original coordinates.
 
-The known strings/column/which/date/unlink/jq and ln/mv errors are corrected in these versions. Earlier defective results remain in [historical observations](reports/2026-10-11-command-followups/README.md). Current dependencies are async 0.22.4, x 0.5.5 and moonjq 0.2.0. Curl/wget now deliver the previously local explicit-Cookie fixes.
+The known strings/column/which/date/unlink/jq and ln/mv errors are corrected in these versions. Earlier defective results remain in [historical observations](reports/2026-10-11-command-followups/README.md). This published baseline uses async 0.22.4, x 0.5.5 and moonjq 0.2.0. Curl/wget deliver the previously local explicit-Cookie fixes.
 
 Authorization belongs to the caller/host. Catalog capabilities and the older
 restricted label describe requirements, not command-local policy.
+
+## Workspace candidate: async 0.22.5
+
+[Roadmap stage 0](command-roadmap.md) is unpublished implementation work. It
+updates the workspace dependency to async 0.22.5 and plans core 0.7.0 for the
+new shared transfer API. The published baseline remains **core 0.6.0 and 78
+commands** at the coordinates above; candidate source, tests and catalog entries
+do not alter those releases or establish new acceptance results.
+
+| Candidate area | Implemented decision | Evidence still required / retained boundary |
+| --- | --- | --- |
+| Windows link rename | Native consumes async's reparse-point rename fix. Windows Wasm rejects source symlink/junction moves and destination-link backups before prompting or mutation; no-clobber and update-none skips remain. No `-u` link-skip acceptance is claimed. Regular-source replacement of destination links without backup remains allowed pending Windows evidence. | Actual Windows Native/Wasm results for forced file/directory/dangling symlinks, junctions, backups and referents; interactive refusal with stdin open and no prompt; package fault-injected Native link-backup restoration. Identify a fixed released host before lifting the Wasm rejection; a dependency version is not host evidence. See ADR-0004 and [#38](https://github.com/moonbit-community/cmd/issues/38). |
+| curl response failures | `CurlProfile` maps empty replies to 52, partial bodies to 18 and other receive failures to 56. File output opens on first payload or successful completion and buffers 4096 bytes. An earlier network failure remains primary if the final tail flush also fails; an earlier write failure returns 23. Unopened destinations remain intact on empty failure, including with `--remove-on-error`. A redirect requiring consumed stdin to rewind returns 65. | Native/Wasm status, bytes, existing/absent files, cleanup and retry effects against the sealed curl oracle. File buffering does not establish stdout error precedence. `--retry-all-errors` may send empty stdin on a later attempt after consuming it, matching the fixed oracle; redirect rewind and empty-upload controls require separate wire evidence. |
+| Header EOF profiles | Public `TransferProfile` defaults to `StrictProfile`. The command profiles accept EOF while collecting headers after a complete 200 status line, preserving all already parsed framing checks. The unfinished `Content-Len` fixture succeeds with zero bytes; strict transfer rejects it. | Actual Native/Wasm and fixed-oracle cases for empty replies, incomplete status/header bytes, known Content-Length with unfinished later fields, and malformed headers. Accepting header EOF does not bypass known body-length requirements. |
+| Wget retry/resume | `WgetProfile` retries failed network reads from delivered bytes and reuses the selected output path. Mismatched resumed Content-Range returns 4 after retries. A complete shorter known-length 200 preserves the prefix and succeeds; 416 succeeds without opening transfer output. Explicit `-O` still initializes its aggregate file before requests. Continued GET with Content-Disposition first discovers the name using HEAD, then uses that file's offset. | Fixed Wget comparisons for stdout, partial files, shared `-O`, selected filenames, retries and wire requests. Wget does not retry consumed stdin bodies; unchanged remote prefixes are not verified. Verify HEAD/GET order and existing/absent destination effects separately. Core still rejects a direct resumed switch to a different output path; see ADR-0005. |
+| Chunk framing edges | The project parser delivers chunk payload before later framing checks. `WgetProfile` accepts EOF in remaining chunk payload, including zero bytes, or trailers; EOF in chunk-size lines or completed-chunk separators still fails. Strict and curl profiles retain chunk truncation failures. | Fresh Native/Wasm and oracle comparison for each EOF state, malformed chunks, retained prefixes and complete chunk/trailer, close-delimited and bodyless controls. This is project implementation through existing public byte APIs, not an upstream API blocker. See ADR-0005. |
+| Encoded transfer bytes | Request identity encoding by default, preserve explicit Accept-Encoding, and retain content-coding bytes unchanged. Validate resumed 206 body byte spans even without Content-Length; bodyless responses do not consume a resume prefix. | Native/Wasm gzip-coded fixed-length success/truncation and resumed chunked/close-delimited span regressions; fixed-oracle command comparison remains required. Automatic decompression is not added. See ADR-0005. |
+| HTTP/1 metadata and remaining scope | Reject protocol lines above 64 KiB, cumulative headers above 1 MiB, more than 1024 fields per block, more than 128 interim responses or more than 1024 trailer fields; header failures preserve output and trailer failures retain delivered bytes. Proxy CONNECT still uses async's high-level client path. | Registered rejection regressions require actual backend runs. Ordinary repeated request-header semantics remain project work under [#34](https://github.com/moonbit-community/cmd/issues/34); no new upstream list API is required. |
+
+Generated request fields, including Cookie data, now receive the existing
+invalid-header checks before any request bytes are written. A private sink
+scope guarantees file closure on task cancellation; it does not establish
+buffered-tail or cleanup parity for cancellation, which remains in stage 5.
+
+Curl's `-sS` preserves an intermediate transfer-error diagnostic even if the
+retry succeeds; fixed-length truncation reports its structured missing-byte
+count. The registered binary-stdin retry scenario compares those stderr bytes
+as well as both request bodies. Internal HTTP-status retries without `-f` do
+not produce a false error 22 diagnostic.
+
+These rows are candidate decisions, not additions to the measured profiles
+below. New fixture registrations and package tests require their actual runs,
+backend-pair observations, exact-revision coverage audit and release acceptance
+before promotion. Missing Windows symlink privileges or link observers are
+infrastructure failures. The public filesystem/terminal/process API blockers
+remain unchanged by async 0.22.5.
 
 ## Workspace metadata contract
 

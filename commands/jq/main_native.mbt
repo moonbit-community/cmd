@@ -24,7 +24,7 @@ priv struct CliOptions {
   raw_input : Bool
   exit_status : Bool
   color_output : Bool
-  indent : Int?
+  indent : Int32?
   tab : Bool
   arguments : Map[String, String]
 }
@@ -285,7 +285,7 @@ fn render_result(
   raw_output : Bool,
   compact_output : Bool,
   sort_keys : Bool,
-  indent : Int?,
+  indent : Int32?,
   tab : Bool,
   colors : Array[String]?,
 ) -> String {
@@ -311,7 +311,7 @@ async fn write_results(
   compact_output : Bool,
   join_output : Bool,
   sort_keys : Bool,
-  indent : Int?,
+  indent : Int32?,
   tab : Bool,
   colors : Array[String]?,
 ) -> Json? {
@@ -331,7 +331,7 @@ async fn write_results(
 }
 
 ///|
-fn status_for_results(values : Array[Json]) -> Int {
+fn status_for_results(values : Array[Json]) -> Int32 {
   match values.last() {
     None => 4
     Some(False | Null) => 1
@@ -343,7 +343,7 @@ fn status_for_results(values : Array[Json]) -> Int {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("jq 0.2.2\n")
+    @stdio.stdout.write("jq 0.2.3\n")
     return
   }
   let args = @env.args()[1:]

@@ -95,7 +95,7 @@ async fn read_input() -> String {
 }
 
 ///|
-fn replacement_lines(text : String, eof? : String? = None) -> Array[String] {
+fn replacement_lines(text : String, eof~ : String? = None) -> Array[String] {
   let result : Array[String] = []
   for line in text.split("\n") {
     let value = line.trim().to_owned()
@@ -122,7 +122,7 @@ fn replace_arguments(
 }
 
 ///|
-fn xargs_child_status(status : Int) -> Int {
+fn xargs_child_status(status : Int32) -> Int32 {
   if status == 0 {
     0
   } else if status == 255 {
@@ -135,7 +135,7 @@ fn xargs_child_status(status : Int) -> Int {
 }
 
 ///|
-fn parse_positive(value : String, option : String) -> Int raise XargsError {
+fn parse_positive(value : String, option : String) -> Int32 raise XargsError {
   let parsed = @string.parse_int(value) catch {
     _ => raise XargsError("invalid value for \{option}: '\{value}'")
   }
@@ -146,7 +146,7 @@ fn parse_positive(value : String, option : String) -> Int raise XargsError {
 }
 
 ///|
-async fn parse_positive_or_exit(value : String, option : String) -> Int? {
+async fn parse_positive_or_exit(value : String, option : String) -> Int32? {
   try parse_positive(value, option) catch {
     XargsError(message) => {
       @stdio.stderr.write("xargs: \{message}\n")
@@ -159,7 +159,7 @@ async fn parse_positive_or_exit(value : String, option : String) -> Int? {
 }
 
 ///|
-fn command_size(prefix : Array[String], values : Array[String]) -> Int {
+fn command_size(prefix : Array[String], values : Array[String]) -> Int32 {
   let mut size = 0
   for argument in prefix {
     size += argument.length() + 1
@@ -176,7 +176,7 @@ async fn run_xargs_child(
   arguments : Array[String],
   context : @process.ExecutionContext,
   verbose : Bool,
-) -> Int {
+) -> Int32 {
   if verbose {
     let command_line = program + " " + arguments.join(" ") + "\n"
     @stdio.stderr.write(command_line)
@@ -210,7 +210,7 @@ async fn run_xargs_child(
 }
 
 ///|
-fn aggregate_xargs_status(current : Int, child : Int) -> Int {
+fn aggregate_xargs_status(current : Int32, child : Int32) -> Int32 {
   let mapped = if child == 126 || child == 127 {
     child
   } else {
@@ -233,10 +233,10 @@ fn aggregate_xargs_status(current : Int, child : Int) -> Int {
 async fn run_xargs_batches(
   program : String,
   batches : Array[Array[String]],
-  max_procs : Int,
+  max_procs : Int32,
   context : @process.ExecutionContext,
   verbose : Bool,
-) -> Int {
+) -> Int32 {
   if max_procs <= 1 {
     let mut result = 0
     for arguments in batches {
@@ -255,7 +255,7 @@ async fn run_xargs_batches(
       let mut offset = 0
       while offset < batches.length() {
         let end = (offset + max_procs).min(batches.length())
-        let tasks : Array[@async.Task[Int]] = []
+        let tasks : Array[@async.Task[Int32]] = []
         for arguments in batches[offset:end] {
           tasks.push(
             group.spawn(() => {
@@ -280,7 +280,7 @@ async fn run_xargs_batches(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("xargs 0.2.1\n")
+    @stdio.stdout.write("xargs 0.2.2\n")
     return
   }
   let args = @env.args()[1:]

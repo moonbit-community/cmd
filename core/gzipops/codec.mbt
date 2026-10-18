@@ -1,5 +1,5 @@
 ///|
-fn crc32(data : BytesView) -> UInt {
+fn crc32(data : BytesView) -> UInt32 {
   let mut crc = 0xffffffffU
   for byte in data {
     crc = update_crc(crc, byte)
@@ -8,7 +8,7 @@ fn crc32(data : BytesView) -> UInt {
 }
 
 ///|
-fn header_end(data : Bytes, start : Int) -> Int raise {
+fn header_end(data : Bytes, start : Int32) -> Int32 raise {
   guard data.length() - start >= 10 else { fail("unexpected end of file") }
   guard data[start] == b'\x1f' && data[start + 1] == b'\x8b' else {
     fail("not in gzip format")
@@ -93,7 +93,7 @@ pub async fn decode(
 }
 
 ///|
-fn uint32_le(data : Bytes, position : Int) -> UInt {
+fn uint32_le(data : Bytes, position : Int32) -> UInt32 {
   data[position].to_uint() |
   (data[position + 1].to_uint() << 8) |
   (data[position + 2].to_uint() << 16) |

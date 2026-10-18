@@ -11,20 +11,20 @@ struct Session {
 ///|
 pub(all) enum SessionResult {
   NeedMoreInput
-  Completed(Int)
-  Exit(Int)
+  Completed(Int32)
+  Exit(Int32)
 } derive(Eq, Debug)
 
 ///|
 pub fn Session::new(
-  name? : String = "sh",
-  args? : Array[String] = [],
-  env? : Map[String, String] = @child_process.default_environment(),
+  name~ : String = "sh",
+  args~ : Array[String] = [],
+  env~ : Map[String, String] = @child_process.default_environment(),
   cwd? : String,
   input? : &@io.Reader,
   output? : &@io.Writer,
   error? : &@io.Writer,
-  interactive? : Bool = false,
+  interactive~ : Bool = false,
 ) -> Session {
   let cwd = cwd.unwrap_or(@env.current_dir().unwrap_or("."))
   let variables = Map(env.to_array())
@@ -126,7 +126,7 @@ pub async fn Session::finish(self : Session) -> SessionResult {
 }
 
 ///|
-pub fn Session::prompt(self : Session, continuation? : Bool = false) -> String {
+pub fn Session::prompt(self : Session, continuation~ : Bool = false) -> String {
   self.context.env
   .get(if continuation { "PS2" } else { "PS1" })
   .unwrap_or(if continuation { "> " } else { "$ " })
@@ -172,11 +172,11 @@ pub async fn read_line(input : &@io.Reader) -> String? {
 ///|
 pub async fn run(
   script : String,
-  name? : String = "sh",
-  args? : Array[String] = [],
-  env? : Map[String, String] = @child_process.default_environment(),
+  name~ : String = "sh",
+  args~ : Array[String] = [],
+  env~ : Map[String, String] = @child_process.default_environment(),
   cwd? : String,
-) -> Int {
+) -> Int32 {
   let session = Session::new(name~, args~, env~, cwd?)
   match session.feed(script) {
     Exit(status) => status
@@ -193,11 +193,11 @@ pub async fn run(
 /// Stderr remains a separate stream and the shell exit status is returned.
 pub async fn capture(
   script : String,
-  name? : String = "sh",
-  args? : Array[String] = [],
-  env? : Map[String, String] = @child_process.default_environment(),
+  name~ : String = "sh",
+  args~ : Array[String] = [],
+  env~ : Map[String, String] = @child_process.default_environment(),
   cwd? : String,
-) -> (Int, String) {
+) -> (Int32, String) {
   let session = Session::new(name~, args~, env~, cwd?)
   run_substitution(script, session.context)
 }

@@ -1,8 +1,8 @@
 ///|
 fn printf_escape(
   chars : Array[Char],
-  start : Int,
-) -> (String, Int, Bool) raise ShellError {
+  start : Int32,
+) -> (String, Int32, Bool) raise ShellError {
   if start + 1 >= chars.length() {
     return ("\\", start + 1, false)
   }
@@ -17,11 +17,11 @@ fn printf_escape(
     'v' => "\u000b"
     '\\' => "\\"
     'c' => return ("", start + 2, true)
-    '0'..='7' => {
+    '0'..<='7' => {
       let mut number = 0
       let mut end = start + 1
       let limit = if char == '0' { start + 5 } else { start + 4 }
-      while end < chars.length() && end < limit && chars[end] is ('0'..='7') {
+      while end < chars.length() && end < limit && chars[end] is ('0'..<='7') {
         number = number * 8 + chars[end].to_int() - '0'.to_int()
         end += 1
       }
@@ -76,7 +76,7 @@ fn printf_radix(value : UInt64, radix : UInt64, upper : Bool) -> String {
 }
 
 ///|
-async fn printf_builtin(args : Array[String], context : Context) -> Int {
+async fn printf_builtin(args : Array[String], context : Context) -> Int32 {
   if args.is_empty() {
     return builtin_error(context, "printf: format required")
   }
@@ -120,7 +120,7 @@ async fn printf_builtin(args : Array[String], context : Context) -> Int {
         }
         let zero = format.get(index) == Some('0')
         let mut width = 0
-        while index < format.length() && format[index] is ('0'..='9') {
+        while index < format.length() && format[index] is ('0'..<='9') {
           width = width * 10 + format[index].to_int() - '0'.to_int()
           if width > 1000000 {
             raise ShellError("printf: field width exceeds builtin limit")

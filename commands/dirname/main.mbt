@@ -1,5 +1,5 @@
 ///|
-fn chars_string(chars : Array[Char], end : Int) -> String {
+fn chars_string(chars : Array[Char], end : Int32) -> String {
   let out = StringBuilder()
   for i in 0..<end {
     out.write_char(chars[i])
@@ -36,7 +36,7 @@ fn dir_name(path : String) -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("dirname 0.2.1\n")
+    @stdio.stdout.write("dirname 0.2.2\n")
     return
   }
   let args = @env.args()[1:]

@@ -1,7 +1,7 @@
 ///|
 async fn serve_test_requests(
   group : @async.TaskGroup[Unit],
-) -> (@http.Server, Int) {
+) -> (@http.Server, Int32) {
   let server = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
   group.spawn_bg(no_wait=true) <| () => {
     server.run_forever() <| ((request, _body, connection) => {
@@ -59,9 +59,21 @@ async fn serve_test_requests(
         "/range" => {
           let ranged = request.headers.get("Range") == Some("bytes=3-")
           let content = if ranged { "lo" } else { "hello" }
-          connection.send_response(if ranged { 206 } else { 200 }, "OK", extra_headers={
+          let headers : Map[@http.CaseInsensitiveString, String] = {
             "Content-Length": content.length().to_string(),
-          })
+          }
+          if ranged {
+            headers["Content-Range"] = "bytes 3-4/5"
+          }
+          connection.send_response(
+            if ranged {
+              206
+            } else {
+              200
+            },
+            "OK",
+            extra_headers=headers,
+          )
           connection..write(content).end_response()
         }
         "/not-modified" =>
@@ -411,7 +423,7 @@ async test "cross-origin redirects strip authorization and partial failures clea
         transfer_options(),
       )
     catch {
-      TransferError(kind=ConnectionFailure, ..) => ()
+      TransferError(kind=PartialBodyFailure, ..) => ()
       _ => fail("expected a partial-transfer failure")
     } noraise {
       _ => fail("expected a partial-transfer failure")

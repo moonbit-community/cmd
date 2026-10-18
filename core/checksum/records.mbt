@@ -49,7 +49,7 @@ fn decode_filename(value : String) -> String? {
 ///|
 fn is_hex_digest(algorithm : Algorithm, value : String) -> Bool {
   value.length() == algorithm.hex_length() &&
-  value.iter().all(c => c is ('0'..='9' | 'a'..='f' | 'A'..='F'))
+  value.iter().all(c => c is ('0'..<='9' | 'a'..<='f' | 'A'..<='F'))
 }
 
 ///|

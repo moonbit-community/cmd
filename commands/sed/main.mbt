@@ -1,5 +1,5 @@
 ///|
-async fn run(args : ArrayView[String]) -> Int {
+async fn run(args : ArrayView[String]) -> Int32 {
   let parsed = @cli.parse(args, [
     @cli.flag("quiet", short='n'),
     @cli.flag("silent"),
@@ -17,7 +17,7 @@ async fn run(args : ArrayView[String]) -> Int {
     return 0
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("sed 0.1.1\n")
+    @stdio.stdout.write("sed 0.1.2\n")
     return 0
   }
   let scripts : Array[String] = []

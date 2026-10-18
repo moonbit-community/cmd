@@ -4,7 +4,7 @@
 priv struct JsonInput {
   reader : &@io.Reader
   mut chunk : Bytes
-  mut position : Int
+  mut position : Int32
   mut pending : Byte?
 }
 

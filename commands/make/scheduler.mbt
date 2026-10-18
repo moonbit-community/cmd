@@ -88,7 +88,7 @@ async fn build_targets(
   targets : Array[String],
   database : Database,
   settings : Settings,
-  execute? : async (BuildNode, Database, Settings) -> Unit = execute_target,
+  execute~ : async (BuildNode, Database, Settings) -> Unit = execute_target,
 ) -> Unit {
   let order : Array[BuildNode] = []
   let planned : Set[String] = Set([])

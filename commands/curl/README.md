@@ -1,6 +1,6 @@
 # curl
 
-Pure-MoonBit curl 8.22 HTTP/HTTPS profile, version **0.2.2**. See the
+Pure-MoonBit curl 8.22 HTTP/HTTPS profile, version **0.2.3**. See the
 [support record](../../docs/compatibility.md) for platform verification and
 exact-version publication evidence.
 
@@ -35,6 +35,51 @@ is bounded by the runtime millisecond range.
 Network authorization belongs to the caller or host. The command does not
 embed an allowlist.
 
+The workspace candidate returns status 18 for an incomplete fixed-length or
+chunked response body, 52 for an EOF before any response bytes, and 56 for other
+response-read failures. Connection
+setup failures retain status 7. Bytes already written to stdout remain visible;
+partial files remain unless `--remove-on-error` selects cleanup. Ordinary
+`--retry` does not retry these body failures; `--retry-all-errors` can retry
+them, restarting file output while stdout retains each emitted prefix.
+The pure MoonBit HTTP/1 adapter preserves chunk payload before checking its
+following CRLF and distinguishes an empty reply from an incomplete header.
+The calibrated EOF after a complete 200 status line accepts the complete
+header fields and ignores the unfinished field; malformed complete fields and
+incomplete status lines still fail.
+
+File output opens on the first payload or successful empty completion and uses
+4096-byte buffering. A failed empty body leaves an existing file untouched and
+does not create an absent file, including with `--remove-on-error`. After a
+network error, a buffered tail is flushed if possible; a secondary flush error
+does not replace the earlier network error. The fixed Linux oracle consequently
+returns 18 for `/dev/full` with an incomplete body below 4096 bytes, but 23 when
+4096 bytes trigger a write failure first. Successful nonempty bodies whose final
+flush fails return 23; successful empty bodies create an empty destination.
+These behaviors still require the current candidate acceptance checks.
+
+A redirect that must resend an already consumed stdin upload fails with status
+65. A separate `--retry-all-errors` attempt can upload the now-empty stdin;
+it does not replay the original bytes. File bodies remain reopenable.
+With `-sS`, each failed transfer attempt still writes its error to stderr even
+when a later retry succeeds with status 0. Plain `-s` suppresses those errors.
+Fixed-length truncation reports the missing byte count using the structured
+transfer context. HTTP status retries without `-f` do not invent a status-22
+error diagnostic merely because the internal retry mechanism uses an error.
+
+Request fields generated from literal or stored cookies receive the same header
+validation as explicit fields. CR/LF in a Cookie value is rejected before any
+request bytes are written, with status 2 and no transfer output file opened.
+
+Requests default to `Accept-Encoding: identity` and preserve an explicitly
+supplied header. Response content-coding bytes are written unchanged, so gzip
+responses retain their encoded byte counts and framing checks. Automatic
+decompression and `--compressed` are not supported.
+
+Protocol metadata limits and supported response framing are documented in the
+[shared transfer profile](../../core/netops/README.md). They are project support
+choices and can be extended through the existing released transport APIs.
+
 This remains a bounded HTTP transfer profile, not full curl compatibility.
 Non-HTTP protocols, HTTP/2 negotiation, config files, non-Basic authentication,
 interactive password prompts, exact native progress and diagnostic bytes,
@@ -55,7 +100,7 @@ destination.
 
 ## Standalone metadata
 
-Standalone `--version` prints exactly `curl 0.2.2` followed by one
+Standalone `--version` prints exactly `curl 0.2.3` followed by one
 newline. Standalone `--help` starts with `Usage: curl`, lists both
 metadata options, and ends with a newline. Both write to stdout, leave stdin
 unread, and exit with status 0. Exact-version publication and verification

@@ -1,6 +1,6 @@
 # pwd
 
-Version **0.2.1** behavior is documented here. The
+Version **0.2.2** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -12,7 +12,7 @@ back to the physical cwd. The default is `-P`, or `-L` when
 
 ## Standalone metadata
 
-Standalone `--version` prints exactly `pwd 0.2.1` followed by one
+Standalone `--version` prints exactly `pwd 0.2.2` followed by one
 newline. Standalone `--help` starts with `Usage: pwd`, lists both
 metadata options, and ends with a newline. Both write to stdout, leave stdin
 unread, and exit with status 0. Exact-version publication and verification

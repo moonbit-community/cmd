@@ -154,7 +154,7 @@ fn curl_proxy_for(options : CurlOptions, url : String) -> String? {
 fn curl_output(
   options : CurlOptions,
   url : String,
-  index : Int,
+  index : Int32,
 ) -> @netops.TransferOutput raise @netops.TransferError {
   if index < options.output_specs.length() {
     let path = options.output_specs[index]
@@ -183,6 +183,7 @@ fn curl_output(
         kind=@netops.OutputFailure,
         message="Remote filename has no length",
         status=None,
+        context=None,
       )
     }
     let path = @netops.remote_name(url)
@@ -197,25 +198,29 @@ fn curl_output(
 }
 
 ///|
-fn curl_exit_kind(kind : @netops.TransferErrorKind) -> Int {
+fn curl_exit_kind(kind : @netops.TransferErrorKind) -> Int32 {
   match kind {
     @netops.UnsupportedProtocol => 1
     @netops.InvalidMethod | @netops.ProtocolFailure => 2
     @netops.InvalidUrl => 3
     @netops.ProxyFailure => 5
     @netops.ConnectionFailure => 7
+    @netops.PartialBodyFailure => 18
     @netops.HttpStatusFailure => 22
     @netops.OutputFailure => 23
     @netops.InputFailure => 26
+    @netops.RewindFailure => 65
     @netops.TimeoutFailure => 28
     @netops.RedirectFailure => 47
+    @netops.ReceiveFailure => 56
+    @netops.EmptyReplyFailure => 52
     @netops.TlsFailure => 60
   }
 }
 
 ///|
 async fn curl_write_headers(
-  status : Int,
+  status : Int32,
   reason : String,
   headers : ArrayView[@netops.HttpHeader],
 ) -> Unit {
@@ -287,7 +292,7 @@ async fn curl_observer(
 fn curl_can_retry(
   options : CurlOptions,
   kind : @netops.TransferErrorKind,
-  status : Int?,
+  status : Int32?,
 ) -> Bool {
   if options.retry_all_errors {
     return kind != @netops.InputFailure && kind != @netops.OutputFailure
@@ -301,7 +306,31 @@ fn curl_can_retry(
 }
 
 ///|
-fn curl_retry_delay(options : CurlOptions, attempt : Int) -> Int {
+fn curl_reports_retry_error(
+  options : CurlOptions,
+  kind : @netops.TransferErrorKind,
+) -> Bool {
+  (!options.silent || options.show_error) &&
+  (kind != @netops.HttpStatusFailure || options.fail)
+}
+
+///|
+fn curl_error_message(
+  kind : @netops.TransferErrorKind,
+  message : String,
+  context : @netops.TransferFailureContext?,
+) -> String {
+  if kind == @netops.PartialBodyFailure &&
+    context is Some(context) &&
+    context.framing is Some(@netops.FixedLength(expected)) &&
+    context.received_bytes < expected {
+    return "end of response with \{expected - context.received_bytes} bytes missing"
+  }
+  message
+}
+
+///|
+fn curl_retry_delay(options : CurlOptions, attempt : Int32) -> Int32 {
   if options.retry_delay_ms > 0 {
     return options.retry_delay_ms
   }
@@ -313,9 +342,9 @@ fn curl_retry_delay(options : CurlOptions, attempt : Int) -> Int {
 async fn curl_transfer_one(
   options : CurlOptions,
   url : String,
-  index : Int,
+  index : Int32,
   jar : @netops.CookieJar?,
-) -> Int {
+) -> Int32 {
   let body = curl_request_body(options) catch {
     err => {
       if !options.silent || options.show_error {
@@ -385,6 +414,7 @@ async fn curl_transfer_one(
         url,
         output,
         @netops.transfer_options(
+          profile=@netops.CurlProfile,
           request_method=curl_request_method(options),
           headers~,
           body~,
@@ -416,7 +446,8 @@ async fn curl_transfer_one(
         },
       )
     catch {
-      @netops.TransferError(kind~, message~, status~) => {
+      @netops.TransferError(kind~, message~, status~, context~) => {
+        let diagnostic = curl_error_message(kind, message, context)
         if attempt < options.retry_count &&
           curl_can_retry(options, kind, status) {
           let next_attempt = attempt + 1
@@ -426,6 +457,10 @@ async fn curl_transfer_one(
             elapsed + retry_delay.to_int64() <
             options.retry_max_time_ms.unwrap().to_int64() {
             attempt = next_attempt
+            if curl_reports_retry_error(options, kind) {
+              let code = curl_exit_kind(kind)
+              @stdio.stderr.write("curl: (\{code}) \{diagnostic}\n")
+            }
             if !options.silent {
               @stdio.stderr.write(
                 "Warning: transient problem: \{message}. Retrying...\n",
@@ -437,7 +472,7 @@ async fn curl_transfer_one(
         }
         let code = curl_exit_kind(kind)
         if !options.silent || options.show_error {
-          @stdio.stderr.write("curl: (\{code}) \{message}\n")
+          @stdio.stderr.write("curl: (\{code}) \{diagnostic}\n")
         }
         return code
       }
@@ -456,7 +491,7 @@ async fn curl_transfer_one(
 }
 
 ///|
-async fn curl_run(options : CurlOptions) -> Int {
+async fn curl_run(options : CurlOptions) -> Int32 {
   if options.help {
     @stdio.stdout.write(curl_usage())
     return 0
@@ -501,7 +536,7 @@ async fn curl_run(options : CurlOptions) -> Int {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("curl 0.2.2\n")
+    @stdio.stdout.write("curl 0.2.3\n")
     return
   }
   let options = parse_curl_options(@env.args()[1:]) catch {

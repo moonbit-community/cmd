@@ -31,7 +31,7 @@ async fn next_checked(
   previous : Ref[Bytes?],
   unordered : Ref[Bool],
   name : String,
-  order_mode : Int,
+  order_mode : Int32,
   unpairable : Ref[Bool],
 ) -> @stream.Line? {
   let line = scanner.next()
@@ -55,7 +55,7 @@ async fn next_checked(
 
 ///|
 fn mark_unpairable(
-  order_mode : Int,
+  order_mode : Int32,
   unpairable : Ref[Bool],
   unordered1 : Ref[Bool],
   unordered2 : Ref[Bool],
@@ -82,7 +82,7 @@ async fn merge_readers(
   hide1 : Bool,
   hide2 : Bool,
   hide3 : Bool,
-  order_mode : Int,
+  order_mode : Int32,
   record_delimiter : Byte,
 ) -> Unit {
   let scanner1 = @stream.LineScanner::new(reader1, delimiter=record_delimiter)
@@ -155,7 +155,7 @@ async fn merge_readers(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("comm 0.2.1\n")
+    @stdio.stdout.write("comm 0.2.2\n")
     return
   }
   let args = @env.args()[1:]

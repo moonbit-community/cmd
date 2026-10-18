@@ -59,7 +59,7 @@ test "edit scripts reconstruct both sides with minimum edit count" {
         dp[i][j] = if a[i - 1] == b[j - 1] {
           dp[i - 1][j - 1]
         } else {
-          1 + Int::min(dp[i - 1][j], dp[i][j - 1])
+          1 + Int32::min(dp[i - 1][j], dp[i][j - 1])
         }
       }
     }

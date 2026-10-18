@@ -1,5 +1,5 @@
 ///|
-fn digit(value : Int) -> Char {
+fn digit(value : Int32) -> Char {
   if value < 10 {
     ('0'.to_int() + value).to_char().unwrap()
   } else {
@@ -8,7 +8,7 @@ fn digit(value : Int) -> Char {
 }
 
 ///|
-fn radix_string(value : Int, radix : Int) -> String {
+fn radix_string(value : Int32, radix : Int32) -> String {
   if value == 0 {
     return "0"
   }
@@ -29,10 +29,10 @@ fn printable(byte : Byte, eight_bit : Bool) -> Bool {
 ///|
 fn records(
   data : Bytes,
-  minimum : Int,
-  eight_bit? : Bool = false,
-) -> Array[(Int, Bytes)] {
-  let result : Array[(Int, Bytes)] = []
+  minimum : Int32,
+  eight_bit~ : Bool = false,
+) -> Array[(Int32, Bytes)] {
+  let result : Array[(Int32, Bytes)] = []
   let mut start = 0
   let mut index = 0
   while index <= data.length() {
@@ -67,7 +67,7 @@ fn help_message() -> String {
 }
 
 ///|
-fn parse_radix(value : String) -> Int? {
+fn parse_radix(value : String) -> Int32? {
   match value {
     "d" => Some(10)
     "o" => Some(8)
@@ -80,9 +80,9 @@ fn parse_radix(value : String) -> Int? {
 async fn emit(
   path : String,
   data : Bytes,
-  minimum : Int,
+  minimum : Int32,
   prefix : Bool,
-  radix : Int?,
+  radix : Int32?,
   eight_bit : Bool,
 ) -> Unit {
   for (offset, text) in records(data, minimum, eight_bit~) {
@@ -107,7 +107,7 @@ async fn emit(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("strings 0.1.2\n")
+    @stdio.stdout.write("strings 0.1.3\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [

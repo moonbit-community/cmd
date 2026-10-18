@@ -5,28 +5,66 @@ async fn network_request(
   work : String,
   command : String,
   args : Array[String],
+  stdin~ : Bytes = b"",
   oracle_image? : String,
   oracle_failures? : Array[String],
+  transfer_requests? : Array[@testkit.TransferFixtureRequest],
+  expected_ranges? : Array[String?],
+  expected_methods? : Array[String],
+  expected_bodies? : Array[Bytes],
+  expected_files? : Array[(String, String?)],
 ) -> @testkit.RunResult {
+  if transfer_requests is Some(requests) {
+    requests.clear()
+  }
   let result = @testkit.run_artifact(
     root,
     wasm,
     command,
     args,
-    stdin=b"",
+    stdin~,
     cwd=work,
     extra_env={ "NO_PROXY": "*", "no_proxy": "*", "LC_ALL": "C" },
   )
+  // Capture product effects before adding evidence files to this directory.
+  let output_names = if expected_files is Some(_) {
+    let names = @fs.readdir(work)
+    let names = if oracle_image is Some(_) {
+      names.filter(name => name != "oracle")
+    } else {
+      names
+    }
+    names.sort()
+    Some(names)
+  } else {
+    None
+  }
   let prefix = work + "/call-\{@fs.readdir(work).length()}"
   @fs.write_file(prefix + ".stdout.bin", result.stdout)
   @fs.write_file(prefix + ".stderr.bin", result.stderr)
   @fs.write_file(prefix + ".status.txt", result.status.to_string())
+  if !stdin.is_empty() {
+    @fs.write_file(prefix + ".stdin.bin", stdin)
+  }
   @fs.write_file(
     prefix + ".request.json",
     ({ "command": Json(command), "args": Json(args) } : Json).stringify(
       indent=2,
     ),
   )
+  let actual_requests = transfer_requests.map(requests => requests.copy())
+  if actual_requests is Some(requests) {
+    @fs.write_file(
+      prefix + ".requests.json",
+      @json.to_json(requests).stringify(indent=2),
+    )
+  }
+  if output_names is Some(names) {
+    @fs.write_file(
+      prefix + ".files.json",
+      @json.to_json(names).stringify(indent=2),
+    )
+  }
   if oracle_image is Some(image) {
     let docker_user = @testkit.docker_user()
     let oracle_work = work + "/oracle"
@@ -34,6 +72,9 @@ async fn network_request(
       @fs.mkdir(oracle_work)
     }
     let oracle_args = args.map(arg => arg.replace_all(old=work, new=oracle_work))
+    if transfer_requests is Some(requests) {
+      requests.clear()
+    }
     let run = @testkit.run_with_deadline(
       "docker",
       [
@@ -59,13 +100,45 @@ async fn network_request(
         ..oracle_args,
       ],
       120000,
+      stdin~,
     )
     @fs.write_file(prefix + ".oracle.stdout.bin", run.output.stdout)
     @fs.write_file(prefix + ".oracle.stderr.bin", run.output.stderr)
+    @fs.write_file(prefix + ".oracle.status.txt", run.output.status.to_string())
+    @fs.write_file(
+      prefix + ".oracle.execution.json",
+      @testkit.canonical_json({
+        "timed_out": Json(run.timed_out),
+        "cleanup_error": @json.to_json(run.cleanup_error),
+      }),
+    )
+    let oracle_requests = transfer_requests.map(requests => requests.copy())
+    if oracle_requests is Some(requests) {
+      @fs.write_file(
+        prefix + ".oracle.requests.json",
+        @json.to_json(requests).stringify(indent=2),
+      )
+    }
+    let oracle_output_names = if expected_files is Some(_) {
+      let names = @fs.readdir(oracle_work)
+      names.sort()
+      @fs.write_file(
+        prefix + ".oracle.files.json",
+        @json.to_json(names).stringify(indent=2),
+      )
+      Some(names)
+    } else {
+      None
+    }
     if run.timed_out ||
       run.cleanup_error is Some(_) ||
       [125, 126, 127].contains(run.output.status) {
-      fail("oracle infrastructure failure")
+      fail(
+        "oracle infrastructure failure: status " +
+        run.output.status.to_string() +
+        ", timeout " +
+        run.timed_out.to_string(),
+      )
     }
     let differences : Array[String] = []
     if result.status != run.output.status {
@@ -76,6 +149,17 @@ async fn network_request(
     }
     if result.stderr != run.output.stderr {
       differences.push("stderr bytes differ")
+    }
+    if oracle_requests is Some(requests) && actual_requests is Some(actual) {
+      if requests != actual {
+        differences.push("request methods, paths, Range, or body bytes differ")
+      }
+    }
+    if expected_files is Some(files) &&
+      oracle_output_names is Some(oracle_names) {
+      check_transfer_files(oracle_work, files, oracle_names) catch {
+        error => differences.push("oracle file effect: " + error.to_string())
+      }
     }
     if !differences.is_empty() {
       let detail = command +
@@ -89,7 +173,1164 @@ async fn network_request(
       }
     }
   }
+  let contract_failures : Array[String] = []
+  if actual_requests is Some(requests) && expected_bodies is Some(bodies) {
+    let actual_bodies = requests.map(request => request.body)
+    if actual_bodies != bodies {
+      contract_failures.push(
+        "candidate request body bytes differ; lengths " +
+        repr(actual_bodies.map(body => body.length())) +
+        " != " +
+        repr(bodies.map(body => body.length())),
+      )
+    }
+  }
+  if actual_requests is Some(requests) && expected_methods is Some(methods) {
+    let actual_methods = requests.map(request => request.request_method)
+    if actual_methods != methods {
+      contract_failures.push(
+        "candidate method sequence differs: " +
+        repr(actual_methods) +
+        " != " +
+        repr(methods),
+      )
+    }
+  }
+  if actual_requests is Some(requests) && expected_ranges is Some(ranges) {
+    let actual_ranges = requests.map(request => request.range)
+    if actual_ranges != ranges {
+      contract_failures.push(
+        "candidate Range sequence differs: " +
+        repr(actual_ranges) +
+        " != " +
+        repr(ranges),
+      )
+    }
+  }
+  if expected_files is Some(files) && output_names is Some(names) {
+    check_transfer_files(work, files, names) catch {
+      error =>
+        contract_failures.push("candidate file effect: " + error.to_string())
+    }
+  }
+  if !contract_failures.is_empty() {
+    match oracle_failures {
+      Some(failures) => failures.append(contract_failures)
+      None => fail(contract_failures.join("; "))
+    }
+  }
   result
+}
+
+///|
+async fn check_transfer_files(
+  work : String,
+  files : Array[(String, String?)],
+  observed_names : Array[String],
+) -> Unit {
+  let expected_names : Array[String] = []
+  for (name, content) in files {
+    if content is Some(_) {
+      expected_names.push(name)
+    }
+  }
+  expected_names.sort()
+  let names = observed_names.copy()
+  names.sort()
+  let failures : Array[String] = []
+  if names != expected_names {
+    failures.push(
+      "transfer output file set differs: " +
+      repr(names) +
+      " != " +
+      repr(expected_names),
+    )
+  }
+  for (name, content) in files {
+    let path = work + "/" + name
+    try {
+      match content {
+        Some(content) => {
+          assert_true(@fs.exists(path), msg="missing transfer output: " + name)
+          assert_eq(
+            @fs.kind(path, follow_symlink=false),
+            @fs.Regular,
+            msg="transfer output must be a regular file: " + name,
+          )
+          assert_eq(@fs.read_file(path).binary(), @utf8.encode(content))
+        }
+        None =>
+          assert_false(
+            @fs.exists(path),
+            msg="unexpected transfer output: " + name,
+          )
+      }
+    } catch {
+      error => failures.push(name + ": " + error.to_string())
+    }
+  }
+  guard failures.is_empty() else { fail(failures.join("; ")) }
+}
+
+///|
+// Exact statuses observed with pinned-oracle-v1 image
+// sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7.
+fn transfer_oracle_status(command : String, label : String) -> Int32 raise {
+  match command {
+    "curl" =>
+      match label {
+        "chunk-complete"
+        | "close-complete"
+        | "empty-complete"
+        | "empty-output-complete-new-keep"
+        | "empty-output-complete-new-remove"
+        | "empty-output-complete-existing-keep"
+        | "empty-output-complete-existing-remove"
+        | "stdin-retry-256"
+        | "stdin-retry-65537"
+        | "stdin-retry-show-error-256"
+        | "fixed-complete"
+        | "fixed-prefix-then-fixed-complete"
+        | "head-length"
+        | "header-partial-file"
+        | "header-partial"
+        | "no-content"
+        | "not-modified"
+        | "output-full-empty"
+        | "output-null-complete"
+        | "trailer-complete" => 0
+        "chunk-data-crlf"
+        | "chunk-initial-eof"
+        | "chunk-empty"
+        | "chunk-payload-file"
+        | "chunk-payload"
+        | "chunk-terminator-file"
+        | "chunk-terminator"
+        | "chunk-trailer"
+        | "default-retry-does-not-retry-partial"
+        | "fixed-complete-then-fixed-prefix"
+        | "fixed-empty-file"
+        | "fixed-empty"
+        | "empty-output-partial-new-keep"
+        | "empty-output-partial-new-remove"
+        | "empty-output-partial-existing-keep"
+        | "empty-output-partial-existing-remove"
+        | "fixed-prefix-existing-file"
+        | "fixed-prefix-file"
+        | "fixed-prefix"
+        | "keep-named"
+        | "output-full-partial"
+        | "output-full-partial-4095"
+        | "remove-named"
+        | "remove-partial"
+        | "retry-all-file"
+        | "retry-all-stdout" => 18
+        "output-full-complete"
+        | "output-full-complete-4095"
+        | "output-full-complete-4096"
+        | "output-full-partial-4096" => 23
+        "header-empty-existing-file" | "header-empty-file" | "header-empty" =>
+          52
+        "chunk-invalid" => 56
+        "stdin-redirect-307" => 65
+        _ => fail("missing frozen oracle status: " + command + " " + label)
+      }
+    "wget" =>
+      match label {
+        "chunk-complete"
+        | "chunk-empty"
+        | "chunk-payload-file"
+        | "chunk-payload"
+        | "chunk-trailer"
+        | "close-complete"
+        | "empty-complete"
+        | "fixed-complete"
+        | "head-length"
+        | "header-partial-file"
+        | "header-partial"
+        | "no-content"
+        | "output-full-empty"
+        | "output-null-complete"
+        | "resume-name-change-ignore-existing"
+        | "resume-name-change-ignore-new"
+        | "resume-nonfinal-range"
+        | "resume-unsatisfied-equal-resource"
+        | "resume-unsatisfied-longer-than-resource"
+        | "resume-unsatisfied-shorter-than-resource"
+        | "resume-unsatisfied-malformed-local-3"
+        | "resume-unsatisfied-malformed-local-6"
+        | "resume-unsatisfied-malformed-local-7"
+        | "resume-unsatisfied-missing-local-3"
+        | "resume-unsatisfied-missing-local-6"
+        | "resume-unsatisfied-missing-local-7"
+        | "resume-unsatisfied-without-resume"
+        | "resume-named-valid-new"
+        | "resume-named-valid-existing"
+        | "retry-content-disposition-keeps-actual-name"
+        | "retry-ignore-aggregate"
+        | "retry-ignore-changed-aggregate"
+        | "retry-ignore-changed-default-file"
+        | "retry-ignore-changed-file"
+        | "retry-ignore-changed-stdout"
+        | "retry-ignore-default-file"
+        | "retry-ignore-file"
+        | "retry-ignore-stdout"
+        | "retry-range-aggregate"
+        | "retry-range-default-file"
+        | "retry-range-file"
+        | "retry-range-stdout"
+        | "retry-unique-keeps-actual-name"
+        | "trailer-complete" => 0
+        "output-full-complete" | "output-full-partial" => 3
+        "chunk-data-crlf"
+        | "chunk-initial-eof"
+        | "chunk-invalid"
+        | "chunk-terminator-file"
+        | "chunk-terminator"
+        | "fixed-complete-then-fixed-prefix"
+        | "fixed-empty-file"
+        | "fixed-empty"
+        | "fixed-prefix-existing-file"
+        | "fixed-prefix-file"
+        | "fixed-prefix-then-fixed-complete"
+        | "fixed-prefix"
+        | "header-empty-existing-file"
+        | "header-empty-file"
+        | "header-empty"
+        | "resume-name-change-existing"
+        | "resume-name-change-new"
+        | "retry-empty-is-bounded"
+        | "retry-wrong-range-preserves-prefix" => 4
+        "not-modified" => 8
+        _ => fail("missing frozen oracle status: " + command + " " + label)
+      }
+    _ => fail("unknown transfer command: " + command)
+  }
+}
+
+///|
+async fn transfer_scenario_call(
+  root : String,
+  wasm : Bool,
+  work : String,
+  command : String,
+  label : String,
+  args : Array[String],
+  stdout : String,
+  ranges : Array[String?],
+  requests : Array[@testkit.TransferFixtureRequest],
+  oracle_failures : Array[String],
+  files~ : Array[(String, String?)] = [],
+  initial_files~ : Array[(String, String)] = [],
+  stdin~ : Bytes = b"",
+  expected_stderr~ : String = "",
+  bodies? : Array[Bytes],
+  methods? : Array[String],
+  oracle_image? : String,
+) -> Unit {
+  try {
+    let case_work = work + "/" + command + "-" + label
+    @fs.mkdir(case_work)
+    for (name, content) in initial_files {
+      @fs.write_file(case_work + "/" + name, content)
+    }
+    if oracle_image is Some(_) {
+      @fs.mkdir(case_work + "/oracle")
+      for (name, content) in initial_files {
+        @fs.write_file(case_work + "/oracle/" + name, content)
+      }
+    }
+    let call_failures : Array[String] = []
+    let expected_methods = methods.unwrap_or(ranges.map(_ => "GET"))
+    let result = network_request(
+      root,
+      wasm,
+      case_work,
+      command,
+      args,
+      stdin~,
+      oracle_image?,
+      oracle_failures=call_failures,
+      transfer_requests=requests,
+      expected_ranges=ranges,
+      expected_methods~,
+      expected_bodies?=bodies,
+      expected_files=files,
+    )
+    if result.stdout != @utf8.encode(stdout) {
+      call_failures.push(
+        "candidate stdout bytes differ from the scenario contract",
+      )
+    }
+    if result.stderr != @utf8.encode(expected_stderr) {
+      call_failures.push(
+        "candidate stderr bytes differ from the scenario contract",
+      )
+    }
+    let expected_status = transfer_oracle_status(command, label)
+    if result.status != expected_status {
+      call_failures.push(
+        "candidate status " +
+        result.status.to_string() +
+        " != frozen oracle status " +
+        expected_status.to_string(),
+      )
+    }
+    @fs.write_file(
+      case_work + "/contract-checks.json",
+      @testkit.canonical_json({
+        "command": Json(command),
+        "label": Json(label),
+        "status": Json(result.status),
+        "status_contract": Json("exact-pinned-oracle-calibration"),
+        "expected_status": Json(expected_status),
+        "expected_stdout": Json(stdout),
+        "expected_stderr": Json(expected_stderr),
+        "expected_methods": Json(expected_methods),
+        "expected_bodies": bodies
+        .map(value => Json(value))
+        .unwrap_or(Json::null()),
+        "expected_ranges": Json(
+          ranges.map(range => {
+            range.map(value => Json(value)).unwrap_or(Json::null())
+          }),
+        ),
+        "failures": Json(call_failures),
+      }),
+    )
+    oracle_failures.append(
+      call_failures.map(error => command + " " + label + ": " + error),
+    )
+  } catch {
+    error =>
+      oracle_failures.push(command + " " + label + ": " + error.to_string())
+  }
+}
+
+///|
+/// The wire fixture is stateless: retries are selected by Range or upload bytes,
+/// so candidate and oracle calls cannot change one another's response sequence.
+async fn network_transfer_scenario(
+  root : String,
+  wasm : Bool,
+  work : String,
+  oracle_image? : String,
+) -> Unit {
+  let oracle_failures : Array[String] = []
+  @async.with_task_group(group => {
+    let server = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
+    group.add_defer(() => server.close())
+    let requests : Array[@testkit.TransferFixtureRequest] = []
+    group.spawn_bg(no_wait=true, () => {
+      server.run_forever() <| ((request, _, connection) => {
+        if !@testkit.serve_transfer_fixture(request, connection, requests~) {
+          fail("unknown transfer fixture path: " + request.path)
+        }
+      })
+    })
+    let base = "http://127.0.0.1:\{server.addr.port()}"
+    @fs.write_file(work + "/../network-origin.txt", base)
+    for command in ["curl", "wget"] {
+      let quiet = if command == "curl" { ["-s"] } else { ["-q", "-t", "1"] }
+      let to_stdout = if command == "curl" { [] } else { ["-O", "-"] }
+      for
+        (endpoint, stdout) in [
+          ("fixed-empty", ""),
+          ("fixed-prefix", "hello"),
+          ("chunk-empty", ""),
+          ("chunk-initial-eof", ""),
+          ("chunk-payload", "hello"),
+          ("chunk-data-crlf", "hello"),
+          ("chunk-terminator", "hello"),
+          ("chunk-trailer", "hello"),
+          ("chunk-invalid", ""),
+          ("header-empty", ""),
+          ("header-partial", ""),
+          ("fixed-complete", "hello"),
+          ("chunk-complete", "hello"),
+          ("trailer-complete", "hello"),
+          ("close-complete", "hello"),
+          ("empty-complete", ""),
+          ("no-content", ""),
+          ("not-modified", ""),
+        ] {
+        transfer_scenario_call(
+          root,
+          wasm,
+          work,
+          command,
+          endpoint,
+          [..quiet, ..to_stdout, base + "/transfer-" + endpoint],
+          stdout,
+          [None],
+          requests,
+          oracle_failures,
+          oracle_image?,
+        )
+      }
+      transfer_scenario_call(
+        root,
+        wasm,
+        work,
+        command,
+        "head-length",
+        [
+          ..quiet,
+          ..to_stdout,
+          if command == "curl" {
+            "-I"
+          } else {
+            "--method=HEAD"
+          },
+          base + "/transfer-head-length",
+        ],
+        if command == "curl" {
+          "HTTP/1.1 200 OK\r\nContent-Length: 9\r\n\r\n"
+        } else {
+          ""
+        },
+        [None],
+        requests,
+        oracle_failures,
+        methods=["HEAD"],
+        oracle_image?,
+      )
+      if @async.platform is Linux {
+        for device in ["/dev/full", "/dev/null"] {
+          guard @fs.kind(device, follow_symlink=false) == @fs.CharDevice else {
+            fail(
+              "infrastructure: output observation requires a character device: " +
+              device,
+            )
+          }
+        }
+        for
+          (label, endpoint, output) in [
+            ("output-full-complete", "fixed-complete", "/dev/full"),
+            ("output-full-partial", "fixed-prefix", "/dev/full"),
+            ("output-full-empty", "empty-complete", "/dev/full"),
+            ("output-null-complete", "fixed-complete", "/dev/null"),
+          ] {
+          transfer_scenario_call(
+            root,
+            wasm,
+            work,
+            command,
+            label,
+            [
+              ..quiet,
+              if command == "curl" {
+                "-o"
+              } else {
+                "-O"
+              },
+              output,
+              base + "/transfer-" + endpoint,
+            ],
+            "",
+            [None],
+            requests,
+            oracle_failures,
+            oracle_image?,
+          )
+        }
+        if command == "curl" {
+          for count in [4095, 4096] {
+            for completion in ["partial", "complete"] {
+              transfer_scenario_call(
+                root,
+                wasm,
+                work,
+                command,
+                "output-full-\{completion}-\{count}",
+                [
+                  "-s",
+                  "-o",
+                  "/dev/full",
+                  base + "/transfer-output-\{completion}-\{count}",
+                ],
+                "",
+                [None],
+                requests,
+                oracle_failures,
+                oracle_image?,
+              )
+            }
+          }
+        }
+      }
+      for endpoint in ["fixed-prefix", "chunk-payload", "chunk-terminator"] {
+        transfer_scenario_call(
+          root,
+          wasm,
+          work,
+          command,
+          endpoint + "-file",
+          [
+            ..quiet,
+            if command == "curl" {
+              "-o"
+            } else {
+              "-O"
+            },
+            "partial.bin",
+            base + "/transfer-" + endpoint,
+          ],
+          "",
+          [None],
+          requests,
+          oracle_failures,
+          files=[("partial.bin", Some("hello"))],
+          oracle_image?,
+        )
+      }
+      for
+        (endpoint, content) in [
+          ("fixed-empty", if command == "curl" { None } else { Some("") }),
+          ("header-empty", if command == "curl" { None } else { Some("") }),
+          ("header-partial", Some("")),
+        ] {
+        transfer_scenario_call(
+          root,
+          wasm,
+          work,
+          command,
+          endpoint + "-file",
+          [
+            ..quiet,
+            if command == "curl" {
+              "-o"
+            } else {
+              "-O"
+            },
+            "partial.bin",
+            base + "/transfer-" + endpoint,
+          ],
+          "",
+          [None],
+          requests,
+          oracle_failures,
+          files=[("partial.bin", content)],
+          oracle_image?,
+        )
+      }
+      for
+        (endpoint, content) in [
+          ("fixed-prefix", "hello"),
+          ("header-empty", if command == "curl" { "original" } else { "" }),
+        ] {
+        transfer_scenario_call(
+          root,
+          wasm,
+          work,
+          command,
+          endpoint + "-existing-file",
+          [
+            ..quiet,
+            if command == "curl" {
+              "-o"
+            } else {
+              "-O"
+            },
+            "partial.bin",
+            base + "/transfer-" + endpoint,
+          ],
+          "",
+          [None],
+          requests,
+          oracle_failures,
+          initial_files=[("partial.bin", "original")],
+          files=[("partial.bin", Some(content))],
+          oracle_image?,
+        )
+      }
+      for
+        (first, second) in [
+          ("fixed-prefix", "fixed-complete"),
+          ("fixed-complete", "fixed-prefix"),
+        ] {
+        transfer_scenario_call(
+          root,
+          wasm,
+          work,
+          command,
+          first + "-then-" + second,
+          [
+            ..quiet,
+            ..to_stdout,
+            base + "/transfer-" + first,
+            base + "/transfer-" + second,
+          ],
+          "hellohello",
+          [None, None],
+          requests,
+          oracle_failures,
+          oracle_image?,
+        )
+      }
+    }
+    for count in [256, 65537] {
+      let input = Bytes::from_array(
+        Array::makei(count, index => (index % 256).to_byte()),
+      )
+      transfer_scenario_call(
+        root,
+        wasm,
+        work,
+        "curl",
+        "stdin-retry-\{count}",
+        [
+          "-s",
+          "-T",
+          "-",
+          "--retry",
+          "1",
+          "--retry-all-errors",
+          "--retry-delay",
+          "1",
+          base + "/transfer-stdin-retry",
+        ],
+        "hellook",
+        [None, None],
+        requests,
+        oracle_failures,
+        stdin=input,
+        bodies=[input, b""],
+        methods=["PUT", "PUT"],
+        oracle_image?,
+      )
+    }
+    let binary_input = Bytes::from_array(
+      Array::makei(256, index => index.to_byte()),
+    )
+    transfer_scenario_call(
+      root,
+      wasm,
+      work,
+      "curl",
+      "stdin-retry-show-error-256",
+      [
+        "-sS",
+        "-T",
+        "-",
+        "--retry",
+        "1",
+        "--retry-all-errors",
+        "--retry-delay",
+        "1",
+        base + "/transfer-stdin-retry",
+      ],
+      "hellook",
+      [None, None],
+      requests,
+      oracle_failures,
+      stdin=binary_input,
+      expected_stderr="curl: (18) end of response with 4 bytes missing\n",
+      bodies=[binary_input, b""],
+      methods=["PUT", "PUT"],
+      oracle_image?,
+    )
+    transfer_scenario_call(
+      root,
+      wasm,
+      work,
+      "curl",
+      "stdin-redirect-307",
+      [
+        "-s",
+        "-T",
+        "-",
+        "-L",
+        "--max-redirs",
+        "2",
+        base + "/transfer-stdin-redirect",
+      ],
+      "",
+      [None],
+      requests,
+      oracle_failures,
+      stdin=binary_input,
+      bodies=[binary_input],
+      methods=["PUT"],
+      oracle_image?,
+    )
+    for existing in [false, true] {
+      for remove in [false, true] {
+        for complete in [false, true] {
+          let completion = if complete { "complete" } else { "partial" }
+          let prior = if existing { "existing" } else { "new" }
+          let cleanup = if remove { "remove" } else { "keep" }
+          transfer_scenario_call(
+            root,
+            wasm,
+            work,
+            "curl",
+            "empty-output-\{completion}-\{prior}-\{cleanup}",
+            [
+              "-s",
+              "-o",
+              "output",
+              ..if remove {
+                ["--remove-on-error"]
+              } else {
+                []
+              },
+              base +
+              (if complete {
+                "/transfer-empty-complete"
+              } else {
+                "/transfer-fixed-empty"
+              }),
+            ],
+            "",
+            [None],
+            requests,
+            oracle_failures,
+            initial_files=if existing { [("output", "preserve")] } else { [] },
+            files=[
+              (
+                "output",
+                if complete {
+                  Some("")
+                } else if existing {
+                  Some("preserve")
+                } else {
+                  None
+                },
+              ),
+            ],
+            oracle_image?,
+          )
+        }
+      }
+    }
+    transfer_scenario_call(
+      root,
+      wasm,
+      work,
+      "curl",
+      "remove-partial",
+      [
+        "-s",
+        "--remove-on-error",
+        "-o",
+        "partial.bin",
+        base + "/transfer-fixed-prefix",
+      ],
+      "",
+      [None],
+      requests,
+      oracle_failures,
+      files=[("partial.bin", None)],
+      oracle_image?,
+    )
+    for remove in [false, true] {
+      transfer_scenario_call(
+        root,
+        wasm,
+        work,
+        "curl",
+        if remove {
+          "remove-named"
+        } else {
+          "keep-named"
+        },
+        [
+          "-sJO",
+          ..if remove {
+            ["--remove-on-error"]
+          } else {
+            []
+          },
+          base + "/transfer-named-prefix",
+        ],
+        "",
+        [None],
+        requests,
+        oracle_failures,
+        files=[("wire-partial.bin", if remove { None } else { Some("hello") })],
+        oracle_image?,
+      )
+    }
+    transfer_scenario_call(
+      root,
+      wasm,
+      work,
+      "curl",
+      "default-retry-does-not-retry-partial",
+      ["-s", "--retry", "2", base + "/transfer-fixed-prefix"],
+      "hello",
+      [None],
+      requests,
+      oracle_failures,
+      oracle_image?,
+    )
+    for file in [false, true] {
+      transfer_scenario_call(
+        root,
+        wasm,
+        work,
+        "curl",
+        if file {
+          "retry-all-file"
+        } else {
+          "retry-all-stdout"
+        },
+        [
+          "-s",
+          "--retry",
+          "2",
+          "--retry-all-errors",
+          "--retry-delay",
+          "1",
+          ..if file {
+            ["-o", "partial.bin"]
+          } else {
+            []
+          },
+          base + "/transfer-fixed-prefix",
+        ],
+        if file {
+          ""
+        } else {
+          "hellohellohello"
+        },
+        [None, None, None],
+        requests,
+        oracle_failures,
+        files=if file { [("partial.bin", Some("hello"))] } else { [] },
+        oracle_image?,
+      )
+    }
+    for endpoint in ["retry-range", "retry-ignore", "retry-ignore-changed"] {
+      for file in [false, true] {
+        transfer_scenario_call(
+          root,
+          wasm,
+          work,
+          "wget",
+          endpoint + (if file { "-file" } else { "-stdout" }),
+          [
+            "-q",
+            "-t",
+            "2",
+            "--waitretry=0.001",
+            "-O",
+            if file {
+              "result.bin"
+            } else {
+              "-"
+            },
+            base + "/transfer-" + endpoint,
+          ],
+          if file {
+            ""
+          } else {
+            "helloworld"
+          },
+          [None, Some("bytes=5-")],
+          requests,
+          oracle_failures,
+          files=if file { [("result.bin", Some("helloworld"))] } else { [] },
+          oracle_image?,
+        )
+      }
+      transfer_scenario_call(
+        root,
+        wasm,
+        work,
+        "wget",
+        endpoint + "-aggregate",
+        [
+          "-q",
+          "-t",
+          "2",
+          "--waitretry=0.001",
+          "-O",
+          "aggregate.bin",
+          base + "/transfer-fixed-complete",
+          base + "/transfer-" + endpoint,
+        ],
+        "",
+        [None, None, Some("bytes=5-")],
+        requests,
+        oracle_failures,
+        files=[("aggregate.bin", Some("hellohelloworld"))],
+        oracle_image?,
+      )
+      transfer_scenario_call(
+        root,
+        wasm,
+        work,
+        "wget",
+        endpoint + "-default-file",
+        ["-q", "-t", "2", "--waitretry=0.001", base + "/transfer-" + endpoint],
+        "",
+        [None, Some("bytes=5-")],
+        requests,
+        oracle_failures,
+        files=[("transfer-" + endpoint, Some("helloworld"))],
+        oracle_image?,
+      )
+    }
+    transfer_scenario_call(
+      root,
+      wasm,
+      work,
+      "wget",
+      "retry-unique-keeps-actual-name",
+      ["-q", "-t", "2", "--waitretry=0.001", base + "/transfer-retry-range"],
+      "",
+      [None, Some("bytes=5-")],
+      requests,
+      oracle_failures,
+      initial_files=[("transfer-retry-range", "existing")],
+      files=[
+        ("transfer-retry-range", Some("existing")),
+        ("transfer-retry-range.1", Some("helloworld")),
+        ("transfer-retry-range.2", None),
+      ],
+      oracle_image?,
+    )
+    transfer_scenario_call(
+      root,
+      wasm,
+      work,
+      "wget",
+      "retry-content-disposition-keeps-actual-name",
+      [
+        "-q",
+        "-t",
+        "2",
+        "--waitretry=0.001",
+        "--content-disposition",
+        base + "/transfer-retry-named",
+      ],
+      "",
+      [None, Some("bytes=5-")],
+      requests,
+      oracle_failures,
+      initial_files=[("wire-retry.bin", "existing")],
+      files=[
+        ("wire-retry.bin", Some("existing")),
+        ("wire-retry.bin.1", Some("helloworld")),
+        ("wire-retry.bin.2", None),
+        ("transfer-retry-named", None),
+      ],
+      oracle_image?,
+    )
+    transfer_scenario_call(
+      root,
+      wasm,
+      work,
+      "wget",
+      "retry-wrong-range-preserves-prefix",
+      [
+        "-q",
+        "-t",
+        "2",
+        "--waitretry=0.001",
+        "-O",
+        "partial.bin",
+        base + "/transfer-retry-wrong-range",
+      ],
+      "",
+      [None, Some("bytes=5-")],
+      requests,
+      oracle_failures,
+      files=[("partial.bin", Some("hello"))],
+      oracle_image?,
+    )
+    transfer_scenario_call(
+      root,
+      wasm,
+      work,
+      "wget",
+      "retry-empty-is-bounded",
+      [
+        "-q",
+        "-t",
+        "2",
+        "--waitretry=0.001",
+        "-O",
+        "-",
+        base + "/transfer-fixed-empty",
+      ],
+      "",
+      [None, None],
+      requests,
+      oracle_failures,
+      oracle_image?,
+    )
+    for endpoint in ["resume-name-change", "resume-name-change-ignore"] {
+      for existing in [false, true] {
+        transfer_scenario_call(
+          root,
+          wasm,
+          work,
+          "wget",
+          endpoint + (if existing { "-existing" } else { "-new" }),
+          [
+            "-q",
+            "-t",
+            "1",
+            "-c",
+            "--content-disposition",
+            base + "/transfer-" + endpoint,
+          ],
+          "",
+          if endpoint == "resume-name-change" {
+            [None]
+          } else {
+            [None, if existing { Some("bytes=8-") } else { None }]
+          },
+          requests,
+          oracle_failures,
+          initial_files=[
+            ("transfer-" + endpoint, "abc"),
+            ..if existing {
+              [("renamed.bin", "preserve")]
+            } else {
+              []
+            },
+          ],
+          files=[
+            ("transfer-" + endpoint, Some("abc")),
+            (
+              "renamed.bin",
+              if existing {
+                Some("preserve")
+              } else if endpoint == "resume-name-change-ignore" {
+                Some("abcdef")
+              } else {
+                None
+              },
+            ),
+          ],
+          methods=if endpoint == "resume-name-change" {
+            ["HEAD"]
+          } else {
+            ["HEAD", "GET"]
+          },
+          oracle_image?,
+        )
+      }
+    }
+    for
+      (label, prefix, range) in [
+        ("shorter-than-resource", "abc", "bytes=3-"),
+        ("equal-resource", "abcdef", "bytes=6-"),
+        ("longer-than-resource", "abcdefg", "bytes=7-"),
+      ] {
+      transfer_scenario_call(
+        root,
+        wasm,
+        work,
+        "wget",
+        "resume-unsatisfied-" + label,
+        ["-q", "-t", "1", "-c", base + "/transfer-resume-unsatisfied"],
+        "",
+        [Some(range)],
+        requests,
+        oracle_failures,
+        initial_files=[("transfer-resume-unsatisfied", prefix)],
+        files=[("transfer-resume-unsatisfied", Some(prefix))],
+        oracle_image?,
+      )
+    }
+    for variant in ["malformed", "missing"] {
+      for
+        (prefix, range) in [
+          ("abc", "bytes=3-"),
+          ("abcdef", "bytes=6-"),
+          ("abcdefg", "bytes=7-"),
+        ] {
+        let endpoint = "transfer-resume-unsatisfied-" + variant
+        transfer_scenario_call(
+          root,
+          wasm,
+          work,
+          "wget",
+          "resume-unsatisfied-\{variant}-local-\{prefix.length()}",
+          ["-q", "-t", "1", "-c", base + "/" + endpoint],
+          "",
+          [Some(range)],
+          requests,
+          oracle_failures,
+          initial_files=[(endpoint, prefix)],
+          files=[(endpoint, Some(prefix))],
+          oracle_image?,
+        )
+      }
+    }
+    transfer_scenario_call(
+      root,
+      wasm,
+      work,
+      "wget",
+      "resume-unsatisfied-without-resume",
+      ["-q", "-t", "1", base + "/transfer-resume-unsatisfied"],
+      "",
+      [None],
+      requests,
+      oracle_failures,
+      files=[("transfer-resume-unsatisfied", None)],
+      oracle_image?,
+    )
+    for existing in [false, true] {
+      transfer_scenario_call(
+        root,
+        wasm,
+        work,
+        "wget",
+        "resume-named-valid-" + (if existing { "existing" } else { "new" }),
+        [
+          "-q",
+          "-t",
+          "1",
+          "-c",
+          "--content-disposition",
+          base + "/transfer-resume-named-valid",
+        ],
+        "",
+        [None, if existing { Some("bytes=3-") } else { None }],
+        requests,
+        oracle_failures,
+        initial_files=[
+          ("transfer-resume-named-valid", "original"),
+          ..if existing {
+            [("renamed.bin", "abc")]
+          } else {
+            []
+          },
+        ],
+        files=[
+          ("transfer-resume-named-valid", Some("original")),
+          ("renamed.bin", Some("abcdef")),
+        ],
+        methods=["HEAD", "GET"],
+        oracle_image?,
+      )
+    }
+    transfer_scenario_call(
+      root,
+      wasm,
+      work,
+      "wget",
+      "resume-nonfinal-range",
+      ["-q", "-t", "1", "-c", base + "/transfer-resume-nonfinal-range"],
+      "",
+      [Some("bytes=3-")],
+      requests,
+      oracle_failures,
+      initial_files=[("transfer-resume-nonfinal-range", "abc")],
+      files=[("transfer-resume-nonfinal-range", Some("abcde"))],
+      oracle_image?,
+    )
+    if !oracle_failures.is_empty() {
+      fail(oracle_failures.join("; "))
+    }
+  })
 }
 
 ///|

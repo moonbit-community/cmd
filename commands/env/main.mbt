@@ -15,7 +15,7 @@ fn split_assignment(value : String) -> (String, String)? {
 async fn main {
   let metadata_args = @core_env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("env 0.2.1\n")
+    @stdio.stdout.write("env 0.2.2\n")
     return
   }
   let args = @core_env.args()[1:]

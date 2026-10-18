@@ -3,13 +3,13 @@
 // truncated input observable, including when no full trailer remains to prefetch.
 priv struct Bits {
   data : Bytes
-  mut position : Int
-  mut pending : UInt
-  mut available : Int
+  mut position : Int32
+  mut pending : UInt32
+  mut available : Int32
 }
 
 ///|
-fn Bits::take(self : Bits, count : Int) -> Int raise {
+fn Bits::take(self : Bits, count : Int32) -> Int32 raise {
   while self.available < count {
     guard self.position < self.data.length() else {
       fail("unexpected end of file")
@@ -33,12 +33,12 @@ fn Bits::align(self : Bits) -> Unit {
 
 ///|
 priv struct Huffman {
-  codes : Map[Int, Int]
-  width : Int
+  codes : Map[Int32, Int32]
+  width : Int32
 }
 
 ///|
-fn huffman(lengths : Array[Int], strict? : Bool = false) -> Huffman raise {
+fn huffman(lengths : Array[Int32], strict~ : Bool = false) -> Huffman raise {
   let counts = Array::make(16, 0)
   let mut width = 0
   for length in lengths {
@@ -64,7 +64,7 @@ fn huffman(lengths : Array[Int], strict? : Bool = false) -> Huffman raise {
   if space > 0 && (strict || (width != 0 && width != 1)) {
     fail("incomplete Huffman tree")
   }
-  let codes : Map[Int, Int] = Map([])
+  let codes : Map[Int32, Int32] = Map([])
   for symbol, length in lengths {
     if length == 0 {
       continue
@@ -82,7 +82,7 @@ fn huffman(lengths : Array[Int], strict? : Bool = false) -> Huffman raise {
 }
 
 ///|
-fn Huffman::read(self : Huffman, bits : Bits) -> Int raise {
+fn Huffman::read(self : Huffman, bits : Bits) -> Int32 raise {
   let mut code = 0
   for length in 1..<=self.width {
     code = code | (bits.take(1) << (length - 1))
@@ -122,11 +122,11 @@ fn dynamic_trees(bits : Bits) -> (Huffman, Huffman) raise {
   }
   let tree = huffman(code_lengths, strict=true)
   let total = literal_count + distance_count
-  let lengths : Array[Int] = []
+  let lengths : Array[Int32] = []
   while lengths.length() < total {
     let symbol = tree.read(bits)
     let (value, count) = match symbol {
-      0..=15 => (symbol, 1)
+      0..<=15 => (symbol, 1)
       16 => {
         guard !lengths.is_empty() else { fail("missing previous code length") }
         (lengths[lengths.length() - 1], bits.take(2) + 3)
@@ -150,7 +150,7 @@ fn dynamic_trees(bits : Bits) -> (Huffman, Huffman) raise {
 }
 
 ///|
-let crc_table : FixedArray[UInt] = FixedArray::makei(256, index => {
+let crc_table : FixedArray[UInt32] = FixedArray::makei(256, index => {
   let mut value = index.reinterpret_as_uint()
   for _ in 0..<8 {
     value = (value >> 1) ^ (if (value & 1U) == 0U { 0U } else { 0xedb88320U })
@@ -159,17 +159,17 @@ let crc_table : FixedArray[UInt] = FixedArray::makei(256, index => {
 })
 
 ///|
-fn update_crc(crc : UInt, byte : Byte) -> UInt {
+fn update_crc(crc : UInt32, byte : Byte) -> UInt32 {
   (crc >> 8) ^ crc_table[((crc ^ byte.to_uint()) & 0xffU).reinterpret_as_int()]
 }
 
 ///|
 priv struct InflateOutput {
   window : FixedArray[Byte]
-  mut cursor : Int
-  mut history : Int
-  mut crc : UInt
-  mut size : UInt
+  mut cursor : Int32
+  mut history : Int32
+  mut crc : UInt32
+  mut size : UInt32
   pending : Array[Byte]
   writer : &@io.Writer
   test_only : Bool
@@ -193,25 +193,25 @@ async fn InflateOutput::push(self : InflateOutput, byte : Byte) -> Unit {
 }
 
 ///|
-let length_base : ReadOnlyArray[Int] = [
+let length_base : ReadOnlyArray[Int32] = [
   3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83,
   99, 115, 131, 163, 195, 227, 258,
 ]
 
 ///|
-let length_extra : ReadOnlyArray[Int] = [
+let length_extra : ReadOnlyArray[Int32] = [
   0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5,
   5, 0,
 ]
 
 ///|
-let distance_base : ReadOnlyArray[Int] = [
+let distance_base : ReadOnlyArray[Int32] = [
   1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385, 513, 769,
   1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577,
 ]
 
 ///|
-let distance_extra : ReadOnlyArray[Int] = [
+let distance_extra : ReadOnlyArray[Int32] = [
   0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11,
   12, 12, 13, 13,
 ]
@@ -250,10 +250,10 @@ async fn compressed_block(
 ///|
 async fn inflate(
   data : Bytes,
-  start : Int,
+  start : Int32,
   writer : &@io.Writer,
   test_only : Bool,
-) -> (Int, UInt, UInt) {
+) -> (Int32, UInt32, UInt32) {
   let bits : Bits = { data, position: start, pending: 0U, available: 0, }
   let output : InflateOutput = {
     window: FixedArray::make(32768, b'\x00'),

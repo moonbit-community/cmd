@@ -222,7 +222,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/fmt@0.1.1 metadata contract",
+      "source_version": "workspace cli/fmt@0.1.2 metadata contract",
       "expected_stdout_text": "Usage: fmt [-WIDTH] [-w WIDTH] [-g GOAL] [-su] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nReformat paragraphs, preserving indentation; default width 75.\n-s splits lines without joining; -u uses uniform spacing.\nC-locale byte columns. Crown/tagged margins and prefixes are not supported.\n",
       "expected_stderr_text": ""
     },
@@ -241,8 +241,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/fmt@0.1.1 metadata contract",
-      "expected_stdout_text": "fmt 0.1.1\n",
+      "source_version": "workspace cli/fmt@0.1.2 metadata contract",
+      "expected_stdout_text": "fmt 0.1.2\n",
       "expected_stderr_text": ""
     }
   ]
