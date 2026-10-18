@@ -1097,7 +1097,10 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
     record_result(
       curl_partial.status == 18 &&
       !@fs.exists(partial_path) &&
-      @testkit.contains_bytes(curl_partial.stderr, "response body"),
+      @testkit.bytes_equal(
+        curl_partial.stderr,
+        b"curl: (18) end of response with 6 bytes missing\n",
+      ),
       "curl: partial response cleanup mismatch",
       failures,
     )

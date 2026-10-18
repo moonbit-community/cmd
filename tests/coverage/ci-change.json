@@ -1522,7 +1522,11 @@
     "package-test:commands/curl/options_wbtest.mbt::curl fixed-length diagnostics use the structured missing byte count",
     "package-test:core/netops/transfer_lifecycle_wbtest.mbt::transfer sink scope closes real files on cancellation and repeated close is safe",
     "package-test:core/netops/http_wire_validation_wbtest.mbt::generated Cookie fields reject line injection before writing request bytes",
-    "case:transfer-curl-cookie-line-injection"
+    "case:transfer-curl-cookie-line-injection",
+    "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission separates complete test scopes from production imports",
+    "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission rejects unknown incomplete and mixed import syntax",
+    "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission decodes import paths and ignores only actual comments",
+    "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission accepts the mv test observer without production process authority"
   ],
   "affected_options": [
     "help",
@@ -2927,9 +2931,30 @@
       ]
     },
     {
+      "path": "docs/adr/0008-data.md",
+      "behavior_ids": [
+        "package-test:tests/registry/dependencies_wbtest.mbt::workspace dependency manifests keep one async baseline and the selected local core coordinate",
+        "package-test:tests/registry/registry_wbtest.mbt::checked-in registry binds all executable test sources"
+      ]
+    },
+    {
+      "path": "docs/adr/README.md",
+      "behavior_ids": [
+        "package-test:tests/registry/dependencies_wbtest.mbt::workspace dependency manifests keep one async baseline and the selected local core coordinate",
+        "package-test:tests/registry/registry_wbtest.mbt::checked-in registry binds all executable test sources"
+      ]
+    },
+    {
       "path": "docs/command-followups.md",
       "behavior_ids": [
         "package-test:tests/registry/registry_wbtest.mbt::checked-in registry binds all executable test sources"
+      ]
+    },
+    {
+      "path": "docs/command-roadmap.md",
+      "behavior_ids": [
+        "package-test:tests/registry/registry_wbtest.mbt::checked-in registry binds all executable test sources",
+        "package-test:tests/registry/dependencies_wbtest.mbt::workspace dependency manifests keep one async baseline and the selected local core coordinate"
       ]
     },
     {
@@ -2950,7 +2975,11 @@
       "path": "tests/coverage/ci-change-scope.md",
       "behavior_ids": [
         "package-test:tests/coverage/ci_wbtest.mbt::CI impact rejects supplied outcomes and keeps documentation exclusions narrow",
-        "package-test:tests/coverage/ci_wbtest.mbt::CI coverage requires every applicable platform rather than any passing host"
+        "package-test:tests/coverage/ci_wbtest.mbt::CI coverage requires every applicable platform rather than any passing host",
+        "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission separates complete test scopes from production imports",
+        "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission rejects unknown incomplete and mixed import syntax",
+        "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission decodes import paths and ignores only actual comments",
+        "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission accepts the mv test observer without production process authority"
       ]
     },
     {
@@ -3004,7 +3033,11 @@
         "package-test:tests/runner/runner_wbtest.mbt::Windows mv scenarios select their actual backend and never claim a pair",
         "package-test:tests/runner/runner_wbtest.mbt::suite filtering respects case kind before fixtures or artifacts",
         "package-test:tests/runner/workspace_wbtest.mbt::default scenario selection uses registered backends while explicit cases remain diagnostic",
-        "package-test:tests/runner/runner_wbtest.mbt::open stdin observations reject deadlines cleanup errors and missing exit"
+        "package-test:tests/runner/runner_wbtest.mbt::open stdin observations reject deadlines cleanup errors and missing exit",
+        "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission separates complete test scopes from production imports",
+        "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission rejects unknown incomplete and mixed import syntax",
+        "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission decodes import paths and ignores only actual comments",
+        "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission accepts the mv test observer without production process authority"
       ]
     },
     {
@@ -3042,6 +3075,24 @@
       ]
     },
     {
+      "path": "tests/runner/policy.mbt",
+      "behavior_ids": [
+        "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission separates complete test scopes from production imports",
+        "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission rejects unknown incomplete and mixed import syntax",
+        "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission decodes import paths and ignores only actual comments",
+        "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission accepts the mv test observer without production process authority"
+      ]
+    },
+    {
+      "path": "tests/runner/scenario_mv.mbt",
+      "behavior_ids": [
+        "package-test:tests/testkit/fixture_wbtest.mbt::Windows link observer distinguishes symbolic links and junction targets",
+        "package-test:tests/testkit/fixture_wbtest.mbt::Windows link observer rejects missing or unrecognized reparse properties",
+        "package-test:tests/runner/runner_wbtest.mbt::Windows mv scenarios select their actual backend and never claim a pair",
+        "package-test:tests/runner/runner_wbtest.mbt::open stdin observations reject deadlines cleanup errors and missing exit"
+      ]
+    },
+    {
       "path": "tests/runner/scenario_network.mbt",
       "behavior_ids": [
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture does not repair deliberately incomplete framing",
@@ -3073,33 +3124,17 @@
       ]
     },
     {
-      "path": "tests/testkit/pkg.generated.mbti",
-      "behavior_ids": [
-        "package-test:tests/testkit/fixture_wbtest.mbt::Windows link observer distinguishes symbolic links and junction targets",
-        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture sends uncompleted wire bytes and closes the socket"
-      ]
-    },
-    {
-      "path": "docs/command-roadmap.md",
-      "behavior_ids": [
-        "package-test:tests/registry/registry_wbtest.mbt::checked-in registry binds all executable test sources",
-        "package-test:tests/registry/dependencies_wbtest.mbt::workspace dependency manifests keep one async baseline and the selected local core coordinate"
-      ]
-    },
-    {
-      "path": "tests/runner/scenario_mv.mbt",
-      "behavior_ids": [
-        "package-test:tests/testkit/fixture_wbtest.mbt::Windows link observer distinguishes symbolic links and junction targets",
-        "package-test:tests/testkit/fixture_wbtest.mbt::Windows link observer rejects missing or unrecognized reparse properties",
-        "package-test:tests/runner/runner_wbtest.mbt::Windows mv scenarios select their actual backend and never claim a pair",
-        "package-test:tests/runner/runner_wbtest.mbt::open stdin observations reject deadlines cleanup errors and missing exit"
-      ]
-    },
-    {
       "path": "tests/testkit/network_transfer.mbt",
       "behavior_ids": [
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture does not repair deliberately incomplete framing",
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry fixture depends on the actual Range rather than call order",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture sends uncompleted wire bytes and closes the socket"
+      ]
+    },
+    {
+      "path": "tests/testkit/pkg.generated.mbti",
+      "behavior_ids": [
+        "package-test:tests/testkit/fixture_wbtest.mbt::Windows link observer distinguishes symbolic links and junction targets",
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture sends uncompleted wire bytes and closes the socket"
       ]
     }

@@ -21,6 +21,13 @@ candidate implementation.
 Repeated suite selections run once; neither extension implicitly reruns compat.
 The default suite is `compat`, and the default backend is Native.
 
+Policy admission checks production imports rather than test-only observers.
+Only complete import blocks explicitly marked `for "test"` or `for "wbtest"`
+are excluded; aliases retain the authority of their imported package. The
+admission scanner accepts formatted, line-based import blocks and rejects
+unrecognized scopes, incomplete import syntax, and unquoted import tokens after
+another statement on the same line.
+
 ## Build and select
 
 Build serially with the local publishing account, retaining the PATH toolchain:

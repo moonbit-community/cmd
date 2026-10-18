@@ -73,7 +73,7 @@ defects or deviations, not retroactively approved design choices. See the
 | csplit | [0004](0004-filesystem.md#migrated-filesystem-profiles): exclusive outputs/owned cleanup; [0008](0008-data.md) regex | 0.1.0 |
 | expr | [0008](0008-data.md#migrated-algorithm-profiles): BigInt and short-circuit byte regex | 0.1.0 |
 | fmt | [0003](0003-streams.md#migrated-text-and-binary-profiles): paragraphs/goal/margins | 0.1.0 |
-| gzip | [0008](0008-data.md#migrated-algorithm-profiles): stored encoder/pure inflater; [0004](0004-filesystem.md) metadata | 0.1.0 |
+| gzip | [0008](0008-data.md#migrated-algorithm-profiles): public encoder/pure inflater, including the unpublished async 0.22.5 limited LZ/fixed profile; [0004](0004-filesystem.md) metadata | 0.1.0 |
 | gunzip | [0008](0008-data.md#migrated-algorithm-profiles): member/CRC decoding; [0009](0009-safety.md) prefix-on-error | 0.1.0 |
 | zcat | [0008](0008-data.md#migrated-algorithm-profiles): gzip-only stdout; [0009](0009-safety.md) prefix-on-error | 0.1.0 |
 | column | [0003](0003-streams.md#migrated-text-and-binary-profiles): buffered tables and known default/LF defects | 0.1.0 |

@@ -47876,6 +47876,114 @@
         "file-type"
       ],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission separates complete test scopes from production imports",
+      "command": "",
+      "owner": "tests/runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/runner/policy_admission_wbtest.mbt::policy admission separates complete test scopes from production imports",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "policy admission separates complete test scopes from production imports"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission rejects unknown incomplete and mixed import syntax",
+      "command": "",
+      "owner": "tests/runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/runner/policy_admission_wbtest.mbt::policy admission rejects unknown incomplete and mixed import syntax",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "policy admission rejects unknown incomplete and mixed import syntax"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission decodes import paths and ignores only actual comments",
+      "command": "",
+      "owner": "tests/runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/runner/policy_admission_wbtest.mbt::policy admission decodes import paths and ignores only actual comments",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "policy admission decodes import paths and ignores only actual comments"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission accepts the mv test observer without production process authority",
+      "command": "",
+      "owner": "tests/runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/runner/policy_admission_wbtest.mbt::policy admission accepts the mv test observer without production process authority",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "policy admission accepts the mv test observer without production process authority"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
     }
   ],
   "release_commands": [

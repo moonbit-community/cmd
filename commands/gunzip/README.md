@@ -22,6 +22,8 @@ accepted. Header CRC, data CRC and uncompressed size are checked. A late format
 error returns 1 without retracting bytes already written. Trailing garbage
 returns 2 with a warning; `-q`/`--quiet` suppresses that warning. Compressed input
 is buffered, while decoded output is written in chunks.
+The unpublished async 0.22.5 workspace upgrade retains this pure inflater and
+does not remove whole-input buffering; Reader-based decoding remains planned.
 
 Named-file replacement without `-c` is rejected. Other compression formats,
 force/pass-through behavior, metadata restoration, recursive operation and

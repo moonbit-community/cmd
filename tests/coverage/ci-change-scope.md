@@ -114,3 +114,21 @@ rewriting frozen published manifests or historical evidence. The CI declaration
 contains impact and requirements only, with no reports, result labels or
 assumed passes. Acceptance needs clean exact-head evidence, all applicable
 Linux/macOS/Windows jobs, the immutable Linux oracle and the coverage audit.
+
+## Production import admission
+
+The complete change range also includes a harness-only admission correction.
+The policy scanner excludes an import block from production authority only
+after its closing scope explicitly identifies test or wbtest. Package aliases
+do not change authority: production imports of moonbitlang/async/process,
+cli/core/process and cli/core/shell remain rejected for non-restricted commands.
+Unknown scopes, mixed scope suffixes, incomplete blocks and unsupported import
+syntax fail admission. No product import, command tier or host policy is relaxed.
+
+Four named Native harness regressions cover multiple production/test blocks,
+aliases, malformed scopes and separators, escaped paths, actual comments, and
+the current mv test-observer manifest. They are required on every applicable
+platform and are explicitly bound to policy.mbt; runner documentation also
+retains that binding. These harness checks supplement the existing Wasm policy
+execution. All 79 affected commands, Native/Wasm evidence, immutable oracle
+requirements and actual Windows link/referent evidence remain required.

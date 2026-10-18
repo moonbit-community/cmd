@@ -17,8 +17,12 @@ moonx cli/gzip -t notes.txt.gz
 `-d`/`--decompress` decodes, `-t`/`--test` checks compressed data without writing
 decoded bytes, and `-c`/`--stdout` selects stdout. `-n`/`--no-name` omits saved
 names and timestamps. Multiple operands are processed in order; `-` reads stdin.
-The encoder emits valid gzip data using stored DEFLATE blocks, so output can
-be larger than its input. Compression levels are not implemented.
+The published 0.1.2 baseline uses stored DEFLATE blocks. The unpublished workspace
+with async 0.22.5 uses its public Encoder, which performs bounded LZ matching and
+fixed-Huffman DEFLATE encoding with a 1 KiB history and matches up to 64 bytes.
+Output can still be larger than its input. A 32 KiB compressor, dynamic-Huffman
+block selection and compression levels remain planned work; the dependency
+upgrade does not complete those features or establish ratio/performance claims.
 
 Decompression accepts concatenated members, optional names, comments and extra
 header fields, and verifies header CRC, payload CRC and size. Decoded bytes
