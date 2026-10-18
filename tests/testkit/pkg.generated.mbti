@@ -5,6 +5,7 @@ import {
   "moonbitlang/async",
   "moonbitlang/async/http",
   "moonbitlang/async/process",
+  "moonbitlang/async/socket",
   "moonbitlang/core/debug",
   "moonbitlang/core/json",
 }
@@ -115,6 +116,8 @@ pub async fn seal_oracle_profile(String, String, expected_profile_path? : String
 pub fn select_cases(ArrayView[Case], ArrayView[String], ArrayView[String]) -> Array[Case] raise Failure
 
 pub async fn serve_transfer_fixture(@http.Request, @http.ServerConnection, requests? : Array[TransferFixtureRequest], before_response? : async () -> Unit) -> Bool
+
+pub async fn serve_wire_fixture(@socket.Tcp, Array[TransferFixtureRequest], Array[Bytes]) -> Unit
 
 pub fn sha256_bytes(Bytes) -> String
 
@@ -354,6 +357,7 @@ pub(all) struct TransferFixtureRequest {
   path : String
   range : String?
   body : Bytes
+  cookies : Array[String]
 } derive(Eq, ToJson, @debug.Debug)
 pub fn TransferFixtureRequest::equal(Self, Self) -> Bool
 pub fn TransferFixtureRequest::not_equal(Self, Self) -> Bool

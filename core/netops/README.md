@@ -37,6 +37,14 @@ Before writing request bytes, the adapter validates the final persistent and
 per-request fields, including generated Cookie fields. Invalid names and CR/LF
 in values are rejected; literal cookie data cannot inject another header.
 
+Request-target handling runs before connection for the initial URL.
+`CurlProfile` rejects raw ASCII space, TAB, CR, LF and DEL in paths and queries;
+the curl command reports status 3 and preserves existing output. `WgetProfile`
+uses uppercase percent escapes for those bytes. Existing percent-encoded bytes
+remain encoded. For followed Location values, curl encodes path spaces as
+`%20` and query spaces as `+`; Wget uses `%20` in both. Both encode TAB as
+`%09`. These calibrated cases do not imply general browser URL normalization.
+
 `TransferError.context` records connection, request, response-header,
 or response-body phase. Request completion and response parsing are separate
 operations with unambiguous failure phases.
@@ -142,13 +150,33 @@ The legacy `fetch` and `fetch_with_options` entry points remain source
 compatible and retain the original 30-second default. New command adapters use
 `transfer_options` directly.
 
-`CookieJar` receives the public `Response.cookies` array constructed by the wire
-adapter, preserving multiple Set-Cookie fields. Stores survive redirects and separate transfers;
+`CookieJar` receives parsed cookies separately from the wire adapter's retained
+final Set-Cookie fields. Stores survive redirects and separate transfers;
 request selection enforces host/domain and path boundaries, expiration and
-Secure, with longer paths first. Netscape files preserve HttpOnly and session
+Secure. The strict profile retains longer-path-first ordering. Netscape files preserve HttpOnly and session
 state. A public-suffix database, IDNA and browser cookie-prefix rules remain
-project work, not async API blockers. Response events expose reconstructed
-Set-Cookie headers without promising original capitalization or attribute order.
+project work, not async API blockers. Response events preserve final Set-Cookie
+field-name capitalization, values, attribute order and repeated-field order,
+with HTTP optional whitespace normalized. Informational response fields do
+not leak into those observations or cookie storage.
+
+The command profiles ignore Set-Cookie fields without `=` without failing a
+complete response body. Nonnumeric Max-Age deletes the matching stored cookie
+for curl, while Wget ignores the replacement and preserves its old cookie.
+Positive decimal overflow keeps curl's replacement under its 400-day lifetime
+cap. Only lifetimes exceeding that cap round the capped expiry to the nearest
+minute. Wget expires matching cookies for numeric overflow below 32 digits;
+overlong attributes discard the replacement. The strict profile discards
+unparseable Max-Age replacements as a project choice.
+Repeated fields update storage in response order. Retained response fields
+remain observable even when cookie storage ignores them.
+
+Curl sends cookies by descending UTF-8 path, domain and name byte length, then
+newer creation first; replacement retains the original creation order. Wget
+uses descending domain and path byte length, then ascending name and value byte
+order. Registered tests distinguish these profiles with subsequent request
+bytes and fixed-clock expiry boundaries. This does not claim byte-for-byte jar
+serialization or complete cross-scope duplicate-cookie compatibility.
 
 Basic credentials are scoped to the initial origin. Callers choose preemptive
 authentication or a single challenge retry; cross-origin redirects do not
@@ -168,7 +196,7 @@ credential scope. This corrects the
 0.2.0 rejection without new FFI. It does not
 provide arbitrary ordered repeated headers: each layer is still a map. Extending
 ordinary repeated-field semantics is project work, tracked separately by #34.
-The response cookies array preserves each Set-Cookie field.
+Parsed cookie storage does not replace the separately retained response fields.
 
 ## Reproducing the CLI checks
 

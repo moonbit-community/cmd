@@ -561,37 +561,15 @@ fn resumed_response_range(
 }
 
 ///|
-fn response_headers(response : @http.Response) -> Array[HttpHeader] {
+fn response_headers(
+  response : @http.Response,
+  cookie_fields : Array[HttpHeader],
+) -> Array[HttpHeader] {
   let result : Array[HttpHeader] = []
   for name, value in response.headers {
     result.push({ name: name.to_string(), value, })
   }
-  for cookie in response.cookies {
-    let value = StringBuilder()
-    value.write_string(cookie.name + "=" + cookie.value)
-    if cookie.path is Some(path) {
-      value.write_string("; Path=" + path)
-    }
-    if cookie.domain is Some(domain) {
-      value.write_string("; Domain=" + domain)
-    }
-    if cookie.expires_raw is Some(expires) {
-      value.write_string("; Expires=" + expires)
-    }
-    if cookie.max_age is Some(age) {
-      value.write_string("; Max-Age=" + age.to_string())
-    }
-    if cookie.secure {
-      value.write_string("; Secure")
-    }
-    if cookie.http_only {
-      value.write_string("; HttpOnly")
-    }
-    for extension in cookie.extensions {
-      value.write_string("; " + extension)
-    }
-    result.push(http_header("Set-Cookie", value.to_string()))
-  }
+  result.append(cookie_fields)
   result
 }
 
@@ -816,7 +794,7 @@ pub async fn transfer(
   validate_headers(options.headers)
   let started = @async.now()
   let requested_url = url
-  let mut parsed = parse_absolute_url(url)
+  let mut parsed = parse_absolute_url(url).for_transfer(options.profile)
   let credential_origin = parsed.origin_key()
   let challenged_origins : Map[String, Bool] = Map([])
   let mut request_method = options.request_method
@@ -851,7 +829,12 @@ pub async fn transfer(
         @base64.encode(@utf8.encode(credentials))
     }
     let stored = match options.cookie_jar {
-      Some(jar) => jar.header_for(parsed, @fsops.current_timestamp().seconds)
+      Some(jar) =>
+        jar.header_for(
+          parsed,
+          @fsops.current_timestamp().seconds,
+          profile=options.profile,
+        )
       None => None
     }
     if per_request.contains("Cookie") &&
@@ -897,10 +880,15 @@ pub async fn transfer(
         )
     }
     if options.cookie_jar is Some(jar) {
-      jar.receive(parsed, response.cookies, @fsops.current_timestamp().seconds)
+      jar.receive(
+        parsed,
+        response.cookies,
+        @fsops.current_timestamp().seconds,
+        profile=options.profile,
+      )
     }
     let total = response_content_length(response)
-    let visible_headers = response_headers(response)
+    let visible_headers = response_headers(response, client.cookie_fields)
     emit(
       observer,
       ResponseStarted(
@@ -940,7 +928,10 @@ pub async fn transfer(
           status=response.code,
         )
       }
-      let next = resolve_location(parsed, location) catch {
+      let next = resolve_location(parsed, location).for_transfer(
+        options.profile,
+        redirect=true,
+      ) catch {
         TransferError(message~, ..) => {
           client.close()
           raise transfer_error(

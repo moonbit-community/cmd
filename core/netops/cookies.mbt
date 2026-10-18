@@ -184,6 +184,7 @@ fn CookieJar::receive(
   url : ParsedUrl,
   cookies : Array[@http.Cookie],
   now : Int64,
+  profile~ : TransferProfile = StrictProfile,
 ) -> Unit {
   let host = url.host.to_lower()
   for cookie in cookies {
@@ -208,7 +209,19 @@ fn CookieJar::receive(
     }
     let expires = match cookie.max_age {
       Some(age) if age <= 0L => Some(0L)
-      Some(age) => Some(now + age.min(9223372036854775807L - now))
+      Some(age) => {
+        let expiry = now + age.min(9223372036854775807L - now)
+        let limit = 34560000L
+        Some(
+          if profile == CurlProfile &&
+            now < 9223372036854775807L - limit - 30L &&
+            expiry > now + limit {
+            (now + limit + 30L) / 60L * 60L
+          } else {
+            expiry
+          },
+        )
+      }
       None =>
         match cookie.expires_raw {
           Some(value) => cookie_date(value)
@@ -232,10 +245,56 @@ fn CookieJar::receive(
 }
 
 ///|
+fn cookie_sorts_before(
+  left : StoredCookie,
+  right : StoredCookie,
+  profile : TransferProfile,
+) -> Bool {
+  if profile == StrictProfile {
+    return left.path.length() > right.path.length()
+  }
+  let left_path = @utf8.encode(left.path).length()
+  let right_path = @utf8.encode(right.path).length()
+  let left_domain = @utf8.encode(left.domain).length()
+  let right_domain = @utf8.encode(right.domain).length()
+  if profile == WgetProfile {
+    if left_domain != right_domain {
+      return left_domain > right_domain
+    }
+    if left_path != right_path {
+      return left_path > right_path
+    }
+    let names = @utf8.encode(left.name).lexical_compare(
+      @utf8.encode(right.name),
+    )
+    if names != 0 {
+      return names < 0
+    }
+    return @utf8.encode(left.value).lexical_compare(@utf8.encode(right.value)) <
+      0
+  }
+  if left_path != right_path {
+    return left_path > right_path
+  }
+  if left_domain != right_domain {
+    return left_domain > right_domain
+  }
+  let left_name = @utf8.encode(left.name).length()
+  let right_name = @utf8.encode(right.name).length()
+  if left_name != right_name {
+    return left_name > right_name
+  }
+  // The insertion walk visits newer entries last. Replacements retain their
+  // original slot, so moving an equal key first preserves curl's creation order.
+  true
+}
+
+///|
 fn CookieJar::header_for(
   self : CookieJar,
   url : ParsedUrl,
   now : Int64,
+  profile~ : TransferProfile = StrictProfile,
 ) -> String? {
   self.entries = self.entries.filter(cookie => {
     match cookie.expires {
@@ -253,12 +312,13 @@ fn CookieJar::header_for(
     cookie_path_matches(url.path, cookie.path) &&
     (!cookie.secure || url.scheme == "https")
   })
-  // Insertion sort preserves creation order among equally specific paths.
+  // Strict retains creation order among equal-length paths. The command profiles
+  // preserve their pinned domain/path/name ordering without changing stored order.
   for index = 1; index < selected.length(); index = index + 1 {
     let cookie = selected[index]
     let mut position = index
     while position > 0 &&
-          selected[position - 1].path.length() < cookie.path.length() {
+          cookie_sorts_before(cookie, selected[position - 1], profile) {
       selected[position] = selected[position - 1]
       position -= 1
     }

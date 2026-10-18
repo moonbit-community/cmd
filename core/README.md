@@ -28,6 +28,18 @@ request-header option semantics remain project work; no new byte or list API
 is required to implement them. Protocol lines are bounded to 64 KiB, cumulative
 headers to 1 MiB, fields to 1024 per block, interim responses to 128 and trailer
 fields to 1024, with explicit rejection regressions.
+The command profiles also distinguish request-target handling: curl rejects
+raw ASCII space/TAB/CR/LF/DEL in initial paths and queries before connecting,
+while Wget percent-encodes them. Encoded bytes remain encoded. Redirect spaces
+use curl's path `%20`/query `+` policy or Wget's `%20` policy; TAB uses `%09`.
+Final Set-Cookie fields retain their names, values and order for response
+observers, separately from parsed cookie storage and with HTTP optional
+whitespace normalized. Both commands ignore fields without `=`. Nonnumeric
+Max-Age deletes the matching curl cookie but leaves Wget's old cookie intact;
+positive decimal overflow retains curl's replacement under its 400-day cap,
+whereas Wget expires the matching cookie for numeric overflow below 32 digits.
+Cookie ordering is profile-specific; the shared transfer documentation records
+the ordering and expiry bounds without claiming cookie-jar byte parity.
 Ordinary curl file output opens on first payload or successful completion and uses a
 4096-byte buffer. A network failure remains primary if flushing its pending
 tail also fails; the context still records uncertain write effects. An earlier

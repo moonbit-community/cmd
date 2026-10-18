@@ -46200,7 +46200,98 @@
         "curl:cd-status-500-empty-incomplete-fail-false",
         "curl:cd-status-500-empty-incomplete-fail-true",
         "curl:cd-status-500-body-complete-fail-false",
-        "curl:cd-status-500-body-complete-fail-true"
+        "curl:cd-status-500-body-complete-fail-true",
+        "-L",
+        "--location",
+        "-I",
+        "--head",
+        "-b",
+        "--cookie",
+        "--no-cookies",
+        "curl:wire-url-path-space-raw",
+        "curl:wire-url-path-space-escaped",
+        "curl:wire-url-path-tab-raw",
+        "curl:wire-url-path-tab-escaped",
+        "curl:wire-url-path-cr-raw",
+        "curl:wire-url-path-cr-escaped",
+        "curl:wire-url-path-lf-raw",
+        "curl:wire-url-path-lf-escaped",
+        "curl:wire-url-path-del-raw",
+        "curl:wire-url-path-del-escaped",
+        "curl:wire-url-path-escaped-crlf",
+        "curl:wire-redirect-path-space",
+        "curl:wire-redirect-path-tab",
+        "curl:wire-redirect-path-escaped-crlf",
+        "curl:wire-url-query-space-raw",
+        "curl:wire-url-query-space-escaped",
+        "curl:wire-url-query-tab-raw",
+        "curl:wire-url-query-tab-escaped",
+        "curl:wire-url-query-cr-raw",
+        "curl:wire-url-query-cr-escaped",
+        "curl:wire-url-query-lf-raw",
+        "curl:wire-url-query-lf-escaped",
+        "curl:wire-url-query-del-raw",
+        "curl:wire-url-query-del-escaped",
+        "curl:wire-url-query-escaped-crlf",
+        "curl:wire-redirect-query-space",
+        "curl:wire-redirect-query-tab",
+        "curl:wire-redirect-query-escaped-crlf",
+        "curl:wire-cookie-no-pair",
+        "curl:wire-cookie-invalid-maxage",
+        "curl:wire-cookie-seeded-invalid-maxage",
+        "curl:wire-cookie-duplicate-valid-invalid",
+        "curl:wire-cookie-duplicate-invalid-valid",
+        "curl:wire-cookie-no-pair-disabled",
+        "curl:wire-cookie-invalid-maxage-disabled",
+        "curl:wire-cookie-order-name-length",
+        "curl:wire-cookie-order-equal-length",
+        "curl:wire-cookie-order-equal-reverse",
+        "curl:wire-cookie-order-replace",
+        "curl:wire-cookie-order-invalid-valid-cross",
+        "curl:wire-cookie-maxage-overflow-one",
+        "curl:wire-cookie-maxage-overflow-many",
+        "wget:wire-url-path-space-raw",
+        "wget:wire-url-path-space-escaped",
+        "wget:wire-url-path-tab-raw",
+        "wget:wire-url-path-tab-escaped",
+        "wget:wire-url-path-cr-raw",
+        "wget:wire-url-path-cr-escaped",
+        "wget:wire-url-path-lf-raw",
+        "wget:wire-url-path-lf-escaped",
+        "wget:wire-url-path-del-raw",
+        "wget:wire-url-path-del-escaped",
+        "wget:wire-url-path-escaped-crlf",
+        "wget:wire-redirect-path-space",
+        "wget:wire-redirect-path-tab",
+        "wget:wire-redirect-path-escaped-crlf",
+        "wget:wire-url-query-space-raw",
+        "wget:wire-url-query-space-escaped",
+        "wget:wire-url-query-tab-raw",
+        "wget:wire-url-query-tab-escaped",
+        "wget:wire-url-query-cr-raw",
+        "wget:wire-url-query-cr-escaped",
+        "wget:wire-url-query-lf-raw",
+        "wget:wire-url-query-lf-escaped",
+        "wget:wire-url-query-del-raw",
+        "wget:wire-url-query-del-escaped",
+        "wget:wire-url-query-escaped-crlf",
+        "wget:wire-redirect-query-space",
+        "wget:wire-redirect-query-tab",
+        "wget:wire-redirect-query-escaped-crlf",
+        "wget:wire-cookie-no-pair",
+        "wget:wire-cookie-invalid-maxage",
+        "wget:wire-cookie-seeded-invalid-maxage",
+        "wget:wire-cookie-duplicate-valid-invalid",
+        "wget:wire-cookie-duplicate-invalid-valid",
+        "wget:wire-cookie-no-pair-disabled",
+        "wget:wire-cookie-invalid-maxage-disabled",
+        "wget:wire-cookie-order-name-length",
+        "wget:wire-cookie-order-equal-length",
+        "wget:wire-cookie-order-equal-reverse",
+        "wget:wire-cookie-order-replace",
+        "wget:wire-cookie-order-invalid-valid-cross",
+        "wget:wire-cookie-maxage-overflow-one",
+        "wget:wire-cookie-maxage-overflow-many"
       ],
       "required_backends": [
         "native",
@@ -46281,7 +46372,98 @@
         "curl:cd-status-500-empty-incomplete-fail-false",
         "curl:cd-status-500-empty-incomplete-fail-true",
         "curl:cd-status-500-body-complete-fail-false",
-        "curl:cd-status-500-body-complete-fail-true"
+        "curl:cd-status-500-body-complete-fail-true",
+        "-L",
+        "--location",
+        "-I",
+        "--head",
+        "-b",
+        "--cookie",
+        "--no-cookies",
+        "curl:wire-url-path-space-raw",
+        "curl:wire-url-path-space-escaped",
+        "curl:wire-url-path-tab-raw",
+        "curl:wire-url-path-tab-escaped",
+        "curl:wire-url-path-cr-raw",
+        "curl:wire-url-path-cr-escaped",
+        "curl:wire-url-path-lf-raw",
+        "curl:wire-url-path-lf-escaped",
+        "curl:wire-url-path-del-raw",
+        "curl:wire-url-path-del-escaped",
+        "curl:wire-url-path-escaped-crlf",
+        "curl:wire-redirect-path-space",
+        "curl:wire-redirect-path-tab",
+        "curl:wire-redirect-path-escaped-crlf",
+        "curl:wire-url-query-space-raw",
+        "curl:wire-url-query-space-escaped",
+        "curl:wire-url-query-tab-raw",
+        "curl:wire-url-query-tab-escaped",
+        "curl:wire-url-query-cr-raw",
+        "curl:wire-url-query-cr-escaped",
+        "curl:wire-url-query-lf-raw",
+        "curl:wire-url-query-lf-escaped",
+        "curl:wire-url-query-del-raw",
+        "curl:wire-url-query-del-escaped",
+        "curl:wire-url-query-escaped-crlf",
+        "curl:wire-redirect-query-space",
+        "curl:wire-redirect-query-tab",
+        "curl:wire-redirect-query-escaped-crlf",
+        "curl:wire-cookie-no-pair",
+        "curl:wire-cookie-invalid-maxage",
+        "curl:wire-cookie-seeded-invalid-maxage",
+        "curl:wire-cookie-duplicate-valid-invalid",
+        "curl:wire-cookie-duplicate-invalid-valid",
+        "curl:wire-cookie-no-pair-disabled",
+        "curl:wire-cookie-invalid-maxage-disabled",
+        "curl:wire-cookie-order-name-length",
+        "curl:wire-cookie-order-equal-length",
+        "curl:wire-cookie-order-equal-reverse",
+        "curl:wire-cookie-order-replace",
+        "curl:wire-cookie-order-invalid-valid-cross",
+        "curl:wire-cookie-maxage-overflow-one",
+        "curl:wire-cookie-maxage-overflow-many",
+        "wget:wire-url-path-space-raw",
+        "wget:wire-url-path-space-escaped",
+        "wget:wire-url-path-tab-raw",
+        "wget:wire-url-path-tab-escaped",
+        "wget:wire-url-path-cr-raw",
+        "wget:wire-url-path-cr-escaped",
+        "wget:wire-url-path-lf-raw",
+        "wget:wire-url-path-lf-escaped",
+        "wget:wire-url-path-del-raw",
+        "wget:wire-url-path-del-escaped",
+        "wget:wire-url-path-escaped-crlf",
+        "wget:wire-redirect-path-space",
+        "wget:wire-redirect-path-tab",
+        "wget:wire-redirect-path-escaped-crlf",
+        "wget:wire-url-query-space-raw",
+        "wget:wire-url-query-space-escaped",
+        "wget:wire-url-query-tab-raw",
+        "wget:wire-url-query-tab-escaped",
+        "wget:wire-url-query-cr-raw",
+        "wget:wire-url-query-cr-escaped",
+        "wget:wire-url-query-lf-raw",
+        "wget:wire-url-query-lf-escaped",
+        "wget:wire-url-query-del-raw",
+        "wget:wire-url-query-del-escaped",
+        "wget:wire-url-query-escaped-crlf",
+        "wget:wire-redirect-query-space",
+        "wget:wire-redirect-query-tab",
+        "wget:wire-redirect-query-escaped-crlf",
+        "wget:wire-cookie-no-pair",
+        "wget:wire-cookie-invalid-maxage",
+        "wget:wire-cookie-seeded-invalid-maxage",
+        "wget:wire-cookie-duplicate-valid-invalid",
+        "wget:wire-cookie-duplicate-invalid-valid",
+        "wget:wire-cookie-no-pair-disabled",
+        "wget:wire-cookie-invalid-maxage-disabled",
+        "wget:wire-cookie-order-name-length",
+        "wget:wire-cookie-order-equal-length",
+        "wget:wire-cookie-order-equal-reverse",
+        "wget:wire-cookie-order-replace",
+        "wget:wire-cookie-order-invalid-valid-cross",
+        "wget:wire-cookie-maxage-overflow-one",
+        "wget:wire-cookie-maxage-overflow-many"
       ],
       "required_backends": [
         "native",
@@ -48335,6 +48517,404 @@
       "aliases": [],
       "coverage": [
         "transfer fixture captures framed GET bytes before entering passthrough mode"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/url_wire_wbtest.mbt::request URL preparation preserves escaped bytes and rejects raw request delimiters",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/url_wire_wbtest.mbt::request URL preparation preserves escaped bytes and rejects raw request delimiters",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "request URL preparation preserves escaped bytes and rejects raw request delimiters"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/url_wire_wbtest.mbt::request URL preparation distinguishes initial URLs from redirect quoting",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/url_wire_wbtest.mbt::request URL preparation distinguishes initial URLs from redirect quoting",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "request URL preparation distinguishes initial URLs from redirect quoting"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/url_wire_wbtest.mbt::public transfer rejects request line injection before connection and file effects",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/url_wire_wbtest.mbt::public transfer rejects request line injection before connection and file effects",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "public transfer rejects request line injection before connection and file effects"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/url_wire_wbtest.mbt::public transfer quotes Wget request controls without adding headers or requests",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/url_wire_wbtest.mbt::public transfer quotes Wget request controls without adding headers or requests",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "public transfer quotes Wget request controls without adding headers or requests"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_cookie_wbtest.mbt::public transfer preserves original repeated Set-Cookie fields independently of storage",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_cookie_wbtest.mbt::public transfer preserves original repeated Set-Cookie fields independently of storage",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "public transfer preserves original repeated Set-Cookie fields independently of storage"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_cookie_wbtest.mbt::public transfer ignores malformed cookies without losing response headers or body",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_cookie_wbtest.mbt::public transfer ignores malformed cookies without losing response headers or body",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "public transfer ignores malformed cookies without losing response headers or body"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_cookie_wbtest.mbt::public transfer applies invalid Max-Age updates in response order",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_cookie_wbtest.mbt::public transfer applies invalid Max-Age updates in response order",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "public transfer applies invalid Max-Age updates in response order"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_cookie_wbtest.mbt::public transfer orders curl cookies by specificity and preserved creation order",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_cookie_wbtest.mbt::public transfer orders curl cookies by specificity and preserved creation order",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "public transfer orders curl cookies by specificity and preserved creation order"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_cookie_wbtest.mbt::public transfer distinguishes numeric Max-Age overflow from nonnumeric attributes",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_cookie_wbtest.mbt::public transfer distinguishes numeric Max-Age overflow from nonnumeric attributes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "public transfer distinguishes numeric Max-Age overflow from nonnumeric attributes"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_cookie_wbtest.mbt::cookie profiles cap curl Max-Age with fixed-clock overflow and rounding boundaries",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_cookie_wbtest.mbt::cookie profiles cap curl Max-Age with fixed-clock overflow and rounding boundaries",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "cookie profiles cap curl Max-Age with fixed-clock overflow and rounding boundaries"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/runner/backend_pair_wbtest.mbt::scenario pair snapshots bind both allocated network origins and retain other ports",
+      "command": "",
+      "owner": "tests/runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/runner/backend_pair_wbtest.mbt::scenario pair snapshots bind both allocated network origins and retain other ports",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scenario pair snapshots bind both allocated network origins and retain other ports"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/network_transfer_wbtest.mbt::wire fixture preserves escaped targets and repeated Cookie fields",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/network_transfer_wbtest.mbt::wire fixture preserves escaped targets and repeated Cookie fields",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "wire fixture preserves escaped targets and repeated Cookie fields"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/network_transfer_wbtest.mbt::wire fixture preserves malformed Cookie response fields and redirect target bytes",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/network_transfer_wbtest.mbt::wire fixture preserves malformed Cookie response fields and redirect target bytes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "wire fixture preserves malformed Cookie response fields and redirect target bytes"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/network_transfer_wbtest.mbt::wire fixture retains cookie ordering and numeric overflow response bytes",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/network_transfer_wbtest.mbt::wire fixture retains cookie ordering and numeric overflow response bytes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "wire fixture retains cookie ordering and numeric overflow response bytes"
       ],
       "required_backends": [
         "native"

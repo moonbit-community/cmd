@@ -27,6 +27,13 @@ Redirect behavior distinguishes ordinary data from upload streams. An explicit
 `--data-*` body as curl does, while 307/308 and upload streams preserve their
 body. Cross-origin redirects remove authorization headers.
 
+The workspace candidate rejects raw ASCII space, TAB, CR, LF and DEL in an
+initial URL path or query with status 3 before connecting, leaving an existing
+output file untouched. Already percent-encoded bytes remain encoded. For a
+followed Location, a path space becomes `%20`, a query space becomes `+`, and
+TAB becomes `%09` in either component. These are the calibrated URL cases;
+they do not establish general browser URL normalization.
+
 `--max-redirs -1` is unlimited; zero disables followed hops. Zero for
 `--connect-timeout`, `--max-time`, and `--retry-max-time` selects the documented
 disabled/default behavior, while `--idle-timeout` must be positive. Timer input
@@ -90,6 +97,19 @@ error diagnostic merely because the internal retry mechanism uses an error.
 Request fields generated from literal or stored cookies receive the same header
 validation as explicit fields. CR/LF in a Cookie value is rejected before any
 request bytes are written, with status 2 and no transfer output file opened.
+
+Malformed response Set-Cookie fields without `=` are ignored for cookie
+storage without failing an otherwise complete body. A nonnumeric Max-Age deletes
+the matching stored cookie in the curl profile. Positive decimal overflow instead
+retains the new cookie under the profile's 400-day lifetime cap; lifetimes beyond
+the cap round their capped expiry to the nearest minute. Outgoing cookies sort
+by descending path, domain and name byte length, then newer creation first;
+replacement preserves creation order. Repeated fields are processed in response
+order. Header observations retain the final response's Set-Cookie
+field names, values and order separately from parsed storage, with HTTP
+optional whitespace normalized. Interim response cookies are not retained.
+These corrections require fresh Native/Wasm and fixed-oracle acceptance; they
+do not establish byte-for-byte cookie-jar serialization parity.
 
 Requests default to `Accept-Encoding: identity` and preserve an explicitly
 supplied header. Response content-coding bytes are written unchanged, so gzip

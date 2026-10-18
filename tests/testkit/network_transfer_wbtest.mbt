@@ -240,7 +240,13 @@ async test "transfer fixture sends uncompleted wire bytes and closes the socket"
         client.read_all().text()
       })
       assert_eq(completed, Some(expected))
-      expected_requests.push({ request_method, path, range, body: b"", })
+      expected_requests.push({
+        request_method,
+        path,
+        range,
+        body: b"",
+        cookies: [],
+      })
     }
     for body in [b"\x00bin\xff", b""] {
       let completed = @async.with_timeout_opt(2000, () => {
@@ -272,6 +278,7 @@ async test "transfer fixture sends uncompleted wire bytes and closes the socket"
         path: "/transfer-stdin-retry",
         range: None,
         body,
+        cookies: [],
       })
     }
     assert_eq(requests, expected_requests)
@@ -295,7 +302,7 @@ async test "transfer fixture captures framed GET bytes before entering passthrou
         let client = @socket.Tcp::connect(server.addr)
         defer client.close()
         client.write(
-          "GET /transfer-fixed-complete HTTP/1.1\r\nHost: fixture\r\nExpect: 100-continue\r\n" +
+          "GET /transfer-fixed-complete HTTP/1.1\r\nHost: fixture\r\nCookie: observed=actual\r\nExpect: 100-continue\r\n" +
           (if chunked {
             "Transfer-Encoding: chunked"
           } else {
@@ -328,6 +335,7 @@ async test "transfer fixture captures framed GET bytes before entering passthrou
         path: "/transfer-fixed-complete",
         range: None,
         body,
+        cookies: ["observed=actual"],
       }),
     )
   })
@@ -349,6 +357,7 @@ test "transfer retry lifecycle fixture requires a bounded per-run request captur
     path: "/transfer-retry-empty",
     range: None,
     body: b"",
+    cookies: [],
   })
   let exhausted_error = try {
     ignore(
@@ -420,9 +429,112 @@ async test "transfer retry lifecycle fixture replays independently after request
             path,
             range: None,
             body: b"",
+            cookies: [],
           }),
         )
       }
     }
   })
+}
+
+///|
+async test "wire fixture preserves escaped targets and repeated Cookie fields" {
+  @async.with_task_group(group => {
+    let server = @socket.TcpServer(@socket.Addr::parse("127.0.0.1:0"))
+    group.add_defer(() => server.close())
+    let requests : Array[TransferFixtureRequest] = []
+    let wires : Array[Bytes] = []
+    group.spawn_bg(no_wait=true, () => {
+      server.run_forever((connection, _) => {
+        serve_wire_fixture(connection, requests, wires)
+      })
+    })
+    let wire = "GET /wire-url/a%0D%0Ab?q=%09 HTTP/1.1\r\nHost: fixture\r\nCookie: sid=first\r\nCookie: sid=second\r\n\r\n"
+    for _ in 0..<2 {
+      requests.clear()
+      wires.clear()
+      let received = @async.with_timeout_opt(2000, () => {
+        let client = @socket.Tcp::connect(server.addr)
+        defer client.close()
+        client.write(wire)
+        client.read_all().text()
+      })
+      assert_eq(
+        received,
+        Some(
+          "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Length: 2\r\n\r\nok",
+        ),
+      )
+      assert_eq(wires, [@utf8.encode(wire)])
+      assert_eq(requests, [
+        {
+          request_method: "GET",
+          path: "/wire-url/a%0D%0Ab?q=%09",
+          range: None,
+          body: b"",
+          cookies: ["sid=first", "sid=second"],
+        },
+      ])
+    }
+  })
+}
+
+///|
+test "wire fixture preserves malformed Cookie response fields and redirect target bytes" {
+  let malformed = wire_fixture_response("/wire-cookie-no-pair", [])
+  assert_true(
+    malformed.contains("Set-Cookie: broken\r\nSet-Cookie: valid=ok; Path=/\r\n"),
+  )
+  let replacement = wire_fixture_response(
+    "/wire-cookie-seeded-invalid-maxage/hop-1",
+    ["sid=old"],
+  )
+  assert_true(
+    replacement.contains("Set-Cookie: sid=new; Max-Age=nope; Path=/\r\n"),
+  )
+  assert_true(
+    wire_fixture_response("/wire-redirect-query-space", []).contains(
+      "Location: /wire-url/next?q=a b\r\n",
+    ),
+  )
+  assert_true(
+    wire_fixture_response("/wire-redirect-path-tab", []).contains(
+      "Location: /wire-url/next-a\tb\r\n",
+    ),
+  )
+  assert_eq(
+    wire_fixture_response("/wire-cookie-no-pair/hop-1", ["valid=ok"]),
+    "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Length: 16\r\n\r\nCookie: valid=ok",
+  )
+}
+
+///|
+test "wire fixture retains cookie ordering and numeric overflow response bytes" {
+  for
+    (target, fields) in [
+      (
+        "/wire-cookie-order-name-length", "Set-Cookie: a=1; Path=/\r\nSet-Cookie: longname=2; Path=/\r\nSet-Cookie: bb=3; Path=/\r\n",
+      ),
+      (
+        "/wire-cookie-order-equal-length", "Set-Cookie: aa=1; Path=/\r\nSet-Cookie: bb=2; Path=/\r\nSet-Cookie: cc=3; Path=/\r\n",
+      ),
+      (
+        "/wire-cookie-order-equal-reverse", "Set-Cookie: cc=3; Path=/\r\nSet-Cookie: bb=2; Path=/\r\nSet-Cookie: aa=1; Path=/\r\n",
+      ),
+      ("/wire-cookie-order-replace/hop-1", "Set-Cookie: aa=3; Path=/\r\n"),
+      (
+        "/wire-cookie-order-invalid-valid-cross/hop-1", "Set-Cookie: sid=bad; Max-Age=nope; Path=/\r\n",
+      ),
+      (
+        "/wire-cookie-order-invalid-valid-cross/hop-2", "Set-Cookie: sid=new; Path=/\r\n",
+      ),
+      (
+        "/wire-cookie-maxage-overflow-one/hop-1", "Set-Cookie: sid=new; Max-Age=9223372036854775808; Path=/\r\nSet-Cookie: valid=ok; Path=/\r\n",
+      ),
+      (
+        "/wire-cookie-maxage-overflow-many/hop-1", "Set-Cookie: sid=new; Max-Age=999999999999999999999999999999; Path=/\r\nSet-Cookie: valid=ok; Path=/\r\n",
+      ),
+    ] {
+    assert_true(wire_fixture_response(target, []).contains(fields))
+  }
 }

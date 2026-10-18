@@ -1266,6 +1266,7 @@
     "package-test:tests/runner/workspace_wbtest.mbt::cohort selection requires its unique typed registry owner",
     "package-test:tests/runner/backend_pair_wbtest.mbt::scenario pairing normalizes only allocated fixture roots and listener origins",
     "package-test:tests/runner/backend_pair_wbtest.mbt::scenario pair snapshots detect byte and exit-status differences",
+    "package-test:tests/runner/backend_pair_wbtest.mbt::timestamp pairing compares exact unchanged relations and rejects mutations",
     "case:release-metadata-cp-help",
     "case:release-metadata-cp-version",
     "case:release-metadata-jq-help",
@@ -1536,7 +1537,21 @@
     "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer disposition status fixture preserves status and incomplete wire bodies",
     "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture requires a bounded per-run request capture",
     "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture replays independently after request capture reset",
-    "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture captures framed GET bytes before entering passthrough mode"
+    "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture captures framed GET bytes before entering passthrough mode",
+    "package-test:core/netops/url_wire_wbtest.mbt::request URL preparation preserves escaped bytes and rejects raw request delimiters",
+    "package-test:core/netops/url_wire_wbtest.mbt::request URL preparation distinguishes initial URLs from redirect quoting",
+    "package-test:core/netops/url_wire_wbtest.mbt::public transfer rejects request line injection before connection and file effects",
+    "package-test:core/netops/url_wire_wbtest.mbt::public transfer quotes Wget request controls without adding headers or requests",
+    "package-test:core/netops/http_wire_cookie_wbtest.mbt::public transfer preserves original repeated Set-Cookie fields independently of storage",
+    "package-test:core/netops/http_wire_cookie_wbtest.mbt::public transfer ignores malformed cookies without losing response headers or body",
+    "package-test:core/netops/http_wire_cookie_wbtest.mbt::public transfer applies invalid Max-Age updates in response order",
+    "package-test:core/netops/http_wire_cookie_wbtest.mbt::public transfer orders curl cookies by specificity and preserved creation order",
+    "package-test:core/netops/http_wire_cookie_wbtest.mbt::public transfer distinguishes numeric Max-Age overflow from nonnumeric attributes",
+    "package-test:core/netops/http_wire_cookie_wbtest.mbt::cookie profiles cap curl Max-Age with fixed-clock overflow and rounding boundaries",
+    "package-test:tests/runner/backend_pair_wbtest.mbt::scenario pair snapshots bind both allocated network origins and retain other ports",
+    "package-test:tests/testkit/network_transfer_wbtest.mbt::wire fixture preserves escaped targets and repeated Cookie fields",
+    "package-test:tests/testkit/network_transfer_wbtest.mbt::wire fixture preserves malformed Cookie response fields and redirect target bytes",
+    "package-test:tests/testkit/network_transfer_wbtest.mbt::wire fixture retains cookie ordering and numeric overflow response bytes"
   ],
   "affected_options": [
     "help",
@@ -1554,7 +1569,18 @@
     "--backup",
     "-n",
     "-i",
-    "--update=none"
+    "--update=none",
+    "-L",
+    "--location",
+    "-I",
+    "--head",
+    "-b",
+    "--cookie",
+    "--cookie-jar",
+    "--load-cookies",
+    "--save-cookies",
+    "--keep-session-cookies",
+    "--no-cookies"
   ],
   "affected_operands": [
     "curl:URL",
@@ -2943,7 +2969,10 @@
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture does not repair deliberately incomplete framing",
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture sends uncompleted wire bytes and closes the socket",
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture replays independently after request capture reset",
-        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer disposition status fixture preserves status and incomplete wire bodies"
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer disposition status fixture preserves status and incomplete wire bodies",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::wire fixture preserves escaped targets and repeated Cookie fields",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::wire fixture preserves malformed Cookie response fields and redirect target bytes",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::wire fixture retains cookie ordering and numeric overflow response bytes"
       ]
     },
     {
@@ -3057,6 +3086,15 @@
       ]
     },
     {
+      "path": "tests/runner/backend_pair.mbt",
+      "behavior_ids": [
+        "package-test:tests/runner/backend_pair_wbtest.mbt::scenario pair snapshots bind both allocated network origins and retain other ports",
+        "package-test:tests/runner/backend_pair_wbtest.mbt::scenario pairing normalizes only allocated fixture roots and listener origins",
+        "package-test:tests/runner/backend_pair_wbtest.mbt::scenario pair snapshots detect byte and exit-status differences",
+        "package-test:tests/runner/backend_pair_wbtest.mbt::timestamp pairing compares exact unchanged relations and rejects mutations"
+      ]
+    },
+    {
       "path": "tests/runner/cohorts.mbt",
       "behavior_ids": [
         "package-test:tests/runner/runner_wbtest.mbt::Windows mv scenarios select their actual backend and never claim a pair",
@@ -3118,6 +3156,10 @@
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture replays independently after request capture reset",
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer disposition status fixture preserves status and incomplete wire bodies",
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture captures framed GET bytes before entering passthrough mode",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::wire fixture preserves escaped targets and repeated Cookie fields",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::wire fixture preserves malformed Cookie response fields and redirect target bytes",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::wire fixture retains cookie ordering and numeric overflow response bytes",
+        "package-test:tests/runner/backend_pair_wbtest.mbt::scenario pair snapshots bind both allocated network origins and retain other ports",
         "package-test:tests/runner/backend_pair_wbtest.mbt::scenario pairing normalizes only allocated fixture roots and listener origins",
         "package-test:tests/runner/scenario_network_wbtest.mbt::transfer file checks retain independent failures"
       ]
@@ -3152,7 +3194,10 @@
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture requires a bounded per-run request capture",
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture replays independently after request capture reset",
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer disposition status fixture preserves status and incomplete wire bodies",
-        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture captures framed GET bytes before entering passthrough mode"
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture captures framed GET bytes before entering passthrough mode",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::wire fixture preserves escaped targets and repeated Cookie fields",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::wire fixture preserves malformed Cookie response fields and redirect target bytes",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::wire fixture retains cookie ordering and numeric overflow response bytes"
       ]
     },
     {
@@ -3161,7 +3206,9 @@
         "package-test:tests/testkit/fixture_wbtest.mbt::Windows link observer distinguishes symbolic links and junction targets",
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture sends uncompleted wire bytes and closes the socket",
         "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture requires a bounded per-run request capture",
-        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture replays independently after request capture reset"
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture replays independently after request capture reset",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::wire fixture preserves escaped targets and repeated Cookie fields",
+        "package-test:tests/testkit/network_transfer_wbtest.mbt::wire fixture preserves malformed Cookie response fields and redirect target bytes"
       ]
     }
   ]

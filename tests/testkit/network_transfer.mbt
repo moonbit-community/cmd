@@ -4,6 +4,7 @@ pub(all) struct TransferFixtureRequest {
   path : String
   range : String?
   body : Bytes
+  cookies : Array[String]
 } derive(Debug, Eq, ToJson)
 
 ///|
@@ -277,7 +278,13 @@ pub async fn serve_transfer_fixture(
   }
   guard response is Some(response) else { return false }
   if requests is Some(requests) {
-    requests.push({ request_method, path: request.path, range, body, })
+    requests.push({
+      request_method,
+      path: request.path,
+      range,
+      body,
+      cookies: request.headers.get("Cookie").map(value => [value]).unwrap_or([]),
+    })
   }
   if before_response is Some(observe) {
     observe()
@@ -288,4 +295,176 @@ pub async fn serve_transfer_fixture(
     connection.write(response)
   }
   true
+}
+
+///|
+fn wire_cookie_steps(label : String) -> Array[Array[String]]? {
+  match label {
+    "no-pair" => Some([["broken", "valid=ok; Path=/"]])
+    "invalid-maxage" =>
+      Some([["odd=value; Max-Age=nope; Path=/", "valid=ok; Path=/"]])
+    "seeded-invalid-maxage" =>
+      Some([
+        ["sid=old; Path=/"],
+        ["sid=new; Max-Age=nope; Path=/", "valid=ok; Path=/"],
+      ])
+    "duplicate-valid-invalid" =>
+      Some([
+        [
+          "sid=good; Path=/", "sid=bad; Max-Age=nope; Path=/", "valid=ok; Path=/",
+        ],
+      ])
+    "duplicate-invalid-valid" =>
+      Some([
+        [
+          "sid=bad; Max-Age=nope; Path=/", "sid=good; Path=/", "valid=ok; Path=/",
+        ],
+      ])
+    "order-name-length" =>
+      Some([["a=1; Path=/", "longname=2; Path=/", "bb=3; Path=/"]])
+    "order-equal-length" =>
+      Some([["aa=1; Path=/", "bb=2; Path=/", "cc=3; Path=/"]])
+    "order-equal-reverse" =>
+      Some([["cc=3; Path=/", "bb=2; Path=/", "aa=1; Path=/"]])
+    "order-replace" =>
+      Some([["aa=1; Path=/", "bb=2; Path=/"], ["aa=3; Path=/"]])
+    "order-invalid-valid-cross" =>
+      Some([
+        ["sid=old; Path=/"],
+        ["sid=bad; Max-Age=nope; Path=/"],
+        ["sid=new; Path=/"],
+      ])
+    "maxage-overflow-one" =>
+      Some([
+        ["sid=old; Path=/"],
+        ["sid=new; Max-Age=9223372036854775808; Path=/", "valid=ok; Path=/"],
+      ])
+    "maxage-overflow-many" =>
+      Some([
+        ["sid=old; Path=/"],
+        [
+          "sid=new; Max-Age=999999999999999999999999999999; Path=/", "valid=ok; Path=/",
+        ],
+      ])
+    _ => None
+  }
+}
+
+///|
+fn wire_fixture_response(
+  target : String,
+  cookies : Array[String],
+) -> String raise {
+  let fixed = "HTTP/1.1 200 OK\r\nConnection: close\r\n"
+  if target.has_prefix("/wire-url/") {
+    return fixed + "Content-Length: 2\r\n\r\nok"
+  }
+  for
+    (label, value) in [
+      ("space", " "),
+      ("tab", "\t"),
+      ("escaped-crlf", "%0D%0A"),
+    ] {
+    for part in ["path", "query"] {
+      if target == "/wire-redirect-\{part}-\{label}" {
+        let location = if part == "path" {
+          "/wire-url/next-a" + value + "b"
+        } else {
+          "/wire-url/next?q=a" + value + "b"
+        }
+        return "HTTP/1.1 302 Found\r\nConnection: close\r\nContent-Length: 0\r\nLocation: " +
+          location +
+          "\r\n\r\n"
+      }
+    }
+  }
+  for
+    label in [
+      "no-pair", "invalid-maxage", "seeded-invalid-maxage", "duplicate-valid-invalid",
+      "duplicate-invalid-valid", "order-name-length", "order-equal-length", "order-equal-reverse",
+      "order-replace", "order-invalid-valid-cross", "maxage-overflow-one", "maxage-overflow-many",
+    ] {
+    let base = "/wire-cookie-" + label
+    let steps = wire_cookie_steps(label).unwrap()
+    for index in 0..<=steps.length() {
+      let path = if index == 0 { base } else { base + "/hop-\{index}" }
+      if target == path {
+        if index == steps.length() {
+          let body = cookies.map(value => "Cookie: " + value).join("\n")
+          return fixed +
+            "Content-Length: \{@utf8.encode(body).length()}\r\n\r\n" +
+            body
+        }
+        let fields = steps[index]
+          .map(value => "Set-Cookie: " + value + "\r\n")
+          .join("")
+        return "HTTP/1.1 302 Found\r\nConnection: close\r\nContent-Length: 0\r\nLocation: " +
+          base +
+          "/hop-\{index + 1}\r\n" +
+          fields +
+          "\r\n"
+      }
+    }
+  }
+  fail("unknown raw wire fixture request target: " + target)
+}
+
+///|
+/// This diagnostic fixture observes the request target before URL or HTTP parsing.
+/// It accepts only bounded bodyless GET requests and preserves repeated Cookie fields.
+pub async fn serve_wire_fixture(
+  connection : @socket.Tcp,
+  requests : Array[TransferFixtureRequest],
+  request_wires : Array[Bytes],
+) -> Unit {
+  defer connection.close()
+  @async.with_timeout(8000, () => {
+    guard connection.read_until("\r\n") is Some(start) else { return }
+    let fields = start.split(" ").to_array()
+    guard fields.length() == 3 && fields[0] == "GET" && fields[2] == "HTTP/1.1" else {
+      fail(
+        "wire fixture received an invalid or unsupported request line: " + start,
+      )
+    }
+    let target = fields[1].to_owned()
+    let cookies : Array[String] = []
+    let mut range : String? = None
+    let mut wire = start + "\r\n"
+    for ;; {
+      guard connection.read_until("\r\n") is Some(line) else {
+        fail("EOF in wire fixture request headers")
+      }
+      wire += line + "\r\n"
+      guard wire.length() <= 16384 else {
+        fail("wire fixture request exceeds 16 KiB")
+      }
+      if line == "" {
+        break
+      }
+      guard line.find(":") is Some(colon) else {
+        fail("wire fixture received malformed header")
+      }
+      let name = line[:colon].to_owned().to_lower()
+      let value = line[colon + 1:].trim().to_owned()
+      if name == "cookie" {
+        cookies.push(value)
+      }
+      if name == "range" {
+        range = Some(value)
+      }
+      guard name != "transfer-encoding" &&
+        (name != "content-length" || value == "0") else {
+        fail("wire fixture requires a bodyless GET")
+      }
+    }
+    request_wires.push(@utf8.encode(wire))
+    requests.push({
+      request_method: "GET",
+      path: target,
+      range,
+      body: b"",
+      cookies,
+    })
+    connection.write(wire_fixture_response(target, cookies))
+  })
 }

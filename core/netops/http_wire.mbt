@@ -19,6 +19,7 @@ priv struct HttpWire {
   mut request_remaining : Int64?
   mut request_chunked : Bool
   mut request_payload_bytes : Int64
+  mut cookie_fields : Array[HttpHeader]
 }
 
 ///|
@@ -35,6 +36,7 @@ async fn HttpWire::new(client : @http.Client) -> HttpWire {
     request_remaining: None,
     request_chunked: false,
     request_payload_bytes: 0L,
+    cookie_fields: [],
   }
 }
 
@@ -175,6 +177,7 @@ async fn HttpWire::response(
     let reason = if status.length() == 12 { "" } else { status[13:].to_owned() }
     let headers : Map[@http.CaseInsensitiveString, String] = Map([])
     let cookies : Array[@http.Cookie] = []
+    let cookie_fields : Array[HttpHeader] = []
     for fields = 0; ; fields = fields + 1 {
       let line = self.line(header=true) catch {
         @io.ReaderClosed if profile != StrictProfile && code == 200 => break
@@ -191,7 +194,10 @@ async fn HttpWire::response(
       }
       let (name, value) = wire_field(line)
       if name.to_lower() == "set-cookie" {
-        cookies.push(wire_cookie(value))
+        cookie_fields.push(http_header(name, value))
+        if wire_cookie(value, profile) is Some(cookie) {
+          cookies.push(cookie)
+        }
       } else {
         let key = @http.CaseInsensitiveString(name)
         headers[key] = match headers.get(key) {
@@ -217,6 +223,7 @@ async fn HttpWire::response(
     } else {
       self.body = UntilClose
     }
+    self.cookie_fields = cookie_fields
     return response
   }
 }

@@ -3,7 +3,7 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-10-18
-Revision: Own HTTP/1 framing through the released passthrough API and apply explicit command profiles for the fixed oracle's EOF, file buffering, retry reset and selected-filename lifetime in the async 0.22.5 candidate.
+Revision: Own HTTP/1 framing through the released passthrough API and apply explicit command profiles for URL targets, response cookies, EOF, file buffering, retry reset and selected-filename lifetime in the async 0.22.5 candidate.
 
 ## Target and decision
 
@@ -54,6 +54,41 @@ before writing request bytes. This applies the existing explicit-header input
 validation to generated fields; it is not a missing-API boundary or a claim of
 GNU handling for malformed cookie input. Raw TCP and command regressions observe
 the rejected bytes and unchanged output separately.
+
+Initial request-target validation precedes connection. The calibrated curl
+profile rejects raw ASCII space, TAB, CR, LF and DEL in the path or query with
+status 3 and leaves an existing output file unchanged. Wget instead emits
+uppercase percent escapes and succeeds on the complete-response controls.
+Existing encoded bytes remain encoded. Followed Location spaces become `%20`
+in curl paths and `+` in curl queries; Wget uses `%20` in both. TAB becomes
+`%09` in both components for both commands. These cases are explicit command
+policies, not a general URL-normalization claim or an upstream API blocker.
+
+Response observation retains every final Set-Cookie field separately from
+parsed cookie storage, preserving field-name capitalization, value text,
+attribute order and repeated-field order after HTTP optional-whitespace
+normalization. Interim response fields do not enter final observations or the
+jar. Both command profiles ignore fields without `=` without failing the body.
+For nonnumeric Max-Age, curl deletes the matching stored cookie, whereas Wget
+ignores that replacement and retains the old cookie. Positive decimal overflow
+instead retains curl's replacement under its 400-day lifetime cap; only
+lifetimes exceeding that cap round the capped expiry to the nearest minute.
+Wget expires matching cookies for numeric overflow below 32 digits and discards
+overlong replacements. The strict profile discards unparseable replacements as
+a project choice. Repeated fields update storage in response order. Curl sends
+cookies by descending UTF-8 path/domain/name byte length, then newer creation
+first, preserving creation on replacement. Wget uses descending domain/path
+byte length and ascending name/value byte order. These rules do not establish
+byte-for-byte jar serialization, port-qualified saved-domain parity or complete
+cross-scope duplicate-cookie compatibility; those remain within issue #34.
+Malformed response-cookie handling remains separate from final outgoing-field
+CR/LF validation above.
+
+The fixed URL/cookie and ordering/overflow probes establish expectations for
+these cases. Fresh registered Native/Wasm, backend-pair and sealed-oracle
+results at the repaired source are still required, including raw request
+bytes, connection count, final body and existing-output effects. Neither the
+probe nor CI for an earlier commit promotes the candidate to published status.
 
 An owned output sink closes on every exit from its private scope, including
 task cancellation. This lifetime guarantee does not define GNU signal behavior,

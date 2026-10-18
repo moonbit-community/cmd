@@ -54,6 +54,27 @@ real file closed by the same private sink scope used in transfer and verifies
 that repeated close cannot close a subsequently opened file. Buffered-tail and
 remove-on-error cancellation behavior remain part of the resource stage.
 
+The wire-review correction retains all existing impact requirements and adds
+command-specific request-target and response-cookie observations. Initial raw
+ASCII space/TAB/CR/LF/DEL in path/query must produce curl 3 before connecting
+and preserve an existing destination; Wget must emit uppercase percent escapes.
+Encoded controls remain encoded. Followed Location space/TAB controls require
+curl path `%20`/query `+` and TAB `%09`, versus Wget `%20`/`%09` in both
+components. Observe actual request bytes and connection counts, not only status.
+Final response Set-Cookie fields retain names, values and order independently
+of cookie storage, with HTTP optional whitespace normalized and interim fields
+excluded. Missing `=` must not fail a complete body; nonnumeric Max-Age must
+delete the matching curl cookie while preserving Wget's prior cookie. Positive
+decimal overflow requires the opposite replacement effects: curl keeps the new
+cookie under its 400-day cap, while Wget expires matching cookies for numeric
+overflow below 32 digits. Fixed-clock tests cover the cap, rounding and overflow
+boundaries. Subsequent request bytes must distinguish profile-specific cookie
+ordering and preserved creation order. Repeated-field order requires request
+and jar-state observations, without claiming byte-for-byte jar serialization.
+The fixed comparisons establish expectations only; new registered package,
+command, Native/Wasm pair and immutable-oracle evidence must use the repaired
+exact source. Earlier CI runs cannot establish acceptance for these changes.
+
 The transfer declaration includes the public strict/curl/Wget profiles and
 their different observable results. Preserve strict default rejection controls
 alongside the command-specific 200 header-EOF acceptance, Wget chunk-payload

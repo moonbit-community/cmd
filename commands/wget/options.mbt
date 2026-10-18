@@ -81,6 +81,10 @@ fn usage() -> String {
     #|PUT, DELETE, CONNECT, OPTIONS, TRACE, and PATCH. Timer values are bounded
     #|by the runtime millisecond timer range.
     #|Content-coding bytes remain encoded; Accept-Encoding defaults to identity.
+    #|Raw space/TAB/CR/LF/DEL in URL paths or queries uses uppercase percent escapes.
+    #|Redirect spaces use %20 and TAB uses %09; existing escapes remain encoded.
+    #|Set-Cookie without '=' and nonnumeric Max-Age replacements are ignored.
+    #|Positive decimal Max-Age overflow below 32 digits expires its stored cookie.
     #|GNU chunk payload/trailer EOF rules apply; missing size lines or CRLF fail.
     #|HTTP 416 succeeds without opening transfer output; -O is initialized first.
     #|Unsolicited 304 exits 8. Continued GET with --content-disposition selects

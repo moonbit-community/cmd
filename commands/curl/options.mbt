@@ -91,6 +91,10 @@ fn curl_usage() -> String {
     #|      --remove-on-error        remove opened output after final failure
     #|Already written stdout remains; final partial files remain without cleanup.
     #|Cookie values containing CR/LF are rejected before request bytes are sent.
+    #|Raw space/TAB/CR/LF/DEL in an initial URL path or query exits 3 before connecting.
+    #|Redirect spaces use %20 in paths and + in queries; TAB uses %09.
+    #|Set-Cookie without '=' is ignored; nonnumeric Max-Age deletes its stored cookie.
+    #|Positive decimal Max-Age overflow keeps the new cookie under a 400-day cap.
     #|An empty HTTP reply exits 52; incomplete bodies exit 18; receive errors exit 56.
     #|An initial empty failure leaves ordinary unopened output untouched.
     #|An accepted retry resets an opened regular file before the next request.

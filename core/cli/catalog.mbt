@@ -213,6 +213,12 @@ pub fn command_catalog() -> Array[CommandContract] {
     // retry-all attempt may instead upload the now-empty input. Show-error
     // retains each failed attempt's diagnostic even after retry success.
     // Generated Cookie fields reject invalid headers before request writes.
+    // Initial raw space/TAB/CR/LF/DEL in path/query rejects before connection (3).
+    // Redirect spaces use path %20/query +; TAB uses %09. Encoded bytes remain.
+    // Set-Cookie without '=' is ignored; nonnumeric Max-Age deletes its stored cookie.
+    // Positive decimal overflow keeps the replacement under a 400-day lifetime cap.
+    // Cookie ordering uses descending path/domain/name byte length, then creation.
+    // Response observers retain final Set-Cookie fields separately from storage.
     // Requests default to identity encoding and retain content-coded wire bytes.
     // Resumed 206 bodies must complete their declared Content-Range span.
     contract(
@@ -275,6 +281,12 @@ pub fn command_catalog() -> Array[CommandContract] {
     // a complete shorter known-length 200 preserves the prefix. Stdin is not retried.
     // Continued GET plus Content-Disposition discovers the filename with HEAD,
     // then uses that file's offset. The core API rejects a direct resumed switch.
+    // Raw space/TAB/CR/LF/DEL in initial path/query uses uppercase percent escapes.
+    // Redirect space/TAB uses %20/%09. Existing percent-encoded bytes remain.
+    // Set-Cookie without '=' and nonnumeric Max-Age replacements preserve old cookies.
+    // Positive decimal overflow below 32 digits expires the matching stored cookie.
+    // Cookie ordering uses descending domain/path byte length, then name/value bytes.
+    // Response observers retain final Set-Cookie fields separately from storage.
     contract(
       "wget",
       Restricted,
