@@ -1,17 +1,19 @@
 # Command compatibility gaps and follow-up decisions
 
-Updated: 2026-10-18
+Updated: 2026-10-20
 
 This register covers **79 local commands: 78 published and local-only timeout**. F01-F19 are tracked by issues #5-#23; existing jq issue #4 and second-review issue #25 are also in the repair. See the [repair record](reports/2026-10-11-fidelity-repair/README.md) for implementation and remaining release gates. Historical defect descriptions identify the versions in which they were observed; repaired behavior is published at the coordinates recorded below. All 31 newly migrated commands map to [canonical ADRs](adr/README.md#recent-command-decision-coverage).
 
-Before repair, versions were 47 commands at 0.2.0, 11 at 0.1.1 and 20 at 0.1.0, with core 0.4.0. The 2026-10-11 repair used MoonBit 2026-09-20, async 0.22.4, x 0.5.5 and moonjq 0.2.0 and was published as core 0.5.0 plus its changed command versions. This remains a dated verified baseline, not a claim that every dependency is the registry's current latest release. The current published baseline is core 0.6.0 and 78 commands, recorded in the [support record](compatibility.md).
+Before repair, versions were 47 commands at 0.2.0, 11 at 0.1.1 and 20 at 0.1.0, with core 0.4.0. The 2026-10-11 repair used MoonBit 2026-09-20, async 0.22.4, x 0.5.5 and moonjq 0.2.0 and was published as core 0.5.0 plus its changed command versions. This remains a dated verified baseline, not a claim that every dependency is the registry's current latest release. The current published baseline is core 0.7.0 and 78 commands, recorded in the [support record](compatibility.md).
 
 The [ordered implementation roadmap](command-roadmap.md) governs the next work:
-stage 0 integrates async 0.22.5 as an unpublished candidate before gzip #27,
-sed #28 and diff/patch #30. It includes response failure/retry contracts and
-independent Windows Native/Wasm link behavior. Public API blockers remain
-separate; the release upgrade does not complete F05 or F15. Candidate tests and
-issue checklists do not replace actual acceptance evidence.
+stage 0 has published core 0.7.0 and curl/mv/wget 0.2.3, with response
+failure/retry contracts and independent Windows Native/Wasm link evidence.
+The [release report](reports/2026-10-20-stage0-release/README.md) records exact MoonX acceptance.
+The other 75 commands retain their prior published coordinates; gzip #27,
+sed #28 and all later stages are deferred. Public API blockers remain separate;
+the release upgrade does not complete F05 or F15, and Windows Wasm link moves
+remain conservatively rejected under issue #38.
 
 Scope includes source, README, help, support records and common upstream options; it does not enumerate every historical/platform GNU/curl/jq option. Omission does not certify support. **Implemented but under-verified is not unsupported; explicit rejection is not parity.** Commands without new defects remain listed without invented gaps.
 

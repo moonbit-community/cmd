@@ -1,0 +1,59 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "p0-tree-help",
+      "command": "tree",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_contains": "Usage: tree",
+      "diagnostic_reason": "The Usage heading is stable; command-specific help prose may vary.",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": []
+    },
+    {
+      "id": "release-metadata-tree-help",
+      "command": "tree",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/tree@0.1.3 metadata contract",
+      "expected_stdout_text": "Usage: tree [-adf] [-L level] [--noreport] [--] [directory ...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-tree-version",
+      "command": "tree",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/tree@0.1.3 metadata contract",
+      "expected_stdout_text": "tree 0.1.3\n",
+      "expected_stderr_text": ""
+    }
+  ]
+}

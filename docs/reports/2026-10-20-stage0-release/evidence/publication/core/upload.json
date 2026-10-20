@@ -1,0 +1,9 @@
+{
+  "source_revision": "7829269d1a3b751768e6f64a0d305cd76282ee02",
+  "candidate_sha256": "62dcf68bbe5ca77636c81039f682a4ebd1ce0e6248c3636b2ec255cb608c88a7",
+  "coordinate": "cli/core@0.7.0",
+  "status": 0,
+  "stdout_sha256": "2181a6efef819c2bd3fcaab6d86e725a80e36dc116431d7cdf24973f35cb5575",
+  "stderr_sha256": "9280c48343b8d82d3a45530c97bc2d17f0c61b524c9cfb475c6d771653f9c77b",
+  "stderr_encoding": "UTF-8 from shell.Output.stderr()"
+}

@@ -1,0 +1,56 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "p0-rev-lines",
+      "command": "rev",
+      "args": [],
+      "stdin_text": "abc\n123\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "cba\n321\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": []
+    },
+    {
+      "id": "release-metadata-rev-help",
+      "command": "rev",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/rev@0.1.3 metadata contract",
+      "expected_stdout_text": "Usage: rev [OPTION]... [FILE]...\n      --help      display this help and exit\n      --version   display version and exit\n\nReverse the characters of every line from standard input or one file.\nThis implementation uses C-locale byte order and preserves line feeds.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-rev-version",
+      "command": "rev",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/rev@0.1.3 metadata contract",
+      "expected_stdout_text": "rev 0.1.3\n",
+      "expected_stderr_text": ""
+    }
+  ]
+}

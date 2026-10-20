@@ -1,0 +1,516 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "patch-unified-dry-run",
+      "command": "patch",
+      "args": [
+        "--dry-run",
+        "-i",
+        "change.diff"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "one\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "checking file input\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "--dry-run"
+      ]
+    },
+    {
+      "id": "patch-unified-output-stdout",
+      "command": "patch",
+      "args": [
+        "-s",
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "one\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "one\nTWO\nthree\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "-o"
+      ]
+    },
+    {
+      "id": "patch-context-output-stdout",
+      "command": "patch",
+      "args": [
+        "-s",
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "one\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "*** input\n--- output\n***************\n*** 1,3 ****\n  one\n! two\n  three\n--- 1,3 ----\n  one\n! TWO\n  three\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "one\nTWO\nthree\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "-u"
+      ]
+    },
+    {
+      "id": "patch-reverse-output-stdout",
+      "command": "patch",
+      "args": [
+        "-R",
+        "-s",
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "one\nTWO\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "one\ntwo\nthree\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "-R"
+      ]
+    },
+    {
+      "id": "patch-existing-write-boundary",
+      "command": "patch",
+      "args": [
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "one\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "patch: rewriting an existing file requires public source mode metadata; use --dry-run or --output=-\n",
+      "expected_rejection": "requires public source mode metadata",
+      "comparison": "boundary",
+      "normalizations": [],
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "one\ntwo\nthree\n"
+        }
+      ]
+    },
+    {
+      "id": "patch-fuzz-boundary",
+      "command": "patch",
+      "args": [
+        "--dry-run",
+        "-F1",
+        "-i",
+        "change.diff"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "one\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "patch: only exact context (--fuzz=0) is supported\n",
+      "expected_rejection": "only exact context",
+      "comparison": "boundary",
+      "normalizations": []
+    },
+    {
+      "id": "patch-hunk-mismatch",
+      "command": "patch",
+      "args": [
+        "--dry-run",
+        "-s",
+        "-i",
+        "change.diff"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "wrong\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "patch: hunk #1 does not match at line 1; file unchanged\n",
+      "comparison": "boundary",
+      "expected_rejection": "does not match",
+      "normalizations": []
+    },
+    {
+      "id": "patch-unsafe-path-boundary",
+      "command": "patch",
+      "args": [
+        "--dry-run",
+        "-p0",
+        "-i",
+        "change.diff"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "one\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- ../../escape\n+++ ../../escape\n@@ -1 +1 @@\n-one\n+two\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "patch: unsafe file name in patch header\n",
+      "expected_rejection": "unsafe file name",
+      "comparison": "boundary",
+      "normalizations": []
+    },
+    {
+      "id": "patch-create-null",
+      "command": "patch",
+      "args": [
+        "-s",
+        "-p1"
+      ],
+      "stdin_text": "--- /dev/null\n+++ b/new\n@@ -0,0 +1,2 @@\n+one\n+two\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "expected_files": [
+        {
+          "path": "new",
+          "exists": true,
+          "content_text": "one\ntwo\n"
+        }
+      ],
+      "coverage": [
+        "-p"
+      ]
+    },
+    {
+      "id": "patch-delete-null",
+      "command": "patch",
+      "args": [
+        "-s"
+      ],
+      "stdin_text": "--- input\n+++ /dev/null\n@@ -1,2 +0,0 @@\n-one\n-two\n",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "one\ntwo\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "expected_files": [
+        {
+          "path": "input",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "patch-context-addition",
+      "command": "patch",
+      "args": [
+        "-c",
+        "-s",
+        "-o",
+        "-",
+        "input"
+      ],
+      "stdin_text": "*** input\n--- new\n***************\n*** 1 ****\n--- 1,2 ----\n  one\n+ two\n",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "one\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "one\ntwo\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "-c"
+      ]
+    },
+    {
+      "id": "patch-named-output-boundary",
+      "command": "patch",
+      "args": [
+        "-o",
+        "new",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "one\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "patch: named output requires public source mode metadata; use --output=-\n",
+      "expected_rejection": "requires public source mode metadata",
+      "comparison": "boundary",
+      "normalizations": [],
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "one\n"
+        },
+        {
+          "path": "new",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "patch-no-final-newline",
+      "command": "patch",
+      "args": [
+        "-s",
+        "-o",
+        "-",
+        "input"
+      ],
+      "stdin_text": "--- input\n+++ new\n@@ -1 +1 @@\n-old\n+new\n\\ No newline at end of file\n",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "old\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "new",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": []
+    },
+    {
+      "id": "repair-alias-patch-quiet",
+      "command": "patch",
+      "args": [
+        "--quiet",
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "one\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "one\nTWO\nthree\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "-o"
+      ],
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+    },
+    {
+      "id": "repair-alias-patch-reverse",
+      "command": "patch",
+      "args": [
+        "--reverse",
+        "-s",
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "one\nTWO\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "one\ntwo\nthree\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "-R"
+      ],
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+    },
+    {
+      "id": "repair-alias-patch-context",
+      "command": "patch",
+      "args": [
+        "--context",
+        "-s",
+        "-o",
+        "-",
+        "input"
+      ],
+      "stdin_text": "*** input\n--- new\n***************\n*** 1 ****\n--- 1,2 ----\n  one\n+ two\n",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "one\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "one\ntwo\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "-c"
+      ],
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+    },
+    {
+      "id": "release-metadata-patch-help",
+      "command": "patch",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/patch@0.1.2 metadata contract",
+      "expected_stdout_text": "Usage: patch [OPTION]... [ORIGINALFILE [PATCHFILE]]\nApply unified or context patches with exact hunk positions and context.\n  -p, --strip=N       remove N leading file-name components\n  -i, --input=FILE    read the patch from FILE instead of stdin\n  -o, --output=-      write one patched file to stdout\n  -d, --directory=DIR resolve target paths relative to DIR\n  -R, --reverse       apply additions as removals and vice versa\n      --dry-run       check without writing or deleting files\n  -s, --quiet         suppress routine file messages\n  -u, --unified       require unified input\n  -c, --context       require context input\n  -t, --batch         accept the noninteractive behavior\n  -F, --fuzz=0        only exact context is supported\n      --no-backup-if-mismatch  accept the no-backup strict profile\n      --help          display this help and exit\n      --version       display version and exit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-patch-version",
+      "command": "patch",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/patch@0.1.2 metadata contract",
+      "expected_stdout_text": "patch 0.1.2\n",
+      "expected_stderr_text": ""
+    }
+  ]
+}

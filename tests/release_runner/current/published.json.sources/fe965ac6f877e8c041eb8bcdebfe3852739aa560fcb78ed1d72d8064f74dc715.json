@@ -1,0 +1,334 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "phase3-join-unpaired-output-list",
+      "command": "join",
+      "args": [
+        "-a",
+        "1",
+        "-a",
+        "2",
+        "-e",
+        "0",
+        "-o",
+        "0,1.2,2.2",
+        "left",
+        "right"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "left",
+          "content_text": "a left\nb only-left\nc left-c\n"
+        },
+        {
+          "path": "right",
+          "content_text": "a right\nc right-c\nd only-right\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-join-zero-terminated",
+      "command": "join",
+      "args": [
+        "-z",
+        "left",
+        "right"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "31206c6566740032206c65667400"
+        },
+        {
+          "path": "right",
+          "content_hex": "31207269676874003220726967687400"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "p9-join-check-order",
+      "command": "join",
+      "args": [
+        "--check-order",
+        "left",
+        "right"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "left",
+          "content_text": "a\nb\n"
+        },
+        {
+          "path": "right",
+          "content_text": "a\nb\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-text-join-output-list",
+      "command": "join",
+      "args": [
+        "-a",
+        "1",
+        "-a",
+        "2",
+        "-e",
+        "0",
+        "-o",
+        "0,1.2,2.2",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "a left\nb only-left\nc left-c\n"
+        },
+        {
+          "path": "right",
+          "content_text": "a right\nc right-c\nd only-right\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "a left right\nb only-left 0\nc left-c right-c\nd 0 only-right\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-join-nul-records",
+      "command": "join",
+      "args": [
+        "-z",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "31206c6566740032206c65667400"
+        },
+        {
+          "path": "right",
+          "content_hex": "31207269676874003220726967687400"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_hex": "31206c6566742072696768740032206c65667420726967687400",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-join-check-order",
+      "command": "join",
+      "args": [
+        "--check-order",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "b\na\n"
+        },
+        {
+          "path": "right",
+          "content_text": "a\nb\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "not in sorted order",
+      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted."
+    },
+    {
+      "id": "compat-text-join-nocheck-precedence",
+      "command": "join",
+      "args": [
+        "--check-order",
+        "--nocheck-order",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "b\na\n"
+        },
+        {
+          "path": "right",
+          "content_text": "a\nb\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "b\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-merge-join",
+      "command": "join",
+      "args": [
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "1 alice\n2 bob\n"
+        },
+        {
+          "path": "right",
+          "content_text": "1 red\n2 blue\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "1 alice red\n2 bob blue\n",
+      "expected_files": [],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-catalog-line-108",
+      "command": "join",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "repair-alias-join-after",
+      "command": "join",
+      "args": [
+        "--after",
+        "1",
+        "-a",
+        "2",
+        "-e",
+        "0",
+        "-o",
+        "0,1.2,2.2",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "a left\nb only-left\nc left-c\n"
+        },
+        {
+          "path": "right",
+          "content_text": "a right\nc right-c\nd only-right\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "expected_stdout_text": "a left right\nb only-left 0\nc left-c right-c\nd 0 only-right\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "repair-alias-join-zero-terminated",
+      "command": "join",
+      "args": [
+        "--zero-terminated",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "31206c6566740032206c65667400"
+        },
+        {
+          "path": "right",
+          "content_hex": "31207269676874003220726967687400"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "expected_stdout_hex": "31206c6566742072696768740032206c65667420726967687400",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-join-help",
+      "command": "join",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/join@0.2.2 metadata contract",
+      "expected_stdout_text": "Usage: join [options] FILE1 FILE2\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nJoin lines of two files sorted on their join fields.\n\nOptions:\n  -1 FIELD    Join on this field of FILE1 (default 1).\n  -2 FIELD    Join on this field of FILE2 (default 1).\n  -t CHAR     Use CHAR as the field separator instead of runs of\n              blanks; the output separator becomes CHAR as well.\n  -a FILENO    Also print unpairable lines from FILENO (1 or 2).\n  -v FILENO    Print only unpairable lines from FILENO.\n  -e STRING    Replace missing fields with STRING.\n  -o LIST      Select output fields (for example 0,1.2,2.2).\n      --check-order  Diagnose unsorted input.\n      --nocheck-order  Do not diagnose unsorted input.\n  -z           End records with NUL instead of newline.\n\nUse '-' as a file name to read stdin.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-join-version",
+      "command": "join",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/join@0.2.2 metadata contract",
+      "expected_stdout_text": "join 0.2.2\n",
+      "expected_stderr_text": ""
+    }
+  ]
+}

@@ -1,0 +1,380 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "compat-text-env-help",
+      "command": "env",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "Usage: env [-i] [-0] [-u NAME] [-C DIR] [NAME=VALUE]... [COMMAND [ARG]...]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "p0-seq-version",
+      "command": "seq",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "expected_stdout_text": "seq (moonbit cmd) 0.2.1\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "p2-date-version",
+      "command": "date",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_contains": "date (cli)",
+      "diagnostic_reason": "The command/version prefix is stable; exact package version is checked separately.",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "version"
+      ]
+    },
+    {
+      "id": "p0-echo-version",
+      "command": "echo",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "expected_stdout_text": "echo (moonbit cmd) 0.2.0\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "p0-echo-help",
+      "command": "echo",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "expected_stdout_text": "Usage: echo [-n] [-e|-E] [STRING...]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "p0-true-version",
+      "command": "true",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "expected_stdout_text": "true (moonbit cmd) 0.2.0\n",
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-text-line-754"
+      ]
+    },
+    {
+      "id": "p0-true-help",
+      "command": "true",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "expected_stdout_text": "Usage: true [ignored command line arguments]\n",
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-text-line-746"
+      ]
+    },
+    {
+      "id": "p0-false-version",
+      "command": "false",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "expected_stdout_text": "false (moonbit cmd) 0.2.0\n",
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-text-line-762"
+      ]
+    },
+    {
+      "id": "p0-false-help",
+      "command": "false",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "expected_stdout_text": "Usage: false [ignored command line arguments]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "p0-jqlog-help-newline",
+      "command": "jqlog",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_ends_with_newline": true,
+      "coverage": [
+        "help"
+      ],
+      "expected_stdout_text": "Usage: jqlog [options] <query> [input]\n\nOptions:\n  -f, --file <path>   Read input text from a file.\n  -h, --help          Show this help message.\n\nNotes:\n  - Input is treated as JSONL/NDJSON with possible non-JSON lines.\n  - Non-JSON lines are skipped.\n  - If [input] is omitted, stdin is used.\n  - If [input] is provided without --file, it is treated as raw text.\n\nExamples:\n  cat logs.ndjson | jqlog '.message'\n  jqlog -f output.txt '.a'\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "p0-jqlog-error-newline",
+      "command": "jqlog",
+      "args": [
+        "--bad"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_ends_with_newline": true,
+      "coverage": [
+        "error"
+      ],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "Error: Unknown option: \"--bad\"\nUsage: jqlog [options] <query> [input]\n\nOptions:\n  -f, --file <path>   Read input text from a file.\n  -h, --help          Show this help message.\n\nNotes:\n  - Input is treated as JSONL/NDJSON with possible non-JSON lines.\n  - Non-JSON lines are skipped.\n  - If [input] is omitted, stdin is used.\n  - If [input] is provided without --file, it is treated as raw text.\n\nExamples:\n  cat logs.ndjson | jqlog '.message'\n  jqlog -f output.txt '.a'\n"
+    },
+    {
+      "id": "compat-text-jqlog-help-newline",
+      "command": "jqlog",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "Usage: jqlog [options] <query> [input]\n\nOptions:\n  -f, --file <path>   Read input text from a file.\n  -h, --help          Show this help message.\n\nNotes:\n  - Input is treated as JSONL/NDJSON with possible non-JSON lines.\n  - Non-JSON lines are skipped.\n  - If [input] is omitted, stdin is used.\n  - If [input] is provided without --file, it is treated as raw text.\n\nExamples:\n  cat logs.ndjson | jqlog '.message'\n  jqlog -f output.txt '.a'\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-text-jqlog-error-newline",
+      "command": "jqlog",
+      "args": [
+        "--bad"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "Error: Unknown option: \"--bad\"\nUsage: jqlog [options] <query> [input]\n\nOptions:\n  -f, --file <path>   Read input text from a file.\n  -h, --help          Show this help message.\n\nNotes:\n  - Input is treated as JSONL/NDJSON with possible non-JSON lines.\n  - Non-JSON lines are skipped.\n  - If [input] is omitted, stdin is used.\n  - If [input] is provided without --file, it is treated as raw text.\n\nExamples:\n  cat logs.ndjson | jqlog '.message'\n  jqlog -f output.txt '.a'\n"
+    },
+    {
+      "id": "p0-sleep-version",
+      "command": "sleep",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "expected_stdout_text": "sleep (moonbit cmd) 0.2.0\n",
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-text-line-736"
+      ]
+    },
+    {
+      "id": "p0-sleep-help",
+      "command": "sleep",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "expected_stdout_text": "Usage: sleep NUMBER[SUFFIX]...\n\nPause for NUMBER seconds, like sleep(1). NUMBER may be fractional.\nSUFFIX may be 's' (seconds, default), 'm' (minutes), 'h' (hours), or\n'd' (days). With multiple arguments, sleep for their sum.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "p2-which-version",
+      "command": "which",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_contains": "which (cli)",
+      "diagnostic_reason": "The command/version prefix is stable; exact package version is checked separately.",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "version"
+      ]
+    },
+    {
+      "id": "p2-column-version",
+      "command": "column",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_contains": "column (cli)",
+      "diagnostic_reason": "The command/version prefix is stable; exact package version is checked separately.",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "version"
+      ]
+    },
+    {
+      "id": "checksum-md5sum-version",
+      "command": "md5sum",
+      "args": [
+        "--version"
+      ],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "md5sum (moonbit cmd) 0.1.0\n",
+      "expected_stderr_text": "",
+      "comparison": "contract"
+    },
+    {
+      "id": "checksum-sha1sum-version",
+      "command": "sha1sum",
+      "args": [
+        "--version"
+      ],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "sha1sum (moonbit cmd) 0.1.0\n",
+      "expected_stderr_text": "",
+      "comparison": "contract"
+    },
+    {
+      "id": "p2-strings-version",
+      "command": "strings",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_contains": "strings (cli)",
+      "diagnostic_reason": "The command/version prefix is stable; exact package version is checked separately.",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "version"
+      ]
+    },
+    {
+      "id": "checksum-sha512sum-version",
+      "command": "sha512sum",
+      "args": [
+        "--version"
+      ],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "sha512sum (moonbit cmd) 0.1.0\n",
+      "expected_stderr_text": "",
+      "comparison": "contract"
+    }
+  ]
+}

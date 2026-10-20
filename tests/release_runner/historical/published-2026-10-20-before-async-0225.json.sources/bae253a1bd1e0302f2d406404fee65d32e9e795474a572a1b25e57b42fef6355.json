@@ -1,0 +1,207 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "p0-unlink-help",
+      "command": "unlink",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_contains": "Usage: unlink",
+      "diagnostic_reason": "The Usage heading is stable; command-specific help prose may vary.",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": []
+    },
+    {
+      "id": "repair-unlink-one",
+      "command": "unlink",
+      "args": [
+        "file"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "preserved unless removed"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "COLUMNS": "80"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "coreutils 9.11",
+      "expected_files": [
+        {
+          "path": "file",
+          "exists": false
+        }
+      ],
+      "oracle": true
+    },
+    {
+      "id": "repair-unlink-extra-operands",
+      "command": "unlink",
+      "args": [
+        "one",
+        "two"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "one",
+          "content_text": "one"
+        },
+        {
+          "path": "two",
+          "content_text": "two"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "COLUMNS": "80"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "coreutils 9.11",
+      "expected_files": [
+        {
+          "path": "one",
+          "content_text": "one"
+        },
+        {
+          "path": "two",
+          "content_text": "two"
+        }
+      ],
+      "expected_stderr_contains": "extra operand",
+      "diagnostic_reason": "GNU brands the usage hint differently; operand rejection and both original file contents are required."
+    },
+    {
+      "id": "repair-edge-unlink-symlink-directory",
+      "command": "unlink",
+      "args": [
+        "link"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "target",
+          "kind": "directory"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "target"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 command repair edge contract",
+      "expected_files": [
+        {
+          "path": "link",
+          "exists": false
+        },
+        {
+          "path": "target",
+          "kind": "directory"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "repair-edge-unlink-dash-name",
+      "command": "unlink",
+      "args": [
+        "--",
+        "-r"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "-r",
+          "content_text": "fixture"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 command repair edge contract",
+      "expected_files": [
+        {
+          "path": "-r",
+          "exists": false
+        }
+      ],
+      "oracle": true
+    },
+    {
+      "id": "release-metadata-unlink-help",
+      "command": "unlink",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/unlink@0.1.3 metadata contract",
+      "expected_stdout_text": "Usage: unlink FILE\nRemove exactly one non-directory name.\n      --help     display this help and exit\n      --version  display version and exit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-unlink-version",
+      "command": "unlink",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/unlink@0.1.3 metadata contract",
+      "expected_stdout_text": "unlink 0.1.3\n",
+      "expected_stderr_text": ""
+    }
+  ]
+}

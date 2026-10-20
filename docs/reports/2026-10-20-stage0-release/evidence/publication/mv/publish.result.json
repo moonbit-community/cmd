@@ -1,0 +1,6 @@
+{
+  "status": 0,
+  "stdout_sha256": "2181a6efef819c2bd3fcaab6d86e725a80e36dc116431d7cdf24973f35cb5575",
+  "stderr_sha256": "be348a7948c1e423bef5759ef50be241242a9df88902e0aeb6b95c4bbc1d5197",
+  "stderr_encoding": "UTF-8 from shell.Output.stderr()"
+}

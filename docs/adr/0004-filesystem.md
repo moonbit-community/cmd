@@ -2,18 +2,21 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-18
+Updated: 2026-10-20
 
 The pinned GNU coreutils 9.11 Linux run also establishes status 1 when an
 interactive ln/mv overwrite is declined, including EOF. Preserve both paths,
 continue other operands, and aggregate the failure. A no-clobber/update skip
 remains a distinct successful no-op. Earlier golden status 0 was wrong;
 real Native/Wasm and published regressions retain the corrected upstream status.
-Revision: Integrate the async 0.22.5 Native Windows link-rename fix as a candidate, retain a separate Wasm host gate, and preserve the existing identity and metadata boundaries.
+Revision: Integrate the async 0.22.5 Native Windows link-rename fix in the accepted stage 0 subset, retain a separate Wasm host gate, and preserve the existing identity and metadata boundaries.
 
-## Candidate: Windows link rename
+## Stage 0: Windows link rename
 
-The unpublished stage-0 candidate uses async 0.22.5. Its
+Stage 0 publishes `cli/mv@0.2.3` with core 0.7.0 and async 0.22.5.
+The [release report](../reports/2026-10-20-stage0-release/README.md) records independent Windows
+Native/Wasm execution, exact published-host rejection and runtime identities.
+The upstream
 [Native implementation](https://github.com/moonbitlang/async/blob/11749dec32e2b4de8cc8a6101e18110019c29893/src/internal/event_loop/fs.c#L1504)
 adds `FILE_FLAG_OPEN_REPARSE_POINT` when opening the source of a Windows rename,
 so the operation addresses a symbolic link or junction itself. The
@@ -21,7 +24,7 @@ so the operation addresses a symbolic link or junction itself. The
 imports the rename job from the host. Updating the package does not update or
 identify that host implementation.
 
-The candidate `mv` therefore rejects Windows Wasm source symlink/junction moves
+The published `mv` therefore rejects Windows Wasm source symlink/junction moves
 and destination-link backups before prompting or changing paths. No-clobber
 and update-none skips remain available. `-u` timestamp-based link skips are not
 claimed: the Wasm guard runs before timestamp lookup. Native uses the released fix; neither
@@ -39,8 +42,9 @@ of a destination link without backup on both backends; Windows execution must
 establish its actual effects. Native package fault injection observes a completed
 link/junction backup before failing the commit, then checks restoration of the
 link type, target and referent bytes. The corresponding Wasm test must reject
-before the injection point. These are candidate tests awaiting Windows evidence;
-they do not establish a real CLI post-backup filesystem failure or recovery.
+before the injection point. Actual Windows runs cover these assertions;
+package fault injection does not establish a real CLI post-backup filesystem
+failure or recovery.
 
 Overwrite/update timestamp decisions now read the source and destination
 entries with `follow_symlink=false`. A dangling source link remains movable;
@@ -51,11 +55,12 @@ Equal-time identity-dependent decisions retain their existing rejection.
 Unlock the Wasm boundary only after identifying a released host containing the
 fix and passing independent Windows Native/Wasm tests for file symlinks,
 directory symlinks, junctions, backup paths and unchanged referents. The tests
-and their registration are candidate work until those executions are retained.
+and their current rejection evidence do not establish a fixed Wasm host.
 Track that host-specific evidence in [issue #38](https://github.com/moonbit-community/cmd/issues/38),
 a child of the broader [filesystem issue #10](https://github.com/moonbit-community/cmd/issues/10).
 The published baseline remains the coordinates in the
-[support record](../compatibility.md); no published package is changed here.
+[support record](../compatibility.md). The other 75 command coordinates
+remain unchanged by this partial publication.
 
 The 0.22.5 public fs interface adds no identity, mode reader, handle truncate,
 timestamp setter, hard-link or readlink API. The metadata and inode boundaries
