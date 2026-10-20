@@ -47,7 +47,21 @@ fn frozen_manifest_location(relative : String) -> String? {
 
 ///|
 async fn snapshot_git(root : String, args : Array[String]) -> Bytes {
-  let result = @testkit.run("git", ["-C", root, ..args])
+  // Frozen replay can run alongside the full package suite on Windows.
+  // Keep a bounded Git deadline independent of command-under-test deadlines.
+  let completed = @testkit.run_with_deadline(
+    "git",
+    ["-C", root, ..args],
+    60000,
+    stdin=b"",
+  )
+  if completed.cleanup_error is Some(error) {
+    fail("immutable Git snapshot cleanup failed: " + error)
+  }
+  guard !completed.timed_out else {
+    fail("immutable Git snapshot read exceeded its 60-second deadline")
+  }
+  let result = completed.output
   guard result.status == 0 else {
     fail(
       "cannot recover immutable Git snapshot: " + @utf8.decode(result.stderr),

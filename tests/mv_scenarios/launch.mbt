@@ -42,7 +42,6 @@ async fn run_mv(
     15000,
     stdin=b"",
     cwd=directory,
-    inherit_env=launch.published,
   )
   @fs.write_file(prefix + ".stdout.bin", completed.output.stdout)
   @fs.write_file(prefix + ".stderr.bin", completed.output.stderr)
