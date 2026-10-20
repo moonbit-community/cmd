@@ -123,10 +123,7 @@ jobs:
           --manifest tests/release_runner/current/candidate.json
           --verify-candidate --freeze-evidence test-reports/release-acceptance/evidence.json
           --suite differential --moonx "${{ env.CMD_MOONX }}" --jobs 1 --timeout-ms 120000
-          --case compat-filesystem-windows-chmod-boundary
-          --case compat-filesystem-windows-ln-boundary
-          --case rm-final-parent-backslash
-          --case repair-which-windows-pathext
+          --host-contracts
           --report-dir test-reports/release-acceptance/windows-contracts
       - name: Ensure acceptance did not modify committed source
         run: git diff --exit-code

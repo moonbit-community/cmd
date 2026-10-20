@@ -416,7 +416,11 @@
         "repair-final-curl-cookie-redirect",
         "repair-final-curl-cross-host-auth",
         "transfer-curl-chunked-stdin-upload",
-        "transfer-curl-cookie-line-injection"
+        "transfer-curl-cookie-line-injection",
+        "network-auth-cookie",
+        "network-auth-cookie-oracle",
+        "network-transfer-boundaries",
+        "network-transfer-boundaries-oracle"
       ]
     },
     {
@@ -902,7 +906,8 @@
         "repair-fs-mv-equal-time-boundary",
         "async-0225-mv-directory-symbolic-link",
         "async-0225-mv-windows-junction-no-clobber",
-        "async-0225-mv-windows-symbolic-link-no-clobber"
+        "async-0225-mv-windows-symbolic-link-no-clobber",
+        "mv-windows-wasm-links-boundary"
       ]
     },
     {

@@ -1,6 +1,11 @@
 {
   "schema": 2,
   "candidate": true,
+  "release_scope": [
+    "curl",
+    "mv",
+    "wget"
+  ],
   "core_version": "0.7.0",
   "base_manifest": "active-cases.json",
   "commands": [
@@ -1300,6 +1305,11 @@
     "ls-links-times-8",
     "ls-links-times-9",
     "mkdir-parent-leaf-mode",
+    "mv-windows-wasm-links-boundary",
+    "network-auth-cookie",
+    "network-auth-cookie-oracle",
+    "network-transfer-boundaries",
+    "network-transfer-boundaries-oracle",
     "od-big-endian",
     "od-default-partial-word",
     "od-duplicate-blocks",

@@ -93,6 +93,7 @@ test "freeze distinguishes availability from semantic evidence" {
   let candidate : ReleaseManifest = {
     schema: 2,
     candidate: Some(true),
+    release_scope: None,
     core_version: Some("0.5.0"),
     base_manifest: "active-cases.json",
     case_ids: [fixture.id],

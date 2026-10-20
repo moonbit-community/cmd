@@ -166,6 +166,14 @@ fn shared_report(
   let observations : Array[String] = []
   for fixture in fixtures {
     if fixture.id == report.id && result_class(report.category) == "pass" {
+      if release_mv_scenario(fixture) {
+        observations.append(@mv_scenarios.observations())
+        continue
+      }
+      if @network_scenarios.supports(fixture.id) {
+        observations.append(@network_scenarios.observations(fixture.id))
+        continue
+      }
       match report_verification(report, fixtures, differential) {
         "availability" => observations.push("status")
         "contract" => {
@@ -274,6 +282,28 @@ async fn write_report(
     .filter(report => result_class(report.category) != "skip")
     .map(report => "cli/" + report.command + "@" + report.version)
     .filter(value => !value.has_suffix("@"))
+  if reports.any(report => {
+      result_class(report.category) != "skip" &&
+      @network_scenarios.supports(report.id)
+    }) {
+    let manifest = read_release_manifest(manifest_path)
+    for fixture in fixtures {
+      if @network_scenarios.supports(fixture.id) &&
+        reports.any(report => {
+          report.id == fixture.id && result_class(report.category) != "skip"
+        }) {
+        for command in network_scenario_commands(fixture) {
+          guard find_command(manifest, command) is Some(row) else {
+            fail("network scenario report has no exact coordinate: " + command)
+          }
+          let coordinate = row.package_name + "@" + row.version
+          if !coordinates.contains(coordinate) {
+            coordinates.push(coordinate)
+          }
+        }
+      }
+    }
+  }
   coordinates.sort()
   let metadata = @testkit.collect_run_metadata(
     "release-" + @async.now().to_string(),

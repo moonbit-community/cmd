@@ -1,0 +1,38 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "mooxCLI/cmd-tests/mv_scenarios"
+
+import {
+  "mooxCLI/cmd-tests/testkit",
+}
+
+// Values
+pub fn backend_selected(String, Bool) -> Bool
+
+pub fn observations() -> Array[String]
+
+pub fn open_stdin_observation_failures(OpenStdinObservation) -> Array[String]
+
+pub async fn run(Launch, Bool, String) -> Unit
+
+pub async fn run_helper(ArrayView[String]) -> Unit
+
+pub fn supports(String) -> Bool
+
+// Errors
+
+// Types and methods
+pub(all) struct Launch {
+  program : String
+  prefix : Array[String]
+  source_version : String
+  published : Bool
+}
+
+pub(all) struct OpenStdinObservation {
+  run : @testkit.TimedRun
+  exited_before_stdin_close : Bool
+}
+
+// Type aliases
+
+// Traits

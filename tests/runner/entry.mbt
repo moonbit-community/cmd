@@ -85,6 +85,10 @@ async fn run_driver() -> Unit {
     }
   }
   let args = oracle_options.arguments[:]
+  if args.get(0) == Some("--mv-test-helper") {
+    @mv_scenarios.run_helper(args[1:])
+    return
+  }
   if args.get(0) == Some("--test-helper") {
     run_test_helper(args[1:])
     return

@@ -15,8 +15,6 @@ type CommandRow derive(@debug.Debug, @json.FromJson)
 
 type Manifest derive(@debug.Debug, @json.FromJson)
 
-type OpenStdinObservation
-
 type ScenarioTimestampObservation derive(ToJson, @json.FromJson)
 
 // Type aliases
