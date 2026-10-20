@@ -14,6 +14,7 @@ they are not an alternative support matrix.
 
 | Date | Report | Scope |
 | --- | --- | --- |
+| 2026-10-20 | [Stage 0 async 0.22.5 release](2026-10-20-stage0-release/README.md) | Core 0.7.0 and curl/mv/wget 0.2.3, verified registry uploads, local MoonX contracts, three-platform publication evidence and preserved partial snapshot |
 | 2026-10-18 | [Unified metadata release](2026-10-15-metadata-release/README.md) | Core 0.6.0, 78 command patch releases, 79 verified uploads on October 17 UTC, exact-source three-platform CI, published acceptance and immutable freezing |
 | 2026-10-18 | [Test-system recheck repairs](2026-10-14-test-system-closeout/README.md) | Unified coverage/provenance gates, lifecycle ownership, direct backend pairs and final three-platform source acceptance |
 | 2026-10-11 | [Command follow-up audit](2026-10-11-command-followups/README.md) | 79-command inventory, 31 new-package ADR mappings and Native/Wasm/exact MoonX observations of four known fidelity deviations |

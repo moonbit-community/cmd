@@ -1,0 +1,321 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "rm-final-parent-slash",
+      "command": "rm",
+      "args": [
+        "-r",
+        "dir/../"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "kept",
+          "content_text": "safe"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU rm final-dot operand rule; Windows CI regression",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "protected path",
+      "diagnostic_reason": "The path spelling is platform dependent; the refusal, status and complete retained fixture are required.",
+      "expected_files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "kept",
+          "content_text": "safe"
+        }
+      ]
+    },
+    {
+      "id": "rm-final-parent-backslash",
+      "command": "rm",
+      "args": [
+        "-r",
+        "dir\\..\\"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "kept",
+          "content_text": "safe"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Windows final-dot operand regression",
+      "host_platforms": [
+        "windows"
+      ],
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "protected path",
+      "diagnostic_reason": "The refusal, status and complete retained fixture are required; command branding differs from upstream.",
+      "expected_files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "kept",
+          "content_text": "safe"
+        }
+      ]
+    },
+    {
+      "id": "phase4-rm-regular",
+      "command": "rm",
+      "args": [
+        "removed"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "removed",
+          "content_text": "payload\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": []
+    },
+    {
+      "id": "compat-text-rm-partial-order",
+      "command": "rm",
+      "args": [
+        "missing",
+        "removable"
+      ],
+      "files": [
+        {
+          "path": "removable",
+          "content_text": "x"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "missing",
+      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted.",
+      "expected_files": [
+        {
+          "path": "removable",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "compat-filesystem-rm-dash",
+      "command": "rm",
+      "args": [
+        "--",
+        "-dash"
+      ],
+      "files": [
+        {
+          "path": "-dash",
+          "content_text": "dash"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "-dash",
+          "exists": false
+        }
+      ],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "compat-filesystem-rm-current-directory",
+      "command": "rm",
+      "args": [
+        "-r",
+        "."
+      ],
+      "files": [
+        {
+          "path": "protected/kept",
+          "content_text": "safe"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "protected/kept",
+          "content_text": "safe"
+        }
+      ],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_contains": "protected path",
+      "diagnostic_reason": "OS path formatting may vary; status, empty stdout and declared filesystem effects remain exact.",
+      "cwd": "protected"
+    },
+    {
+      "id": "compat-filesystem-remove-link",
+      "command": "rm",
+      "args": [
+        "-r",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "policy-fixture\n"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "policy-fixture\n"
+        },
+        {
+          "path": "link",
+          "exists": false
+        }
+      ],
+      "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
+      "expected_stderr_text": "",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "compat-catalog-line-202",
+      "command": "rm",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "repair-alias-rm-recursive",
+      "command": "rm",
+      "args": [
+        "--recursive",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "policy-fixture\n"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "policy-fixture\n"
+        },
+        {
+          "path": "link",
+          "exists": false
+        }
+      ],
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "expected_stderr_text": "",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "release-metadata-rm-help",
+      "command": "rm",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/rm@0.2.2 metadata contract",
+      "expected_stdout_text": "Usage: rm [-f] [-r|-R] [-d] [-v] [--preserve-root|--no-preserve-root] FILE...\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-rm-version",
+      "command": "rm",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/rm@0.2.2 metadata contract",
+      "expected_stdout_text": "rm 0.2.2\n",
+      "expected_stderr_text": ""
+    }
+  ]
+}

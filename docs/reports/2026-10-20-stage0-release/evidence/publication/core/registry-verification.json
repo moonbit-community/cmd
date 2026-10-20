@@ -1,0 +1,11 @@
+{
+  "manifest_url": "https://mooncakes.io/api/v0/manifest/cli/core@0.7.0",
+  "manifest_status": 200,
+  "manifest_sha256": "674d4f50d50aa3b771147125af2efe0b1c782709ef196e3ba8b4161566990b1c",
+  "archive_url": "https://download.mooncakes.io/user/cli/core/0.7.0.zip",
+  "archive_initial_status": 302,
+  "archive_redirect": [
+    "https://d15l9c1mnzh3r.cloudfront.net/user/cli/core/0.7.0.zip"
+  ],
+  "archive_sha256": "5645f84c76ed32a385bffee770e7416fd6a31222aa8ded8f469e33377725a913"
+}

@@ -1,0 +1,7 @@
+{
+  "coordinate": "cli/mv@0.2.3",
+  "source_absent": true,
+  "destination_kind": "regular",
+  "destination_text": "published mv file bytes\n",
+  "source_revision": "7829269d1a3b751768e6f64a0d305cd76282ee02"
+}

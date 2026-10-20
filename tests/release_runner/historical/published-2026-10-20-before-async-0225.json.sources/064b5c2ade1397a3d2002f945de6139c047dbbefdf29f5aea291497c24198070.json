@@ -1,0 +1,136 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "p0-unexpand-leading",
+      "command": "unexpand",
+      "args": [],
+      "stdin_text": "        x\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "\tx\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "default-stops",
+        "leading"
+      ]
+    },
+    {
+      "id": "p0-unexpand-all",
+      "command": "unexpand",
+      "args": [
+        "--all"
+      ],
+      "stdin_text": "x        y\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "x\t y\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "all-blanks"
+      ]
+    },
+    {
+      "id": "p0-unexpand-first-only",
+      "command": "unexpand",
+      "args": [
+        "--all",
+        "--first-only"
+      ],
+      "stdin_text": "        x        y\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "\tx        y\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "first-only"
+      ]
+    },
+    {
+      "id": "p0-unexpand-explicit-stops",
+      "command": "unexpand",
+      "args": [
+        "-t",
+        "4,10"
+      ],
+      "stdin_text": "          x\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "\t\tx\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "explicit-stops"
+      ]
+    },
+    {
+      "id": "repair-alias-unexpand-tabs",
+      "command": "unexpand",
+      "args": [
+        "--tabs",
+        "4,10"
+      ],
+      "stdin_text": "          x\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "\t\tx\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "explicit-stops"
+      ],
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+    },
+    {
+      "id": "release-metadata-unexpand-help",
+      "command": "unexpand",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/unexpand@0.1.2 metadata contract",
+      "expected_stdout_text": "Usage: unexpand [OPTION]... [FILE]...\n      --help      display this help and exit\n      --version   display version and exit\n\nConvert spaces in each FILE to tabs, writing to standard output.\nWith no FILE, or when FILE is -, read standard input.\n\n  -a, --all          convert all blanks, not just leading blanks\n      --first-only   convert only leading blank sequences\n  -t, --tabs=LIST    use comma-separated tab stops (implies --all)\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-unexpand-version",
+      "command": "unexpand",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/unexpand@0.1.2 metadata contract",
+      "expected_stdout_text": "unexpand 0.1.2\n",
+      "expected_stderr_text": ""
+    }
+  ]
+}

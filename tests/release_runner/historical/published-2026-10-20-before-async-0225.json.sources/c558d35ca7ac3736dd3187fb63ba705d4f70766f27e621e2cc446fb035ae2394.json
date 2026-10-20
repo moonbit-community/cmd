@@ -1,0 +1,287 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "od-default-partial-word",
+      "command": "od",
+      "args": [],
+      "stdin_text": "abc",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "0000000 061141 000143\n0000003\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "od-hex-byte-address",
+      "command": "od",
+      "args": [
+        "-Ax",
+        "-tx1"
+      ],
+      "stdin_text": "abc",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "000000 61 62 63\n000003\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "-A",
+        "-t",
+        "--address-radix",
+        "--format"
+      ],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "od-signed-bytes",
+      "command": "od",
+      "args": [
+        "-An",
+        "-td1"
+      ],
+      "stdin_hex": "ff80",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "   -1 -128\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "od-big-endian",
+      "command": "od",
+      "args": [
+        "-An",
+        "-tx2",
+        "--endian=big"
+      ],
+      "stdin_hex": "0102",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": " 0102\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "--endian"
+      ],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "od-skip-limit-concatenation",
+      "command": "od",
+      "args": [
+        "-tx1",
+        "-j2",
+        "-N4",
+        "one",
+        "two"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "one",
+          "content_text": "xxab"
+        },
+        {
+          "path": "two",
+          "content_text": "cdyz"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "0000002 61 62 63 64\n0000006\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "-j",
+        "-N",
+        "--skip-bytes",
+        "--read-bytes"
+      ],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "od-duplicate-blocks",
+      "command": "od",
+      "args": [
+        "-tx1",
+        "-w4"
+      ],
+      "stdin_text": "abcdabcdabcd",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "0000000 61 62 63 64\n*\n0000014\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "-w",
+        "--width"
+      ],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "od-verbose-blocks",
+      "command": "od",
+      "args": [
+        "-An",
+        "-tx1",
+        "-w4",
+        "-v"
+      ],
+      "stdin_text": "abcdabcd",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": " 61 62 63 64\n 61 62 63 64\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "-v",
+        "--output-duplicates"
+      ],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "od-escaped-characters",
+      "command": "od",
+      "args": [
+        "-An",
+        "-c"
+      ],
+      "stdin_hex": "610a00ff",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "   a  \\n  \\0 377\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "-c"
+      ],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "od-empty-address",
+      "command": "od",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "0000000\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "od-float-boundary",
+      "command": "od",
+      "args": [
+        "-tf4"
+      ],
+      "stdin_text": "abcd",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "od: unsupported format 'f'; use a, c, or integer d/u/o/x formats\n",
+      "expected_rejection": "unsupported format",
+      "comparison": "boundary",
+      "normalizations": []
+    },
+    {
+      "id": "od-skip-past-eof",
+      "command": "od",
+      "args": [
+        "-j4"
+      ],
+      "stdin_text": "abc",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "od: cannot skip past end of combined input\n",
+      "comparison": "contract",
+      "normalizations": []
+    },
+    {
+      "id": "release-metadata-od-help",
+      "command": "od",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/od@0.1.1 metadata contract",
+      "expected_stdout_text": "Usage: od [OPTION]... [FILE]...\nDump concatenated files, or stdin when no FILE or FILE - is given.\n  -A, --address-radix=d|o|x|n  address base, or no addresses\n  -j, --skip-bytes=N          skip N input bytes\n  -N, --read-bytes=N          print at most N bytes\n  -t, --format=TYPE           a, c, d/u/o/x with size 1,2,4,8; optional z\n  -a -b -c -d -i -l -o -s -x  traditional named/integer formats\n      --endian=little|big     byte order (default little)\n  -w[N], --width[=N]         bytes per line (default 16, bare option 32)\n  -v, --output-duplicates    do not replace repeated blocks with *\n      --help                 display this help and exit\n      --version              display version and exit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-od-version",
+      "command": "od",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/od@0.1.1 metadata contract",
+      "expected_stdout_text": "od 0.1.1\n",
+      "expected_stderr_text": ""
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Command implementation and release roadmap
 
-Updated: 2026-10-18
+Updated: 2026-10-20
 
 This is the accepted implementation sequence for the workspace after commit
 `5c2f93e`. It records work and acceptance requirements, not passing results.
@@ -10,6 +10,11 @@ stops after stage 0: publish only `cli/core@0.7.0`, `cli/curl@0.2.3`,
 `cli/mv@0.2.3`, and `cli/wget@0.2.3`, then verify exact MoonX coordinates.
 The other 75 published commands retain their registry versions and remain
 unpublished source candidates. Later stages require a subsequent continuation.
+
+Stage 0 publication and exact-version MoonX acceptance are complete; see the
+[release record](reports/2026-10-20-stage0-release/README.md). This delivery stops here. Later
+stage entries below retain their original requirements and are not completion
+claims.
 
 ## Ordered stages
 

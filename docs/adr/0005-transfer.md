@@ -2,22 +2,25 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-18
-Revision: Own HTTP/1 framing through the released passthrough API and apply explicit command profiles for URL targets, response cookies, EOF, file buffering, retry reset and selected-filename lifetime in the async 0.22.5 candidate.
+Updated: 2026-10-20
+Revision: Own HTTP/1 framing through the released passthrough API and apply explicit command profiles for URL targets, response cookies, EOF, file buffering, retry reset and selected-filename lifetime in the accepted async 0.22.5 stage 0 subset.
 
 ## Target and decision
 
 Implement curl/wget HTTP/HTTPS with public async APIs. Basic auth, cookie selection/persistence and redirect state are project responsibilities. Collect repeated Set-Cookie fields separately from the ordinary header map. Preserve command-specific credential challenge/redirect rules and cookie domain/path/Secure/expiry behavior within the documented subset.
 
-## Candidate: response failures and retry output
+## Stage 0: response failures and retry output
 
-The unpublished stage-0 candidate uses async 0.22.5 and a project-owned pure
+Stage 0 publishes core 0.7.0 and curl/wget 0.2.3. The
+[release report](../reports/2026-10-20-stage0-release/README.md) records exact main-source
+Native/Wasm gates, sealed-oracle comparisons and local/published MoonX results.
+The implementation uses async 0.22.5 and a project-owned pure
 MoonBit HTTP/1 wire adapter. A fresh public `Client` establishes the connection,
 TLS and configured proxy tunnel, then enters its released passthrough mode
 before the origin request. The project serializes that request and parses its
 response through public byte reads and writes. This is project implementation
 work using existing APIs, with no host-command fallback or private transport
-access. Planned core 0.7.0 adds `EmptyReplyFailure`, `PartialBodyFailure`,
+access. Core 0.7.0 adds `EmptyReplyFailure`, `PartialBodyFailure`,
 `ReceiveFailure` and `RewindFailure` to the public transfer error model.
 The public `TransferProfile` selects `StrictProfile` by default; the command
 callers explicitly select `CurlProfile` or `WgetProfile`. In the strict profile,
@@ -86,9 +89,9 @@ CR/LF validation above.
 
 The fixed URL/cookie and ordering/overflow probes establish expectations for
 these cases. Fresh registered Native/Wasm, backend-pair and sealed-oracle
-results at the repaired source are still required, including raw request
-bytes, connection count, final body and existing-output effects. Neither the
-probe nor CI for an earlier commit promotes the candidate to published status.
+results are retained in the release evidence, including raw request bytes,
+connection counts, final bodies and existing-output effects. Published status
+comes from the exact-version acceptance, separately from exploratory probes.
 
 An owned output sink closes on every exit from its private scope, including
 task cancellation. This lifetime guarantee does not define GNU signal behavior,
@@ -105,7 +108,7 @@ wire framing and made those bytes unsafe as encoded Range offsets. Fixed-length
 gzip success/truncation fixtures check the actual byte counts and retained
 output on both default and explicit-header paths.
 
-The candidate curl maps empty replies to status 52, partial bodies to status 18
+The published curl maps empty replies to status 52, partial bodies to status 18
 and other receive failures to 56. Its ordinary file destination opens on the
 first payload or successful completion, so an initial empty failed body does
 not create, truncate or remove an unopened destination, including with
@@ -207,9 +210,9 @@ succeeds. Other incomplete or malformed headers remain receive failures.
 The parser exposes chunk payload before checking the following CRLF,
 next chunk or trailers, so delivered bytes remain observable when later framing
 fails. Complete trailers and bodyless/close-delimited responses remain separate
-success controls. These are implemented candidate contracts requiring fresh
-Native/Wasm command and immutable-oracle evidence; neither header distinction
-nor chunk payload preservation is now blocked on a new async API.
+success controls. Actual Native/Wasm command and immutable-oracle evidence
+is recorded for these implemented contracts; neither header distinction nor
+chunk payload preservation is blocked on a new async API.
 
 Untrusted protocol metadata is bounded: protocol lines are limited to 64 KiB,
 cumulative response headers to 1 MiB, fields to 1024 per header block, interim

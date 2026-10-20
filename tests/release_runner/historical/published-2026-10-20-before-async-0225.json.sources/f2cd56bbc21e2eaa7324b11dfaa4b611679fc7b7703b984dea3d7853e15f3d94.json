@@ -1,0 +1,535 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "p2-date-epoch-format",
+      "command": "date",
+      "args": [
+        "-u",
+        "-d",
+        "@0",
+        "+%Y-%m-%dT%H:%M:%SZ"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1970-01-01T00:00:00Z\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "utc",
+        "date"
+      ]
+    },
+    {
+      "id": "p2-date-iso-seconds",
+      "command": "date",
+      "args": [
+        "-u",
+        "-d",
+        "1970-01-02 03:04:05",
+        "--iso-8601=seconds"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1970-01-02T03:04:05+00:00\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "iso-8601"
+      ]
+    },
+    {
+      "id": "p2-date-rfc-email",
+      "command": "date",
+      "args": [
+        "-u",
+        "-d",
+        "@0",
+        "-R"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "Thu, 01 Jan 1970 00:00:00 +0000\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "rfc-email"
+      ]
+    },
+    {
+      "id": "p2-date-version",
+      "command": "date",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "date 0.1.1\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "version"
+      ]
+    },
+    {
+      "id": "repair-date-fixed-offset",
+      "command": "date",
+      "args": [
+        "-d",
+        "@0",
+        "+%H:%M %z %Z"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "<+0545>-5:45"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "05:45 +0545 +0545\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "coreutils 9.11",
+      "oracle": true
+    },
+    {
+      "id": "repair-date-utc-override",
+      "command": "date",
+      "args": [
+        "-u",
+        "-d",
+        "@0",
+        "+%H:%M %z %Z"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "<+0545>-5:45"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "00:00 +0000 UTC\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "coreutils 9.11",
+      "oracle": true
+    },
+    {
+      "id": "repair-date-negative-fraction",
+      "command": "date",
+      "args": [
+        "-u",
+        "-d",
+        "@-0.5",
+        "+%FT%T.%N %s"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1969-12-31T23:59:59.500000000 -1\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "coreutils 9.11",
+      "oracle": true
+    },
+    {
+      "id": "repair-date-iso-ns",
+      "command": "date",
+      "args": [
+        "-d",
+        "@0.123456789",
+        "-Ins"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "<+0545>-5:45"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1970-01-01T05:45:00,123456789+05:45\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "coreutils 9.11",
+      "oracle": true
+    },
+    {
+      "id": "repair-date-dst-future",
+      "command": "date",
+      "args": [
+        "-d",
+        "2050-07-01 12:00:00",
+        "+%FT%T %z %Z"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "EST5EDT,M3.2.0,M11.1.0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "2050-07-01T12:00:00 -0400 EDT\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "coreutils 9.11",
+      "oracle": true
+    },
+    {
+      "id": "repair-date-gmt-abbreviation",
+      "command": "date",
+      "args": [
+        "-d",
+        "@2147483648",
+        "+%Z"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "GMT0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "GMT\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "coreutils 9.11",
+      "oracle": true
+    },
+    {
+      "id": "repair-alias-date-utc",
+      "command": "date",
+      "args": [
+        "--utc",
+        "-d",
+        "@0",
+        "+%Y-%m-%dT%H:%M:%SZ"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1970-01-01T00:00:00Z\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "utc",
+        "date"
+      ],
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+    },
+    {
+      "id": "repair-alias-date-date",
+      "command": "date",
+      "args": [
+        "--date",
+        "@0",
+        "+%H:%M %z %Z"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "<+0545>-5:45"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "05:45 +0545 +0545\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "oracle": true
+    },
+    {
+      "id": "repair-edge-date-Asia-Shanghai",
+      "command": "date",
+      "args": [
+        "-d",
+        "@0",
+        "+%F %R %z %Z"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "zone.tzif",
+          "content_hex": "545a6966320000000000000000000000000000000000000000000000000000000000001d000000030000000c80000000a097a280a17904f0c8595e80c909f970c9d3bd00cb058af0cb7c4000d23b3ef0d38b7b80d442adf0d5452200d64cbff0d73cbf00d8066670d91df280d9417cf01eba52201f699b90207e84a021497d902267a12023295f902447832025127c102627652026f25e102807472028d240100201020102010201020102010201020102010201020102010201020102000071d7000000007e9001040000708000084c4d54004344540043535400545a6966320000000000000000000000000000000000000000000000000000000000001d000000030000000cffffffff7e364329ffffffffa097a280ffffffffa17904f0ffffffffc8595e80ffffffffc909f970ffffffffc9d3bd00ffffffffcb058af0ffffffffcb7c4000ffffffffd23b3ef0ffffffffd38b7b80ffffffffd442adf0ffffffffd5452200ffffffffd64cbff0ffffffffd73cbf00ffffffffd8066670ffffffffd91df280ffffffffd9417cf0000000001eba5220000000001f699b9000000000207e84a00000000021497d90000000002267a1200000000023295f9000000000244783200000000025127c1000000000262765200000000026f25e1000000000280747200000000028d240100201020102010201020102010201020102010201020102010201020102000071d7000000007e9001040000708000084c4d540043445400435354000a4353542d380a"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "${WORK}/zone.tzif"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1970-01-01 08:00 +0800 CST\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 command repair edge contract",
+      "oracle": true
+    },
+    {
+      "id": "repair-edge-date-Europe-Dublin",
+      "command": "date",
+      "args": [
+        "-d",
+        "@2147483648",
+        "+%F %R %z %Z"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "zone.tzif",
+          "content_hex": "545a696632000000000000000000000000000000000000090000000900000000000000e40000000900000014800000009b26b3919bd60b119ccf30a09da4c3a09e9c9da09f971aa0a085ba20a176fca0a2659c20a37bc8a0a44eb8a0a53ffb20a6256020a727c620a82a2c20a8ebf8a0aa00d3a0aad51520abe9f020acc76c20adc9d220aea74e20afa079a0b0873020b192d0a0b2704ca0b372b2a0b4502ea0b5495a20b63010a0b73276a0b80ff2a0b91258a0b9efd4a0bae90020bbd8f120bcdb5720bdb8d320beb1fea0bf98b520c09b1b20c1789720c27afd20c3587920c451a4a0c5385b20c63ac120c758d6a0c7da09a0d449e020d51e21a0d64eac20d72c2820d82e8e20d8f99520da0e7020daebec20dbe517a0dccbce20ddc4f9a0deb4eaa0dfae1620e094cca0e17248a0e26b7420e3522aa0e45490a0e5320ca0e63dad20e71b2920e81454a0e8fb0b20e9fd7120eadaed20ebdd5320ecbacf20edb3faa0ee9ab120ef8167a0f09f7d20f16149a0f27f5f20f34a6620f45f4120f5210da0f63f2320f700efa0f81f0520f8e0d1a0f9fee720fac0b3a0fbe803a0fc7baba0fdc7bb700370c620042958200550a82006093a2007308a2007e91c2009106c2009c8fe200af04e200bb21aa00cd030200d91fca00eb012200f71dea010992ea01151c0a0127910a01331a2a01458f2a01523eb901638c6901703cd901818a89018e3af9019f88a901ac391901be1a7101cacae101dc189101e8c90101fa16b10206c721021814d10224c541023612f10242c3610254a4b90260c1810272a2d9027f53490290a0f9029d516902ae9f1902bb4f8902cc9d3902d94da902ea9b5902f74bc9030899790315dd9103272b410333dbb1034529610351d9d103632781036fd7f10381b949038dd611039fb76903abd43103bdb58903ca65f903dbb3a903e8641903f9b1c9040662390418439104246059043641b104425e7904543fd104605c9904723df1047eee6104903c11049cec8104ae3a3104baeaa104cccbf904d8e8c104eaca1904f6e6e10508c839051578a90526c659053376c90544c479055174e90562c299056f730905815461058d7129059f528105ab6f4905bd50a105ca011105db4ec105e7ff3105f94ce10605fd510617dea90623fb710635dcc90641f9910653dae906608b590671d909067e8979068fd729069c879906add54906ba85b906cc671106d883d906ea653106f681f907086351071513c107266171073311e107445f91075110010762f159076f0e210780ef79078d0c41079eed9907ab0a6107bcebb907c99c2907dae9d907e79a4907f8e7f90010204030403040304030403040504050405040504050405040504050405040504050405040504050405040504050405040504050405040504050405040504050405040504050405040504050405040504050405040504050405040504050608050405040504050405040504050405040504070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708fffffa0f0000fffffa0f00040000081f010800000e10010c00000000001000000e10010800000e10000800000e1001080000000000104c4d5400444d54004953540042535400474d5400000001010101000101000000000000000101545a696632000000000000000000000000000000000000090000000900000000000000e40000000900000014ffffffff57d10af1ffffffff9b26b391ffffffff9bd60b11ffffffff9ccf30a0ffffffff9da4c3a0ffffffff9e9c9da0ffffffff9f971aa0ffffffffa085ba20ffffffffa176fca0ffffffffa2659c20ffffffffa37bc8a0ffffffffa44eb8a0ffffffffa53ffb20ffffffffa6256020ffffffffa727c620ffffffffa82a2c20ffffffffa8ebf8a0ffffffffaa00d3a0ffffffffaad51520ffffffffabe9f020ffffffffacc76c20ffffffffadc9d220ffffffffaea74e20ffffffffafa079a0ffffffffb0873020ffffffffb192d0a0ffffffffb2704ca0ffffffffb372b2a0ffffffffb4502ea0ffffffffb5495a20ffffffffb63010a0ffffffffb73276a0ffffffffb80ff2a0ffffffffb91258a0ffffffffb9efd4a0ffffffffbae90020ffffffffbbd8f120ffffffffbcdb5720ffffffffbdb8d320ffffffffbeb1fea0ffffffffbf98b520ffffffffc09b1b20ffffffffc1789720ffffffffc27afd20ffffffffc3587920ffffffffc451a4a0ffffffffc5385b20ffffffffc63ac120ffffffffc758d6a0ffffffffc7da09a0ffffffffd449e020ffffffffd51e21a0ffffffffd64eac20ffffffffd72c2820ffffffffd82e8e20ffffffffd8f99520ffffffffda0e7020ffffffffdaebec20ffffffffdbe517a0ffffffffdccbce20ffffffffddc4f9a0ffffffffdeb4eaa0ffffffffdfae1620ffffffffe094cca0ffffffffe17248a0ffffffffe26b7420ffffffffe3522aa0ffffffffe45490a0ffffffffe5320ca0ffffffffe63dad20ffffffffe71b2920ffffffffe81454a0ffffffffe8fb0b20ffffffffe9fd7120ffffffffeadaed20ffffffffebdd5320ffffffffecbacf20ffffffffedb3faa0ffffffffee9ab120ffffffffef8167a0fffffffff09f7d20fffffffff16149a0fffffffff27f5f20fffffffff34a6620fffffffff45f4120fffffffff5210da0fffffffff63f2320fffffffff700efa0fffffffff81f0520fffffffff8e0d1a0fffffffff9fee720fffffffffac0b3a0fffffffffbe803a0fffffffffc7baba0fffffffffdc7bb70000000000370c6200000000004295820000000000550a8200000000006093a200000000007308a200000000007e91c200000000009106c200000000009c8fe20000000000af04e20000000000bb21aa0000000000cd03020000000000d91fca0000000000eb01220000000000f71dea00000000010992ea0000000001151c0a000000000127910a0000000001331a2a0000000001458f2a0000000001523eb90000000001638c690000000001703cd90000000001818a8900000000018e3af900000000019f88a90000000001ac39190000000001be1a710000000001cacae10000000001dc18910000000001e8c9010000000001fa16b1000000000206c72100000000021814d1000000000224c54100000000023612f1000000000242c361000000000254a4b9000000000260c181000000000272a2d900000000027f5349000000000290a0f900000000029d51690000000002ae9f190000000002bb4f890000000002cc9d390000000002d94da90000000002ea9b590000000002f74bc90000000003089979000000000315dd910000000003272b41000000000333dbb10000000003452961000000000351d9d1000000000363278100000000036fd7f1000000000381b94900000000038dd61100000000039fb7690000000003abd4310000000003bdb5890000000003ca65f90000000003dbb3a90000000003e864190000000003f9b1c900000000040662390000000004184391000000000424605900000000043641b10000000004425e790000000004543fd10000000004605c990000000004723df100000000047eee610000000004903c1100000000049cec810000000004ae3a310000000004baeaa10000000004cccbf90000000004d8e8c10000000004eaca190000000004f6e6e1000000000508c83900000000051578a9000000000526c65900000000053376c9000000000544c47900000000055174e9000000000562c29900000000056f7309000000000581546100000000058d712900000000059f52810000000005ab6f490000000005bd50a10000000005ca01110000000005db4ec10000000005e7ff310000000005f94ce1000000000605fd51000000000617dea9000000000623fb71000000000635dcc9000000000641f991000000000653dae90000000006608b59000000000671d90900000000067e897900000000068fd72900000000069c87990000000006add5490000000006ba85b90000000006cc67110000000006d883d90000000006ea65310000000006f681f9000000000708635100000000071513c1000000000726617100000000073311e10000000007445f910000000007511001000000000762f15900000000076f0e21000000000780ef7900000000078d0c4100000000079eed990000000007ab0a610000000007bcebb90000000007c99c290000000007dae9d90000000007e79a490000000007f8e7f90010204030403040304030403040504050405040504050405040504050405040504050405040504050405040504050405040504050405040504050405040504050405040504050405040504050405040504050405040504050405040504050608050405040504050405040504050405040504070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708070807080708fffffa0f0000fffffa0f00040000081f010800000e10010c00000000001000000e10010800000e10000800000e1001080000000000104c4d5400444d54004953540042535400474d54000000010101010001010000000000000001010a474d54304953542c4d332e352e302f312c4d31302e352e300a"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "${WORK}/zone.tzif"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "2038-01-19 03:14 +0000 GMT\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 command repair edge contract",
+      "oracle": true
+    },
+    {
+      "id": "repair-edge-date-unsupported-format",
+      "command": "date",
+      "args": [
+        "-u",
+        "-d",
+        "@0",
+        "+%q"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "comparison": "boundary",
+      "normalizations": [],
+      "source_version": "2026-10-11 command repair edge contract",
+      "expected_stderr_contains": "unsupported format",
+      "diagnostic_reason": "Explicit limitation, no substituted timestamp or partial formatted output.",
+      "expected_rejection": "unsupported format"
+    },
+    {
+      "id": "repair-edge-date-dst-gap",
+      "command": "date",
+      "args": [
+        "-d",
+        "2026-03-08 02:30:00"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "TZ": "EST5EDT,M3.2.0,M11.1.0"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "comparison": "boundary",
+      "normalizations": [],
+      "source_version": "2026-10-11 command repair edge contract",
+      "expected_stderr_contains": "invalid local time",
+      "diagnostic_reason": "Explicit limitation, no substituted timestamp or partial formatted output.",
+      "expected_rejection": "invalid local time"
+    },
+    {
+      "id": "repair-edge-date-dst-fold",
+      "command": "date",
+      "args": [
+        "-d",
+        "2026-11-01 01:30:00"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "TZ": "EST5EDT,M3.2.0,M11.1.0"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "comparison": "boundary",
+      "normalizations": [],
+      "source_version": "2026-10-11 command repair edge contract",
+      "expected_stderr_contains": "ambiguous local time",
+      "diagnostic_reason": "Explicit limitation, no substituted timestamp or partial formatted output.",
+      "expected_rejection": "ambiguous local time"
+    },
+    {
+      "id": "repair-edge-date-extra-operand",
+      "command": "date",
+      "args": [
+        "-u",
+        "-d",
+        "@0",
+        "-R",
+        "+%s"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 command repair edge contract",
+      "expected_stderr_contains": "conflicting output formats",
+      "diagnostic_reason": "Output selector conflict is rejected before output."
+    },
+    {
+      "id": "repair-final-date-date-midnight",
+      "command": "date",
+      "args": [
+        "-u",
+        "-d",
+        "1970-01-02",
+        "+%s"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "86400\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled",
+      "oracle": true
+    },
+    {
+      "id": "repair-final-date-date-fraction",
+      "command": "date",
+      "args": [
+        "-u",
+        "-d",
+        "1970-01-02T00:00:00.123",
+        "+%s"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "86400\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled",
+      "oracle": true
+    },
+    {
+      "id": "repair-final-date-negative-year",
+      "command": "date",
+      "args": [
+        "-u",
+        "-d",
+        "@-62198755200",
+        "+%Y %y %F %s"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "-001 01 -001-01-01 -62198755200\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled",
+      "oracle": true
+    },
+    {
+      "id": "repair-final-date-inline-dst-offset",
+      "command": "date",
+      "args": [
+        "-d",
+        "@0",
+        "+%z %Z"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "<+1030>-10:30<+11>-11,M10.1.0/2,M4.1.0/2"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "+1100 +11\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled",
+      "oracle": true
+    },
+    {
+      "id": "repair-final-date-invalid-diagnostic",
+      "command": "date",
+      "args": [
+        "-u",
+        "-d",
+        "not-a-date"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "date: invalid date 'not-a-date'\n",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled"
+    }
+  ]
+}

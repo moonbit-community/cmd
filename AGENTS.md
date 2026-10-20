@@ -157,12 +157,14 @@ module and version before any release operation.
   Update the published manifest and release report with those results, then
   commit and push the documentation. Do not publish from a failing or
   unverified candidate.
-- Current baseline after the 2026-10-18 metadata release closeout: core is
-  0.6.0. There are 78 published commands: 39 at 0.2.1, eight at 0.2.2, 15 at 0.1.1,
-  15 at 0.1.2 and one at 0.1.3. `timeout` remains local-only. Exact coordinates
-  are in tests/release_runner/current/published.json; source, upload and
-  published acceptance are recorded in
-  docs/reports/2026-10-15-metadata-release/README.md. Earlier coordinates remain
+- Current baseline after the 2026-10-20 stage 0 release: core is 0.7.0.
+  There are 78 published commands: 39 at 0.2.1, five at 0.2.2, three at 0.2.3,
+  15 at 0.1.1, 15 at 0.1.2 and one at 0.1.3. Only curl, mv and wget moved to
+  0.2.3; the other 75 commands retain their prior coordinates and unpublished
+  workspace candidates. `timeout` remains local-only. Exact coordinates are
+  in tests/release_runner/current/published.json; source, uploads and published
+  acceptance are recorded in docs/reports/2026-10-20-stage0-release/README.md.
+  Earlier coordinates remain
   frozen under tests/release_runner/historical/, including the 2026-10-11 repair.
   Update this baseline whenever a later release changes it.
 

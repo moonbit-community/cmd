@@ -1,0 +1,412 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "p2-column-table",
+      "command": "column",
+      "args": [
+        "-t"
+      ],
+      "stdin_text": "name age\nAda 36\nBob 7\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "name  age\nAda   36\nBob   7\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "table"
+      ]
+    },
+    {
+      "id": "p2-column-delimiter",
+      "command": "column",
+      "args": [
+        "-t",
+        "-s",
+        ":",
+        "-o",
+        " | "
+      ],
+      "stdin_text": "a:b\ncc:ddd\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a  | b\ncc | ddd\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "separator",
+        "output-separator"
+      ]
+    },
+    {
+      "id": "p2-column-copy",
+      "command": "column",
+      "args": [],
+      "stdin_text": "one\ntwo\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "COLUMNS": "80"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "one\ttwo\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": []
+    },
+    {
+      "id": "p2-column-version",
+      "command": "column",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "column 0.1.3\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/column@0.1.3 metadata contract"
+    },
+    {
+      "id": "repair-column-default",
+      "command": "column",
+      "args": [],
+      "stdin_text": "a\nb\nc\nd\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "COLUMNS": "80"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a\tb\tc\td\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "util-linux 2.40",
+      "oracle": true
+    },
+    {
+      "id": "repair-column-table-final-lf",
+      "command": "column",
+      "args": [
+        "-t"
+      ],
+      "stdin_text": "a b\ncc d",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "COLUMNS": "80"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a   b\ncc  d\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "util-linux 2.40",
+      "oracle": true
+    },
+    {
+      "id": "repair-column-uneven",
+      "command": "column",
+      "args": [
+        "-t"
+      ],
+      "stdin_text": "a b\nc\nz d e\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "COLUMNS": "80"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a  b  \nc     \nz  d  e\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "util-linux 2.40",
+      "oracle": true
+    },
+    {
+      "id": "repair-column-delimiter-set",
+      "command": "column",
+      "args": [
+        "-t",
+        "-s",
+        ":,"
+      ],
+      "stdin_text": "a::b,c\nxx:,d\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "COLUMNS": "80"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a     b  c\nxx    d  \n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "util-linux 2.40",
+      "oracle": true
+    },
+    {
+      "id": "repair-column-width",
+      "command": "column",
+      "args": [
+        "-c16"
+      ],
+      "stdin_text": "a\nb\nc\nd\ne\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "COLUMNS": "80"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a\td\nb\te\nc\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "util-linux 2.40",
+      "oracle": true
+    },
+    {
+      "id": "repair-column-fillrows",
+      "command": "column",
+      "args": [
+        "-c16",
+        "-x"
+      ],
+      "stdin_text": "a\nb\nc\nd\ne\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "COLUMNS": "80"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a\tb\nc\td\ne\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "util-linux 2.40",
+      "oracle": true
+    },
+    {
+      "id": "repair-column-empty",
+      "command": "column",
+      "args": [
+        "-t"
+      ],
+      "stdin_text": "\n \t\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "COLUMNS": "80"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "util-linux 2.40",
+      "oracle": true
+    },
+    {
+      "id": "repair-column-nul",
+      "command": "column",
+      "args": [
+        "-t"
+      ],
+      "stdin_text": "a b\u0000discard\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "COLUMNS": "80"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a  b\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "util-linux 2.40",
+      "oracle": true
+    },
+    {
+      "id": "repair-column-empty-separator",
+      "command": "column",
+      "args": [
+        "-t",
+        "-s",
+        ""
+      ],
+      "stdin_text": "a b\ncc dd\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "COLUMNS": "80"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a b\ncc dd\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "util-linux 2.40",
+      "oracle": true
+    },
+    {
+      "id": "repair-column-multi-file",
+      "command": "column",
+      "args": [
+        "-t",
+        "one",
+        "two"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "one",
+          "content_text": "a b"
+        },
+        {
+          "path": "two",
+          "content_text": "long d\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "COLUMNS": "80"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a     b\nlong  d\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "util-linux 2.40",
+      "oracle": true
+    },
+    {
+      "id": "repair-alias-column-table",
+      "command": "column",
+      "args": [
+        "--table"
+      ],
+      "stdin_text": "name age\nAda 36\nBob 7\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "name  age\nAda   36\nBob   7\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "table"
+      ],
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+    },
+    {
+      "id": "repair-edge-column-invalid-bytes",
+      "command": "column",
+      "args": [
+        "-t"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a\\xff  b\nx      y\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 command repair edge contract",
+      "stdin_hex": "61ff20620a7820790a",
+      "oracle": true
+    },
+    {
+      "id": "repair-final-column-ansi-width",
+      "command": "column",
+      "args": [
+        "-t",
+        "-s",
+        ":"
+      ],
+      "stdin_text": "a\u001b[31mb:c\nlong:d\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC",
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a\u001b[31mb    c\nlong  d\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "2026-10-11 second review; pinned oracle where enabled",
+      "oracle": true
+    },
+    {
+      "id": "release-metadata-column-help",
+      "command": "column",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/column@0.1.3 metadata contract",
+      "expected_stdout_text": "Usage: column [OPTION]... [FILE]...\nColumnate input in columns (default), or align a table with -t.\n  -t, --table                 create a table\n  -s, --separator=CHARS       table delimiters (default: space and TAB)\n  -o, --output-separator=SEP  table separator (default: two spaces)\n  -c, --output-width=WIDTH    output width (default: COLUMNS or 80)\n  -x, --fillrows              fill rows before columns\n      --help                 display this help and exit\n      --version              display version and exit\nLayout uses the C locale. Bytes above ASCII are printed as \\xHH.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-column-version",
+      "command": "column",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/column@0.1.3 metadata contract",
+      "expected_stdout_text": "column 0.1.3\n",
+      "expected_stderr_text": ""
+    }
+  ]
+}

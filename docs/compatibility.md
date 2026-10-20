@@ -1,48 +1,41 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-10-18
+Updated: 2026-10-20
 
-The unified metadata release publishes `cli/core@0.6.0` and new patch versions
-of all 78 published commands. Exact coordinates, 79 verified upload receipts
-and source/archive evidence are recorded in the
-[metadata release report](reports/2026-10-15-metadata-release/README.md).
+Stage 0 publishes `cli/core@0.7.0`, `cli/curl@0.2.3`, `cli/mv@0.2.3`
+and `cli/wget@0.2.3` with async 0.22.5. The other 75 published commands
+retain their registry coordinates and frozen expectations; their workspace
+dependency upgrades remain unpublished candidates. `timeout` stays local-only.
+The [stage 0 release report](reports/2026-10-20-stage0-release/README.md)
+records the four verified uploads, exact main-source three-platform gates,
+local MoonX contracts, published platform acceptance and immutable oracle.
 
-The workspace contains **79 command modules**, with **78 published** and local-only `timeout`. Published command versions are **39 at 0.2.1, 8 at 0.2.2, 15 at 0.1.1, 15 at 0.1.2 and 1 at 0.1.3**. Shared `cli/core` is **0.6.0** and is not counted as a command.
+There are **79 local command modules and 78 published commands**.
+Published command versions are **39 at 0.2.1, 5 at 0.2.2, 3 at 0.2.3,
+15 at 0.1.1, 15 at 0.1.2 and 1 at 0.1.3**. Shared `cli/core` is **0.7.0**
+and is not counted as a command.
 
-All 79 uploads returned 200 and their exact official source archives matched
-the retained local ZIPs after
-[three-platform source CI](https://github.com/moonbit-community/cmd/actions/runs/39041842874)
-passed at `c619ae71ae92706d6d56cdd6c73c17f270a17230`.
-[Published acceptance run 39045905149](https://github.com/moonbit-community/cmd/actions/runs/39045905149)
-passed on attempt 2: exact MoonX smoke succeeded on all three platforms,
-Linux full differential and the Windows-only semantic cases jointly cover
-all 997 selected IDs, and the immutable publication freeze passed.
-The reviewed snapshot is imported; all pre-existing historical files are
-preserved. The new record commit requires its own exact-head coverage audit
-before the final audited push, as specified by the report's
-[record-update declaration](reports/2026-10-15-metadata-release/record-update-coverage.json).
-The [2026-10-11 fidelity repair](reports/2026-10-11-fidelity-repair/README.md)
-remains historical evidence for its original coordinates.
-
-The known strings/column/which/date/unlink/jq and ln/mv errors are corrected in these versions. Earlier defective results remain in [historical observations](reports/2026-10-11-command-followups/README.md). This published baseline uses async 0.22.4, x 0.5.5 and moonjq 0.2.0. Curl/wget deliver the previously local explicit-Cookie fixes.
+The [metadata release](reports/2026-10-15-metadata-release/README.md)
+and [fidelity repair](reports/2026-10-11-fidelity-repair/README.md) remain
+historical evidence for their original coordinates. The retained commands
+keep their earlier dependency and acceptance profiles.
 
 Authorization belongs to the caller/host. Catalog capabilities and the older
 restricted label describe requirements, not command-local policy.
 
-## Workspace candidate: async 0.22.5
+## Accepted stage 0 subset: async 0.22.5
 
-[Roadmap stage 0](command-roadmap.md) is unpublished implementation work. It
-updates the workspace dependency to async 0.22.5 and plans core 0.7.0 for the
-new shared transfer API. The published baseline remains **core 0.6.0 and 78
-commands** at the coordinates above; candidate source, tests and catalog entries
-do not alter those releases or establish new acceptance results.
+[Roadmap stage 0](command-roadmap.md) is accepted for the four coordinates
+above. The following implementation decisions and acceptance contracts are
+covered by the linked release evidence. Broader API, host and command-feature
+limits remain explicit; this does not establish full upstream compatibility.
 
-| Candidate area | Implemented decision | Evidence still required / retained boundary |
+| Accepted area | Implemented decision | Acceptance contract / retained boundary |
 | --- | --- | --- |
-| Windows link rename | Native consumes async's reparse-point rename fix. Windows Wasm rejects source symlink/junction moves and destination-link backups before prompting or mutation; no-clobber and update-none skips remain. No `-u` link-skip acceptance is claimed. Regular-source replacement of destination links without backup remains allowed pending Windows evidence. | Actual Windows Native/Wasm results for forced file/directory/dangling symlinks, junctions, backups and referents; interactive refusal with stdin open and no prompt; package fault-injected Native link-backup restoration. Identify a fixed released host before lifting the Wasm rejection; a dependency version is not host evidence. See ADR-0004 and [#38](https://github.com/moonbit-community/cmd/issues/38). |
+| Windows link rename | Native consumes async's reparse-point rename fix. Windows Wasm rejects source symlink/junction moves and destination-link backups before prompting or mutation; no-clobber and update-none skips remain. No `-u` link-skip acceptance is claimed. Regular-source replacement of destination links without backup is covered by actual Windows source and published-host evidence. | Actual Windows Native/Wasm results for forced file/directory/dangling symlinks, junctions, backups and referents; interactive refusal with stdin open and no prompt; package fault-injected Native link-backup restoration. Identify a fixed released host before lifting the Wasm rejection; a dependency version is not host evidence. See ADR-0004 and [#38](https://github.com/moonbit-community/cmd/issues/38). |
 | curl response failures | `CurlProfile` maps empty replies to 52, partial bodies to 18 and other receive failures to 56. Ordinary file output opens on first payload or successful completion and buffers 4096 bytes. An earlier network failure remains primary if the final tail flush also fails; an earlier write failure returns 23. An initial empty failure preserves ordinary unopened destinations, including with `--remove-on-error`. A redirect requiring consumed stdin to rewind returns 65. | Native/Wasm status, bytes, existing/absent files, cleanup and retry effects against the sealed curl oracle. File buffering does not establish stdout error precedence. `--retry-all-errors` may send empty stdin on a later attempt after consuming it, matching the fixed oracle; redirect rewind and empty-upload controls require separate wire evidence. |
-| curl retry and selected filenames | An accepted retry resets an opened regular output file before the next request. Cleanup of an opened selected file occurs only after final failure; successful retries keep their result. With `-O -J`, a valid Content-Disposition filename on a 2xx/3xx response creates exclusively before body delivery; an existing selected filename returns 23 unchanged. Other statuses keep ordinary URL-derived output selection, and enabled `-f` rejects HTTP errors before opening output. Retries keep the first server-selected name even if later headers change or omit it. Strict and Wget profiles retain their existing behavior. | Observe file bytes before the retry response and after final failure/success, including initial empty-failure and existing-name controls. Status controls cover 200/304 and 404/500 with and without `-f`. Exploratory fixed curl probes define expectations; registered Native/Wasm and sealed-oracle scenarios still require actual passes. Path-based reset uses released APIs but does not establish descriptor/inode identity during concurrent path replacement; retain [#10](https://github.com/moonbit-community/cmd/issues/10), with the unlock condition in ADR-0005. |
+| curl retry and selected filenames | An accepted retry resets an opened regular output file before the next request. Cleanup of an opened selected file occurs only after final failure; successful retries keep their result. With `-O -J`, a valid Content-Disposition filename on a 2xx/3xx response creates exclusively before body delivery; an existing selected filename returns 23 unchanged. Other statuses keep ordinary URL-derived output selection, and enabled `-f` rejects HTTP errors before opening output. Retries keep the first server-selected name even if later headers change or omit it. Strict and Wget profiles retain their existing behavior. | Observe file bytes before the retry response and after final failure/success, including initial empty-failure and existing-name controls. Status controls cover 200/304 and 404/500 with and without `-f`. Exploratory fixed curl probes define expectations; actual registered Native/Wasm and sealed-oracle passes are retained in the release evidence. Path-based reset uses released APIs but does not establish descriptor/inode identity during concurrent path replacement; retain [#10](https://github.com/moonbit-community/cmd/issues/10), with the unlock condition in ADR-0005. |
 | URL request targets | Initial raw ASCII space/TAB/CR/LF/DEL in path/query returns curl 3 before connecting and preserves existing output; Wget uses uppercase percent escapes. Existing encoded bytes remain encoded. Redirect spaces use curl path `%20`/query `+`, or Wget `%20` in both; TAB uses `%09` in both commands. | Fixed probes establish these specific expectations. Require fresh Native/Wasm raw-wire, connection-count and output observations, encoded controls, and sealed-oracle comparison. This is project validation/encoding through released APIs, not a new API requirement. |
 | Response cookie fields | Final Set-Cookie names, values, attribute order and repeated-field order remain observable separately from parsed storage, after HTTP optional-whitespace normalization; interim fields are excluded. Both commands ignore fields without `=` without failing complete bodies. Nonnumeric Max-Age deletes the matching curl cookie; Wget ignores the replacement. Positive decimal overflow keeps curl's replacement under its 400-day cap, but Wget expires the matching cookie for numeric overflow below 32 digits. Curl orders by descending path/domain/name byte length, then newer creation; Wget uses descending domain/path byte length, then name/value byte order. | Verify repeated-field order, old/new cookie state, subsequent request bytes, complete bodies and header observations independently on Native/Wasm and the sealed oracle; fixed-clock tests cover expiry limits. This does not relax outgoing Cookie-field CR/LF rejection or establish cookie-jar byte parity or every malformed-cookie rule. |
 | Header EOF profiles | Public `TransferProfile` defaults to `StrictProfile`. The command profiles accept EOF while collecting headers after a complete 200 status line, preserving all already parsed framing checks. The unfinished `Content-Len` fixture succeeds with zero bytes; strict transfer rejects it. | Actual Native/Wasm and fixed-oracle cases for empty replies, incomplete status/header bytes, known Content-Length with unfinished later fields, and malformed headers. Accepting header EOF does not bypass known body-length requirements. |
@@ -62,10 +55,10 @@ count. The registered binary-stdin retry scenario compares those stderr bytes
 as well as both request bodies. Internal HTTP-status retries without `-f` do
 not produce a false error 22 diagnostic.
 
-These rows are candidate decisions, not additions to the measured profiles
-below. New fixture registrations and package tests require their actual runs,
-backend-pair observations, exact-revision coverage audit and release acceptance
-before promotion. Missing Windows symlink privileges or link observers are
+These selected rows are promoted by actual Native/Wasm runs, backend-pair
+observations, exact-revision coverage audits and exact-version published
+acceptance in the stage 0 release report. Missing Windows symlink privileges
+or link observers are
 infrastructure failures. The public filesystem/terminal/process API blockers
 remain unchanged by async 0.22.5.
 
@@ -87,9 +80,10 @@ The dated 2026-10-12 probes are workspace evidence. The exact published MoonX
 audit in `docs/reports/2026-10-12-readme-audit/` records older immutable
 coordinates, including the old metadata behavior, separately.
 
-The metadata release has verified all new coordinates with core 0.6.0. The 72
-existing core-dependent commands request that version; six independent
-commands remain independent and `timeout` stays local-only. New exact help
+The historical metadata release verified its original coordinates with
+core 0.6.0. Its 72 core-dependent published commands requested that version.
+The three stage 0 commands now request core 0.7.0; the other 69 retain core
+0.6.0. Six independent commands remain independent and `timeout` stays local-only. New exact help
 and version cases cover all 78 published commands. The local exact
 `cli/sh@0.2.1` probe passes both metadata operations, fixing the reported
 `sh@0.2.0` limitation. Full published acceptance and the current frozen pointer
@@ -197,8 +191,8 @@ Linux oracle remains the strict filesystem authority.
 
 ## Inventory
 
-The workspace contains **79 command modules**, with **78 published** and local-only `timeout`. Published command versions are **39 at 0.2.1, 8 at 0.2.2, 15 at 0.1.1, 15 at 0.1.2 and 1 at 0.1.3**. Shared `cli/core` is **0.6.0** and is not counted as a command.
-Exact coordinates and selected cases are in [the current manifest](../tests/release_runner/current/published.json) and [metadata release report](reports/2026-10-15-metadata-release/README.md). Earlier manifests remain historical records under `tests/release_runner/historical/`.
+The workspace contains **79 command modules**, with **78 published** and local-only `timeout`. Published command versions are **39 at 0.2.1, 5 at 0.2.2, 3 at 0.2.3, 15 at 0.1.1, 15 at 0.1.2 and 1 at 0.1.3**. Shared `cli/core` is **0.7.0** and is not counted as a command.
+Exact coordinates and selected cases are in [the current manifest](../tests/release_runner/current/published.json) and [stage 0 release report](reports/2026-10-20-stage0-release/README.md). Earlier manifests remain historical records under `tests/release_runner/historical/`.
 
 `timeout` is intentionally local-only because portable
 `ProcessGroupCancellation` is unavailable:

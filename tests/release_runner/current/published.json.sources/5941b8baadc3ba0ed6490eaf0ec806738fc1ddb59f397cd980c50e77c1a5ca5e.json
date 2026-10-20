@@ -1,0 +1,249 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "files": [],
+      "stdin_text": "one two three four five six\n",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "id": "p1-fmt-width",
+      "command": "fmt",
+      "args": [
+        "-w12"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "one two\nthree four\nfive six\n",
+      "oracle": true,
+      "source_version": "coreutils-9.11"
+    },
+    {
+      "files": [],
+      "stdin_text": "one\ntwo\n\nthree",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "id": "p1-fmt-join-paragraph",
+      "command": "fmt",
+      "args": [],
+      "expected_status": 0,
+      "expected_stdout_text": "one two\n\nthree\n",
+      "oracle": true,
+      "source_version": "coreutils-9.11"
+    },
+    {
+      "files": [],
+      "stdin_text": "one\ntwo\n",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "id": "p1-fmt-split-only",
+      "command": "fmt",
+      "args": [
+        "-s"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "one\ntwo\n",
+      "oracle": true,
+      "source_version": "coreutils-9.11"
+    },
+    {
+      "files": [],
+      "stdin_text": "one   two.   Three\n",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "id": "p1-fmt-uniform",
+      "command": "fmt",
+      "args": [
+        "-u"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "one two.  Three\n",
+      "oracle": true,
+      "source_version": "coreutils-9.11"
+    },
+    {
+      "files": [],
+      "stdin_text": "  one\n  two\nnext\n",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "id": "p1-fmt-indent",
+      "command": "fmt",
+      "args": [],
+      "expected_status": 0,
+      "expected_stdout_text": "  one two\nnext\n",
+      "oracle": true,
+      "source_version": "coreutils-9.11"
+    },
+    {
+      "id": "p1-fmt-control-word-boundaries",
+      "command": "fmt",
+      "args": [
+        "-u",
+        "-w20"
+      ],
+      "stdin_hex": "6f6e650b2074776f0c2074687265650d20666f75720a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "6f6e65200b2074776f200c2074687265650a0d20666f75720a",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "p1-fmt-zero-width",
+      "command": "fmt",
+      "args": [
+        "-w0"
+      ],
+      "stdin_text": "alpha beta gamma\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "alpha\nbeta\ngamma\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "p1-fmt-goal-only",
+      "command": "fmt",
+      "args": [
+        "-g10"
+      ],
+      "stdin_text": "alpha beta gamma delta epsilon zeta eta theta iota kappa lambda mu nu xi omicron\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "alpha beta\ngamma delta\nepsilon zeta\neta theta iota\nkappa lambda\nmu nu xi omicron\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "comparison": "contract",
+      "normalizations": [],
+      "id": "p1-fmt-prefix-boundary",
+      "command": "fmt",
+      "args": [
+        "-p>"
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "fmt: unknown short option\n",
+      "diagnostic_reason": "Parser wording includes the unsupported option.",
+      "expected_rejection": "unknown short option"
+    },
+    {
+      "files": [],
+      "stdin_text": "one\ntwo\n",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "id": "repair-alias-fmt-split-only",
+      "command": "fmt",
+      "args": [
+        "--split-only"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "one\ntwo\n",
+      "oracle": true,
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+    },
+    {
+      "files": [],
+      "stdin_text": "one   two.   Three\n",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "id": "repair-alias-fmt-uniform-spacing",
+      "command": "fmt",
+      "args": [
+        "--uniform-spacing"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "one two.  Three\n",
+      "oracle": true,
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+    },
+    {
+      "id": "release-metadata-fmt-help",
+      "command": "fmt",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/fmt@0.1.2 metadata contract",
+      "expected_stdout_text": "Usage: fmt [-WIDTH] [-w WIDTH] [-g GOAL] [-su] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nReformat paragraphs, preserving indentation; default width 75.\n-s splits lines without joining; -u uses uniform spacing.\nC-locale byte columns. Crown/tagged margins and prefixes are not supported.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-fmt-version",
+      "command": "fmt",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/fmt@0.1.2 metadata contract",
+      "expected_stdout_text": "fmt 0.1.2\n",
+      "expected_stderr_text": ""
+    }
+  ]
+}

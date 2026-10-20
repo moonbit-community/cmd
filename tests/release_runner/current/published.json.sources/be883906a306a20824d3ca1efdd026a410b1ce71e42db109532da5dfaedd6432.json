@@ -1,0 +1,59 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "p0-realpath-help",
+      "command": "realpath",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_contains": "Usage: realpath",
+      "diagnostic_reason": "The Usage heading is stable; command-specific help prose may vary.",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": []
+    },
+    {
+      "id": "release-metadata-realpath-help",
+      "command": "realpath",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "workspace cli/realpath@0.1.3 metadata contract",
+      "expected_stdout_text": "Usage: realpath [-e] [-z] NAME...\n      --help      display this help and exit\n      --version   display version and exit\n  -e, --canonicalize-existing  require every path component to exist\n  -z, --zero                   separate output with NUL bytes\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-realpath-version",
+      "command": "realpath",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "source_version": "workspace cli/realpath@0.1.3 metadata contract",
+      "expected_stdout_text": "realpath 0.1.3\n",
+      "expected_stderr_text": ""
+    }
+  ]
+}
