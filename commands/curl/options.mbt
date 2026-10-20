@@ -22,20 +22,20 @@ struct CurlOptions {
   mut show_error : Bool
   mut fail : Bool
   mut location : Bool
-  mut max_redirects : Int
+  mut max_redirects : Int32
   mut head : Bool
   mut request_method : @netops.HttpMethod?
   headers : Array[@netops.HttpHeader]
   data_specs : Array[CurlDataSpec]
   mut upload_file : String?
-  mut retry_count : Int
-  mut retry_delay_ms : Int
-  mut retry_max_time_ms : Int?
+  mut retry_count : Int32
+  mut retry_delay_ms : Int32
+  mut retry_max_time_ms : Int32?
   mut retry_connection_refused : Bool
   mut retry_all_errors : Bool
-  mut connect_timeout_ms : Int
-  mut max_time_ms : Int?
-  mut idle_timeout_ms : Int
+  mut connect_timeout_ms : Int32
+  mut max_time_ms : Int32?
+  mut idle_timeout_ms : Int32
   mut insecure : Bool
   mut proxy_url : String?
   mut no_proxy : String?
@@ -88,7 +88,22 @@ fn curl_usage() -> String {
     #|  -k, --insecure               allow insecure TLS connections
     #|  -x, --proxy <url>            use this proxy
     #|      --noproxy <list>         bypass proxy for matching hosts
-    #|      --remove-on-error        remove output file after transfer failure
+    #|      --remove-on-error        remove opened output after final failure
+    #|Already written stdout remains; final partial files remain without cleanup.
+    #|Cookie values containing CR/LF are rejected before request bytes are sent.
+    #|Raw space/TAB/CR/LF/DEL in an initial URL path or query exits 3 before connecting.
+    #|Redirect spaces use %20 in paths and + in queries; TAB uses %09.
+    #|Set-Cookie without '=' is ignored; nonnumeric Max-Age deletes its stored cookie.
+    #|Positive decimal Max-Age overflow keeps the new cookie under a 400-day cap.
+    #|An empty HTTP reply exits 52; incomplete bodies exit 18; receive errors exit 56.
+    #|An initial empty failure leaves ordinary unopened output untouched.
+    #|An accepted retry resets an opened regular file before the next request.
+    #|-O -J creates valid Content-Disposition filenames exclusively for 2xx/3xx.
+    #|An existing selected filename exits 23 untouched; retries retain the first name.
+    #|File write errors exit 23; an earlier transfer failure keeps its exit status.
+    #|A redirect requiring already uploaded stdin to rewind exits 65.
+    #|-sS keeps each failed attempt's error visible even if a later retry succeeds.
+    #|Content-coding bytes remain encoded; Accept-Encoding defaults to identity.
     #|
     #|Compatibility limits: HTTP/HTTPS only; -X accepts GET, HEAD, POST, PUT,
     #|DELETE, CONNECT, OPTIONS, TRACE, and PATCH. Timer values are bounded by
@@ -100,7 +115,7 @@ fn curl_usage() -> String {
 fn curl_nonnegative(
   value : String,
   option : String,
-) -> Int raise CurlUsageError {
+) -> Int32 raise CurlUsageError {
   let result = @string.parse_int(value) catch {
     _ => raise CurlUsageError("\{option}: expected a non-negative integer")
   }
@@ -111,7 +126,7 @@ fn curl_nonnegative(
 }
 
 ///|
-fn curl_redirect_limit(value : String) -> Int raise CurlUsageError {
+fn curl_redirect_limit(value : String) -> Int32 raise CurlUsageError {
   let result = @string.parse_int(value) catch {
     _ =>
       raise CurlUsageError(
@@ -125,7 +140,7 @@ fn curl_redirect_limit(value : String) -> Int raise CurlUsageError {
 }
 
 ///|
-fn curl_seconds(value : String, option : String) -> Int raise CurlUsageError {
+fn curl_seconds(value : String, option : String) -> Int32 raise CurlUsageError {
   @cli.parse_idle_timeout(value) catch {
     _ =>
       raise CurlUsageError("\{option}: expected a positive number of seconds")
@@ -136,7 +151,7 @@ fn curl_seconds(value : String, option : String) -> Int raise CurlUsageError {
 fn curl_seconds_or_zero(
   value : String,
   option : String,
-) -> Int raise CurlUsageError {
+) -> Int32 raise CurlUsageError {
   let seconds = @string.parse_double(value) catch {
     _ =>
       raise CurlUsageError(
@@ -156,7 +171,7 @@ fn curl_seconds_or_zero(
 fn curl_retry_seconds(
   value : String,
   option : String,
-) -> Int raise CurlUsageError {
+) -> Int32 raise CurlUsageError {
   let seconds = @string.parse_int(value) catch {
     _ =>
       raise CurlUsageError(
@@ -295,7 +310,7 @@ fn parse_curl_options(
       },
     )
   }
-  let data_positions : Map[String, Int] = Map([])
+  let data_positions : Map[String, Int32] = Map([])
   for name in parsed.order {
     if name == "data" ||
       name == "data-raw" ||

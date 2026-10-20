@@ -1,9 +1,9 @@
 ///|
 fn folded(
   data : Bytes,
-  width : Int,
-  bytes? : Bool = false,
-  spaces? : Bool = false,
+  width : Int32,
+  bytes~ : Bool = false,
+  spaces~ : Bool = false,
 ) -> Bytes {
   let state = FoldState::new(width, bytes, false, spaces)
   let out = state.feed(data).to_array()

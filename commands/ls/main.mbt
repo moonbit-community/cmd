@@ -45,7 +45,7 @@ fn join_path(parent : String, name : String) -> String {
 }
 
 ///|
-fn c_locale_compare(left : String, right : String) -> Int {
+fn c_locale_compare(left : String, right : String) -> Int32 {
   let left = @utf8.encode(left)
   let right = @utf8.encode(right)
   let shared = left.length().min(right.length())
@@ -143,7 +143,11 @@ async fn read_entry(
 }
 
 ///|
-fn compare_entries(left : LsEntry, right : LsEntry, options : LsOptions) -> Int {
+fn compare_entries(
+  left : LsEntry,
+  right : LsEntry,
+  options : LsOptions,
+) -> Int32 {
   let primary = match options.sort {
     SortByName => c_locale_compare(left.name, right.name)
     SortByTime =>
@@ -178,7 +182,7 @@ fn compare_entries(left : LsEntry, right : LsEntry, options : LsOptions) -> Int 
 async fn sorted_entries(
   path : String,
   options : LsOptions,
-  status : Ref[Int],
+  status : Ref[Int32],
 ) -> Array[LsEntry] {
   let names = @fs.readdir(
     path,
@@ -231,7 +235,7 @@ async fn print_directory(
   options : LsOptions,
   show_header : Bool,
   printed_section : Ref[Bool],
-  status : Ref[Int],
+  status : Ref[Int32],
 ) -> Array[String] {
   if show_header {
     if printed_section.val {
@@ -344,7 +348,7 @@ fn ls_options(parsed : @cli.ParsedArgs) -> LsOptions raise @cli.CliError {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("ls 0.2.2\n")
+    @stdio.stdout.write("ls 0.2.3\n")
     return
   }
   let parsed = parse_arguments(@env.args()[1:]) catch {

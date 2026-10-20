@@ -1,9 +1,9 @@
 ///|
-fn hex_value(c : Char) -> Int {
+fn hex_value(c : Char) -> Int32 {
   match c {
-    '0'..='9' => c.to_int() - '0'.to_int()
-    'a'..='f' => c.to_int() - 'a'.to_int() + 10
-    'A'..='F' => c.to_int() - 'A'.to_int() + 10
+    '0'..<='9' => c.to_int() - '0'.to_int()
+    'a'..<='f' => c.to_int() - 'a'.to_int() + 10
+    'A'..<='F' => c.to_int() - 'A'.to_int() + 10
     _ => -1
   }
 }
@@ -62,11 +62,11 @@ fn decode_escapes(text : String) -> (Bytes, Bool) {
         out.push(value.to_byte())
         i = j
       }
-    } else if escaped is ('0'..='7') {
+    } else if escaped is ('0'..<='7') {
       let mut value = 0
       let mut count = 0
       let mut j = if escaped == '0' { i + 2 } else { i + 1 }
-      while j < chars.length() && count < 3 && chars[j] is ('0'..='7') {
+      while j < chars.length() && count < 3 && chars[j] is ('0'..<='7') {
         value = value * 8 + chars[j].to_int() - '0'.to_int()
         count += 1
         j += 1
@@ -86,7 +86,7 @@ fn decode_escapes(text : String) -> (Bytes, Bool) {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("echo 0.2.1\n")
+    @stdio.stdout.write("echo 0.2.2\n")
     return
   }
   let args = @env.args()[1:]

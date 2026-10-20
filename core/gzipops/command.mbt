@@ -18,7 +18,7 @@ pub async fn run(
   command : String,
   args : ArrayView[String],
   version : String,
-) -> Int {
+) -> Int32 {
   let parsed = @cli.parse(args, [
     @cli.flag("stdout", short='c'),
     @cli.flag("decompress", short='d'),

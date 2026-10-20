@@ -1,5 +1,5 @@
 ///|
-fn starts_with_at(data : Bytes, index : Int, separator : Bytes) -> Bool {
+fn starts_with_at(data : Bytes, index : Int32, separator : Bytes) -> Bool {
   if index + separator.length() > data.length() {
     return false
   }
@@ -81,7 +81,7 @@ fn help_message() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("tac 0.1.2\n")
+    @stdio.stdout.write("tac 0.1.3\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [

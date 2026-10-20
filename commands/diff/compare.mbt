@@ -34,8 +34,8 @@ fn lines(data : Bytes) -> Array[Line] {
 fn edits(a : Array[Line], b : Array[Line]) -> Array[Edit] {
   let n = a.length()
   let m = b.length()
-  let frontier : Map[Int, Int] = { 1: 0 }
-  let trace : Array[Map[Int, Int]] = []
+  let frontier : Map[Int32, Int32] = { 1: 0 }
+  let trace : Array[Map[Int32, Int32]] = []
   let mut distance = 0
   let mut done = false
   while distance <= n + m && !done {
@@ -109,7 +109,7 @@ fn record(out : StringBuilder, prefix : String, line : Line) -> Unit {
 }
 
 ///|
-fn range(start : Int, count : Int, unified : Bool) -> String {
+fn range(start : Int32, count : Int32, unified : Bool) -> String {
   if count == 1 {
     (start + 1).to_string()
   } else if unified {
@@ -175,10 +175,10 @@ fn normal(changes : Array[Edit]) -> Bytes {
 ///|
 fn unified(
   changes : Array[Edit],
-  context : Int,
+  context : Int32,
   label_a : String,
   label_b : String,
-  context_format? : Bool = false,
+  context_format~ : Bool = false,
 ) -> Bytes {
   let output = StringBuilder()
   output.write_string(
@@ -217,7 +217,7 @@ fn unified(
       }
       scan += 1
     }
-    let end = Int::min(changes.length(), last_change + context + 1)
+    let end = Int32::min(changes.length(), last_change + context + 1)
     let old_start = old_positions[start]
     let new_start = new_positions[start]
     if context_format {

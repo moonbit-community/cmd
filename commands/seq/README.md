@@ -1,6 +1,6 @@
 # seq
 
-This documents version 0.2.2. The [support record](../../docs/compatibility.md)
+This documents version 0.2.3. The [support record](../../docs/compatibility.md)
 tracks platform verification and exact-version publication evidence separately.
 
 Print a numeric sequence using `LAST`, `FIRST LAST`, or
@@ -17,7 +17,7 @@ cap. `--version` reports the published package version. The current release is
 
 ## Standalone metadata
 
-Standalone `--version` prints exactly `seq 0.2.2` followed by one
+Standalone `--version` prints exactly `seq 0.2.3` followed by one
 newline. Standalone `--help` starts with `Usage: seq`, lists both
 metadata options, and ends with a newline. Both write to stdout, leave stdin
 unread, and exit with status 0. Exact-version publication and verification

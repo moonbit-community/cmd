@@ -41,6 +41,54 @@ pub fn expand_fixture_content(content : Bytes, http_base? : String) -> Bytes {
 }
 
 ///|
+fn windows_link_observation(
+  data : Bytes,
+  root : String,
+) -> (String, String) raise {
+  let value = @json.parse(@utf8.decode(data))
+  guard value is { "kind": String(kind), "target": String(target), .. } &&
+    (kind == "SymbolicLink" || kind == "Junction") &&
+    target != "" else {
+    fail("Windows link observer did not return a link type and target")
+  }
+  let target = target.replace_all(old="\\", new="/")
+  let target = if target.has_prefix("//?/") {
+    target[4:].to_owned()
+  } else {
+    target
+  }
+  let root = root.replace_all(old="\\", new="/")
+  let prefix = root + "/"
+  let target = if target.to_lower().has_prefix(prefix.to_lower()) {
+    "${WORK}/" + target[prefix.length():].to_owned()
+  } else {
+    target
+  }
+  (kind, target)
+}
+
+///|
+async fn observe_windows_link(path : String, root : String) -> (String, String) {
+  // A fixed host observer collects properties unavailable through public fs.
+  // The path is data in the child environment, never PowerShell source.
+  let result = run(
+    "powershell.exe",
+    [
+      "-NoProfile", "-NonInteractive", "-Command", "$ErrorActionPreference = 'Stop'; [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false); $item = Get-Item -LiteralPath $env:MOONCMD_OBSERVED_LINK -Force; [pscustomobject]@{kind=$item.LinkType; target=@($item.Target)[0]} | ConvertTo-Json -Compress",
+    ],
+    extra_env=Map([("MOONCMD_OBSERVED_LINK", path)]),
+  ) catch {
+    error => fail("required Windows link observer unavailable: \{error}")
+  }
+  guard result.status == 0 else {
+    fail(
+      "required Windows link observer failed: " + @utf8.decode(result.stderr),
+    )
+  }
+  windows_link_observation(result.stdout, root)
+}
+
+///|
 pub async fn prepare_fixture(
   root : String,
   fixture : Case,
@@ -61,6 +109,34 @@ pub async fn prepare_fixture(
           fail("unsafe symlink target")
         }
         @fs.symlink(target~, destination)
+      }
+      Some("symbolic-link") | Some("junction") => {
+        guard file.target is Some(target) && safe_symlink_target(target) else {
+          fail("unsafe link target")
+        }
+        let junction = file.kind == Some("junction")
+        if junction {
+          guard @async.platform is Windows else {
+            fail("junction fixture requires Windows")
+          }
+          let target_path = @path.Path(parent).join(Path(target)).to_string()
+          guard @fs.kind(target_path, follow_symlink=false) == Directory else {
+            fail("junction fixture requires an existing directory target")
+          }
+          @fs.symlink(
+            target=@fs.realpath(target_path),
+            destination,
+            force_symlink=false,
+          )
+        } else {
+          @fs.symlink(target~, destination, force_symlink=true)
+        }
+        if @async.platform is Windows {
+          let (kind, _) = observe_windows_link(destination, root)
+          guard kind == (if junction { "Junction" } else { "SymbolicLink" }) else {
+            fail("Windows fixture created the wrong link type")
+          }
+        }
       }
       Some("directory") =>
         @fs.mkdir(destination, recursive=true, permission?=file.mode)
@@ -207,18 +283,23 @@ async fn snapshot_into(
         }
         "symlink-target" =>
           if kind == SymLink {
-            let result = run(readlink_path, [child]) catch {
-              error =>
-                fail(
-                  "required observation unavailable: symlink-target: \{error}",
-                )
-            }
-            guard result.status == 0 else { fail("host readlink failed") }
-            let target = @utf8.decode(result.stdout)
-            metadata[dimension] = if target.has_suffix("\n") {
-              target[:target.length() - 1].to_owned()
+            if @async.platform is Windows {
+              let (_, target) = observe_windows_link(child, root)
+              metadata[dimension] = target
             } else {
-              target
+              let result = run(readlink_path, [child]) catch {
+                error =>
+                  fail(
+                    "required observation unavailable: symlink-target: \{error}",
+                  )
+              }
+              guard result.status == 0 else { fail("host readlink failed") }
+              let target = @utf8.decode(result.stdout)
+              metadata[dimension] = if target.has_suffix("\n") {
+                target[:target.length() - 1].to_owned()
+              } else {
+                target
+              }
             }
           }
         "atime" => {

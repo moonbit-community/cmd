@@ -1,10 +1,10 @@
 ///|
 priv struct CheckSummary {
-  mut checked : Int
-  mut verified : Int
-  mut mismatched : Int
-  mut unreadable : Int
-  mut malformed : Int
+  mut checked : Int32
+  mut verified : Int32
+  mut mismatched : Int32
+  mut unreadable : Int32
+  mut malformed : Int32
 }
 
 ///|
@@ -109,7 +109,7 @@ pub async fn run(
   algorithm : Algorithm,
   args : ArrayView[String],
   version : String,
-) -> Int {
+) -> Int32 {
   let command = algorithm.command()
   let parsed = @cli.parse(args, [
     @cli.flag("check", short='c'),

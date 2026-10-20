@@ -1,5 +1,5 @@
 ///|
-async fn drive_input(session : @shell.Session, interactive : Bool) -> Int {
+async fn drive_input(session : @shell.Session, interactive : Bool) -> Int32 {
   let mut continuation = false
   for ;; {
     if interactive {
@@ -34,7 +34,7 @@ async fn drive_input(session : @shell.Session, interactive : Bool) -> Int {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("sh 0.2.1\n")
+    @stdio.stdout.write("sh 0.2.2\n")
     return
   }
   if metadata_args.length() == 1 && metadata_args[0] == "--help" {

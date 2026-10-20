@@ -14,7 +14,7 @@ fn parse_colors(value : String?) -> (Array[String], Bool) {
   let mut start = 0
   for slot in 0..<8 {
     let mut end = start
-    while end < text.length() && text[end] is ('0'..='9' | ';') {
+    while end < text.length() && text[end] is ('0'..<='9' | ';') {
       end += 1
     }
     if end < text.length() && slot < 7 && text[end] != ':' {
@@ -33,7 +33,7 @@ fn parse_colors(value : String?) -> (Array[String], Bool) {
 }
 
 ///|
-fn json_color(value : Json) -> Int {
+fn json_color(value : Json) -> Int32 {
   match value {
     Null => 0
     False => 1
@@ -49,12 +49,12 @@ fn json_color(value : Json) -> Int {
 fn render_json(
   value : Json,
   pretty : Bool,
-  indent : Int,
+  indent : Int32,
   tab : Bool,
   colors : Array[String]?,
 ) -> String {
   let output = StringBuilder()
-  fn color(index : Int) -> Unit {
+  fn color(index : Int32) -> Unit {
     if colors is Some(palette) {
       output.write_string(palette[index])
     }
@@ -64,7 +64,7 @@ fn render_json(
       output.write_string("\u{1b}[0m")
     }
   }
-  fn newline(depth : Int) -> Unit {
+  fn newline(depth : Int32) -> Unit {
     if pretty {
       output.write_char('\n')
       for _ in 0..<(if tab { depth } else { depth * indent }) {
@@ -72,7 +72,7 @@ fn render_json(
       }
     }
   }
-  fn emit(value : Json, depth : Int) -> Unit {
+  fn emit(value : Json, depth : Int32) -> Unit {
     let tone = json_color(value)
     color(tone)
     match value {

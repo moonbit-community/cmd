@@ -122,3 +122,65 @@ async test "scenario pair snapshots detect byte and exit-status differences" {
   @fs.write_file(directory + "/wasm/work/result", "changed file")
   assert_true(native != scenario_pair_snapshot(directory + "/wasm", fixture))
 }
+
+///|
+async test "scenario pair snapshots bind both allocated network origins and retain other ports" {
+  let directory = @fs.tmpdir(prefix="mooncmd-two-network-origins-")
+  defer @fs.rmdir(directory, recursive=true)
+  for
+    (backend, http_port, wire_port) in [
+      ("native", "1234", "2345"),
+      ("wasm", "3456", "4567"),
+    ] {
+    let evidence = directory + "/" + backend
+    @fs.mkdir(evidence + "/work", recursive=true)
+    @fs.write_file(
+      evidence + "/network-origin.txt",
+      "http://127.0.0.1:" + http_port,
+    )
+    @fs.write_file(
+      evidence + "/wire-origin.txt",
+      "http://127.0.0.1:" + wire_port,
+    )
+    @fs.write_file(
+      evidence + "/work/request.bin",
+      "GET /wire-url/a%0D%0Ab HTTP/1.1\r\nHost: 127.0.0.1:" +
+      wire_port +
+      "\r\nCookie: sid=actual\r\n\r\n",
+    )
+    @fs.write_file(
+      evidence + "/work/origins.txt",
+      "http://127.0.0.1:" +
+      http_port +
+      " http://127.0.0.1:" +
+      wire_port +
+      " http://foreign:9999",
+    )
+  }
+  let fixture : @testkit.Case = @json.from_json({
+    "id": "network-transfer-boundaries",
+    "command": "curl",
+    "args": [],
+    "files": [],
+    "environment": {},
+    "expected_status": 0,
+    "normalizations": [],
+    "comparison": "scenario",
+  })
+  let native = scenario_pair_snapshot(directory + "/native", fixture)
+  assert_eq(native, scenario_pair_snapshot(directory + "/wasm", fixture))
+  @fs.write_file(
+    directory + "/wasm/work/origins.txt",
+    "http://127.0.0.1:3456 http://127.0.0.1:4567 http://foreign:9998",
+  )
+  assert_true(native != scenario_pair_snapshot(directory + "/wasm", fixture))
+  @fs.write_file(
+    directory + "/wasm/work/origins.txt",
+    "http://127.0.0.1:3456 http://127.0.0.1:4567 http://foreign:9999",
+  )
+  @fs.write_file(
+    directory + "/wasm/work/request.bin",
+    "GET /wire-url/changed HTTP/1.1\r\nHost: 127.0.0.1:4567\r\nCookie: sid=actual\r\n\r\n",
+  )
+  assert_true(native != scenario_pair_snapshot(directory + "/wasm", fixture))
+}

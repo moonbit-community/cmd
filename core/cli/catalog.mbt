@@ -6,7 +6,7 @@ fn contract(
   output : OutputMode,
   capabilities : Array[Capability],
   options : Array[String],
-  exit_codes? : Array[Int] = [0, 1, 2],
+  exit_codes~ : Array[Int32] = [0, 1, 2],
 ) -> CommandContract {
   let declared_options = options.copy()
   if !declared_options.contains("help") {
@@ -173,6 +173,8 @@ pub fn command_catalog() -> Array[CommandContract] {
       "mode", "parents", "verbose",
     ]),
     contract("mktemp", Extended, NoInput, LineStream, [FileWrite], ["directory"]),
+    // Timestamps describe entries, including dangling links, without dereferencing.
+    // Windows Wasm link moves/backups reject until the host rename fix is verified.
     contract("mv", Extended, NoInput, LineStream, [FileRead, FileWrite], [
       "force", "no-clobber", "no-target-directory", "verbose", "interactive", "update",
       "update-mode", "backup", "backup-control", "suffix",
@@ -198,15 +200,43 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("chmod", Restricted, NoInput, LineStream, [PermissionMutation], [
       "recursive", "reference", "verbose", "symbolic-assignment",
     ]),
-    // header + cookie: explicit Cookie follows the jar as a separate field.
-    contract("curl", Restricted, NoInput, ByteStream, [Network, FileWrite], [
-      "connect-timeout", "data", "data-binary", "data-raw", "data-urlencode", "fail",
-      "head", "header", "idle-timeout", "insecure", "location", "max-redirs", "max-time",
-      "output", "proxy", "remote-header-name", "remote-name", "remove-on-error",
-      "request", "retry", "retry-all-errors", "retry-connrefused", "retry-delay",
-      "retry-max-time", "show-error", "silent", "upload-file", "user", "basic", "cookie",
-      "cookie-jar",
-    ]),
+    // Explicit Cookie follows the jar as a separate field. Candidate CurlProfile
+    // maps partial bodies/receive/empty replies to 18/56/52. Accepted 200 header
+    // EOF retains known framing checks. Ordinary lazy file output buffers
+    // 4096 bytes; an earlier body failure survives a secondary final-flush failure.
+    // Accepted retries reset opened regular files before the next request;
+    // remove-on-error cleans up only after final failure. A valid -OJ name on
+    // 2xx/3xx creates exclusively before body delivery and stays fixed across retries.
+    // Other response statuses keep ordinary URL-derived output selection.
+    // Path-based reset does not establish descriptor/inode identity under races.
+    // A redirect requiring consumed stdin to rewind fails with 65; a separate
+    // retry-all attempt may instead upload the now-empty input. Show-error
+    // retains each failed attempt's diagnostic even after retry success.
+    // Generated Cookie fields reject invalid headers before request writes.
+    // Initial raw space/TAB/CR/LF/DEL in path/query rejects before connection (3).
+    // Redirect spaces use path %20/query +; TAB uses %09. Encoded bytes remain.
+    // Set-Cookie without '=' is ignored; nonnumeric Max-Age deletes its stored cookie.
+    // Positive decimal overflow keeps the replacement under a 400-day lifetime cap.
+    // Cookie ordering uses descending path/domain/name byte length, then creation.
+    // Response observers retain final Set-Cookie fields separately from storage.
+    // Requests default to identity encoding and retain content-coded wire bytes.
+    // Resumed 206 bodies must complete their declared Content-Range span.
+    contract(
+      "curl",
+      Restricted,
+      NoInput,
+      ByteStream,
+      [Network, FileWrite],
+      [
+        "connect-timeout", "data", "data-binary", "data-raw", "data-urlencode", "fail",
+        "head", "header", "idle-timeout", "insecure", "location", "max-redirs", "max-time",
+        "output", "proxy", "remote-header-name", "remote-name", "remove-on-error",
+        "request", "retry", "retry-all-errors", "retry-connrefused", "retry-delay",
+        "retry-max-time", "show-error", "silent", "upload-file", "user", "basic",
+        "cookie", "cookie-jar",
+      ],
+      exit_codes=[0, 1, 2, 3, 5, 7, 18, 22, 23, 26, 28, 47, 52, 56, 60, 65],
+    ),
     contract(
       "env",
       Restricted,
@@ -244,15 +274,36 @@ pub fn command_catalog() -> Array[CommandContract] {
       ["duration"],
       exit_codes=[0, 124, 125, 126, 127],
     ),
-    // header + load-cookies: explicit Cookie overrides jar fields across origins.
-    contract("wget", Restricted, NoInput, ByteStream, [Network, FileWrite], [
-      "append-output", "body-data", "body-file", "connect-timeout", "continue", "content-disposition",
-      "header", "input-file", "max-redirect", "method", "no-check-certificate", "no-proxy",
-      "output-document", "output-file", "quiet", "read-timeout", "retry-connrefused",
-      "retry-on-http-error", "timeout", "timestamping", "tries", "waitretry", "idle-timeout",
-      "user", "password", "http-user", "http-password", "auth-no-challenge", "load-cookies",
-      "save-cookies", "keep-session-cookies", "no-cookies",
-    ]),
+    // Explicit Cookie overrides jar fields across origins. Candidate WgetProfile
+    // accepts calibrated header/chunk-data/trailer EOF, but other exhausted
+    // receive retries use 4. A 416 does not open transfer output and succeeds;
+    // explicit -O initialization remains a prior command effect.
+    // a complete shorter known-length 200 preserves the prefix. Stdin is not retried.
+    // Continued GET plus Content-Disposition discovers the filename with HEAD,
+    // then uses that file's offset. The core API rejects a direct resumed switch.
+    // Raw space/TAB/CR/LF/DEL in initial path/query uses uppercase percent escapes.
+    // Redirect space/TAB uses %20/%09. Existing percent-encoded bytes remain.
+    // Set-Cookie without '=' and nonnumeric Max-Age replacements preserve old cookies.
+    // Positive decimal overflow below 32 digits expires the matching stored cookie.
+    // Cookie ordering uses descending domain/path byte length, then name/value bytes.
+    // Response observers retain final Set-Cookie fields separately from storage.
+    contract(
+      "wget",
+      Restricted,
+      NoInput,
+      ByteStream,
+      [Network, FileWrite],
+      [
+        "append-output", "body-data", "body-file", "connect-timeout", "continue",
+        "content-disposition", "header", "input-file", "max-redirect", "method",
+        "no-check-certificate", "no-proxy", "output-document", "output-file", "quiet",
+        "read-timeout", "retry-connrefused", "retry-on-http-error", "timeout", "timestamping",
+        "tries", "waitretry", "idle-timeout", "user", "password", "http-user", "http-password",
+        "auth-no-challenge", "load-cookies", "save-cookies", "keep-session-cookies",
+        "no-cookies",
+      ],
+      exit_codes=[0, 1, 2, 3, 4, 5, 7, 8],
+    ),
     contract("yes", Core, NoInput, ByteStream, [], []),
     contract(
       "fold",

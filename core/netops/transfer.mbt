@@ -2,9 +2,58 @@
 fn transfer_error(
   kind : TransferErrorKind,
   message : String,
-  status? : Int,
+  status? : Int32,
+  context? : TransferFailureContext,
 ) -> TransferError {
-  TransferError(kind~, message~, status~)
+  TransferError(kind~, message~, status~, context~)
+}
+
+///|
+fn failure_context(
+  phase : TransferPhase,
+  framing? : ResponseFraming,
+  received_bytes~ : Int64 = 0L,
+  committed_bytes~ : Int64 = 0L,
+  write_outcome_uncertain~ : Bool = false,
+) -> TransferFailureContext {
+  { phase, framing, received_bytes, committed_bytes, write_outcome_uncertain, }
+}
+
+///|
+fn with_failure_context(
+  error : TransferError,
+  fallback : TransferFailureContext,
+) -> TransferError {
+  let TransferError(kind~, message~, status~, context~) = error
+  TransferError(
+    kind~,
+    message~,
+    status~,
+    context=Some(context.unwrap_or(fallback)),
+  )
+}
+
+///|
+fn response_body_failure(
+  error : TransferError,
+  framing : ResponseFraming,
+  received_bytes~ : Int64,
+  committed_bytes~ : Int64,
+  write_outcome_uncertain? : Bool,
+) -> TransferError {
+  let TransferError(kind~, ..) = error
+  with_failure_context(
+    error,
+    failure_context(
+      ResponseBody,
+      framing~,
+      received_bytes~,
+      committed_bytes~,
+      write_outcome_uncertain=write_outcome_uncertain.unwrap_or(
+        kind == OutputFailure,
+      ),
+    ),
+  )
 }
 
 ///|
@@ -20,6 +69,9 @@ fn validate_transfer_options(
       "maximum transfer time must be greater than zero",
     )
   }
+  if options.resume_from is Some(offset) && offset < 0L {
+    raise transfer_error(ProtocolFailure, "resume offset must not be negative")
+  }
   match options.redirects {
     FollowRedirects(limit) if limit < 0 =>
       raise transfer_error(
@@ -34,9 +86,9 @@ fn validate_transfer_options(
 fn timeout_for(
   options : TransferOptions,
   started : Int64,
-  phase_timeout : Int,
+  phase_timeout : Int32,
   phase : String,
-) -> Int raise TransferError {
+) -> Int32 raise TransferError {
   match options.max_time_ms {
     None => phase_timeout
     Some(maximum) => {
@@ -53,7 +105,7 @@ fn timeout_for(
 }
 
 ///|
-fn timeout_message(phase : String, timeout : Int) -> TransferError {
+fn timeout_message(phase : String, timeout : Int32) -> TransferError {
   transfer_error(
     TimeoutFailure,
     "operation timed out after \{timeout} milliseconds during \{phase}",
@@ -65,10 +117,7 @@ fn validate_headers(
   headers : ArrayView[HttpHeader],
 ) -> Unit raise TransferError {
   for header in headers {
-    if header.name == "" ||
-      header.name.contains(":") ||
-      header.name.contains("\r") ||
-      header.name.contains("\n") ||
+    if !wire_token(header.name) ||
       header.value.contains("\r") ||
       header.value.contains("\n") {
       raise transfer_error(
@@ -102,7 +151,7 @@ fn filtered_headers(
   headers : ArrayView[HttpHeader],
   strip_sensitive : Bool,
   strip_entity : Bool,
-  keep_cookie? : Bool = false,
+  keep_cookie~ : Bool = false,
 ) -> Array[HttpHeader] {
   let result : Array[HttpHeader] = []
   for header in headers {
@@ -176,6 +225,10 @@ fn request_header_maps(
   if length is Some(value) && !contains_header(headers, "content-length") {
     per_request["Content-Length"] = value.to_string()
   }
+  if !contains_header(headers, "accept-encoding") {
+    // Keep transfer counts and Range offsets on the encoded representation.
+    per_request["Accept-Encoding"] = "identity"
+  }
   if resume_from is Some(value) &&
     value > 0L &&
     !contains_header(headers, "range") {
@@ -187,10 +240,9 @@ fn request_header_maps(
 ///|
 async fn open_client(
   parsed : ParsedUrl,
-  headers : Map[@http.CaseInsensitiveString, String],
   options : TransferOptions,
   started : Int64,
-) -> @http.Client {
+) -> HttpWire {
   let mut created : @http.Client? = None
   let timeout = timeout_for(
     options,
@@ -220,7 +272,6 @@ async fn open_client(
     }
     let client = @http.Client(
       parsed.origin(),
-      headers~,
       proxy?,
       trust=if options.verify_tls {
         @tls.SystemRoot
@@ -229,7 +280,7 @@ async fn open_client(
       },
     )
     created = Some(client)
-    client
+    HttpWire::new(client)
   }) catch {
     @tls.TlsError(message) => raise transfer_error(TlsFailure, message)
     @http.ProxyError(_) =>
@@ -254,33 +305,17 @@ async fn open_client(
 
 ///|
 async fn write_client_chunk(
-  client : @http.Client,
+  client : HttpWire,
   chunk : Bytes,
   options : TransferOptions,
   started : Int64,
 ) -> Unit {
-  let timeout = timeout_for(
-    options,
-    started,
-    options.idle_timeout_ms,
-    "request body",
-  )
-  let result = @async.with_timeout_opt(timeout, () => client.write(chunk)) catch {
-    err =>
-      raise transfer_error(
-        ConnectionFailure,
-        "request body write failed: \{err}",
-      )
-  }
-  match result {
-    Some(_) => ()
-    None => raise timeout_message("request body", timeout)
-  }
+  client.write_payload(chunk, options, started)
 }
 
 ///|
 async fn stream_file_body(
-  client : @http.Client,
+  client : HttpWire,
   path : String,
   options : TransferOptions,
   started : Int64,
@@ -317,7 +352,7 @@ async fn stream_file_body(
 
 ///|
 async fn stream_stdin_body(
-  client : @http.Client,
+  client : HttpWire,
   options : TransferOptions,
   started : Int64,
 ) -> Unit {
@@ -345,66 +380,75 @@ async fn stream_stdin_body(
 
 ///|
 async fn send_request(
-  client : @http.Client,
+  client : HttpWire,
   parsed : ParsedUrl,
   request_method : HttpMethod,
+  persistent : Map[@http.CaseInsensitiveString, String],
   headers : Map[@http.CaseInsensitiveString, String],
   body : RequestBody,
   options : TransferOptions,
   started : Int64,
 ) -> @http.Response {
-  let timeout = timeout_for(
-    options,
-    started,
-    options.idle_timeout_ms,
-    "request headers",
+  client.start_request(
+    parsed, request_method, persistent, headers, body, options, started,
   )
-  let request_result = @async.with_timeout_opt(timeout, () => {
-    client.request(
-      request_method.to_runtime(),
-      parsed.request_target(),
-      extra_headers=headers,
-    )
-  }) catch {
-    err =>
-      raise transfer_error(
-        ConnectionFailure,
-        "request header write failed: \{err}",
-      )
-  }
-  match request_result {
-    Some(_) => ()
-    None => raise timeout_message("request headers", timeout)
-  }
   match body {
     EmptyBody => ()
     BytesBody(data) => write_client_chunk(client, data, options, started)
     FileBody(path) => stream_file_body(client, path, options, started)
     StdinBody => stream_stdin_body(client, options, started)
   }
+  client.finish_request(options, started)
   let timeout = timeout_for(
     options,
     started,
     options.idle_timeout_ms,
     "response headers",
-  )
+  ) catch {
+    error => raise with_failure_context(error, failure_context(ResponseHeaders))
+  }
   let response_result = @async.with_timeout_opt(timeout, () => {
-    client.end_request()
+    client.response(request_method, profile=options.profile)
   }) catch {
-    err =>
+    @io.ReaderClosed =>
       raise transfer_error(
-        ConnectionFailure,
-        "response header read failed: \{err}",
+        if client.header_bytes == 0L {
+          EmptyReplyFailure
+        } else {
+          ReceiveFailure
+        },
+        if client.header_bytes == 0L {
+          "server returned an empty reply"
+        } else {
+          "response headers ended before completion"
+        },
+        context=failure_context(ResponseHeaders),
+      )
+    TransferError(..) as error =>
+      raise with_failure_context(error, failure_context(ResponseHeaders))
+    error =>
+      raise transfer_error(
+        ReceiveFailure,
+        "response header read failed: \{error}",
+        context=failure_context(ResponseHeaders),
       )
   }
   match response_result {
     Some(response) => response
-    None => raise timeout_message("response headers", timeout)
+    None =>
+      raise with_failure_context(
+        timeout_message("response headers", timeout),
+        failure_context(ResponseHeaders),
+      )
   }
 }
 
 ///|
 fn response_content_length(response : @http.Response) -> Int64? {
+  if response.headers.get("Transfer-Encoding") is Some(encoding) &&
+    encoding.to_lower() == "chunked" {
+    return None
+  }
   match response.headers.get("Content-Length") {
     Some(value) => {
       let length = @string.parse_int64(value) catch { _ => return None }
@@ -419,37 +463,113 @@ fn response_content_length(response : @http.Response) -> Int64? {
 }
 
 ///|
-fn response_headers(response : @http.Response) -> Array[HttpHeader] {
+fn response_framing(
+  response : @http.Response,
+  request_method : HttpMethod,
+) -> ResponseFraming {
+  if !response_has_body(response.code, request_method) {
+    return Bodyless
+  }
+  if response.headers.get("Transfer-Encoding") is Some(encoding) &&
+    encoding.to_lower() == "chunked" {
+    return Chunked
+  }
+  match response_content_length(response) {
+    Some(length) => FixedLength(length)
+    None => CloseDelimited
+  }
+}
+
+///|
+fn response_body_eof(
+  response : @http.Response,
+  request_method : HttpMethod,
+  received : Int64,
+) -> TransferError {
+  if response_has_body(response.code, request_method) {
+    if response.headers.get("Transfer-Encoding") is Some(encoding) &&
+      encoding.to_lower() == "chunked" {
+      return transfer_error(
+        PartialBodyFailure,
+        "chunked response body ended after \{received} bytes before its terminator",
+      )
+    }
+    if response_content_length(response) is Some(expected) {
+      return transfer_error(
+        PartialBodyFailure,
+        "response body ended after \{received} of \{expected} bytes",
+      )
+    }
+  }
+  transfer_error(ReceiveFailure, "response body read failed: unexpected EOF")
+}
+
+///|
+fn resumed_response_range(
+  response : @http.Response,
+  resume_from : Int64?,
+) -> (Int64, Int64?) raise TransferError {
+  guard resume_from is Some(offset) && offset > 0L && response.code == 206 else {
+    return (0L, None)
+  }
+  guard response.headers.get("Content-Range") is Some(value) &&
+    value.has_prefix("bytes ") else {
+    raise transfer_error(
+      ProtocolFailure,
+      "resumed response has no byte Content-Range",
+    )
+  }
+  let range = value[6:]
+  guard range.find("-") is Some(dash) &&
+    range.find("/") is Some(slash) &&
+    dash > 0 &&
+    slash > dash + 1 else {
+    raise transfer_error(ProtocolFailure, "invalid resumed Content-Range")
+  }
+  let start = @string.parse_int64(range[:dash]) catch {
+    _ => raise transfer_error(ProtocolFailure, "invalid resumed range start")
+  }
+  let end = @string.parse_int64(range[dash + 1:slash]) catch {
+    _ => raise transfer_error(ProtocolFailure, "invalid resumed range end")
+  }
+  guard start == offset && end >= start else {
+    raise transfer_error(
+      ProtocolFailure,
+      "resumed response starts at the wrong offset",
+    )
+  }
+  let total = range[slash + 1:]
+  if total != "*" {
+    let total = @string.parse_int64(total) catch {
+      _ => raise transfer_error(ProtocolFailure, "invalid resumed range length")
+    }
+    guard total > end else {
+      raise transfer_error(
+        ProtocolFailure,
+        "resumed range exceeds the resource length",
+      )
+    }
+  }
+  if response_content_length(response) is Some(length) &&
+    length != end - start + 1L {
+    raise transfer_error(
+      ProtocolFailure,
+      "resumed range and Content-Length disagree",
+    )
+  }
+  (offset, Some(end - start + 1L))
+}
+
+///|
+fn response_headers(
+  response : @http.Response,
+  cookie_fields : Array[HttpHeader],
+) -> Array[HttpHeader] {
   let result : Array[HttpHeader] = []
   for name, value in response.headers {
     result.push({ name: name.to_string(), value, })
   }
-  for cookie in response.cookies {
-    let value = StringBuilder()
-    value.write_string(cookie.name + "=" + cookie.value)
-    if cookie.path is Some(path) {
-      value.write_string("; Path=" + path)
-    }
-    if cookie.domain is Some(domain) {
-      value.write_string("; Domain=" + domain)
-    }
-    if cookie.expires_raw is Some(expires) {
-      value.write_string("; Expires=" + expires)
-    }
-    if cookie.max_age is Some(age) {
-      value.write_string("; Max-Age=" + age.to_string())
-    }
-    if cookie.secure {
-      value.write_string("; Secure")
-    }
-    if cookie.http_only {
-      value.write_string("; HttpOnly")
-    }
-    for extension in cookie.extensions {
-      value.write_string("; " + extension)
-    }
-    result.push(http_header("Set-Cookie", value.to_string()))
-  }
+  result.append(cookie_fields)
   result
 }
 
@@ -509,6 +629,7 @@ priv enum OutputSink {
 async fn open_sink(
   output : TransferOutput,
   response : @http.Response,
+  exclusive~ : Bool = false,
 ) -> OutputSink {
   match output {
     StandardOutput => StdoutSink
@@ -516,10 +637,14 @@ async fn open_sink(
     FileOutput(mode~, remove_on_error~, ..) => {
       let path = output_path(output, response).unwrap()
       let opened = try {
-        match mode {
-          Truncate => (path, @fsops.open_output(path, CreateOrTruncate))
-          Append => (path, @fsops.open_output(path, AppendOrCreate))
-          Unique => @fsops.open_unique_numbered_output(path)
+        if exclusive {
+          (path, @fsops.open_output(path, CreateNew))
+        } else {
+          match mode {
+            Truncate => (path, @fsops.open_output(path, CreateOrTruncate))
+            Append => (path, @fsops.open_output(path, AppendOrCreate))
+            Unique => @fsops.open_unique_numbered_output(path)
+          }
         }
       } catch {
         err =>
@@ -552,7 +677,14 @@ fn OutputSink::close(self : OutputSink) -> Unit {
 ///|
 async fn OutputSink::write(self : OutputSink, chunk : Bytes) -> Unit {
   match self {
-    StdoutSink => @stdio.stdout.write(chunk)
+    StdoutSink =>
+      @stdio.stdout.write(chunk) catch {
+        err =>
+          raise transfer_error(
+            OutputFailure,
+            "cannot write standard output: \{err}",
+          )
+      }
     DiscardSink => ()
     FileSink(path, file, _) =>
       file.write(chunk) catch {
@@ -585,12 +717,12 @@ async fn emit(
 }
 
 ///|
-fn is_redirect(code : Int) -> Bool {
+fn is_redirect(code : Int32) -> Bool {
   code == 301 || code == 302 || code == 303 || code == 307 || code == 308
 }
 
 ///|
-fn response_has_body(code : Int, request_method : HttpMethod) -> Bool {
+fn response_has_body(code : Int32, request_method : HttpMethod) -> Bool {
   if request_method == Head ||
     (code >= 100 && code < 200) ||
     code == 204 ||
@@ -603,7 +735,7 @@ fn response_has_body(code : Int, request_method : HttpMethod) -> Bool {
 
 ///|
 fn rewritten_request(
-  code : Int,
+  code : Int32,
   request_method : HttpMethod,
   body : RequestBody,
   preserve_method : Bool,
@@ -626,9 +758,13 @@ fn rewritten_request(
 }
 
 ///|
-pub fn retryable_failure(kind : TransferErrorKind, status : Int?) -> Bool {
+pub fn retryable_failure(kind : TransferErrorKind, status : Int32?) -> Bool {
   match kind {
-    ConnectionFailure | TimeoutFailure => true
+    ConnectionFailure
+    | EmptyReplyFailure
+    | ReceiveFailure
+    | PartialBodyFailure
+    | TimeoutFailure => true
     HttpStatusFailure =>
       match status {
         Some(408 | 429 | 500 | 502 | 503 | 504) => true
@@ -641,6 +777,7 @@ pub fn retryable_failure(kind : TransferErrorKind, status : Int?) -> Bool {
     | ProxyFailure
     | RedirectFailure
     | InputFailure
+    | RewindFailure
     | OutputFailure
     | ProtocolFailure => false
   }
@@ -657,7 +794,7 @@ pub async fn transfer(
   validate_headers(options.headers)
   let started = @async.now()
   let requested_url = url
-  let mut parsed = parse_absolute_url(url)
+  let mut parsed = parse_absolute_url(url).for_transfer(options.profile)
   let credential_origin = parsed.origin_key()
   let challenged_origins : Map[String, Bool] = Map([])
   let mut request_method = options.request_method
@@ -692,15 +829,20 @@ pub async fn transfer(
         @base64.encode(@utf8.encode(credentials))
     }
     let stored = match options.cookie_jar {
-      Some(jar) => jar.header_for(parsed, @fsops.current_timestamp().seconds)
+      Some(jar) =>
+        jar.header_for(
+          parsed,
+          @fsops.current_timestamp().seconds,
+          profile=options.profile,
+        )
       None => None
     }
     if per_request.contains("Cookie") &&
       stored is Some(value) &&
       options.custom_cookie_mode is SeparateFields {
-      // async serializes client headers before request headers. These are two
+      // The transport serializes persistent headers before request headers. These are two
       // independent maps, so the jar and explicit field retain their wire
-      // identity and order without merging values or replacing the transport.
+      // identity and order without merging values.
       persistent["Cookie"] = value
     }
     if !per_request.contains("Cookie") {
@@ -719,20 +861,34 @@ pub async fn transfer(
         per_request["Cookie"] = value
       }
     }
-    let client = open_client(parsed, persistent, options, started)
+    let client = open_client(parsed, options, started) catch {
+      TransferError(..) as error =>
+        raise with_failure_context(error, failure_context(Connection))
+      error => raise error
+    }
     errdefer client.close()
     let response = send_request(
-      client, parsed, request_method, per_request, body, options, started,
+      client, parsed, request_method, persistent, per_request, body, options, started,
     ) catch {
-      TransferError(..) as err => raise err
+      TransferError(..) as err =>
+        raise with_failure_context(err, failure_context(Request))
       err =>
-        raise transfer_error(ConnectionFailure, "HTTP request failed: \{err}")
+        raise transfer_error(
+          ConnectionFailure,
+          "HTTP request failed: \{err}",
+          context=failure_context(Request),
+        )
     }
     if options.cookie_jar is Some(jar) {
-      jar.receive(parsed, response.cookies, @fsops.current_timestamp().seconds)
+      jar.receive(
+        parsed,
+        response.cookies,
+        @fsops.current_timestamp().seconds,
+        profile=options.profile,
+      )
     }
     let total = response_content_length(response)
-    let visible_headers = response_headers(response)
+    let visible_headers = response_headers(response, client.cookie_fields)
     emit(
       observer,
       ResponseStarted(
@@ -772,7 +928,10 @@ pub async fn transfer(
           status=response.code,
         )
       }
-      let next = resolve_location(parsed, location) catch {
+      let next = resolve_location(parsed, location).for_transfer(
+        options.profile,
+        redirect=true,
+      ) catch {
         TransferError(message~, ..) => {
           client.close()
           raise transfer_error(
@@ -793,6 +952,11 @@ pub async fn transfer(
         body,
         options.preserve_method_on_redirect,
       )
+      require_replayable_redirect(
+        options.profile,
+        next_body,
+        client.request_payload_bytes,
+      )
       headers = filtered_headers(
         headers,
         cross_origin,
@@ -806,6 +970,30 @@ pub async fn transfer(
       client.close()
       continue
     }
+    if options.profile == WgetProfile &&
+      request_method == Head &&
+      response.code == 206 &&
+      !per_request.contains("Range") {
+      raise transfer_error(
+        ReceiveFailure,
+        "unexpected partial response during filename discovery",
+        status=response.code,
+      )
+    }
+    if options.profile == WgetProfile && response.code == 416 {
+      client.close()
+      emit(observer, Completed(received=0L, content_length=total))
+      return {
+        requested_url,
+        effective_url: parsed.to_url(),
+        status: response.code,
+        reason: response.reason,
+        headers: visible_headers,
+        received: 0L,
+        output_path: output_path(output, response),
+        redirects: redirect_count,
+      }
+    }
     if (options.fail_on_http_error && response.code >= 400) ||
       options.http_error_statuses.contains(response.code) {
       client.close()
@@ -813,6 +1001,57 @@ pub async fn transfer(
         HttpStatusFailure,
         "server returned HTTP status \{response.code} \{response.reason}",
         status=response.code,
+      )
+    }
+    let (response_offset, response_span) = resumed_response_range(
+      response,
+      options.resume_from,
+    ) catch {
+      TransferError(kind~, message~, status~, context~) as error => {
+        if options.profile == WgetProfile && kind == ProtocolFailure {
+          raise TransferError(kind=ReceiveFailure, message~, status~, context~)
+        }
+        raise error
+      }
+    }
+    if options.resume_from is Some(offset) &&
+      offset > 0L &&
+      (options.resume_skip_existing || response.code == 206) {
+      match output {
+        FileOutput(path~, ..) if output_path(output, response) != Some(path) =>
+          raise transfer_error(
+            ProtocolFailure,
+            "cannot resume into a different Content-Disposition output path",
+          )
+        _ => ()
+      }
+    }
+    let skip_existing = if options.resume_skip_existing &&
+      response.code == 200 &&
+      response_has_body(response.code, request_method) {
+      options.resume_from.unwrap_or(0L)
+    } else {
+      0L
+    }
+    if options.resume_skip_existing &&
+      options.resume_from is Some(offset) &&
+      offset > 0L {
+      match output {
+        FileOutput(mode=Truncate | Unique, ..) =>
+          raise transfer_error(
+            ProtocolFailure,
+            "retaining a resumed prefix requires append output",
+          )
+        _ => ()
+      }
+    }
+    if options.profile != WgetProfile &&
+      skip_existing > 0L &&
+      total is Some(expected) &&
+      expected < skip_existing {
+      raise transfer_error(
+        ProtocolFailure,
+        "response is shorter than the already written prefix",
       )
     }
     let effective_output = if options.keep_output_on_not_modified &&
@@ -824,7 +1063,7 @@ pub async fn transfer(
           Some(offset),
           200,
           FileOutput(path~, content_disposition~, remove_on_error~, ..),
-        ) if offset > 0L =>
+        ) if offset > 0L && !options.resume_skip_existing =>
           FileOutput(
             path~,
             mode=Truncate,
@@ -834,64 +1073,125 @@ pub async fn transfer(
         _ => output
       }
     }
-    let sink = open_sink(effective_output, response)
-    let received = try {
-      let mut count = 0L
-      for ;; {
-        let timeout = timeout_for(
-          options,
-          started,
-          options.idle_timeout_ms,
-          "response body",
+    let sink = TransferSink::new(effective_output, response, options.profile) catch {
+      TransferError(..) as error =>
+        raise with_failure_context(
+          error,
+          failure_context(
+            ResponseBody,
+            framing=response_framing(response, request_method),
+          ),
         )
-        let read_result = @async.with_timeout_opt(timeout, () => {
-          client.read_some(max_len=65536)
-        }) catch {
-          err =>
-            raise transfer_error(
-              ConnectionFailure,
-              "response body read failed: \{err}",
-            )
-        }
-        let chunk = match read_result {
-          Some(Some(chunk)) => chunk
-          Some(None) => break
-          None => raise timeout_message("response body", timeout)
-        }
-        sink.write(chunk)
-        count += chunk.length().to_int64()
-        emit(observer, Progress(received=count, content_length=total))
-      }
-      if response_has_body(response.code, request_method) &&
-        total is Some(expected) &&
-        count != expected {
-        raise transfer_error(
-          ConnectionFailure,
-          "response body ended after \{count} of \{expected} bytes",
-        )
-      }
-      count
-    } catch {
-      TransferError(..) as transfer_failure => {
-        sink.close()
-        sink.cleanup_after_error() catch {
-          _ => ()
-        }
-        client.close()
-        raise transfer_failure
-      }
-      err => {
-        sink.close()
-        sink.cleanup_after_error() catch {
-          _ => ()
-        }
-        client.close()
-        raise transfer_error(
-          ConnectionFailure,
-          "response transfer failed: \{err}",
-        )
-      }
+      error => raise error
     }
+    let mut count = 0L
+    let framing = response_framing(response, request_method)
+    let received = sink.with_scope(() => {
+      try {
+        if !sink.deferred_open {
+          sink.start(observer, response_offset)
+        }
+        let mut skip_remaining = skip_existing
+        for ;; {
+          let timeout = timeout_for(
+            options,
+            started,
+            options.idle_timeout_ms,
+            "response body",
+          )
+          let read_result = @async.with_timeout_opt(timeout, () => {
+            client.read_some(max_len=65536, profile=options.profile)
+          }) catch {
+            @io.ReaderClosed =>
+              raise response_body_eof(response, request_method, count)
+            TransferError(..) as error => raise error
+            err =>
+              raise transfer_error(
+                ReceiveFailure,
+                "response body read failed: \{err}",
+              )
+          }
+          let chunk = match read_result {
+            Some(Some(chunk)) => chunk
+            Some(None) => break
+            None => raise timeout_message("response body", timeout)
+          }
+          let skipped = skip_remaining.min(chunk.length().to_int64()).to_int()
+          skip_remaining -= skipped.to_int64()
+          count += chunk.length().to_int64()
+          if skipped < chunk.length() {
+            sink.start(observer, response_offset)
+            sink.write(
+              if skipped == 0 {
+                chunk
+              } else {
+                chunk[skipped:].to_owned()
+              },
+            )
+          }
+          emit(observer, Progress(received=count, content_length=total))
+        }
+        let expected_body_length = match response_span {
+          Some(_) => response_span
+          None => total
+        }
+        if response_has_body(response.code, request_method) &&
+          expected_body_length is Some(expected) &&
+          count != expected {
+          raise transfer_error(
+            PartialBodyFailure,
+            "response body ended after \{count} of \{expected} bytes",
+          )
+        }
+        let completed_shorter_wget_response = options.profile == WgetProfile &&
+          response.code == 200 &&
+          total == Some(count)
+        if skip_remaining > 0L && !completed_shorter_wget_response {
+          raise transfer_error(
+            PartialBodyFailure,
+            "response ended before the already written prefix",
+          )
+        }
+        sink.start(observer, response_offset)
+        sink.flush()
+        count
+      } catch {
+        TransferError(..) as transfer_failure => {
+          sink.flush_after_failure()
+          sink.close()
+          sink.cleanup_after_error() catch {
+            _ => ()
+          }
+          client.close()
+          raise response_body_failure(
+            transfer_failure,
+            framing,
+            received_bytes=count,
+            committed_bytes=sink.committed,
+            write_outcome_uncertain=sink.write_uncertain,
+          )
+        }
+        err => {
+          sink.flush_after_failure()
+          sink.close()
+          sink.cleanup_after_error() catch {
+            _ => ()
+          }
+          client.close()
+          raise transfer_error(
+            ReceiveFailure,
+            "response transfer failed: \{err}",
+            context=failure_context(
+              ResponseBody,
+              framing~,
+              received_bytes=count,
+              committed_bytes=sink.committed,
+              write_outcome_uncertain=sink.write_uncertain,
+            ),
+          )
+        }
+      }
+    })
     sink.close()
     client.close()
     emit(observer, Completed(received~, content_length=total))
@@ -905,5 +1205,20 @@ pub async fn transfer(
       output_path: sink.path(),
       redirects: redirect_count,
     }
+  }
+}
+
+///|
+fn require_replayable_redirect(
+  profile : TransferProfile,
+  body : RequestBody,
+  sent : Int64,
+) -> Unit raise TransferError {
+  if profile == CurlProfile && body is StdinBody && sent > 0L {
+    raise transfer_error(
+      RewindFailure,
+      "cannot rewind standard input for the redirected request",
+      context=failure_context(Request),
+    )
   }
 }

@@ -4,7 +4,7 @@ priv suberror CliError {
 }
 
 ///|
-fn b64_char(v : Int) -> Char {
+fn b64_char(v : Int32) -> Char {
   if v < 26 {
     (0x41 + v).unsafe_to_char()
   } else if v < 52 {
@@ -19,11 +19,11 @@ fn b64_char(v : Int) -> Char {
 }
 
 ///|
-fn sextet(c : Char) -> Int raise CliError {
+fn sextet(c : Char) -> Int32 raise CliError {
   match c {
-    'A'..='Z' => c.to_int() - 0x41
-    'a'..='z' => c.to_int() - 0x61 + 26
-    '0'..='9' => c.to_int() - 0x30 + 52
+    'A'..<='Z' => c.to_int() - 0x41
+    'a'..<='z' => c.to_int() - 0x61 + 26
+    '0'..<='9' => c.to_int() - 0x30 + 52
     '+' => 62
     '/' => 63
     _ => raise CliError("base64: invalid input character: '\{c}'")
@@ -33,8 +33,8 @@ fn sextet(c : Char) -> Int raise CliError {
 ///|
 async fn encode_stream(
   reader : &@io.Reader,
-  wrap : Int,
-  writer? : &@io.Writer = @stdio.stdout,
+  wrap : Int32,
+  writer~ : &@io.Writer = @stdio.stdout,
 ) -> Unit {
   let mut column = 0
   let mut emitted = false
@@ -171,7 +171,7 @@ async fn decode_stream(reader : &@io.Reader, ignore_garbage : Bool) -> Unit {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("base64 0.2.1\n")
+    @stdio.stdout.write("base64 0.2.2\n")
     return
   }
   let args = @env.args()[1:]

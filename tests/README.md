@@ -38,6 +38,25 @@ It checks the exact standalone `--help` and `--version` output contract for
 every workspace command on both Native and Wasm, including the local-only
 `timeout` module.
 
+The stage-0 dependency invariant checks all 81 current `moon.mod` files and
+their workspace membership: core, 79 commands and tests declare async 0.22.5;
+core-dependent modules request the current core coordinate, while the six
+independent commands remain independent. This is a manifest consistency test,
+not independent registry resolution. Before publication, a temporary minimal
+workspace containing only the selected module and local core can check that
+other command workspace members are not masking dependencies. Retain its
+`moon tree` output, source identities and Native/Wasm checks as local-core
+evidence.
+
+Core 0.7.0 is intentionally unpublished until the centralized release. Exact
+standalone registry resolution for its dependent modules and exact-version
+MoonX consumers remain release acceptance, after core and the changed commands
+are published in the documented order. Run standalone module checks from the
+module directory with `MOON_WORK=off`; pin `MOON_WORK` to the temporary
+`moon.work` path for minimal-workspace checks. These modes must be recorded
+separately. A local-core pass cannot establish registry availability or published
+consumer parity, and no early core publication is required to run stage 0.
+
 `tests/cases/` describes the workspace. The historical release base
 `release_runner/historical/active-cases.json` overlays 21 frozen metadata
 contracts from `release_runner/historical/published-metadata-2026-10-11.json`,

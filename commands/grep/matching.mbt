@@ -17,7 +17,7 @@ fn translate_regexp(
         raise GrepError("trailing backslash")
       }
       let escaped = chars[index]
-      if escaped is ('1'..='9') {
+      if escaped is ('1'..<='9') {
         raise GrepError(
           "backreferences are not supported by the public regex API",
         )
@@ -71,8 +71,8 @@ fn translate_regexp(
 ///|
 fn match_boundaries(
   line : String,
-  start : Int,
-  end : Int,
+  start : Int32,
+  end : Int32,
   whole : Bool,
   word : Bool,
 ) -> Bool {
@@ -96,8 +96,8 @@ fn match_boundaries(
 fn Matcher::next_match(
   self : Matcher,
   line : String,
-  position : Int,
-) -> (Int, Int)? {
+  position : Int32,
+) -> (Int32, Int32)? {
   if position > line.length() {
     return None
   }

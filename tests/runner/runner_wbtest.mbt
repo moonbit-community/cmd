@@ -5,6 +5,51 @@ test "byte differences identify offset and length" {
 }
 
 ///|
+test "open stdin observations reject deadlines cleanup errors and missing exit" {
+  let observed : OpenStdinObservation = {
+    run: {
+      output: { status: 1, stdout: b"", stderr: b"rejected\n", },
+      timed_out: false,
+      cleanup_error: None,
+    },
+    exited_before_stdin_close: true,
+  }
+  assert_eq(open_stdin_observation_failures(observed), [])
+  assert_eq(
+    open_stdin_observation_failures({
+      ..observed,
+      run: { ..observed.run, timed_out: true, },
+    }),
+    ["child exceeded the open-stdin deadline"],
+  )
+  assert_eq(
+    open_stdin_observation_failures({
+      ..observed,
+      run: { ..observed.run, cleanup_error: Some("wait failed"), },
+    }),
+    ["child cleanup failed: wait failed"],
+  )
+  assert_eq(
+    open_stdin_observation_failures({
+      ..observed,
+      exited_before_stdin_close: false,
+    }),
+    ["exit was not observed before closing stdin"],
+  )
+  assert_eq(
+    open_stdin_observation_failures({
+      run: {
+        ..observed.run,
+        timed_out: true,
+        cleanup_error: Some("wait failed"),
+      },
+      exited_before_stdin_close: false,
+    }).length(),
+    3,
+  )
+}
+
+///|
 test "backend pair normalizes only declared workspace output placeholders" {
   let fixture : @testkit.Case = @json.from_json({
     "id": "path",
@@ -126,4 +171,31 @@ test "suite filtering respects case kind before fixtures or artifacts" {
       "oracle",
     ]),
   )
+}
+
+///|
+test "Windows mv scenarios select their actual backend and never claim a pair" {
+  for id in ["mv-windows-native-links", "mv-windows-wasm-links-boundary"] {
+    let fixture : @testkit.Case = @json.from_json({
+      "id": id,
+      "command": "mv",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+    })
+    assert_true(case_in_suites(fixture, ["scenarios"]))
+    assert_false(case_in_suites(fixture, ["backend-pair"]))
+    assert_false(case_in_suites(fixture, ["contract", "oracle"]))
+    assert_eq(
+      windows_mv_scenario_backend(id, false),
+      id == "mv-windows-native-links",
+    )
+    assert_eq(
+      windows_mv_scenario_backend(id, true),
+      id == "mv-windows-wasm-links-boundary",
+    )
+  }
 }

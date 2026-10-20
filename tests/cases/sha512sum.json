@@ -101,10 +101,10 @@
       "environment": {},
       "normalizations": [],
       "expected_status": 0,
-      "expected_stdout_text": "sha512sum 0.1.1\n",
+      "expected_stdout_text": "sha512sum 0.1.2\n",
       "expected_stderr_text": "",
       "comparison": "contract",
-      "source_version": "workspace cli/sha512sum@0.1.1 metadata contract"
+      "source_version": "workspace cli/sha512sum@0.1.2 metadata contract"
     },
     {
       "id": "release-metadata-sha512sum-help",
@@ -121,7 +121,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/sha512sum@0.1.1 metadata contract",
+      "source_version": "workspace cli/sha512sum@0.1.2 metadata contract",
       "expected_stdout_text": "Usage: sha512sum [OPTION]... [FILE]...\nPrint or check SHA512 checksums. With no FILE, or FILE -, read stdin.\n\n  -b, --binary          mark output as binary\n  -t, --text            mark output as text (default)\n  -c, --check           read checksums from FILEs and check them\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification output\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nChecks use standard GNU untagged records. BSD tagged records are not supported.\nInput bytes are unchanged by -b or -t on every supported platform.\n",
       "expected_stderr_text": ""
     },
@@ -140,8 +140,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/sha512sum@0.1.1 metadata contract",
-      "expected_stdout_text": "sha512sum 0.1.1\n",
+      "source_version": "workspace cli/sha512sum@0.1.2 metadata contract",
+      "expected_stdout_text": "sha512sum 0.1.2\n",
       "expected_stderr_text": ""
     }
   ]

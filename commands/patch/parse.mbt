@@ -5,7 +5,7 @@ priv suberror PatchError {
 
 ///|
 priv suberror HunkMismatch {
-  HunkMismatch(Int, Int)
+  HunkMismatch(Int32, Int32)
 }
 
 ///|
@@ -22,10 +22,10 @@ struct Change {
 
 ///|
 struct Hunk {
-  old_start : Int
-  old_count : Int
-  new_start : Int
-  new_count : Int
+  old_start : Int32
+  old_count : Int32
+  new_start : Int32
+  new_count : Int32
   changes : Array[Change]
 }
 
@@ -54,7 +54,7 @@ fn lines(data : Bytes) -> Array[Line] {
 }
 
 ///|
-fn range(text : String, sign : Char) -> (Int, Int) raise PatchError {
+fn range(text : String, sign : Char) -> (Int32, Int32) raise PatchError {
   if text.is_empty() || text[0].to_int() != sign.to_int() {
     raise PatchError("malformed hunk range")
   }
@@ -192,7 +192,7 @@ fn context_range(
   text : String,
   prefix : String,
   suffix : String,
-) -> (Int, Int) raise PatchError {
+) -> (Int32, Int32) raise PatchError {
   if !text.has_prefix(prefix) || !text.has_suffix(suffix) {
     raise PatchError("malformed context range")
   }
@@ -222,9 +222,9 @@ fn context_range(
 ///|
 fn context_rows(
   input : Array[Line],
-  start : Int,
+  start : Int32,
   old : Bool,
-) -> (Array[Change], Int) raise PatchError {
+) -> (Array[Change], Int32) raise PatchError {
   let result : Array[Change] = []
   let mut i = start
   while i < input.length() {

@@ -315,7 +315,20 @@ async fn execute_scenario(
 ) -> @testkit.CaseReport {
   let start = @async.now()
   let report_id = "scenario:" + fixture.id
-  if !fixture.platform_applies() {
+  let retain_success = retain_success ||
+    windows_mv_scenario(fixture.id) ||
+    fixture.id == "network-transfer-boundaries" ||
+    fixture.id == "network-transfer-boundaries-oracle"
+  let verification = if fixture.id == "mv-windows-wasm-links-boundary" {
+    "boundary"
+  } else if oracle_image is Some(_) {
+    "differential"
+  } else {
+    "contract"
+  }
+  let wrong_backend = windows_mv_scenario(fixture.id) &&
+    !windows_mv_scenario_backend(fixture.id, wasm)
+  if !fixture.platform_applies() || wrong_backend {
     let report = suite_report(
       report_id,
       if wasm {
@@ -330,14 +343,18 @@ async fn execute_scenario(
       ..report,
       command: fixture.command,
       result: "skip",
-      verification: if oracle_image is Some(_) {
-        "differential"
+      verification,
+      stage: if !fixture.platform_applies() {
+        "platform"
       } else {
-        "contract"
+        "backend"
       },
-      stage: "platform",
-      detail: "case applies only to: " +
-      fixture.host_platforms.unwrap_or([]).join(", "),
+      detail: if !fixture.platform_applies() {
+        "case applies only to: " +
+        fixture.host_platforms.unwrap_or([]).join(", ")
+      } else {
+        "Windows mv Native support and Wasm refusal require separate executions"
+      },
       observations: [],
     }
   }
@@ -366,6 +383,13 @@ async fn execute_scenario(
         "network-auth-cookie" => network_cli_scenario(root, wasm, work)
         "network-auth-cookie-oracle" =>
           network_cli_scenario(root, wasm, work, oracle_image?)
+        "network-transfer-boundaries" =>
+          network_transfer_scenario(root, wasm, work)
+        "network-transfer-boundaries-oracle" =>
+          network_transfer_scenario(root, wasm, work, oracle_image?)
+        "mv-windows-native-links" => windows_mv_links_scenario(root, wasm, work)
+        "mv-windows-wasm-links-boundary" =>
+          windows_mv_links_scenario(root, wasm, work)
         _ => fail("unknown scenario: " + fixture.id)
       }
     },
@@ -411,10 +435,15 @@ async fn execute_scenario(
     } else {
       report.result
     },
-    verification: if oracle_image is Some(_) {
-      "differential"
+    verification,
+    observations: if windows_mv_scenario(fixture.id) && failures.is_empty() {
+      [
+        "status", "stdout", "stderr", "file-content", "file-type", "symlink-target",
+      ]
+    } else if windows_mv_scenario(fixture.id) {
+      []
     } else {
-      "contract"
+      report.observations
     },
     source_version: fixture.source_version.unwrap_or("workspace 0.2.0"),
     detail: failures.join("; "),

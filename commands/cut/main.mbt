@@ -4,10 +4,10 @@ priv suberror CliError {
 }
 
 ///|
-let open_end : Int = 0x7FFFFFFF
+let open_end : Int32 = 0x7FFFFFFF
 
 ///|
-fn parse_positive(text : String, spec : String) -> Int raise CliError {
+fn parse_positive(text : String, spec : String) -> Int32 raise CliError {
   let n = @string.parse_int(text) catch {
     _ => raise CliError("cut: invalid list: '\{spec}'")
   }
@@ -18,8 +18,8 @@ fn parse_positive(text : String, spec : String) -> Int raise CliError {
 }
 
 ///|
-fn parse_list(spec : String) -> Array[(Int, Int)] raise CliError {
-  let ranges : Array[(Int, Int)] = []
+fn parse_list(spec : String) -> Array[(Int32, Int32)] raise CliError {
+  let ranges : Array[(Int32, Int32)] = []
   for part in spec.split(",") {
     let item = part.to_owned()
     if item is "" {
@@ -53,7 +53,7 @@ fn parse_list(spec : String) -> Array[(Int, Int)] raise CliError {
 }
 
 ///|
-fn selected(ranges : Array[(Int, Int)], index : Int) -> Bool {
+fn selected(ranges : Array[(Int32, Int32)], index : Int32) -> Bool {
   for r in ranges {
     let (lo, hi) = r
     if index >= lo && index <= hi {
@@ -66,7 +66,7 @@ fn selected(ranges : Array[(Int, Int)], index : Int) -> Bool {
 ///|
 fn cut_fields(
   line : Bytes,
-  ranges : Array[(Int, Int)],
+  ranges : Array[(Int32, Int32)],
   delimiter : Byte,
   only_delimited : Bool,
 ) -> Bytes? {
@@ -102,7 +102,7 @@ fn cut_fields(
 }
 
 ///|
-fn cut_characters(line : Bytes, ranges : Array[(Int, Int)]) -> Bytes {
+fn cut_characters(line : Bytes, ranges : Array[(Int32, Int32)]) -> Bytes {
   let out : Array[Byte] = []
   for index, byte in line {
     if selected(ranges, index + 1) {
@@ -115,8 +115,8 @@ fn cut_characters(line : Bytes, ranges : Array[(Int, Int)]) -> Bytes {
 ///|
 async fn process_reader(
   reader : &@io.Reader,
-  field_ranges : Array[(Int, Int)]?,
-  char_ranges : Array[(Int, Int)]?,
+  field_ranges : Array[(Int32, Int32)]?,
+  char_ranges : Array[(Int32, Int32)]?,
   delimiter : Byte,
   record_delimiter : Byte,
   only_delimited : Bool,
@@ -148,7 +148,7 @@ async fn process_reader(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("cut 0.2.1\n")
+    @stdio.stdout.write("cut 0.2.2\n")
     return
   }
   let args = @env.args()[1:]

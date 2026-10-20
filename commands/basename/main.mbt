@@ -1,5 +1,5 @@
 ///|
-fn chars_string(chars : Array[Char], start : Int, end : Int) -> String {
+fn chars_string(chars : Array[Char], start : Int32, end : Int32) -> String {
   let out = StringBuilder()
   for i in start..<end {
     out.write_char(chars[i])
@@ -40,7 +40,7 @@ fn strip_suffix(name : String, suffix : String) -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("basename 0.2.1\n")
+    @stdio.stdout.write("basename 0.2.2\n")
     return
   }
   let args = @env.args()[1:]

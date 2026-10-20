@@ -1,5 +1,5 @@
 ///|
-fn integer(data : Bytes, at : Int, length : Int) -> Int64 raise {
+fn integer(data : Bytes, at : Int32, length : Int32) -> Int64 raise {
   guard at >= 0 && length <= data.length() - at else {
     fail("truncated TZif file")
   }
@@ -12,16 +12,16 @@ fn integer(data : Bytes, at : Int, length : Int) -> Int64 raise {
 
 ///|
 priv struct Header {
-  at : Int
-  width : Int
-  times : Int
-  types : Int
-  chars : Int
-  end : Int
+  at : Int32
+  width : Int32
+  times : Int32
+  types : Int32
+  chars : Int32
+  end : Int32
 }
 
 ///|
-fn header(data : Bytes, at : Int, width : Int) -> Header raise {
+fn header(data : Bytes, at : Int32, width : Int32) -> Header raise {
   guard at >= 0 && data.length() - at >= 44 && data[at:at + 4] == b"TZif"[:] else {
     fail("invalid TZif header")
   }
@@ -89,7 +89,7 @@ pub fn decode(data : Bytes) -> Zone raise {
     let name = @utf8.decode(data[start:end].to_owned())
     types.push({ seconds, name, dst: data[at + 4] != 0, })
   }
-  let transitions : Array[(Int64, Int)] = []
+  let transitions : Array[(Int64, Int32)] = []
   for i in 0..<block.times {
     let instant = integer(data, block.at + i * block.width, block.width)
     let index = data[indices + i].to_int()

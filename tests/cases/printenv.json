@@ -95,7 +95,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/printenv@0.2.1 metadata contract",
+      "source_version": "workspace cli/printenv@0.2.2 metadata contract",
       "expected_stdout_text": "Usage: printenv [-0] [NAME...]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -114,8 +114,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/printenv@0.2.1 metadata contract",
-      "expected_stdout_text": "printenv 0.2.1\n",
+      "source_version": "workspace cli/printenv@0.2.2 metadata contract",
+      "expected_stdout_text": "printenv 0.2.2\n",
       "expected_stderr_text": ""
     }
   ]

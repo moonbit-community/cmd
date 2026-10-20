@@ -80,3 +80,66 @@ async test "cohort selection requires its unique typed registry owner" {
   }
   assert_true(refused)
 }
+
+///|
+async test "default scenario selection uses registered backends while explicit cases remain diagnostic" {
+  let root = workspace_root()
+  let registry = @registry.load(
+    workspace_path(root, "tests/registry/registry.json"),
+  )
+  for
+    (id, supported) in [
+      ("mv-windows-native-links", "native"),
+      ("mv-windows-wasm-links-boundary", "wasm"),
+    ] {
+    let fixture : @testkit.Case = @json.from_json({
+      "id": Json(id),
+      "command": "mv",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "scenario",
+    })
+    for backend in ["native", "wasm"] {
+      assert_eq(
+        registered_scenario_backend_selected(registry, fixture, backend, []),
+        backend == supported,
+      )
+      assert_true(
+        registered_scenario_backend_selected(registry, fixture, backend, [id]),
+      )
+    }
+    let both = {
+      ..registry,
+      entries: registry.entries.map(entry => {
+        if entry.source == "tests/runner/scenarios.mbt::" + id {
+          { ..entry, required_backends: ["native", "wasm"], }
+        } else {
+          entry
+        }
+      }),
+    }
+    for backend in ["native", "wasm"] {
+      assert_true(
+        registered_scenario_backend_selected(both, fixture, backend, []),
+      )
+    }
+    let missing = {
+      ..registry,
+      entries: registry.entries.filter(entry => {
+        entry.source != "tests/runner/scenarios.mbt::" + id
+      }),
+    }
+    let rejected = try {
+      ignore(
+        registered_scenario_backend_selected(missing, fixture, "native", []),
+      )
+      false
+    } catch {
+      error => error.to_string().contains("registered typed binding")
+    }
+    assert_true(rejected)
+  }
+}

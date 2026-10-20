@@ -10,7 +10,7 @@ priv enum CountSpec {
 }
 
 ///|
-let chunk_size : Int = 65536
+let chunk_size : Int32 = 65536
 
 ///|
 fn scaled_count(
@@ -68,7 +68,7 @@ fn parse_count(text : String) -> CountSpec raise CliError {
     (false, text)
   }
   let mut split = 0
-  while split < unsigned.length() && unsigned[split] is ('0'..='9') {
+  while split < unsigned.length() && unsigned[split] is ('0'..<='9') {
     split += 1
   }
   if split == 0 {
@@ -92,7 +92,7 @@ fn obsolete_count_arg(arg : String) -> Array[String]? {
   }
   let body = arg[1:]
   let mut split = 0
-  while split < body.length() && body[split] is ('0'..='9') {
+  while split < body.length() && body[split] is ('0'..<='9') {
     split += 1
   }
   if split == 0 {
@@ -249,7 +249,7 @@ async fn head_reader(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("head 0.2.1\n")
+    @stdio.stdout.write("head 0.2.2\n")
     return
   }
   let args = legacy_count_args(@env.args()[1:])

@@ -1,6 +1,6 @@
 name = "cli/true"
 
-version = "0.2.1"
+version = "0.2.2"
 
 readme = "README.md"
 
@@ -15,6 +15,6 @@ preferred_target = "wasm"
 description = "true command for MoonX."
 
 import {
-  "moonbitlang/async@0.22.4",
+  "moonbitlang/async@0.22.5",
   "moonbitlang/x@0.5.5",
 }

@@ -5,14 +5,14 @@ priv struct ParsedUrl {
   endpoint : String
   user_info : String?
   host : String
-  port : Int?
+  port : Int32?
   path : String
   query : String?
 }
 
 ///|
 fn invalid_url(message : String) -> TransferError {
-  TransferError(kind=InvalidUrl, message~, status=None)
+  TransferError(kind=InvalidUrl, message~, status=None, context=None)
 }
 
 ///|
@@ -60,7 +60,7 @@ fn split_query(value : String) -> (String, String?) {
 }
 
 ///|
-fn first_authority_separator(value : String) -> Int? {
+fn first_authority_separator(value : String) -> Int32? {
   let slash = value.find("/")
   let query = value.find("?")
   match (slash, query) {
@@ -71,7 +71,7 @@ fn first_authority_separator(value : String) -> Int? {
 }
 
 ///|
-fn parse_port(value : String) -> Int raise TransferError {
+fn parse_port(value : String) -> Int32 raise TransferError {
   if value == "" {
     raise invalid_url("empty URL port")
   }
@@ -85,7 +85,7 @@ fn parse_port(value : String) -> Int raise TransferError {
 }
 
 ///|
-fn parse_host_port(value : String) -> (String, Int?) raise TransferError {
+fn parse_host_port(value : String) -> (String, Int32?) raise TransferError {
   if value == "" {
     raise invalid_url("URL host is empty")
   }
@@ -129,6 +129,7 @@ fn parse_absolute_url(value : String) -> ParsedUrl raise TransferError {
       kind=UnsupportedProtocol,
       message="unsupported protocol '\{scheme}'",
       status=None,
+      context=None,
     )
   }
   let remainder = value[colon + 1:].to_owned()
@@ -267,11 +268,11 @@ fn resolve_location(
 }
 
 ///|
-fn hex_value(char : Char) -> Int? {
+fn hex_value(char : Char) -> Int32? {
   match char {
-    '0'..='9' => Some(char.to_int() - '0'.to_int())
-    'a'..='f' => Some(char.to_int() - 'a'.to_int() + 10)
-    'A'..='F' => Some(char.to_int() - 'A'.to_int() + 10)
+    '0'..<='9' => Some(char.to_int() - '0'.to_int())
+    'a'..<='f' => Some(char.to_int() - 'a'.to_int() + 10)
+    'A'..<='F' => Some(char.to_int() - 'A'.to_int() + 10)
     _ => None
   }
 }

@@ -17,6 +17,18 @@ priv enum MoveResult {
 }
 
 ///|
+#cfg(target="wasm")
+fn unverified_windows_link_rename() -> Bool {
+  @async.platform is Windows
+}
+
+///|
+#cfg(target="native")
+fn unverified_windows_link_rename() -> Bool {
+  false
+}
+
+///|
 fn normalized_args(args : ArrayView[String]) -> Array[String] {
   let result : Array[String] = []
   let mut options = true
@@ -49,10 +61,20 @@ async fn confirm_overwrite(target : String) -> Bool {
 }
 
 ///|
+async fn rename_move_entry(
+  source : String,
+  target : String,
+  replace : Bool,
+) -> Unit {
+  @fs.rename(source, target, replace~)
+}
+
+///|
 async fn move_one(
   source : String,
   target : String,
   options : MvOptions,
+  rename~ : async (String, String, Bool) -> Unit = rename_move_entry,
 ) -> MoveResult {
   let source_kind = @fs.kind(source, follow_symlink=false)
   if source_kind == Directory {
@@ -61,6 +83,25 @@ async fn move_one(
   let target_kind = @fsops.kind_if_exists(target)
   if options.no_clobber && target_kind is Some(_) {
     return Skipped
+  }
+  if unverified_windows_link_rename() &&
+    (
+      source_kind == SymLink ||
+      (target_kind == Some(SymLink) && options.backup != @fsops.NoBackup)
+    ) {
+    if target_kind is Some(_) && target_kind != Some(Directory) {
+      if options.update == @fsops.UpdateNone {
+        return Skipped
+      }
+      if options.update == @fsops.UpdateNoneFail {
+        raise @fsops.FsOpError("destination exists under update=none-fail")
+      }
+    }
+    // Wasm imports rename from moonrun; upgrading the Native C implementation
+    // does not establish that the host renames a reparse point itself.
+    raise @fsops.FsOpError(
+      "unsupported capability: Windows Wasm symlink/junction rename requires a verified host fix",
+    )
   }
   if target_kind is Some(_) &&
     options.update != @fsops.UpdateNone &&
@@ -84,7 +125,11 @@ async fn move_one(
     }
   }
   if target_kind is Some(_) && target_kind != Some(Directory) {
-    let source_time = @fsops.read_file_timestamp(source, ModificationTime)
+    let source_time = @fsops.read_file_timestamp(
+      source,
+      ModificationTime,
+      follow_symlink=false,
+    )
     let target_time = @fsops.read_file_timestamp(
       target,
       ModificationTime,
@@ -122,7 +167,7 @@ async fn move_one(
     Some(path) => @fsops.restore_backup(target, path) catch { _ => () }
     None => ()
   })
-  @fs.rename(source, target, replace=backup is None)
+  rename(source, target, backup is None)
   if @fsops.kind_if_exists(source) is Some(_) {
     // POSIX rename of hard-link aliases succeeds without removing the source.
     // Verify the operation's postcondition; never infer identity from contents.
@@ -137,7 +182,7 @@ async fn move_one(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("mv 0.2.2\n")
+    @stdio.stdout.write("mv 0.2.3\n")
     return
   }
   let parsed = @cli.parse(normalized_args(@env.args()[1:]), [
@@ -161,7 +206,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nDeclining an interactive overwrite returns status 1 and preserves both files.\nEqual-time interactive/update targets require unavailable file identity metadata.\n",
+      "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nDeclining an interactive overwrite returns status 1 and preserves both files.\nTimestamps describe source and destination entries, including dangling links.\nEqual-time interactive/update targets require unavailable file identity metadata.\nWindows Wasm symlink/junction moves and link backups require a verified host fix.\n",
     )
     return
   }

@@ -1,7 +1,7 @@
 ///|
 priv struct ArithmeticParser {
   chars : Array[Char]
-  mut pos : Int
+  mut pos : Int32
   context : Context
 }
 
@@ -14,7 +14,7 @@ fn ArithmeticParser::skip(self : ArithmeticParser) -> Unit {
 }
 
 ///|
-fn arithmetic_precedence(operator : String) -> Int {
+fn arithmetic_precedence(operator : String) -> Int32 {
   match operator {
     "||" => 1
     "&&" => 2
@@ -100,10 +100,10 @@ fn ArithmeticParser::primary(
       0L
     }
   }
-  if ch is ('0'..='9') {
+  if ch is ('0'..<='9') {
     while self.pos < self.chars.length() &&
           self.chars[self.pos]
-          is ('0'..='9' | 'a'..='f' | 'A'..='F' | 'x' | 'X') {
+          is ('0'..<='9' | 'a'..<='f' | 'A'..<='F' | 'x' | 'X') {
       self.pos += 1
     }
     return arithmetic_number(String::from_array(self.chars[start:self.pos]))
@@ -114,7 +114,7 @@ fn ArithmeticParser::primary(
 ///|
 fn ArithmeticParser::expression(
   self : ArithmeticParser,
-  minimum : Int,
+  minimum : Int32,
   evaluate : Bool,
 ) -> Int64 raise ShellError {
   let mut value = self.primary(evaluate)

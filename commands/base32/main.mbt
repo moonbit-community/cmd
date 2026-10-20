@@ -4,7 +4,7 @@ priv suberror CliError {
 }
 
 ///|
-fn base32_char(v : Int) -> Char {
+fn base32_char(v : Int32) -> Char {
   if v < 26 {
     (0x41 + v).unsafe_to_char()
   } else {
@@ -13,16 +13,16 @@ fn base32_char(v : Int) -> Char {
 }
 
 ///|
-fn base32_value(c : Char) -> Int raise CliError {
+fn base32_value(c : Char) -> Int32 raise CliError {
   match c {
-    'A'..='Z' => c.to_int() - 0x41
-    '2'..='7' => c.to_int() - 0x32 + 26
+    'A'..<='Z' => c.to_int() - 0x41
+    '2'..<='7' => c.to_int() - 0x32 + 26
     _ => raise CliError("base32: invalid input character: '\{c}'")
   }
 }
 
 ///|
-fn append_wrapped(sb : StringBuilder, text : String, wrap : Int) -> Unit {
+fn append_wrapped(sb : StringBuilder, text : String, wrap : Int32) -> Unit {
   let mut column = 0
   for c in text {
     sb.write_char(c)
@@ -38,7 +38,7 @@ fn append_wrapped(sb : StringBuilder, text : String, wrap : Int) -> Unit {
 }
 
 ///|
-fn encode_bytes(input : Bytes, wrap : Int) -> Bytes {
+fn encode_bytes(input : Bytes, wrap : Int32) -> Bytes {
   let encoded = StringBuilder()
   let mut index = 0
   while index < input.length() {
@@ -184,7 +184,7 @@ async fn decode_to_writer(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("base32 0.1.2\n")
+    @stdio.stdout.write("base32 0.1.3\n")
     return
   }
   let args = @env.args()[1:]

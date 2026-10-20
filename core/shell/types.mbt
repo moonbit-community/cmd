@@ -10,7 +10,7 @@ priv enum WordPart {
   Variable(String, Bool)
   CommandSubstitution(String, Bool)
   LengthVariable(String, Bool)
-  Positional(Int, Bool)
+  Positional(Int32, Bool)
   LastStatus(Bool)
   ArgCount(Bool)
   AllArgs(Bool, Bool)
@@ -101,9 +101,9 @@ priv struct Context {
   mut positional : Array[String]
   name : String
   mut cwd : String
-  mut last_status : Int
+  mut last_status : Int32
   mut exited : Bool
-  mut exit_status : Int
+  mut exit_status : Int32
   capture : StringBuilder?
   mut input : &@io.Reader?
   mut output : &@io.Writer?
@@ -111,12 +111,12 @@ priv struct Context {
   functions : Map[String, Array[Job]]
   mut errexit : Bool
   mut nounset : Bool
-  mut return_status : Int?
+  mut return_status : Int32?
   mut break_loop : Bool
   mut continue_loop : Bool
-  mut loop_depth : Int
-  mut call_depth : Int
-  mut substitution_status : Int?
+  mut loop_depth : Int32
+  mut call_depth : Int32
+  mut substitution_status : Int32?
   mut expansion_failed : Bool
 }
 

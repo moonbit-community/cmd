@@ -1,12 +1,12 @@
 ///|
-fn positive(value : String) -> Int raise {
+fn positive(value : String) -> Int32 raise {
   let result = @string.parse_int(value)
   guard result > 0 else { fail("invalid positive count: \{value}") }
   result
 }
 
 ///|
-fn byte_count(value : String) -> Int raise {
+fn byte_count(value : String) -> Int32 raise {
   let mut end = 0
   while end < value.length() && value[end] >= '0' && value[end] <= '9' {
     end += 1
@@ -32,8 +32,12 @@ fn byte_count(value : String) -> Int raise {
 }
 
 ///|
-fn boundaries(data : Bytes, size : Int, lines : Bool) -> Array[(Int, Int)] {
-  let result : Array[(Int, Int)] = []
+fn boundaries(
+  data : Bytes,
+  size : Int32,
+  lines : Bool,
+) -> Array[(Int32, Int32)] {
+  let result : Array[(Int32, Int32)] = []
   let mut start = 0
   let mut count = 0
   for index in 0..<data.length() {
@@ -53,7 +57,11 @@ fn boundaries(data : Bytes, size : Int, lines : Bool) -> Array[(Int, Int)] {
 }
 
 ///|
-fn advance_suffix(digits : Array[Int], radix : Int, automatic : Bool) -> Bool {
+fn advance_suffix(
+  digits : Array[Int32],
+  radix : Int32,
+  automatic : Bool,
+) -> Bool {
   let mut position = digits.length() - 1
   while position >= 0 {
     digits[position] += 1
@@ -82,7 +90,7 @@ fn advance_suffix(digits : Array[Int], radix : Int, automatic : Bool) -> Bool {
 }
 
 ///|
-fn suffix_name(digits : Array[Int], numeric : Bool) -> String {
+fn suffix_name(digits : Array[Int32], numeric : Bool) -> String {
   let output = StringBuilder()
   let base = if numeric { 48 } else { 97 }
   for digit in digits {
@@ -115,7 +123,7 @@ fn help_message() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("split 0.1.1\n")
+    @stdio.stdout.write("split 0.1.2\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [
@@ -138,7 +146,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("split 0.1.1\n")
+    @stdio.stdout.write("split 0.1.2\n")
     return
   }
   let (size, lines, width, additional) = try {

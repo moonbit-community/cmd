@@ -9,7 +9,7 @@ child requests with the shell's cwd and exported environment. Authorization is
 owned by the caller and runtime; the interpreter does not filter environment
 names or delegate complete scripts to a host shell.
 
-The following describes version **0.2.1**. Platform verification and exact
+The following describes version **0.2.2**. Platform verification and exact
 MoonX publication evidence are tracked in the
 [support record](../../docs/compatibility.md).
 The [support record](../../docs/compatibility.md) is the canonical release record.
@@ -85,7 +85,7 @@ retained under `docs/reports/2026-09-21-test-cleanup-evidence/repro/`.
 
 ## Standalone metadata
 
-Standalone `--version` prints exactly `sh 0.2.1` followed by one
+Standalone `--version` prints exactly `sh 0.2.2` followed by one
 newline. Standalone `--help` starts with `Usage: sh`, lists both
 metadata options, and ends with a newline. Both write to stdout, leave stdin
 unread, and exit with status 0. Exact-version publication and verification

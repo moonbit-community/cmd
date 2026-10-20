@@ -1,5 +1,5 @@
 ///|
-async fn encoded_output(input : Bytes, wrap : Int) -> Bytes {
+async fn encoded_output(input : Bytes, wrap : Int32) -> Bytes {
   let source = @io.MemoryReader(writer => writer.write(input))
   defer source.close()
   let encoded = @io.MemoryReader(writer => encode_stream(source, wrap, writer~))

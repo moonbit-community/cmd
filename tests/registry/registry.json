@@ -25551,7 +25551,12 @@
       "source": "tests/runner/scenarios.mbt::network-auth-cookie",
       "case_id": "",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "--cookie-jar",
+        "--load-cookies",
+        "--save-cookies",
+        "--keep-session-cookies"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -25582,7 +25587,12 @@
       "source": "tests/runner/scenarios.mbt::network-auth-cookie-oracle",
       "case_id": "",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "--cookie-jar",
+        "--load-cookies",
+        "--save-cookies",
+        "--keep-session-cookies"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -44901,6 +44911,4032 @@
         "status"
       ],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/mv/link_wbtest.mbt::mv moves or safely refuses a file symbolic link without moving its referent",
+      "command": "mv",
+      "owner": "commands/mv",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/mv/link_wbtest.mbt::mv moves or safely refuses a file symbolic link without moving its referent",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "mv moves or safely refuses a file symbolic link without moving its referent"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/mv/link_wbtest.mbt::mv moves or safely refuses a directory symbolic link without moving its referent",
+      "command": "mv",
+      "owner": "commands/mv",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/mv/link_wbtest.mbt::mv moves or safely refuses a directory symbolic link without moving its referent",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "mv moves or safely refuses a directory symbolic link without moving its referent"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/mv/link_wbtest.mbt::mv moves or safely refuses a Windows junction without moving its referent",
+      "command": "mv",
+      "owner": "commands/mv",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/mv/link_wbtest.mbt::mv moves or safely refuses a Windows junction without moving its referent",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "mv moves or safely refuses a Windows junction without moving its referent"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [
+        "windows"
+      ],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/mv/link_wbtest.mbt::mv backup preserves a destination link referent or rejects before mutation",
+      "command": "mv",
+      "owner": "commands/mv",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/mv/link_wbtest.mbt::mv backup preserves a destination link referent or rejects before mutation",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "mv backup preserves a destination link referent or rejects before mutation"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/mv/link_wbtest.mbt::mv no-clobber and update-none leave a source link and its referent unchanged",
+      "command": "mv",
+      "owner": "commands/mv",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/mv/link_wbtest.mbt::mv no-clobber and update-none leave a source link and its referent unchanged",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "mv no-clobber and update-none leave a source link and its referent unchanged",
+        "--update=none"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/mv/link_wbtest.mbt::mv replacing an existing target reads the dangling source link timestamp",
+      "command": "mv",
+      "owner": "commands/mv",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/mv/link_wbtest.mbt::mv replacing an existing target reads the dangling source link timestamp",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "mv replacing an existing target reads the dangling source link timestamp"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/mv/link_wbtest.mbt::mv restores a completed backup after an injected rename failure",
+      "command": "mv",
+      "owner": "commands/mv",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/mv/link_wbtest.mbt::mv restores a completed backup after an injected rename failure",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "mv restores a completed backup after an injected rename failure"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/curl/options_wbtest.mbt::curl body failures need all-error retries and keep their transfer exit codes",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/curl/options_wbtest.mbt::curl body failures need all-error retries and keep their transfer exit codes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl body failures need all-error retries and keep their transfer exit codes"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/wget/retry_wbtest.mbt::wget retries partial output with an updated range without duplicating aggregate files",
+      "command": "wget",
+      "owner": "commands/wget",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/wget/retry_wbtest.mbt::wget retries partial output with an updated range without duplicating aggregate files",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "wget retries partial output with an updated range without duplicating aggregate files"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/wget/retry_wbtest.mbt::wget retries the same collision selected output and preserves existing names",
+      "command": "wget",
+      "owner": "commands/wget",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/wget/retry_wbtest.mbt::wget retries the same collision selected output and preserves existing names",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "wget retries the same collision selected output and preserves existing names"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/wget/retry_wbtest.mbt::wget exhausted partial retries retain one prefix and report network failure",
+      "command": "wget",
+      "owner": "commands/wget",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/wget/retry_wbtest.mbt::wget exhausted partial retries retain one prefix and report network failure",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "wget exhausted partial retries retain one prefix and report network failure"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/wget/retry_wbtest.mbt::wget continued downloads discover the disposition filename before selecting the resume offset",
+      "command": "wget",
+      "owner": "commands/wget",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/wget/retry_wbtest.mbt::wget continued downloads discover the disposition filename before selecting the resume offset",
+      "case_id": "",
+      "aliases": [
+        "package-test:commands/wget/retry_wbtest.mbt::wget continued downloads reject a changed disposition path before either file changes"
+      ],
+      "coverage": [
+        "Content-Disposition discovery precedes resume offset selection; unsuccessful discovery preserves both paths"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/response_boundaries_wbtest.mbt::response body EOF has a distinct failure and retains the delivered prefix",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/response_boundaries_wbtest.mbt::response body EOF has a distinct failure and retains the delivered prefix",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "response body EOF has a distinct failure and retains the delivered prefix"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/response_boundaries_wbtest.mbt::normal close delimited and bodyless responses do not become partial failures",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/response_boundaries_wbtest.mbt::normal close delimited and bodyless responses do not become partial failures",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "normal close delimited and bodyless responses do not become partial failures"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/response_boundaries_wbtest.mbt::response header failures precede output creation and differ from body EOF",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/response_boundaries_wbtest.mbt::response header failures precede output creation and differ from body EOF",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "response header failures precede output creation and differ from body EOF"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/response_boundaries_wbtest.mbt::resumed partial response records received and newly committed bytes separately",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/response_boundaries_wbtest.mbt::resumed partial response records received and newly committed bytes separately",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "resumed partial response records received and newly committed bytes separately"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/response_boundaries_wbtest.mbt::failed file sink writes remain output failures and preserve the file",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/response_boundaries_wbtest.mbt::failed file sink writes remain output failures and preserve the file",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "failed file sink writes remain output failures and preserve the file"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/response_boundaries_wbtest.mbt::resumed output validates ranges before mutation and can skip a repeated prefix",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/response_boundaries_wbtest.mbt::resumed output validates ranges before mutation and can skip a repeated prefix",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "resumed output validates ranges before mutation and can skip a repeated prefix"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/fixture_wbtest.mbt::Windows link observer distinguishes symbolic links and junction targets",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/fixture_wbtest.mbt::Windows link observer distinguishes symbolic links and junction targets",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "Windows link observer distinguishes symbolic links and junction targets"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/fixture_wbtest.mbt::Windows link observer rejects missing or unrecognized reparse properties",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/fixture_wbtest.mbt::Windows link observer rejects missing or unrecognized reparse properties",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "Windows link observer rejects missing or unrecognized reparse properties"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture does not repair deliberately incomplete framing",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/network_transfer_wbtest.mbt::transfer fixture does not repair deliberately incomplete framing",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "transfer fixture does not repair deliberately incomplete framing"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry fixture depends on the actual Range rather than call order",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/network_transfer_wbtest.mbt::transfer retry fixture depends on the actual Range rather than call order",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "transfer retry fixture depends on the actual Range rather than call order"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture sends uncompleted wire bytes and closes the socket",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/network_transfer_wbtest.mbt::transfer fixture sends uncompleted wire bytes and closes the socket",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "transfer fixture sends uncompleted wire bytes and closes the socket"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:mv-windows-native-links",
+      "command": "mv",
+      "owner": "commands/mv",
+      "surface": [
+        "filesystem",
+        "options"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/mv.json",
+      "case_id": "mv-windows-native-links",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [
+        "windows"
+      ],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:mv-windows-wasm-links-boundary",
+      "command": "mv",
+      "owner": "commands/mv",
+      "surface": [
+        "filesystem",
+        "options"
+      ],
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/mv.json",
+      "case_id": "mv-windows-wasm-links-boundary",
+      "aliases": [],
+      "coverage": [
+        "-i"
+      ],
+      "required_backends": [
+        "wasm"
+      ],
+      "platforms": [
+        "windows"
+      ],
+      "required_evidence": [
+        "boundary"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:async-0225-mv-file-symbolic-link",
+      "command": "mv",
+      "owner": "commands/mv",
+      "surface": [
+        "filesystem",
+        "options"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/mv.json",
+      "case_id": "async-0225-mv-file-symbolic-link",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [
+        "posix"
+      ],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-type",
+        "symlink-target",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:async-0225-mv-directory-symbolic-link",
+      "command": "mv",
+      "owner": "commands/mv",
+      "surface": [
+        "filesystem",
+        "options"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/mv.json",
+      "case_id": "async-0225-mv-directory-symbolic-link",
+      "aliases": [],
+      "coverage": [
+        "-T"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [
+        "posix"
+      ],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-type",
+        "symlink-target",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:async-0225-mv-windows-symbolic-link-no-clobber",
+      "command": "mv",
+      "owner": "commands/mv",
+      "surface": [
+        "filesystem",
+        "options"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/mv.json",
+      "case_id": "async-0225-mv-windows-symbolic-link-no-clobber",
+      "aliases": [],
+      "coverage": [
+        "-n"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [
+        "windows"
+      ],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-type",
+        "symlink-target",
+        "file-content"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:async-0225-mv-windows-junction-no-clobber",
+      "command": "mv",
+      "owner": "commands/mv",
+      "surface": [
+        "filesystem",
+        "options"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/mv.json",
+      "case_id": "async-0225-mv-windows-junction-no-clobber",
+      "aliases": [],
+      "coverage": [
+        "-n",
+        "-T"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [
+        "windows"
+      ],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-type",
+        "symlink-target",
+        "file-content"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:network-transfer-boundaries",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "network",
+        "filesystem"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "network-transfer-boundaries",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:network-transfer-boundaries-oracle",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "network",
+        "filesystem"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "network-transfer-boundaries-oracle",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [
+        "linux"
+      ],
+      "required_evidence": [
+        "upstream-differential"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:transfer-curl-fixed-complete",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "transfer-curl-fixed-complete",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:transfer-curl-empty-complete",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "transfer-curl-empty-complete",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:transfer-curl-chunk-complete",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "transfer-curl-chunk-complete",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:transfer-curl-trailer-complete",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "transfer-curl-trailer-complete",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:transfer-curl-close-complete",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "transfer-curl-close-complete",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:transfer-wget-fixed-complete",
+      "command": "wget",
+      "owner": "commands/wget",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "transfer-wget-fixed-complete",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:transfer-wget-empty-complete",
+      "command": "wget",
+      "owner": "commands/wget",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "transfer-wget-empty-complete",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:transfer-wget-chunk-complete",
+      "command": "wget",
+      "owner": "commands/wget",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "transfer-wget-chunk-complete",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:transfer-wget-trailer-complete",
+      "command": "wget",
+      "owner": "commands/wget",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "transfer-wget-trailer-complete",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:transfer-wget-close-complete",
+      "command": "wget",
+      "owner": "commands/wget",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "transfer-wget-close-complete",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "scenario:network-transfer-boundaries",
+      "command": "curl",
+      "owner": "tests/runner/scenarios.mbt",
+      "surface": [
+        "network",
+        "filesystem"
+      ],
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/runner/scenarios.mbt::network-transfer-boundaries",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "--retry",
+        "--retry-all-errors",
+        "--remove-on-error",
+        "-c",
+        "--content-disposition",
+        "-O",
+        "curl:URL",
+        "wget:URL",
+        "-o",
+        "-J",
+        "-f",
+        "--fail",
+        "curl:retry-partial-empty-file-new",
+        "curl:retry-partial-empty-file-existing",
+        "curl:retry-partial-empty-stdout",
+        "curl:remove-partial-empty-new",
+        "curl:remove-partial-empty-existing",
+        "curl:remove-partial-complete-new",
+        "curl:cd-partial-empty-changed",
+        "curl:cd-partial-complete-changed",
+        "curl:cd-partial-complete-missing",
+        "curl:cd-partial-empty-changed-remove",
+        "curl:cd-partial-complete-changed-remove",
+        "curl:cd-first-empty-new",
+        "curl:cd-first-empty-existing",
+        "curl:cd-status-200-empty-complete-fail-false",
+        "curl:cd-status-200-empty-complete-fail-true",
+        "curl:cd-status-200-empty-incomplete-fail-false",
+        "curl:cd-status-200-empty-incomplete-fail-true",
+        "curl:cd-status-200-body-complete-fail-false",
+        "curl:cd-status-200-body-complete-fail-true",
+        "curl:cd-status-304-empty-complete-fail-false",
+        "curl:cd-status-304-empty-complete-fail-true",
+        "curl:cd-status-304-empty-incomplete-fail-false",
+        "curl:cd-status-304-empty-incomplete-fail-true",
+        "curl:cd-status-304-body-complete-fail-false",
+        "curl:cd-status-304-body-complete-fail-true",
+        "curl:cd-status-404-empty-complete-fail-false",
+        "curl:cd-status-404-empty-complete-fail-true",
+        "curl:cd-status-404-empty-incomplete-fail-false",
+        "curl:cd-status-404-empty-incomplete-fail-true",
+        "curl:cd-status-404-body-complete-fail-false",
+        "curl:cd-status-404-body-complete-fail-true",
+        "curl:cd-status-500-empty-complete-fail-false",
+        "curl:cd-status-500-empty-complete-fail-true",
+        "curl:cd-status-500-empty-incomplete-fail-false",
+        "curl:cd-status-500-empty-incomplete-fail-true",
+        "curl:cd-status-500-body-complete-fail-false",
+        "curl:cd-status-500-body-complete-fail-true",
+        "-L",
+        "--location",
+        "-I",
+        "--head",
+        "-b",
+        "--cookie",
+        "--no-cookies",
+        "curl:wire-url-path-space-raw",
+        "curl:wire-url-path-space-escaped",
+        "curl:wire-url-path-tab-raw",
+        "curl:wire-url-path-tab-escaped",
+        "curl:wire-url-path-cr-raw",
+        "curl:wire-url-path-cr-escaped",
+        "curl:wire-url-path-lf-raw",
+        "curl:wire-url-path-lf-escaped",
+        "curl:wire-url-path-del-raw",
+        "curl:wire-url-path-del-escaped",
+        "curl:wire-url-path-escaped-crlf",
+        "curl:wire-redirect-path-space",
+        "curl:wire-redirect-path-tab",
+        "curl:wire-redirect-path-escaped-crlf",
+        "curl:wire-url-query-space-raw",
+        "curl:wire-url-query-space-escaped",
+        "curl:wire-url-query-tab-raw",
+        "curl:wire-url-query-tab-escaped",
+        "curl:wire-url-query-cr-raw",
+        "curl:wire-url-query-cr-escaped",
+        "curl:wire-url-query-lf-raw",
+        "curl:wire-url-query-lf-escaped",
+        "curl:wire-url-query-del-raw",
+        "curl:wire-url-query-del-escaped",
+        "curl:wire-url-query-escaped-crlf",
+        "curl:wire-redirect-query-space",
+        "curl:wire-redirect-query-tab",
+        "curl:wire-redirect-query-escaped-crlf",
+        "curl:wire-cookie-no-pair",
+        "curl:wire-cookie-invalid-maxage",
+        "curl:wire-cookie-seeded-invalid-maxage",
+        "curl:wire-cookie-duplicate-valid-invalid",
+        "curl:wire-cookie-duplicate-invalid-valid",
+        "curl:wire-cookie-no-pair-disabled",
+        "curl:wire-cookie-invalid-maxage-disabled",
+        "curl:wire-cookie-order-name-length",
+        "curl:wire-cookie-order-equal-length",
+        "curl:wire-cookie-order-equal-reverse",
+        "curl:wire-cookie-order-replace",
+        "curl:wire-cookie-order-invalid-valid-cross",
+        "curl:wire-cookie-maxage-overflow-one",
+        "curl:wire-cookie-maxage-overflow-many",
+        "wget:wire-url-path-space-raw",
+        "wget:wire-url-path-space-escaped",
+        "wget:wire-url-path-tab-raw",
+        "wget:wire-url-path-tab-escaped",
+        "wget:wire-url-path-cr-raw",
+        "wget:wire-url-path-cr-escaped",
+        "wget:wire-url-path-lf-raw",
+        "wget:wire-url-path-lf-escaped",
+        "wget:wire-url-path-del-raw",
+        "wget:wire-url-path-del-escaped",
+        "wget:wire-url-path-escaped-crlf",
+        "wget:wire-redirect-path-space",
+        "wget:wire-redirect-path-tab",
+        "wget:wire-redirect-path-escaped-crlf",
+        "wget:wire-url-query-space-raw",
+        "wget:wire-url-query-space-escaped",
+        "wget:wire-url-query-tab-raw",
+        "wget:wire-url-query-tab-escaped",
+        "wget:wire-url-query-cr-raw",
+        "wget:wire-url-query-cr-escaped",
+        "wget:wire-url-query-lf-raw",
+        "wget:wire-url-query-lf-escaped",
+        "wget:wire-url-query-del-raw",
+        "wget:wire-url-query-del-escaped",
+        "wget:wire-url-query-escaped-crlf",
+        "wget:wire-redirect-query-space",
+        "wget:wire-redirect-query-tab",
+        "wget:wire-redirect-query-escaped-crlf",
+        "wget:wire-cookie-no-pair",
+        "wget:wire-cookie-invalid-maxage",
+        "wget:wire-cookie-seeded-invalid-maxage",
+        "wget:wire-cookie-duplicate-valid-invalid",
+        "wget:wire-cookie-duplicate-invalid-valid",
+        "wget:wire-cookie-no-pair-disabled",
+        "wget:wire-cookie-invalid-maxage-disabled",
+        "wget:wire-cookie-order-name-length",
+        "wget:wire-cookie-order-equal-length",
+        "wget:wire-cookie-order-equal-reverse",
+        "wget:wire-cookie-order-replace",
+        "wget:wire-cookie-order-invalid-valid-cross",
+        "wget:wire-cookie-maxage-overflow-one",
+        "wget:wire-cookie-maxage-overflow-many"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:network-transfer-boundaries-oracle",
+      "command": "curl",
+      "owner": "tests/runner/scenarios.mbt",
+      "surface": [
+        "network",
+        "filesystem"
+      ],
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/runner/scenarios.mbt::network-transfer-boundaries-oracle",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "--retry",
+        "--retry-all-errors",
+        "--remove-on-error",
+        "-c",
+        "--content-disposition",
+        "-O",
+        "curl:URL",
+        "wget:URL",
+        "-o",
+        "-J",
+        "-f",
+        "--fail",
+        "curl:retry-partial-empty-file-new",
+        "curl:retry-partial-empty-file-existing",
+        "curl:retry-partial-empty-stdout",
+        "curl:remove-partial-empty-new",
+        "curl:remove-partial-empty-existing",
+        "curl:remove-partial-complete-new",
+        "curl:cd-partial-empty-changed",
+        "curl:cd-partial-complete-changed",
+        "curl:cd-partial-complete-missing",
+        "curl:cd-partial-empty-changed-remove",
+        "curl:cd-partial-complete-changed-remove",
+        "curl:cd-first-empty-new",
+        "curl:cd-first-empty-existing",
+        "curl:cd-status-200-empty-complete-fail-false",
+        "curl:cd-status-200-empty-complete-fail-true",
+        "curl:cd-status-200-empty-incomplete-fail-false",
+        "curl:cd-status-200-empty-incomplete-fail-true",
+        "curl:cd-status-200-body-complete-fail-false",
+        "curl:cd-status-200-body-complete-fail-true",
+        "curl:cd-status-304-empty-complete-fail-false",
+        "curl:cd-status-304-empty-complete-fail-true",
+        "curl:cd-status-304-empty-incomplete-fail-false",
+        "curl:cd-status-304-empty-incomplete-fail-true",
+        "curl:cd-status-304-body-complete-fail-false",
+        "curl:cd-status-304-body-complete-fail-true",
+        "curl:cd-status-404-empty-complete-fail-false",
+        "curl:cd-status-404-empty-complete-fail-true",
+        "curl:cd-status-404-empty-incomplete-fail-false",
+        "curl:cd-status-404-empty-incomplete-fail-true",
+        "curl:cd-status-404-body-complete-fail-false",
+        "curl:cd-status-404-body-complete-fail-true",
+        "curl:cd-status-500-empty-complete-fail-false",
+        "curl:cd-status-500-empty-complete-fail-true",
+        "curl:cd-status-500-empty-incomplete-fail-false",
+        "curl:cd-status-500-empty-incomplete-fail-true",
+        "curl:cd-status-500-body-complete-fail-false",
+        "curl:cd-status-500-body-complete-fail-true",
+        "-L",
+        "--location",
+        "-I",
+        "--head",
+        "-b",
+        "--cookie",
+        "--no-cookies",
+        "curl:wire-url-path-space-raw",
+        "curl:wire-url-path-space-escaped",
+        "curl:wire-url-path-tab-raw",
+        "curl:wire-url-path-tab-escaped",
+        "curl:wire-url-path-cr-raw",
+        "curl:wire-url-path-cr-escaped",
+        "curl:wire-url-path-lf-raw",
+        "curl:wire-url-path-lf-escaped",
+        "curl:wire-url-path-del-raw",
+        "curl:wire-url-path-del-escaped",
+        "curl:wire-url-path-escaped-crlf",
+        "curl:wire-redirect-path-space",
+        "curl:wire-redirect-path-tab",
+        "curl:wire-redirect-path-escaped-crlf",
+        "curl:wire-url-query-space-raw",
+        "curl:wire-url-query-space-escaped",
+        "curl:wire-url-query-tab-raw",
+        "curl:wire-url-query-tab-escaped",
+        "curl:wire-url-query-cr-raw",
+        "curl:wire-url-query-cr-escaped",
+        "curl:wire-url-query-lf-raw",
+        "curl:wire-url-query-lf-escaped",
+        "curl:wire-url-query-del-raw",
+        "curl:wire-url-query-del-escaped",
+        "curl:wire-url-query-escaped-crlf",
+        "curl:wire-redirect-query-space",
+        "curl:wire-redirect-query-tab",
+        "curl:wire-redirect-query-escaped-crlf",
+        "curl:wire-cookie-no-pair",
+        "curl:wire-cookie-invalid-maxage",
+        "curl:wire-cookie-seeded-invalid-maxage",
+        "curl:wire-cookie-duplicate-valid-invalid",
+        "curl:wire-cookie-duplicate-invalid-valid",
+        "curl:wire-cookie-no-pair-disabled",
+        "curl:wire-cookie-invalid-maxage-disabled",
+        "curl:wire-cookie-order-name-length",
+        "curl:wire-cookie-order-equal-length",
+        "curl:wire-cookie-order-equal-reverse",
+        "curl:wire-cookie-order-replace",
+        "curl:wire-cookie-order-invalid-valid-cross",
+        "curl:wire-cookie-maxage-overflow-one",
+        "curl:wire-cookie-maxage-overflow-many",
+        "wget:wire-url-path-space-raw",
+        "wget:wire-url-path-space-escaped",
+        "wget:wire-url-path-tab-raw",
+        "wget:wire-url-path-tab-escaped",
+        "wget:wire-url-path-cr-raw",
+        "wget:wire-url-path-cr-escaped",
+        "wget:wire-url-path-lf-raw",
+        "wget:wire-url-path-lf-escaped",
+        "wget:wire-url-path-del-raw",
+        "wget:wire-url-path-del-escaped",
+        "wget:wire-url-path-escaped-crlf",
+        "wget:wire-redirect-path-space",
+        "wget:wire-redirect-path-tab",
+        "wget:wire-redirect-path-escaped-crlf",
+        "wget:wire-url-query-space-raw",
+        "wget:wire-url-query-space-escaped",
+        "wget:wire-url-query-tab-raw",
+        "wget:wire-url-query-tab-escaped",
+        "wget:wire-url-query-cr-raw",
+        "wget:wire-url-query-cr-escaped",
+        "wget:wire-url-query-lf-raw",
+        "wget:wire-url-query-lf-escaped",
+        "wget:wire-url-query-del-raw",
+        "wget:wire-url-query-del-escaped",
+        "wget:wire-url-query-escaped-crlf",
+        "wget:wire-redirect-query-space",
+        "wget:wire-redirect-query-tab",
+        "wget:wire-redirect-query-escaped-crlf",
+        "wget:wire-cookie-no-pair",
+        "wget:wire-cookie-invalid-maxage",
+        "wget:wire-cookie-seeded-invalid-maxage",
+        "wget:wire-cookie-duplicate-valid-invalid",
+        "wget:wire-cookie-duplicate-invalid-valid",
+        "wget:wire-cookie-no-pair-disabled",
+        "wget:wire-cookie-invalid-maxage-disabled",
+        "wget:wire-cookie-order-name-length",
+        "wget:wire-cookie-order-equal-length",
+        "wget:wire-cookie-order-equal-reverse",
+        "wget:wire-cookie-order-replace",
+        "wget:wire-cookie-order-invalid-valid-cross",
+        "wget:wire-cookie-maxage-overflow-one",
+        "wget:wire-cookie-maxage-overflow-many"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [
+        "linux"
+      ],
+      "required_evidence": [
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "scenario:mv-windows-native-links",
+      "command": "mv",
+      "owner": "tests/runner/scenarios.mbt",
+      "surface": [
+        "filesystem",
+        "options"
+      ],
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/runner/scenarios.mbt::mv-windows-native-links",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "--backup",
+        "-n",
+        "mv:SOURCE",
+        "mv:DEST"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [
+        "windows"
+      ],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content",
+        "file-type",
+        "symlink-target"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:mv-windows-wasm-links-boundary",
+      "command": "mv",
+      "owner": "tests/runner/scenarios.mbt",
+      "surface": [
+        "filesystem",
+        "options"
+      ],
+      "status": "boundary",
+      "implementation": "stateful-scenario",
+      "source": "tests/runner/scenarios.mbt::mv-windows-wasm-links-boundary",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "--backup",
+        "-n",
+        "mv:SOURCE",
+        "mv:DEST",
+        "-i"
+      ],
+      "required_backends": [
+        "wasm"
+      ],
+      "platforms": [
+        "windows"
+      ],
+      "required_evidence": [
+        "boundary"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content",
+        "file-type",
+        "symlink-target"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/runner/runner_wbtest.mbt::Windows mv scenarios select their actual backend and never claim a pair",
+      "command": "",
+      "owner": "tests/runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/runner/runner_wbtest.mbt::Windows mv scenarios select their actual backend and never claim a pair",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "Windows mv scenarios select their actual backend and never claim a pair"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/response_boundaries_wbtest.mbt::body failure context preserves completed write lower bounds and error kinds",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/response_boundaries_wbtest.mbt::body failure context preserves completed write lower bounds and error kinds",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "body failure context preserves completed write lower bounds and error kinds"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/response_boundaries_wbtest.mbt::request completion failures distinguish known phases from the combined public call",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/response_boundaries_wbtest.mbt::request completion failures distinguish known phases from the combined public call",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "request completion failures distinguish known phases from the combined public call"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:transfer-curl-head-length",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "transfer-curl-head-length",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:transfer-curl-no-content",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "transfer-curl-no-content",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:transfer-curl-not-modified",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "transfer-curl-not-modified",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:transfer-wget-head-length",
+      "command": "wget",
+      "owner": "commands/wget",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "transfer-wget-head-length",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:transfer-wget-no-content",
+      "command": "wget",
+      "owner": "commands/wget",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "transfer-wget-no-content",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:transfer-wget-not-modified",
+      "command": "wget",
+      "owner": "commands/wget",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "transfer-wget-not-modified",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "package-test:core/netops/response_boundaries_wbtest.mbt::resumed chunked and close delimited bodies must satisfy their Content-Range span",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/response_boundaries_wbtest.mbt::resumed chunked and close delimited bodies must satisfy their Content-Range span",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "resumed chunked and close delimited bodies must satisfy their Content-Range span"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/response_boundaries_wbtest.mbt::content coded bodies preserve wire bytes and fixed length failure counts",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/response_boundaries_wbtest.mbt::content coded bodies preserve wire bytes and fixed length failure counts",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "content coded bodies preserve wire bytes and fixed length failure counts"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/response_boundaries_wbtest.mbt::bodyless resumed responses never require replayed prefix bytes",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/response_boundaries_wbtest.mbt::bodyless resumed responses never require replayed prefix bytes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "bodyless resumed responses never require replayed prefix bytes"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/runner/manifest_wbtest.mbt::workspace manifest accepts explicit link kinds without accepting invalid fixtures",
+      "command": "",
+      "owner": "tests/runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/runner/manifest_wbtest.mbt::workspace manifest accepts explicit link kinds without accepting invalid fixtures",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "workspace manifest accepts explicit link kinds without accepting invalid fixtures"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/runner/workspace_wbtest.mbt::default scenario selection uses registered backends while explicit cases remain diagnostic",
+      "command": "",
+      "owner": "tests/runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/runner/workspace_wbtest.mbt::default scenario selection uses registered backends while explicit cases remain diagnostic",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "default scenario selection uses registered backends while explicit cases remain diagnostic"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/runner/scenario_network_wbtest.mbt::transfer file checks retain independent failures",
+      "command": "",
+      "owner": "tests/runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/runner/scenario_network_wbtest.mbt::transfer file checks retain independent failures",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "transfer file checks retain independent failures"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_wbtest.mbt::wire chunk payload is committed before separator and trailer failures",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_wbtest.mbt::wire chunk payload is committed before separator and trailer failures",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "wire chunk payload is committed before separator and trailer failures"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_wbtest.mbt::wire chunked framing overrides Content-Length and accepts extensions and trailers",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_wbtest.mbt::wire chunked framing overrides Content-Length and accepts extensions and trailers",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "wire chunked framing overrides Content-Length and accepts extensions and trailers"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_wbtest.mbt::wire protocol metadata limits reject before opening output",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_wbtest.mbt::wire protocol metadata limits reject before opening output",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "wire protocol metadata limits reject before opening output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_wbtest.mbt::wire unknown length uploads stream independent chunks and a final terminator",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_wbtest.mbt::wire unknown length uploads stream independent chunks and a final terminator",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "wire unknown length uploads stream independent chunks and a final terminator"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_wbtest.mbt::wire trailer metadata limits retain already delivered body",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_wbtest.mbt::wire trailer metadata limits retain already delivered body",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "wire trailer metadata limits retain already delivered body"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_contract_wbtest.mbt::public transfer consumes informational responses before exposing the final response",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_contract_wbtest.mbt::public transfer consumes informational responses before exposing the final response",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "public transfer consumes informational responses before exposing the final response"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_contract_wbtest.mbt::public transfer preserves separate Set-Cookie fields and sends both stored cookies",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_contract_wbtest.mbt::public transfer preserves separate Set-Cookie fields and sends both stored cookies",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "public transfer preserves separate Set-Cookie fields and sends both stored cookies"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_contract_wbtest.mbt::public transfer uploads exact binary bytes with fixed lengths from memory and files",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_contract_wbtest.mbt::public transfer uploads exact binary bytes with fixed lengths from memory and files",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "public transfer uploads exact binary bytes with fixed lengths from memory and files"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_contract_wbtest.mbt::public transfer reports request length failures before response or output effects",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_contract_wbtest.mbt::public transfer reports request length failures before response or output effects",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "public transfer reports request length failures before response or output effects"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_contract_wbtest.mbt::public transfer rejects truncated and malformed headers before opening output",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_contract_wbtest.mbt::public transfer rejects truncated and malformed headers before opening output",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "public transfer rejects truncated and malformed headers before opening output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:transfer-curl-chunked-stdin-upload",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "transfer-curl-chunked-stdin-upload",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "package-test:commands/mv/link_wbtest.mbt::mv restores Windows link backups after injected commit failure or rejects before mutation",
+      "command": "mv",
+      "owner": "commands/mv",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/mv/link_wbtest.mbt::mv restores Windows link backups after injected commit failure or rejects before mutation",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "mv restores Windows link backups after injected commit failure or rejects before mutation"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [
+        "windows"
+      ],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/wget/retry_wbtest.mbt::wget accepts not modified only for timestamping and preserves existing output",
+      "command": "wget",
+      "owner": "commands/wget",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/wget/retry_wbtest.mbt::wget accepts not modified only for timestamping and preserves existing output",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "wget accepts not modified only for timestamping and preserves existing output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/phase_wbtest.mbt::transfer timeouts identify stalled request headers and body phases",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/phase_wbtest.mbt::transfer timeouts identify stalled request headers and body phases",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "transfer timeouts identify stalled request headers and body phases"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/transfer_buffer_wbtest.mbt::curl lazy open failures do not report an attempted sink write",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/transfer_buffer_wbtest.mbt::curl lazy open failures do not report an attempted sink write",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl lazy open failures do not report an attempted sink write"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/transfer_buffer_wbtest.mbt::curl buffered file tails are retained after a network failure",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/transfer_buffer_wbtest.mbt::curl buffered file tails are retained after a network failure",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl buffered file tails are retained after a network failure"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/transfer_buffer_wbtest.mbt::curl file buffering distinguishes the flush threshold and preserves primary failures",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/transfer_buffer_wbtest.mbt::curl file buffering distinguishes the flush threshold and preserves primary failures",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl file buffering distinguishes the flush threshold and preserves primary failures"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/transfer_buffer_wbtest.mbt::curl lazy cleanup leaves unopened destinations untouched after an empty failure",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/transfer_buffer_wbtest.mbt::curl lazy cleanup leaves unopened destinations untouched after an empty failure",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl lazy cleanup leaves unopened destinations untouched after an empty failure"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_grammar_wbtest.mbt::wire chunk extensions preserve BWS quoted values and reject malformed syntax",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_grammar_wbtest.mbt::wire chunk extensions preserve BWS quoted values and reject malformed syntax",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "wire chunk extensions preserve BWS quoted values and reject malformed syntax"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_grammar_wbtest.mbt::wire headers reject raw control bytes before trimming HTTP whitespace",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_grammar_wbtest.mbt::wire headers reject raw control bytes before trimming HTTP whitespace",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "wire headers reject raw control bytes before trimming HTTP whitespace"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_grammar_wbtest.mbt::wire Set-Cookie trailers fail after retaining the delivered payload",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_grammar_wbtest.mbt::wire Set-Cookie trailers fail after retaining the delivered payload",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "wire Set-Cookie trailers fail after retaining the delivered payload"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/transfer_profiles_wbtest.mbt::Wget HEAD partial responses require an actual Range request",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/transfer_profiles_wbtest.mbt::Wget HEAD partial responses require an actual Range request",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "Wget HEAD partial responses require an actual Range request"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/transfer_profiles_wbtest.mbt::curl redirected stdin requires rewind only after payload was sent",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/transfer_profiles_wbtest.mbt::curl redirected stdin requires rewind only after payload was sent",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl redirected stdin requires rewind only after payload was sent"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/transfer_profiles_wbtest.mbt::command profiles accept calibrated final header EOF while strict transfer rejects",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/transfer_profiles_wbtest.mbt::command profiles accept calibrated final header EOF while strict transfer rejects",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "command profiles accept calibrated final header EOF while strict transfer rejects"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/transfer_profiles_wbtest.mbt::Wget profile accepts only calibrated chunk EOF states",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/transfer_profiles_wbtest.mbt::Wget profile accepts only calibrated chunk EOF states",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "Wget profile accepts only calibrated chunk EOF states"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/transfer_profiles_wbtest.mbt::curl lazy files distinguish failed empty bodies from successful empty responses",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/transfer_profiles_wbtest.mbt::curl lazy files distinguish failed empty bodies from successful empty responses",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl lazy files distinguish failed empty bodies from successful empty responses"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/transfer_profiles_wbtest.mbt::Wget 416 profile preserves outputs independently of range metadata or resume state",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/transfer_profiles_wbtest.mbt::Wget 416 profile preserves outputs independently of range metadata or resume state",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "Wget 416 profile preserves outputs independently of range metadata or resume state"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/transfer_profiles_wbtest.mbt::Wget range mismatch is a receive failure and a complete shorter response preserves its prefix",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/transfer_profiles_wbtest.mbt::Wget range mismatch is a receive failure and a complete shorter response preserves its prefix",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "Wget range mismatch is a receive failure and a complete shorter response preserves its prefix"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/runner/runner_wbtest.mbt::open stdin observations reject deadlines cleanup errors and missing exit",
+      "command": "",
+      "owner": "tests/runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/runner/runner_wbtest.mbt::open stdin observations reject deadlines cleanup errors and missing exit",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "open stdin observations reject deadlines cleanup errors and missing exit"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/registry/dependencies_wbtest.mbt::workspace dependency manifests keep one async baseline and the selected local core coordinate",
+      "command": "",
+      "owner": "tests/registry",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/registry/dependencies_wbtest.mbt::workspace dependency manifests keep one async baseline and the selected local core coordinate",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "workspace dependency manifests keep one async baseline and the selected local core coordinate"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:transfer-curl-stdin-redirect-307",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "transfer-curl-stdin-redirect-307",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:transfer-curl-chunk-initial-eof",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "transfer-curl-chunk-initial-eof",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:transfer-wget-chunk-initial-eof",
+      "command": "wget",
+      "owner": "commands/wget",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "transfer-wget-chunk-initial-eof",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:transfer-wget-unsatisfied-without-resume",
+      "command": "wget",
+      "owner": "commands/wget",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "transfer-wget-unsatisfied-without-resume",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "package-test:commands/curl/options_wbtest.mbt::curl retry diagnostics preserve show-error without inventing HTTP failures",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/curl/options_wbtest.mbt::curl retry diagnostics preserve show-error without inventing HTTP failures",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl retry diagnostics preserve show-error without inventing HTTP failures"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/curl/options_wbtest.mbt::curl fixed-length diagnostics use the structured missing byte count",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/curl/options_wbtest.mbt::curl fixed-length diagnostics use the structured missing byte count",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl fixed-length diagnostics use the structured missing byte count"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/transfer_lifecycle_wbtest.mbt::transfer sink scope closes real files on cancellation and repeated close is safe",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/transfer_lifecycle_wbtest.mbt::transfer sink scope closes real files on cancellation and repeated close is safe",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "transfer sink scope closes real files on cancellation and repeated close is safe"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_validation_wbtest.mbt::generated Cookie fields reject line injection before writing request bytes",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_validation_wbtest.mbt::generated Cookie fields reject line injection before writing request bytes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "generated Cookie fields reject line injection before writing request bytes"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:transfer-curl-cookie-line-injection",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "network",
+        "stdout"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "transfer-curl-cookie-line-injection",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-type"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission separates complete test scopes from production imports",
+      "command": "",
+      "owner": "tests/runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/runner/policy_admission_wbtest.mbt::policy admission separates complete test scopes from production imports",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "policy admission separates complete test scopes from production imports"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission rejects unknown incomplete and mixed import syntax",
+      "command": "",
+      "owner": "tests/runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/runner/policy_admission_wbtest.mbt::policy admission rejects unknown incomplete and mixed import syntax",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "policy admission rejects unknown incomplete and mixed import syntax"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission decodes import paths and ignores only actual comments",
+      "command": "",
+      "owner": "tests/runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/runner/policy_admission_wbtest.mbt::policy admission decodes import paths and ignores only actual comments",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "policy admission decodes import paths and ignores only actual comments"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/runner/policy_admission_wbtest.mbt::policy admission accepts the mv test observer without production process authority",
+      "command": "",
+      "owner": "tests/runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/runner/policy_admission_wbtest.mbt::policy admission accepts the mv test observer without production process authority",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "policy admission accepts the mv test observer without production process authority"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/curl/output_retry_wbtest.mbt::curl accepted retries reset opened files before a later empty failure",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/curl/output_retry_wbtest.mbt::curl accepted retries reset opened files before a later empty failure",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl accepted retries reset opened files before a later empty failure"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/curl/output_retry_wbtest.mbt::curl leaves partial files intact when a retry is not accepted",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/curl/output_retry_wbtest.mbt::curl leaves partial files intact when a retry is not accepted",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl leaves partial files intact when a retry is not accepted"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/curl/output_retry_wbtest.mbt::curl first empty failures preserve unopened files with final cleanup enabled",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/curl/output_retry_wbtest.mbt::curl first empty failures preserve unopened files with final cleanup enabled",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl first empty failures preserve unopened files with final cleanup enabled"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/curl/output_retry_wbtest.mbt::curl retries retain the selected content disposition path and defer removal",
+      "command": "curl",
+      "owner": "commands/curl",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/curl/output_retry_wbtest.mbt::curl retries retain the selected content disposition path and defer removal",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl retries retain the selected content disposition path and defer removal"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/transfer_buffer_wbtest.mbt::curl content disposition creates exclusive output before empty body failures",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/transfer_buffer_wbtest.mbt::curl content disposition creates exclusive output before empty body failures",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl content disposition creates exclusive output before empty body failures"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/transfer_buffer_wbtest.mbt::curl content disposition selection follows response status and fail policy",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/transfer_buffer_wbtest.mbt::curl content disposition selection follows response status and fail policy",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "curl content disposition selection follows response status and fail policy"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer disposition status fixture preserves status and incomplete wire bodies",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/network_transfer_wbtest.mbt::transfer disposition status fixture preserves status and incomplete wire bodies",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "transfer disposition status fixture preserves status and incomplete wire bodies"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture requires a bounded per-run request capture",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture requires a bounded per-run request capture",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "transfer retry lifecycle fixture requires a bounded per-run request capture"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture replays independently after request capture reset",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/network_transfer_wbtest.mbt::transfer retry lifecycle fixture replays independently after request capture reset",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "transfer retry lifecycle fixture replays independently after request capture reset"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/network_transfer_wbtest.mbt::transfer fixture captures framed GET bytes before entering passthrough mode",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/network_transfer_wbtest.mbt::transfer fixture captures framed GET bytes before entering passthrough mode",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "transfer fixture captures framed GET bytes before entering passthrough mode"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/url_wire_wbtest.mbt::request URL preparation preserves escaped bytes and rejects raw request delimiters",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/url_wire_wbtest.mbt::request URL preparation preserves escaped bytes and rejects raw request delimiters",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "request URL preparation preserves escaped bytes and rejects raw request delimiters"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/url_wire_wbtest.mbt::request URL preparation distinguishes initial URLs from redirect quoting",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/url_wire_wbtest.mbt::request URL preparation distinguishes initial URLs from redirect quoting",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "request URL preparation distinguishes initial URLs from redirect quoting"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/url_wire_wbtest.mbt::public transfer rejects request line injection before connection and file effects",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/url_wire_wbtest.mbt::public transfer rejects request line injection before connection and file effects",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "public transfer rejects request line injection before connection and file effects"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/url_wire_wbtest.mbt::public transfer quotes Wget request controls without adding headers or requests",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/url_wire_wbtest.mbt::public transfer quotes Wget request controls without adding headers or requests",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "public transfer quotes Wget request controls without adding headers or requests"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_cookie_wbtest.mbt::public transfer preserves original repeated Set-Cookie fields independently of storage",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_cookie_wbtest.mbt::public transfer preserves original repeated Set-Cookie fields independently of storage",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "public transfer preserves original repeated Set-Cookie fields independently of storage"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_cookie_wbtest.mbt::public transfer ignores malformed cookies without losing response headers or body",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_cookie_wbtest.mbt::public transfer ignores malformed cookies without losing response headers or body",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "public transfer ignores malformed cookies without losing response headers or body"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_cookie_wbtest.mbt::public transfer applies invalid Max-Age updates in response order",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_cookie_wbtest.mbt::public transfer applies invalid Max-Age updates in response order",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "public transfer applies invalid Max-Age updates in response order"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_cookie_wbtest.mbt::public transfer orders curl cookies by specificity and preserved creation order",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_cookie_wbtest.mbt::public transfer orders curl cookies by specificity and preserved creation order",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "public transfer orders curl cookies by specificity and preserved creation order"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_cookie_wbtest.mbt::public transfer distinguishes numeric Max-Age overflow from nonnumeric attributes",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_cookie_wbtest.mbt::public transfer distinguishes numeric Max-Age overflow from nonnumeric attributes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "public transfer distinguishes numeric Max-Age overflow from nonnumeric attributes"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/netops/http_wire_cookie_wbtest.mbt::cookie profiles cap curl Max-Age with fixed-clock overflow and rounding boundaries",
+      "command": "",
+      "owner": "core/netops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/netops/http_wire_cookie_wbtest.mbt::cookie profiles cap curl Max-Age with fixed-clock overflow and rounding boundaries",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "cookie profiles cap curl Max-Age with fixed-clock overflow and rounding boundaries"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/runner/backend_pair_wbtest.mbt::scenario pair snapshots bind both allocated network origins and retain other ports",
+      "command": "",
+      "owner": "tests/runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/runner/backend_pair_wbtest.mbt::scenario pair snapshots bind both allocated network origins and retain other ports",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scenario pair snapshots bind both allocated network origins and retain other ports"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/network_transfer_wbtest.mbt::wire fixture preserves escaped targets and repeated Cookie fields",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/network_transfer_wbtest.mbt::wire fixture preserves escaped targets and repeated Cookie fields",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "wire fixture preserves escaped targets and repeated Cookie fields"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/network_transfer_wbtest.mbt::wire fixture preserves malformed Cookie response fields and redirect target bytes",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/network_transfer_wbtest.mbt::wire fixture preserves malformed Cookie response fields and redirect target bytes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "wire fixture preserves malformed Cookie response fields and redirect target bytes"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/network_transfer_wbtest.mbt::wire fixture retains cookie ordering and numeric overflow response bytes",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/network_transfer_wbtest.mbt::wire fixture retains cookie ordering and numeric overflow response bytes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "wire fixture retains cookie ordering and numeric overflow response bytes"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
     }
   ],
   "release_commands": [
@@ -45293,21 +49329,33 @@
         "phase2-curl-upload-file",
         "repair-final-curl-basic",
         "p1-curl-binary-data-file",
+        "transfer-curl-no-content",
         "phase2-curl-multiple-urls",
+        "transfer-curl-head-length",
         "phase2-curl-fail-status-22",
         "phase2-curl-https-insecure",
         "release-metadata-curl-help",
+        "transfer-curl-not-modified",
         "p1-curl-redirect-limit-zero",
         "phase2-curl-does-not-follow",
+        "transfer-curl-chunk-complete",
+        "transfer-curl-close-complete",
+        "transfer-curl-empty-complete",
+        "transfer-curl-fixed-complete",
         "release-metadata-curl-version",
         "repair-final-curl-cookie-path",
+        "transfer-curl-trailer-complete",
         "repair-final-curl-cookie-domain",
         "repair-final-curl-cookie-header",
+        "transfer-curl-chunk-initial-eof",
         "p1-curl-explicit-method-redirect",
         "phase2-curl-last-transfer-status",
         "repair-final-curl-cookie-session",
+        "transfer-curl-stdin-redirect-307",
         "repair-final-curl-cookie-redirect",
-        "repair-final-curl-cross-host-auth"
+        "repair-final-curl-cross-host-auth",
+        "transfer-curl-chunked-stdin-upload",
+        "transfer-curl-cookie-line-injection"
       ]
     },
     {
@@ -45789,7 +49837,11 @@
         "repair-fs-mv-same-interactive",
         "repair-fs-mv-same-update-none",
         "repair-fs-mv-interactive-no-eof",
-        "repair-fs-mv-equal-time-boundary"
+        "async-0225-mv-file-symbolic-link",
+        "repair-fs-mv-equal-time-boundary",
+        "async-0225-mv-directory-symbolic-link",
+        "async-0225-mv-windows-junction-no-clobber",
+        "async-0225-mv-windows-symbolic-link-no-clobber"
       ]
     },
     {
@@ -46339,20 +50391,30 @@
         "repair-final-wget-basic",
         "p1-wget-binary-body-file",
         "phase2-wget-request-body",
+        "transfer-wget-no-content",
         "phase2-wget-http-status-8",
         "phase2-wget-multiple-urls",
+        "transfer-wget-head-length",
         "release-metadata-wget-help",
+        "transfer-wget-not-modified",
+        "transfer-wget-chunk-complete",
+        "transfer-wget-close-complete",
+        "transfer-wget-empty-complete",
+        "transfer-wget-fixed-complete",
         "phase2-wget-relative-redirect",
         "release-metadata-wget-version",
         "repair-final-wget-cookie-path",
         "p1-wget-timestamp-not-modified",
+        "transfer-wget-trailer-complete",
         "repair-final-wget-cookie-domain",
         "repair-final-wget-cookie-header",
+        "transfer-wget-chunk-initial-eof",
         "repair-final-wget-cookie-session",
         "repair-final-wget-cookie-redirect",
         "p1-wget-method-and-repeated-header",
         "p1-wget-content-disposition-collision",
-        "phase2-wget-https-no-check-certificate"
+        "phase2-wget-https-no-check-certificate",
+        "transfer-wget-unsatisfied-without-resume"
       ]
     },
     {

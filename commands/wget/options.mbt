@@ -9,11 +9,11 @@ struct WgetOptions {
   mut append_log : Bool
   mut continue_download : Bool
   mut timestamping : Bool
-  mut tries : Int
+  mut tries : Int32
   mut retry_connection_refused : Bool
-  retry_http_statuses : Array[Int]
-  mut retry_delay_ms : Int
-  mut max_redirects : Int
+  retry_http_statuses : Array[Int32]
+  mut retry_delay_ms : Int32
+  mut max_redirects : Int32
   mut content_disposition : Bool
   headers : Array[@netops.HttpHeader]
   mut request_method : @netops.HttpMethod
@@ -22,8 +22,8 @@ struct WgetOptions {
   mut body_options_conflict : Bool
   mut no_check_certificate : Bool
   mut no_proxy : Bool
-  mut connect_timeout_ms : Int
-  mut read_timeout_ms : Int
+  mut connect_timeout_ms : Int32
+  mut read_timeout_ms : Int32
   mut user : String?
   mut password : String?
   mut auth_no_challenge : Bool
@@ -49,12 +49,13 @@ fn usage() -> String {
     #|  -o, --output-file=FILE          log messages to FILE
     #|  -a, --append-output=FILE        append messages to FILE
     #|  -i, --input-file=FILE           download URLs found in FILE
-    #|  -c, --continue                  resume a partially downloaded file
+    #|  -c, --continue                  resume after the already written prefix
     #|  -N, --timestamping              do not re-retrieve unchanged files
     #|  -t, --tries=NUMBER              set number of retries (0 means unlimited)
     #|      --retry-connrefused         retry even if the connection is refused
     #|      --retry-on-http-error=CODES retry comma-separated HTTP status codes
     #|      --waitretry=SECONDS         wait between retries
+    #|                                 partial bytes survive retries and failures
     #|      --max-redirect=NUMBER       maximum redirects (default 20)
     #|      --content-disposition       honor Content-Disposition filenames
     #|      --header=STRING             insert STRING among request headers
@@ -79,6 +80,15 @@ fn usage() -> String {
     #|Compatibility limits: HTTP/HTTPS only; --method accepts GET, HEAD, POST,
     #|PUT, DELETE, CONNECT, OPTIONS, TRACE, and PATCH. Timer values are bounded
     #|by the runtime millisecond timer range.
+    #|Content-coding bytes remain encoded; Accept-Encoding defaults to identity.
+    #|Raw space/TAB/CR/LF/DEL in URL paths or queries uses uppercase percent escapes.
+    #|Redirect spaces use %20 and TAB uses %09; existing escapes remain encoded.
+    #|Set-Cookie without '=' and nonnumeric Max-Age replacements are ignored.
+    #|Positive decimal Max-Age overflow below 32 digits expires its stored cookie.
+    #|GNU chunk payload/trailer EOF rules apply; missing size lines or CRLF fail.
+    #|HTTP 416 succeeds without opening transfer output; -O is initialized first.
+    #|Unsolicited 304 exits 8. Continued GET with --content-disposition selects
+    #|the filename with HEAD before choosing that file's resume offset.
   text + "\n"
 }
 
@@ -123,7 +133,7 @@ fn default_options() -> WgetOptions {
 fn parse_nonnegative(
   value : String,
   option : String,
-) -> Int raise WgetUsageError {
+) -> Int32 raise WgetUsageError {
   let result = @string.parse_int(value) catch {
     _ => raise WgetUsageError("\{option}: invalid number '\{value}'")
   }
@@ -134,7 +144,7 @@ fn parse_nonnegative(
 }
 
 ///|
-fn parse_seconds(value : String, option : String) -> Int raise WgetUsageError {
+fn parse_seconds(value : String, option : String) -> Int32 raise WgetUsageError {
   @cli.parse_idle_timeout(value) catch {
     _ => raise WgetUsageError("\{option}: invalid time period '\{value}'")
   }
@@ -152,8 +162,8 @@ fn parse_header(value : String) -> @netops.HttpHeader raise WgetUsageError {
 }
 
 ///|
-fn parse_statuses(value : String) -> Array[Int] raise WgetUsageError {
-  let statuses : Array[Int] = []
+fn parse_statuses(value : String) -> Array[Int32] raise WgetUsageError {
+  let statuses : Array[Int32] = []
   for item in value.split(",") {
     let status = parse_nonnegative(
       item.trim().to_owned(),

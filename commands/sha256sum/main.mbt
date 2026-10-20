@@ -33,7 +33,7 @@ fn is_hex_digest(value : String) -> Bool {
     return false
   }
   for char in value {
-    if !(char is ('0'..='9' | 'a'..='f' | 'A'..='F')) {
+    if !(char is ('0'..<='9' | 'a'..<='f' | 'A'..<='F')) {
       return false
     }
   }
@@ -85,11 +85,11 @@ fn decode_filename(value : String) -> String? {
 
 ///|
 priv struct CheckSummary {
-  mut checked : Int
-  mut verified : Int
-  mut mismatched : Int
-  mut unreadable : Int
-  mut malformed : Int
+  mut checked : Int32
+  mut verified : Int32
+  mut mismatched : Int32
+  mut unreadable : Int32
+  mut malformed : Int32
 }
 
 ///|
@@ -181,7 +181,7 @@ async fn check_manifest(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("sha256sum 0.2.1\n")
+    @stdio.stdout.write("sha256sum 0.2.2\n")
     return
   }
   let args = @env.args()[1:]

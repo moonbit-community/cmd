@@ -14,7 +14,7 @@ pub(all) enum FeedbackMode {
 ///|
 pub(all) struct FetchOptions {
   fail_on_http_error : Bool
-  idle_timeout_ms : Int
+  idle_timeout_ms : Int32
   feedback : FeedbackMode
   label : String
   diagnostic_path : String?
@@ -23,7 +23,7 @@ pub(all) struct FetchOptions {
 ///|
 pub fn fetch_options(
   fail_on_http_error : Bool,
-  idle_timeout_ms : Int,
+  idle_timeout_ms : Int32,
   show_progress : Bool,
   label : String,
 ) -> FetchOptions {
@@ -42,10 +42,10 @@ pub fn fetch_options(
 ///|
 pub fn fetch_options_with_feedback(
   fail_on_http_error : Bool,
-  idle_timeout_ms : Int,
+  idle_timeout_ms : Int32,
   feedback : FeedbackMode,
   label : String,
-  diagnostic_path? : String? = None,
+  diagnostic_path~ : String? = None,
 ) -> FetchOptions {
   { fail_on_http_error, idle_timeout_ms, feedback, label, diagnostic_path, }
 }

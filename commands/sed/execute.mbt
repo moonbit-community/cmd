@@ -25,7 +25,7 @@ fn PatternRef::resolve(
 ///|
 fn Address::matches(
   self : Address,
-  line : Int,
+  line : Int32,
   last : Bool,
   text : String,
   runtime : Runtime,
@@ -40,7 +40,7 @@ fn Address::matches(
 ///|
 fn Command::selected(
   self : Command,
-  line : Int,
+  line : Int32,
   last : Bool,
   text : String,
   runtime : Runtime,
@@ -115,7 +115,7 @@ fn substitute(
   text : String,
   replacement : String,
   global : Bool,
-  occurrence : Int,
+  occurrence : Int32,
 ) -> (String, Bool) raise {
   let result = StringBuilder()
   let mut search = 0
@@ -171,7 +171,7 @@ async fn Runtime::emit(
 async fn execute_line(
   commands : Array[Command],
   line : @stream.Line,
-  number : Int,
+  number : Int32,
   last : Bool,
   quiet : Bool,
   runtime : Runtime,

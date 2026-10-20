@@ -73,7 +73,7 @@ fn split_fields(line : Bytes, separator : Byte?) -> Array[Bytes] {
 }
 
 ///|
-fn key_of(fields : Array[Bytes], field : Int) -> Bytes {
+fn key_of(fields : Array[Bytes], field : Int32) -> Bytes {
   if field - 1 < fields.length() {
     fields[field - 1]
   } else {
@@ -82,7 +82,7 @@ fn key_of(fields : Array[Bytes], field : Int) -> Bytes {
 }
 
 ///|
-fn rest_of(fields : Array[Bytes], field : Int) -> Array[Bytes] {
+fn rest_of(fields : Array[Bytes], field : Int32) -> Array[Bytes] {
   let rest : Array[Bytes] = []
   for index, value in fields {
     if index != field - 1 {
@@ -98,7 +98,7 @@ fn bytes_equal(left : Bytes, right : Bytes) -> Bool {
 }
 
 ///|
-fn compare_bytes(left : Bytes, right : Bytes) -> Int {
+fn compare_bytes(left : Bytes, right : Bytes) -> Int32 {
   left[:].lexical_compare(right[:])
 }
 
@@ -110,7 +110,7 @@ fn append_bytes(output : Array[Byte], value : Bytes) -> Unit {
 }
 
 ///|
-fn field_at(fields : Array[Bytes], index : Int, empty : String) -> Bytes {
+fn field_at(fields : Array[Bytes], index : Int32, empty : String) -> Bytes {
   if index < fields.length() {
     fields[index]
   } else {
@@ -119,7 +119,7 @@ fn field_at(fields : Array[Bytes], index : Int, empty : String) -> Bytes {
 }
 
 ///|
-fn parse_output_field(value : String) -> (Int, Int)? {
+fn parse_output_field(value : String) -> (Int32, Int32)? {
   if value == "0" {
     return Some((0, 0))
   }
@@ -141,8 +141,8 @@ fn parse_output_field(value : String) -> (Int, Int)? {
 fn parse_file_numbers(
   parsed : @cli.ParsedArgs,
   name : String,
-) -> Array[Int] raise {
-  let values : Array[Int] = []
+) -> Array[Int32] raise {
+  let values : Array[Int32] = []
   for value in parsed.values(name) {
     let number = @string.parse_int(value) catch {
       _ => raise Failure("join: invalid file number: '\{value}'")
@@ -159,11 +159,11 @@ fn parse_file_numbers(
 async fn write_joined(
   left : JoinRow?,
   right : JoinRow?,
-  field1 : Int,
-  field2 : Int,
+  field1 : Int32,
+  field2 : Int32,
   separator : Byte,
   empty : String,
-  format_fields : Array[(Int, Int)],
+  format_fields : Array[(Int32, Int32)],
   record_delimiter : Byte,
 ) -> Unit {
   let output : Array[Byte] = []
@@ -223,10 +223,10 @@ async fn write_joined(
 async fn next_ordered_row(
   scanner : @stream.LineScanner,
   previous_key : Ref[Bytes?],
-  field : Int,
+  field : Int32,
   separator : Byte?,
   name : String,
-  order_mode : Int,
+  order_mode : Int32,
   unordered : Ref[Bool],
 ) -> JoinRow? {
   match scanner.next() {
@@ -253,15 +253,15 @@ async fn next_ordered_row(
 async fn merge_readers(
   reader1 : &@io.Reader,
   reader2 : &@io.Reader,
-  field1 : Int,
-  field2 : Int,
+  field1 : Int32,
+  field2 : Int32,
   separator : Byte?,
-  all : Array[Int],
-  only : Array[Int],
+  all : Array[Int32],
+  only : Array[Int32],
   empty : String,
-  output_fields : Array[(Int, Int)],
+  output_fields : Array[(Int32, Int32)],
   record_delimiter : Byte,
-  order_mode : Int,
+  order_mode : Int32,
 ) -> Unit {
   let scanner1 = @stream.LineScanner::new(reader1, delimiter=record_delimiter)
   let scanner2 = @stream.LineScanner::new(reader2, delimiter=record_delimiter)
@@ -277,7 +277,7 @@ async fn merge_readers(
   )
   let out_separator = separator.unwrap_or(b' ')
   fn mark_unpairable(
-    order_mode : Int,
+    order_mode : Int32,
     unordered1 : Ref[Bool],
     unordered2 : Ref[Bool],
   ) -> Unit raise JoinError {
@@ -412,7 +412,7 @@ async fn merge_readers(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("join 0.2.1\n")
+    @stdio.stdout.write("join 0.2.2\n")
     return
   }
   let args = @env.args()[1:]
@@ -511,7 +511,7 @@ async fn main {
   } else {
     0
   }
-  let output_fields : Array[(Int, Int)] = []
+  let output_fields : Array[(Int32, Int32)] = []
   for value in parsed.values("output") {
     for item in value.split(",") {
       match parse_output_field(item.to_owned()) {

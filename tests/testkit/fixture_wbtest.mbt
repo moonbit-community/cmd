@@ -97,3 +97,40 @@ test "release contract newline checks exactly one terminator" {
   assert_false(ends_with_newline(b"line"))
   assert_false(ends_with_newline(b""))
 }
+
+///|
+test "Windows link observer distinguishes symbolic links and junction targets" {
+  assert_eq(
+    windows_link_observation(
+      b"{\"kind\":\"SymbolicLink\",\"target\":\"referent\"}", "C:/work",
+    ),
+    ("SymbolicLink", "referent"),
+  )
+  assert_eq(
+    windows_link_observation(
+      b"{\"kind\":\"Junction\",\"target\":\"C:\\\\work\\\\referent\"}", "c:/work",
+    ),
+    ("Junction", "${WORK}/referent"),
+  )
+  assert_eq(
+    windows_link_observation(
+      b"{\"kind\":\"Junction\",\"target\":\"C:\\\\work-other\\\\referent\"}", "C:/work",
+    ),
+    ("Junction", "C:/work-other/referent"),
+  )
+}
+
+///|
+test "Windows link observer rejects missing or unrecognized reparse properties" {
+  for
+    data in [
+      b"{\"kind\":null,\"target\":null}", b"{\"kind\":\"Other\",\"target\":\"referent\"}",
+      b"{\"kind\":\"SymbolicLink\",\"target\":\"\"}",
+    ] {
+    try windows_link_observation(data, "C:/work") catch {
+      _ => ()
+    } noraise {
+      _ => fail("unavailable link metadata must fail observation")
+    }
+  }
+}

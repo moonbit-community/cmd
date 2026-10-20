@@ -4,11 +4,11 @@ priv suberror UnexpandError {
 }
 
 ///|
-fn parse_stops(text : String) -> Array[Int] raise UnexpandError {
+fn parse_stops(text : String) -> Array[Int32] raise UnexpandError {
   if text == "" {
     raise UnexpandError("invalid tab size")
   }
-  let stops : Array[Int] = []
+  let stops : Array[Int32] = []
   for part in text.split(",") {
     if part.trim() == "" {
       raise UnexpandError("invalid tab size")
@@ -28,7 +28,7 @@ fn parse_stops(text : String) -> Array[Int] raise UnexpandError {
 }
 
 ///|
-fn next_stop(column : Int, stops : Array[Int]) -> Int? {
+fn next_stop(column : Int32, stops : Array[Int32]) -> Int32? {
   for stop in stops {
     if stop > column {
       return Some(stop)
@@ -44,10 +44,10 @@ fn next_stop(column : Int, stops : Array[Int]) -> Int? {
 ///|
 fn emit_spaces_as_tabs(
   output : Array[Byte],
-  start : Int,
-  count : Int,
-  stops : Array[Int],
-) -> Int {
+  start : Int32,
+  count : Int32,
+  stops : Array[Int32],
+) -> Int32 {
   let end = start + count
   let mut column = start
   while column < end {
@@ -70,7 +70,7 @@ fn unexpand_bytes(
   data : Bytes,
   all_blanks : Bool,
   first_only : Bool,
-  stops : Array[Int],
+  stops : Array[Int32],
 ) -> Bytes {
   let output : Array[Byte] = []
   let mut column = 0
@@ -161,7 +161,7 @@ async fn read_input(path : String) -> Bytes {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("unexpand 0.1.2\n")
+    @stdio.stdout.write("unexpand 0.1.3\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [

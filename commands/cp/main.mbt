@@ -187,7 +187,7 @@ async fn copy_one(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("cp 0.2.1\n")
+    @stdio.stdout.write("cp 0.2.2\n")
     return
   }
   let parsed = @cli.parse(normalized_args(@env.args()[1:]), [

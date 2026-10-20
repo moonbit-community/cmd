@@ -190,7 +190,7 @@ fn validate_release_manifest(
         err => failures.push("\{err}")
       }
       match file.kind {
-        Some("symlink") =>
+        Some("symlink" | "symbolic-link" | "junction") =>
           match file.target {
             None => failures.push("\{fixture.id}: symlink target is required")
             Some(target) if !safe_symlink_target(target) =>

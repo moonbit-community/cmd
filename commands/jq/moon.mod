@@ -1,6 +1,6 @@
 name = "cli/jq"
 
-version = "0.2.2"
+version = "0.2.3"
 
 readme = "README.md"
 
@@ -15,8 +15,8 @@ preferred_target = "wasm"
 description = "jq command for MoonX."
 
 import {
-  "cli/core@0.6.0",
-  "moonbitlang/async@0.22.4",
+  "cli/core@0.7.0",
+  "moonbitlang/async@0.22.5",
   "moonbitlang/x@0.5.5",
   "bobzhang/moonjq@0.2.0",
 }

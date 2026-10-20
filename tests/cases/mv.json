@@ -2,6 +2,42 @@
   "schema": 2,
   "cases": [
     {
+      "id": "mv-windows-native-links",
+      "command": "mv",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "windows"
+      ],
+      "timeout_ms": 120000,
+      "source_version": "Windows Native async 0.22.5 link rename: command effects and independent reparse-point/referent observation"
+    },
+    {
+      "id": "mv-windows-wasm-links-boundary",
+      "command": "mv",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "coverage": [
+        "-i"
+      ],
+      "host_platforms": [
+        "windows"
+      ],
+      "timeout_ms": 120000,
+      "diagnostic_reason": "Windows Wasm rejects symlink/junction rename and link backups before prompts or mutation, including with stdin held open, until a released host fix has independent Windows evidence; safe no-clobber skips and regular-source destination-link replacement without backup retain separate effect checks.",
+      "source_version": "Windows Wasm explicit rejection and unchanged link/referent evidence; ADR-0004 and issue #38"
+    },
+    {
       "id": "phase4-mv-regular",
       "command": "mv",
       "args": [
@@ -385,6 +421,10 @@
     {
       "id": "repair-fs-mv-hardlink-no-op",
       "command": "mv",
+      "observe": [
+        "mode",
+        "identity"
+      ],
       "args": [
         "source",
         "alias"
@@ -709,6 +749,250 @@
       ]
     },
     {
+      "id": "async-0225-mv-file-symbolic-link",
+      "command": "mv",
+      "observe": [
+        "symlink-target"
+      ],
+      "args": [
+        "source",
+        "moved"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "referent",
+          "content_text": "referent stays\n"
+        },
+        {
+          "path": "source",
+          "kind": "symbolic-link",
+          "target": "referent"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "normalizations": [],
+      "expected_files": [
+        {
+          "path": "source",
+          "exists": false
+        },
+        {
+          "path": "moved",
+          "kind": "symlink",
+          "target": "referent"
+        },
+        {
+          "path": "referent",
+          "kind": "file",
+          "content_text": "referent stays\n"
+        }
+      ],
+      "source_version": "async 0.22.5 link-object rename contract; Windows backend split is covered by mv package tests"
+    },
+    {
+      "id": "async-0225-mv-directory-symbolic-link",
+      "command": "mv",
+      "observe": [
+        "symlink-target"
+      ],
+      "args": [
+        "-T",
+        "source",
+        "moved"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "referent",
+          "kind": "directory"
+        },
+        {
+          "path": "referent/payload",
+          "content_text": "directory stays\n"
+        },
+        {
+          "path": "source",
+          "kind": "symbolic-link",
+          "target": "referent"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "normalizations": [],
+      "coverage": [
+        "-T"
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "exists": false
+        },
+        {
+          "path": "moved",
+          "kind": "symlink",
+          "target": "referent"
+        },
+        {
+          "path": "referent",
+          "kind": "directory"
+        },
+        {
+          "path": "referent/payload",
+          "kind": "file",
+          "content_text": "directory stays\n"
+        }
+      ],
+      "source_version": "async 0.22.5 forced directory symlink fixture; Native/Wasm preserve the referent"
+    },
+    {
+      "id": "async-0225-mv-windows-symbolic-link-no-clobber",
+      "command": "mv",
+      "args": [
+        "-n",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "referent",
+          "content_text": "referent stays\n"
+        },
+        {
+          "path": "destination",
+          "content_text": "destination stays\n"
+        },
+        {
+          "path": "source",
+          "kind": "symbolic-link",
+          "target": "referent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "windows"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "-n"
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "symlink",
+          "target": "referent"
+        },
+        {
+          "path": "destination",
+          "kind": "file",
+          "content_text": "destination stays\n"
+        },
+        {
+          "path": "referent",
+          "kind": "file",
+          "content_text": "referent stays\n"
+        },
+        {
+          "path": "destination~",
+          "exists": false
+        }
+      ],
+      "source_version": "Windows explicit SymbolicLink fixture and host observation; no rename required"
+    },
+    {
+      "id": "async-0225-mv-windows-junction-no-clobber",
+      "command": "mv",
+      "args": [
+        "-n",
+        "-T",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "referent",
+          "kind": "directory"
+        },
+        {
+          "path": "referent/payload",
+          "content_text": "directory stays\n"
+        },
+        {
+          "path": "destination",
+          "content_text": "destination stays\n"
+        },
+        {
+          "path": "source",
+          "kind": "junction",
+          "target": "referent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "windows"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "-n",
+        "-T"
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "symlink",
+          "target": "${WORK}/referent"
+        },
+        {
+          "path": "destination",
+          "kind": "file",
+          "content_text": "destination stays\n"
+        },
+        {
+          "path": "referent",
+          "kind": "directory"
+        },
+        {
+          "path": "referent/payload",
+          "kind": "file",
+          "content_text": "directory stays\n"
+        },
+        {
+          "path": "destination~",
+          "exists": false
+        }
+      ],
+      "source_version": "Windows explicit Junction fixture and host observation; no rename required"
+    },
+    {
       "id": "release-metadata-mv-help",
       "command": "mv",
       "args": [
@@ -723,8 +1007,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/mv@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nDeclining an interactive overwrite returns status 1 and preserves both files.\nEqual-time interactive/update targets require unavailable file identity metadata.\n",
+      "source_version": "workspace cli/mv@0.2.3 metadata contract",
+      "expected_stdout_text": "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nDeclining an interactive overwrite returns status 1 and preserves both files.\nTimestamps describe source and destination entries, including dangling links.\nEqual-time interactive/update targets require unavailable file identity metadata.\nWindows Wasm symlink/junction moves and link backups require a verified host fix.\n",
       "expected_stderr_text": ""
     },
     {
@@ -742,8 +1026,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/mv@0.2.2 metadata contract",
-      "expected_stdout_text": "mv 0.2.2\n",
+      "source_version": "workspace cli/mv@0.2.3 metadata contract",
+      "expected_stdout_text": "mv 0.2.3\n",
       "expected_stderr_text": ""
     }
   ]

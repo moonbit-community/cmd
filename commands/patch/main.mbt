@@ -21,7 +21,7 @@ fn help_message() -> String {
 }
 
 ///|
-fn stripped(name : String, count : Int?) -> String raise PatchError {
+fn stripped(name : String, count : Int32?) -> String raise PatchError {
   let pieces = name.split("/").filter(s => s != "").to_array()
   let drop = count.unwrap_or((pieces.length() - 1).max(0))
   if count == Some(0) && name.has_prefix("/") {
@@ -38,7 +38,7 @@ fn stripped(name : String, count : Int?) -> String raise PatchError {
 }
 
 ///|
-async fn run(args : ArrayView[String]) -> Int {
+async fn run(args : ArrayView[String]) -> Int32 {
   let parsed = @cli.parse(args, [
     @cli.option("strip", short='p'),
     @cli.option("input", short='i'),
@@ -237,7 +237,7 @@ async fn run(args : ArrayView[String]) -> Int {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("patch 0.1.1\n")
+    @stdio.stdout.write("patch 0.1.2\n")
     return
   }
   let status = run(@env.args()[1:]) catch {

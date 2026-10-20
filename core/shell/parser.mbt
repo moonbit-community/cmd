@@ -1,7 +1,7 @@
 ///|
 priv struct Parser {
   tokens : Array[Token]
-  mut pos : Int
+  mut pos : Int32
 }
 
 ///|

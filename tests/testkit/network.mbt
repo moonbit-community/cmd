@@ -19,6 +19,9 @@ pub fn oracle_request_name(request : @http.Request) -> String {
 pub async fn run_http_fixture(server : @http.Server) -> Unit {
   defer server.close()
   server.run_forever() <| ((request, body, connection) => {
+    if serve_transfer_fixture(request, connection) {
+      return
+    }
     match request.path {
       "/auth-cookie-challenge" if request.headers.get("Authorization") is None =>
         connection

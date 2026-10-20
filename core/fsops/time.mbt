@@ -8,11 +8,11 @@ pub(all) enum TimestampKind {
 ///|
 pub(all) struct FileTimestamp {
   seconds : Int64
-  nanoseconds : Int
+  nanoseconds : Int32
 } derive(Eq, Debug)
 
 ///|
-pub fn compare_timestamps(left : FileTimestamp, right : FileTimestamp) -> Int {
+pub fn compare_timestamps(left : FileTimestamp, right : FileTimestamp) -> Int32 {
   if left.seconds < right.seconds {
     -1
   } else if left.seconds > right.seconds {
@@ -50,7 +50,7 @@ pub fn timestamp_age_bucket(
 pub async fn read_file_timestamp(
   path : String,
   kind : TimestampKind,
-  follow_symlink? : Bool = true,
+  follow_symlink~ : Bool = true,
 ) -> FileTimestamp {
   let path = @platform.normalize_input_separators(path)
   let (seconds, nanoseconds) = match kind {

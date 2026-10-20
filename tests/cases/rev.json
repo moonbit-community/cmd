@@ -29,7 +29,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/rev@0.1.2 metadata contract",
+      "source_version": "workspace cli/rev@0.1.3 metadata contract",
       "expected_stdout_text": "Usage: rev [OPTION]... [FILE]...\n      --help      display this help and exit\n      --version   display version and exit\n\nReverse the characters of every line from standard input or one file.\nThis implementation uses C-locale byte order and preserves line feeds.\n",
       "expected_stderr_text": ""
     },
@@ -48,8 +48,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/rev@0.1.2 metadata contract",
-      "expected_stdout_text": "rev 0.1.2\n",
+      "source_version": "workspace cli/rev@0.1.3 metadata contract",
+      "expected_stdout_text": "rev 0.1.3\n",
       "expected_stderr_text": ""
     }
   ]

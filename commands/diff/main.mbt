@@ -8,7 +8,7 @@ async fn source(path : String) -> Bytes {
 }
 
 ///|
-async fn run(args : ArrayView[String]) -> Int {
+async fn run(args : ArrayView[String]) -> Int32 {
   let normalized : Array[String] = []
   let mut options = true
   for arg in args {
@@ -42,7 +42,7 @@ async fn run(args : ArrayView[String]) -> Int {
     return 0
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("diff 0.1.2\n")
+    @stdio.stdout.write("diff 0.1.3\n")
     return 0
   }
   guard parsed.operands.length() == 2 else {
@@ -119,9 +119,9 @@ async fn run(args : ArrayView[String]) -> Int {
 }
 
 ///|
-fn padded(value : Int, width : Int) -> String {
+fn padded(value : Int32, width : Int32) -> String {
   let text = value.to_string()
-  "0".repeat(Int::max(0, width - text.length())) + text
+  "0".repeat(Int32::max(0, width - text.length())) + text
 }
 
 ///|

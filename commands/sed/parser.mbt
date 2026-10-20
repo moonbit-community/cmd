@@ -16,7 +16,7 @@ enum PatternRef {
 
 ///|
 enum Address {
-  Number(Int)
+  Number(Int32)
   Last
   Search(PatternRef)
 }
@@ -27,7 +27,7 @@ enum Action {
   Delete
   Quit
   Number
-  Substitute(PatternRef, String, Bool, Int, Bool)
+  Substitute(PatternRef, String, Bool, Int32, Bool)
 }
 
 ///|
@@ -43,7 +43,7 @@ struct Command {
 struct Script {
   source : String
   extended : Bool
-  mut index : Int
+  mut index : Int32
 }
 
 ///|
@@ -202,7 +202,7 @@ fn compile(source : String, extended : Bool) -> Array[Command] raise {
               global = true
             }
             'p' => print = true
-            '1'..='9' => {
+            '1'..<='9' => {
               guard occurrence == 0 else { fail("duplicate occurrence flag") }
               let begin = parser.index - 1
               while parser.index < source.length() &&

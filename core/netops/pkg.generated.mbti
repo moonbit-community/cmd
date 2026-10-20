@@ -26,7 +26,7 @@ pub fn retryable_failure(TransferErrorKind, Int?) -> Bool
 
 pub async fn transfer(String, TransferOutput, TransferOptions, observer? : async (TransferEvent) -> Unit) -> TransferResult
 
-pub fn transfer_options(request_method? : HttpMethod, headers? : Array[HttpHeader], body? : RequestBody, redirects? : RedirectPolicy, preserve_method_on_redirect? : Bool, verify_tls? : Bool, proxy_url? : String, connect_timeout_ms? : Int, idle_timeout_ms? : Int, max_time_ms? : Int, fail_on_http_error? : Bool, http_error_statuses? : Array[Int], resume_from? : Int64, keep_output_on_not_modified? : Bool, cookie_jar? : CookieJar, cookie_data? : String, custom_cookie_mode? : CustomCookieMode, custom_cookie_cross_origin? : Bool, basic_credentials? : String, basic_preemptive? : Bool, basic_credential_scope? : BasicCredentialScope) -> TransferOptions
+pub fn transfer_options(profile? : TransferProfile, request_method? : HttpMethod, headers? : Array[HttpHeader], body? : RequestBody, redirects? : RedirectPolicy, preserve_method_on_redirect? : Bool, verify_tls? : Bool, proxy_url? : String, connect_timeout_ms? : Int, idle_timeout_ms? : Int, max_time_ms? : Int, fail_on_http_error? : Bool, http_error_statuses? : Array[Int], resume_from? : Int64, resume_skip_existing? : Bool, keep_output_on_not_modified? : Bool, cookie_jar? : CookieJar, cookie_data? : String, custom_cookie_mode? : CustomCookieMode, custom_cookie_cross_origin? : Bool, basic_credentials? : String, basic_preemptive? : Bool, basic_credential_scope? : BasicCredentialScope) -> TransferOptions
 
 pub fn url_host(String) -> String raise TransferError
 
@@ -36,7 +36,7 @@ pub(all) suberror NetOpError {
 }
 
 pub(all) suberror TransferError {
-  TransferError(kind~ : TransferErrorKind, message~ : String, status~ : Int?)
+  TransferError(kind~ : TransferErrorKind, message~ : String, status~ : Int?, context~ : TransferFailureContext?)
 } derive(Eq, @debug.Debug)
 pub fn TransferError::equal(Self, Self) -> Bool
 pub fn TransferError::not_equal(Self, Self) -> Bool
@@ -122,6 +122,16 @@ pub(all) enum RequestBody {
 } derive(@debug.Debug)
 pub fn RequestBody::to_repr(Self) -> @debug.Repr
 
+pub(all) enum ResponseFraming {
+  Bodyless
+  FixedLength(Int64)
+  Chunked
+  CloseDelimited
+} derive(Eq, @debug.Debug)
+pub fn ResponseFraming::equal(Self, Self) -> Bool
+pub fn ResponseFraming::not_equal(Self, Self) -> Bool
+pub fn ResponseFraming::to_repr(Self) -> @debug.Repr
+
 type StoredCookie
 
 pub(all) enum TransferErrorKind {
@@ -129,12 +139,16 @@ pub(all) enum TransferErrorKind {
   UnsupportedProtocol
   InvalidMethod
   ConnectionFailure
+  EmptyReplyFailure
+  ReceiveFailure
+  PartialBodyFailure
   TlsFailure
   ProxyFailure
   TimeoutFailure
   RedirectFailure
   HttpStatusFailure
   InputFailure
+  RewindFailure
   OutputFailure
   ProtocolFailure
 } derive(Eq, @debug.Debug)
@@ -145,10 +159,22 @@ pub fn TransferErrorKind::to_repr(Self) -> @debug.Repr
 pub(all) enum TransferEvent {
   ResponseStarted(url~ : String, status~ : Int, reason~ : String, headers~ : Array[HttpHeader], content_length~ : Int64?)
   Redirected(status~ : Int, from~ : String, to~ : String)
+  OutputStarted(path~ : String?, response_offset~ : Int64)
   Progress(received~ : Int64, content_length~ : Int64?)
   Completed(received~ : Int64, content_length~ : Int64?)
 } derive(@debug.Debug)
 pub fn TransferEvent::to_repr(Self) -> @debug.Repr
+
+pub(all) struct TransferFailureContext {
+  phase : TransferPhase
+  framing : ResponseFraming?
+  received_bytes : Int64
+  committed_bytes : Int64
+  write_outcome_uncertain : Bool
+} derive(Eq, @debug.Debug)
+pub fn TransferFailureContext::equal(Self, Self) -> Bool
+pub fn TransferFailureContext::not_equal(Self, Self) -> Bool
+pub fn TransferFailureContext::to_repr(Self) -> @debug.Repr
 
 pub(all) enum TransferFileMode {
   Truncate
@@ -160,6 +186,7 @@ pub fn TransferFileMode::not_equal(Self, Self) -> Bool
 pub fn TransferFileMode::to_repr(Self) -> @debug.Repr
 
 pub(all) struct TransferOptions {
+  profile : TransferProfile
   request_method : HttpMethod
   headers : Array[HttpHeader]
   body : RequestBody
@@ -173,6 +200,7 @@ pub(all) struct TransferOptions {
   fail_on_http_error : Bool
   http_error_statuses : Array[Int]
   resume_from : Int64?
+  resume_skip_existing : Bool
   keep_output_on_not_modified : Bool
   cookie_jar : CookieJar?
   cookie_data : String?
@@ -190,6 +218,25 @@ pub(all) enum TransferOutput {
 } derive(@debug.Debug)
 pub fn TransferOutput::to_repr(Self) -> @debug.Repr
 
+pub(all) enum TransferPhase {
+  Connection
+  Request
+  ResponseHeaders
+  ResponseBody
+} derive(Eq, @debug.Debug)
+pub fn TransferPhase::equal(Self, Self) -> Bool
+pub fn TransferPhase::not_equal(Self, Self) -> Bool
+pub fn TransferPhase::to_repr(Self) -> @debug.Repr
+
+pub(all) enum TransferProfile {
+  StrictProfile
+  CurlProfile
+  WgetProfile
+} derive(Eq, @debug.Debug)
+pub fn TransferProfile::equal(Self, Self) -> Bool
+pub fn TransferProfile::not_equal(Self, Self) -> Bool
+pub fn TransferProfile::to_repr(Self) -> @debug.Repr
+
 pub(all) struct TransferResult {
   requested_url : String
   effective_url : String
@@ -200,6 +247,7 @@ pub(all) struct TransferResult {
   output_path : String?
   redirects : Int
 }
+pub fn TransferResult::content_disposition_filename(Self) -> String?
 pub fn TransferResult::header(Self, String) -> String?
 
 // Type aliases

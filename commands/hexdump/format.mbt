@@ -1,5 +1,5 @@
 ///|
-fn number(value : Int64, radix : Int, width : Int) -> String {
+fn number(value : Int64, radix : Int32, width : Int32) -> String {
   let digits = "0123456789abcdef"
   let chars : Array[Char] = []
   let mut value = value
@@ -23,7 +23,7 @@ fn number(value : Int64, radix : Int, width : Int) -> String {
 }
 
 ///|
-fn spaces(n : Int) -> String {
+fn spaces(n : Int32) -> String {
   let out = StringBuilder()
   for _ in 0..<n {
     out.write_char(' ')

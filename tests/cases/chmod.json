@@ -135,7 +135,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/chmod@0.2.1 metadata contract",
+      "source_version": "workspace cli/chmod@0.2.2 metadata contract",
       "expected_stdout_text": "Usage: chmod [-R] [-v] MODE FILE...\n      --help      display this help and exit\n      --version   display version and exit\n       chmod [-R] [-v] --reference=RFILE FILE...\nMODE may be numeric or a complete symbolic '=' assignment such as a=rwx or u=rw,g=r,o=.\n",
       "expected_stderr_text": ""
     },
@@ -154,8 +154,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/chmod@0.2.1 metadata contract",
-      "expected_stdout_text": "chmod 0.2.1\n",
+      "source_version": "workspace cli/chmod@0.2.2 metadata contract",
+      "expected_stdout_text": "chmod 0.2.2\n",
       "expected_stderr_text": ""
     }
   ]

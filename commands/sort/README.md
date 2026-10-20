@@ -1,6 +1,6 @@
 # sort for moonx
 
-Version **0.2.1** behavior is documented here. The
+Version **0.2.2** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -32,7 +32,7 @@ temporary files. With no file operand, it silently reads stdin until EOF.
 
 ## Standalone metadata
 
-Standalone `--version` prints exactly `sort 0.2.1` followed by one
+Standalone `--version` prints exactly `sort 0.2.2` followed by one
 newline. Standalone `--help` starts with `Usage: sort`, lists both
 metadata options, and ends with a newline. Both write to stdout, leave stdin
 unread, and exit with status 0. Exact-version publication and verification

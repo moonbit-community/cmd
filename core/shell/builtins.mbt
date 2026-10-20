@@ -1,5 +1,5 @@
 ///|
-async fn read_builtin(args : Array[String], context : Context) -> Int {
+async fn read_builtin(args : Array[String], context : Context) -> Int32 {
   let raw = args.get(0) == Some("-r")
   let names = if raw { args[1:].to_owned() } else { args }
   if names.is_empty() {
@@ -134,7 +134,7 @@ async fn test_expression(args : Array[String], context : Context) -> Bool {
 }
 
 ///|
-async fn run_builtin(argv : Array[String], context : Context) -> Int? {
+async fn run_builtin(argv : Array[String], context : Context) -> Int32? {
   guard argv.get(0) is Some(name) else { return None }
   let args = argv[1:].to_owned()
   match name {

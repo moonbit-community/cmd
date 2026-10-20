@@ -11,7 +11,7 @@ fn[T] fail(message : String) -> T raise ExprError {
 ///|
 struct Parser {
   args : Array[String]
-  mut pos : Int
+  mut pos : Int32
 }
 
 ///|
@@ -26,7 +26,7 @@ fn truth(s : String) -> Bool {
 }
 
 ///|
-fn precedence(s : String) -> Int {
+fn precedence(s : String) -> Int32 {
   match s {
     "|" => 1
     "&" => 2
@@ -173,7 +173,7 @@ fn binary(op : String, left : String, right : String) -> String raise {
 ///|
 fn Parser::expression(
   self : Parser,
-  minimum : Int,
+  minimum : Int32,
   active : Bool,
 ) -> String raise {
   let mut left = self.atom(active)
@@ -209,7 +209,7 @@ fn evaluate(args : Array[String]) -> String raise {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("expr 0.1.1\n")
+    @stdio.stdout.write("expr 0.1.2\n")
     return
   }
   let args = @env.args()[1:].to_owned()
@@ -220,7 +220,7 @@ async fn main {
     return
   }
   if args == ["--version"] {
-    @stdio.stdout.write("expr 0.1.1\n")
+    @stdio.stdout.write("expr 0.1.2\n")
     return
   }
   if args.get(0) == Some("--") {

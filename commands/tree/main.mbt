@@ -8,7 +8,7 @@ priv struct TreeOptions {
   all : Bool
   directories_only : Bool
   full_path : Bool
-  level : Int?
+  level : Int32?
   no_report : Bool
   help : Bool
   version : Bool
@@ -30,8 +30,8 @@ priv struct TreeNode {
 
 ///|
 priv struct TreeCounts {
-  directories : Int
-  files : Int
+  directories : Int32
+  files : Int32
 }
 
 ///|
@@ -83,7 +83,7 @@ fn basename(path : String) -> String {
 }
 
 ///|
-fn parse_level(value : String) -> Int raise TreeError {
+fn parse_level(value : String) -> Int32 raise TreeError {
   let level = @string.parse_int(value) catch {
     _ => raise TreeError("invalid level: '\{value}'")
   }
@@ -139,7 +139,7 @@ fn display_root(path : String, full_path : Bool) -> String {
 async fn collect_node(
   path : String,
   display_name : String,
-  depth : Int,
+  depth : Int32,
   options : TreeOptions,
 ) -> TreeNode raise TreeError {
   let kind = @fs.kind(path, follow_symlink=false) catch {
@@ -275,7 +275,7 @@ fn usage() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("tree 0.1.2\n")
+    @stdio.stdout.write("tree 0.1.3\n")
     return
   }
   let invocation = parse_arguments(@env.args()[1:].to_owned()) catch {

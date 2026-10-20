@@ -1,5 +1,5 @@
 ///|
-fn pad_left(text : String, width : Int, fill? : Char = ' ') -> String {
+fn pad_left(text : String, width : Int32, fill~ : Char = ' ') -> String {
   let sb = StringBuilder()
   for _ in 0..<(width - text.length()) {
     sb.write_char(fill)
@@ -9,7 +9,7 @@ fn pad_left(text : String, width : Int, fill? : Char = ' ') -> String {
 }
 
 ///|
-fn format_number(number : Int, width : Int, format : String) -> String {
+fn format_number(number : Int32, width : Int32, format : String) -> String {
   let text = number.to_string()
   match format {
     "ln" => text + " ".repeat((width - text.length()).max(0))
@@ -21,7 +21,7 @@ fn format_number(number : Int, width : Int, format : String) -> String {
 }
 
 ///|
-fn spaces(width : Int) -> String {
+fn spaces(width : Int32) -> String {
   let sb = StringBuilder()
   for _ in 0..<width {
     sb.write_char(' ')
@@ -35,17 +35,17 @@ async fn process_reader(
   header_style : String,
   body_style : String,
   footer_style : String,
-  width : Int,
+  width : Int32,
   separator : String,
-  number : Ref[Int],
-  starting_number : Int,
-  increment : Int,
+  number : Ref[Int32],
+  starting_number : Int32,
+  increment : Int32,
   number_format : String,
-  join_blank_lines : Int,
+  join_blank_lines : Int32,
   no_renumber : Bool,
   section_delimiter : String,
-  section : Ref[Int],
-  blank_run : Ref[Int],
+  section : Ref[Int32],
+  blank_run : Ref[Int32],
 ) -> Unit {
   let scanner = @stream.LineScanner::new(reader)
   let header_marker = @utf8.encode(section_delimiter.repeat(3))
@@ -108,7 +108,7 @@ async fn process_reader(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("nl 0.2.1\n")
+    @stdio.stdout.write("nl 0.2.2\n")
     return
   }
   let args = @env.args()[1:]

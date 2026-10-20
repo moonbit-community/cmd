@@ -1,6 +1,6 @@
 # gzip
 
-Version **0.1.1** behavior is documented here. The
+Version **0.1.2** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -17,8 +17,12 @@ moonx cli/gzip -t notes.txt.gz
 `-d`/`--decompress` decodes, `-t`/`--test` checks compressed data without writing
 decoded bytes, and `-c`/`--stdout` selects stdout. `-n`/`--no-name` omits saved
 names and timestamps. Multiple operands are processed in order; `-` reads stdin.
-The encoder emits valid gzip data using stored DEFLATE blocks, so output can
-be larger than its input. Compression levels are not implemented.
+The published 0.1.2 baseline uses stored DEFLATE blocks. The unpublished workspace
+with async 0.22.5 uses its public Encoder, which performs bounded LZ matching and
+fixed-Huffman DEFLATE encoding with a 1 KiB history and matches up to 64 bytes.
+Output can still be larger than its input. A 32 KiB compressor, dynamic-Huffman
+block selection and compression levels remain planned work; the dependency
+upgrade does not complete those features or establish ratio/performance claims.
 
 Decompression accepts concatenated members, optional names, comments and extra
 header fields, and verifies header CRC, payload CRC and size. Decoded bytes
@@ -34,7 +38,7 @@ listing, force/pass-through modes and compression levels are rejected.
 
 ## Standalone metadata
 
-Standalone `--version` prints exactly `gzip 0.1.1` followed by one
+Standalone `--version` prints exactly `gzip 0.1.2` followed by one
 newline. Standalone `--help` starts with `Usage: gzip`, lists both
 metadata options, and ends with a newline. Both write to stdout, leave stdin
 unread, and exit with status 0. Exact-version publication and verification

@@ -81,7 +81,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/zcat@0.1.1 metadata contract",
+      "source_version": "workspace cli/zcat@0.1.2 metadata contract",
       "expected_stdout_text": "Usage: zcat [OPTION]... [FILE]...\nCompress or decompress gzip streams; no FILE or - reads stdin.\n\n  -c, --stdout       Write to stdout and keep input files.\n  -d, --decompress   Decompress (default for gunzip and zcat).\n  -t, --test         Validate compressed input without output.\n  -n, --no-name      Omit name/time metadata when compressing.\n  -q, --quiet        Suppress trailing-garbage warnings.\n      --help         display this help and exit\n      --version      display version and exit\n\nNamed-file compression requires -cn; decompression requires -c.\nIn-place replacement, saved-name metadata, levels, and recursion are unsupported.\n",
       "expected_stderr_text": ""
     },
@@ -100,8 +100,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/zcat@0.1.1 metadata contract",
-      "expected_stdout_text": "zcat 0.1.1\n",
+      "source_version": "workspace cli/zcat@0.1.2 metadata contract",
+      "expected_stdout_text": "zcat 0.1.2\n",
       "expected_stderr_text": ""
     }
   ]

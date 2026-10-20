@@ -4,7 +4,7 @@ priv suberror MktempError {
 }
 
 ///|
-fn random_hex(length : Int) -> String raise MktempError {
+fn random_hex(length : Int32) -> String raise MktempError {
   guard @env.rand(length) is Some(bytes) else {
     raise MktempError("mktemp: secure random source is unavailable")
   }
@@ -99,7 +99,7 @@ async fn create_unique(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("mktemp 0.1.2\n")
+    @stdio.stdout.write("mktemp 0.1.3\n")
     return
   }
   let args = @env.args()[1:]

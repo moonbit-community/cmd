@@ -4,7 +4,7 @@ priv suberror CliError {
 }
 
 ///|
-fn hex_digit(n : Int) -> Char {
+fn hex_digit(n : Int32) -> Char {
   if n < 10 {
     (0x30 + n).unsafe_to_char()
   } else {
@@ -19,7 +19,7 @@ fn write_hex_byte(sb : StringBuilder, b : Byte) -> Unit {
 }
 
 ///|
-fn hex_val(byte : Byte) -> Int {
+fn hex_val(byte : Byte) -> Int32 {
   let value = byte.to_int()
   if value >= 0x30 && value <= 0x39 {
     value - 0x30
@@ -33,7 +33,7 @@ fn hex_val(byte : Byte) -> Int {
 }
 
 ///|
-fn dump_line(data : ArrayView[Byte], cols : Int, offset : Int) -> String {
+fn dump_line(data : ArrayView[Byte], cols : Int32, offset : Int32) -> String {
   let sb = StringBuilder()
   for k in 0..<8 {
     sb.write_char(hex_digit((offset >> ((7 - k) * 4)) & 0xF))
@@ -63,7 +63,7 @@ fn dump_line(data : ArrayView[Byte], cols : Int, offset : Int) -> String {
 }
 
 ///|
-fn limited_length(length : Int, remaining : Int?) -> Int {
+fn limited_length(length : Int32, remaining : Int32?) -> Int32 {
   match remaining {
     Some(value) => if value < length { value } else { length }
     None => length
@@ -74,8 +74,8 @@ fn limited_length(length : Int, remaining : Int?) -> Int {
 async fn dump_stream(
   reader : &@io.Reader,
   plain : Bool,
-  cols : Int,
-  limit : Int?,
+  cols : Int32,
+  limit : Int32?,
   start_offset : Int64,
 ) -> Unit {
   let pending : Array[Byte] = []
@@ -126,7 +126,7 @@ async fn dump_stream(
 }
 
 ///|
-fn reverse_dump_line(line : Bytes) -> (Int, Bytes)? {
+fn reverse_dump_line(line : Bytes) -> (Int32, Bytes)? {
   let out : Array[Byte] = []
   if line.length() < 9 {
     return None
@@ -170,7 +170,7 @@ fn reverse_dump_line(line : Bytes) -> (Int, Bytes)? {
 }
 
 ///|
-fn loose_reverse_offset(line : Bytes) -> Int? {
+fn loose_reverse_offset(line : Bytes) -> Int32? {
   let mut started = false
   let mut offset = 0
   let mut delimiter = -1
@@ -275,7 +275,7 @@ fn include_name(path : String, symbol_name : String?) -> String {
   let raw = if path == "-" { "" } else { path }
   let normalized = StringBuilder()
   for char in raw {
-    if char is ('a'..='z' | 'A'..='Z' | '0'..='9' | '_') {
+    if char is ('a'..<='z' | 'A'..<='Z' | '0'..<='9' | '_') {
       normalized.write_char(char)
     } else {
       normalized.write_char('_')
@@ -331,8 +331,8 @@ fn include_output(path : String, data : Bytes, symbol_name : String?) -> String 
 fn parse_number(
   parsed : @cli.ParsedArgs,
   name : String,
-  minimum? : Int = 1,
-) -> Int? raise CliError {
+  minimum~ : Int32 = 1,
+) -> Int32? raise CliError {
   match parsed.last_value(name) {
     Some(text) => {
       let n = @string.parse_int(text) catch {
@@ -395,7 +395,7 @@ async fn write_zero_prefix(count : Int64) -> Unit {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("xxd 0.2.1\n")
+    @stdio.stdout.write("xxd 0.2.2\n")
     return
   }
   let args = @env.args()[1:].map(arg => {

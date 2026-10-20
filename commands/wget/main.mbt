@@ -63,7 +63,7 @@ async fn read_url_file(path : String) -> Array[String] {
 }
 
 ///|
-fn two_digits(value : Int) -> String {
+fn two_digits(value : Int32) -> String {
   if value < 10 {
     "0\{value}"
   } else {
@@ -85,7 +85,7 @@ fn http_weekday(value : @time.Weekday) -> String {
 }
 
 ///|
-fn http_month(value : Int) -> String {
+fn http_month(value : Int32) -> String {
   match value {
     1 => "Jan"
     2 => "Feb"
@@ -149,17 +149,20 @@ fn proxy_for(url : String, disabled : Bool) -> String? {
 }
 
 ///|
-fn wget_exit_kind(kind : @netops.TransferErrorKind) -> Int {
+fn wget_exit_kind(kind : @netops.TransferErrorKind) -> Int32 {
   match kind {
     @netops.HttpStatusFailure => 8
     @netops.TlsFailure => 5
-    @netops.InputFailure | @netops.OutputFailure => 3
+    @netops.InputFailure | @netops.RewindFailure | @netops.OutputFailure => 3
     @netops.UnsupportedProtocol
     | @netops.InvalidMethod
     | @netops.ProtocolFailure
     | @netops.RedirectFailure => 7
     @netops.InvalidUrl
     | @netops.ConnectionFailure
+    | @netops.ReceiveFailure
+    | @netops.EmptyReplyFailure
+    | @netops.PartialBodyFailure
     | @netops.ProxyFailure
     | @netops.TimeoutFailure => 4
   }
@@ -169,7 +172,7 @@ fn wget_exit_kind(kind : @netops.TransferErrorKind) -> Int {
 fn wget_can_retry(
   options : WgetOptions,
   kind : @netops.TransferErrorKind,
-  status : Int?,
+  status : Int32?,
   message : String,
 ) -> Bool {
   let retry_http = match status {
@@ -191,6 +194,8 @@ fn wget_can_retry(
 async fn output_for(
   options : WgetOptions,
   url : String,
+  selected_name? : String,
+  defer_resume~ : Bool = false,
 ) -> (@netops.TransferOutput, String, Int64?) {
   match options.output_document {
     Some("-") => (@netops.StandardOutput, "stdout", None)
@@ -206,8 +211,9 @@ async fn output_for(
         None,
       )
     None => {
-      let path = @netops.remote_name(url)
-      if options.continue_download && @fs.exists(path) {
+      let path = selected_name.unwrap_or_else(() => @netops.remote_name(url))
+      let disposition = options.content_disposition && selected_name is None
+      if options.continue_download && !defer_resume && @fs.exists(path) {
         let file = @fs.open(path, mode=ReadOnly)
         defer file.close()
         let size = file.size()
@@ -215,7 +221,7 @@ async fn output_for(
           @netops.FileOutput(
             path~,
             mode=@netops.Append,
-            content_disposition=options.content_disposition,
+            content_disposition=disposition,
             remove_on_error=false,
           ),
           path,
@@ -230,7 +236,7 @@ async fn output_for(
             } else {
               @netops.Unique
             },
-            content_disposition=options.content_disposition,
+            content_disposition=disposition,
             remove_on_error=false,
           ),
           path,
@@ -238,6 +244,37 @@ async fn output_for(
         )
       }
     }
+  }
+}
+
+///|
+priv struct DownloadProgress {
+  mut output : @netops.TransferOutput
+  mut downloaded : Int64
+  mut response_offset : Int64
+}
+
+///|
+fn DownloadProgress::observe(
+  self : DownloadProgress,
+  event : @netops.TransferEvent,
+) -> Unit {
+  match event {
+    @netops.OutputStarted(path~, response_offset~) => {
+      self.response_offset = response_offset
+      if path is Some(path) {
+        // Retain the actual unique or Content-Disposition name across attempts.
+        self.output = @netops.FileOutput(
+          path~,
+          mode=@netops.Append,
+          content_disposition=false,
+          remove_on_error=false,
+        )
+      }
+    }
+    @netops.Progress(received~, ..) =>
+      self.downloaded = self.downloaded.max(self.response_offset + received)
+    _ => ()
   }
 }
 
@@ -294,13 +331,22 @@ async fn download_one(
   log : LogDestination,
   url : String,
   jar : @netops.CookieJar?,
-) -> Int {
-  let (output, label, resume_from) = output_for(options, url) catch {
+) -> Int32 {
+  let mut discover_name = options.continue_download &&
+    options.content_disposition &&
+    options.output_document is None &&
+    options.request_method == @netops.Get
+  let (output, initial_label, resume_from) = output_for(
+    options,
+    url,
+    defer_resume=discover_name,
+  ) catch {
     err => {
       log.write("wget: \{err}\n")
       return 3
     }
   }
+  let mut label = initial_label
   let headers = options.headers.copy()
   if !headers.any(header => header.name.to_lower() == "user-agent") {
     headers.push(@netops.http_header("User-Agent", "Wget/1.25.0"))
@@ -317,42 +363,82 @@ async fn download_one(
   let interactive = !options.quiet &&
     options.log_file is None &&
     @platform.terminal_output_enabled(@platform.IfTerminal, @platform.Stderr)
+  let progress : DownloadProgress = {
+    output,
+    downloaded: resume_from.unwrap_or(0L),
+    response_offset: 0L,
+  }
   let mut attempt = 0
   for ;; {
     attempt += 1
     log.write("--  \{url}\n")
     let proxy_url = proxy_for(url, options.no_proxy)
-    try
-      @netops.transfer(
-        url,
-        output,
-        @netops.transfer_options(
-          request_method=options.request_method,
-          headers~,
-          body=options.body,
-          redirects=@netops.FollowRedirects(options.max_redirects),
-          verify_tls=!options.no_check_certificate,
-          proxy_url?,
-          connect_timeout_ms=options.connect_timeout_ms,
-          idle_timeout_ms=options.read_timeout_ms,
-          fail_on_http_error=true,
-          resume_from?,
-          keep_output_on_not_modified=options.timestamping,
-          cookie_jar?=jar,
-          custom_cookie_mode=@netops.ReplaceStored,
-          custom_cookie_cross_origin=true,
-          basic_credentials?=options.user.map(user => {
-            user + ":" + options.password.unwrap_or("")
-          }),
-          basic_preemptive=options.auth_no_challenge,
-          basic_credential_scope=@netops.AllOrigins,
-        ),
-        observer=event => wget_observer(log, interactive, label, event),
+    try {
+      let mut request_options = @netops.transfer_options(
+        profile=@netops.WgetProfile,
+        request_method=options.request_method,
+        headers~,
+        body=options.body,
+        redirects=@netops.FollowRedirects(options.max_redirects),
+        verify_tls=!options.no_check_certificate,
+        proxy_url?,
+        connect_timeout_ms=options.connect_timeout_ms,
+        idle_timeout_ms=options.read_timeout_ms,
+        fail_on_http_error=true,
+        http_error_statuses=if options.timestamping { [] } else { [304] },
+        resume_from?=if progress.downloaded > 0L {
+          Some(progress.downloaded)
+        } else {
+          None
+        },
+        resume_skip_existing=true,
+        keep_output_on_not_modified=options.timestamping,
+        cookie_jar?=jar,
+        custom_cookie_mode=@netops.ReplaceStored,
+        custom_cookie_cross_origin=true,
+        basic_credentials?=options.user.map(user => {
+          user + ":" + options.password.unwrap_or("")
+        }),
+        basic_preemptive=options.auth_no_challenge,
+        basic_credential_scope=@netops.AllOrigins,
       )
-    catch {
-      @netops.TransferError(kind~, message~, status~) => {
+      if discover_name {
+        let discovery = @netops.transfer(url, @netops.DiscardOutput, {
+          ..request_options,
+          request_method: @netops.Head,
+          body: @netops.EmptyBody,
+          resume_from: None,
+        })
+        let selected = discovery
+          .content_disposition_filename()
+          .unwrap_or(initial_label)
+        let (selected_output, selected_label, selected_resume) = output_for(
+          options,
+          url,
+          selected_name=selected,
+        ) catch {
+          error => {
+            log.write("wget: \{error}\n")
+            return 3
+          }
+        }
+        progress.output = selected_output
+        progress.downloaded = selected_resume.unwrap_or(0L)
+        progress.response_offset = 0L
+        label = selected_label
+        request_options = { ..request_options, resume_from: selected_resume, }
+        discover_name = false
+      }
+      @netops.transfer(url, progress.output, request_options, observer=event => {
+        progress.observe(event)
+        wget_observer(log, interactive, label, event)
+      })
+    } catch {
+      @netops.TransferError(kind~, message~, status~, ..) => {
         let retryable = wget_can_retry(options, kind, status, message)
-        if retryable && (options.tries == 0 || attempt < options.tries) {
+        if retryable &&
+          !(options.body is @netops.StdinBody) &&
+          (options.tries == 0 || attempt < options.tries) {
           log.write("wget: \{message}; retrying\n")
           if options.retry_delay_ms > 0 {
             @async.sleep(options.retry_delay_ms)
@@ -373,7 +459,7 @@ async fn download_one(
 }
 
 ///|
-async fn run(options : WgetOptions) -> Int {
+async fn run(options : WgetOptions) -> Int32 {
   if options.help {
     @stdio.stdout.write(usage())
     return 0
@@ -455,7 +541,7 @@ async fn run(options : WgetOptions) -> Int {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("wget 0.2.2\n")
+    @stdio.stdout.write("wget 0.2.3\n")
     return
   }
   let options = parse_wget_options(@env.args()[1:]) catch {

@@ -30,7 +30,7 @@ struct Database {
 
 ///|
 struct Settings {
-  jobs : Int
+  jobs : Int32
   cwd : String
   silent : Bool
   dry_run : Bool
@@ -171,9 +171,9 @@ async fn lookup_variable(
   name : String,
   variables : Map[String, Variable],
   automatic : Map[String, String],
-  depth : Int,
-  cwd? : String = @env.current_dir().unwrap_or("."),
-  exported? : Set[String] = Set([]),
+  depth : Int32,
+  cwd~ : String = @env.current_dir().unwrap_or("."),
+  exported~ : Set[String] = Set([]),
 ) -> String {
   if automatic.get(name) is Some(value) {
     return value
@@ -191,9 +191,9 @@ async fn expand(
   value : String,
   variables : Map[String, Variable],
   automatic : Map[String, String],
-  depth : Int,
-  cwd? : String = @env.current_dir().unwrap_or("."),
-  exported? : Set[String] = Set([]),
+  depth : Int32,
+  cwd~ : String = @env.current_dir().unwrap_or("."),
+  exported~ : Set[String] = Set([]),
 ) -> String {
   if depth > 64 {
     raise MakeError("variable expansion exceeds the recursion limit")
@@ -468,7 +468,7 @@ async fn parse_makefile(
   contents : String,
   database : Database,
   source_directory : String,
-  depth : Int,
+  depth : Int32,
 ) -> Unit {
   if depth > 64 {
     raise MakeError("include nesting exceeds the recursion limit")
@@ -724,7 +724,7 @@ async fn run_recipe(
   rule : Rule,
   database : Database,
   settings : Settings,
-) -> Int {
+) -> Int32 {
   let automatic : Map[String, String] = {
     "@": rule.target,
     "<": rule.dependencies.get(0).unwrap_or(""),
@@ -945,7 +945,7 @@ async fn run(arguments : Array[String]) -> Unit {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("make 0.2.1\n")
+    @stdio.stdout.write("make 0.2.2\n")
     return
   }
   run(@env.args()[1:].to_owned()) catch {

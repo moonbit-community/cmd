@@ -109,3 +109,64 @@ test "curl progress formatting separates terminal and redirected stderr" {
   assert_eq(curl_progress_text(5L, Some(10L), false, false), "")
   assert_eq(curl_progress_text(10L, Some(10L), false, true), "100% 10\n")
 }
+
+///|
+test "curl retry diagnostics preserve show-error without inventing HTTP failures" {
+  let options = default_curl_options()
+  assert_true(curl_reports_retry_error(options, @netops.PartialBodyFailure))
+  options.silent = true
+  assert_false(curl_reports_retry_error(options, @netops.PartialBodyFailure))
+  options.show_error = true
+  assert_true(curl_reports_retry_error(options, @netops.PartialBodyFailure))
+  assert_false(curl_reports_retry_error(options, @netops.HttpStatusFailure))
+  options.fail = true
+  assert_true(curl_reports_retry_error(options, @netops.HttpStatusFailure))
+}
+
+///|
+test "curl fixed-length diagnostics use the structured missing byte count" {
+  let context : @netops.TransferFailureContext = {
+    phase: @netops.ResponseBody,
+    framing: Some(@netops.FixedLength(9L)),
+    received_bytes: 5L,
+    committed_bytes: 0L,
+    write_outcome_uncertain: true,
+  }
+  assert_eq(
+    curl_error_message(
+      @netops.PartialBodyFailure,
+      "internal detail",
+      Some(context),
+    ),
+    "end of response with 4 bytes missing",
+  )
+  assert_eq(
+    curl_error_message(@netops.OutputFailure, "write failed", Some(context)),
+    "write failed",
+  )
+  assert_eq(
+    curl_error_message(@netops.PartialBodyFailure, "chunk ended", None),
+    "chunk ended",
+  )
+}
+
+///|
+test "curl body failures need all-error retries and keep their transfer exit codes" {
+  let options = default_curl_options()
+  for
+    (kind, code) in [
+      (@netops.PartialBodyFailure, 18),
+      (@netops.ReceiveFailure, 56),
+      (@netops.EmptyReplyFailure, 52),
+      (@netops.RewindFailure, 65),
+    ] {
+    assert_eq(curl_exit_kind(kind), code)
+    assert_false(curl_can_retry(options, kind, None))
+  }
+  options.retry_connection_refused = true
+  assert_false(curl_can_retry(options, @netops.PartialBodyFailure, None))
+  options.retry_all_errors = true
+  assert_true(curl_can_retry(options, @netops.PartialBodyFailure, None))
+  assert_true(curl_can_retry(options, @netops.ReceiveFailure, None))
+  assert_false(curl_can_retry(options, @netops.OutputFailure, None))
+}

@@ -1,6 +1,6 @@
 # cp
 
-This documents version 0.2.1. The [support record](../../docs/compatibility.md)
+This documents version 0.2.2. The [support record](../../docs/compatibility.md)
 tracks platform verification and exact-version publication evidence separately.
 
 Copy regular files and directory trees to new destinations with
@@ -28,7 +28,7 @@ read and restore complete links, modes, ownership, and timestamps. See the
 
 ## Standalone metadata
 
-Standalone `--version` prints exactly `cp 0.2.1` followed by one
+Standalone `--version` prints exactly `cp 0.2.2` followed by one
 newline. Standalone `--help` starts with `Usage: cp`, lists both
 metadata options, and ends with a newline. Both write to stdout, leave stdin
 unread, and exit with status 0. Exact-version publication and verification

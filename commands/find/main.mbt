@@ -25,9 +25,9 @@ priv enum FindExpr {
   Kind(Char)
   Empty
   Size(Comparison, Int64, Bool)
-  TimeAge(@fsops.TimestampKind, Comparison, Int, Int64)
+  TimeAge(@fsops.TimestampKind, Comparison, Int32, Int64)
   Newer(@fsops.TimestampKind, @fsops.TimestampKind, String)
-  Used(Comparison, Int)
+  Used(Comparison, Int32)
   Readable
   Writable
   Executable
@@ -41,9 +41,9 @@ priv enum FindExpr {
 ///|
 priv struct FindParser {
   tokens : Array[String]
-  mut pos : Int
-  mut min_depth : Int
-  mut max_depth : Int
+  mut pos : Int32
+  mut min_depth : Int32
+  mut max_depth : Int32
   mut depth_first : Bool
   mut action : FindAction?
 }
@@ -155,7 +155,7 @@ fn glob_regex(pattern : String) -> Regex raise FindError {
 }
 
 ///|
-fn parse_depth(text : String, option : String) -> Int raise FindError {
+fn parse_depth(text : String, option : String) -> Int32 raise FindError {
   let value = @string.parse_int(text) catch {
     _ => raise FindError("invalid \{option}: '\{text}'")
   }
@@ -200,7 +200,7 @@ fn parse_size(text : String) -> (Comparison, Int64, Bool) raise FindError {
 }
 
 ///|
-fn parse_mtime(text : String) -> (Comparison, Int) raise FindError {
+fn parse_mtime(text : String) -> (Comparison, Int32) raise FindError {
   let (comparison, raw) = parse_comparison(text)
   let value = @string.parse_int(raw) catch {
     _ => raise FindError("invalid mtime: '{text}'")
@@ -526,7 +526,7 @@ fn reference_timestamp(
 }
 
 ///|
-fn compare_age(actual : Int64, comparison : Comparison, wanted : Int) -> Bool {
+fn compare_age(actual : Int64, comparison : Comparison, wanted : Int32) -> Bool {
   let wanted = wanted.to_int64()
   match comparison {
     Exact => actual == wanted
@@ -629,7 +629,7 @@ fn join_path(parent : String, name : String) -> String {
 }
 
 ///|
-fn exec_batch_size(command : Array[String], values : Array[String]) -> Int {
+fn exec_batch_size(command : Array[String], values : Array[String]) -> Int32 {
   let mut size = 0
   for argument in command {
     if argument == "{}" {
@@ -652,7 +652,7 @@ fn begins_expression(token : String) -> Bool {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("find 0.2.1\n")
+    @stdio.stdout.write("find 0.2.2\n")
     return
   }
   let args = @env.args()[1:]
@@ -714,7 +714,7 @@ async fn main {
     }
   }
   let context : FindContext = { now: @fsops.current_timestamp(), references, }
-  let stack : Array[(String, Int, Bool)] = []
+  let stack : Array[(String, Int32, Bool)] = []
   let mut path_index = paths.length()
   while path_index > 0 {
     path_index -= 1

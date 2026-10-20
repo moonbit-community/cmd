@@ -173,9 +173,21 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
           "/range" => {
             let ranged = request.headers.get("Range") == Some("bytes=3-")
             let content = if ranged { "lo" } else { "hello" }
-            connection.send_response(if ranged { 206 } else { 200 }, "OK", extra_headers={
+            let headers : Map[@http.CaseInsensitiveString, String] = {
               "Content-Length": content.length().to_string(),
-            })
+            }
+            if ranged {
+              headers["Content-Range"] = "bytes 3-4/5"
+            }
+            connection.send_response(
+              if ranged {
+                206
+              } else {
+                200
+              },
+              "OK",
+              extra_headers=headers,
+            )
             connection..write(content).end_response()
           }
           "/range-ignore" => {
@@ -710,7 +722,7 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       @testkit.bytes_equal(@fs.read_file(basename_path).binary(), b"hello") &&
       curl_encoded_name.status == 0 &&
       @testkit.bytes_equal(@fs.read_file(encoded_path).binary(), b"hello") &&
-      curl_named_partial.status == 7 &&
+      curl_named_partial.status == 18 &&
       !@fs.exists(named_partial_path),
       "curl: remote filename, collision, or named cleanup mismatch",
       failures,
@@ -1083,9 +1095,12 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       base + "/partial",
     ])
     record_result(
-      curl_partial.status == 7 &&
+      curl_partial.status == 18 &&
       !@fs.exists(partial_path) &&
-      @testkit.contains_bytes(curl_partial.stderr, "response body"),
+      @testkit.bytes_equal(
+        curl_partial.stderr,
+        b"curl: (18) end of response with 6 bytes missing\n",
+      ),
       "curl: partial response cleanup mismatch",
       failures,
     )

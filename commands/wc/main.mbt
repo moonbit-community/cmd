@@ -39,7 +39,7 @@ fn is_continuation(b : Byte) -> Bool {
 ///|
 /// Count valid UTF-8 encoded characters. Bytes that are not part of a valid
 /// sequence are skipped without being counted, like GNU wc -m.
-fn count_utf8_chars(data : Bytes, at_eof : Bool) -> (Int64, Int) {
+fn count_utf8_chars(data : Bytes, at_eof : Bool) -> (Int64, Int32) {
   let mut count : Int64 = 0
   let mut i = 0
   while i < data.length() {
@@ -148,7 +148,7 @@ priv struct Selection {
 }
 
 ///|
-fn pad_left(text : String, width : Int) -> String {
+fn pad_left(text : String, width : Int32) -> String {
   let output = StringBuilder()
   for _ in 0..<(width - text.length()) {
     output.write_char(' ')
@@ -162,7 +162,7 @@ fn render_counts(
   counts : Counts,
   selection : Selection,
   name : String?,
-  width : Int,
+  width : Int32,
 ) -> String {
   let parts : Array[String] = []
   if selection.lines {
@@ -187,22 +187,22 @@ fn render_counts(
 }
 
 ///|
-fn count_width(counts : Counts, selection : Selection) -> Int {
+fn count_width(counts : Counts, selection : Selection) -> Int32 {
   let mut width = 1
   if selection.lines {
-    width = Int::max(width, counts.lines.to_string().length())
+    width = Int32::max(width, counts.lines.to_string().length())
   }
   if selection.words {
-    width = Int::max(width, counts.words.to_string().length())
+    width = Int32::max(width, counts.words.to_string().length())
   }
   if selection.chars {
-    width = Int::max(width, counts.chars.to_string().length())
+    width = Int32::max(width, counts.chars.to_string().length())
   }
   if selection.bytes {
-    width = Int::max(width, counts.bytes.to_string().length())
+    width = Int32::max(width, counts.bytes.to_string().length())
   }
   if selection.max_line_length {
-    width = Int::max(width, counts.max_line_length.to_string().length())
+    width = Int32::max(width, counts.max_line_length.to_string().length())
   }
   width
 }
@@ -251,7 +251,7 @@ async fn count_source(path : String) -> Counts {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("wc 0.2.1\n")
+    @stdio.stdout.write("wc 0.2.2\n")
     return
   }
   let args = @env.args()[1:]

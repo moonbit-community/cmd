@@ -12,7 +12,7 @@ priv enum CountSpec {
 }
 
 ///|
-let chunk_size : Int = 65536
+let chunk_size : Int32 = 65536
 
 ///|
 /// The follow loop keeps the descriptor open so renames do not switch it to a
@@ -20,7 +20,7 @@ let chunk_size : Int = 65536
 priv struct FollowFile {
   file : @fs.File
   name : String
-  source_index : Int
+  source_index : Int32
   mut offset : Int64
 }
 
@@ -47,7 +47,7 @@ fn parse_spec(text : String) -> CountSpec raise CliError {
 ///|
 /// Parse GNU tail's follow polling interval and convert seconds to the
 /// millisecond unit used by the async runtime.
-fn parse_sleep_interval(text : String) -> Int raise CliError {
+fn parse_sleep_interval(text : String) -> Int32 raise CliError {
   if text is ['-', ..] {
     raise CliError("tail: invalid sleep interval: '\{text}'")
   }
@@ -131,7 +131,7 @@ fn select_bytes(data : Bytes, spec : CountSpec) -> BytesView {
 }
 
 ///|
-fn count_newlines(chunk : Bytes) -> Int {
+fn count_newlines(chunk : Bytes) -> Int32 {
   let mut n = 0
   for b in chunk {
     if b is b'\n' {
@@ -405,9 +405,9 @@ async fn stream_available(file : @fs.File, start : Int64, end : Int64) -> Int64 
 /// at byte zero. Cancellation closes every descriptor through the defer.
 async fn follow_files(
   files : Array[FollowFile],
-  interval_ms : Int,
+  interval_ms : Int32,
   show_headers : Bool,
-  last_source_index : Int,
+  last_source_index : Int32,
 ) -> Unit {
   defer (for state in files {
     state.file.close()
@@ -437,7 +437,7 @@ async fn follow_files(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("tail 0.2.1\n")
+    @stdio.stdout.write("tail 0.2.2\n")
     return
   }
   let args = @env.args()[1:]

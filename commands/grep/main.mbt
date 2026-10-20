@@ -25,8 +25,8 @@ priv struct GrepOptions {
   recursive : Bool
   suppress_messages : Bool
   zero_terminated : Bool
-  before_context : Int
-  after_context : Int
+  before_context : Int32
+  after_context : Int32
   context_enabled : Bool
   binary_mode : BinaryMode
 }
@@ -45,7 +45,7 @@ priv suberror GrepError {
 ///|
 priv struct Record {
   data : Bytes
-  number : Int
+  number : Int32
   offset : Int64
 }
 
@@ -86,7 +86,7 @@ fn split_records(data : Bytes, delimiter : Byte) -> Array[Record] {
 
 ///|
 fn is_word_char(c : Char) -> Bool {
-  c == '_' || c is ('a'..='z' | 'A'..='Z' | '0'..='9')
+  c == '_' || c is ('a'..<='z' | 'A'..<='Z' | '0'..<='9')
 }
 
 ///|
@@ -185,7 +185,7 @@ fn join_path(parent : String, name : String) -> String {
 }
 
 ///|
-fn glob_matches(pattern : Bytes, name : Bytes, pi : Int, ni : Int) -> Bool {
+fn glob_matches(pattern : Bytes, name : Bytes, pi : Int32, ni : Int32) -> Bool {
   if pi == pattern.length() {
     return ni == name.length()
   }
@@ -252,7 +252,7 @@ async fn collect_files(
 }
 
 ///|
-fn parse_context(value : String) -> Int raise GrepError {
+fn parse_context(value : String) -> Int32 raise GrepError {
   let count = @string.parse_int(value) catch {
     _ => raise GrepError("grep: invalid context length argument: '\{value}'")
   }
@@ -379,8 +379,8 @@ async fn process_source(
       let mut emitted_through = -1
       for index in 0..<records.length() {
         if selected[index] {
-          let start = Int::max(0, index - options.before_context)
-          let end = Int::min(
+          let start = Int32::max(0, index - options.before_context)
+          let end = Int32::min(
             records.length() - 1,
             index + options.after_context,
           )
@@ -389,7 +389,7 @@ async fn process_source(
             start > emitted_through + 1 {
             @stdio.stdout.write("--\n")
           }
-          for output_index in Int::max(start, emitted_through + 1)..<=end {
+          for output_index in Int32::max(start, emitted_through + 1)..<=end {
             write_record(
               records[output_index],
               path,
@@ -398,7 +398,7 @@ async fn process_source(
               selected[output_index],
             )
           }
-          emitted_through = Int::max(emitted_through, end)
+          emitted_through = Int32::max(emitted_through, end)
         }
       }
     }
@@ -414,7 +414,7 @@ async fn process_source(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("grep 0.2.1\n")
+    @stdio.stdout.write("grep 0.2.2\n")
     return
   }
   let args = @env.args()[1:]

@@ -1,5 +1,5 @@
 ///|
-fn parse_duration(value : String) -> Int raise {
+fn parse_duration(value : String) -> Int32 raise {
   let mut multiplier = 1000
   let mut number = value
   if value.has_suffix("ms") {
@@ -30,11 +30,11 @@ fn parse_duration(value : String) -> Int raise {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("timeout 0.2.0\n")
+    @stdio.stdout.write("timeout 0.2.1\n")
     return
   }
   let args = @env.args()[1:]
-  let mut duration : Int? = None
+  let mut duration : Int32? = None
   let command : Array[String] = []
   let mut options = true
   let mut i = 0

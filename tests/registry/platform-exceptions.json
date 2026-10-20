@@ -2,6 +2,16 @@
   "schema": 1,
   "exceptions": [
     {
+      "source": "commands/mv/link_wbtest.mbt::mv restores Windows link backups after injected commit failure or rejects before mutation",
+      "platforms": ["windows"],
+      "reason": "Native must restore real file/directory/dangling symbolic-link and junction backups after an injected commit failure, preserving link type, target and referents. Wasm must reject before backup or injection. Both require the Windows PowerShell observer; this exception excludes only non-Windows hosts and does not turn missing privileges into passing evidence."
+    },
+    {
+      "source": "commands/mv/link_wbtest.mbt::mv moves or safely refuses a Windows junction without moving its referent",
+      "platforms": ["windows"],
+      "reason": "Junction creation and observation require Windows reparse points. The Windows Native body must move the junction itself, while Windows Wasm must reject before mutation until its host fix is verified. Missing privileges or observations fail infrastructure; this exception excludes only non-Windows hosts."
+    },
+    {
       "source": "tests/testkit/snapshot_lifecycle_wbtest.mbt::rejection detects same-content replacement of an existing file",
       "platforms": ["posix"],
       "reason": "The rejection observer requires /bin/sh, /bin/mv and POSIX device/inode identity. Missing observers fail prerequisites; Windows is excluded before semantic execution."

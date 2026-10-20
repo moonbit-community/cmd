@@ -1,6 +1,6 @@
 # test
 
-Version **0.2.1** behavior is documented here. The
+Version **0.2.2** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -20,7 +20,7 @@ caller or host.
 
 ## Standalone metadata
 
-Standalone `--version` prints exactly `test 0.2.1` followed by one
+Standalone `--version` prints exactly `test 0.2.2` followed by one
 newline. Standalone `--help` starts with `Usage: test`, lists both
 metadata options, and ends with a newline. Both write to stdout, leave stdin
 unread, and exit with status 0. Exact-version publication and verification

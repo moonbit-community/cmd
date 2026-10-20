@@ -194,6 +194,9 @@
     {
       "id": "repair-fs-ln-force-last",
       "command": "ln",
+      "observe": [
+        "symlink-target"
+      ],
       "args": [
         "-s",
         "-i",
@@ -288,6 +291,9 @@
     {
       "id": "repair-fs-ln-force-long-last",
       "command": "ln",
+      "observe": [
+        "symlink-target"
+      ],
       "args": [
         "--symbolic",
         "--interactive",
@@ -335,6 +341,9 @@
     {
       "id": "repair-fs-ln-backup",
       "command": "ln",
+      "observe": [
+        "symlink-target"
+      ],
       "args": [
         "-s",
         "-b",
@@ -387,6 +396,9 @@
     {
       "id": "repair-fs-ln-target-directory",
       "command": "ln",
+      "observe": [
+        "symlink-target"
+      ],
       "args": [
         "-s",
         "-t",
@@ -429,6 +441,9 @@
     {
       "id": "repair-fs-ln-no-dereference",
       "command": "ln",
+      "observe": [
+        "symlink-target"
+      ],
       "args": [
         "-sfn",
         "source",
@@ -538,7 +553,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/ln@0.2.2 metadata contract",
+      "source_version": "workspace cli/ln@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: ln -s [-f|-i] [-r] [-n|-T] [-t DIRECTORY] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\n      --help      display this help and exit\n      --version   display version and exit\nThe last -f/--force or -i/--interactive selects overwrite behavior.\nDeclining an interactive overwrite returns status 1 without replacing the link.\n",
       "expected_stderr_text": ""
     },
@@ -557,8 +572,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/ln@0.2.2 metadata contract",
-      "expected_stdout_text": "ln 0.2.2\n",
+      "source_version": "workspace cli/ln@0.2.3 metadata contract",
+      "expected_stdout_text": "ln 0.2.3\n",
       "expected_stderr_text": ""
     }
   ]

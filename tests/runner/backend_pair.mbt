@@ -253,6 +253,7 @@ fn scenario_pair_bytes(
   work : String,
   origin : String?,
   filesystem_root? : String,
+  wire_origin? : String,
 ) -> Bytes {
   let text = @utf8.decode(data) catch { _ => return data }
   let mut normalized = text.replace_all(old=work, new="${WORK}")
@@ -271,6 +272,22 @@ fn scenario_pair_bytes(
     normalized = normalized.replace_all(old=authority, new="${HTTP_AUTHORITY}")
     let localhost = authority.replace_all(old="127.0.0.1", new="localhost")
     normalized = normalized.replace_all(old=localhost, new="${HTTP_LOCALHOST}")
+  }
+  if wire_origin is Some(origin) {
+    normalized = normalized.replace_all(old=origin, new="${WIRE_HTTP_BASE}")
+    let authority = origin
+      .strip_prefix("http://")
+      .unwrap_or(origin[:])
+      .to_owned()
+    normalized = normalized.replace_all(
+      old=authority,
+      new="${WIRE_HTTP_AUTHORITY}",
+    )
+    let localhost = authority.replace_all(old="127.0.0.1", new="localhost")
+    normalized = normalized.replace_all(
+      old=localhost,
+      new="${WIRE_HTTP_LOCALHOST}",
+    )
   }
   @utf8.encode(normalized)
 }
@@ -300,6 +317,12 @@ async fn scenario_pair_snapshot(
     None
   }
   let filesystem_origin_path = evidence + "/filesystem-origin.txt"
+  let wire_origin_path = evidence + "/wire-origin.txt"
+  let wire_origin = if @fs.exists(wire_origin_path) {
+    Some(@fs.read_file(wire_origin_path).text())
+  } else {
+    None
+  }
   let filesystem_root = if @fs.exists(filesystem_origin_path) {
     Some(@fs.read_file(filesystem_origin_path).text())
   } else {
@@ -317,7 +340,13 @@ async fn scenario_pair_snapshot(
     let metadata : Map[String, String] = Map([])
     for key, value in item.metadata {
       metadata[key] = @utf8.decode(
-        scenario_pair_bytes(@utf8.encode(value), work, origin, filesystem_root?),
+        scenario_pair_bytes(
+          @utf8.encode(value),
+          work,
+          origin,
+          filesystem_root?,
+          wire_origin?,
+        ),
       ) catch {
         _ => value
       }
@@ -336,7 +365,13 @@ async fn scenario_pair_snapshot(
       item.path.has_suffix(".request.json") {
       scenario_request_pair_bytes(item.content, work, origin, filesystem_root?)
     } else {
-      scenario_pair_bytes(item.content, work, origin, filesystem_root?)
+      scenario_pair_bytes(
+        item.content,
+        work,
+        origin,
+        filesystem_root?,
+        wire_origin?,
+      )
     }
     { ..item, content, metadata, }
   })

@@ -2,7 +2,7 @@
 priv struct Ctx {
   out : Array[Byte]
   args : Array[String]
-  mut arg_index : Int
+  mut arg_index : Int32
   messages : Array[String]
   mut exit_error : Bool
   mut stop : Bool
@@ -124,8 +124,8 @@ fn parse_integer(ctx : Ctx, text : String, unsigned~ : Bool) -> Int64 {
   while j < chars.length() {
     let d = match base {
       16 => hex_val(chars[j])
-      8 => if chars[j] is ('0'..='7') { chars[j].to_int() - 0x30 } else { -1 }
-      _ => if chars[j] is ('0'..='9') { chars[j].to_int() - 0x30 } else { -1 }
+      8 => if chars[j] is ('0'..<='7') { chars[j].to_int() - 0x30 } else { -1 }
+      _ => if chars[j] is ('0'..<='9') { chars[j].to_int() - 0x30 } else { -1 }
     }
     if d < 0 {
       break
@@ -174,14 +174,14 @@ fn parse_integer(ctx : Ctx, text : String, unsigned~ : Bool) -> Int64 {
 }
 
 ///|
-fn matches_word(chars : Array[Char], start : Int, word : String) -> Bool {
+fn matches_word(chars : Array[Char], start : Int32, word : String) -> Bool {
   let want : Array[Char] = word.iter().collect()
   if start + want.length() > chars.length() {
     return false
   }
   for k, w in want {
     let c = chars[start + k]
-    let lower = if c is ('A'..='Z') {
+    let lower = if c is ('A'..<='Z') {
       (c.to_int() + 0x20).unsafe_to_char()
     } else {
       c
@@ -196,7 +196,7 @@ fn matches_word(chars : Array[Char], start : Int, word : String) -> Bool {
 ///|
 /// 2^exp with clamping: doubles overflow past 2^1024 and underflow below
 /// 2^-1075, so huge exponents can short-circuit instead of looping.
-fn pow2(exp : Int) -> Double {
+fn pow2(exp : Int32) -> Double {
   if exp > 1100 {
     return 1.0 / 0.0
   }
@@ -220,7 +220,7 @@ fn pow2(exp : Int) -> Double {
 /// m * 2^exp in two steps so a subnormal result is not lost to an
 /// intermediate pow2 underflow (e.g. a 2^63-scaled significand with a
 /// deeply negative exponent).
-fn scale2(m : Double, exp : Int) -> Double {
+fn scale2(m : Double, exp : Int32) -> Double {
   if exp >= -600 {
     m * pow2(exp)
   } else {
@@ -287,7 +287,7 @@ fn parse_double_arg(ctx : Ctx, text : String) -> Double {
     if end < chars.length() && chars[end] == '(' {
       let mut j = end + 1
       while j < chars.length() &&
-            chars[j] is ('0'..='9' | 'a'..='z' | 'A'..='Z' | '_') {
+            chars[j] is ('0'..<='9' | 'a'..<='z' | 'A'..<='Z' | '_') {
         j += 1
       }
       if j < chars.length() && chars[j] == ')' {
@@ -358,7 +358,7 @@ fn parse_double_arg(ctx : Ctx, text : String) -> Double {
         }
         let mut ev = 0
         let mut edigits = false
-        while k < chars.length() && chars[k] is ('0'..='9') {
+        while k < chars.length() && chars[k] is ('0'..<='9') {
           if ev < 1000000 {
             ev = ev * 10 + (chars[k].to_int() - 0x30)
           }
@@ -394,7 +394,7 @@ fn parse_double_arg(ctx : Ctx, text : String) -> Double {
     let mut sig_digits = 0
     let mut frac_zeros = 0
     let mut seen_nonzero = false
-    while j < chars.length() && chars[j] is ('0'..='9') {
+    while j < chars.length() && chars[j] is ('0'..<='9') {
       any = true
       if chars[j] != '0' || seen_nonzero {
         seen_nonzero = true
@@ -405,7 +405,7 @@ fn parse_double_arg(ctx : Ctx, text : String) -> Double {
     let int_sig = sig_digits
     if j < chars.length() && chars[j] == '.' {
       j += 1
-      while j < chars.length() && chars[j] is ('0'..='9') {
+      while j < chars.length() && chars[j] is ('0'..<='9') {
         any = true
         if int_sig == 0 && !seen_nonzero {
           if chars[j] == '0' {
@@ -433,7 +433,7 @@ fn parse_double_arg(ctx : Ctx, text : String) -> Double {
       }
       let mut ev = 0
       let mut edigits = false
-      while k < chars.length() && chars[k] is ('0'..='9') {
+      while k < chars.length() && chars[k] is ('0'..<='9') {
         if ev < 1000000 {
           ev = ev * 10 + (chars[k].to_int() - 0x30)
         }
@@ -496,8 +496,8 @@ fn parse_double_arg(ctx : Ctx, text : String) -> Double {
 fn emit_signed(
   ctx : Ctx,
   n : Int64,
-  width : Int?,
-  prec : Int?,
+  width : Int32?,
+  prec : Int32?,
   minus : Bool,
   plus : Bool,
   space : Bool,
@@ -527,11 +527,11 @@ fn emit_signed(
 fn emit_unsigned(
   ctx : Ctx,
   u : UInt64,
-  radix : Int,
+  radix : Int32,
   upper : Bool,
   alt : Bool,
-  width : Int?,
-  prec : Int?,
+  width : Int32?,
+  prec : Int32?,
   minus : Bool,
   zero : Bool,
 ) -> Unit {
@@ -560,8 +560,8 @@ fn emit_float(
   ctx : Ctx,
   conv : Char,
   x : Double,
-  width : Int?,
-  prec : Int?,
+  width : Int32?,
+  prec : Int32?,
   minus : Bool,
   plus : Bool,
   space : Bool,
@@ -647,8 +647,8 @@ fn spec_valid(
   space : Bool,
   zero : Bool,
   alt : Bool,
-  width : Int?,
-  prec : Int?,
+  width : Int32?,
+  prec : Int32?,
 ) -> Bool {
   match conv {
     'd' | 'i' | 'u' => !alt
@@ -669,7 +669,7 @@ fn spec_valid(
 
 ///|
 /// Field widths allocate real padding, so cap them far below INT_MAX.
-let max_width : Int = 100000000
+let max_width : Int32 = 100000000
 
 ///|
 /// One pass over the format string; conversions consume arguments from ctx.
@@ -719,7 +719,7 @@ fn scan_format(ctx : Ctx, chars : Array[Char]) -> Unit {
       }
       j += 1
     }
-    let mut width : Int? = None
+    let mut width : Int32? = None
     if j < chars.length() && chars[j] == '*' {
       let v = match ctx.next_arg() {
         Some(arg) => parse_integer(ctx, arg, unsigned=false)
@@ -742,12 +742,12 @@ fn scan_format(ctx : Ctx, chars : Array[Char]) -> Unit {
       let mut w = 0
       let mut any = false
       let digits_start = j
-      while j < chars.length() && chars[j] is ('0'..='9') {
+      while j < chars.length() && chars[j] is ('0'..<='9') {
         let d = chars[j].to_int() - 0x30
         if w > (max_width - d) / 10 {
           let sb = StringBuilder()
           for k in digits_start..<chars.length() {
-            if !(chars[k] is ('0'..='9')) {
+            if !(chars[k] is ('0'..<='9')) {
               break
             }
             sb.write_char(chars[k])
@@ -763,7 +763,7 @@ fn scan_format(ctx : Ctx, chars : Array[Char]) -> Unit {
         width = Some(w)
       }
     }
-    let mut prec : Int? = None
+    let mut prec : Int32? = None
     if j < chars.length() && chars[j] == '.' {
       j += 1
       if j < chars.length() && chars[j] == '*' {
@@ -782,12 +782,12 @@ fn scan_format(ctx : Ctx, chars : Array[Char]) -> Unit {
       } else {
         let mut p = 0
         let digits_start = j
-        while j < chars.length() && chars[j] is ('0'..='9') {
+        while j < chars.length() && chars[j] is ('0'..<='9') {
           let d = chars[j].to_int() - 0x30
           if p > (max_width - d) / 10 {
             let sb = StringBuilder()
             for k in digits_start..<chars.length() {
-              if !(chars[k] is ('0'..='9')) {
+              if !(chars[k] is ('0'..<='9')) {
                 break
               }
               sb.write_char(chars[k])
@@ -895,7 +895,7 @@ fn scan_format(ctx : Ctx, chars : Array[Char]) -> Unit {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("printf 0.2.1\n")
+    @stdio.stdout.write("printf 0.2.2\n")
     return
   }
   let argv = @env.args()[1:]

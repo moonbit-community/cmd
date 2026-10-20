@@ -1,6 +1,6 @@
 # date
 
-Version **0.1.2**. See the [support record](../../docs/compatibility.md) for release evidence.
+Version **0.1.3**. See the [support record](../../docs/compatibility.md) for release evidence.
 
 Print or format a timestamp:
 
@@ -36,7 +36,7 @@ larger offsets fail explicitly. `--help` and `--version` are available.
 
 ## Standalone metadata
 
-Standalone `--version` prints exactly `date 0.1.2` followed by one
+Standalone `--version` prints exactly `date 0.1.3` followed by one
 newline. Standalone `--help` starts with `Usage: date`, lists both
 metadata options, and ends with a newline. Both write to stdout, leave stdin
 unread, and exit with status 0. Exact-version publication and verification

@@ -64,7 +64,8 @@ fn case_in_suites(fixture : @testkit.Case, suites : Array[String]) -> Bool {
       "contract" => kind == "contract" || fixture.expected_rejection is Some(_)
       "backend-pair" =>
         (kind == "contract" || kind == "scenario") &&
-        fixture.expected_rejection is None
+        fixture.expected_rejection is None &&
+        !windows_mv_scenario(fixture.id)
       "oracle" =>
         kind == "differential" ||
         kind == "exact" ||

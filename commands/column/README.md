@@ -1,6 +1,6 @@
 # column
 
-Version **0.1.2**. See the [support record](../../docs/compatibility.md) for release evidence.
+Version **0.1.3**. See the [support record](../../docs/compatibility.md) for release evidence.
 
 Arrange input into columns or an aligned table:
 
@@ -30,7 +30,7 @@ grammar are not implemented. `--help` and `--version` are available.
 
 ## Standalone metadata
 
-Standalone `--version` prints exactly `column 0.1.2` followed by one
+Standalone `--version` prints exactly `column 0.1.3` followed by one
 newline. Standalone `--help` starts with `Usage: column`, lists both
 metadata options, and ends with a newline. Both write to stdout, leave stdin
 unread, and exit with status 0. Exact-version publication and verification

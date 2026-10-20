@@ -1,14 +1,14 @@
 ///|
 priv struct Offset {
-  seconds : Int
+  seconds : Int32
   name : String
   dst : Bool
 }
 
 ///|
 priv enum Rule {
-  Month(Int, Int, Int, Int)
-  Day(Int, Bool, Int)
+  Month(Int32, Int32, Int32, Int32)
+  Day(Int32, Bool, Int32)
 }
 
 ///|
@@ -22,14 +22,14 @@ priv struct Rules {
 ///|
 priv struct Cursor {
   source : String
-  mut index : Int
+  mut index : Int32
 }
 
 ///|
-fn Cursor::number(self : Cursor) -> Int raise {
+fn Cursor::number(self : Cursor) -> Int32 raise {
   let start = self.index
   while self.index < self.source.length() &&
-        self.source[self.index] is ('0'..='9') {
+        self.source[self.index] is ('0'..<='9') {
     self.index += 1
   }
   guard self.index > start else { fail("invalid POSIX timezone number") }
@@ -52,8 +52,8 @@ fn Cursor::name(self : Cursor) -> String raise {
   let start = self.index
   while self.index < self.source.length() &&
         (
-          self.source[self.index] is ('A'..='Z' | 'a'..='z') ||
-          (quoted && self.source[self.index] is ('0'..='9' | '+' | '-'))
+          self.source[self.index] is ('A'..<='Z' | 'a'..<='z') ||
+          (quoted && self.source[self.index] is ('0'..<='9' | '+' | '-'))
         ) {
     self.index += 1
   }
@@ -65,7 +65,7 @@ fn Cursor::name(self : Cursor) -> String raise {
 }
 
 ///|
-fn Cursor::clock(self : Cursor, maximum_hour : Int) -> Int raise {
+fn Cursor::clock(self : Cursor, maximum_hour : Int32) -> Int32 raise {
   let sign = if self.take('-') {
     -1
   } else {
@@ -134,7 +134,7 @@ fn parse_rules(text : String) -> Rules raise {
 }
 
 ///|
-fn transition(rule : Rule, year : Int, offset : Int) -> Int64 raise {
+fn transition(rule : Rule, year : Int32, offset : Int32) -> Int64 raise {
   let (day, seconds) = match rule {
     Month(month, week, weekday, seconds) => {
       let first = @time.PlainDate::of(year, month, 1)

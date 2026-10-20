@@ -66,7 +66,7 @@ pub(all) struct OptionSpec {
 pub fn flag(
   name : String,
   short? : Char,
-  repeatable? : Bool = true,
+  repeatable~ : Bool = true,
 ) -> OptionSpec {
   { name, short, takes_value: false, repeatable, allow_attached: false, }
 }
@@ -75,8 +75,8 @@ pub fn flag(
 pub fn option(
   name : String,
   short? : Char,
-  repeatable? : Bool = true,
-  allow_attached? : Bool = true,
+  repeatable~ : Bool = true,
+  allow_attached~ : Bool = true,
 ) -> OptionSpec {
   { name, short, takes_value: true, repeatable, allow_attached, }
 }
@@ -133,7 +133,7 @@ pub fn ParsedArgs::last_occurrence(
 ///|
 /// Parse a positive timeout expressed in seconds and return milliseconds.
 /// The result is bounded by the integer range accepted by async timers.
-pub fn parse_idle_timeout(value : String) -> Int raise CliError {
+pub fn parse_idle_timeout(value : String) -> Int32 raise CliError {
   let seconds = @string.parse_double(value) catch {
     _ =>
       raise CliError(
@@ -169,7 +169,7 @@ pub(all) struct CommandContract {
   tier : CompatibilityTier
   input : InputMode
   output : OutputMode
-  exit_codes : Array[Int]
+  exit_codes : Array[Int32]
   capabilities : Array[Capability]
   options : Array[String]
 }

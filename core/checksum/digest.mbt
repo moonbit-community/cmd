@@ -20,7 +20,7 @@ fn Algorithm::command(self : Algorithm) -> String {
 }
 
 ///|
-fn Algorithm::hex_length(self : Algorithm) -> Int {
+fn Algorithm::hex_length(self : Algorithm) -> Int32 {
   match self {
     Md5 => 32
     Sha1 => 40
@@ -32,9 +32,9 @@ fn Algorithm::hex_length(self : Algorithm) -> Int {
 // x exposes SHA-1 only as a one-shot function. Keep a single block in memory
 // here so sha1sum supports arbitrarily long streams like the other algorithms.
 priv struct Sha1State {
-  words : FixedArray[UInt]
+  words : FixedArray[UInt32]
   block : FixedArray[Byte]
-  mut used : Int
+  mut used : Int32
   mut length : UInt64
 }
 
@@ -49,7 +49,7 @@ fn Sha1State::new() -> Sha1State {
 }
 
 ///|
-fn rotate(value : UInt, amount : Int) -> UInt {
+fn rotate(value : UInt32, amount : Int32) -> UInt32 {
   (value << amount) | (value >> (32 - amount))
 }
 
