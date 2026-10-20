@@ -195,7 +195,9 @@ async fn validate_candidate_registry(
     @utf8.decode(revision.stdout).trim() == evidence.git_revision else {
     fail("freeze evidence belongs to a different Git revision")
   }
-  let expected = candidate.commands.map(row => (row.package_name, row.version))
+  let expected = release_commands(candidate).map(row => {
+    (row.package_name, row.version)
+  })
   guard candidate.core_version is Some(core_version) else {
     fail("freeze candidate must record cli/core version")
   }
@@ -258,6 +260,7 @@ fn validate_freeze_result(
 ) -> Bool {
   let row = find_command(candidate, result.command)
   guard row is Some(row) else { return false }
+  guard release_includes(candidate, result.command) else { return false }
   result.run_id == run.run_id &&
   result.backend == "published-wasm" &&
   ["availability", "contract", "differential", "boundary"].contains(
@@ -265,6 +268,11 @@ fn validate_freeze_result(
   ) &&
   result.source_version == row.package_name + "@" + row.version &&
   run.moonx_coordinates.contains(result.source_version) &&
+  run.moonx_coordinates.all(coordinate => {
+    release_commands(candidate).any(command => {
+      coordinate == command.package_name + "@" + command.version
+    })
+  }) &&
   result.result == "pass" &&
   !result.observations.is_empty() &&
   result.missing_observations.is_empty()
@@ -283,6 +291,8 @@ fn freeze_smoke_covered(
     results.any(item => {
       item.0.id == fixture.id &&
       item.0.command == command &&
+      case_supported_on_host(fixture, item.1.platform) &&
+      freeze_fixture_coordinates(fixture, item.1) &&
       item.0.verification == verification_level(fixture, false) &&
       shared_report(
         {
@@ -386,9 +396,25 @@ fn freeze_case_covered(
   results.any(item => {
     item.0.id == fixture.id &&
     item.0.command == fixture.command &&
+    case_supported_on_host(fixture, item.1.platform) &&
+    freeze_fixture_coordinates(fixture, item.1) &&
     item.0.verification == required &&
     expected_observations.all(observation => {
       item.0.observations.contains(observation)
+    })
+  })
+}
+
+///|
+/// Every coordinate in a report is already checked against the scoped
+/// candidate. A shared scenario must additionally record each participant.
+fn freeze_fixture_coordinates(
+  fixture : ReleaseCase,
+  run : @testkit.RunMetadata,
+) -> Bool {
+  [fixture.command, ..fixture.related_commands.unwrap_or([])].all(command => {
+    run.moonx_coordinates.any(coordinate => {
+      coordinate.has_prefix("cli/" + command + "@")
     })
   })
 }
@@ -486,7 +512,7 @@ async fn freeze_published_snapshot(
   )
   let corpus_hash = @testkit.manifest_digest(base_path)
   let oracle_profile = @testkit.read_oracle_profile(oracle_profile_path)
-  let cases = selected_cases(candidate, base)
+  let cases = release_cases(candidate, base)
   guard !cases.is_empty() else { fail("freeze candidate selects no cases") }
   if cases.any(fixture => verification_level(fixture, true) == "differential") {
     let registry = @registry.load(registry_path)
@@ -513,7 +539,7 @@ async fn freeze_published_snapshot(
     corpus_hash,
     oracle_profile,
   )
-  for row in candidate.commands {
+  for row in release_commands(candidate) {
     guard freeze_smoke_covered(row.name, cases, smoke) else {
       fail("missing exact MoonX smoke: " + row.name)
     }
@@ -561,14 +587,27 @@ async fn freeze_published_snapshot(
   let old_base_bytes = @fs.read_file(old_base_path).binary()
   let old_sources : Array[(String, Bytes)] = []
   collect_corpus_sources(old_base_path, [], old_sources)
+  for suffix in [".registry.json", ".provenance.json"] {
+    let path = current + "/published.json" + suffix
+    old_sources.push((path, @fs.read_file(path).binary()))
+  }
+  let source_directory = current + "/published.json.sources"
+  for name in @fs.readdir(source_directory, sort=true) {
+    let path = source_directory + "/" + name
+    old_sources.push((path, @fs.read_file(path).binary()))
+  }
   old_sources.sort_by((left, right) => left.0.lexical_compare(right.0))
   let old_corpus_hash = @testkit.manifest_digest(old_base_path)
   let old_replay_bytes = old_base_bytes
   let archived_base = archive + ".base-source.json"
   let archived_cases = archive + ".cases.json"
-  let published = frozen_publication(candidate)
+  let published = if candidate.release_scope is Some(_) {
+    partial_publication(candidate, old)
+  } else {
+    frozen_publication(candidate)
+  }
   let published_bytes = @utf8.encode(
-    @testkit.canonical_json(ToJson::to_json(published)) + "\n",
+    @testkit.canonical_json(publication_json(published)) + "\n",
   )
   let publication_snapshot = prepare_current_snapshot(
     root,

@@ -46985,13 +46985,13 @@
     {
       "behavior_id": "package-test:tests/runner/scenario_network_wbtest.mbt::transfer file checks retain independent failures",
       "command": "",
-      "owner": "tests/runner",
+      "owner": "tests/network_scenarios",
       "surface": [
         "package-api"
       ],
       "status": "supported",
       "implementation": "package-test",
-      "source": "tests/runner/scenario_network_wbtest.mbt::transfer file checks retain independent failures",
+      "source": "tests/network_scenarios/scenarios_wbtest.mbt::transfer file checks retain independent failures",
       "case_id": "",
       "aliases": [],
       "coverage": [
@@ -48937,6 +48937,330 @@
         "status"
       ],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/release_runner/scenario_mv_wbtest.mbt::published mv boundary preserves exact coordinates and observation requirements",
+      "command": "",
+      "owner": "tests/release_runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/release_runner/scenario_mv_wbtest.mbt::published mv boundary preserves exact coordinates and observation requirements",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "published mv boundary preserves exact coordinates and observation requirements"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/release_runner/host_contracts_wbtest.mbt::explicit host contracts retain platform and oracle requirements",
+      "command": "",
+      "owner": "tests/release_runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/release_runner/host_contracts_wbtest.mbt::explicit host contracts retain platform and oracle requirements",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "explicit host contracts retain platform and oracle requirements"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/release_runner/host_contracts_wbtest.mbt::scoped Windows acceptance selects both mv link contracts",
+      "command": "",
+      "owner": "tests/release_runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/release_runner/host_contracts_wbtest.mbt::scoped Windows acceptance selects both mv link contracts",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scoped Windows acceptance selects both mv link contracts"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/release_runner/partial_release_wbtest.mbt::partial release scope limits execution without shrinking candidate inventory",
+      "command": "",
+      "owner": "tests/release_runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/release_runner/partial_release_wbtest.mbt::partial release scope limits execution without shrinking candidate inventory",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "partial release scope limits execution without shrinking candidate inventory"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/release_runner/partial_release_wbtest.mbt::published network scenarios require exact adapters and complete command scope",
+      "command": "",
+      "owner": "tests/release_runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/release_runner/partial_release_wbtest.mbt::published network scenarios require exact adapters and complete command scope",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "published network scenarios require exact adapters and complete command scope"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/release_runner/partial_release_wbtest.mbt::partial release preserves unselected coordinates and rejects retained case identity collisions",
+      "command": "",
+      "owner": "tests/release_runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/release_runner/partial_release_wbtest.mbt::partial release preserves unselected coordinates and rejects retained case identity collisions",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "partial release preserves unselected coordinates and rejects retained case identity collisions"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/release_runner/partial_release_wbtest.mbt::freeze evidence requires release scope and actual applicable host",
+      "command": "",
+      "owner": "tests/release_runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/release_runner/partial_release_wbtest.mbt::freeze evidence requires release scope and actual applicable host",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "freeze evidence requires release scope and actual applicable host"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/release_runner/partial_release_wbtest.mbt::partial frozen publication replays committed predecessor and rejects forged retained contracts",
+      "command": "",
+      "owner": "tests/release_runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/release_runner/partial_release_wbtest.mbt::partial frozen publication replays committed predecessor and rejects forged retained contracts",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "partial frozen publication replays committed predecessor and rejects forged retained contracts"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/release_runner/scenario_network_wbtest.mbt::published network executor preserves exact coordinates input and launch receipts",
+      "command": "",
+      "owner": "tests/release_runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/release_runner/scenario_network_wbtest.mbt::published network executor preserves exact coordinates input and launch receipts",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "published network executor preserves exact coordinates input and launch receipts"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/release_runner/scenario_network_wbtest.mbt::published network scenarios distinguish shared contracts from sealed differentials",
+      "command": "",
+      "owner": "tests/release_runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/release_runner/scenario_network_wbtest.mbt::published network scenarios distinguish shared contracts from sealed differentials",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "published network scenarios distinguish shared contracts from sealed differentials"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/network_scenarios/executor_wbtest.mbt::shared network executor retains exact identity and incomplete output evidence",
+      "command": "",
+      "owner": "tests/network_scenarios",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/network_scenarios/executor_wbtest.mbt::shared network executor retains exact identity and incomplete output evidence",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "shared network executor retains exact identity and incomplete output evidence"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/network_scenarios/executor_wbtest.mbt::shared network workspace receipts preserve backend pair observation bytes",
+      "command": "",
+      "owner": "tests/network_scenarios",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/network_scenarios/executor_wbtest.mbt::shared network workspace receipts preserve backend pair observation bytes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "shared network workspace receipts preserve backend pair observation bytes"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
     }
   ],
   "release_commands": [
@@ -49355,7 +49679,11 @@
         "repair-final-curl-cookie-redirect",
         "repair-final-curl-cross-host-auth",
         "transfer-curl-chunked-stdin-upload",
-        "transfer-curl-cookie-line-injection"
+        "transfer-curl-cookie-line-injection",
+        "network-auth-cookie",
+        "network-auth-cookie-oracle",
+        "network-transfer-boundaries",
+        "network-transfer-boundaries-oracle"
       ]
     },
     {
@@ -49841,7 +50169,8 @@
         "repair-fs-mv-equal-time-boundary",
         "async-0225-mv-directory-symbolic-link",
         "async-0225-mv-windows-junction-no-clobber",
-        "async-0225-mv-windows-symbolic-link-no-clobber"
+        "async-0225-mv-windows-symbolic-link-no-clobber",
+        "mv-windows-wasm-links-boundary"
       ]
     },
     {

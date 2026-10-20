@@ -5,8 +5,11 @@ Updated: 2026-10-18
 This is the accepted implementation sequence for the workspace after commit
 `5c2f93e`. It records work and acceptance requirements, not passing results.
 Each stage uses a separate pull request, with command-family pull requests for
-larger stages. Finish a stage before beginning the next. Publish the resulting
-candidate once after the sequence, then verify exact MoonX coordinates.
+larger stages. Finish a stage before beginning the next. The current delivery
+stops after stage 0: publish only `cli/core@0.7.0`, `cli/curl@0.2.3`,
+`cli/mv@0.2.3`, and `cli/wget@0.2.3`, then verify exact MoonX coordinates.
+The other 75 published commands retain their registry versions and remain
+unpublished source candidates. Later stages require a subsequent continuation.
 
 ## Ordered stages
 
@@ -85,11 +88,11 @@ Choose unused candidate versions from live registry evidence; keep timeout local
 only. Existing published manifests and historical expectations remain frozen.
 Stage 0 checks the 81-manifest dependency invariant and can validate each module
 in a minimal workspace with the unpublished local core. This is not standalone
-registry resolution. Core 0.7.0 remains unpublished until the centralized
-release; exact standalone registry consumers and exact-version MoonX checks are
-deferred to that release acceptance, without an early core publication to
-unblock development checks.
-Publish core first, then affected commands serially in lexical order, verify
+registry resolution. The stage-0 release scope is core, curl, mv and wget;
+exact standalone registry consumers and exact-version MoonX checks are part
+of that release acceptance. Preserve the unselected commands' existing frozen
+published coordinates and expectations when recording this partial release.
+Publish core first, then curl, mv and wget serially in lexical order, verify
 each upload/registry coordinate, and run exact-version MoonX smoke/differentials.
 
 After publication acceptance, close completed stages in sequence. For partial
@@ -101,5 +104,6 @@ other work in #31 and #34 is outside this sequence.
 
 ## Current progress
 
-Stage 0 is in implementation. Later stages have not started. No new registry
-publication or issue closure is claimed by this document.
+Stage 0 is undergoing final CI and partial-release preparation. Later stages
+have not started. No new registry publication or issue closure is claimed by
+this document.

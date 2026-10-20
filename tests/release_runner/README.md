@@ -40,6 +40,27 @@ case labels. `current/published.json` preserves the current exact release;
 `current/published.json.cases.json` retains its historical metadata expectations
 separately from the generated candidate corpus.
 
+An optional candidate `release_scope` selects a nonempty, unique list of command
+names in lexical order. The candidate still contains and validates all release
+commands against their source modules. Only selected commands need upload
+receipts and new MoonX acceptance; the shared core receipt remains mandatory.
+For stage 0 the scope is `["curl", "mv", "wget"]`, with core 0.7.0. The remaining
+75 command coordinates and their frozen cases stay unchanged in the published
+inventory. Omitting the field retains a full release. A published manifest must
+not contain `release_scope`.
+
+The legacy `publish_candidate.mbtx` uploader rejects scoped candidates before
+account, registry or upload operations. Its full-inventory loop must not be used
+for a partial release. Publish only the reviewed core and selected command
+coordinates, serially, after their required checks pass.
+
+The shared network authentication and interrupted-transfer scenarios launch the
+same fixture through exact MoonX coordinates during release acceptance. Each
+retained call identifies its package version and argv; metadata binds both curl
+and wget even though curl owns the scenario. Smoke runs check the scenario
+contract. Oracle scenario runs additionally require the sealed immutable image
+before reporting differential agreement.
+
 After publication, `--verify-candidate --freeze-evidence FILE` permits exact
 MoonX checks of the candidate only after the registry receipts have passed.
 It never uploads packages. Run separate smoke and differential suites into
@@ -58,6 +79,7 @@ fingerprint, `git_revision`, `registry`, `smoke_report_dirs` and
 `semantic_report_dirs`. Every registry receipt supplies `package_name`, exact
 `version`, HTTP `status` 200, `response_file` and the response byte
 `response_sha256`; receipts are required for every command and `cli/core`.
+For a scoped candidate, command receipts cover only its explicit scope.
 Response bodies must contain the exact non-yanked Mooncakes package entry with
 its distribution checksum. The gate independently queries the fixed official
 HTTPS registry endpoint and verifies downloaded archive bytes; a local receipt
@@ -72,6 +94,16 @@ or documented boundary result with all required observation dimensions. Empty
 or missing observations and duplicate case rows cannot satisfy these gates.
 Skips do not satisfy these requirements.
 
+`--host-contracts` selects explicitly platform-bound contracts and boundaries
+within the release scope. The Windows acceptance job executes this selection
+independently of smoke, preserving its exact MoonX status, streams and file
+observations. Oracle-dependent cases cannot enter this contract-only selection;
+an empty selection fails instead of claiming platform coverage.
+The selected mv boundary scenario reuses the workspace observer and all Wasm
+link operations through `moonx cli/mv@<version>`. It retains the runtime version,
+invocations, source and target entries, link targets, referent bytes, and
+open-stdin observations; the two no-clobber contracts do not replace it.
+
 All gates run before writes. The previous current manifest is preserved byte
 for byte as `historical/published-<release-id>.json` and its resolved cases
 are frozen beside it in a `.cases.json` sidecar. The original base-manifest
@@ -84,6 +116,12 @@ selected case definitions to preserve replay as the workspace evolves.
 Existing historical files cannot be replaced;
 a directory lock rejects concurrent freezes, and the current file is replaced
 through a temporary file only after its archive hash has been checked.
+
+A partial publication reconstructs the preceding committed published snapshot,
+then replaces only scoped command rows and cases. Its distinct provenance
+records both the candidate and predecessor source identities. Replay checks the
+complete deterministic merge, so a new result cannot rewrite an unselected
+command's old expectations or falsely mark an unpublished candidate as released.
 
 After sealing the immutable oracle profile as described in the
 [workspace runner guide](../runner/README.md#upstream-and-ci), a historical

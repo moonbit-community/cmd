@@ -47,7 +47,7 @@ async fn prepare_acceptance_evidence(args : ArrayView[String]) -> Unit {
   @fs.mkdir(directory + "/verified-registry")
   let expected = [("cli/core", core_version)]
   expected.append(
-    candidate.commands.map(row => (row.package_name, row.version)),
+    release_commands(candidate).map(row => (row.package_name, row.version)),
   )
   let receipts : Array[Json] = []
   for (name, version) in expected {

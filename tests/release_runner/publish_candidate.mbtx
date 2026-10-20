@@ -281,6 +281,14 @@ async fn main {
   }
   let candidate_path = "tests/release_runner/current/candidate.json"
   let candidate_bytes = @fs.read_file(candidate_path).binary()
+  // This legacy uploader has a full-inventory contract. A scoped release must
+  // use its explicitly reviewed serial package operations, never this loop.
+  guard !(@json.parse(@utf8.decode(candidate_bytes)) is Object(fields) &&
+    fields.contains("release_scope")) else {
+    fail(
+      "publish_candidate.mbtx does not support release_scope; refusing a full-inventory upload",
+    )
+  }
   let candidate_hash = digest(candidate_bytes)
   check_source(source, candidate_hash)
   guard @json.parse(@utf8.decode(candidate_bytes))

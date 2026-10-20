@@ -80,5 +80,20 @@ staged before replacement and the manifest pointer moves last. A partial
 filesystem failure makes the inconsistent pointer fail provenance validation
 instead of making a semantic pass claim.
 
+An explicit candidate `release_scope` produces a `verified-partial-publication`
+snapshot. Its provenance identifies the preceding committed current snapshot
+as well as the new candidate and registry. Replay validates that predecessor
+through its existing provenance, then reconstructs the exact merge: selected
+command coordinates and cases come from the candidate; all other coordinates
+and case definitions come from the predecessor. The published inventory remains
+complete and contains no release scope. New receipts and execution evidence
+prove only the selected publication, not a new release of retained commands.
+
+The same live-registry, clean-source, immutable-oracle, case-observation and
+atomic rollover requirements apply to full and partial publication. A supplied
+hash cannot authorize changing an unselected coordinate or frozen expectation.
+Platform-specific cases require applicable-host results; a skipped or foreign
+platform row cannot satisfy their acceptance.
+
 These changes do not publish any package and do not retroactively add
 immutable-oracle acceptance evidence to old reports.

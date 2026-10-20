@@ -2,7 +2,7 @@
 fn usage() -> String {
   "Usage: release-runner --manifest FILE [--suite differential|smoke|validate|all] " +
   "[--moonx PATH] [--docker PATH] [--oracle-image IMAGE] [--oracle-profile FILE] [--report-dir DIR] " +
-  "[--command NAME] [--case ID] [--list] [--jobs N] [--timeout-ms N] [--historical-replay]\n" +
+  "[--command NAME] [--case ID] [--host-contracts] [--list] [--jobs N] [--timeout-ms N] [--historical-replay]\n" +
   "       release-runner --generate-candidate [--template FILE] [--metadata FILE] " +
   "[--registry FILE] [--active-output FILE] [--output FILE]\n" +
   "       release-runner --manifest FILE --verify-candidate --freeze-evidence FILE [run options]\n" +
@@ -87,7 +87,19 @@ fn has_contract_assertion(fixture : ReleaseCase) -> Bool {
 
 ///|
 fn verification_level(fixture : ReleaseCase, differential : Bool) -> String {
-  if fixture.expected_rejection is Some(_) ||
+  if release_mv_scenario(fixture) {
+    "boundary"
+  } else if @network_scenarios.supports(fixture.id) &&
+    (
+      fixture.comparison == Some("scenario") ||
+      fixture.comparison == Some("oracle-scenario")
+    ) {
+    if differential && fixture.comparison == Some("oracle-scenario") {
+      "differential"
+    } else {
+      "contract"
+    }
+  } else if fixture.expected_rejection is Some(_) ||
     fixture.comparison == Some("boundary") {
     "boundary"
   } else if differential && fixture.oracle == Some(true) {
@@ -144,6 +156,8 @@ fn case_supported_on_host(fixture : ReleaseCase, platform : String) -> Bool {
 
 ///|
 fn requires_serial_fixture(fixture : ReleaseCase) -> Bool {
+  @network_scenarios.supports(fixture.id) ||
+  release_mv_scenario(fixture) ||
   fixture.delay_ms.unwrap_or(0) > 0 ||
   fixture.files.any(file => file.atime is Some(_) || file.mtime is Some(_)) ||
   fixture.observe
@@ -151,6 +165,22 @@ fn requires_serial_fixture(fixture : ReleaseCase) -> Bool {
   .any(dimension => {
     dimension == "atime" || dimension == "mtime" || dimension == "ctime"
   })
+}
+
+///|
+/// Explicit platform contracts run independently of the portable smoke suite.
+/// The selection remains inside the reviewed release scope and cannot turn
+/// an oracle-dependent case into a contract without its oracle.
+fn explicit_host_contract(fixture : ReleaseCase, platform : String) -> Bool {
+  fixture.host_platforms.unwrap_or([]).contains(platform) &&
+  case_supported_on_host(fixture, platform) &&
+  fixture.oracle != Some(true) &&
+  (
+    release_mv_scenario(fixture) ||
+    fixture.comparison == Some("contract") ||
+    fixture.comparison == Some("boundary") ||
+    fixture.expected_rejection is Some(_)
+  )
 }
 
 ///|
@@ -872,6 +902,29 @@ async fn run_selected_cases(
             })
             return reports
           }
+          if release_mv_scenario(fixture) {
+            run_mv_release_scenario(
+              manifest, fixture, moonx, reports, report_root,
+            )
+            return reports
+          }
+          if @network_scenarios.supports(fixture.id) {
+            run_network_release_scenario(
+              manifest,
+              fixture,
+              moonx,
+              timeout_ms,
+              if differential && fixture.comparison == Some("oracle-scenario") {
+                Some(oracle_image)
+              } else {
+                None
+              },
+              reports,
+              report_root,
+              candidate_executor~,
+            )
+            return reports
+          }
           match find_command(manifest, fixture.command) {
             Some(row) =>
               run_case(
@@ -1027,6 +1080,10 @@ async fn workspace_input(root : String, configured : String) -> String {
 async fn run_driver() -> Unit {
   @testkit.begin_environment_capture()
   let raw_args = @env.args()
+  if raw_args.get(1) == Some("--mv-test-helper") {
+    @mv_scenarios.run_helper(raw_args[2:])
+    return
+  }
   if raw_args.length() == 2 && raw_args[1] == "--http-fixture-server" {
     run_http_fixture_process()
     return
@@ -1076,6 +1133,7 @@ async fn run_driver() -> Unit {
   let commands : Array[String] = []
   let ids : Array[String] = []
   let mut list_only = false
+  let mut host_contracts = false
   let mut jobs = 4
   let mut index = 0
   while index < args.length() {
@@ -1157,6 +1215,7 @@ async fn run_driver() -> Unit {
         ids.push(args[index])
       }
       "--list" => list_only = true
+      "--host-contracts" => host_contracts = true
       _ => {
         @stdio.stderr.write(usage() + "\n")
         @sys.exit(2)
@@ -1347,7 +1406,7 @@ async fn run_driver() -> Unit {
       return
     }
   }
-  let fixtures = filter_cases(selected_cases(manifest, base), commands, ids) catch {
+  let fixtures = filter_cases(release_cases(manifest, base), commands, ids) catch {
     err => {
       write_release_preflight_failure(
         report_dir,
@@ -1361,6 +1420,17 @@ async fn run_driver() -> Unit {
       @sys.exit(2)
       return
     }
+  }
+  let fixtures = if host_contracts {
+    let selected = fixtures.filter(fixture => {
+      explicit_host_contract(fixture, host_platform())
+    })
+    guard !selected.is_empty() else {
+      fail("no explicit host contracts are selected by this release scope")
+    }
+    selected
+  } else {
+    fixtures
   }
   // Published evidence is pinned by its manifest and remains replayable after
   // the working tree advances to a new candidate. Validate is the release-time
@@ -1575,7 +1645,13 @@ async fn run_driver() -> Unit {
   })
   let executed_rows = manifest.commands.filter(row => {
     fixtures.any(fixture => {
-      fixture.command == row.name &&
+      (
+        fixture.command == row.name ||
+        (
+          @network_scenarios.supports(fixture.id) &&
+          fixture.related_commands.unwrap_or([]).contains(row.name)
+        )
+      ) &&
       case_supported_on_host(fixture, host_platform())
     })
   })

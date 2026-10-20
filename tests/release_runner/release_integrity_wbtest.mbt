@@ -3,6 +3,7 @@ fn integrity_candidate(fixture : ReleaseCase) -> ReleaseManifest {
   {
     schema: 2,
     candidate: Some(true),
+    release_scope: None,
     core_version: Some("0.5.0"),
     base_manifest: "cases.json",
     case_ids: [fixture.id],

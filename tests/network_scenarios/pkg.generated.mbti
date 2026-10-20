@@ -1,0 +1,41 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "mooxCLI/cmd-tests/network_scenarios"
+
+import {
+  "mooxCLI/cmd-tests/testkit",
+}
+
+// Values
+pub fn observations(String) -> Array[String]
+
+pub async fn run(String, Executor, String, oracle_image? : String) -> Unit
+
+pub fn supports(String) -> Bool
+
+// Errors
+
+// Types and methods
+pub(all) struct Execution {
+  run : @testkit.TimedRun
+  source_version : String
+  program : String
+  args : Array[String]
+  infrastructure_error : String?
+  retain_identity : Bool
+}
+
+pub(all) struct Executor {
+  invoke : async (Invocation) -> Execution
+}
+
+pub(all) struct Invocation {
+  command : String
+  args : Array[String]
+  stdin : Bytes
+  cwd : String
+  environment : Map[String, String]
+}
+
+// Type aliases
+
+// Traits

@@ -181,6 +181,7 @@ async test "published smoke execution never overlaps candidates when jobs exceed
   let manifest : ReleaseManifest = {
     schema: 2,
     candidate: Some(false),
+    release_scope: None,
     core_version: Some("0.5.0"),
     base_manifest: "cases.json",
     commands: [lifecycle_release_command()],

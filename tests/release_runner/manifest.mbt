@@ -51,6 +51,7 @@ priv struct ActiveCasesIndex {
 priv struct ReleaseManifest {
   schema : Int32
   candidate : Bool?
+  release_scope : Array[String]?
   core_version : String?
   base_manifest : String
   commands : Array[ReleaseCommand]
@@ -92,6 +93,7 @@ fn validate_release_manifest(
   base : BaseManifest,
 ) -> Array[String] {
   let failures : Array[String] = []
+  failures.append(release_scope_errors(manifest))
   if manifest.schema != 1 && manifest.schema != 2 {
     failures.push("release manifest: expected schema 1 or 2")
   }
@@ -254,9 +256,22 @@ fn validate_release_manifest(
         fixture.comparison == Some("oracle-scenario")
       ) &&
       selected_cases(manifest, base).any(selected => selected.id == fixture.id) {
-      failures.push(
-        "\{fixture.id}: stateful scenarios run through the workspace runner, not a release case",
-      )
+      if !release_network_scenario(fixture) && !release_mv_scenario(fixture) {
+        failures.push(
+          "\{fixture.id}: stateful scenario has no exact published executor",
+        )
+      } else if release_case_included(manifest, fixture) {
+        for
+          command in [fixture.command, ..fixture.related_commands.unwrap_or([])] {
+          if find_command(manifest, command) is None ||
+            !release_includes(manifest, command) {
+            failures.push(
+              "\{fixture.id}: release_scope must include related command " +
+              command,
+            )
+          }
+        }
+      }
     }
     for dimension in fixture.observe.unwrap_or([]) {
       if ![
@@ -759,6 +774,7 @@ async fn generate_candidate_manifest(
   {
     schema: 2,
     candidate: Some(true),
+    release_scope: template.release_scope,
     core_version: Some(core_version),
     base_manifest: "active-cases.json",
     commands,

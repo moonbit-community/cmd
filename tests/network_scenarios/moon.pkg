@@ -1,0 +1,11 @@
+import {
+  "mooxCLI/cmd-tests/testkit",
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/http",
+  "moonbitlang/async/socket",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/json",
+}
+
+supported_targets = "native"

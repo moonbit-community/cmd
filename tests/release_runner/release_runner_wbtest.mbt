@@ -127,6 +127,7 @@ async test "frozen release inventory survives catalog growth but candidates rema
   let frozen : ReleaseManifest = {
     schema: 2,
     candidate: None,
+    release_scope: None,
     core_version: None,
     base_manifest: "active-cases.json",
     commands: [row],
@@ -155,6 +156,7 @@ test "release manifest selects explicit cases" {
   let manifest : ReleaseManifest = {
     schema: 1,
     candidate: None,
+    release_scope: None,
     core_version: None,
     base_manifest: "tests/fixtures/runner/cases.json",
     commands: [],
@@ -290,6 +292,7 @@ test "support coverage uses selected cases only" {
   let manifest : ReleaseManifest = {
     schema: 1,
     candidate: None,
+    release_scope: None,
     core_version: None,
     base_manifest: "cases.json",
     commands: [

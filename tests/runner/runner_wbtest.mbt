@@ -1,4 +1,7 @@
 ///|
+using @mv_scenarios {type OpenStdinObservation, open_stdin_observation_failures}
+
+///|
 test "byte differences identify offset and length" {
   assert_true(first_byte_difference(b"abc", b"axc").contains("at 1"))
   assert_true(first_byte_difference(b"abc", b"abcx").contains("length differs"))

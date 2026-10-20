@@ -16,6 +16,7 @@ priv struct FrozenProvenance {
   corpus_sha256 : String
   registry_sha256 : String
   source_registry_path : String?
+  predecessor : FrozenPredecessor?
   sources : Array[FrozenSource]
   interpretation : String
 } derive(FromJson, ToJson)
@@ -236,6 +237,7 @@ async fn write_snapshot_sidecars(
     corpus_sha256: @testkit.sha256_bytes(corpus),
     registry_sha256: @testkit.sha256_bytes(registry),
     source_registry_path: None,
+    predecessor: None,
     sources: sources.map(source => {
       path: source.0,
       sha256: @testkit.sha256_bytes(source.1),
@@ -291,19 +293,36 @@ async fn validate_frozen_case_binding_checked(
   guard @fs.realpath(base_path) == @fs.realpath(actual + ".cases.json") else {
     fail("replay must use immutable resolved corpus")
   }
-  let provenance : FrozenProvenance = @json.from_json(
-    @json.parse(@fs.read_file(actual + ".provenance.json").text()),
-  )
+  let snapshot = read_frozen_snapshot_with(relative, path => {
+    @fs.read_file(root + "/" + path).binary()
+  })
+  validate_frozen_snapshot_contents(root, relative, snapshot, [])
+}
+
+///|
+async fn validate_frozen_snapshot_contents(
+  root : String,
+  relative : String,
+  snapshot : FrozenSnapshot,
+  ancestors : Array[String],
+) -> Unit {
+  guard frozen_manifest_location(relative) is Some(_) else {
+    fail("unrecognized frozen manifest location")
+  }
+  let provenance = snapshot.provenance
   guard provenance.schema == 1 &&
-    provenance.manifest_sha256 == @testkit.file_digest(actual) &&
-    provenance.corpus_sha256 == @testkit.file_digest(base_path) &&
-    provenance.registry_sha256 ==
-    @testkit.file_digest(actual + ".registry.json") else {
+    provenance.manifest_sha256 == @testkit.sha256_bytes(snapshot.manifest) &&
+    provenance.corpus_sha256 == @testkit.sha256_bytes(snapshot.corpus) &&
+    provenance.registry_sha256 == @testkit.sha256_bytes(snapshot.registry) else {
     fail("frozen snapshot hash mismatch")
   }
-  if provenance.kind == "verified-publication" {
-    validate_verified_publication(root, actual, base_path, provenance)
+  if provenance.kind == "verified-publication" ||
+    provenance.kind == "verified-partial-publication" {
+    validate_verified_publication(root, snapshot, ancestors)
     return
+  }
+  guard provenance.predecessor is None else {
+    fail("historical snapshot cannot declare a publication predecessor")
   }
   let baseline = migration_baseline(root)
   let migration_current = provenance.kind == "migration-current-source"
@@ -332,7 +351,7 @@ async fn validate_frozen_case_binding_checked(
     fail("frozen source manifest mismatch")
   }
   let original_value = @json.parse(@utf8.decode(original))
-  let current_value = @json.parse(@fs.read_file(actual).text())
+  let current_value = @json.parse(@utf8.decode(snapshot.manifest))
   if migration_current {
     guard original_value is Object(expected) &&
       current_value is Object(observed) else {
@@ -346,7 +365,7 @@ async fn validate_frozen_case_binding_checked(
       fail("current published manifest differs from frozen migration source")
     }
   } else {
-    guard original == @fs.read_file(actual).binary() else {
+    guard original == snapshot.manifest else {
       fail("historical manifest bytes differ from Git source")
     }
   }
@@ -359,7 +378,7 @@ async fn validate_frozen_case_binding_checked(
   }
   let sources : Array[(String, Bytes)] = []
   let cases = snapshot_cases(root, revision, source_base, sources)
-  guard snapshot_corpus_bytes(cases) == @fs.read_file(base_path).binary() else {
+  guard snapshot_corpus_bytes(cases) == snapshot.corpus else {
     fail("frozen corpus differs from recorded Git source")
   }
   guard sources.length() == provenance.sources.length() else {
@@ -370,7 +389,7 @@ async fn validate_frozen_case_binding_checked(
     guard provenance.sources.any(source => {
         source.path == path && source.sha256 == digest
       }) &&
-      @fs.read_file(actual + ".sources/" + digest + ".json").binary() == bytes else {
+      snapshot.archives.get(digest) == Some(bytes) else {
       fail("frozen source archive mismatch")
     }
   }
@@ -381,6 +400,7 @@ fn frozen_publication(candidate : ReleaseManifest) -> ReleaseManifest {
   {
     ..candidate,
     candidate: Some(false),
+    release_scope: None,
     base_manifest: "published-cases.json",
     commands: candidate.commands.map(row => { ..row, published: true, }),
     case_ids: [],
@@ -391,10 +411,10 @@ fn frozen_publication(candidate : ReleaseManifest) -> ReleaseManifest {
 ///|
 async fn validate_verified_publication(
   root : String,
-  manifest_path : String,
-  corpus_path : String,
-  provenance : FrozenProvenance,
+  snapshot : FrozenSnapshot,
+  ancestors : Array[String],
 ) -> Unit {
+  let provenance = snapshot.provenance
   guard provenance.source_registry_path is Some(registry_path) else {
     fail("verified publication missing source registry")
   }
@@ -412,7 +432,8 @@ async fn validate_verified_publication(
     @json.parse(@utf8.decode(candidate_bytes)),
   )
   guard candidate.candidate == Some(true) &&
-    candidate.commands.all(row => !row.published) else {
+    candidate.commands.all(row => !row.published) &&
+    release_scope_errors(candidate).is_empty() else {
     fail("verified publication source is not an unpublished candidate")
   }
   let source_base = snapshot_child(
@@ -424,22 +445,40 @@ async fn validate_verified_publication(
   }
   let sources : Array[(String, Bytes)] = []
   let cases = snapshot_cases(root, revision, source_base, sources)
-  let selected = selected_cases(candidate, { schema: 2, cases, })
-  guard snapshot_corpus_bytes(selected) == @fs.read_file(corpus_path).binary() else {
+  let selected = release_cases(candidate, { schema: 2, cases, })
+  let (published, selected) = if provenance.kind ==
+    "verified-partial-publication" {
+    guard candidate.release_scope is Some(_) &&
+      provenance.predecessor is Some(predecessor) else {
+      fail("partial publication requires explicit scope and predecessor")
+    }
+    let previous = verified_predecessor(root, revision, predecessor, ancestors)
+    (
+      partial_publication(candidate, snapshot_manifest(previous)),
+      partial_publication_cases(
+        candidate,
+        snapshot_case_list(previous),
+        selected,
+      ),
+    )
+  } else {
+    guard candidate.release_scope is None && provenance.predecessor is None else {
+      fail("full publication cannot discard a partial release predecessor")
+    }
+    (frozen_publication(candidate), selected)
+  }
+  guard snapshot_corpus_bytes(selected) == snapshot.corpus else {
     fail("verified publication corpus differs from committed candidate")
   }
-  let expected = @testkit.canonical_json(
-    ToJson::to_json(frozen_publication(candidate)),
-  )
+  let expected = @testkit.canonical_json(publication_json(published))
   let actual = @testkit.canonical_json(
-    @json.parse(@fs.read_file(manifest_path).text()),
+    @json.parse(@utf8.decode(snapshot.manifest)),
   )
   guard actual == expected else {
     fail("published manifest differs from committed candidate transformation")
   }
   let registry_bytes = snapshot_source(root, revision, registry_path)
-  guard registry_bytes ==
-    @fs.read_file(manifest_path + ".registry.json").binary() else {
+  guard registry_bytes == snapshot.registry else {
     fail("verified publication registry differs from committed source")
   }
   guard sources.length() == provenance.sources.length() else {
@@ -450,8 +489,7 @@ async fn validate_verified_publication(
     guard provenance.sources.any(source => {
         source.path == path && source.sha256 == digest
       }) &&
-      @fs.read_file(manifest_path + ".sources/" + digest + ".json").binary() ==
-      bytes else {
+      snapshot.archives.get(digest) == Some(bytes) else {
       fail("verified publication source archive mismatch")
     }
   }
@@ -505,23 +543,59 @@ async fn prepare_current_snapshot(
   let source_base = snapshot_child(candidate_source, candidate.base_manifest)
   let sources : Array[(String, Bytes)] = []
   let base_cases = snapshot_cases(root, revision, source_base, sources)
-  let expected_cases = selected_cases(candidate, {
+  let expected_cases = release_cases(candidate, {
     schema: 2,
     cases: base_cases,
   })
-  let corpus = snapshot_corpus_bytes(selected)
-  guard corpus == snapshot_corpus_bytes(expected_cases) else {
+  guard snapshot_corpus_bytes(selected) == snapshot_corpus_bytes(expected_cases) else {
     fail("freeze cases are not the committed evidence revision")
   }
+  let (published, selected, predecessor) = if candidate.release_scope is Some(_) {
+    let path = "tests/release_runner/current/published.json"
+    let previous = read_frozen_snapshot_with(path, source => {
+      snapshot_source(root, revision, source)
+    })
+    let binding = predecessor_binding(previous)
+    let current_snapshot = read_frozen_snapshot_with(path, source => {
+      @fs.read_file(root + "/" + source).binary()
+    })
+    guard predecessor_matches(binding, current_snapshot) else {
+      fail(
+        "partial publication predecessor is not the committed current snapshot",
+      )
+    }
+    ignore(verified_predecessor(root, revision, binding, []))
+    (
+      partial_publication(candidate, snapshot_manifest(previous)),
+      partial_publication_cases(
+        candidate,
+        snapshot_case_list(previous),
+        selected,
+      ),
+      Some(binding),
+    )
+  } else {
+    (frozen_publication(candidate), selected, None)
+  }
+  guard @testkit.canonical_json(publication_json(published)) ==
+    @testkit.canonical_json(@json.parse(@utf8.decode(published_bytes))) else {
+    fail("freeze manifest is not the committed publication transformation")
+  }
+  let corpus = snapshot_corpus_bytes(selected)
   sources.sort_by((left, right) => left.0.lexical_compare(right.0))
   let provenance : FrozenProvenance = {
     schema: 1,
-    kind: "verified-publication",
+    kind: if predecessor is Some(_) {
+      "verified-partial-publication"
+    } else {
+      "verified-publication"
+    },
     source_revision: revision,
     source_manifest_path: candidate_source,
     source_manifest_sha256: @testkit.sha256_bytes(candidate_bytes),
     source_base_path: source_base,
     source_registry_path: Some(registry_source),
+    predecessor,
     manifest_sha256: @testkit.sha256_bytes(published_bytes),
     corpus_sha256: @testkit.sha256_bytes(corpus),
     registry_sha256: @testkit.sha256_bytes(registry_bytes),
@@ -529,7 +603,11 @@ async fn prepare_current_snapshot(
       path: source.0,
       sha256: @testkit.sha256_bytes(source.1),
     }),
-    interpretation: "Frozen by the exact registry, MoonX contract, differential and reproducibility gates. Replaying these source bytes does not repeat historical acceptance.",
+    interpretation: if predecessor is Some(_) {
+      "The explicit release scope passed exact registry and MoonX acceptance. Unselected coordinates and contracts are retained from the committed predecessor and keep its original provenance. Replay reconstructs both inputs; it does not claim a full candidate publication or repeat historical acceptance."
+    } else {
+      "Frozen by the exact registry, MoonX contract, differential and reproducibility gates. Replaying these source bytes does not repeat historical acceptance."
+    },
   }
   let outputs = [
     (".cases.json", corpus),
