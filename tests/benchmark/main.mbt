@@ -304,11 +304,7 @@ async fn run_pair(
     }
     trials.push(trial)
     // Keep each observation before the next invocation reuses its output files.
-    @fs.write_file(
-      context.directory + "/trials.jsonl",
-      ToJson::to_json(trial).stringify() + "\n",
-      append=true,
-    )
+    append_jsonl(context.directory + "/trials.jsonl", ToJson::to_json(trial))
     if !correct {
       return None
     }
@@ -319,6 +315,16 @@ async fn run_pair(
     }
   }
   Some({ candidate_us, upstream_us, })
+}
+
+///|
+async fn append_jsonl(path : String, value : Json) -> Unit {
+  @fs.write_file(
+    path,
+    value.stringify() + "\n",
+    create_mode=OpenOrCreate,
+    append=true,
+  )
 }
 
 ///|

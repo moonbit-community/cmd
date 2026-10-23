@@ -132,6 +132,12 @@ The row JSON also retains every complete measured pair; warmups never enter
 the statistics. Gzip also reuses one decoded file per side. Existing report
 directories are not overwritten.
 
+The initial 2026-10-24 macOS and Linux reports used the released filesystem
+writer's default truncate mode together with append. Their `trials.jsonl` files
+retain only the final observation; complete trial records and timing samples
+remain in `row.json` and `report.json`. Those historical files are unchanged.
+New runs explicitly open the JSONL file without truncation.
+
 ## Initial published baseline
 
 The 2026-10-24 macOS pilot completed all 660 invocation checks. Median
