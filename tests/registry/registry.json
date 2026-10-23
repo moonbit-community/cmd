@@ -51556,6 +51556,330 @@
         "status"
       ],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/main_wbtest.mbt::benchmark trial log retains consecutive JSON lines",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/main_wbtest.mbt::benchmark trial log retains consecutive JSON lines",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark trial log retains consecutive JSON lines"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/main_wbtest.mbt::benchmark small inputs preserve partial chunks and operand expectations",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/main_wbtest.mbt::benchmark small inputs preserve partial chunks and operand expectations",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark small inputs preserve partial chunks and operand expectations"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/main_wbtest.mbt::benchmark gzip observations decode content and reject corrupt output",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/main_wbtest.mbt::benchmark gzip observations decode content and reject corrupt output",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark gzip observations decode content and reject corrupt output"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/process_wbtest.mbt::benchmark file comparison checks later chunks length and empty output",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/process_wbtest.mbt::benchmark file comparison checks later chunks length and empty output",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark file comparison checks later chunks length and empty output"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/statistics_wbtest.mbt::benchmark schedule has five warmups and balanced alternating measured pairs",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/statistics_wbtest.mbt::benchmark schedule has five warmups and balanced alternating measured pairs",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark schedule has five warmups and balanced alternating measured pairs"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/statistics_wbtest.mbt::benchmark quantiles freeze even median p95 and percentile endpoints",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/statistics_wbtest.mbt::benchmark quantiles freeze even median p95 and percentile endpoints",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark quantiles freeze even median p95 and percentile endpoints"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/statistics_wbtest.mbt::benchmark bootstrap resamples pairs and uses ratio of medians",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/statistics_wbtest.mbt::benchmark bootstrap resamples pairs and uses ratio of medians",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark bootstrap resamples pairs and uses ratio of medians"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/statistics_wbtest.mbt::benchmark complete row accepts inclusive delivery threshold",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/statistics_wbtest.mbt::benchmark complete row accepts inclusive delivery threshold",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark complete row accepts inclusive delivery threshold"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/statistics_wbtest.mbt::benchmark p95 failure cannot be hidden by a passing median",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/statistics_wbtest.mbt::benchmark p95 failure cannot be hidden by a passing median",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark p95 failure cannot be hidden by a passing median"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/statistics_wbtest.mbt::benchmark interval upper bound can reject passing median and p95 ratios",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/statistics_wbtest.mbt::benchmark interval upper bound can reject passing median and p95 ratios",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark interval upper bound can reject passing median and p95 ratios"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/statistics_wbtest.mbt::benchmark noise checks both sides and exact MAD and block drift limits",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/statistics_wbtest.mbt::benchmark noise checks both sides and exact MAD and block drift limits",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark noise checks both sides and exact MAD and block drift limits"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/statistics_wbtest.mbt::benchmark missing failed and invalid observations never pass",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/statistics_wbtest.mbt::benchmark missing failed and invalid observations never pass",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark missing failed and invalid observations never pass"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
     }
   ],
   "release_commands": [

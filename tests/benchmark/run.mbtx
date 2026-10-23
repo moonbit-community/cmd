@@ -1,0 +1,19 @@
+///|
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/shell",
+  "moonbitlang/core/env",
+  "moonbitlang/x@0.5.5/sys",
+}
+
+///|
+// Build explicitly before launching. Cache preparation is also a separate step.
+async fn main {
+  let status = @shell.Cmd(
+    "./_build/native/release/build/mooxCLI/cmd-tests/benchmark/benchmark.exe",
+    @env.args()[1:].to_owned(),
+    stdout=Inherit,
+    stderr=Inherit,
+  ).status()
+  @sys.exit(status)
+}

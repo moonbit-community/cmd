@@ -49,6 +49,9 @@ Local evidence is under `/private/tmp/cmd-c3-paired-live-20261024`,
 `/private/tmp/cmd-c3-current-outline-registry-join-20261024.json`.
 These precommit runs establish the implementation comparison. Exact committed
 three-platform and actual-main acceptance remain separate CI gates.
+PR #45 run `40015090550` passed all four required checks at `935fe17` and
+merged as `222d9b1`. Its actual-main verification is still pending; the PR run
+does not replace that gate.
 
 ## C4 measurement
 
@@ -56,9 +59,11 @@ three-platform and actual-main acceptance remain separate CI gates.
 per CI entrypoint and directly reuses a release coverage CLI. Its 52 coverage
 regressions, release build, direct entrypoint probes and workflow validation
 passed locally. Hosted run `39995981396` passed all four required checks and
-PR #44 merged as `f32438b5`. Actual-main acceptance remains pending.
+PR #44 merged as `f32438b5`. Actual-main run `40004057220` then passed all four
+required checks: macOS 17:17, Linux 27:14, Windows 42:53 and coverage-audit 7:10;
+the actual-main audit body took 180 seconds.
 
-The coverage-audit job took 420 seconds, compared with 813 seconds on the C1
+The PR coverage-audit job took 420 seconds, compared with 813 seconds on the C1
 actual-main run; its audit body decreased from 596 to 167 seconds. The three
 platform stamp steps together decreased from 265 to 115 seconds. Full/shadow
 execution retained all 1,728 behaviors and the frozen publication proof retained
