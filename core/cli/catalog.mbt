@@ -400,14 +400,18 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("fmt", Core, FileOrStdin, ByteStream, [FileRead], [
       "width", "goal", "split-only", "uniform-spacing",
     ]),
+    // The gzip family streams input and output, including validation mode.
     contract("gzip", Extended, FileOrStdin, ByteStream, [FileRead], [
-      "stdout", "decompress", "test", "no-name", "quiet",
+      "stdout", "decompress", "test", "no-name", "quiet", "fast", "2", "3", "4",
+      "5", "6", "7", "8", "best",
     ]),
     contract("gunzip", Extended, FileOrStdin, ByteStream, [FileRead], [
-      "stdout", "decompress", "test", "no-name", "quiet",
+      "stdout", "decompress", "test", "no-name", "quiet", "fast", "2", "3", "4",
+      "5", "6", "7", "8", "best",
     ]),
     contract("zcat", Core, FileOrStdin, ByteStream, [FileRead], [
-      "stdout", "decompress", "test", "no-name", "quiet",
+      "stdout", "decompress", "test", "no-name", "quiet", "fast", "2", "3", "4",
+      "5", "6", "7", "8", "best",
     ]),
     contract("strings", Core, FileOrStdin, LineStream, [FileRead], [
       "all", "bytes", "encoding", "octal", "print-file-name", "radix", "version",

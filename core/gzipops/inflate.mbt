@@ -1,44 +1,24 @@
 ///|
-// RFC 1951 decoder. Keeping the bit cursor here makes output produced before
-// truncated input observable, including when no full trailer remains to prefetch.
-priv struct Bits {
-  data : Bytes
-  mut position : Int32
-  mut pending : UInt32
-  mut available : Int32
-}
-
-///|
-fn Bits::take(self : Bits, count : Int32) -> Int32 raise {
-  while self.available < count {
-    guard self.position < self.data.length() else {
-      fail("unexpected end of file")
-    }
-    self.pending = self.pending |
-      (self.data[self.position].to_uint() << self.available)
-    self.position += 1
-    self.available += 8
-  }
-  let value = self.pending & ((1U << count) - 1U)
-  self.pending = self.pending >> count
-  self.available -= count
-  value.reinterpret_as_int()
-}
-
-///|
-fn Bits::align(self : Bits) -> Unit {
-  self.pending = 0U
-  self.available = 0
+priv enum DecodeEntry {
+  Invalid
+  Symbol(Int32, Int32)
+  More(FixedArray[DecodeEntry], Int32)
 }
 
 ///|
 priv struct Huffman {
   codes : Map[Int32, Int32]
   width : Int32
+  main_bits : Int32
+  main : FixedArray[DecodeEntry]
 }
 
 ///|
-fn huffman(lengths : Array[Int32], strict~ : Bool = false) -> Huffman raise {
+fn huffman(
+  lengths : Array[Int32],
+  strict~ : Bool = false,
+  main_bits~ : Int32 = 9,
+) -> Huffman raise {
   let counts = Array::make(16, 0)
   let mut width = 0
   for length in lengths {
@@ -65,6 +45,10 @@ fn huffman(lengths : Array[Int32], strict~ : Bool = false) -> Huffman raise {
     fail("incomplete Huffman tree")
   }
   let codes : Map[Int32, Int32] = Map([])
+  let main_bits = main_bits.min(width.max(1))
+  let main = FixedArray::make(1 << main_bits, DecodeEntry::Invalid)
+  let sub_widths = FixedArray::make(1 << main_bits, 0)
+  let reversed_codes = Array::make(lengths.length(), 0)
   for symbol, length in lengths {
     if length == 0 {
       continue
@@ -77,12 +61,76 @@ fn huffman(lengths : Array[Int32], strict~ : Bool = false) -> Huffman raise {
     }
     next[length] += 1
     codes[(length << 16) | reversed] = symbol
+    reversed_codes[symbol] = reversed
+    if length > main_bits {
+      let prefix = reversed & ((1 << main_bits) - 1)
+      sub_widths[prefix] = sub_widths[prefix].max(length - main_bits)
+    }
   }
-  { codes, width, }
+  for prefix, sub_width in sub_widths {
+    if sub_width > 0 {
+      main[prefix] = More(FixedArray::make(1 << sub_width, Invalid), sub_width)
+    }
+  }
+  for symbol, length in lengths {
+    if length == 0 {
+      continue
+    }
+    let reversed = reversed_codes[symbol]
+    if length <= main_bits {
+      for index = reversed; index < main.length(); index = index + (1 << length) {
+        main[index] = Symbol(symbol, length)
+      }
+    } else {
+      let prefix = reversed & ((1 << main_bits) - 1)
+      guard main[prefix] is More(table, _) else { abort("missing subtable") }
+      for index = reversed >> main_bits
+          index < table.length()
+          index = index + (1 << (length - main_bits)) {
+        table[index] = Symbol(symbol, length)
+      }
+    }
+  }
+  { codes, width, main_bits, main, }
 }
 
 ///|
-fn Huffman::read(self : Huffman, bits : Bits) -> Int32 raise {
+// A short code may be complete before the full lookup width is available.
+// Check that case before reading another byte, preserving late read errors.
+fn Huffman::buffered(self : Huffman, bits : Bits) -> Int32? raise {
+  match self.main[bits.peek(self.main_bits)] {
+    Symbol(symbol, length) if length <= bits.available => {
+      bits.drop_bits(length)
+      Some(symbol)
+    }
+    More(table, width) if bits.available >= self.main_bits =>
+      match table[bits.peek(self.main_bits + width) >> self.main_bits] {
+        Symbol(symbol, length) if length <= bits.available => {
+          bits.drop_bits(length)
+          Some(symbol)
+        }
+        Invalid if bits.available >= self.main_bits + width =>
+          fail("invalid Huffman code")
+        _ => None
+      }
+    Invalid if bits.available >= self.main_bits => fail("invalid Huffman code")
+    _ => None
+  }
+}
+
+///|
+async fn Huffman::read(self : Huffman, bits : Bits) -> Int32 {
+  guard self.width > 0 else { fail("invalid Huffman code") }
+  for ;; {
+    if self.buffered(bits) is Some(symbol) {
+      return symbol
+    }
+    if !bits.fill_byte() {
+      break
+    }
+  }
+  // EOF can leave fewer bits than a lookup width. Retain the canonical slow
+  // path so those bits receive the same symbol/truncation validation.
   let mut code = 0
   for length in 1..<=self.width {
     code = code | (bits.take(1) << (length - 1))
@@ -106,11 +154,11 @@ fn fixed_trees() -> (Huffman, Huffman) raise {
       8
     }
   })
-  (huffman(lengths), huffman(Array::make(32, 5)))
+  (huffman(lengths), huffman(Array::make(32, 5), main_bits=6))
 }
 
 ///|
-fn dynamic_trees(bits : Bits) -> (Huffman, Huffman) raise {
+async fn dynamic_trees(bits : Bits) -> (Huffman, Huffman) {
   let literal_count = bits.take(5) + 257
   let distance_count = bits.take(5) + 1
   let code_count = bits.take(4) + 4
@@ -120,7 +168,7 @@ fn dynamic_trees(bits : Bits) -> (Huffman, Huffman) raise {
   for index in 0..<code_count {
     code_lengths[order[index]] = bits.take(3)
   }
-  let tree = huffman(code_lengths, strict=true)
+  let tree = huffman(code_lengths, strict=true, main_bits=7)
   let total = literal_count + distance_count
   let lengths : Array[Int32] = []
   while lengths.length() < total {
@@ -145,7 +193,7 @@ fn dynamic_trees(bits : Bits) -> (Huffman, Huffman) raise {
   guard lengths[256] > 0 else { fail("missing end-of-block code") }
   (
     huffman(lengths[:literal_count].to_owned()),
-    huffman(lengths[literal_count:].to_owned()),
+    huffman(lengths[literal_count:].to_owned(), main_bits=6),
   )
 }
 
@@ -170,13 +218,14 @@ priv struct InflateOutput {
   mut history : Int32
   mut crc : UInt32
   mut size : UInt32
-  pending : Array[Byte]
+  pending : FixedArray[Byte]
+  mut count : Int32
   writer : &@io.Writer
   test_only : Bool
 }
 
 ///|
-async fn InflateOutput::push(self : InflateOutput, byte : Byte) -> Unit {
+fn InflateOutput::push(self : InflateOutput, byte : Byte) -> Unit {
   self.window[self.cursor] = byte
   self.cursor = (self.cursor + 1) & 32767
   if self.history < 32768 {
@@ -185,9 +234,47 @@ async fn InflateOutput::push(self : InflateOutput, byte : Byte) -> Unit {
   self.crc = update_crc(self.crc, byte)
   self.size += 1U
   if !self.test_only {
-    self.pending.push(byte)
-    if self.pending.length() >= 65536 {
-      flush_pending(self.pending, self.writer)
+    self.pending[self.count] = byte
+    self.count += 1
+  }
+}
+
+///|
+async fn InflateOutput::flush(self : InflateOutput) -> Unit {
+  if self.count > 0 {
+    let count = self.count
+    self.count = 0
+    self.writer.write(self.pending.unsafe_reinterpret_as_bytes()[:count])
+  }
+}
+
+///|
+async fn stored_payload(
+  bits : Bits,
+  length : Int32,
+  output : InflateOutput,
+) -> Unit {
+  let mut remaining = length
+  while remaining > 0 && bits.available >= 8 {
+    output.push(bits.peek(8).to_byte())
+    bits.drop_bits(8)
+    remaining -= 1
+    if output.count == output.pending.length() {
+      output.flush()
+    }
+  }
+  while remaining > 0 {
+    guard bits.refill() else { fail("unexpected end of file") }
+    let count = remaining
+      .min(bits.end - bits.position)
+      .min(output.pending.length() - output.count)
+    for index in bits.position..<(bits.position + count) {
+      output.push(bits.buffer[index])
+    }
+    bits.position += count
+    remaining -= count
+    if output.count == output.pending.length() {
+      output.flush()
     }
   }
 }
@@ -227,6 +314,9 @@ async fn compressed_block(
     let symbol = literal.read(bits)
     if symbol < 256 {
       output.push(symbol.to_byte())
+      if output.count == output.pending.length() {
+        output.flush()
+      }
     } else if symbol == 256 {
       return
     } else {
@@ -240,8 +330,16 @@ async fn compressed_block(
       guard count <= output.history else {
         fail("distance exceeds output history")
       }
-      for _ in 0..<length {
-        output.push(output.window[(output.cursor - count) & 32767])
+      let mut remaining = length
+      while remaining > 0 {
+        let chunk = remaining.min(output.pending.length() - output.count)
+        for _ in 0..<chunk {
+          output.push(output.window[(output.cursor - count) & 32767])
+        }
+        remaining -= chunk
+        if output.count == output.pending.length() {
+          output.flush()
+        }
       }
     }
   }
@@ -249,23 +347,23 @@ async fn compressed_block(
 
 ///|
 async fn inflate(
-  data : Bytes,
-  start : Int32,
+  bits : Bits,
   writer : &@io.Writer,
   test_only : Bool,
-) -> (Int32, UInt32, UInt32) {
-  let bits : Bits = { data, position: start, pending: 0U, available: 0, }
+) -> (UInt32, UInt32) {
   let output : InflateOutput = {
     window: FixedArray::make(32768, b'\x00'),
     cursor: 0,
     history: 0,
     crc: 0xffffffffU,
     size: 0U,
-    pending: [],
+    pending: FixedArray::make(65536, b'\x00'),
+    count: 0,
     writer,
     test_only,
   }
-  errdefer flush_pending(output.pending, writer)
+  errdefer output.flush()
+  let mut fixed_cache : (Huffman, Huffman)? = None
   let mut is_last = false
   while !is_last {
     is_last = bits.take(1) != 0
@@ -276,12 +374,17 @@ async fn inflate(
         guard (length ^ bits.take(16)) == 0xffff else {
           fail("invalid stored-block length")
         }
-        for _ in 0..<length {
-          output.push(bits.take(8).to_byte())
-        }
+        stored_payload(bits, length, output)
       }
       1 => {
-        let (literal, distance) = fixed_trees()
+        let (literal, distance) = match fixed_cache {
+          Some(trees) => trees
+          None => {
+            let trees = fixed_trees()
+            fixed_cache = Some(trees)
+            trees
+          }
+        }
         compressed_block(bits, literal, distance, output)
       }
       2 => {
@@ -292,6 +395,6 @@ async fn inflate(
     }
   }
   bits.align()
-  flush_pending(output.pending, writer)
-  (bits.position, output.crc ^ 0xffffffffU, output.size)
+  output.flush()
+  (output.crc ^ 0xffffffffU, output.size)
 }

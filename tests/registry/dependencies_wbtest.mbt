@@ -84,14 +84,23 @@ async test "workspace dependency manifests keep one async baseline and the selec
           directory.strip_prefix("commands/").unwrap().to_owned(),
         )
       )
-    assert_eq(
-      imports.filter(coordinate => coordinate.has_prefix("cli/core@")),
-      if needs_core {
-        [core_coordinate]
+    let core_imports = imports.filter(coordinate => {
+      coordinate.has_prefix("cli/core@")
+    })
+    if needs_core {
+      assert_eq(core_imports.length(), 1)
+      // Unchanged commands may retain the published core; the harness follows
+      // the workspace candidate instead of forcing every command to migrate.
+      if directory == "tests" {
+        assert_eq(core_imports, [core_coordinate])
       } else {
-        []
-      },
-    )
+        assert_true(
+          ["cli/core@0.7.0", core_coordinate].contains(core_imports[0]),
+        )
+      }
+    } else {
+      assert_eq(core_imports, [])
+    }
   }
   let members = []
   for line in @fs.read_file(root + "moon.work").text().split("\n") {

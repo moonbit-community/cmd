@@ -1,6 +1,6 @@
 import {
   "cli/core/cli",
-  "moonbitlang/async/gzip",
+  "moonbitlang/core/buffer",
   "moonbitlang/async/io",
   "moonbitlang/async/fs",
   "moonbitlang/async/stdio",

@@ -1,29 +1,38 @@
 # gunzip
 
-Version **0.1.2** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
+This documents the **unpublished workspace 0.1.2** candidate. The current
+published release is **cli/gunzip@0.1.1**. The
+[support record](../../docs/compatibility.md) separates these profiles;
+the examples select the published release.
 
 Decode gzip data from stdin, or write named compressed files to stdout with `-c`:
 
 ```sh
-moonx cli/gunzip -c notes.txt.gz
-moonx cli/gunzip -t notes.txt.gz
-cat notes.txt.gz | moonx cli/gunzip
+moonx cli/gunzip@0.1.1 -c notes.txt.gz
+moonx cli/gunzip@0.1.1 -t notes.txt.gz
+cat notes.txt.gz | moonx cli/gunzip@0.1.1
 ```
 
 `-c`/`--stdout` keeps input files, `-t`/`--test` verifies without output, and
 `-d`/`--decompress` explicitly selects the default decoding operation.
 `-n`/`--no-name` is accepted; stdout decoding never restores saved metadata.
 Multiple files and `-` operands are processed in order.
+Workspace `-1` through `-9`, `--fast` and `--best` are accepted and ignored by
+decompression and testing; they do not change this command into a compressor.
 
 Concatenated gzip members and optional name, extra and comment fields are
 accepted. Header CRC, data CRC and uncompressed size are checked. A late format
 error returns 1 without retracting bytes already written. Trailing garbage
-returns 2 with a warning; `-q`/`--quiet` suppresses that warning. Compressed input
-is buffered, while decoded output is written in chunks.
-The unpublished async 0.22.5 workspace upgrade retains this pure inflater and
-does not remove whole-input buffering; Reader-based decoding remains planned.
+returns 2 with a warning; `-q`/`--quiet` suppresses that warning. The workspace
+streams compressed input through 64 KiB input/output buffers, a 32 KiB history
+window and bounded main/secondary Huffman tables. It does not retain whole
+compressed input or decoded output. The shared
+[gzip encoder](../gzip/README.md) now uses 32 KiB LZ history, 3–258 byte matches,
+64 KiB input chunks and stored/fixed/dynamic block selection. The G1 frontend
+GNU cases pass on Native and Wasm; performance acceptance remains pending. See the
+[G1 development report](../../docs/reports/2026-10-24-g1-codec.md).
+The [G2 report](../../docs/reports/2026-10-24-g2-streaming.md) records the
+streaming decoder's byte/error checks and resource observations.
 
 Named-file replacement without `-c` is rejected. Other compression formats,
 force/pass-through behavior, metadata restoration, recursive operation and

@@ -4,7 +4,7 @@ Date: 2026-10-23; execution direction revised 2026-10-24
 
 Repository: `moonbit-community/cmd`
 
-Status: C0/C1 accepted. Continue from C1 with C3/C4, benchmarks, command algorithms and final publication; later acceptance remains pending.
+Status: C0/C1/C3/C4 accepted. The benchmark pilot is merged; complete benchmarks, command algorithms and final publication remain pending.
 
 Source: `cmd-comprehensive-optimization-plan-2026-10-23.md`, supplied by the user.
 

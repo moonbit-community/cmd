@@ -1,39 +1,50 @@
 # gzip
 
-Version **0.1.2** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
+This documents the **unpublished workspace 0.1.2** candidate. The current
+published release is **cli/gzip@0.1.1** with its frozen stored-block encoder;
+the compression levels below require the workspace candidate. The
+[support record](../../docs/compatibility.md) separates these profiles.
 
 Compress stdin to a gzip stream, or use `-c -n` to compress named files while
 keeping the originals:
 
 ```sh
-printf 'hello\n' | moonx cli/gzip > hello.gz
-moonx cli/gzip -cn notes.txt > notes.txt.gz
-moonx cli/gzip -dc notes.txt.gz
-moonx cli/gzip -t notes.txt.gz
+printf 'hello\n' | moonx cli/gzip@0.1.1 > hello.gz
+moonx cli/gzip@0.1.1 -cn notes.txt > notes.txt.gz
+moonx cli/gzip@0.1.1 -dc notes.txt.gz
+moonx cli/gzip@0.1.1 -t notes.txt.gz
 ```
 
 `-d`/`--decompress` decodes, `-t`/`--test` checks compressed data without writing
 decoded bytes, and `-c`/`--stdout` selects stdout. `-n`/`--no-name` omits saved
 names and timestamps. Multiple operands are processed in order; `-` reads stdin.
-The published 0.1.2 baseline uses stored DEFLATE blocks. The unpublished workspace
-with async 0.22.5 uses its public Encoder, which performs bounded LZ matching and
-fixed-Huffman DEFLATE encoding with a 1 KiB history and matches up to 64 bytes.
-Output can still be larger than its input. A 32 KiB compressor, dynamic-Huffman
-block selection and compression levels remain planned work; the dependency
-upgrade does not complete those features or establish ratio/performance claims.
+The workspace encoder uses pure MoonBit LZ matching with a 32 KiB history and
+3–258 byte matches. It compares complete stored/fixed/dynamic DEFLATE bit costs,
+including headers and alignment, and can extend an open Huffman block. Input is
+processed in 64 KiB chunks with bounded history, tokens and coding tables.
+`-1` through `-9` select search effort, defaulting to `-6`; `--fast` aliases `-1`
+and `--best` aliases `-9`. The last level option wins, including grouped short
+options. Levels are accepted and ignored when decompressing or testing.
+Compressed bytes need not match GNU's encoding. All nine levels pass the
+direct Native/Wasm GNU roundtrips and selected size limits in the
+[G1 development report](../../docs/reports/2026-10-24-g1-codec.md).
+Published MoonX and performance acceptance remain open.
 
 Decompression accepts concatenated members, optional names, comments and extra
 header fields, and verifies header CRC, payload CRC and size. Decoded bytes
 already written remain visible if a later member or trailer fails. Zero padding
 is accepted; trailing garbage produces a warning and status 2 (`-q` suppresses
-the warning). Input and format failures return 1. Compression streams input;
-decompression buffers compressed input and emits decoded chunks.
+the warning). Input and format failures return 1. Both directions stream input
+and output in bounded chunks. Decoding uses 64 KiB input/output buffers, a
+32 KiB history window and bounded Huffman lookup tables; it does not retain the
+whole compressed input or decoded output.
+The [G2 development report](../../docs/reports/2026-10-24-g2-streaming.md)
+records byte/error checks, direct timings and memory observations.
 
 Named-file compression requires `-cn`; named-file decompression requires `-c`
 unless only testing. In-place replacement, saved metadata, recursive traversal,
-listing, force/pass-through modes and compression levels are rejected.
+listing and force/pass-through modes are rejected. The public Bytes decoder
+remains an adapter; its caller still holds the supplied bytes.
 `--help` and `--version` describe this command.
 
 ## Standalone metadata

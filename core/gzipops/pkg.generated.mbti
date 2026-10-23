@@ -8,7 +8,9 @@ import {
 // Values
 pub async fn decode(Bytes, &@io.Writer, Bool) -> Bool
 
-pub async fn encode(&@io.Reader, &@io.Writer) -> Unit
+pub async fn decode_reader(&@io.Reader, &@io.Writer, Bool) -> Bool
+
+pub async fn encode(&@io.Reader, &@io.Writer, level? : Int) -> Unit
 
 pub fn help(String) -> String
 

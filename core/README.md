@@ -9,8 +9,19 @@ It retains the shared incremental MD5/SHA-1/SHA-512, C-byte regular-expression
 adaptation and gzip stream codecs. Earlier command packages continue to use
 their published core-compatible versions.
 
-The unpublished workspace candidate targets **0.7.0** with async **0.22.5**.
-It adds public `EmptyReplyFailure`, `PartialBodyFailure`, `ReceiveFailure` and
+The unpublished workspace candidate targets **0.8.0**. Public
+`gzipops.encode` accepts an optional `level` argument, defaulting to six, for
+the private pure MoonBit 32 KiB LZ and stored/fixed/dynamic Huffman encoder.
+Levels one through nine control search effort; existing callers retain the
+default. Input is processed in 64 KiB chunks with bounded history.
+`gzipops.decode_reader` streams gzip envelopes and DEFLATE through 64 KiB
+input/output buffers, 32 KiB history and bounded Huffman tables. Existing
+`decode(Bytes, ...)` callers retain their supplied bytes. The G1 report records
+GNU interoperability and selected size results; performance acceptance remains
+pending. Only changed command packages select this new core coordinate.
+
+Published **0.7.0** uses async **0.22.5**.
+It added public `EmptyReplyFailure`, `PartialBodyFailure`, `ReceiveFailure` and
 `RewindFailure` classifications,
 `OutputStarted` path/offset observations, and `resume_skip_existing` for callers
 that retain an already delivered prefix. Public `TransferProfile` defaults to
