@@ -166,9 +166,7 @@ async test "package preparation builds once across files and separates backends"
   )
   assert_eq(first.directory, second.directory)
   assert_true(first.directory != wasm.directory)
-  let cli = @path.Path("core/cli").normalize().to_string()
-  let stream = @path.Path("core/stream").normalize().to_string()
-  assert_eq(builds, [cli + ":native", cli + ":wasm", stream + ":native"])
+  assert_eq(builds, ["core/cli:native", "core/cli:wasm", "core/stream:native"])
 }
 
 ///|
@@ -192,7 +190,7 @@ async test "package preparation retains failure without rebuilding each case" {
       },
     )
   }
-  assert_eq(builds, [@path.Path("core/cli").normalize().to_string()])
+  assert_eq(builds, ["core/cli"])
 }
 
 ///|
