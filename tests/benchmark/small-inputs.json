@@ -1,0 +1,156 @@
+{
+  "schema": 1,
+  "published_manifest": "tests/release_runner/current/published.json",
+  "workloads": [
+    {
+      "id": "basename-operand-0",
+      "behavior_id": "case:p9-basename-empty",
+      "command": "basename",
+      "input_bytes": 0,
+      "input_mode": "operand",
+      "args": ["--", "${INPUT_TEXT}"],
+      "expected_status": 0,
+      "stdout_check": "input-newline"
+    },
+    {
+      "id": "basename-operand-1",
+      "behavior_id": "case:phase3-basename-suffix",
+      "command": "basename",
+      "input_bytes": 1,
+      "input_mode": "operand",
+      "args": ["--", "${INPUT_TEXT}"],
+      "expected_status": 0,
+      "stdout_check": "input-newline"
+    },
+    {
+      "id": "basename-operand-4k",
+      "behavior_id": "case:phase3-basename-suffix",
+      "command": "basename",
+      "input_bytes": 4096,
+      "input_mode": "operand",
+      "args": ["--", "${INPUT_TEXT}"],
+      "expected_status": 0,
+      "stdout_check": "input-newline"
+    },
+    {
+      "id": "wc-stdin-0",
+      "behavior_id": "case:compat-text-line-596",
+      "command": "wc",
+      "input_bytes": 0,
+      "input_mode": "stdin",
+      "args": ["-c"],
+      "expected_status": 0,
+      "stdout_check": "byte-count"
+    },
+    {
+      "id": "wc-stdin-1",
+      "behavior_id": "case:compat-text-line-596",
+      "command": "wc",
+      "input_bytes": 1,
+      "input_mode": "stdin",
+      "args": ["-c"],
+      "expected_status": 0,
+      "stdout_check": "byte-count"
+    },
+    {
+      "id": "wc-stdin-4k",
+      "behavior_id": "case:compat-text-line-596",
+      "command": "wc",
+      "input_bytes": 4096,
+      "input_mode": "stdin",
+      "args": ["-c"],
+      "expected_status": 0,
+      "stdout_check": "byte-count"
+    },
+    {
+      "id": "sha256sum-stdin-0",
+      "behavior_id": "case:compat-stdin-sha256sum",
+      "command": "sha256sum",
+      "input_bytes": 0,
+      "input_mode": "stdin",
+      "args": [],
+      "expected_status": 0,
+      "stdout_check": "sha256"
+    },
+    {
+      "id": "sha256sum-stdin-1",
+      "behavior_id": "case:compat-stdin-sha256sum",
+      "command": "sha256sum",
+      "input_bytes": 1,
+      "input_mode": "stdin",
+      "args": [],
+      "expected_status": 0,
+      "stdout_check": "sha256"
+    },
+    {
+      "id": "sha256sum-stdin-4k",
+      "behavior_id": "case:compat-stdin-sha256sum",
+      "command": "sha256sum",
+      "input_bytes": 4096,
+      "input_mode": "stdin",
+      "args": [],
+      "expected_status": 0,
+      "stdout_check": "sha256"
+    },
+    {
+      "id": "grep-stdin-0",
+      "behavior_id": "case:phase3-grep-stdin",
+      "command": "grep",
+      "input_bytes": 0,
+      "input_mode": "stdin",
+      "args": ["."],
+      "expected_status": 1,
+      "stdout_check": "empty"
+    },
+    {
+      "id": "grep-stdin-1",
+      "behavior_id": "case:phase3-grep-stdin",
+      "command": "grep",
+      "input_bytes": 1,
+      "input_mode": "stdin",
+      "args": ["."],
+      "expected_status": 0,
+      "stdout_check": "input-newline"
+    },
+    {
+      "id": "grep-stdin-4k",
+      "behavior_id": "case:phase3-grep-stdin",
+      "command": "grep",
+      "input_bytes": 4096,
+      "input_mode": "stdin",
+      "args": ["."],
+      "expected_status": 0,
+      "stdout_check": "input"
+    },
+    {
+      "id": "gzip-stdin-0",
+      "behavior_id": "case:p1-gzip-validate",
+      "command": "gzip",
+      "input_bytes": 0,
+      "input_mode": "stdin",
+      "args": ["-n", "-c"],
+      "expected_status": 0,
+      "stdout_check": "gzip-roundtrip"
+    },
+    {
+      "id": "gzip-stdin-1",
+      "behavior_id": "case:p1-gzip-validate",
+      "command": "gzip",
+      "input_bytes": 1,
+      "input_mode": "stdin",
+      "args": ["-n", "-c"],
+      "expected_status": 0,
+      "stdout_check": "gzip-roundtrip"
+    },
+    {
+      "id": "gzip-stdin-4k",
+      "behavior_id": "case:p1-gzip-validate",
+      "command": "gzip",
+      "input_bytes": 4096,
+      "input_mode": "stdin",
+      "args": ["-n", "-c"],
+      "expected_status": 0,
+      "stdout_check": "gzip-roundtrip"
+    }
+  ]
+}
