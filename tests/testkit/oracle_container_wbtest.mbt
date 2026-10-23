@@ -366,40 +366,55 @@ async test "owned oracle outer cancellation joins protected container cleanup" {
   let name = Ref("")
   let removed = Ref(false)
   let returned = Ref(false)
-  let finished = @async.with_timeout_opt(100, () => {
-    ignore(
-      run_oracle_with_deadline_using(
-        ["run", "--rm", "image", "sleep", "60"],
-        30000,
-        evidence,
-        invocation => {
-          let args = invocation.args
-          match args[0] {
-            "run" => {
-              name.val = args[2]
-              @async.sleep(5000)
-              oracle_container_test_result()
+  let started : @async.Queue[Unit] = @async.Queue(kind=Unbounded)
+  @async.with_task_group(group => {
+    let task = group.spawn(() => {
+      // Exercise startup slower than the former 100 ms cancellation trigger.
+      @async.sleep(150)
+      ignore(
+        run_oracle_with_deadline_using(
+          ["run", "--rm", "image", "sleep", "60"],
+          30000,
+          evidence,
+          invocation => {
+            let args = invocation.args
+            match args[0] {
+              "run" => {
+                name.val = args[2]
+                started.put(())
+                @async.sleep(5000)
+                oracle_container_test_result()
+              }
+              "ps" if !args.contains("id=" + id) && !removed.val =>
+                oracle_container_test_result(stdout=@utf8.encode(id + "\n"))
+              "container" =>
+                oracle_container_test_result(
+                  stdout=oracle_container_test_inspect(name.val, name.val, id),
+                )
+              "rm" => {
+                @async.sleep(5)
+                removed.val = true
+                oracle_container_test_result()
+              }
+              "ps" => oracle_container_test_result()
+              _ => fail("unexpected Docker command")
             }
-            "ps" if !args.contains("id=" + id) && !removed.val =>
-              oracle_container_test_result(stdout=@utf8.encode(id + "\n"))
-            "container" =>
-              oracle_container_test_result(
-                stdout=oracle_container_test_inspect(name.val, name.val, id),
-              )
-            "rm" => {
-              @async.sleep(5)
-              removed.val = true
-              oracle_container_test_result()
-            }
-            "ps" => oracle_container_test_result()
-            _ => fail("unexpected Docker command")
-          }
-        },
-      ),
-    )
-    returned.val = true
+          },
+        ),
+      )
+      returned.val = true
+    })
+    // Acknowledge execution before cancellation; filesystem setup is outside
+    // the cancellation trigger and may take longer on a loaded Windows host.
+    @async.with_timeout(10000, () => started.get())
+    task.cancel()
+    try task.wait() catch {
+      @async.WaitedTaskAlreadyCancelled => ()
+      error => raise error
+    } noraise {
+      _ => fail("outer cancellation must interrupt the owned oracle task")
+    }
   })
-  assert_eq(finished, None)
   assert_false(returned.val)
   assert_true(removed.val)
   assert_true(
