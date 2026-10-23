@@ -96,21 +96,30 @@ async fn main {
     ended_at_ms=started,
   )
   let reports : Array[@testkit.CaseReport] = []
+  let preparations : Map[String, PackagePreparation] = Map([])
   for entry in selected {
     if backend == "pair" {
-      reports.append(execute_package_pair(entry, directory))
+      reports.append(execute_package_pair(entry, directory, preparations))
     } else {
-      reports.push(execute_package_test(entry, backend, directory))
+      reports.push(
+        execute_package_test(entry, backend, directory, preparations),
+      )
     }
   }
-  let stable = @testkit.canonical_json(source_corpus()) == corpus
+  let source_stable = @testkit.canonical_json(source_corpus()) == corpus
+  let artifact_errors = prepared_stability_errors(preparations)
+  let stable = source_stable && artifact_errors.is_empty()
   if !stable {
     for index, row in reports {
       reports[index] = {
         ..row,
         result: "infra",
         stage: "source-stability",
-        detail: "workspace source corpus changed during execution",
+        detail: if !source_stable {
+          "workspace source corpus changed during execution"
+        } else {
+          artifact_errors.join("; ")
+        },
         observations: [],
         missing_observations: [..row.observations, ..row.missing_observations],
       }
@@ -127,9 +136,9 @@ async fn main {
     started_at_ms=started,
     ended_at_ms=@async.now(),
   )
-  // Test artifacts are built during this run. Each executed test already
-  // checks its index and artifact against the frozen captured bytes. Adopt
-  // only those artifact hashes; keep all run-start source/policy/host fields.
+  // Test artifacts are prepared once per package/backend. The completed batch
+  // checks their source artifacts and named inventories for changes. Adopt the
+  // frozen artifact hashes; keep all run-start source/policy/host fields.
   let start_metadata = {
     ..start_metadata,
     native_artifact_hash: metadata.native_artifact_hash,

@@ -41,16 +41,33 @@ test "package adapter binds exact source names without glob expansion" {
         { "index": 0, "name": "name?*\"\\", "attrs": [] },
         { "index": 1, "name": "name-other", "attrs": [] },
       ],
+      "other_wbtest.mbt": [{ "index": 3, "name": "name?*\"\\", "attrs": [] }],
     },
   }
   assert_eq(
-    exact_test_index(outline, "tests/fixture/fixture_wbtest.mbt", "name?*\"\\"),
+    exact_test_index(
+      @json.from_json(outline),
+      "tests/fixture/fixture_wbtest.mbt",
+      "name?*\"\\",
+    ),
     0,
+  )
+  assert_eq(
+    exact_test_index(
+      @json.from_json(outline),
+      "tests/fixture/other_wbtest.mbt",
+      "name?*\"\\",
+    ),
+    3,
   )
   assert_true(
     try {
       ignore(
-        exact_test_index(outline, "tests/fixture/fixture_wbtest.mbt", "missing"),
+        exact_test_index(
+          @json.from_json(outline),
+          "tests/fixture/fixture_wbtest.mbt",
+          "missing",
+        ),
       )
       false
     } catch {
@@ -61,7 +78,9 @@ test "package adapter binds exact source names without glob expansion" {
     try {
       ignore(
         exact_test_index(
-          outline, "tests/fixture/other_wbtest.mbt", "name-other",
+          @json.from_json(outline),
+          "tests/fixture/other_wbtest.mbt",
+          "name-other",
         ),
       )
       false
@@ -90,13 +109,120 @@ test "package adapter rejects ambiguous skipped and unknown test indices" {
     let outline : Json = { "tests": { "fixture_wbtest.mbt": Json(tests) } }
     assert_true(
       try {
-        ignore(exact_test_index(outline, "fixture_wbtest.mbt", "named"))
+        ignore(
+          exact_test_index(
+            @json.from_json(outline),
+            "fixture_wbtest.mbt",
+            "named",
+          ),
+        )
         false
       } catch {
         _ => true
       },
     )
   }
+}
+
+///|
+async test "package preparation builds once across files and separates backends" {
+  let root = @fs.tmpdir(prefix="mooncmd-package-prepare")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let preparations : Map[String, PackagePreparation] = Map([])
+  let builds : Array[String] = []
+  let build = async fn(package_path, backend, prefix) {
+    @fs.write_file(prefix + ".fixture", "prepared")
+    builds.push(package_path + ":" + backend)
+  }
+  let first = prepare_package(
+    preparations,
+    "core/cli/one_test.mbt",
+    "native",
+    root,
+    build~,
+  )
+  let second = prepare_package(
+    preparations,
+    "core/cli/two_wbtest.mbt",
+    "native",
+    root,
+    build~,
+  )
+  let wasm = prepare_package(
+    preparations,
+    "core/cli/one_test.mbt",
+    "wasm",
+    root,
+    build~,
+  )
+  ignore(
+    prepare_package(
+      preparations,
+      "core/stream/one_test.mbt",
+      "native",
+      root,
+      build~,
+    ),
+  )
+  assert_eq(first.directory, second.directory)
+  assert_true(first.directory != wasm.directory)
+  assert_eq(builds, ["core/cli:native", "core/cli:wasm", "core/stream:native"])
+}
+
+///|
+async test "package preparation retains failure without rebuilding each case" {
+  let root = @fs.tmpdir(prefix="mooncmd-package-failure")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let preparations : Map[String, PackagePreparation] = Map([])
+  let builds : Array[String] = []
+  let build = async fn(package_path, _, prefix) {
+    @fs.write_file(prefix + ".fixture", "failed")
+    builds.push(package_path)
+    fail("controlled build failure")
+  }
+  for file in ["core/cli/one_test.mbt", "core/cli/two_wbtest.mbt"] {
+    assert_true(
+      try {
+        ignore(prepare_package(preparations, file, "native", root, build~))
+        false
+      } catch {
+        _ => true
+      },
+    )
+  }
+  assert_eq(builds, ["core/cli"])
+}
+
+///|
+async test "package batch rejects changed artifact or inventory" {
+  let root = @fs.tmpdir(prefix="mooncmd-package-stability")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let outline = root + "/test-info.json"
+  let artifact = root + "/test.exe"
+  @fs.write_file(outline, "inventory")
+  @fs.write_file(artifact, "artifact")
+  let preparations : Map[String, PackagePreparation] = {
+    "native:fixture": Ready({
+      directory: root,
+      artifacts: {
+        "whitebox": {
+          outline: { tests: Map([]), },
+          outline_path: outline,
+          outline_hash: @testkit.sha256_text("inventory"),
+          artifact_path: artifact,
+          frozen_artifact: artifact,
+          artifact_hash: @testkit.sha256_text("artifact"),
+        },
+      },
+    }),
+  }
+  assert_true(prepared_stability_errors(preparations).is_empty())
+  for (path, original) in [(artifact, "artifact"), (outline, "inventory")] {
+    @fs.write_file(path, "changed")
+    assert_eq(prepared_stability_errors(preparations).length(), 1)
+    @fs.write_file(path, original)
+  }
+  assert_true(prepared_stability_errors(preparations).is_empty())
 }
 
 ///|

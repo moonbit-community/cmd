@@ -92,11 +92,12 @@ jobs:
         id: check_source
         run: moon check --target all --deny-warn
 
-      - name: Test
+      - name: Test remaining JS and Wasm-GC targets
         shell: bash
         run: |
           mkdir -p test-reports
-          moon test --target all 2>&1 | tee test-reports/package-tests.log
+          moon test --target js 2>&1 | tee test-reports/package-tests.log
+          moon test --target wasm-gc 2>&1 | tee -a test-reports/package-tests.log
 
       - name: Retain package test diagnostics
         if: always()
@@ -141,38 +142,25 @@ jobs:
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
           --suite compat --report-dir test-reports/compat-native
 
-      - name: Native command contracts
-        if: ${{ !cancelled() && steps.build_native.outcome == 'success' }}
+      - name: Native command contracts when Wasm build is unavailable
+        if: ${{ !cancelled() && steps.build_native.outcome == 'success' && steps.build_wasm.outcome != 'success' }}
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
           --suite contract --backend native --jobs 1 --report-dir test-reports/contract-native
 
-      - name: Wasm command contracts
-        if: ${{ !cancelled() && steps.build_native.outcome == 'success' && steps.build_wasm.outcome == 'success' }}
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
-          --suite contract --backend wasm --jobs 1 --report-dir test-reports/contract-wasm
-
-      - name: Native interactive, network and lifecycle scenarios
-        if: ${{ !cancelled() && steps.build_native.outcome == 'success' }}
+      - name: Native scenarios when Wasm build is unavailable
+        if: ${{ !cancelled() && steps.build_native.outcome == 'success' && steps.build_wasm.outcome != 'success' }}
         timeout-minutes: 3
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
           --suite scenarios --backend native --report-dir test-reports/scenarios-native
 
-      - name: Wasm interactive, network and lifecycle scenarios
-        if: ${{ !cancelled() && steps.build_native.outcome == 'success' && steps.build_wasm.outcome == 'success' }}
-        timeout-minutes: 3
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
-          --suite scenarios --backend wasm --report-dir test-reports/scenarios-wasm
-
-      - name: Compare Native and Wasm contracts and stateful scenarios
+      - name: Execute and compare Native and Wasm contracts and scenarios once
         if: ${{ !cancelled() && steps.build_native.outcome == 'success' && steps.build_wasm.outcome == 'success' }}
         timeout-minutes: 20
         run: >-
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
-          --suite backend-pair --jobs 1 --report-dir test-reports/backend-pair
+          --suite paired --jobs 1 --report-dir test-reports
 
       - name: Compare all applicable registered package tests on Native and Wasm
         if: ${{ !cancelled() && steps.build_native.outcome == 'success' && steps.build_wasm.outcome == 'success' }}

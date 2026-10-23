@@ -52,10 +52,12 @@ test, info, or format operations. Each build and test invocation has a
 120-second deadline; timeout or cleanup uncertainty produces infrastructure
 failure evidence.
 
-For each applicable registry binding the adapter first uses `moon test
---build-only` on its source file. It reads the generated test-info JSON, finds
-exactly one matching source name, and invokes that file with `--index`. This
-preserves names containing filter metacharacters. A pass requires exit status
+For each applicable package/backend the adapter uses `moon test --build-only`
+once on the package directory. It reads each blackbox/whitebox test-info JSON
+once and resolves exact source-name indices. Each selected binding still invokes
+its source file separately with public `moon test --index`; `--frozen` avoids
+repeating dependency synchronization after preparation, not compilation or test
+execution. This preserves names containing filter metacharacters. A pass requires exit status
 zero and exactly one summary reading `Total tests: 1, passed: 1, failed: 0.`
 in the captured streams. Zero tests, multiple tests, missing or changed
 summary formats, attributed/skipped tests, and ambiguous indices cannot
@@ -71,11 +73,20 @@ stdout assertion. Additional registry observations remain missing until an
 adapter explicitly proves them.
 
 Each report contains `summary.jsonl`, `summary.md`, and `run-metadata.json`.
-Per-case evidence retains build and test invocation arguments, complete raw
-stdout/stderr streams, status/timeout/cleanup records, the compiled test-info
-JSON, and the exact test artifact's SHA-256. Frozen test executables live under
-`artifacts/<backend>/`; the run metadata hashes those bytes. An artifact or
-index change between compilation and execution invalidates the row.
+Per-case evidence retains test invocation arguments, complete raw stdout/stderr
+streams, status/timeout/cleanup records, and a reference to the shared package
+preparation and frozen artifact. `prepared/<backend>/` retains each package's
+build capture and compiled blackbox/whitebox test-info JSON once. Frozen test
+executables live under `artifacts/<backend>/`; the run metadata hashes those
+bytes. The adapter verifies the prepared artifacts and indices
+at batch end. Any change invalidates the report, preserving this check without
+rereading each large executable for every named case.
+
+CI executes the complete applicable Native/Wasm registry through `--backend pair
+--all` and `--backend native --all --native-only`. The ordinary test step retains
+JS and Wasm-GC. The current compiler outline maps all 598 Native and 287 Wasm
+tests to registered bindings; the two tests on each remaining target still run
+through Moon. See the [CI cost record](../../docs/ci-performance.md).
 
 `source-corpus.json` records SHA-256 fingerprints of workspace MoonBit sources,
 Moon module/package declarations, JSON test inputs and registry documents,
