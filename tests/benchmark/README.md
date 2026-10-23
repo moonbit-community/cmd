@@ -1,8 +1,11 @@
 # Delivery benchmark pilot
 
 This Native host driver covers the eight early pilot command families. Each
-workload references an existing registry behavior and reads its exact published
-coordinate from `tests/release_runner/current/published.json`. Each candidate
+workload links a `reference_behavior_id` as context for the same command and
+reads its exact published coordinate from
+`tests/release_runner/current/published.json`. That reference does not execute
+the cited case or satisfy coverage audit; each workload's own arguments and
+output checks define its measured behavior. Each candidate
 call is a real `moonx <coordinate> -- <args...>` process. Source Native and
 direct Wasm timings cannot substitute for this delivery role.
 
@@ -137,6 +140,8 @@ writer's default truncate mode together with append. Their `trials.jsonl` files
 retain only the final observation; complete trial records and timing samples
 remain in `row.json` and `report.json`. Those historical files are unchanged.
 New runs explicitly open the JSONL file without truncation.
+Historical manifests retain the earlier `behavior_id` field name; those links
+also provide context rather than proof of the referenced case.
 
 ## Initial published baseline
 

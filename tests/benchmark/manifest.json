@@ -4,21 +4,21 @@
   "workloads": [
     {
       "id": "true-startup",
-      "behavior_id": "case:phase3-true-status",
+      "reference_behavior_id": "case:phase3-true-status",
       "command": "true",
       "input_bytes": 0,
       "expected_status": 0
     },
     {
       "id": "false-startup",
-      "behavior_id": "case:phase0-false-status",
+      "reference_behavior_id": "case:phase0-false-status",
       "command": "false",
       "input_bytes": 0,
       "expected_status": 1
     },
     {
       "id": "cat-8m",
-      "behavior_id": "case:compat-stdin-cat",
+      "reference_behavior_id": "case:compat-stdin-cat",
       "command": "cat",
       "input_bytes": 8388608,
       "expected_status": 0

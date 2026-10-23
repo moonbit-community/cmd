@@ -4,7 +4,7 @@
   "workloads": [
     {
       "id": "basename-operand-0",
-      "behavior_id": "case:p9-basename-empty",
+      "reference_behavior_id": "case:p9-basename-empty",
       "command": "basename",
       "input_bytes": 0,
       "input_mode": "operand",
@@ -14,7 +14,7 @@
     },
     {
       "id": "basename-operand-1",
-      "behavior_id": "case:phase3-basename-suffix",
+      "reference_behavior_id": "case:phase3-basename-suffix",
       "command": "basename",
       "input_bytes": 1,
       "input_mode": "operand",
@@ -24,7 +24,7 @@
     },
     {
       "id": "basename-operand-4k",
-      "behavior_id": "case:phase3-basename-suffix",
+      "reference_behavior_id": "case:phase3-basename-suffix",
       "command": "basename",
       "input_bytes": 4096,
       "input_mode": "operand",
@@ -34,7 +34,7 @@
     },
     {
       "id": "wc-stdin-0",
-      "behavior_id": "case:compat-text-line-596",
+      "reference_behavior_id": "case:compat-text-line-596",
       "command": "wc",
       "input_bytes": 0,
       "input_mode": "stdin",
@@ -44,7 +44,7 @@
     },
     {
       "id": "wc-stdin-1",
-      "behavior_id": "case:compat-text-line-596",
+      "reference_behavior_id": "case:compat-text-line-596",
       "command": "wc",
       "input_bytes": 1,
       "input_mode": "stdin",
@@ -54,7 +54,7 @@
     },
     {
       "id": "wc-stdin-4k",
-      "behavior_id": "case:compat-text-line-596",
+      "reference_behavior_id": "case:compat-text-line-596",
       "command": "wc",
       "input_bytes": 4096,
       "input_mode": "stdin",
@@ -64,7 +64,7 @@
     },
     {
       "id": "sha256sum-stdin-0",
-      "behavior_id": "case:compat-stdin-sha256sum",
+      "reference_behavior_id": "case:compat-stdin-sha256sum",
       "command": "sha256sum",
       "input_bytes": 0,
       "input_mode": "stdin",
@@ -74,7 +74,7 @@
     },
     {
       "id": "sha256sum-stdin-1",
-      "behavior_id": "case:compat-stdin-sha256sum",
+      "reference_behavior_id": "case:compat-stdin-sha256sum",
       "command": "sha256sum",
       "input_bytes": 1,
       "input_mode": "stdin",
@@ -84,7 +84,7 @@
     },
     {
       "id": "sha256sum-stdin-4k",
-      "behavior_id": "case:compat-stdin-sha256sum",
+      "reference_behavior_id": "case:compat-stdin-sha256sum",
       "command": "sha256sum",
       "input_bytes": 4096,
       "input_mode": "stdin",
@@ -94,7 +94,7 @@
     },
     {
       "id": "grep-stdin-0",
-      "behavior_id": "case:phase3-grep-stdin",
+      "reference_behavior_id": "case:phase3-grep-stdin",
       "command": "grep",
       "input_bytes": 0,
       "input_mode": "stdin",
@@ -104,7 +104,7 @@
     },
     {
       "id": "grep-stdin-1",
-      "behavior_id": "case:phase3-grep-stdin",
+      "reference_behavior_id": "case:phase3-grep-stdin",
       "command": "grep",
       "input_bytes": 1,
       "input_mode": "stdin",
@@ -114,7 +114,7 @@
     },
     {
       "id": "grep-stdin-4k",
-      "behavior_id": "case:phase3-grep-stdin",
+      "reference_behavior_id": "case:phase3-grep-stdin",
       "command": "grep",
       "input_bytes": 4096,
       "input_mode": "stdin",
@@ -124,7 +124,7 @@
     },
     {
       "id": "gzip-stdin-0",
-      "behavior_id": "case:p1-gzip-validate",
+      "reference_behavior_id": "case:p1-gzip-validate",
       "command": "gzip",
       "input_bytes": 0,
       "input_mode": "stdin",
@@ -134,7 +134,7 @@
     },
     {
       "id": "gzip-stdin-1",
-      "behavior_id": "case:p1-gzip-validate",
+      "reference_behavior_id": "case:p1-gzip-validate",
       "command": "gzip",
       "input_bytes": 1,
       "input_mode": "stdin",
@@ -144,7 +144,7 @@
     },
     {
       "id": "gzip-stdin-4k",
-      "behavior_id": "case:p1-gzip-validate",
+      "reference_behavior_id": "case:p1-gzip-validate",
       "command": "gzip",
       "input_bytes": 4096,
       "input_mode": "stdin",

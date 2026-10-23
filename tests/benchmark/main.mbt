@@ -1,7 +1,7 @@
 ///|
 priv struct PilotWorkload {
   id : String
-  behavior_id : String
+  reference_behavior_id : String
   command : String
   input_bytes : Int32
   expected_status : Int32
@@ -476,10 +476,12 @@ async fn run_pilot(options : Map[String, String]) -> Bool {
       fail("invalid workload ID or negative input size")
     }
     guard registry.entries.any(entry => {
-      entry.behavior_id == workload.behavior_id &&
+      entry.behavior_id == workload.reference_behavior_id &&
       entry.command == workload.command
     }) else {
-      fail("workload has no matching registry behavior: " + workload.id)
+      fail(
+        "workload reference has no matching registry command: " + workload.id,
+      )
     }
     let matches = published.commands.filter(row => {
       row.name == workload.command && row.published

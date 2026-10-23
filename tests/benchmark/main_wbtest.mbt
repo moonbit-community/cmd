@@ -37,7 +37,7 @@ async test "benchmark small inputs preserve partial chunks and operand expectati
   assert_eq(file.read_exactly_at(1, position=65536L), b"a")
   let workload : PilotWorkload = {
     id: "basename-operand-4k",
-    behavior_id: "case:phase3-basename-suffix",
+    reference_behavior_id: "case:phase3-basename-suffix",
     command: "basename",
     input_bytes: 4096,
     expected_status: 0,
