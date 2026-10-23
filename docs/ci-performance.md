@@ -55,7 +55,18 @@ three-platform and actual-main acceptance remain separate CI gates.
 [PR #44](https://github.com/moonbit-community/cmd/pull/44) computes scope once
 per CI entrypoint and directly reuses a release coverage CLI. Its 52 coverage
 regressions, release build, direct entrypoint probes and workflow validation
-passed locally. Hosted run `39995981396` is still pending. Compare early CLI
-compilation together with the later Native build so moved work is not reported
-as removed work. Cache, artifact-transfer and concurrency changes require an
-observed benefit before adding complexity.
+passed locally. Hosted run `39995981396` passed all four required checks and
+PR #44 merged as `f32438b5`. Actual-main acceptance remains pending.
+
+The coverage-audit job took 420 seconds, compared with 813 seconds on the C1
+actual-main run; its audit body decreased from 596 to 167 seconds. The three
+platform stamp steps together decreased from 265 to 115 seconds. Full/shadow
+execution retained all 1,728 behaviors and the frozen publication proof retained
+1,028 cases across 78 coordinates, with no audit findings.
+
+Platform jobs took 18:05 on macOS, 44:01 on Windows and 32:28 on Linux, compared
+with 14:20, 40:22 and 37:31 at C1. These single-run observations include hosted
+runner variation and do not establish an overall CI speedup. Early CLI
+compilation and the later Native build together retained the same macOS release
+task count. Cache, artifact-transfer and concurrency changes require an observed
+benefit before adding complexity.
