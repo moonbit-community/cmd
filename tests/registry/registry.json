@@ -51421,6 +51421,141 @@
         "status"
       ],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/runner/backend_pair_wbtest.mbt::paired side reports preserve failures without dangling success evidence",
+      "command": "",
+      "owner": "tests/runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/runner/backend_pair_wbtest.mbt::paired side reports preserve failures without dangling success evidence",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "paired side reports preserve failures without dangling success evidence"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/runner/backend_pair_wbtest.mbt::paired role partition retains scenario aliases and boundary verification",
+      "command": "",
+      "owner": "tests/runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/runner/backend_pair_wbtest.mbt::paired role partition retains scenario aliases and boundary verification",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "paired role partition retains scenario aliases and boundary verification"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/packages/package_tests_wbtest.mbt::package preparation builds once across files and separates backends",
+      "command": "",
+      "owner": "tests/packages",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/packages/package_tests_wbtest.mbt::package preparation builds once across files and separates backends",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "package preparation builds once across files and separates backends"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/packages/package_tests_wbtest.mbt::package preparation retains failure without rebuilding each case",
+      "command": "",
+      "owner": "tests/packages",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/packages/package_tests_wbtest.mbt::package preparation retains failure without rebuilding each case",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "package preparation retains failure without rebuilding each case"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/packages/package_tests_wbtest.mbt::package batch rejects changed artifact or inventory",
+      "command": "",
+      "owner": "tests/packages",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/packages/package_tests_wbtest.mbt::package batch rejects changed artifact or inventory",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "package batch rejects changed artifact or inventory"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
     }
   ],
   "release_commands": [

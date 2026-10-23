@@ -1,14 +1,21 @@
 # Comprehensive algorithm, performance and CI optimization execution plan
 
-Date: 2026-10-23
+Date: 2026-10-23; execution direction revised 2026-10-24
 
 Repository: `moonbit-community/cmd`
 
-Status: Authorized execution plan; implementation, measurement, CI migration and release acceptance remain pending unless a separate current execution record supplies their evidence.
+Status: C0/C1 accepted. Continue from C1 with C3/C4, benchmarks, command algorithms and final publication; later acceptance remains pending.
 
 Source: `cmd-comprehensive-optimization-plan-2026-10-23.md`, supplied by the user.
 
-Source SHA-256: `9c39170fdf528302e2c05c16ed782072aaf8aafb2bae4eb284276293f9cf6723`
+The user's 2026-10-24 direction removes C2. The execution baseline is accepted
+main `f2769846996ec0dc9d03d55014aa2f749bf1fbb6`. Keep the unmerged C2 work
+on its local branch; do not carry it into subsequent changes. Retain C1's full
+three-platform checks, coverage audit and daily schedule. Do not introduce a
+root PR coordinator, isolated guard, handoff-audit framework or scoped/weekly
+activation. Reduce demonstrated duplication and runtime cost with small,
+maintainable changes; avoid additional hash checks and defensive frameworks.
+The scope design below remains C1 background, not a new activation stage.
 
 This is the English repository counterpart of the selected comprehensive plan.
 It does not certify completion of any stage. Existing historical reports remain
@@ -22,8 +29,9 @@ Execution evidence begins with the
 distinguishes the reproduced command-oracle cleanup defect from the historical
 timeout whose cause remains unconfirmed. The separate
 [C0 actual-main acceptance](reports/2026-10-23-c0-acceptance/README.md) records
-the completed four-check gate at main `4180e527`. C1 proceeds in full/shadow
-mode; scoped execution is not activated by that C0 result.
+the completed four-check gate at main `4180e527`. C1 subsequently completed at
+`f2769846`, including actual-main run `39955744640`. Full/shadow execution stays
+in effect.
 
 ## 1. Objective, decisions and boundaries
 
@@ -45,18 +53,17 @@ issues in the same order only after final acceptance.
 | Performance gate location | Fixed local macOS and Linux environments, outside required hosted CI timing statuses |
 | Windows | Three-platform correctness; diagnostic timing only until a stable host exists |
 | Candidate publication | Necessary final joint-acceptance `-rc.N` coordinates only; no ordinary-PR candidates |
-| PR validation | Automatic minimum impact closure plus reviewed human additions |
-| Ordinary main | Recompute the actual merge impact and integration differences at the real main SHA |
-| Periodic full runs | Weekly full source and all current published coordinates; also full before release |
-| Scope inputs | Fixed root `pr.mbtx` plus upgraded `tests/coverage/ci-change.json`, no competing manifest |
+| PR validation | Existing C1 full execution and current impact declaration |
+| Ordinary main | Full validation of the real main commit |
+| Periodic full runs | Existing daily full source/published checks; full before release |
+| Scope inputs | Existing coverage prepare/verify and sole `tests/coverage/ci-change.json` |
 | Freshness | Actual content, change set, dependency, registry, policy and base fingerprints |
 | New commands | No awk/tar/zip/unzip in this round |
 
 Unknown impact, broad shared infrastructure changes, release freezes and repairs
 of full-regression failures may force full validation. Removing unrelated work
 does not remove relevant semantics, platform checks, provenance or failure gates.
-An impact-analysis miss may remain undiscovered until the weekly full run; do
-not claim the same discovery latency as a full run after every merge.
+This round retains full execution after each merge.
 
 All product, runtime, commands, runners, fixtures and repository automation use
 pure MoonBit. Agent-authored automation uses `.mbtx`. Do not add project-owned
@@ -76,8 +83,8 @@ The performance target is parity or better; the maximum accepted cost is 1.5x
 for **each applicable workload**. Averages, removed slow rows, changed
 correctness and disabled upstream optimizations cannot establish acceptance.
 
-Engineering defaults selected by the plan include Monday 11:17 Asia/Shanghai,
-schema-v2 content fingerprints, 105 paired samples with bootstrap, 64 KiB I/O,
+Engineering defaults include the existing daily schedule, schema-v2 declarations,
+105 paired samples with bootstrap, 64 KiB I/O,
 64 MiB sort accounting and 16-way merge. Internal parameters may evolve with
 reviewable evidence. Do not independently relax scope, the 1.5x ceiling,
 evidence requirements or completion conditions. Explain contract changes with
@@ -197,11 +204,10 @@ Native/Wasm registry responsibility.
 Verify this toolchain's supported `--index`/`--frozen` contract before use;
 continue selecting individual tests through supported Moon entrypoints. Do not
 invent a direct-driver protocol or depend on a private generated-code ABI.
-Generate stable source/test-name mappings after compilation and verify source,
-artifact and inventory identities before/after execution. Prove that exactly
+Generate source/test-name mappings after compilation. Prove that exactly
 the expected tests actually ran; exit 0 can mean zero tests. Store one verified
-content-addressed frozen artifact, then verify at batch end instead of copying
-and rereading every large artifact for each case. Remove the duplicate ordinary
+shared artifact per build unit instead of copying and rereading every large
+artifact for each case. Remove the duplicate ordinary
 entrypoint only after every original inventory item has an execution owner.
 
 ### 3.2 Other reuse and cache conditions
@@ -224,7 +230,7 @@ toolchain, SDK, dependency graph, backend and flags. Never cache developer
 credentials/tokens or reusable passing test results. Validate identity and
 execute correctness on cache hits; rebuild untrusted/mismatched entries. Main
 never inherits PR pass results. Cancel only superseded runs of the same PR;
-preserve failure logs and do not cancel main/weekly/release for unrelated PRs.
+preserve failure logs and do not cancel main/daily/release for unrelated PRs.
 
 Serialize Moon check/test/build/info/fmt because of `_build/.moon-lock`.
 Measure Moon-internal concurrency separately. Initially allow at most two
@@ -244,7 +250,7 @@ naturally occurring successful runs instead of manufacturing repeated full CI.
 
 | File/layer | Responsibility |
 | --- | --- |
-| Root `pr.mbtx` (planned) | Fixed reviewed prepare/verify/push coordinator |
+| Existing coverage prepare/verify | Reuse C1 entrypoints without a new coordinator |
 | `tests/coverage/ci-change.json` | Sole current impact declaration; schema upgrade; requirements only |
 | `tests/coverage/` | Diff, dependency closure, declaration checks and evidence binding |
 | `tests/registry/` | Stable command/behavior/case/owner/backend/observations and non-import associations |
@@ -334,11 +340,8 @@ impact across multi-commit pushes; squash/merge cannot reuse a PR head receipt.
 GitHub workflows run after a push is accepted. Remote failure blocks merge;
 the local wrapper supplies rejection before push. Selection minimums use the
 reviewed target-branch policy. Changes to resolver/policy/workflow/audit force
-full validation and cannot approve their own reduced scope. If a trusted-base
-guard is introduced, build/run it in isolated baseline checkout so candidate
-imports cannot replace it; never execute candidate code with secrets through
-`pull_request_target`. Workflow/guard review remains necessary; one same-named
-status is not complete malicious-workflow security.
+full validation and cannot approve their own reduced scope. No additional
+trusted-base guard is part of this round.
 
 Keep required status names `ubuntu-24.04`, `macos-15`, `windows-2025` and
 `coverage-audit`. An optional selector preflight job is checked by final audit.
@@ -350,15 +353,15 @@ or skipped required jobs must never aggregate green.
 
 | Trigger | Source | Published | Required identity |
 | --- | --- | --- | --- |
-| PR | Automatic closure plus extras on applicable three platforms/backends | Relevant coordinates only when impact requires | Fresh intent before expensive work; actual synthetic merge |
-| Main push | Recomputed actual merge range; widen integration changes | Actual impact | Fresh actual-main evidence |
-| Weekly | All 79 commands/core and applicable source regressions | All current 78 coordinates | Monday 11:17 Asia/Shanghai, UTC `17 3 * * 1` |
+| PR | Existing full three-platform/backend execution | Current C1 publication conditions | Fresh intent; actual synthetic merge |
+| Main push | Full validation of the actual merge | Current C1 publication conditions | Fresh actual-main evidence |
+| Daily schedule | All 79 commands/core and applicable source regressions | All current 78 coordinates | Existing UTC `17 3 * * *` |
 | Manual full | Full source | Source/published/both selectable | Selection recorded in receipt |
-| Freeze/RC/formal | Full actual-main source and release closure | Baseline before release, exact new coordinates after; linked unchanged consumers | Do not wait for weekly or substitute scoped PR |
+| Freeze/RC/formal | Full actual-main source and release closure | Baseline before release, exact new coordinates after; linked unchanged consumers | Run before release, independently of the schedule |
 | Global selector/policy/toolchain | Full | Full when published interpretation/execution affected | Prevent self-authorized scope reduction |
 
-Schedules may run late. Weekly executes even when source is unchanged; build
-cache is allowed, last week's passing results are not. Schedule/manual full use
+Schedules may run late. Daily full executes even when source is unchanged; build
+cache is allowed, prior passing results are not. Schedule/manual full use
 explicit `regression-only/full`: derive requirements from current main and full
 registry, without fabricated PR changes or stale-intent filtering. Receipts
 record trigger, full/scoped, source, run/attempt, scope fingerprint and execution
@@ -374,18 +377,18 @@ real path/link/locking/output behavior including stage-0 mv directory-entry and
 referent observations and separate Native/Wasm runtime identity. Missing Windows
 permission/observer/host capability is unfinished or an explicit boundary;
 nonzero status alone does not prove no damage. Targeted affected resource,
-process and network stress stays in PRs; longer full stress is weekly/release.
+process and network stress stays in PRs; retain current full stress execution.
 Never move sole semantic evidence away just because its name contains stress.
 
 | PR label | Work | Its own acceptance |
 | --- | --- | --- |
 | C0 | Mainline timeout classification/fix and valid current evidence | Existing full three-platform/audit |
 | C1 | Schema v2, generic parsing/closure/freshness and negatives; explicit old-schema transition | Full execution, selector shadow, expected-scope comparison |
-| C2 | Fixed pr.mbtx/push integration/AGENTS/docs, scoped activation, weekly frequency | Last full three-platform run; activate only after shadow equivalence |
 | C3 | Package precompile/inventory/duplicate removal/pair reuse | Equivalent complete execution and observation set; retain unmapped tests |
-| C4 | Artifacts/cache/release build reuse/timing/controlled concurrency | Tamper/invalidation negatives and complete cold/warm comparison |
+| C4 | Artifacts/cache/release build reuse/timing/controlled concurrency | Relevant regressions and complete cold/warm comparison |
 
-C3/C4 may split. No manual list bypass before scope validation. Old schema is
+C2 is removed. Continue directly from accepted C1 to C3/C4, which may split.
+Keep full execution and avoid new coordination or proof layers. Old schema is
 accepted only through the explicit migration path; ordinary new PRs ultimately
 require freshness. Never alter historical reports retroactively.
 
@@ -399,7 +402,7 @@ selector/audit changes forcing full; duplicate/missing/attributed test inventory
 zero-test success, wrong index and changing artifact; wrong backend/artifact/
 oracle/run/attempt, missing raw observations, tampered cache/frozen files and
 both pair sides reusing one execution; scoped/full intersection equality;
-main/weekly triggers resisting PR intent; unchanged-source weekly execution;
+main/daily triggers resisting PR intent; unchanged-source daily execution;
 and missing/failed/skipped mandatory platform/selector aggregation.
 
 On full-regression failure retain source/package/toolchain/oracle/logs and
@@ -966,50 +969,28 @@ Windows mv file/directory/dangling links/junctions, same-volume -T/replacement/
 safe conservative rejection if host defects persist; optimization cannot remove
 the checks that prevent damage.
 
-## 15. Push handoff, merge gates and policy migration
+## 15. Existing push and merge gates
 
-Existing AGENTS forbids applicable pushes when audit is missing/nonzero, while
-first remote three-platform evidence cannot originate on a macOS-only local
-host. Previous one-commit exceptions are not permanent. C1/C2 deliberately
-separate two audits through the same implementation/schema:
-
-| Layer | Required condition | Unexecuted remote obligations |
-| --- | --- | --- |
-| Pre-push handoff | Exact clean committed HEAD, fresh closure/mappings, required local checks, complete remote responsibility, no unexplained uncovered work | Explicit required_remote/pending execution; never passing semantic evidence |
-| Merge/weekly/release coverage | Actual checkout's entire applicable platform/evidence matrix really completed | Missing/fail/infra/unacceptable skip reject |
-
-After reviewed policy adoption, push.mbtx may accept explicit handoff mode for
-remote verification. A passing handoff does not claim complete coverage or
-authorize merge/release. Release always requires full audit; local performance
-is independent and cannot become ci-change pass intent. Before new policy
-takes effect follow existing AGENTS. If its migration first push is blocked,
-prepare exact commit and complete local evidence first, then request a single
-branch/commit-limited bootstrap authorization. This document itself does not
-grant the exception or change repository policy.
-
-C2 updates the existing AGENTS coverage section, replacing conflicting wording,
-to require fixed pr.mbtx/one intent; refresh after tracked content/base/graph/
-registry/rule changes; full-range content fingerprints; no automatic-scope
-removal; staged preparation/exact-clean verification; honest pending remote
-handoff; exact-SHA push wrapper; actual PR/main applicable platform validation;
-weekly/release full execution and all published weekly; no pass-result cache;
-full for broad/policy changes; local exact-MoonX performance gates; and source/
-test/help/README/catalog/support/ADR/registry/candidate synchronization. Detailed
-schema/CLI stays in coverage README rather than copying the whole plan.
+Reuse C1's prepare, verify, audit and push entrypoints. C2's handoff and AGENTS
+migration are removed. Apply the existing rules to the actual change: harness
+changes require their registered regression evidence; command behavior changes
+require the existing command-by-command coverage audit. PR, actual-main and
+release acceptance retain the full three-platform checks and coverage-audit.
+Pending checks stay pending. Do not add duplicate evidence systems or rerun
+unchanged checks without a new reason.
 
 Daily sequence: existing PATH and `MOON_HOME="$HOME/.moon-accounts/cli"`; freeze
 the PR's behaviors/options/conflicts/cases/workloads; implement/relevant serial
 check/test/build; finally info/fmt and review generated diffs; rerun checks only
-for actual new impact; staged prepare/review extras and pending remote; commit,
+for actual new impact; staged prepare/review scope; commit,
 verify/audit/wrapper push; PR checks/merge/new actual-main evidence; report stage
-as merged pending combined publication and keep issue open. New pr.mbtx CLI
-names are documented as runnable only after implementation/verification.
+as merged pending combined publication and keep issue open.
 
 ## 16. Order and stage exits
 
 ```text
 C0 main/evidence and workspace preservation
- -> C1/C2 scope/freshness/policy/weekly
+ -> accepted C1 baseline (C2 removed; retain full daily CI)
  -> C3/C4 execution/build reuse/cache/artifacts/timing
  -> B1/B2 benchmark/oracle/corpus/startup floor
  -> G1/G2 -> S1/S2/S3 -> D1/D2/D3 -> O1..O13 -> R1..R4
@@ -1132,7 +1113,7 @@ local work and no implicit follow-on task.
 Completion requires all of the following together:
 
 - Scope/freshness/reuse regressions pass, mandatory platforms/audit cannot be
-  skipped green, and weekly/release full really execute.
+  skipped green, and current daily/release full execution remains intact.
 - All selected #27/#28/#30/#33/#32 algorithms/options finish in order.
 - Gzip incremental decode, diff linear space and resource/failure contracts
   have measured evidence.
@@ -1150,8 +1131,8 @@ Completion requires all of the following together:
 ## 19. Execution entry and references
 
 Read plan/current rules, verify source/dirty/main/published baseline; preserve
-interfaces/old draft; finish C0; fully validate C1/C2 before narrowing PRs; finish
-C3/C4 with equivalent-set comparison; finish B1/B2 and disclose real startup/hash
+interfaces/old draft; resume accepted C1 with C2 removed; finish
+C3/C4 with equivalent-set comparison; finish B1/B2 and disclose real startup/algorithm
 risks; proceed G/S/D/O/R/full review/RC/formal/closure. Planned paths/subcommands
 become executable instructions only after implementation/verification. C/G/S/D/
 O/R labels are work packages, not existing GitHub PR numbers.

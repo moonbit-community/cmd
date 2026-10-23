@@ -168,6 +168,10 @@ test "suite filtering respects case kind before fixtures or artifacts" {
     "expected_rejection": "metadata unavailable",
   })
   assert_true(case_in_suites(boundary, ["contract"]))
+  assert_true(paired_single_execution(boundary))
+  assert_false(
+    paired_single_execution({ ..boundary, expected_rejection: None, }),
+  )
   assert_false(case_in_suites(boundary, ["oracle"]))
   assert_true(
     case_in_suites({ ..boundary, comparison: None, expected_status: 0, }, [
@@ -191,6 +195,7 @@ test "Windows mv scenarios select their actual backend and never claim a pair" {
     })
     assert_true(case_in_suites(fixture, ["scenarios"]))
     assert_false(case_in_suites(fixture, ["backend-pair"]))
+    assert_true(paired_single_execution(fixture))
     assert_false(case_in_suites(fixture, ["contract", "oracle"]))
     assert_eq(
       windows_mv_scenario_backend(id, false),

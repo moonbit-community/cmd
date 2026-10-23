@@ -1,6 +1,6 @@
 ///|
 fn usage() -> String {
-  "Usage: cmd-test-runner --manifest FILE [--suite compat|contract|backend-pair|policy|oracle|gnu|stress|scenarios|all] [--backend native|wasm] [--native-root DIR] [--wasm-root DIR] [--oracle-image IMAGE] [--oracle-profile FILE] [--command NAME] [--case ID] [--list] [--report-dir DIR] [--jobs N] [--validate-only]\n       cmd-test-runner --seal-oracle sha256:IMAGE-ID [--oracle-profile FILE]"
+  "Usage: cmd-test-runner --manifest FILE [--suite compat|contract|backend-pair|paired|policy|oracle|gnu|stress|scenarios|all] [--backend native|wasm] [--native-root DIR] [--wasm-root DIR] [--oracle-image IMAGE] [--oracle-profile FILE] [--command NAME] [--case ID] [--list] [--report-dir DIR] [--jobs N] [--validate-only]\n       cmd-test-runner --seal-oracle sha256:IMAGE-ID [--oracle-profile FILE]"
 }
 
 ///|
@@ -195,7 +195,7 @@ async fn run_driver() -> Unit {
     suites.any(suite => {
       ![
         "compat", "contract", "backend-pair", "policy", "oracle", "gnu", "stress",
-        "scenarios", "all",
+        "scenarios", "paired", "all",
       ].contains(suite)
     }) {
     @stdio.stderr.write(usage() + "\n")
@@ -204,6 +204,16 @@ async fn run_driver() -> Unit {
   }
   if suites.is_empty() {
     suites.push("compat")
+  }
+  let paired = suites.contains("paired")
+  if paired {
+    guard suites.length() == 1 && backend == "native" else {
+      fail(
+        "paired runs both backends and must be selected without other suites or --backend wasm",
+      )
+    }
+    suites.clear()
+    suites.append(["backend-pair", "contract", "scenarios"])
   }
   if suites.contains("all") {
     suites.clear()
@@ -215,7 +225,7 @@ async fn run_driver() -> Unit {
   native_root = workspace_input(project_root, native_root)
   wasm_root = workspace_input(project_root, wasm_root)
   report_dir = workspace_output(report_dir)
-  let (manifest, selected, required_oracle_profiles) = try {
+  let (manifest, selected, required_oracle_profiles, registry) = try {
     let registry = @registry.load(registry_path)
     let registry_failures = @registry.validate(registry)
     let registry_source_failures = @registry.validate_source_bindings(
@@ -258,7 +268,13 @@ async fn run_driver() -> Unit {
     let available = [..all, ..registered_cohort_cases(registry)]
     let selected = @testkit.select_cases(available, commands, ids).filter(item => {
       case_in_suites(item, suites) &&
-      registered_scenario_backend_selected(registry, item, backend, ids)
+      (
+        registered_scenario_backend_selected(registry, item, backend, ids) ||
+        (
+          paired &&
+          registered_scenario_backend_selected(registry, item, "wasm", ids)
+        )
+      )
     })
     if selected.is_empty() {
       fail("empty selection for requested suites")
@@ -283,7 +299,7 @@ async fn run_driver() -> Unit {
         })
       })
       .map(entry => entry.oracle_profile)
-    (manifest, selected, required_oracle_profiles)
+    (manifest, selected, required_oracle_profiles, registry)
   } catch {
     error => {
       @stdio.stderr.write(error.to_string() + "\n")
@@ -358,80 +374,104 @@ async fn run_driver() -> Unit {
           }
         "contract" => {
           let cases = selected.filter(item => {
-            item.comparison == Some("contract") ||
-            item.expected_rejection is Some(_)
+            case_in_suites(item, ["contract"]) &&
+            (!paired || paired_single_execution(item))
           })
-          if cases.is_empty() {
-            continue
-          }
-          @async.with_task_group(group => {
-            let mut base : String? = None
-            let mut https_base : String? = None
-            if cases.any(item => @testkit.is_network_case(item)) {
-              let (child, reader, url) = @testkit.spawn_http_fixture_process(
-                group,
-              )
-              base = Some(url)
-              group.add_defer(() => {
-                reader.close()
-                child.cancel()
-                @async.protect_from_cancel(() => ignore(child.wait()))
-              })
+          for
+            execution_backend in (if paired {
+              ["native", "wasm"]
+            } else {
+              [backend]
+            }) {
+            let backend = execution_backend
+            let bin_root = if backend == "wasm" {
+              wasm_bin_root
+            } else {
+              native_bin_root
             }
-            if cases.any(item => {
-                item.platform_applies() &&
-                item.args.any(arg => arg.contains("${HTTPS_BASE}"))
-              }) {
-              let root = @fs.tmpdir(prefix="mooncmd-contract-https-")
-              let (child, url) = spawn_https_fixture_process(
-                group,
-                root,
-                fixture_directory=http_fixture_directory,
-              )
-              https_base = Some(url)
-              group.add_defer(() => {
-                child.cancel()
-                @async.protect_from_cancel(() => ignore(child.wait()))
-                @fs.rmdir(root, recursive=true)
-              })
+            let report_dir = if paired {
+              report_dir + "/contract-" + backend
+            } else {
+              report_dir
             }
-            let tasks : Array[async () -> Unit] = cases.map(item => {
-              () => {
-                let transformed = match https_base {
-                  Some(url) =>
-                    {
-                      ..item,
-                      args: item.args.map(arg => {
-                        arg.replace_all(old="${HTTPS_BASE}", new=url)
-                      }),
-                    }
-                  None => item
-                }
-                reports.push(
-                  @testkit.execute_contract(
-                    transformed,
-                    bin_root,
-                    backend == "wasm",
-                    report_dir,
-                    http_base?=base,
-                  ),
+            if cases.is_empty() {
+              continue
+            }
+            @async.with_task_group(group => {
+              let mut base : String? = None
+              let mut https_base : String? = None
+              if cases.any(item => @testkit.is_network_case(item)) {
+                let (child, reader, url) = @testkit.spawn_http_fixture_process(
+                  group,
                 )
+                base = Some(url)
+                group.add_defer(() => {
+                  reader.close()
+                  child.cancel()
+                  @async.protect_from_cancel(() => ignore(child.wait()))
+                })
               }
+              if cases.any(item => {
+                  item.platform_applies() &&
+                  item.args.any(arg => arg.contains("${HTTPS_BASE}"))
+                }) {
+                let root = @fs.tmpdir(prefix="mooncmd-contract-https-")
+                let (child, url) = spawn_https_fixture_process(
+                  group,
+                  root,
+                  fixture_directory=http_fixture_directory,
+                )
+                https_base = Some(url)
+                group.add_defer(() => {
+                  child.cancel()
+                  @async.protect_from_cancel(() => ignore(child.wait()))
+                  @fs.rmdir(root, recursive=true)
+                })
+              }
+              let tasks : Array[async () -> Unit] = cases.map(item => {
+                () => {
+                  let transformed = match https_base {
+                    Some(url) =>
+                      {
+                        ..item,
+                        args: item.args.map(arg => {
+                          arg.replace_all(old="${HTTPS_BASE}", new=url)
+                        }),
+                      }
+                    None => item
+                  }
+                  reports.push(
+                    @testkit.execute_contract(
+                      transformed,
+                      bin_root,
+                      backend == "wasm",
+                      report_dir,
+                      http_base?=base,
+                    ),
+                  )
+                }
+              })
+              ignore(@async.all(tasks, max_concurrent=jobs))
             })
-            ignore(@async.all(tasks, max_concurrent=jobs))
-          })
+          }
         }
         "backend-pair" => {
           let scenarios = selected.filter(item => {
-            item.comparison == Some("scenario")
+            item.comparison == Some("scenario") &&
+            case_in_suites(item, ["backend-pair"])
           })
           run_scenario_batch(scenarios, reports, jobs, fixture => {
             execute_scenario_backend_pair(
-              fixture, native_bin_root, wasm_bin_root, report_dir,
+              fixture,
+              native_bin_root,
+              wasm_bin_root,
+              report_dir,
+              side_reports?=if paired { Some(reports) } else { None },
             )
           })
           let cases = selected.filter(item => {
-            item.comparison == Some("contract")
+            item.comparison == Some("contract") &&
+            case_in_suites(item, ["backend-pair"])
           })
           if cases.is_empty() {
             continue
@@ -486,6 +526,7 @@ async fn run_driver() -> Unit {
                     wasm_bin_root,
                     report_dir,
                     http_base?=base,
+                    side_reports?=if paired { Some(reports) } else { None },
                   ),
                 )
               }
@@ -696,17 +737,36 @@ async fn run_driver() -> Unit {
             ignore(@async.all(tasks, max_concurrent=jobs))
           })
         }
-        _ => {
-          let cases = selected.filter(item => {
-            item.comparison == Some("scenario")
-          })
-          if cases.is_empty() {
-            continue
+        _ =>
+          for
+            execution_backend in (if paired {
+              ["native", "wasm"]
+            } else {
+              [backend]
+            }) {
+            let backend = execution_backend
+            let bin_root = if backend == "wasm" {
+              wasm_bin_root
+            } else {
+              native_bin_root
+            }
+            let report_dir = if paired {
+              report_dir + "/scenarios-" + backend
+            } else {
+              report_dir
+            }
+            let cases = selected.filter(item => {
+              item.comparison == Some("scenario") &&
+              (!paired || paired_single_execution(item)) &&
+              registered_scenario_backend_selected(registry, item, backend, ids)
+            })
+            if cases.is_empty() {
+              continue
+            }
+            run_scenario_batch(cases, reports, jobs, fixture => {
+              execute_scenario(fixture, bin_root, backend == "wasm", report_dir)
+            })
           }
-          run_scenario_batch(cases, reports, jobs, fixture => {
-            execute_scenario(fixture, bin_root, backend == "wasm", report_dir)
-          })
-        }
       }
     }
   })
@@ -731,7 +791,21 @@ async fn run_driver() -> Unit {
     metadata, oracle_versions_hash,
   )
   let metadata = @testkit.finalize_run_metadata(start_metadata, metadata)
-  @testkit.write_reports_with_metadata(report_dir, reports, metadata)
+  if paired {
+    for
+      role in [
+        "contract-native", "contract-wasm", "scenarios-native", "scenarios-wasm",
+        "backend-pair",
+      ] {
+      @testkit.write_reports_with_metadata(
+        report_dir + "/" + role,
+        paired_role_reports(reports, selected, role),
+        metadata,
+      )
+    }
+  } else {
+    @testkit.write_reports_with_metadata(report_dir, reports, metadata)
+  }
   for report in reports {
     println(
       "\{report.result} \{report.verification} \{report.id} \{report.duration_ms}ms \{report.detail}",
@@ -744,4 +818,30 @@ async fn run_driver() -> Unit {
     metadata.reproducibility_status != "complete" {
     @sys.exit(1)
   }
+}
+
+///|
+fn paired_role_reports(
+  reports : Array[@testkit.CaseReport],
+  fixtures : Array[@testkit.Case],
+  role : String,
+) -> Array[@testkit.CaseReport] {
+  reports.filter(report => {
+    if role == "backend-pair" {
+      return report.verification == "backend-pair"
+    }
+    let scenario = fixtures.any(fixture => {
+      fixture.comparison == Some("scenario") &&
+      (report.id == fixture.id || report.id == "scenario:" + fixture.id)
+    })
+    let backend = if role.has_suffix("-wasm") { "wasm" } else { "native" }
+    report.backend == backend &&
+    report.verification != "backend-pair" &&
+    scenario == role.has_prefix("scenarios-")
+  })
+}
+
+///|
+fn paired_single_execution(fixture : @testkit.Case) -> Bool {
+  !case_in_suites(fixture, ["backend-pair"]) || !fixture.platform_applies()
 }

@@ -9,6 +9,7 @@ candidate implementation.
 | --- | --- | --- |
 | `contract` | Selected catalog cases with output/status/effect contracts or explicit rejection boundaries | Native or Wasm |
 | `backend-pair` | Direct status/stream/file comparison of both executions after each contract passes | Native and Wasm |
+| `paired` | Execute contracts/scenarios once per backend and write all five contract/scenario/pair roles | Native and Wasm |
 | `scenarios` | Registered persistent-input, network and lifecycle scenarios | Native or Wasm |
 | `compat` | Retained compatibility cohorts | Native |
 | `policy` | Host authorization allow/deny cases | Wasm |
@@ -107,6 +108,17 @@ contract, retaining both raw results on failure. Separate backend contract
 passes cannot replace this direct comparison. Registry platform exclusions
 remain explicit skips. Every report directory includes `run-metadata.json`;
 each case references its run, registry and artifact identities.
+
+`--suite paired --report-dir test-reports` runs that same comparison while
+retaining the actual side reports as `contract-native`, `contract-wasm`,
+`scenarios-native`, `scenarios-wasm`, and `backend-pair` subdirectories. All
+five roles share one run's metadata. Boundaries and single-backend Windows
+scenarios still execute separately on their applicable backends; platform
+exclusions retain the original skip rows. Each paired fixture starts with
+independent Native and Wasm state. Successful contract rows omit evidence paths
+after the pair comparison removes their captures; failed captures and scenario
+traces remain available. This mode cannot be combined with other suites or
+`--backend wasm`. Existing single-suite commands remain available.
 
 Windows `mv` uses two independent scenario identities:
 `mv-windows-native-links` checks Native support and

@@ -39,6 +39,7 @@ async fn execute_backend_pair(
   wasm_root : String,
   report_dir : String,
   http_base? : String,
+  side_reports? : Array[@testkit.CaseReport],
 ) -> @testkit.CaseReport {
   let start = @async.now()
   execute_backend_pair_inner(
@@ -47,6 +48,7 @@ async fn execute_backend_pair(
     wasm_root,
     report_dir,
     http_base?,
+    side_reports?,
   ) catch {
     error =>
       pair_report(
@@ -67,6 +69,7 @@ async fn execute_backend_pair_inner(
   wasm_root : String,
   report_dir : String,
   http_base? : String,
+  side_reports? : Array[@testkit.CaseReport],
 ) -> @testkit.CaseReport {
   let start = @async.now()
   if !fixture.platform_applies() {
@@ -109,6 +112,9 @@ async fn execute_backend_pair_inner(
     http_base?,
     retain_success=true,
   )
+  if side_reports is Some(reports) {
+    reports.push(contract_pair_side(native))
+  }
   let wasm = @testkit.execute_contract(
     fixture,
     wasm_root,
@@ -117,6 +123,11 @@ async fn execute_backend_pair_inner(
     http_base?,
     retain_success=true,
   )
+  if side_reports is Some(reports) {
+    // Successful contract captures are removed after comparison. Their side
+    // rows use the same no-evidence convention as the standalone contract suite.
+    reports.push(contract_pair_side(wasm))
+  }
   if native.result == "infra" || wasm.result == "infra" {
     return pair_report(
       fixture,
@@ -217,6 +228,15 @@ async fn execute_backend_pair_inner(
       @async.now() - start,
       Some(pair_root),
     )
+  }
+}
+
+///|
+fn contract_pair_side(report : @testkit.CaseReport) -> @testkit.CaseReport {
+  if report.result == "pass" {
+    { ..report, evidence: None, }
+  } else {
+    report
   }
 }
 
@@ -384,6 +404,7 @@ async fn execute_scenario_backend_pair(
   native_root : String,
   wasm_root : String,
   report_dir : String,
+  side_reports? : Array[@testkit.CaseReport],
 ) -> @testkit.CaseReport {
   let started = @async.now()
   let pair_root = report_dir + "/backend-pair/" + fixture.id
@@ -423,6 +444,9 @@ async fn execute_scenario_backend_pair(
       pair_root + "/native",
       retain_success=true,
     )
+    if side_reports is Some(reports) {
+      append_scenario_reports(reports, fixture, native)
+    }
     let wasm = execute_scenario(
       fixture,
       wasm_root,
@@ -430,6 +454,9 @@ async fn execute_scenario_backend_pair(
       pair_root + "/wasm",
       retain_success=true,
     )
+    if side_reports is Some(reports) {
+      append_scenario_reports(reports, fixture, wasm)
+    }
     @fs.write_file(
       pair_root + "/native-report.json",
       @testkit.canonical_json(ToJson::to_json(native)),

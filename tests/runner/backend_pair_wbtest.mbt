@@ -184,3 +184,106 @@ async test "scenario pair snapshots bind both allocated network origins and reta
   )
   assert_true(native != scenario_pair_snapshot(directory + "/wasm", fixture))
 }
+
+///|
+test "paired side reports preserve failures without dangling success evidence" {
+  let native = {
+    ..suite_report("fixture", "native", 0L, []),
+    evidence: Some("removed/native"),
+  }
+  let wasm = {
+    ..native,
+    backend: "wasm",
+    result: "fail",
+    detail: "different output",
+    evidence: Some("retained/wasm"),
+  }
+  let native_side = contract_pair_side(native)
+  let wasm_side = contract_pair_side(wasm)
+  assert_eq(
+    ToJson::to_json(native_side),
+    ToJson::to_json({ ..native, evidence: None, }),
+  )
+  assert_eq(ToJson::to_json(wasm_side), ToJson::to_json(wasm))
+  let selected : Array[@testkit.Case] = [
+    @json.from_json({
+      "id": "fixture",
+      "command": "echo",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+    }),
+  ]
+  let reports = [
+    native_side,
+    wasm_side,
+    pair_report(
+      selected[0],
+      "fail",
+      "assertion",
+      "stdout differs",
+      0L,
+      Some("retained"),
+    ),
+  ]
+  assert_eq(
+    paired_role_reports(reports, selected, "contract-native").map(row => {
+      ToJson::to_json(row)
+    }),
+    [ToJson::to_json(native_side)],
+  )
+  assert_eq(
+    paired_role_reports(reports, selected, "contract-wasm").map(row => {
+      ToJson::to_json(row)
+    }),
+    [ToJson::to_json(wasm)],
+  )
+  assert_eq(
+    paired_role_reports(reports, selected, "backend-pair").map(row => row.result),
+    ["fail"],
+  )
+}
+
+///|
+test "paired role partition retains scenario aliases and boundary verification" {
+  let fixture : @testkit.Case = @json.from_json({
+    "id": "mv-windows-wasm-links-boundary",
+    "command": "mv",
+    "args": [],
+    "files": [],
+    "environment": {},
+    "expected_status": 0,
+    "normalizations": [],
+    "comparison": "scenario",
+  })
+  let scenario = {
+    ..suite_report("scenario:" + fixture.id, "wasm", 0L, []),
+    verification: "boundary",
+  }
+  let reports : Array[@testkit.CaseReport] = []
+  append_scenario_reports(reports, fixture, scenario)
+  let boundary = {
+    ..suite_report("boundary", "native", 0L, []),
+    verification: "boundary",
+  }
+  reports.push(boundary)
+  assert_eq(
+    paired_role_reports(reports, [fixture], "scenarios-wasm").map(row => row.id),
+    [fixture.id, "scenario:" + fixture.id],
+  )
+  assert_eq(
+    paired_role_reports(reports, [fixture], "contract-native").map(row => {
+      ToJson::to_json(row)
+    }),
+    [ToJson::to_json(boundary)],
+  )
+  assert_true(
+    paired_role_reports(reports, [fixture], "backend-pair").is_empty(),
+  )
+  assert_true(
+    paired_role_reports(reports, [fixture], "scenarios-native").is_empty(),
+  )
+}

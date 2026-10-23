@@ -11,12 +11,33 @@ struct TestOutline {
 } derive(FromJson)
 
 ///|
+priv struct PreparedArtifact {
+  outline : TestOutline
+  outline_path : String
+  outline_hash : String
+  artifact_path : String
+  frozen_artifact : String
+  artifact_hash : String
+}
+
+///|
+priv struct PreparedPackage {
+  directory : String
+  artifacts : Map[String, PreparedArtifact]
+}
+
+///|
+priv enum PackagePreparation {
+  Ready(PreparedPackage)
+  Failed(String)
+}
+
+///|
 fn exact_test_index(
-  outline : Json,
+  outline : TestOutline,
   file : String,
   name : String,
 ) -> Int32 raise {
-  let outline : TestOutline = @json.from_json(outline)
   let parts = file.split("/").collect()
   let basename = parts[parts.length() - 1].to_owned()
   guard outline.tests.get(basename) is Some(tests) else {
@@ -210,10 +231,131 @@ fn require_completed(result : @testkit.TimedRun, stage : String) -> Unit raise {
 }
 
 ///|
+async fn build_package(
+  package_path : String,
+  backend : String,
+  prefix : String,
+) -> Unit {
+  let built = capture_moon(
+    [
+      "test", "--target", backend, "--deny-warn", "--no-parallelize", package_path,
+      "--build-only",
+    ],
+    prefix,
+  )
+  require_completed(built, "build")
+  guard built.output.status == 0 else {
+    fail("package-test build exited with status \{built.output.status}")
+  }
+}
+
+///|
+async fn prepare_package(
+  preparations : Map[String, PackagePreparation],
+  file : String,
+  backend : String,
+  directory : String,
+  build~ : async (String, String, String) -> Unit = build_package,
+) -> PreparedPackage {
+  let package_path = @path.Path(file).dirname().to_string()
+  let key = backend + ":" + package_path
+  if preparations.get(key) is Some(prepared) {
+    return match prepared {
+      Ready(prepared) => prepared
+      Failed(error) => fail(error)
+    }
+  }
+  let evidence = directory +
+    "/prepared/" +
+    backend +
+    "/" +
+    @testkit.sha256_text(package_path)
+  let prepared = try {
+    @fs.mkdir(evidence, recursive=true)
+    build(package_path, backend, evidence + "/build")
+    Ready({ directory: evidence, artifacts: Map([]), })
+  } catch {
+    error => Failed(error.to_string())
+  }
+  preparations[key] = prepared
+  match prepared {
+    Ready(prepared) => prepared
+    Failed(error) => fail(error)
+  }
+}
+
+///|
+async fn prepare_artifact(
+  prepared : PreparedPackage,
+  file : String,
+  backend : String,
+  directory : String,
+) -> PreparedArtifact {
+  let kind = if file.has_suffix("_wbtest.mbt") {
+    "whitebox"
+  } else {
+    "blackbox"
+  }
+  if prepared.artifacts.get(kind) is Some(artifact) {
+    return artifact
+  }
+  let (outline_path, artifact_path) = package_artifacts(file, backend)
+  let outline_bytes = @fs.read_file(outline_path).binary()
+  let outline : TestOutline = @json.from_json(
+    @json.parse(@utf8.decode(outline_bytes)),
+  )
+  @fs.write_file(
+    prepared.directory + "/" + kind + "-test-info.json",
+    outline_bytes,
+  )
+  let artifact_bytes = @fs.read_file(artifact_path).binary()
+  let artifacts = directory + "/artifacts/" + backend
+  @fs.mkdir(artifacts, recursive=true, allow_exist=true)
+  let extension = if backend == "native" { ".exe" } else { ".wasm" }
+  let frozen_artifact = artifacts +
+    "/" +
+    @testkit.sha256_text(artifact_path) +
+    extension
+  @fs.write_file(frozen_artifact, artifact_bytes, create_mode=CreateNew)
+  let artifact = {
+    outline,
+    outline_path,
+    outline_hash: @testkit.sha256_bytes(outline_bytes),
+    artifact_path,
+    frozen_artifact,
+    artifact_hash: @testkit.sha256_bytes(artifact_bytes),
+  }
+  prepared.artifacts[kind] = artifact
+  artifact
+}
+
+///|
+async fn prepared_stability_errors(
+  preparations : Map[String, PackagePreparation],
+) -> Array[String] {
+  let errors : Array[String] = []
+  for _, preparation in preparations {
+    if preparation is Ready(prepared) {
+      for _, artifact in prepared.artifacts {
+        if @testkit.file_digest(artifact.outline_path) != artifact.outline_hash ||
+          @testkit.file_digest(artifact.artifact_path) != artifact.artifact_hash {
+          errors.push(
+            "prepared test artifact or named inventory changed: " +
+            artifact.artifact_path,
+          )
+        }
+      }
+    }
+  }
+  errors
+}
+
+///|
 async fn execute_package_test(
   entry : @registry.RegistryEntry,
   backend : String,
   directory : String,
+  preparations : Map[String, PackagePreparation],
 ) -> @testkit.CaseReport {
   let started = @async.now()
   let host = @testkit.host_platform()
@@ -263,45 +405,22 @@ async fn execute_package_test(
       }),
     )
     stage = "build"
+    let prepared = prepare_package(preparations, file, backend, directory)
     let common = [
-      "test", "--target", backend, "--deny-warn", "--no-parallelize", file,
-    ]
-    let built = capture_moon([..common, "--build-only"], evidence + "/build")
-    require_completed(built, stage)
-    guard built.output.status == 0 else {
-      fail("package-test build exited with status \{built.output.status}")
-    }
-    stage = "test-index"
-    let (index_path, artifact_path) = package_artifacts(file, backend)
-    let outline_bytes = @fs.read_file(index_path).binary()
-    let index = exact_test_index(
-      @json.parse(@utf8.decode(outline_bytes)),
+      "test", "--frozen", "--target", backend, "--deny-warn", "--no-parallelize",
       file,
-      name,
-    )
-    @fs.write_file(evidence + "/test-info.json", outline_bytes)
-    let artifact = @fs.read_file(artifact_path).binary()
-    let artifact_hash = @testkit.sha256_bytes(artifact)
-    let artifacts = directory + "/artifacts/" + backend
-    @fs.mkdir(artifacts, recursive=true, allow_exist=true)
-    let extension = if backend == "native" { ".exe" } else { ".wasm" }
-    let frozen_artifact = artifacts +
-      "/" +
-      @testkit.sha256_text(file) +
-      extension
-    if @fs.exists(frozen_artifact) {
-      guard @testkit.file_digest(frozen_artifact) == artifact_hash else {
-        fail("test artifact changed within run")
-      }
-    } else {
-      @fs.write_file(frozen_artifact, artifact)
-    }
+    ]
+    stage = "test-index"
+    let artifact = prepare_artifact(prepared, file, backend, directory)
+    let index = exact_test_index(artifact.outline, file, name)
     @fs.write_file(
       evidence + "/artifact.json",
       @testkit.canonical_json({
-        "source": Json(artifact_path),
-        "frozen": Json(frozen_artifact),
-        "sha256": Json(artifact_hash),
+        "source": Json(artifact.artifact_path),
+        "frozen": Json(artifact.frozen_artifact),
+        "sha256": Json(artifact.artifact_hash),
+        "preparation": Json(prepared.directory),
+        "inventory": Json(artifact.outline_path),
         "test_index": Json(index),
       }),
     )
@@ -311,11 +430,6 @@ async fn execute_package_test(
       evidence + "/test",
     )
     require_completed(executed, stage)
-    stage = "source-stability"
-    guard @testkit.file_digest(artifact_path) == artifact_hash &&
-      @testkit.file_digest(index_path) == @testkit.sha256_bytes(outline_bytes) else {
-      fail("test artifact or named index changed during execution")
-    }
     let passed = single_test_passed(executed.output)
     let (observed, missing) = package_observations(passed, entry.observations)
     {
@@ -396,10 +510,11 @@ async fn package_test_capture(directory : String) -> @testkit.RunResult {
 async fn execute_package_pair(
   entry : @registry.RegistryEntry,
   directory : String,
+  preparations : Map[String, PackagePreparation],
 ) -> Array[@testkit.CaseReport] {
   let started = @async.now()
-  let native = execute_package_test(entry, "native", directory)
-  let wasm = execute_package_test(entry, "wasm", directory)
+  let native = execute_package_test(entry, "native", directory, preparations)
+  let wasm = execute_package_test(entry, "wasm", directory, preparations)
   let pair : @testkit.CaseReport = {
     ..native,
     verification: "backend-pair",
