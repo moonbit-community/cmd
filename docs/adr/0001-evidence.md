@@ -2,8 +2,8 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-18
-Revision: Require current-version mainline coverage audit and lifecycle completeness while keeping evidence retention scoped to the current CI execution.
+Updated: 2026-10-23
+Revision: Preserve exact-source coverage gates and add invocation-owned Docker oracle cleanup after interrupted execution.
 
 ## Target and decision
 
@@ -50,6 +50,29 @@ are separate from local artifacts. Pinned GNU/Linux is the strict oracle;
 label installed macOS-tool evidence. Use released public APIs and pure MoonBit
 code and automation. Host tools may observe test fixtures or act as an oracle,
 but cannot implement a product command.
+
+Docker command oracles own their containers separately from the direct Docker
+CLI child. The C0 investigation reproduced a running container after the
+deadline helper had reaped that child without a cleanup error; it did not
+identify the cause of the historical `hexdump-empty` timeout. Keep the generic
+deadline helper's direct-child boundary. The oracle adapter reserves a unique
+invocation identity, adds its own name and ownership label, and retains daemon
+state before interrupted-run cleanup. Remove only a full container ID whose
+name and label match that reservation, then verify its absence. Apply the same
+adapter to workspace and exact published-consumer command oracles.
+
+Cleanup-control failures, ownership mismatches, unavailable lifecycle evidence
+and interrupted creation without an established container identity are
+infrastructure uncertainty. They cannot become semantic passes. Retain the
+ownership reservation when cleanup cannot be established; observing no
+container once does not prove that an interrupted daemon request cannot create
+one later. Normal successful `docker run --rm` completion keeps its existing
+fast path without additional daemon queries. The cost is lifecycle evidence and
+extra control calls for abnormal executions. Reopen this design only with an
+equivalent ownership and cancellation observation mechanism. See the
+[C0 investigation](../reports/2026-10-23-c0-investigation/README.md) for the
+reproduction, environment limits and acceptance status; local emulated Docker
+diagnostics are not native-arm64 performance evidence.
 
 The workspace also standardizes command metadata. A standalone `--help` must
 return status 0, write usage to stdout with a final newline, and include the

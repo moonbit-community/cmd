@@ -193,6 +193,18 @@ HTTP and HTTPS fixtures are local; command contracts do not depend on a public
 service. Installed host curl/wget results are separate evidence from this pinned
 oracle.
 
+Command-oracle invocations reserve a unique Docker name and ownership label.
+On interrupted or abnormal execution, the shared testkit records lifecycle
+observations outside the compared fixture tree, verifies the full container
+ID/name/label before removal, and checks absence afterward. Failed control
+calls, lost evidence and interrupted creation without an observed identity
+remain `infra`; their reservation is retained for diagnosis. A normal status-0
+`docker run --rm` keeps its fast path. The published runner and shared network
+scenarios use the same adapter. Profile sealing/version-inventory launches
+retain their separate direct-child execution boundary. See
+[the C0 investigation](../../docs/reports/2026-10-23-c0-investigation/README.md)
+for the reproduced cleanup defect and historical timeout uncertainty.
+
 Launch the entire host runner with `umask 022` for oracle comparisons, matching
 the image entrypoint and existing CI setup. This gives Native/Wasm candidates
 and host-created fixtures the same creation mask while preserving actual file

@@ -49261,6 +49261,330 @@
         "status"
       ],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/oracle_container_wbtest.mbt::owned oracle normal completion keeps the Docker rm fast path",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/oracle_container_wbtest.mbt::owned oracle normal completion keeps the Docker rm fast path",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "owned oracle normal completion keeps the Docker rm fast path"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/oracle_container_wbtest.mbt::owned oracle timeout removes the verified exact container and retains state",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/oracle_container_wbtest.mbt::owned oracle timeout removes the verified exact container and retains state",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "owned oracle timeout removes the verified exact container and retains state"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/oracle_container_wbtest.mbt::owned oracle refuses mismatched identity name or ownership labels",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/oracle_container_wbtest.mbt::owned oracle refuses mismatched identity name or ownership labels",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "owned oracle refuses mismatched identity name or ownership labels"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/oracle_container_wbtest.mbt::owned oracle observation removal and absence failures remain infrastructure errors",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/oracle_container_wbtest.mbt::owned oracle observation removal and absence failures remain infrastructure errors",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "owned oracle observation removal and absence failures remain infrastructure errors"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/oracle_container_wbtest.mbt::owned oracle startup exception preserves failure and cleans its container",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/oracle_container_wbtest.mbt::owned oracle startup exception preserves failure and cleans its container",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "owned oracle startup exception preserves failure and cleans its container"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/oracle_container_wbtest.mbt::owned oracle outer cancellation joins protected container cleanup",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/oracle_container_wbtest.mbt::owned oracle outer cancellation joins protected container cleanup",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "owned oracle outer cancellation joins protected container cleanup"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/oracle_container_wbtest.mbt::owned oracle absent containers retain abnormal exit without promotion",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/oracle_container_wbtest.mbt::owned oracle absent containers retain abnormal exit without promotion",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "owned oracle absent containers retain abnormal exit without promotion"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/oracle_container_wbtest.mbt::owned oracle Docker options cannot override invocation ownership",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/oracle_container_wbtest.mbt::owned oracle Docker options cannot override invocation ownership",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "owned oracle Docker options cannot override invocation ownership"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/oracle_container_wbtest.mbt::owned oracle interrupted creation without identity remains unresolved",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/oracle_container_wbtest.mbt::owned oracle interrupted creation without identity remains unresolved",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "owned oracle interrupted creation without identity remains unresolved"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/oracle_container_wbtest.mbt::owned oracle auto removal races require exact and owner absence",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/oracle_container_wbtest.mbt::owned oracle auto removal races require exact and owner absence",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "owned oracle auto removal races require exact and owner absence"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/oracle_container_wbtest.mbt::owned oracle cleanup continues when lifecycle storage fails",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/oracle_container_wbtest.mbt::owned oracle cleanup continues when lifecycle storage fails",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "owned oracle cleanup continues when lifecycle storage fails"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/oracle_container_wbtest.mbt::owned oracle concurrent cleanup isolates invocation identities",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/oracle_container_wbtest.mbt::owned oracle concurrent cleanup isolates invocation identities",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "owned oracle concurrent cleanup isolates invocation identities"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
     }
   ],
   "release_commands": [

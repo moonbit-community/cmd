@@ -337,7 +337,14 @@ async fn run_oracle(
     extra_env=controlled_environment(environment),
     inherit_env=false,
   )
-  @testkit.run_with_deadline(docker, args, timeout_ms, stdin~, inherit_env=true)
+  @testkit.run_oracle_with_deadline(
+    docker,
+    args,
+    timeout_ms,
+    stdin~,
+    inherit_env=true,
+    evidence_dir=@path.Path(root).dirname().to_string() + "/oracle.lifecycle",
+  )
 }
 
 ///|
