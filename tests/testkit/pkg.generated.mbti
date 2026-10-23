@@ -105,7 +105,7 @@ pub async fn run_http_fixture_process() -> Unit
 
 pub fn run_metadata_errors(RunMetadata) -> Array[String]
 
-pub async fn run_with_deadline(String, Array[String], Int, stdin? : Bytes, cwd? : String, extra_env? : Map[String, String], inherit_env? : Bool, capture_environment? : Bool) -> TimedRun
+pub async fn run_with_deadline(String, Array[String], Int32, stdin? : Bytes, cwd? : String, extra_env? : Map[String, String], inherit_env? : Bool, capture_environment? : Bool) -> TimedRun
 
 pub fn safe_relative_path(String) -> Bool
 
@@ -129,9 +129,9 @@ pub fn snapshot_fingerprint(ArrayView[SnapshotEntry]) -> String
 
 pub fn snapshots_equal(ArrayView[SnapshotEntry], ArrayView[SnapshotEntry]) -> Bool
 
-pub async fn spawn_http_fixture_process(@async.TaskGroup[Unit], timeout_ms? : Int) -> (@process.Process, @process.ReadFromProcess, String)
+pub async fn spawn_http_fixture_process(@async.TaskGroup[Unit], timeout_ms? : Int32) -> (@process.Process, @process.ReadFromProcess, String)
 
-pub async fn spawn_https_fixture_process(@async.TaskGroup[Unit], String, fixture_directory? : String, timeout_ms? : Int) -> (@process.Process, String)
+pub async fn spawn_https_fixture_process(@async.TaskGroup[Unit], String, fixture_directory? : String, timeout_ms? : Int32) -> (@process.Process, String)
 
 pub fn unordered_lines_equal(Bytes, Bytes) -> Bool
 
@@ -161,12 +161,12 @@ pub(all) struct Case {
   stdin_hex : String?
   stdin_text : String?
   files : Array[FixtureFile]
-  delay_ms : Int?
+  delay_ms : Int32?
   environment : Map[String, String]
-  expected_status : Int
+  expected_status : Int32
   expected_rejection : String?
   normalizations : Array[Normalization]
-  timeout_ms : Int?
+  timeout_ms : Int32?
   comparison : String?
   oracle : Bool?
   expected_stdout_hex : String?
@@ -230,7 +230,7 @@ pub(all) struct ExpectedFile {
   kind : String?
   content_text : String?
   content_hex : String?
-  mode : Int?
+  mode : Int32?
   target : String?
   same_identity_as : String?
 } derive(ToJson, @debug.Debug, @json.FromJson)
@@ -244,7 +244,7 @@ pub(all) struct FixtureFile {
   content_text : String?
   kind : String?
   target : String?
-  mode : Int?
+  mode : Int32?
   atime : String?
   mtime : String?
 } derive(ToJson, @debug.Debug, @json.FromJson)
@@ -275,9 +275,9 @@ pub(all) struct OracleOptions {
 }
 
 pub(all) struct OracleProfile {
-  schema : Int
+  schema : Int32
   id : String
-  profile_version : Int
+  profile_version : Int32
   image : String
   base_image_digest : String
   image_digest : String
@@ -299,7 +299,7 @@ pub fn OracleSource::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDec
 pub fn OracleSource::to_json(Self) -> Json
 
 pub(all) struct RunMetadata {
-  schema : Int
+  schema : Int32
   run_id : String
   git_revision : String
   git_dirty : String
@@ -333,7 +333,7 @@ pub fn RunMetadata::to_json(Self) -> Json
 pub fn RunMetadata::to_repr(Self) -> @debug.Repr
 
 pub(all) struct RunResult {
-  status : Int
+  status : Int32
   stdout : Bytes
   stderr : Bytes
 }
