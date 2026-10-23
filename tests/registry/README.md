@@ -38,6 +38,11 @@ The registry package exposes the following integration points:
   It also checks exact case-file/command/platform bindings, executable dispatch
   branches, package backend declarations, and lifecycle test references.
 
+Source discovery tolerates only a typed ENOENT when a concurrently removed
+entry disappears after directory enumeration. A missing registered declaration
+still fails as an orphan binding. Permission, non-directory and other failures
+remain fatal; a transient fixture cannot suppress a reviewed source obligation.
+
 Behavior IDs are stable identifiers. Existing JSON case IDs remain unchanged;
 the registry prefixes them with `case:` to keep their implementation category
 explicit. Scenario, cohort, policy, metadata, and package registrations use
@@ -52,6 +57,16 @@ corresponding corpus revision.
 reference to an immutable oracle profile before reporting upstream differential
 evidence; a non-empty registry value is not a substitute for digest
 verification.
+
+`associations.json` records non-import fixture/scenario/cohort/policy/catalog/
+release relationships used by the content-bound scope selector. Child-command
+artifact prerequisites are distinct from retested command behaviors. Unknown
+association syntax widens to full; malformed data cannot become empty scope.
+`boundaries.json` indexes every current registered rejection's support document,
+canonical ADR, current limit and unlock condition. Its same-ID rejection
+references are requirements for real execution, never passing results. The
+scope intent embeds the applicable records and preserves old-side replacement
+obligations. See [scope contracts](../scope/README.md).
 
 The workspace runner validates this registry before loading a suite. It compares
 the registry's JSON-case bindings with the canonical workspace case corpus. A

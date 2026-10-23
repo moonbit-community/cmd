@@ -80,6 +80,9 @@ fn verification_supports(row : EvidenceRow, evidence : String) -> Bool {
     "upstream-differential" => !published && row.verification == "differential"
     "published-differential" => published && row.verification == "differential"
     "boundary" => !published && row.verification == "boundary"
+    // This proves execution of a retained diagnostic only. It cannot satisfy
+    // any contract, pair, boundary or immutable differential requirement.
+    "supplementary" => !published && row.verification == "supplementary"
     _ => false
   }
 }

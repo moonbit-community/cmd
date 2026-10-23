@@ -307,7 +307,7 @@ jobs:
         if: ${{ !cancelled() && steps.check_source.outcome == 'success' }}
         run: >-
           moon fmt tests/testkit tests/runner tests/release_runner tests/registry
-          tests/registry/cli tests/coverage tests/coverage/cli tests/metadata tests/packages
+          tests/registry/cli tests/coverage tests/coverage/cli tests/scope tests/metadata tests/packages
 
       - name: Check automation script formatting
         if: ${{ !cancelled() && steps.check_source.outcome == 'success' }}

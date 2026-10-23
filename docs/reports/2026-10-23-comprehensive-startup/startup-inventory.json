@@ -1,0 +1,3761 @@
+{
+  "schema": 1,
+  "purpose": "Unified startup source, option, operand and support inventory of 79 commands and 12 core packages; no acceptance promotion",
+  "date": "2026-10-23",
+  "source_revision": "82ba94b01f5a4cf4e91789d73158caa87cc8a261",
+  "source_root": "/Users/winter/.codex/worktrees/cmd-comprehensive-c0/cmd",
+  "original_plan_sha256": "9c39170fdf528302e2c05c16ed782072aaf8aafb2bae4eb284276293f9cf6723",
+  "plan": "docs/comprehensive-optimization-plan.md:120-142",
+  "execution": {
+    "moon_commands": 0,
+    "oracle_commands": 0,
+    "product_edits": 0,
+    "status": "source_review_only"
+  },
+  "common_interpretation": [
+    "Paths and one-based line ranges resolve at source_revision under source_root. Every row includes actual source plus declarations; declarations alone do not establish support.",
+    "Options list accepted parser spellings or expression grammar observed in source, including recognized rejection paths where identified. They are not a completed alias/conflict/repeat/error-precedence contract.",
+    "Common standalone metadata is --help and --version; exact invocation behavior remains command-specific. Catalog contract() appends these metadata entries at core/cli/catalog.mbt:1-27.",
+    "Generic cli.parse supports --, short clusters, attached values and long=value but keeps scanning options after operands; individual commands may normalize first or use independent parsers. Catalog names may be semantic identifiers, not literal accepted long aliases.",
+    "Current support labels are inherited declarations, not fresh GNU/POSIX, Native/Wasm, platform, published-consumer or performance verification.",
+    "Documented API boundaries are conditional current project policy, not fresh absence proofs of released dependency APIs. Algorithm work must not be relabeled as an API gap.",
+    "All rows still need applicable frozen-oracle option/operand/conflict/error-prefix/effect cases at their owning implementation stage. No oracle conflict was resolved by this inventory."
+  ],
+  "common_source_evidence": [
+    "core/cli/parser.mbt:61-154",
+    "core/cli/types.mbt:57-134",
+    "core/cli/catalog.mbt:1-27",
+    "docs/compatibility.md:213-293"
+  ],
+  "inventory_counts": {
+    "selected_commands": 35,
+    "other_commands": 44,
+    "all_commands": 79,
+    "selected_plan_groups": 47,
+    "core_packages": 12
+  },
+  "commands": {
+    "cut": {
+      "help": "commands/cut/main.mbt:170-173",
+      "readme": "commands/cut/README.md",
+      "catalog": "core/cli/catalog.mbt:48-50",
+      "support": "docs/compatibility.md:241",
+      "options": [
+        "-s/--only-delimited",
+        "-d/--delimiter",
+        "-f/--fields",
+        "-b/--bytes",
+        "-c/--characters",
+        "-z/--zero-terminated"
+      ],
+      "source": [
+        "commands/cut/main.mbt:155-162"
+      ],
+      "operands": "FILE... or stdin; one selected list mode, selected single-byte field delimiter; numeric/range list grammar.",
+      "boundaries": [
+        "C-byte character mode; no full multibyte locale claim"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O1-cut",
+          "stage": "O1",
+          "commands": [
+            "cut"
+          ],
+          "options": [
+            "--complement",
+            "--output-delimiter"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/cut/main.mbt:155-163",
+            "commands/cut/main.mbt:67-112"
+          ],
+          "finding": "Neither option is parsed. Field output reuses input delimiter; byte/character selection emits contiguous selected bytes without an output delimiter.",
+          "retain": [
+            "range parser and byte semantics",
+            "field/byte/character modes",
+            "-d/-s validation",
+            "NUL record scanner"
+          ],
+          "oracle_review": [
+            "common",
+            "O1"
+          ]
+        }
+      ]
+    },
+    "uniq": {
+      "help": "commands/uniq/main.mbt:169-172",
+      "readme": "commands/uniq/README.md",
+      "catalog": "core/cli/catalog.mbt:93-96",
+      "support": "docs/compatibility.md:281",
+      "options": [
+        "-c/--count",
+        "-d/--repeated",
+        "-u/--unique",
+        "-i/--ignore-case",
+        "-f/--skip-fields",
+        "-s/--skip-chars",
+        "-w/--check-chars",
+        "-z/--zero-terminated"
+      ],
+      "source": [
+        "commands/uniq/main.mbt:152-172"
+      ],
+      "operands": "[INPUT [OUTPUT]]; adjacent-group processing and selected output-file safety.",
+      "boundaries": [
+        "C-byte comparison; group modes are separately absent"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O1-uniq",
+          "stage": "O1",
+          "commands": [
+            "uniq"
+          ],
+          "options": [
+            "-D",
+            "--all-repeated[=none,prepend,separate]",
+            "--group[=separate,prepend,append,both]"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/uniq/main.mbt:72-95",
+            "commands/uniq/main.mbt:152-161"
+          ],
+          "finding": "Only one representative record is retained/emitted per adjacent group. No all-repeated/group parser or separator state exists.",
+          "retain": [
+            "existing -c/-d/-u/-i/-f/-s/-w/-z and comparison keys"
+          ],
+          "oracle_review": [
+            "common",
+            "O1"
+          ]
+        }
+      ]
+    },
+    "comm": {
+      "help": "commands/comm/main.mbt:7",
+      "readme": "commands/comm/README.md",
+      "catalog": "core/cli/catalog.mbt:45-47",
+      "support": "docs/compatibility.md:238",
+      "options": [
+        "-1/--suppress-1",
+        "-2/--suppress-2",
+        "-3/--suppress-3",
+        "--check-order",
+        "--nocheck-order",
+        "-z/--zero-terminated"
+      ],
+      "source": [
+        "commands/comm/main.mbt:162-170"
+      ],
+      "operands": "Exactly FILE1 FILE2; sorted dual-stream merge, - stdin.",
+      "boundaries": [
+        "C-byte key ordering; locale collation excluded"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O1-comm",
+          "stage": "O1",
+          "commands": [
+            "comm"
+          ],
+          "options": [
+            "--output-delimiter",
+            "--total"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/comm/main.mbt:79-152",
+            "commands/comm/main.mbt:162-170"
+          ],
+          "finding": "Column prefixes are hardcoded TABs; merge has no total counters or total-output mode.",
+          "retain": [
+            "dual-stream merge",
+            "column suppression",
+            "conditional/check/nocheck order",
+            "-z"
+          ],
+          "oracle_review": [
+            "common",
+            "O1"
+          ]
+        }
+      ]
+    },
+    "join": {
+      "help": "commands/join/main.mbt:7",
+      "readme": "commands/join/README.md",
+      "catalog": "core/cli/catalog.mbt:55-58",
+      "support": "docs/compatibility.md:249",
+      "options": [
+        "-1/--field1",
+        "-2/--field2",
+        "-t/--separator",
+        "-a/--after",
+        "-v/--only",
+        "-e/--empty",
+        "-o/--output LIST",
+        "--check-order",
+        "--nocheck-order",
+        "-z/--zero-terminated"
+      ],
+      "source": [
+        "commands/join/main.mbt:419-431"
+      ],
+      "operands": "Exactly FILE1 FILE2; selected fields, explicit output-list and equal-key Cartesian runs.",
+      "boundaries": [
+        "C-byte field/order profile; legacy/common GNU aliases not inferred from semantic option IDs"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O1-join",
+          "stage": "O1",
+          "commands": [
+            "join"
+          ],
+          "options": [
+            "-i/--ignore-case",
+            "--header",
+            "-o auto"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/join/main.mbt:122",
+            "commands/join/main.mbt:419-431",
+            "commands/join/main.mbt:514-520"
+          ],
+          "finding": "Ignore-case/header absent; -o accepts parsed explicit field lists, not auto.",
+          "retain": [
+            "streaming merge with equal-key runs",
+            "-1/-2/-t/-a/-v/-e/-o LIST/-z",
+            "order controls"
+          ],
+          "oracle_review": [
+            "common",
+            "O1"
+          ]
+        }
+      ]
+    },
+    "wc": {
+      "help": "commands/wc/main.mbt:273-276",
+      "readme": "commands/wc/README.md",
+      "catalog": "core/cli/catalog.mbt:101-103",
+      "support": "docs/compatibility.md:284",
+      "options": [
+        "-l/--lines",
+        "-w/--words",
+        "-c/--bytes",
+        "-m/--chars",
+        "-L/--max-line-length",
+        "--files0-from"
+      ],
+      "source": [
+        "commands/wc/main.mbt:259-276"
+      ],
+      "operands": "FILE... or stdin; --files0-from supplies NUL-separated names.",
+      "boundaries": [
+        "Existing C-profile count/word/display-width definitions; no full locale claim"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O1-wc",
+          "stage": "O1",
+          "commands": [
+            "wc"
+          ],
+          "options": [
+            "--total=auto,always,only,never"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/wc/main.mbt:259-266",
+            "commands/wc/main.mbt:318-350"
+          ],
+          "finding": "Totals are hardwired to files.length()>1; no total policy argument.",
+          "retain": [
+            "existing count modes",
+            "alignment",
+            "files0-from",
+            "successful-operand accumulation"
+          ],
+          "oracle_review": [
+            "common",
+            "O1"
+          ]
+        }
+      ]
+    },
+    "sort": {
+      "help": "commands/sort/main.mbt:836-839",
+      "readme": "commands/sort/README.md",
+      "catalog": "core/cli/catalog.mbt:77-82",
+      "support": "docs/compatibility.md:271",
+      "options": [
+        "-r/--reverse",
+        "-n/--numeric-sort",
+        "-g/--general-numeric-sort",
+        "-h/--human-numeric-sort",
+        "-M/--month-sort",
+        "-V/--version-sort",
+        "-R/--random-sort (recognized rejection)",
+        "-u/--unique",
+        "-f/--ignore-case",
+        "-b/--ignore-leading-blanks",
+        "-d/--dictionary-order",
+        "-i/--ignore-nonprinting",
+        "-z/--zero-terminated",
+        "-c/--check",
+        "-C/--check-quiet",
+        "-k/--key",
+        "-t/--field-separator"
+      ],
+      "source": [
+        "commands/sort/main.mbt:799-849"
+      ],
+      "operands": "FILE... or stdin; selected key-position/modifier and --sort normalization already exist.",
+      "boundaries": [
+        "In-memory sorting; external budget/merge/output/random features are separate work",
+        "No locale collation; -R rejects deterministic seed ambiguity"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O2-sort-stable-merge-output",
+          "stage": "O2",
+          "commands": [
+            "sort"
+          ],
+          "options": [
+            "-s/--stable",
+            "-m/--merge",
+            "-o/--output (new target)"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/sort/main.mbt:810-829",
+            "commands/sort/main.mbt:73-85"
+          ],
+          "finding": "No stable/merge/output options. Existing in-memory sorting and key comparisons are prerequisites, not these modes.",
+          "retain": [
+            "current key/modifier parser",
+            "numeric/general/human/month/version comparisons",
+            "whole-record fallback and tie retention",
+            "-c/-C/-z"
+          ],
+          "oracle_review": [
+            "common",
+            "O2"
+          ]
+        },
+        {
+          "id": "O2-sort-random",
+          "stage": "O2",
+          "commands": [
+            "sort"
+          ],
+          "options": [
+            "-R/--random-sort/--sort=random",
+            "--random-source"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/sort/main.mbt:89-99",
+            "commands/sort/main.mbt:817",
+            "commands/sort/main.mbt:842-848",
+            "commands/sort/main.mbt:876-881"
+          ],
+          "finding": "-R/--random-sort is recognized and explicitly rejected for lack of an audited deterministic seed contract. This is documented project work, not a proven missing public API; no random-source parser exists.",
+          "retain": [
+            "explicit pre-input rejection until exact GNU random behavior is implemented"
+          ],
+          "oracle_review": [
+            "common",
+            "O2"
+          ]
+        },
+        {
+          "id": "O2-sort-existing-target-boundary",
+          "stage": "O2",
+          "commands": [
+            "sort"
+          ],
+          "options": [
+            "-o/--output existing file or hard-link alias"
+          ],
+          "status": "documented_public_api_boundary",
+          "conditional": true,
+          "code_evidence": [
+            "commands/sort/main.mbt:810-829",
+            "docs/adr/0004-filesystem.md:65-66",
+            "docs/adr/0004-filesystem.md:131-145"
+          ],
+          "finding": "Output option is not implemented. Future existing-file identity/handle-truncate semantics must respect the documented shared filesystem boundary. This does not block implementing safe new output files or input spooling.",
+          "oracle_review": [
+            "O2"
+          ]
+        }
+      ]
+    },
+    "seq": {
+      "help": "commands/seq/main.mbt:197",
+      "readme": "commands/seq/README.md",
+      "catalog": "core/cli/catalog.mbt:153-155",
+      "support": "docs/compatibility.md:267",
+      "options": [
+        "-w/--equal-width",
+        "-s/--separator"
+      ],
+      "source": [
+        "commands/seq/main.mbt:174-228"
+      ],
+      "operands": "[FIRST [INCREMENT]] LAST; one to three exact decimal/exponent values; negative numeric tokens retained.",
+      "boundaries": [
+        "4096-character numeric operand and exponent/scale bounds; format option absent"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O3-seq",
+          "stage": "O3",
+          "commands": [
+            "seq"
+          ],
+          "options": [
+            "-f/--format"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/seq/main.mbt:174-213"
+          ],
+          "finding": "Manual parser supports equal-width and separator but no format option.",
+          "retain": [
+            "exact fixed-point decimal/exponent arithmetic",
+            "bounded 64 KiB streamed output",
+            "negative increments and existing range checks"
+          ],
+          "oracle_review": [
+            "common",
+            "O3"
+          ]
+        }
+      ]
+    },
+    "fmt": {
+      "help": "commands/fmt/main.mbt:28",
+      "readme": "commands/fmt/README.md",
+      "catalog": "core/cli/catalog.mbt:400-402",
+      "support": "docs/compatibility.md:228",
+      "options": [
+        "-WIDTH",
+        "-w/--width",
+        "-g/--goal",
+        "-s/--split-only",
+        "-u/--uniform-spacing"
+      ],
+      "source": [
+        "commands/fmt/main.mbt:2-45"
+      ],
+      "operands": "FILE... or stdin; width0..2500 and goal<=width.",
+      "boundaries": [
+        "C-byte columns and bounded paragraph reflow; crown/tag/prefix missing"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O3-fmt",
+          "stage": "O3",
+          "commands": [
+            "fmt"
+          ],
+          "options": [
+            "-c/--crown-margin",
+            "-t/--tagged-paragraph",
+            "-p/--prefix"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/fmt/main.mbt:19-28",
+            "commands/fmt/format.mbt:152",
+            "docs/adr/0003-streams.md:41"
+          ],
+          "finding": "Parser/help explicitly exclude these margins/prefixes.",
+          "retain": [
+            "width/goal/-WIDTH",
+            "split-only/uniform spacing",
+            "current paragraph/indentation/long-word logic"
+          ],
+          "oracle_review": [
+            "common",
+            "O3"
+          ]
+        }
+      ]
+    },
+    "printf": {
+      "help": "commands/printf/main.mbt:13",
+      "readme": "commands/printf/README.md",
+      "catalog": "core/cli/catalog.mbt:75",
+      "support": "docs/compatibility.md:261",
+      "options": [
+        "standalone metadata",
+        "leading -- before FORMAT",
+        "format flags -+ 0#",
+        "width/precision including *",
+        "s/c/b/d/i/u/o/x/X/f/F/e/E/g/G/% conversions",
+        "selected backslash/Unicode/octal/hex escapes"
+      ],
+      "source": [
+        "commands/printf/main.mbt:13-30",
+        "commands/printf/main.mbt:818-879"
+      ],
+      "operands": "FORMAT [ARGUMENT...]; repeat format to consume arguments; %b interprets escapes.",
+      "boundaries": [
+        "C-profile numeric/byte formatting; a/A/q conversions are missing work"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O3-printf",
+          "stage": "O3",
+          "commands": [
+            "printf"
+          ],
+          "options": [
+            "%a/%A",
+            "%q"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/printf/main.mbt:818-889",
+            "commands/printf/main.mbt:945-957"
+          ],
+          "finding": "Dispatch implements integer/string/byte and f/F/e/E/g/G conversions; a/A/q reach invalid-conversion fatal handling.",
+          "retain": [
+            "existing exact decimal float rendering",
+            "flags/width/precision/*",
+            "format repetition",
+            "escape decoding",
+            "partial output and numeric-prefix diagnostics"
+          ],
+          "oracle_review": [
+            "common",
+            "O3"
+          ]
+        }
+      ]
+    },
+    "expand": {
+      "help": "commands/expand/main.mbt:89-105",
+      "readme": "commands/expand/README.md",
+      "catalog": "core/cli/catalog.mbt:123-125",
+      "support": "docs/compatibility.md:232",
+      "options": [
+        "-i/--initial",
+        "-t/--tabs"
+      ],
+      "source": [
+        "commands/expand/main.mbt:120-122"
+      ],
+      "operands": "FILE... or stdin; ascending absolute tab stops or a repeated single interval.",
+      "boundaries": [
+        "/N/+N trailing grammar absent; C-byte column rules"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O4-expand",
+          "stage": "O4",
+          "commands": [
+            "expand"
+          ],
+          "options": [
+            "/N repeating tab stops",
+            "+N relative trailing repeat"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/expand/main.mbt:7-41",
+            "commands/expand/main.mbt:120-122"
+          ],
+          "finding": "Stops are comma-separated positive increasing integers; only single-stop mode repeats. No / or + trailing grammar/state.",
+          "retain": [
+            "fixed stop lists",
+            "single interval",
+            "initial-only",
+            "byte/backspace handling"
+          ],
+          "oracle_review": [
+            "common",
+            "O4"
+          ]
+        }
+      ]
+    },
+    "unexpand": {
+      "help": "commands/unexpand/main.mbt:136-152",
+      "readme": "commands/unexpand/README.md",
+      "catalog": "core/cli/catalog.mbt:97-99",
+      "support": "docs/compatibility.md:283",
+      "options": [
+        "-a/--all",
+        "--first-only",
+        "-t/--tabs"
+      ],
+      "source": [
+        "commands/unexpand/main.mbt:168-171"
+      ],
+      "operands": "FILE... or stdin; fixed ascending tab stops or repeated interval.",
+      "boundaries": [
+        "/N/+N trailing grammar absent; C-byte columns and ordered all/first-only semantics"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O4-unexpand",
+          "stage": "O4",
+          "commands": [
+            "unexpand"
+          ],
+          "options": [
+            "/N repeating tab stops",
+            "+N relative trailing repeat"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/unexpand/main.mbt:7-41",
+            "commands/unexpand/main.mbt:168-171"
+          ],
+          "finding": "Same integer-only stop grammar; repeating tail extensions absent.",
+          "retain": [
+            "first-only/all",
+            "fixed stop conversion and existing pending-space logic"
+          ],
+          "oracle_review": [
+            "common",
+            "O4"
+          ]
+        }
+      ]
+    },
+    "split": {
+      "help": "commands/split/main.mbt:103-118",
+      "readme": "commands/split/README.md",
+      "catalog": "core/cli/catalog.mbt:381-390",
+      "support": "docs/compatibility.md:227",
+      "options": [
+        "-l/--lines",
+        "-b/--bytes",
+        "-a/--suffix-length",
+        "-d/--numeric-suffixes",
+        "--additional-suffix"
+      ],
+      "source": [
+        "commands/split/main.mbt:129-136"
+      ],
+      "operands": "[FILE [PREFIX]]; default stdin; basic numeric suffix starts0; exclusive output creation and suffix growth/exhaustion exist.",
+      "boundaries": [
+        "Chunk/filter/line-bytes/hex/FROM extensions absent; source is not the planned bounded resource implementation"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O5-split-chunks",
+          "stage": "O5",
+          "commands": [
+            "split"
+          ],
+          "options": [
+            "-n/--number N,K/N,l/N,l/K/N,r/N,r/K/N",
+            "-C/--line-bytes",
+            "--filter",
+            "-x/--hex-suffixes[=FROM]",
+            "-e/--elide-empty-files"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/split/main.mbt:129-136",
+            "commands/split/main.mbt:152-171",
+            "commands/split/main.mbt:179-207"
+          ],
+          "finding": "Only line/byte count boundaries and alpha/decimal suffixes exist. No chunk, line-byte, filter, hex or elide mode.",
+          "retain": [
+            "byte/line boundaries",
+            "suffix width/growth/exhaustion",
+            "additional suffix",
+            "exclusive creation and collision refusal"
+          ],
+          "oracle_review": [
+            "common",
+            "O5"
+          ]
+        },
+        {
+          "id": "O5-split-numeric-base",
+          "stage": "O5",
+          "commands": [
+            "split"
+          ],
+          "options": [
+            "-d/--numeric-suffixes without FROM"
+          ],
+          "status": "already_implemented",
+          "code_evidence": [
+            "commands/split/main.mbt:133",
+            "commands/split/main.mbt:181-203"
+          ],
+          "finding": "Numeric suffix flag exists, starts at zero and uses base10 advancement. Preserve it; selected extension is optional FROM, not replacement of all suffix logic.",
+          "oracle_review": [
+            "common",
+            "O5"
+          ]
+        },
+        {
+          "id": "O5-split-numeric-from",
+          "stage": "O5",
+          "commands": [
+            "split"
+          ],
+          "options": [
+            "--numeric-suffixes[=FROM] starting offset"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/split/main.mbt:133",
+            "commands/split/main.mbt:189"
+          ],
+          "finding": "Declared as a flag and digit array initializes to zero; arbitrary starting value absent.",
+          "oracle_review": [
+            "common",
+            "O5"
+          ]
+        }
+      ]
+    },
+    "csplit": {
+      "help": "commands/csplit/main.mbt:101-117",
+      "readme": "commands/csplit/README.md",
+      "catalog": "core/cli/catalog.mbt:391-398",
+      "support": "docs/compatibility.md:227",
+      "options": [
+        "-f/--prefix",
+        "-n/--digits",
+        "-s/--silent",
+        "-q/--quiet",
+        "-k/--keep-files",
+        "-z/--elide-empty-files"
+      ],
+      "source": [
+        "commands/csplit/main.mbt:129-136"
+      ],
+      "operands": "FILE PATTERN...; line numbers, /regex/, %regex%, offsets and selected repeat grammar.",
+      "boundaries": [
+        "Current buffering/indexing not R2 spool acceptance; custom formatter/suppress-matched absent"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O6-csplit",
+          "stage": "O6",
+          "commands": [
+            "csplit"
+          ],
+          "options": [
+            "-b/--suffix-format",
+            "--suppress-matched"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/csplit/main.mbt:15-20",
+            "commands/csplit/main.mbt:129-137"
+          ],
+          "finding": "Decimal width-based names exist; no custom integer suffix formatter or suppress-matched mode.",
+          "retain": [
+            "numeric/regex boundaries",
+            "positive/negative offsets and repetitions",
+            "-f/-n/-s/-q/-z/-k",
+            "owned-file cleanup"
+          ],
+          "oracle_review": [
+            "common",
+            "O6"
+          ]
+        }
+      ]
+    },
+    "rev": {
+      "help": "commands/rev/main.mbt:30-38",
+      "readme": "commands/rev/README.md",
+      "catalog": "core/cli/catalog.mbt:191",
+      "support": "docs/compatibility.md:265",
+      "options": [
+        "metadata only"
+      ],
+      "source": [
+        "commands/rev/main.mbt:41-80"
+      ],
+      "operands": "Zero or one FILE; default/- stdin; >1 rejects despite FILE... help.",
+      "boundaries": [
+        "Whole-input buffered C-byte reversal; multi-file and per-record resource work remain"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O6-rev-multifile",
+          "stage": "O6",
+          "commands": [
+            "rev"
+          ],
+          "options": [
+            "ordered multiple file operands"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/rev/main.mbt:59-60"
+          ],
+          "finding": "Multiple inputs explicitly rejected although help advertises FILE...; README/support correctly restrict to one file.",
+          "retain": [
+            "byte reversal",
+            "line endings/no final LF",
+            "stdin and one file"
+          ],
+          "oracle_review": [
+            "common",
+            "O6"
+          ]
+        }
+      ]
+    },
+    "tac": {
+      "help": "commands/tac/main.mbt:64-76",
+      "readme": "commands/tac/README.md",
+      "catalog": "core/cli/catalog.mbt:86-88",
+      "support": "docs/compatibility.md:273",
+      "options": [
+        "-b/--before",
+        "-s/--separator",
+        "-r/--regex (recognized rejection)"
+      ],
+      "source": [
+        "commands/tac/main.mbt:88-105"
+      ],
+      "operands": "Zero or one FILE; default/- stdin; >1 rejects despite FILE... help.",
+      "boundaries": [
+        "Fixed separator only; regex/multifile and reverse-block/stdin-spool work remain"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O6-tac",
+          "stage": "O6",
+          "commands": [
+            "tac"
+          ],
+          "options": [
+            "ordered multiple file operands",
+            "-r/--regex"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/tac/main.mbt:88-111"
+          ],
+          "finding": "Regex flag recognized then rejected; multiple inputs rejected. Both are explicitly documented command work.",
+          "retain": [
+            "fixed separator",
+            "before mode",
+            "existing record boundary behavior"
+          ],
+          "oracle_review": [
+            "common",
+            "O6"
+          ]
+        }
+      ]
+    },
+    "od": {
+      "help": "commands/od/main.mbt:2-17",
+      "readme": "commands/od/README.md",
+      "catalog": "core/cli/catalog.mbt:317-329",
+      "support": "docs/compatibility.md:222",
+      "options": [
+        "-A/--address-radix",
+        "-j/--skip-bytes",
+        "-N/--read-bytes",
+        "-t/--format",
+        "--endian",
+        "-w/--width",
+        "-v/--output-duplicates",
+        "-a/--named",
+        "-b/--octal-byte",
+        "-c/--character",
+        "-d/--decimal",
+        "-i/--int",
+        "-l/--long",
+        "-o/--octal",
+        "-s/--signed",
+        "-x/--hex"
+      ],
+      "source": [
+        "commands/od/main.mbt:112-129",
+        "commands/od/format.mbt:50"
+      ],
+      "operands": "FILE... or stdin; selected byte/integer formats and offsets.",
+      "boundaries": [
+        "Floating aliases/ABI, strings and traditional offset/label absent"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O7-od",
+          "stage": "O7",
+          "commands": [
+            "od"
+          ],
+          "options": [
+            "all frozen-oracle float formats and aliases",
+            "-S/--strings[=N]",
+            "traditional offset/label operands"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/od/main.mbt:112-130",
+            "commands/od/format.mbt:50"
+          ],
+          "finding": "Only named/escaped characters and d/u/o/x integer types/legacy aliases exist; strings and offset/label modes absent. Float ABI alias matrix still needs sealed oracle enumeration.",
+          "retain": [
+            "integer types/sizes",
+            "explicit endian",
+            "-j/-N/-w",
+            "multiple files/stdin",
+            "duplicate folding"
+          ],
+          "oracle_review": [
+            "common",
+            "O7"
+          ]
+        }
+      ]
+    },
+    "hexdump": {
+      "help": "commands/hexdump/main.mbt:2-20",
+      "readme": "commands/hexdump/README.md",
+      "catalog": "core/cli/catalog.mbt:330-341",
+      "support": "docs/compatibility.md:222",
+      "options": [
+        "-b/--one-byte-octal",
+        "-c/--one-byte-char",
+        "-C/--canonical",
+        "-d/--two-bytes-decimal",
+        "-o/--two-bytes-octal",
+        "-x/--two-bytes-hex",
+        "-X/--one-byte-hex",
+        "-n/--length",
+        "-s/--skip",
+        "-v/--no-squeezing",
+        "-h/--help",
+        "-V/--version"
+      ],
+      "source": [
+        "commands/hexdump/main.mbt:29-40",
+        "commands/hexdump/main.mbt:105",
+        "commands/hexdump/stream.mbt:40-63"
+      ],
+      "operands": "FILE... or stdin; selected repeatable built-in formats.",
+      "boundaries": [
+        "Positive stdin skip has erroneous seek-API refusal despite discard implementation; custom/color formats absent"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O7-hexdump-format-color",
+          "stage": "O7",
+          "commands": [
+            "hexdump"
+          ],
+          "options": [
+            "-e/-f",
+            "-L/--color=always,never",
+            "_L color units"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/hexdump/main.mbt:29-40"
+          ],
+          "finding": "Only built-in format selectors are parsed. No custom grammar, format file or color unit implementation.",
+          "retain": [
+            "built-in formats/order",
+            "streaming state",
+            "64-bit offsets/counts",
+            "duplicate folding"
+          ],
+          "oracle_review": [
+            "common",
+            "O7"
+          ]
+        },
+        {
+          "id": "O7-hexdump-stdin-skip",
+          "stage": "O7",
+          "commands": [
+            "hexdump"
+          ],
+          "options": [
+            "positive forward stdin -s skip"
+          ],
+          "status": "defect",
+          "code_evidence": [
+            "commands/hexdump/main.mbt:105-113",
+            "commands/hexdump/stream.mbt:40-46",
+            "commands/hexdump/stream.mbt:63-75"
+          ],
+          "finding": "CLI rejects stdin skip citing missing seekable-stream API even though its own Reader feed/read logic already discards skip bytes. The selected forward-only path does not need seeking. Historical rejection does not prove an actual API gap.",
+          "oracle_review": [
+            "common",
+            "O7"
+          ]
+        }
+      ]
+    },
+    "cmp": {
+      "help": "commands/cmp/main.mbt:173-176",
+      "readme": "commands/cmp/README.md",
+      "catalog": "core/cli/catalog.mbt:110-118",
+      "support": "docs/compatibility.md:237",
+      "options": [
+        "-s/--silent",
+        "--quiet",
+        "-l/--verbose",
+        "-n/--bytes",
+        "-i/--ignore-initial"
+      ],
+      "source": [
+        "commands/cmp/main.mbt:160-176"
+      ],
+      "operands": "FILE1 [FILE2 [SKIP1 [SKIP2]]]; selected skip/count profile.",
+      "boundaries": [
+        "Print-bytes absent; preserve first difference/EOF/quiet error priority"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O7-cmp",
+          "stage": "O7",
+          "commands": [
+            "cmp"
+          ],
+          "options": [
+            "-b/--print-bytes"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/cmp/main.mbt:160-165"
+          ],
+          "finding": "Option absent; existing first/verbose/silent comparisons and offsets must be extended, not rewritten.",
+          "retain": [
+            "equal/different/error precedence",
+            "-s/-l conflict",
+            "-n/-i",
+            "stream comparison"
+          ],
+          "oracle_review": [
+            "common",
+            "O7"
+          ]
+        }
+      ]
+    },
+    "strings": {
+      "help": "commands/strings/main.mbt:53-70",
+      "readme": "commands/strings/README.md",
+      "catalog": "core/cli/catalog.mbt:412-414",
+      "support": "docs/compatibility.md:218",
+      "options": [
+        "-a/--all",
+        "-f/--print-file-name",
+        "-n/--bytes",
+        "-o/--octal",
+        "-t/--radix",
+        "-e/--encoding"
+      ],
+      "source": [
+        "commands/strings/main.mbt:114-121"
+      ],
+      "operands": "FILE... or stdin; s/S 7/8-bit scanning and selected minimum/radix.",
+      "boundaries": [
+        "Wide/object/Unicode/locale extraction and output separator absent; bounded continuation work remains"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O7-strings",
+          "stage": "O7",
+          "commands": [
+            "strings"
+          ],
+          "options": [
+            "-s/--output-separator"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/strings/main.mbt:114-121"
+          ],
+          "finding": "No separator option; current encoding/min-length/offset behavior remains reusable.",
+          "retain": [
+            "s/S byte encodings",
+            "TAB",
+            "last -o/-t precedence",
+            "filename/multiple input behavior"
+          ],
+          "oracle_review": [
+            "common",
+            "O7"
+          ]
+        }
+      ]
+    },
+    "xxd": {
+      "help": "commands/xxd/main.mbt:424-427",
+      "readme": "commands/xxd/README.md",
+      "catalog": "core/cli/catalog.mbt:104-106",
+      "support": "docs/compatibility.md:288",
+      "options": [
+        "-i/--include",
+        "-p/--plain",
+        "-r/--reverse/--revert",
+        "-c/--cols",
+        "-l/--len",
+        "-s/--seek",
+        "-n/--name"
+      ],
+      "source": [
+        "commands/xxd/main.mbt:399-430",
+        "commands/xxd/main.mbt:464-478"
+      ],
+      "operands": "Zero or one FILE; optional output operand absent; forward nonnegative discard and positive plain-reverse prefix exist.",
+      "boundaries": [
+        "Addressed reverse ignores -s; most selected display/address extensions absent",
+        "Existing-target output needs identity/handle-truncation policy"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O8-xxd-formats",
+          "stage": "O8",
+          "commands": [
+            "xxd"
+          ],
+          "options": [
+            "-a",
+            "-b",
+            "-e",
+            "-E",
+            "-g",
+            "-u",
+            "-o"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/xxd/main.mbt:409-416"
+          ],
+          "finding": "Requested selectors absent. Existing plain/reverse/include/cols/len/name paths exist.",
+          "retain": [
+            "forward streaming dump",
+            "loose addressed reverse scan and sparse-hole allocation bound",
+            "plain and include formats"
+          ],
+          "oracle_review": [
+            "common",
+            "O8"
+          ]
+        },
+        {
+          "id": "O8-xxd-forward-discard",
+          "stage": "O8",
+          "commands": [
+            "xxd"
+          ],
+          "options": [
+            "nonnegative absolute -s forward discard on stdin/file"
+          ],
+          "status": "already_implemented",
+          "code_evidence": [
+            "commands/xxd/main.mbt:351-381",
+            "commands/xxd/main.mbt:472-487"
+          ],
+          "finding": "Reads/discards in bounded blocks without requiring seekability. Current accepted offset is bounded to signed32 range.",
+          "oracle_review": [
+            "common",
+            "O8"
+          ]
+        },
+        {
+          "id": "O8-xxd-relative",
+          "stage": "O8",
+          "commands": [
+            "xxd"
+          ],
+          "options": [
+            "relative/end-relative -s"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/xxd/main.mbt:351-365"
+          ],
+          "finding": "Parser reduces seek argument to an integer and rejects negative values; no distinct relative/end-relative state. Plus-prefixed integer acceptance is not established by this review.",
+          "oracle_review": [
+            "common",
+            "O8"
+          ]
+        },
+        {
+          "id": "O8-xxd-reverse-plain-offset",
+          "stage": "O8",
+          "commands": [
+            "xxd"
+          ],
+          "options": [
+            "positive -s prefix in -r -p"
+          ],
+          "status": "already_implemented",
+          "code_evidence": [
+            "commands/xxd/main.mbt:385-390",
+            "commands/xxd/main.mbt:464-467",
+            "commands/xxd/main.mbt:478-481"
+          ],
+          "finding": "Plain reverse writes a zero prefix from seek_opt before decoded bytes. Exact GNU mode/offset semantics remain unverified.",
+          "oracle_review": [
+            "common",
+            "O8"
+          ]
+        },
+        {
+          "id": "O8-xxd-addressed-reverse-offset",
+          "stage": "O8",
+          "commands": [
+            "xxd"
+          ],
+          "options": [
+            "-s output address adjustment in addressed reverse"
+          ],
+          "status": "defect",
+          "code_evidence": [
+            "commands/xxd/main.mbt:438-441",
+            "commands/xxd/main.mbt:464-469",
+            "commands/xxd/main.mbt:478-483"
+          ],
+          "finding": "-s is accepted/parsed but addressed reverse calls reverse_dump_stream without using seek_opt. Ignored option is visible in source; final oracle adjustment semantics still need execution.",
+          "oracle_review": [
+            "common",
+            "O8"
+          ]
+        },
+        {
+          "id": "O8-xxd-output-file",
+          "stage": "O8",
+          "commands": [
+            "xxd"
+          ],
+          "options": [
+            "second output file operand (new target)"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/xxd/main.mbt:430-433"
+          ],
+          "finding": "Second operand explicitly rejected; safe creation is project work.",
+          "oracle_review": [
+            "common",
+            "O8"
+          ]
+        },
+        {
+          "id": "O8-xxd-existing-output",
+          "stage": "O8",
+          "commands": [
+            "xxd"
+          ],
+          "options": [
+            "safe existing output/hard-link alias handling"
+          ],
+          "status": "documented_public_api_boundary",
+          "conditional": true,
+          "code_evidence": [
+            "docs/adr/0004-filesystem.md:65-66",
+            "docs/adr/0004-filesystem.md:131-145"
+          ],
+          "finding": "Shared identity/handle-truncation boundary constrains future existing-target semantics. It must not block safe new output creation or justify inode-replacing rename.",
+          "oracle_review": [
+            "O8"
+          ]
+        }
+      ]
+    },
+    "cksum": {
+      "help": "commands/cksum/main.mbt:68-76",
+      "readme": "commands/cksum/README.md",
+      "catalog": "core/cli/catalog.mbt:35-37",
+      "support": "docs/compatibility.md:231",
+      "options": [
+        "metadata only"
+      ],
+      "source": [
+        "commands/cksum/main.mbt:68-100"
+      ],
+      "operands": "FILE... or stdin; POSIX CRC32 and byte length.",
+      "boundaries": [
+        "GNU alternate digest/check/tag/base64/raw modes absent"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O9-cksum",
+          "stage": "O9",
+          "commands": [
+            "cksum"
+          ],
+          "options": [
+            "-a/--algorithm sysv,bsd,crc,crc32b,md5,sha1,sha2,sha3,blake2b,sm3",
+            "-l/--length",
+            "--check",
+            "tagged default",
+            "--untagged",
+            "--base64",
+            "--raw",
+            "applicable manifest flags"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/cksum/main.mbt:85-86",
+            "core/checksum/digest.mbt:2-27",
+            "docs/adr/0008-data.md:95"
+          ],
+          "finding": "cksum has only metadata options and POSIX CRC/length processing. Algorithm selector/length/output/check modes absent; existing public/shared digest code is reusable, not an API blocker.",
+          "retain": [
+            "POSIX CRC implementation",
+            "multiple file/stdin operand ordering and partial failures",
+            "public MD5/SHA1/SHA512 and existing SHA256 adapter"
+          ],
+          "oracle_review": [
+            "common",
+            "O9"
+          ]
+        }
+      ]
+    },
+    "md5sum": {
+      "help": "core/checksum/run.mbt:85-103",
+      "readme": "commands/md5sum/README.md",
+      "catalog": "core/cli/catalog.mbt:342-345",
+      "support": "docs/compatibility.md:223",
+      "options": [
+        "-c/--check",
+        "-z/--zero",
+        "-b/--binary",
+        "-t/--text",
+        "--quiet",
+        "--status",
+        "--strict",
+        "-w/--warn",
+        "--ignore-missing"
+      ],
+      "source": [
+        "commands/md5sum/main.mbt:2",
+        "core/checksum/run.mbt:108-125"
+      ],
+      "operands": "FILE... or stdin; check mode parses GNU untagged manifests.",
+      "boundaries": [
+        "Tagged digest/check mode absent; preserve existing byte/escape/status profile"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O9-tagged-records",
+          "stage": "O9",
+          "commands": [
+            "md5sum",
+            "sha1sum",
+            "sha256sum",
+            "sha512sum"
+          ],
+          "options": [
+            "--tag",
+            "tagged record verification"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "core/checksum/run.mbt:101",
+            "core/checksum/run.mbt:115-125",
+            "core/checksum/records.mbt:56-78",
+            "commands/sha256sum/main.mbt:189-198"
+          ],
+          "finding": "Shared checker explicitly supports only untagged records; no command parses --tag. SHA256 maintains a separate checker needing consistent extension.",
+          "retain": [
+            "incremental algorithms",
+            "untagged -c/-b/-t/-z/quiet/status/strict/warn/ignore-missing",
+            "read failure versus mismatch summaries"
+          ],
+          "oracle_review": [
+            "common",
+            "O9"
+          ]
+        },
+        {
+          "id": "O9-existing-manifest-basics",
+          "stage": "O9",
+          "commands": [
+            "md5sum",
+            "sha1sum",
+            "sha256sum",
+            "sha512sum"
+          ],
+          "options": [
+            "untagged manifest escaping",
+            "malformed/empty manifest checks",
+            "existing manifest flags"
+          ],
+          "status": "already_implemented",
+          "code_evidence": [
+            "core/checksum/records.mbt:2-96",
+            "core/checksum/run.mbt:11-79",
+            "core/checksum/run.mbt:162-221",
+            "commands/sha256sum/main.mbt:44-83",
+            "commands/sha256sum/main.mbt:96-175",
+            "commands/sha256sum/main.mbt:246-288"
+          ],
+          "finding": "Do not recreate these parsers/summary modes. Shared core escapes backslash/LF/CR; SHA256's separate encoder/decoder handles backslash/LF only. The CR discrepancy needs frozen-oracle review before a defect/repair claim.",
+          "oracle_review": [
+            "common",
+            "O9"
+          ]
+        }
+      ]
+    },
+    "sha1sum": {
+      "help": "core/checksum/run.mbt:85-103",
+      "readme": "commands/sha1sum/README.md",
+      "catalog": "core/cli/catalog.mbt:346-349",
+      "support": "docs/compatibility.md:223",
+      "options": [
+        "-c/--check",
+        "-z/--zero",
+        "-b/--binary",
+        "-t/--text",
+        "--quiet",
+        "--status",
+        "--strict",
+        "-w/--warn",
+        "--ignore-missing"
+      ],
+      "source": [
+        "commands/sha1sum/main.mbt:2",
+        "core/checksum/run.mbt:108-125"
+      ],
+      "operands": "FILE... or stdin; GNU untagged manifest checks.",
+      "boundaries": [
+        "Tagged digest/check mode absent; pure incremental SHA1 already exists"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O9-tagged-records",
+          "stage": "O9",
+          "commands": [
+            "md5sum",
+            "sha1sum",
+            "sha256sum",
+            "sha512sum"
+          ],
+          "options": [
+            "--tag",
+            "tagged record verification"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "core/checksum/run.mbt:101",
+            "core/checksum/run.mbt:115-125",
+            "core/checksum/records.mbt:56-78",
+            "commands/sha256sum/main.mbt:189-198"
+          ],
+          "finding": "Shared checker explicitly supports only untagged records; no command parses --tag. SHA256 maintains a separate checker needing consistent extension.",
+          "retain": [
+            "incremental algorithms",
+            "untagged -c/-b/-t/-z/quiet/status/strict/warn/ignore-missing",
+            "read failure versus mismatch summaries"
+          ],
+          "oracle_review": [
+            "common",
+            "O9"
+          ]
+        },
+        {
+          "id": "O9-existing-manifest-basics",
+          "stage": "O9",
+          "commands": [
+            "md5sum",
+            "sha1sum",
+            "sha256sum",
+            "sha512sum"
+          ],
+          "options": [
+            "untagged manifest escaping",
+            "malformed/empty manifest checks",
+            "existing manifest flags"
+          ],
+          "status": "already_implemented",
+          "code_evidence": [
+            "core/checksum/records.mbt:2-96",
+            "core/checksum/run.mbt:11-79",
+            "core/checksum/run.mbt:162-221",
+            "commands/sha256sum/main.mbt:44-83",
+            "commands/sha256sum/main.mbt:96-175",
+            "commands/sha256sum/main.mbt:246-288"
+          ],
+          "finding": "Do not recreate these parsers/summary modes. Shared core escapes backslash/LF/CR; SHA256's separate encoder/decoder handles backslash/LF only. The CR discrepancy needs frozen-oracle review before a defect/repair claim.",
+          "oracle_review": [
+            "common",
+            "O9"
+          ]
+        }
+      ]
+    },
+    "sha256sum": {
+      "help": "commands/sha256sum/main.mbt:206-209",
+      "readme": "commands/sha256sum/README.md",
+      "catalog": "core/cli/catalog.mbt:156-159",
+      "support": "docs/compatibility.md:269",
+      "options": [
+        "-c/--check",
+        "-z/--zero",
+        "-b/--binary",
+        "-t/--text",
+        "--quiet",
+        "--status",
+        "--strict",
+        "-w/--warn",
+        "--ignore-missing"
+      ],
+      "source": [
+        "commands/sha256sum/main.mbt:189-209"
+      ],
+      "operands": "FILE... or stdin; standalone SHA256 implementation/checker.",
+      "boundaries": [
+        "Tagged digest/check mode absent; CR escaping discrepancy versus shared checksums is unverified"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O9-tagged-records",
+          "stage": "O9",
+          "commands": [
+            "md5sum",
+            "sha1sum",
+            "sha256sum",
+            "sha512sum"
+          ],
+          "options": [
+            "--tag",
+            "tagged record verification"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "core/checksum/run.mbt:101",
+            "core/checksum/run.mbt:115-125",
+            "core/checksum/records.mbt:56-78",
+            "commands/sha256sum/main.mbt:189-198"
+          ],
+          "finding": "Shared checker explicitly supports only untagged records; no command parses --tag. SHA256 maintains a separate checker needing consistent extension.",
+          "retain": [
+            "incremental algorithms",
+            "untagged -c/-b/-t/-z/quiet/status/strict/warn/ignore-missing",
+            "read failure versus mismatch summaries"
+          ],
+          "oracle_review": [
+            "common",
+            "O9"
+          ]
+        },
+        {
+          "id": "O9-existing-manifest-basics",
+          "stage": "O9",
+          "commands": [
+            "md5sum",
+            "sha1sum",
+            "sha256sum",
+            "sha512sum"
+          ],
+          "options": [
+            "untagged manifest escaping",
+            "malformed/empty manifest checks",
+            "existing manifest flags"
+          ],
+          "status": "already_implemented",
+          "code_evidence": [
+            "core/checksum/records.mbt:2-96",
+            "core/checksum/run.mbt:11-79",
+            "core/checksum/run.mbt:162-221",
+            "commands/sha256sum/main.mbt:44-83",
+            "commands/sha256sum/main.mbt:96-175",
+            "commands/sha256sum/main.mbt:246-288"
+          ],
+          "finding": "Do not recreate these parsers/summary modes. Shared core escapes backslash/LF/CR; SHA256's separate encoder/decoder handles backslash/LF only. The CR discrepancy needs frozen-oracle review before a defect/repair claim.",
+          "oracle_review": [
+            "common",
+            "O9"
+          ]
+        }
+      ]
+    },
+    "sha512sum": {
+      "help": "core/checksum/run.mbt:85-103",
+      "readme": "commands/sha512sum/README.md",
+      "catalog": "core/cli/catalog.mbt:350-353",
+      "support": "docs/compatibility.md:223",
+      "options": [
+        "-c/--check",
+        "-z/--zero",
+        "-b/--binary",
+        "-t/--text",
+        "--quiet",
+        "--status",
+        "--strict",
+        "-w/--warn",
+        "--ignore-missing"
+      ],
+      "source": [
+        "commands/sha512sum/main.mbt:2",
+        "core/checksum/run.mbt:108-125"
+      ],
+      "operands": "FILE... or stdin; GNU untagged manifest checks.",
+      "boundaries": [
+        "Tagged digest/check mode absent; incremental public crypto state already used"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O9-tagged-records",
+          "stage": "O9",
+          "commands": [
+            "md5sum",
+            "sha1sum",
+            "sha256sum",
+            "sha512sum"
+          ],
+          "options": [
+            "--tag",
+            "tagged record verification"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "core/checksum/run.mbt:101",
+            "core/checksum/run.mbt:115-125",
+            "core/checksum/records.mbt:56-78",
+            "commands/sha256sum/main.mbt:189-198"
+          ],
+          "finding": "Shared checker explicitly supports only untagged records; no command parses --tag. SHA256 maintains a separate checker needing consistent extension.",
+          "retain": [
+            "incremental algorithms",
+            "untagged -c/-b/-t/-z/quiet/status/strict/warn/ignore-missing",
+            "read failure versus mismatch summaries"
+          ],
+          "oracle_review": [
+            "common",
+            "O9"
+          ]
+        },
+        {
+          "id": "O9-existing-manifest-basics",
+          "stage": "O9",
+          "commands": [
+            "md5sum",
+            "sha1sum",
+            "sha256sum",
+            "sha512sum"
+          ],
+          "options": [
+            "untagged manifest escaping",
+            "malformed/empty manifest checks",
+            "existing manifest flags"
+          ],
+          "status": "already_implemented",
+          "code_evidence": [
+            "core/checksum/records.mbt:2-96",
+            "core/checksum/run.mbt:11-79",
+            "core/checksum/run.mbt:162-221",
+            "commands/sha256sum/main.mbt:44-83",
+            "commands/sha256sum/main.mbt:96-175",
+            "commands/sha256sum/main.mbt:246-288"
+          ],
+          "finding": "Do not recreate these parsers/summary modes. Shared core escapes backslash/LF/CR; SHA256's separate encoder/decoder handles backslash/LF only. The CR discrepancy needs frozen-oracle review before a defect/repair claim.",
+          "oracle_review": [
+            "common",
+            "O9"
+          ]
+        }
+      ]
+    },
+    "realpath": {
+      "help": "commands/realpath/main.mbt:43-50",
+      "readme": "commands/realpath/README.md",
+      "catalog": "core/cli/catalog.mbt:188-190",
+      "support": "docs/compatibility.md:264",
+      "options": [
+        "-e/--canonicalize-existing",
+        "-z/--zero"
+      ],
+      "source": [
+        "commands/realpath/main.mbt:31-50"
+      ],
+      "operands": "FILE...; current public realpath delegation.",
+      "boundaries": [
+        "Lexical -s/-m, relative output/quiet absent; physical missing-component symlink semantics need documented readlink capability"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O10-realpath-lexical",
+          "stage": "O10",
+          "commands": [
+            "realpath"
+          ],
+          "options": [
+            "-s/--strip/--no-symlinks",
+            "lexical -m",
+            "--relative-to",
+            "--relative-base",
+            "-q"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/realpath/main.mbt:7-18",
+            "commands/realpath/main.mbt:31-35",
+            "docs/adr/0004-filesystem.md:169"
+          ],
+          "finding": "Only -e/-z parsed; all paths delegate to fs.realpath. ADR explicitly says lexical -s implementable and separates it from physical missing-path links.",
+          "retain": [
+            "existing path realpath",
+            "ordered operands/failure prefixes",
+            "NUL output"
+          ],
+          "oracle_review": [
+            "common",
+            "O10"
+          ]
+        },
+        {
+          "id": "O10-realpath-physical-boundary",
+          "stage": "O10",
+          "commands": [
+            "realpath"
+          ],
+          "options": [
+            "physical missing-component/link resolution beyond lexical profile"
+          ],
+          "status": "documented_public_api_boundary",
+          "conditional": true,
+          "code_evidence": [
+            "docs/adr/0004-filesystem.md:65-66",
+            "docs/adr/0004-filesystem.md:169"
+          ],
+          "finding": "Full missing-path symlink semantics may require unavailable public readlink. This is not a boundary for the selected lexical modes; fresh API verification remains required.",
+          "oracle_review": [
+            "O10"
+          ]
+        }
+      ]
+    },
+    "mktemp": {
+      "help": "commands/mktemp/main.mbt:116-119",
+      "readme": "commands/mktemp/README.md",
+      "catalog": "core/cli/catalog.mbt:175",
+      "support": "docs/compatibility.md:256",
+      "options": [
+        "-d/--directory"
+      ],
+      "source": [
+        "commands/mktemp/main.mbt:106-119"
+      ],
+      "operands": "Zero or one TEMPLATE; default TMPDIR or /tmp plus tmp.XXXXXX; secure random/atomic creation.",
+      "boundaries": [
+        "Full GNU template/tmpdir/-t/suffix/quiet absent; unsafe -u remains excluded"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O10-mktemp",
+          "stage": "O10",
+          "commands": [
+            "mktemp"
+          ],
+          "options": [
+            "-p/--tmpdir",
+            "-t",
+            "--suffix",
+            "GNU default template rules",
+            "-q"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/mktemp/main.mbt:20-48",
+            "commands/mktemp/main.mbt:106-108",
+            "docs/adr/0004-filesystem.md:171"
+          ],
+          "finding": "Only directory flag exists. Default uses TMPDIR or /tmp plus tmp.XXXXXX and trailing-X templates; extension/env/template/quiet contracts not implemented.",
+          "retain": [
+            "env.rand",
+            "exclusive create and collision retries",
+            "0600/0700 creation",
+            "-d"
+          ],
+          "excluded": [
+            "-u"
+          ],
+          "oracle_review": [
+            "common",
+            "O10"
+          ]
+        }
+      ]
+    },
+    "mkdir": {
+      "help": "commands/mkdir/main.mbt:44-47",
+      "readme": "commands/mkdir/README.md",
+      "catalog": "core/cli/catalog.mbt:172-174",
+      "support": "docs/compatibility.md:255",
+      "options": [
+        "-p/--parents",
+        "-m/--mode",
+        "-v/--verbose"
+      ],
+      "source": [
+        "commands/mkdir/main.mbt:32-47"
+      ],
+      "operands": "DIRECTORY...; numeric modes and leaf creation/chmod exist.",
+      "boundaries": [
+        "Symbolic mode evaluation absent; omitted-who umask and Windows mode behavior need explicit discovery"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O10-mkdir",
+          "stage": "O10",
+          "commands": [
+            "mkdir"
+          ],
+          "options": [
+            "symbolic -m"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/mkdir/main.mbt:2-21",
+            "commands/mkdir/main.mbt:46",
+            "commands/mkdir/main.mbt:75-85"
+          ],
+          "finding": "Only octal numeric mode parser exists. Public mkdir/chmod application is already used; symbolic evaluation is project work, while omitted-who umask and platform effects need separate validation.",
+          "retain": [
+            "numeric -m",
+            "leaf-only mode after -p",
+            "public chmod application",
+            "operand failure continuation"
+          ],
+          "oracle_review": [
+            "common",
+            "O10"
+          ]
+        }
+      ]
+    },
+    "rm": {
+      "help": "commands/rm/main.mbt:33-36",
+      "readme": "commands/rm/README.md",
+      "catalog": "core/cli/catalog.mbt:182-184",
+      "support": "docs/compatibility.md:263",
+      "options": [
+        "-r/-R/--recursive",
+        "-f/--force",
+        "-d/--dir",
+        "-v/--verbose",
+        "--preserve-root",
+        "--no-preserve-root"
+      ],
+      "source": [
+        "commands/rm/main.mbt:18-36"
+      ],
+      "operands": "FILE...; explicit final dot/dotdot/root safety and ordered failure paths.",
+      "boundaries": [
+        "Interactive modes absent; prompt API/behavior must be discovered without weakening existing policy"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O10-rm",
+          "stage": "O10",
+          "commands": [
+            "rm"
+          ],
+          "options": [
+            "-i",
+            "-I",
+            "--interactive=never,once,always"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/rm/main.mbt:18-25"
+          ],
+          "finding": "No interaction state or parser. Explicit rm prompting must use its own frozen input contract; do not assume xargs's independent-confirmation requirement or general terminal detection blocks it.",
+          "retain": [
+            "force/recursive/dir/verbose/root protection",
+            "final dot/dotdot rejection",
+            "existing failure/side-effect ordering"
+          ],
+          "oracle_review": [
+            "common",
+            "O10"
+          ]
+        }
+      ]
+    },
+    "ls": {
+      "help": "commands/ls/main.mbt:361-364",
+      "readme": "commands/ls/README.md",
+      "catalog": "core/cli/catalog.mbt:144-148",
+      "support": "docs/compatibility.md:253",
+      "options": [
+        "-a/--all",
+        "-A/--almost-all",
+        "-d/--directory",
+        "-F/--classify",
+        "-R/--recursive",
+        "-1/--one",
+        "-t/--sort-time",
+        "-u/--access-time",
+        "-c/--change-time",
+        "-r/--reverse",
+        "-S/--sort-size",
+        "-H/--dereference-command-line",
+        "-L/--dereference",
+        "-P/--no-dereference",
+        "--time"
+      ],
+      "source": [
+        "commands/ls/main.mbt:281-296",
+        "commands/ls/main.mbt:361-364"
+      ],
+      "operands": "FILE... or current directory; current output is one name/classification per line.",
+      "boundaries": [
+        "Layouts/width/tab/quoting/explicit-color absent; do not fabricate unavailable link/owner/mode/inode metadata"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O11-ls",
+          "stage": "O11",
+          "commands": [
+            "ls"
+          ],
+          "options": [
+            "-C",
+            "-x",
+            "-m",
+            "-w/--width",
+            "-T/--tabsize",
+            "-b/-q/-N/-Q",
+            "C-locale GNU quoting styles",
+            "--color=always,never"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/ls/main.mbt:225-229",
+            "commands/ls/main.mbt:281-296",
+            "docs/adr/0004-filesystem.md:77-78"
+          ],
+          "finding": "Current rendering is one raw name plus classification suffix per line; selected layout/quote/color options absent. Explicit color does not require isatty. Existing executable/type observations can be reused.",
+          "retain": [
+            "entry collection/sorting",
+            "-a/-A/-d/-F/-1/-R/-r/-S/time/link selections",
+            "documented -P extension and existing link errors"
+          ],
+          "oracle_review": [
+            "common",
+            "O11"
+          ]
+        }
+      ]
+    },
+    "tree": {
+      "help": "commands/tree/main.mbt:268-278",
+      "readme": "commands/tree/README.md",
+      "catalog": "core/cli/catalog.mbt:193-195",
+      "support": "docs/compatibility.md:276",
+      "options": [
+        "-a/--all",
+        "-d/--dirs-only",
+        "-f/--full-path",
+        "-L/--level",
+        "--noreport"
+      ],
+      "source": [
+        "commands/tree/main.mbt:99-105",
+        "commands/tree/main.mbt:268-278"
+      ],
+      "operands": "DIR... or current directory; current traversal/count/depth renderer.",
+      "boundaries": [
+        "Selected structured/filter/prune/size/color modes absent; ordinary-file algorithms separate from link/metadata API limits"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O12-tree",
+          "stage": "O12",
+          "commands": [
+            "tree"
+          ],
+          "options": [
+            "-J",
+            "-H BASE",
+            "-T TITLE",
+            "-P/-I",
+            "--matchdirs",
+            "--ignore-case",
+            "--prune",
+            "--filelimit",
+            "--du",
+            "-s/-h/--si",
+            "-C/-n",
+            "supported reporting"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/tree/main.mbt:99-105",
+            "docs/adr/0004-filesystem.md:170"
+          ],
+          "finding": "Only all/dirs-only/full-path/level/noreport exist. Output/filter/color/ordinary-file size algorithms are explicitly project work.",
+          "retain": [
+            "ordinary-directory traversal/order",
+            "depth/hidden/type selection",
+            "multiple roots",
+            "current totals"
+          ],
+          "oracle_review": [
+            "common",
+            "O12"
+          ]
+        },
+        {
+          "id": "O12-tree-links-metadata",
+          "stage": "O12",
+          "commands": [
+            "tree"
+          ],
+          "options": [
+            "link target/loop and unavailable metadata behavior"
+          ],
+          "status": "documented_public_api_boundary",
+          "conditional": true,
+          "code_evidence": [
+            "commands/tree/main.mbt:150",
+            "commands/tree/main.mbt:174",
+            "docs/adr/0004-filesystem.md:170",
+            "docs/compatibility.md:276"
+          ],
+          "finding": "Current traversal explicitly rejects symlink entries. Public readlink/identity/mode boundary remains separate from selected ordinary-file JSON/HTML/filter/color/size work; no directory inode size or owner metadata may be fabricated.",
+          "oracle_review": [
+            "O12"
+          ]
+        }
+      ]
+    },
+    "env": {
+      "help": "commands/env/main.mbt:39-42",
+      "readme": "commands/env/README.md",
+      "catalog": "core/cli/catalog.mbt:240-248",
+      "support": "docs/compatibility.md:244",
+      "options": [
+        "-i/--ignore-environment",
+        "- legacy ignore-environment",
+        "-0/--null",
+        "-u/--unset",
+        "-C/--chdir"
+      ],
+      "source": [
+        "commands/env/main.mbt:33-111"
+      ],
+      "operands": "NAME=VALUE... [COMMAND ARG...]; first assignment ends option parsing; child arguments remain literal.",
+      "boundaries": [
+        "Split-string absent; direct-child launch/environment behavior exists"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O13-env",
+          "stage": "O13",
+          "commands": [
+            "env"
+          ],
+          "options": [
+            "-S/--split-string"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/env/main.mbt:33-108"
+          ],
+          "finding": "No split-string branch; unknown dash options reject. Add pure parser integration to existing argv/environment logic rather than host shell evaluation.",
+          "retain": [
+            "complete inherited environment",
+            "-i/-u/-0/-C",
+            "assignment/option boundary",
+            "direct process launch/status classes"
+          ],
+          "oracle_review": [
+            "common",
+            "O13"
+          ]
+        }
+      ]
+    },
+    "xargs": {
+      "help": "commands/xargs/main.mbt:392-395",
+      "readme": "commands/xargs/README.md",
+      "catalog": "core/cli/catalog.mbt:430-438",
+      "support": "docs/compatibility.md:287",
+      "options": [
+        "-0/--null",
+        "-r/--no-run-if-empty",
+        "-t/--verbose",
+        "-n/--max-args",
+        "-L/--max-lines",
+        "-s/--max-chars",
+        "-P/--max-procs",
+        "-E/--eof",
+        "-I/--replace",
+        "--show-limits"
+      ],
+      "source": [
+        "commands/xargs/main.mbt:285-395"
+      ],
+      "operands": "[COMMAND ARG...]; batch/token/quote/NUL/replacement/eof and bounded parallel child scheduling exist.",
+      "boundaries": [
+        "Delimiter/prompt modes absent; independent confirmation channel needs capability discovery",
+        "Catalog omits several actually implemented limits/eof/show-limits options"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O13-xargs-delimiter",
+          "stage": "O13",
+          "commands": [
+            "xargs"
+          ],
+          "options": [
+            "-d/--delimiter"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/xargs/main.mbt:285-415"
+          ],
+          "finding": "Parser supports whitespace/NUL but not custom delimiter.",
+          "retain": [
+            "existing -0/-n/-L/-s/-P/-E/-I/-r/-t/show-limits",
+            "batch limits and child status aggregation"
+          ],
+          "oracle_review": [
+            "common",
+            "O13"
+          ]
+        },
+        {
+          "id": "O13-xargs-interactive",
+          "stage": "O13",
+          "commands": [
+            "xargs"
+          ],
+          "options": [
+            "-p/--interactive"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/xargs/main.mbt:392-409",
+            "docs/adr/0006-process.md:47",
+            "docs/adr/0007-language.md:27"
+          ],
+          "finding": "No prompt mode. Independent confirmation channel must be discovered through public APIs before implementation; existing general terminal limitations do not prove that this exact channel is unavailable. If absent, add precise pre-input/pre-child rejection, ADR/support and unlock condition.",
+          "api_discovery_required": true,
+          "oracle_review": [
+            "common",
+            "O13"
+          ]
+        }
+      ]
+    },
+    "tail": {
+      "help": "commands/tail/main.mbt:459-462",
+      "readme": "commands/tail/README.md",
+      "catalog": "core/cli/catalog.mbt:83-85",
+      "support": "docs/compatibility.md:272",
+      "options": [
+        "-q/--quiet",
+        "-v/--verbose",
+        "-f/--follow",
+        "-n/--lines",
+        "-c/--bytes",
+        "-s/--sleep-interval"
+      ],
+      "source": [
+        "commands/tail/main.mbt:445-462"
+      ],
+      "operands": "FILE... or stdin; signed line/byte origins, selected header/descriptor-follow behavior.",
+      "boundaries": [
+        "NUL records absent; name-follow -F identity/rotation requires explicit policy and API work"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O13-tail",
+          "stage": "O13",
+          "commands": [
+            "tail"
+          ],
+          "options": [
+            "-z/--zero-terminated"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/tail/main.mbt:445-451"
+          ],
+          "finding": "No NUL-record option; keep existing signed record/byte origins and header/follow behavior.",
+          "retain": [
+            "-n/-c +K",
+            "-q/-v",
+            "descriptor follow/polling and sleep interval",
+            "existing -F identity boundary"
+          ],
+          "oracle_review": [
+            "common",
+            "O13"
+          ]
+        }
+      ]
+    },
+    "tee": {
+      "help": "commands/tee/main.mbt:19-22",
+      "readme": "commands/tee/README.md",
+      "catalog": "core/cli/catalog.mbt:192",
+      "support": "docs/compatibility.md:274",
+      "options": [
+        "-a/--append"
+      ],
+      "source": [
+        "commands/tee/main.mbt:10-22",
+        "commands/tee/main.mbt:48"
+      ],
+      "operands": "FILE... plus stdout; stdin byte-copy loop with per-file continuation.",
+      "boundaries": [
+        "Output-error modes/-p absent; actual pipe/file error classification must be checked before asserting an API gap"
+      ],
+      "inventory_group": "selected_O_options",
+      "selected_plan_groups": [
+        {
+          "id": "O13-tee",
+          "stage": "O13",
+          "commands": [
+            "tee"
+          ],
+          "options": [
+            "--output-error=warn,warn-nopipe,exit,exit-nopipe",
+            "-p"
+          ],
+          "status": "missing_project_work",
+          "code_evidence": [
+            "commands/tee/main.mbt:10-11",
+            "commands/tee/main.mbt:48-58"
+          ],
+          "finding": "No policy option; stdout write is outside per-file write catches. Mode-specific pipe/file classification must be verified via released APIs before calling it blocked.",
+          "retain": [
+            "append flag",
+            "shared64KiB input chunks",
+            "per-file active/error continuation"
+          ],
+          "api_discovery_required": true,
+          "oracle_review": [
+            "common",
+            "O13"
+          ]
+        }
+      ]
+    },
+    "base32": {
+      "options": [
+        "-d/--decode",
+        "-i/--ignore-garbage",
+        "-w/--wrap"
+      ],
+      "operands": "Zero or one FILE; omitted/- is stdin; wrap defaults to 76 and zero disables wrapping.",
+      "source": [
+        "commands/base32/main.mbt:192-195",
+        "commands/base32/main.mbt:209-232"
+      ],
+      "help": "commands/base32/main.mbt:205",
+      "readme": "commands/base32/README.md",
+      "catalog": "core/cli/catalog.mbt:32-34",
+      "support": "docs/compatibility.md:230",
+      "observed": "Encoding/decoding, wrapping, garbage policy and padding validation already exist; input is read_all before transformation.",
+      "boundaries": [
+        "C-byte stream profile; invalid-data prefix/error behavior and full padding/alias conflicts remain unverified here",
+        "Whole-input buffering is source-visible; no streaming or performance acceptance follows"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "base64": {
+      "options": [
+        "-d/-D/--decode",
+        "-i/--ignore-garbage",
+        "-w/--wrap"
+      ],
+      "operands": "Zero or one FILE; omitted/- is stdin; wrap defaults to 76, zero disables wrapping.",
+      "source": [
+        "commands/base64/main.mbt:179-183",
+        "commands/base64/main.mbt:197-220"
+      ],
+      "help": "commands/base64/main.mbt:193",
+      "readme": "commands/base64/README.md",
+      "catalog": "core/cli/catalog.mbt:38-40",
+      "support": "docs/compatibility.md:233",
+      "observed": "Existing byte encoder/decoder with strict padding, optional ignored garbage and width validation; input is buffered.",
+      "boundaries": [
+        "Full oracle invalid-data/prefix/order behavior not rechecked",
+        "Whole-input processing is not an incremental codec claim"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "basename": {
+      "options": [
+        "-a/--multiple",
+        "-s/--suffix",
+        "-z/--zero"
+      ],
+      "operands": "NAME [SUFFIX] by default; -a or -s enables NAME...; -s implies multiple.",
+      "source": [
+        "commands/basename/main.mbt:48-51",
+        "commands/basename/main.mbt:59-80"
+      ],
+      "help": "commands/basename/main.mbt:65",
+      "readme": "commands/basename/README.md",
+      "catalog": "core/cli/catalog.mbt:107-109",
+      "support": "docs/compatibility.md:234",
+      "observed": "Lexical path/suffix handling, multiple operands and NUL separators exist.",
+      "boundaries": [
+        "Declared C-byte/portable lexical profile; host path and locale edge parity unverified"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "cat": {
+      "options": [
+        "-n/--number",
+        "-b/--number-nonblank",
+        "-s/--squeeze-blank",
+        "-T/--show-tabs",
+        "-E/--show-ends",
+        "-v/--show-nonprinting",
+        "-A/--show-all",
+        "-e",
+        "-t",
+        "-u/--unbuffered",
+        "--show-ends-nonprinting",
+        "--show-tabs-nonprinting"
+      ],
+      "operands": "FILE...; omitted/- is stdin. Numbering state spans operands.",
+      "source": [
+        "commands/cat/main.mbt:195-205"
+      ],
+      "help": "commands/cat/main.mbt:2",
+      "readme": "commands/cat/README.md",
+      "catalog": "core/cli/catalog.mbt:41-44",
+      "support": "docs/compatibility.md:235",
+      "observed": "Byte copy and selected formatting modes already exist; -u is accepted as a documented no-op.",
+      "boundaries": [
+        "C-byte display profile; locale display/signal/closed-output parity not promoted"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "chmod": {
+      "options": [
+        "-R/--recursive",
+        "-v/--verbose",
+        "--reference (recognized rejection)"
+      ],
+      "operands": "MODE FILE...; numeric mode or closed symbolic assignments such as a=rwx/u=rw,g=r,o=.",
+      "source": [
+        "commands/chmod/main.mbt:163-190",
+        "commands/chmod/main.mbt:192-230"
+      ],
+      "help": "commands/chmod/main.mbt:176",
+      "readme": "commands/chmod/README.md",
+      "catalog": "core/cli/catalog.mbt:200-202",
+      "support": "docs/compatibility.md:236",
+      "observed": "Numeric modes and restricted complete symbolic assignments exist; recursion and verbose output exist. Reference mode rejects before mutation.",
+      "boundaries": [
+        "Windows permission mutation is rejected by platform policy",
+        "Reference/incremental/copied/omitted-class/X/s/t modes need permission-read semantics; restricted symbolic assignments exclude directory/link cases",
+        "Command-line numeric symlinks and recursively encountered symlinks have distinct handling"
+      ],
+      "declaration_findings": [
+        "Some API diagnostic/documentation text still names async 0.22.4 while workspace dependency is 0.22.5; this is stale version wording, not proof that the gap has been lifted"
+      ],
+      "inventory_group": "other_existing_commands"
+    },
+    "column": {
+      "options": [
+        "-t/--table",
+        "-s/--separator",
+        "-o/--output-separator",
+        "-c/--output-width",
+        "-x/--fillrows"
+      ],
+      "operands": "FILE... or stdin; inputs are combined before layout. Width comes from option, COLUMNS or 80; zero/unlimited modes have dedicated behavior.",
+      "source": [
+        "commands/column/main.mbt:175-199"
+      ],
+      "help": "commands/column/main.mbt:153",
+      "readme": "commands/column/README.md",
+      "catalog": "core/cli/catalog.mbt:415-417",
+      "support": "docs/compatibility.md:219",
+      "observed": "Grid/table layout and separator controls exist; non-ASCII input bytes use escaped display in the declared C profile.",
+      "boundaries": [
+        "Non-ASCII separators reject",
+        "Auto terminal width/full Unicode width/full util-linux grammar are outside the current profile",
+        "Current layout materialization is not the required R2 same-snapshot spool implementation"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "cp": {
+      "options": [
+        "-R/-r/--recursive",
+        "-f/--force",
+        "-n/--no-clobber",
+        "-i/--interactive",
+        "-u/--update[=MODE]",
+        "-b/--backup[=CONTROL]",
+        "-S/--suffix",
+        "-H",
+        "-L",
+        "-P",
+        "-T/--no-target-directory",
+        "-p/--preserve (recognized rejection)",
+        "--no-preserve=mode",
+        "-a/--archive (recognized rejection)",
+        "-v/--verbose",
+        "--update-mode (direct parser spelling)",
+        "--backup-control (direct parser spelling)",
+        "--dereference-command-line",
+        "--dereference",
+        "--no-dereference"
+      ],
+      "operands": "SOURCE... DEST, at least two operands. Prefix normalization handles optional update/backup and preserve forms.",
+      "source": [
+        "commands/cp/main.mbt:18-35",
+        "commands/cp/main.mbt:194-239",
+        "commands/cp/main.mbt:281-291",
+        "core/fsops/fsops.mbt:303-362"
+      ],
+      "help": "commands/cp/main.mbt:222",
+      "readme": "commands/cp/README.md:7-20",
+      "catalog": "core/cli/catalog.mbt:163-167",
+      "support": "docs/compatibility.md:239",
+      "observed": "New-file/tree copies with explicit --no-preserve=mode and selected no-clobber/update no-ops exist; traversal and backup/overwrite decisions are implemented.",
+      "boundaries": [
+        "Default mode preservation rejects without public permission reads",
+        "Existing regular-file overwrite rejects without identity/handle truncation; -f does not lift that gate",
+        "Symbolic sources require supported follow policy; no symbolic-link-copy implementation or metadata-preserving fallback"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "curl": {
+      "options": [
+        "-s/--silent",
+        "-S/--show-error",
+        "-f/--fail",
+        "-o/--output",
+        "-O/--remote-name",
+        "-J/--remote-header-name",
+        "-L/--location",
+        "--max-redirs",
+        "-I/--head",
+        "-H/--header",
+        "-u/--user",
+        "--basic",
+        "-b/--cookie",
+        "-c/--cookie-jar",
+        "-X/--request",
+        "-d/--data",
+        "--data-raw",
+        "--data-binary",
+        "--data-urlencode",
+        "-T/--upload-file",
+        "--retry",
+        "--retry-delay",
+        "--retry-max-time",
+        "--retry-connrefused",
+        "--retry-all-errors",
+        "--connect-timeout",
+        "-m/--max-time",
+        "--idle-timeout",
+        "-k/--insecure",
+        "-x/--proxy",
+        "--noproxy",
+        "--remove-on-error"
+      ],
+      "operands": "URL...; credentials need explicit user:password rather than an interactive password prompt.",
+      "source": [
+        "commands/curl/options.mbt:239-295",
+        "commands/curl/options.mbt:309"
+      ],
+      "help": "commands/curl/options.mbt:55-103",
+      "readme": "commands/curl/README.md",
+      "catalog": "core/cli/catalog.mbt:224-239",
+      "support": "docs/compatibility.md:27-63,240",
+      "observed": "Substantial HTTP transfer, Basic authentication, cookies, redirect/upload/retry/timeout/output modes exist. Preserve calibrated stage-0 framing/prefix/file/error-priority profiles.",
+      "boundaries": [
+        "HTTP/1 profile, no complete curl protocol/config/HTTP2/auth/PSL/IDNA parity",
+        "Content coding is retained as wire bytes; no automatic decompression/compressed option",
+        "Path-based retry reset cannot guarantee descriptor/inode identity after replacement",
+        "Repeated ordinary request-header semantics remain project work, not a list API gap"
+      ],
+      "declaration_findings": [
+        "--noproxy is implemented at options.mbt:269 and documented in help:90 but absent from catalog:230-237"
+      ],
+      "inventory_group": "other_existing_commands"
+    },
+    "date": {
+      "options": [
+        "-u/--utc",
+        "-d/--date",
+        "-I[PRECISION]/--iso-8601[=PRECISION]",
+        "-R/--rfc-email",
+        "--iso (normalized parser spelling)"
+      ],
+      "operands": "At most one +FORMAT. -d accepts selected ISO civil input or @SECONDS with up to nine fraction digits; TZ/TZDIR select timezone.",
+      "source": [
+        "commands/date/main.mbt:202-210",
+        "commands/date/main.mbt:242-270",
+        "core/time_zone/zone.mbt:20-124"
+      ],
+      "help": "commands/date/main.mbt:257",
+      "readme": "commands/date/README.md",
+      "catalog": "core/cli/catalog.mbt:427-429",
+      "support": "docs/compatibility.md:221",
+      "observed": "Current time, explicit input, C-profile format fields, 64-bit TZif/POSIX future rules and ISO/email formatting exist; internal normalized option is named iso.",
+      "boundaries": [
+        "Relative/free-form GNU date grammar, clock setting and unsupported modifiers reject",
+        "Ambiguous/gap local civil times reject; local database absence needs TZ or -u",
+        "Current host-clock precision and exact formatting conflicts remain unverified"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "diff": {
+      "options": [
+        "-q/--brief",
+        "-s/--report-identical-files",
+        "-a/--text",
+        "-u/--unified[=LINES]",
+        "-U/--unified-lines",
+        "-c/--context[=LINES]",
+        "-C/--context-lines",
+        "--label (up to twice)"
+      ],
+      "operands": "Exactly FILE1 FILE2; - is stdin. Unified and context modes conflict; context count is bounded.",
+      "source": [
+        "commands/diff/main.mbt:15-72",
+        "commands/diff/compare.mbt:32-72"
+      ],
+      "help": "commands/diff/main.mbt:40",
+      "readme": "commands/diff/README.md",
+      "catalog": "core/cli/catalog.mbt:357-368",
+      "support": "docs/compatibility.md:225",
+      "observed": "File-only normal/unified/context/brief/binary/identical rendering already exists. Inputs are materialized; Myers reconstruction stores a copied frontier map per edit distance at compare.mbt:42.",
+      "boundaries": [
+        "Current algorithm is not the planned O(N+M) auxiliary-space D implementation",
+        "Selected whitespace/case/blank-line/recursive/new-file modes are project work; current help explicitly excludes them",
+        "Ambiguous edit ties/hunks are not certified to GNU ordering; timestamp/TZ and no-final-LF contracts need preserved evidence"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "dirname": {
+      "options": [
+        "-z/--zero"
+      ],
+      "operands": "One or more NAME operands.",
+      "source": [
+        "commands/dirname/main.mbt:44-55"
+      ],
+      "help": "commands/dirname/main.mbt:55",
+      "readme": "commands/dirname/README.md",
+      "catalog": "core/cli/catalog.mbt:119",
+      "support": "docs/compatibility.md:242",
+      "observed": "Lexical dirname with ordered multiple outputs and NUL mode exists.",
+      "boundaries": [
+        "Portable lexical/C-byte profile; platform separator and root edge parity unverified"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "echo": {
+      "options": [
+        "-n",
+        "-e",
+        "-E",
+        "clusters containing only n/e/E"
+      ],
+      "operands": "STRING...; parsing stops at first unrecognized cluster/operand. -- is a literal operand.",
+      "source": [
+        "commands/echo/main.mbt:86-128"
+      ],
+      "help": "commands/echo/main.mbt:93",
+      "readme": "commands/echo/README.md",
+      "catalog": "core/cli/catalog.mbt:120-122",
+      "support": "docs/compatibility.md:243",
+      "observed": "Newline suppression and selected C-byte escape expansion exist; metadata has special standalone handling.",
+      "boundaries": [
+        "No universal generic-parser semantics; POSIXLY_CORRECT/locale modes not claimed",
+        "Catalog enable-escapes/disable-escapes/no-newline are semantic IDs, not accepted long aliases"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "expr": {
+      "options": [
+        "expression operators | & comparisons + - * / % :",
+        "match",
+        "substr",
+        "index",
+        "length",
+        "+ operand quoting"
+      ],
+      "operands": "EXPRESSION token argv; one initial -- is removed; metadata recognized standalone.",
+      "source": [
+        "commands/expr/main.mbt:199-245",
+        "core/bytere/bytere.mbt:42-133"
+      ],
+      "help": "commands/expr/main.mbt:218",
+      "readme": "commands/expr/README.md",
+      "catalog": "core/cli/catalog.mbt:399",
+      "support": "docs/compatibility.md:228",
+      "observed": "Precedence-aware integer/string expression evaluation and shared regex adapter already exist.",
+      "boundaries": [
+        "C-byte strings; pattern backreferences/word assertions and locale collation are excluded",
+        "Matcher expansion is S1 project work; no host regex fallback or new public-API blocker established"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "false": {
+      "options": [
+        "standalone --help",
+        "standalone --version"
+      ],
+      "operands": "All other arguments are ignored.",
+      "source": [
+        "commands/false/main.mbt:3-15"
+      ],
+      "help": "commands/false/main.mbt:7",
+      "readme": "commands/false/README.md",
+      "catalog": "core/cli/catalog.mbt:51",
+      "support": "docs/compatibility.md:245",
+      "observed": "Normal exit is 1; standalone metadata exits 0.",
+      "boundaries": [
+        "No GNU startup/performance acceptance was measured"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "find": {
+      "options": [
+        "( )",
+        "!/-not",
+        "-a/-and and implicit AND",
+        "-o/-or",
+        "-name",
+        "-path/-wholename",
+        "-type",
+        "-empty",
+        "-size",
+        "-mtime/-mmin/-atime/-amin/-ctime/-cmin",
+        "-newer/-anewer/-cnewer/-newerXY",
+        "-used",
+        "-readable/-writable/-executable",
+        "-xtype",
+        "-depth",
+        "-prune",
+        "-maxdepth/-mindepth",
+        "-print/-print0",
+        "-exec ... ;/+",
+        "-delete",
+        "-true/-false"
+      ],
+      "operands": "PATH... precedes expression; default path is .; -- escapes the next path in the path-prefix loop. Batched -exec + has expression-placement and action-count restrictions.",
+      "source": [
+        "commands/find/main.mbt:236-383",
+        "commands/find/main.mbt:658-682"
+      ],
+      "help": "commands/find/main.mbt:659",
+      "readme": "commands/find/README.md",
+      "catalog": "core/cli/catalog.mbt:126-136",
+      "support": "docs/compatibility.md:246",
+      "observed": "Traversal, boolean expression tree, selected metadata/access predicates and ordered actions already exist; avoid replacing these as missing functionality.",
+      "boundaries": [
+        "No general -H/-L link traversal/full GNU expression grammar/owner/link-target/birth-time claims",
+        "Selected special-file/time combinations and action-error precedence need actual backend/oracle evidence",
+        "Catalog is an expression-summary contract, not a complete lexer table"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "fold": {
+      "options": [
+        "-b/--bytes",
+        "-c/--characters",
+        "-s/--spaces",
+        "-w/--width",
+        "-WIDTH legacy form"
+      ],
+      "operands": "FILE... or stdin.",
+      "source": [
+        "commands/fold/main.mbt:25-43"
+      ],
+      "help": "commands/fold/main.mbt:4",
+      "readme": "commands/fold/README.md",
+      "catalog": "core/cli/catalog.mbt:308-316",
+      "support": "docs/compatibility.md:217",
+      "observed": "Incremental byte/C-profile display columns, tabs/backspaces and space folding exist; invalid input bytes are retained.",
+      "boundaries": [
+        "Full Unicode/locale display width is not claimed; long-record and partial-error behavior still require execution"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "grep": {
+      "options": [
+        "-F/--fixed-strings",
+        "-E/--extended-regexp",
+        "-G/--basic-regexp",
+        "-o/--only-matching",
+        "-i/--ignore-case",
+        "-v/--invert-match",
+        "-n/--line-number",
+        "-b/--byte-offset",
+        "-c/--count",
+        "-l/--files-with-matches",
+        "-L/--files-without-match",
+        "-q/--quiet",
+        "-H/--with-filename",
+        "-h/--no-filename",
+        "-x/--line-regexp",
+        "-w/--word-regexp",
+        "-r/-R/--recursive",
+        "-s/--no-messages",
+        "-z/--null-data",
+        "-a/--text",
+        "-A/--after-context",
+        "-B/--before-context",
+        "-C/--context",
+        "--include",
+        "--exclude",
+        "--binary-files",
+        "-e/--regexp",
+        "-f/--file"
+      ],
+      "operands": "PATTERN [FILE...] when no -e/-f; otherwise FILE...; - is stdin. Multiple -e/-f patterns exist.",
+      "source": [
+        "commands/grep/main.mbt:422-461",
+        "core/bytere/bytere.mbt:42-133"
+      ],
+      "help": "commands/grep/main.mbt:461",
+      "readme": "commands/grep/README.md:19-25",
+      "catalog": "core/cli/catalog.mbt:137-143",
+      "support": "docs/compatibility.md:247",
+      "observed": "Literal/BRE/ERE modes, C-byte leftmost-longest adapter, matching/output/context/recursive/file-selection behavior exist.",
+      "boundaries": [
+        "Backreferences, word assertions and unsupported engine syntax reject; full locale/worst-case matcher performance remains project work",
+        "-r/-R share the recursive parser identity; distinct symlink traversal parity was not established"
+      ],
+      "declaration_findings": [
+        "README:23-24 attributes pattern backreferences to a public regex-engine limit; code explicitly rejects them in the project adapter, and the new plan assigns a pure MoonBit matcher to S1. Do not perpetuate this as an established public-API blocker"
+      ],
+      "inventory_group": "other_existing_commands"
+    },
+    "gunzip": {
+      "options": [
+        "-c/--stdout",
+        "-d/--decompress",
+        "-t/--test",
+        "-n/--no-name",
+        "-q/--quiet"
+      ],
+      "operands": "FILE... or stdin; named decompression requires -c unless testing; root delegates to core/gzipops.run.",
+      "source": [
+        "commands/gunzip/main.mbt:2",
+        "core/gzipops/command.mbt:22-93",
+        "core/gzipops/codec.mbt:56-93"
+      ],
+      "help": "core/gzipops/command.mbt:2-13",
+      "readme": "commands/gunzip/README.md:15-30",
+      "catalog": "core/cli/catalog.mbt:406-408",
+      "support": "docs/compatibility.md:229",
+      "observed": "RFC1951 stored/fixed/dynamic decoding, concatenated members, CRC/ISIZE and delivered-prefix errors exist; compressed input is entirely buffered.",
+      "boundaries": [
+        "Reader-based incremental input decoding is G2 project work, not an API blocker",
+        "Named replacement/metadata restoration remain an independent documented filesystem boundary"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "gzip": {
+      "options": [
+        "-c/--stdout",
+        "-d/--decompress",
+        "-t/--test",
+        "-n/--no-name",
+        "-q/--quiet"
+      ],
+      "operands": "FILE... or stdin; named encoding requires -c -n; named decompression requires -c unless testing.",
+      "source": [
+        "commands/gzip/main.mbt:2",
+        "core/gzipops/command.mbt:22-93",
+        "core/gzipops/codec.mbt:113-117"
+      ],
+      "help": "core/gzipops/command.mbt:2-13",
+      "readme": "commands/gzip/README.md:15-33",
+      "catalog": "core/cli/catalog.mbt:403-405",
+      "support": "docs/compatibility.md:229",
+      "observed": "Workspace encoder calls released async 0.22.5 Encoder.write_reader/end with bounded LZ matching and fixed Huffman. Shared decoder also exists. This source inventory did not inspect or execute the active published encoder; historical README version text does not establish its encoding behavior.",
+      "boundaries": [
+        "Levels -1..-9/--fast/--best, 32KiB history, dynamic compression/cost selection and Reader decoding remain project work",
+        "Current candidate support records 1KiB history/64-byte max match; performance/ratio have not been measured here",
+        "Metadata-aware named replacement is separate from compression algorithms"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "head": {
+      "options": [
+        "-q/--quiet",
+        "-v/--verbose",
+        "-z/--zero-terminated",
+        "-n/--lines",
+        "-c/--bytes",
+        "legacy signed count forms"
+      ],
+      "operands": "FILE... or stdin; count parser supports selected signed 64-bit counts and suffixes; last lines/bytes selects mode.",
+      "source": [
+        "commands/head/main.mbt:249-286"
+      ],
+      "help": "commands/head/main.mbt:272",
+      "readme": "commands/head/README.md",
+      "catalog": "core/cli/catalog.mbt:52-54",
+      "support": "docs/compatibility.md:248",
+      "observed": "First/negative-tail line or byte selection, NUL records and headers exist.",
+      "boundaries": [
+        "Negative counts retain required suffix state; source support is not a memory-scaling acceptance",
+        "Unlisted aliases, pipe-read boundaries and error-order parity remain unverified"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "jq": {
+      "options": [
+        "-c/--compact-output",
+        "-j/--join-output",
+        "-l/--logs",
+        "-n/--null-input",
+        "-s/--slurp",
+        "-r/--raw-output",
+        "-R/--raw-input",
+        "-S/--sort-keys",
+        "-e/--exit-status",
+        "-C/--color-output",
+        "-M/--monochrome-output",
+        "-f/--from-file",
+        "--indent",
+        "--tab",
+        "--arg NAME VALUE",
+        "--argjson NAME VALUE"
+      ],
+      "operands": "FILTER [FILE...] with current default-identity/from-file paths; - is stdin; argument preparation packs two-value variable options.",
+      "source": [
+        "commands/jq/main_native.mbt:105-163",
+        "commands/jq/moon.pkg:1",
+        "core/jq_filter/filter.mbt:4-90"
+      ],
+      "help": "commands/jq/main_native.mbt:45-66",
+      "readme": "commands/jq/README.md",
+      "catalog": "core/cli/catalog.mbt:59-63",
+      "support": "docs/compatibility.md:250",
+      "observed": "moonjq0.2.0 evaluation with a public-AST Unicode-scalar slice adapter and current input/output/variable modes exists; main_native filename does not limit the package to Native.",
+      "boundaries": [
+        "No complete jq module/streaming/language parity; moonjq adapter/profile limits are documented",
+        "Logs conflicts with null/raw input are explicit rejections; auto terminal color is not claimed"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "jqlog": {
+      "options": [
+        "-h/--help",
+        "-f/--file PATH",
+        "standalone --version",
+        "-- terminator"
+      ],
+      "operands": "QUERY plus optional inline INPUT; - or absent input reads stdin; file input uses -f. Manual parser accepts the separate --file PATH form.",
+      "source": [
+        "commands/jqlog/main_native.mbt:44-96",
+        "commands/jqlog/moon.pkg:1"
+      ],
+      "help": "commands/jqlog/main_native.mbt:22-40",
+      "readme": "commands/jqlog/README.md",
+      "catalog": "core/cli/catalog.mbt:64-66",
+      "support": "docs/compatibility.md:251",
+      "observed": "JSONL/log record framing, malformed-line skipping, selected log format and shared jq-filter evaluation exist on declared Native/Wasm targets.",
+      "boundaries": [
+        "No full jq language/streaming guarantee; --file=PATH is not registered by this manual parser",
+        "Malformed/prefix/large-log behavior needs execution, not filename-based inference"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "ln": {
+      "options": [
+        "-s/--symbolic",
+        "-f/--force",
+        "-i/--interactive",
+        "-r/--relative",
+        "-n/--no-dereference",
+        "-T/--no-target-directory",
+        "-t/--target-directory",
+        "-b/--backup[=CONTROL]",
+        "-S/--suffix",
+        "-v/--verbose",
+        "--backup-control (direct parser spelling)"
+      ],
+      "operands": "TARGET... LINK or -t DIRECTORY TARGET...; -t and -T conflict.",
+      "source": [
+        "commands/ln/main.mbt:111-179"
+      ],
+      "help": "commands/ln/main.mbt:132",
+      "readme": "commands/ln/README.md",
+      "catalog": "core/cli/catalog.mbt:168-171",
+      "support": "docs/compatibility.md:252",
+      "observed": "Symbolic-link creation with relative/target/overwrite/backup decisions exists; requesting default hard links rejects before mutation.",
+      "boundaries": [
+        "Public hard-link API unavailable in documented policy; Windows symbolic creation is conservatively rejected",
+        "Follow/no-follow/backup/race and prompt-channel oracle parity not rechecked"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "make": {
+      "options": [
+        "-f/--file[=FILE]",
+        "-C DIRECTORY",
+        "-s/--silent",
+        "-n/--just-print",
+        "-B/--always-make",
+        "-k/--keep-going",
+        "-W/--what-if[=FILE] and attached -WFILE",
+        "-j/--jobs[=N] and attached -jN",
+        "-h/--help",
+        "standalone --version",
+        "-- terminator"
+      ],
+      "operands": "VARIABLE=VALUE and TARGET...; manual option grammar. -C is a separate-argument form, not evidence of literal --directory support.",
+      "source": [
+        "commands/make/main.mbt:813-897",
+        "commands/make/main.mbt:945"
+      ],
+      "help": "commands/make/main.mbt:886",
+      "readme": "commands/make/README.md",
+      "catalog": "core/cli/catalog.mbt:249-259",
+      "support": "docs/compatibility.md:254",
+      "observed": "Existing parser, dependency graph, recipe execution and bounded parallel ready-queue scheduling are substantial prerequisites; -j is implemented.",
+      "boundaries": [
+        "No GNU jobserver, full implicit-rule/secondary-expansion/make language guarantee",
+        "Export handling excludes bare export/unexport; catalog directory is a semantic identifier",
+        "Shell/child execution inherits current explicit process boundaries"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "mv": {
+      "options": [
+        "-f/--force",
+        "-n/--no-clobber",
+        "-i/--interactive",
+        "-u/--update[=MODE]",
+        "-b/--backup[=CONTROL]",
+        "-S/--suffix",
+        "-T/--no-target-directory",
+        "-v/--verbose",
+        "--update-mode (direct parser spelling)",
+        "--backup-control (direct parser spelling)"
+      ],
+      "operands": "SOURCE... DEST, at least two operands; normalized optional update/backup forms.",
+      "source": [
+        "commands/mv/main.mbt:36-46",
+        "commands/mv/main.mbt:103-144",
+        "commands/mv/main.mbt:189-199"
+      ],
+      "help": "commands/mv/main.mbt:209",
+      "readme": "commands/mv/README.md",
+      "catalog": "core/cli/catalog.mbt:178-181",
+      "support": "docs/compatibility.md:27-45,257",
+      "observed": "Files/directories and selected links, overwrite/no-clobber/update/backup/recovery paths exist. Keep stage-0 Windows Native link rename behavior and conservative Wasm gate.",
+      "boundaries": [
+        "Equal-time interactive/update targets require identity; no-clobber remains a successful skip",
+        "EXDEV means rename failed; metadata-preserving cross-device copy fallback is unavailable and is not silently performed",
+        "Windows Wasm link/junction rename remains rejected pending verified host behavior"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "nl": {
+      "options": [
+        "-b/--body-numbering",
+        "-h/--header-numbering",
+        "-f/--footer-numbering",
+        "-w/--number-width",
+        "-s/--number-separator",
+        "-v/--starting-line-number",
+        "-i/--line-increment",
+        "-l/--join-blank-lines",
+        "-n/--number-format",
+        "-d/--section-delimiter",
+        "-p/--no-renumber"
+      ],
+      "operands": "FILE... or stdin; numbering/sections continue through the command stream.",
+      "source": [
+        "commands/nl/main.mbt:116-137"
+      ],
+      "help": "commands/nl/main.mbt:137",
+      "readme": "commands/nl/README.md",
+      "catalog": "core/cli/catalog.mbt:67-71",
+      "support": "docs/compatibility.md:258",
+      "observed": "Selected a/t/n numbering styles, logical-page sections, width/start/increment/format and blanks grouping exist.",
+      "boundaries": [
+        "pBRE style and complete locale grammar are excluded; actual large numeric/record limits not newly executed"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "paste": {
+      "options": [
+        "-s/--serial",
+        "-d/--delimiters",
+        "-z/--zero-terminated"
+      ],
+      "operands": "FILE... or stdin; repeated - operands consume successive records from shared stdin.",
+      "source": [
+        "commands/paste/main.mbt:100-113"
+      ],
+      "help": "commands/paste/main.mbt:113",
+      "readme": "commands/paste/README.md",
+      "catalog": "core/cli/catalog.mbt:72-74",
+      "support": "docs/compatibility.md:259",
+      "observed": "Parallel/serial paste, delimiter cycling and selected escaped/NUL delimiters exist; delimiter validation precedes input.",
+      "boundaries": [
+        "C-byte profile; repeated stdin, EOF padding and later-open/read errors need preserved oracle contracts"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "patch": {
+      "options": [
+        "-p/--strip",
+        "-i/--input",
+        "-o/--output (- only)",
+        "-d/--directory",
+        "-R/--reverse",
+        "--dry-run",
+        "-s/--quiet",
+        "-u/--unified",
+        "-c/--context",
+        "-t/--batch",
+        "-F/--fuzz (0 only)",
+        "--no-backup-if-mismatch"
+      ],
+      "operands": "[ORIGINALFILE [PATCHFILE]]; -i and positional patch input cannot duplicate; explicit target/output cannot ambiguously bind a multifile patch.",
+      "source": [
+        "commands/patch/main.mbt:24-75",
+        "commands/patch/main.mbt:92-142",
+        "commands/patch/main.mbt:192-221"
+      ],
+      "help": "commands/patch/main.mbt:2-20",
+      "readme": "commands/patch/README.md:15-37",
+      "catalog": "core/cli/catalog.mbt:369-380",
+      "support": "docs/compatibility.md:226",
+      "observed": "Unified/context parsing, reverse, zero-fuzz exact application, dry-run/stdout, safe target-name stripping and /dev/null creation/deletion paths exist. Existing-file writeback rejects in preflight.",
+      "boundaries": [
+        "Nonzero fuzz, offsets and .rej output are project work, separate from file identity/metadata writeback boundaries",
+        "Named --output rejects; current safe existing-path refusal must not be removed by parser expansion",
+        "Current hunk mismatch abandons that file and continues later files; D-stage partial-hunk/.rej semantics remain to implement and freeze"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "printenv": {
+      "options": [
+        "-0/--null"
+      ],
+      "operands": "Optional NAME...; absent names print all environment entries.",
+      "source": [
+        "commands/printenv/main.mbt:10-21"
+      ],
+      "help": "commands/printenv/main.mbt:21",
+      "readme": "commands/printenv/README.md",
+      "catalog": "core/cli/catalog.mbt:149",
+      "support": "docs/compatibility.md:260",
+      "observed": "Ordered selected-name values and newline/NUL output exist; missing names set status1 while retaining other values.",
+      "boundaries": [
+        "Host environment enumeration and ordering are current profile, not full locale/environment parity"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "pwd": {
+      "options": [
+        "-L/--logical",
+        "-P/--physical"
+      ],
+      "operands": "Extra non-option operands are ignored with a diagnostic; last L/P determines mode; POSIXLY_CORRECT affects default.",
+      "source": [
+        "commands/pwd/main.mbt:23-58"
+      ],
+      "help": "commands/pwd/main.mbt:35",
+      "readme": "commands/pwd/README.md",
+      "catalog": "core/cli/catalog.mbt:150-152",
+      "support": "docs/compatibility.md:262",
+      "observed": "Logical PWD validation and physical current directory paths exist; validation compares normalized realpaths.",
+      "boundaries": [
+        "No independent inode-identity proof; current working-directory and realpath backend behavior remains relevant"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "rmdir": {
+      "options": [
+        "-p/--parents",
+        "-I/--ignore-fail-on-non-empty",
+        "-v/--verbose"
+      ],
+      "operands": "One or more DIR operands.",
+      "source": [
+        "commands/rmdir/main.mbt:34-47"
+      ],
+      "help": "commands/rmdir/main.mbt:47",
+      "readme": "commands/rmdir/README.md",
+      "catalog": "core/cli/catalog.mbt:185-187",
+      "support": "docs/compatibility.md:266",
+      "observed": "Directory removal and parent traversal/verbose/selected ignored-failure behavior exist.",
+      "boundaries": [
+        "Parent removal has partial effects; full permission/path/diagnostic oracle parity not certified"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "sed": {
+      "options": [
+        "-n/--quiet",
+        "--silent",
+        "-E/--regexp-extended",
+        "-r/--extended",
+        "-e/--expression",
+        "-f/--file"
+      ],
+      "operands": "SCRIPT [FILE...] unless ordered -e/-f scripts are supplied; FILE... share numbering/state. Compilation precedes input.",
+      "source": [
+        "commands/sed/main.mbt:3-44",
+        "commands/sed/parser.mbt:158-221",
+        "core/bytere/bytere.mbt:42-133"
+      ],
+      "help": "commands/sed/main.mbt:15",
+      "readme": "commands/sed/README.md:15-33",
+      "catalog": "core/cli/catalog.mbt:354-356",
+      "support": "docs/compatibility.md:224",
+      "observed": "Existing p/d/q/=, s with g/positive occurrence/p, replacement captures, positive/$/regex/range/! addresses and ordered scripts are reusable.",
+      "boundaries": [
+        "Hold space, labels/branches, groups, multiline commands and append/insert/change remain S project work",
+        "Pattern backreferences/word assertions and matcher scaling need pure MoonBit project implementation; replacement captures already exist",
+        "In-place editing is a separate documented identity/metadata boundary and is not registered by the current parser"
+      ],
+      "declaration_findings": [
+        "Catalog:355 lists in-place although -i/--in-place is absent from the parser and help/support explicitly exclude editing",
+        "Catalog extended-regexp is a semantic spelling different from accepted --regexp-extended/--extended; do not treat catalog names as aliases"
+      ],
+      "inventory_group": "other_existing_commands"
+    },
+    "sh": {
+      "options": [
+        "-i",
+        "-c SOURCE",
+        "-s",
+        "-- terminator",
+        "standalone --help/--version"
+      ],
+      "operands": "FILE ARGS..., -c SOURCE NAME ARGS..., or stdin; explicit -i uses the current pipe/session interaction.",
+      "source": [
+        "commands/sh/main.mbt:34-104",
+        "core/shell/session.mbt:19-108"
+      ],
+      "help": "commands/sh/main.mbt:38",
+      "readme": "commands/sh/README.md:15-76",
+      "catalog": "core/cli/catalog.mbt:260-267",
+      "support": "docs/compatibility.md:268",
+      "observed": "Existing lexer/parser/expansion, functions/control flow, child execution and incremental Session interface are substantial current features.",
+      "boundaries": [
+        "Session/REPL is not a full PTY or job-control terminal",
+        "Arithmetic/fd duplication/backticks/background jobs and exec/fg/bg/jobs/wait are outside the declared language profile",
+        "This plan does not add #31 language/PTY scope"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "sleep": {
+      "options": [
+        "-h/--help at first argument",
+        "standalone --version",
+        "one leading --"
+      ],
+      "operands": "One or more nonnegative fractional DURATION operands with s/m/h/d suffix; sums seconds.",
+      "source": [
+        "commands/sleep/main.mbt:22-47",
+        "commands/sleep/main.mbt:57-91"
+      ],
+      "help": "commands/sleep/main.mbt:7-17",
+      "readme": "commands/sleep/README.md:9-20",
+      "catalog": "core/cli/catalog.mbt:76",
+      "support": "docs/compatibility.md:270",
+      "observed": "Fractional/summed duration handling exists; milliseconds round upward then clamp to 2147483647.",
+      "boundaries": [
+        "Source-visible cap silently shortens requests above approximately24.86days; no long real-time wait was performed",
+        "Signal/clock scheduling behavior and overflow/Infinity grammar remain unverified oracle questions"
+      ],
+      "declaration_findings": [
+        "README/help/support do not disclose the source cap; comment says never waits less than requested while the clamp necessarily can"
+      ],
+      "inventory_group": "other_existing_commands"
+    },
+    "test": {
+      "options": [
+        "unary -n/-z",
+        "-e/-a/-f/-d/-L/-h/-p/-S/-b/-c/-s/-N/-r/-w/-x",
+        "binary =/==/!=/</>",
+        "-eq/-ne/-lt/-le/-gt/-ge",
+        "-nt/-ot",
+        "!/logical -a/-o/parentheses",
+        "standalone --help/--version"
+      ],
+      "operands": "EXPRESSION tokens; no expression exits1; malformed/trailing expressions exit2; no generic option parser.",
+      "source": [
+        "commands/test/main.mbt:27-137",
+        "commands/test/main.mbt:155-237"
+      ],
+      "help": "commands/test/main.mbt:208",
+      "readme": "commands/test/README.md",
+      "catalog": "core/cli/catalog.mbt:160-162",
+      "support": "docs/compatibility.md:275",
+      "observed": "Current string/integer/file-kind/access/size/time predicates and logical expression parser exist.",
+      "boundaries": [
+        "No implemented isatty -t, same-file -ef or full owner/mode predicate suite",
+        "Special-file positive cases, timestamp races and legacy ambiguous operand grammar need exact backend/oracle evidence"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "timeout": {
+      "options": [
+        "-- terminator",
+        "standalone --help/--version",
+        "--preserve-status and --foreground recognized as unsupported"
+      ],
+      "operands": "DURATION COMMAND [ARG...]; other option-looking tokens reject. Duration uses bounded millisecond conversion.",
+      "source": [
+        "commands/timeout/main.mbt:1-85",
+        "commands/timeout/main.mbt:93-128"
+      ],
+      "help": "commands/timeout/main.mbt:49",
+      "readme": "commands/timeout/README.md",
+      "catalog": "core/cli/catalog.mbt:268-276",
+      "support": "docs/compatibility.md:277",
+      "observed": "Local direct-child timeout execution exists with124 timeout and125/126/127 error classes.",
+      "boundaries": [
+        "Local-only; not among78published commands",
+        "No process-group/tree termination guarantee, signal selection, kill-after or full GNU job-control semantics",
+        "Direct-child hard cancel cannot establish cleanup of daemon-owned resources"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "touch": {
+      "options": [
+        "-c/--no-create",
+        "-a/--access (recognized rejection)",
+        "-m/--modification (recognized rejection)",
+        "-d/--date (recognized rejection)",
+        "-r/--reference (recognized rejection)",
+        "-t/--timestamp (recognized rejection)",
+        "--time (recognized rejection)"
+      ],
+      "operands": "FILE...; missing paths may be exclusively created with default permissions; -c on a missing path is a no-op.",
+      "source": [
+        "commands/touch/main.mbt:9-48",
+        "commands/touch/main.mbt:59-80"
+      ],
+      "help": "commands/touch/main.mbt:27",
+      "readme": "commands/touch/README.md",
+      "catalog": "core/cli/catalog.mbt:196-199",
+      "support": "docs/compatibility.md:278",
+      "observed": "Missing-file creation/no-create behavior exists; existing paths and explicit timestamp selectors reject before attempting unsupported setters; earlier created outputs survive later failure.",
+      "boundaries": [
+        "Public timestamp setter capability remains the documented unlock; parsing alone does not implement timestamp behavior"
+      ],
+      "declaration_findings": [
+        "Existing-path diagnostic still names async0.22.4 although current workspace is0.22.5; fresh public-API discovery is required before lifting the boundary"
+      ],
+      "inventory_group": "other_existing_commands"
+    },
+    "tr": {
+      "options": [
+        "-d/--delete",
+        "-s/--squeeze-repeats",
+        "-c/-C/--complement",
+        "-t/--truncate-set1"
+      ],
+      "operands": "SET1 [SET2] with mode-specific arity; C-byte sets/classes/escapes/equivalence/repeats.",
+      "source": [
+        "commands/tr/main.mbt:451-466"
+      ],
+      "help": "commands/tr/main.mbt:466",
+      "readme": "commands/tr/README.md",
+      "catalog": "core/cli/catalog.mbt:89-91",
+      "support": "docs/compatibility.md:279",
+      "observed": "Current translation/deletion/squeeze/complement paths and set grammar exist.",
+      "boundaries": [
+        "Full multibyte/locale collation semantics are excluded; conflict/expansion/invalid-set oracle matrix still required"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "true": {
+      "options": [
+        "standalone --help",
+        "standalone --version"
+      ],
+      "operands": "All other arguments ignored.",
+      "source": [
+        "commands/true/main.mbt:3-16"
+      ],
+      "help": "commands/true/main.mbt:12",
+      "readme": "commands/true/README.md",
+      "catalog": "core/cli/catalog.mbt:92",
+      "support": "docs/compatibility.md:280",
+      "observed": "Normal and metadata execution exits0.",
+      "boundaries": [
+        "No startup/performance acceptance was measured"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "unlink": {
+      "options": [
+        "standalone --help",
+        "standalone --version"
+      ],
+      "operands": "Exactly one FILE.",
+      "source": [
+        "commands/unlink/main.mbt:33-55"
+      ],
+      "help": "commands/unlink/main.mbt:42",
+      "readme": "commands/unlink/README.md",
+      "catalog": "core/cli/catalog.mbt:100",
+      "support": "docs/compatibility.md:282",
+      "observed": "Single-path no-follow unlink and directory refusal exist.",
+      "boundaries": [
+        "Full permission/special-file/backend error-wording parity not revalidated"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "wget": {
+      "options": [
+        "-q/--quiet",
+        "-O/--output-document",
+        "-o/--output-file",
+        "-a/--append-output",
+        "-i/--input-file",
+        "-c/--continue",
+        "-N/--timestamping",
+        "-t/--tries",
+        "--retry-connrefused",
+        "--retry-on-http-error",
+        "--waitretry",
+        "--max-redirect",
+        "--content-disposition",
+        "--header",
+        "--user",
+        "--password",
+        "--http-user",
+        "--http-password",
+        "--auth-no-challenge",
+        "--load-cookies",
+        "--save-cookies",
+        "--keep-session-cookies",
+        "--no-cookies",
+        "--method",
+        "--body-data",
+        "--body-file",
+        "--no-check-certificate",
+        "--no-proxy",
+        "-T/--timeout",
+        "--connect-timeout",
+        "--read-timeout",
+        "--idle-timeout"
+      ],
+      "operands": "URL... plus optional input-file URLs; selected explicit HTTP methods only.",
+      "source": [
+        "commands/wget/options.mbt:185-224",
+        "commands/wget/options.mbt:276"
+      ],
+      "help": "commands/wget/options.mbt:44-90",
+      "readme": "commands/wget/README.md",
+      "catalog": "core/cli/catalog.mbt:290-306",
+      "support": "docs/compatibility.md:27-63,285",
+      "observed": "Existing HTTP transfer, Basic/cookie/retry/resume/output/log modes are substantial; preserve stage-0 partial-body/Range/selected-name/zero-body and retry wire behavior.",
+      "boundaries": [
+        "No FTP/recursive/HSTS/full progress/IDNA/PSL/full GNU Wget parity",
+        "Timestamping and metadata behavior retain documented capability limits",
+        "--idle-timeout is an explicit project extension, not proof of a GNU alias",
+        "Repeated ordinary headers remain project semantics work"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "which": {
+      "options": [
+        "-a/--all",
+        "-s/--silent"
+      ],
+      "operands": "NAME...; direct paths or PATH search; Windows PATHEXT and empty/duplicate PATH entries have source paths.",
+      "source": [
+        "commands/which/main.mbt:80-93"
+      ],
+      "help": "commands/which/main.mbt:93",
+      "readme": "commands/which/README.md",
+      "catalog": "core/cli/catalog.mbt:418-426",
+      "support": "docs/compatibility.md:220",
+      "observed": "Regular executable lookup and all/silent modes exist; no shell alias/function introspection.",
+      "boundaries": [
+        "Provider/version/profile must be frozen before differential claims; a host which binary is not a substitute",
+        "Platform executable/read/access semantics need actual backend evidence"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "yes": {
+      "options": [
+        "standalone --help",
+        "standalone --version"
+      ],
+      "operands": "STRING... joined with spaces; default y; other option-looking operands remain text.",
+      "source": [
+        "commands/yes/main.mbt:2-33"
+      ],
+      "help": "commands/yes/main.mbt:18",
+      "readme": "commands/yes/README.md",
+      "catalog": "core/cli/catalog.mbt:307",
+      "support": "docs/compatibility.md:286",
+      "observed": "Repeated line output exists; current main catches all stdout write errors and exits successfully.",
+      "boundaries": [
+        "Accepted closed-pipe profile is not proof of signal parity or equivalence for every output error",
+        "Sustained throughput and cancellation were not measured here"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    },
+    "zcat": {
+      "options": [
+        "-c/--stdout",
+        "-d/--decompress",
+        "-t/--test",
+        "-n/--no-name",
+        "-q/--quiet"
+      ],
+      "operands": "FILE... or stdin; implicit decompression to stdout; root delegates to shared gzip runner.",
+      "source": [
+        "commands/zcat/main.mbt:2",
+        "core/gzipops/command.mbt:22-93",
+        "core/gzipops/codec.mbt:56-93"
+      ],
+      "help": "core/gzipops/command.mbt:2-13",
+      "readme": "commands/zcat/README.md:15-25",
+      "catalog": "core/cli/catalog.mbt:409-411",
+      "support": "docs/compatibility.md:229",
+      "observed": "Same current RFC1951/member/checksum/prefix decoder as gunzip; compressed input is read_all.",
+      "boundaries": [
+        "Reader input is G2 project work",
+        "Suffix search/force pass-through/metadata restoration outside current profile"
+      ],
+      "declaration_findings": [],
+      "inventory_group": "other_existing_commands"
+    }
+  },
+  "core_packages": {
+    "cli": {
+      "manifest": "core/cli/moon.pkg:1-6",
+      "source": [
+        "core/cli/types.mbt:57-134",
+        "core/cli/parser.mbt:2-154",
+        "core/cli/catalog.mbt:1-438"
+      ],
+      "public_surface": "OptionSpec/ParsedArgs, option helpers, parse and command catalog/contracts",
+      "observed": "Linear spec lookup per option; occurrences map plus order preserve repeated argument information; generic parser handles --, clusters, attached values and long=value.",
+      "boundaries": [
+        "No parser/error-order changes accepted by inventory; universal map/catalog construction is not automatically worthwhile",
+        "Catalog entries may describe rejection boundaries and semantic IDs rather than literal aliases"
+      ],
+      "declaration_findings": []
+    },
+    "stream": {
+      "manifest": "core/stream/moon.pkg:1-10",
+      "source": [
+        "core/stream/stream.mbt:2-67"
+      ],
+      "public_surface": "64KiB chunk_size/read_chunk; Line(data,terminated); LineScanner.new/next with configurable byte delimiter",
+      "observed": "Scanner searches pending from index0 after refill; take copies output and the entire remaining tail then clears/appends it.",
+      "boundaries": [
+        "R1 cursor/amortized-compaction work is source-justified, not measured complete",
+        "Longest live record can grow beyond64KiB; block size is not an input cap"
+      ],
+      "declaration_findings": []
+    },
+    "bytere": {
+      "manifest": "core/bytere/moon.pkg:1-5",
+      "source": [
+        "core/bytere/bytere.mbt:8-133"
+      ],
+      "public_surface": "Reversible C-byte text/bytes/argument adapter; compile; Pattern.find/group_count; Hit spans/captures",
+      "observed": "Project BRE/ERE translator wraps built-in Regex; find obtains earliest start then scans candidate ends with newly composed bounded Regex to choose longest.",
+      "boundaries": [
+        "Explicit pattern backreference/word assertion/engine-extension rejections; S1 matcher is project work",
+        "No fresh complexity/profile/compile-versus-scan measurements; do not declare entire matcher satisfactory"
+      ],
+      "declaration_findings": [
+        "Grep README engine-limit attribution is narrower than the plan's project-owned matcher obligation"
+      ]
+    },
+    "gzipops": {
+      "manifest": "core/gzipops/moon.pkg:1-13",
+      "source": [
+        "core/gzipops/command.mbt:17-96",
+        "core/gzipops/codec.mbt:11-117",
+        "core/gzipops/inflate.mbt:41-162",
+        "core/gzipops/inflate.mbt:179-251"
+      ],
+      "public_surface": "help/run(command,args,version), encode(Reader,Writer), decode(Bytes,Writer,test_only)",
+      "observed": "Encoder delegates to released async gzip Encoder, decoder handles member headers/inflate/trailer integrity and writes chunks before later failure; compressed input is materialized.",
+      "boundaries": [
+        "Three command consumers; 32KiB/dynamic compression/levels and incremental Reader decoder remain G work",
+        "Named metadata replacement is separate from codec project work"
+      ],
+      "declaration_findings": []
+    },
+    "checksum": {
+      "manifest": "core/checksum/moon.pkg:1-10",
+      "source": [
+        "core/checksum/digest.mbt:2-25",
+        "core/checksum/digest.mbt:141-175",
+        "core/checksum/records.mbt:2-96",
+        "core/checksum/run.mbt:11-125"
+      ],
+      "public_surface": "Algorithm(Md5,Sha1,Sha512) and run(algorithm,args,version)",
+      "observed": "MD5/SHA512 use incremental public crypto; SHA1 has pure project state; all feed64KiB reads; GNU untagged manifest parser/escaping and checks exist.",
+      "boundaries": [
+        "O9 adds algorithm/tag/length/output modes with independent vectors; current tags are explicitly rejected",
+        "Standalone sha256sum is separate and must join impact closure; CR escaping discrepancy unverified"
+      ],
+      "declaration_findings": []
+    },
+    "fsops": {
+      "manifest": "core/fsops/moon.pkg:1-14",
+      "source": [
+        "core/fsops/fsops.mbt:24-245",
+        "core/fsops/fsops.mbt:303-362",
+        "core/fsops/fsops.mbt:414-522",
+        "core/fsops/overwrite.mbt:25-156",
+        "core/fsops/time.mbt:15-71"
+      ],
+      "public_surface": "Paths/working-directory/removal protection, metadata/output/unique-temp/copy/remove, update/backup decisions, timestamp comparisons/reads",
+      "observed": "Copy preflight rejects unsafe existing regular/symlink targets before traversal effects; time/update/backup helpers centralize current policy.",
+      "boundaries": [
+        "Permission reads/identity/readlink/hardlink/handle-truncation/arbitrary timestamp setters remain documented policy limits",
+        "Query reuse must preserve preflight/identity/race/error/policy ordering; no metadata-preserving EXDEV fallback"
+      ],
+      "declaration_findings": []
+    },
+    "netops": {
+      "manifest": "core/netops/moon.pkg:1-25",
+      "source": [
+        "core/netops/types.mbt:54-152",
+        "core/netops/types.mbt:183-310",
+        "core/netops/transfer.mbt:761-814",
+        "core/netops/transfer_sink.mbt:1",
+        "core/netops/http_wire.mbt:1",
+        "core/netops/cookies.mbt:335-416",
+        "core/netops/url.mbt:308-372"
+      ],
+      "public_surface": "Transfer options/profiles/errors/phases/observations/result, transfer/retry classification, cookies and URL helpers; legacy fetch API",
+      "documentation": "core/netops/README.md:1-126",
+      "observed": "Pure HTTP/1 adapter uses public passthrough, phased deadlines/framing, bounded metadata and profile-specific prefix/sink/cookie/request-target handling.",
+      "boundaries": [
+        "Strict/Curl/Wget distinctions and stage-0 partial-error precedence must survive reuse",
+        "Proxy CONNECT high-level parser and repeated header semantics remain project work; no automatic content decoding",
+        "Failed writer may have unknown additional effects; counters are a lower bound, not exact committed bytes",
+        "File retry uses path reset without descriptor/inode identity guarantee"
+      ],
+      "declaration_findings": [
+        "README calls some stage-0 transfer behavior candidate acceptance despite later published stage-0 support record; reconcile current wording without rewriting historical evidence"
+      ]
+    },
+    "process": {
+      "manifest": "core/process/moon.pkg:1-7",
+      "source": [
+        "core/process/process.mbt:4-87"
+      ],
+      "public_surface": "Complete environment, ExecutionContext, ChildSpec/child/run, POSIX launch status mapping, file redirections/pipe",
+      "observed": "run supplies literal argv/cwd/full explicit environment and hard_cancel to released async process; inherit_env=false.",
+      "boundaries": [
+        "Direct child only; process tree/groups and daemon-owned resources require separate ownership/observation logic",
+        "No full terminal/session or soft-signal contract implied"
+      ],
+      "declaration_findings": []
+    },
+    "shell": {
+      "manifest": "core/shell/moon.pkg:1-15",
+      "source": [
+        "core/shell/session.mbt:19-108",
+        "core/shell/session.mbt:129-204",
+        "core/shell/lexer.mbt:1",
+        "core/shell/parser.mbt:1",
+        "core/shell/expand.mbt:1",
+        "core/shell/executor.mbt:1",
+        "core/shell/types.mbt:1"
+      ],
+      "public_surface": "Session.new/feed/finish/prompt/load_startup, read_line, run/capture; internal language AST/lexer/parser/expansion/executor",
+      "observed": "Session owns mutable variables/cwd/status/functions/input and pending source; feed parses accumulated text then runs jobs, preserving incomplete-input state.",
+      "boundaries": [
+        "Current declared language only; no #31 expansion/PTY/job-control acceptance",
+        "Any invocation cache must invalidate for mutable environment/cwd/session changes"
+      ],
+      "declaration_findings": []
+    },
+    "jq_filter": {
+      "manifest": "core/jq_filter/moon.pkg:1-4",
+      "source": [
+        "core/jq_filter/filter.mbt:4-90"
+      ],
+      "public_surface": "parse(source)->public moonjq AST",
+      "observed": "Recursive public-AST lowering adapts Unicode-scalar string Slice to explode/slice/implode, leaves path assignment targets as locations and traverses other expression nodes.",
+      "boundaries": [
+        "Retain moonjq0.2.0/current language/numeric/order/error boundaries; no full jq language or streaming evaluator",
+        "AST/intermediate optimization needs operation-equivalent measurements and integrated command evidence"
+      ],
+      "declaration_findings": []
+    },
+    "time_zone": {
+      "manifest": "core/time_zone/moon.pkg:1-10",
+      "source": [
+        "core/time_zone/zone.mbt:20-124",
+        "core/time_zone/tzif.mbt:2-53",
+        "core/time_zone/posix.mbt:109-183"
+      ],
+      "public_surface": "Zone load/decode/at_unix/abbreviation/at_local",
+      "observed": "TZ/TZDIR or host TZif plus POSIX future-rule parsing; current transition selection scans linearly; at_local checks candidate offsets and rejects ambiguous/gap times.",
+      "boundaries": [
+        "Required binary-search/invocation cache is future work; no performance claim",
+        "Cache identity must include TZ/TZDIR/source/session changes; missing host database remains explicit failure"
+      ],
+      "declaration_findings": []
+    },
+    "platform": {
+      "manifest": "core/platform/moon.pkg:1-8",
+      "source": [
+        "core/platform/platform.mbt:24-126",
+        "core/platform/platform.mbt:149-191"
+      ],
+      "public_surface": "Platform/standard streams/terminal policy, path separators and capability predicates, POSIX EXDEV classification",
+      "observed": "File-kind/regular-size/time/access reads return supported; permission mutation and symlink creation reject Windows; permission reads/setters/hardlink/readlink/special-file policy/is_terminal currently false.",
+      "boundaries": [
+        "These booleans are project policy/verified baseline, not proof of current dependency API absence",
+        "Terminal auto detection is false; explicit interaction/color decisions remain separate",
+        "EXDEV classification is POSIX18 only; Windows rename domains remain unclassified"
+      ],
+      "declaration_findings": [
+        "is_terminal comment cites async0.22.4 while workspace core depends0.22.5; lift only after public API and backend evidence"
+      ]
+    }
+  },
+  "cross_package_declaration_debt": [
+    {
+      "evidence": [
+        "core/README.md:12",
+        "core/moon.mod:3",
+        "docs/compatibility.md:6-16"
+      ],
+      "finding": "core README still calls0.7.0/async0.22.5 an unpublished workspace candidate, although current support record declares cli/core0.7.0 stage-0 publication. This is current prose debt; keep historical reports and unmodified command candidates distinct."
+    }
+  ],
+  "selected_group_classification_contract": {
+    "already_implemented": "A current code path exists for the stated narrower group; execution, option conflict parity, platforms and publication are not re-certified.",
+    "defect": "A concrete source/declaration inconsistency or selected-contract rejection/ignored input is visible. This is not newly executed GNU differential evidence.",
+    "missing_project_work": "Selected parser/algorithm/output behavior is absent or explicitly rejected; no public-API blocker has been established for that algorithm.",
+    "documented_public_api_boundary": "A precise existing ADR/support boundary applies to the stated conditional behavior. This review did not perform a fresh dependency API absence proof."
+  },
+  "oracle_questions": {
+    "common": "canonical/alias/cluster/=value, missing/invalid/zero/negative/overflow, -- operands, repeats/conflicts/order, empty/stdin/multifile/binary/no final delimiter, later error/prefix/effects",
+    "O1": "group/count separators; suppressed comm columns/totals; join case/header/auto duplicate keys; wc totals with failed operands",
+    "O2": "stable versus whole-line tie fallback, merge input ordering, same-input output opening, random-source hash/order/consumption/exhaustion",
+    "O3": "oracle ABI precision and rounding, single seq float conversion and -w conflicts, fmt margins/prefixes, printf hex/quote flags and error prefixes",
+    "O4": "absolute /N and relative +N trailing stops, repeat ordering and CR/backspace interactions",
+    "O5": "all six chunk forms and selected stdout, line-byte oversized records, suffix starts/exhaustion, filter $FILE/pipe/wait/cleanup, elide applicability",
+    "O6": "csplit integer format/%%/width/suppress/offset/repeat; multifile no added bytes; tac regex zero/overlap matching",
+    "O7": "od actual ABI float aliases/traditional offset/label conflicts; hexdump custom/color units and skip; cmp byte quoting; strings separator/encoding boundaries",
+    "O8": "xxd binary/EBCDIC/endian/group/case/autoskip mode conflicts; relative/end-relative/reverse address adjustments; output file safety",
+    "O9": "algorithm/length/tag/base64/raw/check conflicts, digest standard vectors and GNU record escaping/empty/malformed summaries",
+    "O10": "realpath lexical versus physical combinations; mktemp template/environment precedence; symbolic mkdir omitted-who umask; rm prompt/force ordering and input source",
+    "O11": "layout width after quoting; nine C-locale quoting styles and env/short-option precedence; explicit color rules",
+    "O12": "JSON/HTML escape and color conflicts; pattern/matchdirs/prune/filelimit/du/count/report order and ordinary-file size",
+    "O13": "env GNU split/escape/variable behavior; xargs delimiter combinations and independent confirmation channel; tail NUL origins/headers; tee pipe/file output-error classification"
+  },
+  "component_reports": [
+    "o-options-inventory.json",
+    "selected-command-surfaces.json",
+    "remaining-command-inventory.json",
+    "core-package-inventory.json"
+  ],
+  "unfinished": [
+    "C0 mainline recovery and required checks remain separately gated",
+    "C1/C2 closure, freshness, schema and CI migration are not implemented by this inventory",
+    "Plan features, full algorithm/resource review, fixed-oracle, cross-platform/backend-pair, publication and exact MoonX performance acceptance remain outstanding"
+  ]
+}

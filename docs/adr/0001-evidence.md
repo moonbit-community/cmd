@@ -3,9 +3,82 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-10-23
-Revision: Preserve exact-source coverage gates and add invocation-owned Docker oracle cleanup after interrupted execution.
+Revision: Preserve exact-source coverage and invocation-owned Docker cleanup; bind automatic impact to complete Git content and both-side dependencies in a full/shadow migration.
 
 ## Target and decision
+
+The C1 scope migration uses one schema-v2 `tests/coverage/ci-change.json` and
+the [scope contract](../../tests/scope/README.md). Prepare from the staged
+payload after final interfaces/formatting; verify the exact clean committed
+tree, base, complete raw diff, both public dependency graphs, registry and
+non-import policy. Reviewed additions only expand requirements. A declaration
+filename change or timestamp cannot prove freshness. Same tree/base with a
+different commit message requires no artificial edit.
+
+The migration remains `shadow-full`: all platform suites execute in full and
+actual evidence is checked against the calculated requirements. Candidate
+selector changes cannot authorize reduced execution. CI15's public package
+graph v2 is a conservative declared-import union; newer v3 requires explicit
+Native/Wasm captures. Normalize the same imports to the same identity, retain
+all isolated workspace packages, and explain full widening for unsupported
+semantics. Copying/resolving two owned snapshots costs extra C1 time; replace
+that cost only with identity-checked reuse and equivalent observed coverage.
+
+Selected rejection requirements retain support/ADR/unlock mappings. Removed
+or moved command obligations require explicit replacements and actual old plus
+current evidence; a new owner's row cannot silently prove the old owner.
+Retained host-tool diagnostics remain supplementary and cannot prove immutable
+upstream parity. Existing pre-push policy remains effective until C2's reviewed
+handoff migration; `shadow-full` grants no bootstrap exception.
+
+The C1 remote correction preserves Git's effective checkout conversion using
+only validated scalar `core.autocrlf`, `core.eol`, `core.symlinks` and
+`core.fileMode` values. Ambient Git overrides remain excluded; a disposable
+fresh index still checks actual bytes, link text and applicable mode changes.
+The owned CRLF fixture reproduces loss of system conversion and verifies that
+conversion cannot hide an actual edit. Actual Windows acceptance still requires
+the platform run, with contained path/status/mode diagnostics on any failure.
+
+Full regression retains the Linux GNU host diagnostic's actual supplementary
+bundle without promoting it to semantic parity. Frozen publication is an
+independent proof subject: validate every exact coordinate and selected frozen
+case, its actual observations, explicit platform applicability and sealed
+oracle where required. Current source and frozen publication identities cannot
+substitute for each other. Empty or partial publication evidence fails even
+when the current registry has no per-behavior publication requirement.
+
+Registry source discovery tolerates typed ENOENT only for an entry that vanishes
+after enumeration during concurrent tests. Deleted registered declarations
+still fail orphan validation; permission and other filesystem failures remain
+fatal. Deterministic removal and error-classification regressions preserve this
+boundary without serializing otherwise independent fixture execution.
+
+The live report index's in-place regular-file updates qualify for narrative
+scope. Historical report edits/removal, index renames/deletion/type changes and
+unknown ownership still widen to full. Both immutable paths and file modes are
+checked so moving historical evidence into the index cannot hide its removal.
+
+Changes to shared metadata, package-test, network-scenario and mv-scenario
+producers force full scope. Import closure alone misses dynamically launched
+command artifacts and registered consumers of their execution protocols; typed
+scenario associations alone can omit the corresponding raw cases and published
+coordinates. The owned-package regression reproduces the former scoped result
+and requires complete command/case/build/publication closure after correction.
+This conservatism costs a full run for producer maintenance. Lift it only with
+complete old/new consumer, child artifact and raw/typed/publication associations
+and equivalent observed regression coverage.
+
+Reviewed command additions retain linked non-import integrations with each
+registered row's own requirements. Targeted behavior/case and boundary mapping
+additions do not promote unchanged child commands to their entire ordinary
+collections. Close artifacts after those targets are known: preserve both
+snapshots' command roots, matched or member-associated child builds and forward
+dependencies. Required publication rows contribute their exact coordinates;
+build-only children do not add publication evidence. Full association rules
+widen before acceptance and recompute newly selected rejection obligations.
+The targeted regression covers metadata-only additions, member-only scenario
+builds, removed old rules/edges, mapped targets, registered applicability and
+full widening without spreading an extra's evidence onto linked rows.
 
 The 2026-10-11 repair treats an upstream disagreement as a failed contract,
 even when old package tests encoded the same defect. Pin binutils 2.44 and

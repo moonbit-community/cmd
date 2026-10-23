@@ -1,0 +1,1526 @@
+{
+  "schema": 1,
+  "artifact_kind": "pending-original-acceptance-map",
+  "prepared_on": "2026-10-23",
+  "purpose": "Preserve and map every original acceptance bullet from issues #27/#28/#30/#33/#32 to stable local acceptance IDs, plan stages and required evidence. This file is a planning artifact, not observed passing coverage or issue completion.",
+  "status": "pending",
+  "source": {
+    "snapshot": "_build/verification/2026-10-23-preflight/original-issue-snapshot.json",
+    "snapshot_sha256": "2d15eca4074a70fc199b1158933e587949be43c688943c8d9f234c511d40e2c8",
+    "snapshot_observed_at": "2026-10-23T01:42:00Z",
+    "plan": "/Users/winter/.codex/worktrees/cmd-comprehensive-c0/cmd/docs/comprehensive-optimization-plan.md",
+    "inspected_source_revision": "82ba94b01f5a4cf4e91789d73158caa87cc8a261",
+    "acceptance_sections": [
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "14",
+      "16",
+      "17",
+      "18"
+    ]
+  },
+  "stable_id_policy": "IDs identify immutable original issue bullets in snapshot order. They are not test-registry behavior/case IDs and must not be renumbered when implementation is split. Actual registry bindings remain pending rather than invented.",
+  "totals": {
+    "issues": 5,
+    "original_acceptance_bullets": 22,
+    "pending_acceptance_bullets": 22,
+    "accepted_acceptance_bullets": 0
+  },
+  "mapping_rules": [
+    "original_text preserves every acceptance bullet verbatim, excluding only the Markdown '- ' list marker.",
+    "Historical issue context stays historical. Current source observations do not rewrite original conditions or establish acceptance.",
+    "Required evidence classes and plan stages describe obligations, never observed execution outcomes.",
+    "All required Linux/macOS/Windows semantic and effect observations remain obligations; unknown applicability is pending rather than automatically skipped.",
+    "Native/Wasm each execute independently and backend-pair compares their applicable raw observations.",
+    "Performance is required on fixed native arm64 macOS and native arm64 Linux VM profiles. Windows timing is diagnostic and not a performance claim.",
+    "Pinned upstream profiles require immutable image/executable identity, tool versions and source/distribution checksums; PATH availability or mutable labels do not establish parity.",
+    "An API boundary needs original condition, unfinished observable behavior, classification, precise API/platform, minimal reproduction, rejection effects, canonical ADR/support, responsible child and exact unlock.",
+    "Selected algorithms/options and failed performance gates cannot be transferred to children to manufacture completion.",
+    "Source/package/contract/backend-pair/upstream/published/resource/performance evidence remain distinct. No current source inspection or historical report marks a row complete.",
+    "Release acceptance requires exact changed-package coordinates, full actual-main gates and exact RC/formal MoonX consumers. This map does not authorize publication.",
+    "No issue was filed, closed or commented. Ordered closure remains #27 -> #28 -> #30 -> #33 -> #32 after formal exact-consumer and final-main acceptance."
+  ],
+  "evidence_class_definitions": {
+    "source-review": "Pure-MoonBit implementation, released public APIs, exact source/dependency ownership and hotspot review.",
+    "package": "Registered package regression execution and independent algorithm/vector/property checks as applicable.",
+    "contract": "Raw stdout/stderr/status/input/effect assertions bound to stable registered cases.",
+    "metadata": "Actual help/version/README/catalog/package metadata consistency.",
+    "scenario": "Registered multi-command/stateful/file/process/network interactions and failure ordering.",
+    "policy": "Capability/input/filesystem/process/output rejection and no-unowned-effect evidence.",
+    "backend-pair": "Independent Native/Wasm executions compared using applicable raw observations.",
+    "upstream-differential": "Current command observations compared with an immutable pinned upstream profile.",
+    "published-differential": "Actual exact RC/formal MoonX consumer observations compared with applicable frozen contracts/oracle expectations.",
+    "boundary": "Minimal public-API/platform reproduction, exact rejection effects, canonical ADR/support and responsible child/unlock mapping.",
+    "resource-observation": "First output, RSS/explicit memory/temp disk/handles/children/filter/index peaks and cleanup/failure effects.",
+    "performance-observation": "Frozen per-row real-MoonX timing/ratio/size/raw-sample/statistical gates; not semantic compatibility.",
+    "profile-provenance": "Source/artifact/dependency/toolchain/OS/ABI/oracle/corpus/environment identities.",
+    "documentation-sync": "Synchronized README/help/catalog/compatibility/canonical ADR/registry/manifests, preserving historical evidence.",
+    "release-provenance": "Candidate/RC/formal coordinates, archive/resolution identities and exact checked-out/main/consumer execution receipts."
+  },
+  "evidence_taxonomy_note": "These are obligation categories for this acceptance map. They do not extend or substitute the repository registry's executable required_evidence enum.",
+  "plan_stage_sections": {
+    "B1": "7 and 16: sampling/statistics/streaming observations",
+    "B2": "6, 7 and 16: sealed profiles/corpus/oracles and same-toolchain baseline",
+    "G1": "8: raw codec, levels, block cost selection",
+    "G2": "8: Reader/envelope/three-CLI incremental decode",
+    "S1": "9: shared AST/matcher/adapters/expr",
+    "S2": "9: instruction/PC/hold/groups/branches",
+    "S3": "9: complete cycle/multiline/output/error order",
+    "D1": "10: comparison keys/options/directories",
+    "D2": "10: linear-space reconstruction/hunks",
+    "D3": "10: offset/fuzz/reject/mixed effects",
+    "R1": "12: scanner/rev/strings/split",
+    "R2": "12: csplit/tac/column spool/index",
+    "R3": "12: sort runs/merge/controls",
+    "R4": "12: joint resources/cancel/large input",
+    "FULL_REVIEW": "13 and 16: complete 79-command/12-core review",
+    "FULL_SOURCE_GATE": "16 and 17: integrated exact-source full three-platform/main gates",
+    "RC": "17: combined release candidate publication and exact consumers",
+    "FORMAL": "17: formal publication and exact formal consumers",
+    "CLOSURE": "18: original acceptance audit and ordered issue closure",
+    "O1": "11: selected option family O1",
+    "O2": "11: selected option family O2",
+    "O3": "11: selected option family O3",
+    "O4": "11: selected option family O4",
+    "O5": "11: selected option family O5",
+    "O6": "11: selected option family O6",
+    "O7": "11: selected option family O7",
+    "O8": "11: selected option family O8",
+    "O9": "11: selected option family O9",
+    "O10": "11: selected option family O10",
+    "O11": "11: selected option family O11",
+    "O12": "11: selected option family O12",
+    "O13": "11: selected option family O13"
+  },
+  "issue_closure_order": [
+    27,
+    28,
+    30,
+    33,
+    32
+  ],
+  "issues": [
+    {
+      "issue_number": 27,
+      "issue_url": "https://github.com/moonbit-community/cmd/issues/27",
+      "original_title": "gzip: add compressed DEFLATE output and streaming decode",
+      "source_issue_updated_at": "2026-10-11T14:10:47Z",
+      "source_snapshot_state": "open",
+      "status": "pending",
+      "affected_commands": [
+        "gzip",
+        "gunzip",
+        "zcat"
+      ],
+      "intended_packages": [
+        "cli/core",
+        "cli/gzip",
+        "cli/gunzip",
+        "cli/zcat"
+      ],
+      "implementation_targets": [
+        "core/gzipops",
+        "commands/gzip",
+        "commands/gunzip",
+        "commands/zcat"
+      ],
+      "required_oracle_profiles": [
+        "gzip-1.14"
+      ],
+      "current_context_notes": [
+        {
+          "classification": "historical-wording-with-current-source-drift",
+          "original_context": "Compression currently emits stored DEFLATE blocks and the command rejects compression-level options, so the original issue is only partially complete.",
+          "current_source_observation": "At inspected revision 82ba94b01f5a4cf4e91789d73158caa87cc8a261, encode calls the released async public Encoder.write_reader/end. Current source records describe limited LZ matching and fixed-Huffman encoding; levels, 32 KiB history, dynamic block selection and Reader decoding remain planned. This source inspection does not satisfy any acceptance row.",
+          "source_anchors": [
+            "core/gzipops/codec.mbt:113",
+            "core/gzipops/command.mbt:13",
+            "docs/adr/0008-data.md:42",
+            "docs/compatibility.md:229"
+          ],
+          "exact_published_coordinate": "cli/gzip@0.1.1",
+          "exact_published_encoding_classification": "unverified; do not infer stored-only encoding from the issue preamble or workspace README",
+          "manifest_anchor": "tests/release_runner/current/published.json",
+          "manifest_sha256": "888dc3399d4561ddddab3439d468f22862be494ff7940a44ba95d98b01ba3133",
+          "inherited_wording_caution": "commands/gzip/README.md and preflight startup-inventory.json contain published stored-only wording; it is not verified exact-coordinate encoding evidence. Preserve historical wording without promoting it to a current claim."
+        }
+      ],
+      "acceptance": [
+        {
+          "acceptance_id": "original-issue-27-A01",
+          "original_bullet_index": 1,
+          "source_body_line": 6,
+          "original_text": "Add pure-MoonBit LZ/Huffman compression with level selection.",
+          "status": "pending",
+          "plan_stages": [
+            "G1"
+          ],
+          "required_evidence_classes": [
+            "source-review",
+            "package",
+            "contract",
+            "backend-pair",
+            "upstream-differential"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [],
+          "required_performance_platforms": [],
+          "required_observations": [
+            "Pure-MoonBit LZ/Huffman implementation and independent vectors/properties",
+            "32 KiB history and effective level selection; default/aliases/repeat ordering",
+            "Stored/fixed/dynamic selection and valid canonical Huffman trees"
+          ],
+          "boundary_mapping_required": false,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        },
+        {
+          "acceptance_id": "original-issue-27-A02",
+          "original_bullet_index": 2,
+          "source_body_line": 7,
+          "original_text": "Confirm compressible fixtures shrink and remain interoperable with pinned gzip.",
+          "status": "pending",
+          "plan_stages": [
+            "G1",
+            "B2",
+            "RC",
+            "FORMAL"
+          ],
+          "required_evidence_classes": [
+            "contract",
+            "backend-pair",
+            "upstream-differential",
+            "published-differential",
+            "profile-provenance",
+            "performance-observation"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_performance_platforms": [
+            "macos-native-arm64",
+            "linux-virtualized-native-arm64"
+          ],
+          "required_observations": [
+            "Designated compressible fixtures shrink at every selected level",
+            "Project output decoded by pinned gzip; project decodes all pinned GNU levels",
+            "Compressed-byte identity is not required; ratio and interoperability are separate"
+          ],
+          "boundary_mapping_required": false,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        },
+        {
+          "acceptance_id": "original-issue-27-A03",
+          "original_bullet_index": 3,
+          "source_body_line": 8,
+          "original_text": "Reduce decoder whole-input buffering while preserving concatenated members, CRC failures and partial output.",
+          "status": "pending",
+          "plan_stages": [
+            "G2",
+            "R4"
+          ],
+          "required_evidence_classes": [
+            "source-review",
+            "package",
+            "contract",
+            "backend-pair",
+            "upstream-differential",
+            "resource-observation"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [],
+          "required_performance_platforms": [],
+          "required_observations": [
+            "Reader/refill-based decode rather than compressed-input read_all",
+            "Concatenated/empty members and optional headers across byte splits",
+            "CRC/ISIZE/truncation/error-prefix bytes and order retained",
+            "Bounded decoder history/tables separated from Bytes adapter caller memory"
+          ],
+          "boundary_mapping_required": false,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        },
+        {
+          "acceptance_id": "original-issue-27-A04",
+          "original_bullet_index": 4,
+          "source_body_line": 9,
+          "original_text": "Record memory and throughput observations separately from semantic compatibility.",
+          "status": "pending",
+          "plan_stages": [
+            "B1",
+            "B2",
+            "G1",
+            "G2",
+            "R4",
+            "RC",
+            "FORMAL"
+          ],
+          "required_evidence_classes": [
+            "profile-provenance",
+            "performance-observation",
+            "resource-observation",
+            "upstream-differential"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [],
+          "required_performance_platforms": [
+            "macos-native-arm64",
+            "linux-virtualized-native-arm64"
+          ],
+          "required_observations": [
+            "Memory, throughput and ratio observations recorded independently",
+            "Raw samples and input/artifact/profile identities",
+            "No semantic compatibility claim derived from speed or memory measurements"
+          ],
+          "boundary_mapping_required": false,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        },
+        {
+          "acceptance_id": "original-issue-27-A05",
+          "original_bullet_index": 5,
+          "source_body_line": 10,
+          "original_text": "Update README, compatibility, ADR and release tests before publication.",
+          "status": "pending",
+          "plan_stages": [
+            "G1",
+            "G2",
+            "FULL_SOURCE_GATE",
+            "RC",
+            "FORMAL"
+          ],
+          "required_evidence_classes": [
+            "documentation-sync",
+            "metadata",
+            "contract",
+            "policy",
+            "backend-pair",
+            "upstream-differential",
+            "published-differential",
+            "release-provenance"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_performance_platforms": [],
+          "required_observations": [
+            "README/help/catalog/compatibility/canonical ADR and registry synchronized",
+            "Exact RC/formal coordinates and release regression effects",
+            "Immutable historical evidence remains historical"
+          ],
+          "boundary_mapping_required": false,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        }
+      ]
+    },
+    {
+      "issue_number": 28,
+      "issue_url": "https://github.com/moonbit-community/cmd/issues/28",
+      "original_title": "sed: complete hold space, branching, multiline commands and matcher grammar",
+      "source_issue_updated_at": "2026-10-11T14:10:53Z",
+      "source_snapshot_state": "open",
+      "status": "pending",
+      "affected_commands": [
+        "sed",
+        "expr",
+        "grep",
+        "csplit",
+        "tac"
+      ],
+      "intended_packages": [
+        "cli/core",
+        "cli/sed",
+        "cli/expr",
+        "cli/grep",
+        "cli/csplit",
+        "cli/tac"
+      ],
+      "implementation_targets": [
+        "core/bytere",
+        "commands/sed",
+        "commands/expr"
+      ],
+      "required_oracle_profiles": [
+        "sed-4.9",
+        "coreutils-9.11",
+        "grep-3.12"
+      ],
+      "current_context_notes": [
+        {
+          "classification": "historical-context-preserved",
+          "original_context": "Hold space, branching, multiline commands, append/insert operations and the remaining matcher grammar are still outside the supported profile.",
+          "current_source_observation": "The inspected sed README and canonical data ADR still exclude these families. This is an inventory observation, not acceptance evidence; regex changes must also account for shared consumers.",
+          "source_anchors": [
+            "commands/sed/README.md:30",
+            "docs/adr/0008-data.md:97"
+          ]
+        }
+      ],
+      "acceptance": [
+        {
+          "acceptance_id": "original-issue-28-A01",
+          "original_bullet_index": 1,
+          "source_body_line": 6,
+          "original_text": "Implement the remaining pure-MoonBit sed execution model and shared matcher features.",
+          "status": "pending",
+          "plan_stages": [
+            "S1",
+            "S2",
+            "S3"
+          ],
+          "required_evidence_classes": [
+            "source-review",
+            "package",
+            "contract",
+            "scenario",
+            "backend-pair",
+            "upstream-differential"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [],
+          "required_performance_platforms": [],
+          "required_observations": [
+            "Shared matcher AST/POSIX selection/captures/backreferences and consumer closure",
+            "Sed PC/hold/groups/labels/branches/flags/append/input-cycle state",
+            "n/N/P/D/a/i/c EOF/multifile/no-LF effects"
+          ],
+          "boundary_mapping_required": false,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        },
+        {
+          "acceptance_id": "original-issue-28-A02",
+          "original_bullet_index": 2,
+          "source_body_line": 7,
+          "original_text": "Compare empty matches, backreferences, branching, multiline input and partial output with pinned GNU sed.",
+          "status": "pending",
+          "plan_stages": [
+            "S1",
+            "S2",
+            "S3",
+            "B2",
+            "RC",
+            "FORMAL"
+          ],
+          "required_evidence_classes": [
+            "contract",
+            "scenario",
+            "backend-pair",
+            "upstream-differential",
+            "published-differential",
+            "profile-provenance"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_performance_platforms": [],
+          "required_observations": [
+            "Empty-match progress and POSIX leftmost-longest/capture selection",
+            "Pattern backreferences and finite branch/multiline scripts",
+            "Partial stdout/stderr/status ordering against pinned GNU sed"
+          ],
+          "boundary_mapping_required": false,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        },
+        {
+          "acceptance_id": "original-issue-28-A03",
+          "original_bullet_index": 3,
+          "source_body_line": 8,
+          "original_text": "Preserve invalid-script status, output and writeback boundaries.",
+          "status": "pending",
+          "plan_stages": [
+            "S1",
+            "S2",
+            "S3"
+          ],
+          "required_evidence_classes": [
+            "package",
+            "contract",
+            "policy",
+            "scenario",
+            "backend-pair",
+            "upstream-differential",
+            "boundary"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [],
+          "required_performance_platforms": [],
+          "required_observations": [
+            "Invalid-script status/stdout/stderr before input or output effects",
+            "Writeback/target identity/metadata rejection before mutation",
+            "Delivered prefix and later-input/closed-output error ordering"
+          ],
+          "boundary_mapping_required": false,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        },
+        {
+          "acceptance_id": "original-issue-28-A04",
+          "original_bullet_index": 4,
+          "source_body_line": 9,
+          "original_text": "Keep in-place editing blocked until public metadata and truncate APIs are available.",
+          "status": "pending",
+          "plan_stages": [
+            "S3",
+            "FULL_REVIEW",
+            "RC",
+            "FORMAL"
+          ],
+          "required_evidence_classes": [
+            "source-review",
+            "boundary",
+            "policy",
+            "contract",
+            "backend-pair"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [],
+          "required_performance_platforms": [],
+          "required_observations": [
+            "Keep -i rejected until precise released public metadata/truncate/identity requirements are met",
+            "Minimal API reproduction and unchanged target/alias/mode observations",
+            "Canonical ADR/support unlock and fully responsible child if legitimate"
+          ],
+          "boundary_mapping_required": true,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        },
+        {
+          "acceptance_id": "original-issue-28-A05",
+          "original_bullet_index": 5,
+          "source_body_line": 10,
+          "original_text": "Update README, compatibility, ADR and Native/Wasm/MoonX regressions before publication.",
+          "status": "pending",
+          "plan_stages": [
+            "S1",
+            "S2",
+            "S3",
+            "FULL_SOURCE_GATE",
+            "RC",
+            "FORMAL"
+          ],
+          "required_evidence_classes": [
+            "documentation-sync",
+            "metadata",
+            "contract",
+            "policy",
+            "backend-pair",
+            "upstream-differential",
+            "published-differential",
+            "release-provenance"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_performance_platforms": [],
+          "required_observations": [
+            "README/help/catalog/compatibility/ADR/registry synchronized",
+            "Actual Native/Wasm regressions plus exact RC/formal MoonX consumer semantics",
+            "Required Windows observations retained; no missing-platform completion claim"
+          ],
+          "boundary_mapping_required": false,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        }
+      ]
+    },
+    {
+      "issue_number": 30,
+      "issue_url": "https://github.com/moonbit-community/cmd/issues/30",
+      "original_title": "diff and patch: add directory, whitespace, fuzz, offset and reject-file workflows",
+      "source_issue_updated_at": "2026-10-11T14:11:07Z",
+      "source_snapshot_state": "open",
+      "status": "pending",
+      "affected_commands": [
+        "diff",
+        "patch"
+      ],
+      "intended_packages": [
+        "cli/core",
+        "cli/diff",
+        "cli/patch"
+      ],
+      "implementation_targets": [
+        "commands/diff",
+        "commands/patch"
+      ],
+      "required_oracle_profiles": [
+        "diffutils-3.12",
+        "patch-2.8"
+      ],
+      "current_context_notes": [
+        {
+          "classification": "historical-context-preserved",
+          "original_context": "Directory and whitespace modes, fuzzy and offset application, reject files, mixed partial success and remaining writeback metadata behavior are still outside the supported profile.",
+          "current_source_observation": "The inspected command READMEs still describe buffered file diff and exact-hunk patch, with mode/identity-dependent writeback rejection. These records define investigation input, not proof that all original conditions remain absent or accepted.",
+          "source_anchors": [
+            "commands/diff/README.md:25",
+            "commands/patch/README.md:22",
+            "docs/adr/0004-filesystem.md:124"
+          ]
+        }
+      ],
+      "acceptance": [
+        {
+          "acceptance_id": "original-issue-30-A01",
+          "original_bullet_index": 1,
+          "source_body_line": 6,
+          "original_text": "Implement the remaining pure-MoonBit diff and patch workflows.",
+          "status": "pending",
+          "plan_stages": [
+            "D1",
+            "D2",
+            "D3"
+          ],
+          "required_evidence_classes": [
+            "source-review",
+            "package",
+            "contract",
+            "scenario",
+            "policy",
+            "backend-pair",
+            "upstream-differential"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [],
+          "required_performance_platforms": [],
+          "required_observations": [
+            "Diff directory/whitespace/case/CR/missing-side behavior and linear-space reconstruction",
+            "Patch per-file/per-hunk offset/fuzz/reject/mixed status state",
+            "Safe new-file/new-reject creation without unsafe existing-target replacement"
+          ],
+          "boundary_mapping_required": false,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        },
+        {
+          "acceptance_id": "original-issue-30-A02",
+          "original_bullet_index": 2,
+          "source_body_line": 7,
+          "original_text": "Compare multiple files and hunks, whitespace modes, offsets, fuzz, reject files, partial success and failure ordering with pinned GNU diffutils and patch.",
+          "status": "pending",
+          "plan_stages": [
+            "D1",
+            "D2",
+            "D3",
+            "B2",
+            "RC",
+            "FORMAL"
+          ],
+          "required_evidence_classes": [
+            "contract",
+            "scenario",
+            "backend-pair",
+            "upstream-differential",
+            "published-differential",
+            "profile-provenance"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_performance_platforms": [],
+          "required_observations": [
+            "Multiple files/hunks, whitespace modes and exact hunk/output selection",
+            "Offsets/fuzz/candidate order/reject path and bytes",
+            "Mixed success and diagnostic/failure ordering",
+            "Roundtrip supplements rather than replaces byte/status/reject evidence"
+          ],
+          "boundary_mapping_required": false,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        },
+        {
+          "acceptance_id": "original-issue-30-A03",
+          "original_bullet_index": 3,
+          "source_body_line": 8,
+          "original_text": "Preserve dry-run and stdout behavior and record file and mode effects where public APIs permit.",
+          "status": "pending",
+          "plan_stages": [
+            "D1",
+            "D3",
+            "R4"
+          ],
+          "required_evidence_classes": [
+            "contract",
+            "scenario",
+            "policy",
+            "backend-pair",
+            "upstream-differential",
+            "boundary",
+            "resource-observation"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [],
+          "required_performance_platforms": [],
+          "required_observations": [
+            "Dry-run creates neither targets nor rejects, including temporary effects",
+            "Stdout/result/diagnostic ordering",
+            "File/mode/link/identity effects observed where released public APIs permit",
+            "Unsafe existing target/reject replacement rejects before damage"
+          ],
+          "boundary_mapping_required": true,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        },
+        {
+          "acceptance_id": "original-issue-30-A04",
+          "original_bullet_index": 4,
+          "source_body_line": 9,
+          "original_text": "Update README, compatibility, ADR and cross-backend release regressions before publication.",
+          "status": "pending",
+          "plan_stages": [
+            "D1",
+            "D2",
+            "D3",
+            "FULL_SOURCE_GATE",
+            "RC",
+            "FORMAL"
+          ],
+          "required_evidence_classes": [
+            "documentation-sync",
+            "metadata",
+            "contract",
+            "policy",
+            "backend-pair",
+            "upstream-differential",
+            "published-differential",
+            "release-provenance"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_performance_platforms": [],
+          "required_observations": [
+            "Both command READMEs/help/catalog/compatibility/canonical ADR and registry synchronized",
+            "Cross-backend release regressions and exact consumer coordinates",
+            "Precise metadata/link/writeback residual conditions retained"
+          ],
+          "boundary_mapping_required": false,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        }
+      ]
+    },
+    {
+      "issue_number": 33,
+      "issue_url": "https://github.com/moonbit-community/cmd/issues/33",
+      "original_title": "common command options: finish the remaining algorithmic and path semantics",
+      "source_issue_updated_at": "2026-10-11T14:11:25Z",
+      "source_snapshot_state": "open",
+      "status": "pending",
+      "affected_commands": [
+        "cut",
+        "uniq",
+        "comm",
+        "join",
+        "wc",
+        "sort",
+        "seq",
+        "fmt",
+        "printf",
+        "expand",
+        "unexpand",
+        "split",
+        "csplit",
+        "rev",
+        "tac",
+        "od",
+        "hexdump",
+        "cmp",
+        "strings",
+        "xxd",
+        "cksum",
+        "md5sum",
+        "sha1sum",
+        "sha256sum",
+        "sha512sum",
+        "realpath",
+        "mktemp",
+        "mkdir",
+        "rm",
+        "ls",
+        "tree",
+        "env",
+        "xargs",
+        "tail",
+        "tee"
+      ],
+      "intended_packages": [
+        "cli/core",
+        "cli/cut",
+        "cli/uniq",
+        "cli/comm",
+        "cli/join",
+        "cli/wc",
+        "cli/sort",
+        "cli/seq",
+        "cli/fmt",
+        "cli/printf",
+        "cli/expand",
+        "cli/unexpand",
+        "cli/split",
+        "cli/csplit",
+        "cli/rev",
+        "cli/tac",
+        "cli/od",
+        "cli/hexdump",
+        "cli/cmp",
+        "cli/strings",
+        "cli/xxd",
+        "cli/cksum",
+        "cli/md5sum",
+        "cli/sha1sum",
+        "cli/sha256sum",
+        "cli/sha512sum",
+        "cli/realpath",
+        "cli/mktemp",
+        "cli/mkdir",
+        "cli/rm",
+        "cli/ls",
+        "cli/tree",
+        "cli/env",
+        "cli/xargs",
+        "cli/tail",
+        "cli/tee"
+      ],
+      "implementation_targets": [
+        "commands/<each selected command>",
+        "core/<owning shared package>"
+      ],
+      "required_oracle_profiles": [
+        "coreutils-9.11",
+        "util-linux-2.40",
+        "binutils-2.44",
+        "sealed actual xxd/rev/tree providers"
+      ],
+      "current_context_notes": [
+        {
+          "classification": "historical-inventory-not-current-completion",
+          "original_context": "The broader option inventory still contains unimplemented formatting, merge, complement, group, filter, path and metadata modes.",
+          "current_source_observation": "Section 11 requires classifying every selected family as implemented, repair, new or API boundary before edits. The broad historical statement is not authority to rewrite existing implementations or mark any family complete.",
+          "source_anchors": [
+            "docs/comprehensive-optimization-plan.md:681"
+          ]
+        }
+      ],
+      "acceptance": [
+        {
+          "acceptance_id": "original-issue-33-A01",
+          "original_bullet_index": 1,
+          "source_body_line": 6,
+          "original_text": "Split each remaining command-specific option family into independently testable contracts.",
+          "status": "pending",
+          "plan_stages": [
+            "O1",
+            "O2",
+            "O3",
+            "O4",
+            "O5",
+            "O6",
+            "O7",
+            "O8",
+            "O9",
+            "O10",
+            "O11",
+            "O12",
+            "O13"
+          ],
+          "required_evidence_classes": [
+            "source-review",
+            "package",
+            "contract",
+            "scenario",
+            "policy",
+            "backend-pair"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [],
+          "required_performance_platforms": [],
+          "required_observations": [
+            "Separate stable behavior/case ownership for every selected command-specific family",
+            "Frozen aliases/value forms/defaults/repeats/conflicts and operands table",
+            "Current source/README/help/registry inventory before modifying an existing option"
+          ],
+          "boundary_mapping_required": false,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        },
+        {
+          "acceptance_id": "original-issue-33-A02",
+          "original_bullet_index": 2,
+          "source_body_line": 7,
+          "original_text": "Compare success, conflicts, invalid arguments, partial output and side effects with pinned upstream tools.",
+          "status": "pending",
+          "plan_stages": [
+            "O1",
+            "O2",
+            "O3",
+            "O4",
+            "O5",
+            "O6",
+            "O7",
+            "O8",
+            "O9",
+            "O10",
+            "O11",
+            "O12",
+            "O13",
+            "B2",
+            "RC",
+            "FORMAL"
+          ],
+          "required_evidence_classes": [
+            "contract",
+            "scenario",
+            "policy",
+            "backend-pair",
+            "upstream-differential",
+            "published-differential",
+            "profile-provenance"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_performance_platforms": [],
+          "required_observations": [
+            "Success/conflicts/invalid/missing/zero/negative/overflow arguments",
+            "Exact stdout/stderr/status and delivered partial output",
+            "Filesystem/process/network/input/child/filter/temp effects as applicable",
+            "Independent clean fixtures for Native/Wasm and every required platform"
+          ],
+          "boundary_mapping_required": false,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        },
+        {
+          "acceptance_id": "original-issue-33-A03",
+          "original_bullet_index": 3,
+          "source_body_line": 8,
+          "original_text": "Keep options requiring readlink, mode, identity or timestamp setters in explicit boundary state until released public APIs exist.",
+          "status": "pending",
+          "plan_stages": [
+            "O1",
+            "O2",
+            "O3",
+            "O4",
+            "O5",
+            "O6",
+            "O7",
+            "O8",
+            "O9",
+            "O10",
+            "O11",
+            "O12",
+            "O13",
+            "FULL_REVIEW",
+            "RC",
+            "FORMAL"
+          ],
+          "required_evidence_classes": [
+            "source-review",
+            "boundary",
+            "policy",
+            "contract",
+            "backend-pair"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [],
+          "required_performance_platforms": [],
+          "required_observations": [
+            "Precise readlink/mode/identity/timestamp/input/process observation capability per option",
+            "Released public API minimal reproduction and no-effect rejection",
+            "Canonical ADR/support plus responsible child and exact unlock",
+            "Algorithmic or numerical work is not relabeled as an API boundary"
+          ],
+          "boundary_mapping_required": true,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        },
+        {
+          "acceptance_id": "original-issue-33-A04",
+          "original_bullet_index": 4,
+          "source_body_line": 9,
+          "original_text": "Update each package README and help text, compatibility record, ADR and release manifest with the exact supported subset.",
+          "status": "pending",
+          "plan_stages": [
+            "O1",
+            "O2",
+            "O3",
+            "O4",
+            "O5",
+            "O6",
+            "O7",
+            "O8",
+            "O9",
+            "O10",
+            "O11",
+            "O12",
+            "O13",
+            "FULL_SOURCE_GATE",
+            "RC",
+            "FORMAL"
+          ],
+          "required_evidence_classes": [
+            "documentation-sync",
+            "metadata",
+            "contract",
+            "backend-pair",
+            "upstream-differential",
+            "published-differential",
+            "release-provenance"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_performance_platforms": [],
+          "required_observations": [
+            "Each package README/help, shared catalog, compatibility, canonical ADR and registry exact subset",
+            "Changed-package versions/dependencies and candidate/active/current manifests synchronized",
+            "Unchanged packages retain coordinates; current exact published coordinates are separately verified"
+          ],
+          "boundary_mapping_required": false,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        }
+      ]
+    },
+    {
+      "issue_number": 32,
+      "issue_url": "https://github.com/moonbit-community/cmd/issues/32",
+      "original_title": "large-input handling: complete streaming and resource-boundary work",
+      "source_issue_updated_at": "2026-10-11T14:11:19Z",
+      "source_snapshot_state": "open",
+      "status": "pending",
+      "affected_commands": [
+        "split",
+        "csplit",
+        "sort",
+        "tac",
+        "rev",
+        "diff",
+        "column",
+        "strings",
+        "gzip",
+        "gunzip",
+        "zcat"
+      ],
+      "intended_packages": [
+        "cli/core",
+        "cli/split",
+        "cli/csplit",
+        "cli/sort",
+        "cli/tac",
+        "cli/rev",
+        "cli/diff",
+        "cli/column",
+        "cli/strings",
+        "cli/gzip",
+        "cli/gunzip",
+        "cli/zcat"
+      ],
+      "implementation_targets": [
+        "core/stream",
+        "core/gzipops",
+        "commands/diff",
+        "commands/<affected large-input command>"
+      ],
+      "required_oracle_profiles": [
+        "coreutils-9.11",
+        "gzip-1.14",
+        "diffutils-3.12",
+        "util-linux-2.40",
+        "binutils-2.44"
+      ],
+      "current_context_notes": [
+        {
+          "classification": "historical-baseline-preserved",
+          "original_context": "The repair removed seq's artificial record-count cap and verified 10,000,001 records with bounded output buffering.",
+          "current_source_observation": "The compatibility record retains this historical seq result. No new seq run or current acceptance is inferred from it.",
+          "source_anchors": [
+            "docs/compatibility.md:267"
+          ]
+        },
+        {
+          "classification": "historical-document-name-needs-current-responsibility",
+          "original_context": "Record any API-dependent refusal in async-upstream-gaps and the applicable ADR.",
+          "current_source_observation": "No current repository file with async-upstream-gaps in its filename was found during this read-only review. Preserve the named original condition; locate or establish its responsible current record while updating canonical ADR/support rather than rewriting immutable historical reports.",
+          "source_anchors": [
+            "docs/adr/0004-filesystem.md:178",
+            "docs/adr/0006-process.md",
+            "docs/compatibility.md"
+          ]
+        }
+      ],
+      "acceptance": [
+        {
+          "acceptance_id": "original-issue-32-A01",
+          "original_bullet_index": 1,
+          "source_body_line": 6,
+          "original_text": "Define per-command memory and failure-effect contracts before changing buffering.",
+          "status": "pending",
+          "plan_stages": [
+            "G2",
+            "D2",
+            "R1",
+            "R2",
+            "R3",
+            "R4"
+          ],
+          "required_evidence_classes": [
+            "source-review",
+            "contract",
+            "policy",
+            "resource-observation"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [],
+          "required_performance_platforms": [],
+          "required_observations": [
+            "Per-command access/retained-state/spool/first-output/failure-effect contract frozen before buffering changes",
+            "Explicit memory, longest-record, index and temporary-disk accounting",
+            "No claim that chunked read_all accumulation establishes streaming"
+          ],
+          "boundary_mapping_required": false,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        },
+        {
+          "acceptance_id": "original-issue-32-A02",
+          "original_bullet_index": 2,
+          "source_body_line": 7,
+          "original_text": "Add large byte-equivalence cases, interruption behavior and resource observations for the remaining commands.",
+          "status": "pending",
+          "plan_stages": [
+            "G2",
+            "D2",
+            "R1",
+            "R2",
+            "R3",
+            "R4",
+            "B1",
+            "B2",
+            "RC",
+            "FORMAL"
+          ],
+          "required_evidence_classes": [
+            "package",
+            "contract",
+            "scenario",
+            "policy",
+            "backend-pair",
+            "upstream-differential",
+            "published-differential",
+            "resource-observation",
+            "performance-observation"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_performance_platforms": [
+            "macos-native-arm64",
+            "linux-virtualized-native-arm64"
+          ],
+          "required_observations": [
+            "8/64/512 MiB and independent long-record byte/status/effect equivalence",
+            "Interruption/observable cancel/closed output/later input/open/read/write/temp/ENOSPC failures",
+            "Owned-file/handle/child/filter/index/temp-disk peaks and cleanup",
+            "First output/time/RSS/explicit memory recorded separately",
+            "Checked 64-bit arithmetic and near-2/4-GiB offsets without huge in-memory fixtures"
+          ],
+          "boundary_mapping_required": false,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        },
+        {
+          "acceptance_id": "original-issue-32-A03",
+          "original_bullet_index": 3,
+          "source_body_line": 8,
+          "original_text": "Preserve pure-MoonBit implementations and distinguish product limits from test timeouts.",
+          "status": "pending",
+          "plan_stages": [
+            "G2",
+            "D2",
+            "R1",
+            "R2",
+            "R3",
+            "R4"
+          ],
+          "required_evidence_classes": [
+            "source-review",
+            "package",
+            "contract",
+            "boundary",
+            "resource-observation"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [],
+          "required_performance_platforms": [],
+          "required_observations": [
+            "Pure MoonBit implementation without FFI or host-tool fallback",
+            "Product bounds distinguished from harness deadlines and observation failures",
+            "No SIGKILL/crash cleanup promise without recoverable public API",
+            "No early truncation or rejection of previously supported oversized records"
+          ],
+          "boundary_mapping_required": false,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        },
+        {
+          "acceptance_id": "original-issue-32-A04",
+          "original_bullet_index": 4,
+          "source_body_line": 9,
+          "original_text": "Record any API-dependent refusal in async-upstream-gaps and the applicable ADR.",
+          "status": "pending",
+          "plan_stages": [
+            "R1",
+            "R2",
+            "R3",
+            "R4",
+            "FULL_REVIEW",
+            "RC",
+            "FORMAL"
+          ],
+          "required_evidence_classes": [
+            "source-review",
+            "boundary",
+            "policy",
+            "contract",
+            "backend-pair",
+            "documentation-sync"
+          ],
+          "required_platforms": [
+            "linux",
+            "macos",
+            "windows"
+          ],
+          "required_backends": [
+            "native",
+            "wasm"
+          ],
+          "required_exact_moonx_semantic_platforms": [],
+          "required_performance_platforms": [],
+          "required_observations": [
+            "API-dependent refusal has exact capability/scenario and minimal reproduction",
+            "Current no-side-effect rejection plus per-platform observations",
+            "Original async-upstream-gaps condition retained with responsible current record",
+            "Canonical ADR/support and child/unlock preserve original conditions"
+          ],
+          "boundary_mapping_required": true,
+          "registry_behavior_ids": [],
+          "registry_case_ids": [],
+          "registry_binding_status": "pending",
+          "implementation_evidence": [],
+          "execution_evidence": [],
+          "responsible_children": [],
+          "blocking_note": "Original condition is not accepted by this mapping. Bind concrete registered cases, implementation, immutable profile/artifact identities and current execution evidence before any status change."
+        }
+      ]
+    }
+  ]
+}

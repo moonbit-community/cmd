@@ -143,6 +143,8 @@ async fn audit_declared(
   platforms~ : Array[String] = [],
   ci~ : Bool = false,
   frozen~ : CiFrozenBinding? = None,
+  scope~ : @scope.ScopeIntent? = None,
+  full_scope~ : @scope.ScopeIntent? = None,
 ) -> AuditReport {
   ignore(@async.platform)
   let root_result = @shell.Cmd("git", ["rev-parse", "--show-toplevel"]).output(
@@ -183,7 +185,13 @@ async fn audit_declared(
     @registry.validate_case_bindings(registry, registered_source_ids),
   )
   let (_, core_changed, scope_failures) = validate_changed_scope(
-    paths, declaration, registry,
+    paths,
+    declaration,
+    registry,
+    retired=match scope {
+      Some(intent) => ci_scope_retired_commands(intent, registry)
+      None => []
+    },
   )
   failures.append(scope_failures)
   if !ci && declaration.affected_commands.is_empty() {
@@ -286,6 +294,20 @@ async fn audit_declared(
   failures.append(
     validate_report_evidence(declaration, registry, bundles, platforms~),
   )
+  if scope is Some(intent) {
+    failures.append(
+      validate_scope_requirements(
+        intent, declaration, registry, bundles, platforms,
+      ),
+    )
+  }
+  if full_scope is Some(intent) {
+    failures.append(
+      validate_scope_requirements(
+        intent, declaration, registry, bundles, platforms,
+      ),
+    )
+  }
   let affected = canonical_ids(registry, declaration.affected_behaviors)
   let unsupported = affected.filter(id => {
     find_entry(registry, id) is Some(entry) && entry.status == "unsupported"
@@ -417,6 +439,15 @@ fn parse_arguments(
 
 ///|
 pub async fn run(args : Array[String]) -> Unit {
+  if args.get(0) == Some("--scope") {
+    @scope.run_cli(args[1:].to_owned()) catch {
+      error => {
+        @stdio.stderr.write("scope preparation/verification: \{error}\n")
+        @sys.exit(2)
+      }
+    }
+    return
+  }
   if args.get(0) == Some("--ci") {
     run_ci(args[1:].to_owned())
     return
@@ -447,7 +478,7 @@ pub async fn run(args : Array[String]) -> Unit {
     .unwrap_or(["tests/runner/image/profile.json"]),
     report_path: values.get("--report").map(items => items[0]),
   }
-  let report = audit(options) catch {
+  let report = audit_scoped(options) catch {
     error => {
       @stdio.stderr.write("coverage audit infrastructure: \{error}\n")
       @sys.exit(2)

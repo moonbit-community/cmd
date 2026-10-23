@@ -6,6 +6,7 @@ priv struct CiContext {
   pr_head : String
   run_id : String
   attempt : String
+  unresolved_base : String?
 } derive(FromJson, ToJson)
 
 ///|
@@ -28,6 +29,19 @@ fn ci_context_errors(
   parents : ArrayView[String],
 ) -> Array[String] {
   let failures : Array[String] = []
+  if context.unresolved_base is Some(raw) {
+    if context.event != "push" ||
+      context.base != "" ||
+      !(raw == "" ||
+      (
+        raw.length() == 40 &&
+        raw.iter().all(char => char is ('0'..<='9') || char is ('a'..<='f'))
+      )) {
+      failures.push(
+        "unresolved-before fallback is restricted to a full main-push regression",
+      )
+    }
+  }
   if !ci_sha(context.head) ||
     !ci_positive_integer(context.run_id) ||
     !ci_positive_integer(context.attempt) {
@@ -45,7 +59,8 @@ fn ci_context_errors(
         )
       }
     "push" =>
-      if !ci_sha(context.base) || context.base == context.head {
+      if context.unresolved_base is None &&
+        (!ci_sha(context.base) || context.base == context.head) {
         failures.push("push audit requires the nonempty before-to-head range")
       }
     "workflow_dispatch" =>
@@ -90,6 +105,10 @@ async fn ci_require_clean_checkout() -> Unit {
       result.stderr(),
     )
   }
+  let root = ci_git(["rev-parse", "--show-toplevel"])
+  guard @scope.staged_tree(root) == ci_git(["rev-parse", "HEAD^{tree}"]) else {
+    fail("CI source index differs from its immutable checked-out tree")
+  }
 }
 
 ///|
@@ -121,13 +140,36 @@ async fn ci_report_history_errors(
 
 ///|
 async fn ci_context() -> CiContext {
-  let context : CiContext = {
+  let supplied : CiContext = {
     event: @env.get_env_var("GITHUB_EVENT_NAME").unwrap_or(""),
     base: @env.get_env_var("CMD_AUDIT_BASE").unwrap_or(""),
     head: @env.get_env_var("GITHUB_SHA").unwrap_or(""),
     pr_head: @env.get_env_var("CMD_AUDIT_PR_HEAD").unwrap_or(""),
     run_id: @env.get_env_var("GITHUB_RUN_ID").unwrap_or(""),
     attempt: @env.get_env_var("GITHUB_RUN_ATTEMPT").unwrap_or(""),
+    unresolved_base: None,
+  }
+  let context = if supplied.event == "push" && supplied.base != supplied.head {
+    let before_is_exact = try {
+      if !ci_sha(supplied.base) ||
+        resolve_revision(supplied.base) != supplied.base {
+        false
+      } else {
+        ignore(
+          ci_git(["merge-base", "--is-ancestor", supplied.base, supplied.head]),
+        )
+        true
+      }
+    } catch {
+      _ => false
+    }
+    if before_is_exact {
+      supplied
+    } else {
+      { ..supplied, base: "", unresolved_base: Some(supplied.base), }
+    }
+  } else {
+    supplied
   }
   let parents = ci_git(["show", "-s", "--format=%P", "HEAD"])
     .split(" ")
@@ -160,6 +202,7 @@ fn ci_receipt_context_errors(
     saved.head != current.head ||
     saved.pr_head != current.pr_head ||
     saved.run_id != current.run_id ||
+    saved.unresolved_base != current.unresolved_base ||
     !ci_positive_integer(saved.attempt) {
     failures.push(
       "platform receipt belongs to a different workflow run or source range",

@@ -28,16 +28,36 @@ async fn scan_package_tests(
       continue
     }
     let next = relative + "/" + name
-    match @fs.kind(root + next, follow_symlink=false) {
-      Directory => scan_package_tests(root, next, references)
-      Regular if name.has_suffix("_test.mbt") || name.has_suffix("_wbtest.mbt") =>
-        for line in @fs.read_file(root + next).text().split("\n") {
+    scan_package_test_entry(root, next, references)
+  }
+}
+
+///|
+async fn scan_package_test_entry(
+  root : String,
+  relative : String,
+  references : Array[String],
+  inspect~ : async (String) -> @fs.FileKind = path => {
+    @fs.kind(path, follow_symlink=false)
+  },
+) -> Unit {
+  try {
+    match inspect(root + relative) {
+      Directory => scan_package_tests(root, relative, references)
+      Regular if relative.has_suffix("_test.mbt") ||
+        relative.has_suffix("_wbtest.mbt") =>
+        for line in @fs.read_file(root + relative).text().split("\n") {
           if test_name(line.to_owned()) is Some(name) {
-            references.push(next + "::" + name)
+            references.push(relative + "::" + name)
           }
         }
       _ => ()
     }
+  } catch {
+    // Parallel tests may remove temporary entries after enumeration. Missing
+    // registered source remains an orphan when discovered references are checked.
+    @os_error.OSError(_) as error if error.is_ENOENT() => ()
+    error => raise error
   }
 }
 

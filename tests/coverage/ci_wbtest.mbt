@@ -7,6 +7,7 @@ fn ci_test_context() -> CiContext {
     pr_head: "3333333333333333333333333333333333333333",
     run_id: "42",
     attempt: "2",
+    unresolved_base: None,
   }
 }
 

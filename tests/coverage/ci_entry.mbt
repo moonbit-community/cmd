@@ -10,6 +10,25 @@ async fn ci_audit(
   let (metadata_paths, corpora, profiles, frozen) = ci_verified_reports(
     context, evidence_root,
   )
+  let published = match frozen {
+    Some(binding) =>
+      Some(
+        ci_prove_frozen_publication(
+          binding,
+          metadata_paths,
+          profiles,
+          context.head,
+        ),
+      )
+    None => None
+  }
+  if published is Some(proof) {
+    @fs.write_file(
+      output + ".published.json",
+      @testkit.canonical_json(ToJson::to_json(proof)) + "\n",
+      create_mode=CreateNew,
+    )
+  }
   let paths = if context.base == "" {
     []
   } else {
@@ -18,40 +37,22 @@ async fn ci_audit(
     guard history_errors.is_empty() else { fail(history_errors.join("\n")) }
     paths
   }
-  let regression_only = context.base == ""
-  let documentation_only = !paths.is_empty() && paths.all(ci_documentation_path)
-  if regression_only || documentation_only {
-    let reason = if regression_only {
-      "scheduled/manual regression validation; no change range was claimed"
-    } else {
-      "every changed path is in the documentation-only allowlist"
-    }
-    let result : Json = {
-      "schema": 1,
-      "status": "not-applicable",
-      "reason": Json(reason),
-      "context": ToJson::to_json(context),
-      "changed_paths": Json(paths),
-      "verified_metadata": Json(metadata_paths),
-    }
-    @fs.write_file(
-      output + ".json",
-      @testkit.canonical_json(result) + "\n",
-      create_mode=@fs.CreateNew,
-    )
-    @fs.write_file(
-      output,
-      "# CI coverage audit\n\nStatus: not-applicable\n\n" + reason + "\n",
-      create_mode=@fs.CreateNew,
-    )
-    return true
-  }
-  guard !paths.is_empty() else {
-    fail("a change event must have a nonempty audited range")
-  }
+  let shadow = ci_scope_preflight(context)
+  let root = ci_git(["rev-parse", "--show-toplevel"])
+  let snapshot = @scope.read_tree(root, context.head)
+  let full = @scope.full_regression_requirements(
+    snapshot,
+    @scope.capture_graph(snapshot),
+    context.head,
+  )
   let declaration_path = "tests/coverage/ci-change.json"
-  let impact = ci_impact(@json.parse(@fs.read_file(declaration_path).text()))
   let registry = @registry.load("tests/registry/registry.json")
+  let mapping_errors = match shadow {
+    Some(intent) => ci_scope_mapping_errors(intent, registry)
+    None => []
+  }
+  guard mapping_errors.is_empty() else { fail(mapping_errors.join("\n")) }
+  let impact = ci_full_shadow_impact(full, shadow, registry)
   let errors = ci_scope_errors(paths, impact, registry)
   guard errors.is_empty() else { fail(errors.join("\n")) }
   let reports = metadata_paths.map(path => {
@@ -61,10 +62,28 @@ async fn ci_audit(
     .normalize()
     .to_string()
   })
-  let declaration = ci_declaration(impact, registry, reports)
-  let report = audit_declared(
+  let identical_frozen_cases = match frozen {
+    Some(binding) => ci_frozen_selected_ids(binding, registry, root)
+    None => []
+  }
+  let frozen_reports = match published {
+    Some(proof) => proof.report_paths
+    None => []
+  }
+  let declaration = ci_declaration(
+    impact,
+    registry,
+    reports,
+    frozen_reports~,
+    identical_frozen_cases~,
+  )
+  let source_report = audit_declared(
     {
-      base: context.base,
+      base: if context.base == "" {
+        context.head
+      } else {
+        context.base
+      },
       head: context.head,
       declaration_path,
       run_metadata_paths: metadata_paths,
@@ -80,7 +99,23 @@ async fn ci_audit(
     platforms=["linux", "macos", "windows"],
     ci=true,
     frozen~,
+    scope=shadow,
+    full_scope=Some(full),
   )
+  let report = match published {
+    None => source_report
+    Some(proof) =>
+      {
+        ..source_report,
+        status: if source_report.status == "passed" && proof.status == "passed" {
+          "passed"
+        } else {
+          "failed"
+        },
+        findings: source_report.findings + proof.findings,
+        run_ids: sorted_unique(source_report.run_ids + proof.run_ids),
+      }
+  }
   @fs.write_file(output, report_text(report), create_mode=@fs.CreateNew)
   @fs.write_file(
     output + ".json",
@@ -91,6 +126,35 @@ async fn ci_audit(
     output + ".context.json",
     @testkit.canonical_json(ToJson::to_json(context)) + "\n",
     create_mode=@fs.CreateNew,
+  )
+  let comparison : Json = {
+    "schema": 1,
+    "context": ToJson::to_json(context),
+    "execution_mode": "full",
+    "status": report.status,
+    "change_range_classification": if context.base == "" {
+      "regression-only/full"
+    } else {
+      match shadow {
+        Some(intent) => intent.selection.mode
+        None => "invalid"
+      }
+    },
+    "shadow_scope_fingerprint": ci_scope_fingerprint(shadow),
+    "full_behavior_count": full.selection.behaviors.length(),
+    "full_requirement_count": full.selection.requirements.length(),
+    "shadow_requirement_count": match shadow {
+      Some(intent) => intent.selection.requirements.length()
+      None => 0
+    },
+    "observed_run_ids": report.run_ids,
+    "findings": report.findings,
+    "unresolved_before": context.unresolved_base.unwrap_or(""),
+  }
+  @fs.write_file(
+    output + ".scope-shadow.json",
+    @testkit.canonical_json(comparison) + "\n",
+    create_mode=CreateNew,
   )
   report.status == "passed"
 }
