@@ -800,7 +800,7 @@ async fn run_driver() -> Unit {
       @testkit.write_reports_with_metadata(
         report_dir + "/" + role,
         paired_role_reports(reports, selected, role),
-        metadata,
+        paired_role_metadata(metadata, role),
       )
     }
   } else {
@@ -818,6 +818,14 @@ async fn run_driver() -> Unit {
     metadata.reproducibility_status != "complete" {
     @sys.exit(1)
   }
+}
+
+///|
+fn paired_role_metadata(
+  metadata : @testkit.RunMetadata,
+  role : String,
+) -> @testkit.RunMetadata {
+  { ..metadata, run_id: metadata.run_id + "/" + role, }
 }
 
 ///|

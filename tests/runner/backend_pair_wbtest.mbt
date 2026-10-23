@@ -249,6 +249,51 @@ test "paired side reports preserve failures without dangling success evidence" {
 
 ///|
 test "paired role partition retains scenario aliases and boundary verification" {
+  let metadata : @testkit.RunMetadata = {
+    schema: 1,
+    run_id: "paired-fixture",
+    git_revision: "fixture-source",
+    git_dirty: "false",
+    toolchain: "fixture-toolchain",
+    runner_version: "fixture-runner",
+    registry_hash: "fixture-registry",
+    manifest_hash: "fixture-manifest",
+    case_corpus_hash: "fixture-corpus",
+    native_artifact_hash: "fixture-native",
+    wasm_artifact_hash: "fixture-wasm",
+    oracle_profile_id: "",
+    oracle_image_digest: "",
+    oracle_versions_hash: "",
+    moonx_coordinates: [],
+    platform: "macos",
+    os: "Darwin",
+    architecture: "arm64",
+    locale: "C",
+    timezone: "UTC",
+    docker_version: "",
+    policy_hash: "fixture-policy",
+    environment_fingerprint: "fixture-environment",
+    host_environment_fingerprint: "fixture-host",
+    execution_environments: [],
+    started_at_ms: 1L,
+    ended_at_ms: 2L,
+    reproducibility_status: "complete",
+  }
+  let original_metadata = ToJson::to_json(metadata)
+  let role_metadata = [
+    "contract-native", "contract-wasm", "scenarios-native", "scenarios-wasm", "backend-pair",
+  ].map(role => paired_role_metadata(metadata, role))
+  assert_eq(role_metadata.map(item => item.run_id), [
+    "paired-fixture/contract-native", "paired-fixture/contract-wasm", "paired-fixture/scenarios-native",
+    "paired-fixture/scenarios-wasm", "paired-fixture/backend-pair",
+  ])
+  for item in role_metadata {
+    assert_eq(
+      ToJson::to_json({ ..item, run_id: metadata.run_id, }),
+      original_metadata,
+    )
+  }
+  assert_eq(ToJson::to_json(metadata), original_metadata)
   let fixture : @testkit.Case = @json.from_json({
     "id": "mv-windows-wasm-links-boundary",
     "command": "mv",
