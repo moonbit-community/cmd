@@ -105,6 +105,8 @@ pub async fn run_http_fixture_process() -> Unit
 
 pub fn run_metadata_errors(RunMetadata) -> Array[String]
 
+pub async fn run_oracle_with_deadline(String, Array[String], Int32, evidence_dir~ : String, stdin? : Bytes, extra_env? : Map[String, String], inherit_env? : Bool) -> TimedRun
+
 pub async fn run_with_deadline(String, Array[String], Int32, stdin? : Bytes, cwd? : String, extra_env? : Map[String, String], inherit_env? : Bool, capture_environment? : Bool) -> TimedRun
 
 pub fn safe_relative_path(String) -> Bool

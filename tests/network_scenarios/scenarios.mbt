@@ -158,7 +158,7 @@ async fn network_request(
       observation.work = Some(oracle_work)
       observation.snapshots.clear()
     }
-    let run = @testkit.run_with_deadline(
+    let run = @testkit.run_oracle_with_deadline(
       "docker",
       [
         "run",
@@ -183,6 +183,7 @@ async fn network_request(
         ..oracle_args,
       ],
       120000,
+      evidence_dir=prefix + ".oracle.lifecycle",
       stdin~,
     )
     @fs.write_file(prefix + ".oracle.stdout.bin", run.output.stdout)

@@ -345,10 +345,11 @@ async fn run_case(
     extra_env=oracle_environment,
     inherit_env=false,
   )
-  let oracle_run = @testkit.run_with_deadline(
+  let oracle_run = @testkit.run_oracle_with_deadline(
     "docker",
     docker_args,
     fixture.timeout_ms.unwrap_or(120000),
+    evidence_dir=root + "/oracle.lifecycle",
     stdin=fixture.input(root="/work", http_base~),
     inherit_env=true,
   ) catch {

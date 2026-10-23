@@ -222,6 +222,11 @@ serially after all ordinary cases finish. No assertion is weakened and there
 are no automatic retries. Workspace runners retain their normal parallelism.
 The default deadline is 120 seconds, overridable by positive `--timeout-ms` or
 case `timeout_ms`. A command's own exit 124 differs from a runner deadline.
+Command-oracle and shared network-scenario Docker calls use the testkit's
+[invocation-owned container adapter](../runner/README.md#upstream-and-ci).
+Their lifecycle evidence sits outside the compared fixture tree. Uncertain
+ownership, control execution or cleanup remains infrastructure failure;
+successful direct-child reaping alone does not establish container cleanup.
 Platform-excluded cases report `skip` with a reason. Schema 1 `posix` remains
 accepted alongside `linux`, `macos` and `windows`.
 

@@ -37,6 +37,41 @@
       "limitations": ["pure MoonBit process-boundary injection; does not mutate a live Docker image"]
     },
     {
+      "id": "oracle-owned-container-timeout",
+      "status": "proven",
+      "test_ref": "tests/testkit/oracle_container_wbtest.mbt::owned oracle timeout removes the verified exact container and retains state",
+      "proves": ["deadline-status-and-partial-streams-preserved", "container-state-retained-before-removal", "exact-id-name-label-verified", "owned-container-absence-verified"],
+      "limitations": ["deterministic daemon-boundary injection; live Docker deadline controls are separate diagnostics in the C0 report", "does not identify the historical hexdump timeout cause"]
+    },
+    {
+      "id": "oracle-owned-container-cancellation",
+      "status": "proven",
+      "test_ref": "tests/testkit/oracle_container_wbtest.mbt::owned oracle outer cancellation joins protected container cleanup",
+      "proves": ["outer-cancellation-joins-protected-cleanup", "owned-container-removal-and-absence-observed"],
+      "limitations": ["deterministic daemon-boundary injection; arbitrary process trees and oracle inventory launches are outside this adapter"]
+    },
+    {
+      "id": "oracle-container-ownership-mismatch",
+      "status": "proven",
+      "test_ref": "tests/testkit/oracle_container_wbtest.mbt::owned oracle refuses mismatched identity name or ownership labels",
+      "proves": ["unverified-container-removal-refused", "identity-name-label-mismatches-remain-infrastructure-errors", "uncertain-reservation-retained"],
+      "limitations": ["pure MoonBit daemon-boundary injection; does not mutate another live container"]
+    },
+    {
+      "id": "oracle-container-evidence-storage-failure",
+      "status": "proven",
+      "test_ref": "tests/testkit/oracle_container_wbtest.mbt::owned oracle cleanup continues when lifecycle storage fails",
+      "proves": ["storage-failure-does-not-prevent-owned-cleanup", "original-exit-and-streams-preserved", "lost-evidence-remains-infrastructure-error"],
+      "limitations": ["deterministic path collision models an unavailable evidence sink; does not induce physical disk exhaustion"]
+    },
+    {
+      "id": "oracle-interrupted-create-identity-unresolved",
+      "status": "proven",
+      "test_ref": "tests/testkit/oracle_container_wbtest.mbt::owned oracle interrupted creation without identity remains unresolved",
+      "proves": ["empty-discovery-does-not-certify-interrupted-create-cleanup", "infrastructure-uncertainty-and-reservation-retained"],
+      "limitations": ["no daemon acknowledgement proves a canceled create cannot finish later; this remains an explicit infrastructure boundary, not cleanup success"]
+    },
+    {
       "id": "oracle-version-mismatch",
       "status": "proven",
       "test_ref": "tests/testkit/lifecycle_wbtest.mbt::oracle version mismatch retains immutable inventory selection",
