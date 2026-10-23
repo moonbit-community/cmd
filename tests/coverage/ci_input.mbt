@@ -26,6 +26,9 @@ priv struct CiImpact {
 
 ///|
 fn ci_impact(value : Json) -> CiImpact raise {
+  if value is { "schema": Number(2, ..), .. } {
+    return ci_scope_impact(@scope.parse_intent(value))
+  }
   guard value is Object(fields) else { fail("CI impact must be an object") }
   let allowed = [
     "schema", "affected_commands", "affected_behaviors", "affected_options", "affected_operands",
@@ -44,6 +47,82 @@ fn ci_impact(value : Json) -> CiImpact raise {
 }
 
 ///|
+fn ci_scope_impact(
+  intent : @scope.ScopeIntent,
+  registry~ : @registry.Registry? = None,
+) -> CiImpact {
+  let selected = intent.selection
+  let projected : Array[String] = []
+  for id in selected.behaviors {
+    let mappings = intent.boundaries.filter(row => row.behavior_id == id)
+    if mappings.any(row => !row.replacement_behaviors.is_empty()) {
+      projected.append(ci_scope_mapped_targets(intent, id))
+    } else {
+      projected.push(id)
+      projected.append(ci_scope_mapped_targets(intent, id))
+    }
+  }
+  let commands = selected.commands.filter(command => {
+    guard registry is Some(registry) else { return true }
+    if registry.entries.any(entry => entry.command == command) {
+      return true
+    }
+    let old = selected.requirements.filter(row => row.command == command)
+    old.is_empty() ||
+    !old.all(row => {
+      intent.boundaries.any(mapping => {
+        mapping.behavior_id == row.behavior_id &&
+        !mapping.replacement_behaviors.is_empty()
+      })
+    })
+  })
+  {
+    schema: 2,
+    affected_commands: commands,
+    affected_behaviors: sorted_unique(projected),
+    affected_options: selected.affected_options,
+    affected_operands: selected.affected_operands,
+    case_ids: selected.case_ids.filter(id => {
+      guard registry is Some(registry) else { return true }
+      registry.entries.any(entry => entry.case_id == id) ||
+      !selected.requirements.any(requirement => {
+        requirement.case_id == id &&
+        intent.boundaries.any(mapping => {
+          mapping.behavior_id == requirement.behavior_id &&
+          !mapping.replacement_behaviors.is_empty()
+        })
+      })
+    }),
+    core_impact: if selected.core_packages.is_empty() {
+      None
+    } else {
+      Some("all")
+    },
+    published_manifest_affected: intent.changes.any(change => {
+      [change.old_path, change.new_path].any(path => {
+        path.has_prefix("tests/release_runner/current/published") ||
+        path.has_prefix("tests/release_runner/historical/published-")
+      })
+    }),
+    required_backends: [],
+    required_evidence: [],
+    required_observations: [],
+    boundaries: intent.boundaries
+    .filter(row => row.replacement_behaviors.is_empty())
+    .map(boundary => {
+      behavior_id: boundary.behavior_id,
+      support_record: boundary.support_record,
+      adr: boundary.adr,
+      current_limit: boundary.current_limit,
+      unlock_condition: boundary.unlock_condition,
+    }),
+    deferred: intent.deferred,
+    uncovered: intent.uncovered,
+    harness_bindings: [],
+  }
+}
+
+///|
 fn ci_documentation_path(path : String) -> Bool {
   // Current support records, ADRs, agent rules and executable docs stay gated.
   path.has_prefix("docs/reports/") &&
@@ -58,6 +137,19 @@ fn ci_scope_errors(
   registry : @registry.Registry,
 ) -> Array[String] {
   let failures : Array[String] = []
+  // Schema-v2 freshness and closure are recomputed before execution and audit.
+  // Requiring the declaration filename to change would reject a same-tree
+  // re-push while accepting an unrelated timestamp edit under schema 1.
+  if impact.schema == 2 {
+    for id in impact.affected_behaviors {
+      if find_entry(registry, id) is None {
+        failures.push(
+          "removed behavior requires explicit replacement evidence: " + id,
+        )
+      }
+    }
+    return failures
+  }
   if !paths.contains("tests/coverage/ci-change.json") {
     failures.push("CI impact must be updated within the audited change range")
   }

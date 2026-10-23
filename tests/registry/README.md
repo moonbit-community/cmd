@@ -53,6 +53,16 @@ reference to an immutable oracle profile before reporting upstream differential
 evidence; a non-empty registry value is not a substitute for digest
 verification.
 
+`associations.json` records non-import fixture/scenario/cohort/policy/catalog/
+release relationships used by the content-bound scope selector. Child-command
+artifact prerequisites are distinct from retested command behaviors. Unknown
+association syntax widens to full; malformed data cannot become empty scope.
+`boundaries.json` indexes every current registered rejection's support document,
+canonical ADR, current limit and unlock condition. Its same-ID rejection
+references are requirements for real execution, never passing results. The
+scope intent embeds the applicable records and preserves old-side replacement
+obligations. See [scope contracts](../scope/README.md).
+
 The workspace runner validates this registry before loading a suite. It compares
 the registry's JSON-case bindings with the canonical workspace case corpus. A
 smaller manifest may select registered cases but cannot introduce new bodies

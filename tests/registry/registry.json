@@ -49585,6 +49585,1491 @@
         "status"
       ],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/git_wbtest.mbt::scope Git binds binary empty and symbolic link blobs from the index",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/git_wbtest.mbt::scope Git binds binary empty and symbolic link blobs from the index",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope Git binds binary empty and symbolic link blobs from the index"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/git_wbtest.mbt::scope Git range preserves rename deletion executable mode and type changes",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/git_wbtest.mbt::scope Git range preserves rename deletion executable mode and type changes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope Git range preserves rename deletion executable mode and type changes"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/git_wbtest.mbt::scope Git staged preparation rejects post-prepare edits and hidden index flags",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/git_wbtest.mbt::scope Git staged preparation rejects post-prepare edits and hidden index flags",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope Git staged preparation rejects post-prepare edits and hidden index flags"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/git_wbtest.mbt::scope Git freshness survives a commit-message-only amendment",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/git_wbtest.mbt::scope Git freshness survives a commit-message-only amendment",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope Git freshness survives a commit-message-only amendment"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/git_wbtest.mbt::scope Git parsers reject truncated unsafe ambiguous and substituted data",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/git_wbtest.mbt::scope Git parsers reject truncated unsafe ambiguous and substituted data",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope Git parsers reject truncated unsafe ambiguous and substituted data"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/git_wbtest.mbt::scope Git digest exclusions retain every payload path and cross-boundary rename",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/git_wbtest.mbt::scope Git digest exclusions retain every payload path and cross-boundary rename",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope Git digest exclusions retain every payload path and cross-boundary rename"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/graph_wbtest.mbt::scope public package graph v2 retains isolated owners and all import kinds",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/graph_wbtest.mbt::scope public package graph v2 retains isolated owners and all import kinds",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope public package graph v2 retains isolated owners and all import kinds"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/graph_wbtest.mbt::scope public graph rejects corrupt schema status indices identities and ownership",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/graph_wbtest.mbt::scope public graph rejects corrupt schema status indices identities and ownership",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope public graph rejects corrupt schema status indices identities and ownership"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/graph_wbtest.mbt::scope graph digest is stable under public node numbering and edge order",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/graph_wbtest.mbt::scope graph digest is stable under public node numbering and edge order",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope graph digest is stable under public node numbering and edge order"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/graph_wbtest.mbt::scope graph v3 unions backend edges without dropping isolated packages",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/graph_wbtest.mbt::scope graph v3 unions backend edges without dropping isolated packages",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope graph v3 unions backend edges without dropping isolated packages"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/graph_wbtest.mbt::scope graph identity agrees across public v2 and v3 for shared import syntax",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/graph_wbtest.mbt::scope graph identity agrees across public v2 and v3 for shared import syntax",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope graph identity agrees across public v2 and v3 for shared import syntax"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/graph_wbtest.mbt::scope graph capture materializes immutable bytes uses v2 without target and cleans ownership",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/graph_wbtest.mbt::scope graph capture materializes immutable bytes uses v2 without target and cleans ownership",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope graph capture materializes immutable bytes uses v2 without target and cleans ownership"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/graph_wbtest.mbt::scope graph capture requests missing v3 backend and does not narrow failed resolution",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/graph_wbtest.mbt::scope graph capture requests missing v3 backend and does not narrow failed resolution",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope graph capture requests missing v3 backend and does not narrow failed resolution"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/graph_wbtest.mbt::scope graph capture rejects unsafe snapshot paths and unsupported file modes before resolver",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/graph_wbtest.mbt::scope graph capture rejects unsafe snapshot paths and unsupported file modes before resolver",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope graph capture rejects unsafe snapshot paths and unsupported file modes before resolver"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/graph_wbtest.mbt::scope graph capture retains unknown semantics and cleans resolver exceptions",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/graph_wbtest.mbt::scope graph capture retains unknown semantics and cleans resolver exceptions",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope graph capture retains unknown semantics and cleans resolver exceptions"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/graph_wbtest.mbt::scope graph capture rejects case-colliding directories and omitted local packages",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/graph_wbtest.mbt::scope graph capture rejects case-colliding directories and omitted local packages",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope graph capture rejects case-colliding directories and omitted local packages"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/graph_wbtest.mbt::scope graph capture projects the known README link without host symlink privileges",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/graph_wbtest.mbt::scope graph capture projects the known README link without host symlink privileges",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope graph capture projects the known README link without host symlink privileges"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/intent_wbtest.mbt::scope intent rejects outcomes unknown nested fields and ambiguous JSON keys",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/intent_wbtest.mbt::scope intent rejects outcomes unknown nested fields and ambiguous JSON keys",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope intent rejects outcomes unknown nested fields and ambiguous JSON keys"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/intent_wbtest.mbt::scope freshness binds payload complete diff dependencies policy and target base",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/intent_wbtest.mbt::scope freshness binds payload complete diff dependencies policy and target base",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope freshness binds payload complete diff dependencies policy and target base"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/intent_wbtest.mbt::scope freshness retains human additions and forbids an empty scope masquerade",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/intent_wbtest.mbt::scope freshness retains human additions and forbids an empty scope masquerade",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope freshness retains human additions and forbids an empty scope masquerade"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/boundary_wbtest.mbt::scope canonical rejection requirements reject stale prose and use current unlock conditions",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/boundary_wbtest.mbt::scope canonical rejection requirements reject stale prose and use current unlock conditions",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope canonical rejection requirements reject stale prose and use current unlock conditions"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/boundary_wbtest.mbt::scope full regression derives current requirements without parsing a stale PR intent",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/boundary_wbtest.mbt::scope full regression derives current requirements without parsing a stale PR intent",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope full regression derives current requirements without parsing a stale PR intent"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/selection_wbtest.mbt::scope command changes retain the complete collection without retesting prerequisites",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/selection_wbtest.mbt::scope command changes retain the complete collection without retesting prerequisites",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope command changes retain the complete collection without retesting prerequisites"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/selection_wbtest.mbt::scope unions transitive old and new consumers when imports are removed",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/selection_wbtest.mbt::scope unions transitive old and new consumers when imports are removed",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope unions transitive old and new consumers when imports are removed"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/selection_wbtest.mbt::scope deleted commands retain old owners requirements and exact coordinates",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/selection_wbtest.mbt::scope deleted commands retain old owners requirements and exact coordinates",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope deleted commands retain old owners requirements and exact coordinates"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/selection_wbtest.mbt::scope durable non-import rules retain child scenarios and separate build artifacts",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/selection_wbtest.mbt::scope durable non-import rules retain child scenarios and separate build artifacts",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope durable non-import rules retain child scenarios and separate build artifacts"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/selection_wbtest.mbt::scope shared harness is full while boundaries and supplementary applicability remain exact",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/selection_wbtest.mbt::scope shared harness is full while boundaries and supplementary applicability remain exact",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope shared harness is full while boundaries and supplementary applicability remain exact"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/selection_wbtest.mbt::scope catalog narrows only literal rows with unchanged surrounding helpers",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/selection_wbtest.mbt::scope catalog narrows only literal rows with unchanged surrounding helpers",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope catalog narrows only literal rows with unchanged surrounding helpers"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/selection_wbtest.mbt::scope registry stable ID transfer selects both owners and global registry checks",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/selection_wbtest.mbt::scope registry stable ID transfer selects both owners and global registry checks",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope registry stable ID transfer selects both owners and global registry checks"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/selection_wbtest.mbt::scope old new requirements never create a backend platform cross product",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/selection_wbtest.mbt::scope old new requirements never create a backend platform cross product",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope old new requirements never create a backend platform cross product"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/selection_wbtest.mbt::scope human extras union only their targeted requirements and preserve automatic rows",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/selection_wbtest.mbt::scope human extras union only their targeted requirements and preserve automatic rows",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope human extras union only their targeted requirements and preserve automatic rows"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/selection_wbtest.mbt::scope only newly added narrative reports get docs mode",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/selection_wbtest.mbt::scope only newly added narrative reports get docs mode",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope only newly added narrative reports get docs mode"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/selection_wbtest.mbt::scope unknown graph or association schemas widen while corrupt policies reject",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/selection_wbtest.mbt::scope unknown graph or association schemas widen while corrupt policies reject",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope unknown graph or association schemas widen while corrupt policies reject"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/selection_wbtest.mbt::scope nested package moves retain consumers of both previous and new owners",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/selection_wbtest.mbt::scope nested package moves retain consumers of both previous and new owners",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope nested package moves retain consumers of both previous and new owners"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/selection_wbtest.mbt::scope published row metadata changes select owners even when coordinates are unchanged",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/selection_wbtest.mbt::scope published row metadata changes select owners even when coordinates are unchanged",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope published row metadata changes select owners even when coordinates are unchanged"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/selection_wbtest.mbt::scope regression full derives every current obligation without a synthetic change range",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/selection_wbtest.mbt::scope regression full derives every current obligation without a synthetic change range",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope regression full derives every current obligation without a synthetic change range"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/selection_wbtest.mbt::scope both-side human extras retain removed cases and strengthen matching aliases",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/selection_wbtest.mbt::scope both-side human extras retain removed cases and strengthen matching aliases",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope both-side human extras retain removed cases and strengthen matching aliases"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_scope_wbtest.mbt::scope CI cannot borrow a moved command owner without an explicit replacement",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_scope_wbtest.mbt::scope CI cannot borrow a moved command owner without an explicit replacement",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope CI cannot borrow a moved command owner without an explicit replacement"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_scope_wbtest.mbt::scope CI stable behavior IDs cannot substitute a new case binding without review",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_scope_wbtest.mbt::scope CI stable behavior IDs cannot substitute a new case binding without review",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope CI stable behavior IDs cannot substitute a new case binding without review"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_scope_wbtest.mbt::scope CI accepts canonical coverage aliases and rejects duplicate canonical records",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_scope_wbtest.mbt::scope CI accepts canonical coverage aliases and rejects duplicate canonical records",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope CI accepts canonical coverage aliases and rejects duplicate canonical records"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_scope_wbtest.mbt::scope CI requires every replacement and rejection execution plus coverage references",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_scope_wbtest.mbt::scope CI requires every replacement and rejection execution plus coverage references",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope CI requires every replacement and rejection execution plus coverage references"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_scope_wbtest.mbt::scope CI rejects stale ambiguous and alias replacement mappings",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_scope_wbtest.mbt::scope CI rejects stale ambiguous and alias replacement mappings",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope CI rejects stale ambiguous and alias replacement mappings"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_scope_wbtest.mbt::scope CI keeps old Native Windows and current Wasm Linux obligations separate",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_scope_wbtest.mbt::scope CI keeps old Native Windows and current Wasm Linux obligations separate",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope CI keeps old Native Windows and current Wasm Linux obligations separate"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_scope_wbtest.mbt::scope CI replacement preserves old oracle profile and sealed differential evidence",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_scope_wbtest.mbt::scope CI replacement preserves old oracle profile and sealed differential evidence",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope CI replacement preserves old oracle profile and sealed differential evidence"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_scope_wbtest.mbt::scope CI mapped retirement crosses the changed-command gate only for old deleted paths",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_scope_wbtest.mbt::scope CI mapped retirement crosses the changed-command gate only for old deleted paths",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope CI mapped retirement crosses the changed-command gate only for old deleted paths"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_projection_wbtest.mbt::scope CI execution includes old-side and extra published obligations",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_projection_wbtest.mbt::scope CI execution includes old-side and extra published obligations",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope CI execution includes old-side and extra published obligations"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_projection_wbtest.mbt::scope CI projects retirement mappings without dropping old intent obligations",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_projection_wbtest.mbt::scope CI projects retirement mappings without dropping old intent obligations",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope CI projects retirement mappings without dropping old intent obligations"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_projection_wbtest.mbt::scope CI retirement preserves a custom stable behavior and its old case binding",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_projection_wbtest.mbt::scope CI retirement preserves a custom stable behavior and its old case binding",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope CI retirement preserves a custom stable behavior and its old case binding"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_projection_wbtest.mbt::local scoped audit rejects manual declarations that omit automatic consumers",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_projection_wbtest.mbt::local scoped audit rejects manual declarations that omit automatic consumers",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "local scoped audit rejects manual declarations that omit automatic consumers"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_projection_wbtest.mbt::scope shadow receipts bind selection source run platform inventory and full execution",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_projection_wbtest.mbt::scope shadow receipts bind selection source run platform inventory and full execution",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope shadow receipts bind selection source run platform inventory and full execution"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_projection_wbtest.mbt::scope supplementary execution never proves semantic parity or rejection",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_projection_wbtest.mbt::scope supplementary execution never proves semantic parity or rejection",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope supplementary execution never proves semantic parity or rejection"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_projection_wbtest.mbt::unresolvable main before selects full regression while PR context stays exact",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_projection_wbtest.mbt::unresolvable main before selects full regression while PR context stays exact",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "unresolvable main before selects full regression while PR context stays exact"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_projection_wbtest.mbt::full current execution cannot be replaced by a shadow retirement mapping or empty summaries",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_projection_wbtest.mbt::full current execution cannot be replaced by a shadow retirement mapping or empty summaries",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "full current execution cannot be replaced by a shadow retirement mapping or empty summaries"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/graph_wbtest.mbt::scope graph acquisition progress has the same identity as a warm resolver",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/graph_wbtest.mbt::scope graph acquisition progress has the same identity as a warm resolver",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope graph acquisition progress has the same identity as a warm resolver"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/graph_wbtest.mbt::scope graph warnings unknown progress and malformed logs cannot narrow scope",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/graph_wbtest.mbt::scope graph warnings unknown progress and malformed logs cannot narrow scope",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope graph warnings unknown progress and malformed logs cannot narrow scope"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
     }
   ],
   "release_commands": [

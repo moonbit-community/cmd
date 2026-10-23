@@ -26,19 +26,28 @@ fn ci_impact_needs_published(
 
 ///|
 async fn ci_published_enabled(context : CiContext) -> Bool {
-  if context.event == "schedule" || context.event == "workflow_dispatch" {
+  if context.base == "" {
+    ignore(ci_scope_preflight(context))
     return true
   }
-  let paths = git_changed_paths(context.base, context.head)
-  if !paths.is_empty() && paths.all(ci_documentation_path) {
-    return false
+  guard ci_scope_preflight(context) is Some(intent) else {
+    fail("published execution requires the fresh actual-range scope")
   }
+  context.event == "workflow_dispatch" ||
+  ci_scope_needs_published(intent) ||
   ci_impact_needs_published(
-    ci_impact(
-      @json.parse(@fs.read_file("tests/coverage/ci-change.json").text()),
-    ),
+    ci_scope_impact(intent),
     @registry.load("tests/registry/registry.json"),
   )
+}
+
+///|
+fn ci_scope_needs_published(intent : @scope.ScopeIntent) -> Bool {
+  intent.selection.mode == "full" ||
+  intent.selection.requirements.any(row => {
+    row.evidence.contains("published-differential")
+  }) ||
+  ci_scope_impact(intent).published_manifest_affected
 }
 
 ///|

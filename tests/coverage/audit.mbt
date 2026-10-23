@@ -167,7 +167,7 @@ fn validate_declaration_shape(
   }
   if !valid_set(declaration.required_evidence, [
       "contract", "backend-pair", "upstream-differential", "published-differential",
-      "boundary",
+      "boundary", "supplementary",
     ]) {
     failures.push("declaration: unsupported required evidence")
   }
@@ -189,7 +189,7 @@ fn validate_declaration_shape(
     if !valid_set(record.backends, ["native", "wasm"]) ||
       !valid_set(record.evidence, [
         "contract", "backend-pair", "upstream-differential", "published-differential",
-        "boundary",
+        "boundary", "supplementary",
       ]) ||
       !valid_set(record.observations, [
         "status", "stdout", "stderr", "file-content", "file-type", "file-mode", "file-identity",
@@ -239,8 +239,19 @@ fn validate_changed_scope(
   paths : ArrayView[String],
   declaration : ChangeDeclaration,
   registry : @registry.Registry,
+  retired~ : Array[String] = [],
 ) -> (Array[String], Bool, Array[String]) {
   let failures : Array[String] = []
+  let retired = retired.filter(command => {
+    if registry.entries.any(entry => entry.command == command) {
+      failures.push(
+        "scope: a current command cannot be treated as retired '\{command}'",
+      )
+      false
+    } else {
+      true
+    }
+  })
   let changed_commands : Array[String] = []
   let mut core_changed = false
   for path in paths {
@@ -286,7 +297,12 @@ fn validate_changed_scope(
   let declared_commands = sorted_unique(declaration.affected_commands.copy())
   if declared_commands.is_empty() {
     if core_changed ||
-      paths.any(path => path == "commands" || path.has_prefix("commands/")) {
+      paths.any(path => {
+        match command_from_path(path) {
+          Some(command) => !retired.contains(command)
+          None => path == "commands" || path.has_prefix("commands/")
+        }
+      }) {
       failures.push(
         "scope: harness-only declarations cannot change core or commands",
       )
@@ -311,7 +327,7 @@ fn validate_changed_scope(
     .map(entry => entry.command),
   )
   for command in changed_commands {
-    if !declared_commands.contains(command) {
+    if !retired.contains(command) && !declared_commands.contains(command) {
       failures.push(
         "scope: changed command '\{command}' is missing from affected_commands",
       )

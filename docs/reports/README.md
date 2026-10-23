@@ -14,6 +14,9 @@ they are not an alternative support matrix.
 
 | Date | Report | Scope |
 | --- | --- | --- |
+| 2026-10-23 | [C1 content-bound scope implementation](2026-10-23-c1-scope/README.md) | Local full/shadow scope migration, separate full/current and old-side evidence proof; remote acceptance pending |
+| 2026-10-23 | [Comprehensive startup inventory](2026-10-23-comprehensive-startup/README.md) | Frozen source inventory of all 79 commands and 12 core packages, and all 22 pending original issue acceptance bullets |
+| 2026-10-23 | [C0 actual-main acceptance](2026-10-23-c0-acceptance/README.md) | Exact actual-main three-platform and coverage-audit acceptance; historical timeout cause remains unconfirmed |
 | 2026-10-23 | [C0 oracle lifecycle investigation](2026-10-23-c0-investigation/README.md) | Empty-stdin controls, preserved mainline timeout evidence, reproduced orphan-container cleanup defect, repair validation and explicit acceptance boundaries |
 | 2026-10-20 | [Stage 0 async 0.22.5 release](2026-10-20-stage0-release/README.md) | Core 0.7.0 and curl/mv/wget 0.2.3, verified registry uploads, local MoonX contracts, three-platform publication evidence and preserved partial snapshot |
 | 2026-10-18 | [Unified metadata release](2026-10-15-metadata-release/README.md) | Core 0.6.0, 78 command patch releases, 79 verified uploads on October 17 UTC, exact-source three-platform CI, published acceptance and immutable freezing |

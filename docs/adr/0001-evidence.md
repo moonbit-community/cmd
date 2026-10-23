@@ -3,9 +3,33 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-10-23
-Revision: Preserve exact-source coverage gates and add invocation-owned Docker oracle cleanup after interrupted execution.
+Revision: Preserve exact-source coverage and invocation-owned Docker cleanup; bind automatic impact to complete Git content and both-side dependencies in a full/shadow migration.
 
 ## Target and decision
+
+The C1 scope migration uses one schema-v2 `tests/coverage/ci-change.json` and
+the [scope contract](../../tests/scope/README.md). Prepare from the staged
+payload after final interfaces/formatting; verify the exact clean committed
+tree, base, complete raw diff, both public dependency graphs, registry and
+non-import policy. Reviewed additions only expand requirements. A declaration
+filename change or timestamp cannot prove freshness. Same tree/base with a
+different commit message requires no artificial edit.
+
+The migration remains `shadow-full`: all platform suites execute in full and
+actual evidence is checked against the calculated requirements. Candidate
+selector changes cannot authorize reduced execution. CI15's public package
+graph v2 is a conservative declared-import union; newer v3 requires explicit
+Native/Wasm captures. Normalize the same imports to the same identity, retain
+all isolated workspace packages, and explain full widening for unsupported
+semantics. Copying/resolving two owned snapshots costs extra C1 time; replace
+that cost only with identity-checked reuse and equivalent observed coverage.
+
+Selected rejection requirements retain support/ADR/unlock mappings. Removed
+or moved command obligations require explicit replacements and actual old plus
+current evidence; a new owner's row cannot silently prove the old owner.
+Retained host-tool diagnostics remain supplementary and cannot prove immutable
+upstream parity. Existing pre-push policy remains effective until C2's reviewed
+handoff migration; `shadow-full` grants no bootstrap exception.
 
 The 2026-10-11 repair treats an upstream disagreement as a failed contract,
 even when old package tests encoded the same defect. Pin binutils 2.44 and

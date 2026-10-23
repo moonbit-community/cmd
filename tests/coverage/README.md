@@ -4,6 +4,16 @@ The audit connects an explicit committed Git range to registry bindings and
 actual runner evidence. A declaration alone, a passing package test command,
 or an increased case count does not establish coverage.
 
+C1 uses [content-bound schema 2](../scope/README.md) in explicit `shadow-full`
+mode. Finish source/tests/docs/registry/interfaces/formatting, synchronize the
+target base, stage all managed edits, and run
+`MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/coverage/prepare_ci_change.mbtx --base-ref origin/main`.
+Review the generated sole `ci-change.json`, commit, and verify the clean exact
+commit with `audit.mbtx --scope verify --base <SHA> --head HEAD`. The normal
+audit CLI and push launcher also enforce fresh automatic minimums against
+the supplied actual evidence. The low-level public `audit(options)` API remains
+for controlled protocol fixtures; the push launcher exposes no raw mode.
+
 Run the pure MoonBit launcher from the repository root:
 
 ```text
@@ -52,9 +62,10 @@ The local push audit also accepts an empty `affected_commands` array for a
 harness-only range. Every affected behavior must be a registered package test
 under `tests/` without a command owner, and the range must not change `core/`
 or `commands/`. Nonempty affected behaviors and actual passing evidence remain
-required. This exception also checks the committed `ci-change.json` path
-bindings below and requires its reviewed impact and evidence requirements to
-match the local declaration. A dummy command is neither needed nor accepted as
+required. Schema-1 path-binding checks remain for predecessor/protocol fixtures.
+Current pushes require schema-2 content/closure freshness and a local declaration
+containing every automatic and reviewed obligation. A dummy command is neither
+needed nor accepted as
 a substitute for harness evidence. Existing command-scoped local declarations
 keep their original interface.
 This exception requires both declarations to contain no boundaries, deferred
@@ -118,30 +129,37 @@ platform jobs. Branch protection must require `coverage-audit`, `ubuntu-24.04`,
 coverage. Pull requests audit the target-base SHA to GitHub's exact synthetic
 merge SHA and verify both merge parents; pushes audit the event's exact
 `before` SHA to its new SHA. A manual dispatch may supply `audit_base` as an
-exact SHA. Scheduled runs and manual dispatches without a base validate the
-regression evidence and explicitly report change coverage as not applicable.
+exact SHA. Scheduled runs and manual dispatches without a base derive and prove
+the complete current full-regression matrix without claiming a change range.
 
-For an impactful range, update the reviewed `tests/coverage/ci-change.json` in
-that range. Its schema is the impact portion of the local declaration:
-`schema`, `affected_commands`, `affected_behaviors`, `affected_options`,
-`affected_operands`, `case_ids`, optional `core_impact`,
-`published_manifest_affected`, `required_backends`, `required_evidence`,
-`required_observations`, `boundaries`, `deferred`, and `uncovered`. Add
-`harness_bindings`, an array of objects containing a changed `path` and its
-affected registered package-test `behavior_ids`. Do not supply `coverage`,
-report paths, pass labels, or other execution outcomes: the CI input rejects
-them. Requirements come from this reviewed impact and the registry; successful
-rows never generate the declared scope.
+For a change range, [schema 2](../scope/README.md) binds the target base,
+tracked payload excluding the declaration itself, complete old/new Git records,
+both dependency graphs, registry and association policy. Human additions require
+reasons and can only expand old/new obligations. Unknown fields, duplicate keys,
+malformed input, stale fingerprints and lost consumers reject. A same-tree/base
+re-push needs no artificial declaration filename edit. Report paths, pass labels
+and execution outcomes remain forbidden in intent. Schema 1 can be read as a
+recorded predecessor; new change-event validation requires schema 2.
 
-Harness-only changes use their registered tests with an empty
-`affected_commands` array. Nonregistered harness/configuration paths need
-explicit bindings to affected harness tests. Changed registered test sources
-must still declare their owned behaviors. Frozen published JSON snapshots
-require `published_manifest_affected`, without one binding per source blob;
-executable files in those directories remain gated. Only narrative `.md`
-files newly added below `docs/reports/`, plus the live `docs/reports/README.md`
-index, qualify for the documentation-only path. Before either that shortcut
-or a mixed-change audit, CI rejects edits, deletions, type changes and renames
+During C1, CI executes and audits every current full-suite obligation, then
+independently proves the automatic shadow's old-side and added obligations.
+A replacement for an old row cannot replace a still-current full-suite row.
+Schedule/manual full derives current requirements without a stale PR filter or
+fabricated Git changes. An unavailable/rewritten main before identity forces
+full current-source/published execution with the original before value retained;
+it makes no reconstructed range claim. Empty summaries, zero inventory, missing
+actual rejection/replacement results and metadata-only receipts reject.
+
+Full/shadow platform receipts bind scope, full inventory, source, platform,
+run and attempt. The final `.scope-shadow.json` distinguishes the calculated
+minimum, full execution responsibility and actual audit result. C2 has not
+activated scoped execution or pre-push handoff. Existing policy still governs
+the first migration push; the plan itself grants no exception.
+
+Only narrative `.md` files newly added below `docs/reports/`, plus the live
+`docs/reports/README.md` index, qualify for the documentation-only classification.
+C1 still requires full execution for that classification. Before a ranged
+audit, CI rejects edits, deletions, type changes and renames
 of narrative reports already present at the audited base. This check uses
 only the current base-to-head Git diff and fails if the comparison is
 unavailable; it does not run a historical baseline or maintain an archive.

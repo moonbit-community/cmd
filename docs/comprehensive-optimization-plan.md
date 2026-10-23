@@ -20,8 +20,10 @@ force until their reviewed replacement takes effect.
 Execution evidence begins with the
 [C0 investigation](reports/2026-10-23-c0-investigation/README.md). That record
 distinguishes the reproduced command-oracle cleanup defect from the historical
-timeout whose cause remains unconfirmed. Later stages remain gated on the
-required exact-source C0 acceptance.
+timeout whose cause remains unconfirmed. The separate
+[C0 actual-main acceptance](reports/2026-10-23-c0-acceptance/README.md) records
+the completed four-check gate at main `4180e527`. C1 proceeds in full/shadow
+mode; scoped execution is not activated by that C0 result.
 
 ## 1. Objective, decisions and boundaries
 

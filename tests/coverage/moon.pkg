@@ -1,6 +1,7 @@
 import {
   "mooxCLI/cmd-tests/registry",
   "mooxCLI/cmd-tests/testkit",
+  "mooxCLI/cmd-tests/scope",
   "moonbitlang/async",
   "moonbitlang/async/fs",
   "moonbitlang/async/shell",

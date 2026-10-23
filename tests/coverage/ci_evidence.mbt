@@ -36,7 +36,7 @@ fn ci_receipt_paths(
   platform : String,
   published~ : Bool = false,
 ) -> Array[String] {
-  let paths : Array[String] = []
+  let paths : Array[String] = ["scope-shadow.json"]
   for role in ci_report_roles(platform, published~) {
     paths.append([role + "/summary.jsonl", role + "/run-metadata.json"])
     if role.has_prefix("package-") {
@@ -113,6 +113,7 @@ async fn ci_stamp(context : CiContext, directory : String) -> Unit {
   guard ["linux", "macos", "windows"].contains(platform) else {
     fail("unsupported CI platform")
   }
+  ci_write_scope_shadow(context, directory)
   let published = ci_published_enabled(context)
   let frozen = if platform == "linux" && published {
     Some(ci_frozen_binding())
@@ -184,6 +185,7 @@ async fn ci_verified_reports(
     }
     let errors = ci_receipt_context_errors(receipt.context, context)
     guard errors.is_empty() else { fail(errors.join("; ")) }
+    ci_verify_scope_shadow(context, root, platform)
     let expected = ci_receipt_paths(platform, published~)
     let actual = receipt.files.map(file => file.path)
     guard actual.length() == expected.length() &&
