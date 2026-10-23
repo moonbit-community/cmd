@@ -53,6 +53,198 @@ async fn scope_expect_unstaged(root : String) -> Unit {
 }
 
 ///|
+async fn scope_checkout_probe_environment(
+  root : String,
+  configuration : String,
+) -> Map[String, String] {
+  let home = root + "/.scope-output/config-home"
+  @fs.mkdir(home, recursive=true, allow_exist=true)
+  let environment = git_environment(@env.get_env_vars())
+  environment["HOME"] = home
+  environment["USERPROFILE"] = home
+  environment["XDG_CONFIG_HOME"] = home
+  // Only the read-only configuration probe sees this owned fixture file.
+  environment["GIT_CONFIG_SYSTEM"] = configuration
+  environment
+}
+
+///|
+async test "scope Git preserves system checkout conversion in a fresh index" {
+  let root = scope_git_fixture()
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  @fs.write_file(root + "/.gitattributes", "README.md -filter\n")
+  @fs.write_file(root + "/README.md", "first\nsecond\n")
+  ignore(scope_git_commit(root))
+  let tree = git_line(scope_fixture_git(root, ["write-tree"]), "fixture tree")
+  let configuration = root + "/.scope-output/system.gitconfig"
+  @fs.write_file(
+    configuration, "[core]\n\tautocrlf\n\teol = crlf\n\tsymlinks =\n",
+  )
+  let environment = scope_checkout_probe_environment(root, configuration)
+  let preserved = git_checkout_configuration(root, environment)
+  assert_true(preserved.contains("core.autocrlf=true"))
+  assert_true(preserved.contains("core.eol=crlf"))
+  assert_true(preserved.contains("core.symlinks=false"))
+  let suppressed_environment = environment.copy()
+  suppressed_environment["GIT_CONFIG_NOSYSTEM"] = "1"
+  let suppressed = git_checkout_configuration(root, suppressed_environment)
+  assert_true(!suppressed.any(value => value.has_prefix("core.autocrlf=")))
+  assert_true(!suppressed.any(value => value.has_prefix("core.eol=")))
+  @fs.remove(root + "/README.md")
+  ignore(
+    git_capture(root, [
+      "-c", "core.autocrlf=true", "-c", "core.eol=crlf", "checkout-index", "--force",
+      "--", "README.md",
+    ]),
+  )
+  assert_eq(@fs.read_file(root + "/README.md").binary(), b"first\r\nsecond\r\n")
+  // The old NOSYSTEM boundary lost these effective system settings. Explicit
+  // default values isolate that failure mechanism from the host's global config.
+  try
+    git_require_fresh_worktree(
+      root,
+      tree,
+      checkout=[
+        ..suppressed, "-c", "core.autocrlf=false", "-c", "core.eol=native",
+      ],
+    )
+  catch {
+    error => {
+      let detail = error.to_string()
+      assert_true(detail.contains("\"path\":\"README.md\""))
+      assert_true(detail.contains("\"status\":\"M\""))
+      assert_true(!detail.contains("first"))
+    }
+  } noraise {
+    _ =>
+      fail(
+        "discarding the checkout conversion must reproduce the CRLF false failure",
+      )
+  }
+  git_require_fresh_worktree(root, tree, checkout=preserved)
+  let snapshot = read_tree(root, tree)
+  assert_true(
+    snapshot.files.any(file => {
+      file.path == "README.md" && file.content == b"first\nsecond\n"
+    }),
+  )
+  // Equal-length edits must still fail with conversion enabled and a fresh index.
+  @fs.write_file(root + "/README.md", b"other\r\nsecond\r\n")
+  try git_require_fresh_worktree(root, tree, checkout=preserved) catch {
+    error => assert_true(error.to_string().contains("\"path\":\"README.md\""))
+  } noraise {
+    _ => fail("checkout conversion must not hide a changed payload")
+  }
+  assert_eq(
+    git_line(scope_fixture_git(root, ["write-tree"]), "fixture tree"),
+    tree,
+  )
+}
+
+///|
+async test "scope Git preserves configured symbolic link stubs without following them" {
+  let root = scope_git_fixture()
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  @fs.write_file(root + "/outside-target.mbt", "unrelated bytes")
+  ignore(scope_git_commit(root))
+  let target = "../outside-target.mbt"
+  let blob = git_line(
+    scope_fixture_git(root, ["hash-object", "-w", "--stdin"], input=target),
+    "link blob",
+  )
+  ignore(
+    scope_fixture_git(root, [
+      "update-index", "--add", "--cacheinfo", "120000", blob, "link.mbt",
+    ]),
+  )
+  ignore(scope_fixture_git(root, ["config", "core.symlinks", "false"]))
+  ignore(
+    scope_fixture_git(root, ["checkout-index", "--force", "--", "link.mbt"]),
+  )
+  let tree = git_line(scope_fixture_git(root, ["write-tree"]), "fixture tree")
+  assert_eq(@fs.read_file(root + "/link.mbt").binary(), @utf8.encode(target))
+  let settings = git_checkout_configuration(
+    root,
+    git_environment(@env.get_env_vars()),
+  )
+  assert_true(settings.contains("core.symlinks=false"))
+  git_require_fresh_worktree(root, tree, checkout=settings)
+  @fs.write_file(root + "/link.mbt", "../different-target.mbt")
+  try git_require_fresh_worktree(root, tree, checkout=settings) catch {
+    error => assert_true(error.to_string().contains("\"path\":\"link.mbt\""))
+  } noraise {
+    _ =>
+      fail(
+        "modified symbolic link text must fail even when checkout uses a regular stub",
+      )
+  }
+  assert_true(
+    read_tree(root, tree).files.any(file => {
+      file.path == "link.mbt" &&
+      file.mode == "120000" &&
+      file.content == @utf8.encode(target)
+    }),
+  )
+}
+
+///|
+test "scope Git checkout configuration is closed and ambient Git overrides are stripped" {
+  let environment = git_environment({
+    "GIT_DIR": "/untrusted",
+    "git_index_file": "/untrusted/index",
+    "GIT_CONFIG_SYSTEM": "/untrusted/config",
+    "Git_Config_NoSystem": "1",
+    "PATH": "/fixture/bin",
+    "HOME": "/fixture/home",
+  })
+  assert_true(
+    environment
+    .keys()
+    .all(name => {
+      !name.to_upper().has_prefix("GIT_") ||
+      name is ("GIT_OPTIONAL_LOCKS" | "GIT_NO_REPLACE_OBJECTS")
+    }),
+  )
+  assert_eq(environment["PATH"], "/fixture/bin")
+  assert_eq(environment["HOME"], "/fixture/home")
+  assert_eq(git_checkout_value("core.autocrlf", "input"), "input")
+  assert_eq(git_checkout_value("core.autocrlf", "true"), "true")
+  assert_eq(git_checkout_value("core.symlinks", "false"), "false")
+  assert_eq(git_checkout_value("core.fileMode", "true"), "true")
+  assert_eq(git_checkout_value("core.eol", "crlf"), "crlf")
+  for
+    pair in [
+      ("core.eol", "arbitrary"),
+      ("core.autocrlf", "command"),
+      ("core.fileMode", "true\nfalse"),
+      ("core.symlinks", "input"),
+      ("core.symlinks", ""),
+      ("filter.fixture.clean", "arbitrary helper"),
+    ] {
+    try git_checkout_value(pair.0, pair.1) catch {
+      _ => ()
+    } noraise {
+      _ =>
+        fail(
+          "unknown settings and non-scalar conversion values must fail closed",
+        )
+    }
+  }
+  let header = ":100644 100644 " +
+    "a".repeat(40) +
+    " " +
+    "0".repeat(40) +
+    " M\u0000"
+  for suffix in ["../outside\u0000", ".git/config\u0000", "missing terminator"] {
+    try git_worktree_diagnostics(@utf8.encode(header + suffix)) catch {
+      _ => ()
+    } noraise {
+      _ => fail("worktree diagnostics must reject unsafe or malformed paths")
+    }
+  }
+}
+
+///|
 async test "scope Git binds binary empty and symbolic link blobs from the index" {
   let root = scope_git_fixture()
   defer (@fs.rmdir(root, recursive=true) catch { _ => () })

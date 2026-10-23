@@ -292,7 +292,12 @@ fn ci_declaration(
   impact : CiImpact,
   registry : @registry.Registry,
   report_paths : Array[String],
+  frozen_reports~ : Array[String] = [],
+  identical_frozen_cases~ : Array[String] = [],
 ) -> ChangeDeclaration raise {
+  // References belong to this proof subject. Frozen publication bundles are
+  // eligible only for identical current case bodies and published evidence;
+  // the complete frozen publication remains a separate proof subject.
   let records : Array[CoverageRecord] = []
   let seen : Set[String] = Set([])
   for id in impact.affected_behaviors {
@@ -324,7 +329,12 @@ fn ci_declaration(
       // An obligation is not a supplied result. Only evidence rows can pass it.
       result: "required",
       report: None,
-      reports: Some(report_paths),
+      reports: Some(
+        report_paths.filter(path => {
+          !frozen_reports.contains(path) ||
+          (entry.is_case() && identical_frozen_cases.contains(entry.case_id))
+        }),
+      ),
     })
   }
   {

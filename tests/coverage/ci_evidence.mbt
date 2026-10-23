@@ -23,7 +23,7 @@ fn ci_report_roles(
     "stress-native",
   ]
   if platform == "linux" {
-    roles.append(["oracle-native", "oracle-wasm"])
+    roles.append(["gnu-native", "oracle-native", "oracle-wasm"])
     if published {
       roles.push("published-differential")
     }

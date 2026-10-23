@@ -150,6 +150,23 @@ full current-source/published execution with the original before value retained;
 it makes no reconstructed range claim. Empty summaries, zero inventory, missing
 actual rejection/replacement results and metadata-only receipts reject.
 
+CI proves the current frozen publication as a separate subject using its
+provenance-bound registry and immutable selected case bodies. Every exact
+published coordinate must appear once in run metadata, and every selected case
+requires one actual published row with the matching coordinate, identity,
+observations and contract, boundary or sealed differential verification.
+Non-Linux cases require explicit platform skips. Frozen rows cannot prove a
+current source contract, backend pair or upstream comparison, and current rows
+cannot replace frozen execution. An added published-differential requirement
+may reference a frozen row only when its complete case body is canonically
+identical to the current case; changed metadata cases cannot borrow that row.
+The `.published.json` audit sidecar records this independent proof and its
+findings; empty, partial, duplicated or substituted evidence fails the audit.
+
+The Linux `gnu-native` bundle is retained to prove execution of the registered
+GNU host supplementary diagnostic. It cannot satisfy a contract, backend pair,
+boundary or immutable upstream differential obligation.
+
 Full/shadow platform receipts bind scope, full inventory, source, platform,
 run and attempt. The final `.scope-shadow.json` distinguishes the calculated
 minimum, full execution responsibility and actual audit result. C2 has not

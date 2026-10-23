@@ -38,6 +38,11 @@ The registry package exposes the following integration points:
   It also checks exact case-file/command/platform bindings, executable dispatch
   branches, package backend declarations, and lifecycle test references.
 
+Source discovery tolerates only a typed ENOENT when a concurrently removed
+entry disappears after directory enumeration. A missing registered declaration
+still fails as an orphan binding. Permission, non-directory and other failures
+remain fatal; a transient fixture cannot suppress a reviewed source obligation.
+
 Behavior IDs are stable identifiers. Existing JSON case IDs remain unchanged;
 the registry prefixes them with `case:` to keep their implementation category
 explicit. Scenario, cohort, policy, metadata, and package registrations use

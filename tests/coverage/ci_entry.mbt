@@ -10,6 +10,25 @@ async fn ci_audit(
   let (metadata_paths, corpora, profiles, frozen) = ci_verified_reports(
     context, evidence_root,
   )
+  let published = match frozen {
+    Some(binding) =>
+      Some(
+        ci_prove_frozen_publication(
+          binding,
+          metadata_paths,
+          profiles,
+          context.head,
+        ),
+      )
+    None => None
+  }
+  if published is Some(proof) {
+    @fs.write_file(
+      output + ".published.json",
+      @testkit.canonical_json(ToJson::to_json(proof)) + "\n",
+      create_mode=CreateNew,
+    )
+  }
   let paths = if context.base == "" {
     []
   } else {
@@ -43,8 +62,22 @@ async fn ci_audit(
     .normalize()
     .to_string()
   })
-  let declaration = ci_declaration(impact, registry, reports)
-  let report = audit_declared(
+  let identical_frozen_cases = match frozen {
+    Some(binding) => ci_frozen_selected_ids(binding, registry, root)
+    None => []
+  }
+  let frozen_reports = match published {
+    Some(proof) => proof.report_paths
+    None => []
+  }
+  let declaration = ci_declaration(
+    impact,
+    registry,
+    reports,
+    frozen_reports~,
+    identical_frozen_cases~,
+  )
+  let source_report = audit_declared(
     {
       base: if context.base == "" {
         context.head
@@ -69,6 +102,20 @@ async fn ci_audit(
     scope=shadow,
     full_scope=Some(full),
   )
+  let report = match published {
+    None => source_report
+    Some(proof) =>
+      {
+        ..source_report,
+        status: if source_report.status == "passed" && proof.status == "passed" {
+          "passed"
+        } else {
+          "failed"
+        },
+        findings: source_report.findings + proof.findings,
+        run_ids: sorted_unique(source_report.run_ids + proof.run_ids),
+      }
+  }
   @fs.write_file(output, report_text(report), create_mode=@fs.CreateNew)
   @fs.write_file(
     output + ".json",

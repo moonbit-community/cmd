@@ -31,6 +31,28 @@ Retained host-tool diagnostics remain supplementary and cannot prove immutable
 upstream parity. Existing pre-push policy remains effective until C2's reviewed
 handoff migration; `shadow-full` grants no bootstrap exception.
 
+The C1 remote correction preserves Git's effective checkout conversion using
+only validated scalar `core.autocrlf`, `core.eol`, `core.symlinks` and
+`core.fileMode` values. Ambient Git overrides remain excluded; a disposable
+fresh index still checks actual bytes, link text and applicable mode changes.
+The owned CRLF fixture reproduces loss of system conversion and verifies that
+conversion cannot hide an actual edit. Actual Windows acceptance still requires
+the platform run, with contained path/status/mode diagnostics on any failure.
+
+Full regression retains the Linux GNU host diagnostic's actual supplementary
+bundle without promoting it to semantic parity. Frozen publication is an
+independent proof subject: validate every exact coordinate and selected frozen
+case, its actual observations, explicit platform applicability and sealed
+oracle where required. Current source and frozen publication identities cannot
+substitute for each other. Empty or partial publication evidence fails even
+when the current registry has no per-behavior publication requirement.
+
+Registry source discovery tolerates typed ENOENT only for an entry that vanishes
+after enumeration during concurrent tests. Deleted registered declarations
+still fail orphan validation; permission and other filesystem failures remain
+fatal. Deterministic removal and error-classification regressions preserve this
+boundary without serializing otherwise independent fixture execution.
+
 The 2026-10-11 repair treats an upstream disagreement as a failed contract,
 even when old package tests encoded the same defect. Pin binutils 2.44 and
 util-linux 2.40 alongside coreutils 9.11/jq 1.8.2. Correct known wrong golden

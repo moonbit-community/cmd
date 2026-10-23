@@ -51070,6 +51070,357 @@
         "status"
       ],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/git_wbtest.mbt::scope Git preserves system checkout conversion in a fresh index",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/git_wbtest.mbt::scope Git preserves system checkout conversion in a fresh index",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope Git preserves system checkout conversion in a fresh index"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/git_wbtest.mbt::scope Git preserves configured symbolic link stubs without following them",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/git_wbtest.mbt::scope Git preserves configured symbolic link stubs without following them",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope Git preserves configured symbolic link stubs without following them"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/scope/git_wbtest.mbt::scope Git checkout configuration is closed and ambient Git overrides are stripped",
+      "command": "",
+      "owner": "tests/scope",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/scope/git_wbtest.mbt::scope Git checkout configuration is closed and ambient Git overrides are stripped",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "scope Git checkout configuration is closed and ambient Git overrides are stripped"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_roles_wbtest.mbt::CI Linux receipts retain mandatory supplementary execution",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_roles_wbtest.mbt::CI Linux receipts retain mandatory supplementary execution",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "CI Linux receipts retain mandatory supplementary execution"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_frozen_proof_wbtest.mbt::CI frozen publication proves contracts rejections and differentials as a separate subject",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_frozen_proof_wbtest.mbt::CI frozen publication proves contracts rejections and differentials as a separate subject",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "CI frozen publication proves contracts rejections and differentials as a separate subject"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_frozen_proof_wbtest.mbt::CI frozen publication rejects empty partial duplicated and current source rows",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_frozen_proof_wbtest.mbt::CI frozen publication rejects empty partial duplicated and current source rows",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "CI frozen publication rejects empty partial duplicated and current source rows"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_frozen_proof_wbtest.mbt::CI frozen publication requires complete coordinates immutable oracle and exact identities",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_frozen_proof_wbtest.mbt::CI frozen publication requires complete coordinates immutable oracle and exact identities",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "CI frozen publication requires complete coordinates immutable oracle and exact identities"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_frozen_proof_wbtest.mbt::CI frozen zero-status upstream fixtures still require actual rejection and explicit platform skips",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_frozen_proof_wbtest.mbt::CI frozen zero-status upstream fixtures still require actual rejection and explicit platform skips",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "CI frozen zero-status upstream fixtures still require actual rejection and explicit platform skips"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_frozen_proof_wbtest.mbt::CI frozen case selection reads immutable bodies aliases and unconditional extras",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_frozen_proof_wbtest.mbt::CI frozen case selection reads immutable bodies aliases and unconditional extras",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "CI frozen case selection reads immutable bodies aliases and unconditional extras"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_frozen_proof_wbtest.mbt::CI published extras reference only canonically identical frozen cases",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_frozen_proof_wbtest.mbt::CI published extras reference only canonically identical frozen cases",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "CI published extras reference only canonically identical frozen cases"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/coverage/ci_frozen_proof_wbtest.mbt::CI frozen network oracle scenarios require their delegated observations without invented file types",
+      "command": "",
+      "owner": "tests/coverage",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/coverage/ci_frozen_proof_wbtest.mbt::CI frozen network oracle scenarios require their delegated observations without invented file types",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "CI frozen network oracle scenarios require their delegated observations without invented file types"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/registry/source_bindings_wbtest.mbt::source scan tolerates entries removed after enumeration without accepting deleted bindings",
+      "command": "",
+      "owner": "tests/registry",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/registry/source_bindings_wbtest.mbt::source scan tolerates entries removed after enumeration without accepting deleted bindings",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "source scan tolerates entries removed after enumeration without accepting deleted bindings"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/registry/source_bindings_wbtest.mbt::source scan preserves permission non-directory and non-filesystem failures",
+      "command": "",
+      "owner": "tests/registry",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/registry/source_bindings_wbtest.mbt::source scan preserves permission non-directory and non-filesystem failures",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "source scan preserves permission non-directory and non-filesystem failures"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
     }
   ],
   "release_commands": [
