@@ -79,9 +79,14 @@ jobs:
       - name: Update registry
         run: moon update
 
+      - name: Build release coverage CLI
+        run: moon build --target native --release --deny-warn tests/coverage/cli
+
       - name: Resolve reviewed coverage requirements
         id: coverage_requirements
-        run: moon run tests/coverage/ci.mbtx requirements
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/coverage/cli/cli.exe
+          --ci requirements
 
       - name: Check
         id: check_source
@@ -325,7 +330,9 @@ jobs:
         run: git diff --exit-code
 
       - name: Bind complete platform evidence to this workflow run
-        run: moon run tests/coverage/ci.mbtx stamp test-reports
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/coverage/cli/cli.exe
+          --ci stamp test-reports
 
       - name: Upload reports and failed fixtures
         if: always()
@@ -366,15 +373,20 @@ jobs:
           pattern: cmd-test-reports-*
           path: test-reports/ci
       - run: moon update
+      - name: Build release coverage CLI
+        run: moon build --target native --release --deny-warn tests/coverage/cli
       - name: Resolve reviewed coverage requirements
         id: coverage_requirements
-        run: moon run tests/coverage/ci.mbtx requirements
+        run: >-
+          ./_build/native/release/build/mooxCLI/cmd-tests/coverage/cli/cli.exe
+          --ci requirements
       - name: Build the frozen publication validator when required
         if: steps.coverage_requirements.outputs.published_differential == 'true'
         run: moon build --target native --release --deny-warn tests/release_runner
       - name: Audit reviewed impact against all exact-source platform evidence
         run: >-
-          moon run tests/coverage/ci.mbtx audit test-reports/ci
+          ./_build/native/release/build/mooxCLI/cmd-tests/coverage/cli/cli.exe
+          --ci audit test-reports/ci
           test-reports/coverage-audit/audit.md
       - name: Preserve coverage audit evidence
         if: always()

@@ -169,9 +169,9 @@ boundary or immutable upstream differential obligation.
 
 Full/shadow platform receipts bind scope, full inventory, source, platform,
 run and attempt. The final `.scope-shadow.json` distinguishes the calculated
-minimum, full execution responsibility and actual audit result. C2 has not
-activated scoped execution or pre-push handoff. Existing policy still governs
-the first migration push; the plan itself grants no exception.
+minimum, full execution responsibility and actual audit result. C2 has been
+removed from the current plan; C1 full/shadow execution and the existing local
+push policy remain in effect.
 
 Shared metadata, registry-package execution, network-scenario and mv-scenario
 producer changes require full scope, including their dynamic command consumers,
@@ -205,6 +205,14 @@ The CI audit requires each declared backend/evidence combination on every
 applicable platform; oracle comparisons use Linux. The local audit's existing
 interface remains unchanged. Requirements without an applicable CI evidence
 producer fail rather than being inferred from an availability result.
+
+CI builds `tests/coverage/cli` once in Native release mode and invokes that
+executable with `--ci requirements`, `--ci stamp`, or `--ci audit`. The `.mbtx`
+launcher remains available for local use. Each entry verifies the current scope
+once and shares that value with its published decision and platform-shadow
+checks. This reuse lasts only for the current invocation; full execution,
+per-platform evidence checks, and frozen-publication validation remain required.
+Full regression execution and the daily schedule are unchanged.
 
 The `ci.mbtx requirements` probe enables published verification from the
 reviewed intent and registry requirements before any results exist. Its Linux

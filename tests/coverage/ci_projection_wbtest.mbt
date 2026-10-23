@@ -133,6 +133,22 @@ test "scope shadow receipts bind selection source run platform inventory and ful
   assert_true(
     ci_scope_shadow_errors(report, intent, context, "macos", [entry.behavior_id]).is_empty(),
   )
+  guard report is Object(fields) else {
+    fail("fixture report must be an object")
+  }
+  for platform in ["linux", "macos", "windows"] {
+    let platform_report = fields.copy()
+    platform_report["platform"] = Json(platform)
+    assert_true(
+      ci_scope_shadow_errors(
+        Json::object(platform_report),
+        intent,
+        context,
+        platform,
+        [entry.behavior_id],
+      ).is_empty(),
+    )
+  }
   let mutations : Array[(String, Json)] = [
     ("platform", "windows"),
     ("execution_mode", "scoped"),
