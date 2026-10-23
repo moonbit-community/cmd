@@ -336,6 +336,7 @@ async fn snapshot_into(
 pub async fn snapshot(
   root : String,
   observe~ : ArrayView[String] = [],
+  content~ : Bool = true,
   baseline~ : Bool = false,
   preserve_identity~ : Bool = false,
   stat_path~ : String = "stat",
@@ -347,7 +348,7 @@ pub async fn snapshot(
   // reading one hard-link name could change a later alias's observed atime.
   for index in 0..<entries.length() {
     let entry = entries[index]
-    if entry.kind == "file" {
+    if content && entry.kind == "file" {
       let content = @fs.read_file(
         @path.Path(root).join(Path(entry.path)).to_string(),
         sync_timestamp=baseline && observe.contains("atime"),
@@ -359,7 +360,7 @@ pub async fn snapshot(
   // observation. Those reads synchronize timestamps before this resampling:
   // otherwise a delayed observer update could look like a candidate mutation.
   // The final snapshot retains atime measured before reading content.
-  if baseline && observe.contains("atime") {
+  if content && baseline && observe.contains("atime") {
     for entry in entries {
       let (s, n) = @fs.atime(
         @path.Path(root).join(Path(entry.path)).to_string(),

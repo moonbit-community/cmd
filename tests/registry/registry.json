@@ -51880,6 +51880,222 @@
         "status"
       ],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/snapshot_lifecycle_wbtest.mbt::snapshot can observe metadata without loading large file contents",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/snapshot_lifecycle_wbtest.mbt::snapshot can observe metadata without loading large file contents",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "snapshot can observe metadata without loading large file contents"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/corpus_wbtest.mbt::benchmark corpus generation preserves chunk boundaries and deterministic binary bytes",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/corpus_wbtest.mbt::benchmark corpus generation preserves chunk boundaries and deterministic binary bytes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark corpus generation preserves chunk boundaries and deterministic binary bytes"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/corpus_wbtest.mbt::benchmark long records retain exact delimiters invalid bytes and final record",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/corpus_wbtest.mbt::benchmark long records retain exact delimiters invalid bytes and final record",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark long records retain exact delimiters invalid bytes and final record"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/corpus_wbtest.mbt::benchmark corpus sweeps expand fixed sizes without losing behavior ownership",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/corpus_wbtest.mbt::benchmark corpus sweeps expand fixed sizes without losing behavior ownership",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark corpus sweeps expand fixed sizes without losing behavior ownership"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/corpus_wbtest.mbt::benchmark scaled output replaces small literals with bounded exact comparison",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/corpus_wbtest.mbt::benchmark scaled output replaces small literals with bounded exact comparison",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark scaled output replaces small literals with bounded exact comparison"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/functional_wbtest.mbt::benchmark functional fixtures reset mutations and compare bounded effects",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/functional_wbtest.mbt::benchmark functional fixtures reset mutations and compare bounded effects",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark functional fixtures reset mutations and compare bounded effects"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/functional_wbtest.mbt::benchmark generated relations check mktemp identity and bounded yes prefixes",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/functional_wbtest.mbt::benchmark generated relations check mktemp identity and bounded yes prefixes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark generated relations check mktemp identity and bounded yes prefixes"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/functional_wbtest.mbt::benchmark functional cases refuse metadata placeholders and retain declared root relations",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/functional_wbtest.mbt::benchmark functional cases refuse metadata placeholders and retain declared root relations",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark functional cases refuse metadata placeholders and retain declared root relations"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
     }
   ],
   "release_commands": [

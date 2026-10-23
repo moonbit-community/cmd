@@ -1,4 +1,20 @@
 ///|
+async test "snapshot can observe metadata without loading large file contents" {
+  let root = @fs.tmpdir(prefix="mooncmd-snapshot-content-")
+  defer @fs.rmdir(root, recursive=true)
+  let file = @fs.create(root + "/large")
+  file.write_at(b"x", position=67108863L)
+  file.close()
+  let entries = snapshot(root, content=false)
+  assert_eq(entries.length(), 1)
+  assert_eq(entries[0].kind, "file")
+  assert_eq(entries[0].content, b"")
+  assert_eq(@fs.file_size(root + "/large"), 67108864L)
+  @fs.write_file(root + "/large", b"small")
+  assert_eq(snapshot(root)[0].content, b"small")
+}
+
+///|
 async test "rejection detects same-content replacement of an existing file" {
   if host_platform() == "windows" {
     return
