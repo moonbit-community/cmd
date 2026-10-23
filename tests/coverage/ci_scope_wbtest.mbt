@@ -125,7 +125,9 @@ fn ci_scope_test_bundle(
     },
   }
   {
-    report_path: "reports/" + id + "/summary.jsonl",
+    report_path: @path.Path("reports/" + id + "/summary.jsonl")
+    .normalize()
+    .to_string(),
     metadata,
     rows: entries.map(entry => {
       ..audit_row(id, backend, verification),
@@ -191,10 +193,11 @@ test "scope CI cannot borrow a moved command owner without an explicit replaceme
     rejection.behavior_id,
   )
   let mapped = ci_scope_test_intent([requirement], [mapping])
-  assert_true(
+  assert_eq(
     validate_scope_requirements(mapped, declaration, registry, bundles, [
       "macos",
-    ]).is_empty(),
+    ]),
+    [],
   )
   assert_eq(
     ci_scope_mapped_targets(mapped, old.behavior_id),
@@ -235,10 +238,11 @@ test "scope CI stable behavior IDs cannot substitute a new case binding without 
     rejection.behavior_id,
   )
   let mapped = ci_scope_test_intent([requirement], [mapping])
-  assert_true(
+  assert_eq(
     validate_scope_requirements(mapped, declaration, registry, [current], [
       "macos",
-    ]).is_empty(),
+    ]),
+    [],
   )
   let only_old_strength = ci_scope_test_bundle(
     "native-only", "macos", "native", "contract", entries,
@@ -275,6 +279,26 @@ test "scope CI accepts canonical coverage aliases and rejects duplicate canonica
   ]
   let declaration = ci_scope_test_declaration([entry], bundles)
   let canonical = declaration.coverage[0]
+  assert_eq(
+    report_references(canonical),
+    bundles.map(bundle => bundle.report_path),
+  )
+  let noncanonical = {
+    ..bundles[0],
+    report_path: "reports/./alias/summary.jsonl",
+  }
+  let noncanonical_declaration = ci_scope_test_declaration([entry], [
+    noncanonical,
+  ])
+  assert_true(
+    validate_scope_requirements(
+      intent,
+      noncanonical_declaration,
+      registry,
+      [noncanonical],
+      ["macos"],
+    ).any(problem => problem.contains("report has no supplied run metadata")),
+  )
   for id in ["legacy-current", entry.case_id] {
     let aliased_row = { ..canonical, behavior_id: id, }
     let aliased = {
@@ -282,8 +306,9 @@ test "scope CI accepts canonical coverage aliases and rejects duplicate canonica
       affected_behaviors: [id],
       coverage: [aliased_row],
     }
-    assert_true(
-      validate_scope_requirements(intent, aliased, registry, bundles, ["macos"]).is_empty(),
+    assert_eq(
+      validate_scope_requirements(intent, aliased, registry, bundles, ["macos"]),
+      [],
     )
     let duplicate = { ..declaration, coverage: [canonical, aliased_row], }
     assert_true(
@@ -316,10 +341,11 @@ test "scope CI requires every replacement and rejection execution plus coverage 
     "all", "macos", "native", "contract", entries,
   )
   let declaration = ci_scope_test_declaration(entries, [complete])
-  assert_true(
+  assert_eq(
     validate_scope_requirements(intent, declaration, registry, [complete], [
       "macos",
-    ]).is_empty(),
+    ]),
+    [],
   )
   for absent in entries {
     let missing = {
@@ -467,8 +493,9 @@ test "scope CI keeps old Native Windows and current Wasm Linux obligations separ
   let bundles = [old_execution, current_execution, rejected]
   let declaration = ci_scope_test_declaration(entries, bundles)
   let hosts = ["linux", "windows"]
-  assert_true(
-    validate_scope_requirements(intent, declaration, registry, bundles, hosts).is_empty(),
+  assert_eq(
+    validate_scope_requirements(intent, declaration, registry, bundles, hosts),
+    [],
   )
   for incomplete in [[old_execution, rejected], [current_execution, rejected]] {
     let declared = ci_scope_test_declaration(entries, incomplete)
@@ -557,10 +584,11 @@ test "scope CI replacement preserves old oracle profile and sealed differential 
   )
   let bundles = [prior, current, rejected]
   let declaration = ci_scope_test_declaration(entries, bundles)
-  assert_true(
+  assert_eq(
     validate_scope_requirements(intent, declaration, registry, bundles, [
       "linux",
-    ]).is_empty(),
+    ]),
+    [],
   )
   let substituted = [current, rejected]
   assert_false(

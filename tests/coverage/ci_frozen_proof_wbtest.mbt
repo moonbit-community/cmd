@@ -143,7 +143,9 @@ fn frozen_proof_fixture() -> FrozenProofFixture raise {
     cases,
     coordinates,
     bundle: {
-      report_path: "linux/published-differential/summary.jsonl",
+      report_path: @path.Path("linux/published-differential/summary.jsonl")
+      .normalize()
+      .to_string(),
       metadata,
       rows,
       selected_ids: cases.map(fixture => fixture.id),
@@ -604,14 +606,15 @@ async test "CI published extras reference only canonically identical frozen case
     identical_frozen_cases=identical,
   )
   assert_eq(declaration.coverage[0].reports, Some([fixture.bundle.report_path]))
-  assert_true(
+  assert_eq(
     validate_scope_requirements(
       intent,
       declaration,
       registry,
       [fixture.bundle],
       ["linux"],
-    ).is_empty(),
+    ),
+    [],
   )
   @fs.write_file(
     root + "/current.json",

@@ -242,23 +242,25 @@ test "full current execution cannot be replaced by a shadow retirement mapping o
     "full", "macos", "native", "contract", entries,
   )
   let declaration = ci_scope_test_declaration(entries, [complete])
-  assert_true(
+  assert_eq(
     validate_scope_requirements(full, declaration, registry, [complete], [
       "macos",
-    ]).is_empty(),
+    ]),
+    [],
   )
   let missing_current = {
     ..complete,
     rows: complete.rows.filter(row => row.id != current.case_id),
   }
-  assert_true(
+  assert_eq(
     validate_scope_requirements(
       shadow,
       declaration,
       registry,
       [missing_current],
       ["macos"],
-    ).is_empty(),
+    ),
+    [],
   )
   assert_false(
     validate_scope_requirements(
