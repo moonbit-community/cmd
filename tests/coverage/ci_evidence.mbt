@@ -113,8 +113,9 @@ async fn ci_stamp(context : CiContext, directory : String) -> Unit {
   guard ["linux", "macos", "windows"].contains(platform) else {
     fail("unsupported CI platform")
   }
-  ci_write_scope_shadow(context, directory)
-  let published = ci_published_enabled(context)
+  let intent = ci_scope_preflight(context)
+  ci_write_scope_shadow(context, directory, intent)
+  let published = ci_published_enabled(context, intent)
   let frozen = if platform == "linux" && published {
     Some(ci_frozen_binding())
   } else {
@@ -164,13 +165,14 @@ async fn ci_stamp(context : CiContext, directory : String) -> Unit {
 async fn ci_verified_reports(
   context : CiContext,
   directory : String,
+  intent : @scope.ScopeIntent?,
 ) -> (Array[String], Array[String], Array[String], CiFrozenBinding?) {
   let metadata_paths : Array[String] = []
   let corpora = [
     "tests/fixtures/runner/cases.json", "tests/registry/registry.json",
   ]
   let profiles : Array[String] = []
-  let published = ci_published_enabled(context)
+  let published = ci_published_enabled(context, intent)
   let frozen = if published { Some(ci_frozen_binding()) } else { None }
   for
     (platform, host) in [
@@ -185,7 +187,7 @@ async fn ci_verified_reports(
     }
     let errors = ci_receipt_context_errors(receipt.context, context)
     guard errors.is_empty() else { fail(errors.join("; ")) }
-    ci_verify_scope_shadow(context, root, platform)
+    ci_verify_scope_shadow(context, root, platform, intent)
     let expected = ci_receipt_paths(platform, published~)
     let actual = receipt.files.map(file => file.path)
     guard actual.length() == expected.length() &&

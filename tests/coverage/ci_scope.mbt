@@ -38,8 +38,11 @@ fn ci_scope_fingerprint(intent : @scope.ScopeIntent?) -> String {
 }
 
 ///|
-async fn ci_write_scope_shadow(context : CiContext, directory : String) -> Unit {
-  let intent = ci_scope_preflight(context)
+async fn ci_write_scope_shadow(
+  context : CiContext,
+  directory : String,
+  intent : @scope.ScopeIntent?,
+) -> Unit {
   let registry = @registry.load("tests/registry/registry.json")
   let report : Json = {
     "schema": 1,
@@ -65,8 +68,8 @@ async fn ci_verify_scope_shadow(
   context : CiContext,
   directory : String,
   platform : String,
+  intent : @scope.ScopeIntent?,
 ) -> Unit {
-  let intent = ci_scope_preflight(context)
   let report = @scope.strict_json(
     @fs.read_file(directory + "/scope-shadow.json").text(),
   )

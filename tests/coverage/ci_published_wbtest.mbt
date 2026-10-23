@@ -10,7 +10,7 @@ fn ci_test_frozen() -> CiFrozenBinding {
 }
 
 ///|
-test "CI published requirements come from reviewed intent and registry obligations" {
+async test "CI published requirements come from reviewed intent and registry obligations" {
   let entry = audit_entry()
   let registry : @registry.Registry = {
     schema: 2,
@@ -18,6 +18,28 @@ test "CI published requirements come from reviewed intent and registry obligatio
     release_commands: [],
   }
   let impact = ci_test_impact(entry.behavior_id)
+  let context = ci_test_context()
+  let intent = ci_scope_test_intent([ci_scope_test_requirement(entry)], [])
+  assert_true(
+    ci_published_enabled({ ..context, event: "schedule", base: "", }, None),
+  )
+  assert_true(
+    ci_published_enabled(
+      { ..context, event: "workflow_dispatch", },
+      Some(intent),
+    ),
+  )
+  assert_true(
+    ci_published_enabled(
+      context,
+      Some({ ..intent, selection: { ..intent.selection, mode: "full", }, }),
+    ),
+  )
+  try ci_published_enabled(context, None) catch {
+    error => assert_true(error.to_string().contains("fresh actual-range scope"))
+  } noraise {
+    _ => fail("published requirements accepted a missing range scope")
+  }
   assert_false(ci_impact_needs_published(impact, registry))
   assert_true(
     ci_impact_needs_published(

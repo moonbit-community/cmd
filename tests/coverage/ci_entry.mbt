@@ -7,8 +7,9 @@ async fn ci_audit(
   guard @env.get_env_var("CMD_MATRIX_RESULT") == Some("success") else {
     fail("all three platform jobs must succeed before the CI coverage audit")
   }
+  let shadow = ci_scope_preflight(context)
   let (metadata_paths, corpora, profiles, frozen) = ci_verified_reports(
-    context, evidence_root,
+    context, evidence_root, shadow,
   )
   let published = match frozen {
     Some(binding) =>
@@ -37,7 +38,6 @@ async fn ci_audit(
     guard history_errors.is_empty() else { fail(history_errors.join("\n")) }
     paths
   }
-  let shadow = ci_scope_preflight(context)
   let root = ci_git(["rev-parse", "--show-toplevel"])
   let snapshot = @scope.read_tree(root, context.head)
   let full = @scope.full_regression_requirements(

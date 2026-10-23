@@ -25,12 +25,14 @@ fn ci_impact_needs_published(
 }
 
 ///|
-async fn ci_published_enabled(context : CiContext) -> Bool {
+async fn ci_published_enabled(
+  context : CiContext,
+  intent : @scope.ScopeIntent?,
+) -> Bool {
   if context.base == "" {
-    ignore(ci_scope_preflight(context))
     return true
   }
-  guard ci_scope_preflight(context) is Some(intent) else {
+  guard intent is Some(intent) else {
     fail("published execution requires the fresh actual-range scope")
   }
   context.event == "workflow_dispatch" ||
@@ -52,7 +54,8 @@ fn ci_scope_needs_published(intent : @scope.ScopeIntent) -> Bool {
 
 ///|
 async fn ci_requirements(context : CiContext) -> Unit {
-  let published = ci_published_enabled(context)
+  let intent = ci_scope_preflight(context)
+  let published = ci_published_enabled(context, intent)
   let output = "published_differential=" + published.to_string() + "\n"
   guard @env.get_env_var("GITHUB_OUTPUT") is Some(path) else {
     fail("requirements probe requires the workflow step output path")
