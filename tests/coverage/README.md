@@ -174,7 +174,9 @@ activated scoped execution or pre-push handoff. Existing policy still governs
 the first migration push; the plan itself grants no exception.
 
 Only narrative `.md` files newly added below `docs/reports/`, plus the live
-`docs/reports/README.md` index, qualify for the documentation-only classification.
+`docs/reports/README.md` index's regular-file in-place modifications, qualify
+for the documentation-only classification. Index deletion, rename and type
+changes remain conservative full-scope changes.
 C1 still requires full execution for that classification. Before a ranged
 audit, CI rejects edits, deletions, type changes and renames
 of narrative reports already present at the audited base. This check uses

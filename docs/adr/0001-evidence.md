@@ -53,6 +53,11 @@ still fail orphan validation; permission and other filesystem failures remain
 fatal. Deterministic removal and error-classification regressions preserve this
 boundary without serializing otherwise independent fixture execution.
 
+The live report index's in-place regular-file updates qualify for narrative
+scope. Historical report edits/removal, index renames/deletion/type changes and
+unknown ownership still widen to full. Both immutable paths and file modes are
+checked so moving historical evidence into the index cannot hide its removal.
+
 The 2026-10-11 repair treats an upstream disagreement as a failed contract,
 even when old package tests encoded the same defect. Pin binutils 2.44 and
 util-linux 2.40 alongside coreutils 9.11/jq 1.8.2. Correct known wrong golden

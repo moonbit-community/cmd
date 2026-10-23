@@ -256,6 +256,19 @@ pub fn select_scope(
         sel_full(state, "shared harness or global selection policy: " + path)
         continue
       }
+      let live_index = change.status == "M" &&
+        change.old_path == "docs/reports/README.md" &&
+        change.new_path == change.old_path &&
+        change.old_mode == "100644" &&
+        change.new_mode == "100644" &&
+        snapshot_file(base, path) is Some(before) &&
+        before.mode == "100644" &&
+        snapshot_file(candidate, path) is Some(after) &&
+        after.mode == "100644"
+      if live_index {
+        state.reasons.push("live report index update: " + path)
+        continue
+      }
       let narrative = change.old_path == "" &&
         path.has_prefix("docs/reports/") &&
         path.has_suffix(".md") &&

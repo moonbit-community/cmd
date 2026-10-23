@@ -548,6 +548,94 @@ test "scope only newly added narrative reports get docs mode" {
     registry,
   )
   assert_eq(result.mode, "docs")
+  let index = "docs/reports/README.md"
+  let index_before = sel_test_tree(files=[
+    sel_test_file(index, content="previous report index"),
+  ])
+  let index_after = sel_test_tree(files=[
+    sel_test_file(index, content="updated report index"),
+  ])
+  let index_result = select_scope(
+    index_before,
+    index_after,
+    [sel_test_change(index)],
+    graph,
+    graph,
+    registry,
+    registry,
+  )
+  assert_eq(index_result.mode, "docs")
+  assert_eq(index_result.changed_paths, [index])
+  assert_true(index_result.commands.is_empty())
+  assert_true(index_result.behaviors.is_empty())
+  assert_true(index_result.packages.is_empty())
+  assert_true(index_result.build_prerequisites.is_empty())
+  assert_true(index_result.requirements.is_empty())
+  let historical = "docs/reports/previous/README.md"
+  let historical_before = sel_test_tree(files=[
+    sel_test_file(historical, content="frozen report"),
+  ])
+  let historical_after = sel_test_tree(files=[
+    sel_test_file(historical, content="modified frozen report"),
+  ])
+  for
+    (before, after, change) in [
+      (historical_before, historical_after, sel_test_change(historical)),
+      (
+        historical_before,
+        index_after,
+        { ..sel_test_change(index), status: "R100", old_path: historical, },
+      ),
+      (
+        index_before,
+        new,
+        { ..sel_test_change(index), status: "R100", new_path: path, },
+      ),
+      (
+        index_before,
+        old,
+        {
+          ..sel_test_change(index),
+          status: "D",
+          new_path: "",
+          new_mode: "000000",
+        },
+      ),
+    ] {
+    assert_eq(
+      select_scope(before, after, [change], graph, graph, registry, registry).mode,
+      "full",
+    )
+  }
+  for mode in ["120000", "100755"] {
+    let nonregular = sel_test_tree(files=[{ ..sel_test_file(index), mode, }])
+    for
+      (before, after, change) in [
+        (nonregular, index_after, { ..sel_test_change(index), old_mode: mode, }),
+        (
+          index_before,
+          nonregular,
+          { ..sel_test_change(index), new_mode: mode, },
+        ),
+        (nonregular, index_after, sel_test_change(index)),
+        (index_before, nonregular, sel_test_change(index)),
+        (
+          index_before,
+          index_after,
+          { ..sel_test_change(index), old_mode: mode, },
+        ),
+        (
+          index_before,
+          index_after,
+          { ..sel_test_change(index), new_mode: mode, },
+        ),
+      ] {
+      assert_eq(
+        select_scope(before, after, [change], graph, graph, registry, registry).mode,
+        "full",
+      )
+    }
+  }
   for
     protected_path in [
       "docs/compatibility.md", "docs/adr/0001-evidence.md", "README.mbt.md", "unknown/new.mbt",

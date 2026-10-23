@@ -14,6 +14,7 @@ they are not an alternative support matrix.
 
 | Date | Report | Scope |
 | --- | --- | --- |
+| 2026-10-23 | [C1 live report index correction](2026-10-23-c1-live-index-correction/README.md) | Narrow regular-file index updates to documented narrative scope while retaining historical, rename and type boundaries; acceptance pending |
 | 2026-10-23 | [C1 remote correction](2026-10-23-c1-remote-correction/README.md) | Preserved first PR failure, checkout-conversion regression, Linux supplementary receipts and independent frozen-publication proof; remote acceptance pending |
 | 2026-10-23 | [C1 content-bound scope implementation](2026-10-23-c1-scope/README.md) | Local full/shadow scope migration, separate full/current and old-side evidence proof; remote acceptance pending |
 | 2026-10-23 | [Comprehensive startup inventory](2026-10-23-comprehensive-startup/README.md) | Frozen source inventory of all 79 commands and 12 core packages, and all 22 pending original issue acceptance bullets |
