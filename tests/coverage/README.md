@@ -173,6 +173,13 @@ minimum, full execution responsibility and actual audit result. C2 has not
 activated scoped execution or pre-push handoff. Existing policy still governs
 the first migration push; the plan itself grants no exception.
 
+Shared metadata, registry-package execution, network-scenario and mv-scenario
+producer changes require full scope, including their dynamic command consumers,
+raw and typed cases, child build prerequisites and applicable publication
+coordinates. Their own package/import ownership is not a complete execution
+dependency list. See the [scope contract](../scope/README.md) for the conditions
+for a future narrower classification.
+
 Only narrative `.md` files newly added below `docs/reports/`, plus the live
 `docs/reports/README.md` index's regular-file in-place modifications, qualify
 for the documentation-only classification. Index deletion, rename and type

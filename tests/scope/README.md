@@ -44,7 +44,13 @@ literal catalog rows may narrow only with unchanged helper/structure bytes;
 unknown expressions use normal core closure. Shared fixtures and child command
 launches use `tests/registry/associations.json`; child build prerequisites do
 not automatically add unchanged command behaviors. General harness and policy
-changes force full. Unknown paths/owners widen; malformed input rejects.
+changes force full. The shared metadata, registry-package execution, network
+scenario and mv scenario producers also force full when their own sources or
+package manifests change. Their dynamic command launches and shared case /
+scenario / publication responsibilities cannot be inferred from imports alone.
+Narrow these producer paths only after complete registered consumer and child
+artifact associations have equivalent old/new-side regression evidence.
+Unknown paths/owners widen; malformed input rejects.
 
 `intent.mbt` and `entry.mbt` own schema parsing, content identities and preparation.
 The sole current impact input remains `tests/coverage/ci-change.json`.
@@ -71,6 +77,17 @@ explicit commands, behaviors, packages or cases plus added requirements.
 oracle applicability rather than imposing a global Native/Wasm cross product.
 Mapped replacement and rejection tests add actual evidence obligations; they
 do not remove the old-side requirement from intent.
+
+Explicit command additions also retain linked non-import integration rows,
+using each row's registered requirements. Behavior/case additions and boundary
+targets remain targeted; their descriptive command does not select every
+ordinary behavior of that command. After additions and boundary mappings,
+artifact closure includes their command roots, old/new associated child builds
+and forward dependencies. A selected behavior's association membership can
+require child artifacts even when no command/path trigger matches. Full or
+unresolved associations retain a conservative two-side full selection and
+recompute rejection obligations. Required publication rows add their exact
+coordinates; build-only children do not imply publication requirements.
 
 Schema 1 can be read as the recorded predecessor during preparation and in
 historical first-parent intent inspection. It supplies no schema-v2 automatic

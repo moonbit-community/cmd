@@ -79,6 +79,285 @@ fn sel_association_path(pattern : String, path : String) -> Bool {
 }
 
 ///|
+fn sel_requires_association(entry : @registry.RegistryEntry) -> Bool {
+  ["stateful-scenario", "compatibility-cohort", "policy-test"].contains(
+    entry.implementation,
+  )
+}
+
+///|
+fn sel_association_triggered(
+  rule : SelectionAssociation,
+  commands : Array[String],
+  paths : Array[String],
+) -> Bool {
+  rule.trigger_commands.any(command => {
+    (command == "*" && !commands.is_empty()) || commands.contains(command)
+  }) ||
+  rule.trigger_paths.any(pattern => {
+    paths.any(path => sel_association_path(pattern, path))
+  })
+}
+
+///|
+fn sel_reviewed_associations(
+  base : TreeSnapshot,
+  candidate : TreeSnapshot,
+) -> (Array[SelectionAssociation], Array[String]) raise {
+  let (old, old_uncertainty) = sel_associations(base)
+  let (new, new_uncertainty) = sel_associations(candidate)
+  (old + new, old_uncertainty + new_uncertainty)
+}
+
+///|
+fn sel_association_commands(
+  base_graph : DependencyGraph,
+  candidate_graph : DependencyGraph,
+  base_registry : @registry.Registry,
+  candidate_registry : @registry.Registry,
+) -> Set[String] {
+  let known : Set[String] = Set([])
+  for registry in [base_registry, candidate_registry] {
+    for command in registry.release_commands {
+      known.add(command.name)
+    }
+    for entry in registry.entries {
+      if entry.command != "" && entry.command != "all" {
+        known.add(entry.command)
+      }
+    }
+  }
+  for node in base_graph.nodes + candidate_graph.nodes {
+    if sel_command(node.owner) is Some(command) {
+      known.add(command)
+    }
+  }
+  known
+}
+
+///|
+fn sel_association_floor(
+  selection : Selection,
+  base : TreeSnapshot,
+  candidate : TreeSnapshot,
+  base_graph : DependencyGraph,
+  candidate_graph : DependencyGraph,
+  base_registry : @registry.Registry,
+  candidate_registry : @registry.Registry,
+) -> Selection raise {
+  let (rules, reasons) = sel_reviewed_associations(base, candidate)
+  let known = sel_association_commands(
+    base_graph, candidate_graph, base_registry, candidate_registry,
+  )
+  let entries = base_registry.entries + candidate_registry.entries
+  for entry in entries {
+    if sel_requires_association(entry) &&
+      (
+        !selection.commands.is_empty() ||
+        selection.behaviors.contains(entry.behavior_id)
+      ) &&
+      !rules.any(rule => rule.behavior_ids.contains(entry.behavior_id)) {
+      reasons.push("missing non-import association: " + entry.behavior_id)
+    }
+  }
+  for rule in rules {
+    for id in rule.behavior_ids {
+      if !entries.any(entry => entry.behavior_id == id) {
+        reasons.push("unknown non-import behavior: " + id)
+      }
+    }
+    for command in rule.trigger_commands + rule.build_commands {
+      if command != "*" && !known.contains(command) {
+        reasons.push("unknown non-import command: " + command)
+      }
+    }
+    if rule.full &&
+      (
+        sel_association_triggered(
+          rule,
+          selection.commands,
+          selection.changed_paths,
+        ) ||
+        rule.behavior_ids.any(id => selection.behaviors.contains(id))
+      ) {
+      reasons.push("shared non-import layer: " + rule.id)
+    }
+  }
+  if reasons.is_empty() {
+    return selection
+  }
+  let mut result = {
+    ..selection,
+    mode: "full",
+    reasons: sorted_strings(selection.reasons + reasons),
+  }
+  if selection.mode == "full" {
+    return result
+  }
+  for
+    (snapshot, registry) in [
+      (base, base_registry),
+      (candidate, candidate_registry),
+    ] {
+    let full = full_regression_selection(snapshot, registry)
+    result = {
+      ..result,
+      commands: sorted_strings(result.commands + full.commands),
+      behaviors: sorted_strings(result.behaviors + full.behaviors),
+      packages: sorted_strings(result.packages + full.packages),
+      core_packages: sorted_strings(result.core_packages + full.core_packages),
+      build_prerequisites: sorted_strings(
+        result.build_prerequisites + full.build_prerequisites,
+      ),
+      case_ids: sorted_strings(result.case_ids + full.case_ids),
+      affected_options: sorted_strings(
+        result.affected_options + full.affected_options,
+      ),
+      affected_operands: sorted_strings(
+        result.affected_operands + full.affected_operands,
+      ),
+      requirements: sel_requirement_union(
+        result.requirements + full.requirements,
+      ),
+    }
+  }
+  result
+}
+
+///|
+/// A command addition includes linked integrations, with each registered row's
+/// own requirements. Descriptive child commands do not select whole commands.
+fn sel_extra_command_associations(
+  selection : Selection,
+  extras : Array[HumanExtra],
+  base : TreeSnapshot,
+  candidate : TreeSnapshot,
+  base_registry : @registry.Registry,
+  candidate_registry : @registry.Registry,
+) -> Selection raise {
+  let commands = sorted_strings(
+    extras
+    .map(extra => extra.commands)
+    .fold(init=[], (all, items) => all + items),
+  )
+  if commands.is_empty() {
+    return selection
+  }
+  let ids : Set[String] = Set([])
+  let reasons = selection.reasons.copy()
+  let entries = base_registry.entries + candidate_registry.entries
+  let (rules, _) = sel_reviewed_associations(base, candidate)
+  for rule in rules {
+    if !sel_association_triggered(rule, commands, []) {
+      continue
+    }
+    for id in rule.behavior_ids {
+      ids.add(id)
+    }
+    reasons.push("reviewed command non-import association: " + rule.id)
+  }
+  let linked = entries.filter(entry => ids.contains(entry.behavior_id))
+  let packages = sorted_strings(
+    selection.packages + linked.map(sel_registered_package),
+  )
+  {
+    ..selection,
+    mode: if selection.mode == "docs" && !linked.is_empty() {
+      "scoped"
+    } else {
+      selection.mode
+    },
+    reasons: sorted_strings(reasons),
+    behaviors: sorted_strings(
+      selection.behaviors + linked.map(entry => entry.behavior_id),
+    ),
+    packages: packages.copy(),
+    core_packages: sorted_strings(
+      selection.core_packages +
+      packages.filter(path => path.has_prefix("core/")),
+    ),
+    build_prerequisites: sorted_strings(
+      selection.build_prerequisites + packages,
+    ),
+    case_ids: sorted_strings(
+      selection.case_ids +
+      linked.filter(entry => entry.case_id != "").map(entry => entry.case_id),
+    ),
+    affected_options: sorted_strings(
+      selection.affected_options +
+      linked
+      .filter(entry => entry.surface.contains("options"))
+      .map(entry => entry.coverage)
+      .fold(init=[], (all, items) => all + items),
+    ),
+    affected_operands: sorted_strings(
+      selection.affected_operands +
+      linked
+      .filter(entry => entry.surface.contains("operands"))
+      .map(entry => entry.coverage)
+      .fold(init=[], (all, items) => all + items),
+    ),
+    requirements: sel_requirement_union(
+      selection.requirements + sel_requirements(linked),
+    ),
+  }
+}
+
+///|
+/// Close artifacts only after reviewed and boundary targets are known. Rule
+/// membership retains child builds without adding sibling behavior obligations.
+fn sel_final_prerequisites(
+  selection : Selection,
+  base : TreeSnapshot,
+  candidate : TreeSnapshot,
+  base_graph : DependencyGraph,
+  candidate_graph : DependencyGraph,
+  base_registry : @registry.Registry,
+  candidate_registry : @registry.Registry,
+) -> Array[String] raise {
+  let known = sel_association_commands(
+    base_graph, candidate_graph, base_registry, candidate_registry,
+  )
+  let artifact_commands = sorted_strings(
+    selection.commands +
+    selection.requirements
+    .map(row => row.command)
+    .filter(command => command != "" && command != "all"),
+  )
+  let roots = selection.packages + selection.build_prerequisites
+  for command in artifact_commands {
+    guard known.contains(command) else {
+      fail("selected artifact command has no known owner: " + command)
+    }
+    roots.push("commands/" + command)
+  }
+  let (rules, _) = sel_reviewed_associations(base, candidate)
+  for rule in rules {
+    if !sel_association_triggered(
+        rule,
+        selection.commands,
+        selection.changed_paths,
+      ) &&
+      !rule.behavior_ids.any(id => selection.behaviors.contains(id)) {
+      continue
+    }
+    for command in rule.build_commands {
+      if command == "*" {
+        for name in known.iter() {
+          roots.push("commands/" + name)
+        }
+      } else if known.contains(command) {
+        roots.push("commands/" + command)
+      }
+    }
+  }
+  let roots = sorted_strings(roots)
+  sorted_strings(
+    roots + selection_prerequisites(base_graph, candidate_graph, roots),
+  )
+}
+
+///|
 fn sel_published(snapshot : TreeSnapshot) -> Map[String, String] raise {
   guard snapshot_file(snapshot, "tests/release_runner/current/published.json")
     is Some(file) else {

@@ -139,6 +139,10 @@ fn sel_global(path : String) -> Bool {
   path == "tests/moon.pkg" ||
   path.has_prefix("tests/testkit/") ||
   path.has_prefix("tests/runner/") ||
+  path.has_prefix("tests/metadata/") ||
+  path.has_prefix("tests/packages/") ||
+  path.has_prefix("tests/network_scenarios/") ||
+  path.has_prefix("tests/mv_scenarios/") ||
   (
     path.has_prefix("tests/release_runner/") &&
     path != "tests/release_runner/current/published.json" &&
@@ -386,9 +390,7 @@ pub fn select_scope(
   }
   if !state.commands.is_empty() {
     for entry in entries {
-      if ["stateful-scenario", "compatibility-cohort", "policy-test"].contains(
-          entry.implementation,
-        ) &&
+      if sel_requires_association(entry) &&
         !(old_rules + new_rules).any(rule => {
           rule.behavior_ids.contains(entry.behavior_id)
         }) {
@@ -396,6 +398,7 @@ pub fn select_scope(
       }
     }
   }
+  let association_commands = state.commands.iter().collect()
   for rule in old_rules + new_rules {
     for id in rule.behavior_ids {
       if !entries.any(row => row.behavior_id == id) {
@@ -407,13 +410,7 @@ pub fn select_scope(
         sel_full(state, "unknown non-import command: " + command)
       }
     }
-    if rule.trigger_commands.any(command => {
-        (command == "*" && !state.commands.is_empty()) ||
-        state.commands.contains(command)
-      }) ||
-      rule.trigger_paths.any(pattern => {
-        state.paths.any(path => sel_association_path(pattern, path))
-      }) {
+    if sel_association_triggered(rule, association_commands, state.paths) {
       state.reasons.push("non-import association: " + rule.id)
       if rule.full {
         sel_full(state, "shared non-import layer: " + rule.id)

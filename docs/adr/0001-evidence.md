@@ -58,6 +58,28 @@ scope. Historical report edits/removal, index renames/deletion/type changes and
 unknown ownership still widen to full. Both immutable paths and file modes are
 checked so moving historical evidence into the index cannot hide its removal.
 
+Changes to shared metadata, package-test, network-scenario and mv-scenario
+producers force full scope. Import closure alone misses dynamically launched
+command artifacts and registered consumers of their execution protocols; typed
+scenario associations alone can omit the corresponding raw cases and published
+coordinates. The owned-package regression reproduces the former scoped result
+and requires complete command/case/build/publication closure after correction.
+This conservatism costs a full run for producer maintenance. Lift it only with
+complete old/new consumer, child artifact and raw/typed/publication associations
+and equivalent observed regression coverage.
+
+Reviewed command additions retain linked non-import integrations with each
+registered row's own requirements. Targeted behavior/case and boundary mapping
+additions do not promote unchanged child commands to their entire ordinary
+collections. Close artifacts after those targets are known: preserve both
+snapshots' command roots, matched or member-associated child builds and forward
+dependencies. Required publication rows contribute their exact coordinates;
+build-only children do not add publication evidence. Full association rules
+widen before acceptance and recompute newly selected rejection obligations.
+The targeted regression covers metadata-only additions, member-only scenario
+builds, removed old rules/edges, mapped targets, registered applicability and
+full widening without spreading an extra's evidence onto linked rows.
+
 The 2026-10-11 repair treats an upstream disagreement as a failed contract,
 even when old package tests encoded the same defect. Pin binutils 2.44 and
 util-linux 2.40 alongside coreutils 9.11/jq 1.8.2. Correct known wrong golden

@@ -494,6 +494,29 @@ pub fn policy_identity(snapshot : TreeSnapshot) -> String {
 }
 
 ///|
+fn sel_boundary_targets(
+  selection : Selection,
+  boundaries : Array[ScopeBoundary],
+  registry : @registry.Registry,
+) -> Selection raise {
+  add_human_extras(
+    selection,
+    boundaries.map(row => {
+      reason: "registered rejection/replacement obligations for " +
+      row.behavior_id,
+      commands: [],
+      behaviors: sorted_strings(row.rejection_tests + row.replacement_behaviors),
+      packages: [],
+      case_ids: [],
+      backends: [],
+      evidence: [],
+      observations: [],
+    }),
+    registry,
+  )
+}
+
+///|
 pub fn make_intent(
   target_ref : String,
   base : String,
@@ -513,41 +536,53 @@ pub fn make_intent(
     base_tree, candidate_tree, changes, base_graph, candidate_graph, base_registry,
     candidate_registry,
   )
-  let with_extras = add_human_extras_both(
-    automatic, extras, base_registry, candidate_registry,
-  )
-  let boundaries = selected_boundaries(
-    base_tree, candidate_tree, with_extras, boundaries, base_registry, candidate_registry,
-  )
-  let mapped = add_human_extras(
-    with_extras,
-    boundaries.map(row => {
-      reason: "registered rejection/replacement obligations for " +
-      row.behavior_id,
-      commands: [],
-      behaviors: sorted_strings(row.rejection_tests + row.replacement_behaviors),
-      packages: [],
-      case_ids: [],
-      backends: [],
-      evidence: [],
-      observations: [],
-    }),
+  let linked = sel_extra_command_associations(
+    add_human_extras_both(automatic, extras, base_registry, candidate_registry),
+    extras,
+    base_tree,
+    candidate_tree,
+    base_registry,
     candidate_registry,
   )
+  let with_extras = sel_association_floor(
+    linked, base_tree, candidate_tree, base_graph, candidate_graph, base_registry,
+    candidate_registry,
+  )
+  let mut boundaries = selected_boundaries(
+    base_tree, candidate_tree, with_extras, boundaries, base_registry, candidate_registry,
+  )
+  let mapped = sel_boundary_targets(with_extras, boundaries, candidate_registry)
+  let widened = sel_association_floor(
+    mapped, base_tree, candidate_tree, base_graph, candidate_graph, base_registry,
+    candidate_registry,
+  )
+  let mapped = if widened.mode == "full" && mapped.mode != "full" {
+    boundaries = selected_boundaries(
+      base_tree, candidate_tree, widened, boundaries, base_registry, candidate_registry,
+    )
+    sel_boundary_targets(widened, boundaries, candidate_registry)
+  } else {
+    widened
+  }
   let selection = {
     ..mapped,
     published_coordinates: selection_coordinates(
       base_tree,
       candidate_tree,
-      mapped.commands,
-    ),
-    build_prerequisites: sorted_strings(
-      mapped.build_prerequisites +
-      selection_prerequisites(
-        base_graph,
-        candidate_graph,
-        mapped.packages + mapped.build_prerequisites,
+      sorted_strings(
+        mapped.commands +
+        mapped.requirements
+        .filter(row => {
+          row.evidence.contains("published-differential") &&
+          row.command != "" &&
+          row.command != "all"
+        })
+        .map(row => row.command),
       ),
+    ),
+    build_prerequisites: sel_final_prerequisites(
+      mapped, base_tree, candidate_tree, base_graph, candidate_graph, base_registry,
+      candidate_registry,
     ),
   }
   let intent : ScopeIntent = {

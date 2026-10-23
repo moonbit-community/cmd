@@ -291,6 +291,82 @@ test "scope shared harness is full while boundaries and supplementary applicabil
   assert_eq(refusal.backends, ["wasm"])
   assert_eq(refusal.platforms, ["windows"])
   assert_eq(refusal.evidence, ["boundary"])
+  let shared_registry = sel_test_registry([
+    host,
+    boundary,
+    sel_test_entry("ordinary-cat", "cat"),
+    sel_test_entry("ordinary-wc", "wc"),
+    {
+      ..sel_test_entry("metadata:cat", "cat"),
+      owner: "tests/metadata/verify.mbtx",
+      implementation: "metadata-probe",
+      source: "tests/metadata/verify.mbtx::cat",
+    },
+    {
+      ..sel_test_entry("package-adapter", ""),
+      owner: "tests/packages",
+      source: "tests/packages/main_wbtest.mbt::package-adapter",
+    },
+    {
+      ..sel_test_entry("case:network-child", "cat"),
+      implementation: "json-case",
+      source: "tests/cases/cat.json",
+      case_id: "network-child",
+    },
+    {
+      ..sel_test_entry("scenario:network-child", "cat"),
+      owner: "tests/runner/scenarios.mbt",
+      implementation: "stateful-scenario",
+      source: "tests/runner/scenarios.mbt::network-child",
+    },
+  ])
+  let shared_graph = sel_test_graph(
+    [
+      "commands/cat", "commands/wc", "core/stream", "tests/integration", "tests/metadata",
+      "tests/packages", "tests/network_scenarios", "tests/mv_scenarios", "tests/runner",
+    ],
+    links=[
+      ("commands/cat", "core/stream"),
+      ("tests/runner", "tests/network_scenarios"),
+      ("tests/runner", "tests/mv_scenarios"),
+    ],
+  )
+  let shared_tree = sel_test_tree(
+    associations="{\"schema\":1,\"rules\":[{\"id\":\"network-child\",\"kind\":\"scenario\",\"trigger_commands\":[],\"trigger_paths\":[\"tests/network_scenarios/**\"],\"behavior_ids\":[\"scenario:network-child\"],\"build_commands\":[\"*\"],\"full\":false}]}",
+    published="{\"schema\":2,\"commands\":[{\"name\":\"cat\",\"package_name\":\"cli/cat\",\"version\":\"0.1.1\",\"published\":true},{\"name\":\"wc\",\"package_name\":\"cli/wc\",\"version\":\"0.2.1\",\"published\":true}]}",
+  )
+  // Owned helper/manifest paths must not pass only through unknown-path widening.
+  for
+    path in [
+      "tests/metadata/main.mbt", "tests/metadata/moon.pkg", "tests/packages/main.mbt",
+      "tests/packages/moon.pkg", "tests/network_scenarios/executor.mbt", "tests/network_scenarios/moon.pkg",
+      "tests/mv_scenarios/launch.mbt", "tests/mv_scenarios/moon.pkg",
+    ] {
+    let shared = select_scope(
+      shared_tree,
+      shared_tree,
+      [sel_test_change(path)],
+      shared_graph,
+      shared_graph,
+      shared_registry,
+      shared_registry,
+    )
+    assert_eq(shared.mode, "full")
+    assert_eq(shared.commands, ["cat", "wc"])
+    assert_eq(shared.behaviors.length(), shared_registry.entries.length())
+    assert_true(shared.behaviors.contains("ordinary-cat"))
+    assert_true(shared.behaviors.contains("ordinary-wc"))
+    assert_true(shared.behaviors.contains("case:network-child"))
+    assert_true(shared.behaviors.contains("scenario:network-child"))
+    assert_true(shared.build_prerequisites.contains("commands/cat"))
+    assert_true(shared.build_prerequisites.contains("commands/wc"))
+    assert_true(shared.build_prerequisites.contains("core/stream"))
+    assert_eq(shared.published_coordinates, ["cli/cat@0.1.1", "cli/wc@0.2.1"])
+    assert_eq(
+      shared.requirements.filter(row => row.behavior_id == "windows-boundary"),
+      [refusal],
+    )
+  }
 }
 
 ///|

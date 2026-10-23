@@ -14,6 +14,7 @@ they are not an alternative support matrix.
 
 | Date | Report | Scope |
 | --- | --- | --- |
+| 2026-10-23 | [C1 shared producer and addition closure](2026-10-23-c1-shared-producer-closure/README.md) | Conservative shared producer scope and post-addition child artifacts; local validation in progress, remote acceptance pending |
 | 2026-10-23 | [C1 Windows evidence fixture correction](2026-10-23-c1-windows-fixture-correction/README.md) | Verified actual Windows eight-test failure and path-normalization cause; fixture-only correction, actual Windows acceptance pending |
 | 2026-10-23 | [C1 live report index correction](2026-10-23-c1-live-index-correction/README.md) | Narrow regular-file index updates to documented narrative scope while retaining historical, rename and type boundaries; acceptance pending |
 | 2026-10-23 | [C1 remote correction](2026-10-23-c1-remote-correction/README.md) | Preserved first PR failure, checkout-conversion regression, Linux supplementary receipts and independent frozen-publication proof; remote acceptance pending |
