@@ -21,7 +21,8 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": []
     },
     {
       "id": "p9-comm-zero-terminated",
@@ -44,7 +45,10 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "zero-terminated"
+      ]
     },
     {
       "id": "compat-text-comm-nul-records",
@@ -70,7 +74,10 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_hex": "610009620009096300",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "zero-terminated"
+      ]
     },
     {
       "id": "compat-text-comm-check-order",
@@ -97,7 +104,10 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "b\n",
       "expected_stderr_contains": "not in sorted order",
-      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted."
+      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted.",
+      "coverage": [
+        "check-order"
+      ]
     },
     {
       "id": "compat-text-comm-nocheck-precedence",
@@ -124,7 +134,11 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "b\na\n\tz\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "check-order",
+        "nocheck-order"
+      ]
     },
     {
       "id": "compat-text-comm-default-order",
@@ -148,9 +162,10 @@
       "normalizations": [],
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_text": "b\n",
+      "expected_stdout_text": "b\na\n\tz\n",
       "expected_stderr_contains": "not in sorted order",
-      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted."
+      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted.",
+      "coverage": []
     },
     {
       "id": "compat-text-comm-pairable-unsorted",
@@ -175,7 +190,8 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "\t\tb\n\t\ta\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": []
     },
     {
       "id": "compat-merge-comm",
@@ -203,7 +219,11 @@
       "expected_stdout_text": "a\n",
       "expected_files": [],
       "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "2",
+        "3"
+      ]
     },
     {
       "id": "compat-catalog-line-48",
@@ -219,7 +239,10 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_contains": "Usage:",
       "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact.",
+      "coverage": [
+        "help"
+      ]
     },
     {
       "id": "compat-catalog-line-375",
@@ -236,7 +259,8 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "",
       "expected_stderr_contains": "both inputs",
-      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact.",
+      "coverage": []
     },
     {
       "id": "repair-alias-comm-zero-terminated",
@@ -262,7 +286,10 @@
       "comparison": "contract",
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
       "expected_stdout_hex": "610009620009096300",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "zero-terminated"
+      ]
     },
     {
       "id": "release-metadata-comm-help",
@@ -280,7 +307,7 @@
         "help"
       ],
       "source_version": "workspace cli/comm@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: comm [-123] [-z] FILE1 FILE2\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nCompare two sorted files line by line, producing three columns:\nlines only in FILE1, lines only in FILE2, and lines in both.\n\nOptions:\n  -1  Suppress column 1 (lines unique to FILE1).\n  -2  Suppress column 2 (lines unique to FILE2).\n  -3  Suppress column 3 (lines in both files).\n      --check-order  Diagnose unsorted input.\n      --nocheck-order  Do not diagnose unsorted input.\n  -z, --zero-terminated  End records with NUL instead of newline.\n\nUse '-' as a file name to read stdin.\n",
+      "expected_stdout_text": "Usage: comm [-123] [-z] FILE1 FILE2\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nCompare two sorted files line by line, producing three columns:\nlines only in FILE1, lines only in FILE2, and lines in both.\n\nOptions:\n  -1  Suppress column 1 (lines unique to FILE1).\n  -2  Suppress column 2 (lines unique to FILE2).\n  -3  Suppress column 3 (lines in both files).\n      --output-delimiter=STR  Separate columns with STR (empty means NUL).\n      --total  Print counts for all three columns and a total label.\n      --check-order  Diagnose unsorted input.\n      --nocheck-order  Do not diagnose unsorted input.\n  -z, --zero-terminated  End records with NUL instead of newline.\n\nUse '-' as a file name to read stdin.\n",
       "expected_stderr_text": ""
     },
     {
@@ -301,6 +328,361 @@
       "source_version": "workspace cli/comm@0.2.2 metadata contract",
       "expected_stdout_text": "comm 0.2.2\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o1-comm-total",
+      "command": "comm",
+      "args": [
+        "--total",
+        "comm-left.in",
+        "comm-right.in"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "comm-left.in",
+          "content_hex": "610a620a620a640a"
+        },
+        {
+          "path": "comm-right.in",
+          "content_hex": "620a620a630a640a"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed macOS development observation; CI must bind its immutable oracle",
+      "expected_stdout_hex": "610a0909620a0909620a09630a0909640a310931093309746f74616c0a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "total"
+      ]
+    },
+    {
+      "id": "o1-comm-total-123",
+      "command": "comm",
+      "args": [
+        "--total",
+        "-123",
+        "comm-left.in",
+        "comm-right.in"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "comm-left.in",
+          "content_hex": "610a620a620a640a"
+        },
+        {
+          "path": "comm-right.in",
+          "content_hex": "620a620a630a640a"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed macOS development observation; CI must bind its immutable oracle",
+      "expected_stdout_hex": "310931093309746f74616c0a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "total",
+        "1",
+        "2",
+        "3"
+      ]
+    },
+    {
+      "id": "o1-comm-delim-total",
+      "command": "comm",
+      "args": [
+        "--output-delimiter=|",
+        "--total",
+        "comm-left.in",
+        "comm-right.in"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "comm-left.in",
+          "content_hex": "610a620a620a640a"
+        },
+        {
+          "path": "comm-right.in",
+          "content_hex": "620a620a630a640a"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed macOS development observation; CI must bind its immutable oracle",
+      "expected_stdout_hex": "610a7c7c620a7c7c620a7c630a7c7c640a317c317c337c746f74616c0a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "output-delimiter",
+        "total"
+      ]
+    },
+    {
+      "id": "o1-comm-delim-empty",
+      "command": "comm",
+      "args": [
+        "--output-delimiter=",
+        "comm-left.in",
+        "comm-right.in"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "comm-left.in",
+          "content_hex": "610a620a620a640a"
+        },
+        {
+          "path": "comm-right.in",
+          "content_hex": "620a620a630a640a"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed macOS development observation; CI must bind its immutable oracle",
+      "expected_stdout_hex": "610a0000620a0000620a00630a0000640a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "output-delimiter"
+      ]
+    },
+    {
+      "id": "o1-comm-delim-repeat",
+      "command": "comm",
+      "args": [
+        "--output-delimiter=X",
+        "--output-delimiter=Y",
+        "comm-left.in",
+        "comm-right.in"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "comm-left.in",
+          "content_hex": "610a620a620a640a"
+        },
+        {
+          "path": "comm-right.in",
+          "content_hex": "620a620a630a640a"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed macOS development observation; CI must bind its immutable oracle",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "636f6d6d3a206d756c7469706c65206f75747075742064656c696d6974657273207370656369666965640a",
+      "oracle": true,
+      "coverage": [
+        "output-delimiter"
+      ]
+    },
+    {
+      "id": "o1-comm-order-total",
+      "command": "comm",
+      "args": [
+        "--total",
+        "comm-unsorted.in",
+        "comm-right.in"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "comm-unsorted.in",
+          "content_hex": "620a610a"
+        },
+        {
+          "path": "comm-right.in",
+          "content_hex": "620a620a630a640a"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed macOS development observation; CI must bind its immutable oracle",
+      "expected_stdout_hex": "0909620a610a09620a09630a09640a310933093109746f74616c0a",
+      "expected_stderr_hex": "636f6d6d3a2066696c652031206973206e6f7420696e20736f72746564206f726465720a636f6d6d3a20696e707574206973206e6f7420696e20736f72746564206f726465720a",
+      "oracle": true,
+      "coverage": [
+        "total"
+      ]
+    },
+    {
+      "id": "o1-comm-order-check-total",
+      "command": "comm",
+      "args": [
+        "--check-order",
+        "--total",
+        "comm-unsorted.in",
+        "comm-right.in"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "comm-unsorted.in",
+          "content_hex": "620a610a"
+        },
+        {
+          "path": "comm-right.in",
+          "content_hex": "620a620a630a640a"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed macOS development observation; CI must bind its immutable oracle",
+      "expected_stdout_hex": "0909620a",
+      "expected_stderr_hex": "636f6d6d3a2066696c652031206973206e6f7420696e20736f72746564206f726465720a",
+      "oracle": true,
+      "coverage": [
+        "check-order",
+        "total"
+      ]
+    },
+    {
+      "id": "o1-comm-delim-repeat-same",
+      "command": "comm",
+      "args": [
+        "--output-delimiter=X",
+        "--output-delimiter=X",
+        "comm-left.in",
+        "comm-right.in"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "comm-left.in",
+          "content_hex": "610a620a620a640a"
+        },
+        {
+          "path": "comm-right.in",
+          "content_hex": "620a620a630a640a"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed macOS development observation; CI must bind its immutable oracle",
+      "expected_stdout_hex": "610a5858620a5858620a58630a5858640a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "output-delimiter"
+      ]
+    },
+    {
+      "id": "o1-comm-total-zero",
+      "command": "comm",
+      "args": [
+        "-z",
+        "--total",
+        "--output-delimiter=|",
+        "empty.in",
+        "empty.in"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "empty.in",
+          "content_hex": ""
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed macOS development observation; CI must bind its immutable oracle",
+      "expected_stdout_hex": "307c307c307c746f74616c00",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "zero-terminated",
+        "total",
+        "output-delimiter"
+      ]
+    },
+    {
+      "id": "o1-comm-order-nocheck-check",
+      "command": "comm",
+      "args": [
+        "--nocheck-order",
+        "--check-order",
+        "--total",
+        "comm-unsorted.in",
+        "comm-right.in"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "comm-unsorted.in",
+          "content_hex": "620a610a"
+        },
+        {
+          "path": "comm-right.in",
+          "content_hex": "620a620a630a640a"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed macOS development observation; CI must bind its immutable oracle",
+      "expected_stdout_hex": "0909620a",
+      "expected_stderr_hex": "636f6d6d3a2066696c652031206973206e6f7420696e20736f72746564206f726465720a",
+      "oracle": true,
+      "coverage": [
+        "nocheck-order",
+        "check-order",
+        "total"
+      ]
+    },
+    {
+      "id": "o1-comm-pairable-buried-disorder",
+      "command": "comm",
+      "args": [
+        "--total",
+        "left",
+        "right"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "630a620a640a"
+        },
+        {
+          "path": "right",
+          "content_hex": "630a620a640a7a0a"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed macOS development observation; CI must bind its immutable oracle",
+      "expected_stdout_hex": "0909630a0909620a0909640a097a0a300931093309746f74616c0a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "total"
+      ]
     }
   ]
 }

@@ -12,7 +12,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "delimiter",
+        "fields"
+      ]
     },
     {
       "id": "p9-cut-zero-terminated",
@@ -25,7 +29,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "zero-terminated",
+        "characters"
+      ]
     },
     {
       "id": "p9-cut-bytes",
@@ -38,7 +46,10 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "bytes"
+      ]
     },
     {
       "id": "compat-text-line-605",
@@ -54,7 +65,10 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_hex": "006162630aff7461696c",
       "expected_stdout_hex": "000aff0a",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "characters"
+      ]
     },
     {
       "id": "compat-text-line-684",
@@ -71,7 +85,11 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_hex": "6162006364",
       "expected_stdout_hex": "61006300",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "zero-terminated",
+        "characters"
+      ]
     },
     {
       "id": "compat-text-line-693",
@@ -88,7 +106,10 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "",
       "expected_stderr_contains": "decreasing",
-      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact.",
+      "coverage": [
+        "characters"
+      ]
     },
     {
       "id": "compat-text-line-694",
@@ -100,13 +121,17 @@
       ],
       "files": [],
       "environment": {},
-      "expected_status": 2,
+      "expected_status": 0,
       "normalizations": [],
       "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
+      "source_version": "GNU coreutils 9.11 empty/NUL input delimiter",
       "expected_stdout_text": "",
-      "expected_stderr_contains": "single byte",
-      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+      "expected_stderr_text": "",
+      "oracle": true,
+      "coverage": [
+        "delimiter",
+        "fields"
+      ]
     },
     {
       "id": "compat-catalog-line-72",
@@ -122,7 +147,10 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "",
       "expected_stdout_text": "",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "characters"
+      ]
     },
     {
       "id": "compat-catalog-line-374",
@@ -139,7 +167,11 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "",
       "expected_stderr_contains": "single byte",
-      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact.",
+      "coverage": [
+        "delimiter",
+        "fields"
+      ]
     },
     {
       "id": "repair-alias-cut-zero-terminated",
@@ -156,7 +188,11 @@
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
       "stdin_hex": "6162006364",
       "expected_stdout_hex": "61006300",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "zero-terminated",
+        "characters"
+      ]
     },
     {
       "id": "release-metadata-cut-help",
@@ -174,7 +210,7 @@
         "help"
       ],
       "source_version": "workspace cli/cut@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: cut (-b LIST | -c LIST | -f LIST [-d CHAR] [-s]) [-z] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stdout_text": "Usage: cut (-b LIST | -c LIST | -f LIST [-d CHAR] [-s]) [--complement] [--output-delimiter=STRING] [-z] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
     {
@@ -195,6 +231,291 @@
       "source_version": "workspace cli/cut@0.2.2 metadata contract",
       "expected_stdout_text": "cut 0.2.2\n",
       "expected_stderr_text": ""
+    },
+    {
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed development observations, O1 selected contract",
+      "id": "o1-cut-adjacent-output-ranges",
+      "command": "cut",
+      "args": [
+        "-b3-4,1-2",
+        "--output-delimiter=|"
+      ],
+      "stdin_text": "abcdef\n",
+      "expected_stdout_hex": "61627c63640a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "output-delimiter"
+      ]
+    },
+    {
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed development observations, O1 selected contract",
+      "id": "o1-cut-overlapping-output-ranges",
+      "command": "cut",
+      "args": [
+        "-b1-2,2-3",
+        "--output-delimiter=|"
+      ],
+      "stdin_text": "abcdef\n",
+      "expected_stdout_hex": "6162630a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "output-delimiter"
+      ]
+    },
+    {
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed development observations, O1 selected contract",
+      "id": "o1-cut-complement-output-ranges",
+      "command": "cut",
+      "args": [
+        "-c2,4",
+        "--complement",
+        "--complement",
+        "--output-delimiter=|"
+      ],
+      "stdin_text": "abcdef\nabc\n\n",
+      "expected_stdout_hex": "617c637c65660a617c630a0a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "characters",
+        "complement",
+        "output-delimiter"
+      ]
+    },
+    {
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed development observations, O1 selected contract",
+      "id": "o1-cut-field-output-last-value",
+      "command": "cut",
+      "args": [
+        "-d:",
+        "-f1,3",
+        "--output-delimiter=::",
+        "--output-delimiter=|"
+      ],
+      "stdin_text": "a:b:c\nplain\na::\n",
+      "expected_stdout_hex": "617c630a706c61696e0a617c0a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter",
+        "fields",
+        "output-delimiter"
+      ]
+    },
+    {
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed development observations, O1 selected contract",
+      "id": "o1-cut-empty-output-delimiter",
+      "command": "cut",
+      "args": [
+        "-d:",
+        "-f1,3",
+        "--output-delimiter="
+      ],
+      "stdin_text": "a:b:c\n",
+      "expected_stdout_hex": "6100630a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter",
+        "fields",
+        "output-delimiter"
+      ]
+    },
+    {
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed development observations, O1 selected contract",
+      "id": "o1-cut-empty-input-delimiter",
+      "command": "cut",
+      "args": [
+        "-d",
+        "",
+        "-f1,3",
+        "--output-delimiter=|"
+      ],
+      "stdin_hex": "61006200630a",
+      "expected_stdout_hex": "617c630a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter",
+        "fields",
+        "output-delimiter"
+      ]
+    },
+    {
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed development observations, O1 selected contract",
+      "id": "o1-cut-same-record-field-delimiter",
+      "command": "cut",
+      "args": [
+        "-z",
+        "-d",
+        "",
+        "-f2"
+      ],
+      "stdin_hex": "61006200630a",
+      "expected_stdout_hex": "6200",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "zero-terminated",
+        "delimiter",
+        "fields"
+      ]
+    },
+    {
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed development observations, O1 selected contract",
+      "id": "o1-cut-same-delimiter-single-field-suppression",
+      "command": "cut",
+      "args": [
+        "-z",
+        "-s",
+        "-d",
+        "",
+        "-f2"
+      ],
+      "stdin_hex": "6100",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "zero-terminated",
+        "only-delimited",
+        "delimiter",
+        "fields"
+      ]
+    },
+    {
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed development observations, O1 selected contract",
+      "id": "o1-cut-complement-all-undelimited",
+      "command": "cut",
+      "args": [
+        "-d:",
+        "-f1-",
+        "--complement"
+      ],
+      "stdin_text": "x:y\nplain",
+      "expected_stdout_hex": "0a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter",
+        "fields",
+        "complement"
+      ]
+    },
+    {
+      "id": "o1-cut-selection-conflict",
+      "command": "cut",
+      "args": [
+        "-b1",
+        "-f1"
+      ],
+      "stdin_text": "abc\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed development observation with bare argv0",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "6375743a206f6e6c79206f6e65206c697374206d6179206265207370656369666965640a5472792027637574202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "fields"
+      ]
+    },
+    {
+      "id": "o1-cut-input-delimiter-conflict",
+      "command": "cut",
+      "args": [
+        "-b1",
+        "-d:"
+      ],
+      "stdin_text": "abc\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed development observation with bare argv0",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "6375743a20616e20696e7075742064656c696d69746572206d616b65732073656e73650a096f6e6c79207768656e206f7065726174696e67206f6e206669656c64730a5472792027637574202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "delimiter"
+      ]
+    },
+    {
+      "id": "o1-cut-suppress-conflict",
+      "command": "cut",
+      "args": [
+        "-b1",
+        "-s"
+      ],
+      "stdin_text": "abc\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed development observation with bare argv0",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "6375743a207375707072657373696e67206e6f6e2d64656c696d69746564206c696e6573206d616b65732073656e73650a096f6e6c79207768656e206f7065726174696e67206f6e206669656c64730a5472792027637574202d2d68656c702720666f72206d6f726520696e666f726d6174696f6e2e0a",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "only-delimited"
+      ]
     }
   ]
 }

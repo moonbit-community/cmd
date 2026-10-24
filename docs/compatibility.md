@@ -24,6 +24,20 @@ keep their earlier dependency and acceptance profiles.
 Authorization belongs to the caller/host. Catalog capabilities and the older
 restricted label describe requirements, not command-local policy.
 
+## Workspace O1 text-option candidates
+
+Unpublished cut, uniq, comm, join and wc **0.2.2** add the selected complement,
+delimiter, duplicate-group, merge-header/field and total policies. Their current
+Native development comparisons are separate from required PR and actual-main
+acceptance and from publication. The exact contracts are in the current case
+corpus and [streams ADR](adr/0003-streams.md).
+
+Wc -m now follows the selected C byte profile, including invalid UTF-8, and
+no longer maintains a UTF-8 decoder. Named-file widths follow size metadata;
+multi-counter stdin uses stream-width padding. Exact GNU physical-fstat width
+for regular-file redirection to stdin remains a public descriptor-metadata
+limit, independently of total-only output and counter correctness.
+
 ## Workspace diff and patch candidates
 
 Unpublished diff and patch **0.2.0** select core **0.8.0**. Diff adds C-byte
@@ -312,10 +326,10 @@ claiming success; `local-only` is absent from MoonX by design.
 | `cat` | subset verified | files/stdin; `-n -b -s -A -E -T -v -e -t`, `-u/--unbuffered` | Unbuffered is a stream-safe compatibility no-op |
 | `chmod` | subset verified | Numeric modes, closed symbolic assignments, command-line symlink following, recursive symlink skipping | Incremental/implicit symbolic modes need public mode reads; full recursive command-line directory-symlink combinations remain unverified |
 | `cmp` | subset verified | equal=0, different=1, error=2; `-s -l -n -i` | Full diagnostic byte parity not claimed |
-| `comm` | subset verified | three columns, `-1 -2 -3`, `-z`, `--check-order`, `--nocheck-order`, `-`, clustered flags | Locale collation beyond C bytes not claimed |
+| `comm` | workspace candidate | Three columns, `-123`, `-z`, last order policy, custom output delimiter, totals including suppressed columns | Locale collation beyond C bytes not claimed |
 | `cp` | subset verified | `--no-preserve=mode` to new regular files/trees; no-clobber/update no-ops; traversal controls | Default source-mode preservation and every existing regular-file overwrite reject until public mode/identity/handle-truncate APIs exist; same-inode aliases remain intact |
 | `curl` | subset verified | Existing HTTP/HTTPS transfer profile plus Basic `-u`, literal/Netscape `-b`, `-c`, redirect cookie state and credential origin boundaries; 0.2.1 sends separate explicit/jar Cookie fields | Literal cookies remain scoped to the initial origin as in pinned curl 8.22.0. No non-Basic auth/password prompts/PSL/IDNA/raw Set-Cookie input files; 0.2.1 includes the explicit Cookie plus jar correction |
-| `cut` | subset verified | `-c`, `-f`, `-d`, `-s`, `-z`, range/comma lists | Locale/multibyte behavior not claimed |
+| `cut` | workspace candidate | Byte/field ranges, complement, custom output delimiter, empty/NUL delimiters, `-s/-z` | Locale/multibyte behavior not claimed |
 | `dirname` | subset verified | multiple operands and `-z`, empty/root/repeated-separator operands | Multibyte path locale behavior not claimed |
 | `echo` | subset verified | `-n`, `-e`, `-E`, byte escapes, literal `--` ambiguity | `POSIXLY_CORRECT` profile not claimed |
 | `env` | subset verified | Complete inherited environment, `-i/-u/-0/-C`, direct children, `--help/--version` | Host authorization is separate; child launch error classes remain explicit |
@@ -323,7 +337,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `find` | restricted | names/paths/types, `-empty/-size`, metadata predicates, access checks, `-xtype`, depth/actions | File/process policy required; P8 time/reference/access combinations still need independent probes; ownership, inode, link-count, and full GNU expression grammar not claimed |
 | `grep` | subset verified | Default BRE / `-G`, ERE / `-E`, byte-based `-F`, `-o` leftmost-longest, context-only separators, existing context/file/binary options; unpublished 0.3.0 adds the shared matcher, grammar-preserving ASCII `-i`, streaming input/output and early `-q`/`-l` completion | [Workspace matcher limits](#workspace-matcher-and-sed-candidates), non-C locale classes/case folding and worst-case capture/reference resources remain open |
 | `head` | subset verified | `-n`, `-c`, signed/attached/long/legacy counts and decimal/binary/IEC size suffixes, `-z`, `-q/-v`, files/stdin and headers | Counts are bounded by signed 64-bit storage; locale-aware records are not claimed |
-| `join` | subset verified | `-1 -2 -t -a -v -e -o`, `-z`, `-` stdin | Locale diagnostics not claimed |
+| `join` | workspace candidate | Field/unpaired/empty output, `-z`, ASCII ignore-case, headers, automatic or accumulated explicit output fields, last order policy | Locale behavior beyond the fixed C profile not claimed |
 | `jq` | subset verified | Consecutive JSON, -s/-R/-n/-e, AST binding, partial output before errors, -C/-M/JQ_COLORS, tostring/tojson and Unicode string slices | Released moonjq 0.2.0 plus public-AST adapter; full evaluator/modules/streaming/diagnostics and automatic TTY color are not claimed |
 | `jqlog` | subset verified | JSONL stdin/raw input, -f/-h, invalid-line skipping, conversions and Unicode slices | Independent JSONL contract; invalid whitespace lines are not repaired by trimming; full jq CLI compatibility is not claimed |
 | `ln` | subset verified | Symbolic -s/-r, last -f/-i selection, -n/-T/-t, backup/suffix/-v and refusal status 1 including EOF | POSIX symlinks; hard-link requests reject before mutation; broader overwrite/target combinations remain |
@@ -355,10 +369,10 @@ claiming success; `local-only` is absent from MoonX by design.
 | `touch` | subset verified | Create missing files; `-c` missing-file no-op | Existing-file timestamp updates and setters explicitly fail without content rewrites |
 | `tr` | subset verified | translate/delete/squeeze/`-c/-C` complement, `-t`, ranges, C-locale classes, octal/equivalence/repetition forms | Verified profile is byte-oriented; locale data beyond C is not claimed |
 | `true` | subset verified | any args: no output, status 0; help/version | Metadata text is package-versioned |
-| `uniq` | subset verified | adjacent filtering, `-c -d -u -i`, `-f -s -w -z`, exact count spacing | Fixed C-locale field/character comparison; locale collation not claimed |
+| `uniq` | workspace candidate | Adjacent filtering, counts, selected repeated/unique members, all-repeated/group separators, `-i/-f/-s/-w/-z` | Fixed C-byte comparisons; non-C collation not claimed |
 | `unlink` | subset verified | Exactly one regular-file/symlink operand, -- separator, help/version | Extra operands reject before any deletion; directories reject |
 | `unexpand` | subset verified | Leading/all blank conversion, `--first-only`, `-t` stops, stdin or multiple files | Locale display widths and non-byte tab semantics are not claimed |
-| `wc` | subset verified | `-l -w -c -m -L`, combinations, aligned multi-file totals, `--files0-from`, files/stdin | `-L` is the C-locale display-width profile; full locale diagnostics not claimed |
+| `wc` | workspace candidate | C-byte counters, display width, four total policies, `--files0-from`, partial read-error counts, files/stdin | Non-C counters and regular-stdin physical-fstat alignment are not claimed; see ADR-0003 |
 | `wget` | subset verified | Existing transfer profile plus challenge-based Basic credentials across destinations; `--auth-no-challenge` sends explicit credentials on every request, including redirects; load/save cookies, session-cookie option, shared redirect jar; 0.2.1 lets explicit Cookie override stored cookies | No recursive mirror/FTP/HSTS/PSL/IDNA; consumed stdin bodies cannot replay an auth challenge; cross-port and cross-operand authentication caching and full progress text not claimed; explicit Cookie override is delivered in 0.2.1 |
 | `yes` | subset verified | Infinite repeated `y` or joined arguments, help/version, broken-pipe termination | Exact signal diagnostics and terminal interaction are not claimed |
 | `xargs` | restricted | whitespace/NUL tokenization, quotes/backslashes, `-0 -r -t -n -L -s -E -I`, `--show-limits`, bounded `-P`; direct-child status classes 123/124/125/126/127 | Child policy required; process windows are bounded and aggregate status deterministically; GNU shell/locale extensions are not claimed |

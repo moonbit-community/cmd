@@ -32,82 +32,29 @@ fn is_space_byte(b : Byte) -> Bool {
 }
 
 ///|
-fn is_continuation(b : Byte) -> Bool {
-  (b.to_int() & 0xC0) == 0x80
-}
-
-///|
-/// Count valid UTF-8 encoded characters. Bytes that are not part of a valid
-/// sequence are skipped without being counted, like GNU wc -m.
-fn count_utf8_chars(data : BytesView, at_eof : Bool) -> (Int64, Int32) {
-  let mut count : Int64 = 0
-  let mut i = 0
-  while i < data.length() {
-    let b0 = data[i].to_int()
-    if b0 < 0x80 {
-      count += 1
-      i += 1
-      continue
-    }
-    // (sequence length, valid range for the second byte)
-    let (len, lo1, hi1) = if b0 >= 0xC2 && b0 <= 0xDF {
-      (2, 0x80, 0xBF)
-    } else if b0 == 0xE0 {
-      (3, 0xA0, 0xBF)
-    } else if (b0 >= 0xE1 && b0 <= 0xEC) || b0 == 0xEE || b0 == 0xEF {
-      (3, 0x80, 0xBF)
-    } else if b0 == 0xED {
-      (3, 0x80, 0x9F)
-    } else if b0 == 0xF0 {
-      (4, 0x90, 0xBF)
-    } else if b0 >= 0xF1 && b0 <= 0xF3 {
-      (4, 0x80, 0xBF)
-    } else if b0 == 0xF4 {
-      (4, 0x80, 0x8F)
-    } else {
-      (0, 0, 0)
-    }
-    if len > 0 && i + len > data.length() && !at_eof {
-      break
-    }
-    if len == 0 || i + len > data.length() {
-      i += 1
-      continue
-    }
-    let second = data[i + 1].to_int()
-    if second < lo1 || second > hi1 {
-      i += 1
-      continue
-    }
-    let mut ok = true
-    for k in 2..<len {
-      if !is_continuation(data[i + k]) {
-        ok = false
-        break
-      }
-    }
-    if ok {
-      count += 1
-      i += len
-    } else {
-      i += 1
-    }
+async fn count_reader(
+  reader : &@io.Reader,
+  selection : Selection,
+  counts? : Counts,
+) -> Counts {
+  let counts = match counts {
+    Some(counts) => counts
+    None => Counts::new()
   }
-  (count, i)
-}
-
-///|
-async fn count_reader(reader : &@io.Reader, selection : Selection) -> Counts {
-  let counts = Counts::new()
-  let pending : Array[Byte] = []
   let buffer = FixedArray::make(@stream.chunk_size, b'\x00')
   let data = buffer.unsafe_reinterpret_as_bytes()
   let mut in_word = false
   let mut line_width : Int64 = 0
+  defer {
+    counts.max_line_length = Int64::max(counts.max_line_length, line_width)
+  }
   while reader.read(buffer, max_len=buffer.length()) is count && count > 0 {
     let chunk = data[:count]
     if selection.bytes {
       counts.bytes += count.to_int64()
+    }
+    if selection.chars {
+      counts.chars += count.to_int64()
     }
     if selection.lines || selection.words || selection.max_line_length {
       for b in chunk {
@@ -137,28 +84,7 @@ async fn count_reader(reader : &@io.Reader, selection : Selection) -> Counts {
         }
       }
     }
-    if selection.chars {
-      let chars_data = if pending.is_empty() {
-        chunk
-      } else {
-        for byte in chunk {
-          pending.push(byte)
-        }
-        Bytes::from_array(pending)[:]
-      }
-      let (chars, consumed) = count_utf8_chars(chars_data, false)
-      counts.chars += chars
-      let remaining = chars_data[consumed:]
-      pending.clear()
-      for byte in remaining {
-        pending.push(byte)
-      }
-    }
   }
-  if !pending.is_empty() {
-    counts.chars += count_utf8_chars(Bytes::from_array(pending)[:], true).0
-  }
-  counts.max_line_length = Int64::max(counts.max_line_length, line_width)
   counts
 }
 
@@ -211,24 +137,80 @@ fn render_counts(
 }
 
 ///|
-fn count_width(counts : Counts, selection : Selection) -> Int32 {
+async fn count_width(files : Array[String], selection : Selection) -> Int32 {
+  let counters = [
+      selection.lines,
+      selection.words,
+      selection.chars,
+      selection.bytes,
+      selection.max_line_length,
+    ]
+    .filter(value => value)
+    .length()
+  if files.is_empty() || (files.length() == 1 && counters == 1) {
+    return 1
+  }
+  let mut minimum = 1
+  let mut size : UInt64 = 0
+  for index, path in files {
+    if path == "-" {
+      minimum = 7
+      continue
+    }
+    let bytes = try {
+      if @async_fs.kind(path) == Regular {
+        Some(@async_fs.file_size(path))
+      } else {
+        None
+      }
+    } catch {
+      _ => {
+        if index == 0 {
+          return 1
+        }
+        continue
+      }
+    }
+    match bytes {
+      Some(bytes) => {
+        let next = size + bytes.reinterpret_as_uint64()
+        size = if next < size { 0xFFFFFFFFFFFFFFFFUL } else { next }
+      }
+      None => minimum = 7
+    }
+  }
   let mut width = 1
-  if selection.lines {
-    width = Int32::max(width, counts.lines.to_string().length())
+  while size >= 10 {
+    size /= 10
+    width += 1
   }
-  if selection.words {
-    width = Int32::max(width, counts.words.to_string().length())
+  width.max(minimum)
+}
+
+///|
+priv enum TotalMode {
+  Auto
+  Always
+  Only
+  Never
+}
+
+///|
+fn parse_total_mode(value : String) -> TotalMode raise CliError {
+  let choices = ["auto", "always", "only", "never"]
+  let matches = choices.filter(choice => choice.has_prefix(value))
+  guard matches is [choice] else {
+    let kind = if matches.is_empty() { "invalid" } else { "ambiguous" }
+    raise CliError(
+      "wc: \{kind} argument '\{value}' for '--total'\nValid arguments are:\n  - 'auto'\n  - 'always'\n  - 'only'\n  - 'never'\nTry 'wc --help' for more information.",
+    )
   }
-  if selection.chars {
-    width = Int32::max(width, counts.chars.to_string().length())
+  match choice {
+    "auto" => Auto
+    "always" => Always
+    "only" => Only
+    _ => Never
   }
-  if selection.bytes {
-    width = Int32::max(width, counts.bytes.to_string().length())
-  }
-  if selection.max_line_length {
-    width = Int32::max(width, counts.max_line_length.to_string().length())
-  }
-  width
 }
 
 ///|
@@ -237,9 +219,6 @@ fn nul_file_names(data : Bytes) -> Array[String] raise {
   let mut start = 0
   for index, byte in data {
     if byte is b'\x00' {
-      if index == start {
-        raise CliError("wc: invalid zero-length file name")
-      }
       names.push(@utf8.decode(data[start:index].to_owned()))
       start = index + 1
     }
@@ -261,13 +240,74 @@ async fn read_file_list(path : String) -> Array[String] {
 }
 
 ///|
-async fn count_source(path : String, selection : Selection) -> Counts {
-  if path == "-" {
-    count_reader(@stdio.stdin, selection)
+fn quoted_name(path : String) -> String {
+  if !path.is_empty() &&
+    path
+    .iter()
+    .all(char => {
+      char is ('a'..<='z' | 'A'..<='Z' | '0'..<='9') ||
+      "_./=-+,:".contains(char.to_string())
+    }) {
+    path
   } else {
-    let file = @async_fs.open(path, mode=ReadOnly)
+    "'" + path.replace_all(old="'", new="'\\''") + "'"
+  }
+}
+
+///|
+fn input_error(path : String, error : Error) -> String {
+  let message = match error {
+    @os_error.OSError(_, ..) as os_error =>
+      if os_error.is_ENOENT() {
+        "No such file or directory"
+      } else if os_error.is_EACCES() {
+        "Permission denied"
+      } else if os_error.is_ENOTDIR() {
+        "Not a directory"
+      } else {
+        os_error.to_string()
+      }
+    _ => error.to_string()
+  }
+  "wc: " + quoted_name(path) + ": " + message
+}
+
+///|
+async fn read_counted(
+  reader : &@io.Reader,
+  path : String,
+  selection : Selection,
+) -> (Counts?, String?) {
+  let counts = Counts::new()
+  let error = try {
+    ignore(count_reader(reader, selection, counts~))
+    None
+  } catch {
+    error => Some(input_error(path, error))
+  }
+  (Some(counts), error)
+}
+
+///|
+async fn count_source(
+  path : String,
+  selection : Selection,
+) -> (Counts?, String?) {
+  if path == "-" {
+    read_counted(@stdio.stdin, path, selection)
+  } else {
+    let file = @async_fs.open(path, mode=ReadOnly) catch {
+      error => return (None, Some(input_error(path, error)))
+    }
     defer file.close()
-    count_reader(file, selection)
+    if file.kind() == Directory {
+      (
+        Some(Counts::new()),
+        Some("wc: " + quoted_name(path) + ": Is a directory"),
+      )
+    } else {
+      read_counted(file, path, selection)
+    }
   }
 }
 
@@ -286,9 +326,17 @@ async fn main {
     @cli.flag("chars", short='m'),
     @cli.flag("max-line-length", short='L'),
     @cli.option("files0-from"),
+    @cli.option("total"),
     @cli.flag("help"),
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
+      if option == "total" {
+        @stdio.stderr.write(
+          "wc: option '--total' requires an argument\nTry 'wc --help' for more information.\n",
+        )
+        @sys.exit(1)
+        return
+      }
       @stdio.stderr.write("wc: \{message}: '\{option}'\n")
       @sys.exit(2)
       return
@@ -296,9 +344,16 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: wc [-lwcmL] [--files0-from=FILE] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: wc [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]\n      --total=WHEN  print totals: auto (default), always, only, never\n      --help      display this help and exit\n      --version   display version and exit\nCounting uses the fixed C byte profile; -m counts every byte.\n",
     )
     return
+  }
+  let mode = parse_total_mode(parsed.last_value("total").unwrap_or("auto")) catch {
+    CliError(message) => {
+      @stdio.stderr.write(message + "\n")
+      @sys.exit(1)
+      return
+    }
   }
   let lines = parsed.contains("lines")
   let words = parsed.contains("words")
@@ -336,43 +391,57 @@ async fn main {
       }
     None => parsed.operands
   }
-  if parsed.contains("files0-from") && files.is_empty() {
-    return
-  }
+  let implicit_stdin = files.is_empty() && !parsed.contains("files0-from")
+  let sources = if implicit_stdin { ["-"] } else { files }
+  let width = if mode is Only { 1 } else { count_width(sources, selection) }
   let total = Counts::new()
   let mut failed = false
-  if files.is_empty() {
-    let counts = count_reader(@stdio.stdin, selection)
-    @stdio.stdout.write(render_counts(counts, selection, None, 1) + "\n")
-  } else {
-    let completed : Array[(Counts, String)] = []
-    for path in files {
-      let counts = count_source(path, selection) catch {
-        err => {
-          @stdio.stderr.write("wc: \{err}\n")
-          failed = true
-          continue
-        }
+  for index, path in sources {
+    if path == "" {
+      let prefix = match parsed.last_value("files0-from") {
+        Some(list) => quoted_name(list) + ":" + (index + 1).to_string() + ": "
+        None => ""
       }
+      @stdio.stderr.write("wc: " + prefix + "invalid zero-length file name\n")
+      failed = true
+      continue
+    }
+    if path == "-" && parsed.last_value("files0-from") == Some("-") {
+      @stdio.stderr.write(
+        "wc: when reading file names from standard input, no file name of '-' allowed\n",
+      )
+      failed = true
+      continue
+    }
+    let (counts, error) = count_source(path, selection)
+    if error is Some(message) {
+      @stdio.stderr.write(message + "\n")
+      failed = true
+    }
+    if counts is Some(counts) {
       total.add(counts)
-      completed.push((counts, path))
+      if !(mode is Only) {
+        let name = if implicit_stdin { None } else { Some(path) }
+        @stdio.stdout.write(
+          render_counts(counts, selection, name, width) + "\n",
+        )
+      }
     }
-    let width = if files.length() > 1 {
-      count_width(total, selection)
-    } else {
-      1
-    }
-    for item in completed {
-      let (counts, path) = item
-      @stdio.stdout.write(
-        render_counts(counts, selection, Some(path), width) + "\n",
-      )
-    }
-    if files.length() > 1 {
-      @stdio.stdout.write(
-        render_counts(total, selection, Some("total"), width) + "\n",
-      )
-    }
+  }
+  if mode is (Always | Only) || (mode is Auto && files.length() > 1) {
+    @stdio.stdout.write(
+      render_counts(
+        total,
+        selection,
+        if mode is Only {
+          None
+        } else {
+          Some("total")
+        },
+        width,
+      ) +
+      "\n",
+    )
   }
   if failed {
     @sys.exit(1)

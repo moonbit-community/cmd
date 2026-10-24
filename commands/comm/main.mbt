@@ -17,6 +17,8 @@ fn help_message() -> String {
     #|  -1  Suppress column 1 (lines unique to FILE1).
     #|  -2  Suppress column 2 (lines unique to FILE2).
     #|  -3  Suppress column 3 (lines in both files).
+    #|      --output-delimiter=STR  Separate columns with STR (empty means NUL).
+    #|      --total  Print counts for all three columns and a total label.
     #|      --check-order  Diagnose unsorted input.
     #|      --nocheck-order  Do not diagnose unsorted input.
     #|  -z, --zero-terminated  End records with NUL instead of newline.
@@ -26,44 +28,39 @@ fn help_message() -> String {
 }
 
 ///|
+priv struct CommOrder {
+  mut previous : Bytes?
+  mut descending : Bool
+  mut warned : Bool
+}
+
+///|
 async fn next_checked(
   scanner : @stream.LineScanner,
-  previous : Ref[Bytes?],
-  unordered : Ref[Bool],
+  state : CommOrder,
   name : String,
   order_mode : Int32,
   unpairable : Ref[Bool],
 ) -> @stream.Line? {
   let line = scanner.next()
-  match line {
-    Some(value) => {
-      match previous.val {
-        Some(old) if old[:].lexical_compare(value.data[:]) > 0 => {
-          unordered.val = true
-          if order_mode > 0 || (order_mode == 0 && unpairable.val) {
-            raise CommError("\{name} is not in sorted order")
-          }
-        }
-        _ => ()
-      }
-      previous.val = Some(value.data)
+  if line is Some(value) {
+    state.descending = match state.previous {
+      Some(old) => old[:].lexical_compare(value.data[:]) > 0
+      None => false
     }
-    None => ()
+    state.previous = Some(value.data)
+  }
+  // At EOF GNU checks the final pair again after observing an unpaired row.
+  if !state.warned &&
+    state.descending &&
+    (order_mode > 0 || (order_mode == 0 && unpairable.val)) {
+    if order_mode > 0 {
+      raise CommError("\{name} is not in sorted order")
+    }
+    @stdio.stderr.write("comm: \{name} is not in sorted order\n")
+    state.warned = true
   }
   line
-}
-
-///|
-fn mark_unpairable(
-  order_mode : Int32,
-  unpairable : Ref[Bool],
-  unordered1 : Ref[Bool],
-  unordered2 : Ref[Bool],
-) -> Unit raise CommError {
-  unpairable.val = true
-  if order_mode == 0 && (unordered1.val || unordered2.val) {
-    raise CommError("input is not in sorted order")
-  }
 }
 
 ///|
@@ -84,70 +81,76 @@ async fn merge_readers(
   hide3 : Bool,
   order_mode : Int32,
   record_delimiter : Byte,
+  column_delimiter : String,
+  total : Bool,
 ) -> Unit {
   let scanner1 = @stream.LineScanner::new(reader1, delimiter=record_delimiter)
   let scanner2 = @stream.LineScanner::new(reader2, delimiter=record_delimiter)
-  let previous1 : Ref[Bytes?] = Ref(None)
-  let previous2 : Ref[Bytes?] = Ref(None)
-  let unordered1 = Ref(false)
-  let unordered2 = Ref(false)
+  let state1 : CommOrder = { previous: None, descending: false, warned: false, }
+  let state2 : CommOrder = { previous: None, descending: false, warned: false, }
   let unpairable = Ref(false)
   let mut line1 = next_checked(
-    scanner1, previous1, unordered1, "file 1", order_mode, unpairable,
+    scanner1, state1, "file 1", order_mode, unpairable,
   )
   let mut line2 = next_checked(
-    scanner2, previous2, unordered2, "file 2", order_mode, unpairable,
+    scanner2, state2, "file 2", order_mode, unpairable,
   )
-  let col2_prefix = if hide1 { "" } else { "\t" }
-  let col3_prefix = (if hide1 { "" } else { "\t" }) +
-    (if hide2 { "" } else { "\t" })
+  let col2_prefix = if hide1 { "" } else { column_delimiter }
+  let col3_prefix = (if hide1 { "" } else { column_delimiter }) +
+    (if hide2 { "" } else { column_delimiter })
+  let mut count1 : Int64 = 0
+  let mut count2 : Int64 = 0
+  let mut count3 : Int64 = 0
   while line1 is Some(left) && line2 is Some(right) {
     let order = left.data[:].lexical_compare(right.data[:])
     if order < 0 {
-      mark_unpairable(order_mode, unpairable, unordered1, unordered2)
+      unpairable.val = true
+      count1 += 1
       if !hide1 {
         write_line("", left.data, record_delimiter)
       }
-      line1 = next_checked(
-        scanner1, previous1, unordered1, "file 1", order_mode, unpairable,
-      )
+      line1 = next_checked(scanner1, state1, "file 1", order_mode, unpairable)
     } else if order > 0 {
-      mark_unpairable(order_mode, unpairable, unordered1, unordered2)
+      unpairable.val = true
+      count2 += 1
       if !hide2 {
         write_line(col2_prefix, right.data, record_delimiter)
       }
-      line2 = next_checked(
-        scanner2, previous2, unordered2, "file 2", order_mode, unpairable,
-      )
+      line2 = next_checked(scanner2, state2, "file 2", order_mode, unpairable)
     } else {
+      count3 += 1
       if !hide3 {
         write_line(col3_prefix, left.data, record_delimiter)
       }
-      line1 = next_checked(
-        scanner1, previous1, unordered1, "file 1", order_mode, unpairable,
-      )
-      line2 = next_checked(
-        scanner2, previous2, unordered2, "file 2", order_mode, unpairable,
-      )
+      line1 = next_checked(scanner1, state1, "file 1", order_mode, unpairable)
+      line2 = next_checked(scanner2, state2, "file 2", order_mode, unpairable)
     }
   }
   while line1 is Some(left) {
-    mark_unpairable(order_mode, unpairable, unordered1, unordered2)
+    unpairable.val = true
+    count1 += 1
     if !hide1 {
       write_line("", left.data, record_delimiter)
     }
-    line1 = next_checked(
-      scanner1, previous1, unordered1, "file 1", order_mode, unpairable,
-    )
+    line1 = next_checked(scanner1, state1, "file 1", order_mode, unpairable)
   }
   while line2 is Some(right) {
-    mark_unpairable(order_mode, unpairable, unordered1, unordered2)
+    unpairable.val = true
+    count2 += 1
     if !hide2 {
       write_line(col2_prefix, right.data, record_delimiter)
     }
-    line2 = next_checked(
-      scanner2, previous2, unordered2, "file 2", order_mode, unpairable,
+    line2 = next_checked(scanner2, state2, "file 2", order_mode, unpairable)
+  }
+  if total {
+    write_line(
+      "\{count1}\{column_delimiter}\{count2}\{column_delimiter}\{count3}\{column_delimiter}",
+      b"total",
+      record_delimiter,
     )
+  }
+  if state1.warned || state2.warned {
+    raise CommError("input is not in sorted order")
   }
 }
 
@@ -163,6 +166,8 @@ async fn main {
     @cli.flag("suppress-1", short='1'),
     @cli.flag("suppress-2", short='2'),
     @cli.flag("suppress-3", short='3'),
+    @cli.option("output-delimiter"),
+    @cli.flag("total"),
     @cli.flag("help", short='h'),
     @cli.flag("check-order"),
     @cli.flag("nocheck-order"),
@@ -181,13 +186,23 @@ async fn main {
   let hide1 = parsed.contains("suppress-1")
   let hide2 = parsed.contains("suppress-2")
   let hide3 = parsed.contains("suppress-3")
-  let order_mode = if parsed.contains("nocheck-order") {
-    -1
-  } else if parsed.contains("check-order") {
-    1
-  } else {
-    0
+  let order_mode = match
+    parsed.last_occurrence(["check-order", "nocheck-order"]) {
+    Some("nocheck-order") => -1
+    Some(_) => 1
+    None => 0
   }
+  let delimiters = parsed.values("output-delimiter")
+  let mut column_delimiter = "\t"
+  for index, value in delimiters {
+    if index > 0 && value != delimiters[0] {
+      @stdio.stderr.write("comm: multiple output delimiters specified\n")
+      @sys.exit(1)
+      return
+    }
+    column_delimiter = if value == "" { "\u0000" } else { value }
+  }
+  let total = parsed.contains("total")
   let record_delimiter = if parsed.contains("zero-terminated") {
     b'\x00'
   } else {
@@ -211,13 +226,15 @@ async fn main {
       let file2 = @fs.open(files[1], mode=ReadOnly)
       defer file2.close()
       merge_readers(
-        @stdio.stdin, file2, hide1, hide2, hide3, order_mode, record_delimiter,
+        @stdio.stdin, file2, hide1, hide2, hide3, order_mode, record_delimiter, column_delimiter,
+        total,
       )
     } else if files[1] == "-" {
       let file1 = @fs.open(files[0], mode=ReadOnly)
       defer file1.close()
       merge_readers(
-        file1, @stdio.stdin, hide1, hide2, hide3, order_mode, record_delimiter,
+        file1, @stdio.stdin, hide1, hide2, hide3, order_mode, record_delimiter, column_delimiter,
+        total,
       )
     } else {
       let file1 = @fs.open(files[0], mode=ReadOnly)
@@ -225,7 +242,8 @@ async fn main {
       let file2 = @fs.open(files[1], mode=ReadOnly)
       defer file2.close()
       merge_readers(
-        file1, file2, hide1, hide2, hide3, order_mode, record_delimiter,
+        file1, file2, hide1, hide2, hide3, order_mode, record_delimiter, column_delimiter,
+        total,
       )
     }
   } catch {

@@ -2081,7 +2081,9 @@
       "source": "tests/cases/comm.json",
       "case_id": "p9-comm-zero-terminated",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "zero-terminated"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -2107,7 +2109,9 @@
       "source": "tests/cases/comm.json",
       "case_id": "compat-text-comm-nul-records",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "zero-terminated"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -2136,7 +2140,9 @@
       "source": "tests/cases/comm.json",
       "case_id": "compat-text-comm-check-order",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "check-order"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -2165,7 +2171,10 @@
       "source": "tests/cases/comm.json",
       "case_id": "compat-text-comm-nocheck-precedence",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "check-order",
+        "nocheck-order"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -2253,7 +2262,10 @@
       "source": "tests/cases/comm.json",
       "case_id": "compat-merge-comm",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "2",
+        "3"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -2282,7 +2294,9 @@
       "source": "tests/cases/comm.json",
       "case_id": "compat-catalog-line-48",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "help"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -2340,7 +2354,9 @@
       "source": "tests/cases/comm.json",
       "case_id": "repair-alias-comm-zero-terminated",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "zero-terminated"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -3501,7 +3517,10 @@
       "source": "tests/cases/cut.json",
       "case_id": "phase3-cut-field",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "delimiter",
+        "fields"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -3528,7 +3547,10 @@
       "source": "tests/cases/cut.json",
       "case_id": "p9-cut-zero-terminated",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "zero-terminated",
+        "characters"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -3555,7 +3577,9 @@
       "source": "tests/cases/cut.json",
       "case_id": "p9-cut-bytes",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "bytes"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -3582,7 +3606,9 @@
       "source": "tests/cases/cut.json",
       "case_id": "compat-text-line-605",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "characters"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -3612,7 +3638,10 @@
       "source": "tests/cases/cut.json",
       "case_id": "compat-text-line-684",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "zero-terminated",
+        "characters"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -3641,7 +3670,9 @@
       "source": "tests/cases/cut.json",
       "case_id": "compat-text-line-693",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "characters"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -3663,14 +3694,18 @@
       "command": "cut",
       "owner": "commands/cut",
       "surface": [
-        "options"
+        "options",
+        "stdin"
       ],
       "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/cut.json",
       "case_id": "compat-text-line-694",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "delimiter",
+        "fields"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -3678,14 +3713,15 @@
       "platforms": [],
       "required_evidence": [
         "contract",
-        "backend-pair"
+        "backend-pair",
+        "upstream-differential"
       ],
       "observations": [
         "status",
-        "stderr",
-        "stdout"
+        "stdout",
+        "stderr"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-catalog-line-72",
@@ -3700,7 +3736,9 @@
       "source": "tests/cases/cut.json",
       "case_id": "compat-catalog-line-72",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "characters"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -3729,7 +3767,10 @@
       "source": "tests/cases/cut.json",
       "case_id": "compat-catalog-line-374",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "delimiter",
+        "fields"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -3759,7 +3800,10 @@
       "source": "tests/cases/cut.json",
       "case_id": "repair-alias-cut-zero-terminated",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "zero-terminated",
+        "characters"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -9426,7 +9470,11 @@
       "source": "tests/cases/join.json",
       "case_id": "phase3-join-unpaired-output-list",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "after",
+        "empty",
+        "output"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -9453,7 +9501,9 @@
       "source": "tests/cases/join.json",
       "case_id": "p9-join-zero-terminated",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "zero-terminated"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -9480,7 +9530,9 @@
       "source": "tests/cases/join.json",
       "case_id": "p9-join-check-order",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "check-order"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -9506,7 +9558,11 @@
       "source": "tests/cases/join.json",
       "case_id": "compat-text-join-output-list",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "after",
+        "empty",
+        "output"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -9535,7 +9591,9 @@
       "source": "tests/cases/join.json",
       "case_id": "compat-text-join-nul-records",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "zero-terminated"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -9564,7 +9622,9 @@
       "source": "tests/cases/join.json",
       "case_id": "compat-text-join-check-order",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "check-order"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -9593,7 +9653,10 @@
       "source": "tests/cases/join.json",
       "case_id": "compat-text-join-nocheck-precedence",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "check-order",
+        "nocheck-order"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -9652,7 +9715,9 @@
       "source": "tests/cases/join.json",
       "case_id": "compat-catalog-line-108",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "help"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -9681,7 +9746,11 @@
       "source": "tests/cases/join.json",
       "case_id": "repair-alias-join-after",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "after",
+        "empty",
+        "output"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -9710,7 +9779,9 @@
       "source": "tests/cases/join.json",
       "case_id": "repair-alias-join-zero-terminated",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "zero-terminated"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -22978,7 +23049,12 @@
       "source": "tests/cases/uniq.json",
       "case_id": "p3-uniq-field-character-selection",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "count",
+        "skip-fields",
+        "skip-chars",
+        "check-chars"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -23005,7 +23081,11 @@
       "source": "tests/cases/uniq.json",
       "case_id": "p3-uniq-zero-records",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "zero-terminated",
+        "skip-chars",
+        "check-chars"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -23032,7 +23112,12 @@
       "source": "tests/cases/uniq.json",
       "case_id": "compat-text-line-476",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "count",
+        "skip-fields",
+        "skip-chars",
+        "check-chars"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -23062,7 +23147,11 @@
       "source": "tests/cases/uniq.json",
       "case_id": "compat-text-line-485",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "zero-terminated",
+        "skip-chars",
+        "check-chars"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -23091,7 +23180,9 @@
       "source": "tests/cases/uniq.json",
       "case_id": "compat-text-line-494",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "skip-fields"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -23181,7 +23272,12 @@
       "source": "tests/cases/uniq.json",
       "case_id": "repair-alias-uniq-count",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "count",
+        "skip-fields",
+        "skip-chars",
+        "check-chars"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -23211,7 +23307,11 @@
       "source": "tests/cases/uniq.json",
       "case_id": "repair-alias-uniq-zero-terminated",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "zero-terminated",
+        "skip-chars",
+        "check-chars"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -23398,7 +23498,9 @@
       "source": "tests/cases/wc.json",
       "case_id": "phase3-wc-lines",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "lines"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -23425,7 +23527,9 @@
       "source": "tests/cases/wc.json",
       "case_id": "p3-wc-max-line-length",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "max-line-length"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -23452,7 +23556,10 @@
       "source": "tests/cases/wc.json",
       "case_id": "p3-wc-files0-alignment",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "lines",
+        "files0-from"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -23479,7 +23586,9 @@
       "source": "tests/cases/wc.json",
       "case_id": "compat-text-line-495",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "max-line-length"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -23509,7 +23618,9 @@
       "source": "tests/cases/wc.json",
       "case_id": "compat-text-line-496",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "max-line-length"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -23538,7 +23649,9 @@
       "source": "tests/cases/wc.json",
       "case_id": "compat-text-line-536",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "files0-from"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -23568,7 +23681,9 @@
       "source": "tests/cases/wc.json",
       "case_id": "compat-text-line-596",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "bytes"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -23597,7 +23712,9 @@
       "source": "tests/cases/wc.json",
       "case_id": "compat-text-wc-aligned-files",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "lines"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -23626,7 +23743,10 @@
       "source": "tests/cases/wc.json",
       "case_id": "compat-text-wc-files0-accounting",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "lines",
+        "files0-from"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -23655,7 +23775,9 @@
       "source": "tests/cases/wc.json",
       "case_id": "compat-text-wc-partial-counts",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "lines"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -23685,7 +23807,9 @@
       "source": "tests/cases/wc.json",
       "case_id": "compat-catalog-line-296",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "lines"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -23744,7 +23868,9 @@
       "source": "tests/cases/wc.json",
       "case_id": "repair-alias-wc-max-line-length",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "max-line-length"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -23774,7 +23900,9 @@
       "source": "tests/cases/wc.json",
       "case_id": "repair-alias-wc-bytes",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "bytes"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -23803,7 +23931,9 @@
       "source": "tests/cases/wc.json",
       "case_id": "repair-alias-wc-lines",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "lines"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -29095,64 +29225,6 @@
       "aliases": [],
       "coverage": [
         "set expansion handles escapes equivalence and repetition"
-      ],
-      "required_backends": [
-        "native",
-        "wasm"
-      ],
-      "platforms": [],
-      "required_evidence": [
-        "contract",
-        "backend-pair"
-      ],
-      "observations": [
-        "status"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "package-test:commands/wc/count_wbtest.mbt::UTF-8 counter preserves incomplete trailing sequences",
-      "command": "wc",
-      "owner": "commands/wc",
-      "surface": [
-        "package-api"
-      ],
-      "status": "supported",
-      "implementation": "package-test",
-      "source": "commands/wc/count_wbtest.mbt::UTF-8 counter preserves incomplete trailing sequences",
-      "case_id": "",
-      "aliases": [],
-      "coverage": [
-        "UTF-8 counter preserves incomplete trailing sequences"
-      ],
-      "required_backends": [
-        "native",
-        "wasm"
-      ],
-      "platforms": [],
-      "required_evidence": [
-        "contract",
-        "backend-pair"
-      ],
-      "observations": [
-        "status"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "package-test:commands/wc/count_wbtest.mbt::UTF-8 counter skips malformed input",
-      "command": "wc",
-      "owner": "commands/wc",
-      "surface": [
-        "package-api"
-      ],
-      "status": "supported",
-      "implementation": "package-test",
-      "source": "commands/wc/count_wbtest.mbt::UTF-8 counter skips malformed input",
-      "case_id": "",
-      "aliases": [],
-      "coverage": [
-        "UTF-8 counter skips malformed input"
       ],
       "required_backends": [
         "native",
@@ -60226,6 +60298,3080 @@
         "status"
       ],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:o1-comm-total",
+      "command": "comm",
+      "owner": "commands/comm",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/comm.json",
+      "case_id": "o1-comm-total",
+      "aliases": [],
+      "coverage": [
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-comm-total-123",
+      "command": "comm",
+      "owner": "commands/comm",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/comm.json",
+      "case_id": "o1-comm-total-123",
+      "aliases": [],
+      "coverage": [
+        "total",
+        "1",
+        "2",
+        "3"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-comm-delim-total",
+      "command": "comm",
+      "owner": "commands/comm",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/comm.json",
+      "case_id": "o1-comm-delim-total",
+      "aliases": [],
+      "coverage": [
+        "output-delimiter",
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-comm-delim-empty",
+      "command": "comm",
+      "owner": "commands/comm",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/comm.json",
+      "case_id": "o1-comm-delim-empty",
+      "aliases": [],
+      "coverage": [
+        "output-delimiter"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-comm-delim-repeat",
+      "command": "comm",
+      "owner": "commands/comm",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/comm.json",
+      "case_id": "o1-comm-delim-repeat",
+      "aliases": [],
+      "coverage": [
+        "output-delimiter"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-comm-order-total",
+      "command": "comm",
+      "owner": "commands/comm",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/comm.json",
+      "case_id": "o1-comm-order-total",
+      "aliases": [],
+      "coverage": [
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-comm-order-check-total",
+      "command": "comm",
+      "owner": "commands/comm",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/comm.json",
+      "case_id": "o1-comm-order-check-total",
+      "aliases": [],
+      "coverage": [
+        "check-order",
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-comm-delim-repeat-same",
+      "command": "comm",
+      "owner": "commands/comm",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/comm.json",
+      "case_id": "o1-comm-delim-repeat-same",
+      "aliases": [],
+      "coverage": [
+        "output-delimiter"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-comm-total-zero",
+      "command": "comm",
+      "owner": "commands/comm",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/comm.json",
+      "case_id": "o1-comm-total-zero",
+      "aliases": [],
+      "coverage": [
+        "zero-terminated",
+        "total",
+        "output-delimiter"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-comm-order-nocheck-check",
+      "command": "comm",
+      "owner": "commands/comm",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/comm.json",
+      "case_id": "o1-comm-order-nocheck-check",
+      "aliases": [],
+      "coverage": [
+        "nocheck-order",
+        "check-order",
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-comm-pairable-buried-disorder",
+      "command": "comm",
+      "owner": "commands/comm",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/comm.json",
+      "case_id": "o1-comm-pairable-buried-disorder",
+      "aliases": [],
+      "coverage": [
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-cut-adjacent-output-ranges",
+      "command": "cut",
+      "owner": "commands/cut",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cut.json",
+      "case_id": "o1-cut-adjacent-output-ranges",
+      "aliases": [],
+      "coverage": [
+        "bytes",
+        "output-delimiter"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-cut-overlapping-output-ranges",
+      "command": "cut",
+      "owner": "commands/cut",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cut.json",
+      "case_id": "o1-cut-overlapping-output-ranges",
+      "aliases": [],
+      "coverage": [
+        "bytes",
+        "output-delimiter"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-cut-complement-output-ranges",
+      "command": "cut",
+      "owner": "commands/cut",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cut.json",
+      "case_id": "o1-cut-complement-output-ranges",
+      "aliases": [],
+      "coverage": [
+        "characters",
+        "complement",
+        "output-delimiter"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-cut-field-output-last-value",
+      "command": "cut",
+      "owner": "commands/cut",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cut.json",
+      "case_id": "o1-cut-field-output-last-value",
+      "aliases": [],
+      "coverage": [
+        "delimiter",
+        "fields",
+        "output-delimiter"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-cut-empty-output-delimiter",
+      "command": "cut",
+      "owner": "commands/cut",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cut.json",
+      "case_id": "o1-cut-empty-output-delimiter",
+      "aliases": [],
+      "coverage": [
+        "delimiter",
+        "fields",
+        "output-delimiter"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-cut-empty-input-delimiter",
+      "command": "cut",
+      "owner": "commands/cut",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cut.json",
+      "case_id": "o1-cut-empty-input-delimiter",
+      "aliases": [],
+      "coverage": [
+        "delimiter",
+        "fields",
+        "output-delimiter"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-cut-same-record-field-delimiter",
+      "command": "cut",
+      "owner": "commands/cut",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cut.json",
+      "case_id": "o1-cut-same-record-field-delimiter",
+      "aliases": [],
+      "coverage": [
+        "zero-terminated",
+        "delimiter",
+        "fields"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-cut-same-delimiter-single-field-suppression",
+      "command": "cut",
+      "owner": "commands/cut",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cut.json",
+      "case_id": "o1-cut-same-delimiter-single-field-suppression",
+      "aliases": [],
+      "coverage": [
+        "zero-terminated",
+        "only-delimited",
+        "delimiter",
+        "fields"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-cut-complement-all-undelimited",
+      "command": "cut",
+      "owner": "commands/cut",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cut.json",
+      "case_id": "o1-cut-complement-all-undelimited",
+      "aliases": [],
+      "coverage": [
+        "delimiter",
+        "fields",
+        "complement"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-cut-selection-conflict",
+      "command": "cut",
+      "owner": "commands/cut",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cut.json",
+      "case_id": "o1-cut-selection-conflict",
+      "aliases": [],
+      "coverage": [
+        "bytes",
+        "fields"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-cut-input-delimiter-conflict",
+      "command": "cut",
+      "owner": "commands/cut",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cut.json",
+      "case_id": "o1-cut-input-delimiter-conflict",
+      "aliases": [],
+      "coverage": [
+        "bytes",
+        "delimiter"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-cut-suppress-conflict",
+      "command": "cut",
+      "owner": "commands/cut",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cut.json",
+      "case_id": "o1-cut-suppress-conflict",
+      "aliases": [],
+      "coverage": [
+        "bytes",
+        "only-delimited"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-join-ignore-case",
+      "command": "join",
+      "owner": "commands/join",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/join.json",
+      "case_id": "o1-join-ignore-case",
+      "aliases": [],
+      "coverage": [
+        "ignore-case"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-join-auto",
+      "command": "join",
+      "owner": "commands/join",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/join.json",
+      "case_id": "o1-join-auto",
+      "aliases": [],
+      "coverage": [
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-join-header-auto-unpaired",
+      "command": "join",
+      "owner": "commands/join",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/join.json",
+      "case_id": "o1-join-header-auto-unpaired",
+      "aliases": [],
+      "coverage": [
+        "header",
+        "ignore-case",
+        "after",
+        "empty",
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-join-auto-output-repeat",
+      "command": "join",
+      "owner": "commands/join",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/join.json",
+      "case_id": "o1-join-auto-output-repeat",
+      "aliases": [],
+      "coverage": [
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-join-output-auto-repeat",
+      "command": "join",
+      "owner": "commands/join",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/join.json",
+      "case_id": "o1-join-output-auto-repeat",
+      "aliases": [],
+      "coverage": [
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-join-auto-header-missing-left",
+      "command": "join",
+      "owner": "commands/join",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/join.json",
+      "case_id": "o1-join-auto-header-missing-left",
+      "aliases": [],
+      "coverage": [
+        "header",
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-join-auto-then-list",
+      "command": "join",
+      "owner": "commands/join",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/join.json",
+      "case_id": "o1-join-auto-then-list",
+      "aliases": [],
+      "coverage": [
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-join-auto-empty",
+      "command": "join",
+      "owner": "commands/join",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/join.json",
+      "case_id": "o1-join-auto-empty",
+      "aliases": [],
+      "coverage": [
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-join-header-vboth",
+      "command": "join",
+      "owner": "commands/join",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/join.json",
+      "case_id": "o1-join-header-vboth",
+      "aliases": [],
+      "coverage": [
+        "header",
+        "only"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-join-header-all-empty",
+      "command": "join",
+      "owner": "commands/join",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/join.json",
+      "case_id": "o1-join-header-all-empty",
+      "aliases": [],
+      "coverage": [
+        "header",
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-join-case-cartesian",
+      "command": "join",
+      "owner": "commands/join",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/join.json",
+      "case_id": "o1-join-case-cartesian",
+      "aliases": [],
+      "coverage": [
+        "ignore-case",
+        "after",
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-join-ascii-fold-only",
+      "command": "join",
+      "owner": "commands/join",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/join.json",
+      "case_id": "o1-join-ascii-fold-only",
+      "aliases": [],
+      "coverage": [
+        "ignore-case",
+        "after"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-join-auto-empty-fields",
+      "command": "join",
+      "owner": "commands/join",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/join.json",
+      "case_id": "o1-join-auto-empty-fields",
+      "aliases": [],
+      "coverage": [
+        "t",
+        "empty",
+        "output",
+        "after"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-join-header-zero-auto",
+      "command": "join",
+      "owner": "commands/join",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/join.json",
+      "case_id": "o1-join-header-zero-auto",
+      "aliases": [],
+      "coverage": [
+        "zero-terminated",
+        "t",
+        "header",
+        "ignore-case",
+        "output",
+        "after"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-join-after-plus-only",
+      "command": "join",
+      "owner": "commands/join",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/join.json",
+      "case_id": "o1-join-after-plus-only",
+      "aliases": [],
+      "coverage": [
+        "after",
+        "only"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-join-order-last-check",
+      "command": "join",
+      "owner": "commands/join",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/join.json",
+      "case_id": "o1-join-order-last-check",
+      "aliases": [],
+      "coverage": [
+        "nocheck-order",
+        "check-order",
+        "ignore-case"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-join-header-data-order",
+      "command": "join",
+      "owner": "commands/join",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/join.json",
+      "case_id": "o1-join-header-data-order",
+      "aliases": [],
+      "coverage": [
+        "header",
+        "check-order",
+        "ignore-case"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-join-default-late-order",
+      "command": "join",
+      "owner": "commands/join",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/join.json",
+      "case_id": "o1-join-default-late-order",
+      "aliases": [],
+      "coverage": [
+        "after"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-uniq-all-repeated-default",
+      "command": "uniq",
+      "owner": "commands/uniq",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uniq.json",
+      "case_id": "o1-uniq-all-repeated-default",
+      "aliases": [],
+      "coverage": [
+        "all-repeated"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-uniq-all-repeated-prepend",
+      "command": "uniq",
+      "owner": "commands/uniq",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uniq.json",
+      "case_id": "o1-uniq-all-repeated-prepend",
+      "aliases": [],
+      "coverage": [
+        "all-repeated"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-uniq-all-repeated-separate-abbreviation",
+      "command": "uniq",
+      "owner": "commands/uniq",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uniq.json",
+      "case_id": "o1-uniq-all-repeated-separate-abbreviation",
+      "aliases": [],
+      "coverage": [
+        "all-repeated"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-uniq-all-repeated-unique-members",
+      "command": "uniq",
+      "owner": "commands/uniq",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uniq.json",
+      "case_id": "o1-uniq-all-repeated-unique-members",
+      "aliases": [],
+      "coverage": [
+        "ignore-case",
+        "unique",
+        "repeated",
+        "all-repeated"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-uniq-group-default",
+      "command": "uniq",
+      "owner": "commands/uniq",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uniq.json",
+      "case_id": "o1-uniq-group-default",
+      "aliases": [],
+      "coverage": [
+        "group"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-uniq-group-prepend",
+      "command": "uniq",
+      "owner": "commands/uniq",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uniq.json",
+      "case_id": "o1-uniq-group-prepend",
+      "aliases": [],
+      "coverage": [
+        "group"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-uniq-group-append",
+      "command": "uniq",
+      "owner": "commands/uniq",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uniq.json",
+      "case_id": "o1-uniq-group-append",
+      "aliases": [],
+      "coverage": [
+        "group"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-uniq-group-both-nul",
+      "command": "uniq",
+      "owner": "commands/uniq",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uniq.json",
+      "case_id": "o1-uniq-group-both-nul",
+      "aliases": [],
+      "coverage": [
+        "zero-terminated",
+        "group"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-uniq-later-bare-D-resets-method",
+      "command": "uniq",
+      "owner": "commands/uniq",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uniq.json",
+      "case_id": "o1-uniq-later-bare-D-resets-method",
+      "aliases": [],
+      "coverage": [
+        "all-repeated"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-uniq-later-group-method",
+      "command": "uniq",
+      "owner": "commands/uniq",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uniq.json",
+      "case_id": "o1-uniq-later-group-method",
+      "aliases": [],
+      "coverage": [
+        "group"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-uniq-empty-group-input",
+      "command": "uniq",
+      "owner": "commands/uniq",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uniq.json",
+      "case_id": "o1-uniq-empty-group-input",
+      "aliases": [],
+      "coverage": [
+        "group"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-uniq-count-all-conflict",
+      "command": "uniq",
+      "owner": "commands/uniq",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uniq.json",
+      "case_id": "o1-uniq-count-all-conflict",
+      "aliases": [],
+      "coverage": [
+        "count",
+        "all-repeated"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-uniq-group-selection-conflict",
+      "command": "uniq",
+      "owner": "commands/uniq",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uniq.json",
+      "case_id": "o1-uniq-group-selection-conflict",
+      "aliases": [],
+      "coverage": [
+        "group",
+        "unique"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-uniq-empty-method-rejected",
+      "command": "uniq",
+      "owner": "commands/uniq",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uniq.json",
+      "case_id": "o1-uniq-empty-method-rejected",
+      "aliases": [],
+      "coverage": [
+        "all-repeated"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-uniq-D-attached-text-is-cluster",
+      "command": "uniq",
+      "owner": "commands/uniq",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uniq.json",
+      "case_id": "o1-uniq-D-attached-text-is-cluster",
+      "aliases": [],
+      "coverage": [
+        "all-repeated",
+        "skip-chars"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-auto-multi",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-auto-multi",
+      "aliases": [],
+      "coverage": [
+        "lines",
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-always-single",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-always-single",
+      "aliases": [],
+      "coverage": [
+        "lines",
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-never-multi",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-never-multi",
+      "aliases": [],
+      "coverage": [
+        "lines",
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-only-counters",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-only-counters",
+      "aliases": [],
+      "coverage": [
+        "lines",
+        "words",
+        "bytes",
+        "chars",
+        "max-line-length",
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-only-partial-error",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-only-partial-error",
+      "aliases": [],
+      "coverage": [
+        "lines",
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-always-all-errors",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-always-all-errors",
+      "aliases": [],
+      "coverage": [
+        "lines",
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-only-all-errors",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-only-all-errors",
+      "aliases": [],
+      "coverage": [
+        "lines",
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-always-empty-list",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-always-empty-list",
+      "aliases": [],
+      "coverage": [
+        "lines",
+        "total",
+        "files0-from"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-only-empty-list",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-only-empty-list",
+      "aliases": [],
+      "coverage": [
+        "lines",
+        "words",
+        "bytes",
+        "total",
+        "files0-from"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-never-empty-list",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-never-empty-list",
+      "aliases": [],
+      "coverage": [
+        "lines",
+        "total",
+        "files0-from"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-auto-empty-list",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-auto-empty-list",
+      "aliases": [],
+      "coverage": [
+        "lines",
+        "total",
+        "files0-from"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-only-files0",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-only-files0",
+      "aliases": [],
+      "coverage": [
+        "lines",
+        "total",
+        "files0-from"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-repeat-never",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-repeat-never",
+      "aliases": [],
+      "coverage": [
+        "lines",
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-repeat-only",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-repeat-only",
+      "aliases": [],
+      "coverage": [
+        "lines",
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-stdin-always",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-stdin-always",
+      "aliases": [],
+      "coverage": [
+        "lines",
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-stdin-only",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-stdin-only",
+      "aliases": [],
+      "coverage": [
+        "lines",
+        "words",
+        "bytes",
+        "chars",
+        "max-line-length",
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-stdin-multiple-counters",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-stdin-multiple-counters",
+      "aliases": [],
+      "coverage": [
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-invalid",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-invalid",
+      "aliases": [],
+      "coverage": [
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-ambiguous",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-ambiguous",
+      "aliases": [],
+      "coverage": [
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-empty",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-empty",
+      "aliases": [],
+      "coverage": [
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-missing-value",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-missing-value",
+      "aliases": [],
+      "coverage": [
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-abbreviation",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-abbreviation",
+      "aliases": [],
+      "coverage": [
+        "lines",
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-read-error",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-read-error",
+      "aliases": [],
+      "coverage": [
+        "lines",
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-c-profile-chars-binary",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-c-profile-chars-binary",
+      "aliases": [],
+      "coverage": [
+        "chars"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-c-profile-bytes-chars-binary",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-c-profile-bytes-chars-binary",
+      "aliases": [],
+      "coverage": [
+        "bytes",
+        "chars"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o1-wc-total-only-all-counters-binary",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "o1-wc-total-only-all-counters-binary",
+      "aliases": [],
+      "coverage": [
+        "lines",
+        "words",
+        "bytes",
+        "chars",
+        "max-line-length",
+        "total"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "package-test:commands/wc/count_wbtest.mbt::C profile counts every byte across a 64 KiB read boundary",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/wc/count_wbtest.mbt::C profile counts every byte across a 64 KiB read boundary",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "C profile counts every byte across a 64 KiB read boundary"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/wc/count_wbtest.mbt::wc retains partial counters after a read error",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/wc/count_wbtest.mbt::wc retains partial counters after a read error",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "wc retains partial counters after a read error"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/cut/cut_wbtest.mbt::cut normalizes overlaps while preserving adjacent range boundaries",
+      "command": "cut",
+      "owner": "commands/cut",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/cut/cut_wbtest.mbt::cut normalizes overlaps while preserving adjacent range boundaries",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "cut normalizes overlaps while preserving adjacent range boundaries"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/cut/cut_wbtest.mbt::cut output separators join explicit ranges and selected fields",
+      "command": "cut",
+      "owner": "commands/cut",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/cut/cut_wbtest.mbt::cut output separators join explicit ranges and selected fields",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "cut output separators join explicit ranges and selected fields"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/cut/cut_wbtest.mbt::cut field selection preserves undelimited records and NUL fields",
+      "command": "cut",
+      "owner": "commands/cut",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/cut/cut_wbtest.mbt::cut field selection preserves undelimited records and NUL fields",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "cut field selection preserves undelimited records and NUL fields"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/uniq/uniq_wbtest.mbt::uniq all repeated preserves members and unique skips only the last",
+      "command": "uniq",
+      "owner": "commands/uniq",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/uniq/uniq_wbtest.mbt::uniq all repeated preserves members and unique skips only the last",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "uniq all repeated preserves members and unique skips only the last"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/uniq/uniq_wbtest.mbt::uniq group methods delimit singleton repeated empty and NUL records",
+      "command": "uniq",
+      "owner": "commands/uniq",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/uniq/uniq_wbtest.mbt::uniq group methods delimit singleton repeated empty and NUL records",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "uniq group methods delimit singleton repeated empty and NUL records"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/uniq/uniq_wbtest.mbt::uniq optional methods reset in order and reject conflicting selection",
+      "command": "uniq",
+      "owner": "commands/uniq",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/uniq/uniq_wbtest.mbt::uniq optional methods reset in order and reject conflicting selection",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "uniq optional methods reset in order and reject conflicting selection"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:o1-join-explicit-fields-header-auto",
+      "command": "join",
+      "owner": "commands/join",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/join.json",
+      "case_id": "o1-join-explicit-fields-header-auto",
+      "aliases": [],
+      "coverage": [
+        "t",
+        "1",
+        "2",
+        "ignore-case",
+        "header",
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
     }
   ],
   "release_commands": [
@@ -60556,24 +63702,43 @@
       "compare_profile": "gnu",
       "supported_options": [
         "help",
-        "version"
+        "version",
+        "1",
+        "2",
+        "3",
+        "check-order",
+        "nocheck-order",
+        "output-delimiter",
+        "total",
+        "zero-terminated"
       ],
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
-        "compat-merge-comm",
         "phase3-comm-columns",
+        "p9-comm-zero-terminated",
+        "compat-text-comm-nul-records",
+        "compat-text-comm-check-order",
+        "compat-text-comm-nocheck-precedence",
+        "compat-text-comm-default-order",
+        "compat-text-comm-pairable-unsorted",
+        "compat-merge-comm",
         "compat-catalog-line-48",
         "compat-catalog-line-375",
-        "p9-comm-zero-terminated",
-        "release-metadata-comm-help",
-        "compat-text-comm-check-order",
-        "compat-text-comm-nul-records",
-        "release-metadata-comm-version",
-        "compat-text-comm-default-order",
         "repair-alias-comm-zero-terminated",
-        "compat-text-comm-pairable-unsorted",
-        "compat-text-comm-nocheck-precedence"
+        "release-metadata-comm-help",
+        "release-metadata-comm-version",
+        "o1-comm-total",
+        "o1-comm-total-123",
+        "o1-comm-delim-total",
+        "o1-comm-delim-empty",
+        "o1-comm-delim-repeat",
+        "o1-comm-order-total",
+        "o1-comm-order-check-total",
+        "o1-comm-delim-repeat-same",
+        "o1-comm-total-zero",
+        "o1-comm-order-nocheck-check",
+        "o1-comm-pairable-buried-disorder"
       ]
     },
     {
@@ -60657,23 +63822,43 @@
       "compare_profile": "gnu",
       "supported_options": [
         "help",
-        "version"
+        "version",
+        "bytes",
+        "characters",
+        "complement",
+        "delimiter",
+        "fields",
+        "only-delimited",
+        "output-delimiter",
+        "zero-terminated"
       ],
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
-        "p9-cut-bytes",
         "phase3-cut-field",
+        "p9-cut-zero-terminated",
+        "p9-cut-bytes",
         "compat-text-line-605",
         "compat-text-line-684",
         "compat-text-line-693",
         "compat-text-line-694",
         "compat-catalog-line-72",
-        "p9-cut-zero-terminated",
         "compat-catalog-line-374",
+        "repair-alias-cut-zero-terminated",
         "release-metadata-cut-help",
         "release-metadata-cut-version",
-        "repair-alias-cut-zero-terminated"
+        "o1-cut-adjacent-output-ranges",
+        "o1-cut-overlapping-output-ranges",
+        "o1-cut-complement-output-ranges",
+        "o1-cut-field-output-last-value",
+        "o1-cut-empty-output-delimiter",
+        "o1-cut-empty-input-delimiter",
+        "o1-cut-same-record-field-delimiter",
+        "o1-cut-same-delimiter-single-field-suppression",
+        "o1-cut-complement-all-undelimited",
+        "o1-cut-selection-conflict",
+        "o1-cut-input-delimiter-conflict",
+        "o1-cut-suppress-conflict"
       ]
     },
     {
@@ -60888,24 +64073,55 @@
       "compare_profile": "gnu",
       "supported_options": [
         "help",
-        "version"
+        "version",
+        "1",
+        "2",
+        "after",
+        "empty",
+        "only",
+        "output",
+        "t",
+        "check-order",
+        "nocheck-order",
+        "header",
+        "ignore-case",
+        "zero-terminated"
       ],
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
-        "compat-merge-join",
-        "p9-join-check-order",
-        "compat-catalog-line-108",
-        "p9-join-zero-terminated",
-        "repair-alias-join-after",
-        "release-metadata-join-help",
-        "compat-text-join-check-order",
-        "compat-text-join-nul-records",
-        "compat-text-join-output-list",
-        "release-metadata-join-version",
         "phase3-join-unpaired-output-list",
+        "p9-join-zero-terminated",
+        "p9-join-check-order",
+        "compat-text-join-output-list",
+        "compat-text-join-nul-records",
+        "compat-text-join-check-order",
+        "compat-text-join-nocheck-precedence",
+        "compat-merge-join",
+        "compat-catalog-line-108",
+        "repair-alias-join-after",
         "repair-alias-join-zero-terminated",
-        "compat-text-join-nocheck-precedence"
+        "release-metadata-join-help",
+        "release-metadata-join-version",
+        "o1-join-ignore-case",
+        "o1-join-auto",
+        "o1-join-header-auto-unpaired",
+        "o1-join-auto-output-repeat",
+        "o1-join-output-auto-repeat",
+        "o1-join-auto-header-missing-left",
+        "o1-join-auto-then-list",
+        "o1-join-auto-empty",
+        "o1-join-header-vboth",
+        "o1-join-header-all-empty",
+        "o1-join-case-cartesian",
+        "o1-join-ascii-fold-only",
+        "o1-join-auto-empty-fields",
+        "o1-join-header-zero-auto",
+        "o1-join-after-plus-only",
+        "o1-join-order-last-check",
+        "o1-join-header-data-order",
+        "o1-join-default-late-order",
+        "o1-join-explicit-fields-header-auto"
       ]
     },
     {
@@ -61628,23 +64844,48 @@
       "compare_profile": "gnu",
       "supported_options": [
         "help",
-        "version"
+        "version",
+        "all-repeated",
+        "check-chars",
+        "count",
+        "group",
+        "ignore-case",
+        "repeated",
+        "skip-chars",
+        "skip-fields",
+        "unique",
+        "zero-terminated"
       ],
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "phase3-uniq-adjacent",
+        "p3-uniq-field-character-selection",
+        "p3-uniq-zero-records",
         "compat-text-line-476",
         "compat-text-line-485",
         "compat-text-line-494",
         "compat-text-line-614",
-        "p3-uniq-zero-records",
-        "phase3-uniq-adjacent",
         "compat-catalog-line-295",
         "repair-alias-uniq-count",
+        "repair-alias-uniq-zero-terminated",
         "release-metadata-uniq-help",
         "release-metadata-uniq-version",
-        "p3-uniq-field-character-selection",
-        "repair-alias-uniq-zero-terminated"
+        "o1-uniq-all-repeated-default",
+        "o1-uniq-all-repeated-prepend",
+        "o1-uniq-all-repeated-separate-abbreviation",
+        "o1-uniq-all-repeated-unique-members",
+        "o1-uniq-group-default",
+        "o1-uniq-group-prepend",
+        "o1-uniq-group-append",
+        "o1-uniq-group-both-nul",
+        "o1-uniq-later-bare-D-resets-method",
+        "o1-uniq-later-group-method",
+        "o1-uniq-empty-group-input",
+        "o1-uniq-count-all-conflict",
+        "o1-uniq-group-selection-conflict",
+        "o1-uniq-empty-method-rejected",
+        "o1-uniq-D-attached-text-is-cluster"
       ]
     },
     {
@@ -61653,28 +64894,61 @@
       "compare_profile": "gnu",
       "supported_options": [
         "help",
-        "version"
+        "version",
+        "bytes",
+        "chars",
+        "files0-from",
+        "lines",
+        "max-line-length",
+        "total",
+        "words"
       ],
       "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
-        "compat-stdin-wc",
         "phase3-wc-lines",
+        "p3-wc-max-line-length",
+        "p3-wc-files0-alignment",
         "compat-text-line-495",
         "compat-text-line-496",
         "compat-text-line-536",
         "compat-text-line-596",
-        "p3-wc-max-line-length",
+        "compat-text-wc-aligned-files",
+        "compat-text-wc-files0-accounting",
+        "compat-text-wc-partial-counts",
+        "compat-catalog-line-296",
+        "compat-stdin-wc",
+        "repair-alias-wc-max-line-length",
         "repair-alias-wc-bytes",
         "repair-alias-wc-lines",
-        "p3-wc-files0-alignment",
-        "compat-catalog-line-296",
         "release-metadata-wc-help",
         "release-metadata-wc-version",
-        "compat-text-wc-aligned-files",
-        "compat-text-wc-partial-counts",
-        "repair-alias-wc-max-line-length",
-        "compat-text-wc-files0-accounting"
+        "o1-wc-auto-multi",
+        "o1-wc-always-single",
+        "o1-wc-never-multi",
+        "o1-wc-only-counters",
+        "o1-wc-only-partial-error",
+        "o1-wc-always-all-errors",
+        "o1-wc-only-all-errors",
+        "o1-wc-always-empty-list",
+        "o1-wc-only-empty-list",
+        "o1-wc-never-empty-list",
+        "o1-wc-auto-empty-list",
+        "o1-wc-only-files0",
+        "o1-wc-repeat-never",
+        "o1-wc-repeat-only",
+        "o1-wc-stdin-always",
+        "o1-wc-stdin-only",
+        "o1-wc-stdin-multiple-counters",
+        "o1-wc-invalid",
+        "o1-wc-ambiguous",
+        "o1-wc-empty",
+        "o1-wc-missing-value",
+        "o1-wc-abbreviation",
+        "o1-wc-read-error",
+        "o1-wc-c-profile-chars-binary",
+        "o1-wc-c-profile-bytes-chars-binary",
+        "o1-wc-total-only-all-counters-binary"
       ]
     },
     {

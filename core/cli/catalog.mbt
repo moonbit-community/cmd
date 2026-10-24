@@ -43,10 +43,12 @@ pub fn command_catalog() -> Array[CommandContract] {
       "squeeze-blank", "unbuffered",
     ]),
     contract("comm", Core, FileOrStdin, LineStream, [FileRead], [
-      "1", "2", "3", "check-order", "nocheck-order", "help", "zero-terminated",
+      "1", "2", "3", "check-order", "nocheck-order", "help", "output-delimiter",
+      "total", "zero-terminated",
     ]),
     contract("cut", Core, FileOrStdin, LineStream, [FileRead], [
-      "bytes", "characters", "delimiter", "fields", "only-delimited", "zero-terminated",
+      "bytes", "characters", "complement", "delimiter", "fields", "only-delimited",
+      "output-delimiter", "zero-terminated",
     ]),
     contract("false", Core, NoInput, LineStream, [], ["help", "version"]),
     contract("head", Core, FileOrStdin, ByteStream, [FileRead], [
@@ -54,7 +56,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     ]),
     contract("join", Core, FileOrStdin, LineStream, [FileRead], [
       "1", "2", "after", "empty", "only", "output", "t", "check-order", "nocheck-order",
-      "help", "zero-terminated",
+      "header", "help", "ignore-case", "zero-terminated",
     ]),
     contract("jq", Core, StructuredInput, StructuredOutput, [FileRead], [
       "color-output", "monochrome-output", "compact-output", "exit-status", "from-file",
@@ -91,15 +93,15 @@ pub fn command_catalog() -> Array[CommandContract] {
     ]),
     contract("true", Core, NoInput, LineStream, [], ["help", "version"]),
     contract("uniq", Core, FileOrStdin, LineStream, [FileRead], [
-      "check-chars", "count", "ignore-case", "repeated", "skip-chars", "skip-fields",
-      "unique", "zero-terminated",
+      "all-repeated", "check-chars", "count", "group", "ignore-case", "repeated",
+      "skip-chars", "skip-fields", "unique", "zero-terminated",
     ]),
     contract("unexpand", Core, FileOrStdin, ByteStream, [FileRead], [
       "all", "first-only", "tabs",
     ]),
     contract("unlink", Core, NoInput, LineStream, [FileWrite], []),
     contract("wc", Core, FileOrStdin, LineStream, [FileRead], [
-      "bytes", "chars", "files0-from", "lines", "max-line-length", "words",
+      "bytes", "chars", "files0-from", "lines", "max-line-length", "total", "words",
     ]),
     contract("xxd", Core, FileOrStdin, ByteStream, [FileRead], [
       "cols", "include", "len", "plain", "revert", "seek",
