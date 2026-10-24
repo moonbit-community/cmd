@@ -166,6 +166,12 @@ fn shared_report(
   let observations : Array[String] = []
   for fixture in fixtures {
     if fixture.id == report.id && result_class(report.category) == "pass" {
+      if release_diff_device_scenario(fixture) {
+        observations.append([
+          "status", "stdout", "stderr", "file-type", "symlink-target",
+        ])
+        continue
+      }
       if release_mv_scenario(fixture) {
         observations.append(@mv_scenarios.observations())
         continue

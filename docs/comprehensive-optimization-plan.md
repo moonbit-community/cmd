@@ -4,6 +4,22 @@ Date: 2026-10-23; execution direction revised 2026-10-24
 
 Repository: `moonbit-community/cmd`
 
+Performance decision, 2026-10-24: the user selects direct release Wasm
+measurements for this round. MoonX resolution and launcher overhead are outside
+cmd performance acceptance. This supersedes the earlier exact-MoonX timing
+requirements throughout this plan. Existing MoonX observations remain historical;
+published-coordinate semantic checks remain a separate release responsibility.
+Keep the existing workloads, correctness, sampling and 1.5x thresholds; invoke
+the built Wasm through moonrun without an empty-runtime subtraction. Native
+remains useful for correctness and development diagnosis.
+
+Execution decision, 2026-10-24: continue D, then O, then R. Close #30, #33 and
+#32 individually after their selected implementation and applicable validation,
+required PR checks and actual-main acceptance. Preserve precise public-API
+children and their rejection contracts. This supersedes the earlier requirement
+to keep these implementation issues open until combined publication; publication
+is a separate, unexecuted stage.
+
 Status: C0/C1/C3/C4 accepted. The benchmark pilot is merged; complete benchmarks, command algorithms and final publication remain pending.
 
 Current development: G1/G2 (PR #47) and B2 (PR #48) are merged, with all required
@@ -57,8 +73,8 @@ issues in the same order only after final acceptance.
 
 | Question | Selected decision |
 | --- | --- |
-| Delivery performance | Actual, cached, exact-version MoonX invocation, including startup and exit |
-| Native/direct Wasm | Independent development, algorithm, correctness and backend-pair evidence; no replacement for MoonX acceptance |
+| Delivery performance | Direct release Wasm through moonrun, including runtime startup, command work, flush and exit; no MoonX launcher |
+| Native/direct Wasm | Native supplies independent development/correctness evidence; direct Wasm supplies performance acceptance |
 | Performance gate location | Fixed local macOS and Linux environments, outside required hosted CI timing statuses |
 | Windows | Three-platform correctness; diagnostic timing only until a stable host exists |
 | Candidate publication | Necessary final joint-acceptance `-rc.N` coordinates only; no ordinary-PR candidates |
@@ -426,15 +442,16 @@ full recovery run, not only the single failing case.
 For every registered command/workload/host/input/cache row independently:
 
 ```text
-R50 = median(full MoonX time) / median(full upstream time)
-R95 = p95(full MoonX time) / p95(full upstream time)
+R50 = median(full direct Wasm time) / median(full upstream time)
+R95 = p95(full direct Wasm time) / p95(full upstream time)
 target: R50 <= 1.00
 required: R50 <= 1.50, R95 <= 1.50,
           upper bound of the 95% interval for R50 <= 1.50
 ```
 
-Every measurement starts a new process and includes cached exact-package
-resolution, moonrun startup, command execution, flush and exit. No daemon,
+Every measurement starts moonrun with the built release Wasm artifact and
+includes runtime startup, command execution, flush and exit. MoonX resolution,
+download and launcher overhead are excluded. No daemon,
 persistent service or empty-runtime subtraction. Upstream is an explicit
 executable, never a shell builtin or deliberately added MoonX-like wrapper.
 Geometric means, throughput aggregates and fast large files cannot compensate
@@ -442,16 +459,16 @@ for small-row failure. Claim faster only when the R50 95% upper bound is below
 1. A 1-1.5 result is tolerated cost. Wrong output, early termination, timeout,
 OOM, policy refusal and missing measurement do not pass.
 
-All 78 published commands enter real MoonX acceptance. Timeout still receives
-review, correctness and Native/Wasm development data; its registry row is N/A
-and it is not published for table completeness. Unsupported capabilities get
+All 79 local commands enter the applicable direct Wasm review and measurement.
+Timeout remains local-only and is not published for table completeness;
+unsupported Wasm capabilities retain explicit rejection evidence. Such capabilities get
 rejection correctness/cost, not successful-workload performance claims.
 
 | Measurement role | Meaning | 1.5x delivery gate |
 | --- | --- | --- |
-| Delivery | Cached exact coordinate; fresh process each time | Yes |
-| First use | Empty-cache download/resolve/compile/first run with network/build provenance | No, separate |
-| Development | Release Native/direct Wasm/core in-process microbenchmark | No, causal diagnostics |
+| Direct Wasm | Built release artifact through moonrun; fresh process each time | Yes |
+| Published consumer | Exact MoonX coordinate and semantic checks | No MoonX timing gate |
+| Development | Release Native or core in-process microbenchmark | No, causal diagnostics |
 
 Delivery includes warm filesystem-cache profiles. Report cold-data results only
 with reproducible cache control; a renamed file is not cold cache. Each

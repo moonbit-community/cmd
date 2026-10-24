@@ -156,17 +156,6 @@
       "replacement_behaviors": []
     },
     {
-      "behavior_id": "case:p1-diff-directory-boundary",
-      "support_record": "docs/compatibility.md",
-      "adr": "docs/adr/0008-data.md",
-      "current_limit": "diff -r directory recursion is outside the implemented file-comparison profile and returns an option error.",
-      "unlock_condition": "Implement the selected directory recursion/order/type/missing-side/diagnostic workflow in pure MoonBit and pass pinned GNU diffutils Native/Wasm byte/status/effect regressions; unavailable link metadata remains a separately scoped boundary.",
-      "rejection_tests": [
-        "case:p1-diff-directory-boundary"
-      ],
-      "replacement_behaviors": []
-    },
-    {
       "behavior_id": "case:p1-fmt-prefix-boundary",
       "support_record": "docs/compatibility.md",
       "adr": "docs/adr/0003-streams.md",
@@ -240,28 +229,6 @@
       "unlock_condition": "Require released public source-mode metadata and a safe mode-preserving replacement strategy, then pass fixed GNU mode/hard-link/mixed-failure and Native/Wasm no-damage regressions. Rename availability alone does not lift this boundary.",
       "rejection_tests": [
         "case:patch-existing-write-boundary"
-      ],
-      "replacement_behaviors": []
-    },
-    {
-      "behavior_id": "case:patch-fuzz-boundary",
-      "support_record": "docs/compatibility.md",
-      "adr": "docs/adr/0009-safety.md",
-      "current_limit": "patch accepts only exact context (--fuzz=0); requested fuzz is unimplemented matching/state work.",
-      "unlock_condition": "Implement per-hunk offset/fuzz tiers, candidate order, cumulative displacement, used regions, reject bytes and mixed-success ordering, then pass pinned GNU patch byte/status/file-effect differentials before widening.",
-      "rejection_tests": [
-        "case:patch-fuzz-boundary"
-      ],
-      "replacement_behaviors": []
-    },
-    {
-      "behavior_id": "case:patch-hunk-mismatch",
-      "support_record": "docs/compatibility.md",
-      "adr": "docs/adr/0009-safety.md",
-      "current_limit": "The exact-hunk profile rejects this context mismatch before writing the affected file. This does not establish GNU partial-success, offset/fuzz or reject-file semantics.",
-      "unlock_condition": "Retain rejection of genuinely inapplicable hunks; expand only after offset/fuzz/reject and multi-hunk/multi-file mixed-result behavior has independent GNU byte/status/effect evidence. Do not treat a mismatch rejection as proof of the broader workflow.",
-      "rejection_tests": [
-        "case:patch-hunk-mismatch"
       ],
       "replacement_behaviors": []
     },
@@ -417,6 +384,39 @@
       "rejection_tests": [
         "scenario:mv-windows-wasm-links-boundary"
       ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:d-patch-existing-reject-boundary",
+      "adr": "docs/adr/0004-filesystem.md",
+      "support_record": "docs/compatibility.md",
+      "rejection_tests": [
+        "case:d-patch-existing-reject-boundary"
+      ],
+      "current_limit": "Patch creates new reject files exclusively; replacing an existing reject is refused before target/reject mutation because public handle identity and safe truncation are unavailable.",
+      "unlock_condition": "Require released public identity/handle-truncation semantics and independent GNU Native/Wasm collision, alias, mode and partial-failure effects before replacing existing reject files.",
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:diff-directory-devices-boundary",
+      "adr": "docs/adr/0004-filesystem.md",
+      "support_record": "docs/compatibility.md",
+      "rejection_tests": [
+        "case:diff-directory-devices-boundary"
+      ],
+      "current_limit": "Directory comparison of distinct character/block devices refuses because public device-number metadata is unavailable; FIFO/socket reports and top-level readable streams remain supported.",
+      "unlock_condition": "Require released public rdev/device-number metadata and fixed GNU device equality/difference plus Native/Wasm effects before enabling this directory comparison.",
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "scenario:diff-directory-devices-boundary",
+      "adr": "docs/adr/0004-filesystem.md",
+      "support_record": "docs/compatibility.md",
+      "rejection_tests": [
+        "scenario:diff-directory-devices-boundary"
+      ],
+      "current_limit": "Directory comparison of distinct character/block devices refuses because public device-number metadata is unavailable; FIFO/socket reports and top-level readable streams remain supported.",
+      "unlock_condition": "Require released public rdev/device-number metadata and fixed GNU device equality/difference plus Native/Wasm effects before enabling this directory comparison.",
       "replacement_behaviors": []
     }
   ]

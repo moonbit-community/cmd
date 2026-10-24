@@ -20,13 +20,28 @@ priv struct FunctionalSide {
 }
 
 ///|
+fn functional_candidate(
+  command : String,
+  args : Array[String],
+  coordinate : String?,
+  options : Map[String, String],
+) -> (String, Array[String]) {
+  if options.get("--wasm-root") is Some(root) {
+    (options["--moonrun"], [@testkit.wasm_path(root, command), "--", ..args])
+  } else if coordinate is Some(coordinate) {
+    (options["--moonx"], [coordinate, "--", ..args])
+  } else {
+    (@testkit.executable_path(options["--native-root"], command), args)
+  }
+}
+
+///|
 async fn execute_functional_side(
   side : String,
   workload : FunctionalWorkload,
   fixture : @testkit.Case,
   coordinate : String?,
-  moonx : String,
-  native_root : String?,
+  options : Map[String, String],
   oracle_bin : String,
   environment : Map[String, String],
   directory : String,
@@ -55,20 +70,14 @@ async fn execute_functional_side(
     extra[name] = value
   }
   let candidate = side == "candidate"
+  let (program, argv) = if candidate {
+    functional_candidate(fixture.command, args, coordinate, options)
+  } else {
+    (oracle_bin + "/" + fixture.command, args)
+  }
   let invocation : BenchmarkInvocation = {
-    program: if !candidate {
-      oracle_bin + "/" + fixture.command
-    } else {
-      match coordinate {
-        Some(_) => moonx
-        None => @testkit.executable_path(native_root.unwrap(), fixture.command)
-      }
-    },
-    args: if candidate && coordinate is Some(coordinate) {
-      [coordinate, "--", ..args]
-    } else {
-      args
-    },
+    program,
+    args: argv,
     cwd: fixture.working_directory(root),
     environment: extra,
     stdin_path: input,
@@ -248,8 +257,7 @@ async fn functional_pair(
       workload,
       fixture,
       coordinate,
-      options["--moonx"],
-      options.get("--native-root"),
+      options,
       options["--oracle-bin"],
       environment,
       directory,
@@ -366,7 +374,9 @@ async fn run_functional_row(
   let row = {
     workload,
     coordinate,
-    role: if coordinate is Some(_) {
+    role: if options.contains("--wasm-root") {
+      "direct-wasm"
+    } else if coordinate is Some(_) {
       "delivery"
     } else {
       "diagnostic-only"
@@ -433,10 +443,18 @@ async fn run_functional(options : Map[String, String], sample~ : Bool) -> Bool {
     profile.timezone == "UTC" else {
     fail("expected warm delivery profile with C locale and UTC")
   }
-  let moonx = options.get("--moonx").unwrap_or("")
+  let wasm = options.contains("--wasm-root")
+  let launcher = options
+    .get(if wasm { "--moonrun" } else { "--moonx" })
+    .unwrap_or("")
   let oracle = options.get("--oracle-bin").unwrap_or("")
-  guard @path.Path(moonx).is_absolute() && @path.Path(oracle).is_absolute() else {
-    fail("explicit absolute --moonx and --oracle-bin are required")
+  guard @path.Path(launcher).is_absolute() && @path.Path(oracle).is_absolute() else {
+    fail(
+      "explicit absolute launcher (--moonrun or --moonx) and --oracle-bin are required",
+    )
+  }
+  if options.get("--wasm-root") is Some(root) && !@path.Path(root).is_absolute() {
+    fail("--wasm-root requires an absolute release artifact directory")
   }
   let record = @json.parse(@fs.read_file(profile.oracle_build_record).text())
   let built : OracleBuildRoot = @json.from_json(record)
@@ -476,7 +494,7 @@ async fn run_functional(options : Map[String, String], sample~ : Bool) -> Bool {
   }
   let probes = [
     observe_profile("moon", ["version", "--all"]),
-    observe_profile(moonx, ["--version"]),
+    observe_profile(launcher, ["--version"]),
     observe_profile("uname", ["-a"]),
     observe_profile("git", ["rev-parse", "HEAD"]),
     observe_profile("git", ["status", "--short"]),
@@ -487,6 +505,8 @@ async fn run_functional(options : Map[String, String], sample~ : Bool) -> Bool {
     "native_build_records": Json(records),
     "environment": ToJson::to_json(environment),
     "platform": Json(@testkit.host_platform()),
+    "candidate_role": Json(if wasm { "direct-wasm" } else { "published-moonx" }),
+    "wasm_root": ToJson::to_json(options.get("--wasm-root")),
     "observations": ToJson::to_json(probes),
     "corpus_generator": {
       "chunk_bytes": 65536,
@@ -516,7 +536,7 @@ async fn run_functional(options : Map[String, String], sample~ : Bool) -> Bool {
       let matches = published.commands.filter(row => {
         row.name == workload.command && row.published
       })
-      let coordinate = if workload.command == "timeout" {
+      let coordinate = if wasm || workload.command == "timeout" {
         None
       } else {
         guard matches is [entry] else {
@@ -526,7 +546,9 @@ async fn run_functional(options : Map[String, String], sample~ : Bool) -> Bool {
       }
       let pending = if workload.pending is Some(reason) {
         Some(reason)
-      } else if coordinate is None && options.get("--native-root") is None {
+      } else if !wasm &&
+        coordinate is None &&
+        options.get("--native-root") is None {
         Some("timeout is local-only; provide --native-root for its diagnostic")
       } else {
         None

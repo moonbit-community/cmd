@@ -4,11 +4,6 @@ priv suberror PatchError {
 }
 
 ///|
-priv suberror HunkMismatch {
-  HunkMismatch(Int32, Int32)
-}
-
-///|
 struct Line {
   value : String
   terminated : Bool
@@ -27,6 +22,7 @@ struct Hunk {
   new_start : Int32
   new_count : Int32
   changes : Array[Change]
+  section : String
 }
 
 ///|
@@ -34,6 +30,9 @@ struct FilePatch {
   old_name : String
   new_name : String
   hunks : Array[Hunk]
+  old_header : String
+  new_header : String
+  unified : Bool
 }
 
 ///|
@@ -111,11 +110,13 @@ fn parse_unified(data : Bytes) -> Array[FilePatch] raise {
       continue
     }
     let old_name = header_name(text)
+    let old_header = text[4:].to_owned()
     i += 1
     if i >= input.length() || !input[i].value.has_prefix("+++ ") {
       raise PatchError("missing +++ file header")
     }
     let new_name = header_name(input[i].value)
+    let new_header = input[i].value[4:].to_owned()
     i += 1
     let hunks : Array[Hunk] = []
     while i < input.length() && input[i].value.has_prefix("@@ ") {
@@ -125,6 +126,13 @@ fn parse_unified(data : Bytes) -> Array[FilePatch] raise {
       }
       let (old_start, old_count) = range(fields[1].to_owned(), '-')
       let (new_start, new_count) = range(fields[2].to_owned(), '+')
+      let header = input[i].value
+      let mut section_start = 3
+      while section_start + 1 < header.length() &&
+            !(header[section_start] == '@' && header[section_start + 1] == '@') {
+        section_start += 1
+      }
+      let section = header[section_start + 2:].to_owned()
       let changes : Array[Change] = []
       let mut removed = 0
       let mut added = 0
@@ -174,12 +182,26 @@ fn parse_unified(data : Bytes) -> Array[FilePatch] raise {
       if removed != old_count || added != new_count {
         raise PatchError("incomplete hunk")
       }
-      hunks.push({ old_start, old_count, new_start, new_count, changes, })
+      hunks.push({
+        old_start,
+        old_count,
+        new_start,
+        new_count,
+        changes,
+        section,
+      })
     }
     if hunks.is_empty() {
       raise PatchError("file patch has no unified hunks")
     }
-    files.push({ old_name, new_name, hunks, })
+    files.push({
+      old_name,
+      new_name,
+      hunks,
+      old_header,
+      new_header,
+      unified: true,
+    })
   }
   if files.is_empty() {
     raise PatchError("no unified patch found")
@@ -329,14 +351,17 @@ fn parse_context(data : Bytes) -> Array[FilePatch] raise {
       continue
     }
     let old_name = header_name(input[i].value)
+    let old_header = input[i].value[4:].to_owned()
     i += 1
     if i >= input.length() || !input[i].value.has_prefix("--- ") {
       raise PatchError("missing context file header")
     }
     let new_name = header_name(input[i].value)
+    let new_header = input[i].value[4:].to_owned()
     i += 1
     let hunks : Array[Hunk] = []
     while i < input.length() && input[i].value.has_prefix("***************") {
+      let section = input[i].value[15:].to_owned()
       i += 1
       if i >= input.length() {
         raise PatchError("incomplete context hunk")
@@ -364,12 +389,26 @@ fn parse_context(data : Bytes) -> Array[FilePatch] raise {
       if removed != old_count || added != new_count {
         raise PatchError("context hunk length does not match header")
       }
-      hunks.push({ old_start, old_count, new_start, new_count, changes, })
+      hunks.push({
+        old_start,
+        old_count,
+        new_start,
+        new_count,
+        changes,
+        section,
+      })
     }
     if hunks.is_empty() {
       raise PatchError("file patch has no context hunks")
     }
-    files.push({ old_name, new_name, hunks, })
+    files.push({
+      old_name,
+      new_name,
+      hunks,
+      old_header,
+      new_header,
+      unified: false,
+    })
   }
   if files.is_empty() {
     raise PatchError("no context patch found")
@@ -391,57 +430,3 @@ fn parse_patch(data : Bytes) -> Array[FilePatch] raise {
 }
 
 ///|
-fn apply_patch_bytes(
-  data : Bytes,
-  hunks : Array[Hunk],
-  reverse : Bool,
-) -> Bytes raise HunkMismatch {
-  let input = lines(data)
-  let output = StringBuilder()
-  let mut cursor = 0
-  for index, hunk in hunks {
-    let start = if reverse { hunk.new_start } else { hunk.old_start }
-    let count = if reverse { hunk.new_count } else { hunk.old_count }
-    let position = if count == 0 { start } else { start - 1 }
-    if position < cursor || position > input.length() {
-      raise HunkMismatch(index + 1, start)
-    }
-    for line in input[cursor:position] {
-      output.write_string(line.value)
-      if line.terminated {
-        output.write_char('\n')
-      }
-    }
-    cursor = position
-    for change in hunk.changes {
-      let kind = if reverse {
-        match change.kind {
-          '+' => '-'
-          '-' => '+'
-          _ => ' '
-        }
-      } else {
-        change.kind
-      }
-      if kind != '+' {
-        if cursor >= input.length() || input[cursor] != change.line {
-          raise HunkMismatch(index + 1, start)
-        }
-        cursor += 1
-      }
-      if kind != '-' {
-        output.write_string(change.line.value)
-        if change.line.terminated {
-          output.write_char('\n')
-        }
-      }
-    }
-  }
-  for line in input[cursor:] {
-    output.write_string(line.value)
-    if line.terminated {
-      output.write_char('\n')
-    }
-  }
-  @bytere.bytes(output.to_string())
-}

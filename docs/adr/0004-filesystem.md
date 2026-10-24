@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-20
+Updated: 2026-10-24
 
 The pinned GNU coreutils 9.11 Linux run also establishes status 1 when an
 interactive ln/mv overwrite is declined, including EOF. Preserve both paths,
@@ -10,6 +10,28 @@ continue other operands, and aggregate the failure. A no-clobber/update skip
 remains a distinct successful no-op. Earlier golden status 0 was wrong;
 real Native/Wasm and published regressions retain the corrected upstream status.
 Revision: Integrate the async 0.22.5 Native Windows link-rename fix in the accepted stage 0 subset, retain a separate Wasm host gate, and preserve the existing identity and metadata boundaries.
+
+## D-stage patch candidate
+
+The unpublished patch 0.2.0 candidate supports offset/fuzz selection, mixed
+hunk results and new unified/context rejects. A failed hunk retains its input
+region and allows later hunks; stdout and dry-run remain useful without unsafe
+existing-file replacement. Batch mode selects a detected reverse explicitly.
+Default interactive prompting remains outside this profile.
+
+New reject files use exclusive creation and ordinary permission/umask rules.
+Multiple files may share a reject handle owned by this invocation. An already
+existing reject is refused before target/reject mutation because public file
+identity and safe handle truncation are missing. Reopen that operation only
+after released APIs and fixed GNU alias, collision, mode and partial-failure
+regressions exist. The current rejection is `d-patch-existing-reject-boundary`;
+the existing target, named-output and unsafe-header rejections remain.
+These limits do not postpone offset, fuzz, partial success or new rejects.
+
+Diff's directory profile reports FIFO/socket type differences without reading
+them, and top-level readable operands retain stream comparison. Comparing
+distinct character/block device numbers inside directories requires public
+device metadata; path spelling or content must not impersonate that metadata.
 
 ## Stage 0: Windows link rename
 
@@ -117,8 +139,9 @@ pass. This observation capability does not expand product command APIs.
 
 ## Alternatives and compatibility cost
 
-The new patch profile applies exact unified/context hunks to stdout or in a
-dry run, and supports unambiguous creation/deletion. Existing-file replacement
+The original patch profile applied exact unified/context hunks to stdout or in a
+dry run, and supported unambiguous creation/deletion. The D candidate above
+extends matching and reject handling. Existing-file replacement
 and named `-o` output refuse because GNU patch preserves source mode. Unlike cp,
 patch may replace the target inode: rename itself is available. Reject direct
 truncate/write because it mutates hard-link aliases, and reject default-mode

@@ -13,6 +13,60 @@ fn scenario_timestamp_text(value : (Int64, Int32)) -> String {
 }
 
 ///|
+async fn diff_directory_devices_boundary_scenario(
+  root : String,
+  wasm : Bool,
+  work : String,
+) -> Unit {
+  let left = work + "/left"
+  let right = work + "/right"
+  @fs.mkdir(left)
+  @fs.mkdir(right)
+  @fs.symlink(left + "/device", target="/dev/null")
+  defer @async.protect_from_cancel(() => @fs.remove(left + "/device"))
+  @fs.symlink(right + "/device", target="/dev/zero")
+  defer @async.protect_from_cancel(() => @fs.remove(right + "/device"))
+  assert_eq(@fs.kind(left + "/device"), CharDevice)
+  assert_eq(@fs.kind(right + "/device"), CharDevice)
+  let result = scenario_run(
+    work,
+    root,
+    wasm,
+    "diff",
+    ["-r", left, right],
+    stdin=b"",
+  )
+  assert_eq(result.status, 2)
+  assert_eq(result.stdout, b"")
+  assert_eq(
+    result.stderr,
+    b"diff: unsupported capability: directory device-number comparison\n",
+  )
+  let left_kind = @fs.kind(left + "/device", follow_symlink=false)
+  let right_kind = @fs.kind(right + "/device", follow_symlink=false)
+  let left_target = @fs.realpath(left + "/device")
+  let right_target = @fs.realpath(right + "/device")
+  let observed : Json = {
+    "left": {
+      "kind": Json(if left_kind == SymLink { "symlink" } else { "other" }),
+      "resolved_target": Json(left_target),
+    },
+    "right": {
+      "kind": Json(if right_kind == SymLink { "symlink" } else { "other" }),
+      "resolved_target": Json(right_target),
+    },
+  }
+  @fs.write_file(
+    work + "/device-observations.json",
+    observed.stringify(indent=2) + "\n",
+  )
+  assert_eq(left_kind, SymLink)
+  assert_eq(right_kind, SymLink)
+  assert_eq(left_target, "/dev/null")
+  assert_eq(right_target, "/dev/zero")
+}
+
+///|
 async fn rejected_touch_timestamp_scenario(
   root : String,
   wasm : Bool,

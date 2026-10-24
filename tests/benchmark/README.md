@@ -1,5 +1,29 @@
 # Delivery benchmark workloads
 
+The user's 2026-10-24 decision changes performance acceptance to direct release
+Wasm. Use the schema-2 driver with `--wasm-root` and an explicit `--moonrun`:
+
+```text
+MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/benchmark/run.mbtx -- run \
+  --wasm-root /absolute/path/to/release/artifacts \
+  --moonrun /absolute/path/to/moonrun \
+  --oracle-bin /private/tmp/cmd-native-oracle-2026-10-23/prefix/bin \
+  --manifest /absolute/path/to/current-workloads.json \
+  --profile tests/benchmark/profile-full.json \
+  --report-dir test-reports/performance/wasm-unique
+```
+
+The artifact directory follows testkit's `cli/<command>/<command>.wasm` layout.
+Each candidate starts moonrun directly; command arguments follow its `--`.
+Use a workload manifest pointing at current cases to assess new workspace
+features. Rows record `direct-wasm`, no publication coordinate, actual argv and
+the artifact root. Timing includes moonrun startup, I/O and exit, without MoonX
+or subtraction of empty-runtime time. Correctness, 5 warmups, 105 pairs, noise
+rules and the three 1.5x conditions below remain. The older `--moonx` mode and
+retained reports describe the previous published baseline; MoonX timing is no
+longer a cmd performance gate. Exact published-consumer semantics remain part
+of release acceptance.
+
 The schema-2 `functional.json` adds a first real functional/startup path for all
 79 command names. It loads frozen published Cases by ID; generated fixtures
 cover mktemp/realpath/tree/yes and controlled child work. Env/sh/make/xargs use
