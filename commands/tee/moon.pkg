@@ -3,6 +3,8 @@ import {
   "cli/core/fsops",
   "moonbitlang/async",
   "moonbitlang/async/fs",
+  "moonbitlang/async/io",
+  "moonbitlang/async/os_error",
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",
   "moonbitlang/x/sys",
@@ -11,3 +13,7 @@ import {
 supported_targets = "native+wasm"
 
 pkgtype(kind: "executable")
+
+import {
+  "moonbitlang/async/pipe",
+} for "wbtest"

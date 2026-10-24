@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "cksum command for MoonX."
 
 import {
-  "cli/core@0.7.0",
+  "cli/core@0.8.0",
   "moonbitlang/async@0.22.5",
   "moonbitlang/x@0.5.5",
 }

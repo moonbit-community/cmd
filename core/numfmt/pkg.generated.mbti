@@ -8,7 +8,11 @@ import {
 // Values
 pub fn compare(Value, Value) -> Int
 
+pub fn decode(BytesView, Profile, big_endian? : Bool) -> Value
+
 pub fn format_magnitude(Value, Char, Int?, Bool, Profile, normalized_hex? : Bool) -> String
+
+pub fn format_roundtrip(Value, Profile) -> String
 
 pub fn parse_prefix(String, Profile) -> (Value, Int, Bool)
 
@@ -20,6 +24,9 @@ pub fn zero(negative? : Bool) -> Value
 
 // Types and methods
 pub(all) enum Profile {
+  Binary16
+  BFloat16
+  Binary32
   Binary64
   Extended80
   Binary128

@@ -42,7 +42,7 @@ pub async fn execute_contract(
       detail: invalid.join("; "),
     }
   }
-  let work = report_dir + "/" + fixture.id
+  let work = report_dir + "/" + case_directory_name(fixture.id)
   if @fs.exists(work) {
     fail("evidence already exists: \{work}; choose a fresh --report-dir")
   }
@@ -172,7 +172,10 @@ pub async fn execute_contract(
         // Preserve the completed candidate result in a sibling directory so
         // cleanup failure cannot erase the only stream/status evidence.
         if result is Some(observed) {
-          let fallback = report_dir + "/" + fixture.id + ".cleanup-evidence"
+          let fallback = report_dir +
+            "/" +
+            case_directory_name(fixture.id) +
+            ".cleanup-evidence"
           try {
             @fs.mkdir(fallback)
             @fs.write_file(fallback + "/stdout.bin", observed.stdout)

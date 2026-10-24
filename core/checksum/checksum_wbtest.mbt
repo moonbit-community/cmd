@@ -15,12 +15,27 @@ test "streaming SHA1 matches standard vectors across padding boundaries" {
         hasher.update(bytes[offset:end])
         offset = end
       }
-      assert_eq(hasher.finalize(), expected)
+      assert_eq(hex_digest(hasher.finalize_bytes()), expected)
     }
   }
   let state = Sha1State::new()
   state.update(b"abc"[:])
-  assert_eq(state.finalize(), "a9993e364706816aba3e25717850c26c9cd0d89d")
+  assert_eq(
+    hex_digest(state.finalize_bytes()),
+    "a9993e364706816aba3e25717850c26c9cd0d89d",
+  )
+}
+
+///|
+fn parse_record(algorithm : Algorithm, line : String) -> (String, String)? {
+  let format : ManifestFormat = {
+    reversed: 0,
+    label: algorithm.label(),
+    sha2_tag: None,
+  }
+  manifest_record(line, Some(Fixed(algorithm)), false, format).map(record => {
+    (hex_digest(record.expected), record.name)
+  })
 }
 
 ///|

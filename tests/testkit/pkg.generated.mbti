@@ -21,11 +21,21 @@ pub fn bytes_equal(Bytes, Bytes) -> Bool
 
 pub fn canonical_json(Json) -> String
 
+pub fn case_directory_name(String) -> String
+
 pub fn check_contract(Case, RunResult, String) -> Array[String]
 
 pub async fn check_expected_files(Case, String) -> Array[String]
 
+pub async fn check_mktemp_options(String, async (Array[String], String, Map[String, String]) -> RunResult, check_mode~ : Bool) -> Unit
+
+pub async fn check_mktemp_oracle(String, String) -> Unit
+
 pub fn check_oracle_identity(OracleProfile, String, String) -> Array[String]
+
+pub async fn check_tee_modes(String, Array[String], String, default_only? : Bool) -> Unit
+
+pub async fn check_tee_oracle(String, String) -> Unit
 
 pub async fn collect_run_metadata(String, manifest_path? : String, case_corpus_path? : String, native_root? : String, wasm_root? : String, registry_path? : String, oracle_profile_id? : String, oracle_image_digest? : String, oracle_versions_path? : String, policy_path? : String, moonx_coordinates? : ArrayView[String], started_at_ms? : Int64, ended_at_ms? : Int64) -> RunMetadata
 
@@ -81,6 +91,10 @@ pub fn normalize_lf(String) -> String
 
 pub fn normalize_text(Bytes, String, ArrayView[Normalization], String) -> Bytes
 
+pub fn option_child_path() -> String
+
+pub fn option_child_required(Case) -> Bool
+
 pub fn oracle_profile_binding_errors(OracleProfile, OracleProfile, required_profile_ids? : Array[String]) -> Array[String]
 
 pub fn oracle_profile_errors(OracleProfile) -> Array[String]
@@ -104,6 +118,8 @@ pub async fn run_http_fixture(@http.Server) -> Unit
 pub async fn run_http_fixture_process() -> Unit
 
 pub fn run_metadata_errors(RunMetadata) -> Array[String]
+
+pub async fn run_option_child(ArrayView[String]) -> Int
 
 pub async fn run_oracle_with_deadline(String, Array[String], Int, evidence_dir~ : String, stdin? : Bytes, extra_env? : Map[String, String], inherit_env? : Bool) -> TimedRun
 

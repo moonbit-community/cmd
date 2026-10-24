@@ -33,7 +33,8 @@ pub fn command_catalog() -> Array[CommandContract] {
       "decode", "ignore-garbage", "wrap",
     ]),
     contract("cksum", Core, FileOrStdin, LineStream, [FileRead], [
-      "help", "version",
+      "algorithm", "length", "base64", "raw", "untagged", "tag", "binary", "text",
+      "zero", "check", "ignore-missing", "quiet", "status", "strict", "warn",
     ]),
     contract("base64", Core, FileOrStdin, ByteStream, [FileRead], [
       "decode", "ignore-garbage", "wrap",
@@ -83,10 +84,10 @@ pub fn command_catalog() -> Array[CommandContract] {
       "reverse", "sort", "stable", "unique", "version-sort", "zero-terminated",
     ]),
     contract("tail", Core, FileOrStdin, ByteStream, [FileRead], [
-      "bytes", "follow", "lines", "quiet", "sleep-interval", "verbose",
+      "bytes", "follow", "lines", "quiet", "sleep-interval", "verbose", "zero-terminated",
     ]),
     contract("tac", Core, FileOrStdin, ByteStream, [FileRead], [
-      "before", "separator",
+      "before", "regex", "separator",
     ]),
     contract("tr", Core, OptionalStdin, ByteStream, [], [
       "complement", "delete", "squeeze-repeats", "truncate-set1",
@@ -103,9 +104,18 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("wc", Core, FileOrStdin, LineStream, [FileRead], [
       "bytes", "chars", "files0-from", "lines", "max-line-length", "total", "words",
     ]),
-    contract("xxd", Core, FileOrStdin, ByteStream, [FileRead], [
-      "cols", "include", "len", "plain", "revert", "seek",
-    ]),
+    contract(
+      "xxd",
+      Core,
+      FileOrStdin,
+      ByteStream,
+      [FileRead, FileWrite],
+      [
+        "autoskip", "bits", "cols", "ebcdic", "little", "group", "include", "len",
+        "name", "offset", "plain", "reverse", "revert", "seek", "upper",
+      ],
+      exit_codes=[0, 1, 2, 3, 4, 5, 255],
+    ),
     contract("basename", Core, NoInput, LineStream, [], [
       "multiple", "suffix", "zero",
     ]),
@@ -115,7 +125,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       FileOrStdin,
       LineStream,
       [FileRead],
-      ["bytes", "ignore-initial", "silent", "verbose"],
+      ["bytes", "ignore-initial", "silent", "verbose", "print-bytes"],
       exit_codes=[0, 1, 2],
     ),
     contract("dirname", Core, NoInput, LineStream, [], ["zero"]),
@@ -149,7 +159,9 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("ls", Core, NoInput, LineStream, [FileRead], [
       "all", "almost-all", "classify", "directory", "recursive", "sort-time", "access-time",
       "change-time", "reverse", "sort-size", "dereference-command-line", "dereference",
-      "no-dereference", "time",
+      "no-dereference", "time", "columns", "across", "commas", "one", "width", "tabsize",
+      "quoting-style", "escape", "literal", "quote", "hide-control-chars", "show-control-chars",
+      "color",
     ]),
     contract("printenv", Core, NoInput, ByteStream, [], ["null"]),
     contract("pwd", Core, NoInput, LineStream, [FileRead], [
@@ -159,8 +171,8 @@ pub fn command_catalog() -> Array[CommandContract] {
       "equal-width", "format", "separator", "version",
     ]),
     contract("sha256sum", Core, FileOrStdin, LineStream, [FileRead], [
-      "binary", "check", "ignore-missing", "quiet", "status", "strict", "text", "warn",
-      "zero",
+      "binary", "check", "ignore-missing", "quiet", "status", "strict", "tag", "text",
+      "warn", "zero",
     ]),
     contract("test", Core, NoInput, LineStream, [FileRead], [
       "expression-language", "file-kinds", "access-checks", "size", "timestamps",
@@ -177,26 +189,34 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("mkdir", Extended, NoInput, LineStream, [FileWrite], [
       "mode", "parents", "verbose",
     ]),
-    contract("mktemp", Extended, NoInput, LineStream, [FileWrite], ["directory"]),
+    contract("mktemp", Extended, NoInput, LineStream, [FileWrite], [
+      "directory", "quiet", "suffix", "tmpdir",
+    ]),
     // Timestamps describe entries, including dangling links, without dereferencing.
     // Windows Wasm link moves/backups reject until the host rename fix is verified.
     contract("mv", Extended, NoInput, LineStream, [FileRead, FileWrite], [
       "force", "no-clobber", "no-target-directory", "verbose", "interactive", "update",
       "update-mode", "backup", "backup-control", "suffix",
     ]),
-    contract("rm", Extended, NoInput, LineStream, [FileWrite], [
-      "dir", "force", "preserve-root", "no-preserve-root", "recursive", "verbose",
+    contract("rm", Extended, OptionalStdin, LineStream, [FileWrite], [
+      "dir", "force", "interactive", "preserve-root", "no-preserve-root", "recursive",
+      "verbose",
     ]),
     contract("rmdir", Extended, NoInput, LineStream, [FileWrite], [
       "ignore-fail-on-non-empty", "parents", "verbose",
     ]),
     contract("realpath", Core, NoInput, LineStream, [FileRead], [
-      "canonicalize-existing", "zero",
+      "canonicalize", "canonicalize-existing", "canonicalize-missing", "quiet", "relative-base",
+      "relative-to", "strip", "no-symlinks", "zero",
     ]),
     contract("rev", Core, FileOrStdin, ByteStream, [FileRead], []),
-    contract("tee", Extended, OptionalStdin, ByteStream, [FileWrite], ["append"]),
+    contract("tee", Extended, OptionalStdin, ByteStream, [FileWrite], [
+      "append", "output-error",
+    ]),
     contract("tree", Core, NoInput, LineStream, [FileRead], [
-      "all", "dirs-only", "full-path", "level", "noreport",
+      "all", "dirs-only", "full-path", "level", "noreport", "json", "html", "title",
+      "pattern", "ignore", "matchdirs", "ignore-case", "prune", "filelimit", "size",
+      "human-readable", "si", "du", "color", "no-color",
     ]),
     contract("touch", Extended, NoInput, LineStream, [FileWrite], [
       "access-time", "date", "modification-time", "no-create", "reference", "stamp",
@@ -248,7 +268,9 @@ pub fn command_catalog() -> Array[CommandContract] {
       NoInput,
       LineStream,
       [ProcessSpawn],
-      ["chdir", "ignore-environment", "null", "unset", "help", "version"],
+      [
+        "chdir", "ignore-environment", "null", "split-string", "unset", "help", "version",
+      ],
       exit_codes=[0, 125, 126, 127],
     ),
     contract(
@@ -328,7 +350,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       [
         "address-radix", "skip-bytes", "read-bytes", "format", "endian", "width",
         "output-duplicates", "named", "octal-byte", "character", "decimal", "int",
-        "long", "octal", "signed", "hex", "version",
+        "long", "octal", "signed", "hex", "strings", "traditional", "version",
       ],
       exit_codes=[0, 1],
     ),
@@ -340,21 +362,22 @@ pub fn command_catalog() -> Array[CommandContract] {
       [FileRead],
       [
         "one-byte-octal", "one-byte-char", "canonical", "two-bytes-decimal", "two-bytes-octal",
-        "two-bytes-hex", "one-byte-hex", "length", "skip", "no-squeezing", "version",
+        "two-bytes-hex", "one-byte-hex", "length", "skip", "no-squeezing", "format",
+        "format-file", "color", "version",
       ],
       exit_codes=[0, 1],
     ),
     contract("md5sum", Core, FileOrStdin, LineStream, [FileRead], [
-      "binary", "check", "ignore-missing", "quiet", "status", "strict", "text", "warn",
-      "zero",
+      "binary", "check", "ignore-missing", "quiet", "status", "strict", "tag", "text",
+      "warn", "zero",
     ]),
     contract("sha1sum", Core, FileOrStdin, LineStream, [FileRead], [
-      "binary", "check", "ignore-missing", "quiet", "status", "strict", "text", "warn",
-      "zero",
+      "binary", "check", "ignore-missing", "quiet", "status", "strict", "tag", "text",
+      "warn", "zero",
     ]),
     contract("sha512sum", Core, FileOrStdin, LineStream, [FileRead], [
-      "binary", "check", "ignore-missing", "quiet", "status", "strict", "text", "warn",
-      "zero",
+      "binary", "check", "ignore-missing", "quiet", "status", "strict", "tag", "text",
+      "warn", "zero",
     ]),
     // The workspace sed instruction machine adds hold, branches and multiline
     // cycles; in-place replacement remains a separate filesystem boundary.
@@ -392,9 +415,10 @@ pub fn command_catalog() -> Array[CommandContract] {
       Extended,
       FileOrStdin,
       ByteStream,
-      [FileRead, FileWrite],
+      [FileRead, FileWrite, ProcessSpawn],
       [
-        "bytes", "lines", "numeric-suffixes", "suffix-length", "additional-suffix",
+        "bytes", "lines", "number", "line-bytes", "numeric-suffixes", "hex-suffixes",
+        "suffix-length", "additional-suffix", "elide-empty-files", "filter",
       ],
     ),
     contract(
@@ -403,7 +427,10 @@ pub fn command_catalog() -> Array[CommandContract] {
       FileOrStdin,
       LineStream,
       [FileRead, FileWrite],
-      ["elide-empty-files", "prefix", "quiet", "silent", "keep-files", "digits"],
+      [
+        "elide-empty-files", "prefix", "quiet", "silent", "keep-files", "digits",
+        "suffix-format", "suppress-matched",
+      ],
     ),
     contract("expr", Core, NoInput, LineStream, [], ["expression-language"]),
     contract("fmt", Core, FileOrStdin, ByteStream, [FileRead], [
@@ -424,7 +451,8 @@ pub fn command_catalog() -> Array[CommandContract] {
       "5", "6", "7", "8", "best",
     ]),
     contract("strings", Core, FileOrStdin, LineStream, [FileRead], [
-      "all", "bytes", "encoding", "octal", "print-file-name", "radix", "version",
+      "all", "bytes", "encoding", "octal", "print-file-name", "radix", "output-separator",
+      "version",
     ]),
     contract("column", Core, FileOrStdin, LineStream, [FileRead], [
       "table", "separator", "output-separator", "output-width", "fillrows", "version",
@@ -446,9 +474,12 @@ pub fn command_catalog() -> Array[CommandContract] {
       Restricted,
       OptionalStdin,
       LineStream,
-      [ProcessSpawn],
-      ["max-args", "no-run-if-empty", "null", "replace", "verbose"],
-      exit_codes=[0, 1, 123, 124, 125, 126, 127],
+      [FileRead, ProcessSpawn],
+      [
+        "max-args", "max-lines", "max-chars", "eof", "no-run-if-empty", "null", "delimiter",
+        "replace", "verbose", "show-limits", "interactive",
+      ],
+      exit_codes=[0, 1, 2, 123, 124, 125, 126, 127],
     ),
   ]
 }

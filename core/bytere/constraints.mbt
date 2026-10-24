@@ -86,7 +86,7 @@ fn constrain_program(
 ///|
 fn Pattern::allows(
   self : Pattern,
-  value : String,
+  value : StringView,
   pc : Int32,
   position : Int32,
 ) -> Bool {
@@ -96,12 +96,12 @@ fn Pattern::allows(
 ///|
 fn Pattern::previous_allows(
   self : Pattern,
-  value : String,
+  value : StringView,
   pc : Int32,
   position : Int32,
 ) -> Bool {
   self.conditions[pc].all(assertion => {
-    assertion is End || assertion.holds(value, position)
+    assertion is (End | LineEnd) || assertion.holds(value, position)
   })
 }
 

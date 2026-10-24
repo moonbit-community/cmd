@@ -107,7 +107,7 @@
         "help"
       ],
       "source_version": "workspace cli/xargs@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: xargs [-0rt] [-n N] [-L N] [-s BYTES] [-P N] [-E EOF] [-I REPLACE] [COMMAND [ARG...]]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stdout_text": "Usage: xargs [-0prt] [-d BYTE] [-n N] [-L N] [-s BYTES] [-P N] [-E EOF] [-I REPLACE] [COMMAND [ARG...]]\n  -d, --delimiter=BYTE  separate literal input items with BYTE or an escape\n  -p, --interactive     confirm each invocation through an independent console\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
     {
@@ -128,6 +128,679 @@
       "source_version": "workspace cli/xargs@0.2.2 metadata contract",
       "expected_stdout_text": "xargs 0.2.2\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o13-xargs-d-comma",
+      "command": "xargs",
+      "args": [
+        "-d",
+        ",",
+        "${PRINTF_CHILD}",
+        "<%s>\n"
+      ],
+      "stdin_hex": "612c622c2c632c",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "3c613e0a3c623e0a3c3e0a3c633e0a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-d-literal-quotes",
+      "command": "xargs",
+      "args": [
+        "-d",
+        ",",
+        "${PRINTF_CHILD}",
+        "<%s>\n"
+      ],
+      "stdin_hex": "27612062272c635c64",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "3c27612062273e0a3c635c643e0a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-d-newline",
+      "command": "xargs",
+      "args": [
+        "-d",
+        "\\n",
+        "${PRINTF_CHILD}",
+        "<%s>\n"
+      ],
+      "stdin_hex": "610a0a620a",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "3c613e0a3c3e0a3c623e0a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-d-hex",
+      "command": "xargs",
+      "args": [
+        "-d",
+        "\\x2c",
+        "${PRINTF_CHILD}",
+        "<%s>\n"
+      ],
+      "stdin_hex": "612c62",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "3c613e0a3c623e0a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-d-octal",
+      "command": "xargs",
+      "args": [
+        "-d",
+        "\\054",
+        "${PRINTF_CHILD}",
+        "<%s>\n"
+      ],
+      "stdin_hex": "612c62",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "3c613e0a3c623e0a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-d-named-trailing",
+      "command": "xargs",
+      "args": [
+        "-d",
+        "\\nX",
+        "${PRINTF_CHILD}",
+        "<%s>\n"
+      ],
+      "stdin_hex": "610a62",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "3c613e0a3c623e0a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-d-nul",
+      "command": "xargs",
+      "args": [
+        "-d",
+        "\\0",
+        "${PRINTF_CHILD}",
+        "<%s>\n"
+      ],
+      "stdin_hex": "61006200",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "3c613e0a3c623e0a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-d-invalid-empty",
+      "command": "xargs",
+      "args": [
+        "-d",
+        "",
+        "${PRINTF_CHILD}",
+        "<%s>\n"
+      ],
+      "stdin_hex": "612c62",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "xargs: Invalid input delimiter specification : the delimiter must be either a single character or an escape sequence starting with \\.\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-d-invalid-multi",
+      "command": "xargs",
+      "args": [
+        "-d",
+        "ab",
+        "${PRINTF_CHILD}",
+        "<%s>\n"
+      ],
+      "stdin_hex": "612c62",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "xargs: Invalid input delimiter specification ab: the delimiter must be either a single character or an escape sequence starting with \\.\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-d-invalid-overflow",
+      "command": "xargs",
+      "args": [
+        "-d",
+        "\\400",
+        "${PRINTF_CHILD}",
+        "<%s>\n"
+      ],
+      "stdin_hex": "612c62",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "xargs: Invalid escape sequence \\400 in input delimiter specification; character values must not exceed 377.\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-d-invalid-hex-trailing",
+      "command": "xargs",
+      "args": [
+        "-d",
+        "\\x2cZ",
+        "${PRINTF_CHILD}",
+        "<%s>\n"
+      ],
+      "stdin_hex": "612c62",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "xargs: Invalid escape sequence \\x2cZ in input delimiter specification; trailing characters Z not recognised.\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-zero-then-delimiter",
+      "command": "xargs",
+      "args": [
+        "-0",
+        "-d",
+        ",",
+        "${PRINTF_CHILD}",
+        "<%s>\n"
+      ],
+      "stdin_hex": "612c62",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "3c613e0a3c623e0a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter",
+        "null"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-delimiter-then-zero",
+      "command": "xargs",
+      "args": [
+        "-d",
+        ",",
+        "-0",
+        "${PRINTF_CHILD}",
+        "<%s>\n"
+      ],
+      "stdin_hex": "612c62",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "3c612c623e0a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter",
+        "null"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-eof-delimiter",
+      "command": "xargs",
+      "args": [
+        "-d",
+        ",",
+        "-E",
+        "STOP",
+        "${PRINTF_CHILD}",
+        "<%s>\n"
+      ],
+      "stdin_hex": "612c53544f502c62",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "3c613e0a3c53544f503e0a3c623e0a",
+      "expected_stderr_text": "xargs: warning: the -E option has no effect if -0 or -d is used.\n\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter",
+        "eof"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-delimiter-replace",
+      "command": "xargs",
+      "args": [
+        "-d",
+        ",",
+        "-I",
+        "{}",
+        "${PRINTF_CHILD}",
+        "<%s>\n",
+        "arg={}"
+      ],
+      "stdin_hex": "612c62",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "3c6172673d613e0a3c6172673d623e0a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter",
+        "replace"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-delimiter-n2",
+      "command": "xargs",
+      "args": [
+        "-d",
+        ",",
+        "-n2",
+        "${PRINTF_CHILD}",
+        "<%s|%s>\n"
+      ],
+      "stdin_hex": "612c622c63",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "3c617c623e0a3c637c3e0a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter",
+        "max-args"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-delimiter-l2",
+      "command": "xargs",
+      "args": [
+        "-d",
+        ",",
+        "-L2",
+        "${PRINTF_CHILD}",
+        "<%s|%s>\n"
+      ],
+      "stdin_hex": "612c622c63",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "3c617c623e0a3c637c3e0a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter",
+        "max-lines"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-d-attached",
+      "command": "xargs",
+      "args": [
+        "-d,",
+        "${PRINTF_CHILD}",
+        "<%s>\n"
+      ],
+      "stdin_text": "a,b",
+      "files": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "3c613e0a3c623e0a",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-d-long",
+      "command": "xargs",
+      "args": [
+        "--delimiter=,",
+        "${PRINTF_CHILD}",
+        "<%s>\n"
+      ],
+      "stdin_text": "a,b",
+      "files": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "3c613e0a3c623e0a",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-d-child-literal",
+      "command": "xargs",
+      "args": [
+        "-d,",
+        "${PRINTF_CHILD}",
+        "<%s>\n",
+        "-d"
+      ],
+      "stdin_text": "a,b",
+      "files": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "3c2d643e0a3c613e0a3c623e0a",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-d-initial-size",
+      "command": "xargs",
+      "args": [
+        "-d,",
+        "-s1",
+        "${PRINTF_CHILD}",
+        "<%s>\n"
+      ],
+      "stdin_text": "a",
+      "files": [],
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "xargs: cannot fit single argument within argument list size limit\n",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter",
+        "max-chars"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-d-valid-utf8",
+      "command": "xargs",
+      "args": [
+        "-d",
+        "\\xFF",
+        "${PRINTF_CHILD}",
+        "<%s>\n"
+      ],
+      "stdin_text": "é",
+      "files": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "3cc3a93e0a",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-d-nul-prefix",
+      "command": "xargs",
+      "args": [
+        "-d,",
+        "${PRINTF_CHILD}",
+        "<%s>\n"
+      ],
+      "stdin_hex": "6100ff2c62",
+      "files": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "3c613e0a3c623e0a",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "delimiter"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-xargs-d-byte-ff",
+      "command": "xargs",
+      "args": [
+        "-d",
+        "\\xFF",
+        "${PRINTF_CHILD}",
+        "<%s>\n"
+      ],
+      "stdin_hex": "61ff62",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_rejection": "non-UTF-8 argument transport",
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "xargs: unsupported capability: non-UTF-8 argument transport\n",
+      "comparison": "boundary",
+      "oracle": false,
+      "normalizations": [],
+      "coverage": [
+        "delimiter"
+      ]
+    },
+    {
+      "id": "o13-xargs-p-no-tty",
+      "command": "xargs",
+      "args": [
+        "-p",
+        "${PRINTF_CHILD}",
+        "unexpected-child\n"
+      ],
+      "stdin_hex": "617267756d656e74",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_rejection": "independent confirmation channel unavailable",
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "xargs: unsupported capability: independent confirmation channel unavailable\n",
+      "source_version": "Workspace independent-channel rejection contract with a controlled visible child-launch marker",
+      "comparison": "boundary",
+      "oracle": false,
+      "normalizations": [],
+      "coverage": [
+        "interactive"
+      ]
+    },
+    {
+      "id": "o13-xargs-p-r-empty",
+      "command": "xargs",
+      "args": [
+        "-p",
+        "-r",
+        "${PRINTF_CHILD}",
+        "unexpected-child\n"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_rejection": "independent confirmation channel unavailable",
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "xargs: unsupported capability: independent confirmation channel unavailable\n",
+      "source_version": "Workspace independent-channel rejection contract with a controlled visible child-launch marker",
+      "comparison": "boundary",
+      "oracle": false,
+      "normalizations": [],
+      "coverage": [
+        "interactive",
+        "no-run-if-empty"
+      ]
     }
   ]
 }

@@ -2,6 +2,8 @@
 package "cli/core/quoting"
 
 // Values
+pub fn locale_quote(BytesView) -> String
+
 pub fn shell_escape(BytesView, force? : Bool, colon? : Bool) -> String
 
 // Errors

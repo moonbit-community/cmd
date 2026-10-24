@@ -142,7 +142,7 @@
         "help"
       ],
       "source_version": "workspace cli/split@0.1.2 metadata contract",
-      "expected_stdout_text": "Usage: split [OPTION]... [FILE [PREFIX]]\nSplit FILE (or stdin) into pieces named PREFIXaa, PREFIXab, ...\nThe default PREFIX is x; the default piece size is 1000 lines.\n\n  -l, --lines=NUMBER        Put NUMBER lines in each output.\n  -b, --bytes=SIZE          Put SIZE bytes in each output (K, M, G, kB, MB, GB).\n  -a, --suffix-length=N     Use fixed-width suffixes of N characters.\n  -d, --numeric-suffixes    Use numeric suffixes starting at zero.\n      --additional-suffix=SUFFIX  Append SUFFIX after generated suffixes.\n      --help               display this help and exit\n      --version            display version and exit\n\nExisting output paths are refused. Chunk distribution, filters, and\nline-byte mode are unsupported.\n",
+      "expected_stdout_text": "Usage: split [OPTION]... [FILE [PREFIX]]\nSplit FILE (or stdin) into byte-preserving pieces; default PREFIX is x.\n  -l, --lines=NUMBER        put NUMBER records in each piece (default 1000)\n  -b, --bytes=SIZE          put SIZE bytes in each piece\n  -C, --line-bytes=SIZE     put at most SIZE bytes of records in each piece\n  -n, --number=CHUNKS       N, K/N, l/N, l/K/N, r/N or r/K/N\n  -a, --suffix-length=N     fixed suffix width; zero selects automatic width\n  -d, --numeric-suffixes[=FROM]  numeric suffixes\n  -x, --hex-suffixes[=FROM]      hexadecimal suffixes\n      --additional-suffix=SUFFIX  append SUFFIX to generated names\n  -e, --elide-empty-files   omit empty outputs\n      --filter=COMMAND     run pure shell source per piece with FILE set\n      --help               display this help and exit\n      --version            display version and exit\nExisting named outputs are refused; filters own their explicit file writes.\n",
       "expected_stderr_text": ""
     },
     {
@@ -163,6 +163,2432 @@
       "source_version": "workspace cli/split@0.1.2 metadata contract",
       "expected_stdout_text": "split 0.1.2\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o5-bytes-3",
+      "command": "split",
+      "args": [
+        "-n",
+        "3",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "30313233343536373839",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "paa",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "30313233"
+        },
+        {
+          "path": "pab",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "343536"
+        },
+        {
+          "path": "pac",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "373839"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "number"
+      ]
+    },
+    {
+      "id": "o5-bytes-selected-2-of-3",
+      "command": "split",
+      "args": [
+        "-n",
+        "2/3",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "30313233343536373839",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "456",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "number"
+      ]
+    },
+    {
+      "id": "o5-lines-3",
+      "command": "split",
+      "args": [
+        "-n",
+        "l/3",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "410a42424242420a430a44",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "paa",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "410a42424242420a"
+        },
+        {
+          "path": "pab",
+          "exists": true,
+          "kind": "file",
+          "content_hex": ""
+        },
+        {
+          "path": "pac",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "430a44"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "number"
+      ]
+    },
+    {
+      "id": "o5-lines-selected-2-of-3",
+      "command": "split",
+      "args": [
+        "-n",
+        "l/2/3",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "410a42424242420a430a44",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "number"
+      ]
+    },
+    {
+      "id": "o5-round-3",
+      "command": "split",
+      "args": [
+        "-n",
+        "r/3",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "610a620a630a640a65",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "paa",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "610a640a"
+        },
+        {
+          "path": "pab",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "620a65"
+        },
+        {
+          "path": "pac",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "630a"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "number"
+      ]
+    },
+    {
+      "id": "o5-round-selected-2-of-3",
+      "command": "split",
+      "args": [
+        "-n",
+        "r/2/3",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "610a620a630a640a65",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "b\ne",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "number"
+      ]
+    },
+    {
+      "id": "o5-bytes-4-short",
+      "command": "split",
+      "args": [
+        "-n",
+        "4",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "6162",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "paa",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "61"
+        },
+        {
+          "path": "pab",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "62"
+        },
+        {
+          "path": "pac",
+          "exists": true,
+          "kind": "file",
+          "content_hex": ""
+        },
+        {
+          "path": "pad",
+          "exists": true,
+          "kind": "file",
+          "content_hex": ""
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "number"
+      ]
+    },
+    {
+      "id": "o5-lines-hole",
+      "command": "split",
+      "args": [
+        "-n",
+        "l/3",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "3132333435363738390a780a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "paa",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "3132333435363738390a"
+        },
+        {
+          "path": "pab",
+          "exists": true,
+          "kind": "file",
+          "content_hex": ""
+        },
+        {
+          "path": "pac",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "number"
+      ]
+    },
+    {
+      "id": "o5-lines-hole-elide",
+      "command": "split",
+      "args": [
+        "-en",
+        "l/3",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "3132333435363738390a780a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "paa",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "3132333435363738390a"
+        },
+        {
+          "path": "pab",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "elide-empty-files",
+        "number"
+      ]
+    },
+    {
+      "id": "o5-empty-bytes",
+      "command": "split",
+      "args": [
+        "-n",
+        "3",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "paa",
+          "exists": true,
+          "kind": "file",
+          "content_hex": ""
+        },
+        {
+          "path": "pab",
+          "exists": true,
+          "kind": "file",
+          "content_hex": ""
+        },
+        {
+          "path": "pac",
+          "exists": true,
+          "kind": "file",
+          "content_hex": ""
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "number"
+      ]
+    },
+    {
+      "id": "o5-empty-lines",
+      "command": "split",
+      "args": [
+        "-n",
+        "l/3",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "paa",
+          "exists": true,
+          "kind": "file",
+          "content_hex": ""
+        },
+        {
+          "path": "pab",
+          "exists": true,
+          "kind": "file",
+          "content_hex": ""
+        },
+        {
+          "path": "pac",
+          "exists": true,
+          "kind": "file",
+          "content_hex": ""
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "number"
+      ]
+    },
+    {
+      "id": "o5-empty-round",
+      "command": "split",
+      "args": [
+        "-n",
+        "r/3",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "paa",
+          "exists": true,
+          "kind": "file",
+          "content_hex": ""
+        },
+        {
+          "path": "pab",
+          "exists": true,
+          "kind": "file",
+          "content_hex": ""
+        },
+        {
+          "path": "pac",
+          "exists": true,
+          "kind": "file",
+          "content_hex": ""
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "number"
+      ]
+    },
+    {
+      "id": "o5-empty-bytes-elide",
+      "command": "split",
+      "args": [
+        "-en",
+        "3",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "elide-empty-files",
+        "number"
+      ]
+    },
+    {
+      "id": "o5-empty-lines-elide",
+      "command": "split",
+      "args": [
+        "-en",
+        "l/3",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "elide-empty-files",
+        "number"
+      ]
+    },
+    {
+      "id": "o5-empty-round-elide",
+      "command": "split",
+      "args": [
+        "-en",
+        "r/3",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "elide-empty-files",
+        "number"
+      ]
+    },
+    {
+      "id": "o5-lines-pipe",
+      "command": "split",
+      "args": [
+        "-n",
+        "l/3",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "410a42424242420a430a44",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "paa",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "410a42424242420a"
+        },
+        {
+          "path": "pab",
+          "exists": true,
+          "kind": "file",
+          "content_hex": ""
+        },
+        {
+          "path": "pac",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "430a44"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "number"
+      ]
+    },
+    {
+      "id": "o5-line-bytes-mixed",
+      "command": "split",
+      "args": [
+        "-C",
+        "8",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "610a626262626262620a630a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "paa",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "610a"
+        },
+        {
+          "path": "pab",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "626262626262620a"
+        },
+        {
+          "path": "pac",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "630a"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "line-bytes"
+      ]
+    },
+    {
+      "id": "o5-line-bytes-long",
+      "command": "split",
+      "args": [
+        "-C",
+        "5",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "61620a31323334353637380a7a0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "paa",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "61620a"
+        },
+        {
+          "path": "pab",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "3132333435"
+        },
+        {
+          "path": "pac",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "3637380a"
+        },
+        {
+          "path": "pad",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "7a0a"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "line-bytes"
+      ]
+    },
+    {
+      "id": "o5-line-bytes-empty",
+      "command": "split",
+      "args": [
+        "-C",
+        "5",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "line-bytes"
+      ]
+    },
+    {
+      "id": "o5-numeric-start-leading-zero",
+      "command": "split",
+      "args": [
+        "-b",
+        "1",
+        "--numeric-suffixes=0008",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "61626364",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "p08",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "61"
+        },
+        {
+          "path": "p09",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "62"
+        },
+        {
+          "path": "p10",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "63"
+        },
+        {
+          "path": "p11",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "64"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "numeric-suffixes"
+      ]
+    },
+    {
+      "id": "o5-numeric-start-exhaust",
+      "command": "split",
+      "args": [
+        "-b",
+        "1",
+        "--numeric-suffixes=98",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "61626364",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "split: output file suffixes exhausted\n",
+      "expected_files": [
+        {
+          "path": "p98",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "61"
+        },
+        {
+          "path": "p99",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "62"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "numeric-suffixes"
+      ]
+    },
+    {
+      "id": "o5-numeric-auto-growth",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "-d",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a780a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "p00",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p01",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p02",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p03",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p04",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p05",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p06",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p07",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p08",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p09",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p10",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p11",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p12",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p13",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p14",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p15",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p16",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p17",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p18",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p19",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p20",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p21",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p22",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p23",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p24",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p25",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p26",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p27",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p28",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p29",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p30",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p31",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p32",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p33",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p34",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p35",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p36",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p37",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p38",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p39",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p40",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p41",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p42",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p43",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p44",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p45",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p46",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p47",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p48",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p49",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p50",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p51",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p52",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p53",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p54",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p55",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p56",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p57",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p58",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p59",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p60",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p61",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p62",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p63",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p64",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p65",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p66",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p67",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p68",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p69",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p70",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p71",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p72",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p73",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p74",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p75",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p76",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p77",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p78",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p79",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p80",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p81",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p82",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p83",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p84",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p85",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p86",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p87",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p88",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p89",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        },
+        {
+          "path": "p9000",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "780a"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "lines",
+        "numeric-suffixes"
+      ]
+    },
+    {
+      "id": "o5-hex-start-digit",
+      "command": "split",
+      "args": [
+        "-b",
+        "1",
+        "--hex-suffixes=9",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "616263",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "p09",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "61"
+        },
+        {
+          "path": "p0a",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "62"
+        },
+        {
+          "path": "p0b",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "63"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "hex-suffixes"
+      ]
+    },
+    {
+      "id": "o5-hex-start-uppercase",
+      "command": "split",
+      "args": [
+        "-b",
+        "1",
+        "--hex-suffixes=A",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "616263",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "split: 'A': invalid start value for hexadecimal suffix\nTry 'split --help' for more information.\n",
+      "expected_files": [],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "hex-suffixes"
+      ]
+    },
+    {
+      "id": "o5-suffix-zero-length",
+      "command": "split",
+      "args": [
+        "-b",
+        "1",
+        "-a",
+        "0",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "616263",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "paa",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "61"
+        },
+        {
+          "path": "pab",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "62"
+        },
+        {
+          "path": "pac",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "63"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "suffix-length"
+      ]
+    },
+    {
+      "id": "o5-suffix-too-short-before-input",
+      "command": "split",
+      "args": [
+        "-n",
+        "27",
+        "-a",
+        "1",
+        "missing-input",
+        "p"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "split: the suffix length needs to be at least 2\n",
+      "expected_files": [],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "number",
+        "suffix-length"
+      ]
+    },
+    {
+      "id": "o5-repeat-number-conflict",
+      "command": "split",
+      "args": [
+        "-n",
+        "3",
+        "-n",
+        "3",
+        "missing-input",
+        "p"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "split: cannot split in more than one way\nTry 'split --help' for more information.\n",
+      "expected_files": [],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "number"
+      ]
+    },
+    {
+      "id": "o5-line-bytes-number-conflict",
+      "command": "split",
+      "args": [
+        "-C",
+        "2",
+        "-n",
+        "3",
+        "missing-input",
+        "p"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "split: cannot split in more than one way\nTry 'split --help' for more information.\n",
+      "expected_files": [],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "line-bytes",
+        "number"
+      ]
+    },
+    {
+      "id": "o5-selected-filter-conflict",
+      "command": "split",
+      "args": [
+        "-n",
+        "2/3",
+        "--filter=:",
+        "missing-input",
+        "p"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "split: --filter does not process a chunk extracted to standard output\nTry 'split --help' for more information.\n",
+      "expected_files": [],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "filter",
+        "number"
+      ]
+    },
+    {
+      "id": "o5-filter-eof-wait-file",
+      "command": "split",
+      "args": [
+        "-b",
+        "2",
+        "--filter=printf '%s\\n' \"$FILE\" >> calls; cat > \"$FILE\"; printf 'done:%s\\n' \"$FILE\" >> calls",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "6162636465",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "paa",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "6162"
+        },
+        {
+          "path": "pab",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "6364"
+        },
+        {
+          "path": "pac",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "65"
+        },
+        {
+          "path": "calls",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "7061610a646f6e653a7061610a7061620a646f6e653a7061620a7061630a646f6e653a7061630a"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "filter"
+      ]
+    },
+    {
+      "id": "o5-filter-empty-chunks",
+      "command": "split",
+      "args": [
+        "-n",
+        "3",
+        "--filter=printf '%s\\n' \"$FILE\" >> calls; cat > \"$FILE\"; printf 'done:%s\\n' \"$FILE\" >> calls",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "paa",
+          "exists": true,
+          "kind": "file",
+          "content_hex": ""
+        },
+        {
+          "path": "pab",
+          "exists": true,
+          "kind": "file",
+          "content_hex": ""
+        },
+        {
+          "path": "pac",
+          "exists": true,
+          "kind": "file",
+          "content_hex": ""
+        },
+        {
+          "path": "calls",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "7061610a646f6e653a7061610a7061620a646f6e653a7061620a7061630a646f6e653a7061630a"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "filter",
+        "number"
+      ]
+    },
+    {
+      "id": "o5-filter-empty-chunks-elide",
+      "command": "split",
+      "args": [
+        "-en",
+        "3",
+        "--filter=printf '%s\\n' \"$FILE\" >> calls; cat > \"$FILE\"; printf 'done:%s\\n' \"$FILE\" >> calls",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "elide-empty-files",
+        "filter",
+        "number"
+      ]
+    },
+    {
+      "id": "o5-filter-failure-7",
+      "command": "split",
+      "args": [
+        "-b",
+        "2",
+        "--filter=printf '%s\\n' \"$FILE\" >> calls; exit 7",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "6162636465",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 7,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "split: with FILE=paa, exit 7 from command: printf '%s\\n' \"$FILE\" >> calls; exit 7\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "7061610a"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "filter"
+      ]
+    },
+    {
+      "id": "o5-filter-empty-command",
+      "command": "split",
+      "args": [
+        "-b",
+        "2",
+        "--filter=",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "6162636465",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "filter"
+      ]
+    },
+    {
+      "id": "o5-filter-exit141",
+      "command": "split",
+      "args": [
+        "-b",
+        "2",
+        "--filter=exit 141",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "61626364",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 141,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "split: with FILE=paa, exit 141 from command: exit 141\n",
+      "expected_files": [],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "filter"
+      ]
+    },
+    {
+      "id": "o5-filter-existing-name-untouched",
+      "command": "split",
+      "args": [
+        "-n",
+        "3",
+        "--filter=printf '%s\\n' \"$FILE\" >> calls; :",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "616263",
+      "files": [
+        {
+          "path": "pab",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "pab",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "calls",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "7061610a7061620a7061630a"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "filter",
+        "number"
+      ]
+    },
+    {
+      "id": "o5-second-filter-failure-retains-files",
+      "command": "split",
+      "args": [
+        "-b",
+        "2",
+        "--filter=cat > \"$FILE\"; if [ \"$FILE\" = pab ]; then exit 7; fi",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "6162636465",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 7,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "split: with FILE=pab, exit 7 from command: cat > \"$FILE\"; if [ \"$FILE\" = pab ]; then exit 7; fi\n",
+      "expected_files": [
+        {
+          "path": "paa",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "6162"
+        },
+        {
+          "path": "pab",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "6364"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "filter"
+      ]
+    },
+    {
+      "id": "o5-filter-stdout-inherited",
+      "command": "split",
+      "args": [
+        "-b",
+        "2",
+        "--filter=printf '%s:' \"$FILE\"; cat",
+        "-",
+        "p"
+      ],
+      "stdin_hex": "6162636465",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "paa:abpab:cdpac:e",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "filter"
+      ]
+    },
+    {
+      "id": "o5-line-bytes-exact-unterminated-boundary",
+      "command": "split",
+      "args": [
+        "-C5",
+        "-",
+        "p"
+      ],
+      "stdin_text": "ab\nxy",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "paa",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "61620a"
+        },
+        {
+          "path": "pab",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "7879"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "line-bytes"
+      ]
+    },
+    {
+      "id": "o5-line-bytes-short-unterminated-tail",
+      "command": "split",
+      "args": [
+        "-C5",
+        "-",
+        "p"
+      ],
+      "stdin_text": "ab\nx",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "paa",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "61620a78"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "line-bytes"
+      ]
+    },
+    {
+      "id": "o5-round-filter-plain-files",
+      "command": "split",
+      "args": [
+        "-nr/3",
+        "--filter=cat > \"$FILE\"",
+        "-",
+        "p"
+      ],
+      "stdin_text": "a\nb\nc\nd\ne",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "paa",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "610a640a"
+        },
+        {
+          "path": "pab",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "620a65"
+        },
+        {
+          "path": "pac",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "630a"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "filter",
+        "number"
+      ]
+    },
+    {
+      "id": "o5-long-number-alias",
+      "command": "split",
+      "args": [
+        "--number=l/2/3",
+        "-",
+        "p"
+      ],
+      "stdin_text": "A\nBBBBB\nC\nD",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "number"
+      ]
+    },
+    {
+      "id": "o5-long-line-bytes-alias",
+      "command": "split",
+      "args": [
+        "--line-bytes=5",
+        "-",
+        "p"
+      ],
+      "stdin_text": "ab\n12345678\nz\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "paa",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "61620a"
+        },
+        {
+          "path": "pab",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "3132333435"
+        },
+        {
+          "path": "pac",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "3637380a"
+        },
+        {
+          "path": "pad",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "7a0a"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "line-bytes"
+      ]
+    },
+    {
+      "id": "o5-hex-number-elide-aliases",
+      "command": "split",
+      "args": [
+        "--hex-suffixes=9",
+        "--elide-empty-files",
+        "--number=3",
+        "-",
+        "p"
+      ],
+      "stdin_text": "ab",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "p09",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "61"
+        },
+        {
+          "path": "p0a",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "62"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "elide-empty-files",
+        "hex-suffixes",
+        "number"
+      ]
+    },
+    {
+      "id": "o5-automatic-width-additional-suffix",
+      "command": "split",
+      "args": [
+        "-a0",
+        "--additional-suffix=.part",
+        "-b1",
+        "-",
+        "p"
+      ],
+      "stdin_text": "abc",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "paa.part",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "61"
+        },
+        {
+          "path": "pab.part",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "62"
+        },
+        {
+          "path": "pac.part",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "63"
+        }
+      ],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "additional-suffix",
+        "bytes",
+        "suffix-length"
+      ]
+    },
+    {
+      "id": "o5-filter-filename-quoting",
+      "command": "split",
+      "args": [
+        "-b1",
+        "--filter=exit 7",
+        "-",
+        "p a:"
+      ],
+      "stdin_text": "a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 7,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "split: with FILE='p a:aa', exit 7 from command: exit 7\n",
+      "expected_files": [],
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "filter"
+      ]
+    },
+    {
+      "id": "o5-hex-start-letter-safe-arithmetic",
+      "command": "split",
+      "args": [
+        "-b1",
+        "--hex-suffixes=a",
+        "-",
+        "p"
+      ],
+      "stdin_text": "abc",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": false,
+      "normalizations": [],
+      "source_version": "Workspace base16 arithmetic contract; GNU 9.11 FROM=a-f has undefined alphabet indexing",
+      "expected_files": [
+        {
+          "path": "p0a",
+          "exists": true,
+          "kind": "file",
+          "content_text": "a"
+        },
+        {
+          "path": "p0b",
+          "exists": true,
+          "kind": "file",
+          "content_text": "b"
+        },
+        {
+          "path": "p0c",
+          "exists": true,
+          "kind": "file",
+          "content_text": "c"
+        }
+      ],
+      "coverage": [
+        "bytes",
+        "hex-suffixes"
+      ]
     }
   ]
 }

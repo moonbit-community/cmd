@@ -295,7 +295,7 @@
         "help"
       ],
       "source_version": "workspace cli/rm@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: rm [-f] [-r|-R] [-d] [-v] [--preserve-root|--no-preserve-root] FILE...\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stdout_text": "Usage: rm [OPTION]... FILE...\n  -f, --force             ignore missing files; never prompt\n  -i                      prompt for each removal using stdin\n  -I                      prompt once for recursion or more than three operands\n      --interactive[=WHEN] never, once or always (default with option)\n  -r, -R, --recursive     remove directory trees without following symlinks\n  -d, --dir               remove empty directories\n  -v, --verbose           print removed paths\n      --preserve-root     protect filesystem roots (default)\n      --no-preserve-root  disable root protection\n      --help              display this help and exit\n      --version           display version and exit\n",
       "expected_stderr_text": ""
     },
     {
@@ -316,6 +316,1151 @@
       "source_version": "workspace cli/rm@0.2.2 metadata contract",
       "expected_stdout_text": "rm 0.2.2\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o10-rm-always-yes-no",
+      "command": "rm",
+      "args": [
+        "-i",
+        "a",
+        "b"
+      ],
+      "stdin_text": "y\nn\n",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "b",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: remove regular file 'a'? rm: remove regular file 'b'? ",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "a",
+          "exists": false
+        },
+        {
+          "path": "b",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "interactive"
+      ]
+    },
+    {
+      "id": "o10-rm-always-eof",
+      "command": "rm",
+      "args": [
+        "-i",
+        "a",
+        "b"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "b",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: remove regular file 'a'? rm: remove regular file 'b'? ",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "a",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "b",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "interactive"
+      ]
+    },
+    {
+      "id": "o10-rm-always-no-newline-yes",
+      "command": "rm",
+      "args": [
+        "-i",
+        "a"
+      ],
+      "stdin_text": "yes",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: remove regular file 'a'? ",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "a",
+          "exists": false
+        }
+      ],
+      "coverage": [
+        "interactive"
+      ]
+    },
+    {
+      "id": "o10-rm-always-leading-space",
+      "command": "rm",
+      "args": [
+        "-i",
+        "a"
+      ],
+      "stdin_text": " yes\n",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: remove regular file 'a'? ",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "a",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "interactive"
+      ]
+    },
+    {
+      "id": "o10-rm-once-three",
+      "command": "rm",
+      "args": [
+        "-I",
+        "a",
+        "b",
+        "c"
+      ],
+      "stdin_text": "n\n",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "b",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "c",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "a",
+          "exists": false
+        },
+        {
+          "path": "b",
+          "exists": false
+        },
+        {
+          "path": "c",
+          "exists": false
+        }
+      ],
+      "coverage": [
+        "interactive"
+      ]
+    },
+    {
+      "id": "o10-rm-once-four-decline",
+      "command": "rm",
+      "args": [
+        "-I",
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "stdin_text": "n\n",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "b",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "c",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "d",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: remove 4 arguments? ",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "a",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "b",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "c",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "d",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "interactive"
+      ]
+    },
+    {
+      "id": "o10-rm-once-four-accept",
+      "command": "rm",
+      "args": [
+        "-I",
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "stdin_text": "y\n",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "b",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "c",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "d",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: remove 4 arguments? ",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "a",
+          "exists": false
+        },
+        {
+          "path": "b",
+          "exists": false
+        },
+        {
+          "path": "c",
+          "exists": false
+        },
+        {
+          "path": "d",
+          "exists": false
+        }
+      ],
+      "coverage": [
+        "interactive"
+      ]
+    },
+    {
+      "id": "o10-rm-once-recursive-decline",
+      "command": "rm",
+      "args": [
+        "-Ir",
+        "tree"
+      ],
+      "stdin_text": "n\n",
+      "files": [
+        {
+          "path": "tree",
+          "kind": "directory"
+        },
+        {
+          "path": "tree/child",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: remove 1 argument recursively? ",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "tree",
+          "kind": "directory"
+        },
+        {
+          "path": "tree/child",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "interactive",
+        "recursive"
+      ]
+    },
+    {
+      "id": "o10-rm-always-tree-decline-descent",
+      "command": "rm",
+      "args": [
+        "-ir",
+        "tree"
+      ],
+      "stdin_text": "n\n",
+      "files": [
+        {
+          "path": "tree",
+          "kind": "directory"
+        },
+        {
+          "path": "tree/child",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: descend into directory 'tree'? ",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "tree",
+          "kind": "directory"
+        },
+        {
+          "path": "tree/child",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "interactive",
+        "recursive"
+      ]
+    },
+    {
+      "id": "o10-rm-always-tree-full-accept",
+      "command": "rm",
+      "args": [
+        "-ir",
+        "tree"
+      ],
+      "stdin_text": "y\ny\ny\n",
+      "files": [
+        {
+          "path": "tree",
+          "kind": "directory"
+        },
+        {
+          "path": "tree/child",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: descend into directory 'tree'? rm: remove regular file 'tree/child'? rm: remove directory 'tree'? ",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "tree",
+          "exists": false
+        },
+        {
+          "path": "tree/child",
+          "exists": false
+        }
+      ],
+      "coverage": [
+        "interactive",
+        "recursive"
+      ]
+    },
+    {
+      "id": "o10-rm-always-tree-child-decline",
+      "command": "rm",
+      "args": [
+        "-ir",
+        "tree"
+      ],
+      "stdin_text": "y\nn\ny\n",
+      "files": [
+        {
+          "path": "tree",
+          "kind": "directory"
+        },
+        {
+          "path": "tree/child",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: descend into directory 'tree'? rm: remove regular file 'tree/child'? rm: remove directory 'tree'? rm: cannot remove 'tree': Directory not empty\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "tree",
+          "kind": "directory"
+        },
+        {
+          "path": "tree/child",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "interactive",
+        "recursive"
+      ]
+    },
+    {
+      "id": "o10-rm-always-empty-directory",
+      "command": "rm",
+      "args": [
+        "-id",
+        "empty"
+      ],
+      "stdin_text": "y\n",
+      "files": [
+        {
+          "path": "empty",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: remove directory 'empty'? ",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "empty",
+          "exists": false
+        }
+      ],
+      "coverage": [
+        "dir",
+        "interactive"
+      ]
+    },
+    {
+      "id": "o10-rm-always-directory-without-r",
+      "command": "rm",
+      "args": [
+        "-i",
+        "tree"
+      ],
+      "stdin_text": "y\n",
+      "files": [
+        {
+          "path": "tree",
+          "kind": "directory"
+        },
+        {
+          "path": "tree/child",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: cannot remove 'tree': Is a directory\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "tree",
+          "kind": "directory"
+        },
+        {
+          "path": "tree/child",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "interactive"
+      ]
+    },
+    {
+      "id": "o10-rm-force-then-i",
+      "command": "rm",
+      "args": [
+        "-fi",
+        "a",
+        "missing"
+      ],
+      "stdin_text": "n\n",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: remove regular file 'a'? rm: cannot remove 'missing': No such file or directory\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "a",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "force",
+        "interactive"
+      ]
+    },
+    {
+      "id": "o10-rm-i-then-force",
+      "command": "rm",
+      "args": [
+        "-if",
+        "a",
+        "missing"
+      ],
+      "stdin_text": "n\n",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "a",
+          "exists": false
+        }
+      ],
+      "coverage": [
+        "force",
+        "interactive"
+      ]
+    },
+    {
+      "id": "o10-rm-force-then-never",
+      "command": "rm",
+      "args": [
+        "-f",
+        "--interactive=never",
+        "missing"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [],
+      "coverage": [
+        "force",
+        "interactive"
+      ]
+    },
+    {
+      "id": "o10-rm-i-then-never",
+      "command": "rm",
+      "args": [
+        "-i",
+        "--interactive=never",
+        "missing"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: cannot remove 'missing': No such file or directory\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [],
+      "coverage": [
+        "interactive"
+      ]
+    },
+    {
+      "id": "o10-rm-force-then-once",
+      "command": "rm",
+      "args": [
+        "-fI",
+        "a",
+        "missing",
+        "b",
+        "c"
+      ],
+      "stdin_text": "y\n",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "b",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "c",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: remove 4 arguments? rm: cannot remove 'missing': No such file or directory\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "a",
+          "exists": false
+        },
+        {
+          "path": "b",
+          "exists": false
+        },
+        {
+          "path": "c",
+          "exists": false
+        }
+      ],
+      "coverage": [
+        "force",
+        "interactive"
+      ]
+    },
+    {
+      "id": "o10-rm-once-missing-decline",
+      "command": "rm",
+      "args": [
+        "-I",
+        "missing1",
+        "missing2",
+        "missing3",
+        "missing4"
+      ],
+      "stdin_text": "n\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: remove 4 arguments? ",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [],
+      "coverage": [
+        "interactive"
+      ]
+    },
+    {
+      "id": "o10-rm-empty-file-prompt",
+      "command": "rm",
+      "args": [
+        "-i",
+        "zero"
+      ],
+      "stdin_text": "Ygarbage\n",
+      "files": [
+        {
+          "path": "zero",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: remove regular empty file 'zero'? ",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "zero",
+          "exists": false
+        }
+      ],
+      "coverage": [
+        "interactive"
+      ]
+    },
+    {
+      "id": "o10-rm-dir-nonempty-prompt",
+      "command": "rm",
+      "args": [
+        "-id",
+        "tree"
+      ],
+      "stdin_text": "y\n",
+      "files": [
+        {
+          "path": "tree",
+          "kind": "directory"
+        },
+        {
+          "path": "tree/child",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: cannot remove 'tree': Is a directory\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "tree",
+          "kind": "directory"
+        },
+        {
+          "path": "tree/child",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "dir",
+        "interactive"
+      ]
+    },
+    {
+      "id": "o10-rm-long-aliases",
+      "command": "rm",
+      "args": [
+        "--interactive=on",
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "stdin_text": "N\n",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "b",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "c",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "d",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: remove 4 arguments? ",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "a",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "b",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "c",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "d",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "interactive"
+      ]
+    },
+    {
+      "id": "o10-rm-verbose-recursive",
+      "command": "rm",
+      "args": [
+        "-riv",
+        "tree"
+      ],
+      "stdin_text": "y\ny\ny\n",
+      "files": [
+        {
+          "path": "tree",
+          "kind": "directory"
+        },
+        {
+          "path": "tree/child",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "removed 'tree/child'\nremoved directory 'tree'\n",
+      "expected_stderr_text": "rm: descend into directory 'tree'? rm: remove regular file 'tree/child'? rm: remove directory 'tree'? ",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "tree",
+          "exists": false
+        },
+        {
+          "path": "tree/child",
+          "exists": false
+        }
+      ],
+      "coverage": [
+        "interactive",
+        "recursive",
+        "verbose"
+      ]
+    },
+    {
+      "id": "o10-rm-symlink-removal",
+      "command": "rm",
+      "args": [
+        "-i",
+        "link"
+      ],
+      "stdin_text": "y\n",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "existing/child"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: remove symbolic link 'link'? ",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "link",
+          "exists": false
+        }
+      ],
+      "coverage": [
+        "interactive"
+      ]
+    },
+    {
+      "id": "o10-rm-invalid-interaction",
+      "command": "rm",
+      "args": [
+        "--interactive=invalid",
+        "a"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: invalid argument 'invalid' for '--interactive'\nValid arguments are:\n  - 'never', 'no', 'none'\n  - 'once'\n  - 'always', 'yes'\nTry 'rm --help' for more information.\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "a",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "interactive"
+      ]
+    },
+    {
+      "id": "o10-rm-empty-interaction",
+      "command": "rm",
+      "args": [
+        "--interactive="
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: ambiguous argument '' for '--interactive'\nValid arguments are:\n  - 'never', 'no', 'none'\n  - 'once'\n  - 'always', 'yes'\nTry 'rm --help' for more information.\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [],
+      "coverage": [
+        "interactive"
+      ]
     }
   ]
 }

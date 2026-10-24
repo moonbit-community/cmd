@@ -21,3 +21,20 @@ test "finds byte substrings without UTF-8 decoding" {
   assert_true(contains_bytes(b"\xffinput.txt\x00", "input.txt"))
   assert_false(contains_bytes(b"\xffinput.tx\x00", "input.txt"))
 }
+
+///|
+test "case evidence separates existing case-sensitive IDs on portable filesystems" {
+  for
+    (upper, lower) in [
+      ("wide-B", "wide-b"),
+      ("wide-L", "wide-l"),
+      ("encoding-S", "encoding-s"),
+    ] {
+    assert_true(
+      case_directory_name(upper).to_lower() !=
+      case_directory_name(lower).to_lower(),
+    )
+  }
+  assert_eq(case_directory_name("ordinary-case"), "ordinary-case")
+  assert_true(case_directory_name("wide-B") != case_directory_name("wide-_42"))
+}

@@ -6,7 +6,8 @@ import {
   "moonbitlang/async/io",
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",
-  "moonbitlang/core/string",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/buffer",
   "moonbitlang/x/sys",
 }
 

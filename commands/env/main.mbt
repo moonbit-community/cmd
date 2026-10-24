@@ -18,7 +18,8 @@ async fn main {
     @stdio.stdout.write("env 0.2.2\n")
     return
   }
-  let args = @core_env.args()[1:]
+  let mut args = @core_env.args()[1:].to_owned()
+  let original_environment = @process.default_environment()
   let mut ignore_environment = false
   let mut null_output = false
   let base_cwd = @core_env.current_dir().unwrap_or(".")
@@ -32,13 +33,24 @@ async fn main {
   let mut i = 0
   while i < args.length() {
     let arg = args[i]
+    if options &&
+      command is None &&
+      arg.length() > 2 &&
+      arg.has_prefix("-") &&
+      !arg.has_prefix("--") &&
+      arg[1] is ('i' | '0') {
+      args = args[:i].to_owned() +
+        ["-" + arg[1:2].to_owned(), "-" + arg[2:].to_owned()] +
+        args[i + 1:].to_owned()
+      continue
+    }
     if command is Some(_) {
       command_args.push(arg)
     } else if options && arg == "--" {
       options = false
     } else if options && arg == "--help" {
       @stdio.stdout.write(
-        "Usage: env [-i] [-0] [-u NAME] [-C DIR] [NAME=VALUE]... [COMMAND [ARG]...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+        "Usage: env [-i] [-0] [-u NAME] [-C DIR] [-S STRING] [NAME=VALUE]... [COMMAND [ARG]...]\n  -S, --split-string=STRING  split quotes, escapes and original environment variables\n      --help      display this help and exit\n      --version   display version and exit\n",
       )
       return
     } else if options && arg == "--version" {
@@ -50,6 +62,42 @@ async fn main {
       ignore_environment = true
     } else if options && (arg == "-0" || arg == "--null") {
       null_output = true
+    } else if options &&
+      (
+        arg == "-S" ||
+        arg == "--split-string" ||
+        arg.has_prefix("--split-string=") ||
+        (arg.has_prefix("-S") && arg.length() > 2)
+      ) {
+      let separate = arg == "-S" || arg == "--split-string"
+      let (value, consumed) = if separate {
+        if i + 1 == args.length() {
+          let description = if arg == "-S" {
+            "option requires an argument -- 'S'"
+          } else {
+            "option '--split-string' requires an argument"
+          }
+          @stdio.stderr.write(
+            "env: \{description}\nTry 'env --help' for more information.\n",
+          )
+          @sys.exit(125)
+          return
+        }
+        (args[i + 1], 2)
+      } else if arg.has_prefix("--") {
+        (arg[15:].to_owned(), 1)
+      } else {
+        (arg[2:].to_owned(), 1)
+      }
+      let words = split_string(value, original_environment) catch {
+        SplitError(message) => {
+          @stdio.stderr.write("env: \{message}\n")
+          @sys.exit(125)
+          return
+        }
+      }
+      args = args[:i].to_owned() + words + args[i + consumed:].to_owned()
+      continue
     } else if options && (arg == "-C" || arg == "--chdir") {
       if i + 1 >= args.length() {
         @stdio.stderr.write("env: option requires an argument: \{arg}\n")
@@ -90,6 +138,8 @@ async fn main {
       unset.push(args[i])
     } else if options && arg.has_prefix("--unset=") {
       unset.push(arg[8:].to_owned())
+    } else if options && arg.has_prefix("-u") && arg.length() > 2 {
+      unset.push(arg[2:].to_owned())
     } else if options && split_assignment(arg) is Some((key, value)) {
       assignments.push((key, value))
       options = false
@@ -113,7 +163,7 @@ async fn main {
   let variables : Map[String, String] = if ignore_environment {
     Map([])
   } else {
-    @process.default_environment()
+    original_environment
   }
   for name in unset {
     variables.remove(name)
@@ -135,7 +185,9 @@ async fn main {
     }
     Some(program) => {
       if null_output {
-        @stdio.stderr.write("env: cannot specify --null (-0) with command\n")
+        @stdio.stderr.write(
+          "env: cannot specify --null (-0) with command\nTry 'env --help' for more information.\n",
+        )
         @sys.exit(125)
         return
       }

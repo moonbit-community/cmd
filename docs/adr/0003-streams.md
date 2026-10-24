@@ -3,7 +3,7 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-10-25
-Revision: Retain byte profiles; add stable/merge/random sorting, margin formatting and shared tab-stop candidates.
+Revision: Extend selected split, reverse, numeric-dump and pipe-output profiles while retaining explicit stream and signal limits.
 
 ## Target and decision
 
@@ -99,6 +99,62 @@ Selected GNU cases and named package regressions supply Native/Wasm evidence;
 private development observations remain distinct from committed PR/main,
 formal performance and publication acceptance.
 
+## O5-O8 and O13 stream candidates
+
+Split uses bounded reads and owned spools for total-dependent layouts. Byte,
+line-aligned and round-robin selection preserve empty partitions, elision,
+suffix state and completed files on later failure. `--filter` supplies each
+piece through a public pipe to the existing pure MoonBit Session, with `$FILE`
+in its environment. Actual signal termination remains separate from an
+ordinary exit 141; this adds no host-shell fallback or new shell language.
+GNU 9.11's undefined alphabet indexing for hexadecimal FROM=a-f is outside the
+parity domain; the workspace deliberately uses mathematical base-16 names.
+
+Csplit's suffix descriptor compiles one selected integer conversion, flags,
+width, precision and literal percent. Suppress-matched applies to the adjusted
+split boundary, including repeated and negative-offset patterns. Rev and tac
+process operands in order without invented separators. Tac compiles GNU Emacs
+C-byte regexes and selects rightmost start/longest end, with explicit progress
+for nullable separators. Resource acceptance for remaining whole-input/index
+paths is still a separate R task.
+
+Od decodes the frozen Linux amd64 float profile, including binary16, bfloat16,
+binary32/64, x87 Extended80 and binary128, through the shared numeric package.
+Its strings and traditional offset/label paths retain their own termination,
+radix and option-conflict rules. Hexdump compiles custom formats into a small
+format representation; raw `%c`/`%s` bytes, partial elements, multiple formats,
+address/final-address units, iteration and explicit `_L` colors are observed
+against util-linux 2.40. Automatic color behavior on an interactive terminal is
+unclaimed without a public terminal query. Undefined/nonterminating upstream
+format combinations are not golden contracts.
+
+Forward hexdump stdin skip now reads/discards and preserves the equivalent
+named-file display. This is a selected extension: the fixed util-linux 2.40
+pipe path reports Illegal seek. The former boundary ID is a positive
+oracle=false case, not a GNU-pipe parity claim. Xxd likewise reads/discards
+forward stdin positions and uses public size/read-at for wide named-file seeks.
+Backward/end-relative stdin requires a public seekable input; new output files
+support reverse backpatching, while existing outputs retain ADR-0004's limit.
+Cmp byte notation and strings output separators preserve C byte names and
+unterminated accepted strings without a complete output buffer.
+
+Tail `-z` selects NUL record boundaries while preserving final terminators,
+positive origins, byte mode and ordinary multi-file headers. Tee's explicit
+warn/warn-nopipe/exit/exit-nopipe and `-p` policies classify real public pipe
+errors and preserve observed later-sink and prefix effects. The test scenarios
+actually close stdout's pipe reader; their observations are status, stderr and
+file type/content, not captured stdout. Default tee cannot restore GNU SIGPIPE
+termination because the released runtime ignores it and exposes no public
+restore/raise operation. It reports the registered exact status-2 rejection
+with the created sink empty, rather than inventing signal status -13. Lift
+this boundary only after a released signal API and actual Native/Wasm
+closed-pipe termination/prefix/cleanup comparisons pass.
+
+The new selected cases, named package tests, generated mktemp relationships and
+closed-pipe scenarios remain source contracts pending the required platform,
+coverage, actual-main and publication gates. They do not certify RSS bounds or
+the formal direct-Wasm performance targets.
+
 ## Versions and evidence
 
 Baseline: async 0.22.4, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-20.
@@ -121,11 +177,11 @@ reports are separate from full upstream differential certification.
 
 | Commands | Choice and reason | Rejected alternative and compatibility cost | Evidence and condition for expansion |
 | --- | --- | --- | --- |
-| rev, tac | Reverse byte lines / fixed-separator records with exact LF handling; first release accepts stdin or one file to bound the initial implementation. | Do not decode invalid UTF-8 or normalize unterminated lines. Multiple files and tac `-r` are missing project features, not missing async IO. Whole-input reversal consumes input-sized memory. | `rev.json`, `tac.json`, 0.1.1 release report. Add ordered multi-file failures, regex empty/overlapping separator fixtures and bounded-memory tests before expansion; evaluate the shared byte regex without waiting for async. |
+| rev, tac | Reverse C-byte lines/records; the O6 candidate adds ordered operands and GNU Emacs regex separators with nullable progress. | Do not decode invalid UTF-8 or normalize unterminated lines. Whole-input/index resource acceptance remains separate R work. | `rev.json`, `tac.json`, stable package tests and private Native/Wasm fixed-provider observations; older 0.1.1 release evidence remains frozen. |
 | expand, unexpand, fold | C-byte columns, explicit tab stops and control-byte rules; fold preserves input bytes and uses space breaks only when requested. Deterministic byte contracts require no terminal discovery. | Reject UTF-8 replacement decoding and assuming one code point occupies one display column. Non-C widths remain unimplemented; fold handles tabs/backspace/CR in column mode. | Their JSON contracts and fold package tests; expand locale claims only after wide/combining/malformed input and tab/control interactions pass the selected upstream oracle. |
-| od, hexdump | Concatenate operands, zero-pad partial words, preserve duplicate-block and final-offset output. Default integer endian is explicitly little endian on tested targets. | No host delegation or pretending little endian is universal host-native format. od float/string/legacy-offset forms and hexdump `-e/-f` are project work. hexdump stdin seek rejects without a reliable seekability contract. | `od.json`, `hexdump.json` and formatter tests. Add endian-target evidence, format grammar and float edge cases; reopen stdin seek only when seekability is established. |
+| od, hexdump | Concatenate operands and preserve partial words, duplicate blocks and final offsets; the O7 candidate adds the frozen Linux float ABI, strings/legacy offsets and custom hexdump format/color units. | No host delegation or inferred native ABI. Forward stdin skip is a documented read/discard extension; backward positioning needs a seekable input. | `od.json`, `hexdump.json`, numeric/format package tests and fixed-provider Native/Wasm development observations; PR/main and publication remain separate. |
 | fmt | Width/goal paragraph optimization, crown/tagged margins and prefix selection with C-byte indentation and sentence spacing; no file rewrite. | Do not substitute fold or discard long words. Paragraph storage and non-C display widths remain separate work. | Current `fmt.json`, named regressions and O3 GNU margin/prefix/tab/EOF observations; PR/main and formal resources remain separate gates. |
-| strings | Whole-file C-byte scanning; GNU d/o/x offsets, last -o/-t selection, seven-column padding, TAB, explicit filename prefixes, s/S raw byte encodings. | Reject b/l/B/L before input until wide decoding is implemented. Reject the former binary-radix / single-byte -e b reinterpretations. No BFD/FFI or host fallback. Input is still buffered; locale/object sections remain project work. | Binutils 2.44, corrected JSON and package contracts; [repair evidence](../reports/2026-10-11-fidelity-repair/README.md). Open wide modes only after endian/minimum-length/offset/invalid-input differentials, and streaming only with equivalent partial-output behavior. |
+| strings | Streaming C-byte scanning, GNU d/o/x offsets, last -o/-t selection, seven-column padding, TAB, filename prefixes, s/S encodings and selected output separators. | Reject b/l/B/L before input until wide decoding is implemented. No BFD/FFI or host fallback; locale/object sections remain project work. | Binutils 2.44 JSON and package contracts plus selected separator/cross-block development observations. Wide modes require endian/minimum-length/offset/invalid-input differentials. |
 | column | Default vertical column layout; -x row layout, explicit -c/COLUMNS/80 width; -t combines all files, preserves empty fields and emits LF with two-space defaults. | Buffer records to determine global widths. Reject copying input as default columnation and per-file independent tables. GNU/Linux C-locale non-ASCII bytes are escaped; non-ASCII delimiters reject. Terminal width discovery and full Unicode widths remain separate capabilities. | Util-linux 2.40, Native/Wasm byte contracts and Linux oracle; [repair evidence](../reports/2026-10-11-fidelity-repair/README.md). Add terminal discovery only with public terminal APIs; expand locale widths against versioned Unicode/locale data. |
 
 Raw observations and exact invocations are in

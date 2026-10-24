@@ -143,6 +143,23 @@ pub fn Case::working_directory(
 }
 
 ///|
+pub fn case_directory_name(id : String) -> String {
+  let digits = "0123456789abcdef"
+  let name = StringBuilder()
+  for character in id {
+    if character is ('A'..<='Z' | '_') {
+      let code = character.to_int()
+      name.write_char('_')
+      name.write_char(digits[code >> 4].unsafe_to_char())
+      name.write_char(digits[code & 15].unsafe_to_char())
+    } else {
+      name.write_char(character)
+    }
+  }
+  name.to_string()
+}
+
+///|
 pub fn safe_relative_path(value : String) -> Bool {
   if value == "" || @path.Path(value).is_absolute() {
     return false

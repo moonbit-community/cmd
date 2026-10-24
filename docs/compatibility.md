@@ -24,6 +24,33 @@ keep their earlier dependency and acceptance profiles.
 Authorization belongs to the caller/host. Catalog capabilities and the older
 restricted label describe requirements, not command-local policy.
 
+## Workspace O5-O13 option candidates
+
+These unpublished implementation candidates extend the selected O stage; the
+registered cases and package tests describe current source behavior. Private
+Native/Wasm comparisons are development evidence. Required PR checks,
+actual-main acceptance, formal direct-Wasm resources/performance and publication
+remain separate gates. Tree uses directory sizes only when its released public
+backend actually returns them; no portable inode-size constant is assumed.
+
+| Family | Current source behavior | Retained boundary |
+| --- | --- | --- |
+| split | All selected byte/line/round-robin `-n` forms, `-C`, suffix starts/growth, elision and pure MoonBit `--filter` sessions with `$FILE`, stdin and observed child status. | Ordinary existing outputs still reject. GNU's undefined hexadecimal FROM=a-f indexing is excluded; the workspace uses documented base-16 arithmetic. |
+| csplit, rev, tac | Csplit integer suffix descriptors and suppress-matched offsets; ordered rev/tac operands and tac's GNU Emacs C-byte regex selection. | Existing csplit outputs reject. Whole-input/index resource work is separate from option correctness. |
+| od, hexdump, cmp, strings | Frozen Linux numeric formats, strings/traditional od offsets, custom hexdump formats/color rules, cmp byte notation and strings separators. | Wide strings encodings remain rejected. Hexdump forward stdin discard is an explicit extension: util-linux 2.40 rejects seek on a pipe, while equivalent named-file display supplies the byte reference. |
+| xxd | Autoskip/style/group/case/EBCDIC, wide named-input seeks, forward stdin discard, reverse address adjustment and new named outputs with backpatching. | Existing output alias/mode/content preservation needs public file identity and descriptor operations; backward/end-relative stdin positioning needs a seekable public input. |
+| checksum commands | Cksum algorithm/length selection, modern tagged/base64/raw records and checking; consistent tags, escaping and manifest flags for the four sum commands. | The selected C byte profile does not claim Windows text translation. Public digest implementations and bounded incremental state remain shared. |
+| realpath, mktemp, mkdir, rm | Component-wise missing/strip/relative realpaths, GNU temporary templates/tmpdir/suffix/exclusive creation, umask-independent symbolic directory modes, and explicit once/per-entry removal prompts. | Unresolved physical link targets need readlink. Umask-dependent modes, unknown parent raw mode and unsupported Windows setters reject. Automatic terminal-dependent rm prompting is separate from implemented explicit prompts. |
+| ls | C quoting/layout/tab width and explicit color with type/suffix/link-target selection, preserving raw color bytes. | Color auto detection rejects; enabled mode/capability/link-count predicates reject only relevant entries. Effective access is not GNU's raw execute-bit predicate. |
+| tree | Iterative filtered/pruned JSON/HTML/text traversal, safe escaping, C branches, explicit type/suffix color, selected sizes and postorder disk-usage totals. | Public directory size works on Linux and fails on the observed macOS backend; Windows uses the real API result. Readlink and raw-mode color predicates retain narrow boundaries. HTML page metadata/safety differences are deliberate contracts. |
+| env, xargs, tail, tee | Env split-string grammar/expansion/splicing; byte delimiters and separate xargs confirmation input; tail NUL records; tee's five explicit pipe-error policies with actual closed-pipe scenarios. | Invalid-byte argv needs public byte transport. Unavailable confirmation channels reject before argument input. Default tee SIGPIPE termination needs a released restore/raise API; it reports status 2 rather than a fabricated signal result. |
+
+The four former od-float, hexdump-format/stdin-skip and md5sum-tag boundary IDs
+now bind positive regressions. New explicit boundaries retain their rejection
+cases and unlock conditions in the canonical ADRs. Generated mktemp scenarios
+observe name/type/content/mode relations; closed-stdout tee scenarios observe
+status, stderr and later file effects without claiming captured stdout.
+
 ## Workspace O2-O4 option candidates
 
 Unpublished sort **0.2.2**, seq **0.2.3**, printf **0.2.2**, fmt **0.1.2** and
@@ -122,7 +149,8 @@ to grep. Csplit and sed regex addresses use a capture-free predicate; expr and
 sed substitutions request capture registers, following GNU's distinct calls.
 Grep's ASCII `-i` expands literals/classes before class negation,
 preserves assertion escapes and compares references without changing captured
-bytes. Tac and nl have not migrated here.
+bytes. The O6 tac candidate adds its distinct GNU Emacs syntax; nl retains its
+earlier matcher profile.
 Distinct capture/reference states can require exponential resources; no hidden
 matching-step cap is imposed. Non-C locale and complete GNU grammar remain open.
 
@@ -332,34 +360,34 @@ claiming success; `local-only` is absent from MoonX by design.
 | Command | Status | Measured profile | Observed boundary or open evidence |
 | --- | --- | --- | --- |
 | `fold` | subset verified | Byte/control-column folding, width, space breaks, files/stdin | C-locale profile; verify UTF-8 separately |
-| `strings` | subset verified | 7/8-bit extraction, TAB, decimal/octal/hex offsets, -o/-t precedence, filenames and stdin markers | Wide/object/Unicode/locale modes remain; unsupported encodings reject before processing |
+| `strings` | workspace candidate | Streaming 7/8-bit extraction, TAB, decimal/octal/hex offsets, -o/-t precedence, filenames/stdin markers and selected output separators | Wide/object/Unicode/locale modes remain; unsupported encodings reject before processing |
 | `column` | subset verified | Default grid/-x, -c/COLUMNS, -t/-s/-o, empty fields, multiple files, final LF and table ANSI widths | C-byte display profile; full util-linux grammar and automatic terminal width remain |
 | `which` | subset verified | Direct/PATH executable access, -a/-s, POSIX separators, empty/duplicate PATH entries and Windows PATHEXT | Shell aliases/functions are not visible; platform permission results follow the public access API |
 | `date` | subset verified | UTC/TZ, fixed offsets, checked 64-bit TZif/POSIX future rules, ISO local input, fractional epochs, selected ISO/RFC/format directives | Ambiguous/nonexistent local times reject; relative dates/additional directives and clock setting remain; x/time offset bounds are documented |
-| `od`, `hexdump` | subset verified | Integer and character formats, offsets, lengths, duplicate blocks, raw byte input | Floating od types and custom hexdump format language are project work; default integers use little endian |
-| `md5sum`, `sha1sum`, `sha512sum` | subset verified | Incremental hashes, file/stdin, GNU check records and check flags | Tagged formats and platform text transformations are not claimed |
+| `od`, `hexdump` | workspace candidate | Frozen Linux float formats, od strings/traditional offsets, custom hexdump format/color units, partial elements and final offsets | Non-C/native-ABI equivalence is unclaimed; hexdump forward stdin skip is a documented extension, not util-linux pipe parity |
+| `md5sum`, `sha1sum`, `sha512sum` | workspace candidate | Incremental hashes, tags, GNU escaped/tagged check records and manifest flags | Windows text transformation remains outside the selected C byte profile |
 | `sed` | subset verified | BRE/ERE substitution, captures, addresses/ranges and ordered scripts; unpublished 0.2.0 adds hold/branch/group/multiline/text execution and repeated nullable captures | [Workspace candidate scope](#workspace-matcher-and-sed-candidates) retains project diagnostic formatting and script-controlled space growth; current-revision acceptance, in-place editing and complete GNU grammar remain open |
-| `diff` | subset verified | Normal/unified/context text output, labels, binary detection and 0/1/2 statuses | Directory and whitespace modes remain project work; exact hunk choices for ambiguous alignments need separate comparison |
-| `patch` | subset verified | Exact unified/context hunks, reverse, stdout result, dry run, creation/deletion | Existing destination and named output require public source mode; fuzzy/offset/reject-file behavior is not claimed |
-| `split`, `csplit` | subset verified | Line/byte splitting, numeric/regex boundaries, suffixes, cleanup and keep-files; unpublished csplit 0.2.0 uses the shared span matcher | Existing output refuses until safe truncation is public; chunk/filter modes and the [shared matcher limits](#workspace-matcher-and-sed-candidates) remain open |
+| `diff` | workspace candidate | Normal/unified/context output, selected C-byte whitespace/case rules and recursive directory/new-file modes with 0/1/2 statuses | Distinct directory device numbers need public metadata; full GNU grammar and every ambiguous alignment choice remain outside the selected scope |
+| `patch` | workspace candidate | Unified/context offset/fuzz matching, reverse detection, partial success, dry run and new reject files | Existing target/named-output mode preservation and existing-reject replacement retain their public-API boundaries |
+| `split`, `csplit` | workspace candidate | Selected chunk/line-byte/filter layouts and suffix starts/elision; integer csplit suffix formats, suppress-matched boundaries, cleanup and keep-files | Existing outputs refuse until safe identity/truncation effects are established; remaining resources and [matcher limits](#workspace-matcher-and-sed-candidates) stay explicit |
 | `expr` | subset verified | Integer/string expressions and BRE matches; unpublished 0.2.0 uses the shared capture matcher | C-byte locale; [matcher limits](#workspace-matcher-and-sed-candidates) and remaining expression extensions are project work |
 | `fmt` | subset verified | Unpublished 0.1.2 adds crown/tagged margins and prefix matching to width/goal/spacing optimization | C-byte locale; paragraph resources, PR/main and non-C width acceptance remain separate |
 | `gzip`, `gunzip`, `zcat` | subset verified | Unpublished 0.1.2: pure 32 KiB LZ, 3–258 byte matches, stored/fixed/dynamic costs, `-1`–`-9` and aliases; Reader decoding with 64 KiB input/output, 32 KiB history and main/secondary tables preserves members, CRC and error prefixes | Published 0.1.1 keeps its frozen profile. [G1 development evidence](reports/2026-10-24-g1-codec.md) covers GNU roundtrips and selected size limits; 30 codec tests pass Native/Wasm. Published delivery/performance remain open. Bytes callers retain input; levels are ignored during decoding/testing. Named replacement and saved metadata remain boundaries. |
 | `base32` | subset verified | RFC 4648 uppercase encode/decode, `-d`, `-i`, `-w`, stdin or one file | Nonstandard alphabets and locale diagnostics not claimed |
-| `cksum` | subset verified | POSIX CRC-32 and byte count for stdin or multiple files, ordered partial failure | GNU alternate algorithms and tagged output are not claimed |
+| `cksum` | workspace candidate | POSIX/legacy and selected modern algorithms/lengths, tagged/untagged/base64/raw records and manifest checking | C byte profile; Windows text translation and final publication are not inferred |
 | `expand` | subset verified | C-locale tab expansion, `-i`, `-t` stops, stdin or multiple files | Locale display widths and non-byte tab semantics are not claimed |
 | `base64` | subset verified | `-d/-D`, `-i/--ignore-garbage`, `-w N`, file and stdin encode/decode | Nonstandard alphabets and locale diagnostics not claimed |
 | `basename` | subset verified | `-a`, `-s SUFFIX`, `-z`, empty/root/repeated-separator operands | Full multibyte path locale behavior not claimed |
 | `cat` | subset verified | files/stdin; `-n -b -s -A -E -T -v -e -t`, `-u/--unbuffered` | Unbuffered is a stream-safe compatibility no-op |
 | `chmod` | subset verified | Numeric modes, closed symbolic assignments, command-line symlink following, recursive symlink skipping | Incremental/implicit symbolic modes need public mode reads; full recursive command-line directory-symlink combinations remain unverified |
-| `cmp` | subset verified | equal=0, different=1, error=2; `-s -l -n -i` | Full diagnostic byte parity not claimed |
+| `cmp` | workspace candidate | equal=0, different=1, error=2; `-s -l -n -i -b/--print-bytes`, C octal/visible byte notation and EOF distinctions | Non-C locale and every diagnostic form remain outside the selected evidence |
 | `comm` | workspace candidate | Three columns, `-123`, `-z`, last order policy, custom output delimiter, totals including suppressed columns | Locale collation beyond C bytes not claimed |
 | `cp` | subset verified | `--no-preserve=mode` to new regular files/trees; no-clobber/update no-ops; traversal controls | Default source-mode preservation and every existing regular-file overwrite reject until public mode/identity/handle-truncate APIs exist; same-inode aliases remain intact |
 | `curl` | subset verified | Existing HTTP/HTTPS transfer profile plus Basic `-u`, literal/Netscape `-b`, `-c`, redirect cookie state and credential origin boundaries; 0.2.1 sends separate explicit/jar Cookie fields | Literal cookies remain scoped to the initial origin as in pinned curl 8.22.0. No non-Basic auth/password prompts/PSL/IDNA/raw Set-Cookie input files; 0.2.1 includes the explicit Cookie plus jar correction |
 | `cut` | workspace candidate | Byte/field ranges, complement, custom output delimiter, empty/NUL delimiters, `-s/-z` | Locale/multibyte behavior not claimed |
 | `dirname` | subset verified | multiple operands and `-z`, empty/root/repeated-separator operands | Multibyte path locale behavior not claimed |
 | `echo` | subset verified | `-n`, `-e`, `-E`, byte escapes, literal `--` ambiguity | `POSIXLY_CORRECT` profile not claimed |
-| `env` | subset verified | Complete inherited environment, `-i/-u/-0/-C`, direct children, `--help/--version` | Host authorization is separate; child launch error classes remain explicit |
+| `env` | workspace candidate | Complete inherited environment, `-i/-u/-0/-C`, GNU split-string quoting/expansion/splicing and direct children | No host-shell interpretation; host authorization and child launch error classes remain separate |
 | `false` | subset verified | any args: no output, status 1; help/version return 0 | Metadata text is package-versioned |
 | `find` | restricted | names/paths/types, `-empty/-size`, metadata predicates, access checks, `-xtype`, depth/actions | File/process policy required; P8 time/reference/access combinations still need independent probes; ownership, inode, link-count, and full GNU expression grammar not claimed |
 | `grep` | subset verified | Default BRE / `-G`, ERE / `-E`, byte-based `-F`, `-o` leftmost-longest, context-only separators, existing context/file/binary options; unpublished 0.3.0 adds the shared matcher, grammar-preserving ASCII `-i`, streaming input/output and early `-q`/`-l` completion | [Workspace matcher limits](#workspace-matcher-and-sed-candidates), non-C locale classes/case folding and worst-case capture/reference resources remain open |
@@ -368,30 +396,30 @@ claiming success; `local-only` is absent from MoonX by design.
 | `jq` | subset verified | Consecutive JSON, -s/-R/-n/-e, AST binding, partial output before errors, -C/-M/JQ_COLORS, tostring/tojson and Unicode string slices | Released moonjq 0.2.0 plus public-AST adapter; full evaluator/modules/streaming/diagnostics and automatic TTY color are not claimed |
 | `jqlog` | subset verified | JSONL stdin/raw input, -f/-h, invalid-line skipping, conversions and Unicode slices | Independent JSONL contract; invalid whitespace lines are not repaired by trimming; full jq CLI compatibility is not claimed |
 | `ln` | subset verified | Symbolic -s/-r, last -f/-i selection, -n/-T/-t, backup/suffix/-v and refusal status 1 including EOF | POSIX symlinks; hard-link requests reject before mutation; broader overwrite/target combinations remain |
-| `ls` | subset verified | `-a -A -d -F -1 -R`, reverse, regular-file `-S`, `-H/-L` link following, implicit `-u/-c` time sorting and `-S/-t` precedence | Native/Wasm command contracts and pinned GNU 9.11 Linux gate passed. `-P` is a project extension (GNU rejects it); directory-size sorting, long/colour/ownership/inode/block formats not claimed |
+| `ls` | workspace candidate | Existing traversal/sort/link profile plus C quoting, columns/across/commas, width/tab stops and explicit type/suffix/link colors | `-P` is a project extension; enabled raw-mode/capability/link-count predicates and automatic color reject. Long/ownership/inode/block formats remain outside scope |
 | `make` | subset verified | Real `-j` dependency scheduling, shared prerequisites once, failed-dependency propagation, `-k`, `$(shell ...)`, `.SHELLSTATUS`, cwd and exported recipe variables | No GNU jobserver/full Make grammar claim; shell-function export recursion and full GNU variable semantics remain project work |
-| `mkdir` | subset verified | `-p`, numeric `-m`, requested mode on leaf only; default parent mode under ordinary umask | Symbolic modes and unusual umasks requiring temporary owner permissions remain unverified |
-| `mktemp` | subset verified | One template, secure random suffix, `-d/--directory`, atomic create, 0600 files and 0700 directories | Template extensions, owner metadata and platform-specific permission details are not claimed |
+| `mkdir` | workspace candidate | `-p`, numeric and umask-independent symbolic `-m`, requested leaf mode and existing no-ops | Truly umask-dependent results, unknown parent raw mode/owner adjustments and unavailable Windows setters reject |
+| `mktemp` | workspace candidate | Final X-run/default/inferred/explicit suffix rules, tmpdir precedence, quiet errors and exclusive secure-random files/directories | No unsafe `-u`; POSIX mode relationships and Windows supported effects have separate scenarios |
 | `mv` | subset verified | Files/dirs, -f/-n/-i, -T/-v, selected backup/suffix/update, same-entry/hard-link no-op failures and refusal status 1 | Equal-time interactive/update targets reject without public identity; no-clobber remains a successful skip; metadata-preserving EXDEV fallback remains unavailable |
 | `nl` | subset verified | `-b/-h/-f`, `-w`, `-s`, `-v`, `-i`, `-d`, `-p`, files/stdin | Locale-aware formatting not claimed |
 | `paste` | subset verified | parallel/serial `-s`, delimiter cycling `-d`, `-z` | Full malformed delimiter diagnostics not claimed |
 | `printenv` | subset verified | selected/all values and `-0`, mixed present/missing status | Wasm environment is policy-dependent |
 | `printf` | subset verified | Unpublished 0.2.2 adds exact frozen-ABI hex floats and C-byte GNU `%q` to format reuse, flags and numeric conversions | Fixed Linux amd64 numeric profile; non-C locale and every GNU diagnostic not claimed |
 | `pwd` | subset verified | `-L`, `-P`, invalid logical `PWD` fallback | Logical/physical result follows Wasm cwd contract |
-| `rm` | subset verified | files/trees, `-r/-f/-d/-v`, failure ordering, root-preservation flags | Final dot/dot-dot operands are rejected, including Windows separators; explicit cwd paths do not receive additional policy |
-| `realpath` | subset verified | Existing path canonicalization, `-e`, `-z`, multiple operands | GNU missing-path `-m` semantics and every diagnostic byte are not claimed |
-| `rev` | subset verified | C-locale byte reversal per line, stdin or one file, line-feed preservation | Multibyte locale character semantics and multiple files are not claimed |
+| `rm` | workspace candidate | Files/trees, explicit per-entry/once interaction, last force/interactive policy, iterative prompt order and root-preservation flags | Automatic terminal-dependent write-protection prompts need public terminal/raw-mode metadata; final dot/dot-dot operands reject |
+| `realpath` | workspace candidate | Component-wise default/-e/-m, strip/no-symlinks, relative-to/base, quiet/NUL and ordered operands | Only unresolved physical link targets need readlink; lexical missing paths do not |
+| `rev` | workspace candidate | Ordered C-byte line reversal from stdin/multiple files with exact partial-error/LF behavior | Multibyte locale character semantics remain outside the C profile |
 | `rmdir` | subset verified | empty removal, `-p`, `-I`, `-v`, failure ordering | Full path diagnostics not claimed |
 | `seq` | subset verified | Unpublished 0.2.3 adds single-conversion `-f`, frozen-ABI rounding and endpoint recovery; default +/- step, -w/-s and streaming output remain | Default path retains 4096-character/exponent/scale limits; formatted path uses the selected Extended80 range, not the host ABI; formal performance remains open |
 | `sh` | subset verified | Persistent `-i` line REPL and opaque Session; export/local variables, cwd, quoting/IFS/glob, arithmetic, substitution, read, bounded printf/test, functions and pipeline state isolation | No public isatty/raw/editing/recoverable SIGINT/job control/exec; remaining interpreter grammar restrictions are project work, listed in command README |
-| `sha256sum` | subset verified | file/stdin digest, `-c`, `-z`, quiet/status/strict/warn/ignore-missing verification modes | Binary manifest extensions and every warning byte not claimed |
+| `sha256sum` | workspace candidate | File/stdin digest, tags, escaped/tagged manifests and quiet/status/strict/warn/ignore-missing verification | Windows text transformation remains outside the selected C byte profile |
 | `sleep` | subset verified | fractional values, `s/m/h/d`, multiple operands, help/version | Signal/cancellation parity not claimed |
 | `sort` | subset verified | Unpublished 0.2.2 adds stable/merge/output and exact seeded GNU random order to cached keys and bounded disk runs | Existing merge-output identity/error effects reject explicitly; non-C locale and formal RSS/performance remain open |
-| `tail` | subset verified | `-n`, `-c`, `+K`, `-q`, `-v`, `-f`/`--follow`, `-s`/`--sleep-interval` | `-f` follows open regular-file descriptors by polling; stdin/pipes stop at EOF; `-F` path-follow and rotation reopen are not claimed |
-| `tac` | subset verified | Reverse records from stdin or one file, `-s/--separator`, `-b/--before` | Regex separators and multiple input files are rejected; locale diagnostics not claimed |
-| `tee` | subset verified | stdin to stdout/files and `-a` append, partial-output ordering | Signal diagnostics not claimed |
+| `tail` | workspace candidate | Existing line/byte/origin/follow profile plus NUL records, final terminators and ordered file headers | `-f` follows open descriptors; stdin/pipes stop at EOF; `-F` path-follow and rotation reopen remain outside scope |
+| `tac` | workspace candidate | Ordered reverse records, fixed or GNU Emacs byte-regex separators, before mode and nullable/overlap selection | Non-C locale and formal remaining whole-input/index resources remain open |
+| `tee` | workspace candidate | stdin to stdout/files, append, five explicit output-error/pipe policies and observed partial/later-sink effects | Default SIGPIPE termination needs a released restore/raise API and has an exact status-2 rejection scenario |
 | `test` | subset verified | string/integer, file kinds, access, regular-file size, `!`, `-a`, `-o`, and the exercised dangling-link path | `-N`/`-nt`/`-ot` and special-file positive fixtures need independent probes; complete unary/binary ambiguity not claimed |
-| `tree` | subset verified | Sorted recursive display, `-a -d -f -L --noreport`, multiple roots | Symlink targets and metadata need readlink/mode/identity APIs; color, filters and extended output formats are separate project work |
+| `tree` | workspace candidate | C text/JSON/safe HTML, iterative filters/prune/filelimit, explicit colors, actual public sizes and postorder disk-usage reporting | Linux directory size is supported; observed macOS directory size rejects and Windows follows its API result. Selected symlinks/raw-mode colors need readlink/mode; HTML page differences are deliberate |
 | `timeout` | local-only | local duration and expiry returned 124 | No published process-group cancellation |
 | `touch` | subset verified | Create missing files; `-c` missing-file no-op | Existing-file timestamp updates and setters explicitly fail without content rewrites |
 | `tr` | subset verified | translate/delete/squeeze/`-c/-C` complement, `-t`, ranges, C-locale classes, octal/equivalence/repetition forms | Verified profile is byte-oriented; locale data beyond C is not claimed |
@@ -402,8 +430,8 @@ claiming success; `local-only` is absent from MoonX by design.
 | `wc` | workspace candidate | C-byte counters, display width, four total policies, `--files0-from`, partial read-error counts, files/stdin | Non-C counters and regular-stdin physical-fstat alignment are not claimed; see ADR-0003 |
 | `wget` | subset verified | Existing transfer profile plus challenge-based Basic credentials across destinations; `--auth-no-challenge` sends explicit credentials on every request, including redirects; load/save cookies, session-cookie option, shared redirect jar; 0.2.1 lets explicit Cookie override stored cookies | No recursive mirror/FTP/HSTS/PSL/IDNA; consumed stdin bodies cannot replay an auth challenge; cross-port and cross-operand authentication caching and full progress text not claimed; explicit Cookie override is delivered in 0.2.1 |
 | `yes` | subset verified | Infinite repeated `y` or joined arguments, help/version, broken-pipe termination | Exact signal diagnostics and terminal interaction are not claimed |
-| `xargs` | restricted | whitespace/NUL tokenization, quotes/backslashes, `-0 -r -t -n -L -s -E -I`, `--show-limits`, bounded `-P`; direct-child status classes 123/124/125/126/127 | Child policy required; process windows are bounded and aggregate status deterministically; GNU shell/locale extensions are not claimed |
-| `xxd` | subset verified | forward hex, `-p -r -c -l -i`, `--revert`, include symbol naming, positive `-s`, addressed reverse patching with bounded offsets | Negative/end-relative seek remains rejected; loose reverse-offset parsing matches the pinned profile and oversized offsets are rejected before unbounded allocation |
+| `xargs` | workspace candidate | Existing batching/process windows plus raw delimiter grammar, last -0/-d selection and separately opened interactive confirmations | Child policy remains required; invalid-byte argv needs public byte transport, and unavailable independent confirmation channels reject before input/launch |
+| `xxd` | workspace candidate | Styles/autoskip/group/case/EBCDIC, wide named-file seeks, forward stdin discard, reverse address adjustment and new named output backpatching | Existing-output identity/mode/content and backward/end-relative stdin seek retain narrow public-API limits |
 
 ## Help-Visible Only
 
@@ -416,9 +444,10 @@ positive result. They are probe targets, not product claims.
 
 Each row identifies the option families exercised successfully. Explicit
 rejections, including `chmod` incremental/reference modes,
-`cp -a/-p`, `ln` hard links, `mkdir` symbolic modes, existing merge outputs for sort, timestamp
-selectors for `touch`, and negative `xxd -s`, are recorded in their rows. The
-portable filesystem profile exposes file kind, regular-file size, a/m/c times,
+`cp -a/-p`, `ln` hard links, truly umask-dependent `mkdir` modes, existing merge
+outputs for sort, timestamp selectors for `touch`, and unseekable backward
+stdin positions are recorded in their rows. The portable filesystem profile
+exposes file kind, platform-supported size metadata, a/m/c times,
 access checks, and symlink creation; mode reads, timestamp setters, hard links,
 readlink and special-file creation remain closed. POSIX EXDEV classification
 is available; metadata-preserving cross-device fallback is not.

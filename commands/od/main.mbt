@@ -6,11 +6,14 @@ fn help_message() -> String {
     #|  -A, --address-radix=d|o|x|n  address base, or no addresses
     #|  -j, --skip-bytes=N          skip N input bytes
     #|  -N, --read-bytes=N          print at most N bytes
-    #|  -t, --format=TYPE           a, c, d/u/o/x with size 1,2,4,8; optional z
+    #|  -t, --format=TYPE           a, c, integers 1/2/4/8; floats 2/4/8/16; optional z
     #|  -a -b -c -d -i -l -o -s -x  traditional named/integer formats
+    #|  -f -e -F                    traditional float or double formats
     #|      --endian=little|big     byte order (default little)
     #|  -w[N], --width[=N]         bytes per line (default 16, bare option 32)
     #|  -v, --output-duplicates    do not replace repeated blocks with *
+    #|  -S N, --strings[=N]       print NUL-terminated printable strings (default 3)
+    #|      --traditional        accept old offset and label operands
     #|      --help                 display this help and exit
     #|      --version              display version and exit
   message
@@ -49,23 +52,36 @@ fn settings(parsed : @cli.ParsedArgs) -> DumpState raise OdError {
       "octal" => "o2"
       "signed" => "d2"
       "hex" => "x2"
+      "float" => "fF"
+      "double" | "double-F" => "fD"
       _ => continue
     }
     formats.append(parse_formats(spec))
   }
-  if formats.is_empty() {
-    formats.push({ kind: 'o', size: 2, trailer: false, })
+  if parsed.contains("strings") && !formats.is_empty() {
+    raise OdError("no type may be specified when dumping strings")
   }
-  let width = @string.parse_int(parsed.last_value("width").unwrap_or("16")) catch {
+  if formats.is_empty() {
+    formats.push({ kind: 'o', size: 2, trailer: false, floating: None, })
+  }
+  let requested_width = @string.parse_int(
+    parsed.last_value("width").unwrap_or("16"),
+  ) catch {
     _ => raise OdError("invalid line width")
   }
-  if width <= 0 || width > 1048576 {
+  if requested_width < 0 || requested_width > 1048576 {
     raise OdError("line width must be between 1 and 1048576")
   }
+  let mut type_width = 1
   for format in formats {
-    if width % format.size != 0 {
-      raise OdError("line width must be a multiple of every format size")
-    }
+    type_width = type_width.max(format.size)
+  }
+  let width = if requested_width == 0 {
+    Int32::max(16, type_width)
+  } else if requested_width % type_width != 0 {
+    type_width
+  } else {
+    requested_width
   }
   let skip = parse_count(parsed.last_value("skip-bytes").unwrap_or("0"))
   let remaining = match parsed.last_value("read-bytes") {
@@ -84,6 +100,7 @@ fn settings(parsed : @cli.ParsedArgs) -> DumpState raise OdError {
     offset: 0L,
     previous: None,
     squeezed: false,
+    label: None,
   }
 }
 
@@ -96,12 +113,21 @@ async fn main {
   }
   let args : Array[String] = []
   let mut options = true
-  for arg in @env.args()[1:] {
+  for index, arg in metadata_args {
     if arg == "--" {
       options = false
     }
+    if options && arg == "-S" && index == metadata_args.length() - 1 {
+      @stdio.stderr.write(
+        "od: option requires an argument -- 'S'\nTry 'od --help' for more information.\n",
+      )
+      @sys.exit(1)
+      return
+    }
     args.push(
-      if options && (arg == "-w" || arg == "--width") {
+      if options && arg == "--strings" {
+        "--strings=3"
+      } else if options && (arg == "-w" || arg == "--width") {
         "--width=32"
       } else {
         arg
@@ -125,6 +151,11 @@ async fn main {
     @cli.flag("octal", short='o', repeatable=true),
     @cli.flag("signed", short='s', repeatable=true),
     @cli.flag("hex", short='x', repeatable=true),
+    @cli.flag("float", short='f', repeatable=true),
+    @cli.flag("double", short='e', repeatable=true),
+    @cli.flag("double-F", short='F', repeatable=true),
+    @cli.option("strings", short='S', repeatable=true),
+    @cli.flag("traditional"),
     @cli.flag("help"),
     @cli.flag("version"),
   ]) catch {
@@ -149,18 +180,96 @@ async fn main {
       return
     }
   }
-  let sources = if parsed.operands.is_empty() { ["-"] } else { parsed.operands }
+  if parsed.last_value("width") is Some(value) {
+    let requested = @string.parse_int(value) catch { _ => 0 }
+    if requested != 0 && requested != state.width {
+      @stdio.stderr.write(
+        "od: warning: invalid width \{requested}; using \{state.width} instead\n",
+      )
+    }
+  }
+  let (files, old_skip, label) = traditional_operands(parsed) catch {
+    OdError(message) => {
+      @stdio.stderr.write("od: \{message}\n")
+      @sys.exit(1)
+      return
+    }
+  }
+  if old_skip is Some(skip) {
+    state.skip = skip
+  }
+  state.label = label.map(start => start - state.skip)
+  let sources = if files.is_empty() { ["-"] } else { files }
+  if parsed.contains("strings") {
+    let minimum = parse_count(parsed.last_value("strings").unwrap_or("3")) catch {
+      OdError(message) => {
+        @stdio.stderr.write("od: \{message}\n")
+        @sys.exit(1)
+        return
+      }
+    }
+    let strings : StringDump = {
+      minimum,
+      base: state.base,
+      label: state.label,
+      pending: [],
+      skip: state.skip,
+      remaining: state.remaining,
+      offset: 0L,
+      start: 0L,
+    }
+    let mut failed = false
+    let mut opened = false
+    for source in sources {
+      if opened && strings.done() {
+        break
+      }
+      try {
+        if source == "-" {
+          opened = true
+          strings.read(@stdio.stdin)
+        } else {
+          let file = @fs.open(source, mode=ReadOnly)
+          defer file.close()
+          opened = true
+          strings.read(file)
+        }
+      } catch {
+        error => {
+          @stdio.stderr.write("od: \{source}: \{error}\n")
+          failed = true
+        }
+      }
+    }
+    if !opened {
+      if failed {
+        @sys.exit(1)
+      }
+      return
+    }
+    if strings.skip > 0L {
+      @stdio.stderr.write("od: cannot skip past end of combined input\n")
+      failed = true
+    }
+    if failed {
+      @sys.exit(1)
+    }
+    return
+  }
   let mut failed = false
+  let mut opened = false
   for path in sources {
-    if state.skip == 0L && state.remaining == Some(0L) {
+    if opened && state.skip == 0L && state.remaining == Some(0L) {
       break
     }
     try {
       if path == "-" {
+        opened = true
         state.read(@stdio.stdin)
       } else {
         let file = @fs.open(path, mode=ReadOnly)
         defer file.close()
+        opened = true
         state.read(file)
       }
     } catch {
@@ -170,6 +279,12 @@ async fn main {
       }
     }
   }
+  if !opened {
+    if failed {
+      @sys.exit(1)
+    }
+    return
+  }
   if state.skip > 0L {
     @stdio.stderr.write("od: cannot skip past end of combined input\n")
     @sys.exit(1)
@@ -178,8 +293,10 @@ async fn main {
   if !state.pending.is_empty() {
     @stdio.stdout.write(state.row())
   }
-  if state.base != 0 {
-    @stdio.stdout.write(address(state.offset, state.base) + "\n")
+  if state.base != 0 || state.label is Some(_) {
+    @stdio.stdout.write(
+      labeled_address(state.offset, state.base, state.label) + "\n",
+    )
   }
   if failed {
     @sys.exit(1)

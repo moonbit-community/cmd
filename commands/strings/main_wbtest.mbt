@@ -5,14 +5,35 @@ async fn scan_strings(
   eight_bit~ : Bool = false,
   prefix~ : Bool = false,
   radix~ : Int32? = None,
+  separator~ : String = "\n",
 ) -> Bytes {
   let input = @io.MemoryReader(writer => writer.write(data))
   defer input.close()
   let output = @io.MemoryReader(writer => {
-    emit_stream(input, writer, "-", minimum, prefix, radix, eight_bit)
+    emit_stream(
+      input,
+      writer,
+      "-",
+      minimum,
+      prefix,
+      radix,
+      eight_bit,
+      separator~,
+    )
   })
   defer output.close()
   output.read_all().binary()
+}
+
+///|
+async test "strings custom separator preserves accepted final and empty runs" {
+  assert_eq(scan_strings(b"abc\x00def\x00no", 3, separator="<>"), b"abc<>def<>")
+  assert_eq(scan_strings(b"abc\x00def", 3, separator=""), b"abcdef")
+  assert_eq(scan_strings(b"ab\x00", 3, separator="<>"), b"")
+  assert_eq(
+    scan_strings(b"abc", 3, prefix=true, radix=Some(10), separator="|"),
+    b"{standard input}:       0 abc|",
+  )
 }
 
 ///|

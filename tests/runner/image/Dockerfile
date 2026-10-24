@@ -213,9 +213,10 @@ RUN curl --fail --location --retry 5 \
   && tar --extract --file util-linux.tar.xz \
   && cd "util-linux-${UTIL_LINUX_VERSION}" \
   && ./configure --prefix=/oracle --disable-nls --disable-shared --without-python --without-systemd --disable-liblastlog2 --without-ncursesw --without-ncurses \
-  && make -j"$(nproc)" hexdump column \
+  && make -j"$(nproc)" hexdump column rev \
   && install -m 0755 hexdump /oracle/bin/hexdump \
   && install -m 0755 column /oracle/bin/column \
+  && install -m 0755 rev /oracle/bin/rev \
   && cd /build \
   && rm -rf util-linux.tar.xz "util-linux-${UTIL_LINUX_VERSION}"
 
@@ -234,8 +235,20 @@ RUN curl --fail --location --retry 5 \
   && cd /build \
   && rm -rf binutils.tar.xz "binutils-${BINUTILS_VERSION}"
 
+ARG TREE_VERSION=2.2.1
+ARG TREE_SHA256=68ac45dc78c0c311ada06200ffc3c285e74223ba208061f8d15ffac25e44b2ec
+
+RUN curl --fail --location --retry 5 \
+      "https://oldmanprogrammer.net/tar/tree/tree-${TREE_VERSION}.tgz" \
+      --output tree.tgz \
+  && echo "${TREE_SHA256}  tree.tgz" | sha256sum --check --strict \
+  && tar --extract --file tree.tgz \
+  && make -C "tree-${TREE_VERSION}" -j"$(nproc)" \
+  && install -m 0755 "tree-${TREE_VERSION}/tree" /oracle/bin/tree \
+  && rm -rf tree.tgz "tree-${TREE_VERSION}"
+
 COPY --chmod=0755 entrypoint.sh versions.sh /usr/local/bin/
 
-ENV LANG=C LC_ALL=C TZ=UTC PATH=/oracle/bin
+ENV LANG=C LC_ALL=C TZ=UTC PATH=/oracle/bin SHELL=/oracle/bin/sh
 WORKDIR /work
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

@@ -33,7 +33,7 @@
         "help"
       ],
       "source_version": "workspace cli/mktemp@0.1.3 metadata contract",
-      "expected_stdout_text": "Usage: mktemp [-d] [TEMPLATE]\n      --help      display this help and exit\n      --version   display version and exit\nCreate a uniquely named temporary file or directory.\n",
+      "expected_stdout_text": "Usage: mktemp [OPTION]... [TEMPLATE]\nCreate an exclusive temporary file (0600) or directory (0700).\n  -d, --directory       create a directory\n  -p DIR, --tmpdir[=DIR] use DIR, then TMPDIR, then /tmp\n  -t                    prefer TMPDIR; reject template directories\n      --suffix=SUFFIX   append SUFFIX to a template ending in X\n  -q, --quiet           suppress creation and output errors\n      --help            display this help and exit\n      --version         display version and exit\nDefault template: tmp.XXXXXXXXXX. The final X run requires at least three Xs.\n",
       "expected_stderr_text": ""
     },
     {
@@ -54,6 +54,299 @@
       "source_version": "workspace cli/mktemp@0.1.3 metadata contract",
       "expected_stdout_text": "mktemp 0.1.3\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o10-mktemp-suffix-requires-final-X",
+      "command": "mktemp",
+      "args": [
+        "--suffix=.tail",
+        "name.XXX.end"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mktemp: with --suffix, template 'name.XXX.end' must end in X\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [],
+      "coverage": [
+        "suffix"
+      ]
+    },
+    {
+      "id": "o10-mktemp-suffix-directory",
+      "command": "mktemp",
+      "args": [
+        "--suffix=/tail",
+        "name.XXX"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mktemp: invalid suffix '/tail', contains directory separator\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [],
+      "coverage": [
+        "suffix"
+      ]
+    },
+    {
+      "id": "o10-mktemp-last-X-run",
+      "command": "mktemp",
+      "args": [
+        "prefixXXXX.aXX.tail"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mktemp: too few X's in template 'prefixXXXX.aXX.tail'\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [],
+      "coverage": []
+    },
+    {
+      "id": "o10-mktemp-t-separator",
+      "command": "mktemp",
+      "args": [
+        "-t",
+        "nested/name.XXX"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mktemp: invalid template, 'nested/name.XXX', contains directory separator\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [],
+      "coverage": [
+        "tmpdir"
+      ]
+    },
+    {
+      "id": "o10-mktemp-q-validation-still-diagnostic",
+      "command": "mktemp",
+      "args": [
+        "-q",
+        "bad.XX"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mktemp: too few X's in template 'bad.XX'\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [],
+      "coverage": [
+        "quiet"
+      ]
+    },
+    {
+      "id": "o10-mktemp-q-create-suppressed",
+      "command": "mktemp",
+      "args": [
+        "-q",
+        "missing/name.XXX"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [],
+      "coverage": [
+        "quiet"
+      ]
+    },
+    {
+      "id": "o10-mktemp-no-X-template",
+      "command": "mktemp",
+      "args": [
+        "plain"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mktemp: too few X's in template 'plain'\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [],
+      "coverage": []
+    },
+    {
+      "id": "o10-mktemp-missing-short-directory",
+      "command": "mktemp",
+      "args": [
+        "-p"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mktemp: option requires an argument -- 'p'\nTry 'mktemp --help' for more information.\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [],
+      "coverage": [
+        "tmpdir"
+      ]
+    },
+    {
+      "id": "o10-mktemp-missing-suffix",
+      "command": "mktemp",
+      "args": [
+        "--suffix"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mktemp: option '--suffix' requires an argument\nTry 'mktemp --help' for more information.\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [],
+      "coverage": [
+        "suffix"
+      ]
+    },
+    {
+      "id": "mktemp-option-effects",
+      "command": "mktemp",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ],
+      "timeout_ms": 60000,
+      "coverage": [
+        "tmpdir",
+        "suffix",
+        "directory"
+      ],
+      "source_version": "GNU coreutils 9.11 generated-name and private file/directory relations",
+      "oracle": false
+    },
+    {
+      "id": "mktemp-option-effects-oracle",
+      "command": "mktemp",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "oracle-scenario",
+      "host_platforms": [
+        "linux"
+      ],
+      "timeout_ms": 120000,
+      "coverage": [
+        "tmpdir",
+        "suffix",
+        "directory"
+      ],
+      "source_version": "GNU coreutils 9.11 immutable oracle generated-name/effect relations",
+      "oracle": false
+    },
+    {
+      "id": "mktemp-option-effects-windows",
+      "command": "mktemp",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "windows"
+      ],
+      "timeout_ms": 60000,
+      "coverage": [
+        "tmpdir",
+        "suffix",
+        "directory"
+      ],
+      "source_version": "Workspace generated-name, empty-file and directory relations; no POSIX mode assertion",
+      "oracle": false
     }
   ]
 }

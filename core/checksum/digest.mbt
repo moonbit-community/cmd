@@ -2,6 +2,7 @@
 pub(all) enum Algorithm {
   Md5
   Sha1
+  Sha256
   Sha512
 }
 
@@ -10,6 +11,7 @@ fn Algorithm::label(self : Algorithm) -> String {
   match self {
     Md5 => "MD5"
     Sha1 => "SHA1"
+    Sha256 => "SHA256"
     Sha512 => "SHA512"
   }
 }
@@ -24,6 +26,7 @@ fn Algorithm::hex_length(self : Algorithm) -> Int32 {
   match self {
     Md5 => 32
     Sha1 => 40
+    Sha256 => 64
     Sha512 => 128
   }
 }
@@ -112,7 +115,7 @@ fn Sha1State::update(self : Sha1State, input : BytesView) -> Unit {
 }
 
 ///|
-fn Sha1State::finalize(self : Sha1State) -> String {
+fn Sha1State::finalize_bytes(self : Sha1State) -> Bytes {
   let bit_length = self.length * 8UL
   self.block[self.used] = b'\x80'
   self.used += 1
@@ -134,43 +137,10 @@ fn Sha1State::finalize(self : Sha1State) -> String {
   for i in 0..<20 {
     result[i] = (self.words[i / 4] >> (24 - i % 4 * 8)).to_byte()
   }
-  @crypto.bytes_to_hex_string(result)
+  result.unsafe_reinterpret_as_bytes()
 }
 
 ///|
-async fn digest_reader(algorithm : Algorithm, reader : &@io.Reader) -> String {
-  match algorithm {
-    Md5 => {
-      let state = @crypto.MD5::new()
-      while reader.read_some(max_len=65536) is Some(chunk) {
-        state.update(chunk)
-      }
-      @crypto.bytes_to_hex_string(state.finalize())
-    }
-    Sha1 => {
-      let state = Sha1State::new()
-      while reader.read_some(max_len=65536) is Some(chunk) {
-        state.update(chunk)
-      }
-      state.finalize()
-    }
-    Sha512 => {
-      let state = @crypto.SHA512::new()
-      while reader.read_some(max_len=65536) is Some(chunk) {
-        state.update(chunk)
-      }
-      @crypto.bytes_to_hex_string(state.finalize())
-    }
-  }
-}
-
-///|
-async fn digest_source(algorithm : Algorithm, path : String) -> String {
-  if path == "-" {
-    digest_reader(algorithm, @stdio.stdin)
-  } else {
-    let file = @fs.open(path, mode=ReadOnly)
-    defer file.close()
-    digest_reader(algorithm, file)
-  }
+fn hex_digest(bytes : Bytes) -> String {
+  @hex.encode(bytes[:])
 }

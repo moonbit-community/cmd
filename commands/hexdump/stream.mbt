@@ -5,7 +5,7 @@ priv suberror HexdumpError {
 
 ///|
 struct DumpState {
-  modes : Array[String]
+  program : FormatProgram
   verbose : Bool
   pending : Array[Byte]
   mut skip : Int64
@@ -16,29 +16,41 @@ struct DumpState {
 }
 
 ///|
-fn DumpState::row(self : DumpState) -> String {
+fn DumpState::row(self : DumpState) -> Bytes {
   let data = Bytes::from_array(self.pending)
   self.pending.clear()
-  let out = StringBuilder()
-  if !self.verbose && data.length() == 16 && self.previous == Some(data) {
+  let out = @buffer.Buffer()
+  if !self.verbose &&
+    data.length() == self.program.block_size &&
+    self.previous == Some(data) {
     if !self.squeezed {
-      out.write_string("*\n")
+      out.write_string_utf8("*\n")
       self.squeezed = true
     }
   } else {
     self.squeezed = false
-    for mode in self.modes {
-      out.write_string(render_row(data, self.offset, mode))
+    for entry in self.program.entries {
+      match entry {
+        Builtin(mode) => {
+          let end = if data.length() < 16 { data.length() } else { 16 }
+          let displayed = data[:end].to_owned()
+          out.write_string_utf8(render_row(displayed, self.offset, mode))
+        }
+        Custom(format) =>
+          out.write_bytes(
+            render_custom(format, data[:], self.offset, self.program.block_size)[:],
+          )
+      }
     }
   }
   self.previous = Some(data)
   self.offset += data.length().to_int64()
-  out.to_string()
+  out.to_bytes()
 }
 
 ///|
-fn DumpState::feed(self : DumpState, chunk : Bytes) -> String {
-  let out = StringBuilder()
+fn DumpState::feed(self : DumpState, chunk : Bytes) -> Bytes {
+  let out = @buffer.Buffer()
   for byte in chunk {
     if self.skip > 0L {
       self.skip -= 1L
@@ -52,11 +64,11 @@ fn DumpState::feed(self : DumpState, chunk : Bytes) -> String {
     if self.remaining is Some(n) {
       self.remaining = Some(n - 1L)
     }
-    if self.pending.length() == 16 {
-      out.write_string(self.row())
+    if self.pending.length() == self.program.block_size {
+      out.write_bytes(self.row()[:])
     }
   }
-  out.to_string()
+  out.to_bytes()
 }
 
 ///|

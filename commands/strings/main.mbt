@@ -38,6 +38,7 @@ fn help_message() -> String {
     #|  -t, --radix=RADIX     display offsets in d, o, or x radix
     #|  -e, --encoding=ENC    s: 7-bit bytes (default); S: 8-bit bytes
     #|                        wide encodings b/l/B/L are unsupported
+    #|  -s, --output-separator=STR  separate accepted strings with STR
     #|      --help            display this help and exit
     #|      --version         display version and exit
   message
@@ -83,6 +84,7 @@ async fn emit_stream(
   prefix : Bool,
   radix : Int32?,
   eight_bit : Bool,
+  separator~ : String = "\n",
 ) -> Unit {
   let pending : Array[Byte] = []
   let mut offset : Int64 = 0
@@ -90,7 +92,7 @@ async fn emit_stream(
   let mut emitting = false
   for ;; {
     let chunk = {
-      errdefer (if emitting { writer.write("\n") })
+      errdefer (if emitting { writer.write(separator) })
       reader.read_some(max_len=65536)
     }
     guard chunk is Some(chunk) else { break }
@@ -98,7 +100,7 @@ async fn emit_stream(
     while index < chunk.length() {
       if !printable(chunk[index], eight_bit) {
         if emitting {
-          writer.write("\n")
+          writer.write(separator)
         }
         pending.clear()
         emitting = false
@@ -129,7 +131,7 @@ async fn emit_stream(
     offset += chunk.length().to_int64()
   }
   if emitting {
-    writer.write("\n")
+    writer.write(separator)
   }
 }
 
@@ -147,6 +149,7 @@ async fn main {
     @cli.flag("octal", short='o'),
     @cli.option("radix", short='t'),
     @cli.option("encoding", short='e'),
+    @cli.option("output-separator", short='s'),
     @cli.flag("help"),
     @cli.flag("version"),
   ]) catch {
@@ -203,6 +206,7 @@ async fn main {
   let files = parsed.operands.filter(path => path != "-")
   let sources = if files.is_empty() { ["-"] } else { files }
   let prefix = parsed.contains("print-file-name")
+  let separator = parsed.last_value("output-separator").unwrap_or("\n")
   let writer = @io.BufferedWriter::new(@stdio.stdout, size=65536)
   let mut failed = false
   for path in sources {
@@ -216,6 +220,7 @@ async fn main {
           prefix,
           radix,
           parsed.last_value("encoding") == Some("S"),
+          separator~,
         )
       } else {
         let file = @fs.open(path, mode=ReadOnly)
@@ -228,6 +233,7 @@ async fn main {
           prefix,
           radix,
           parsed.last_value("encoding") == Some("S"),
+          separator~,
         )
       }
     } catch {

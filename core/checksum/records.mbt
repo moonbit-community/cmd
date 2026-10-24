@@ -47,38 +47,6 @@ fn decode_filename(value : String) -> String? {
 }
 
 ///|
-fn is_hex_digest(algorithm : Algorithm, value : String) -> Bool {
-  value.length() == algorithm.hex_length() &&
-  value.iter().all(c => c is ('0'..<='9' | 'a'..<='f' | 'A'..<='F'))
-}
-
-///|
-fn parse_record(algorithm : Algorithm, line : String) -> (String, String)? {
-  let escaped = line.has_prefix("\\")
-  let record = if escaped { line[1:].to_owned() } else { line }
-  let length = algorithm.hex_length()
-  if record.length() <= length + 2 ||
-    record[length] != ' ' ||
-    !(record[length + 1] is (' ' | '*')) ||
-    !is_hex_digest(algorithm, record[0:length].to_owned()) {
-    return None
-  }
-  let encoded_name = record[length + 2:].to_owned()
-  let name = if escaped {
-    match decode_filename(encoded_name) {
-      Some(name) => name
-      None => return None
-    }
-  } else {
-    encoded_name
-  }
-  if name.contains("\u0000") {
-    return None
-  }
-  Some((record[0:length].to_owned().to_lower(), name))
-}
-
-///|
 fn format_record(
   digest : String,
   name : String,

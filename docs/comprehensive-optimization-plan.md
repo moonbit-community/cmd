@@ -37,9 +37,18 @@ closed. The [D report](reports/2026-10-24-d-diff-patch.md) retains its original
 development observations and precise filesystem boundaries. O1 adds the
 selected cut/uniq/comm/join/wc options with fixed GNU development comparisons;
 PR #52 is merged after all four required checks; actual-main run 40110917627
-also passed all three platform jobs and coverage-audit. O2-O4 source and private development comparisons
-are prepared; their committed integration and the remaining O5-O13 families
-are pending. See the
+also passed all three platform jobs and coverage-audit. O2-O4 PR #53 is merged
+after all four required checks passed; actual-main run 40128550669 is in progress.
+O5-O13 implementation candidates now have selected case/package bindings,
+canonical boundaries and private Native/Wasm fixed-provider observations.
+Tree directory sizes follow the actual public backend: Linux succeeds, the
+observed macOS backend rejects, and Windows remains subject to its real CI
+result. Dynamic size contracts avoid portable inode-size constants. The
+O5-O13 integrated Native contracts record 870 passes and ten platform exclusions;
+their PR checks and actual-main acceptance remain pending.
+Generated mktemp relationships and real closed-stdout tee scenarios retain
+their own observed dimensions; fixture-heavy private cases are not duplicated
+as large literal repository payloads. See the
 [O1 report](reports/2026-10-24-o1-text-options.md). Issue #33 remains open
 until the whole selected O stage is accepted; R and issue #32 follow O.
 

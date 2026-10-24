@@ -5,7 +5,8 @@ Version **0.2.2** behavior is documented here. The
 published MoonX behavior; `moonx` examples use registry releases.
 
 Read arguments from standard input and execute a command with bounded batches.
-Supports whitespace and NUL tokenization with quotes/backslashes, `-0`, `-n N`
+Supports whitespace tokenization with quotes/backslashes, byte tokenization
+with `-0` or `-d CHAR` / `--delimiter=CHAR`, and `-n N`
 (`--max-args=N`), `-L N`/`--max-lines=N`, `-s BYTES`/`--max-chars=BYTES`,
 `-E EOF`/`--eof=EOF`, `-r`/`--no-run-if-empty`, `-t`/`--verbose`,
 `--show-limits`, and `-I REPLACE`/`--replace=REPLACE` logical-line
@@ -24,6 +25,24 @@ to the host or caller. Environment names and locale variables are not filtered
 or rewritten by this command.
 `xargs` always reads stdin silently until EOF, including on a terminal. Native
 behavior is measured separately from Wasm host authorization.
+
+Delimiter mode preserves empty items, treats quotes/backslashes in input
+literally, and accepts one byte or a GNU named, octal, or hexadecimal escape.
+The last `-0` / `-d` wins. `-E` has no effect in either byte mode and emits the
+GNU warning. The selected immutable findutils oracle uses signed `char`, so
+delimiter bytes above 127 do not match input bytes; valid UTF-8 items still
+work. A raw non-UTF-8 argument prefix cannot cross the public process API's
+`String` argv and is rejected with status 2 before any child is launched.
+Bytes after a NUL inside an item are excluded from its C argv string but still
+count toward the byte limit.
+
+`-p` / `--interactive` opens a separate confirmation input (`/dev/tty` on
+POSIX, `CONIN$` on Windows), leaving argument stdin separate. Each proposed
+command is printed on stderr; a line starting with `y` or `Y` accepts it in
+the C locale. If that channel cannot be opened, the command returns status 2
+before consuming argument stdin or launching children. This explicit boundary
+also applies to `-p -r` with empty input; GNU may exit before opening its TTY in
+that case. Positive interactive execution requires an available host console.
 
 ## Standalone metadata
 

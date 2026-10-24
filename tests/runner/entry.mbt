@@ -77,6 +77,14 @@ async fn run_scenario_batch(
 
 ///|
 async fn run_driver() -> Unit {
+  let raw = @env.args()[1:]
+  if raw.get(0) == Some("--option-test-helper") {
+    let status = @testkit.run_option_child(raw[1:])
+    if status != 0 {
+      @sys.exit(status)
+    }
+    return
+  }
   let oracle_options = @testkit.parse_oracle_options(@env.args()[1:]) catch {
     error => {
       @stdio.stderr.write(error.to_string() + "\n" + usage() + "\n")

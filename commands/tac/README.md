@@ -12,10 +12,18 @@ printf 'a--b--' | moonx cli/tac -b -s --
 ```
 
 `-s`/`--separator` selects a fixed separator and `-b`/`--before` places
-separators before records. Standard input or one file is accepted. The
-`-r`/`--regex` form and multiple input files are not implemented and are
-rejected. These are command implementation gaps; multiple-file reading is
-available, and a byte-oriented matcher can be implemented in MoonBit.
+separators before records. Empty fixed separators mean NUL. Records retain
+their original adjoining separator, including a missing final separator.
+Ordered file operands insert no extra bytes; `-` consumes stdin. Read/open
+failures retain completed output and later operands continue.
+
+`-r`/`--regex` uses the frozen GNU Emacs byte syntax: bare `+`/`?`, escaped
+groups/alternation, literal braces, line anchors and buffer assertions. Dot
+excludes LF, and POSIX bracket-class syntax is disabled in this dialect.
+Search selects the rightmost start and longest end inside the preceding
+logical prefix. Nullable patterns make backward progress; an empty regex
+rejects before input is opened. Input remains buffered pending the resource
+stage; the matcher borrows prefixes without copying the complete remainder.
 
 ## Standalone metadata
 

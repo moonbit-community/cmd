@@ -23,8 +23,13 @@ Verification supports `--quiet`, `--status`, `--strict`, `-w/--warn`, and
 `--ignore-missing`; these options require `-c`. Ignoring missing files still
 requires at least one file to be verified. Verification accepts uppercase or
 lowercase digests, escaped filenames, comments and CRLF checksum files.
-`-z` cannot be combined with verification. BSD tagged records and `--tag` are
-not included. `--help` and `--version` are available. Exit status is 0 on
+The unpublished workspace candidate adds `--tag` output and verification of
+BSD/OpenSSL tagged records. It reads manifests one line at a time, accepts
+GNU standard or consistently BSD-reversed records, and quotes verification
+filenames like GNU. `--quiet`, `--status` and `--warn` reset one another; the
+last one wins. Status mode still reports actual file read errors.
+`-z`, explicit `--tag`, and `-b/-t` cannot be combined with verification.
+`--help` and `--version` are available. Exit status is 0 on
 success and 1 for an invalid option, unreadable input or failed verification.
 
 On Windows, text mode does not translate CRLF or treat Ctrl-Z as EOF. Use

@@ -166,7 +166,7 @@
         "help"
       ],
       "source_version": "workspace cli/cmp@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: cmp [-s|-l] [-n LIMIT] [-i SKIP[:SKIP2]] FILE1 FILE2\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stdout_text": "Usage: cmp [-b] [-s|-l] [-n LIMIT] [-i SKIP[:SKIP2]] FILE1 FILE2\n  -b, --print-bytes  print differing octal and visible byte values\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
     {
@@ -187,6 +187,225 @@
       "source_version": "workspace cli/cmp@0.2.2 metadata contract",
       "expected_stdout_text": "cmp 0.2.2\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o7-25-cmp-byte-control",
+      "command": "cmp",
+      "args": [
+        "-b",
+        "left",
+        "right"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "41007f80a0ff0a"
+        },
+        {
+          "path": "right",
+          "content_hex": "41ff807fffa00a"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/cmp; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "6c656674207269676874206469666665723a206279746520322c206c696e65203120697320202030205e4020333737204d2d5e3f0a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "print-bytes"
+      ]
+    },
+    {
+      "id": "o7-26-cmp-verbose-byte-control",
+      "command": "cmp",
+      "args": [
+        "-lb",
+        "left",
+        "right"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "41007f80a0ff0a"
+        },
+        {
+          "path": "right",
+          "content_hex": "41ff807fffa00a"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/cmp; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "3220202030205e40202020333737204d2d5e3f0a3320313737205e3f202020323030204d2d5e400a3420323030204d2d5e4020313737205e3f0a3520323430204d2d202020333737204d2d5e3f0a3620333737204d2d5e3f20323430204d2d200a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "print-bytes",
+        "verbose"
+      ]
+    },
+    {
+      "id": "o7-27-cmp-bytes-skips-limit",
+      "command": "cmp",
+      "args": [
+        "--print-bytes",
+        "-i1:2",
+        "-n2",
+        "left",
+        "right"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "41007f80a0ff0a"
+        },
+        {
+          "path": "right",
+          "content_hex": "41ff807fffa00a"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/cmp; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "6c656674207269676874206469666665723a206279746520312c206c696e65203120697320202030205e4020323030204d2d5e400a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "ignore-initial",
+        "print-bytes"
+      ]
+    },
+    {
+      "id": "o7-28-cmp-byte-eof-newline",
+      "command": "cmp",
+      "args": [
+        "-b",
+        "left",
+        "right"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "610a"
+        },
+        {
+          "path": "right",
+          "content_hex": "610a62"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/cmp; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "636d703a20454f46206f6e20276c65667427206166746572206279746520322c206c696e6520310a",
+      "oracle": true,
+      "coverage": [
+        "print-bytes"
+      ]
+    },
+    {
+      "id": "o7-29-cmp-verbose-byte-eof-after-difference",
+      "command": "cmp",
+      "args": [
+        "-lb",
+        "left",
+        "right"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "41"
+        },
+        {
+          "path": "right",
+          "content_hex": "4243"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/cmp; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "312031303120412020202031303220420a",
+      "expected_stderr_hex": "636d703a20454f46206f6e20276c65667427206166746572206279746520310a",
+      "oracle": true,
+      "coverage": [
+        "print-bytes",
+        "verbose"
+      ]
+    },
+    {
+      "id": "o7-30-cmp-byte-stdin-name",
+      "command": "cmp",
+      "args": [
+        "-b",
+        "left",
+        "-"
+      ],
+      "stdin_hex": "62",
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "61"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/cmp; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "6c656674202d206469666665723a206279746520312c206c696e6520312069732031343120612031343220620a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "print-bytes"
+      ]
+    },
+    {
+      "id": "o7-cmp-quoted-eof-name",
+      "command": "cmp",
+      "args": [
+        "-b",
+        "a'b",
+        "right"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "a'b",
+          "content_text": "a"
+        },
+        {
+          "path": "right",
+          "content_text": "ab"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/cmp; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "636d703a20454f46206f6e2027615c276227206166746572206279746520312c20696e206c696e6520310a",
+      "oracle": true,
+      "coverage": [
+        "print-bytes"
+      ]
     }
   ]
 }

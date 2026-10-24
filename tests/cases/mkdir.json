@@ -95,7 +95,7 @@
         "help"
       ],
       "source_version": "workspace cli/mkdir@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\nNote: MODE currently accepts numeric octal permissions only.\n",
+      "expected_stdout_text": "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\nMODE accepts octal or symbolic permissions (rwxXst, copied classes and comma clauses).\nOmitted-who expressions requiring the process umask are unavailable.\n",
       "expected_stderr_text": ""
     },
     {
@@ -116,6 +116,572 @@
       "source_version": "workspace cli/mkdir@0.2.2 metadata contract",
       "expected_stdout_text": "mkdir 0.2.2\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o10-mkdir-symbolic-explicit",
+      "command": "mkdir",
+      "args": [
+        "-m",
+        "u=rwx,go=rx",
+        "leaf"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "leaf",
+          "kind": "directory",
+          "mode": 493
+        }
+      ],
+      "coverage": [
+        "mode"
+      ]
+    },
+    {
+      "id": "o10-mkdir-symbolic-X-directory",
+      "command": "mkdir",
+      "args": [
+        "-m",
+        "a=rwX",
+        "leaf"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "leaf",
+          "kind": "directory",
+          "mode": 511
+        }
+      ],
+      "coverage": [
+        "mode"
+      ]
+    },
+    {
+      "id": "o10-mkdir-symbolic-copy-sequential",
+      "command": "mkdir",
+      "args": [
+        "-m",
+        "u=rw,g=u,o=g",
+        "leaf"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "leaf",
+          "kind": "directory",
+          "mode": 438
+        }
+      ],
+      "coverage": [
+        "mode"
+      ]
+    },
+    {
+      "id": "o10-mkdir-symbolic-omitted-plus",
+      "command": "mkdir",
+      "args": [
+        "-m",
+        "+w",
+        "leaf"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "leaf",
+          "kind": "directory",
+          "mode": 511
+        }
+      ],
+      "coverage": [
+        "mode"
+      ]
+    },
+    {
+      "id": "o10-mkdir-symbolic-special",
+      "command": "mkdir",
+      "args": [
+        "-m",
+        "u+s,g+s,a+t",
+        "leaf"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "exact",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "leaf",
+          "kind": "directory"
+        }
+      ],
+      "coverage": [
+        "mode"
+      ],
+      "observe": [
+        "mode"
+      ]
+    },
+    {
+      "id": "o10-mkdir-symbolic-parent-leaf",
+      "command": "mkdir",
+      "args": [
+        "-p",
+        "-m",
+        "a=rwx",
+        "new/leaf"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "new",
+          "kind": "directory"
+        },
+        {
+          "path": "new/leaf",
+          "kind": "directory",
+          "mode": 511
+        }
+      ],
+      "coverage": [
+        "mode",
+        "parents"
+      ]
+    },
+    {
+      "id": "o10-mkdir-symbolic-existing-unchanged",
+      "command": "mkdir",
+      "args": [
+        "-p",
+        "-m",
+        "a=",
+        "existing"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        }
+      ],
+      "coverage": [
+        "mode",
+        "parents"
+      ]
+    },
+    {
+      "id": "o10-mkdir-symbolic-invalid-before-operands",
+      "command": "mkdir",
+      "args": [
+        "-m",
+        "u+z",
+        "leaf"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mkdir: invalid mode 'u+z'\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "leaf",
+          "exists": false
+        }
+      ],
+      "coverage": [
+        "mode"
+      ]
+    },
+    {
+      "id": "o10-mkdir-verbose-parents",
+      "command": "mkdir",
+      "args": [
+        "-pvm",
+        "a=rx",
+        "new/leaf"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "mkdir: created directory 'new'\nmkdir: created directory 'new/leaf'\n",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "new",
+          "kind": "directory"
+        },
+        {
+          "path": "new/leaf",
+          "kind": "directory",
+          "mode": 365
+        }
+      ],
+      "coverage": [
+        "mode",
+        "parents",
+        "verbose"
+      ]
+    },
+    {
+      "id": "o10-mkdir-existing-symlink-directory",
+      "command": "mkdir",
+      "args": [
+        "-pm",
+        "a=",
+        "link"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "existing/child"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "existing/child"
+        }
+      ],
+      "coverage": [
+        "mode",
+        "parents"
+      ]
+    },
+    {
+      "id": "o10-mkdir-omitted-recovered",
+      "command": "mkdir",
+      "args": [
+        "-m",
+        "=r,a=rx",
+        "leaf"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "leaf",
+          "kind": "directory",
+          "mode": 365
+        }
+      ],
+      "coverage": [
+        "mode"
+      ]
+    },
+    {
+      "id": "o10-mkdir-symbolic-omitted-equals",
+      "command": "mkdir",
+      "args": [
+        "-m",
+        "=rx",
+        "leaf"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_rejection": "symbolic mode requires process umask",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mkdir: unsupported capability: symbolic mode requires process umask\n",
+      "normalizations": [],
+      "comparison": "boundary",
+      "source_version": "Selected public API boundary; fixed GNU counterpart is retained in private N/W observations",
+      "expected_files": [
+        {
+          "path": "leaf",
+          "exists": false
+        }
+      ],
+      "oracle": false,
+      "coverage": [
+        "mode"
+      ]
+    },
+    {
+      "id": "o10-mkdir-symbolic-omitted-minus",
+      "command": "mkdir",
+      "args": [
+        "-m",
+        "-w",
+        "leaf"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_rejection": "symbolic mode requires process umask",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mkdir: unsupported capability: symbolic mode requires process umask\n",
+      "normalizations": [],
+      "comparison": "boundary",
+      "source_version": "Selected public API boundary; fixed GNU counterpart is retained in private N/W observations",
+      "expected_files": [
+        {
+          "path": "leaf",
+          "exists": false
+        }
+      ],
+      "oracle": false,
+      "coverage": [
+        "mode"
+      ]
+    },
+    {
+      "id": "o10-mkdir-windows-symbolic-boundary",
+      "command": "mkdir",
+      "args": [
+        "-m",
+        "a=rx",
+        "leaf"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_rejection": "symbolic directory permission setter",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mkdir: unsupported capability: symbolic directory permission setter\n",
+      "normalizations": [],
+      "comparison": "boundary",
+      "source_version": "Existing core/platform permission_mutation_supported=false on Windows; requires actual Windows CI",
+      "host_platforms": [
+        "windows"
+      ],
+      "expected_files": [
+        {
+          "path": "leaf",
+          "exists": false
+        }
+      ],
+      "oracle": false,
+      "coverage": [
+        "mode"
+      ]
+    },
+    {
+      "id": "o10-mkdir-windows-existing-symbolic-noop",
+      "command": "mkdir",
+      "args": [
+        "-p",
+        "-m",
+        "a=",
+        "existing"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils9.11 existing-directory no-op observation; actual Windows CI still required",
+      "host_platforms": [
+        "windows"
+      ],
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        }
+      ],
+      "coverage": [
+        "mode",
+        "parents"
+      ]
     }
   ]
 }

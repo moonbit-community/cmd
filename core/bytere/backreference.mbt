@@ -16,7 +16,7 @@ priv enum ReferenceResult {
 
 ///|
 fn reference_end(
-  value : String,
+  value : StringView,
   position : Int32,
   captures : Array[Int32],
   group : Int32,
@@ -36,7 +36,7 @@ fn reference_end(
 ///|
 fn Pattern::reference_result(
   self : Pattern,
-  value : String,
+  value : StringView,
   start : Int32,
   whole : Bool,
   word : Bool,
@@ -62,7 +62,7 @@ fn Pattern::reference_result(
 // A failed register selection ends the search, including later starting bytes.
 fn Pattern::select_registers(
   self : Pattern,
-  value : String,
+  value : StringView,
   start : Int32,
   end : Int32,
   terminal : Int32,

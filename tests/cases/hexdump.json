@@ -31,17 +31,19 @@
         "-C",
         "-s2"
       ],
-      "stdin_text": "abc",
+      "stdin_hex": "4142430001090aff",
       "files": [],
-      "environment": {
-        "LC_ALL": "C"
-      },
-      "expected_status": 1,
-      "expected_stdout_text": "",
-      "expected_stderr_contains": "skipping stdin requires a public seekable-stream API",
-      "diagnostic_reason": "The public stdin API cannot distinguish seekable redirected files from pipes; nonzero skip is rejected without reading stdin.",
-      "expected_rejection": "skipping stdin requires a public seekable-stream API",
-      "comparison": "boundary",
+      "coverage": [
+        "canonical",
+        "skip"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "3030303030303032202034332030302030312030392030612066662020202020202020202020202020202020202020202020202020202020202020207c432e2e2e2e2e7c0a30303030303030380a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Workspace read/discard extension; display compared with fixed util-linux 2.40 named-file output",
+      "environment": {},
       "normalizations": []
     },
     {
@@ -205,17 +207,20 @@
       "command": "hexdump",
       "args": [
         "-e",
-        "1/1 \"%02x\""
+        "4/1 \"%02x \" \"\\n\""
       ],
-      "stdin_text": "abc",
+      "stdin_hex": "4142430001090aff",
       "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "34312034322034332030300a30312030392030612066660a",
+      "expected_stderr_hex": "",
       "environment": {},
-      "expected_status": 1,
-      "expected_stdout_text": "",
-      "expected_stderr_contains": "unknown short option",
-      "diagnostic_reason": "The unsupported format grammar is rejected before input consumption; wording is implementation specific.",
-      "expected_rejection": "unknown short option",
-      "comparison": "boundary",
       "normalizations": []
     },
     {
@@ -303,7 +308,7 @@
         "help"
       ],
       "source_version": "workspace cli/hexdump@0.1.2 metadata contract",
-      "expected_stdout_text": "Usage: hexdump [OPTION]... [FILE]...\nDisplay concatenated files as numbers and characters; no FILE reads stdin.\n  -b, --one-byte-octal     one-byte octal\n  -c, --one-byte-char      escaped characters\n  -C, --canonical         hexadecimal bytes with ASCII\n  -d, --two-bytes-decimal  two-byte unsigned decimal\n  -o, --two-bytes-octal    two-byte octal\n  -x, --two-bytes-hex      two-byte hexadecimal\n  -X, --one-byte-hex       one-byte hexadecimal\n  -n, --length=N          display at most N input bytes\n  -s, --skip=N            skip N input bytes in named files\n  -v, --no-squeezing      display duplicate blocks\n  -h, --help              display this help and exit\n  -V, --version           display version and exit\n",
+      "expected_stdout_text": "Usage: hexdump [OPTION]... [FILE]...\nDisplay concatenated files as numbers and characters; no FILE reads stdin.\n  -b, --one-byte-octal     one-byte octal\n  -c, --one-byte-char      escaped characters\n  -C, --canonical         hexadecimal bytes with ASCII\n  -d, --two-bytes-decimal  two-byte unsigned decimal\n  -o, --two-bytes-octal    two-byte octal\n  -x, --two-bytes-hex      two-byte hexadecimal\n  -X, --one-byte-hex       one-byte hexadecimal\n  -e, --format=FORMAT     add a custom format\n  -f, --format-file=FILE  add formats from a file\n  -L, --color[=WHEN]      enable _L colors: always, auto, or never\n  -n, --length=N          display at most N input bytes\n  -s, --skip=N            skip N input bytes\n  -v, --no-squeezing      display duplicate blocks\n  -h, --help              display this help and exit\n  -V, --version           display version and exit\n",
       "expected_stderr_text": ""
     },
     {
@@ -324,6 +329,991 @@
       "source_version": "workspace cli/hexdump@0.1.2 metadata contract",
       "expected_stdout_text": "hexdump 0.1.2\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o7-hexdump-addresses",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "\"%07.7_ax \" 4/1 \"%02x \" \"\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "303030303030302034312034322034332030300a303030303030342030312030392030612066660a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-final-address",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "\"%07.7_Ax\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-integer-sign",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "4/1 \"%+04d \" \"\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "2b303635202b303636202b303637202b3030300a2b303031202b303039202b303130202d3030310a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-integer-alternate",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "4/1 \"%#06x \" \"\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "3078303034312030783030343220307830303433203030303030300a3078303030312030783030303920307830303061203078303066660a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-integer-precision",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "4/1 \"%6.3u \" \"\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "2020203036352020202030363620202020303637202020203030300a2020203030312020202030303920202020303130202020203235350a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-raw-characters",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "4/1 \"[%c]\" \"\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "5b415d5b425d5b435d5b005d0a5b015d5b095d5b0a5d5bff5d0a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-escaped-characters",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "4/1 \"[%_c]\" \"\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "5b415d5b425d5b435d5b5c305d0a5b3030315d5b5c745d5b5c6e5d5b3337375d0a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-printable-characters",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "4/1 \"[%_p]\" \"\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "5b415d5b425d5b435d5b2e5d0a5b2e5d5b2e5d5b2e5d5b2e5d0a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-ascii-names",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "4/1 \"[%_u]\" \"\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "5b415d5b425d5b435d5b6e756c5d0a5b736f685d5b68745d5b6c665d5b66665d0a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-string-width",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "1/4 \"[%8s]\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "5b20202020204142435d0a5b2020202001090aff5d0a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-string-precision",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "\"[%.3s]\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "5b4142435d0a5b5d0a5b0aff5d0a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-implicit-counts",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "\"%04x %04x\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "3433343234312066663061303930310a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-iteration-tail",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "4/1 \"%02x \\\t\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "343120093432200934332009303020303120093039200930612009666620",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-literal-percent",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "4/1 \"%%:%02x \" \"\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "68657864756d703a2062616420636f6e76657273696f6e206368617261637465722025250a",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-signed-bytes",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "4/1 \"%4d \" \"\\n\""
+      ],
+      "stdin_hex": "ff80007f",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "20202d31202d313238202020203020203132370a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-float64",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "1/8 \"%+.20g\\n\""
+      ],
+      "stdin_hex": "9a9999999999b93f0000000000000080",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "2b302e31303030303030303030303030303030303535350a2d300a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-float32",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "1/4 \"%.12e\\n\""
+      ],
+      "stdin_hex": "cdcccc3d0000807f",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "312e303030303030303134393031652d30310a696e660a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-partial-element",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "2/4 \"%08x \" \"\\n\""
+      ],
+      "stdin_hex": "4142434445",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "34343433343234312030303030303034350a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-multiple-formats",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "4/1 \"%02x \" \"\\n\"",
+        "-e",
+        "2/2 \"%04x \" \"\\n\"",
+        "-e",
+        "\"%_Ad\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "34312034322034332030300a3432343120303034330a30312030392030612066660a3039303120666630610a380a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-format-file",
+      "command": "hexdump",
+      "args": [
+        "-f",
+        "formats"
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [
+        {
+          "path": "formats",
+          "content_text": "# comment\n\n4/1 \"%02x \" \"\\n\"\n\"%07.7_Ax\\n\"\n"
+        }
+      ],
+      "coverage": [
+        "format-file"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "34312034322034332030300a30312030392030612066660a303030303030380a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-limited-partial",
+      "command": "hexdump",
+      "args": [
+        "-n3",
+        "-e",
+        "4/1 \"%02x \" \"\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format",
+        "length"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "34312034322034332020200a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-empty-final-address",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "\"%07.7_Ax\\n\""
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-zero-length",
+      "command": "hexdump",
+      "args": [
+        "-n0",
+        "-e",
+        "\"%07.7_Ax\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format",
+        "length"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-builtin-color-always",
+      "command": "hexdump",
+      "args": [
+        "-C",
+        "--color=always"
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "canonical",
+        "color"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "3030303030303030202034312034322034332030302030312030392030612066662020202020202020202020202020202020202020202020202020207c4142432e2e2e2e2e7c0a30303030303030380a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-builtin-color-never",
+      "command": "hexdump",
+      "args": [
+        "-C",
+        "--color=never"
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "canonical",
+        "color"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "3030303030303030202034312034322034332030302030312030392030612066662020202020202020202020202020202020202020202020202020207c4142432e2e2e2e2e7c0a30303030303030380a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-short-color",
+      "command": "hexdump",
+      "args": [
+        "-L",
+        "-e",
+        "1/1 \"%02x_L[red]\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "color"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "34310a34320a34330a30300a30310a30390a30610a66660a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-color-unconditional",
+      "command": "hexdump",
+      "args": [
+        "--color=always",
+        "-e",
+        "1/1 \"%02x_L[red]\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "color",
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "1b5b33316d34311b5b306d0a1b5b33316d34321b5b306d0a1b5b33316d34331b5b306d0a1b5b33316d30301b5b306d0a1b5b33316d30311b5b306d0a1b5b33316d30391b5b306d0a1b5b33316d30611b5b306d0a1b5b33316d66661b5b306d0a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-color-hex",
+      "command": "hexdump",
+      "args": [
+        "--color=always",
+        "-e",
+        "1/1 \"%02x_L[green:0x41]\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "color",
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "1b5b33326d34311b5b306d0a34320a34330a30300a30310a30390a30610a66660a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-color-octal",
+      "command": "hexdump",
+      "args": [
+        "--color=always",
+        "-e",
+        "1/1 \"%02x_L[cyan:0101]\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "color",
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "1b5b33366d34311b5b306d0a34320a34330a30300a30310a30390a30610a66660a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-color-string",
+      "command": "hexdump",
+      "args": [
+        "--color=always",
+        "-e",
+        "1/1 \"%02x_L[yellow:A]\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "color",
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "1b5b313b33336d34311b5b306d0a34320a34330a30300a30310a30390a30610a66660a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-color-offset",
+      "command": "hexdump",
+      "args": [
+        "--color=always",
+        "-e",
+        "1/1 \"%02x_L[blue@1]\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "color",
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "34310a1b5b33346d34321b5b306d0a34330a30300a30310a30390a30610a66660a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-color-range",
+      "command": "hexdump",
+      "args": [
+        "--color=always",
+        "-e",
+        "1/1 \"%02x_L[magenta@1-3]\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "color",
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "34310a1b5b33356d34321b5b306d0a1b5b33356d34331b5b306d0a1b5b33356d30301b5b306d0a30310a30390a30610a66660a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-color-inverted",
+      "command": "hexdump",
+      "args": [
+        "--color=always",
+        "-e",
+        "1/1 \"%02x_L[!red:0x41@0,green:0x41@0]\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "color",
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "1b5b33326d34311b5b306d0a34320a34330a30300a30310a30390a30610a66660a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-color-first-match",
+      "command": "hexdump",
+      "args": [
+        "--color=always",
+        "-e",
+        "1/1 \"%02x_L[red,green]\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "color",
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "1b5b33316d34311b5b306d0a1b5b33316d34321b5b306d0a1b5b33316d34331b5b306d0a1b5b33316d30301b5b306d0a1b5b33316d30311b5b306d0a1b5b33316d30391b5b306d0a1b5b33316d30611b5b306d0a1b5b33316d66661b5b306d0a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-color-unknown-name",
+      "command": "hexdump",
+      "args": [
+        "--color=always",
+        "-e",
+        "1/1 \"%02x_L[nonesuch]\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "color",
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "34310a34320a34330a30300a30310a30390a30610a66660a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-color-disabled-invalid",
+      "command": "hexdump",
+      "args": [
+        "--color=never",
+        "-e",
+        "1/1 \"%02x_L[nonesuch:A@0-3]\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "color",
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "34310a34320a34330a30300a30310a30390a30610a66660a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-color-last-wins",
+      "command": "hexdump",
+      "args": [
+        "--color=always",
+        "--color=never",
+        "-e",
+        "1/1 \"%02x_L[red]\\n\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "color",
+        "format"
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "34310a34320a34330a30300a30310a30390a30610a66660a",
+      "expected_stderr_hex": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-bad-size",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "1/3 \"%x\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "68657864756d703a20626164206279746520636f756e7420666f7220636f6e76657273696f6e2063686172616374657220780a",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-bad-char-size",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "1/2 \"%c\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "68657864756d703a20626164206279746520636f756e7420666f7220636f6e76657273696f6e2063686172616374657220630a",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-bad-conversion",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "\"%p\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "68657864756d703a2062616420636f6e76657273696f6e206368617261637465722025700a",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-bad-star",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "\"%*x\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "68657864756d703a2062616420636f6e76657273696f6e2063686172616374657220252a0a",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-missing-string-size",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "\"%s\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "68657864756d703a202573207265717569726573206120707265636973696f6e206f722061206279746520636f756e740a",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-multiple-sized",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "1/1 \"%02x %02x\""
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "68657864756d703a206279746520636f756e742077697468206d756c7469706c6520636f6e76657273696f6e20636861726163746572730a",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-unclosed",
+      "command": "hexdump",
+      "args": [
+        "-e",
+        "4/1 \"%02x"
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "format"
+      ],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/hexdump; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "68657864756d703a2062616420666f726d6174207b342f312022253032787d0a",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o7-hexdump-stdin-read-discard-eof",
+      "command": "hexdump",
+      "args": [
+        "-C",
+        "-s20"
+      ],
+      "stdin_hex": "4142430001090aff",
+      "files": [],
+      "coverage": [
+        "canonical",
+        "skip"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030380a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Workspace read/discard extension; display compared with fixed util-linux 2.40 named-file output",
+      "environment": {},
+      "normalizations": []
     }
   ]
 }

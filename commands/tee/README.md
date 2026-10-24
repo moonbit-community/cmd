@@ -6,8 +6,22 @@ published MoonX behavior; `moonx` examples use registry releases.
 
 Copy standard input to standard output and each file operand. The observed
 `-a`/`--append` path appends instead of truncating files.
-If one output cannot be opened or written, `tee` continues writing stdout and
-the remaining outputs, then exits nonzero.
+`--output-error=warn` reports any failed output and continues the remaining
+outputs. `warn-nopipe` ignores closed-pipe errors while retaining regular-file
+errors; bare `--output-error` and `-p` select this mode. `exit` stops at the
+first output error, while `exit-nopipe` ignores pipe failures and stops for
+other errors. An output that failed is disabled, and input consumption stops
+when no outputs remain. An open failure in an exit mode occurs before reading
+stdin; files already opened remain created or truncated.
+
+The default mode continues after regular-file errors. On a broken output pipe,
+GNU normally terminates through SIGPIPE. The released runtime ignores SIGPIPE
+and has no public signal-raising API, so this particular default-mode error
+returns status 2 with an explicit unsupported-capability diagnostic. It stops
+at the same failed sink and preserves earlier output effects. Use `-p` or an
+explicit error mode for supported pipe-error handling. Native and Wasm tests
+exercise real closed OS pipes and regular files; the Windows error-number
+binding is additionally checked by its platform CI.
 
 `tee` always reads stdin silently until EOF. Terminal, pipe, and redirection
 paths do not receive a repository-specific prompt.

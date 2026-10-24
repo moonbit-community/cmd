@@ -87,7 +87,22 @@ fn has_contract_assertion(fixture : ReleaseCase) -> Bool {
 
 ///|
 fn verification_level(fixture : ReleaseCase, differential : Bool) -> String {
-  if release_mv_scenario(fixture) || release_diff_device_scenario(fixture) {
+  if release_tee_scenario(fixture) {
+    if fixture.id == "tee-default-pipe-boundary" {
+      "boundary"
+    } else if differential && fixture.comparison == Some("oracle-scenario") {
+      "differential"
+    } else {
+      "contract"
+    }
+  } else if release_mktemp_scenario(fixture) {
+    if differential && fixture.comparison == Some("oracle-scenario") {
+      "differential"
+    } else {
+      "contract"
+    }
+  } else if release_mv_scenario(fixture) ||
+    release_diff_device_scenario(fixture) {
     "boundary"
   } else if @network_scenarios.supports(fixture.id) &&
     (
@@ -178,6 +193,8 @@ fn explicit_host_contract(fixture : ReleaseCase, platform : String) -> Bool {
   (
     release_mv_scenario(fixture) ||
     release_diff_device_scenario(fixture) ||
+    release_mktemp_scenario(fixture) ||
+    release_tee_scenario(fixture) ||
     fixture.comparison == Some("contract") ||
     fixture.comparison == Some("boundary") ||
     fixture.expected_rejection is Some(_)
@@ -313,6 +330,10 @@ async fn run_oracle(
     "-e",
     "TZ=UTC",
   ])
+  if @testkit.option_child_required(fixture) {
+    let helper = @testkit.option_child_path()
+    args.append(["-v", helper + ":" + helper + ":ro"])
+  }
   let environment = @testkit.expand_environment(
     fixture.environment,
     "/work",
@@ -916,6 +937,39 @@ async fn run_selected_cases(
             )
             return reports
           }
+          if release_tee_scenario(fixture) {
+            run_tee_release_scenario(
+              manifest,
+              fixture,
+              moonx,
+              timeout_ms,
+              if differential && fixture.comparison == Some("oracle-scenario") {
+                Some(oracle_image)
+              } else {
+                None
+              },
+              reports,
+              report_root,
+            )
+            return reports
+          }
+          if release_mktemp_scenario(fixture) {
+            run_mktemp_release_scenario(
+              manifest,
+              fixture,
+              moonx,
+              timeout_ms,
+              if differential && fixture.comparison == Some("oracle-scenario") {
+                Some(oracle_image)
+              } else {
+                None
+              },
+              reports,
+              report_root,
+              candidate_executor~,
+            )
+            return reports
+          }
           if release_diff_device_scenario(fixture) {
             run_diff_device_release_scenario(
               manifest,
@@ -1024,6 +1078,13 @@ async fn print_reports(
 
 ///|
 async fn main {
+  if @env.args()[1:].get(0) == Some("--option-test-helper") {
+    let status = @testkit.run_option_child(@env.args()[2:])
+    if status != 0 {
+      @sys.exit(status)
+    }
+    return
+  }
   run_driver() catch {
     error => {
       @stdio.stderr.write("infrastructure: " + error.to_string() + "\n")
@@ -1705,6 +1766,11 @@ async fn run_driver() -> Unit {
     "release-" + run_started.to_string(),
     manifest_path~,
     case_corpus_path=base_path,
+    native_root?=if fixtures.any(@testkit.option_child_required) {
+      Some(@testkit.option_child_path())
+    } else {
+      None
+    },
     registry_path~,
     oracle_profile_id~,
     oracle_image_digest~,

@@ -1,6 +1,6 @@
 ///|
 test "xargs tokenization and replacement keep argument boundaries" {
-  assert_eq(parse_words("one 'two three' four\\ five", false), [
+  assert_eq(parse_words("one 'two three' four\\ five"), [
     "one", "two three", "four five",
   ])
   assert_eq(replacement_lines("  first line  \n\nsecond\n"), [

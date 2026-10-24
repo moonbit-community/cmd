@@ -316,12 +316,16 @@ async fn execute_scenario(
   let start = @async.now()
   let report_id = "scenario:" + fixture.id
   let device_boundary = fixture.id == "diff-directory-devices-boundary"
+  let tee_boundary = fixture.id == "tee-default-pipe-boundary"
   let retain_success = retain_success ||
     device_boundary ||
     windows_mv_scenario(fixture.id) ||
     fixture.id == "network-transfer-boundaries" ||
-    fixture.id == "network-transfer-boundaries-oracle"
+    fixture.id == "network-transfer-boundaries-oracle" ||
+    fixture.id.has_prefix("mktemp-option-effects") ||
+    fixture.id.has_prefix("tee-")
   let verification = if device_boundary ||
+    tee_boundary ||
     fixture.id == "mv-windows-wasm-links-boundary" {
     "boundary"
   } else if oracle_image is Some(_) {
@@ -379,9 +383,21 @@ async fn execute_scenario(
     ),
     () => {
       match fixture.id {
+        "tee-output-errors" =>
+          tee_modes_scenario(root, wasm, work, tee_boundary, oracle_image?)
+        "tee-output-errors-oracle" =>
+          tee_modes_scenario(root, wasm, work, tee_boundary, oracle_image?)
+        "tee-default-pipe-boundary" =>
+          tee_modes_scenario(root, wasm, work, tee_boundary, oracle_image?)
         "sh-interactive-session" => shell_interactive_scenario(root, wasm, work)
         "make-ready-ack" => make_concurrency_scenario(root, wasm, work)
         "filesystem-fidelity" => filesystem_fidelity_scenario(root, wasm, work)
+        "mktemp-option-effects" =>
+          mktemp_options_scenario(root, wasm, work, true, oracle_image?)
+        "mktemp-option-effects-oracle" =>
+          mktemp_options_scenario(root, wasm, work, true, oracle_image?)
+        "mktemp-option-effects-windows" =>
+          mktemp_options_scenario(root, wasm, work, false, oracle_image?)
         "diff-directory-devices-boundary" =>
           diff_directory_devices_boundary_scenario(root, wasm, work)
         "process-lifecycle" => process_lifecycle_scenario(root, wasm, work)
@@ -441,7 +457,16 @@ async fn execute_scenario(
       report.result
     },
     verification,
-    observations: if device_boundary && failures.is_empty() {
+    observations: if fixture.id.has_prefix("tee-") && failures.is_empty() {
+      ["status", "stderr", "file-content", "file-type"]
+    } else if fixture.id.has_prefix("mktemp-option-effects") &&
+      failures.is_empty() {
+      if fixture.id == "mktemp-option-effects-windows" {
+        ["status", "stdout", "stderr", "file-content", "file-type"]
+      } else {
+        ["status", "stdout", "stderr", "file-content", "file-type", "file-mode"]
+      }
+    } else if device_boundary && failures.is_empty() {
       ["status", "stdout", "stderr", "file-type", "symlink-target"]
     } else if device_boundary {
       []

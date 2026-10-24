@@ -72,6 +72,31 @@ fn hexadecimal(
 }
 
 ///|
+/// Match GNU ftoastr's general-format precision search, including its normal
+/// minimum precision and shorter subnormal search.
+pub fn format_roundtrip(value : Value, profile : Profile) -> String {
+  let sign = if value.is_negative() { "-" } else { "" }
+  guard value is Finite(_, coefficient, exponent) else {
+    return sign + format_magnitude(value, 'g', None, false, profile)
+  }
+  let (bits, minimum, _) = limits(profile)
+  let start = if coefficient.is_zero() ||
+    coefficient.bit_length() - 1 + exponent < minimum {
+    1
+  } else {
+    (bits - 1) * 30103 / 100000
+  }
+  let bound = (bits * 146 + 484) / 485 + 1
+  for precision = start; ; precision = precision + 1 {
+    let text = sign +
+      format_magnitude(value, 'g', Some(precision), false, profile)
+    if precision >= bound || compare(parse_prefix(text, profile).0, value) == 0 {
+      return text
+    }
+  }
+}
+
+///|
 pub fn format_magnitude(
   value : Value,
   conversion : Char,

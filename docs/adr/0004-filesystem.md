@@ -9,7 +9,7 @@ interactive ln/mv overwrite is declined, including EOF. Preserve both paths,
 continue other operands, and aggregate the failure. A no-clobber/update skip
 remains a distinct successful no-op. Earlier golden status 0 was wrong;
 real Native/Wasm and published regressions retain the corrected upstream status.
-Revision: Integrate the async 0.22.5 Native Windows link-rename fix in the accepted stage 0 subset, retain a separate Wasm host gate, and preserve the existing identity and metadata boundaries.
+Revision: Retain the stage 0 Windows rename contract and add selected O8-O12 path, mode, prompt, size and display candidates with operation-specific public-API limits.
 
 ## D-stage patch candidate
 
@@ -47,6 +47,83 @@ and late-read-error effects. Tests retain the original output, including when
 it is an input. Lift this restriction after those APIs, or another algorithm,
 prove normal, alias, mode and late-failure effects on Native/Wasm against GNU.
 It does not restrict ordinary sort output or merge to a new target/stdout.
+
+## O8-O12 filesystem option candidates
+
+Xxd creates new second-operand outputs exclusively and writes reverse offsets
+through public positioned writes. Existing outputs reject before mutation:
+without public file identity and the relevant opened-descriptor/mode operations,
+the selected implementation cannot establish alias, content-preservation and
+mode effects. Path canonicalization or hashes do not supply that identity.
+Lift this boundary after those public operations and fixed-provider Native/Wasm
+new/existing/alias/backpatch/failure-effect observations pass.
+
+Realpath walks physical components while implementing default final-missing,
+existing-only, missing-permitted, strip and relative-to/base rules. Lexical
+`-m -s` needs no link API. An unresolved physical link target needs public
+readlink; known existing canonical components can still use public realpath.
+Only that unresolved link path rejects. Lift it with released readlink plus
+dangling-link, dot/dotdot, missing/intermediate-component and error-order cases;
+missing operands alone are not an API gap.
+
+Mktemp uses the final X run, inferred or explicit suffix, GNU default template,
+optional long tmpdir/required short directory selection and quiet failures.
+Secure public randomness supplies unbiased alphanumeric names, and exclusive
+file/directory creation with bounded collisions supplies ownership. Generated
+scenarios compare name, content, type and POSIX mode relationships rather than
+literal random stdout; Windows checks the supported effects without asserting
+POSIX mode. No unsafe `-u` mode is added.
+
+Mkdir compiles symbolic clauses and evaluates omitted-who rules across every
+possible 0777 umask. Results independent of the unknown mask are supported;
+truly mask-dependent results reject before creation. Unknown parent raw mode
+and GNU's temporary owner-permission adjustments remain narrow limits, as do
+unavailable Windows mode setters. An existing Windows `-p` no-op is supported.
+Lift only the relevant limit after public umask/raw-mode/setter operations and
+Native/Wasm leaf/parent/partial-effect observations exist.
+
+Rm implements explicit per-entry and once prompts with a byte reader, GNU C
+y/Y acceptance and option-order semantics. Once prompting uses original operand
+count or recursive mode before traversal; iterative traversal preserves prompt
+order. These prompts do not require terminal detection. Automatic write-protect
+prompting still needs public terminal state and raw permission metadata; keep
+that distinction explicit instead of disabling supportable `-i`/`-I` modes.
+
+Ls implements selected C quoting, columns/across/commas, post-quote widths, tab
+stops and explicit color. Type, suffix and link-target colors use public kind
+metadata and preserve raw LS_COLORS bytes. Enabled su/sg/ca/ex/mh predicates
+need raw mode, capabilities or link count for regular files; tw/ow/st need raw
+directory mode. Only relevant enabled predicates reject. Effective execute
+access does not establish GNU's any-execute-bit rule. Disable those selectors
+to use supported colors; lift them with the specific released reader and exact
+Native/Wasm predicate/color tests. `--color=auto` and its terminal aliases
+remain rejected until a released terminal query establishes that decision.
+
+Tree applies selected filters and postorder prune/disk-usage totals through an
+iterative traversal, with iterative text/JSON/HTML renderers and bounded output
+batches. Directory sizes use the actual public `file_size` result. Linux
+Native/Wasm returned directory metadata and passed same-fixture immutable
+provider comparisons; the observed macOS Native/Wasm backend returns Operation
+not supported and has four platform-specific rejection contracts. Windows uses
+the public result rather than a guessed platform size. The dynamic package
+regression computes real fixture sizes and subtree/root totals; selected Linux
+contracts assert stable output fragments while full backend/oracle snapshots
+compare all bytes. No portable 4096-byte inode golden is asserted. Lift a
+backend's size limit only when it supplies metadata and those dynamic tests pass.
+
+Selected symbolic links still require readlink text; filtered-out links do not
+trigger that boundary. Present tree mode-color selectors, even zero values,
+require raw mode, and HTML regular-file color needs executable classification.
+Omit unsupported selectors for ordinary type/suffix color, or lift the limit
+with a public mode reader and independent text/HTML predicate observations.
+HTML deliberately escapes unsafe names/title/URLs and uses the cli/tree page
+metadata; fixed-provider safe HTML bodies are compared separately from that
+documented page contract. Neither safe escaping nor retained generic errors is
+a missing-API claim.
+
+These are unpublished source candidates. Selected JSON and package regressions
+retain the boundaries; required PR, actual-main and published-coordinate
+acceptance remain separate.
 
 ## Stage 0: Windows link rename
 
@@ -137,12 +214,13 @@ absence; Linux fixed GNU is the independent oracle, Windows contracts are separa
 
 Implement each backend's maximum correct subset. Public async 0.22.4 lacks identity, mode reads and handle truncation. Default cp therefore fails instead of creating wrong permissions. GNU --no-preserve=mode supports new destinations with 0666/0777 subject to umask; existing regular-file overwrite is rejected. No-clobber/update no-ops remain. Touch creates missing files and implements -c for missing operands; existing timestamp updates fail without content writes. Numeric chmod follows command-line symlinks and skips recursively encountered symlinks. mkdir -p -m applies the requested mode only to the leaf. Exotic umasks requiring temporary owner permissions remain uncertified.
 
-The current async 0.22.4 baseline makes existing-target canonicalization
-available through public `fs.realpath`; `realpath` therefore implements existing
-paths, `-e` and `-z` while rejecting missing-path GNU extensions. `tree` uses
-public directory traversal and rejects symbolic links before output because
-readlink is still unavailable. `mktemp` uses public `env.rand` plus exclusive
-CreateNew/mkdir retries; it never uses timestamps or rename as a safety claim.
+Public `fs.realpath` supplies existing-target canonicalization. The O10
+candidate above adds supportable missing-path and lexical operations without
+inventing an unresolved symlink target. Public directory traversal does not
+provide readlink, raw mode or inode identity; tree's selected profile must
+state only the operations for which those values are actually necessary.
+Mktemp uses secure public randomness plus exclusive CreateNew/mkdir retries;
+it never uses timestamps or rename as an ownership claim.
 
 Tests request metadata dimensions explicitly. Shared snapshots collect metadata
 before content, use host `stat`/`readlink` only as test observers on POSIX, and
@@ -198,18 +276,19 @@ Candidate runtime results are recorded separately from published versions.
 ## Migrated filesystem profiles
 
 Target: preserve upstream path effects and fail without destructive guesses.
-Version evidence is async 0.22.4 on MoonBit 2026-09-20, the public fs interface,
-per-command `tests/cases/<command>.json` and the 0.1.1/0.1.0 release reports.
+The table records current workspace profiles and their public-API boundaries.
+Historical migration evidence uses async 0.22.4 on MoonBit 2026-09-20 and the
+0.1.1/0.1.0 release reports; current cases are in `tests/cases/<command>.json`.
 Every row retains the pure MoonBit boundary; host observers never implement it.
 
 | Commands | Choice and reason | Rejected alternative / compatibility cost | Evidence and unlock condition |
 | --- | --- | --- | --- |
-| realpath | Reuse public realpath for existing paths; `-e/-z` and ordered operands are supported. | Do not lexically remove components and call it symlink-aware canonicalization. Missing-last/default behavior, `-m`, relative output and `-s` need separate work; lexical `-s` is implementable, full missing-path link resolution may need readlink. | `realpath.json`, 0.1.1 release. Add missing intermediate/final components, broken links, `..` after links and relative-base cases before expanding. |
-| tree | Deterministic ordinary-directory traversal with depth/hidden/type selection and totals; preflight unsupported links. | Do not silently omit symlinks or use realpath as original link text. This restricts even default tree on common linked directories. JSON/HTML/filters/colors are project work; link arrows/loops and owner/mode/device output need specific APIs. | `tree.json`, first-batch report and public readlink/identity absence. Add exact link text, dangling/loop fixtures and metadata observers when APIs appear; algorithm-only output modes need no upstream wait. |
-| mktemp | Public randomness plus exclusive creation, collision retries and 0600/0700 creation permissions; use one trailing-X template. | Reject predictable time names and exists-then-create races. `-p`, suffix/template variants and quiet mode are deferred parsing work; owner/Windows mode parity is unverified. | `mktemp.json` and first-batch report. Expand with deterministic collision injection, template/env precedence, umask and per-platform permission observations. |
+| realpath | Public resolution for physically resolvable paths; lexical `-m/-s`, relative-to/base, quiet and ordered operands have selected contracts. | Lexical normalization does not establish physical link resolution. Unresolvable link targets retain the documented readlink boundary. | `realpath.json` and O10 package tests cover missing paths, dot/dotdot, relative bases and link refusals. Lift physical-path restrictions only with the missing public API and same-fixture link evidence. |
+| tree | Iterative traversal/postorder totals and C-locale text, JSON/HTML, filters, pruning, file limits and explicit color. Directory size uses actual per-platform API results. | Original link text and metadata-dependent output retain their API boundaries; HTML follows the documented project profile. macOS directory-size refusal is not a Linux restriction. | `tree.json`, rendering/package tests, Linux directory-size observations and the current support record. Add link/metadata output only with the required public API and upstream observations. |
+| mktemp | Public randomness, exclusive creation/retry, default and explicit template/suffix rules, `-p/-t`, quiet and selected environment precedence. | No predictable names or exists-then-create race. POSIX 0600/0700 observations do not establish Windows owner/ACL parity; `-u` remains outside the selected profile. | `mktemp.json` and generated-name scenarios check reported path, type, emptiness, creation count and applicable private mode. Extend owner/ACL claims only with real platform APIs and observations. |
 | unlink | Preflight exactly one operand, then remove a non-directory name without following symlinks. | Reject the previous multiple-removal extension: extra operands return 1 before any unlink. This intentionally removes non-GNU behavior; no ownership API is required. | Coreutils 9.11 plus two untouched files, single file, -- dash-name and directory-target symlink regressions. No pending API gate for ordinary unlink; widen only to upstream behavior with side-effect evidence. |
-| split, csplit | Exclusive new pieces; buffered input, byte/line or regex boundaries and deterministic suffixes. csplit cleans only files this invocation created unless `-k` requests retention. | Do not truncate collisions or remove pre-existing files during cleanup. Input-sized memory, split Int32 counts and suffix bounds are costs; chunk/filter/custom-suffix modes are implementation work. | Their JSON/package tests, collision/cleanup fixtures. Add streaming/counter and suffix-exhaustion tests for algorithm expansion; existing-name overwrite still requires the handle identity/truncation gate above. |
-| patch | Exact-hunk stdout/dry-run and explicit create/delete are usable now; existing pathname or named-output replacement remains unavailable. | Rename can replace inode, but not preserve unknown source mode. Reject both unguarded in-place writes and wrong-mode replacement; fuzz/offset/reject files are separate algorithm work. | Mode/link observation and contracts cited above. Public mode + safe replacement and GNU hard-link/mode/mixed-failure fixtures unlock writeback; hunk algorithms follow ADR-0009. |
+| split, csplit | Exclusive new pieces and selected suffix/chunk/filter options. Split streams independent distributions and spools total-dependent input; csplit supports suffix formats and suppressed matches. | Do not truncate collisions or remove pre-existing files during cleanup. Csplit's input-sized retention is addressed separately by R; suffix/counter and observable-cancel limits remain explicit. | Their current JSON/package and filter/collision/cleanup fixtures. R supplies paged csplit offsets and large-input observations; existing-name overwrite still requires the handle identity/truncation gate above. |
+| patch | Offset/fuzz matching, ordered partial hunks, rejects, stdout/dry-run and explicit create/delete follow the selected D profile. Existing pathname and named-output replacement remain unavailable. | Replacing an inode does not preserve unknown source mode; unguarded in-place writes can modify aliases. Reject existing reject-file destinations before writes. | Current hunk/reject/mixed-effect cases and ADR-0009. Public mode plus safe replacement and GNU hard-link/mode fixtures are required to unlock existing-file writeback. |
 
 ## Revisit when
 

@@ -57,7 +57,11 @@ async fn execute_backend_pair(
         "backend-pair-infrastructure",
         error.to_string(),
         @async.now() - start,
-        Some(report_dir + "/backend-pair/" + fixture.id),
+        Some(
+          report_dir +
+          "/backend-pair/" +
+          @testkit.case_directory_name(fixture.id),
+        ),
       )
   }
 }
@@ -92,7 +96,9 @@ async fn execute_backend_pair_inner(
       None,
     )
   }
-  let pair_root = report_dir + "/backend-pair/" + fixture.id
+  let pair_root = report_dir +
+    "/backend-pair/" +
+    @testkit.case_directory_name(fixture.id)
   if @fs.exists(pair_root) {
     return pair_report(
       fixture,
@@ -162,8 +168,12 @@ async fn execute_backend_pair_inner(
       Some(pair_root),
     )
   }
-  let native_root = pair_root + "/native/" + fixture.id
-  let wasm_root = pair_root + "/wasm/" + fixture.id
+  let native_root = pair_root +
+    "/native/" +
+    @testkit.case_directory_name(fixture.id)
+  let wasm_root = pair_root +
+    "/wasm/" +
+    @testkit.case_directory_name(fixture.id)
   let native_stdout = pair_stream(
     fixture,
     @fs.read_file(native_root + "/stdout.bin").binary(),
@@ -330,6 +340,12 @@ async fn scenario_pair_snapshot(
   fixture : @testkit.Case,
 ) -> String {
   let work = evidence + "/work"
+  if fixture.id.has_prefix("mktemp-option-effects") {
+    return @fs.read_file(work + "/mktemp-relations.json").text()
+  }
+  if ["tee-output-errors", "tee-default-pipe-boundary"].contains(fixture.id) {
+    return @fs.read_file(work + "/tee-relations.json").text()
+  }
   let origin_path = evidence + "/network-origin.txt"
   let origin = if @fs.exists(origin_path) {
     Some(@fs.read_file(origin_path).text())
@@ -407,7 +423,9 @@ async fn execute_scenario_backend_pair(
   side_reports? : Array[@testkit.CaseReport],
 ) -> @testkit.CaseReport {
   let started = @async.now()
-  let pair_root = report_dir + "/backend-pair/" + fixture.id
+  let pair_root = report_dir +
+    "/backend-pair/" +
+    @testkit.case_directory_name(fixture.id)
   let base = {
     ..pair_report(
       fixture,
@@ -514,7 +532,11 @@ async fn execute_scenario_backend_pair(
         "scenario observations differ; inspect retained native/wasm observations and raw captures"
       },
       duration_ms: @async.now() - started,
-      observations: ["status", "stdout", "stderr", "file-content"],
+      observations: if equal {
+        option_scenario_pair_observations(fixture)
+      } else {
+        []
+      },
       missing_observations: [],
     }
   } catch {
@@ -524,5 +546,24 @@ async fn execute_scenario_backend_pair(
         detail: error.to_string(),
         duration_ms: @async.now() - started,
       }
+  }
+}
+
+///|
+fn option_scenario_pair_observations(fixture : @testkit.Case) -> Array[String] {
+  if fixture.id.has_prefix("mktemp-option-effects") {
+    let observations = [
+      "status", "stdout", "stderr", "file-content", "file-type",
+    ]
+    if fixture.id != "mktemp-option-effects-windows" {
+      observations.push("file-mode")
+    }
+    observations
+  } else if ["tee-output-errors", "tee-default-pipe-boundary"].contains(
+      fixture.id,
+    ) {
+    ["status", "stderr", "file-content", "file-type"]
+  } else {
+    ["status", "stdout", "stderr", "file-content"]
   }
 }

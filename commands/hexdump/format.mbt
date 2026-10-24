@@ -32,7 +32,7 @@ fn spaces(n : Int32) -> String {
 }
 
 ///|
-fn character(byte : Byte) -> String {
+fn escaped_character(byte : Byte) -> String {
   let n = byte.to_int()
   let result = if n >= 32 && n <= 126 {
     n.unsafe_to_char().to_string()
@@ -49,6 +49,12 @@ fn character(byte : Byte) -> String {
       _ => number(n.to_int64(), 8, 3)
     }
   }
+  result
+}
+
+///|
+fn character(byte : Byte) -> String {
+  let result = escaped_character(byte)
   spaces(3 - result.length()) + result
 }
 

@@ -83,7 +83,7 @@
         "help"
       ],
       "source_version": "workspace cli/tee@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: tee [-a] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stdout_text": "Usage: tee [-ap] [--output-error[=MODE]] [FILE...]\n  -a, --append             append instead of truncating output files\n  -p                       ignore broken output pipes; continue other sinks\n      --output-error[=MODE] warn, warn-nopipe, exit, exit-nopipe\n      --help               display this help and exit\n      --version            display version and exit\n",
       "expected_stderr_text": ""
     },
     {
@@ -104,6 +104,609 @@
       "source_version": "workspace cli/tee@0.2.2 metadata contract",
       "expected_stdout_text": "tee 0.2.2\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o13-tee-open-warn",
+      "command": "tee",
+      "args": [
+        "--output-error=warn",
+        "directory",
+        "sink"
+      ],
+      "stdin_hex": "616263",
+      "files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_files": [
+        {
+          "path": "sink",
+          "exists": true,
+          "content_hex": "616263"
+        },
+        {
+          "path": "later",
+          "exists": false,
+          "content_hex": ""
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_hex": "616263",
+      "expected_stderr_text": "tee: directory: Is a directory\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output-error"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tee-open-warn-nopipe",
+      "command": "tee",
+      "args": [
+        "--output-error=warn-nopipe",
+        "directory",
+        "sink"
+      ],
+      "stdin_hex": "616263",
+      "files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_files": [
+        {
+          "path": "sink",
+          "exists": true,
+          "content_hex": "616263"
+        },
+        {
+          "path": "later",
+          "exists": false,
+          "content_hex": ""
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_hex": "616263",
+      "expected_stderr_text": "tee: directory: Is a directory\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output-error"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tee-open-exit",
+      "command": "tee",
+      "args": [
+        "--output-error=exit",
+        "directory",
+        "sink"
+      ],
+      "stdin_hex": "616263",
+      "files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_files": [
+        {
+          "path": "sink",
+          "exists": false,
+          "content_hex": ""
+        },
+        {
+          "path": "later",
+          "exists": false,
+          "content_hex": ""
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "tee: directory: Is a directory\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output-error"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tee-open-exit-nopipe",
+      "command": "tee",
+      "args": [
+        "--output-error=exit-nopipe",
+        "directory",
+        "sink"
+      ],
+      "stdin_hex": "616263",
+      "files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_files": [
+        {
+          "path": "sink",
+          "exists": false,
+          "content_hex": ""
+        },
+        {
+          "path": "later",
+          "exists": false,
+          "content_hex": ""
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "tee: directory: Is a directory\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output-error"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tee-open-default",
+      "command": "tee",
+      "args": [
+        "directory",
+        "sink"
+      ],
+      "stdin_hex": "616263",
+      "files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_files": [
+        {
+          "path": "sink",
+          "exists": true,
+          "content_hex": "616263"
+        },
+        {
+          "path": "later",
+          "exists": false,
+          "content_hex": ""
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_hex": "616263",
+      "expected_stderr_text": "tee: directory: Is a directory\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tee-open-later-error",
+      "command": "tee",
+      "args": [
+        "--output-error=exit",
+        "sink",
+        "directory",
+        "later"
+      ],
+      "stdin_hex": "616263",
+      "files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_files": [
+        {
+          "path": "sink",
+          "exists": true,
+          "content_hex": ""
+        },
+        {
+          "path": "later",
+          "exists": false,
+          "content_hex": ""
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "tee: directory: Is a directory\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output-error"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tee-bare-output-error",
+      "command": "tee",
+      "args": [
+        "--output-error",
+        "sink"
+      ],
+      "stdin_hex": "616263",
+      "files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_files": [
+        {
+          "path": "sink",
+          "exists": true,
+          "content_hex": "616263"
+        },
+        {
+          "path": "later",
+          "exists": false,
+          "content_hex": ""
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "616263",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output-error"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tee-short-p",
+      "command": "tee",
+      "args": [
+        "-p",
+        "sink"
+      ],
+      "stdin_hex": "616263",
+      "files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_files": [
+        {
+          "path": "sink",
+          "exists": true,
+          "content_hex": "616263"
+        },
+        {
+          "path": "later",
+          "exists": false,
+          "content_hex": ""
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "616263",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output-error"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tee-repeat-p-last",
+      "command": "tee",
+      "args": [
+        "--output-error=exit",
+        "-p",
+        "directory",
+        "sink"
+      ],
+      "stdin_hex": "616263",
+      "files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_files": [
+        {
+          "path": "sink",
+          "exists": true,
+          "content_hex": "616263"
+        },
+        {
+          "path": "later",
+          "exists": false,
+          "content_hex": ""
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_hex": "616263",
+      "expected_stderr_text": "tee: directory: Is a directory\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output-error"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tee-repeat-exit-last",
+      "command": "tee",
+      "args": [
+        "-p",
+        "--output-error=exit",
+        "directory",
+        "sink"
+      ],
+      "stdin_hex": "616263",
+      "files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_files": [
+        {
+          "path": "sink",
+          "exists": false,
+          "content_hex": ""
+        },
+        {
+          "path": "later",
+          "exists": false,
+          "content_hex": ""
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "tee: directory: Is a directory\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output-error"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tee-invalid-mode",
+      "command": "tee",
+      "args": [
+        "--output-error=bad",
+        "sink"
+      ],
+      "stdin_hex": "616263",
+      "files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_files": [
+        {
+          "path": "sink",
+          "exists": false,
+          "content_hex": ""
+        },
+        {
+          "path": "later",
+          "exists": false,
+          "content_hex": ""
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "tee: invalid argument 'bad' for '--output-error'\nValid arguments are:\n  - 'warn'\n  - 'warn-nopipe'\n  - 'exit'\n  - 'exit-nopipe'\nTry 'tee --help' for more information.\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output-error"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tee-mode-prefix",
+      "command": "tee",
+      "args": [
+        "--output-error=warn-n",
+        "sink"
+      ],
+      "stdin_text": "abc",
+      "files": [],
+      "expected_files": [
+        {
+          "path": "sink",
+          "content_text": "abc"
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "616263",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output-error"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tee-mode-ambiguous",
+      "command": "tee",
+      "args": [
+        "--output-error=w",
+        "sink"
+      ],
+      "stdin_text": "abc",
+      "files": [],
+      "expected_files": [
+        {
+          "path": "sink",
+          "exists": false
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "tee: ambiguous argument 'w' for '--output-error'\nValid arguments are:\n  - 'warn'\n  - 'warn-nopipe'\n  - 'exit'\n  - 'exit-nopipe'\nTry 'tee --help' for more information.\n",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output-error"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tee-append-p",
+      "command": "tee",
+      "args": [
+        "-ap",
+        "sink"
+      ],
+      "stdin_text": "abc",
+      "files": [
+        {
+          "path": "sink",
+          "content_text": "first"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "sink",
+          "content_text": "firstabc"
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "616263",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "append",
+        "output-error"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "tee-output-errors",
+      "command": "tee",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "timeout_ms": 60000,
+      "coverage": [
+        "output-error",
+        "pipe-errors"
+      ],
+      "source_version": "Five explicit output-error modes with an actually closed stdout pipe and later file sink",
+      "oracle": false
+    },
+    {
+      "id": "tee-output-errors-oracle",
+      "command": "tee",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "oracle-scenario",
+      "host_platforms": [
+        "linux"
+      ],
+      "timeout_ms": 120000,
+      "coverage": [
+        "output-error",
+        "pipe-errors"
+      ],
+      "source_version": "GNU coreutils 9.11 immutable oracle with the same pure MoonBit pipe observer",
+      "oracle": false
+    },
+    {
+      "id": "tee-default-pipe-boundary",
+      "command": "tee",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "timeout_ms": 30000,
+      "coverage": [
+        "pipe-errors",
+        "SIGPIPE"
+      ],
+      "source_version": "Runtime SIGPIPE-restoration boundary; asserts actual status 2, exact diagnostic and empty created sink",
+      "oracle": false
     }
   ]
 }

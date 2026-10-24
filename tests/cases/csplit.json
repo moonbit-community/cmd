@@ -217,7 +217,7 @@
         "help"
       ],
       "source_version": "workspace cli/csplit@0.2.0 metadata contract",
-      "expected_stdout_text": "Usage: csplit [OPTION]... FILE PATTERN...\nSplit FILE (- for stdin) at line numbers or basic regular expressions.\nPatterns: NUMBER, /REGEXP/[OFFSET], %REGEXP%[OFFSET], {N}, {*}\n\n  -f, --prefix=PREFIX      Use PREFIX instead of xx.\n  -n, --digits=NUMBER      Use at least NUMBER suffix digits (default 2).\n  -s, --silent             Suppress output byte counts.\n  -q, --quiet              Same as --silent.\n  -k, --keep-files         Keep created fragments after a split error.\n  -z, --elide-empty-files  Omit empty output fragments.\n      --help               display this help and exit\n      --version            display version and exit\n\nBRE matching includes backreferences, byte classes and word assertions.\nExisting output paths, custom suffix formats and locale-specific matching\nare unsupported.\n",
+      "expected_stdout_text": "Usage: csplit [OPTION]... FILE PATTERN...\nSplit FILE (- for stdin) at line numbers or basic regular expressions.\nPatterns: NUMBER, /REGEXP/[OFFSET], %REGEXP%[OFFSET], {N}, {*}\n\n  -f, --prefix=PREFIX      Use PREFIX instead of xx.\n  -n, --digits=NUMBER      Use at least NUMBER suffix digits (default 2).\n  -b, --suffix-format=FORMAT  Use one d/i/u/o/x/X conversion for suffixes.\n      --suppress-matched    Omit the offset-adjusted split boundary line.\n  -s, --silent             Suppress output byte counts.\n  -q, --quiet              Same as --silent.\n  -k, --keep-files         Keep created fragments after a split error.\n  -z, --elide-empty-files  Omit empty output fragments.\n      --help               display this help and exit\n      --version            display version and exit\n\nBRE matching includes backreferences, byte classes and word assertions.\nExisting output paths and locale-specific matching are unsupported.\n",
       "expected_stderr_text": ""
     },
     {
@@ -374,6 +374,1460 @@
           "content_text": "start\naa\nend\n"
         }
       ]
+    },
+    {
+      "id": "o6-csplit-suffix-decimal",
+      "command": "csplit",
+      "args": [
+        "-f",
+        "part-",
+        "-b",
+        "%d",
+        "split",
+        "3",
+        "{1}"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "part-2",
+          "content_hex": "4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "part-0",
+          "content_hex": "4c310a6869740a"
+        },
+        {
+          "path": "part-1",
+          "content_hex": "4c330a4c340a6869740a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "prefix",
+        "suffix-format"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "7\n10\n13\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suffix-unsigned",
+      "command": "csplit",
+      "args": [
+        "-f",
+        "part-",
+        "-b",
+        "%u",
+        "split",
+        "3",
+        "{1}"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "part-2",
+          "content_hex": "4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "part-0",
+          "content_hex": "4c310a6869740a"
+        },
+        {
+          "path": "part-1",
+          "content_hex": "4c330a4c340a6869740a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "prefix",
+        "suffix-format"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "7\n10\n13\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suffix-percent",
+      "command": "csplit",
+      "args": [
+        "-f",
+        "part-",
+        "-b",
+        "pre%%-%03d.out",
+        "split",
+        "3",
+        "{1}"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "part-pre%-001.out",
+          "content_hex": "4c330a4c340a6869740a"
+        },
+        {
+          "path": "part-pre%-000.out",
+          "content_hex": "4c310a6869740a"
+        },
+        {
+          "path": "part-pre%-002.out",
+          "content_hex": "4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "prefix",
+        "suffix-format"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "7\n10\n13\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suffix-alternative-hex",
+      "command": "csplit",
+      "args": [
+        "-f",
+        "part-",
+        "-b",
+        "%#x",
+        "split",
+        "3",
+        "{1}"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "part-0x2",
+          "content_hex": "4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "part-0",
+          "content_hex": "4c310a6869740a"
+        },
+        {
+          "path": "part-0x1",
+          "content_hex": "4c330a4c340a6869740a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "prefix",
+        "suffix-format"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "7\n10\n13\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suffix-precision",
+      "command": "csplit",
+      "args": [
+        "-f",
+        "part-",
+        "-b",
+        "%.0d",
+        "split",
+        "3",
+        "{1}"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "part-2",
+          "content_hex": "4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "part-",
+          "content_hex": "4c310a6869740a"
+        },
+        {
+          "path": "part-1",
+          "content_hex": "4c330a4c340a6869740a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "prefix",
+        "suffix-format"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "7\n10\n13\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suffix-left-width",
+      "command": "csplit",
+      "args": [
+        "-f",
+        "part-",
+        "-b",
+        "%-3d",
+        "split",
+        "3",
+        "{1}"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "part-0  ",
+          "content_hex": "4c310a6869740a"
+        },
+        {
+          "path": "part-1  ",
+          "content_hex": "4c330a4c340a6869740a"
+        },
+        {
+          "path": "part-2  ",
+          "content_hex": "4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "prefix",
+        "suffix-format"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "7\n10\n13\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suffix-invalid-multiple",
+      "command": "csplit",
+      "args": [
+        "-f",
+        "part-",
+        "-b",
+        "%d%d",
+        "split",
+        "3",
+        "{1}"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "exists": false
+        },
+        {
+          "path": "part-00",
+          "exists": false
+        }
+      ],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "prefix",
+        "suffix-format"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "csplit: too many % conversion specifications in suffix\n",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suffix-invalid-none",
+      "command": "csplit",
+      "args": [
+        "-f",
+        "part-",
+        "-b",
+        "plain",
+        "split",
+        "3",
+        "{1}"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "exists": false
+        },
+        {
+          "path": "part-00",
+          "exists": false
+        }
+      ],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "prefix",
+        "suffix-format"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "csplit: missing % conversion specification in suffix\n",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suffix-invalid-escaped-only",
+      "command": "csplit",
+      "args": [
+        "-f",
+        "part-",
+        "-b",
+        "%%",
+        "split",
+        "3",
+        "{1}"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "exists": false
+        },
+        {
+          "path": "part-00",
+          "exists": false
+        }
+      ],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "prefix",
+        "suffix-format"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "csplit: missing % conversion specification in suffix\n",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suffix-invalid-string",
+      "command": "csplit",
+      "args": [
+        "-f",
+        "part-",
+        "-b",
+        "%s",
+        "split",
+        "3",
+        "{1}"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "exists": false
+        },
+        {
+          "path": "part-00",
+          "exists": false
+        }
+      ],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "prefix",
+        "suffix-format"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "csplit: invalid conversion specifier in suffix: s\n",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suffix-invalid-length",
+      "command": "csplit",
+      "args": [
+        "-f",
+        "part-",
+        "-b",
+        "%ld",
+        "split",
+        "3",
+        "{1}"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "exists": false
+        },
+        {
+          "path": "part-00",
+          "exists": false
+        }
+      ],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "prefix",
+        "suffix-format"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "csplit: invalid conversion specifier in suffix: l\n",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suffix-invalid-plus",
+      "command": "csplit",
+      "args": [
+        "-f",
+        "part-",
+        "-b",
+        "%+d",
+        "split",
+        "3",
+        "{1}"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "exists": false
+        },
+        {
+          "path": "part-00",
+          "exists": false
+        }
+      ],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "prefix",
+        "suffix-format"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "csplit: invalid conversion specifier in suffix: +\n",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suffix-invalid-alt-decimal",
+      "command": "csplit",
+      "args": [
+        "-f",
+        "part-",
+        "-b",
+        "%#d",
+        "split",
+        "3",
+        "{1}"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "exists": false
+        },
+        {
+          "path": "part-00",
+          "exists": false
+        }
+      ],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "prefix",
+        "suffix-format"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "csplit: invalid flags in conversion specification: %#d\n",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suffix-hex-growth",
+      "command": "csplit",
+      "args": [
+        "-f",
+        "part-",
+        "-b",
+        "%02x",
+        "twelve",
+        "1",
+        "{10}"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "twelve",
+          "content_hex": "30310a30320a30330a30340a30350a30360a30370a30380a30390a31300a31310a31320a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "twelve",
+          "content_hex": "30310a30320a30330a30340a30350a30360a30370a30380a30390a31300a31310a31320a"
+        },
+        {
+          "path": "part-07",
+          "content_hex": "30370a"
+        },
+        {
+          "path": "part-00",
+          "content_hex": ""
+        },
+        {
+          "path": "part-09",
+          "content_hex": "30390a"
+        },
+        {
+          "path": "part-0a",
+          "content_hex": "31300a"
+        },
+        {
+          "path": "part-08",
+          "content_hex": "30380a"
+        },
+        {
+          "path": "part-01",
+          "content_hex": "30310a"
+        },
+        {
+          "path": "part-06",
+          "content_hex": "30360a"
+        },
+        {
+          "path": "part-03",
+          "content_hex": "30330a"
+        },
+        {
+          "path": "part-04",
+          "content_hex": "30340a"
+        },
+        {
+          "path": "part-05",
+          "content_hex": "30350a"
+        },
+        {
+          "path": "part-02",
+          "content_hex": "30320a"
+        },
+        {
+          "path": "part-0b",
+          "content_hex": "31310a31320a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "prefix",
+        "suffix-format"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "0\n3\n3\n3\n3\n3\n3\n3\n3\n3\n3\n6\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suffix-repeat",
+      "command": "csplit",
+      "args": [
+        "-f",
+        "part-",
+        "-b",
+        "%03d",
+        "-b",
+        "%02x",
+        "split",
+        "3",
+        "{1}"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "part-00",
+          "content_hex": "4c310a6869740a"
+        },
+        {
+          "path": "part-01",
+          "content_hex": "4c330a4c340a6869740a"
+        },
+        {
+          "path": "part-02",
+          "content_hex": "4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "prefix",
+        "suffix-format"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "7\n10\n13\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-digits-before-suffix",
+      "command": "csplit",
+      "args": [
+        "-f",
+        "part-",
+        "-n5",
+        "-b",
+        "%d",
+        "split",
+        "3",
+        "{1}"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "part-2",
+          "content_hex": "4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "part-0",
+          "content_hex": "4c310a6869740a"
+        },
+        {
+          "path": "part-1",
+          "content_hex": "4c330a4c340a6869740a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "digits",
+        "prefix",
+        "suffix-format"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "7\n10\n13\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-digits-after-suffix",
+      "command": "csplit",
+      "args": [
+        "-f",
+        "part-",
+        "-b",
+        "%d",
+        "-n5",
+        "split",
+        "3",
+        "{1}"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "part-2",
+          "content_hex": "4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "part-0",
+          "content_hex": "4c310a6869740a"
+        },
+        {
+          "path": "part-1",
+          "content_hex": "4c330a4c340a6869740a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "digits",
+        "prefix",
+        "suffix-format"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "7\n10\n13\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-number",
+      "command": "csplit",
+      "args": [
+        "split",
+        "2"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "content_hex": "4c310a"
+        },
+        {
+          "path": "xx01",
+          "content_hex": "6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "3\n27\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suppress-number",
+      "command": "csplit",
+      "args": [
+        "--suppress-matched",
+        "split",
+        "2"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "content_hex": "4c310a"
+        },
+        {
+          "path": "xx01",
+          "content_hex": "4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "suppress-matched"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "3\n23\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-regex",
+      "command": "csplit",
+      "args": [
+        "split",
+        "/hit/"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "content_hex": "4c310a"
+        },
+        {
+          "path": "xx01",
+          "content_hex": "6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "3\n27\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suppress-regex",
+      "command": "csplit",
+      "args": [
+        "--suppress-matched",
+        "split",
+        "/hit/"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "content_hex": "4c310a"
+        },
+        {
+          "path": "xx01",
+          "content_hex": "4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "suppress-matched"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "3\n23\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-negative",
+      "command": "csplit",
+      "args": [
+        "split",
+        "/hit/-1"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "content_hex": ""
+        },
+        {
+          "path": "xx01",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "0\n30\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suppress-negative",
+      "command": "csplit",
+      "args": [
+        "--suppress-matched",
+        "split",
+        "/hit/-1"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "content_hex": ""
+        },
+        {
+          "path": "xx01",
+          "content_hex": "6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "suppress-matched"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "0\n27\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-positive",
+      "command": "csplit",
+      "args": [
+        "split",
+        "/hit/+1"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "content_hex": "4c310a6869740a"
+        },
+        {
+          "path": "xx01",
+          "content_hex": "4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "7\n23\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suppress-positive",
+      "command": "csplit",
+      "args": [
+        "--suppress-matched",
+        "split",
+        "/hit/+1"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "content_hex": "4c310a6869740a"
+        },
+        {
+          "path": "xx01",
+          "content_hex": "4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "suppress-matched"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "7\n20\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-negative-repeat",
+      "command": "csplit",
+      "args": [
+        "split",
+        "/hit/-1",
+        "{1}"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "content_hex": ""
+        },
+        {
+          "path": "xx01",
+          "content_hex": "4c310a6869740a4c330a"
+        },
+        {
+          "path": "xx02",
+          "content_hex": "4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "0\n10\n20\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suppress-negative-repeat",
+      "command": "csplit",
+      "args": [
+        "--suppress-matched",
+        "split",
+        "/hit/-1",
+        "{1}"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "content_hex": ""
+        },
+        {
+          "path": "xx01",
+          "content_hex": "6869740a4c330a"
+        },
+        {
+          "path": "xx02",
+          "content_hex": "6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "suppress-matched"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "0\n7\n17\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-ignore-negative",
+      "command": "csplit",
+      "args": [
+        "split",
+        "%hit%-1"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "30\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suppress-ignore-negative",
+      "command": "csplit",
+      "args": [
+        "--suppress-matched",
+        "split",
+        "%hit%-1"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "content_hex": "6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "suppress-matched"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "27\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suppress-negative-elide",
+      "command": "csplit",
+      "args": [
+        "--suppress-matched",
+        "-z",
+        "split",
+        "/hit/-1"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "content_hex": "6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "elide-empty-files",
+        "suppress-matched"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "27\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-suppress-repeat-flag",
+      "command": "csplit",
+      "args": [
+        "--suppress-matched",
+        "--suppress-matched",
+        "split",
+        "/hit/"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "split",
+          "content_hex": "4c310a6869740a4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        },
+        {
+          "path": "xx00",
+          "content_hex": "4c310a"
+        },
+        {
+          "path": "xx01",
+          "content_hex": "4c330a4c340a6869740a4c360a4c370a6869740a4c390a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "suppress-matched"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "3\n23\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-csplit-format-before-missing-input",
+      "command": "csplit",
+      "args": [
+        "-b",
+        "%s",
+        "absent",
+        "2"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "expected_files": [
+        {
+          "path": "xx00",
+          "exists": false
+        },
+        {
+          "path": "part-00",
+          "exists": false
+        }
+      ],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "suffix-format"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "csplit: invalid conversion specifier in suffix: s\n",
+      "environment": {},
+      "normalizations": []
     }
   ]
 }

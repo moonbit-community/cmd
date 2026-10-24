@@ -12,7 +12,11 @@ moonx cli/rev input.txt
 ```
 
 Line-feed bytes and the absence of a final line feed are preserved. Input is
-standard input or one file operand; multiple files are rejected. The profile
+standard input when operands are absent; multiple file operands are processed
+in order without inserted bytes, and later files continue after an error.
+An explicit `-` is a filename in the frozen util-linux 2.40 profile; this
+replaces the previous workspace stdin extension while published behavior
+remains frozen. The reader retains only the current record. The profile
 uses C-locale byte semantics, so non-UTF-8 input is handled without decoding
 it; multibyte locale character semantics are not claimed.
 

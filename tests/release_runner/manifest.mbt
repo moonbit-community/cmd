@@ -258,6 +258,8 @@ fn validate_release_manifest(
       selected_cases(manifest, base).any(selected => selected.id == fixture.id) {
       if !release_network_scenario(fixture) &&
         !release_mv_scenario(fixture) &&
+        !release_mktemp_scenario(fixture) &&
+        !release_tee_scenario(fixture) &&
         !release_diff_device_scenario(fixture) {
         failures.push(
           "\{fixture.id}: stateful scenario has no exact published executor",

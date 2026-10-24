@@ -102,6 +102,7 @@ priv struct Context {
   name : String
   mut cwd : String
   mut last_status : Int32
+  mut last_signal : Int32?
   mut exited : Bool
   mut exit_status : Int32
   capture : StringBuilder?

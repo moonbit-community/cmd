@@ -18,4 +18,5 @@ import {
   "moonbitlang/async@0.22.5",
   "moonbitlang/x@0.5.5",
   "bobzhang/moonjq@0.2.0",
+  "cc06b/mooncry@0.95.0",
 }

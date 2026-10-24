@@ -38,6 +38,7 @@ pub fn Session::new(
     name,
     cwd,
     last_status: 0,
+    last_signal: None,
     exited: false,
     exit_status: 0,
     capture: None,
@@ -56,6 +57,12 @@ pub fn Session::new(
     expansion_failed: false,
   }
   { context, pending: StringBuilder(), interactive, finished: false, }
+}
+
+///|
+/// Signal responsible for the last command status, distinct from an explicit exit.
+pub fn Session::last_signal(self : Session) -> Int32? {
+  self.context.last_signal
 }
 
 ///|

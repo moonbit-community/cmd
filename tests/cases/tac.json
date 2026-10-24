@@ -30,7 +30,7 @@
         "help"
       ],
       "source_version": "workspace cli/tac@0.1.3 metadata contract",
-      "expected_stdout_text": "Usage: tac [OPTION]... [FILE]...\n      --help      display this help and exit\n      --version   display version and exit\n\nWrite each FILE to standard output, last line first.\nWith no FILE, or when FILE is -, read standard input.\n\n  -b, --before             Attach the separator before records.\n  -s, --separator=STRING   Use STRING instead of newline.\n  -r, --regex              Not supported: regular separators need a public\n                            regular-expression API with byte semantics.\n",
+      "expected_stdout_text": "Usage: tac [OPTION]... [FILE]...\n      --help      display this help and exit\n      --version   display version and exit\n\nWrite each FILE to standard output, last line first.\nWith no FILE, or when FILE is -, read standard input.\n\n  -b, --before             Attach the separator before records.\n  -s, --separator=STRING   Use STRING instead of newline.\n  -r, --regex              Use an Emacs-style byte regular expression.\n",
       "expected_stderr_text": ""
     },
     {
@@ -51,6 +51,1205 @@
       "source_version": "workspace cli/tac@0.1.3 metadata contract",
       "expected_stdout_text": "tac 0.1.3\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o6-tac-default-unterminated",
+      "command": "tac",
+      "args": [],
+      "stdin_hex": "610a620a63",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "cb\na\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-before-unterminated",
+      "command": "tac",
+      "args": [
+        "-b"
+      ],
+      "stdin_hex": "610a620a63",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "before"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "\nc\nba",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-fixed-empty",
+      "command": "tac",
+      "args": [
+        "-s",
+        ""
+      ],
+      "stdin_hex": "6100620063",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "cb\u0000a\u0000",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-fixed-empty-before",
+      "command": "tac",
+      "args": [
+        "-b",
+        "-s",
+        ""
+      ],
+      "stdin_hex": "6100620063",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "before",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "\u0000c\u0000ba",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-regex-empty",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "",
+        "absent"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tac: separator cannot be empty\n",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-regex-invalid",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "\\(",
+        "absent"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tac: Unmatched ( or \\(\n",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-fixed-repeat-separator",
+      "command": "tac",
+      "args": [
+        "-s",
+        "|",
+        "-s",
+        ":"
+      ],
+      "stdin_hex": "61783a62797c637a",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "by|czax:",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-overlap-after",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "aba"
+      ],
+      "stdin_hex": "616261626158",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "Xababa",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-alt-prefix-after",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "aba\\|b"
+      ],
+      "stdin_hex": "6162616261",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "aabab",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-empty-match-after",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "a*"
+      ],
+      "stdin_hex": "61614243",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "CBaa",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-overlap-before",
+      "command": "tac",
+      "args": [
+        "-b",
+        "-r",
+        "-s",
+        "aba"
+      ],
+      "stdin_hex": "616261626158",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "before",
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "abaXab",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-alt-prefix-before",
+      "command": "tac",
+      "args": [
+        "-b",
+        "-r",
+        "-s",
+        "aba\\|b"
+      ],
+      "stdin_hex": "6162616261",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "before",
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "babaa",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-empty-match-before",
+      "command": "tac",
+      "args": [
+        "-b",
+        "-r",
+        "-s",
+        "a*"
+      ],
+      "stdin_hex": "61614243",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "before",
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "CBaa",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-syntax-plus",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "a+"
+      ],
+      "stdin_hex": "78616159612b5a617b327d5128616229526162616253",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "bSbab)Ra{2}Q(a+ZaYaaxa",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-syntax-escaped-plus",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "a\\+"
+      ],
+      "stdin_hex": "78616159612b5a617b327d5128616229526162616253",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "Za{2}Q(ab)RababSxaaYa+",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-syntax-question",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "a?"
+      ],
+      "stdin_hex": "78616159612b5a617b327d5128616229526162616253",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "SbbaRa)b(aQ}2{Za+Yaaxa",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-syntax-escaped-question",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "a\\?"
+      ],
+      "stdin_hex": "78616159612b5a617b327d5128616229526162616253",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "xaaYa+Za{2}Q(ab)RababS",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-syntax-parens",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "(ab)"
+      ],
+      "stdin_hex": "78616159612b5a617b327d5128616229526162616253",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "RababSxaaYa+Za{2}Q(ab)",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-syntax-escaped-parens",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "\\(ab\\)"
+      ],
+      "stdin_hex": "78616159612b5a617b327d5128616229526162616253",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "Sab)RabxaaYa+Za{2}Q(ab",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-syntax-bar",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "a|b"
+      ],
+      "stdin_hex": "78616159612b5a617b327d5128616229526162616253",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "xaaYa+Za{2}Q(ab)RababS",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-syntax-escaped-bar",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "a\\|b"
+      ],
+      "stdin_hex": "78616159612b5a617b327d5128616229526162616253",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "Sbab)Rab{2}Q(a+ZaYaaxa",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-syntax-interval",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "a{2}"
+      ],
+      "stdin_hex": "78616159612b5a617b327d5128616229526162616253",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "Q(ab)RababSxaaYa+Za{2}",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-syntax-escaped-interval",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "a\\{2\\}"
+      ],
+      "stdin_hex": "78616159612b5a617b327d5128616229526162616253",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "Q(ab)RababSxaaYa+Za{2}",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-anchor-caret",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "^"
+      ],
+      "stdin_hex": "610a620a63",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "cb\na\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-anchor-dollar",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "$"
+      ],
+      "stdin_hex": "610a620a63",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "\nc\nba",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-anchor-buffer-begin",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "\\`"
+      ],
+      "stdin_hex": "610a620a63",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "a\nb\nc",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-anchor-buffer-end",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "\\'"
+      ],
+      "stdin_hex": "610a620a63",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "a\nb\nc",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-anchor-dot",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "."
+      ],
+      "stdin_hex": "610a620a63",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "\nc\nba",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-dot-nul",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "."
+      ],
+      "stdin_hex": "6100620a63",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "\ncb\u0000a",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-backreference",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "\\(ab\\)\\1"
+      ],
+      "stdin_hex": "586162616259616261625a",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "ZYababXabab",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-multi",
+      "command": "tac",
+      "args": [
+        "first",
+        "second"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "first",
+          "content_hex": "61620a6364"
+        },
+        {
+          "path": "second",
+          "content_hex": "58590a5a0a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "first",
+          "content_hex": "61620a6364"
+        },
+        {
+          "path": "second",
+          "content_hex": "58590a5a0a"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "cdab\nZ\nXY\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-later-failure",
+      "command": "tac",
+      "args": [
+        "first",
+        "absent",
+        "second"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "first",
+          "content_hex": "61620a6364"
+        },
+        {
+          "path": "second",
+          "content_hex": "58590a5a0a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "first",
+          "content_hex": "61620a6364"
+        },
+        {
+          "path": "second",
+          "content_hex": "58590a5a0a"
+        }
+      ],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "cdab\nZ\nXY\n",
+      "expected_stderr_text": "tac: failed to open 'absent' for reading: No such file or directory\n",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-first-failure",
+      "command": "tac",
+      "args": [
+        "absent",
+        "first",
+        "second"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "first",
+          "content_hex": "61620a6364"
+        },
+        {
+          "path": "second",
+          "content_hex": "58590a5a0a"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "first",
+          "content_hex": "61620a6364"
+        },
+        {
+          "path": "second",
+          "content_hex": "58590a5a0a"
+        }
+      ],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "cdab\nZ\nXY\n",
+      "expected_stderr_text": "tac: failed to open 'absent' for reading: No such file or directory\n",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-repeated-dash",
+      "command": "tac",
+      "args": [
+        "-",
+        "first",
+        "-"
+      ],
+      "stdin_hex": "75760a7778",
+      "files": [
+        {
+          "path": "first",
+          "content_hex": "61620a6364"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "first",
+          "content_hex": "61620a6364"
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "source_version": "GNU coreutils 9.11 / util-linux rev 2.40 C profile",
+      "expected_stdout_text": "wxuv\ncdab\n",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-emacs-posix-digit",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "[[:digit:]]"
+      ],
+      "stdin_hex": "41312042320a4133005a",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_text": "A1 B2\nA3\u0000Z",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-emacs-posix-space",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "[[:space:]]"
+      ],
+      "stdin_hex": "41312042320a4133005a",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_text": "A1 B2\nA3\u0000Z",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-emacs-word-boundary",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "\\b"
+      ],
+      "stdin_hex": "41312042320a4133005a",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_text": "Z\u0000A3\nB2 A1",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-emacs-line-begin",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "^A"
+      ],
+      "stdin_hex": "41312042320a4133005a",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_text": "3\u0000Z1 B2\nAA",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-emacs-line-end",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "[0-9]$"
+      ],
+      "stdin_hex": "41312042320a4133005a",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_text": "\nA3\u0000ZA1 B2",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-emacs-buffer-end",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "Z\\'"
+      ],
+      "stdin_hex": "41312042320a4133005a",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_text": "A1 B2\nA3\u0000Z",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-emacs-not-newline",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        ".+"
+      ],
+      "stdin_hex": "41312042320a4133005a",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_text": "Z\u00003\nA2B 1A",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-emacs-escaped-question",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "A\\?"
+      ],
+      "stdin_hex": "41312042320a4133005a",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_text": "A1 B2\nA3\u0000Z",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-emacs-literal-braces",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "A{2}"
+      ],
+      "stdin_hex": "41312042320a4133005a",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_text": "A1 B2\nA3\u0000Z",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-emacs-bad-class",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "[a"
+      ],
+      "stdin_hex": "41312042320a4133005a",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tac: Unmatched [, [^, [:, [., or [=\n",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-emacs-trailing-backslash",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "a\\"
+      ],
+      "stdin_hex": "41312042320a4133005a",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tac: Trailing backslash\n",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-emacs-bad-reference",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "\\1"
+      ],
+      "stdin_hex": "41312042320a4133005a",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tac: Invalid back reference\n",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-emacs-bad-range",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "[z-a]"
+      ],
+      "stdin_hex": "41312042320a4133005a",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_text": "A1 B2\nA3\u0000Z",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o6-tac-emacs-unmatched-close",
+      "command": "tac",
+      "args": [
+        "-r",
+        "-s",
+        "\\)"
+      ],
+      "stdin_hex": "41312042320a4133005a",
+      "files": [],
+      "expected_files": [],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "regex",
+        "separator"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tac: Unmatched ) or \\)\n",
+      "environment": {},
+      "normalizations": []
     }
   ]
 }

@@ -11,7 +11,9 @@ patch --version | head -n1
 gzip --version | head -n1
 hexdump --version | head -n1
 column --version | head -n1
+rev --version | head -n1
 strings --version | head -n1
+tree --version | head -n1
 find --version | head -n1
 xargs --version | head -n1
 grep --version | head -n1

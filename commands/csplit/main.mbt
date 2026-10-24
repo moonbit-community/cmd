@@ -2,6 +2,7 @@
 struct Output {
   prefix : String
   width : Int32
+  suffix : SuffixFormat?
   quiet : Bool
   elide : Bool
   paths : Array[String]
@@ -12,9 +13,16 @@ async fn Output::write(self : Output, content : BytesView) -> Unit {
   if self.elide && content.is_empty() {
     return
   }
-  let number = self.paths.length().to_string()
-  let suffix = String::make(@cmp.maximum(0, self.width - number.length()), '0') +
-    number
+  let number = self.paths.length()
+  let suffix = match self.suffix {
+    Some(format) => format.render(number)
+    None =>
+      String::make(
+        @cmp.maximum(0, self.width - number.to_string().length()),
+        '0',
+      ) +
+      number.to_string()
+  }
   let path = self.prefix + suffix
   if @fs.exists(path) {
     fail("existing output is unsupported: \{path}")
@@ -33,6 +41,7 @@ async fn partition(
   data : Bytes,
   controls : Array[Control],
   output : Output,
+  suppress : Bool,
 ) -> Unit {
   let starts = line_starts(data)
   let count = starts.length() - 1
@@ -89,7 +98,7 @@ async fn partition(
       if !ignored {
         output.write(data[starts[first]:starts[cut]])
       }
-      first = cut
+      first = if suppress && cut < count { cut + 1 } else { cut }
       repetition += 1
     }
   }
@@ -105,6 +114,8 @@ fn help_message() -> String {
     #|
     #|  -f, --prefix=PREFIX      Use PREFIX instead of xx.
     #|  -n, --digits=NUMBER      Use at least NUMBER suffix digits (default 2).
+    #|  -b, --suffix-format=FORMAT  Use one d/i/u/o/x/X conversion for suffixes.
+    #|      --suppress-matched    Omit the offset-adjusted split boundary line.
     #|  -s, --silent             Suppress output byte counts.
     #|  -q, --quiet              Same as --silent.
     #|  -k, --keep-files         Keep created fragments after a split error.
@@ -113,8 +124,7 @@ fn help_message() -> String {
     #|      --version            display version and exit
     #|
     #|BRE matching includes backreferences, byte classes and word assertions.
-    #|Existing output paths, custom suffix formats and locale-specific matching
-    #|are unsupported.
+    #|Existing output paths and locale-specific matching are unsupported.
   message
 }
 
@@ -128,6 +138,8 @@ async fn main {
   let parsed = @cli.parse(@env.args()[1:], [
     @cli.option("prefix", short='f'),
     @cli.option("digits", short='n'),
+    @cli.option("suffix-format", short='b'),
+    @cli.flag("suppress-matched"),
     @cli.flag("silent", short='s'),
     @cli.flag("quiet", short='q'),
     @cli.flag("keep-files", short='k'),
@@ -149,7 +161,7 @@ async fn main {
     @stdio.stdout.write("csplit 0.2.0\n")
     return
   }
-  let (controls, width) = try {
+  let (controls, width, suffix) = try {
     guard parsed.operands.length() >= 2 else {
       fail("FILE and PATTERN are required")
     }
@@ -157,8 +169,14 @@ async fn main {
     guard width >= 0 && width <= 1024 else {
       fail("suffix digit count must be between 0 and 1024")
     }
-    (parse_controls(parsed.operands[1:]), width)
+    let suffix = parsed.last_value("suffix-format").map(suffix_format)
+    (parse_controls(parsed.operands[1:]), width, suffix)
   } catch {
+    SuffixError(message) => {
+      @stdio.stderr.write("csplit: " + message + "\n")
+      @sys.exit(1)
+      return
+    }
     @bytere.PatternError(message) => {
       @stdio.stderr.write("csplit: \{message}\n")
       @sys.exit(2)
@@ -173,6 +191,7 @@ async fn main {
   let output : Output = {
     prefix: parsed.last_value("prefix").unwrap_or("xx"),
     width,
+    suffix,
     quiet: parsed.contains("silent") || parsed.contains("quiet"),
     elide: parsed.contains("elide-empty-files"),
     paths: [],
@@ -184,7 +203,7 @@ async fn main {
     } else {
       @fs.read_file(path).binary()
     }
-    partition(data, controls, output)
+    partition(data, controls, output, parsed.contains("suppress-matched"))
   } catch {
     err => {
       @stdio.stderr.write("csplit: \{err}\n")

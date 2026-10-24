@@ -321,6 +321,10 @@ async fn run_case(
     "-w",
     fixture.working_directory("/work"),
   ]
+  if @testkit.option_child_required(fixture) {
+    let helper = @testkit.option_child_path()
+    docker_args.append(["-v", helper + ":" + helper + ":ro"])
+  }
   let oracle_environment = controlled_environment(
     @testkit.expand_environment(fixture.environment, "/work", http_base~),
   )

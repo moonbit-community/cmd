@@ -2,17 +2,6 @@
   "schema": 1,
   "entries": [
     {
-      "behavior_id": "case:checksum-md5sum-tag-boundary",
-      "support_record": "docs/compatibility.md",
-      "adr": "docs/adr/0008-data.md",
-      "current_limit": "md5sum --tag output and tagged record handling are outside the current checksum manifest grammar and reject before input processing.",
-      "unlock_condition": "Implement tagged output/checking and escaping/filename/error-prefix semantics in pure MoonBit with standard digest vectors and pinned GNU manifest regressions; this is algorithm/format work rather than a public API gap.",
-      "rejection_tests": [
-        "case:checksum-md5sum-tag-boundary"
-      ],
-      "replacement_behaviors": []
-    },
-    {
       "behavior_id": "case:compat-filesystem-windows-chmod-boundary",
       "support_record": "docs/compatibility.md",
       "adr": "docs/adr/0004-filesystem.md",
@@ -90,28 +79,6 @@
       "replacement_behaviors": []
     },
     {
-      "behavior_id": "case:hexdump-format-boundary",
-      "support_record": "docs/compatibility.md",
-      "adr": "docs/adr/0003-streams.md",
-      "current_limit": "Custom hexdump -e/-f format grammar is not implemented and is explicitly rejected.",
-      "unlock_condition": "Implement the selected pure-MoonBit format grammar and read-count/repetition/address/character/number/empty-input interactions, then pass frozen util-linux byte/status regressions on Native/Wasm.",
-      "rejection_tests": [
-        "case:hexdump-format-boundary"
-      ],
-      "replacement_behaviors": []
-    },
-    {
-      "behavior_id": "case:hexdump-skip-stdin-boundary",
-      "support_record": "docs/compatibility.md",
-      "adr": "docs/adr/0003-streams.md",
-      "current_limit": "The current profile rejects forward -s skipping on stdin. Its existing seek-API diagnostic is broader than the capability actually needed for forward discard.",
-      "unlock_condition": "Implement checked forward reads/discards with empty/short/EOF/error-prefix and byte/status differentials. Only backward or end-relative positioning requires a proven seekable input or explicit spool; do not wait for a new seek API merely to support forward skipping.",
-      "rejection_tests": [
-        "case:hexdump-skip-stdin-boundary"
-      ],
-      "replacement_behaviors": []
-    },
-    {
       "behavior_id": "case:mv-windows-wasm-links-boundary",
       "support_record": "docs/compatibility.md",
       "adr": "docs/adr/0004-filesystem.md",
@@ -119,17 +86,6 @@
       "unlock_condition": "Identify a released Wasm host containing the Windows rename fix, then pass independent Windows Native/Wasm file/directory symlink, junction, backup and unchanged-referent observations including held-open-stdin rejection and failure ordering. Missing host identity/privileges/observers remain infrastructure gaps, not successful or skipped acceptance.",
       "rejection_tests": [
         "case:mv-windows-wasm-links-boundary"
-      ],
-      "replacement_behaviors": []
-    },
-    {
-      "behavior_id": "case:od-float-boundary",
-      "support_record": "docs/compatibility.md",
-      "adr": "docs/adr/0003-streams.md",
-      "current_limit": "od -tf4 floating representations are outside the current integer/character formatter and reject explicitly.",
-      "unlock_condition": "Implement the frozen oracle ABI's selected float widths, endianness, special values and formatting/rounding in pure MoonBit, then pass independent Native/Wasm GNU byte/status edge cases; numerical implementation is not an async API gap.",
-      "rejection_tests": [
-        "case:od-float-boundary"
       ],
       "replacement_behaviors": []
     },
@@ -416,6 +372,270 @@
       "unlock_condition": "Require public same-file identity and opened-descriptor truncation, or an alternative implementation proving exact GNU normal, hard-link alias and late-read-error effects on Native/Wasm before enabling existing merge outputs.",
       "rejection_tests": [
         "case:o2-sort-late-read-merge-existing"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o8-xxd-existing-output-rejection",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "Existing named xxd outputs reject before mutation because released public file identity and handle-preservation semantics cannot establish alias, mode and existing-content effects.",
+      "unlock_condition": "Require released public file identity and the necessary descriptor/mode operations, followed by Native/Wasm fixed-provider existing-output, input-alias, backpatch and failure-effect comparisons. New output creation remains supported.",
+      "rejection_tests": [
+        "case:o8-xxd-existing-output-rejection"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o8-xxd-existing-output-alias-rejection",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "Existing named xxd outputs reject before mutation because released public file identity and handle-preservation semantics cannot establish alias, mode and existing-content effects.",
+      "unlock_condition": "Require released public file identity and the necessary descriptor/mode operations, followed by Native/Wasm fixed-provider existing-output, input-alias, backpatch and failure-effect comparisons. New output creation remains supported.",
+      "rejection_tests": [
+        "case:o8-xxd-existing-output-alias-rejection"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o8-xxd-reverse-existing-output-rejection",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "Existing named xxd outputs reject before mutation because released public file identity and handle-preservation semantics cannot establish alias, mode and existing-content effects.",
+      "unlock_condition": "Require released public file identity and the necessary descriptor/mode operations, followed by Native/Wasm fixed-provider existing-output, input-alias, backpatch and failure-effect comparisons. New output creation remains supported.",
+      "rejection_tests": [
+        "case:o8-xxd-reverse-existing-output-rejection"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o10-mkdir-symbolic-omitted-equals",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "The selected symbolic mode depends on unavailable process umask, parent raw mode or platform permission-setter semantics; the command rejects before creating misleading permissions.",
+      "unlock_condition": "Require the specific released public umask/raw-mode/setter API identified by the rejection and independent Native/Wasm mode, parent/leaf and partial-effect observations. Umask-independent symbolic modes and existing -p no-ops remain separate supported paths.",
+      "rejection_tests": [
+        "case:o10-mkdir-symbolic-omitted-equals"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o10-mkdir-symbolic-omitted-minus",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "The selected symbolic mode depends on unavailable process umask, parent raw mode or platform permission-setter semantics; the command rejects before creating misleading permissions.",
+      "unlock_condition": "Require the specific released public umask/raw-mode/setter API identified by the rejection and independent Native/Wasm mode, parent/leaf and partial-effect observations. Umask-independent symbolic modes and existing -p no-ops remain separate supported paths.",
+      "rejection_tests": [
+        "case:o10-mkdir-symbolic-omitted-minus"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o10-realpath-missing-physical-link-boundary",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "Resolving an unresolved physical symlink target requires a public readlink operation; lexical -m -s does not require that API.",
+      "unlock_condition": "Require released public readlink and component-wise symlink expansion with pinned GNU Native/Wasm dangling-link, dot/dotdot, missing-component, relative-base and error-order observations.",
+      "rejection_tests": [
+        "case:o10-realpath-missing-physical-link-boundary"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o10-realpath-missing-final-physical-link-boundary",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "Resolving an unresolved physical symlink target requires a public readlink operation; lexical -m -s does not require that API.",
+      "unlock_condition": "Require released public readlink and component-wise symlink expansion with pinned GNU Native/Wasm dangling-link, dot/dotdot, missing-component, relative-base and error-order observations.",
+      "rejection_tests": [
+        "case:o10-realpath-missing-final-physical-link-boundary"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o10-mkdir-windows-symbolic-boundary",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "The selected symbolic mode depends on unavailable process umask, parent raw mode or platform permission-setter semantics; the command rejects before creating misleading permissions.",
+      "unlock_condition": "Require the specific released public umask/raw-mode/setter API identified by the rejection and independent Native/Wasm mode, parent/leaf and partial-effect observations. Umask-independent symbolic modes and existing -p no-ops remain separate supported paths.",
+      "rejection_tests": [
+        "case:o10-mkdir-windows-symbolic-boundary"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o11-boundary-regular-ex",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "Selected LS_COLORS predicates require raw permission bits, capability metadata or hard-link counts; effective-access checks cannot substitute for GNU's raw any-execute-bit predicate.",
+      "unlock_condition": "Require released public readers for the enabled predicate and independent Native/Wasm mode, link-count/capability, symlink-target and exact color-byte differentials. Disabling those selectors permits the supported type, suffix and link colors.",
+      "rejection_tests": [
+        "case:o11-boundary-regular-ex"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o11-boundary-directory-tw",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "Selected LS_COLORS predicates require raw permission bits, capability metadata or hard-link counts; effective-access checks cannot substitute for GNU's raw any-execute-bit predicate.",
+      "unlock_condition": "Require released public readers for the enabled predicate and independent Native/Wasm mode, link-count/capability, symlink-target and exact color-byte differentials. Disabling those selectors permits the supported type, suffix and link colors.",
+      "rejection_tests": [
+        "case:o11-boundary-directory-tw"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o11-boundary-target-ex",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "Selected LS_COLORS predicates require raw permission bits, capability metadata or hard-link counts; effective-access checks cannot substitute for GNU's raw any-execute-bit predicate.",
+      "unlock_condition": "Require released public readers for the enabled predicate and independent Native/Wasm mode, link-count/capability, symlink-target and exact color-byte differentials. Disabling those selectors permits the supported type, suffix and link colors.",
+      "rejection_tests": [
+        "case:o11-boundary-target-ex"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:tee-default-pipe-boundary",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0003-streams.md",
+      "current_limit": "The runtime ignores SIGPIPE and exposes no released public operation to restore or raise signal termination. Default tee therefore reports the exact explicit boundary with status 2 rather than claiming GNU's signal result -13.",
+      "unlock_condition": "Require a released public SIGPIPE restore/raise or equivalent signal-termination API and actual Native/Wasm closed-pipe termination, diagnostic, later-sink and prefix observations. All five explicit output-error modes remain supported independently.",
+      "rejection_tests": [
+        "case:tee-default-pipe-boundary"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o13-xargs-d-byte-ff",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0006-process.md",
+      "current_limit": "A raw invalid-UTF-8 argument prefix cannot be transported by the released process API's String argv without changing its bytes; xargs rejects before child execution.",
+      "unlock_condition": "Require a released public raw-byte argv transport, then pass Native/Wasm invalid-byte, delimiter/NUL, size-limit and child-observed argv differentials. Valid UTF-8 items and delimiters remain supported.",
+      "rejection_tests": [
+        "case:o13-xargs-d-byte-ff"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o13-xargs-p-no-tty",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0006-process.md",
+      "current_limit": "This host cannot open the independent confirmation channel required by xargs -p. The workspace fails before consuming argument stdin or launching a child, including an explicit empty -r preflight.",
+      "unlock_condition": "Run on a host exposing an independently opened confirmation channel and verify Native/Wasm yes/no/EOF, argument-stdin isolation, serialized prompts and child effects; do not read confirmations from the argument stream or claim GNU empty-input ordering for the stronger preflight.",
+      "rejection_tests": [
+        "case:o13-xargs-p-no-tty"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o13-xargs-p-r-empty",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0006-process.md",
+      "current_limit": "This host cannot open the independent confirmation channel required by xargs -p. The workspace fails before consuming argument stdin or launching a child, including an explicit empty -r preflight.",
+      "unlock_condition": "Run on a host exposing an independently opened confirmation channel and verify Native/Wasm yes/no/EOF, argument-stdin isolation, serialized prompts and child effects; do not read confirmations from the argument stream or claim GNU empty-input ordering for the stronger preflight.",
+      "rejection_tests": [
+        "case:o13-xargs-p-r-empty"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "scenario:tee-default-pipe-boundary",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0003-streams.md",
+      "current_limit": "The runtime ignores SIGPIPE and exposes no released public operation to restore or raise signal termination. Default tee therefore reports the exact explicit boundary with status 2 rather than claiming GNU's signal result -13.",
+      "unlock_condition": "Require a released public SIGPIPE restore/raise or equivalent signal-termination API and actual Native/Wasm closed-pipe termination, diagnostic, later-sink and prefix observations. All five explicit output-error modes remain supported independently.",
+      "rejection_tests": [
+        "scenario:tee-default-pipe-boundary"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o12-boundary-size-s",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "The observed macOS Native/Wasm public file_size backend returns Operation not supported for directories; tree reports the real metadata failure. Linux directory sizes are supported and Windows follows the actual public API result.",
+      "unlock_condition": "Require the affected released backend to expose directory size, then run platform-specific dynamic size and postorder subtree/report observations with complete Native/Wasm and fixed-provider comparisons. Do not invent a zero or portable 4096-byte inode size.",
+      "rejection_tests": [
+        "case:o12-boundary-size-s"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o12-boundary-size-h",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "The observed macOS Native/Wasm public file_size backend returns Operation not supported for directories; tree reports the real metadata failure. Linux directory sizes are supported and Windows follows the actual public API result.",
+      "unlock_condition": "Require the affected released backend to expose directory size, then run platform-specific dynamic size and postorder subtree/report observations with complete Native/Wasm and fixed-provider comparisons. Do not invent a zero or portable 4096-byte inode size.",
+      "rejection_tests": [
+        "case:o12-boundary-size-h"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o12-boundary-size--si",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "The observed macOS Native/Wasm public file_size backend returns Operation not supported for directories; tree reports the real metadata failure. Linux directory sizes are supported and Windows follows the actual public API result.",
+      "unlock_condition": "Require the affected released backend to expose directory size, then run platform-specific dynamic size and postorder subtree/report observations with complete Native/Wasm and fixed-provider comparisons. Do not invent a zero or portable 4096-byte inode size.",
+      "rejection_tests": [
+        "case:o12-boundary-size--si"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o12-boundary-size--du",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "The observed macOS Native/Wasm public file_size backend returns Operation not supported for directories; tree reports the real metadata failure. Linux directory sizes are supported and Windows follows the actual public API result.",
+      "unlock_condition": "Require the affected released backend to expose directory size, then run platform-specific dynamic size and postorder subtree/report observations with complete Native/Wasm and fixed-provider comparisons. Do not invent a zero or portable 4096-byte inode size.",
+      "rejection_tests": [
+        "case:o12-boundary-size--du"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o12-boundary-regular-mode",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "Selected tree color predicates and regular-file HTML color classification require unavailable raw mode bits. Present zero-valued selectors still enable GNU tree's predicate; effective access is not an equivalent raw-bit reader.",
+      "unlock_condition": "Require a released public raw-mode reader and exact Native/Wasm type, mode, selector precedence and text/HTML color observations. Omitting unsupported selectors permits the selected ordinary type/suffix colors.",
+      "rejection_tests": [
+        "case:o12-boundary-regular-mode"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o12-boundary-directory-mode",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "Selected tree color predicates and regular-file HTML color classification require unavailable raw mode bits. Present zero-valued selectors still enable GNU tree's predicate; effective access is not an equivalent raw-bit reader.",
+      "unlock_condition": "Require a released public raw-mode reader and exact Native/Wasm type, mode, selector precedence and text/HTML color observations. Omitting unsupported selectors permits the selected ordinary type/suffix colors.",
+      "rejection_tests": [
+        "case:o12-boundary-directory-mode"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o12-boundary-html-executable",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "Selected tree color predicates and regular-file HTML color classification require unavailable raw mode bits. Present zero-valued selectors still enable GNU tree's predicate; effective access is not an equivalent raw-bit reader.",
+      "unlock_condition": "Require a released public raw-mode reader and exact Native/Wasm type, mode, selector precedence and text/HTML color observations. Omitting unsupported selectors permits the selected ordinary type/suffix colors.",
+      "rejection_tests": [
+        "case:o12-boundary-html-executable"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o12-boundary-readlink",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "A selected symbolic link requires target text through public readlink, which is unavailable in the released profile. Excluded links do not trigger this boundary.",
+      "unlock_condition": "Require released public readlink plus Native/Wasm selected/excluded, dangling, escaping, structured-output and traversal observations against the fixed tree provider.",
+      "rejection_tests": [
+        "case:o12-boundary-readlink"
       ],
       "replacement_behaviors": []
     }

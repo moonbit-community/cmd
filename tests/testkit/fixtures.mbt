@@ -4,7 +4,10 @@ pub fn expand_text(
   root : String,
   http_base? : String,
 ) -> String {
-  let expanded = value.replace_all(old="${WORK}", new=root)
+  let expanded = value
+    .replace_all(old="${WORK}", new=root)
+    .replace_all(old="${PRINTF_CHILD}", new=option_child_source("printf"))
+    .replace_all(old="${PRINTENV_CHILD}", new=option_child_source("printenv"))
   match http_base {
     Some(base) => expanded.replace_all(old="${HTTP_BASE}", new=base)
     None => expanded
@@ -17,7 +20,15 @@ pub fn expand_args(
   root : String,
   http_base? : String,
 ) -> Array[String] {
-  args.map(arg => expand_text(arg, root, http_base?))
+  let result : Array[String] = []
+  for arg in args {
+    match arg {
+      "${PRINTF_CHILD}" => result.append(option_child_words("printf"))
+      "${PRINTENV_CHILD}" => result.append(option_child_words("printenv"))
+      _ => result.push(expand_text(arg, root, http_base?))
+    }
+  }
+  result
 }
 
 ///|

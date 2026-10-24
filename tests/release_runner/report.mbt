@@ -166,6 +166,19 @@ fn shared_report(
   let observations : Array[String] = []
   for fixture in fixtures {
     if fixture.id == report.id && result_class(report.category) == "pass" {
+      if release_tee_scenario(fixture) {
+        observations.append(["status", "stderr", "file-content", "file-type"])
+        continue
+      }
+      if release_mktemp_scenario(fixture) {
+        observations.append([
+          "status", "stdout", "stderr", "file-content", "file-type",
+        ])
+        if fixture.id != "mktemp-option-effects-windows" {
+          observations.push("file-mode")
+        }
+        continue
+      }
       if release_diff_device_scenario(fixture) {
         observations.append([
           "status", "stdout", "stderr", "file-type", "symlink-target",
@@ -316,6 +329,11 @@ async fn write_report(
     manifest_path~,
     case_corpus_path~,
     registry_path~,
+    native_root?=if fixtures.any(@testkit.option_child_required) {
+      Some(@testkit.option_child_path())
+    } else {
+      None
+    },
     oracle_profile_id=oracle_profile_id.unwrap_or(
       release_oracle_profile_id(reports, oracle_image_digest),
     ),

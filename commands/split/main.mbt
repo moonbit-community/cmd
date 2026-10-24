@@ -1,122 +1,80 @@
 ///|
-fn positive(value : String) -> Int32 raise {
-  let result = @string.parse_int(value)
-  guard result > 0 else { fail("invalid positive count: \{value}") }
-  result
-}
-
-///|
-fn byte_count(value : String) -> Int32 raise {
-  let mut end = 0
-  while end < value.length() && value[end] >= '0' && value[end] <= '9' {
-    end += 1
-  }
-  guard end > 0 else { fail("invalid byte count: \{value}") }
-  let count = positive(value[:end].to_owned())
-  let suffix = value[end:].to_owned()
-  let multiplier = match suffix {
-    "" => 1
-    "b" => 512
-    "kB" => 1000
-    "K" | "KiB" => 1024
-    "MB" => 1000000
-    "M" | "MiB" => 1048576
-    "GB" => 1000000000
-    "G" | "GiB" => 1073741824
-    _ => fail("unsupported byte multiplier: \{suffix}")
-  }
-  guard count <= 2147483647 / multiplier else {
-    fail("byte count is too large")
-  }
-  count * multiplier
-}
-
-///|
-fn boundaries(
-  data : Bytes,
-  size : Int32,
-  lines : Bool,
-) -> Array[(Int32, Int32)] {
-  let result : Array[(Int32, Int32)] = []
-  let mut start = 0
-  let mut count = 0
-  for index in 0..<data.length() {
-    if !lines || data[index] == b'\n' {
-      count += 1
-    }
-    if count == size {
-      result.push((start, index + 1))
-      start = index + 1
-      count = 0
-    }
-  }
-  if start < data.length() {
-    result.push((start, data.length()))
-  }
-  result
-}
-
-///|
-fn advance_suffix(
-  digits : Array[Int32],
-  radix : Int32,
-  automatic : Bool,
-) -> Bool {
-  let mut position = digits.length() - 1
-  while position >= 0 {
-    digits[position] += 1
-    if digits[position] < radix {
-      break
-    }
-    digits[position] = 0
-    position -= 1
-  }
-  if position < 0 {
-    return false
-  }
-  if automatic {
-    let prefix_length = (digits.length() - 2) / 2
-    if digits[prefix_length] == radix - 1 {
-      digits.clear()
-      for _ in 0..<(prefix_length + 1) {
-        digits.push(radix - 1)
-      }
-      for _ in 0..<(prefix_length + 3) {
-        digits.push(0)
-      }
-    }
-  }
-  true
-}
-
-///|
-fn suffix_name(digits : Array[Int32], numeric : Bool) -> String {
-  let output = StringBuilder()
-  let base = if numeric { 48 } else { 97 }
-  for digit in digits {
-    output.write_char((base + digit).unsafe_to_char())
-  }
-  output.to_string()
-}
-
-///|
 fn help_message() -> String {
   let message =
     #|Usage: split [OPTION]... [FILE [PREFIX]]
-    #|Split FILE (or stdin) into pieces named PREFIXaa, PREFIXab, ...
-    #|The default PREFIX is x; the default piece size is 1000 lines.
-    #|
-    #|  -l, --lines=NUMBER        Put NUMBER lines in each output.
-    #|  -b, --bytes=SIZE          Put SIZE bytes in each output (K, M, G, kB, MB, GB).
-    #|  -a, --suffix-length=N     Use fixed-width suffixes of N characters.
-    #|  -d, --numeric-suffixes    Use numeric suffixes starting at zero.
-    #|      --additional-suffix=SUFFIX  Append SUFFIX after generated suffixes.
+    #|Split FILE (or stdin) into byte-preserving pieces; default PREFIX is x.
+    #|  -l, --lines=NUMBER        put NUMBER records in each piece (default 1000)
+    #|  -b, --bytes=SIZE          put SIZE bytes in each piece
+    #|  -C, --line-bytes=SIZE     put at most SIZE bytes of records in each piece
+    #|  -n, --number=CHUNKS       N, K/N, l/N, l/K/N, r/N or r/K/N
+    #|  -a, --suffix-length=N     fixed suffix width; zero selects automatic width
+    #|  -d, --numeric-suffixes[=FROM]  numeric suffixes
+    #|  -x, --hex-suffixes[=FROM]      hexadecimal suffixes
+    #|      --additional-suffix=SUFFIX  append SUFFIX to generated names
+    #|  -e, --elide-empty-files   omit empty outputs
+    #|      --filter=COMMAND     run pure shell source per piece with FILE set
     #|      --help               display this help and exit
     #|      --version            display version and exit
-    #|
-    #|Existing output paths are refused. Chunk distribution, filters, and
-    #|line-byte mode are unsupported.
+    #|Existing named outputs are refused; filters own their explicit file writes.
   message
+}
+
+///|
+async fn process(
+  reader : &@io.Reader,
+  options : Options,
+  known_size : Int64?,
+) -> Unit {
+  @async.with_task_group() <| group => {
+    let outputs = Outputs::new(options, group)
+    defer outputs.close()
+    match options.layout {
+      BytesPer(size) => split_bytes(reader, outputs, size)
+      LinesPer(size) => split_lines(reader, outputs, size)
+      LineBytes(size) => {
+        let directory = @fs.tmpdir(prefix="split-")
+        defer @fs.rmdir(directory, recursive=true)
+        let spool = @fs.open(
+          directory + "/record",
+          mode=ReadWrite,
+          create_mode=CreateNew,
+          permission=0o600,
+        )
+        defer spool.close()
+        split_line_bytes(reader, outputs, size, spool)
+      }
+      RoundRobin(count, selected) =>
+        split_round_robin(reader, outputs, count, selected)
+      Chunks(count, selected, lines) =>
+        match known_size {
+          Some(size) =>
+            split_chunks(reader, outputs, size, count, selected, lines)
+          None => {
+            let directory = @fs.tmpdir(prefix="split-")
+            defer @fs.rmdir(directory, recursive=true)
+            let path = directory + "/input"
+            let size = {
+              let spool = @fs.open(
+                path,
+                mode=WriteOnly,
+                create_mode=CreateNew,
+                permission=0o600,
+              )
+              defer spool.close()
+              let mut size = 0L
+              while reader.read_some(max_len=65536) is Some(bytes) {
+                spool.write(bytes)
+                size += bytes.length().to_int64()
+              }
+              size
+            }
+            let spool = @fs.open(path, mode=ReadOnly)
+            defer spool.close()
+            split_chunks(spool, outputs, size, count, selected, lines)
+          }
+        }
+    }
+  }
 }
 
 ///|
@@ -126,15 +84,7 @@ async fn main {
     @stdio.stdout.write("split 0.1.2\n")
     return
   }
-  let parsed = @cli.parse(@env.args()[1:], [
-    @cli.option("lines", short='l'),
-    @cli.option("bytes", short='b'),
-    @cli.option("suffix-length", short='a'),
-    @cli.flag("numeric-suffixes", short='d'),
-    @cli.option("additional-suffix"),
-    @cli.flag("help"),
-    @cli.flag("version"),
-  ]) catch {
+  let parsed = parse_args(@env.args()[1:]) catch {
     @cli.CliError(message~, option~, ..) => {
       @stdio.stderr.write("split: \{message}: '\{option}'\n")
       @sys.exit(2)
@@ -149,66 +99,24 @@ async fn main {
     @stdio.stdout.write("split 0.1.2\n")
     return
   }
-  let (size, lines, width, additional) = try {
-    guard parsed.operands.length() <= 2 else { fail("too many operands") }
-    guard !(parsed.contains("bytes") && parsed.contains("lines")) else {
-      fail("cannot split in more than one way")
-    }
-    let lines = !parsed.contains("bytes")
-    let size = if lines {
-      positive(parsed.last_value("lines").unwrap_or("1000"))
-    } else {
-      byte_count(parsed.last_value("bytes").unwrap())
-    }
-    let width = positive(parsed.last_value("suffix-length").unwrap_or("2"))
-    guard width <= 1024 else {
-      fail("suffix length exceeds this build's limit of 1024")
-    }
-    let additional = parsed.last_value("additional-suffix").unwrap_or("")
-    guard !additional.contains("/") && !additional.contains("\\") else {
-      fail("additional suffix must not contain a path separator")
-    }
-    (size, lines, width, additional)
-  } catch {
-    err => {
-      @stdio.stderr.write("split: \{err}\n")
-      @sys.exit(2)
-      return
-    }
-  }
-  let input = parsed.operands.get(0).unwrap_or("-")
-  let prefix = parsed.operands.get(1).unwrap_or("x")
-  let numeric = parsed.contains("numeric-suffixes")
   try {
-    let data = if input == "-" {
-      @stdio.stdin.read_all().binary()
+    let options = options(parsed)
+    let input = parsed.operands.get(0).unwrap_or("-")
+    if input == "-" {
+      process(@stdio.stdin, options, None)
     } else {
-      @fs.read_file(input).binary()
-    }
-    let chunks = boundaries(data, size, lines)
-    let digits = Array::make(width, 0)
-    for index, (start, end) in chunks {
-      if index > 0 &&
-        !advance_suffix(
-          digits,
-          if numeric {
-            10
-          } else {
-            26
-          },
-          !parsed.contains("suffix-length"),
-        ) {
-        fail("output file suffixes exhausted")
-      }
-      let output = prefix + suffix_name(digits, numeric) + additional
-      if @fs.exists(output) {
-        fail("existing output is unsupported: \{output}")
-      }
-      @fs.write_file(output, data[start:end], create_mode=CreateNew)
+      let file = @fs.open(input, mode=ReadOnly)
+      defer file.close()
+      let size = if file.kind() == Regular { Some(file.size()) } else { None }
+      process(file, options, size)
     }
   } catch {
-    err => {
-      @stdio.stderr.write("split: \{err}\n")
+    SplitError(status, message) => {
+      @stdio.stderr.write("split: \{message}\n")
+      @sys.exit(status)
+    }
+    error => {
+      @stdio.stderr.write("split: \{error}\n")
       @sys.exit(1)
     }
   }
