@@ -542,9 +542,11 @@ async fn check_runtime_policy(root : String, failures : Array[String]) -> Unit {
     b"first\x00first\x00second\x00",
     failures,
   )
+  // Windows needs an explicitly provisioned temporary environment to reach
+  // the filesystem write check instead of aborting during path lookup.
   let sort_spill = moon_run(
     root,
-    "read-workspace.json",
+    "read-workspace-temp-env.json",
     "sort",
     [],
     stdin=@utf8.encode("a\n".repeat(524288)),

@@ -36,6 +36,8 @@ until EOF.
 Spilling requires the host to allow writes in its temporary directory. A denied
 temporary write fails before sorted output is emitted; small in-memory input
 and check mode do not create disk runs.
+Under a Windows sandbox, the host must also provision `TMP` or `TEMP` for
+temporary-path lookup; the command preserves the environment supplied by the host.
 
 The run budget counts record/key payloads, entry/key slots, sequence IDs and
 reserved merge buffers/index space. It is not an RSS cap: the active input

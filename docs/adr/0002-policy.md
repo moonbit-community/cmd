@@ -15,6 +15,9 @@ policy-sensitive. The host still decides authorization: small input and check
 mode can run without temporary writes, while denied spill creation fails before
 sorted output. The existing host-policy scenario observes both small read-only
 sorting and a real default-budget spill denied by the read-only policy.
+The spill-denial fixture selectively inherits TMP/TEMP/TMPDIR so Windows can
+resolve its temporary path before the write check. Filesystem writes remain
+denied; the command does not add or filter the caller's environment.
 
 ## Alternatives and compatibility cost
 
