@@ -1,131 +1,81 @@
 ///|
-priv suberror UnexpandError {
-  UnexpandError(String)
-}
-
-///|
-fn parse_stops(text : String) -> Array[Int32] raise UnexpandError {
-  if text == "" {
-    raise UnexpandError("invalid tab size")
-  }
-  let stops : Array[Int32] = []
-  for part in text.split(",") {
-    if part.trim() == "" {
-      raise UnexpandError("invalid tab size")
-    }
-    let value = @string.parse_int(part.trim().to_owned()) catch {
-      _ => raise UnexpandError("invalid tab size")
-    }
-    if value <= 0 || (stops.length() > 0 && value <= stops.last().unwrap_or(0)) {
-      raise UnexpandError("tab sizes must be ascending")
-    }
-    stops.push(value)
-  }
-  if stops.is_empty() {
-    raise UnexpandError("invalid tab size")
-  }
-  stops
-}
-
-///|
-fn next_stop(column : Int32, stops : Array[Int32]) -> Int32? {
-  for stop in stops {
-    if stop > column {
-      return Some(stop)
-    }
-  }
-  if stops.length() == 1 {
-    let width = stops[0]
-    return Some((column / width + 1) * width)
-  }
-  None
-}
-
-///|
-fn emit_spaces_as_tabs(
-  output : Array[Byte],
-  start : Int32,
-  count : Int32,
-  stops : Array[Int32],
-) -> Int32 {
-  let end = start + count
-  let mut column = start
-  while column < end {
-    match next_stop(column, stops) {
-      Some(stop) if stop <= end => {
-        output.push(b'\t')
-        column = stop
-      }
-      _ => {
-        output.push(b' ')
-        column += 1
-      }
-    }
-  }
-  column
-}
-
-///|
 fn unexpand_bytes(
   data : Bytes,
   all_blanks : Bool,
   first_only : Bool,
-  stops : Array[Int32],
-) -> Bytes {
+  stops : @tabstops.TabStops,
+) -> Bytes raise @tabstops.TabError {
   let output : Array[Byte] = []
-  let mut column = 0
-  let mut line_has_nonblank = false
-  let pending_spaces : Array[Byte] = []
+  let pending : Array[Byte] = []
+  let mut column = 0L
+  let mut convert = true
+  let mut previous_blank = true
+  let mut one_blank_before_stop = false
   fn flush_pending() {
-    if pending_spaces.is_empty() {
-      return
+    if pending.length() > 1 && one_blank_before_stop {
+      pending[0] = b'\t'
     }
-    let eligible = if first_only {
-      !line_has_nonblank
-    } else {
-      all_blanks || !line_has_nonblank
-    }
-    if eligible {
-      column = emit_spaces_as_tabs(
-        output,
-        column,
-        pending_spaces.length(),
-        stops,
-      )
-    } else {
-      for _ in pending_spaces {
-        output.push(b' ')
-        column += 1
-      }
-    }
-    pending_spaces.clear()
+    output.append(pending)
+    pending.clear()
+    one_blank_before_stop = false
   }
   for byte in data {
-    if byte == b' ' {
-      pending_spaces.push(byte)
-    } else {
-      flush_pending()
-      if byte == b'\n' {
-        output.push(byte)
-        column = 0
-        line_has_nonblank = false
-      } else if byte == b'\t' {
-        output.push(byte)
-        column = match next_stop(column, stops) {
-          Some(stop) => stop
-          None => column + 1
+    let mut emit_byte = true
+    if convert {
+      let blank = byte is (b' ' | b'\t')
+      if blank {
+        match @tabstops.next(column, stops) {
+          None => convert = false
+          Some(stop) => {
+            if byte == b'\t' {
+              column = stop
+              if !pending.is_empty() {
+                pending[0] = b'\t'
+              }
+            } else {
+              column += 1
+              if !(previous_blank && column == stop) {
+                if column == stop {
+                  one_blank_before_stop = true
+                }
+                pending.push(byte)
+                previous_blank = true
+                continue
+              }
+              output.push(b'\t')
+              emit_byte = false
+              if !pending.is_empty() {
+                pending[0] = b'\t'
+              }
+            }
+            if one_blank_before_stop {
+              pending.truncate(1)
+            } else {
+              pending.clear()
+            }
+          }
         }
-        // A tab is still part of the initial blank prefix.
       } else if byte == b'\b' {
-        output.push(byte)
         if column > 0 {
           column -= 1
         }
-      } else {
-        output.push(byte)
+      } else if byte != b'\x00' {
+        if column == 9223372036854775807L {
+          raise @tabstops.TabError("input line is too long")
+        }
         column += 1
-        line_has_nonblank = true
       }
+      flush_pending()
+      previous_blank = blank
+      convert = convert && ((all_blanks && !first_only) || blank)
+    }
+    if emit_byte {
+      output.push(byte)
+    }
+    if byte == b'\n' {
+      column = 0
+      convert = true
+      previous_blank = true
     }
   }
   flush_pending()
@@ -144,7 +94,7 @@ fn help_message() -> String {
     #|
     #|  -a, --all          convert all blanks, not just leading blanks
     #|      --first-only   convert only leading blank sequences
-    #|  -t, --tabs=LIST    use comma-separated tab stops (implies --all)
+    #|  -t, --tabs=LIST    use ascending stops; /N absolute, +N relative (implies --all)
   message
 }
 
@@ -180,10 +130,10 @@ async fn main {
     @stdio.stdout.write(help_message() + "\n")
     return
   }
-  let stops = parse_stops(parsed.last_value("tabs").unwrap_or("8")) catch {
-    UnexpandError(message) => {
+  let stops = @tabstops.parse(parsed.values("tabs")) catch {
+    @tabstops.TabError(message) => {
       @stdio.stderr.write("unexpand: \{message}\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -202,9 +152,19 @@ async fn main {
         continue
       }
     }
-    @stdio.stdout.write(
-      unexpand_bytes(data, all_blanks, parsed.contains("first-only"), stops),
-    )
+    let unexpanded = unexpand_bytes(
+      data,
+      all_blanks,
+      parsed.contains("first-only"),
+      stops,
+    ) catch {
+      @tabstops.TabError(message) => {
+        @stdio.stderr.write("unexpand: \{message}\n")
+        @sys.exit(1)
+        return
+      }
+    }
+    @stdio.stdout.write(unexpanded)
   }
   if failed {
     @sys.exit(1)

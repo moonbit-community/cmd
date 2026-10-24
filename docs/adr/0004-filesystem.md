@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-24
+Updated: 2026-10-25
 
 The pinned GNU coreutils 9.11 Linux run also establishes status 1 when an
 interactive ln/mv overwrite is declined, including EOF. Preserve both paths,
@@ -32,6 +32,21 @@ Diff's directory profile reports FIFO/socket type differences without reading
 them, and top-level readable operands retain stream comparison. Comparing
 distinct character/block device numbers inside directories requires public
 device metadata; path spelling or content must not impersonate that metadata.
+
+## O2 sort output candidate
+
+Ordinary sort creates a new named output before reading, retains an existing
+target until every source is consumed, and then writes through a truncating
+open. This preserves its inode/mode and supports input aliases without an
+atomic replacement or guessed identity.
+
+Streaming merge into a new output is supported. An existing merge output is
+refused before mutation: without public same-file identity and opened-handle
+truncation, the streaming path cannot establish GNU's distinct hard-link alias
+and late-read-error effects. Tests retain the original output, including when
+it is an input. Lift this restriction after those APIs, or another algorithm,
+prove normal, alias, mode and late-failure effects on Native/Wasm against GNU.
+It does not restrict ordinary sort output or merge to a new target/stdout.
 
 ## Stage 0: Windows link rename
 

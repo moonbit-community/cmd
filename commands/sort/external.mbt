@@ -120,7 +120,50 @@ async fn write_entry(writer : &@io.Writer, entry : Entry) -> Unit {
 ///|
 priv struct HeapEntry {
   entry : Entry
-  reader : RunReader
+  reader : MergeReader
+}
+
+///|
+priv enum MergeReader {
+  RunInput(RunReader)
+  SourceInput(SourceReader)
+}
+
+///|
+priv struct SourceReader {
+  scanner : @stream.LineScanner
+  source : String
+  index : Int64
+  specs : Array[KeySpec]
+  global : Modifiers
+  separator : Byte?
+  seed : Bytes
+}
+
+///|
+async fn MergeReader::next(self : MergeReader) -> Entry? {
+  match self {
+    RunInput(reader) => reader.next()
+    SourceInput(reader) => {
+      let line = reader.scanner.next() catch {
+        @os_error.OSError(_) as error =>
+          raise CliError(
+            "sort: read failed: \{reader.source}: \{os_message(error)}",
+          )
+        error => raise error
+      }
+      line.map(line => {
+        make_entry(
+          line.data,
+          reader.index,
+          reader.specs,
+          reader.global,
+          reader.separator,
+          seed=reader.seed,
+        )
+      })
+    }
+  }
 }
 
 ///|
@@ -191,6 +234,58 @@ async fn merge_runs(
       limit: run.largest_entry.max(12),
       key_count,
     }
+    if reader.next() is Some(entry) {
+      heap_push(heap, { entry, reader: RunInput(reader), }, compare)
+    }
+  }
+  while !heap.is_empty() {
+    let item = heap_pop(heap, compare)
+    emit(item.entry)
+    if item.reader.next() is Some(entry) {
+      heap_push(heap, { entry, reader: item.reader, }, compare)
+    }
+  }
+}
+
+///|
+async fn merge_input_sources(
+  sources : ArrayView[String],
+  delimiter : Byte,
+  specs : Array[KeySpec],
+  global : Modifiers,
+  separator : Byte?,
+  seed : Bytes,
+  compare : (Entry, Entry) -> Int32,
+  emit : async (Entry) -> Unit,
+  first_index~ : Int64 = 0,
+) -> Unit {
+  let files : Array[@fs.File] = []
+  defer (for file in files {
+    file.close()
+  })
+  let heap : Array[HeapEntry] = []
+  for index, source in sources {
+    let input : &@io.Reader = if source == "-" {
+      let reader : &@io.Reader = @stdio.stdin
+      reader
+    } else {
+      let file = @fs.open(source, mode=ReadOnly)
+      files.push(file)
+      if file.kind() is Directory {
+        raise CliError("sort: read failed: \{source}: Is a directory")
+      }
+      let reader : &@io.Reader = file
+      reader
+    }
+    let reader = SourceInput({
+      scanner: @stream.LineScanner::new(input, delimiter~),
+      source,
+      index: first_index + index.to_int64(),
+      specs,
+      global,
+      separator,
+      seed,
+    })
     if reader.next() is Some(entry) {
       heap_push(heap, { entry, reader, }, compare)
     }
@@ -281,6 +376,46 @@ async fn Spool::merge(
 }
 
 ///|
+async fn Spool::merge_sources(
+  self : Spool,
+  sources : ArrayView[String],
+  delimiter : Byte,
+  specs : Array[KeySpec],
+  global : Modifiers,
+  separator : Byte?,
+  seed : Bytes,
+  first_index : Int64,
+  compare : (Entry, Entry) -> Int32,
+) -> Run {
+  let path = self.path()
+  let file = @fs.open(
+    path,
+    mode=WriteOnly,
+    create_mode=CreateNew,
+    permission=0o600,
+  )
+  defer file.close()
+  let writer = @io.BufferedWriter::new(file, size=65536)
+  let mut largest_entry : Int64 = 0
+  merge_input_sources(
+    sources,
+    delimiter,
+    specs,
+    global,
+    separator,
+    seed,
+    compare,
+    entry => {
+      largest_entry = largest_entry.max(entry_cost(entry))
+      write_entry(writer, entry)
+    },
+    first_index~,
+  )
+  writer.flush()
+  { path, largest_entry, level: 0, }
+}
+
+///|
 fn merge_count(runs : ArrayView[Run], budget : Int64) -> Int32 {
   let mut count = 0
   let mut retained : Int64 = 0
@@ -339,6 +474,9 @@ async fn scan_source(
     Some(@fs.open(path, mode=ReadOnly))
   }
   defer (if file is Some(file) { file.close() })
+  if file is Some(file) && file.kind() is Directory {
+    raise CliError("sort: read failed: \{path}: Is a directory")
+  }
   let reader : &@io.Reader = match file {
     Some(file) => {
       let reader : &@io.Reader = file
@@ -350,7 +488,13 @@ async fn scan_source(
     }
   }
   let scanner = @stream.LineScanner::new(reader, delimiter~)
-  while scanner.next() is Some(line) {
+  for ;; {
+    let next = scanner.next() catch {
+      @os_error.OSError(_) as error =>
+        raise CliError("sort: read failed: \{path}: \{os_message(error)}")
+      error => raise error
+    }
+    guard next is Some(line) else { break }
     if !accept(line.data) {
       return false
     }
@@ -367,12 +511,16 @@ async fn sort_sources(
   global : Modifiers,
   separator : Byte?,
   unique~ : Bool,
+  stable~ : Bool = false,
+  merge~ : Bool = false,
   check~ : Bool = false,
   diagnose~ : Bool = false,
   budget~ : Int64 = 67108864,
+  seed~ : Bytes = b"",
+  output_path~ : String? = None,
 ) -> Int32 {
   let compare = (left : Entry, right : Entry) => {
-    let order = compare_entries(left, right, specs, global, !unique)
+    let order = compare_entries(left, right, specs, global, !unique && !stable)
     if order == 0 {
       left.index.compare(right.index)
     } else {
@@ -380,7 +528,7 @@ async fn sort_sources(
     }
   }
   let key_count = if specs.is_empty() {
-    if transforms_key(global) {
+    if transforms_key(global) || global.mode == Random {
       1
     } else {
       0
@@ -398,14 +546,14 @@ async fn sort_sources(
   let mut retained : Int64 = 0
   let mut sequence : Int64 = 0
   let mut previous : Entry? = None
-  for source in sources {
+  for source in (if merge && !check { [] } else { sources }) {
     let complete = scan_source(source, delimiter, record => {
-      let entry = make_entry(record, sequence, specs, global, separator)
+      let entry = make_entry(record, sequence, specs, global, separator, seed~)
       sequence += 1
       if check {
         if previous is Some(old) &&
           (
-            compare_entries(old, entry, specs, global, true) > 0 ||
+            compare_entries(old, entry, specs, global, !stable) > 0 ||
             (unique && compare_entries(old, entry, specs, global, false) == 0)
           ) {
           if diagnose {
@@ -436,7 +584,20 @@ async fn sort_sources(
   if check {
     return 0
   }
-  let writer = @io.BufferedWriter::new(output, size=65536)
+  let target = match output_path {
+    Some(path) =>
+      Some(@fs.open(path, mode=WriteOnly, create_mode=TruncateExisting))
+    None => None
+  }
+  defer (if target is Some(file) { file.close() })
+  let sink : &@io.Writer = match target {
+    Some(file) => {
+      let writer : &@io.Writer = file
+      writer
+    }
+    None => output
+  }
+  let writer = @io.BufferedWriter::new(sink, size=65536)
   let emit : async (Entry) -> Unit = entry => {
     if previous is Some(old) &&
       unique &&
@@ -457,26 +618,56 @@ async fn sort_sources(
       })
     }
   }
-  if runs.is_empty() {
+  if merge && sources.length() <= 16 {
+    merge_input_sources(
+      sources[:],
+      delimiter,
+      specs,
+      global,
+      separator,
+      seed,
+      compare,
+      emit,
+    )
+    writer.flush()
+    return 0
+  }
+  if merge {
+    for first = 0; first < sources.length(); first = first + 16 {
+      runs.push(
+        spool.merge_sources(
+          sources[first:(first + 16).min(sources.length())],
+          delimiter,
+          specs,
+          global,
+          separator,
+          seed,
+          first.to_int64(),
+          compare,
+        ),
+      )
+      compact_runs(spool, runs, key_count, compare, run_limit)
+    }
+  } else if runs.is_empty() {
     entries.sort_by(compare)
     for entry in entries {
       emit(entry)
     }
-  } else {
-    if !entries.is_empty() {
-      runs.push(spool.write_run(entries, compare))
-      entries = []
-    }
-    while runs.length() > 16 || merge_count(runs, run_limit) < runs.length() {
-      let count = merge_count(runs, run_limit)
-      let merged = spool.merge(runs[:count], key_count, compare)
-      let remaining = runs[count:].to_owned()
-      runs.clear()
-      runs.append(remaining)
-      runs.push(merged)
-    }
-    merge_runs(runs, key_count, compare, emit)
+    writer.flush()
+    return 0
+  } else if !entries.is_empty() {
+    runs.push(spool.write_run(entries, compare))
+    entries = []
   }
+  while runs.length() > 16 || merge_count(runs, run_limit) < runs.length() {
+    let count = merge_count(runs, run_limit)
+    let merged = spool.merge(runs[:count], key_count, compare)
+    let remaining = runs[count:].to_owned()
+    runs.clear()
+    runs.append(remaining)
+    runs.push(merged)
+  }
+  merge_runs(runs, key_count, compare, emit)
   writer.flush()
   0
 }

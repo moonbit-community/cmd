@@ -1,54 +1,11 @@
 ///|
-priv suberror ExpandError {
-  ExpandError(String)
-}
-
-///|
-fn parse_stops(text : String) -> Array[Int32] raise ExpandError {
-  if text == "" {
-    raise ExpandError("invalid tab size")
-  }
-  let stops : Array[Int32] = []
-  for part in text.split(",") {
-    if part.trim() == "" {
-      raise ExpandError("invalid tab size")
-    }
-    let value = @string.parse_int(part.trim().to_owned()) catch {
-      _ => raise ExpandError("invalid tab size")
-    }
-    if value <= 0 || (stops.length() > 0 && value <= stops.last().unwrap_or(0)) {
-      raise ExpandError("tab sizes must be ascending")
-    }
-    stops.push(value)
-  }
-  if stops.is_empty() {
-    raise ExpandError("invalid tab size")
-  }
-  stops
-}
-
-///|
-fn next_stop(column : Int32, stops : Array[Int32]) -> Int32? {
-  for stop in stops {
-    if stop > column {
-      return Some(stop)
-    }
-  }
-  if stops.length() == 1 {
-    let width = stops[0]
-    return Some((column / width + 1) * width)
-  }
-  None
-}
-
-///|
 fn expand_bytes(
   data : Bytes,
   initial_only : Bool,
-  stops : Array[Int32],
-) -> Bytes {
+  stops : @tabstops.TabStops,
+) -> Bytes raise @tabstops.TabError {
   let output : Array[Byte] = []
-  let mut column = 0
+  let mut column = 0L
   let mut seen_nonblank = false
   for byte in data {
     if byte == b'\n' {
@@ -56,9 +13,9 @@ fn expand_bytes(
       column = 0
       seen_nonblank = false
     } else if byte == b'\t' && (!initial_only || !seen_nonblank) {
-      match next_stop(column, stops) {
+      match @tabstops.next(column, stops) {
         Some(stop) => {
-          for _ in 0..<(stop - column) {
+          for current = column; current < stop; current = current + 1 {
             output.push(b' ')
           }
           column = stop
@@ -76,7 +33,12 @@ fn expand_bytes(
       seen_nonblank = true
     } else {
       output.push(byte)
-      column += 1
+      if byte != b'\x00' {
+        if column == 9223372036854775807L {
+          raise @tabstops.TabError("input line is too long")
+        }
+        column += 1
+      }
       if byte != b' ' && byte != b'\t' {
         seen_nonblank = true
       }
@@ -96,7 +58,7 @@ fn help_message() -> String {
     #|With no FILE, or when FILE is -, read standard input.
     #|
     #|  -i, --initial       do not convert tabs after nonblank characters
-    #|  -t, --tabs=LIST     use comma-separated tab stops (positive, ascending)
+    #|  -t, --tabs=LIST     use ascending tab stops; /N repeats absolute, +N relative
   message
 }
 
@@ -131,10 +93,10 @@ async fn main {
     @stdio.stdout.write(help_message() + "\n")
     return
   }
-  let stops = parse_stops(parsed.last_value("tabs").unwrap_or("8")) catch {
-    ExpandError(message) => {
+  let stops = @tabstops.parse(parsed.values("tabs")) catch {
+    @tabstops.TabError(message) => {
       @stdio.stderr.write("expand: \{message}\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -152,7 +114,14 @@ async fn main {
         continue
       }
     }
-    @stdio.stdout.write(expand_bytes(data, parsed.contains("initial"), stops))
+    let expanded = expand_bytes(data, parsed.contains("initial"), stops) catch {
+      @tabstops.TabError(message) => {
+        @stdio.stderr.write("expand: \{message}\n")
+        @sys.exit(1)
+        return
+      }
+    }
+    @stdio.stdout.write(expanded)
   }
   if failed {
     @sys.exit(1)

@@ -13,7 +13,10 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "format"
+      ]
     },
     {
       "id": "p9-printf-repeated-format",
@@ -28,7 +31,10 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "format"
+      ]
     },
     {
       "id": "compat-text-line-695",
@@ -46,7 +52,10 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "1,2,3,",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "format"
+      ]
     },
     {
       "id": "compat-text-line-704",
@@ -62,7 +71,10 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_hex": "410042",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "format"
+      ]
     },
     {
       "id": "compat-text-line-705",
@@ -78,7 +90,10 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "0",
-      "expected_stderr_text": "printf: 'invalid': expected a numeric value\n"
+      "expected_stderr_text": "printf: 'invalid': expected a numeric value\n",
+      "coverage": [
+        "format"
+      ]
     },
     {
       "id": "compat-catalog-line-184",
@@ -95,7 +110,10 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "answer=42\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "format"
+      ]
     },
     {
       "id": "release-metadata-printf-help",
@@ -113,7 +131,7 @@
         "help"
       ],
       "source_version": "workspace cli/printf@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: printf FORMAT [ARGUMENT...]\n      --help      display this help and exit\n      --version   display version and exit\n\nFormat and print ARGUMENTs under control of FORMAT, like printf(1).\nThe FORMAT is reused as necessary to consume all arguments.\n\nEscapes: \\a \\b \\e \\f \\n \\r \\t \\v \\\\ \\\" \\' \\NNN \\0NNN \\xHH \\uHHHH\n\\UHHHHHHHH, and \\c (stop all output).\n\nConversions: %s %c %b %d %i %u %o %x %X %f %e %E %g %G %%, with the\nflags -+ 0#, field width, and precision (both accept *).\n%b interprets escapes in its argument.\n\nUse -- before a FORMAT that starts with '-'.\n",
+      "expected_stdout_text": "Usage: printf FORMAT [ARGUMENT...]\n      --help      display this help and exit\n      --version   display version and exit\n\nFormat and print ARGUMENTs under control of FORMAT, like printf(1).\nThe FORMAT is reused as necessary to consume all arguments.\n\nEscapes: \\a \\b \\e \\f \\n \\r \\t \\v \\\\ \\\" \\' \\NNN \\0NNN \\xHH \\uHHHH\n\\UHHHHHHHH, and \\c (stop all output).\n\nConversions: %s %c %b %d %i %u %o %x %X %f %e %E %g %G %a %A %%, with the\nflags -+ 0#, field width, and precision (both accept *).\n%b interprets escapes in its argument.\nBare %q quotes an argument for a shell under the C-byte profile.\n\nUse -- before a FORMAT that starts with '-'.\n",
       "expected_stderr_text": ""
     },
     {
@@ -134,6 +152,498 @@
       "source_version": "workspace cli/printf@0.2.2 metadata contract",
       "expected_stdout_text": "printf 0.2.2\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o3-printf-hex-flags",
+      "command": "printf",
+      "args": [
+        "%a|%A|%.0a|%#.0a|%020a|%+a\n",
+        "1.5",
+        "1.5",
+        "1.5",
+        "1.5",
+        "1.5",
+        "1.5"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 native Linux amd64; CI run 40116423941 raw oracle output",
+      "expected_stdout_hex": "307863702d337c305843502d337c307863702d337c3078632e702d337c3078303030303030303030303030303063702d337c2b307863702d330a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-printf-hex-special",
+      "command": "printf",
+      "args": [
+        "[%a]\n",
+        "0",
+        "-0",
+        "inf",
+        "-inf",
+        "nan",
+        "0x0.0000000000001p-1022"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 native Linux amd64; CI run 40116423941 raw oracle output",
+      "expected_stdout_hex": "5b307830702b305d0a5b2d307830702b305d0a5b696e665d0a5b2d696e665d0a5b6e616e5d0a5b307838702d313037375d0a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-printf-hex-precision",
+      "command": "printf",
+      "args": [
+        "%.20a\n",
+        "0.1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 native Linux amd64; CI run 40116423941 raw oracle output",
+      "expected_stdout_hex": "3078632e6363636363636363636363636363643030303030702d370a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-printf-hex-tie",
+      "command": "printf",
+      "args": [
+        "%.1a\n",
+        "1.03125",
+        "1.09375",
+        "-1.03125",
+        "-1.09375"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 native Linux amd64; CI run 40116423941 raw oracle output",
+      "expected_stdout_hex": "3078382e34702d330a3078382e63702d330a2d3078382e34702d330a2d3078382e63702d330a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-printf-hex-star",
+      "command": "printf",
+      "args": [
+        "[%*.*a]\n",
+        "20",
+        "2",
+        "1.5",
+        "-20",
+        "-1",
+        "1.5"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 native Linux amd64; CI run 40116423941 raw oracle output",
+      "expected_stdout_hex": "5b20202020202020202020203078632e3030702d335d0a5b307863702d3320202020202020202020202020205d0a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-printf-hex-missing",
+      "command": "printf",
+      "args": [
+        "prefix:%a:suffix\n"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "7072656669783a307830702b303a7375666669780a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-printf-hex-character",
+      "command": "printf",
+      "args": [
+        "%a\n",
+        "'A"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 native Linux amd64; CI run 40116423941 raw oracle output",
+      "expected_stdout_hex": "3078382e32702b330a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-printf-hex-partial-error",
+      "command": "printf",
+      "args": [
+        "start:%q:%a:done\n",
+        "hello world",
+        "bad"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "73746172743a2768656c6c6f20776f726c64273a307830702b303a646f6e650a",
+      "expected_stderr_hex": "7072696e74663a2027626164273a2065787065637465642061206e756d657269632076616c75650a",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-printf-hex-trailing",
+      "command": "printf",
+      "args": [
+        "%a\n",
+        "1x"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 native Linux amd64; CI run 40116423941 raw oracle output",
+      "expected_stdout_hex": "307838702d330a",
+      "expected_stderr_hex": "7072696e74663a20273178273a2076616c7565206e6f7420636f6d706c6574656c7920636f6e7665727465640a",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-printf-hex-range",
+      "command": "printf",
+      "args": [
+        "%a\n",
+        "1e9999",
+        "1e-9999"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "696e660a307830702b300a",
+      "expected_stderr_hex": "7072696e74663a2027316539393939273a204e756d65726963616c20726573756c74206f7574206f662072616e67650a7072696e74663a202731652d39393939273a204e756d65726963616c20726573756c74206f7574206f662072616e67650a",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-printf-quote-values",
+      "command": "printf",
+      "args": [
+        "[%q]\n",
+        "",
+        "safe_word-1",
+        "two words",
+        "single'quote",
+        "double\"quote",
+        "$x",
+        "`cmd`",
+        "a\\b",
+        "*",
+        "line\nnext",
+        "tab\there",
+        "é"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "5b27275d0a5b736166655f776f72642d315d0a5b2774776f20776f726473275d0a5b2273696e676c652771756f7465225d0a5b27646f75626c652271756f7465275d0a5b272478275d0a5b2760636d6460275d0a5b27615c62275d0a5b272a275d0a5b276c696e652724275c6e27276e657874275d0a5b277461622724275c74272768657265275d0a5b272724275c3330335c323531275d0a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-printf-quote-missing",
+      "command": "printf",
+      "args": [
+        "start:%q:done\n"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "73746172743a3a646f6e650a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-printf-quote-width",
+      "command": "printf",
+      "args": [
+        "start:%10q:done\n",
+        "abc"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "73746172743a",
+      "expected_stderr_hex": "7072696e74663a20253130713a20696e76616c696420636f6e76657273696f6e2073706563696669636174696f6e0a",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-printf-quote-precision",
+      "command": "printf",
+      "args": [
+        "start:%.2q:done\n",
+        "abc"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "73746172743a",
+      "expected_stderr_hex": "7072696e74663a20252e32713a20696e76616c696420636f6e76657273696f6e2073706563696669636174696f6e0a",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-printf-quote-flag",
+      "command": "printf",
+      "args": [
+        "start:%#q:done\n",
+        "abc"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "73746172743a",
+      "expected_stderr_hex": "7072696e74663a202523713a20696e76616c696420636f6e76657273696f6e2073706563696669636174696f6e0a",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-extra-printf-quote-punctuation",
+      "command": "printf",
+      "args": [
+        "%q\n",
+        "apostrophe' space",
+        "a'\"b",
+        "a'$b",
+        "{",
+        "}",
+        "a{b",
+        "a}b",
+        "#",
+        "a#",
+        "~",
+        "a~",
+        "?",
+        "@",
+        "]",
+        "=",
+        "a=b",
+        "!"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "2261706f7374726f70686527207370616365220a2761275c27272262270a2761275c27272462270a277b270a277d270a617b620a617d620a2723270a61230a277e270a617e0a273f270a400a5d0a273d270a27613d62270a2721270a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-extra-printf-quote-control-apostrophes",
+      "command": "printf",
+      "args": [
+        "%q\n",
+        "\n'\t",
+        "a\n'b",
+        "a'\nb",
+        "\n'",
+        "'\n",
+        "\u0007\b\u000b\f\r\u001b"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "272724275c6e275c27272724275c74270a27612724275c6e275c272762270a2761275c27272724275c6e272762270a272724275c6e275c2727270a27275c27272724275c6e270a272724275c615c625c765c665c725c303333270a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-extra-printf-hex-nan-signs",
+      "command": "printf",
+      "args": [
+        "%+a|% a|%A\n",
+        "nan",
+        "-nan",
+        "-nan"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 native Linux amd64; CI run 40116423941 raw oracle output",
+      "expected_stdout_hex": "2b6e616e7c2d6e616e7c2d4e414e0a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-extra-printf-hex-rounding-prefixes",
+      "command": "printf",
+      "args": [
+        "%a\n",
+        "0x1.00000000000018p0",
+        "0x1p-1075",
+        "0x3p-1075",
+        "1e-320"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 native Linux amd64; CI run 40116423941 raw oracle output",
+      "expected_stdout_hex": "3078382e30303030303030303030303063702d330a307838702d313037380a307863702d313037370a3078662e643030623839373437383233386431702d313036370a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
     }
   ]
 }

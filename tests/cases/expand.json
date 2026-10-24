@@ -33,7 +33,8 @@
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
-        "initial-only"
+        "initial-only",
+        "initial"
       ]
     },
     {
@@ -52,7 +53,8 @@
       "normalizations": [],
       "coverage": [
         "explicit-stops",
-        "post-final-stop"
+        "post-final-stop",
+        "tabs"
       ]
     },
     {
@@ -65,14 +67,17 @@
       "stdin_text": "x\n",
       "files": [],
       "environment": {},
-      "expected_status": 2,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "expand: tab sizes must be ascending\n",
+      "expected_status": 1,
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
-        "invalid-option-value"
-      ]
+        "invalid-option-value",
+        "tabs"
+      ],
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "657870616e643a207461622073697a6573206d75737420626520617363656e64696e670a",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 former algorithm restriction retired"
     },
     {
       "id": "release-metadata-expand-help",
@@ -90,7 +95,7 @@
         "help"
       ],
       "source_version": "workspace cli/expand@0.1.3 metadata contract",
-      "expected_stdout_text": "Usage: expand [OPTION]... [FILE]...\n      --help      display this help and exit\n      --version   display version and exit\n\nConvert tabs in each FILE to spaces, writing to standard output.\nWith no FILE, or when FILE is -, read standard input.\n\n  -i, --initial       do not convert tabs after nonblank characters\n  -t, --tabs=LIST     use comma-separated tab stops (positive, ascending)\n",
+      "expected_stdout_text": "Usage: expand [OPTION]... [FILE]...\n      --help      display this help and exit\n      --version   display version and exit\n\nConvert tabs in each FILE to spaces, writing to standard output.\nWith no FILE, or when FILE is -, read standard input.\n\n  -i, --initial       do not convert tabs after nonblank characters\n  -t, --tabs=LIST     use ascending tab stops; /N repeats absolute, +N relative\n",
       "expected_stderr_text": ""
     },
     {
@@ -111,6 +116,415 @@
       "source_version": "workspace cli/expand@0.1.3 metadata contract",
       "expected_stdout_text": "expand 0.1.3\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o4-expand-absolute-grid",
+      "command": "expand",
+      "args": [
+        "-t",
+        "4,6,/8"
+      ],
+      "stdin_text": "a\tb\t\tc\n",
+      "expected_status": 0,
+      "expected_stdout_text": "a   b   c\n",
+      "expected_stderr_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "tabs"
+      ]
+    },
+    {
+      "id": "o4-expand-absolute-backspace-cr",
+      "command": "expand",
+      "args": [
+        "-t",
+        "4,6,/8"
+      ],
+      "stdin_text": "abc\b\tX\r\tY\n",
+      "expected_status": 0,
+      "expected_stdout_text": "abc\b  X\r  Y\n",
+      "expected_stderr_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "tabs"
+      ]
+    },
+    {
+      "id": "o4-expand-relative-grid",
+      "command": "expand",
+      "args": [
+        "-t",
+        "4,6,+8"
+      ],
+      "stdin_text": "a\tb\t\tc\n",
+      "expected_status": 0,
+      "expected_stdout_text": "a   b         c\n",
+      "expected_stderr_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "tabs"
+      ]
+    },
+    {
+      "id": "o4-expand-relative-backspace-cr",
+      "command": "expand",
+      "args": [
+        "-t",
+        "4,6,+8"
+      ],
+      "stdin_text": "abc\b\tX\r\tY\n",
+      "expected_status": 0,
+      "expected_stdout_text": "abc\b  X\r        Y\n",
+      "expected_stderr_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "tabs"
+      ]
+    },
+    {
+      "id": "o4-expand-standalone-absolute",
+      "command": "expand",
+      "args": [
+        "-t",
+        "/8"
+      ],
+      "stdin_text": "a\tb\t\tc\n",
+      "expected_status": 0,
+      "expected_stdout_text": "a       b               c\n",
+      "expected_stderr_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "tabs"
+      ]
+    },
+    {
+      "id": "o4-expand-standalone-relative",
+      "command": "expand",
+      "args": [
+        "-t",
+        "+8"
+      ],
+      "stdin_text": "a\tb\t\tc\n",
+      "expected_status": 0,
+      "expected_stdout_text": "a       b               c\n",
+      "expected_stderr_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "tabs"
+      ]
+    },
+    {
+      "id": "o4-expand-fixed-tail",
+      "command": "expand",
+      "args": [
+        "-t",
+        "4,8"
+      ],
+      "stdin_text": "a\tb\t\tc\n",
+      "expected_status": 0,
+      "expected_stdout_text": "a   b    c\n",
+      "expected_stderr_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "tabs"
+      ]
+    },
+    {
+      "id": "o4-expand-relative-zero",
+      "command": "expand",
+      "args": [
+        "-t",
+        "4,+0"
+      ],
+      "stdin_text": "a\tb\t\tc\n",
+      "expected_status": 0,
+      "expected_stdout_text": "a   b       c\n",
+      "expected_stderr_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "tabs"
+      ]
+    },
+    {
+      "id": "o4-expand-absolute-zero",
+      "command": "expand",
+      "args": [
+        "-t",
+        "4,/0"
+      ],
+      "stdin_text": "a\tb\t\tc\n",
+      "expected_status": 0,
+      "expected_stdout_text": "a   b       c\n",
+      "expected_stderr_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "tabs"
+      ]
+    },
+    {
+      "id": "o4-expand-nonfinal-suffix",
+      "command": "expand",
+      "args": [
+        "-t",
+        "4,+8,12"
+      ],
+      "stdin_text": "a\tb\t\tc\n",
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "expand: '+' specifier only allowed with the last value\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "tabs"
+      ]
+    },
+    {
+      "id": "o4-expand-conflicting-suffixes",
+      "command": "expand",
+      "args": [
+        "-t",
+        "4,/8,+4"
+      ],
+      "stdin_text": "a\tb\t\tc\n",
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "expand: '/' specifier is mutually exclusive with '+'\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "tabs"
+      ]
+    },
+    {
+      "id": "o4-expand-nonascending",
+      "command": "expand",
+      "args": [
+        "-t",
+        "4,4"
+      ],
+      "stdin_text": "a\tb\t\tc\n",
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "expand: tab sizes must be ascending\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "tabs"
+      ]
+    },
+    {
+      "id": "o4-expand-zero-stop",
+      "command": "expand",
+      "args": [
+        "-t",
+        "0"
+      ],
+      "stdin_text": "a\tb\t\tc\n",
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "expand: tab size cannot be 0\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "tabs"
+      ]
+    },
+    {
+      "id": "o4-expand-signed-overflow",
+      "command": "expand",
+      "args": [
+        "-t",
+        "9223372036854775808"
+      ],
+      "stdin_text": "a\tb\t\tc\n",
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "expand: tab stop is too large '9223372036854775808'\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "tabs"
+      ]
+    },
+    {
+      "id": "o4-expand-long-tabs-alias",
+      "command": "expand",
+      "args": [
+        "--tabs=4,6,+8"
+      ],
+      "stdin_text": "a\tb\t\tc\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a   b         c\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "tabs"
+      ]
+    },
+    {
+      "id": "o4-expand-repeated-fixed-tabs",
+      "command": "expand",
+      "args": [
+        "-t4",
+        "--tabs=6,+8"
+      ],
+      "stdin_text": "a\tb\t\tc\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a   b         c\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "tabs"
+      ]
+    },
+    {
+      "id": "o4-expand-int64-stop",
+      "command": "expand",
+      "args": [
+        "-t9223372036854775807"
+      ],
+      "stdin_text": "plain\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "plain\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "tabs"
+      ]
     }
   ]
 }

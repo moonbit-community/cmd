@@ -5,8 +5,9 @@ Version **0.1.2** behavior is documented here. The
 published MoonX behavior; `moonx` examples use registry releases.
 
 Reformat paragraphs from files or stdin while preserving indentation and
-sentence spacing. Lines with different indentation start new paragraphs;
-blank lines separate paragraphs. Output ends with a newline.
+sentence spacing. Blank lines separate paragraphs. Ordinary paragraphs keep
+one indent; crown and tagged modes distinguish the first and continuation
+indents. Reformatted paragraphs end with a newline.
 
 ```sh
 moonx cli/fmt -w 60 notes.txt
@@ -21,9 +22,20 @@ after sentence endings. Widths range from 0 through 2500; a long word is
 emitted intact even when it exceeds the width. Columns use a C-locale byte
 profile, and tabs advance to multiples of eight.
 
+`-c/--crown-margin` allows the first indent to differ from the remaining
+lines. `-t/--tagged-paragraph` joins a second line only when its indent differs
+from the first, and retains the continuation indent for later paragraphs.
+Split mode takes precedence over crown mode, then tagged mode, independent
+of their argument order.
+
+`-p/--prefix=PREFIX` reformats matching prefixed lines and repeats the prefix
+on output. Leading and trailing spaces in the requested prefix affect
+eligibility; unmatched lines retain their contents, including a missing final
+newline. An empty prefix selects ordinary lines. Repeated prefixes use the last.
+
 No file is rewritten. Multiple operands are processed in order and an
-unreadable file does not stop later operands. Crown margins, tagged margins,
-prefix matching and locale-aware character widths are not included.
+unreadable file does not stop later operands. Locale-aware character widths
+are outside the selected C-byte profile.
 `--help` and `--version` are available. Exit status is 0 on success and 1
 for an option or input error.
 

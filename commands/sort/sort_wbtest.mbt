@@ -15,6 +15,7 @@ fn test_modifiers() -> Modifiers {
     fold_case: false,
     ignore_nonprinting: false,
     mode: Lexical,
+    ordering_modes: 0,
     reverse: false,
   }
 }
@@ -78,6 +79,9 @@ async fn run_sort_fixture(
   unique~ : Bool = false,
   delimiter~ : Byte = b'\n',
   specs~ : Array[KeySpec] = [],
+  stable~ : Bool = false,
+  merge~ : Bool = false,
+  seed~ : Bytes = b"",
 ) -> Bytes {
   let output = @io.MemoryReader(writer => {
     let status = sort_sources(
@@ -88,6 +92,9 @@ async fn run_sort_fixture(
       modifiers,
       None,
       unique~,
+      stable~,
+      merge~,
+      seed~,
       budget=22 * 65536 + 512,
     )
     assert_eq(status, 0)

@@ -1,0 +1,19 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/core/tabstops"
+
+// Values
+pub fn next(Int64, TabStops) -> Int64? raise TabError
+
+pub fn parse(Array[String]) -> TabStops raise TabError
+
+// Errors
+pub(all) suberror TabError {
+  TabError(String)
+}
+
+// Types and methods
+type TabStops
+
+// Type aliases
+
+// Traits

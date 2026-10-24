@@ -172,6 +172,7 @@ async fn main {
   let operands : Array[String] = []
   let mut separator = "\n"
   let mut equal_width = false
+  let mut format : String? = None
   let mut options = true
   let mut i = 0
   while i < args.length() {
@@ -180,6 +181,20 @@ async fn main {
       options = false
     } else if options && (arg == "-w" || arg == "--equal-width") {
       equal_width = true
+    } else if options && (arg == "-f" || arg == "--format") {
+      if i + 1 >= args.length() {
+        @stdio.stderr.write(
+          "seq: option '\{arg}' requires an argument\nTry 'seq --help' for more information.\n",
+        )
+        @sys.exit(1)
+        return
+      }
+      i += 1
+      format = Some(args[i])
+    } else if options && arg.has_prefix("--format=") {
+      format = Some(arg[9:].to_owned())
+    } else if options && arg.has_prefix("-f") && arg.length() > 2 {
+      format = Some(arg[2:].to_owned())
     } else if options && (arg == "-s" || arg == "--separator") {
       if i + 1 >= args.length() {
         @stdio.stderr.write("seq: missing separator\n")
@@ -194,7 +209,7 @@ async fn main {
       separator = arg[12:].to_owned()
     } else if options && arg == "--help" {
       @stdio.stdout.write(
-        "Usage: seq [-w] [-s STRING] [FIRST [INCREMENT]] LAST\nPrint an exact decimal sequence; the default increment is 1.\n  -w, --equal-width       pad numbers with leading zeroes\n  -s, --separator=STRING  separate numbers with STRING\n      --help              display this help and exit\n      --version           display version and exit\nNumeric operands are limited to 4096 characters; exponent and decimal scale must be within -4096..4096.\n",
+        "Usage: seq [-w] [-f FORMAT] [-s STRING] [FIRST [INCREMENT]] LAST\nPrint a numeric sequence; the default increment is 1.\n  -w, --equal-width       pad numbers with leading zeroes\n  -f, --format=FORMAT     use one e/E/f/F/g/G/a/A floating conversion\n  -s, --separator=STRING  separate numbers with STRING\n      --help              display this help and exit\n      --version           display version and exit\nWithout -f, exact decimal operands are limited to 4096 characters; exponent and decimal scale must be within -4096..4096.\n",
       )
       return
     } else if options && arg == "--version" {
@@ -209,12 +224,34 @@ async fn main {
       return
     } else {
       operands.push(arg)
+      options = false
     }
     i += 1
   }
   if operands.length() < 1 || operands.length() > 3 {
     @stdio.stderr.write("seq: expected one to three operands\n")
     @sys.exit(1)
+    return
+  }
+  if format is Some(text) {
+    try {
+      let descriptor = parse_float_format(text)
+      if equal_width {
+        raise SeqError(
+          "format string may not be specified when printing equal width strings\nTry 'seq --help' for more information.",
+        )
+      }
+      print_formatted(operands, descriptor, separator)
+    } catch {
+      SeqError(message) => {
+        @stdio.stderr.write("seq: \{message}\n")
+        @sys.exit(1)
+      }
+      error => {
+        @stdio.stderr.write("seq: \{error}\n")
+        @sys.exit(1)
+      }
+    }
     return
   }
   let parsed : Array[Decimal] = []

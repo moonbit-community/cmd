@@ -14,6 +14,7 @@ they are not an alternative support matrix.
 
 | Date | Report | Scope |
 | --- | --- | --- |
+| 2026-10-25 | [O2-O4 options](2026-10-25-o2-o4-options.md) | Stable/merge/random sorting, fixed-ABI numeric and paragraph formatting, shared tab grids; development evidence and precise output limits |
 | 2026-10-24 | [Diff and patch D implementation](2026-10-24-d-diff-patch.md) | Comparison/directory workflows, linear auxiliary reconstruction, offset/fuzz/reject and mixed results; local Native/Wasm and fixed GNU evidence |
 | 2026-10-24 | [O1 text options](2026-10-24-o1-text-options.md) | cut complements, uniq groups, comm totals, join headers/auto fields and wc totals; C-byte counting and explicit stdin metadata limits |
 | 2026-10-24 | [Stream hot paths](2026-10-24-stream-hotpaths.md) | Copy, shared scanner, selected wc counters and incremental strings development observations |

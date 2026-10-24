@@ -36,7 +36,10 @@ platform jobs and coverage-audit passed, and implementation issue #30 is
 closed. The [D report](reports/2026-10-24-d-diff-patch.md) retains its original
 development observations and precise filesystem boundaries. O1 adds the
 selected cut/uniq/comm/join/wc options with fixed GNU development comparisons;
-its PR integration and the remaining O2-O13 families are pending. See the
+PR #52 is merged after all four required checks; actual-main run 40110917627
+also passed all three platform jobs and coverage-audit. O2-O4 source and private development comparisons
+are prepared; their committed integration and the remaining O5-O13 families
+are pending. See the
 [O1 report](reports/2026-10-24-o1-text-options.md). Issue #33 remains open
 until the whole selected O stage is accepted; R and issue #32 follow O.
 
@@ -767,8 +770,9 @@ items. Complete selected #33 work before #32.
 
 Freeze GNU random-source consumption/hash/order/equal-key grouping/duplicates/
 exhaustion; arbitrary shuffle/PRNG is insufficient. Register source identity,
-read calls/bytes and error prefixes. Merge mode validates the existing key
-order, not silently sorting invalid inputs.
+read calls/bytes and error prefixes. GNU merge assumes the existing input key
+order; it does not validate or silently repair unsorted inputs. This corrects
+the original plan wording using the fixed GNU 9.11 source and observations.
 
 Sort consumes/spools necessary inputs before opening output, including same-path
 inputs. Implement safe new targets; refuse existing/hard-link alias operations

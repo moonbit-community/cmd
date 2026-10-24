@@ -19,3 +19,47 @@ test "fmt zero width and independent paragraphs" {
   )
   assert_eq(format(b"one\ntwo\n", 75, 70, true, false), b"one\ntwo\n")
 }
+
+///|
+test "fmt tagged continuation preserves the prefix without negative padding" {
+  assert_eq(
+    format(
+      b">> alpha beta gamma delta epsilon zeta eta theta\n",
+      24,
+      22,
+      false,
+      false,
+      tagged=true,
+      prefix=">> ",
+    ),
+    b">> alpha beta gamma\n>>delta epsilon zeta\n>>eta theta\n",
+  )
+  assert_eq(
+    format(
+      b"A single line alpha beta gamma delta epsilon zeta eta theta iota\n",
+      24,
+      22,
+      false,
+      false,
+      tagged=true,
+    ),
+    b"A single line alpha beta\n   gamma delta epsilon\n   zeta eta theta iota\n",
+  )
+}
+
+///|
+test "fmt prefix eligibility preserves unmatched and partial EOF records" {
+  assert_eq(
+    format(
+      b"plain untouched long line with no newline",
+      24,
+      22,
+      false,
+      false,
+      prefix=">> ",
+    ),
+    b"plain untouched long line with no newline",
+  )
+  assert_eq(format(b">", 24, 22, false, false, prefix=">> "), b">")
+  assert_eq(format(b">>", 24, 22, false, false, prefix=">> "), b">>\n")
+}
