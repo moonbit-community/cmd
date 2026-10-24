@@ -2,11 +2,11 @@
   "schema": 2,
   "candidate": true,
   "release_scope": [
-    "curl",
-    "mv",
-    "wget"
+    "gunzip",
+    "gzip",
+    "zcat"
   ],
-  "core_version": "0.7.0",
+  "core_version": "0.8.0",
   "base_manifest": "active-cases.json",
   "commands": [
     {
@@ -1240,6 +1240,13 @@
     "fold-space-break",
     "fold-tab-column",
     "fold-width-newline",
+    "g1-gunzip-levels-ignored",
+    "g1-gzip-levels-decompress",
+    "g1-zcat-levels-ignored",
+    "g2-gunzip-named-members",
+    "g2-gzip-named-crc-prefix",
+    "g2-gzip-named-members",
+    "g2-zcat-named-members",
     "grep-basic-plus-literal",
     "grep-extended-longest-only",
     "grep-no-context-separator",

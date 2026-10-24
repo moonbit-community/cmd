@@ -51882,6 +51882,1006 @@
       "oracle_profile": ""
     },
     {
+      "behavior_id": "case:g2-gzip-named-members",
+      "command": "gzip",
+      "owner": "commands/gzip",
+      "surface": [
+        "decompression",
+        "files",
+        "streaming"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gzip.json",
+      "case_id": "g2-gzip-named-members",
+      "aliases": [],
+      "coverage": [
+        "-d",
+        "-c"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "file-content",
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:g2-gzip-named-crc-prefix",
+      "command": "gzip",
+      "owner": "commands/gzip",
+      "surface": [
+        "decompression",
+        "files",
+        "error-prefix",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gzip.json",
+      "case_id": "g2-gzip-named-crc-prefix",
+      "aliases": [],
+      "coverage": [
+        "-d",
+        "-c"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "file-content",
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:g2-gunzip-named-members",
+      "command": "gunzip",
+      "owner": "commands/gunzip",
+      "surface": [
+        "decompression",
+        "files",
+        "streaming"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gunzip.json",
+      "case_id": "g2-gunzip-named-members",
+      "aliases": [],
+      "coverage": [
+        "-c"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "file-content",
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:g2-zcat-named-members",
+      "command": "zcat",
+      "owner": "commands/zcat",
+      "surface": [
+        "decompression",
+        "files",
+        "streaming"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/zcat.json",
+      "case_id": "g2-zcat-named-members",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "file-content",
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:g1-gunzip-levels-ignored",
+      "command": "gunzip",
+      "owner": "commands/gunzip",
+      "surface": [
+        "compression-level",
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gunzip.json",
+      "case_id": "g1-gunzip-levels-ignored",
+      "aliases": [],
+      "coverage": [
+        "-1",
+        "-2",
+        "-3",
+        "-4",
+        "-5",
+        "-6",
+        "-7",
+        "-8",
+        "-9",
+        "--fast",
+        "--best"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:g1-gzip-levels-decompress",
+      "command": "gzip",
+      "owner": "commands/gzip",
+      "surface": [
+        "compression-level",
+        "decompression",
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gzip.json",
+      "case_id": "g1-gzip-levels-decompress",
+      "aliases": [],
+      "coverage": [
+        "-d",
+        "-c",
+        "-1",
+        "-2",
+        "-3",
+        "-4",
+        "-5",
+        "-6",
+        "-7",
+        "-8",
+        "-9",
+        "--fast",
+        "--best"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:g1-zcat-levels-ignored",
+      "command": "zcat",
+      "owner": "commands/zcat",
+      "surface": [
+        "compression-level",
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/zcat.json",
+      "case_id": "g1-zcat-levels-ignored",
+      "aliases": [],
+      "coverage": [
+        "-1",
+        "-2",
+        "-3",
+        "-4",
+        "-5",
+        "-6",
+        "-7",
+        "-8",
+        "-9",
+        "--fast",
+        "--best"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/command_wbtest.mbt::gzip compression levels default to six and follow the final option",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/command_wbtest.mbt::gzip compression levels default to six and follow the final option",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "gzip compression levels default to six and follow the final option"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/command_wbtest.mbt::gzip level parsing preserves option terminators and decompression flags",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/command_wbtest.mbt::gzip level parsing preserves option terminators and decompression flags",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "gzip level parsing preserves option terminators and decompression flags"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/command_wbtest.mbt::gzip level parsing rejects zero and unsupported long numeric forms",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/command_wbtest.mbt::gzip level parsing rejects zero and unsupported long numeric forms",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "gzip level parsing rejects zero and unsupported long numeric forms"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/deflate_lz_wbtest.mbt::deflate LZ tokens replay literals overlap and maximum chunk",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/deflate_lz_wbtest.mbt::deflate LZ tokens replay literals overlap and maximum chunk",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "deflate LZ tokens replay literals overlap and maximum chunk"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/deflate_lz_wbtest.mbt::deflate LZ carries pending hashes and copy interiors across chunks",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/deflate_lz_wbtest.mbt::deflate LZ carries pending hashes and copy interiors across chunks",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "deflate LZ carries pending hashes and copy interiors across chunks"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/deflate_lz_wbtest.mbt::deflate LZ includes full window distance beyond 32 bit positions",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/deflate_lz_wbtest.mbt::deflate LZ includes full window distance beyond 32 bit positions",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "deflate LZ includes full window distance beyond 32 bit positions"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/deflate_lz_wbtest.mbt::deflate LZ level controls bounded search and lazy token choice",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/deflate_lz_wbtest.mbt::deflate LZ level controls bounded search and lazy token choice",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "deflate LZ level controls bounded search and lazy token choice"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/deflate_lz_wbtest.mbt::deflate LZ streaming replay survives varying small and large chunks",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/deflate_lz_wbtest.mbt::deflate LZ streaming replay survives varying small and large chunks",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "deflate LZ streaming replay survives varying small and large chunks"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/deflate_blocks_wbtest.mbt::deflate fixed final abc matches the independent raw stream",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/deflate_blocks_wbtest.mbt::deflate fixed final abc matches the independent raw stream",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "deflate fixed final abc matches the independent raw stream"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/deflate_blocks_wbtest.mbt::deflate stored boundaries align LEN NLEN and preserve the payload",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/deflate_blocks_wbtest.mbt::deflate stored boundaries align LEN NLEN and preserve the payload",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "deflate stored boundaries align LEN NLEN and preserve the payload"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/deflate_blocks_wbtest.mbt::deflate code length repeat symbols cover their wire boundaries",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/deflate_blocks_wbtest.mbt::deflate code length repeat symbols cover their wire boundaries",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "deflate code length repeat symbols cover their wire boundaries"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/deflate_blocks_wbtest.mbt::deflate dynamic header repeats across the literal distance boundary",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/deflate_blocks_wbtest.mbt::deflate dynamic header repeats across the literal distance boundary",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "deflate dynamic header repeats across the literal distance boundary"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/deflate_encoder_wbtest.mbt::deflate chooses fixed dynamic and stored blocks by complete cost",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/deflate_encoder_wbtest.mbt::deflate chooses fixed dynamic and stored blocks by complete cost",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "deflate chooses fixed dynamic and stored blocks by complete cost"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/deflate_encoder_wbtest.mbt::deflate streams reused trees changed alphabets and all search levels",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/deflate_encoder_wbtest.mbt::deflate streams reused trees changed alphabets and all search levels",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "deflate streams reused trees changed alphabets and all search levels"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/deflate_encoder_wbtest.mbt::gzip encoding levels preserve envelope checksum and empty payloads",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/deflate_encoder_wbtest.mbt::gzip encoding levels preserve envelope checksum and empty payloads",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "gzip encoding levels preserve envelope checksum and empty payloads"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/deflate_huffman_wbtest.mbt::deflate canonical codes follow RFC 1951 symbol and bit order",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/deflate_huffman_wbtest.mbt::deflate canonical codes follow RFC 1951 symbol and bit order",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "deflate canonical codes follow RFC 1951 symbol and bit order"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/deflate_huffman_wbtest.mbt::deflate empty and singleton alphabets use the smallest unused dummies",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/deflate_huffman_wbtest.mbt::deflate empty and singleton alphabets use the smallest unused dummies",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "deflate empty and singleton alphabets use the smallest unused dummies"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/deflate_huffman_wbtest.mbt::deflate package merge respects binding literal and code-length limits",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/deflate_huffman_wbtest.mbt::deflate package merge respects binding literal and code-length limits",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "deflate package merge respects binding literal and code-length limits"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/deflate_huffman_wbtest.mbt::deflate package merge has optimal cost across small positive alphabets",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/deflate_huffman_wbtest.mbt::deflate package merge has optimal cost across small positive alphabets",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "deflate package merge has optimal cost across small positive alphabets"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/stream_wbtest.mbt::gzip Reader handles byte feeds through optional headers and members",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/stream_wbtest.mbt::gzip Reader handles byte feeds through optional headers and members",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "gzip Reader handles byte feeds through optional headers and members"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/stream_wbtest.mbt::gzip Reader preserves prefixes for every fixed-member truncation",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/stream_wbtest.mbt::gzip Reader preserves prefixes for every fixed-member truncation",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "gzip Reader preserves prefixes for every fixed-member truncation"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/stream_wbtest.mbt::gzip Reader retains prefetched trailer bytes and stored block bytes",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/stream_wbtest.mbt::gzip Reader retains prefetched trailer bytes and stored block bytes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "gzip Reader retains prefetched trailer bytes and stored block bytes"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/stream_wbtest.mbt::gzip Reader rejects reserved blocks stored lengths and absent history",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/stream_wbtest.mbt::gzip Reader rejects reserved blocks stored lengths and absent history",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "gzip Reader rejects reserved blocks stored lengths and absent history"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/stream_wbtest.mbt::gzip Huffman tables match canonical codes including secondary entries",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/stream_wbtest.mbt::gzip Huffman tables match canonical codes including secondary entries",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "gzip Huffman tables match canonical codes including secondary entries"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/gzipops/stream_wbtest.mbt::gzip Reader preserves read errors and never retries a failed writer",
+      "command": "",
+      "owner": "core/gzipops",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/gzipops/stream_wbtest.mbt::gzip Reader preserves read errors and never retries a failed writer",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "gzip Reader preserves read errors and never retries a failed writer"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
       "behavior_id": "package-test:tests/testkit/snapshot_lifecycle_wbtest.mbt::snapshot can observe metadata without loading large file contents",
       "command": "",
       "owner": "tests/testkit",
@@ -53972,6 +54972,9 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "g1-gzip-levels-decompress",
+        "g2-gzip-named-members",
+        "g2-gzip-named-crc-prefix",
         "p1-gzip-validate",
         "p1-gzip-concatenated",
         "p1-gzip-named-header",
@@ -53992,6 +54995,8 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "g1-gunzip-levels-ignored",
+        "g2-gunzip-named-members",
         "p1-gunzip-validate",
         "p1-gunzip-concatenated",
         "p1-gunzip-named-header",
@@ -54012,6 +55017,8 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "g1-zcat-levels-ignored",
+        "g2-zcat-named-members",
         "p1-zcat-validate",
         "p1-zcat-concatenated",
         "p1-zcat-named-header",

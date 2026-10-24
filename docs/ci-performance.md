@@ -50,8 +50,11 @@ Local evidence is under `/private/tmp/cmd-c3-paired-live-20261024`,
 These precommit runs establish the implementation comparison. Exact committed
 three-platform and actual-main acceptance remain separate CI gates.
 PR #45 run `40015090550` passed all four required checks at `935fe17` and
-merged as `222d9b1`. Its actual-main verification is still pending; the PR run
-does not replace that gate.
+merged as `222d9b1`. Actual-main run `40020157020` passed all four required
+checks: macOS 12:09, Linux 26:28, Windows 23:36 and coverage-audit 7:13.
+Full/shadow retained 1,733 behaviors with no findings; the independent frozen
+proof passed 1,028 rows across 78 coordinates. These hosted observations are
+not a controlled cold/warm performance comparison.
 
 ## C4 measurement
 

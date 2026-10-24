@@ -1874,6 +1874,9 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "g1-gzip-levels-decompress",
+        "g2-gzip-named-members",
+        "g2-gzip-named-crc-prefix",
         "p1-gzip-validate",
         "p1-gzip-concatenated",
         "p1-gzip-named-header",
@@ -1894,6 +1897,8 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "g1-gunzip-levels-ignored",
+        "g2-gunzip-named-members",
         "p1-gunzip-validate",
         "p1-gunzip-concatenated",
         "p1-gunzip-named-header",
@@ -1914,6 +1919,8 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "g1-zcat-levels-ignored",
+        "g2-zcat-named-members",
         "p1-zcat-validate",
         "p1-zcat-concatenated",
         "p1-zcat-named-header",
