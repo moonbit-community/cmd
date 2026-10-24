@@ -1,25 +1,4 @@
 ///|
-fn match_boundaries(
-  line : String,
-  start : Int32,
-  end : Int32,
-  whole : Bool,
-  word : Bool,
-) -> Bool {
-  (!whole || (start == 0 && end == line.length())) &&
-  (
-    !word ||
-    (
-      (start == 0 || !is_word_char(line[start - 1].to_int().unsafe_to_char())) &&
-      (
-        end == line.length() ||
-        !is_word_char(line[end].to_int().unsafe_to_char())
-      )
-    )
-  )
-}
-
-///|
 /// Keep each pattern's capture numbering independent, then choose the earliest
 /// start and longest span across the compiled expressions.
 fn Matcher::next_match(
@@ -32,22 +11,10 @@ fn Matcher::next_match(
   }
   match self {
     Fixed(patterns, whole, word) => {
-      for start in position..<=line.length() {
-        let mut longest = -1
-        for pattern in patterns {
-          let end = start + pattern.length()
-          if end <= line.length() &&
-            line[start:end] == pattern &&
-            match_boundaries(line, start, end, whole, word) &&
-            end > longest {
-            longest = end
-          }
-        }
-        if longest >= 0 {
-          return Some((start, longest))
-        }
-      }
-      None
+      let bytes = Bytes::makei(line.length(), index => {
+        line[index].to_int().to_byte()
+      })
+      fixed_span(patterns, bytes[:], position, whole, word)
     }
     Regular(patterns, whole, word) => {
       let mut best = None

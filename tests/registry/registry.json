@@ -57036,6 +57036,93 @@
         "status"
       ],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/grep/grep_wbtest.mbt::streamed records retain views and partial records before input errors",
+      "command": "grep",
+      "owner": "commands/grep",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/grep/grep_wbtest.mbt::streamed records retain views and partial records before input errors",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "streamed records retain views and partial records before input errors"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/grep/grep_wbtest.mbt::streamed grep preserves binary decisions and error prefixes",
+      "command": "grep",
+      "owner": "commands/grep",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/grep/grep_wbtest.mbt::streamed grep preserves binary decisions and error prefixes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "streamed grep preserves binary decisions and error prefixes"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/grep/grep_wbtest.mbt::streamed quiet grep completes while its producer remains open",
+      "command": "grep",
+      "owner": "commands/grep",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/grep/grep_wbtest.mbt::streamed quiet grep completes while its producer remains open",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "streamed quiet grep completes while its producer remains open"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
     }
   ],
   "release_commands": [
