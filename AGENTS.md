@@ -110,6 +110,17 @@ module and version before any release operation.
   CI binds real evidence at its exact checked-out revision. Harness-only changes
   still require registered harness regression evidence. Do not bypass branch
   protection or substitute a feature-branch run for the final main commit.
+- Round-specific PR bootstrap (2026-10-24): for the current comprehensive
+  B2/G/S/D/O/R round, the user authorizes new and corrective feature-branch
+  pushes after relevant local correctness passes and the existing C1
+  prepare/verify and coverage audit run. Retain nonzero findings for missing
+  exact-revision or remote evidence; never label them passing. If `push.mbtx`
+  stops on those findings, a non-force direct Git push may bootstrap PR CI.
+  This authorization carries across corrective commits without per-SHA
+  confirmation. Fix local correctness and scope defects before pushing. All
+  three platform checks and `coverage-audit` must pass before merge, followed
+  by actual-main validation. Performance and release gates remain unchanged;
+  see the optimization plan section 15 and coverage README.
 - Verification serves the current workspace and current published coordinates.
   Retain this CI run's reports, required source/artifact/oracle identities and
   failure diagnostics. These identities prevent stale or substituted evidence;

@@ -43,6 +43,17 @@ Unknown remotes, invalid branch names, missing evidence, and a rejected audit
 stop before `git push`. A direct Git invocation does not install or invoke
 this gate; repository policy requires using the reviewed audit workflow.
 
+For the comprehensive B2/G/S/D/O/R round authorized on 2026-10-24, relevant
+local correctness must pass and the existing C1 prepare/verify and audit must
+run before a new or corrective PR branch push. Keep nonzero findings for
+missing exact-revision or remote evidence in the report; they remain pending.
+When `push.mbtx` stops on those findings, the user authorizes a non-force direct
+Git push to bootstrap CI, including later corrective commits without per-SHA
+confirmation. Repair local correctness or scope defects first. This exception
+does not modify the launcher's fail-closed behavior or add a bypass mode.
+All three platform checks and coverage-audit must pass before merge, followed
+by actual-main validation; original performance and release gates still apply.
+
 Both refs are resolved to commit SHAs before comparing paths. Runs must identify
 that exact head and report a clean source revision. A run against uncommitted
 sources cannot prove the committed range. Untracked report outputs should be
