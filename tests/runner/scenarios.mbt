@@ -315,11 +315,14 @@ async fn execute_scenario(
 ) -> @testkit.CaseReport {
   let start = @async.now()
   let report_id = "scenario:" + fixture.id
+  let device_boundary = fixture.id == "diff-directory-devices-boundary"
   let retain_success = retain_success ||
+    device_boundary ||
     windows_mv_scenario(fixture.id) ||
     fixture.id == "network-transfer-boundaries" ||
     fixture.id == "network-transfer-boundaries-oracle"
-  let verification = if fixture.id == "mv-windows-wasm-links-boundary" {
+  let verification = if device_boundary ||
+    fixture.id == "mv-windows-wasm-links-boundary" {
     "boundary"
   } else if oracle_image is Some(_) {
     "differential"
@@ -379,6 +382,8 @@ async fn execute_scenario(
         "sh-interactive-session" => shell_interactive_scenario(root, wasm, work)
         "make-ready-ack" => make_concurrency_scenario(root, wasm, work)
         "filesystem-fidelity" => filesystem_fidelity_scenario(root, wasm, work)
+        "diff-directory-devices-boundary" =>
+          diff_directory_devices_boundary_scenario(root, wasm, work)
         "process-lifecycle" => process_lifecycle_scenario(root, wasm, work)
         "network-auth-cookie" => network_cli_scenario(root, wasm, work)
         "network-auth-cookie-oracle" =>
@@ -436,7 +441,11 @@ async fn execute_scenario(
       report.result
     },
     verification,
-    observations: if windows_mv_scenario(fixture.id) && failures.is_empty() {
+    observations: if device_boundary && failures.is_empty() {
+      ["status", "stdout", "stderr", "file-type", "symlink-target"]
+    } else if device_boundary {
+      []
+    } else if windows_mv_scenario(fixture.id) && failures.is_empty() {
       [
         "status", "stdout", "stderr", "file-content", "file-type", "symlink-target",
       ]

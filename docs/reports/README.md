@@ -14,6 +14,7 @@ they are not an alternative support matrix.
 
 | Date | Report | Scope |
 | --- | --- | --- |
+| 2026-10-24 | [Diff and patch D implementation](2026-10-24-d-diff-patch.md) | Comparison/directory workflows, linear auxiliary reconstruction, offset/fuzz/reject and mixed results; local Native/Wasm and fixed GNU evidence |
 | 2026-10-24 | [Stream hot paths](2026-10-24-stream-hotpaths.md) | Copy, shared scanner, selected wc counters and incremental strings development observations |
 | 2026-10-24 | [Gzip output/history buffer reuse](2026-10-24-gzip-hotpaths.md) | Smaller private decoder state, existing semantic regressions and direct Native/Wasm development comparison |
 | 2026-10-24 | [G2 streaming decoder](2026-10-24-g2-streaming.md) | Reader and Huffman-table implementation, byte/error regressions, direct timing and bounded-memory observations; final CI/release pending |

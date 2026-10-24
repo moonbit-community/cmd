@@ -28,7 +28,8 @@
       "expected_status": 1,
       "expected_stdout_text": "2c2\n< old\n---\n> new\n",
       "oracle": true,
-      "source_version": "diffutils-3.12"
+      "source_version": "diffutils-3.12",
+      "coverage": []
     },
     {
       "files": [
@@ -60,7 +61,11 @@
       "expected_status": 1,
       "expected_stdout_text": "--- a\n+++ b\n@@ -1 +1 @@\n-old\n+new\n",
       "oracle": true,
-      "source_version": "diffutils-3.12"
+      "source_version": "diffutils-3.12",
+      "coverage": [
+        "unified",
+        "label"
+      ]
     },
     {
       "files": [
@@ -92,7 +97,11 @@
       "expected_status": 1,
       "expected_stdout_text": "*** a\n--- b\n***************\n*** 1 ****\n! old\n--- 1 ----\n! new\n",
       "oracle": true,
-      "source_version": "diffutils-3.12"
+      "source_version": "diffutils-3.12",
+      "coverage": [
+        "context",
+        "label"
+      ]
     },
     {
       "files": [
@@ -124,7 +133,11 @@
       "expected_status": 1,
       "expected_stdout_text": "--- a\n+++ b\n@@ -0,0 +1 @@\n+new\n",
       "oracle": true,
-      "source_version": "diffutils-3.12"
+      "source_version": "diffutils-3.12",
+      "coverage": [
+        "unified-lines",
+        "label"
+      ]
     },
     {
       "files": [
@@ -153,7 +166,8 @@
       "expected_status": 1,
       "expected_stdout_text": "1c1\n< a\n\\ No newline at end of file\n---\n> a\n",
       "oracle": true,
-      "source_version": "diffutils-3.12"
+      "source_version": "diffutils-3.12",
+      "coverage": []
     },
     {
       "files": [
@@ -183,7 +197,10 @@
       "expected_status": 0,
       "expected_stdout_text": "Files a and b are identical\n",
       "oracle": true,
-      "source_version": "diffutils-3.12"
+      "source_version": "diffutils-3.12",
+      "coverage": [
+        "report-identical-files"
+      ]
     },
     {
       "id": "p1-diff-label-brief",
@@ -212,7 +229,11 @@
       "expected_stderr_text": "",
       "comparison": "contract",
       "oracle": true,
-      "source_version": "GNU diffutils 3.12"
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "brief",
+        "label"
+      ]
     },
     {
       "id": "p1-diff-label-binary",
@@ -240,7 +261,10 @@
       "expected_stderr_text": "",
       "comparison": "contract",
       "oracle": true,
-      "source_version": "GNU diffutils 3.12"
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "label"
+      ]
     },
     {
       "id": "p1-diff-label-identical",
@@ -269,28 +293,11 @@
       "expected_stderr_text": "",
       "comparison": "contract",
       "oracle": true,
-      "source_version": "GNU diffutils 3.12"
-    },
-    {
-      "files": [],
-      "stdin_text": "",
-      "environment": {
-        "LC_ALL": "C"
-      },
-      "comparison": "contract",
-      "normalizations": [],
-      "id": "p1-diff-directory-boundary",
-      "command": "diff",
-      "args": [
-        "-r",
-        "a",
-        "b"
-      ],
-      "expected_status": 2,
-      "expected_stdout_text": "",
-      "expected_stderr_contains": "unknown short option",
-      "diagnostic_reason": "Parser wording includes the unsupported option.",
-      "expected_rejection": "unknown short option"
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "report-identical-files",
+        "label"
+      ]
     },
     {
       "files": [
@@ -320,7 +327,10 @@
       "expected_status": 0,
       "expected_stdout_text": "Files a and b are identical\n",
       "oracle": true,
-      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "coverage": [
+        "report-identical-files"
+      ]
     },
     {
       "id": "release-metadata-diff-help",
@@ -337,8 +347,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/diff@0.1.3 metadata contract",
-      "expected_stdout_text": "Usage: diff [-qsauc] [-U LINES | -C LINES] [--label LABEL] FILE1 FILE2\n      --help      display this help and exit\n      --version   display version and exit\nCompare regular files or one stdin operand. Normal, unified and context output.\n-q reports differences only; -s reports equality; -a treats binary input as text.\nTimestamp headers use TZ=UTC or public TZif files; label stdin explicitly.\nDirectory recursion and whitespace/locale options are unsupported.\n",
+      "source_version": "workspace cli/diff@0.2.0 metadata contract",
+      "expected_stdout_text": "Usage: diff [-qsauciwbBZrN] [-U LINES | -C LINES] [--label LABEL] FILE1 FILE2\n      --help      display this help and exit\n      --version   display version and exit\nCompare files, directories or one stdin operand. Normal, unified and context output.\n-q reports differences only; -s reports equality; -a treats binary input as text.\n-i ignores ASCII case; -w ignores whitespace; -b ignores changes in whitespace.\n-Z ignores trailing whitespace; -B ignores blank-only change groups.\n--strip-trailing-cr removes one CR before each LF on input, including displayed lines.\n-r recurses; -N treats missing files as empty; --unidirectional-new-file applies only to the left side.\nTimestamp headers use TZ=UTC or public TZif files; label stdin explicitly.\nNon-C locale collation and link-target-text comparison remain unsupported.\n",
       "expected_stderr_text": ""
     },
     {
@@ -356,9 +366,1478 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/diff@0.1.3 metadata contract",
-      "expected_stdout_text": "diff 0.1.3\n",
+      "source_version": "workspace cli/diff@0.2.0 metadata contract",
+      "expected_stdout_text": "diff 0.2.0\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "d-diff-ignore-case",
+      "command": "diff",
+      "args": [
+        "-i",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "Hello\nWORLD\n"
+        },
+        {
+          "path": "b",
+          "content_text": "hello\nworld\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "ignore-case"
+      ]
+    },
+    {
+      "id": "d-diff-ignore-all-space",
+      "command": "diff",
+      "args": [
+        "-w",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a \tb\nc d\n"
+        },
+        {
+          "path": "b",
+          "content_text": "ab\ncd\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "ignore-all-space"
+      ]
+    },
+    {
+      "id": "d-diff-ignore-space-change",
+      "command": "diff",
+      "args": [
+        "-b",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a \tb  \n"
+        },
+        {
+          "path": "b",
+          "content_text": "a b\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "ignore-space-change"
+      ]
+    },
+    {
+      "id": "d-diff-space-change-not-removal",
+      "command": "diff",
+      "args": [
+        "-b",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "ab\n"
+        },
+        {
+          "path": "b",
+          "content_text": "a b\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "1c1\n< ab\n---\n> a b\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "ignore-space-change"
+      ]
+    },
+    {
+      "id": "d-diff-ignore-trailing-space",
+      "command": "diff",
+      "args": [
+        "-Z",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a \t\nb\t\n"
+        },
+        {
+          "path": "b",
+          "content_text": "a\nb\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "ignore-trailing-space"
+      ]
+    },
+    {
+      "id": "d-diff-strip-trailing-cr",
+      "command": "diff",
+      "args": [
+        "--strip-trailing-cr",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a\r\nb\r\n"
+        },
+        {
+          "path": "b",
+          "content_text": "a\nb\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "strip-trailing-cr"
+      ]
+    },
+    {
+      "id": "d-diff-blank-change",
+      "command": "diff",
+      "args": [
+        "-B",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a\nb\n"
+        },
+        {
+          "path": "b",
+          "content_text": "a\n\nb\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "ignore-blank-lines"
+      ]
+    },
+    {
+      "id": "d-diff-blank-mixed-change",
+      "command": "diff",
+      "args": [
+        "-B",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a\nold\n\nb\n"
+        },
+        {
+          "path": "b",
+          "content_text": "a\nnew\nb\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "2,3c2\n< old\n< \n---\n> new\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "ignore-blank-lines"
+      ]
+    },
+    {
+      "id": "d-diff-blank-space-with-w",
+      "command": "diff",
+      "args": [
+        "-Bw",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a\n \t\nb\n"
+        },
+        {
+          "path": "b",
+          "content_text": "a\nb\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "ignore-blank-lines",
+        "ignore-all-space"
+      ]
+    },
+    {
+      "id": "d-diff-case-space-cr-combined",
+      "command": "diff",
+      "args": [
+        "-iw",
+        "--strip-trailing-cr",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "A B \r\n"
+        },
+        {
+          "path": "b",
+          "content_text": "ab\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "ignore-case",
+        "ignore-all-space",
+        "strip-trailing-cr"
+      ]
+    },
+    {
+      "id": "d-diff-ignored-and-real-unified",
+      "command": "diff",
+      "args": [
+        "-iu",
+        "--label=a",
+        "--label=b",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "A\nold\n"
+        },
+        {
+          "path": "b",
+          "content_text": "a\nnew\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "--- a\n+++ b\n@@ -1,2 +1,2 @@\n A\n-old\n+new\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "ignore-case",
+        "unified",
+        "label"
+      ]
+    },
+    {
+      "id": "d-diff-repeated-delete",
+      "command": "diff",
+      "args": [
+        "-u",
+        "--label=a",
+        "--label=b",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "x\na\na\na\ny\n"
+        },
+        {
+          "path": "b",
+          "content_text": "x\na\na\ny\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "--- a\n+++ b\n@@ -1,5 +1,4 @@\n x\n a\n a\n-a\n y\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "unified",
+        "label"
+      ]
+    },
+    {
+      "id": "d-diff-repeated-cross",
+      "command": "diff",
+      "args": [
+        "-u",
+        "--label=a",
+        "--label=b",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a\nb\na\nb\nc\n"
+        },
+        {
+          "path": "b",
+          "content_text": "b\na\nb\na\nc\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "--- a\n+++ b\n@@ -1,5 +1,5 @@\n-a\n b\n a\n b\n+a\n c\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "unified",
+        "label"
+      ]
+    },
+    {
+      "id": "d-diff-repeat-blank-align",
+      "command": "diff",
+      "args": [
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a\n\na\n\n"
+        },
+        {
+          "path": "b",
+          "content_text": "a\n\n\na\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "3d2\n< a\n4a4\n> a\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": []
+    },
+    {
+      "id": "d-diff-no-final-lf-ignore-space",
+      "command": "diff",
+      "args": [
+        "-w",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a "
+        },
+        {
+          "path": "b",
+          "content_text": "a\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "ignore-all-space"
+      ]
+    },
+    {
+      "id": "d-diff-cr-difference-output",
+      "command": "diff",
+      "args": [
+        "--strip-trailing-cr",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "same\r\nold\r\n"
+        },
+        {
+          "path": "b",
+          "content_text": "same\nnew\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "2c2\n< old\n---\n> new\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "strip-trailing-cr"
+      ]
+    },
+    {
+      "id": "d-diff-cr-no-final-lf",
+      "command": "diff",
+      "args": [
+        "--strip-trailing-cr",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a\r"
+        },
+        {
+          "path": "b",
+          "content_text": "a"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "1c1\n< a\r\n\\ No newline at end of file\n---\n> a\n\\ No newline at end of file\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "strip-trailing-cr"
+      ]
+    },
+    {
+      "id": "d-diff-normal-common-edge-selection",
+      "command": "diff",
+      "args": [
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "b\na\na\na\n"
+        },
+        {
+          "path": "b",
+          "content_text": "a\na\na\na\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "1c1\n< b\n---\n> a\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": []
+    },
+    {
+      "id": "d-diff-cr-repeated-alignment",
+      "command": "diff",
+      "args": [
+        "--strip-trailing-cr",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a\r\nb\r\na\r\na\r\n"
+        },
+        {
+          "path": "b",
+          "content_text": "b\na\na\na\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "1d0\n< a\n2a2\n> a\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "strip-trailing-cr"
+      ]
+    },
+    {
+      "id": "d-diff-binary-as-text",
+      "command": "diff",
+      "args": [
+        "-a",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a\u0000old\n"
+        },
+        {
+          "path": "b",
+          "content_text": "a\u0000new\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "1c1\n< a\u0000old\n---\n> a\u0000new\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "text"
+      ]
+    },
+    {
+      "id": "d-diff-context-lines",
+      "command": "diff",
+      "args": [
+        "-C1",
+        "--label=a",
+        "--label=b",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "same\nold\nend\n"
+        },
+        {
+          "path": "b",
+          "content_text": "same\nnew\nend\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "*** a\n--- b\n***************\n*** 1,3 ****\n  same\n! old\n  end\n--- 1,3 ----\n  same\n! new\n  end\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "context-lines",
+        "label"
+      ]
+    },
+    {
+      "id": "d-diff-directory-nonrecursive",
+      "command": "diff",
+      "args": [
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left/same",
+          "content_text": "same\n"
+        },
+        {
+          "path": "right/same",
+          "content_text": "same\n"
+        },
+        {
+          "path": "left/change",
+          "content_text": "old\n"
+        },
+        {
+          "path": "right/change",
+          "content_text": "new\n"
+        },
+        {
+          "path": "left/only-left",
+          "content_text": "left\n"
+        },
+        {
+          "path": "right/only-right",
+          "content_text": "right\n"
+        },
+        {
+          "path": "left/sub/nested",
+          "content_text": "old\n"
+        },
+        {
+          "path": "right/sub/nested",
+          "content_text": "new\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "diff left/change right/change\n1c1\n< old\n---\n> new\nOnly in left: only-left\nOnly in right: only-right\nCommon subdirectories: left/sub and right/sub\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": []
+    },
+    {
+      "id": "p1-diff-directory-boundary",
+      "command": "diff",
+      "args": [
+        "-r",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left/same",
+          "content_text": "same\n"
+        },
+        {
+          "path": "right/same",
+          "content_text": "same\n"
+        },
+        {
+          "path": "left/change",
+          "content_text": "old\n"
+        },
+        {
+          "path": "right/change",
+          "content_text": "new\n"
+        },
+        {
+          "path": "left/only-left",
+          "content_text": "left\n"
+        },
+        {
+          "path": "right/only-right",
+          "content_text": "right\n"
+        },
+        {
+          "path": "left/sub/nested",
+          "content_text": "old\n"
+        },
+        {
+          "path": "right/sub/nested",
+          "content_text": "new\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "diff -r left/change right/change\n1c1\n< old\n---\n> new\nOnly in left: only-left\nOnly in right: only-right\ndiff -r left/sub/nested right/sub/nested\n1c1\n< old\n---\n> new\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "recursive"
+      ]
+    },
+    {
+      "id": "d-diff-directory-new-files",
+      "command": "diff",
+      "args": [
+        "-rN",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left/same",
+          "content_text": "same\n"
+        },
+        {
+          "path": "right/same",
+          "content_text": "same\n"
+        },
+        {
+          "path": "left/change",
+          "content_text": "old\n"
+        },
+        {
+          "path": "right/change",
+          "content_text": "new\n"
+        },
+        {
+          "path": "left/only-left",
+          "content_text": "left\n"
+        },
+        {
+          "path": "right/only-right",
+          "content_text": "right\n"
+        },
+        {
+          "path": "left/sub/nested",
+          "content_text": "old\n"
+        },
+        {
+          "path": "right/sub/nested",
+          "content_text": "new\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "diff -rN left/change right/change\n1c1\n< old\n---\n> new\ndiff -rN left/only-left right/only-left\n1d0\n< left\ndiff -rN left/only-right right/only-right\n0a1\n> right\ndiff -rN left/sub/nested right/sub/nested\n1c1\n< old\n---\n> new\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "recursive",
+        "new-file"
+      ]
+    },
+    {
+      "id": "d-diff-directory-unidirectional",
+      "command": "diff",
+      "args": [
+        "-r",
+        "--unidirectional-new-file",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left/same",
+          "content_text": "same\n"
+        },
+        {
+          "path": "right/same",
+          "content_text": "same\n"
+        },
+        {
+          "path": "left/change",
+          "content_text": "old\n"
+        },
+        {
+          "path": "right/change",
+          "content_text": "new\n"
+        },
+        {
+          "path": "left/only-left",
+          "content_text": "left\n"
+        },
+        {
+          "path": "right/only-right",
+          "content_text": "right\n"
+        },
+        {
+          "path": "left/sub/nested",
+          "content_text": "old\n"
+        },
+        {
+          "path": "right/sub/nested",
+          "content_text": "new\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "diff -r --unidirectional-new-file left/change right/change\n1c1\n< old\n---\n> new\nOnly in left: only-left\ndiff -r --unidirectional-new-file left/only-right right/only-right\n0a1\n> right\ndiff -r --unidirectional-new-file left/sub/nested right/sub/nested\n1c1\n< old\n---\n> new\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "recursive",
+        "unidirectional-new-file"
+      ]
+    },
+    {
+      "id": "d-diff-directory-brief",
+      "command": "diff",
+      "args": [
+        "-rq",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left/same",
+          "content_text": "same\n"
+        },
+        {
+          "path": "right/same",
+          "content_text": "same\n"
+        },
+        {
+          "path": "left/change",
+          "content_text": "old\n"
+        },
+        {
+          "path": "right/change",
+          "content_text": "new\n"
+        },
+        {
+          "path": "left/only-left",
+          "content_text": "left\n"
+        },
+        {
+          "path": "right/only-right",
+          "content_text": "right\n"
+        },
+        {
+          "path": "left/sub/nested",
+          "content_text": "old\n"
+        },
+        {
+          "path": "right/sub/nested",
+          "content_text": "new\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "Files left/change and right/change differ\nOnly in left: only-left\nOnly in right: only-right\nFiles left/sub/nested and right/sub/nested differ\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "recursive",
+        "brief"
+      ]
+    },
+    {
+      "id": "d-diff-directory-spaces",
+      "command": "diff",
+      "args": [
+        "-r",
+        "left space",
+        "right space"
+      ],
+      "files": [
+        {
+          "path": "left space/a file",
+          "content_text": "old\n"
+        },
+        {
+          "path": "right space/a file",
+          "content_text": "new\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "diff -r \"left space/a file\" \"right space/a file\"\n1c1\n< old\n---\n> new\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "recursive"
+      ]
+    },
+    {
+      "id": "d-diff-directory-file-basename",
+      "command": "diff",
+      "args": [
+        "left",
+        "common"
+      ],
+      "files": [
+        {
+          "path": "left/common",
+          "content_text": "old\n"
+        },
+        {
+          "path": "common",
+          "content_text": "new\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "1c1\n< old\n---\n> new\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": []
+    },
+    {
+      "id": "d-diff-directory-type",
+      "command": "diff",
+      "args": [
+        "-r",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left/x",
+          "kind": "directory"
+        },
+        {
+          "path": "right/x",
+          "content_text": "file\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "File left/x is a directory while file right/x is a regular file\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "recursive"
+      ]
+    },
+    {
+      "id": "d-diff-top-new-file",
+      "command": "diff",
+      "args": [
+        "-N",
+        "missing",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "b",
+          "content_text": "new\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "0a1\n> new\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "new-file"
+      ]
+    },
+    {
+      "id": "d-diff-only-in-spaces",
+      "command": "diff",
+      "args": [
+        "left space",
+        "right space"
+      ],
+      "files": [
+        {
+          "path": "left space/x y",
+          "content_text": "one\n"
+        },
+        {
+          "path": "right space",
+          "kind": "directory"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "Only in 'left space': 'x y'\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": []
+    },
+    {
+      "id": "d-diff-common-directory-spaces",
+      "command": "diff",
+      "args": [
+        "left space",
+        "right space"
+      ],
+      "files": [
+        {
+          "path": "left space/common dir/f",
+          "content_text": "same\n"
+        },
+        {
+          "path": "right space/common dir/f",
+          "content_text": "same\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "Common subdirectories: 'left space/common dir' and 'right space/common dir'\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": []
+    },
+    {
+      "id": "d-diff-brief-spaces",
+      "command": "diff",
+      "args": [
+        "-q",
+        "a file",
+        "b file"
+      ],
+      "files": [
+        {
+          "path": "a file",
+          "content_text": "old\n"
+        },
+        {
+          "path": "b file",
+          "content_text": "new\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "Files 'a file' and 'b file' differ\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "brief"
+      ]
+    },
+    {
+      "id": "d-diff-identical-spaces",
+      "command": "diff",
+      "args": [
+        "-s",
+        "a file",
+        "b file"
+      ],
+      "files": [
+        {
+          "path": "a file",
+          "content_text": "same\n"
+        },
+        {
+          "path": "b file",
+          "content_text": "same\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "Files 'a file' and 'b file' are identical\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "report-identical-files"
+      ]
+    },
+    {
+      "id": "d-diff-label-spaces",
+      "command": "diff",
+      "args": [
+        "-q",
+        "--label=LEFT SPACE",
+        "--label=RIGHT SPACE",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "old\n"
+        },
+        {
+          "path": "b",
+          "content_text": "new\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "Files LEFT SPACE and RIGHT SPACE differ\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": [
+        "brief",
+        "label"
+      ]
+    },
+    {
+      "id": "d-diff-header-spaces",
+      "command": "diff",
+      "args": [
+        "-u",
+        "a file",
+        "b file"
+      ],
+      "files": [
+        {
+          "path": "a file",
+          "content_text": "old\n",
+          "mtime": "202601020304.05"
+        },
+        {
+          "path": "b file",
+          "content_text": "new\n",
+          "mtime": "202601020304.05"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "--- \"a file\"\t2026-01-02 03:04:05.000000000 +0000\n+++ \"b file\"\t2026-01-02 03:04:05.000000000 +0000\n@@ -1 +1 @@\n-old\n+new\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ],
+      "coverage": [
+        "unified"
+      ]
+    },
+    {
+      "id": "d-diff-both-missing",
+      "command": "diff",
+      "args": [
+        "absent-left",
+        "absent-right"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "diff: absent-left: No such file or directory\ndiff: absent-right: No such file or directory\n",
+      "expected_files": [],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU diffutils 3.12",
+      "coverage": []
+    },
+    {
+      "id": "diff-directory-devices-boundary",
+      "command": "diff",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "coverage": [
+        "recursive"
+      ],
+      "host_platforms": [
+        "linux",
+        "macos"
+      ],
+      "timeout_ms": 15000,
+      "source_version": "POSIX directory device-number rejection; ADR-0004 and issue #10",
+      "expected_files": []
     }
   ]
 }

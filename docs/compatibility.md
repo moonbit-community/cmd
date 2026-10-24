@@ -24,6 +24,32 @@ keep their earlier dependency and acceptance profiles.
 Authorization belongs to the caller/host. Catalog capabilities and the older
 restricted label describe requirements, not command-local policy.
 
+## Workspace diff and patch candidates
+
+Unpublished diff and patch **0.2.0** select core **0.8.0**. Diff adds C-byte
+case/whitespace/blank/CR comparisons and ordinary directory workflows with
+recursive, new-file and unidirectional-new-file modes. Comparison keys are
+separate from displayed records; `--strip-trailing-cr` also strips the CR from
+displayed LF-terminated lines. Edit reconstruction uses linear auxiliary
+frontiers and an explicit work stack. Inputs, keys and output remain separately
+allocated; this is not constant-memory or linear-time diff.
+Directory FIFO/socket entries receive type reports. Distinct character/block
+device comparisons require public device-number metadata and retain a POSIX
+rejection scenario; top-level readable special files remain input streams.
+
+Patch adds offset/fuzz selection (default fuzz 2), cumulative displacement,
+used-region protection, batch reverse detection, later-hunk continuation and
+unified/context reject output. New reject files are created exclusively; a
+single invocation can append multiple file results to its own reject handle.
+Dry-run creates neither target nor reject files. Existing target/named-output
+mode preservation and existing-reject replacement remain explicit filesystem
+boundaries in [ADR-0004](adr/0004-filesystem.md). GNU interaction and extended
+binary/rename/mode patch formats are outside this selected profile.
+
+Performance acceptance now measures direct release Wasm, as selected by the
+user on 2026-10-24. MoonX launcher cost is outside that gate. Existing published
+coordinates and their semantic acceptance remain unchanged.
+
 ## Workspace stream optimization candidates
 
 Unpublished core 0.8.0 uses a reusable 64 KiB line scanner. Comm, cut, head,

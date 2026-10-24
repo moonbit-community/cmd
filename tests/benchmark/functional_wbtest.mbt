@@ -1,4 +1,25 @@
 ///|
+test "benchmark direct Wasm invocation preserves program arguments" {
+  let (wasm_root, wasm_artifact) = if @async.platform is Windows {
+    ("C:\\artifacts", "C:\\artifacts\\cli\\diff\\diff.wasm")
+  } else {
+    ("/artifacts", "/artifacts/cli/diff/diff.wasm")
+  }
+  let options = Map([
+    ("--wasm-root", wasm_root),
+    ("--moonrun", "/tools/moonrun"),
+  ])
+  let (program, args) = functional_candidate(
+    "diff",
+    ["-u", "a file", "b"],
+    Some("cli/diff@0.1.2"),
+    options,
+  )
+  assert_eq(program, "/tools/moonrun")
+  assert_eq(args, [wasm_artifact, "--", "-u", "a file", "b"])
+}
+
+///|
 async test "benchmark functional fixtures reset mutations and compare bounded effects" {
   let directory = @fs.tmpdir(prefix="cmd-functional-reset-")
   defer @fs.rmdir(directory, recursive=true)

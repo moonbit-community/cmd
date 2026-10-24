@@ -20,7 +20,8 @@
         "scenario:network-transfer-boundaries",
         "scenario:network-transfer-boundaries-oracle",
         "scenario:mv-windows-native-links",
-        "scenario:mv-windows-wasm-links-boundary"
+      "scenario:mv-windows-wasm-links-boundary",
+      "scenario:diff-directory-devices-boundary"
       ],
       "build_commands": [
         "*"

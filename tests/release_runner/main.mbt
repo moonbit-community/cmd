@@ -87,7 +87,7 @@ fn has_contract_assertion(fixture : ReleaseCase) -> Bool {
 
 ///|
 fn verification_level(fixture : ReleaseCase, differential : Bool) -> String {
-  if release_mv_scenario(fixture) {
+  if release_mv_scenario(fixture) || release_diff_device_scenario(fixture) {
     "boundary"
   } else if @network_scenarios.supports(fixture.id) &&
     (
@@ -177,6 +177,7 @@ fn explicit_host_contract(fixture : ReleaseCase, platform : String) -> Bool {
   fixture.oracle != Some(true) &&
   (
     release_mv_scenario(fixture) ||
+    release_diff_device_scenario(fixture) ||
     fixture.comparison == Some("contract") ||
     fixture.comparison == Some("boundary") ||
     fixture.expected_rejection is Some(_)
@@ -912,6 +913,18 @@ async fn run_selected_cases(
           if release_mv_scenario(fixture) {
             run_mv_release_scenario(
               manifest, fixture, moonx, reports, report_root,
+            )
+            return reports
+          }
+          if release_diff_device_scenario(fixture) {
+            run_diff_device_release_scenario(
+              manifest,
+              fixture,
+              moonx,
+              timeout_ms,
+              reports,
+              report_root,
+              candidate_executor~,
             )
             return reports
           }

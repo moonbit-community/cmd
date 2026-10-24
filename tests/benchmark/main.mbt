@@ -581,7 +581,7 @@ async fn main {
   }
   if args.is_empty() || args.contains("--help") {
     println(
-      "Usage: benchmark run|baseline --moonx ABS --oracle-bin ABS [--report-dir DIR] [--manifest FILE] [--profile FILE] [--native-root DIR]\n       benchmark report --report-dir DIR\n       baseline checks functional schema-2 workloads without a performance verdict.",
+      "Usage: benchmark run|baseline --wasm-root ABS --moonrun ABS --oracle-bin ABS [--report-dir DIR] [--manifest FILE] [--profile FILE]\n       benchmark run|baseline --moonx ABS --oracle-bin ABS [--native-root DIR] [other options]\n       benchmark report --report-dir DIR\n       Direct Wasm uses schema-2 workloads; baseline checks correctness without a performance verdict.",
     )
     return
   }
@@ -592,7 +592,8 @@ async fn main {
       fail("option requires a value: " + args[index])
     }
     guard [
-      "--moonx", "--oracle-bin", "--report-dir", "--manifest", "--profile", "--native-root",
+      "--moonx", "--moonrun", "--wasm-root", "--oracle-bin", "--report-dir", "--manifest",
+      "--profile", "--native-root",
     ].contains(args[index]) else {
       fail("unknown option: " + args[index])
     }
@@ -603,7 +604,13 @@ async fn main {
     "run" => {
       let manifest = options
         .get("--manifest")
-        .unwrap_or("tests/benchmark/manifest.json")
+        .unwrap_or(
+          if options.contains("--wasm-root") {
+            "tests/benchmark/functional.json"
+          } else {
+            "tests/benchmark/manifest.json"
+          },
+        )
       let value = @json.parse(@fs.read_file(manifest).text())
       let passed = if value is { "schema": Number(2, ..), .. } {
         run_functional(options, sample=true)

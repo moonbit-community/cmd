@@ -256,7 +256,9 @@ fn validate_release_manifest(
         fixture.comparison == Some("oracle-scenario")
       ) &&
       selected_cases(manifest, base).any(selected => selected.id == fixture.id) {
-      if !release_network_scenario(fixture) && !release_mv_scenario(fixture) {
+      if !release_network_scenario(fixture) &&
+        !release_mv_scenario(fixture) &&
+        !release_diff_device_scenario(fixture) {
         failures.push(
           "\{fixture.id}: stateful scenario has no exact published executor",
         )

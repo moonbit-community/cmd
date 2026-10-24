@@ -27,7 +27,9 @@
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
-        "--dry-run"
+        "--dry-run",
+        "dry-run",
+        "input"
       ]
     },
     {
@@ -59,7 +61,10 @@
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
-        "-o"
+        "-o",
+        "quiet",
+        "output",
+        "input"
       ]
     },
     {
@@ -91,7 +96,10 @@
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
-        "-u"
+        "-u",
+        "quiet",
+        "output",
+        "input"
       ]
     },
     {
@@ -124,7 +132,11 @@
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
-        "-R"
+        "-R",
+        "reverse",
+        "quiet",
+        "output",
+        "input"
       ]
     },
     {
@@ -158,63 +170,10 @@
           "path": "input",
           "content_text": "one\ntwo\nthree\n"
         }
+      ],
+      "coverage": [
+        "input"
       ]
-    },
-    {
-      "id": "patch-fuzz-boundary",
-      "command": "patch",
-      "args": [
-        "--dry-run",
-        "-F1",
-        "-i",
-        "change.diff"
-      ],
-      "stdin_text": "",
-      "files": [
-        {
-          "path": "input",
-          "content_text": "one\ntwo\nthree\n"
-        },
-        {
-          "path": "change.diff",
-          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
-        }
-      ],
-      "environment": {},
-      "expected_status": 2,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "patch: only exact context (--fuzz=0) is supported\n",
-      "expected_rejection": "only exact context",
-      "comparison": "boundary",
-      "normalizations": []
-    },
-    {
-      "id": "patch-hunk-mismatch",
-      "command": "patch",
-      "args": [
-        "--dry-run",
-        "-s",
-        "-i",
-        "change.diff"
-      ],
-      "stdin_text": "",
-      "files": [
-        {
-          "path": "input",
-          "content_text": "wrong\ntwo\nthree\n"
-        },
-        {
-          "path": "change.diff",
-          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
-        }
-      ],
-      "environment": {},
-      "expected_status": 1,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "patch: hunk #1 does not match at line 1; file unchanged\n",
-      "comparison": "boundary",
-      "expected_rejection": "does not match",
-      "normalizations": []
     },
     {
       "id": "patch-unsafe-path-boundary",
@@ -242,7 +201,12 @@
       "expected_stderr_text": "patch: unsafe file name in patch header\n",
       "expected_rejection": "unsafe file name",
       "comparison": "boundary",
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "dry-run",
+        "strip",
+        "input"
+      ]
     },
     {
       "id": "patch-create-null",
@@ -267,7 +231,9 @@
         }
       ],
       "coverage": [
-        "-p"
+        "-p",
+        "quiet",
+        "strip"
       ]
     },
     {
@@ -294,6 +260,9 @@
           "path": "input",
           "exists": false
         }
+      ],
+      "coverage": [
+        "quiet"
       ]
     },
     {
@@ -320,7 +289,10 @@
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
-        "-c"
+        "-c",
+        "context",
+        "quiet",
+        "output"
       ]
     },
     {
@@ -354,6 +326,9 @@
           "path": "new",
           "exists": false
         }
+      ],
+      "coverage": [
+        "output"
       ]
     },
     {
@@ -377,7 +352,11 @@
       "expected_stdout_text": "new",
       "expected_stderr_text": "",
       "comparison": "contract",
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "quiet",
+        "output"
+      ]
     },
     {
       "id": "repair-alias-patch-quiet",
@@ -408,7 +387,10 @@
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
-        "-o"
+        "-o",
+        "quiet",
+        "output",
+        "input"
       ],
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
     },
@@ -442,7 +424,11 @@
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
-        "-R"
+        "-R",
+        "reverse",
+        "quiet",
+        "output",
+        "input"
       ],
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
     },
@@ -470,7 +456,10 @@
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
-        "-c"
+        "-c",
+        "context",
+        "quiet",
+        "output"
       ],
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
     },
@@ -489,8 +478,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/patch@0.1.2 metadata contract",
-      "expected_stdout_text": "Usage: patch [OPTION]... [ORIGINALFILE [PATCHFILE]]\nApply unified or context patches with exact hunk positions and context.\n  -p, --strip=N       remove N leading file-name components\n  -i, --input=FILE    read the patch from FILE instead of stdin\n  -o, --output=-      write one patched file to stdout\n  -d, --directory=DIR resolve target paths relative to DIR\n  -R, --reverse       apply additions as removals and vice versa\n      --dry-run       check without writing or deleting files\n  -s, --quiet         suppress routine file messages\n  -u, --unified       require unified input\n  -c, --context       require context input\n  -t, --batch         accept the noninteractive behavior\n  -F, --fuzz=0        only exact context is supported\n      --no-backup-if-mismatch  accept the no-backup strict profile\n      --help          display this help and exit\n      --version       display version and exit\n",
+      "source_version": "workspace cli/patch@0.2.0 metadata contract",
+      "expected_stdout_text": "Usage: patch [OPTION]... [ORIGINALFILE [PATCHFILE]]\nApply unified or context patches with offsets, fuzz and rejected hunks.\n  -p, --strip=N       remove N leading file-name components\n  -i, --input=FILE    read the patch from FILE instead of stdin\n  -o, --output=-      write patched files to stdout\n  -r, --reject-file=FILE  write rejected hunks to a new FILE; - discards\n  -d, --directory=DIR resolve target paths relative to DIR\n  -R, --reverse       apply additions as removals and vice versa\n      --dry-run       check without writing or deleting files\n  -s, --quiet         suppress routine file messages\n  -u, --unified       require unified input\n  -c, --context       require context input\n  -t, --batch         select a detected reverse without prompting\n  -F, --fuzz=N        ignore up to N outer context lines (default 2)\n      --no-backup-if-mismatch  accept the no-backup strict profile\n      --help          display this help and exit\n      --version       display version and exit\n",
       "expected_stderr_text": ""
     },
     {
@@ -508,9 +497,994 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/patch@0.1.2 metadata contract",
-      "expected_stdout_text": "patch 0.1.2\n",
+      "source_version": "workspace cli/patch@0.2.0 metadata contract",
+      "expected_stdout_text": "patch 0.2.0\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "d-patch-offset-positive",
+      "command": "patch",
+      "args": [
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "prefix\none\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "prefix\none\nTWO\nthree\n",
+      "expected_stderr_text": "patching file - (read from input)\nHunk #1 succeeded at 2 (offset 1 line).\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "prefix\none\ntwo\nthree\n"
+        },
+        {
+          "path": "-.rej",
+          "exists": false
+        },
+        {
+          "path": "custom.rej",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU patch 2.8",
+      "coverage": [
+        "output",
+        "input"
+      ]
+    },
+    {
+      "id": "d-patch-offset-negative",
+      "command": "patch",
+      "args": [
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "one\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -2,3 +2,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "one\nTWO\nthree\n",
+      "expected_stderr_text": "patching file - (read from input)\nHunk #1 succeeded at 1 (offset -1 lines).\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "one\ntwo\nthree\n"
+        },
+        {
+          "path": "-.rej",
+          "exists": false
+        },
+        {
+          "path": "custom.rej",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU patch 2.8",
+      "coverage": [
+        "output",
+        "input"
+      ]
+    },
+    {
+      "id": "patch-fuzz-boundary",
+      "command": "patch",
+      "args": [
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "ONE\nTWO\nthree\n",
+      "expected_stderr_text": "patching file - (read from input)\nHunk #1 succeeded at 1 with fuzz 1.\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "-.rej",
+          "exists": false
+        },
+        {
+          "path": "custom.rej",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU patch 2.8",
+      "coverage": [
+        "output",
+        "input"
+      ]
+    },
+    {
+      "id": "patch-hunk-mismatch",
+      "command": "patch",
+      "args": [
+        "-F0",
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "ONE\ntwo\nthree\n",
+      "expected_stderr_text": "patching file - (read from input)\nHunk #1 FAILED at 1.\n1 out of 1 hunk FAILED -- saving rejects to file -.rej\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "-.rej",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        },
+        {
+          "path": "custom.rej",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU patch 2.8",
+      "coverage": [
+        "fuzz",
+        "output",
+        "input"
+      ]
+    },
+    {
+      "id": "d-patch-fuzz-custom-reject",
+      "command": "patch",
+      "args": [
+        "-F0",
+        "-o",
+        "-",
+        "-r",
+        "custom.rej",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "ONE\ntwo\nthree\n",
+      "expected_stderr_text": "patching file - (read from input)\nHunk #1 FAILED at 1.\n1 out of 1 hunk FAILED -- saving rejects to file custom.rej\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "-.rej",
+          "exists": false
+        },
+        {
+          "path": "custom.rej",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU patch 2.8",
+      "coverage": [
+        "fuzz",
+        "output",
+        "reject-file",
+        "input"
+      ]
+    },
+    {
+      "id": "d-patch-dry-run-reject",
+      "command": "patch",
+      "args": [
+        "--dry-run",
+        "-F0",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "checking file input\nHunk #1 FAILED at 1.\n1 out of 1 hunk FAILED\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "-.rej",
+          "exists": false
+        },
+        {
+          "path": "custom.rej",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU patch 2.8",
+      "coverage": [
+        "dry-run",
+        "fuzz",
+        "input"
+      ]
+    },
+    {
+      "id": "d-patch-reverse-offset",
+      "command": "patch",
+      "args": [
+        "-R",
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "prefix\none\nTWO\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "prefix\none\ntwo\nthree\n",
+      "expected_stderr_text": "patching file - (read from input)\nHunk #1 succeeded at 2 (offset 1 line).\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "prefix\none\nTWO\nthree\n"
+        },
+        {
+          "path": "-.rej",
+          "exists": false
+        },
+        {
+          "path": "custom.rej",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU patch 2.8",
+      "coverage": [
+        "reverse",
+        "output",
+        "input"
+      ]
+    },
+    {
+      "id": "d-patch-quiet-failure",
+      "command": "patch",
+      "args": [
+        "-s",
+        "-F0",
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "ONE\ntwo\nthree\n",
+      "expected_stderr_text": "1 out of 1 hunk FAILED -- saving rejects to file -.rej\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "-.rej",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        },
+        {
+          "path": "custom.rej",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU patch 2.8",
+      "coverage": [
+        "quiet",
+        "fuzz",
+        "output",
+        "input"
+      ]
+    },
+    {
+      "id": "d-patch-mixed-hunks",
+      "command": "patch",
+      "args": [
+        "-F0",
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "one\ntwo\nthree\nfour\nfive\nsix\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,1 +1,1 @@\n-missing\n+NEW\n@@ -5,1 +5,1 @@\n-five\n+FIVE\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "one\ntwo\nthree\nfour\nFIVE\nsix\n",
+      "expected_stderr_text": "patching file - (read from input)\nHunk #1 FAILED at 1.\n1 out of 2 hunks FAILED -- saving rejects to file -.rej\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "one\ntwo\nthree\nfour\nfive\nsix\n"
+        },
+        {
+          "path": "-.rej",
+          "content_text": "--- input\n+++ output\n@@ -1 +1 @@\n-missing\n+NEW\n"
+        },
+        {
+          "path": "custom.rej",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU patch 2.8",
+      "coverage": [
+        "fuzz",
+        "output",
+        "input"
+      ]
+    },
+    {
+      "id": "d-patch-cumulative-offset",
+      "command": "patch",
+      "args": [
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "prefix\none\ntwo\nthree\nfour\nfive\nsix\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,1 +1,2 @@\n-one\n+ONE\n+extra\n@@ -5,1 +6,1 @@\n-five\n+FIVE\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "prefix\nONE\nextra\ntwo\nthree\nfour\nFIVE\nsix\n",
+      "expected_stderr_text": "patching file - (read from input)\nHunk #1 succeeded at 2 (offset 1 line).\nHunk #2 succeeded at 7 (offset 1 line).\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "prefix\none\ntwo\nthree\nfour\nfive\nsix\n"
+        },
+        {
+          "path": "-.rej",
+          "exists": false
+        },
+        {
+          "path": "custom.rej",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU patch 2.8",
+      "coverage": [
+        "output",
+        "input"
+      ]
+    },
+    {
+      "id": "d-patch-equidistant-positive",
+      "command": "patch",
+      "args": [
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "x\nold\ny\nold\nz\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -3,1 +3,1 @@\n-old\n+NEW\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "x\nold\ny\nNEW\nz\n",
+      "expected_stderr_text": "patching file - (read from input)\nHunk #1 succeeded at 4 (offset 1 line).\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "x\nold\ny\nold\nz\n"
+        },
+        {
+          "path": "-.rej",
+          "exists": false
+        },
+        {
+          "path": "custom.rej",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU patch 2.8",
+      "coverage": [
+        "output",
+        "input"
+      ]
+    },
+    {
+      "id": "d-patch-dry-run-stdout",
+      "command": "patch",
+      "args": [
+        "--dry-run",
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "one\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "one\nTWO\nthree\n",
+      "expected_stderr_text": "checking file - (read from input)\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "one\ntwo\nthree\n"
+        },
+        {
+          "path": "-.rej",
+          "exists": false
+        },
+        {
+          "path": "custom.rej",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU patch 2.8",
+      "coverage": [
+        "dry-run",
+        "output",
+        "input"
+      ]
+    },
+    {
+      "id": "d-patch-discard-reject",
+      "command": "patch",
+      "args": [
+        "-F0",
+        "-r",
+        "-",
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "ONE\ntwo\nthree\n",
+      "expected_stderr_text": "patching file - (read from input)\nHunk #1 FAILED at 1.\n1 out of 1 hunk FAILED\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "-.rej",
+          "exists": false
+        },
+        {
+          "path": "custom.rej",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU patch 2.8",
+      "coverage": [
+        "fuzz",
+        "reject-file",
+        "output",
+        "input"
+      ]
+    },
+    {
+      "id": "d-patch-batch-reverse",
+      "command": "patch",
+      "args": [
+        "-t",
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "one\nTWO\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "one\ntwo\nthree\n",
+      "expected_stderr_text": "patching file - (read from input)\nReversed (or previously applied) patch detected!  Assuming -R.\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "one\nTWO\nthree\n"
+        },
+        {
+          "path": "-.rej",
+          "exists": false
+        },
+        {
+          "path": "custom.rej",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU patch 2.8",
+      "coverage": [
+        "batch",
+        "output",
+        "input"
+      ]
+    },
+    {
+      "id": "d-patch-explicit-unified-options",
+      "command": "patch",
+      "args": [
+        "-u",
+        "-p0",
+        "-d",
+        ".",
+        "--no-backup-if-mismatch",
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "one\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "one\nTWO\nthree\n",
+      "expected_stderr_text": "patching file - (read from input)\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "one\ntwo\nthree\n"
+        },
+        {
+          "path": "-.rej",
+          "exists": false
+        },
+        {
+          "path": "custom.rej",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU patch 2.8",
+      "coverage": [
+        "unified",
+        "strip",
+        "directory",
+        "no-backup-if-mismatch",
+        "output",
+        "input"
+      ]
+    },
+    {
+      "id": "d-patch-insert-beyond-eof",
+      "command": "patch",
+      "args": [
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "one\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -100,0 +101 @@\n+tail\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "one\ntail\n",
+      "expected_stderr_text": "patching file - (read from input)\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "one\n"
+        },
+        {
+          "path": "-.rej",
+          "exists": false
+        },
+        {
+          "path": "custom.rej",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU patch 2.8",
+      "coverage": [
+        "output",
+        "input"
+      ]
+    },
+    {
+      "id": "d-patch-shared-reject",
+      "command": "patch",
+      "args": [
+        "-F0",
+        "-o",
+        "-",
+        "-r",
+        "custom.rej",
+        "-i",
+        "change.diff"
+      ],
+      "files": [
+        {
+          "path": "one",
+          "content_text": "wrong one\n"
+        },
+        {
+          "path": "two",
+          "content_text": "wrong two\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- one\n+++ one\n@@ -1 +1 @@\n-old one\n+new one\n--- two\n+++ two\n@@ -1 +1 @@\n-old two\n+new two\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_text": "wrong one\nwrong two\n",
+      "expected_stderr_text": "patching file - (read from one)\nHunk #1 FAILED at 1.\n1 out of 1 hunk FAILED -- saving rejects to file custom.rej\npatching file - (read from two)\nHunk #1 FAILED at 1.\n1 out of 1 hunk FAILED -- saving rejects to file custom.rej\n",
+      "expected_files": [
+        {
+          "path": "one",
+          "content_text": "wrong one\n"
+        },
+        {
+          "path": "two",
+          "content_text": "wrong two\n"
+        },
+        {
+          "path": "custom.rej",
+          "content_text": "--- one\n+++ one\n@@ -1 +1 @@\n-old one\n+new one\n--- two\n+++ two\n@@ -1 +1 @@\n-old two\n+new two\n"
+        }
+      ],
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU patch 2.8",
+      "coverage": [
+        "fuzz",
+        "output",
+        "reject-file",
+        "input"
+      ]
+    },
+    {
+      "id": "d-patch-existing-reject-boundary",
+      "command": "patch",
+      "args": [
+        "-s",
+        "-F0",
+        "-o",
+        "-",
+        "-r",
+        "custom.rej",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "custom.rej",
+          "content_text": "keep reject\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "patch: replacing an existing reject file requires public file identity; choose a new --reject-file\n",
+      "expected_rejection": "replacing an existing reject file requires public file identity",
+      "oracle": false,
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "custom.rej",
+          "content_text": "keep reject\n"
+        },
+        {
+          "path": "-.rej",
+          "exists": false
+        }
+      ],
+      "coverage": [
+        "quiet",
+        "fuzz",
+        "output",
+        "reject-file",
+        "input"
+      ]
     }
   ]
 }

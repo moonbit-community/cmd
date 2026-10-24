@@ -367,7 +367,9 @@ pub fn command_catalog() -> Array[CommandContract] {
       [FileRead],
       [
         "brief", "report-identical-files", "text", "unified", "context", "unified-lines",
-        "context-lines", "label",
+        "context-lines", "label", "ignore-case", "ignore-all-space", "ignore-space-change",
+        "ignore-blank-lines", "ignore-trailing-space", "strip-trailing-cr", "recursive",
+        "new-file", "unidirectional-new-file",
       ],
       exit_codes=[0, 1, 2],
     ),
@@ -379,7 +381,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       [FileRead, FileWrite],
       [
         "strip", "input", "output", "directory", "reverse", "dry-run", "quiet", "unified",
-        "context", "batch", "fuzz", "no-backup-if-mismatch", "version",
+        "context", "batch", "fuzz", "reject-file", "no-backup-if-mismatch", "version",
       ],
       exit_codes=[0, 1, 2],
     ),
