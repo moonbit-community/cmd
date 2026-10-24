@@ -19,7 +19,11 @@ fn pipe_error(error : Error) -> Bool {
   match error {
     @io.PipeClosed => true
     @os_error.OSError(code, ..) =>
-      code == (if @async.platform is Windows { 109 } else { 32 })
+      if @async.platform is Windows {
+        code == 109 || code == 232
+      } else {
+        code == 32
+      }
     _ => false
   }
 }
@@ -42,6 +46,16 @@ fn error_text(error : Error) -> String {
         _ => error.to_string()
       }
     _ => error.to_string()
+  }
+}
+
+///|
+async fn open_error_text(path : String, error : Error) -> String {
+  let kind = @fs.kind(path) catch { _ => Unknown }
+  if kind is Directory {
+    "Is a directory"
+  } else {
+    error_text(error)
   }
 }
 
@@ -242,7 +256,7 @@ async fn main {
     ) catch {
       error => {
         @stdio.stderr.write(
-          "tee: \{diagnostic_name(path)}: \{error_text(error)}\n",
+          "tee: \{diagnostic_name(path)}: \{open_error_text(path, error)}\n",
         )
         opening_failed = true
         if fatal_mode(mode) {

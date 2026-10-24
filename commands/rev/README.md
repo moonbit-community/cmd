@@ -17,8 +17,13 @@ in order without inserted bytes, and later files continue after an error.
 An explicit `-` is a filename in the frozen util-linux 2.40 profile; this
 replaces the previous workspace stdin extension while published behavior
 remains frozen. The reader retains only the current record. The profile
-uses C-locale byte semantics, so non-UTF-8 input is handled without decoding
-it; multibyte locale character semantics are not claimed.
+selects the fixed Linux C-locale behavior: ASCII bytes, including NUL, are
+reversed without decoding; a record containing a non-ASCII byte is rejected
+before that record is written. Earlier complete records remain on stdout,
+the diagnostic reports their count, and later named files still continue.
+Multibyte locale character semantics are not claimed. Earlier macOS native
+provider observations accepted high bytes; those observations do not establish
+the fixed Linux provider's C-locale behavior.
 
 ## Standalone metadata
 

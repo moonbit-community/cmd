@@ -2275,7 +2275,8 @@
         "phase5-xargs-child-status",
         "phase5-xargs-replace",
         "release-metadata-xargs-help",
-        "release-metadata-xargs-version"
+        "release-metadata-xargs-version",
+        "o13-xargs-p-r-empty-windows"
       ]
     },
     {
@@ -2918,7 +2919,7 @@
         "suffix-length",
         "version"
       ],
-      "policy_sensitive": false,
+      "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
         "o5-automatic-width-additional-suffix",
@@ -3030,7 +3031,8 @@
         "release-metadata-csplit-version",
         "repair-alias-csplit-silent",
         "s1-csplit-pattern-backreference",
-        "s1-csplit-word-assertion"
+        "s1-csplit-word-assertion",
+        "o6-csplit-windows-suffix-name-boundary"
       ]
     },
     {

@@ -23,6 +23,8 @@ lexical. Bare `-s` still checks existence and intermediate directories.
 Physical modes walk components and expand resolvable links with the public
 filesystem API, so `link/..` follows the actual target before traversing up.
 Missing ordinary paths are supported without a blanket physical-mode rejection.
+On Windows, physical modes also expand existing 8.3 aliases through the public
+`fs.realpath` API; `-s` keeps the supplied lexical spelling.
 
 `--relative-to=DIR` computes relative output after canonicalization.
 `--relative-base=DIR` limits relative output to descendants and defaults the

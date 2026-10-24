@@ -24,6 +24,8 @@ Recursive confirmation prompts before descending into nonempty directories,
 then for each child and the final directory removal. A child refusal still
 permits the later parent prompt and attempted removal, as GNU does.
 Traversal uses an explicit stack and does not follow symbolic links.
+Prompt, verbose and error labels retain the original operand spelling; generated
+child components use `/` while filesystem access uses the platform path.
 
 `-I`/`--interactive=once` prompts once before inspection for recursive removal
 or more than three original operands. Declining returns success and preserves

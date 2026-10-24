@@ -219,7 +219,7 @@ fn admission_has_process_authority(manifest : String) -> Bool raise {
 ///|
 async fn check_admission(root : String, failures : Array[String]) -> Unit {
   let expected_restricted = [
-    "chmod", "curl", "env", "find", "make", "sh", "timeout", "wget", "xargs",
+    "chmod", "curl", "env", "find", "make", "sh", "split", "timeout", "wget", "xargs",
   ]
   let catalog = @cli.command_catalog()
   record(
@@ -285,13 +285,13 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
     }
   }
   record(
-    default_count == 70,
-    "default allow tier must contain 70 commands",
+    default_count == 69,
+    "default allow tier must contain 69 commands",
     failures,
   )
   record(
-    restricted_count == 9,
-    "restricted tier must contain 9 commands",
+    restricted_count == 10,
+    "restricted tier must contain 10 commands",
     failures,
   )
   for name in expected_restricted {
@@ -879,6 +879,55 @@ async fn check_mutation_policy(root : String, failures : Array[String]) -> Unit 
 }
 
 ///|
+async fn check_split_filter_process_policy(
+  root : String,
+  failures : Array[String],
+) -> Unit {
+  let args = @testkit.expand_args(
+    ["-b", "1", "--filter=${PRINTENV_CHILD} FILE"],
+    root,
+  )
+  let policy_name = "runtime-split-filter-process.json"
+  let policy_path = root_path(root, "tests/fixtures/policy/" + policy_name)
+  let policy : Map[String, Json] = { "fs": { "read": [Json(root)] } }
+  @fs.write_file(policy_path, Json::object(policy).stringify())
+  defer @fs.remove(policy_path)
+  let denied = moon_run(root, policy_name, "split", args, stdin=b"x") catch {
+    error => {
+      failures.push("split: denied filter invocation failed: \{error}")
+      return
+    }
+  }
+  record(
+    denied.status != 0 &&
+    denied.stdout.is_empty() &&
+    @testkit.contains_bytes(denied.stderr, "blocked process"),
+    "split: filter must report host process denial (status=\{denied.status}, stdout=\{denied.stdout}, stderr=\{denied.stderr})",
+    failures,
+  )
+  policy["process"] = {
+    "allow": [
+      {
+        "program": Json(@testkit.option_child_path()),
+        "args_prefix": ["--option-test-helper", "printenv", "FILE"],
+      },
+    ],
+  }
+  @fs.write_file(policy_path, Json::object(policy).stringify())
+  let allowed = moon_run(root, policy_name, "split", args, stdin=b"x") catch {
+    error => {
+      failures.push("split: allowed filter invocation failed: \{error}")
+      return
+    }
+  }
+  record(
+    stdout_is(allowed, b"xaa\n") && allowed.stderr.is_empty(),
+    "split: allowed filter must run the external child with FILE (status=\{allowed.status}, stdout=\{allowed.stdout}, stderr=\{allowed.stderr})",
+    failures,
+  )
+}
+
+///|
 async fn check_process_and_network_policy(
   root : String,
   failures : Array[String],
@@ -887,6 +936,7 @@ async fn check_process_and_network_policy(
   let makefile = root_path(root, makefile_rel)
   @fs.write_file(makefile, b".PHONY: all\nall:\n\t@printf policy-make-ok\n")
   defer (@fs.remove(makefile) catch { _ => () })
+  check_split_filter_process_policy(root, failures)
   let env_setup = moon_run(root, "deny-all.json", "env", ["-C"]) catch {
     err => {
       failures.push("env: status-125 setup case failed to run: \{err}")

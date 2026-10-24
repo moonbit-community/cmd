@@ -63,6 +63,9 @@ the upstream comparison profile and are not emulated.
 per named piece, with FILE exported and the exact piece bytes on stdin. It
 accepts the shell language already documented by `cli/sh`; it does not
 select a host shell through SHELL. Filter stdout and stderr remain inherited.
+The catalog classifies split as Restricted because filters can launch external
+programs. The host authorizes those children; the classification grants no
+process or filesystem permission.
 Sequential pieces await EOF and completion before starting the next filter;
 round-robin filters remain active together. Empty pieces invoke the filter
 unless `-e` suppresses them. A successful filter may ignore stdin.

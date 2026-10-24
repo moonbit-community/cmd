@@ -30,6 +30,11 @@ integer conversion, literal text and `%%`. Width, precision, left/zero padding
 and applicable alternate/thousands flags follow the GNU C profile. Repeated
 formats use the last; `-b` determines layout independently of `-n` ordering.
 Invalid formats fail before file creation.
+Windows ordinary filesystem paths trim trailing spaces and dots. A generated
+name with either ending is therefore refused with status 2 before reading
+input; it never silently creates a differently named fragment. Verbatim-name
+support requires verified Native/Wasm creation, reading and observation of
+those exact names.
 
 `--suppress-matched` omits the line at the offset-adjusted split boundary for
 regex, ignored regex and numeric patterns. Empty elision reuses the next

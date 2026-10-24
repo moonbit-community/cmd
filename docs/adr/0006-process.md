@@ -50,6 +50,11 @@ documented boundary rather than GNU empty-input parity. A host exposing the
 independent channel can lift its host limitation through yes/no/EOF and child
 effect tests. Opening a character device is public; absence of a usable
 console is not a missing character-device API.
+The no-channel fixtures apply to the observed POSIX CI profile. Windows CI
+opens `CONIN$`: nonempty `-p` waits for confirmation and empty `-p -r` exits 0
+without a prompt or child. The latter has its own Windows contract. Separate
+confirmation-reader tests cover yes/no/EOF; unattended console availability
+must not be relabeled as a missing-channel rejection.
 
 Reject spawn+wait as exec replacement and direct-PID kill as descendant cleanup. Process groups are not authorization. handle_cancellation cannot clear current task cancellation. Timeout remains a local direct-child subset, not a published portable process-group guarantee.
 

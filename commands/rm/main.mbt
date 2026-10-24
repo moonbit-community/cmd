@@ -9,8 +9,20 @@ priv struct RmOptions {
 
 ///|
 priv enum Removal {
-  Visit(String)
-  FinishDirectory(String)
+  Visit(String, String)
+  FinishDirectory(String, String)
+}
+
+///|
+fn child_label(parent : String, name : String) -> String {
+  parent +
+  (if parent.has_suffix("/") ||
+    (@async.platform is Windows && parent.has_suffix("\\")) {
+    ""
+  } else {
+    "/"
+  }) +
+  name
 }
 
 ///|
@@ -117,7 +129,12 @@ fn remove_error(error : Error) -> String {
 }
 
 ///|
-async fn report_error(path : String, error : Error, directory : Bool) -> Unit {
+async fn report_error(
+  path : String,
+  label : String,
+  error : Error,
+  directory : Bool,
+) -> Unit {
   let denied = match error {
     @os_error.OSError(_) as error => error.is_EACCES()
     _ => false
@@ -136,7 +153,7 @@ async fn report_error(path : String, error : Error, directory : Bool) -> Unit {
   } else {
     remove_error(error)
   }
-  @stdio.stderr.write("rm: cannot remove \{quote_path(path)}: \{message}\n")
+  @stdio.stderr.write("rm: cannot remove \{quote_path(label)}: \{message}\n")
 }
 
 ///|
@@ -161,6 +178,7 @@ async fn file_type(path : String, kind : @fs.FileKind) -> String {
 ///|
 async fn item_prompt(
   path : String,
+  label : String,
   kind : @fs.FileKind,
   descend : Bool,
 ) -> Bool {
@@ -170,7 +188,7 @@ async fn item_prompt(
       "descend into " +
       (if write_protected { "write-protected " } else { "" }) +
       "directory " +
-      quote_path(path),
+      quote_path(label),
     )
   } else {
     confirm(
@@ -178,38 +196,38 @@ async fn item_prompt(
       (if write_protected { "write-protected " } else { "" }) +
       file_type(path, kind) +
       " " +
-      quote_path(path),
+      quote_path(label),
     )
   }
 }
 
 ///|
 async fn remove_operand(operand : String, options : RmOptions) -> Bool {
-  let pending : Array[Removal] = [Visit(operand)]
+  let pending : Array[Removal] = [Visit(operand, operand)]
   let mut failed = false
   while pending.pop() is Some(work) {
-    let path = match work {
-      Visit(path) | FinishDirectory(path) => path
+    let (path, label) = match work {
+      Visit(path, label) | FinishDirectory(path, label) => (path, label)
     }
-    if work is FinishDirectory(_) {
-      if options.interactive && !item_prompt(path, Directory, false) {
+    if work is FinishDirectory(_, _) {
+      if options.interactive && !item_prompt(path, label, Directory, false) {
         continue
       }
       @fs.rmdir(path) catch {
         error => {
-          report_error(path, error, true)
+          report_error(path, label, error, true)
           failed = true
           continue
         }
       }
       if options.verbose {
-        @stdio.stdout.write("removed directory \{quote_path(path)}\n")
+        @stdio.stdout.write("removed directory \{quote_path(label)}\n")
       }
       continue
     }
     let kind = @fsops.kind_if_exists(path) catch {
       error => {
-        report_error(path, error, false)
+        report_error(path, label, error, false)
         failed = true
         continue
       }
@@ -218,14 +236,14 @@ async fn remove_operand(operand : String, options : RmOptions) -> Bool {
       None =>
         if !options.force {
           @stdio.stderr.write(
-            "rm: cannot remove \{quote_path(path)}: No such file or directory\n",
+            "rm: cannot remove \{quote_path(label)}: No such file or directory\n",
           )
           failed = true
         }
       Some(Directory) => {
         if !options.recursive && !options.empty_directories {
           @stdio.stderr.write(
-            "rm: cannot remove \{quote_path(path)}: Is a directory\n",
+            "rm: cannot remove \{quote_path(label)}: Is a directory\n",
           )
           failed = true
           continue
@@ -237,55 +255,60 @@ async fn remove_operand(operand : String, options : RmOptions) -> Bool {
           sort=false,
         ) catch {
           error => {
-            report_error(path, error, true)
+            report_error(path, label, error, true)
             failed = true
             continue
           }
         }
         if options.recursive && !entries.is_empty() {
-          if options.interactive && !item_prompt(path, Directory, true) {
+          if options.interactive && !item_prompt(path, label, Directory, true) {
             continue
           }
-          pending.push(FinishDirectory(path))
+          pending.push(FinishDirectory(path, label))
           for index = entries.length() - 1; index >= 0; index = index - 1 {
-            pending.push(Visit(@fsops.join(path, entries[index])))
+            pending.push(
+              Visit(
+                @fsops.join(path, entries[index]),
+                child_label(label, entries[index]),
+              ),
+            )
           }
         } else {
           if options.interactive && !entries.is_empty() {
             @stdio.stderr.write(
-              "rm: cannot remove \{quote_path(path)}: Is a directory\n",
+              "rm: cannot remove \{quote_path(label)}: Is a directory\n",
             )
             failed = true
             continue
           }
-          if options.interactive && !item_prompt(path, Directory, false) {
+          if options.interactive && !item_prompt(path, label, Directory, false) {
             continue
           }
           @fs.rmdir(path) catch {
             error => {
-              report_error(path, error, true)
+              report_error(path, label, error, true)
               failed = true
               continue
             }
           }
           if options.verbose {
-            @stdio.stdout.write("removed directory \{quote_path(path)}\n")
+            @stdio.stdout.write("removed directory \{quote_path(label)}\n")
           }
         }
       }
       Some(kind) => {
-        if options.interactive && !item_prompt(path, kind, false) {
+        if options.interactive && !item_prompt(path, label, kind, false) {
           continue
         }
         @fs.remove(path) catch {
           error => {
-            report_error(path, error, false)
+            report_error(path, label, error, false)
             failed = true
             continue
           }
         }
         if options.verbose {
-          @stdio.stdout.write("removed \{quote_path(path)}\n")
+          @stdio.stdout.write("removed \{quote_path(label)}\n")
         }
       }
     }

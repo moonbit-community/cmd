@@ -25,6 +25,16 @@ async test "tee classifies real public pipe errors separately from regular file 
   } noraise {
     _ => fail("readonly file must reject writes")
   }
+  let directory = root + "/directory"
+  @fs.mkdir(directory)
+  try @fsops.open_output(directory, CreateOrTruncate) catch {
+    error => assert_eq(open_error_text(directory, error), "Is a directory")
+  } noraise {
+    file => {
+      file.close()
+      fail("directory output must be rejected")
+    }
+  }
 }
 
 ///|

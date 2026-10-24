@@ -42,7 +42,11 @@ command is printed on stderr; a line starting with `y` or `Y` accepts it in
 the C locale. If that channel cannot be opened, the command returns status 2
 before consuming argument stdin or launching children. This explicit boundary
 also applies to `-p -r` with empty input; GNU may exit before opening its TTY in
-that case. Positive interactive execution requires an available host console.
+that case. When the channel opens, empty `-p -r` input exits 0 without prompting
+or launching a child. Windows CI can provide `CONIN$` even when nobody is
+available to answer, so a nonempty interactive request correctly waits for
+confirmation. Confirmation choices are exercised with the existing separate
+input tests; unattended CLI cases do not assume a missing Windows console.
 
 ## Standalone metadata
 

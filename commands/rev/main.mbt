@@ -1,4 +1,9 @@
 ///|
+priv suberror InvalidCRecord {
+  InvalidCRecord
+}
+
+///|
 fn reverse_line(data : Bytes) -> Bytes {
   let output : Array[Byte] = []
   let mut index = data.length()
@@ -34,7 +39,7 @@ fn help_message() -> String {
     #|      --version   display version and exit
     #|
     #|Reverse each line from ordered FILE operands, or standard input if absent.
-    #|This implementation uses C-locale byte order and preserves line feeds.
+    #|The fixed Linux C-locale profile reverses bytes and rejects non-ASCII records.
     #|An explicit - is a filename, as in the frozen util-linux profile.
   message
 }
@@ -105,12 +110,19 @@ async fn main {
 }
 
 ///|
-async fn reverse_reader(reader : &@io.Reader, count : Ref[Int64]) -> Unit {
+async fn reverse_reader(
+  reader : &@io.Reader,
+  count : Ref[Int64],
+  writer~ : &@io.Writer = @stdio.stdout,
+) -> Unit {
   let lines = @stream.LineScanner::new(reader)
   while lines.next() is Some(line) {
-    @stdio.stdout.write(reverse_lines(line.data))
+    if line.data.iter().any(byte => byte.to_int() >= 128) {
+      raise InvalidCRecord
+    }
+    writer.write(reverse_lines(line.data))
     if line.terminated {
-      @stdio.stdout.write(b"\n")
+      writer.write(b"\n")
     }
     count.val += 1
   }
@@ -119,6 +131,7 @@ async fn reverse_reader(reader : &@io.Reader, count : Ref[Int64]) -> Unit {
 ///|
 fn error_message(error : Error) -> String {
   match error {
+    InvalidCRecord => "Invalid or incomplete multibyte or wide character"
     @os_error.OSError(code, ..) as error =>
       if error.is_ENOENT() {
         "No such file or directory"

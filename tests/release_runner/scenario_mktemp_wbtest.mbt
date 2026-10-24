@@ -12,10 +12,18 @@ async test "published mktemp scenario uses the selected coordinate and rejects b
       },
     ],
   }
+  let windows = @platform.is_windows()
   let fixture = {
-    ..release_case_for_test("mktemp-option-effects", "mktemp"),
+    ..release_case_for_test(
+      if windows {
+        "mktemp-option-effects-windows"
+      } else {
+        "mktemp-option-effects"
+      },
+      "mktemp",
+    ),
     comparison: Some("scenario"),
-    host_platforms: Some(["linux", "macos"]),
+    host_platforms: Some(if windows { ["windows"] } else { ["linux", "macos"] }),
   }
   assert_true(release_mktemp_scenario(fixture))
   let reports : Array[CaseReport] = []
@@ -56,10 +64,8 @@ async test "published mktemp scenario uses the selected coordinate and rejects b
     Map([]),
   )
   assert_eq(passed.verification, "contract")
-  for
-    dimension in [
-      "status", "stdout", "stderr", "file-content", "file-type", "file-mode",
-    ] {
+  for dimension in ["status", "stdout", "stderr", "file-content", "file-type"] {
     assert_true(passed.observations.contains(dimension))
   }
+  assert_eq(passed.observations.contains("file-mode"), !windows)
 }

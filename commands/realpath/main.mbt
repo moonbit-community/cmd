@@ -128,7 +128,11 @@ async fn resolve_path(
         if must_directory && !(existence is Missing) && !(kind is Directory) {
           raise RealpathError("Not a directory")
         }
-        current = candidate
+        current = if !strip && @platform.is_windows() {
+          slashes(@fs.realpath(candidate))
+        } else {
+          candidate
+        }
       }
     }
   }

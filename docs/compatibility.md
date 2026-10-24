@@ -21,8 +21,10 @@ and [fidelity repair](reports/2026-10-11-fidelity-repair/README.md) remain
 historical evidence for their original coordinates. The retained commands
 keep their earlier dependency and acceptance profiles.
 
-Authorization belongs to the caller/host. Catalog capabilities and the older
+Authorization belongs to the caller/host. Catalog capabilities and the
 restricted label describe requirements, not command-local policy.
+Split is Restricted because `--filter` can launch external children; the
+current tier counts and command list are recorded in [ADR-0002](adr/0002-policy.md).
 
 ## Workspace O5-O13 option candidates
 
@@ -35,8 +37,8 @@ backend actually returns them; no portable inode-size constant is assumed.
 
 | Family | Current source behavior | Retained boundary |
 | --- | --- | --- |
-| split | All selected byte/line/round-robin `-n` forms, `-C`, suffix starts/growth, elision and pure MoonBit `--filter` sessions with `$FILE`, stdin and observed child status. | Ordinary existing outputs still reject. GNU's undefined hexadecimal FROM=a-f indexing is excluded; the workspace uses documented base-16 arithmetic. |
-| csplit, rev, tac | Csplit integer suffix descriptors and suppress-matched offsets; ordered rev/tac operands and tac's GNU Emacs C-byte regex selection. | Existing csplit outputs reject. Whole-input/index resource work is separate from option correctness. |
+| split | All selected byte/line/round-robin `-n` forms, `-C`, suffix starts/growth, elision and pure MoonBit `--filter` sessions with `$FILE`, stdin and observed child status. | Restricted: external filter children require host process authorization. Ordinary existing outputs still reject. GNU's undefined hexadecimal FROM=a-f indexing is excluded; the workspace uses documented base-16 arithmetic. |
+| csplit, rev, tac | Csplit integer suffix descriptors and suppress-matched offsets; ordered rev/tac operands and tac's GNU Emacs C-byte regex selection. Rev follows frozen Linux C ASCII/NUL handling and rejects non-ASCII records before writing them. | Existing csplit outputs and Windows generated names ending in spaces/dots reject. Whole-input/index resource work is separate from option correctness. |
 | od, hexdump, cmp, strings | Frozen Linux numeric formats, strings/traditional od offsets, custom hexdump formats/color rules, cmp byte notation and strings separators. | Wide strings encodings remain rejected. Hexdump forward stdin discard is an explicit extension: util-linux 2.40 rejects seek on a pipe, while equivalent named-file display supplies the byte reference. |
 | xxd | Autoskip/style/group/case/EBCDIC, wide named-input seeks, forward stdin discard, reverse address adjustment and new named outputs with backpatching. | Existing output alias/mode/content preservation needs public file identity and descriptor operations; backward/end-relative stdin positioning needs a seekable public input. |
 | checksum commands | Cksum algorithm/length selection, modern tagged/base64/raw records and checking; consistent tags, escaping and manifest flags for the four sum commands. | The selected C byte profile does not claim Windows text translation. Public digest implementations and bounded incremental state remain shared. |
@@ -408,7 +410,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `pwd` | subset verified | `-L`, `-P`, invalid logical `PWD` fallback | Logical/physical result follows Wasm cwd contract |
 | `rm` | workspace candidate | Files/trees, explicit per-entry/once interaction, last force/interactive policy, iterative prompt order and root-preservation flags | Automatic terminal-dependent write-protection prompts need public terminal/raw-mode metadata; final dot/dot-dot operands reject |
 | `realpath` | workspace candidate | Component-wise default/-e/-m, strip/no-symlinks, relative-to/base, quiet/NUL and ordered operands | Only unresolved physical link targets need readlink; lexical missing paths do not |
-| `rev` | workspace candidate | Ordered C-byte line reversal from stdin/multiple files with exact partial-error/LF behavior | Multibyte locale character semantics remain outside the C profile |
+| `rev` | workspace candidate | Ordered ASCII/NUL line reversal under the fixed Linux C profile, invalid-record rejection, completed-prefix retention and later-file continuation | Non-ASCII records fail before output; multibyte locale character semantics remain outside the selected profile |
 | `rmdir` | subset verified | empty removal, `-p`, `-I`, `-v`, failure ordering | Full path diagnostics not claimed |
 | `seq` | subset verified | Unpublished 0.2.3 adds single-conversion `-f`, frozen-ABI rounding and endpoint recovery; default +/- step, -w/-s and streaming output remain | Default path retains 4096-character/exponent/scale limits; formatted path uses the selected Extended80 range, not the host ABI; formal performance remains open |
 | `sh` | subset verified | Persistent `-i` line REPL and opaque Session; export/local variables, cwd, quoting/IFS/glob, arithmetic, substitution, read, bounded printf/test, functions and pipeline state isolation | No public isatty/raw/editing/recoverable SIGINT/job control/exec; remaining interpreter grammar restrictions are project work, listed in command README |
@@ -430,7 +432,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `wc` | workspace candidate | C-byte counters, display width, four total policies, `--files0-from`, partial read-error counts, files/stdin | Non-C counters and regular-stdin physical-fstat alignment are not claimed; see ADR-0003 |
 | `wget` | subset verified | Existing transfer profile plus challenge-based Basic credentials across destinations; `--auth-no-challenge` sends explicit credentials on every request, including redirects; load/save cookies, session-cookie option, shared redirect jar; 0.2.1 lets explicit Cookie override stored cookies | No recursive mirror/FTP/HSTS/PSL/IDNA; consumed stdin bodies cannot replay an auth challenge; cross-port and cross-operand authentication caching and full progress text not claimed; explicit Cookie override is delivered in 0.2.1 |
 | `yes` | subset verified | Infinite repeated `y` or joined arguments, help/version, broken-pipe termination | Exact signal diagnostics and terminal interaction are not claimed |
-| `xargs` | workspace candidate | Existing batching/process windows plus raw delimiter grammar, last -0/-d selection and separately opened interactive confirmations | Child policy remains required; invalid-byte argv needs public byte transport, and unavailable independent confirmation channels reject before input/launch |
+| `xargs` | workspace candidate | Existing batching/process windows plus raw delimiter grammar, last -0/-d selection and separately opened interactive confirmations; empty Windows `-p -r` exits 0 when CONIN$ opens | Child policy remains required; invalid-byte argv needs public byte transport. POSIX no-channel fixtures reject before input/launch; an available unattended Windows console waits for confirmation |
 | `xxd` | workspace candidate | Styles/autoskip/group/case/EBCDIC, wide named-file seeks, forward stdin discard, reverse address adjustment and new named output backpatching | Existing-output identity/mode/content and backward/end-relative stdin seek retain narrow public-API limits |
 
 ## Help-Visible Only

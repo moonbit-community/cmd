@@ -73434,7 +73434,9 @@
         "native",
         "wasm"
       ],
-      "platforms": [],
+      "platforms": [
+        "posix"
+      ],
       "required_evidence": [
         "contract",
         "backend-pair",
@@ -90962,7 +90964,9 @@
         "native",
         "wasm"
       ],
-      "platforms": [],
+      "platforms": [
+        "posix"
+      ],
       "required_evidence": [
         "boundary"
       ],
@@ -90995,7 +90999,9 @@
         "native",
         "wasm"
       ],
-      "platforms": [],
+      "platforms": [
+        "posix"
+      ],
       "required_evidence": [
         "boundary"
       ],
@@ -96266,6 +96272,109 @@
         "stderr"
       ],
       "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o6-csplit-windows-suffix-name-boundary",
+      "command": "csplit",
+      "owner": "commands/csplit",
+      "surface": [
+        "options",
+        "operands",
+        "stdin",
+        "filesystem"
+      ],
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/csplit.json",
+      "case_id": "o6-csplit-windows-suffix-name-boundary",
+      "aliases": [],
+      "coverage": [
+        "suffix-format",
+        "prefix"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [
+        "windows"
+      ],
+      "required_evidence": [
+        "boundary"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-type",
+        "file-content"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:o13-xargs-p-r-empty-windows",
+      "command": "xargs",
+      "owner": "commands/xargs",
+      "surface": [
+        "options",
+        "operands",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/xargs.json",
+      "case_id": "o13-xargs-p-r-empty-windows",
+      "aliases": [],
+      "coverage": [
+        "interactive",
+        "no-run-if-empty"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [
+        "windows"
+      ],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/rev/main_wbtest.mbt::rev rejects invalid C records before output and continues later readers",
+      "command": "rev",
+      "owner": "commands/rev",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/rev/main_wbtest.mbt::rev rejects invalid C records before output and continues later readers",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "rev rejects invalid C records before output and continues later readers"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
     }
   ],
   "release_commands": [
@@ -98543,7 +98652,8 @@
         "phase5-xargs-child-status",
         "phase5-xargs-replace",
         "release-metadata-xargs-help",
-        "release-metadata-xargs-version"
+        "release-metadata-xargs-version",
+        "o13-xargs-p-r-empty-windows"
       ]
     },
     {
@@ -99186,7 +99296,7 @@
         "suffix-length",
         "version"
       ],
-      "policy_sensitive": false,
+      "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
         "o5-automatic-width-additional-suffix",
@@ -99298,7 +99408,8 @@
         "release-metadata-csplit-version",
         "repair-alias-csplit-silent",
         "s1-csplit-pattern-backreference",
-        "s1-csplit-word-assertion"
+        "s1-csplit-word-assertion",
+        "o6-csplit-windows-suffix-name-boundary"
       ]
     },
     {

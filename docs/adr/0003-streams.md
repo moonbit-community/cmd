@@ -37,6 +37,13 @@ or widening options; require measured RSS before claiming a memory cap.
 These are implementation candidates with package and command regressions;
 published coordinates and final performance acceptance remain separate.
 
+Rev selects the fixed Linux C-locale util-linux 2.40 profile. It reverses
+ASCII/NUL records without decoding and rejects a record containing a non-ASCII
+byte before writing it. Completed records remain on stdout, their count appears
+in the diagnostic, and later named inputs continue. PR #54's pinned Linux
+Native/Wasm observation for `o6-rev-invalid-c-byte` establishes that behavior;
+the older macOS provider's high-byte acceptance is not Linux parity.
+
 Reject universal newline normalization, whole-output trimming and forced locale. Command substitution removes trailing LF only, preserving spaces and embedded newlines. Grep separators require requested context; base64 -w0 emits no newline. Full locale-aware comparisons remain unverified.
 
 ## O1 selected text options
@@ -177,7 +184,7 @@ reports are separate from full upstream differential certification.
 
 | Commands | Choice and reason | Rejected alternative and compatibility cost | Evidence and condition for expansion |
 | --- | --- | --- | --- |
-| rev, tac | Reverse C-byte lines/records; the O6 candidate adds ordered operands and GNU Emacs regex separators with nullable progress. | Do not decode invalid UTF-8 or normalize unterminated lines. Whole-input/index resource acceptance remains separate R work. | `rev.json`, `tac.json`, stable package tests and private Native/Wasm fixed-provider observations; older 0.1.1 release evidence remains frozen. |
+| rev, tac | Ordered operands; rev reverses ASCII/NUL lines under the frozen Linux C profile and tac supports GNU Emacs byte separators with nullable progress. | Rev rejects non-ASCII records before output; neither command performs multibyte-locale decoding or newline normalization. Whole-input/index resource acceptance remains separate R work. | `rev.json`, `tac.json`, production-reader package regressions and pinned Linux Native/Wasm observations; older release evidence remains frozen. |
 | expand, unexpand, fold | C-byte columns, explicit tab stops and control-byte rules; fold preserves input bytes and uses space breaks only when requested. Deterministic byte contracts require no terminal discovery. | Reject UTF-8 replacement decoding and assuming one code point occupies one display column. Non-C widths remain unimplemented; fold handles tabs/backspace/CR in column mode. | Their JSON contracts and fold package tests; expand locale claims only after wide/combining/malformed input and tab/control interactions pass the selected upstream oracle. |
 | od, hexdump | Concatenate operands and preserve partial words, duplicate blocks and final offsets; the O7 candidate adds the frozen Linux float ABI, strings/legacy offsets and custom hexdump format/color units. | No host delegation or inferred native ABI. Forward stdin skip is a documented read/discard extension; backward positioning needs a seekable input. | `od.json`, `hexdump.json`, numeric/format package tests and fixed-provider Native/Wasm development observations; PR/main and publication remain separate. |
 | fmt | Width/goal paragraph optimization, crown/tagged margins and prefix selection with C-byte indentation and sentence spacing; no file rewrite. | Do not substitute fold or discard long words. Paragraph storage and non-C display widths remain separate work. | Current `fmt.json`, named regressions and O3 GNU margin/prefix/tab/EOF observations; PR/main and formal resources remain separate gates. |

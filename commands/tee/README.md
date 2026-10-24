@@ -22,6 +22,9 @@ at the same failed sink and preserves earlier output effects. Use `-p` or an
 explicit error mode for supported pipe-error handling. Native and Wasm tests
 exercise real closed OS pipes and regular files; the Windows error-number
 binding is additionally checked by its platform CI.
+Windows closed-pipe errors 109 and 232 select the same pipe-error modes. Failed
+opens are reported as `Is a directory` only after a public filesystem kind
+query confirms the operand is a directory.
 
 `tee` always reads stdin silently until EOF. Terminal, pipe, and redirection
 paths do not receive a repository-specific prompt.

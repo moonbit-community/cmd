@@ -905,7 +905,7 @@
         "suffix-length",
         "version"
       ],
-      "policy_sensitive": false
+      "policy_sensitive": true
     },
     {
       "name": "strings",
@@ -1990,6 +1990,7 @@
     "o13-xargs-eof-delimiter",
     "o13-xargs-p-no-tty",
     "o13-xargs-p-r-empty",
+    "o13-xargs-p-r-empty-windows",
     "o13-xargs-zero-then-delimiter",
     "o2-sort-global-r-local-n-ignores-seed",
     "o2-sort-global-r-local-reverse-ignores-seed",
@@ -2238,6 +2239,7 @@
     "o6-csplit-suppress-positive",
     "o6-csplit-suppress-regex",
     "o6-csplit-suppress-repeat-flag",
+    "o6-csplit-windows-suffix-name-boundary",
     "o6-rev-first-failure",
     "o6-rev-invalid-c-byte",
     "o6-rev-later-failure",

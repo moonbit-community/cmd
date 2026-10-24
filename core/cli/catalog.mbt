@@ -412,7 +412,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     ),
     contract(
       "split",
-      Extended,
+      Restricted,
       FileOrStdin,
       ByteStream,
       [FileRead, FileWrite, ProcessSpawn],

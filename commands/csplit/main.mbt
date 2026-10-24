@@ -9,11 +9,12 @@ struct Output {
 }
 
 ///|
-async fn Output::write(self : Output, content : BytesView) -> Unit {
-  if self.elide && content.is_empty() {
-    return
-  }
-  let number = self.paths.length()
+priv suberror OutputNameError {
+  UnsupportedOutputName
+}
+
+///|
+fn Output::path(self : Output, number : Int32) -> String raise OutputNameError {
   let suffix = match self.suffix {
     Some(format) => format.render(number)
     None =>
@@ -24,6 +25,18 @@ async fn Output::write(self : Output, content : BytesView) -> Unit {
       number.to_string()
   }
   let path = self.prefix + suffix
+  if @platform.is_windows() && (path.has_suffix(" ") || path.has_suffix(".")) {
+    raise UnsupportedOutputName
+  }
+  path
+}
+
+///|
+async fn Output::write(self : Output, content : BytesView) -> Unit {
+  if self.elide && content.is_empty() {
+    return
+  }
+  let path = self.path(self.paths.length())
   if @fs.exists(path) {
     fail("existing output is unsupported: \{path}")
   }
@@ -125,6 +138,7 @@ fn help_message() -> String {
     #|
     #|BRE matching includes backreferences, byte classes and word assertions.
     #|Existing output paths and locale-specific matching are unsupported.
+    #|Windows output names ending in spaces or dots are rejected before input.
   message
 }
 
@@ -197,6 +211,7 @@ async fn main {
     paths: [],
   }
   try {
+    ignore(output.path(0))
     let path = parsed.operands[0]
     let data = if path == "-" {
       @stdio.stdin.read_all().binary()
@@ -206,7 +221,14 @@ async fn main {
     partition(data, controls, output, parsed.contains("suppress-matched"))
   } catch {
     err => {
-      @stdio.stderr.write("csplit: \{err}\n")
+      let name_boundary = err is UnsupportedOutputName
+      @stdio.stderr.write(
+        if name_boundary {
+          "csplit: unsupported capability: verbatim output names ending in spaces or dots\n"
+        } else {
+          "csplit: \{err}\n"
+        },
+      )
       if !parsed.contains("keep-files") {
         for path in output.paths {
           @fs.remove(path) catch {
@@ -214,7 +236,7 @@ async fn main {
           }
         }
       }
-      @sys.exit(1)
+      @sys.exit(if name_boundary { 2 } else { 1 })
     }
   }
 }

@@ -522,8 +522,8 @@
       "behavior_id": "case:o13-xargs-p-no-tty",
       "support_record": "docs/compatibility.md",
       "adr": "docs/adr/0006-process.md",
-      "current_limit": "This host cannot open the independent confirmation channel required by xargs -p. The workspace fails before consuming argument stdin or launching a child, including an explicit empty -r preflight.",
-      "unlock_condition": "Run on a host exposing an independently opened confirmation channel and verify Native/Wasm yes/no/EOF, argument-stdin isolation, serialized prompts and child effects; do not read confirmations from the argument stream or claim GNU empty-input ordering for the stronger preflight.",
+      "current_limit": "This POSIX invocation cannot open its independent controlling-terminal input. It refuses -p before argument stdin or child execution, including empty -r; Windows CONIN$ availability is observed separately.",
+      "unlock_condition": "Provide an actual independently opened confirmation channel and verify yes/no/EOF without consuming argument stdin. Where CONIN$ opens, empty -p -r is a supported zero-execution contract; unattended console input is not a no-channel fixture.",
       "rejection_tests": [
         "case:o13-xargs-p-no-tty"
       ],
@@ -533,8 +533,8 @@
       "behavior_id": "case:o13-xargs-p-r-empty",
       "support_record": "docs/compatibility.md",
       "adr": "docs/adr/0006-process.md",
-      "current_limit": "This host cannot open the independent confirmation channel required by xargs -p. The workspace fails before consuming argument stdin or launching a child, including an explicit empty -r preflight.",
-      "unlock_condition": "Run on a host exposing an independently opened confirmation channel and verify Native/Wasm yes/no/EOF, argument-stdin isolation, serialized prompts and child effects; do not read confirmations from the argument stream or claim GNU empty-input ordering for the stronger preflight.",
+      "current_limit": "This POSIX invocation cannot open its independent controlling-terminal input. It refuses -p before argument stdin or child execution, including empty -r; Windows CONIN$ availability is observed separately.",
+      "unlock_condition": "Provide an actual independently opened confirmation channel and verify yes/no/EOF without consuming argument stdin. Where CONIN$ opens, empty -p -r is a supported zero-execution contract; unattended console input is not a no-channel fixture.",
       "rejection_tests": [
         "case:o13-xargs-p-r-empty"
       ],
@@ -636,6 +636,17 @@
       "unlock_condition": "Require released public readlink plus Native/Wasm selected/excluded, dangling, escaping, structured-output and traversal observations against the fixed tree provider.",
       "rejection_tests": [
         "case:o12-boundary-readlink"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o6-csplit-windows-suffix-name-boundary",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "Windows ordinary filesystem paths trim trailing spaces and dots from generated csplit names. Such names are rejected before reading input or creating a differently named fragment.",
+      "unlock_condition": "Verify exact verbatim-name creation, reading, inventory and cleanup on Windows Native and Wasm through the public filesystem APIs before lifting the restriction.",
+      "rejection_tests": [
+        "case:o6-csplit-windows-suffix-name-boundary"
       ],
       "replacement_behaviors": []
     }

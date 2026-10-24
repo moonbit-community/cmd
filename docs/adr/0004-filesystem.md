@@ -65,6 +65,15 @@ readlink; known existing canonical components can still use public realpath.
 Only that unresolved link path rejects. Lift it with released readlink plus
 dangling-link, dot/dotdot, missing/intermediate-component and error-order cases;
 missing operands alone are not an API gap.
+Windows physical modes expand existing 8.3 aliases using public `fs.realpath`;
+lexical strip mode preserves the supplied spelling. The existing-file and
+missing-component package regressions compare physical paths with that API.
+
+Csplit rejects generated Windows names ending in a space or dot before input:
+the ordinary public filesystem path currently creates a trimmed name instead.
+The POSIX left-padding contract and Windows unchanged-files rejection have
+separate case identities. Lift this exact-name restriction only after Native
+and Wasm can create, read, enumerate and clean up the verbatim names reliably.
 
 Mktemp uses the final X run, inferred or explicit suffix, GNU default template,
 optional long tmpdir/required short directory selection and quiet failures.

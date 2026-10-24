@@ -772,6 +772,9 @@
       "normalizations": [],
       "coverage": [
         "interactive"
+      ],
+      "host_platforms": [
+        "posix"
       ]
     },
     {
@@ -800,6 +803,39 @@
       "coverage": [
         "interactive",
         "no-run-if-empty"
+      ],
+      "host_platforms": [
+        "posix"
+      ]
+    },
+    {
+      "id": "o13-xargs-p-r-empty-windows",
+      "command": "xargs",
+      "args": [
+        "-p",
+        "-r",
+        "${PRINTF_CHILD}",
+        "unexpected-child\n"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "Current Windows Native/Wasm CI opens CONIN$ and empty -p -r input exits 0 without a prompt or child",
+      "comparison": "contract",
+      "oracle": false,
+      "normalizations": [],
+      "coverage": [
+        "interactive",
+        "no-run-if-empty"
+      ],
+      "host_platforms": [
+        "windows"
       ]
     }
   ]

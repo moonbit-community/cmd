@@ -2,12 +2,21 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-24
-Revision: Retain host-owned authorization and record sort's conditional temporary-write requirement.
+Updated: 2026-10-25
+Revision: Classify split filter process authority while retaining host-owned authorization.
 
 ## Target and decision
 
 Commands preserve argv, inherited environment, cwd, streams and status according to upstream semantics. The embedding application/runtime host owns authorization. Explicit env -i/-u and shell export rules still modify the environment as requested. Catalog tiers/capabilities describe requirements, never authorize or filter execution.
+
+The current 79-command catalog has 69 Core/Extended commands and ten Restricted
+commands: chmod, curl, env, find, make, sh, split, timeout, wget and xargs.
+Split's `--filter` uses the pure MoonBit shell and can launch external children,
+so its existing ProcessSpawn capability also requires the Restricted tier and
+a policy-sensitive release profile. Builtins alone do not prove process
+authorization. The policy-host cohort exercises an actual controlled external
+filter child with process permission denied and explicitly allowed; it grants
+no unrelated process or filesystem authority.
 
 The unpublished sort candidate may create temporary runs after its in-memory
 budget fills. Its catalog includes FileWrite and the release profile marks it

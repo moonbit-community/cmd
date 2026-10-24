@@ -1,6 +1,7 @@
 import {
   "cli/core/bytere",
   "cli/core/cli",
+  "cli/core/platform",
   "moonbitlang/async",
   "moonbitlang/async/fs",
   "moonbitlang/async/stdio",
