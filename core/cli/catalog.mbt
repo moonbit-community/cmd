@@ -74,7 +74,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     ]),
     contract("printf", Core, NoInput, ByteStream, [], ["help"]),
     contract("sleep", Core, NoInput, LineStream, [], ["help", "version"]),
-    contract("sort", Core, FileOrStdin, LineStream, [FileRead], [
+    contract("sort", Core, FileOrStdin, LineStream, [FileRead, FileWrite], [
       "check", "check-quiet", "dictionary-order", "field-separator", "general-numeric-sort",
       "human-numeric-sort", "ignore-case", "ignore-leading-blanks", "ignore-nonprinting",
       "key", "month-sort", "numeric-sort", "random-sort", "reverse", "unique", "version-sort",

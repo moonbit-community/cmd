@@ -57501,6 +57501,296 @@
         "status"
       ],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/wc/count_wbtest.mbt::selected counters preserve words widths and split UTF-8",
+      "command": "wc",
+      "owner": "commands/wc",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/wc/count_wbtest.mbt::selected counters preserve words widths and split UTF-8",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "selected counters preserve words widths and split UTF-8"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/head/head_wbtest.mbt::head buffered output preserves record delimiters and byte modes",
+      "command": "head",
+      "owner": "commands/head",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/head/head_wbtest.mbt::head buffered output preserves record delimiters and byte modes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "head buffered output preserves record delimiters and byte modes"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/head/head_wbtest.mbt::head flushes completed output after input failure and marks failed writes",
+      "command": "head",
+      "owner": "commands/head",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/head/head_wbtest.mbt::head flushes completed output after input failure and marks failed writes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "head flushes completed output after input failure and marks failed writes"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/sort/sort_wbtest.mbt::sort external rounds preserve ordering and first unique representative",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/sort/sort_wbtest.mbt::sort external rounds preserve ordering and first unique representative",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sort external rounds preserve ordering and first unique representative"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/sort/sort_wbtest.mbt::sort external records preserve binary NUL delimiters and missing final delimiter",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/sort/sort_wbtest.mbt::sort external records preserve binary NUL delimiters and missing final delimiter",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sort external records preserve binary NUL delimiters and missing final delimiter"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/sort/sort_wbtest.mbt::sort validates all sources before emitting records and streams check mode",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/sort/sort_wbtest.mbt::sort validates all sources before emitting records and streams check mode",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sort validates all sources before emitting records and streams check mode"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/sort/sort_wbtest.mbt::sort temporary run reader rejects truncated and corrupt lengths",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/sort/sort_wbtest.mbt::sort temporary run reader rejects truncated and corrupt lengths",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sort temporary run reader rejects truncated and corrupt lengths"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/strings/main_wbtest.mbt::strings crosses chunks and streams long printable runs",
+      "command": "strings",
+      "owner": "commands/strings",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/strings/main_wbtest.mbt::strings crosses chunks and streams long printable runs",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "strings crosses chunks and streams long printable runs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/strings/main_wbtest.mbt::strings retains completed output before a producer error",
+      "command": "strings",
+      "owner": "commands/strings",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/strings/main_wbtest.mbt::strings retains completed output before a producer error",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "strings retains completed output before a producer error"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/stream/stream_wbtest.mbt::line scanner preserves records across refills and custom delimiters",
+      "command": "",
+      "owner": "core/stream",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/stream/stream_wbtest.mbt::line scanner preserves records across refills and custom delimiters",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "line scanner preserves records across refills and custom delimiters"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
     }
   ],
   "release_commands": [
@@ -58711,7 +59001,7 @@
         "help",
         "version"
       ],
-      "policy_sensitive": false,
+      "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
         "p3-sort-month",

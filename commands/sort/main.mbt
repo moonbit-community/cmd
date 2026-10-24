@@ -51,7 +51,7 @@ priv struct KeySpec {
 priv struct Entry {
   record : Bytes
   keys : Array[Bytes]
-  index : Int32
+  index : Int64
 }
 
 ///|
@@ -67,22 +67,6 @@ fn byte_is_digit(byte : Byte) -> Bool {
 ///|
 fn byte_is_alphanumeric(byte : Byte) -> Bool {
   byte is (b'0'..<=b'9' | b'a'..<=b'z' | b'A'..<=b'Z')
-}
-
-///|
-fn split_records(data : Bytes, delimiter : Byte) -> Array[Bytes] {
-  let records : Array[Bytes] = []
-  let mut start = 0
-  for index, byte in data {
-    if byte == delimiter {
-      records.push(data[start:index].to_owned())
-      start = index + 1
-    }
-  }
-  if start < data.length() {
-    records.push(data[start:].to_owned())
-  }
-  records
 }
 
 ///|
@@ -401,7 +385,18 @@ fn extract_key(line : Bytes, spec : KeySpec, separator : Byte?) -> Bytes {
 }
 
 ///|
+fn transforms_key(modifiers : Modifiers) -> Bool {
+  modifiers.ignore_leading_blanks ||
+  modifiers.ignore_nonprinting ||
+  modifiers.dictionary_order ||
+  modifiers.fold_case
+}
+
+///|
 fn transformed_key(key : Bytes, modifiers : Modifiers) -> Bytes {
+  if !transforms_key(modifiers) {
+    return key
+  }
   let output : Array[Byte] = []
   let mut start = 0
   if modifiers.ignore_leading_blanks {
@@ -731,9 +726,11 @@ fn version_compare(left : Bytes, right : Bytes) -> Int32 {
 }
 
 ///|
-fn compare_key(left : Bytes, right : Bytes, modifiers : Modifiers) -> Int32 {
-  let left = transformed_key(left, modifiers)
-  let right = transformed_key(right, modifiers)
+fn compare_prepared_key(
+  left : Bytes,
+  right : Bytes,
+  modifiers : Modifiers,
+) -> Int32 {
   let result = match modifiers.mode {
     Lexical => left.lexical_compare(right)
     Numeric => numeric_prefix(left, false).compare(numeric_prefix(right, false))
@@ -759,13 +756,17 @@ fn compare_entries(
   last_resort : Bool,
 ) -> Int32 {
   if specs.is_empty() {
-    let result = compare_key(left.record, right.record, global)
+    let result = compare_prepared_key(
+      left.keys.get(0).unwrap_or(left.record),
+      right.keys.get(0).unwrap_or(right.record),
+      global,
+    )
     if result != 0 || !last_resort {
       return result
     }
   } else {
     for index, spec in specs {
-      let result = compare_key(
+      let result = compare_prepared_key(
         left.keys[index],
         right.keys[index],
         spec.modifiers,
@@ -787,12 +788,25 @@ fn compare_entries(
 }
 
 ///|
-async fn read_source(path : String) -> Bytes {
-  if path == "-" {
-    @stdio.stdin.read_all().binary()
+fn make_entry(
+  record : Bytes,
+  index : Int64,
+  specs : Array[KeySpec],
+  global : Modifiers,
+  separator : Byte?,
+) -> Entry {
+  let keys = if specs.is_empty() {
+    if transforms_key(global) {
+      [transformed_key(record, global)]
+    } else {
+      []
+    }
   } else {
-    @fs.read_file(path).binary()
+    specs.map(spec => {
+      transformed_key(extract_key(record, spec, separator), spec.modifiers)
+    })
   }
+  { record, keys, index, }
 }
 
 ///|
@@ -835,7 +849,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: sort [-bcdfghinMruVz] [-k KEY] [-t CHAR] [-c|-C] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: sort [-bcdfghinMruVz] [-k KEY] [-t CHAR] [-c|-C] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n\nLarge inputs use temporary disk runs and require filesystem write access.\n",
     )
     return
   }
@@ -894,76 +908,24 @@ async fn main {
     @sys.exit(2)
     return
   }
-  let records : Array[Bytes] = []
-  for path in sources {
-    let data = read_source(path) catch {
-      err => {
-        @stdio.stderr.write("sort: \{err}\n")
-        @sys.exit(1)
-        return
-      }
+  let status = sort_sources(
+    sources,
+    @stdio.stdout,
+    delimiter,
+    specs,
+    global,
+    separator,
+    unique=parsed.contains("unique"),
+    check~,
+    diagnose=parsed.contains("check"),
+  ) catch {
+    err => {
+      @stdio.stderr.write("sort: \{err}\n")
+      @sys.exit(1)
+      return
     }
-    records.append(split_records(data, delimiter))
   }
-  let entries : Array[Entry] = []
-  for index, record in records {
-    let keys = specs.map(spec => extract_key(record, spec, separator))
-    entries.push({ record, keys, index, })
-  }
-  if check {
-    for index in 1..<entries.length() {
-      let ordering = compare_entries(
-        entries[index - 1],
-        entries[index],
-        specs,
-        global,
-        true,
-      )
-      let duplicate = parsed.contains("unique") &&
-        compare_entries(
-          entries[index - 1],
-          entries[index],
-          specs,
-          global,
-          false,
-        ) ==
-        0
-      if ordering > 0 || duplicate {
-        if parsed.contains("check") {
-          let record = @utf8.decode(entries[index].record) catch { _ => "" }
-          @stdio.stderr.write("sort: -:\{index + 1}: disorder: \{record}\n")
-        }
-        @sys.exit(1)
-        return
-      }
-    }
-    return
-  }
-  entries.sort_by((left, right) => {
-    let result = compare_entries(
-      left,
-      right,
-      specs,
-      global,
-      !parsed.contains("unique"),
-    )
-    if result == 0 {
-      left.index - right.index
-    } else {
-      result
-    }
-  })
-  let mut previous : Entry? = None
-  for entry in entries {
-    let emit = match previous {
-      Some(old) if parsed.contains("unique") =>
-        compare_entries(old, entry, specs, global, false) != 0
-      _ => true
-    }
-    if emit {
-      @stdio.stdout.write(entry.record)
-      @stdio.stdout.write(if delimiter is b'\x00' { b"\x00" } else { b"\n" })
-      previous = Some(entry)
-    }
+  if status != 0 {
+    @sys.exit(status)
   }
 }

@@ -213,8 +213,6 @@ fn update_crc(crc : UInt32, byte : Byte) -> UInt32 {
 
 ///|
 priv struct InflateOutput {
-  window : FixedArray[Byte]
-  mut cursor : Int32
   mut history : Int32
   mut crc : UInt32
   mut size : UInt32
@@ -226,17 +224,57 @@ priv struct InflateOutput {
 
 ///|
 fn InflateOutput::push(self : InflateOutput, byte : Byte) -> Unit {
-  self.window[self.cursor] = byte
-  self.cursor = (self.cursor + 1) & 32767
+  // Flushed bytes remain in the buffer as history until their slots are reused.
+  self.pending[self.count] = byte
+  self.count += 1
   if self.history < 32768 {
     self.history += 1
   }
   self.crc = update_crc(self.crc, byte)
   self.size += 1U
-  if !self.test_only {
-    self.pending[self.count] = byte
-    self.count += 1
+}
+
+///|
+fn InflateOutput::append(
+  self : InflateOutput,
+  bytes : FixedArray[Byte],
+  offset : Int32,
+  length : Int32,
+) -> Unit {
+  bytes.blit_to(
+    self.pending,
+    src_offset=offset,
+    dst_offset=self.count,
+    len=length,
+  )
+  let mut crc = self.crc
+  for index in offset..<(offset + length) {
+    crc = update_crc(crc, bytes[index])
   }
+  self.count += length
+  self.history = (self.history + length).min(32768)
+  self.crc = crc
+  self.size += length.reinterpret_as_uint()
+}
+
+///|
+fn InflateOutput::copy_match(
+  self : InflateOutput,
+  distance : Int32,
+  length : Int32,
+) -> Unit {
+  // Overlapping matches read bytes produced earlier in this same forward copy.
+  let start = self.count
+  let mut crc = self.crc
+  for index in start..<(start + length) {
+    let byte = self.pending[(index - distance) & 65535]
+    self.pending[index] = byte
+    crc = update_crc(crc, byte)
+  }
+  self.count += length
+  self.history = (self.history + length).min(32768)
+  self.crc = crc
+  self.size += length.reinterpret_as_uint()
 }
 
 ///|
@@ -244,7 +282,9 @@ async fn InflateOutput::flush(self : InflateOutput) -> Unit {
   if self.count > 0 {
     let count = self.count
     self.count = 0
-    self.writer.write(self.pending.unsafe_reinterpret_as_bytes()[:count])
+    if !self.test_only {
+      self.writer.write(self.pending.unsafe_reinterpret_as_bytes()[:count])
+    }
   }
 }
 
@@ -268,9 +308,7 @@ async fn stored_payload(
     let count = remaining
       .min(bits.end - bits.position)
       .min(output.pending.length() - output.count)
-    for index in bits.position..<(bits.position + count) {
-      output.push(bits.buffer[index])
-    }
+    output.append(bits.buffer, bits.position, count)
     bits.position += count
     remaining -= count
     if output.count == output.pending.length() {
@@ -333,9 +371,7 @@ async fn compressed_block(
       let mut remaining = length
       while remaining > 0 {
         let chunk = remaining.min(output.pending.length() - output.count)
-        for _ in 0..<chunk {
-          output.push(output.window[(output.cursor - count) & 32767])
-        }
+        output.copy_match(count, chunk)
         remaining -= chunk
         if output.count == output.pending.length() {
           output.flush()
@@ -352,8 +388,6 @@ async fn inflate(
   test_only : Bool,
 ) -> (UInt32, UInt32) {
   let output : InflateOutput = {
-    window: FixedArray::make(32768, b'\x00'),
-    cursor: 0,
     history: 0,
     crc: 0xffffffffU,
     size: 0U,

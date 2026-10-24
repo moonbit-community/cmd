@@ -483,7 +483,7 @@
     {
       "name": "mv",
       "package_name": "cli/mv",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -722,7 +722,7 @@
         "help",
         "version"
       ],
-      "policy_sensitive": false
+      "policy_sensitive": true
     },
     {
       "name": "split",

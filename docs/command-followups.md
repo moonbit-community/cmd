@@ -11,10 +11,13 @@ stage 0 has published core 0.7.0 and curl/mv/wget 0.2.3, with response
 failure/retry contracts and independent Windows Native/Wasm link evidence.
 The [release report](reports/2026-10-20-stage0-release/README.md) records exact MoonX acceptance.
 The other 75 commands retain their prior published coordinates. Gzip #27 and
-sed #28 have unpublished workspace candidates; their stages remain unaccepted.
+matcher/sed #28 have merged implementations in PRs #47 and #49, after their
+required PR checks. These remain unpublished candidates with separate performance
+and release gates.
 The [matcher/sed evidence](reports/2026-10-24-s-matcher-sed.md) records GNU
 candidate/register selection for the two remaining repeated-capture cases;
-issue #28 stays open pending current-revision acceptance.
+the [stream optimization report](reports/2026-10-24-stream-hotpaths.md) records
+the current copy, count, scanner, strings and external-sort candidates.
 Later stages and public API blockers remain separate;
 the release upgrade does not complete F05 or F15, and Windows Wasm link moves
 remain conservatively rejected under issue #38.
@@ -58,7 +61,7 @@ Command names link to README; source and tests/cases/<cmd>.json provide further 
 | [base32](../commands/base32/README.md) | Common -d/-i/-w are covered; no additional standard option blocker was found. Nonstandard alphabets are not GNU defects. Locale diagnostics are not fully compared. | Maintenance / F16–17 | 0003, 0008 |
 | [base64](../commands/base64/README.md) | Common decode/ignore/wrap work; nonstandard alphabets are outside the baseline and full diagnostics remain uncertified. | Maintenance / F17 | 0003, 0008 |
 | [basename](../commands/basename/README.md) | Multiple operands, suffix and NUL work; multibyte locale paths and extreme platform forms need evidence. | Verification, Platform / F16 | 0003 |
-| [cat](../commands/cat/README.md) | Common formatting flags work; -u is a compatibility no-op. No new independent gap found. | Maintenance | 0003 |
+| [cat](../commands/cat/README.md) | Common formatting flags work; -u is a compatibility no-op. The unpublished plain-copy path reuses a 64 KiB buffer. | Maintenance | 0003 |
 | [chmod](../commands/chmod/README.md) | Incremental/omitted classes, permission copying, X/s/t and --reference are unavailable; symbolic assignments require complete classes. Recursive command-line directory symlinks change only the target itself. Windows mutation is unavailable. | API, Verification, Platform / F05, F08 | 0004 |
 | [cksum](../commands/cksum/README.md) | POSIX CRC plus length only; GNU algorithm selection, check/tag modes remain unimplemented. | Project / F13 | 0008 |
 | [cmp](../commands/cmp/README.md) | -s/-l/-n/-i work; -b/--print-bytes, extra display and complete diagnostics remain follow-ups. | Project, Verification / F13, F17 | 0003 |
@@ -82,7 +85,7 @@ Command names link to README; source and tests/cases/<cmd>.json provide further 
 | [grep](../commands/grep/README.md) | Unpublished 0.3.0 adds tested backreferences/assertions, repeated nullable captures and grammar-preserving ASCII -i. Further GNU grammar and non-C classes/case folding remain; -P stays outside the engine. Capture/reference resource bounds need evidence. | Project / F07, F12, F16 | 0003, 0008 |
 | [gunzip](../commands/gunzip/README.md) | Workspace Reader decoding is bounded. Named replacement without -c, metadata restoration, other formats, force/pass-through and recursion/listing remain. | API, Project / F05–06, F12 | 0004, 0008–0009 |
 | [gzip](../commands/gzip/README.md) | Workspace 32 KiB compression, dynamic costs, levels and Reader decoding are implemented; final performance/publication gates remain. Named compression requires -cn; in-place replacement/metadata, recursion/listing/force remain. | Project, API / F05–06 | 0004, 0008–0009 |
-| [head](../commands/head/README.md) | Counts are bounded by signed Int64. Measure huge suffix/unbounded-record resources against budgets; parsing success is insufficient. | Verification / F12 | 0003 |
+| [head](../commands/head/README.md) | Counts are bounded by signed Int64; the unpublished candidate batches output. Huge suffix/unbounded-record resource acceptance remains separate from parsing and local timing. | Verification / F12 | 0003 |
 | [hexdump](../commands/hexdump/README.md) | -e/-f custom formats and color directives remain; stdin skip rejects; default little-endian is a platform boundary. | Project, API, Platform / F13 | 0003 |
 | [join](../commands/join/README.md) | Ignore-case/header/full output-format extensions remain; non-C collation and diagnostics are not certified. | Project, Verification / F13, F16 | 0003 |
 | [jq](../commands/jq/README.md) | --stream, modules and complete evaluator/diagnostics remain. Automatic TTY color needs isatty; explicit -C/-M already work. | Project, API / F14–15 | 0008 |
@@ -112,9 +115,9 @@ Command names link to README; source and tests/cases/<cmd>.json provide further 
 | [sha256sum](../commands/sha256sum/README.md) | Tagged/binary manifest extensions and complete warnings remain. Shared hash-contract cleanup must preserve existing behavior. | Project, Verification / F13 | 0008 |
 | [sha512sum](../commands/sha512sum/README.md) | As md5sum: tagged records and Windows text mode remain. | Project, Platform / F13, F16 | 0008 |
 | [sleep](../commands/sleep/README.md) | Signal/cancellation parity is uncertified. Duration precision/limits are runtime contracts, not unlimited ranges. | API, Verification / F15 | 0006 |
-| [sort](../commands/sort/README.md) | -R rejects without a seed contract, though randomization is implementable. Output files, merge/stability extensions, external sorting and locale remain. | Project / F12–13, F16 | 0003 |
+| [sort](../commands/sort/README.md) | The unpublished candidate caches comparison transformations and uses stable external runs; spilling needs host temporary-write access. -R, output/merge/stability options, locale and measured total resource acceptance remain. | Project, Verification / F12–13, F16 | 0003 |
 | [split](../commands/split/README.md) | Existing outputs reject. -n chunks, -C line-bytes, filters, numeric start and hex suffix remain; full input buffering, Int32 counts and 1024 suffix bounds persist. | API, Project / F05, F12–13 | 0004, 0009 |
-| [strings](../commands/strings/README.md) | Published 0.1.0 misinterpreted radix/encoding/TAB/prefix/offset behavior; corrected in cli/strings@0.1.1. Wide/Unicode encodings, object sections and custom separators remain. | **Defect**, Project / F01, F12–13, F16 | 0003 |
+| [strings](../commands/strings/README.md) | The 0.1.0 radix/encoding/TAB/prefix/offset defects were corrected in cli/strings@0.1.1. The unpublished candidate streams accepted runs with 64-bit offsets. Wide/Unicode encodings, object sections and custom separators remain. | Project, Verification / F12–13, F16 | 0003 |
 | [tac](../commands/tac/README.md) | Regex separators and multiple files reject; full input buffering persists. Multiple-file support needs no regex API; byte matching is project work. | Project / F07, F12–13 | 0003 |
 | [tail](../commands/tail/README.md) | -F/name-follow and rotation reopening need identity. Other GNU pid/retry/record options are outside the subset. | API, Project / F05, F13 | 0003–0004 |
 | [tee](../commands/tee/README.md) | -i and -p/--output-error signal/error choices are outside the append subset. Pipe failure status needs an explicit contract. | Project, API, Verification / F13, F15 | 0003, 0006 |

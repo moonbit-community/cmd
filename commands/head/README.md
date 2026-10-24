@@ -4,6 +4,9 @@ Version **0.2.2** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
+Record, byte and multi-file header output share a 64 KiB buffer. Input errors
+flush already completed output; an output failure stops without replaying bytes.
+
 Print the first lines or bytes of files or stdin:
 
 ```sh

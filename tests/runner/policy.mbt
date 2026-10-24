@@ -542,6 +542,27 @@ async fn check_runtime_policy(root : String, failures : Array[String]) -> Unit {
     b"first\x00first\x00second\x00",
     failures,
   )
+  // Windows needs an explicitly provisioned temporary environment to reach
+  // the filesystem write check instead of aborting during path lookup.
+  let sort_spill = moon_run(
+    root,
+    "read-workspace-temp-env.json",
+    "sort",
+    [],
+    stdin=@utf8.encode("a\n".repeat(524288)),
+  ) catch {
+    err => {
+      failures.push("sort spill policy invocation failed: \{err}")
+      return
+    }
+  }
+  record(
+    sort_spill.status == 1 &&
+    sort_spill.stdout.is_empty() &&
+    @testkit.contains_bytes(sort_spill.stderr, "blocked file write"),
+    "sort must report host temporary-write denial before emitting output (status=\{sort_spill.status}, stdout_bytes=\{sort_spill.stdout.length()}, stderr=\{sort_spill.stderr})",
+    failures,
+  )
   expect_allowed(
     root,
     "uniq",

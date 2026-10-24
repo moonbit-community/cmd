@@ -313,7 +313,7 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/expr@0.1.2 metadata contract",
+      "source_version": "workspace cli/expr@0.2.0 metadata contract",
       "expected_stdout_text": "expr 0.2.0\n",
       "expected_stderr_text": ""
     },

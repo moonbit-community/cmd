@@ -2,14 +2,39 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-11
-Revision: Repair strings and column against pinned oracles; remove seq's arbitrary output-count limit and document its numeric bounds.
+Updated: 2026-10-24
+Revision: Retain the byte profiles and record the shared scanner, copy buffers and selective counting candidates.
 
 ## Target and decision
 
 Preserve byte streams, final newlines and partial output. Set LC_ALL=C explicitly in differential fixtures; inherit caller locale in real commands. C-byte collation tests do not certify non-C behavior. Keep bounded sort and descriptor-follow tail as declared subsets.
 
 ## Alternatives and compatibility cost
+
+The unpublished core 0.8.0 line scanner owns one 64 KiB read buffer, tracks the
+unconsumed range and uses the public single-byte search operation. It does not
+rescan an accumulated prefix or copy the remaining chunk for each line. Only
+cross-chunk records accumulate; returned lines own their bytes before refill.
+Storage follows the largest record encountered plus a block, rather than the
+number of records. The existing constructor/next calls and delimiter behavior
+remain; the generated structural interface records the new state.
+
+Plain cat copies reuse a 64 KiB buffer across operands. Wc computes only selected
+counters and retains at most an incomplete UTF-8 sequence between chunks when
+character counting is requested. Byte/line modes avoid character decoding.
+Strings retains a candidate prefix only until the requested minimum, then
+streams its printable continuation with 64-bit input offsets.
+Head batches record/byte/header output and flushes completed output on input
+errors. Shared new-file copying uses a reusable 64 KiB buffer; this changes
+neither replacement preflight nor filesystem capability decisions.
+Sort prepares comparison keys once, carries stable sequence IDs through disk
+runs and merges at most sixteen inputs. Its default 64 MiB budget counts
+record/key payloads, bookkeeping and reserved buffers; active/oversized records
+and runtime allocation overhead remain explicit additional costs. Preserve
+first-representative unique behavior and error cleanup before raising the budget
+or widening options; require measured RSS before claiming a memory cap.
+These are implementation candidates with package and command regressions;
+published coordinates and final performance acceptance remain separate.
 
 Reject universal newline normalization, whole-output trimming and forced locale. Command substitution removes trailing LF only, preserving spaces and embedded newlines. Grep separators require requested context; base64 -w0 emits no newline. Full locale-aware comparisons remain unverified.
 

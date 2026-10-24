@@ -1,6 +1,7 @@
 # mv
 
-This describes version 0.2.3. See the
+This describes version 0.2.4. Its unpublished core 0.8.0 dependency reuses a
+64 KiB buffer for supported copy fallbacks. See the
 [support record](../../docs/compatibility.md) for measured option combinations
 and backend limits; accepted options do not establish full compatibility.
 
@@ -59,7 +60,7 @@ postcondition error; no second deletion is attempted.
 
 ## Standalone metadata
 
-Standalone `--version` prints exactly `mv 0.2.3` followed by one
+Standalone `--version` prints exactly `mv 0.2.4` followed by one
 newline. Standalone `--help` starts with `Usage: mv`, lists both
 metadata options, and ends with a newline. Both write to stdout, leave stdin
 unread, and exit with status 0. Exact-version publication and verification

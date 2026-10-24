@@ -24,14 +24,31 @@ keep their earlier dependency and acceptance profiles.
 Authorization belongs to the caller/host. Catalog capabilities and the older
 restricted label describe requirements, not command-local policy.
 
+## Workspace stream optimization candidates
+
+Unpublished core 0.8.0 uses a reusable 64 KiB line scanner. Comm, cut, head,
+join, jq, nl, paste, sed, sort, uniq and xxd now resolve that candidate so their
+published consumers can receive the scanner when a release is accepted.
+Cat reuses a 64 KiB copy buffer, wc computes selected counters, and strings
+streams accepted printable runs. Accepted options and byte profiles remain.
+Head batches output in 64 KiB blocks. Cp and mv select core 0.8.0 for new-file
+copying; mv advances to an unpublished 0.2.4 candidate because its dependency
+resolution changes. Existing filesystem capability boundaries remain.
+Sort caches comparison transformations and uses stable disk runs under a
+64 MiB accounted run budget with at most sixteen merge inputs. This budget
+does not include all allocator/GC or oversized-record costs and is not an RSS cap.
+The [development observations](reports/2026-10-24-stream-hotpaths.md) record
+local correctness and timing separately from final resources, MoonX and release
+acceptance. Current published coordinates above remain frozen.
+
 ## Workspace matcher and sed candidates
 
 Core **0.8.0**, grep **0.3.0**, and sed/expr/csplit **0.2.0** are unpublished
 workspace candidates. The published coordinates and frozen expectations above
-remain unchanged. The [S implementation report](reports/2026-10-24-s-matcher-sed.md)
-records local evidence; stage acceptance and
-[issue #28](https://github.com/moonbit-community/cmd/issues/28) remain pending
-current-revision PR checks and release acceptance.
+remain unchanged. [PR #49](https://github.com/moonbit-community/cmd/pull/49)
+merged the S implementation after all required platform and coverage checks.
+The [S implementation report](reports/2026-10-24-s-matcher-sed.md) records its
+development evidence. Performance and publication remain separate roadmap gates.
 
 The shared C-byte matcher parses BRE/ERE once, supports the tested byte classes,
 word assertions and pattern backreferences, and exposes span-only search
@@ -55,8 +72,8 @@ restoration, including counted repeats, nested captures and multiple references.
 Independent local GNU comparisons match all 1,095 applicable cases; three oracle
 faults are retained separately. The earlier compile-time rejection is removed
 and the consumer cases exercise supported matching. These development results
-do not establish complete GNU/POSIX compatibility; platform/audit, publication
-and performance gates remain.
+do not establish complete GNU/POSIX compatibility. PR #49 supplies platform,
+oracle and coverage evidence for its scope; publication and performance remain.
 
 ## Accepted stage 0 subset: async 0.22.5
 

@@ -1,0 +1,9 @@
+{
+  "fs": {
+    "read": ["."],
+    "write": []
+  },
+  "env": {
+    "from_host": ["TMP", "TEMP", "TMPDIR"]
+  }
+}

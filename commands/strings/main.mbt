@@ -8,15 +8,15 @@ fn digit(value : Int32) -> Char {
 }
 
 ///|
-fn radix_string(value : Int32, radix : Int32) -> String {
+fn radix_string(value : Int64, radix : Int32) -> String {
   if value == 0 {
     return "0"
   }
   let mut number = value
   let mut result = ""
   while number > 0 {
-    result = digit(number % radix).to_string() + result
-    number /= radix
+    result = digit((number % radix.to_int64()).to_int()).to_string() + result
+    number /= radix.to_int64()
   }
   result
 }
@@ -24,29 +24,6 @@ fn radix_string(value : Int32, radix : Int32) -> String {
 ///|
 fn printable(byte : Byte, eight_bit : Bool) -> Bool {
   byte == 0x09 || (byte >= 0x20 && byte <= 0x7E) || (eight_bit && byte >= 0x80)
-}
-
-///|
-fn records(
-  data : Bytes,
-  minimum : Int32,
-  eight_bit~ : Bool = false,
-) -> Array[(Int32, Bytes)] {
-  let result : Array[(Int32, Bytes)] = []
-  let mut start = 0
-  let mut index = 0
-  while index <= data.length() {
-    if index == data.length() || !printable(data[index], eight_bit) {
-      if index - start >= minimum {
-        result.push((start, data[start:index].to_owned()))
-      }
-      index += 1
-      start = index
-    } else {
-      index += 1
-    }
-  }
-  result
 }
 
 ///|
@@ -77,29 +54,82 @@ fn parse_radix(value : String) -> Int32? {
 }
 
 ///|
-async fn emit(
+fn record_prefix(
   path : String,
-  data : Bytes,
+  offset : Int64,
+  prefix : Bool,
+  radix : Int32?,
+) -> String {
+  let mut line = ""
+  if prefix {
+    line += (if path == "-" { "{standard input}" } else { path }) + ": "
+  }
+  match radix {
+    Some(base) => {
+      let address = radix_string(offset, base)
+      line += " ".repeat((7 - address.length()).max(0)) + address + " "
+    }
+    None => ()
+  }
+  line
+}
+
+///|
+async fn emit_stream(
+  reader : &@io.Reader,
+  writer : &@io.Writer,
+  path : String,
   minimum : Int32,
   prefix : Bool,
   radix : Int32?,
   eight_bit : Bool,
 ) -> Unit {
-  for (offset, text) in records(data, minimum, eight_bit~) {
-    let mut line = ""
-    if prefix {
-      line += (if path == "-" { "{standard input}" } else { path }) + ": "
+  let pending : Array[Byte] = []
+  let mut offset : Int64 = 0
+  let mut start : Int64 = 0
+  let mut emitting = false
+  for ;; {
+    let chunk = {
+      errdefer (if emitting { writer.write("\n") })
+      reader.read_some(max_len=65536)
     }
-    match radix {
-      Some(base) => {
-        let address = radix_string(offset, base)
-        line += " ".repeat((7 - address.length()).max(0)) + address + " "
+    guard chunk is Some(chunk) else { break }
+    let mut index = 0
+    while index < chunk.length() {
+      if !printable(chunk[index], eight_bit) {
+        if emitting {
+          writer.write("\n")
+        }
+        pending.clear()
+        emitting = false
+        index += 1
+        start = offset + index.to_int64()
+        continue
       }
-      None => ()
+      let segment = index
+      while index < chunk.length() && printable(chunk[index], eight_bit) {
+        index += 1
+      }
+      if emitting {
+        writer.write(chunk[segment:index])
+      } else if pending.length() + index - segment >= minimum {
+        writer.write(record_prefix(path, start, prefix, radix))
+        if !pending.is_empty() {
+          writer.write(Bytes::from_array(pending))
+          pending.clear()
+        }
+        writer.write(chunk[segment:index])
+        emitting = true
+      } else {
+        for byte in chunk[segment:index] {
+          pending.push(byte)
+        }
+      }
     }
-    @stdio.stdout.write(line)
-    @stdio.stdout.write(text)
-    @stdio.stdout.write("\n")
+    offset += chunk.length().to_int64()
+  }
+  if emitting {
+    writer.write("\n")
   }
 }
 
@@ -173,34 +203,42 @@ async fn main {
   let files = parsed.operands.filter(path => path != "-")
   let sources = if files.is_empty() { ["-"] } else { files }
   let prefix = parsed.contains("print-file-name")
+  let writer = @io.BufferedWriter::new(@stdio.stdout, size=65536)
   let mut failed = false
   for path in sources {
-    let data = read_source(path) catch {
+    try {
+      if path == "-" {
+        emit_stream(
+          @stdio.stdin,
+          writer,
+          path,
+          minimum,
+          prefix,
+          radix,
+          parsed.last_value("encoding") == Some("S"),
+        )
+      } else {
+        let file = @fs.open(path, mode=ReadOnly)
+        defer file.close()
+        emit_stream(
+          file,
+          writer,
+          path,
+          minimum,
+          prefix,
+          radix,
+          parsed.last_value("encoding") == Some("S"),
+        )
+      }
+    } catch {
       err => {
         @stdio.stderr.write("strings: \{path}: \{err}\n")
         failed = true
-        continue
       }
     }
-    emit(
-      path,
-      data,
-      minimum,
-      prefix,
-      radix,
-      parsed.last_value("encoding") == Some("S"),
-    )
   }
+  writer.flush()
   if failed {
     @sys.exit(1)
-  }
-}
-
-///|
-async fn read_source(path : String) -> Bytes {
-  if path == "-" {
-    @stdio.stdin.read_all().binary()
-  } else {
-    @fs.read_file(path).binary()
   }
 }

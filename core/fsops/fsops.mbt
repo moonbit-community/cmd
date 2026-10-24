@@ -277,7 +277,11 @@ async fn copy_regular_file(
     permission=0o666,
   )
   defer output.close()
-  output.write_reader(input)
+  let buffer = FixedArray::make(65536, b'\x00')
+  let bytes = buffer.unsafe_reinterpret_as_bytes()
+  while input.read(buffer, max_len=buffer.length()) is count && count > 0 {
+    output.write(bytes[:count])
+  }
   true
 }
 

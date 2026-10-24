@@ -184,6 +184,14 @@ async fn CatRenderer::copy(self : CatRenderer, reader : &@io.Reader) -> Unit {
 }
 
 ///|
+async fn copy_plain(reader : &@io.Reader, buffer : FixedArray[Byte]) -> Unit {
+  let bytes = buffer.unsafe_reinterpret_as_bytes()
+  while reader.read(buffer, max_len=buffer.length()) is count && count > 0 {
+    @stdio.stdout.write(bytes[:count])
+  }
+}
+
+///|
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
@@ -227,13 +235,21 @@ async fn main {
     parsed.contains("show-tabs-nonprinting")
   let mut failed = false
   let renderer = CatRenderer::new(parsed)
+  let copy_buffer = FixedArray::make(
+    if formatted {
+      0
+    } else {
+      @stream.chunk_size
+    },
+    b'\x00',
+  )
   for path in sources {
     try {
       if path == "-" {
         if formatted {
           renderer.copy(@stdio.stdin)
         } else {
-          @stdio.stdout.write_reader(@stdio.stdin)
+          copy_plain(@stdio.stdin, copy_buffer)
         }
       } else {
         let file = @fs.open(path, mode=ReadOnly)
@@ -241,7 +257,7 @@ async fn main {
         if formatted {
           renderer.copy(file)
         } else {
-          @stdio.stdout.write_reader(file)
+          copy_plain(file, copy_buffer)
         }
       }
     } catch {

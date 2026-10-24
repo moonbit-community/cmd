@@ -13,6 +13,20 @@ priv enum CountSpec {
 let chunk_size : Int32 = 65536
 
 ///|
+priv struct HeadOutput {
+  writer : &@io.Writer
+  mut failed : Bool
+}
+
+///|
+impl @io.Writer for HeadOutput with fn write_once(self, data, offset~, len~) {
+  errdefer {
+    self.failed = true
+  }
+  self.writer.write_once(data, offset~, len~)
+}
+
+///|
 fn scaled_count(
   number : Int64,
   suffix : String,
@@ -159,16 +173,21 @@ async fn read_chunk(reader : &@io.Reader, buffer : FixedArray[Byte]) -> Bytes? {
 }
 
 ///|
-async fn write_record(record : @stream.Line, delimiter : Byte) -> Unit {
-  @stdio.stdout.write(record.data)
+async fn write_record(
+  writer : &@io.Writer,
+  record : @stream.Line,
+  delimiter : Byte,
+) -> Unit {
+  writer.write(record.data)
   if record.terminated {
-    @stdio.stdout.write(if delimiter is b'\x00' { b"\x00" } else { b"\n" })
+    writer.write(if delimiter is b'\x00' { b"\x00" } else { b"\n" })
   }
 }
 
 ///|
 async fn head_records(
   reader : &@io.Reader,
+  writer : &@io.Writer,
   spec : CountSpec,
   delimiter : Byte,
 ) -> Unit {
@@ -177,7 +196,7 @@ async fn head_records(
     First(count) => {
       let mut remaining = count
       while remaining > 0 && scanner.next() is Some(record) {
-        write_record(record, delimiter)
+        write_record(writer, record, delimiter)
         remaining -= 1
       }
     }
@@ -186,7 +205,7 @@ async fn head_records(
       while scanner.next() is Some(record) {
         pending.push(record)
         if pending.length().to_int64() > count {
-          write_record(pending.remove(0), delimiter)
+          write_record(writer, pending.remove(0), delimiter)
         }
       }
     }
@@ -194,7 +213,11 @@ async fn head_records(
 }
 
 ///|
-async fn head_bytes(reader : &@io.Reader, spec : CountSpec) -> Unit {
+async fn head_bytes(
+  reader : &@io.Reader,
+  writer : &@io.Writer,
+  spec : CountSpec,
+) -> Unit {
   let buffer : FixedArray[Byte] = FixedArray::make(chunk_size, 0)
   match spec {
     First(count) => {
@@ -203,10 +226,10 @@ async fn head_bytes(reader : &@io.Reader, spec : CountSpec) -> Unit {
         match read_chunk(reader, buffer) {
           Some(chunk) =>
             if chunk.length().to_int64() <= remaining {
-              @stdio.stdout.write(chunk)
+              writer.write(chunk)
               remaining -= chunk.length().to_int64()
             } else {
-              @stdio.stdout.write(chunk[0:remaining.to_int()])
+              writer.write(chunk[0:remaining.to_int()])
               remaining = 0
             }
           None => break
@@ -221,7 +244,7 @@ async fn head_bytes(reader : &@io.Reader, spec : CountSpec) -> Unit {
         }
         let emit = pending.length().to_int64() - count
         if emit > 0L {
-          @stdio.stdout.write(Bytes::from_array(pending[0:emit.to_int()]))
+          writer.write(Bytes::from_array(pending[0:emit.to_int()]))
           let kept = pending[emit.to_int():].to_owned()
           pending.clear()
           pending.append(kept)
@@ -234,14 +257,15 @@ async fn head_bytes(reader : &@io.Reader, spec : CountSpec) -> Unit {
 ///|
 async fn head_reader(
   reader : &@io.Reader,
+  writer : &@io.Writer,
   spec : CountSpec,
   bytes_mode : Bool,
   delimiter : Byte,
 ) -> Unit {
   if bytes_mode {
-    head_bytes(reader, spec)
+    head_bytes(reader, writer, spec)
   } else {
-    head_records(reader, spec, delimiter)
+    head_records(reader, writer, spec, delimiter)
   }
 }
 
@@ -296,24 +320,39 @@ async fn main {
     b'\n'
   }
   let mut failed = false
+  let sink : HeadOutput = { writer: @stdio.stdout, failed: false, }
+  let output = @io.BufferedWriter::new(sink, size=chunk_size)
   for index, path in sources {
-    if show_headers {
-      let name = if path == "-" { "standard input" } else { path }
-      let prefix = if index > 0 { "\n" } else { "" }
-      @stdio.stdout.write("\{prefix}==> \{name} <==\n")
-    }
     try {
+      if show_headers {
+        let name = if path == "-" { "standard input" } else { path }
+        let prefix = if index > 0 { "\n" } else { "" }
+        output.write("\{prefix}==> \{name} <==\n")
+      }
       if path == "-" {
-        head_reader(@stdio.stdin, spec, bytes_mode, delimiter)
+        head_reader(@stdio.stdin, output, spec, bytes_mode, delimiter)
       } else {
         let file = @fs.open(path, mode=ReadOnly)
         defer file.close()
-        head_reader(file, spec, bytes_mode, delimiter)
+        head_reader(file, output, spec, bytes_mode, delimiter)
       }
+      output.flush()
     } catch {
       err => {
+        if !sink.failed {
+          output.flush() catch {
+            write_error => {
+              @stdio.stderr.write("head: \{write_error}\n")
+              @sys.exit(1)
+              return
+            }
+          }
+        }
         @stdio.stderr.write("head: \{err}\n")
         failed = true
+        if sink.failed {
+          break
+        }
       }
     }
   }

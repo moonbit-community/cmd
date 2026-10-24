@@ -486,7 +486,7 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/grep@0.2.2 metadata contract",
+      "source_version": "workspace cli/grep@0.3.0 metadata contract",
       "expected_stdout_text": "grep 0.3.0\n",
       "expected_stderr_text": ""
     },

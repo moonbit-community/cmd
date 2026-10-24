@@ -104,4 +104,7 @@ async test "gzip dynamic Huffman backreferences overlap and wrap the 32 KiB wind
   let output : Collected = { bytes: [], }
   assert_true(!decode(gzip_member, output, false))
   assert_eq(Bytes::from_array(output.bytes), Bytes::make(100000, b'a'))
+  let verify : Collected = { bytes: [], }
+  assert_true(!decode(gzip_member, verify, true))
+  assert_eq(verify.bytes.length(), 0)
 }
