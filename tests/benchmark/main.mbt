@@ -571,9 +571,17 @@ async fn run_pilot(options : Map[String, String]) -> Bool {
 ///|
 async fn main {
   let args = @env.args()[1:]
+  if args.get(0) == Some("--http-fixture-server") {
+    @testkit.run_http_fixture_process()
+    return
+  }
+  if args.get(0) == Some("--fixture-child") {
+    fixture_child(args[1:])
+    return
+  }
   if args.is_empty() || args.contains("--help") {
     println(
-      "Usage: benchmark run --moonx ABS --oracle-bin ABS [--report-dir DIR] [--manifest FILE] [--profile FILE]\n       benchmark report --report-dir DIR",
+      "Usage: benchmark run|baseline --moonx ABS --oracle-bin ABS [--report-dir DIR] [--manifest FILE] [--profile FILE] [--native-root DIR]\n       benchmark report --report-dir DIR\n       baseline checks functional schema-2 workloads without a performance verdict.",
     )
     return
   }
@@ -583,22 +591,36 @@ async fn main {
     guard args.get(index + 1) is Some(value) else {
       fail("option requires a value: " + args[index])
     }
-    guard ["--moonx", "--oracle-bin", "--report-dir", "--manifest", "--profile"].contains(
-      args[index],
-    ) else {
+    guard [
+      "--moonx", "--oracle-bin", "--report-dir", "--manifest", "--profile", "--native-root",
+    ].contains(args[index]) else {
       fail("unknown option: " + args[index])
     }
     options[args[index]] = value
     index += 2
   }
   match args[0] {
-    "run" => if !run_pilot(options) { @sys.exit(1) }
+    "run" => {
+      let manifest = options
+        .get("--manifest")
+        .unwrap_or("tests/benchmark/manifest.json")
+      let value = @json.parse(@fs.read_file(manifest).text())
+      let passed = if value is { "schema": Number(2, ..), .. } {
+        run_functional(options, sample=true)
+      } else {
+        run_pilot(options)
+      }
+      if !passed {
+        @sys.exit(1)
+      }
+    }
+    "baseline" => if !run_functional(options, sample=false) { @sys.exit(1) }
     "report" => {
       guard options.get("--report-dir") is Some(directory) else {
         fail("report requires --report-dir")
       }
       println(@fs.read_file(directory + "/report.json").text())
     }
-    _ => fail("expected run or report")
+    _ => fail("expected run, baseline or report")
   }
 }

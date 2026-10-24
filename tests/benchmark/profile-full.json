@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "role": "delivery",
+  "cache": "warm",
+  "timeout_ms": 120000,
+  "oracle_build_record": "/private/tmp/cmd-native-oracle-2026-10-23/manifest.json",
+  "additional_oracle_build_records": [
+    "/private/tmp/cmd-native-oracle-2026-10-23/manifest-b2-2026-10-24.json",
+    "/private/tmp/cmd-native-oracle-2026-10-23/manifest-b2-2026-10-24-additions-2.json",
+    "/private/tmp/cmd-native-oracle-2026-10-23/manifest-b2-2026-10-24-additions-3.json",
+    "/private/tmp/cmd-native-oracle-2026-10-23/manifest-b2-2026-10-24-additions-4.json"
+  ],
+  "locale": "C",
+  "timezone": "UTC",
+  "qualification": "Native macOS provider preparation covers79 names. This first functional/startup manifest is not the fullB2 scale/resource/host matrix. Curl HTTP2/HTTP3 absent; grep/Wget PCRE2 present. Linux needs its own actual provider records. Immutable semantic CI remains separate."
+}

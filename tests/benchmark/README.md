@@ -1,6 +1,110 @@
-# Delivery benchmark pilot
+# Delivery benchmark workloads
 
-This Native host driver covers the eight early pilot command families. Each
+The schema-2 `functional.json` adds a first real functional/startup path for all
+79 command names. It loads frozen published Cases by ID; generated fixtures
+cover mktemp/realpath/tree/yes and controlled child work. Env/sh/make/xargs use
+the same pure-MoonBit helper on both sides; curl/wget perform real POST requests
+against the existing pure-MoonBit loopback fixture. Sleep requests10ms. Timeout
+remains a source-Native diagnostic and requires an explicit `--native-root`;
+without it the row is pending, not passed. All other candidates use the exact
+coordinate from the current published manifest, never a workspace candidate.
+
+After an explicit release build, check one pair per functional workload:
+
+```text
+MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/benchmark/run.mbtx -- baseline \
+  --moonx /absolute/path/to/moonx \
+  --oracle-bin /private/tmp/cmd-native-oracle-2026-10-23/prefix/bin \
+  --manifest tests/benchmark/functional.json \
+  --profile tests/benchmark/profile-full.json \
+  --report-dir test-reports/performance/functional-unique
+```
+
+`baseline` checks functional results and records raw process observations; it
+does not emit a performance verdict. With the same schema-2 manifest, `run`
+first checks correctness and then uses the existing5warmups/105pairs/statistics.
+Choose a new report directory for every run. These commands launch real work
+and must be coordinated with a quiet measurement window. The original schema-1
+pilot manifests and their reports retain their existing behavior.
+
+Every side starts from a freshly prepared fixture on every call. Small original
+Case assertions and expected effects reuse testkit. Filesystem comparison uses
+the content-free snapshot mode plus bounded file comparison; it does not load
+all regular files into memory. Captures stay in files. The initial literal
+Case assertion adapter is limited to64KiB captures; the scaled variants below
+use separate bounded output relations. Remaining corpus families, resources
+and host qualification stay open.
+Only fixture-declared root relations may normalize paths. Mktemp validates one
+created empty private file instead of comparing random names. Gzip outputs are
+decoded and compared with the input outside the timer; differing compressed
+bytes are valid, and their sizes remain recorded.
+The current accepted base exposes `decode(Bytes)` here, so this gzip relation
+buffers only the small functional input. It is not a Reader-based512MiB decoder
+path. Scaled rows below use an explicit fixed native observer instead; formal
+512MiB gzip experiments remain unexecuted.
+
+Yes uses a4096-byte consumer that closes its pipe and waits for the producer.
+Prefix validation happens outside the measured interval. Actual close statuses
+and stderr are retained and compared; a difference is a failed functional row,
+not a success normalization. Failed rows stop immediately and keep captures and
+the mutated fixture. Missing diagnostics or explicitly pending recipes remain
+pending. Trial checks are per-side assertions; `comparison.json` records the
+separate candidate/upstream stream/status/effect comparison.
+
+`profile-full.json` composes the existing native build records once. It does
+not imply complete semantic or performance qualification: the macOS curl build
+lacks HTTP2/HTTP3, while grep/Wget PCRE2 is present; Linux requires its own actual
+provider records. The first79 functional entries do not cover the required
+0/1/4KiB,8/64/512MiB, long-record, shape, option, side-effect and resource sweeps.
+Neither their presence nor the earlier18 pilot rows completes B2.
+
+`scaled.json` reuses the functional workload IDs and expands 292 rows for30
+stdin command families. These are generated data variants; the reference ID
+retains behavior ownership and does not claim execution of the frozen literal
+Case or coverage-audit evidence. The shared axes are0/1/4096 B startup,8/64/512 MiB
+with80-byte records, and independent1 KiB/64 KiB/1 MiB/8 MiB/64 MiB records.
+Separate8 MiB shape rows cover deterministic entropy/repetition/NUL/invalid
+UTF-8/no-final-LF and sorted/reverse/random/skew/long-prefix inputs. The pure
+generator writes at most64 KiB per chunk; a completed immutable input is reused
+within that run. Fresh side fixtures and output files remain separate. The
+expanded rows are saved before execution in `expanded-workloads.json`.
+Entropy rows are raw binary bytes rather than fixed-length text records.
+Direct `corpus` entries use decimal strings for `bytes` and `record_bytes`,
+following the public MoonBit JSON representation of64-bit integers.
+
+Use `baseline --manifest tests/benchmark/scaled.json` for correctness only;
+do not run the whole retained-output matrix without sufficient disk space.
+Original small literal assertions do not apply to changed data: scaled rows
+keep status/stderr/effect checks and compare real output files in bounded
+chunks. Gzip uses the explicit fixed native gzip observer outside measurement
+to encode decode-input fixtures and validate compressed output; its argv,
+status and captures are retained. No G2 source has been imported. This initial
+matrix does not cover file/argv/tree/network/process sweeps, regex option
+families, diff edits, real/held-out corpora or resource observations. Existing
+tree/yes differences remain failures in the functional manifest.
+
+## Observed correctness baselines
+
+The first79-row macOS baseline recorded76 checked and3 failed rows. A focused
+xargs rerun passed after adding its standard `--` operand delimiter; the
+original report is unchanged. Tree still differs under `LC_ALL=C` (branch
+glyphs and the separator before its count). Yes produced the required4096-byte
+prefix on both sides, then exited0 for the publication versus GNU SIGPIPE
+status-13. Neither difference is normalized into success.
+
+The new scaled smoke checked9 of10 rows, including512 MiB cat input and a
+64 MiB single record. Gunzip exposed a stale small-literal contract rule;
+after the adapter correction, focused gunzip/zcat1 MiB entropy rows both
+checked using bounded source relations. These separately retained runs are
+correctness observations, with no statistical verdict. The292-row expansion
+has not been executed. Raw reports remain under
+`/private/tmp/cmd-b2-functional-baseline-20261024/` and
+`/private/tmp/cmd-b2-scaled-smoke-20261024/`; they are not coverage-audit proof
+for a future committed revision. The original pilot reports also remain
+unchanged. Full B2 scale/shape/options/effect/resource/host/formal requirements
+remain open.
+
+The original schema-1 pilot covers eight early command families. Each
 workload links a `reference_behavior_id` as context for the same command and
 reads its exact published coordinate from
 `tests/release_runner/current/published.json`. That reference does not execute
@@ -18,7 +122,7 @@ The original manifest and its 660-call report remain separate from the added
 rows. Their results must not be combined into a newly measured eight-command
 report. The four other commands use 0.2.1; gzip retains its actual 0.1.1 release.
 
-This is a pilot of the benchmark path, not complete 79-command coverage or B2
+Those original manifests are a pilot of the benchmark path, not full B2
 acceptance. The existing CI owns immutable semantic-oracle qualification. This
 driver records explicit executable paths, versions, host observations and the
 existing native GNU build record; it does not create another identity system.

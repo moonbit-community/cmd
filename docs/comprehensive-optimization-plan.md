@@ -993,6 +993,18 @@ release acceptance retain the full three-platform checks and coverage-audit.
 Pending checks stay pending. Do not add duplicate evidence systems or rerun
 unchanged checks without a new reason.
 
+For this comprehensive B2/G/S/D/O/R round, the user's 2026-10-24 authorization
+permits new and corrective PR branch pushes once relevant local correctness
+passes and the existing C1 prepare/verify and coverage audit run. Preserve
+nonzero findings for missing exact-revision or remote evidence as pending;
+do not manufacture a passing audit. A non-force direct Git push may bootstrap
+CI when the existing push launcher stops on those findings. Authorization
+continues across corrective commits without per-SHA confirmation; local
+correctness and scope defects still require repair. All three platform checks
+and coverage-audit must pass before merge, then validate actual main. This
+round-specific exception does not change the original per-row MoonX
+performance, resource, RC, publication or completion gates.
+
 Daily sequence: existing PATH and `MOON_HOME="$HOME/.moon-accounts/cli"`; freeze
 the PR's behaviors/options/conflicts/cases/workloads; implement/relevant serial
 check/test/build; finally info/fmt and review generated diffs; rerun checks only
