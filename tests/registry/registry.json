@@ -53596,7 +53596,7 @@
         "options",
         "stdin"
       ],
-      "status": "boundary",
+      "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/sed.json",
       "case_id": "s1-sed-bounded-empty-reference",
@@ -53611,14 +53611,16 @@
       ],
       "platforms": [],
       "required_evidence": [
-        "boundary"
+        "contract",
+        "backend-pair",
+        "upstream-differential"
       ],
       "observations": [
         "status",
         "stderr",
         "stdout"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:s1-sed-minimum-repeat-reference",
@@ -53628,7 +53630,7 @@
         "options",
         "stdin"
       ],
-      "status": "boundary",
+      "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/sed.json",
       "case_id": "s1-sed-minimum-repeat-reference",
@@ -53643,14 +53645,16 @@
       ],
       "platforms": [],
       "required_evidence": [
-        "boundary"
+        "contract",
+        "backend-pair",
+        "upstream-differential"
       ],
       "observations": [
         "status",
         "stderr",
         "stdout"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:s1-grep-ignore-case-negative-word-boundary",
@@ -56870,7 +56874,7 @@
         "options",
         "stdin"
       ],
-      "status": "boundary",
+      "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/grep.json",
       "case_id": "s1-grep-cloned-nullable-reference-boundary",
@@ -56882,14 +56886,16 @@
       ],
       "platforms": [],
       "required_evidence": [
-        "boundary"
+        "contract",
+        "backend-pair",
+        "upstream-differential"
       ],
       "observations": [
         "status",
         "stderr",
         "stdout"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:s1-expr-cloned-nullable-reference-boundary",
@@ -56898,7 +56904,7 @@
       "surface": [
         "options"
       ],
-      "status": "boundary",
+      "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/expr.json",
       "case_id": "s1-expr-cloned-nullable-reference-boundary",
@@ -56910,14 +56916,16 @@
       ],
       "platforms": [],
       "required_evidence": [
-        "boundary"
+        "contract",
+        "backend-pair",
+        "upstream-differential"
       ],
       "observations": [
         "status",
         "stderr",
         "stdout"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:s1-csplit-cloned-nullable-reference-boundary",
@@ -56927,7 +56935,7 @@
         "options",
         "stdin"
       ],
-      "status": "boundary",
+      "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/csplit.json",
       "case_id": "s1-csplit-cloned-nullable-reference-boundary",
@@ -56939,7 +56947,9 @@
       ],
       "platforms": [],
       "required_evidence": [
-        "boundary"
+        "contract",
+        "backend-pair",
+        "upstream-differential"
       ],
       "observations": [
         "file-content",
@@ -56947,7 +56957,7 @@
         "stderr",
         "stdout"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:s1-csplit-cloned-nullable-reference-preserves-output",
@@ -56957,7 +56967,7 @@
         "options",
         "stdin"
       ],
-      "status": "boundary",
+      "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/csplit.json",
       "case_id": "s1-csplit-cloned-nullable-reference-preserves-output",
@@ -56969,7 +56979,9 @@
       ],
       "platforms": [],
       "required_evidence": [
-        "boundary"
+        "contract",
+        "backend-pair",
+        "upstream-differential"
       ],
       "observations": [
         "file-content",
@@ -56977,65 +56989,7 @@
         "stderr",
         "stdout"
       ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "package-test:core/bytere/bytere_test.mbt::byte regex rejects references to cloned nullable captures at compilation",
-      "command": "",
-      "owner": "core/bytere",
-      "surface": [
-        "package-api"
-      ],
-      "status": "supported",
-      "implementation": "package-test",
-      "source": "core/bytere/bytere_test.mbt::byte regex rejects references to cloned nullable captures at compilation",
-      "case_id": "",
-      "aliases": [],
-      "coverage": [
-        "byte regex rejects references to cloned nullable captures at compilation"
-      ],
-      "required_backends": [
-        "native",
-        "wasm"
-      ],
-      "platforms": [],
-      "required_evidence": [
-        "contract",
-        "backend-pair"
-      ],
-      "observations": [
-        "status"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "package-test:core/bytere/bytere_test.mbt::byte regex boundary preserves nonnullable clones and noncloned captures",
-      "command": "",
-      "owner": "core/bytere",
-      "surface": [
-        "package-api"
-      ],
-      "status": "supported",
-      "implementation": "package-test",
-      "source": "core/bytere/bytere_test.mbt::byte regex boundary preserves nonnullable clones and noncloned captures",
-      "case_id": "",
-      "aliases": [],
-      "coverage": [
-        "byte regex boundary preserves nonnullable clones and noncloned captures"
-      ],
-      "required_backends": [
-        "native",
-        "wasm"
-      ],
-      "platforms": [],
-      "required_evidence": [
-        "contract",
-        "backend-pair"
-      ],
-      "observations": [
-        "status"
-      ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "package-test:commands/grep/grep_wbtest.mbt::streamed records retain views and partial records before input errors",
@@ -57109,6 +57063,430 @@
       "aliases": [],
       "coverage": [
         "streamed quiet grep completes while its producer remains open"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/bytere/bytere_test.mbt::cloned nullable captures follow GNU candidate selection",
+      "command": "",
+      "owner": "core/bytere",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/bytere/bytere_test.mbt::cloned nullable captures follow GNU candidate selection",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "cloned nullable captures follow GNU candidate selection"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/bytere/bytere_test.mbt::byte regex counted capture controls agree with GNU",
+      "command": "",
+      "owner": "core/bytere",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/bytere/bytere_test.mbt::byte regex counted capture controls agree with GNU",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "byte regex counted capture controls agree with GNU"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/bytere/bytere_test.mbt::literal anchors use absolute record boundaries including empty spans",
+      "command": "",
+      "owner": "core/bytere",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/bytere/bytere_test.mbt::literal anchors use absolute record boundaries including empty spans",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "literal anchors use absolute record boundaries including empty spans"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/bytere/bytere_test.mbt::literal anchors retain whole-record and word endpoint filters",
+      "command": "",
+      "owner": "core/bytere",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/bytere/bytere_test.mbt::literal anchors retain whole-record and word endpoint filters",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "literal anchors retain whole-record and word endpoint filters"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/bytere/bytere_test.mbt::literal anchor optimization leaves classes and captures on regex matching",
+      "command": "",
+      "owner": "core/bytere",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/bytere/bytere_test.mbt::literal anchor optimization leaves classes and captures on regex matching",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "literal anchor optimization leaves classes and captures on regex matching"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/testkit/snapshot_lifecycle_wbtest.mbt::snapshot can observe metadata without loading large file contents",
+      "command": "",
+      "owner": "tests/testkit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/testkit/snapshot_lifecycle_wbtest.mbt::snapshot can observe metadata without loading large file contents",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "snapshot can observe metadata without loading large file contents"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/corpus_wbtest.mbt::benchmark corpus generation preserves chunk boundaries and deterministic binary bytes",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/corpus_wbtest.mbt::benchmark corpus generation preserves chunk boundaries and deterministic binary bytes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark corpus generation preserves chunk boundaries and deterministic binary bytes"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/corpus_wbtest.mbt::benchmark long records retain exact delimiters invalid bytes and final record",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/corpus_wbtest.mbt::benchmark long records retain exact delimiters invalid bytes and final record",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark long records retain exact delimiters invalid bytes and final record"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/corpus_wbtest.mbt::benchmark corpus sweeps expand fixed sizes without losing behavior ownership",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/corpus_wbtest.mbt::benchmark corpus sweeps expand fixed sizes without losing behavior ownership",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark corpus sweeps expand fixed sizes without losing behavior ownership"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/corpus_wbtest.mbt::benchmark scaled output replaces small literals with bounded exact comparison",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/corpus_wbtest.mbt::benchmark scaled output replaces small literals with bounded exact comparison",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark scaled output replaces small literals with bounded exact comparison"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/functional_wbtest.mbt::benchmark functional fixtures reset mutations and compare bounded effects",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/functional_wbtest.mbt::benchmark functional fixtures reset mutations and compare bounded effects",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark functional fixtures reset mutations and compare bounded effects"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/functional_wbtest.mbt::benchmark generated relations check mktemp identity and bounded yes prefixes",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/functional_wbtest.mbt::benchmark generated relations check mktemp identity and bounded yes prefixes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark generated relations check mktemp identity and bounded yes prefixes"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/benchmark/functional_wbtest.mbt::benchmark functional cases refuse metadata placeholders and retain declared root relations",
+      "command": "",
+      "owner": "tests/benchmark",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "tests/benchmark/functional_wbtest.mbt::benchmark functional cases refuse metadata placeholders and retain declared root relations",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "benchmark functional cases refuse metadata placeholders and retain declared root relations"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:s1-sed-nullable-reference-address",
+      "command": "sed",
+      "owner": "commands/sed",
+      "surface": [
+        "options",
+        "stdin"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sed.json",
+      "case_id": "s1-sed-nullable-reference-address",
+      "aliases": [],
+      "coverage": [
+        "-n",
+        "-E"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stderr",
+        "stdout"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "package-test:core/bytere/bytere_test.mbt::GNU predicates do not request output capture registers",
+      "command": "",
+      "owner": "core/bytere",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/bytere/bytere_test.mbt::GNU predicates do not request output capture registers",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "GNU predicates do not request output capture registers"
       ],
       "required_backends": [
         "native",

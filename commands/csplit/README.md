@@ -27,9 +27,8 @@ created by that invocation unless `-k`/`--keep-files` is used.
 
 Input is buffered. The shared C-byte BRE matcher compiles each expression once
 and supports capture backreferences, byte classes and word assertions.
-Backreferences to nullable captures cloned by repetition are rejected before
-input or output files are opened; ordinary references and non-cloned star paths
-remain supported. See the
+Repeated nullable captures follow the tested GNU candidate and capture-register
+selection, including counted repeats and references. See the
 [workspace support record](../../docs/compatibility.md#workspace-matcher-and-sed-candidates).
 Existing output paths are refused. Locale-sensitive matching, custom suffix formats and
 `--suppress-matched` are rejected. `--help` and `--version` provide command

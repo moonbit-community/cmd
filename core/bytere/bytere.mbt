@@ -145,3 +145,11 @@ pub fn Pattern::find_span(
 ) -> (Int32, Int32)? {
   self.search(value, start, whole, word, false).map(hit => (hit.start, hit.end))
 }
+
+///|
+/// Test acceptance without restoring output capture registers, as GNU csplit
+/// and sed regex addresses do. Ambiguous backreferences can be accepted even
+/// when GNU's separate output-register selection would fail.
+pub fn Pattern::is_match(self : Pattern, value : String) -> Bool {
+  self.search(value, 0, false, false, false, restore_registers=false) is Some(_)
+}

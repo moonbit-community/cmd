@@ -32,7 +32,7 @@ async fn Address::matches(
   match self {
     Number(n) => n == input.number
     Last => !input.has_next()
-    Search(re) => re.resolve(runtime).find_span(text) is Some(_)
+    Search(re) => re.resolve(runtime).is_match(text)
   }
 }
 

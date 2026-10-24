@@ -30,8 +30,8 @@ context options. BRE/ERE patterns are compiled once by the shared C-byte
 matcher, including pattern backreferences and directional/ordinary word
 assertions. Each `-e` expression retains its own capture numbering. `-i` folds
 C-byte literals, classes and backreferences while preserving assertion grammar.
-Backreferences to nullable captures cloned by repetition are rejected at compile
-time; ordinary references and non-cloned star paths remain supported. See the
+Repeated nullable captures follow the tested GNU candidate and capture-register
+selection, including counted repeats and references. See the
 [workspace support record](../../docs/compatibility.md#workspace-matcher-and-sed-candidates).
 Locale-sensitive collation and
 multibyte case folding are not currently implemented. Exit statuses are 0 for a selected

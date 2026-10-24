@@ -400,6 +400,18 @@ test "literal anchor optimization leaves classes and captures on regex matching"
 }
 
 ///|
+test "GNU predicates do not request output capture registers" {
+  for source in ["(a*){0,2}\\1", "(a*){2,}\\1"] {
+    let pattern = @bytere.compile(source, extended=true)
+    assert_true(pattern.is_match("aaaa"))
+    assert_true(pattern.find("aaaa") is None)
+    assert_eq(pattern.find_span("aaaa"), None)
+  }
+  assert_true(@bytere.compile("^ab$").is_match("ab"))
+  assert_true(!@bytere.compile("^ab$").is_match("zab"))
+}
+
+///|
 test "byte regex invalid syntax fails at compilation" {
   for
     source in [

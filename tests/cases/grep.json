@@ -468,7 +468,7 @@
         "help"
       ],
       "source_version": "workspace cli/grep@0.3.0 metadata contract",
-      "expected_stdout_text": "Usage: grep [-EFGivnclLqHhxwrbszo] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nBackreferences to nullable captures cloned by repetition are unsupported.\n",
+      "expected_stdout_text": "Usage: grep [-EFGivnclLqHhxwrbszo] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
     {
@@ -710,20 +710,18 @@
       "command": "grep",
       "args": [
         "-E",
-        "(a*){0,2}\\1",
-        "missing-input"
+        "(a*){0,2}\\1"
       ],
-      "stdin_text": "unread\n",
+      "stdin_text": "aaaa\n",
       "files": [],
       "environment": {},
       "normalizations": [],
-      "expected_status": 2,
+      "expected_status": 1,
       "expected_stdout_text": "",
-      "expected_stderr_text": "grep: invalid regular expression: backreference to a cloned nullable capture is unsupported\n",
+      "expected_stderr_text": "",
       "comparison": "contract",
-      "oracle": false,
-      "source_version": "project matcher profile boundary",
-      "expected_rejection": "backreference to a cloned nullable capture is unsupported"
+      "oracle": true,
+      "source_version": "GNU grep 3.12"
     }
   ]
 }

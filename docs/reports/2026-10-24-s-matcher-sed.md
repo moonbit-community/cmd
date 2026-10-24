@@ -18,7 +18,10 @@ and backreference searches retain distinct states rather than merging histories
 with different future behavior. An explicit stack imposes no hidden step cap;
 ambiguous capture/reference inputs can require exponential time and memory.
 
-Grep/csplit use span searches; expr/sed retain captures. `grep_syntax` preserves
+Grep uses span searches; expr and sed substitutions retain captures. Csplit and
+sed regex addresses use a capture-free predicate, matching GNU's calls without
+output registers. Candidate pruning still runs; only output-register restoration
+is omitted, which matters for ambiguous nullable backreferences. `grep_syntax` preserves
 the exercised GNU grep interval/right-parenthesis rules. `ignore_case` defaults
 to false and expands ASCII literals/classes before negation, preserves grammar
 escapes, and compares references without changing original captured bytes.
@@ -57,39 +60,34 @@ All 90 newly adopted sed contracts passed in that full selection. The earlier
 `test-reports/s1-new-regressions-20261024` retains 21 passes and six semantic
 failures across the nine selected cases and three roles.
 
-After the approved profile change below, core tests passed 15/15 on each backend
-and the focused consumer report `test-reports/s-profile-boundaries-20261024`
-passed 57/57 with no skips: 12 rejection rows, 30 supported contract rows and
-15 backend pairs, including metadata. The final all-target strict check, four
-consumer Native/Wasm release builds, registry/candidate validation and formatting
-passed. Six current rejection bindings preserve compile-before-input/output
-behavior; ordinary references, non-cloned star paths and the former expr/hold
-rejection IDs have positive controls. The registry has 1,912 entries and 44
-current boundaries. These remain local development observations.
+An intermediate profile checkpoint passed 15/15 core tests per backend and
+57/57 focused consumer rows. Its retained report is
+`test-reports/s-profile-boundaries-20261024`; those checks precede the final
+GNU selection implementation below and do not validate its current source.
+Current-source consumer, metadata, registry and platform checks remain required.
 
 The existing intent/audit now records the retired expr/hold restrictions through
 actual positive replacement evidence. Current rejections and old backend,
 platform and observation obligations remain required, alongside each target's
 current requirements.
 
-## Approved matcher boundary
+## GNU repeated-capture selection
 
-The initial source failed the two bounded nullable-capture reference cases above
-and adjacent private controls. On 2026-10-24 the user explicitly narrowed this
-round's compatibility profile: reject a reference when its group body can match
-empty structurally and repetition emits multiple closing-capture copies for that group.
-This includes adjacent counted bounds, plus and cloning by an outer repetition;
-it preserves nonnullable clones, single-copy bounds and non-cloned star paths.
-Compilation raises `backreference to a cloned nullable capture is unsupported`.
-The two stable sed IDs become rejection contracts, with corresponding consumer
-error/effect cases. This is a project algorithm restriction, not an API gap.
+The user's subsequent 2026-10-24 direction restores the two remaining GNU
+compatibility cases to this round. The matcher now selects candidate spans,
+prunes incompatible paths and then restores capture registers. This handles
+nullable captures copied by counted repetition, nested groups and multiple
+references while preserving the ordinary matching path. The earlier compile-time
+restriction is removed; the two stable sed IDs and consumer regressions exercise
+supported behavior.
 
-The implementation adds structural nullability and emitted-program analysis at
-compilation, without matcher-state changes or a second GNU cache/replay engine.
-The rejected private filter remains outside the repository. Lifting the boundary
-requires a coherent capture-selection algorithm and independent GNU controls
-across adjacent bounds, empty/nonempty inputs, nested groups, multiple references
-and unanchored searches. No full GNU/POSIX claim follows from the narrowed scope.
+The private GNU comparison retained in
+`/private/tmp/cmd-s1-nullable-20261024/run-15/summary.json` contains 1,098
+observations: all 1,095 applicable cases match, with zero mismatches and three
+GNU oracle faults recorded separately. Cases include adjacent bounds,
+empty/nonempty inputs, nested captures, multiple references and unanchored
+searches. These are local correctness diagnostics, not formal CI, resource,
+published-consumer or performance acceptance.
 
 ## Development performance boundary
 

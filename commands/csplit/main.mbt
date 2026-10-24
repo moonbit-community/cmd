@@ -57,8 +57,7 @@ async fn partition(
           let mut found = None
           let begin = @cmp.maximum(first, searched + 1)
           for line in begin..<count {
-            if regex.find_span(line_text(data, starts[line], starts[line + 1]))
-              is Some(_) {
+            if regex.is_match(line_text(data, starts[line], starts[line + 1])) {
               found = Some(line)
               break
             }
@@ -114,7 +113,6 @@ fn help_message() -> String {
     #|      --version            display version and exit
     #|
     #|BRE matching includes backreferences, byte classes and word assertions.
-    #|Backreferences to nullable captures cloned by repetition are unsupported.
     #|Existing output paths, custom suffix formats and locale-specific matching
     #|are unsupported.
   message

@@ -2,6 +2,22 @@
   "schema": 2,
   "cases": [
     {
+      "id": "s1-sed-nullable-reference-address",
+      "command": "sed",
+      "args": ["-n", "-E", "/(a*){0,2}\\1/p;/(a*){2,}\\1/p"],
+      "stdin_text": "aaaa\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "aaaa\naaaa\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "source_version": "GNU sed 4.9",
+      "oracle": true,
+      "coverage": ["-n", "-E"]
+    },
+    {
       "id": "p1-sed-substitution",
       "command": "sed",
       "args": [
@@ -370,7 +386,7 @@
         "help"
       ],
       "source_version": "workspace cli/sed@0.2.0 metadata contract",
-      "expected_stdout_text": "Usage: sed [-nE] [-e SCRIPT] [-f SCRIPTFILE] [SCRIPT] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nStream editor: p/d/q/=, s/RE/REPLACEMENT/[gNp], h/H/g/G/x, :/b/t/T, groups, n/N/P/D/a/i/c.\nAddresses: line number, $, /RE/, ranges and !. BRE default; -E enables ERE.\nBRE/ERE supports pattern backreferences and word assertions.\nBackreferences to nullable captures cloned by repetition are unsupported.\nIn-place editing and locale-aware matching are not supported.\n",
+      "expected_stdout_text": "Usage: sed [-nE] [-e SCRIPT] [-f SCRIPTFILE] [SCRIPT] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nStream editor: p/d/q/=, s/RE/REPLACEMENT/[gNp], h/H/g/G/x, :/b/t/T, groups, n/N/P/D/a/i/c.\nAddresses: line number, $, /RE/, ranges and !. BRE default; -E enables ERE.\nBRE/ERE supports pattern backreferences and word assertions.\nIn-place editing and locale-aware matching are not supported.\n",
       "expected_stderr_text": ""
     },
     {
@@ -495,24 +511,22 @@
       "args": [
         "-n",
         "-E",
-        "s/(a*){0,2}\\1/[&][\\1]/p",
-        "missing-input"
+        "s/(a*){0,2}\\1/[&][\\1]/p"
       ],
-      "stdin_text": "\n",
+      "stdin_text": "\naaaa\n",
       "files": [],
       "environment": {},
       "normalizations": [],
-      "expected_status": 1,
+      "expected_status": 0,
       "expected_stdout_text": "",
-      "expected_stderr_text": "sed: backreference to a cloned nullable capture is unsupported\n",
+      "expected_stderr_text": "",
       "comparison": "contract",
-      "source_version": "project matcher profile boundary",
-      "oracle": false,
+      "source_version": "GNU sed 4.9",
+      "oracle": true,
       "coverage": [
         "-n",
         "-E"
-      ],
-      "expected_rejection": "backreference to a cloned nullable capture is unsupported"
+      ]
     },
     {
       "id": "s1-sed-minimum-repeat-reference",
@@ -520,24 +534,22 @@
       "args": [
         "-n",
         "-E",
-        "s/(a*){2,}\\1/[&][\\1]/p",
-        "missing-input"
+        "s/(a*){2,}\\1/[&][\\1]/p"
       ],
-      "stdin_text": "\n",
+      "stdin_text": "\naaaa\n",
       "files": [],
       "environment": {},
       "normalizations": [],
-      "expected_status": 1,
+      "expected_status": 0,
       "expected_stdout_text": "",
-      "expected_stderr_text": "sed: backreference to a cloned nullable capture is unsupported\n",
+      "expected_stderr_text": "",
       "comparison": "contract",
-      "source_version": "project matcher profile boundary",
-      "oracle": false,
+      "source_version": "GNU sed 4.9",
+      "oracle": true,
       "coverage": [
         "-n",
         "-E"
-      ],
-      "expected_rejection": "backreference to a cloned nullable capture is unsupported"
+      ]
     },
     {
       "id": "sed-spec-hold-get-empty",

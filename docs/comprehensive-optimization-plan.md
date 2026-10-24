@@ -9,7 +9,7 @@ Status: C0/C1/C3/C4 accepted. The benchmark pilot is merged; complete benchmarks
 Current development: G1/G2 has a locally validated source commit in PR #47.
 B2 has functional coverage preparation and compact corpus sweeps,
 with complete sampling/resources still open. S2/S3 is implemented and locally
-checked; S1 uses the approved cloned-nullable-capture rejection profile;
+checked; S1 implements GNU candidate/register selection for repeated nullable captures;
 see the [S development report](reports/2026-10-24-s-matcher-sed.md). No G/S
 publication or overall performance acceptance is claimed.
 
@@ -633,12 +633,13 @@ pattern backreferences, C-byte classes/word assertions including applicable
 `\<`, `\>`, `\b`, `\B`. Preserve Pattern::find/Hit; verify expr and separately
 register changes for grep/csplit/tac/other consumers.
 
-The user's 2026-10-24 scope amendment rejects references to nullable captures
-whose closing capture is cloned by repetition, including bounded repeats, plus
-and cloning by outer groups. Preserve ordinary references, nonnullable repeated
-captures and non-cloned star paths. This is project algorithm work, not a public
-API gap. Retain explicit rejection regressions and the support/ADR unlock
-conditions; do not add a second GNU cache/replay system for this round.
+The user's subsequent 2026-10-24 direction restores the two remaining GNU
+compatibility cases to this round. Repeated nullable captures now use candidate
+selection followed by capture-register restoration, including counted repeats,
+nested groups and multiple references. Keep independent GNU regressions for
+adjacent bounds, empty/nonempty input and unanchored search. The 1,095 applicable
+local comparisons match, with three GNU oracle faults retained separately;
+current-revision platform, resource, publication and performance gates remain.
 
 Sed explicitly owns PC, pattern/hold spaces, address-range state, substitution
 flag, deferred append queue and input state. Compile labels/groups/jumps.

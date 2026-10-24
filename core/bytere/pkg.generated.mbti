@@ -26,6 +26,7 @@ type Pattern
 pub fn Pattern::find(Self, String, start? : Int) -> Hit?
 pub fn Pattern::find_span(Self, String, start? : Int, whole? : Bool, word? : Bool) -> (Int, Int)?
 pub fn Pattern::group_count(Self) -> Int
+pub fn Pattern::is_match(Self, String) -> Bool
 
 // Type aliases
 

@@ -29,14 +29,17 @@ restricted label describe requirements, not command-local policy.
 Core **0.8.0**, grep **0.3.0**, and sed/expr/csplit **0.2.0** are unpublished
 workspace candidates. The published coordinates and frozen expectations above
 remain unchanged. The [S implementation report](reports/2026-10-24-s-matcher-sed.md)
-records local evidence; S1 and [issue #28](https://github.com/moonbit-community/cmd/issues/28)
-remain incomplete; current-revision PR checks and release acceptance are pending.
+records local evidence; stage acceptance and
+[issue #28](https://github.com/moonbit-community/cmd/issues/28) remain pending
+current-revision PR checks and release acceptance.
 
 The shared C-byte matcher parses BRE/ERE once, supports the tested byte classes,
 word assertions and pattern backreferences, and exposes span-only search
-to grep/csplit. Grep's ASCII `-i` expands literals/classes before class negation,
+to grep. Csplit and sed regex addresses use a capture-free predicate; expr and
+sed substitutions request capture registers, following GNU's distinct calls.
+Grep's ASCII `-i` expands literals/classes before class negation,
 preserves assertion escapes and compares references without changing captured
-bytes. Expr and sed retain capture results. Tac and nl have not migrated here.
+bytes. Tac and nl have not migrated here.
 Distinct capture/reference states can require exponential resources; no hidden
 matching-step cap is imposed. Non-C locale and complete GNU grammar remain open.
 
@@ -47,16 +50,12 @@ output and missing-input behavior. Pattern/hold growth and branch termination
 remain script-controlled. Diagnostics use project formatting; `-i` still needs
 the replacement/metadata contract in [ADR-0004](adr/0004-filesystem.md).
 
-The user-approved scope rejects a pattern reference when the referenced capture
-is structurally nullable and repetition clones its closing capture. Bounded repeats,
-plus, and cloning by an outer repetition are covered. Ordinary references,
-nonnullable repeated captures and tested non-cloned star paths remain supported.
-This is a project algorithm boundary, not a public MoonBit API gap or a GNU-defect
-waiver. The two original sed IDs remain registered as explicit rejection cases,
-together with consumer error and unchanged-output checks. Lift this boundary only
-with a coherent capture-selection algorithm and independent GNU comparisons across
-adjacent bounds, empty/nonempty inputs, nested groups, multiple references and
-unanchored searches. No full GNU/POSIX claim follows; platform/audit, publication
+Repeated nullable captures now use GNU candidate selection and capture-register
+restoration, including counted repeats, nested captures and multiple references.
+Independent local GNU comparisons match all 1,095 applicable cases; three oracle
+faults are retained separately. The earlier compile-time rejection is removed
+and the consumer cases exercise supported matching. These development results
+do not establish complete GNU/POSIX compatibility; platform/audit, publication
 and performance gates remain.
 
 ## Accepted stage 0 subset: async 0.22.5
@@ -256,7 +255,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `date` | subset verified | UTC/TZ, fixed offsets, checked 64-bit TZif/POSIX future rules, ISO local input, fractional epochs, selected ISO/RFC/format directives | Ambiguous/nonexistent local times reject; relative dates/additional directives and clock setting remain; x/time offset bounds are documented |
 | `od`, `hexdump` | subset verified | Integer and character formats, offsets, lengths, duplicate blocks, raw byte input | Floating od types and custom hexdump format language are project work; default integers use little endian |
 | `md5sum`, `sha1sum`, `sha512sum` | subset verified | Incremental hashes, file/stdin, GNU check records and check flags | Tagged formats and platform text transformations are not claimed |
-| `sed` | subset verified | BRE/ERE substitution, captures, addresses/ranges and ordered scripts; unpublished 0.2.0 adds hold/branch/group/multiline/text execution | [Workspace candidate scope](#workspace-matcher-and-sed-candidates) retains failing matcher cases, project diagnostic formatting and script-controlled space growth; in-place editing and complete GNU grammar remain open |
+| `sed` | subset verified | BRE/ERE substitution, captures, addresses/ranges and ordered scripts; unpublished 0.2.0 adds hold/branch/group/multiline/text execution and repeated nullable captures | [Workspace candidate scope](#workspace-matcher-and-sed-candidates) retains project diagnostic formatting and script-controlled space growth; current-revision acceptance, in-place editing and complete GNU grammar remain open |
 | `diff` | subset verified | Normal/unified/context text output, labels, binary detection and 0/1/2 statuses | Directory and whitespace modes remain project work; exact hunk choices for ambiguous alignments need separate comparison |
 | `patch` | subset verified | Exact unified/context hunks, reverse, stdout result, dry run, creation/deletion | Existing destination and named output require public source mode; fuzzy/offset/reject-file behavior is not claimed |
 | `split`, `csplit` | subset verified | Line/byte splitting, numeric/regex boundaries, suffixes, cleanup and keep-files; unpublished csplit 0.2.0 uses the shared span matcher | Existing output refuses until safe truncation is public; chunk/filter modes and the [shared matcher limits](#workspace-matcher-and-sed-candidates) remain open |

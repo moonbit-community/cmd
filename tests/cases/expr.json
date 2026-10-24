@@ -295,7 +295,7 @@
         "help"
       ],
       "source_version": "workspace cli/expr@0.2.0 metadata contract",
-      "expected_stdout_text": "Usage: expr EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nEvaluate integer/string expressions: | & comparisons + - * / % :\nFunctions: match, substr, index, length; + quotes one operand.\nC-byte BRE supports captures, backreferences and word assertions; locale collation is unsupported.\nBackreferences to nullable captures cloned by repetition are unsupported.\n",
+      "expected_stdout_text": "Usage: expr EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nEvaluate integer/string expressions: | & comparisons + - * / % :\nFunctions: match, substr, index, length; + quotes one operand.\nC-byte BRE supports captures, backreferences and word assertions; locale collation is unsupported.\n",
       "expected_stderr_text": ""
     },
     {
@@ -389,13 +389,12 @@
       "files": [],
       "environment": {},
       "normalizations": [],
-      "expected_status": 2,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "expr: backreference to a cloned nullable capture is unsupported\n",
+      "expected_status": 1,
+      "expected_stdout_text": "\n",
+      "expected_stderr_text": "",
       "comparison": "contract",
-      "oracle": false,
-      "source_version": "project matcher profile boundary",
-      "expected_rejection": "backreference to a cloned nullable capture is unsupported"
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
     }
   ]
 }

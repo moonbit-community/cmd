@@ -12,11 +12,15 @@ type Address
 
 type Command
 
+type Input
+
 type PatternRef
 
 type Runtime
 
 type Script
+
+type Space
 
 // Type aliases
 

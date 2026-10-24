@@ -40,12 +40,16 @@ fn Pattern::reference_result(
   start : Int32,
   whole : Bool,
   word : Bool,
+  restore_registers : Bool,
 ) -> ReferenceResult {
   let (cache, end, log) = self.candidate_log(value, start, whole, word)
   guard end is Some(end) else { return Miss }
   guard self.sift_candidates(value, start, end, whole, word, cache, log)
     is Some((end, terminal, nodes)) else {
     return Miss
+  }
+  if !restore_registers {
+    return Matched({ start, end, captures: [], })
   }
   match self.select_registers(value, start, end, terminal, nodes) {
     Some(captures) => Matched({ start, end, captures, })
