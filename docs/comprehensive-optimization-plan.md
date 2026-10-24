@@ -6,8 +6,8 @@ Repository: `moonbit-community/cmd`
 
 Status: C0/C1/C3/C4 accepted. The benchmark pilot is merged; complete benchmarks, command algorithms and final publication remain pending.
 
-Current development: G1/G2 has a locally validated source commit in PR #47.
-B2 has functional coverage preparation and compact corpus sweeps,
+Current development: G1/G2 (PR #47) and B2 (PR #48) are merged, with all required
+PR and actual-main checks passing. B2 has functional coverage preparation and compact corpus sweeps,
 with complete sampling/resources still open. S2/S3 is implemented and locally
 checked; S1 implements GNU candidate/register selection for repeated nullable captures;
 see the [S development report](reports/2026-10-24-s-matcher-sed.md). No G/S

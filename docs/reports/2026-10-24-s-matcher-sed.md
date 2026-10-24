@@ -1,7 +1,7 @@
 # S matcher and sed workspace evidence
 
 Date: 2026-10-24
-Status: unpublished workspace candidate; current-revision validation pending, issue #28 open.
+Status: unpublished workspace candidate; local integration checks pass, remote acceptance pending.
 
 This records local implementation evidence, not stage or release acceptance.
 Candidates are core 0.8.0, grep 0.3.0 and sed/expr/csplit 0.2.0. Existing
@@ -35,7 +35,32 @@ A streaming cursor uses a 64 KiB chunk and current record; lazy `$` evaluation
 does not inspect unreachable later operands. Script-controlled spaces can grow
 and branches need not terminate. In-place editing remains the ADR-0004 boundary.
 
-## Local checks and observations
+## Current local integration
+
+Native and Wasm each pass 39 tests across bytere, grep and sed. The four-consumer
+backend comparison passes all 181 selected cases, including the six former
+cloned-nullable restrictions and the new sed predicate/substitution distinction.
+The report is `test-reports/s-final-consumers-20261024`. All-target strict checking
+passes. These checks precede PR and actual-main CI and do not establish publication.
+
+A final grep development comparison retains 100 correct calls under
+`/private/tmp/cmd-grep-final-hotpaths-20261024/`. Each arm has one warmup and three
+measured fresh-process samples in rotating order, including full output/status/
+stderr checks against fixed GNU grep. Builds and other measurement children
+were stopped; ordinary desktop applications remained open. Direct Wasm includes
+moonrun. The medians on macOS arm64 are:
+
+| Workload | Before Native ms | After Native ms | Before Wasm ms | After Wasm ms |
+| --- | ---: | ---: | ---: | ---: |
+| Fixed count, 8 MiB | 73.20 | 38.50 | 211.91 | 107.92 |
+| Anchored regex count, 8 MiB | 279.86 | 64.43 | 854.27 | 169.32 |
+| Fixed output, 8 MiB | 7976.65 | 189.65 | 11996.88 | 551.67 |
+| Quiet prefix, 8 MiB available input | 70.85 | 6.02 | 248.17 | 29.57 |
+| One 8 MiB record | 89.77 | 14.74 | 274.67 | 40.90 |
+
+These are direct development comparisons, not the published MoonX ratio gate.
+
+## Earlier local checkpoints
 
 The workspace all-target strict check passed with `--no-mbti`. Focused package
 runs totalled 35 tests per backend across core/grep, expr/csplit and sed; these
