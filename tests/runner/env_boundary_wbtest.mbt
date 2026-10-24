@@ -20,7 +20,10 @@ async test "Windows Native env rejects empty child environments before launch" {
   assert_eq(child.output.status, 0)
   assert_eq(child.output.stdout, marker)
   assert_eq(child.output.stderr, b"")
-  let program = @testkit.executable_path(root, "env")
+  let program = @testkit.executable_path(
+    root + "/_build/native/release/build",
+    "env",
+  )
   let rejected = @testkit.run_with_deadline(
     program,
     ["-i", helper, "--option-test-helper", "printf", "visible-child\\n"],
