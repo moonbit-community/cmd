@@ -33,8 +33,8 @@ priv struct GrepOptions {
 
 ///|
 priv enum Matcher {
-  Fixed(Array[String], Bool, Bool)
-  Regular(Regex?, Bool, Bool)
+  Fixed(Array[Bytes], Bool, Bool)
+  Regular(Array[@bytere.Pattern], Bool, Bool)
 }
 
 ///|
@@ -44,8 +44,9 @@ priv suberror GrepError {
 
 ///|
 priv struct Record {
-  data : Bytes
-  number : Int32
+  data : BytesView
+  terminated : Bool
+  number : Int64
   offset : Int64
 }
 
@@ -59,80 +60,12 @@ fn split_lines(text : String) -> Array[String] {
 }
 
 ///|
-fn split_records(data : Bytes, delimiter : Byte) -> Array[Record] {
-  let records : Array[Record] = []
-  let mut start = 0
-  let mut number = 1
-  for index, byte in data {
-    if byte == delimiter {
-      records.push({
-        data: data[start:index].to_owned(),
-        number,
-        offset: start.to_int64(),
-      })
-      number += 1
-      start = index + 1
-    }
-  }
-  if start < data.length() {
-    records.push({
-      data: data[start:].to_owned(),
-      number,
-      offset: start.to_int64(),
-    })
-  }
-  records
-}
-
-///|
-fn is_word_char(c : Char) -> Bool {
-  c == '_' || c is ('a'..<='z' | 'A'..<='Z' | '0'..<='9')
-}
-
-///|
-fn bytes_as_string(bytes : Bytes) -> String {
-  let output = StringBuilder()
+fn bytes_as_string(bytes : BytesView) -> String {
+  let output = StringBuilder(size_hint=bytes.length())
   for byte in bytes {
-    output.write_char(byte.to_int().to_char().unwrap())
+    output.write_char(byte.to_int().unsafe_to_char())
   }
   output.to_string()
-}
-
-///|
-fn ascii_lower(text : String) -> String {
-  let output = StringBuilder()
-  for char in text {
-    output.write_char(char.to_ascii_lowercase())
-  }
-  output.to_string()
-}
-
-///|
-fn Matcher::matches(
-  self : Matcher,
-  original : String,
-  ignore_case : Bool,
-) -> Bool {
-  let line = if ignore_case { ascii_lower(original) } else { original }
-  match self {
-    Fixed(patterns, whole_line, word) => {
-      for pattern in patterns {
-        if whole_line {
-          if line == pattern {
-            return true
-          }
-        } else if word {
-          return self.next_match(line, 0) is Some(_)
-        } else if line.contains(pattern) {
-          return true
-        }
-      }
-      false
-    }
-    Regular(Some(regex), false, false) => regex.execute(line) is Some(_)
-    Regular(None, _, _) => false
-    Regular(_, _, _) => self.next_match(line, 0) is Some(_)
-  }
 }
 
 ///|
@@ -140,25 +73,29 @@ fn compile_matcher(
   patterns : Array[String],
   options : GrepOptions,
 ) -> Matcher raise {
-  let normalized = patterns.map(value => {
-    let byte_pattern = bytes_as_string(@utf8.encode(value))
-    if options.ignore_case {
-      ascii_lower(byte_pattern)
-    } else {
-      byte_pattern
-    }
-  })
   if options.fixed {
-    return Fixed(normalized, options.whole_line, options.word)
+    let literals = patterns.map(text => {
+      let bytes = @utf8.encode(text)
+      if options.ignore_case {
+        folded_bytes(bytes[:])
+      } else {
+        bytes
+      }
+    })
+    return Fixed(literals, options.whole_line, options.word)
   }
-  if normalized.is_empty() {
-    return Regular(None, options.whole_line, options.word)
+  let compiled : Array[@bytere.Pattern] = []
+  for pattern in patterns {
+    compiled.push(
+      @bytere.compile(
+        bytes_as_string(@utf8.encode(pattern)),
+        extended=options.extended,
+        grep_syntax=true,
+        ignore_case=options.ignore_case,
+      ),
+    )
   }
-  let wrapped : Array[String] = []
-  for pattern in normalized {
-    wrapped.push("(?:" + translate_regexp(pattern, options.extended) + ")")
-  }
-  Regular(Some(Regex(wrapped.join("|"))), options.whole_line, options.word)
+  Regular(compiled, options.whole_line, options.word)
 }
 
 ///|
@@ -167,15 +104,6 @@ async fn read_text(path : String) -> String {
     @stdio.stdin.read_all().text()
   } else {
     @fs.read_file(path).text()
-  }
-}
-
-///|
-async fn read_bytes(path : String) -> Bytes {
-  if path == "-" {
-    @stdio.stdin.read_all().binary()
-  } else {
-    @fs.read_file(path).binary()
   }
 }
 
@@ -269,24 +197,32 @@ async fn write_record(
   options : GrepOptions,
   prefix_filename : Bool,
   selected : Bool,
+  output : &@io.Writer,
 ) -> Unit {
-  let separator = if selected { ':' } else { '-' }
-  let prefix = StringBuilder()
-  if prefix_filename {
-    prefix.write_string(path)
-    prefix.write_char(separator)
+  if prefix_filename || options.line_number || options.byte_offset {
+    let separator = if selected { ':' } else { '-' }
+    let prefix = StringBuilder()
+    if prefix_filename {
+      prefix.write_string(path)
+      prefix.write_char(separator)
+    }
+    if options.line_number {
+      prefix.write_string(record.number.to_string())
+      prefix.write_char(separator)
+    }
+    if options.byte_offset {
+      prefix.write_string(record.offset.to_string())
+      prefix.write_char(separator)
+    }
+    output.write(prefix.to_string())
   }
-  if options.line_number {
-    prefix.write_string(record.number.to_string())
-    prefix.write_char(separator)
+  if record.terminated {
+    let start = record.data.start_offset()
+    output.write(record.data.data()[start:start + record.data.length() + 1])
+  } else {
+    output.write(record.data)
+    output.write(if options.zero_terminated { b"\x00" } else { b"\n" })
   }
-  if options.byte_offset {
-    prefix.write_string(record.offset.to_string())
-    prefix.write_char(separator)
-  }
-  @stdio.stdout.write(prefix.to_string())
-  @stdio.stdout.write(record.data)
-  @stdio.stdout.write(if options.zero_terminated { b"\x00" } else { b"\n" })
 }
 
 ///|
@@ -296,128 +232,22 @@ async fn process_source(
   options : GrepOptions,
   prefix_filename : Bool,
 ) -> Bool {
-  let data = read_bytes(path)
-  let binary = !options.zero_terminated &&
-    data.iter().any(byte => byte is b'\x00')
-  if binary && options.binary_mode == WithoutMatch {
-    if options.count {
-      let prefix = if prefix_filename { path + ":" } else { "" }
-      @stdio.stdout.write("\{prefix}0\n")
-    } else if options.files_without_match {
-      @stdio.stdout.write(path + "\n")
-    }
-    return options.files_without_match
-  }
-  let delimiter : Byte = if options.zero_terminated { b'\x00' } else { b'\n' }
-  let records = split_records(data, delimiter)
-  let selected : Array[Bool] = []
-  let mut selected_count = 0
-  for record in records {
-    let matched = matcher.matches(
-      bytes_as_string(record.data),
-      options.ignore_case,
-    )
-    let keep = if options.invert { !matched } else { matched }
-    selected.push(keep)
-    if keep {
-      selected_count += 1
-      if options.quiet {
-        return true
-      }
-    }
-  }
-  if options.count {
-    let prefix = if prefix_filename { path + ":" } else { "" }
-    @stdio.stdout.write("\{prefix}\{selected_count}\n")
-  } else if options.files_with_matches && selected_count > 0 {
-    @stdio.stdout.write(path + "\n")
-  } else if options.files_without_match && selected_count == 0 {
-    @stdio.stdout.write(path + "\n")
-  } else if !options.files_with_matches &&
-    !options.files_without_match &&
-    selected_count > 0 {
-    if binary && options.binary_mode == Report {
-      let name = if path == "-" { "(standard input)" } else { path }
-      @stdio.stderr.write("grep: \{name}: binary file matches\n")
-    } else if options.only_matching {
-      if !options.invert {
-        for index, record in records {
-          if !selected[index] {
-            continue
-          }
-          let original = bytes_as_string(record.data)
-          let line = if options.ignore_case {
-            ascii_lower(original)
-          } else {
-            original
-          }
-          let mut position = 0
-          while matcher.next_match(line, position) is Some((start, end)) {
-            if end > start {
-              write_record(
-                {
-                  data: record.data[start:end].to_owned(),
-                  number: record.number,
-                  offset: record.offset + start.to_int64(),
-                },
-                path,
-                options,
-                prefix_filename,
-                true,
-              )
-              position = end
-            } else {
-              position = start + 1
-            }
-            if position > line.length() {
-              break
-            }
-          }
-        }
-      }
-    } else {
-      let mut emitted_through = -1
-      for index in 0..<records.length() {
-        if selected[index] {
-          let start = Int32::max(0, index - options.before_context)
-          let end = Int32::min(
-            records.length() - 1,
-            index + options.after_context,
-          )
-          if options.context_enabled &&
-            emitted_through >= 0 &&
-            start > emitted_through + 1 {
-            @stdio.stdout.write("--\n")
-          }
-          for output_index in Int32::max(start, emitted_through + 1)..<=end {
-            write_record(
-              records[output_index],
-              path,
-              options,
-              prefix_filename,
-              selected[output_index],
-            )
-          }
-          emitted_through = Int32::max(emitted_through, end)
-        }
-      }
-    }
-  }
-  if options.files_without_match {
-    selected_count == 0
+  if path == "-" {
+    process_reader(@stdio.stdin, path, matcher, options, prefix_filename)
   } else {
-    selected_count > 0
+    let file = @fs.open(path, mode=ReadOnly)
+    defer file.close()
+    process_reader(file, path, matcher, options, prefix_filename)
   }
 }
 
 ///|
 async fn main {
-  let metadata_args = @env.args()[1:]
-  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("grep 0.2.2\n")
+  let args = @env.args()[1:]
+  if args.length() == 1 && args[0] == "--version" {
+    @stdio.stdout.write("grep 0.3.0\n")
     return
   }
-  let args = @env.args()[1:]
   let parsed = @cli.parse(args, [
     @cli.flag("fixed-strings", short='F'),
     @cli.flag("extended-regexp", short='E'),
@@ -554,6 +384,11 @@ async fn main {
     patterns.append(split_lines(text))
   }
   let matcher = compile_matcher(patterns, options) catch {
+    @bytere.PatternError(message) => {
+      @stdio.stderr.write("grep: invalid regular expression: \{message}\n")
+      @sys.exit(2)
+      return
+    }
     err => {
       @stdio.stderr.write("grep: invalid regular expression: \{err}\n")
       @sys.exit(2)

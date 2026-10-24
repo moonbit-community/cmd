@@ -24,9 +24,24 @@ pub fn argument(value : String) -> String {
 }
 
 ///|
-pub struct Pattern {
-  regex : Regex
+struct Pattern {
+  program : Array[Instruction]
+  conditions : Array[Array[Assertion]]
+  empty_next : Array[Int32]
+  original_nodes : Int32
+  entry : Int32
   groups : Int32
+  backreferences : Bool
+  ignore_case : Bool
+  literal : LiteralPattern?
+  prefix : String
+}
+
+///|
+priv struct LiteralPattern {
+  text : String
+  begin : Bool
+  end : Bool
 }
 
 ///|
@@ -37,63 +52,51 @@ pub(all) struct Hit {
 }
 
 ///|
-/// Compile the regular BRE/ERE subset. Backreferences and non-POSIX engine
-/// extensions are rejected instead of silently changing their meaning.
-pub fn compile(pattern : String, extended~ : Bool = false) -> Pattern raise {
-  let out = StringBuilder()
-  let mut i = 0
-  let mut bracket = false
-  let mut groups = 0
-  while i < pattern.length() {
-    let c = pattern[i].to_int().unsafe_to_char()
-    if c == '\\' && !bracket {
-      i += 1
-      guard i < pattern.length() else {
-        raise PatternError("trailing backslash in regular expression")
-      }
-      let e = pattern[i].to_int().unsafe_to_char()
-      if e is ('1'..<='9' | '<' | '>' | 'b' | 'B') {
-        raise PatternError(
-          "backreferences and word assertions are not supported",
-        )
-      }
-      if e is ('(' | ')' | '{' | '}' | '+' | '?' | '|') {
-        if extended {
-          out.write_char('\\')
-        }
-        if !extended && e == '(' {
-          groups += 1
-        }
-        out.write_char(e)
-      } else if e == 'n' {
-        out.write_char('\n')
-      } else {
-        if e is ('.' | '[' | ']' | '*' | '^' | '$' | '\\') {
-          out.write_char('\\')
-        }
-        out.write_char(e)
-      }
-    } else {
-      if !bracket && extended && c == '(' {
-        if i + 1 < pattern.length() && pattern[i + 1] == '?' {
-          raise PatternError("regex engine extensions are not supported")
-        }
-        groups += 1
-      }
-      if !bracket && !extended && c is ('(' | ')' | '{' | '}' | '+' | '?' | '|') {
-        out.write_char('\\')
-      }
-      out.write_char(c)
-      if c == '[' {
-        bracket = true
-      } else if c == ']' {
-        bracket = false
-      }
-    }
-    i += 1
+pub fn compile(
+  pattern : String,
+  extended~ : Bool = false,
+  grep_syntax~ : Bool = false,
+  ignore_case~ : Bool = false,
+) -> Pattern raise {
+  let parser = Parser::{
+    source: pattern,
+    extended,
+    grep_syntax,
+    ignore_case,
+    index: 0,
+    closed: [],
+    backreferences: false,
+    depth: 0,
   }
-  let translated = out.to_string()
-  { regex: Regex(translated), groups, }
+  let tree = parser.expression()
+  guard parser.index == pattern.length() else {
+    raise PatternError("unmatched closing parenthesis")
+  }
+  let program = [Instruction::Accept]
+  let entry = tree.emit(program, 0)
+  let original_nodes = program.length()
+  let (conditions, empty_next) = if parser.backreferences {
+    constrain_program(program)
+  } else {
+    (
+      Array::makei(program.length(), _ => []),
+      Array::makei(program.length(), _ => 0),
+    )
+  }
+  let prefix = StringBuilder()
+  ignore(tree.literal_prefix(prefix))
+  {
+    program,
+    conditions,
+    empty_next,
+    original_nodes,
+    entry,
+    groups: parser.closed.length(),
+    backreferences: parser.backreferences,
+    ignore_case,
+    literal: tree.literal_pattern(),
+    prefix: prefix.to_string(),
+  }
 }
 
 ///|
@@ -102,32 +105,51 @@ pub fn Pattern::group_count(self : Pattern) -> Int32 {
 }
 
 ///|
-/// Choose the earliest start, then longest match, retaining captures.
+/// Choose the earliest start, then the longest match. Captured strings are
+/// allocated only after the winning byte spans have been selected.
 pub fn Pattern::find(
   self : Pattern,
   value : String,
   start~ : Int32 = 0,
 ) -> Hit? {
-  if start > value.length() {
-    return None
-  }
-  guard self.regex.execute(value, last_index=start) is Some(first) else {
-    return None
-  }
-  let left = first.before().length()
-  let prefix = (try! Regex("^")) + Regex::string(value[:left])
-  for right = value.length(); right >= left; right = right - 1 {
-    let bounded = prefix +
-      self.regex +
-      Regex::string(value[right:]) +
-      (try! Regex("$"))
-    if bounded.execute(value) is Some(hit) {
-      let groups : Array[String?] = [Some(value[left:right].to_owned())]
-      for group in 1..<=self.groups {
-        groups.push(hit.group(group).map(v => v.to_owned()))
-      }
-      return Some({ start: left, end: right, groups, })
+  self
+  .search(value, start, false, false, true)
+  .map(result => {
+    let groups : Array[String?] = [
+      Some(value[result.start:result.end].to_owned()),
+    ]
+    for group in 0..<self.groups {
+      let left = result.captures[group * 2]
+      let right = result.captures[group * 2 + 1]
+      groups.push(
+        if left >= 0 && right >= left {
+          Some(value[left:right].to_owned())
+        } else {
+          None
+        },
+      )
     }
-  }
-  None
+    { start: result.start, end: result.end, groups, }
+  })
+}
+
+///|
+/// Search without allocating captured strings. Whole-record and word filters
+/// apply to each accepting state, including shorter alternatives at one start.
+pub fn Pattern::find_span(
+  self : Pattern,
+  value : String,
+  start~ : Int32 = 0,
+  whole~ : Bool = false,
+  word~ : Bool = false,
+) -> (Int32, Int32)? {
+  self.search(value, start, whole, word, false).map(hit => (hit.start, hit.end))
+}
+
+///|
+/// Test acceptance without restoring output capture registers, as GNU csplit
+/// and sed regex addresses do. Ambiguous backreferences can be accepted even
+/// when GNU's separate output-register selection would fail.
+pub fn Pattern::is_match(self : Pattern, value : String) -> Bool {
+  self.search(value, 0, false, false, false, restore_registers=false) is Some(_)
 }
