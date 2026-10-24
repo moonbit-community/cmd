@@ -649,6 +649,17 @@
         "case:o6-csplit-windows-suffix-name-boundary"
       ],
       "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "package-test:tests/runner/env_boundary_wbtest.mbt::Windows Native env rejects empty child environments before launch",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0006-process.md",
+      "current_limit": "Windows Native env rejects launching a child when the final requested environment map is empty. Released async 0.22.5 leaves this environment block uninitialized. Empty enumeration, nonempty assignments, POSIX and Wasm are separate supported paths.",
+      "unlock_condition": "Use a released public process implementation that constructs a valid empty Windows environment block, then pass Windows Native and Wasm child-observed empty-environment, stdin, status and error regressions before removing the Native rejection.",
+      "rejection_tests": [
+        "package-test:tests/runner/env_boundary_wbtest.mbt::Windows Native env rejects empty child environments before launch"
+      ],
+      "replacement_behaviors": []
     }
   ]
 }

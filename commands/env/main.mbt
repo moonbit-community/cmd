@@ -12,6 +12,18 @@ fn split_assignment(value : String) -> (String, String)? {
 }
 
 ///|
+#cfg(target="native")
+fn empty_child_environment_unavailable() -> Bool {
+  @async.platform is Windows
+}
+
+///|
+#cfg(target="wasm")
+fn empty_child_environment_unavailable() -> Bool {
+  false
+}
+
+///|
 async fn main {
   let metadata_args = @core_env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
@@ -50,7 +62,7 @@ async fn main {
       options = false
     } else if options && arg == "--help" {
       @stdio.stdout.write(
-        "Usage: env [-i] [-0] [-u NAME] [-C DIR] [-S STRING] [NAME=VALUE]... [COMMAND [ARG]...]\n  -S, --split-string=STRING  split quotes, escapes and original environment variables\n      --help      display this help and exit\n      --version   display version and exit\n",
+        "Usage: env [-i] [-0] [-u NAME] [-C DIR] [-S STRING] [NAME=VALUE]... [COMMAND [ARG]...]\n  -S, --split-string=STRING  split quotes, escapes and original environment variables\n      --help      display this help and exit\n      --version   display version and exit\nWindows Native: child launches require a nonempty environment.\n",
       )
       return
     } else if options && arg == "--version" {
@@ -211,6 +223,13 @@ async fn main {
             return
           }
         }
+      }
+      if variables.is_empty() && empty_child_environment_unavailable() {
+        @stdio.stderr.write(
+          "env: unsupported capability: Windows Native empty child environment\n",
+        )
+        @sys.exit(125)
+        return
       }
       let context : @process.ExecutionContext = { cwd, env: variables, }
       let code = @process.run(@process.child(program, command_args, context~)) catch {

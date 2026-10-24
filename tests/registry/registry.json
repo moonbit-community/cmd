@@ -88590,7 +88590,9 @@
         "native",
         "wasm"
       ],
-      "platforms": [],
+      "platforms": [
+        "posix"
+      ],
       "required_evidence": [
         "contract",
         "backend-pair",
@@ -96370,6 +96372,35 @@
       "required_evidence": [
         "contract",
         "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:tests/runner/env_boundary_wbtest.mbt::Windows Native env rejects empty child environments before launch",
+      "command": "env",
+      "owner": "tests/runner",
+      "surface": [
+        "package-api"
+      ],
+      "status": "boundary",
+      "implementation": "package-test",
+      "source": "tests/runner/env_boundary_wbtest.mbt::Windows Native env rejects empty child environments before launch",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "Windows Native env rejects empty child environments before launch"
+      ],
+      "required_backends": [
+        "native"
+      ],
+      "platforms": [
+        "windows"
+      ],
+      "required_evidence": [
+        "boundary"
       ],
       "observations": [
         "status"

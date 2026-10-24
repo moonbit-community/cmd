@@ -1,5 +1,10 @@
 ///|
 async test "workspace fixture failures preserve completed results and infrastructure evidence" {
+  for status in [125, 126, 127] {
+    assert_true(unexpected_oracle_transport_status(status, 0))
+    assert_false(unexpected_oracle_transport_status(status, status))
+  }
+  assert_false(unexpected_oracle_transport_status(1, 0))
   for phase in ["startup", "cleanup"] {
     let root = @fs.tmpdir(prefix="mooncmd-workspace-lifecycle-")
     defer (@fs.rmdir(root, recursive=true) catch { _ => () })

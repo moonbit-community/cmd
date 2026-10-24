@@ -70,6 +70,11 @@
       "source": "tests/testkit/reproducibility_wbtest.mbt::deadline cancellation preserves both partial streams",
       "platforms": ["posix"],
       "reason": "The observer requires /bin/sh and the test returns before assertions on Windows. A missing POSIX shell is not a passing lifecycle observation."
+    },
+    {
+      "source": "tests/runner/env_boundary_wbtest.mbt::Windows Native env rejects empty child environments before launch",
+      "platforms": ["windows"],
+      "reason": "This Native-only harness launches the Native env executable on Windows and checks its explicit empty-child-environment rejection before launch, plus empty enumeration and a nonempty child environment. Other platforms are excluded before execution; Wasm does not share this released async Native environment-block defect."
     }
   ]
 }
