@@ -2672,6 +2672,10 @@
       "source_version": "GNU coreutils 9.11 C profile",
       "coverage": [
         "output"
+      ],
+      "observe": [
+        "mode",
+        "identity"
       ]
     }
   ]
