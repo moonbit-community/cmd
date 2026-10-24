@@ -1,6 +1,7 @@
 ///|
 priv suberror JoinError {
   JoinError(String)
+  JoinOrderError
 }
 
 ///|
@@ -19,8 +20,10 @@ fn help_message() -> String {
     #|              blanks; the output separator becomes CHAR as well.
     #|  -a FILENO    Also print unpairable lines from FILENO (1 or 2).
     #|  -v FILENO    Print only unpairable lines from FILENO.
-    #|  -e STRING    Replace missing fields with STRING.
-    #|  -o LIST      Select output fields (for example 0,1.2,2.2).
+    #|  -e STRING    Replace missing or empty fields with STRING.
+    #|  -o LIST      Select output fields (for example 0,1.2,2.2), or auto.
+    #|  -i, --ignore-case  Compare join fields without ASCII case distinctions.
+    #|      --header  Print the first lines as headers without matching keys.
     #|      --check-order  Diagnose unsorted input.
     #|      --nocheck-order  Do not diagnose unsorted input.
     #|  -z           End records with NUL instead of newline.
@@ -32,6 +35,13 @@ fn help_message() -> String {
 ///|
 priv struct JoinRow {
   fields : Array[Bytes]
+}
+
+///|
+priv struct JoinOrder {
+  mut previous_key : Bytes?
+  mut line_number : Int64
+  mut warned : Bool
 }
 
 ///|
@@ -82,24 +92,41 @@ fn key_of(fields : Array[Bytes], field : Int32) -> Bytes {
 }
 
 ///|
-fn rest_of(fields : Array[Bytes], field : Int32) -> Array[Bytes] {
+fn rest_of(
+  fields : Array[Bytes],
+  field : Int32,
+  width : Int32,
+  empty : String,
+) -> Array[Bytes] {
   let rest : Array[Bytes] = []
-  for index, value in fields {
+  for index = 0; index < width; index = index + 1 {
     if index != field - 1 {
-      rest.push(value)
+      rest.push(field_at(fields, index, empty))
     }
   }
   rest
 }
 
 ///|
-fn bytes_equal(left : Bytes, right : Bytes) -> Bool {
-  left[:].equal(right[:])
-}
-
-///|
-fn compare_bytes(left : Bytes, right : Bytes) -> Int32 {
-  left[:].lexical_compare(right[:])
+fn compare_bytes(left : Bytes, right : Bytes, ignore_case : Bool) -> Int32 {
+  if !ignore_case {
+    return left[:].lexical_compare(right[:])
+  }
+  let length = if left.length() < right.length() {
+    left.length()
+  } else {
+    right.length()
+  }
+  for index = 0; index < length; index = index + 1 {
+    let a = left[index]
+    let b = right[index]
+    let a = if a >= b'A' && a <= b'Z' { a.to_int() + 32 } else { a.to_int() }
+    let b = if b >= b'A' && b <= b'Z' { b.to_int() + 32 } else { b.to_int() }
+    if a != b {
+      return a - b
+    }
+  }
+  left.length() - right.length()
 }
 
 ///|
@@ -111,7 +138,7 @@ fn append_bytes(output : Array[Byte], value : Bytes) -> Unit {
 
 ///|
 fn field_at(fields : Array[Bytes], index : Int32, empty : String) -> Bytes {
-  if index < fields.length() {
+  if index < fields.length() && fields[index].length() > 0 {
     fields[index]
   } else {
     @utf8.encode(empty)
@@ -164,30 +191,34 @@ async fn write_joined(
   separator : Byte,
   empty : String,
   format_fields : Array[(Int32, Int32)],
+  auto_counts : (Int32, Int32)?,
   record_delimiter : Byte,
 ) -> Unit {
   let output : Array[Byte] = []
   let key = match (left, right) {
-    (Some(row), _) => key_of(row.fields, field1)
-    (_, Some(row)) => key_of(row.fields, field2)
+    (Some(row), _) => field_at(row.fields, field1 - 1, empty)
+    (_, Some(row)) => field_at(row.fields, field2 - 1, empty)
     _ => b""
   }
   let rendered : Array[Bytes] = []
   if format_fields.is_empty() {
     rendered.push(key)
-    match left {
-      Some(row) =>
-        for value in rest_of(row.fields, field1) {
-          rendered.push(value)
-        }
-      None => ()
+    let fields1 = match left {
+      Some(row) => row.fields
+      None => []
     }
-    match right {
-      Some(row) =>
-        for value in rest_of(row.fields, field2) {
-          rendered.push(value)
-        }
-      None => ()
+    let fields2 = match right {
+      Some(row) => row.fields
+      None => []
+    }
+    let (width1, width2) = auto_counts.unwrap_or(
+      (fields1.length(), fields2.length()),
+    )
+    for value in rest_of(fields1, field1, width1, empty) {
+      rendered.push(value)
+    }
+    for value in rest_of(fields2, field2, width2, empty) {
+      rendered.push(value)
     }
   } else {
     for item in format_fields {
@@ -222,27 +253,47 @@ async fn write_joined(
 ///|
 async fn next_ordered_row(
   scanner : @stream.LineScanner,
-  previous_key : Ref[Bytes?],
+  state : JoinOrder,
   field : Int32,
   separator : Byte?,
   name : String,
   order_mode : Int32,
-  unordered : Ref[Bool],
+  ignore_case : Bool,
+  unpairable : Ref[Bool],
 ) -> JoinRow? {
   match scanner.next() {
     Some(line) => {
       let row : JoinRow = { fields: split_fields(line.data, separator), }
       let key = key_of(row.fields, field)
-      match previous_key.val {
-        Some(previous) if compare_bytes(previous, key) > 0 => {
-          unordered.val = true
-          if order_mode > 0 {
-            raise JoinError("\{name} is not in sorted order")
+      state.line_number += 1
+      if !state.warned &&
+        (order_mode > 0 || (order_mode == 0 && unpairable.val)) {
+        match state.previous_key {
+          Some(previous) if compare_bytes(previous, key, ignore_case) > 0 => {
+            @stdio.stderr.write(
+              "join: \{name}:\{state.line_number}: is not sorted: ",
+            )
+            let mut end = line.data.length()
+            if end > 0 && line.data[end - 1] == b'\n' {
+              end -= 1
+            }
+            for index = 0; index < end; index = index + 1 {
+              if line.data[index] == b'\x00' {
+                end = index
+                break
+              }
+            }
+            @stdio.stderr.write(line.data[:end].to_owned())
+            @stdio.stderr.write("\n")
+            if order_mode > 0 {
+              raise JoinOrderError
+            }
+            state.warned = true
           }
+          _ => ()
         }
-        _ => ()
       }
-      previous_key.val = Some(key)
+      state.previous_key = Some(key)
       Some(row)
     }
     None => None
@@ -262,37 +313,69 @@ async fn merge_readers(
   output_fields : Array[(Int32, Int32)],
   record_delimiter : Byte,
   order_mode : Int32,
+  ignore_case : Bool,
+  header : Bool,
+  auto_format : Bool,
+  name1 : String,
+  name2 : String,
 ) -> Unit {
   let scanner1 = @stream.LineScanner::new(reader1, delimiter=record_delimiter)
   let scanner2 = @stream.LineScanner::new(reader2, delimiter=record_delimiter)
-  let previous_key1 : Ref[Bytes?] = Ref(None)
-  let previous_key2 : Ref[Bytes?] = Ref(None)
-  let unordered1 = Ref(false)
-  let unordered2 = Ref(false)
+  let state1 : JoinOrder = {
+    previous_key: None,
+    line_number: 0,
+    warned: false,
+  }
+  let state2 : JoinOrder = {
+    previous_key: None,
+    line_number: 0,
+    warned: false,
+  }
+  let unpairable = Ref(false)
   let mut row1 = next_ordered_row(
-    scanner1, previous_key1, field1, separator, "file 1", order_mode, unordered1,
+    scanner1, state1, field1, separator, name1, order_mode, ignore_case, unpairable,
   )
   let mut row2 = next_ordered_row(
-    scanner2, previous_key2, field2, separator, "file 2", order_mode, unordered2,
+    scanner2, state2, field2, separator, name2, order_mode, ignore_case, unpairable,
   )
   let out_separator = separator.unwrap_or(b' ')
-  fn mark_unpairable(
-    order_mode : Int32,
-    unordered1 : Ref[Bool],
-    unordered2 : Ref[Bool],
-  ) -> Unit raise JoinError {
-    if order_mode == 0 && (unordered1.val || unordered2.val) {
-      raise JoinError("input is not in sorted order")
+  let auto_counts = if auto_format {
+    let width1 = match row1 {
+      Some(row) => row.fields.length()
+      None => 0
+    }
+    let width2 = match row2 {
+      Some(row) => row.fields.length()
+      None => 0
+    }
+    Some((width1, width2))
+  } else {
+    None
+  }
+  if header && (row1 is Some(_) || row2 is Some(_)) {
+    write_joined(
+      row1, row2, field1, field2, out_separator, empty, output_fields, auto_counts,
+      record_delimiter,
+    )
+    state1.previous_key = None
+    state2.previous_key = None
+    if row1 is Some(_) {
+      row1 = next_ordered_row(
+        scanner1, state1, field1, separator, name1, order_mode, ignore_case, unpairable,
+      )
+    }
+    if row2 is Some(_) {
+      row2 = next_ordered_row(
+        scanner2, state2, field2, separator, name2, order_mode, ignore_case, unpairable,
+      )
     }
   }
   while row1 is Some(left) && row2 is Some(right) {
     let key1 = key_of(left.fields, field1)
     let key2 = key_of(right.fields, field2)
-    let order = compare_bytes(key1, key2)
+    let order = compare_bytes(key1, key2, ignore_case)
     if order < 0 {
-      mark_unpairable(order_mode, unordered1, unordered2)
-      if (all.contains(1) || only.contains(1)) &&
-        (only.is_empty() || only.contains(1)) {
+      if all.contains(1) || only.contains(1) {
         write_joined(
           Some(left),
           None,
@@ -301,16 +384,16 @@ async fn merge_readers(
           out_separator,
           empty,
           output_fields,
+          auto_counts,
           record_delimiter,
         )
       }
       row1 = next_ordered_row(
-        scanner1, previous_key1, field1, separator, "file 1", order_mode, unordered1,
+        scanner1, state1, field1, separator, name1, order_mode, ignore_case, unpairable,
       )
+      unpairable.val = true
     } else if order > 0 {
-      mark_unpairable(order_mode, unordered1, unordered2)
-      if (all.contains(2) || only.contains(2)) &&
-        (only.is_empty() || only.contains(2)) {
+      if all.contains(2) || only.contains(2) {
         write_joined(
           None,
           Some(right),
@@ -319,21 +402,24 @@ async fn merge_readers(
           out_separator,
           empty,
           output_fields,
+          auto_counts,
           record_delimiter,
         )
       }
       row2 = next_ordered_row(
-        scanner2, previous_key2, field2, separator, "file 2", order_mode, unordered2,
+        scanner2, state2, field2, separator, name2, order_mode, ignore_case, unpairable,
       )
+      unpairable.val = true
     } else {
       let left_run : Array[JoinRow] = [left]
       let right_run : Array[JoinRow] = [right]
       row1 = None
       while next_ordered_row(
-              scanner1, previous_key1, field1, separator, "file 1", order_mode, unordered1,
+              scanner1, state1, field1, separator, name1, order_mode, ignore_case,
+              unpairable,
             )
             is Some(next) {
-        if bytes_equal(key_of(next.fields, field1), key1) {
+        if compare_bytes(key_of(next.fields, field1), key1, ignore_case) == 0 {
           left_run.push(next)
         } else {
           row1 = Some(next)
@@ -342,10 +428,11 @@ async fn merge_readers(
       }
       row2 = None
       while next_ordered_row(
-              scanner2, previous_key2, field2, separator, "file 2", order_mode, unordered2,
+              scanner2, state2, field2, separator, name2, order_mode, ignore_case,
+              unpairable,
             )
             is Some(next) {
-        if bytes_equal(key_of(next.fields, field2), key2) {
+        if compare_bytes(key_of(next.fields, field2), key2, ignore_case) == 0 {
           right_run.push(next)
         } else {
           row2 = Some(next)
@@ -363,6 +450,7 @@ async fn merge_readers(
               out_separator,
               empty,
               output_fields,
+              auto_counts,
               record_delimiter,
             )
           }
@@ -371,7 +459,6 @@ async fn merge_readers(
     }
   }
   while row1 is Some(left) {
-    mark_unpairable(order_mode, unordered1, unordered2)
     if all.contains(1) || only.contains(1) {
       write_joined(
         Some(left),
@@ -381,15 +468,15 @@ async fn merge_readers(
         out_separator,
         empty,
         output_fields,
+        auto_counts,
         record_delimiter,
       )
     }
     row1 = next_ordered_row(
-      scanner1, previous_key1, field1, separator, "file 1", order_mode, unordered1,
+      scanner1, state1, field1, separator, name1, order_mode, ignore_case, unpairable,
     )
   }
   while row2 is Some(right) {
-    mark_unpairable(order_mode, unordered1, unordered2)
     if all.contains(2) || only.contains(2) {
       write_joined(
         None,
@@ -399,12 +486,16 @@ async fn merge_readers(
         out_separator,
         empty,
         output_fields,
+        auto_counts,
         record_delimiter,
       )
     }
     row2 = next_ordered_row(
-      scanner2, previous_key2, field2, separator, "file 2", order_mode, unordered2,
+      scanner2, state2, field2, separator, name2, order_mode, ignore_case, unpairable,
     )
+  }
+  if state1.warned || state2.warned {
+    raise JoinError("input is not in sorted order")
   }
 }
 
@@ -424,6 +515,8 @@ async fn main {
     @cli.option("only", short='v'),
     @cli.option("empty", short='e'),
     @cli.option("output", short='o'),
+    @cli.flag("ignore-case", short='i'),
+    @cli.flag("header"),
     @cli.flag("help", short='h'),
     @cli.flag("check-order"),
     @cli.flag("nocheck-order"),
@@ -504,21 +597,38 @@ async fn main {
     }
   }
   let empty = parsed.last_value("empty").unwrap_or("")
-  let order_mode = if parsed.contains("nocheck-order") {
-    -1
-  } else if parsed.contains("check-order") {
-    1
-  } else {
-    0
+  let order_mode = match
+    parsed.last_occurrence(["check-order", "nocheck-order"]) {
+    Some("nocheck-order") => -1
+    Some(_) => 1
+    None => 0
   }
+  let ignore_case = parsed.contains("ignore-case")
+  let header = parsed.contains("header")
+  let mut auto_format = false
   let output_fields : Array[(Int32, Int32)] = []
   for value in parsed.values("output") {
+    if value == "auto" {
+      auto_format = true
+      continue
+    }
     for item in value.split(",") {
       match parse_output_field(item.to_owned()) {
         Some(field) => output_fields.push(field)
         None => {
-          @stdio.stderr.write("join: invalid field list: '\{value}'\n")
-          @sys.exit(2)
+          let item = item.to_owned()
+          if item.has_prefix("1.") || item.has_prefix("2.") {
+            @stdio.stderr.write("join: invalid field number: '\{item[2:]}'\n")
+          } else if item.has_prefix("0") ||
+            item.has_prefix("1") ||
+            item.has_prefix("2") {
+            @stdio.stderr.write("join: invalid field specifier: '\{item}'\n")
+          } else {
+            @stdio.stderr.write(
+              "join: invalid file number in field spec: '\{item}'\n",
+            )
+          }
+          @sys.exit(1)
           return
         }
       }
@@ -547,15 +657,43 @@ async fn main {
       let file2 = @fs.open(files[1], mode=ReadOnly)
       defer file2.close()
       merge_readers(
-        @stdio.stdin, file2, field1, field2, separator, all, only, empty, output_fields,
-        record_delimiter, order_mode,
+        @stdio.stdin,
+        file2,
+        field1,
+        field2,
+        separator,
+        all,
+        only,
+        empty,
+        output_fields,
+        record_delimiter,
+        order_mode,
+        ignore_case,
+        header,
+        auto_format,
+        files[0],
+        files[1],
       )
     } else if files[1] == "-" {
       let file1 = @fs.open(files[0], mode=ReadOnly)
       defer file1.close()
       merge_readers(
-        file1, @stdio.stdin, field1, field2, separator, all, only, empty, output_fields,
-        record_delimiter, order_mode,
+        file1,
+        @stdio.stdin,
+        field1,
+        field2,
+        separator,
+        all,
+        only,
+        empty,
+        output_fields,
+        record_delimiter,
+        order_mode,
+        ignore_case,
+        header,
+        auto_format,
+        files[0],
+        files[1],
       )
     } else {
       let file1 = @fs.open(files[0], mode=ReadOnly)
@@ -563,11 +701,29 @@ async fn main {
       let file2 = @fs.open(files[1], mode=ReadOnly)
       defer file2.close()
       merge_readers(
-        file1, file2, field1, field2, separator, all, only, empty, output_fields,
-        record_delimiter, order_mode,
+        file1,
+        file2,
+        field1,
+        field2,
+        separator,
+        all,
+        only,
+        empty,
+        output_fields,
+        record_delimiter,
+        order_mode,
+        ignore_case,
+        header,
+        auto_format,
+        files[0],
+        files[1],
       )
     }
   } catch {
+    JoinOrderError => {
+      @sys.exit(1)
+      return
+    }
     JoinError(message) => {
       @stdio.stderr.write("join: \{message}\n")
       @sys.exit(1)

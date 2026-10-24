@@ -3,7 +3,7 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-10-24
-Revision: Retain the byte profiles and record the shared scanner, copy buffers and selective counting candidates.
+Revision: Retain the byte profiles and record O1 selection, grouping, merge and total candidates.
 
 ## Target and decision
 
@@ -20,8 +20,9 @@ number of records. The existing constructor/next calls and delimiter behavior
 remain; the generated structural interface records the new state.
 
 Plain cat copies reuse a 64 KiB buffer across operands. Wc computes only selected
-counters and retains at most an incomplete UTF-8 sequence between chunks when
-character counting is requested. Byte/line modes avoid character decoding.
+counters. Its current candidate follows the frozen C byte profile: both -c and
+-m count every byte, including malformed UTF-8, with no decoder or pending
+sequence state. The earlier UTF-8 counter observations remain historical.
 Strings retains a candidate prefix only until the requested minimum, then
 streams its printable continuation with 64-bit input offsets.
 Head batches record/byte/header output and flushes completed output on input
@@ -37,6 +38,29 @@ These are implementation candidates with package and command regressions;
 published coordinates and final performance acceptance remain separate.
 
 Reject universal newline normalization, whole-output trimming and forced locale. Command substitution removes trailing LF only, preserving spaces and embedded newlines. Grep separators require requested context; base64 -w0 emits no newline. Full locale-aware comparisons remain unverified.
+
+## O1 selected text options
+
+The unpublished 0.2.2 candidates add cut complements/output delimiters, uniq
+member/group output, comm column delimiters/totals, join ASCII-folded keys/
+headers/automatic output fields, and wc total policies. Cut keeps distinct
+adjacent explicit spans when an output delimiter makes their boundary visible.
+Uniq retains only its current key and pending record; member output does not
+buffer an entire duplicate group. Comm/join retain their streaming merge and
+current equal-key runs. Default disorder diagnostics preserve the GNU output
+prefix and continuation; explicit order checking stops early. Join's automatic
+field counts freeze on the first record, and explicit output lists accumulate.
+
+Wc total-only output has no per-input rows, names or padding. Opened inputs keep
+their observed counters after a read error, and later inputs still run. Numeric
+alignment for named files uses public kind/size metadata; standard input uses
+the seven-column stream layout for multiple counters. Exact GNU alignment for
+a regular file redirected to stdin is not claimed: released async 0.22.5 exposes
+Input.fd but no public descriptor kind/size query or fd-to-File borrowing API.
+Lift that layout limit only when such a public API and Native/Wasm regular-file/
+pipe/partially-consumed/repeated-stdin regressions exist. This does not prevent
+total-only output or named-file counting. Do not import internal event-loop
+metadata functions or add host-process workarounds.
 
 ## Versions and evidence
 

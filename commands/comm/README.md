@@ -15,11 +15,17 @@ moonx cli/comm -12 left.txt right.txt   # only common lines
 
 Options: `-1`, `-2`, `-3` suppress the corresponding column (combinable as
 `-12`, `-23`, ...). Use `-` to read stdin. Records are compared as raw bytes,
-matching `LC_ALL=C` order. `--check-order` reports
-an unsorted input and exits nonzero. By default, disorder is diagnosed once
-unpairable input is observed, matching GNU's conditional check.
-`-z` reads and writes NUL-delimited records; `--nocheck-order` explicitly
-selects permissive order handling whenever both order flags are present.
+matching `LC_ALL=C` order. `--output-delimiter=STR` replaces the column TABs;
+an empty value selects one NUL byte. Repeated identical delimiters are accepted,
+while differing values fail before output. `--total` appends the counts of
+FILE1-only, FILE2-only and common records, followed by `total`, using the selected
+column delimiter. Counts include suppressed columns.
+
+`--check-order` reports an unsorted input and stops immediately. By default,
+GNU's conditional order check diagnoses disorder after unpairable input is
+observed; it finishes output and the requested total before exiting nonzero.
+`--nocheck-order` disables checks. The last order flag takes effect.
+`-z` reads and writes NUL-delimited records, including the total record.
 
 ## Standalone metadata
 

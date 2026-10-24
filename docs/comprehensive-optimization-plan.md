@@ -31,6 +31,15 @@ The [S report](reports/2026-10-24-s-matcher-sed.md) and
 implementation and development evidence. No G/S
 publication or overall performance acceptance is claimed.
 
+D is accepted through PR #51 and actual-main run 40101454133; all three
+platform jobs and coverage-audit passed, and implementation issue #30 is
+closed. The [D report](reports/2026-10-24-d-diff-patch.md) retains its original
+development observations and precise filesystem boundaries. O1 adds the
+selected cut/uniq/comm/join/wc options with fixed GNU development comparisons;
+its PR integration and the remaining O2-O13 families are pending. See the
+[O1 report](reports/2026-10-24-o1-text-options.md). Issue #33 remains open
+until the whole selected O stage is accepted; R and issue #32 follow O.
+
 Source: `cmd-comprehensive-optimization-plan-2026-10-23.md`, supplied by the user.
 
 The user's 2026-10-24 direction removes C2. The execution baseline is accepted
