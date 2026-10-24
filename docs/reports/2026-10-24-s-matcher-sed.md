@@ -67,6 +67,11 @@ behavior; ordinary references, non-cloned star paths and the former expr/hold
 rejection IDs have positive controls. The registry has 1,912 entries and 44
 current boundaries. These remain local development observations.
 
+The existing intent/audit now records the retired expr/hold restrictions through
+actual positive replacement evidence. Current rejections and old backend,
+platform and observation obligations remain required, alongside each target's
+current requirements.
+
 ## Approved matcher boundary
 
 The initial source failed the two bounded nullable-capture reference cases above

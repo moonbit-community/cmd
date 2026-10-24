@@ -191,9 +191,16 @@ fn ci_scope_mapping_errors(
       )
     }
     seen.add(boundary.behavior_id)
-    if boundary.rejection_tests.is_empty() {
+    if boundary.rejection_tests.is_empty() &&
+      (
+        boundary.replacement_behaviors.is_empty() ||
+        (
+          ci_scope_current_entry(registry, boundary.behavior_id) is Some(entry) &&
+          entry.status == "boundary"
+        )
+      ) {
       failures.push(
-        "scope replacement requires registered rejection tests: " +
+        "scope mapping requires registered evidence and current rejection tests: " +
         boundary.behavior_id,
       )
     }
@@ -390,9 +397,36 @@ fn validate_scope_requirements(
         )
         continue
       }
+      // A removed rejection is proved by the mapped supported operation.
+      // Its old backend/platform/observation obligations still apply below.
+      let current_rejection = ci_scope_current_entry(
+          registry,
+          requirement.behavior_id,
+        )
+        is Some(current) &&
+        current.status == "boundary"
+      let old_requirement = if boundary is Some(_) &&
+        !current_rejection &&
+        requirement.evidence.contains("boundary") &&
+        entry.status == "supported" {
+        {
+          ..requirement,
+          evidence: sorted_unique(
+            requirement.evidence.map(kind => {
+              if kind == "boundary" {
+                "contract"
+              } else {
+                kind
+              }
+            }),
+          ),
+        }
+      } else {
+        requirement
+      }
       failures.append(
         ci_scope_prove_requirement(
-          requirement, entry, declaration, registry, bundles, platforms,
+          old_requirement, entry, declaration, registry, bundles, platforms,
         ).map(problem => {
           "scope old obligation " +
           requirement.behavior_id +
