@@ -418,6 +418,23 @@ test "scope CI rejects stale ambiguous and alias replacement mappings" {
     rejection.behavior_id,
   )
   let requirement = ci_scope_test_requirement(old)
+  let replacement_only = { ..mapping, rejection_tests: [], }
+  assert_eq(
+    ci_scope_mapping_errors(
+      ci_scope_test_intent([requirement], [replacement_only]),
+      registry,
+    ),
+    [],
+  )
+  assert_false(
+    ci_scope_mapping_errors(
+      ci_scope_test_intent([requirement], [replacement_only]),
+      {
+        ..registry,
+        entries: registry.entries + [{ ..old, status: "boundary", }],
+      },
+    ).is_empty(),
+  )
   for
     boundaries in [
       [mapping, mapping],
@@ -434,7 +451,7 @@ test "scope CI rejects stale ambiguous and alias replacement mappings" {
         },
       ],
       [{ ..mapping, rejection_tests: ["case:unknown-rejection"], }],
-      [{ ..mapping, rejection_tests: [], }],
+      [{ ..mapping, rejection_tests: [], replacement_behaviors: [], }],
     ] {
     assert_false(
       ci_scope_mapping_errors(
@@ -447,7 +464,12 @@ test "scope CI rejects stale ambiguous and alias replacement mappings" {
 
 ///|
 test "scope CI keeps old Native Windows and current Wasm Linux obligations separate" {
-  let old = { ..ci_scope_test_entry("retired", "old"), platforms: ["windows"], }
+  let old = {
+    ..ci_scope_test_entry("retired", "old"),
+    status: "boundary",
+    required_evidence: ["boundary"],
+    platforms: ["windows"],
+  }
   let replacement = {
     ..ci_scope_test_entry("new", "new"),
     required_backends: ["wasm"],
@@ -497,6 +519,15 @@ test "scope CI keeps old Native Windows and current Wasm Linux obligations separ
     validate_scope_requirements(intent, declaration, registry, bundles, hosts),
     [],
   )
+  assert_false(
+    validate_scope_requirements(
+      intent,
+      declaration,
+      { ..registry, entries: entries + [old], },
+      bundles,
+      hosts,
+    ).is_empty(),
+  )
   for incomplete in [[old_execution, rejected], [current_execution, rejected]] {
     let declared = ci_scope_test_declaration(entries, incomplete)
     assert_false(
@@ -524,6 +555,24 @@ test "scope CI keeps old Native Windows and current Wasm Linux obligations separ
       validate_scope_requirements(intent, declared, registry, selected, hosts).is_empty(),
     )
   }
+  let unobserved = {
+    ..old_execution,
+    rows: old_execution.rows.map(row => {
+      ..row,
+      observations: ["status"],
+      missing_observations: ["stdout"],
+    }),
+  }
+  let selected = [unobserved, current_execution, rejected]
+  assert_false(
+    validate_scope_requirements(
+      intent,
+      ci_scope_test_declaration(entries, selected),
+      registry,
+      selected,
+      hosts,
+    ).is_empty(),
+  )
 }
 
 ///|

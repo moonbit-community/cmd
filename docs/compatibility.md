@@ -1,7 +1,7 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-10-20
+Updated: 2026-10-24
 
 Stage 0 publishes `cli/core@0.7.0`, `cli/curl@0.2.3`, `cli/mv@0.2.3`
 and `cli/wget@0.2.3` with async 0.22.5. The other 75 published commands
@@ -23,6 +23,40 @@ keep their earlier dependency and acceptance profiles.
 
 Authorization belongs to the caller/host. Catalog capabilities and the older
 restricted label describe requirements, not command-local policy.
+
+## Workspace matcher and sed candidates
+
+Core **0.8.0**, grep **0.3.0**, and sed/expr/csplit **0.2.0** are unpublished
+workspace candidates. The published coordinates and frozen expectations above
+remain unchanged. The [S implementation report](reports/2026-10-24-s-matcher-sed.md)
+records local evidence; stage acceptance and
+[issue #28](https://github.com/moonbit-community/cmd/issues/28) remain pending
+current-revision PR checks and release acceptance.
+
+The shared C-byte matcher parses BRE/ERE once, supports the tested byte classes,
+word assertions and pattern backreferences, and exposes span-only search
+to grep. Csplit and sed regex addresses use a capture-free predicate; expr and
+sed substitutions request capture registers, following GNU's distinct calls.
+Grep's ASCII `-i` expands literals/classes before class negation,
+preserves assertion escapes and compares references without changing captured
+bytes. Tac and nl have not migrated here.
+Distinct capture/reference states can require exponential resources; no hidden
+matching-step cap is imposed. Non-C locale and complete GNU grammar remain open.
+
+Sed now uses compiled instructions for hold space, labels/branches, groups,
+`n/N/P/D/a/i/c`, and the existing address/substitution commands. A multi-file
+streaming cursor and lazy last-line checks preserve the exercised EOF, queued
+output and missing-input behavior. Pattern/hold growth and branch termination
+remain script-controlled. Diagnostics use project formatting; `-i` still needs
+the replacement/metadata contract in [ADR-0004](adr/0004-filesystem.md).
+
+Repeated nullable captures now use GNU candidate selection and capture-register
+restoration, including counted repeats, nested captures and multiple references.
+Independent local GNU comparisons match all 1,095 applicable cases; three oracle
+faults are retained separately. The earlier compile-time rejection is removed
+and the consumer cases exercise supported matching. These development results
+do not establish complete GNU/POSIX compatibility; platform/audit, publication
+and performance gates remain.
 
 ## Accepted stage 0 subset: async 0.22.5
 
@@ -221,11 +255,11 @@ claiming success; `local-only` is absent from MoonX by design.
 | `date` | subset verified | UTC/TZ, fixed offsets, checked 64-bit TZif/POSIX future rules, ISO local input, fractional epochs, selected ISO/RFC/format directives | Ambiguous/nonexistent local times reject; relative dates/additional directives and clock setting remain; x/time offset bounds are documented |
 | `od`, `hexdump` | subset verified | Integer and character formats, offsets, lengths, duplicate blocks, raw byte input | Floating od types and custom hexdump format language are project work; default integers use little endian |
 | `md5sum`, `sha1sum`, `sha512sum` | subset verified | Incremental hashes, file/stdin, GNU check records and check flags | Tagged formats and platform text transformations are not claimed |
-| `sed` | subset verified | BRE/ERE substitution, captures, address/range selection, p/d/q/=, ordered scripts | No in-place edit, hold space, branching or complete GNU grammar; unsupported syntax rejects |
+| `sed` | subset verified | BRE/ERE substitution, captures, addresses/ranges and ordered scripts; unpublished 0.2.0 adds hold/branch/group/multiline/text execution and repeated nullable captures | [Workspace candidate scope](#workspace-matcher-and-sed-candidates) retains project diagnostic formatting and script-controlled space growth; current-revision acceptance, in-place editing and complete GNU grammar remain open |
 | `diff` | subset verified | Normal/unified/context text output, labels, binary detection and 0/1/2 statuses | Directory and whitespace modes remain project work; exact hunk choices for ambiguous alignments need separate comparison |
 | `patch` | subset verified | Exact unified/context hunks, reverse, stdout result, dry run, creation/deletion | Existing destination and named output require public source mode; fuzzy/offset/reject-file behavior is not claimed |
-| `split`, `csplit` | subset verified | Line/byte splitting, numeric/regex boundaries, suffixes, cleanup and keep-files | Existing output refuses until safe truncation is public; chunk/filter modes are project work |
-| `expr`, `fmt` | subset verified | Integer/string expressions and BRE matches; paragraph width/goal/spacing | C-byte locale; remaining expression/formatting extensions are project work |
+| `split`, `csplit` | subset verified | Line/byte splitting, numeric/regex boundaries, suffixes, cleanup and keep-files; unpublished csplit 0.2.0 uses the shared span matcher | Existing output refuses until safe truncation is public; chunk/filter modes and the [shared matcher limits](#workspace-matcher-and-sed-candidates) remain open |
+| `expr`, `fmt` | subset verified | Integer/string expressions and BRE matches; paragraph width/goal/spacing; unpublished expr 0.2.0 uses the shared capture matcher | C-byte locale; [matcher limits](#workspace-matcher-and-sed-candidates) and remaining expression/formatting extensions are project work |
 | `gzip`, `gunzip`, `zcat` | subset verified | Unpublished 0.1.2: pure 32 KiB LZ, 3–258 byte matches, stored/fixed/dynamic costs, `-1`–`-9` and aliases; Reader decoding with 64 KiB input/output, 32 KiB history and main/secondary tables preserves members, CRC and error prefixes | Published 0.1.1 keeps its frozen profile. [G1 development evidence](reports/2026-10-24-g1-codec.md) covers GNU roundtrips and selected size limits; 30 codec tests pass Native/Wasm. Published delivery/performance remain open. Bytes callers retain input; levels are ignored during decoding/testing. Named replacement and saved metadata remain boundaries. |
 | `base32` | subset verified | RFC 4648 uppercase encode/decode, `-d`, `-i`, `-w`, stdin or one file | Nonstandard alphabets and locale diagnostics not claimed |
 | `cksum` | subset verified | POSIX CRC-32 and byte count for stdin or multiple files, ordered partial failure | GNU alternate algorithms and tagged output are not claimed |
@@ -244,7 +278,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `env` | subset verified | Complete inherited environment, `-i/-u/-0/-C`, direct children, `--help/--version` | Host authorization is separate; child launch error classes remain explicit |
 | `false` | subset verified | any args: no output, status 1; help/version return 0 | Metadata text is package-versioned |
 | `find` | restricted | names/paths/types, `-empty/-size`, metadata predicates, access checks, `-xtype`, depth/actions | File/process policy required; P8 time/reference/access combinations still need independent probes; ownership, inode, link-count, and full GNU expression grammar not claimed |
-| `grep` | subset verified | Default BRE / `-G`, ERE / `-E`, `-F`, `-o` leftmost-longest, context-only separators, existing context/file/binary options | Backreferences and unsupported regex extensions reject; full locale classes and worst-case long-line performance remain project regex work |
+| `grep` | subset verified | Default BRE / `-G`, ERE / `-E`, byte-based `-F`, `-o` leftmost-longest, context-only separators, existing context/file/binary options; unpublished 0.3.0 adds the shared matcher, grammar-preserving ASCII `-i`, streaming input/output and early `-q`/`-l` completion | [Workspace matcher limits](#workspace-matcher-and-sed-candidates), non-C locale classes/case folding and worst-case capture/reference resources remain open |
 | `head` | subset verified | `-n`, `-c`, signed/attached/long/legacy counts and decimal/binary/IEC size suffixes, `-z`, `-q/-v`, files/stdin and headers | Counts are bounded by signed 64-bit storage; locale-aware records are not claimed |
 | `join` | subset verified | `-1 -2 -t -a -v -e -o`, `-z`, `-` stdin | Locale diagnostics not claimed |
 | `jq` | subset verified | Consecutive JSON, -s/-R/-n/-e, AST binding, partial output before errors, -C/-M/JQ_COLORS, tostring/tojson and Unicode string slices | Released moonjq 0.2.0 plus public-AST adapter; full evaluator/modules/streaming/diagnostics and automatic TTY color are not claimed |

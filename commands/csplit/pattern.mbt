@@ -1,57 +1,13 @@
 ///|
 enum Pattern {
   Line(Int32)
-  Expression(Regex, Int32, Bool)
+  Expression(@bytere.Pattern, Int32, Bool)
 }
 
 ///|
 struct Control {
   pattern : Pattern
   repeats : Int32?
-}
-
-///|
-fn basic_expression(value : String) -> String raise {
-  let chars = value.iter().collect()
-  let result = StringBuilder()
-  let mut index = 0
-  let mut bracket = false
-  while index < chars.length() {
-    let char = chars[index]
-    if char.to_int() > 127 {
-      fail("non-ASCII regex patterns are unsupported")
-    }
-    if char == '\\' && !bracket {
-      index += 1
-      guard index < chars.length() else {
-        fail("trailing backslash in expression")
-      }
-      let escaped = chars[index]
-      if escaped is ('1'..<='9' | 'b' | 'B' | '<' | '>' | 'w' | 'W' | 's' | 'S') {
-        fail("backreferences and word extensions are unsupported")
-      }
-      if escaped is ('(' | ')' | '{' | '}' | '+' | '?' | '|') {
-        result.write_char(escaped)
-      } else {
-        if escaped is ('.' | '[' | ']' | '*' | '^' | '$' | '\\') {
-          result.write_char('\\')
-        }
-        result.write_char(escaped)
-      }
-    } else {
-      if !bracket && char is ('(' | ')' | '{' | '}' | '+' | '?' | '|') {
-        result.write_char('\\')
-      }
-      result.write_char(char)
-      if char == '[' {
-        bracket = true
-      } else if char == ']' {
-        bracket = false
-      }
-    }
-    index += 1
-  }
-  result.to_string()
 }
 
 ///|
@@ -77,7 +33,7 @@ fn parse_pattern(value : String) -> Pattern raise {
       @string.parse_int(value[end + 1:])
     }
     Expression(
-      Regex(basic_expression(value[1:end].to_owned())),
+      @bytere.compile(@bytere.argument(value[1:end].to_owned())),
       offset,
       delimiter == '%',
     )

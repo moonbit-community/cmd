@@ -2,6 +2,22 @@
   "schema": 2,
   "cases": [
     {
+      "id": "s1-sed-nullable-reference-address",
+      "command": "sed",
+      "args": ["-n", "-E", "/(a*){0,2}\\1/p;/(a*){2,}\\1/p"],
+      "stdin_text": "aaaa\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "aaaa\naaaa\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "source_version": "GNU sed 4.9",
+      "oracle": true,
+      "coverage": ["-n", "-E"]
+    },
+    {
       "id": "p1-sed-substitution",
       "command": "sed",
       "args": [
@@ -266,11 +282,12 @@
       "files": [],
       "environment": {},
       "normalizations": [],
-      "expected_status": 1,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "sed: unsupported sed command: h\n",
-      "comparison": "boundary",
-      "expected_rejection": "unsupported sed command"
+      "expected_status": 0,
+      "expected_stdout_text": "a\na\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU sed 4.9"
     },
     {
       "id": "p1-sed-overlapping-capture",
@@ -368,8 +385,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/sed@0.1.2 metadata contract",
-      "expected_stdout_text": "Usage: sed [-nE] [-e SCRIPT] [-f SCRIPTFILE] [SCRIPT] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nStream editor: p, d, q, =, s/RE/REPLACEMENT/[gNp].\nAddresses: line number, $, /RE/, ranges and !. BRE default; -E enables ERE.\nIn-place editing, hold space, branches, groups and regex backreferences are not supported.\n",
+      "source_version": "workspace cli/sed@0.2.0 metadata contract",
+      "expected_stdout_text": "Usage: sed [-nE] [-e SCRIPT] [-f SCRIPTFILE] [SCRIPT] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nStream editor: p/d/q/=, s/RE/REPLACEMENT/[gNp], h/H/g/G/x, :/b/t/T, groups, n/N/P/D/a/i/c.\nAddresses: line number, $, /RE/, ranges and !. BRE default; -E enables ERE.\nBRE/ERE supports pattern backreferences and word assertions.\nIn-place editing and locale-aware matching are not supported.\n",
       "expected_stderr_text": ""
     },
     {
@@ -388,8 +405,2418 @@
         "version"
       ],
       "source_version": "workspace cli/sed@0.1.2 metadata contract",
-      "expected_stdout_text": "sed 0.1.2\n",
+      "expected_stdout_text": "sed 0.2.0\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "s1-sed-pattern-backreference",
+      "command": "sed",
+      "args": [
+        "s/\\(a\\|ab\\)\\1/[\\1]/g"
+      ],
+      "stdin_text": "zabab aa\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "z[ab] [a]\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU sed 4.9",
+      "expected_files": []
+    },
+    {
+      "id": "s1-sed-word-assertion",
+      "command": "sed",
+      "args": [
+        "s/\\<foo\\>/X/g"
+      ],
+      "stdin_text": "_foo foo!food\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "_foo X!food\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU sed 4.9",
+      "expected_files": []
+    },
+    {
+      "id": "s1-sed-nullable-repeated-capture",
+      "command": "sed",
+      "args": [
+        "-E",
+        "s/(a*)*/[\\1]/"
+      ],
+      "stdin_text": "aa\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "[aa]\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU sed 4.9",
+      "expected_files": []
+    },
+    {
+      "id": "s1-sed-last-iteration-captures",
+      "command": "sed",
+      "args": [
+        "-E",
+        "s/(a|(b))*/[\\1][\\2]/"
+      ],
+      "stdin_text": "ba\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "[a][b]\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU sed 4.9",
+      "expected_files": []
+    },
+    {
+      "id": "s1-sed-optional-repeat-reference",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-E",
+        "s/(a?)*\\1/[&][\\1]/p"
+      ],
+      "stdin_text": "a\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "[a][a]\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "source_version": "GNU sed 4.9",
+      "oracle": true,
+      "coverage": [
+        "-n",
+        "-E"
+      ]
+    },
+    {
+      "id": "s1-sed-bounded-empty-reference",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-E",
+        "s/(a*){0,2}\\1/[&][\\1]/p"
+      ],
+      "stdin_text": "\naaaa\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "source_version": "GNU sed 4.9",
+      "oracle": true,
+      "coverage": [
+        "-n",
+        "-E"
+      ]
+    },
+    {
+      "id": "s1-sed-minimum-repeat-reference",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-E",
+        "s/(a*){2,}\\1/[&][\\1]/p"
+      ],
+      "stdin_text": "\naaaa\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "source_version": "GNU sed 4.9",
+      "oracle": true,
+      "coverage": [
+        "-n",
+        "-E"
+      ]
+    },
+    {
+      "id": "sed-spec-hold-get-empty",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "g;p"
+      ],
+      "stdin_hex": "6f6e650a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "0a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-hold-append-empty",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "G;p"
+      ],
+      "stdin_hex": "6f6e650a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "6f6e650a0a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-hold-append-into-empty",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "H;g;p"
+      ],
+      "stdin_hex": "6f6e650a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "0a6f6e650a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-hold-x-empty",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "x;p;x;p"
+      ],
+      "stdin_hex": "6f6e650a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "0a6f6e650a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-hold-h-g",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "h;s/one/TWO/;g;p"
+      ],
+      "stdin_hex": "6f6e650a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "6f6e650a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-hold-overwrite",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "1h;2h;$g;$p"
+      ],
+      "stdin_hex": "610a620a630a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "620a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-hold-accumulate",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "1h;1!H;$g;$p"
+      ],
+      "stdin_hex": "610a620a630a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "610a620a630a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-hold-multiline-exchange",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "1h;1!H;$ {x;p;x;p;}"
+      ],
+      "stdin_hex": "610a620a630a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "610a620a630a630a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-hold-nolf-copy",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "h;g;p"
+      ],
+      "stdin_hex": "6f6e65",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "6f6e65",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-hold-nolf-append-from",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "G;p"
+      ],
+      "stdin_hex": "6f6e65",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "6f6e650a0a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-hold-nolf-append-into",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "H;g;p"
+      ],
+      "stdin_hex": "6f6e65",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "0a6f6e65",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-hold-empty-record",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "H;g;p"
+      ],
+      "stdin_hex": "0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "0a0a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-hold-empty-input",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "H;g;p"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-branch-unconditional",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "b end;s/a/X/;:end;p"
+      ],
+      "stdin_hex": "610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "610a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-branch-empty-auto",
+      "command": "sed",
+      "args": [
+        "-e",
+        "b;s/a/X/"
+      ],
+      "stdin_hex": "610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "610a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-branch-empty-quiet",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "b;p"
+      ],
+      "stdin_hex": "610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-branch-empty-t",
+      "command": "sed",
+      "args": [
+        "-e",
+        "s/a/A/;t;s/$/X/"
+      ],
+      "stdin_hex": "610a620a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "410a62580a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-branch-empty-T-failure",
+      "command": "sed",
+      "args": [
+        "-e",
+        "s/a/A/;T;s/$/X/"
+      ],
+      "stdin_hex": "610a620a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "41580a620a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-branch-duplicate-last",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "b L;:L;s/a/F/;b end;:L;s/a/S/;:end;p"
+      ],
+      "stdin_hex": "610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "530a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-branch-cross-expressions",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "b end;s/a/X/\n:end;p"
+      ],
+      "stdin_hex": "610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "610a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-label-expression-link",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "b end",
+        "-e",
+        "s/a/X/;:end;p"
+      ],
+      "stdin_hex": "610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "610a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-branch-finite-loop",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        ":again;s/aa/a/;t again;p"
+      ],
+      "stdin_hex": "61616161610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "610a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-branch-enter-group",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "b inside;/never/{:inside;s/a/X/};p"
+      ],
+      "stdin_hex": "610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "580a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-group-nested-invert",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "/skip/!{1,2{s/a/A/};3!{s/$/!/};p;}"
+      ],
+      "stdin_hex": "610a736b69700a610a6c6173740a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "41210a610a6c617374210a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-group-skip-nested",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "1!{2!{s/a/X/};p;}"
+      ],
+      "stdin_hex": "610a610a610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "610a580a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-t-consumes-success",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "s/a/A/;t first;b bad;:first;t bad;s/$/N/;b end;:bad;s/$/Y/;:end;p"
+      ],
+      "stdin_hex": "610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "414e0a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-T-clears-success",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "s/a/A/;T no;t yes;s/$/N/;b end;:yes;s/$/Y/;b end;:no;s/$/F/;:end;p"
+      ],
+      "stdin_hex": "610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "414e0a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-T-takes-failure",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "s/x/X/;T no;s/$/Y/;b end;:no;s/$/N/;:end;p"
+      ],
+      "stdin_hex": "610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "614e0a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-t-skipped-address",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "s/a/A/;2t consumed;t yes;:consumed;s/$/N/;b end;:yes;s/$/Y/;:end;p"
+      ],
+      "stdin_hex": "610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "41590a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-b-preserves-success",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "s/a/A/;b label;:label;t yes;s/$/N/;b end;:yes;s/$/Y/;:end;p"
+      ],
+      "stdin_hex": "610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "41590a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-t-noop-success",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "s/a/a/;t yes;s/$/N/;b end;:yes;s/$/Y/;:end;p"
+      ],
+      "stdin_hex": "610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "61590a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-t-failed-after-success",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "s/a/A/;s/z/Z/;t yes;s/$/N/;b end;:yes;s/$/Y/;:end;p"
+      ],
+      "stdin_hex": "610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "41590a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-t-new-cycle-reset",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "1s/a/A/;t yes;s/$/N/;b end;:yes;s/$/Y/;:end;p"
+      ],
+      "stdin_hex": "610a620a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "41590a624e0a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-n-default",
+      "command": "sed",
+      "args": [
+        "-e",
+        "n;p"
+      ],
+      "stdin_hex": "610a620a630a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "610a620a620a630a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-n-quiet",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "n;p"
+      ],
+      "stdin_hex": "610a620a630a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "620a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-n-EOF-default",
+      "command": "sed",
+      "args": [
+        "-e",
+        "n;p"
+      ],
+      "stdin_hex": "61",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "61",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-n-EOF-quiet",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "n;p"
+      ],
+      "stdin_hex": "61",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-n-resets-success",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "s/a/A/;n;t yes;s/$/N/;b end;:yes;s/$/Y/;:end;p"
+      ],
+      "stdin_hex": "610a620a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "624e0a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-join-default",
+      "command": "sed",
+      "args": [
+        "-e",
+        "N;p"
+      ],
+      "stdin_hex": "610a620a630a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "610a620a610a620a630a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-join-quiet",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "N;p"
+      ],
+      "stdin_hex": "610a620a630a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "610a620a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-join-noLF",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "N;p"
+      ],
+      "stdin_hex": "610a62",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "610a62",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-join-EOF-default",
+      "command": "sed",
+      "args": [
+        "-e",
+        "N;s/a/X/"
+      ],
+      "stdin_hex": "61",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "61",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-join-EOF-quiet",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "N;p"
+      ],
+      "stdin_hex": "61",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-join-resets-success",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "s/a/A/;N;t yes;s/$/N/;b end;:yes;s/$/Y/;:end;p"
+      ],
+      "stdin_hex": "610a620a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "410a624e0a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-P-multiline",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "N;P"
+      ],
+      "stdin_hex": "610a620a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "610a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-P-single-noLF",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "P"
+      ],
+      "stdin_hex": "6f6e65",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "6f6e65",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-D-restart-flag",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        ":top;t yes;N;s/a/A/;D;:yes;p"
+      ],
+      "stdin_hex": "610a620a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "620a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-D-residual-numbering",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "1{h;N;};P;D"
+      ],
+      "stdin_hex": "610a620a630a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "610a620a630a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-D-hold-retained",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "1{h;N;D;};G;p"
+      ],
+      "stdin_hex": "610a620a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "620a610a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-D-no-newline",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "p;D;p"
+      ],
+      "stdin_hex": "6f6e65",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "6f6e65",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-append-autoprint",
+      "command": "sed",
+      "args": [
+        "-e",
+        "a\\\nA"
+      ],
+      "stdin_hex": "6f6e650a74776f0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "6f6e650a410a74776f0a410a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-append-quiet",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "a\\\nA"
+      ],
+      "stdin_hex": "6f6e650a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "410a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-insert-append-order",
+      "command": "sed",
+      "args": [
+        "-e",
+        "i\\\nI\na\\\nA\np"
+      ],
+      "stdin_hex": "6f6e650a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "490a6f6e650a6f6e650a410a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-append-delete-order",
+      "command": "sed",
+      "args": [
+        "-e",
+        "a\\\nA\nd"
+      ],
+      "stdin_hex": "6f6e650a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "410a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-append-b-empty",
+      "command": "sed",
+      "args": [
+        "-e",
+        "a\\\nA\nb"
+      ],
+      "stdin_hex": "6f6e650a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "6f6e650a410a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-append-q-order",
+      "command": "sed",
+      "args": [
+        "-e",
+        "a\\\nA\nq"
+      ],
+      "stdin_hex": "6f6e650a74776f0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "6f6e650a410a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-append-n-order",
+      "command": "sed",
+      "args": [
+        "-e",
+        "a\\\nA\nn\np"
+      ],
+      "stdin_hex": "6f6e650a74776f0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "6f6e650a410a74776f0a74776f0a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-append-join-order",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "a\\\nA\nN\np"
+      ],
+      "stdin_hex": "6f6e650a74776f0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "410a6f6e650a74776f0a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-append-join-EOF",
+      "command": "sed",
+      "args": [
+        "-e",
+        "a\\\nA\nN"
+      ],
+      "stdin_hex": "6f6e65",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "6f6e650a410a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-append-D-order",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "a\\\nA\nN\nP\nD"
+      ],
+      "stdin_hex": "610a620a630a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "410a610a410a620a410a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-insert-noLF",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "i\\\nI\np"
+      ],
+      "stdin_hex": "6f6e65",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "490a6f6e65",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-append-noLF",
+      "command": "sed",
+      "args": [
+        "-e",
+        "a\\\nA"
+      ],
+      "stdin_hex": "6f6e65",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "6f6e650a410a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-print-twice-noLF",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "p;p"
+      ],
+      "stdin_hex": "6f6e65",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "6f6e650a6f6e65",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-change-single",
+      "command": "sed",
+      "args": [
+        "-e",
+        "2c\\\nX"
+      ],
+      "stdin_hex": "610a620a630a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "610a580a630a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-change-range",
+      "command": "sed",
+      "args": [
+        "-e",
+        "2,3c\\\nX"
+      ],
+      "stdin_hex": "610a620a630a640a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "610a580a640a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-change-range-EOF",
+      "command": "sed",
+      "args": [
+        "-e",
+        "2,9c\\\nX"
+      ],
+      "stdin_hex": "610a620a630a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "610a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-change-regex-range",
+      "command": "sed",
+      "args": [
+        "-e",
+        "/start/,/end/c\\\nX"
+      ],
+      "stdin_hex": "6265666f72650a73746172740a6d69640a656e640a61667465720a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "6265666f72650a580a61667465720a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-change-append-order",
+      "command": "sed",
+      "args": [
+        "-e",
+        "a\\\nA\nc\\\nX"
+      ],
+      "stdin_hex": "6f6e650a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "580a410a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-text-escaped-newline",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "a\\\nleft\\\nright"
+      ],
+      "stdin_hex": "6f6e650a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "6c6566740a72696768740a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-text-empty",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "a\\\n"
+      ],
+      "stdin_hex": "6f6e650a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "0a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-text-EOF",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "a\\"
+      ],
+      "stdin_hex": "6f6e650a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-multi-join-boundary",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "N;p",
+        "one",
+        "two"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "one",
+          "content_text": "a\n"
+        },
+        {
+          "path": "two",
+          "content_text": "b"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "610a62",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-multi-n-boundary",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "n;p",
+        "one",
+        "two"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "one",
+          "content_text": "a"
+        },
+        {
+          "path": "two",
+          "content_text": "b\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "620a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-multi-hold-boundary",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "1h;2{G;p;}",
+        "one",
+        "two"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "one",
+          "content_text": "a\n"
+        },
+        {
+          "path": "two",
+          "content_text": "b\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "620a610a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-multi-range-boundary",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "2,3p",
+        "one",
+        "two"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "one",
+          "content_text": "a\nb"
+        },
+        {
+          "path": "two",
+          "content_text": "c\nd\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "620a630a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-multi-empty-file",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "$p",
+        "one",
+        "empty",
+        "two"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "one",
+          "content_text": "a\n"
+        },
+        {
+          "path": "empty",
+          "content_text": ""
+        },
+        {
+          "path": "two",
+          "content_text": "b"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "62",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-static-missing-label",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "p;b missing"
+      ],
+      "stdin_hex": "6f6e650a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 4,
+      "expected_stdout_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": false,
+      "coverage": [],
+      "timeout_ms": 10000,
+      "diagnostic_reason": "GNU status/stdout are retained; stderr follows the documented project diagnostic format.",
+      "expected_stderr_text": "sed: can't find label for jump to `missing'\n"
+    },
+    {
+      "id": "sed-spec-static-missing-label-input",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "p;b missing",
+        "absent-input"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 4,
+      "expected_stdout_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": false,
+      "coverage": [],
+      "timeout_ms": 10000,
+      "diagnostic_reason": "GNU status/stdout are retained; stderr follows the documented project diagnostic format.",
+      "expected_stderr_text": "sed: can't find label for jump to `missing'\n"
+    },
+    {
+      "id": "sed-spec-static-empty-label",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        ":;p"
+      ],
+      "stdin_hex": "6f6e650a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": false,
+      "coverage": [],
+      "timeout_ms": 10000,
+      "diagnostic_reason": "GNU status/stdout are retained; stderr follows the documented project diagnostic format.",
+      "expected_stderr_text": "sed: \":\" lacks a label\n"
+    },
+    {
+      "id": "sed-spec-static-open-group",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "p;{p"
+      ],
+      "stdin_hex": "6f6e650a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": false,
+      "coverage": [],
+      "timeout_ms": 10000,
+      "diagnostic_reason": "GNU status/stdout are retained; stderr follows the documented project diagnostic format.",
+      "expected_stderr_text": "sed: unmatched `{'\n"
+    },
+    {
+      "id": "sed-spec-static-close-group",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "p;}"
+      ],
+      "stdin_hex": "6f6e650a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": false,
+      "coverage": [],
+      "timeout_ms": 10000,
+      "diagnostic_reason": "GNU status/stdout are retained; stderr follows the documented project diagnostic format.",
+      "expected_stderr_text": "sed: unexpected `}'\n"
+    },
+    {
+      "id": "sed-spec-static-late-regex",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "p;s/\\(/X/"
+      ],
+      "stdin_hex": "6f6e650a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": false,
+      "coverage": [],
+      "timeout_ms": 10000,
+      "diagnostic_reason": "GNU status/stdout are retained; stderr follows the documented project diagnostic format.",
+      "expected_stderr_text": "sed: unmatched opening parenthesis\n"
+    },
+    {
+      "id": "sed-spec-lazy-unused-last-after-quit",
+      "command": "sed",
+      "args": [
+        "-e",
+        "q;$p",
+        "one",
+        "absent-input"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "one",
+          "content_text": "one\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "6f6e650a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-lazy-inactive-last-range",
+      "command": "sed",
+      "args": [
+        "-e",
+        "/never/,$p;q",
+        "one",
+        "absent-input"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "one",
+          "content_text": "one\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "6f6e650a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-quiet-append-join-EOF",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "a\\\nA\nN"
+      ],
+      "stdin_hex": "6f6e65",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "410a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-quiet-append-next-EOF",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "a\\\nA\nn"
+      ],
+      "stdin_hex": "6f6e65",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "410a",
+      "expected_stderr_hex": "",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [],
+      "timeout_ms": 10000
+    },
+    {
+      "id": "sed-spec-append-join-missing-default",
+      "command": "sed",
+      "args": [
+        "-e",
+        "a\\\nA\nN",
+        "one",
+        "absent-input"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "one",
+          "content_text": "one"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 2,
+      "expected_stdout_hex": "6f6e650a410a",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": false,
+      "coverage": [],
+      "timeout_ms": 10000,
+      "diagnostic_reason": "GNU status/stdout are retained; stderr follows the documented project diagnostic format.",
+      "expected_stderr_contains_all": [
+        "sed:",
+        "absent-input"
+      ],
+      "expected_stderr_ends_with_newline": true
+    },
+    {
+      "id": "sed-spec-append-join-missing-quiet",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "a\\\nA\nN",
+        "one",
+        "absent-input"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "one",
+          "content_text": "one"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 2,
+      "expected_stdout_hex": "410a",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": false,
+      "coverage": [],
+      "timeout_ms": 10000,
+      "diagnostic_reason": "GNU status/stdout are retained; stderr follows the documented project diagnostic format.",
+      "expected_stderr_contains_all": [
+        "sed:",
+        "absent-input"
+      ],
+      "expected_stderr_ends_with_newline": true
+    },
+    {
+      "id": "sed-spec-append-next-missing-default",
+      "command": "sed",
+      "args": [
+        "-e",
+        "a\\\nA\nn",
+        "one",
+        "absent-input"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "one",
+          "content_text": "one"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 2,
+      "expected_stdout_hex": "6f6e650a410a",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": false,
+      "coverage": [],
+      "timeout_ms": 10000,
+      "diagnostic_reason": "GNU status/stdout are retained; stderr follows the documented project diagnostic format.",
+      "expected_stderr_contains_all": [
+        "sed:",
+        "absent-input"
+      ],
+      "expected_stderr_ends_with_newline": true
+    },
+    {
+      "id": "sed-spec-append-next-missing-quiet",
+      "command": "sed",
+      "args": [
+        "-n",
+        "-e",
+        "a\\\nA\nn",
+        "one",
+        "absent-input"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "one",
+          "content_text": "one"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C"
+      },
+      "normalizations": [],
+      "expected_status": 2,
+      "expected_stdout_hex": "410a",
+      "source_version": "GNU sed 4.9; C-byte execution model",
+      "comparison": "contract",
+      "oracle": false,
+      "coverage": [],
+      "timeout_ms": 10000,
+      "diagnostic_reason": "GNU status/stdout are retained; stderr follows the documented project diagnostic format.",
+      "expected_stderr_contains_all": [
+        "sed:",
+        "absent-input"
+      ],
+      "expected_stderr_ends_with_newline": true
     }
   ]
 }

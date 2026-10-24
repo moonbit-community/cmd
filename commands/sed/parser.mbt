@@ -4,6 +4,11 @@ priv suberror SedError {
 }
 
 ///|
+priv suberror SedLabelError {
+  SedLabelError(String)
+}
+
+///|
 fn[T] fail(message : String) -> T raise SedError {
   raise SedError(message)
 }
@@ -28,6 +33,23 @@ enum Action {
   Quit
   Number
   Substitute(PatternRef, String, Bool, Int32, Bool)
+  HoldCopy
+  HoldAppend
+  Get
+  GetAppend
+  Exchange
+  Label
+  Jump(Int32)
+  TestJump(Int32, Bool)
+  Group(Int32)
+  EndGroup
+  Next
+  Join
+  PrintFirst
+  DeleteFirst
+  Append(String)
+  Insert(String)
+  Change(String)
 }
 
 ///|
@@ -35,8 +57,9 @@ struct Command {
   first : Address?
   last : Address?
   invert : Bool
-  action : Action
+  mut action : Action
   mut inside : Bool
+  mut closed : Bool
 }
 
 ///|
@@ -83,7 +106,23 @@ fn Script::pattern(self : Script, source : String) -> PatternRef raise {
   if source == "" {
     return Previous
   }
-  let re = @bytere.compile(source, extended=self.extended)
+  let normalized = StringBuilder()
+  let mut index = 0
+  while index < source.length() {
+    if source[index] == '\\' && index + 1 < source.length() {
+      if source[index + 1] == 'n' {
+        normalized.write_char('\n')
+      } else {
+        normalized.write_char('\\')
+        normalized.write_char(source[index + 1].to_int().unsafe_to_char())
+      }
+      index += 2
+    } else {
+      normalized.write_char(source[index].to_int().unsafe_to_char())
+      index += 1
+    }
+  }
+  let re = @bytere.compile(normalized.to_string(), extended=self.extended)
   Explicit(re)
 }
 
@@ -117,9 +156,68 @@ fn Script::address(self : Script) -> Address? raise {
 }
 
 ///|
+fn Script::label(self : Script) -> String {
+  self.blanks()
+  let begin = self.index
+  while self.index < self.source.length() &&
+        !(self.source[self.index]
+        is (';' | '\n' | '}' | '#' | ' ' | '\t' | '\r')) {
+    self.index += 1
+  }
+  self.source[begin:self.index].to_owned()
+}
+
+///|
+fn Script::text(self : Script) -> String raise {
+  self.blanks()
+  guard self.index < self.source.length() else {
+    fail("expected text after command")
+  }
+  if self.source[self.index] == '\\' {
+    self.index += 1
+    if self.index == self.source.length() {
+      return ""
+    }
+    if self.source[self.index] == '\n' {
+      self.index += 1
+    }
+  }
+  let result = StringBuilder()
+  while self.index < self.source.length() {
+    let c = self.source[self.index]
+    self.index += 1
+    if c == '\n' {
+      break
+    }
+    if c == '\\' && self.index == self.source.length() {
+      break
+    }
+    if c == '\\' && self.index < self.source.length() {
+      let next = self.source[self.index]
+      self.index += 1
+      result.write_char(
+        match next {
+          'n' => '\n'
+          't' => '\t'
+          'r' => '\r'
+          _ => next.to_int().unsafe_to_char()
+        },
+      )
+    } else {
+      result.write_char(c.to_int().unsafe_to_char())
+    }
+  }
+  result.write_char('\n')
+  result.to_string()
+}
+
+///|
 fn compile(source : String, extended : Bool) -> Array[Command] raise {
   let parser : Script = { source, extended, index: 0, }
   let commands : Array[Command] = []
+  let labels : Map[String, Int32] = Map([])
+  let jumps : Array[(Int32, String)] = []
+  let groups : Array[Int32] = []
   while parser.index < source.length() {
     parser.blanks()
     if parser.index == source.length() {
@@ -164,6 +262,43 @@ fn compile(source : String, extended : Bool) -> Array[Command] raise {
         Quit
       }
       '=' => Number
+      'h' => HoldCopy
+      'H' => HoldAppend
+      'g' => Get
+      'G' => GetAppend
+      'x' => Exchange
+      'n' => Next
+      'N' => Join
+      'P' => PrintFirst
+      'D' => DeleteFirst
+      ':' => {
+        guard first is None else { fail(": accepts no addresses") }
+        let label = parser.label()
+        guard label != "" else { fail("\":\" lacks a label") }
+        labels[label] = commands.length()
+        Label
+      }
+      'b' | 't' | 'T' => {
+        jumps.push((commands.length(), parser.label()))
+        if code == 'b' {
+          Jump(0)
+        } else {
+          TestJump(0, code == 't')
+        }
+      }
+      '{' => {
+        groups.push(commands.length())
+        Group(0)
+      }
+      '}' => {
+        guard first is None && !invert else { fail("} accepts no addresses") }
+        guard groups.pop() is Some(open) else { fail("unexpected `}'") }
+        commands[open].action = Group(commands.length() + 1)
+        EndGroup
+      }
+      'a' => Append(parser.text())
+      'i' => Insert(parser.text())
+      'c' => Change(parser.text())
       's' => {
         guard parser.index < source.length() else {
           fail("missing substitution delimiter")
@@ -193,7 +328,7 @@ fn compile(source : String, extended : Bool) -> Array[Command] raise {
         let mut print = false
         let mut occurrence = 0
         while parser.index < source.length() &&
-              !(source[parser.index] is (';' | '\n' | ' ' | '\t' | '\r')) {
+              !(source[parser.index] is (';' | '\n' | '}' | ' ' | '\t' | '\r')) {
           let flag = source[parser.index]
           parser.index += 1
           match flag {
@@ -223,12 +358,29 @@ fn compile(source : String, extended : Bool) -> Array[Command] raise {
           code.to_int().unsafe_to_char().to_string(),
         )
     }
-    parser.blanks()
-    if parser.index < source.length() &&
-      !(source[parser.index] is (';' | '\n' | '#')) {
-      fail("extra characters after command")
+    if !(code is ('{' | '}' | 'a' | 'i' | 'c')) {
+      parser.blanks()
+      if parser.index < source.length() &&
+        !(source[parser.index] is (';' | '\n' | '#' | '}')) {
+        fail("extra characters after command")
+      }
     }
-    commands.push({ first, last, invert, action, inside: false, })
+    commands.push({ first, last, invert, action, inside: false, closed: false, })
+  }
+  guard groups.is_empty() else { fail("unmatched `{'") }
+  for (index, name) in jumps {
+    let target = if name == "" {
+      commands.length()
+    } else {
+      guard labels.get(name) is Some(target) else {
+        raise SedLabelError("can't find label for jump to `" + name + "'")
+      }
+      target
+    }
+    commands[index].action = match commands[index].action {
+      TestJump(_, positive) => TestJump(target, positive)
+      _ => Jump(target)
+    }
   }
   commands
 }

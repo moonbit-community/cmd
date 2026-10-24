@@ -12,11 +12,19 @@ test "csplit parses BRE and repeats before any output files are created" {
   assert_eq(controls.length(), 2)
   assert_eq(controls[0].repeats, Some(3))
   assert_true(controls[1].pattern is Expression(_, 1, false))
-  assert_true(Regex(basic_expression("a\\+b")).execute("aaab") is Some(_))
-  assert_true(Regex(basic_expression("a+b")).execute("a+b") is Some(_))
-  try basic_expression("\\(a\\)\\1") catch {
-    _ => ()
-  } noraise {
-    _ => fail("must reject backreferences")
+  let plus = parse_pattern("/a\\+b/")
+  guard plus is Expression(pattern, 0, false) else {
+    fail("expected expression")
   }
+  assert_true(pattern.find_span("aaab") is Some(_))
+  let literal = parse_pattern("/a+b/")
+  guard literal is Expression(pattern, 0, false) else {
+    fail("expected expression")
+  }
+  assert_true(pattern.find_span("a+b") is Some(_))
+  let repeated = parse_pattern("/\\(a\\)\\1/")
+  guard repeated is Expression(pattern, 0, false) else {
+    fail("expected expression")
+  }
+  assert_eq(pattern.find_span("zaab"), Some((1, 3)))
 }

@@ -254,11 +254,12 @@
       "files": [],
       "environment": {},
       "normalizations": [],
-      "expected_status": 2,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "expr: backreferences and word assertions are not supported\n",
-      "comparison": "boundary",
-      "expected_rejection": "backreferences and word assertions"
+      "expected_status": 0,
+      "expected_stdout_text": "a\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
     },
     {
       "id": "p1-expr-overlapping-capture",
@@ -293,8 +294,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/expr@0.1.2 metadata contract",
-      "expected_stdout_text": "Usage: expr EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nEvaluate integer/string expressions: | & comparisons + - * / % :\nFunctions: match, substr, index, length; + quotes one operand.\nC-locale byte strings; regex backreferences and locale collation are unsupported.\n",
+      "source_version": "workspace cli/expr@0.2.0 metadata contract",
+      "expected_stdout_text": "Usage: expr EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nEvaluate integer/string expressions: | & comparisons + - * / % :\nFunctions: match, substr, index, length; + quotes one operand.\nC-byte BRE supports captures, backreferences and word assertions; locale collation is unsupported.\n",
       "expected_stderr_text": ""
     },
     {
@@ -313,8 +314,87 @@
         "version"
       ],
       "source_version": "workspace cli/expr@0.1.2 metadata contract",
-      "expected_stdout_text": "expr 0.1.2\n",
+      "expected_stdout_text": "expr 0.2.0\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "s1-expr-pattern-backreference",
+      "command": "expr",
+      "args": [
+        "aaaa",
+        ":",
+        "\\(a*\\)\\1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "aa\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11",
+      "expected_files": []
+    },
+    {
+      "id": "s1-expr-word-assertion",
+      "command": "expr",
+      "args": [
+        "foo!",
+        ":",
+        "\\<foo\\>"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "3\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11",
+      "expected_files": []
+    },
+    {
+      "id": "s1-expr-literal-unknown-escape",
+      "command": "expr",
+      "args": [
+        "n",
+        ":",
+        "\\n"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11",
+      "expected_files": []
+    },
+    {
+      "id": "s1-expr-cloned-nullable-reference-boundary",
+      "command": "expr",
+      "args": [
+        "aaaa",
+        ":",
+        "\\(a*\\)\\{2,\\}\\1"
+      ],
+      "stdin_text": "unread\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
     }
   ]
 }
