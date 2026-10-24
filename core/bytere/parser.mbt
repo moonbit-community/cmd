@@ -526,6 +526,25 @@ fn Tree::is_literal(self : Tree) -> Bool {
 }
 
 ///|
+fn Tree::literal_pattern(self : Tree) -> LiteralPattern? {
+  let parts = match self {
+    Sequence(parts) => parts
+    _ => [self]
+  }
+  let begin = parts[0] is Assert(Begin)
+  let end = parts[parts.length() - 1] is Assert(End)
+  let text = StringBuilder()
+  let left = if begin { 1 } else { 0 }
+  let right = parts.length() - (if end { 1 } else { 0 })
+  for index in left..<right {
+    let part = parts[index]
+    guard part.is_literal() else { return None }
+    ignore(part.literal_prefix(text))
+  }
+  Some({ text: text.to_string(), begin, end, })
+}
+
+///|
 fn Tree::literal_prefix(self : Tree, out : StringBuilder) -> Bool {
   match self {
     Empty => true

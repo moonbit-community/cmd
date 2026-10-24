@@ -319,6 +319,77 @@ test "byte regex literal prefix and capture-free rejection scan long records" {
 }
 
 ///|
+test "literal anchors use absolute record boundaries including empty spans" {
+  let prefix = @bytere.compile("^ab")
+  assert_eq(prefix.find_span("ab\nab"), Some((0, 2)))
+  assert_eq(prefix.find_span("zab"), None)
+  assert_eq(prefix.find_span("ab", start=1), None)
+  let suffix = @bytere.compile("ab$")
+  assert_eq(suffix.find_span("ab\nab", start=2), Some((3, 5)))
+  assert_eq(suffix.find_span("ab", start=1), None)
+  assert_eq(suffix.find_span("ab\n"), None)
+  assert_eq(suffix.find_span("a"), None)
+  let full = @bytere.compile("^ab$")
+  assert_eq(full.find_span("ab"), Some((0, 2)))
+  assert_eq(full.find_span("ab\n"), None)
+  assert_eq(full.find_span("zab"), None)
+  assert_eq(@bytere.compile("^").find_span("abc"), Some((0, 0)))
+  assert_eq(@bytere.compile("^").find_span("abc", start=1), None)
+  assert_eq(@bytere.compile("$").find_span("abc", start=3), Some((3, 3)))
+  assert_eq(@bytere.compile("^$").find_span(""), Some((0, 0)))
+  assert_eq(@bytere.compile("^$").find_span("\n"), None)
+  assert_eq(@bytere.compile("^a\nb$").find_span("a\nb"), Some((0, 3)))
+  assert_eq(@bytere.compile("^ab").find_span("ab", start=-1), None)
+  assert_eq(@bytere.compile("ab$").find_span("ab", start=3), None)
+}
+
+///|
+test "literal anchors retain whole-record and word endpoint filters" {
+  let prefix = @bytere.compile("^ab")
+  assert_eq(prefix.find_span("ab!", word=true), Some((0, 2)))
+  assert_eq(prefix.find_span("abc", word=true), None)
+  assert_eq(prefix.find_span("ab!", whole=true), None)
+  assert_eq(prefix.find_span("ab", whole=true, word=true), Some((0, 2)))
+  let suffix = @bytere.compile("ab$")
+  assert_eq(suffix.find_span("!ab", word=true), Some((1, 3)))
+  assert_eq(suffix.find_span("cab", word=true), None)
+  assert_eq(suffix.find_span("!ab", whole=true), None)
+  assert_eq(suffix.find_span("ab", whole=true, word=true), Some((0, 2)))
+  assert_eq(@bytere.compile("^-").find_span("-a", word=true), None)
+  assert_eq(@bytere.compile("^-").find_span("-!", word=true), Some((0, 1)))
+  assert_eq(@bytere.compile("^").find_span("abc", word=true), None)
+  assert_eq(@bytere.compile("$").find_span("abc", word=true), None)
+  assert_eq(
+    @bytere.compile("^").find_span("", whole=true, word=true),
+    Some((0, 0)),
+  )
+}
+
+///|
+test "literal anchor optimization leaves classes and captures on regex matching" {
+  let folded = @bytere.compile("^Ab$", ignore_case=true)
+  assert_eq(folded.find_span("aB", whole=true, word=true), Some((0, 2)))
+  assert_eq(folded.find_span("Ab", start=1), None)
+  assert_eq(@bytere.compile("^Ab$").find_span("aB"), None)
+  assert_eq(@bytere.compile("^a.b$").find_span("a\nb"), Some((0, 3)))
+  assert_eq(@bytere.compile("^a[bc]$").find_span("ac"), Some((0, 2)))
+  assert_eq(
+    @bytere.compile("^ab?$", extended=true).find_span("a"),
+    Some((0, 1)),
+  )
+  assert_eq(
+    @bytere.compile("^a|b$", extended=true).find_span("ab"),
+    Some((0, 1)),
+  )
+  assert_eq(@bytere.compile("ab^", extended=true).find_span("ab"), None)
+  let captured = @bytere.compile("^(ab)$", extended=true)
+  assert_eq(captured.group_count(), 1)
+  assert_eq(captured.find_span("ab"), Some((0, 2)))
+  assert_eq(captured.find("ab").unwrap().groups, [Some("ab"), Some("ab")])
+  assert_eq(@bytere.compile("^ab$").find("ab").unwrap().groups, [Some("ab")])
+}
+
+///|
 test "byte regex invalid syntax fails at compilation" {
   for
     source in [

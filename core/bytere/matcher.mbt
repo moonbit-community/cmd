@@ -93,11 +93,30 @@ fn Pattern::search(
     return None
   }
   if self.literal is Some(literal) {
+    if literal.begin || literal.end {
+      let left = if literal.begin {
+        0
+      } else {
+        value.length() - literal.text.length()
+      }
+      let end = left + literal.text.length()
+      return if left >= start &&
+        end <= value.length() &&
+        (!literal.end || end == value.length()) &&
+        value[left:end] == literal.text &&
+        accepted(value, left, end, whole, word) {
+        Some({ start: left, end, captures: [], })
+      } else {
+        None
+      }
+    }
     let mut position = start
     while position <= value.length() {
-      guard value[position:].find(literal) is Some(offset) else { return None }
+      guard value[position:].find(literal.text) is Some(offset) else {
+        return None
+      }
       let left = position + offset
-      let end = left + literal.length()
+      let end = left + literal.text.length()
       if accepted(value, left, end, whole, word) {
         return Some({ start: left, end, captures: [], })
       }
