@@ -467,8 +467,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/grep@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: grep [-EFGivnclLqHhxwrbszo] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "source_version": "workspace cli/grep@0.3.0 metadata contract",
+      "expected_stdout_text": "Usage: grep [-EFGivnclLqHhxwrbszo] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nBackreferences to nullable captures cloned by repetition are unsupported.\n",
       "expected_stderr_text": ""
     },
     {
@@ -487,8 +487,243 @@
         "version"
       ],
       "source_version": "workspace cli/grep@0.2.2 metadata contract",
-      "expected_stdout_text": "grep 0.2.2\n",
+      "expected_stdout_text": "grep 0.3.0\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "s1-grep-independent-backreferences",
+      "command": "grep",
+      "args": [
+        "-o",
+        "-e",
+        "\\(a\\)\\1",
+        "-e",
+        "\\(b\\)\\1"
+      ],
+      "stdin_text": "zaabb\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "aa\nbb\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_files": []
+    },
+    {
+      "id": "s1-grep-word-endpoints",
+      "command": "grep",
+      "args": [
+        "-Ewo",
+        "foo.|foo|[a!]*b"
+      ],
+      "stdin_text": "foo.a\nza!b\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "foo\nb\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_files": []
+    },
+    {
+      "id": "s1-grep-directional-word",
+      "command": "grep",
+      "args": [
+        "-o",
+        "\\<foo\\>"
+      ],
+      "stdin_text": "_foo foo!food\nfoo\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "foo\nfoo\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_files": []
+    },
+    {
+      "id": "s1-grep-ere-literal-errors",
+      "command": "grep",
+      "args": [
+        "-Eo",
+        "-e",
+        ")",
+        "-e",
+        "a{b"
+      ],
+      "stdin_text": "x)a{b\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": ")\na{b\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_files": []
+    },
+    {
+      "id": "s1-grep-ignore-case-negative-word-boundary",
+      "command": "grep",
+      "args": [
+        "-i",
+        "\\B[a-z]"
+      ],
+      "stdin_text": "Aa\nB\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "Aa\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_files": [],
+      "coverage": [
+        "-i"
+      ]
+    },
+    {
+      "id": "s1-grep-ignore-case-negative-word-class",
+      "command": "grep",
+      "args": [
+        "-i",
+        "\\W"
+      ],
+      "stdin_text": "Aa\n! \n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "! \n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_files": [],
+      "coverage": [
+        "-i"
+      ]
+    },
+    {
+      "id": "s1-grep-ignore-case-upper-class",
+      "command": "grep",
+      "args": [
+        "-i",
+        "[[:upper:]]"
+      ],
+      "stdin_text": "Aa\nz\n1\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "Aa\nz\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_files": [],
+      "coverage": [
+        "-i"
+      ]
+    },
+    {
+      "id": "s1-grep-ignore-case-negated-class",
+      "command": "grep",
+      "args": [
+        "-i",
+        "[^A]"
+      ],
+      "stdin_text": "Aa\nB\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "B\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_files": [],
+      "coverage": [
+        "-i"
+      ]
+    },
+    {
+      "id": "s1-grep-ignore-case-negative-space-class",
+      "command": "grep",
+      "args": [
+        "-i",
+        "\\S"
+      ],
+      "stdin_text": "Aa\n \n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "Aa\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_files": [],
+      "coverage": [
+        "-i"
+      ]
+    },
+    {
+      "id": "s1-grep-ignore-case-reference-original-bytes",
+      "command": "grep",
+      "args": [
+        "-i",
+        "-o",
+        "\\([A-Z]\\)\\1"
+      ],
+      "stdin_text": "Aa\nab\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "Aa\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_files": [],
+      "coverage": [
+        "-i"
+      ]
+    },
+    {
+      "id": "s1-grep-cloned-nullable-reference-boundary",
+      "command": "grep",
+      "args": [
+        "-E",
+        "(a*){0,2}\\1",
+        "missing-input"
+      ],
+      "stdin_text": "unread\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "grep: invalid regular expression: backreference to a cloned nullable capture is unsupported\n",
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "project matcher profile boundary",
+      "expected_rejection": "backreference to a cloned nullable capture is unsupported"
     }
   ]
 }

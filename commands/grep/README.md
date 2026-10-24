@@ -1,6 +1,6 @@
 # grep
 
-Version **0.2.2** behavior is documented here. The
+Version **0.3.0** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -20,14 +20,20 @@ diagnostics without hiding status 2. Matching, offsets, and record boundaries
 use a byte-oriented C-locale profile without changing the process environment.
 `-o` emits nonempty, nonoverlapping matches using leftmost-longest selection;
 `-b -o` reports the offset of each match. No group separator is emitted without
-context options. Backreferences are explicitly rejected because the public
-regex engine cannot represent their semantics. Locale-sensitive collation and
+context options. BRE/ERE patterns are compiled once by the shared C-byte
+matcher, including pattern backreferences and directional/ordinary word
+assertions. Each `-e` expression retains its own capture numbering. `-i` folds
+C-byte literals, classes and backreferences while preserving assertion grammar.
+Backreferences to nullable captures cloned by repetition are rejected at compile
+time; ordinary references and non-cloned star paths remain supported. See the
+[workspace support record](../../docs/compatibility.md#workspace-matcher-and-sed-candidates).
+Locale-sensitive collation and
 multibyte case folding are not currently implemented. Exit statuses are 0 for a selected
 line/file, 1 for no selection, and 2 for an error.
 
 ## Standalone metadata
 
-Standalone `--version` prints exactly `grep 0.2.2` followed by one
+Standalone `--version` prints exactly `grep 0.3.0` followed by one
 newline. Standalone `--help` starts with `Usage: grep`, lists both
 metadata options, and ends with a newline. Both write to stdout, leave stdin
 unread, and exit with status 0. Exact-version publication and verification

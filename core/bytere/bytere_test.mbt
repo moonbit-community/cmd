@@ -31,3 +31,337 @@ test "byte regex captures follow GNU sed 4.9 alternative order" {
     Some("a"),
   )
 }
+
+///|
+test "byte regex parses repetition and branch anchor spelling once" {
+  assert_eq(@bytere.compile("ab\\{2,3\\}c").find_span("abbbc"), Some((0, 5)))
+  assert_eq(
+    @bytere.compile("ab{2,3}c", extended=true).find_span("abbc"),
+    Some((0, 4)),
+  )
+  assert_eq(@bytere.compile("a\\{,2\\}").find_span("aaa"), Some((0, 2)))
+  assert_eq(@bytere.compile("a\\{0\\}").find_span("b"), Some((0, 0)))
+  assert_eq(
+    @bytere.compile("a{b", extended=true, grep_syntax=true).find_span("a{b"),
+    Some((0, 3)),
+  )
+  assert_eq(@bytere.compile("*a").find_span("*a"), Some((0, 2)))
+  assert_eq(@bytere.compile("a^b$c").find_span("a^b$c"), Some((0, 5)))
+  let anchored = @bytere.compile("^a\\|b$")
+  assert_eq(anchored.find_span("ab", start=1), Some((1, 2)))
+  assert_eq(@bytere.compile("^a").find_span("aa", start=1), None)
+  assert_eq(@bytere.compile("$").find_span("a\n"), Some((2, 2)))
+  assert_eq(@bytere.compile(".").find_span("\n"), Some((0, 1)))
+  assert_eq(@bytere.compile("\\n").find_span("n"), Some((0, 1)))
+  assert_eq(@bytere.compile("\\t").find_span("t"), Some((0, 1)))
+  assert_eq(@bytere.compile("\\\\n").find_span("\\n"), Some((0, 2)))
+  assert_eq(
+    @bytere.compile("a{2x}", extended=true, grep_syntax=true).find_span("a{2x}"),
+    Some((0, 5)),
+  )
+  assert_eq(
+    @bytere.compile("(a))", extended=true, grep_syntax=true).find_span("a)"),
+    Some((0, 2)),
+  )
+  assert_eq(
+    @bytere.compile(")", extended=true, grep_syntax=true).find_span("a)b"),
+    Some((1, 2)),
+  )
+}
+
+///|
+test "byte regex C classes and bracket bytes include no Unicode folding" {
+  let all = @bytere.text(Bytes::makei(256, i => i.to_byte()))
+  assert_eq(@bytere.compile("[[:alpha:]]\\+").find_span(all), Some((65, 91)))
+  assert_eq(@bytere.compile("[[:space:]]\\+").find_span(all), Some((9, 14)))
+  assert_eq(@bytere.compile("[[:cntrl:]]\\+").find_span(all), Some((0, 32)))
+  assert_eq(
+    @bytere.compile("[[:xdigit:]]\\+").find_span("xyAF09z"),
+    Some((2, 6)),
+  )
+  assert_eq(@bytere.compile("[]a-]\\+").find_span("-a]z"), Some((0, 3)))
+  assert_eq(@bytere.compile("[[.a.]-c]").find_span("b"), Some((0, 1)))
+  assert_eq(@bytere.compile("[[=a=]]").find_span("a"), Some((0, 1)))
+  assert_eq(
+    @bytere.compile("[^[:print:]]").find_span(@bytere.text(b"\xff")),
+    Some((0, 1)),
+  )
+  assert_eq(
+    @bytere.compile("[[:alpha:]]").find_span(@bytere.text(b"\xe9")),
+    None,
+  )
+  assert_eq(@bytere.compile("[\\]").find_span("\\"), Some((0, 1)))
+}
+
+///|
+test "byte regex directional and nondirectional word assertions use record context" {
+  assert_eq(@bytere.compile("\\<foo\\>").find_span("_foo foo!"), Some((5, 8)))
+  assert_eq(@bytere.compile("\\bfoo\\b").find_span("foo_ foo"), Some((5, 8)))
+  assert_eq(@bytere.compile("\\Boo\\B").find_span("food"), Some((1, 3)))
+  assert_eq(@bytere.compile("\\B").find_span(""), Some((0, 0)))
+  assert_eq(@bytere.compile("\\b").find_span(""), None)
+  assert_eq(@bytere.compile("\\w\\+\\s\\W").find_span("ab_ !"), Some((0, 5)))
+  assert_eq(
+    @bytere.compile("\\<foo").find_span("xfoo foo", start=2),
+    Some((5, 8)),
+  )
+}
+
+///|
+test "byte regex backreferences retain distinct capture states" {
+  let repeated = @bytere.compile("\\(a\\|ab\\)\\1")
+  let hit = repeated.find("zabab").unwrap()
+  assert_eq((hit.start, hit.end), (1, 5))
+  assert_eq(hit.groups, [Some("abab"), Some("ab")])
+  assert_eq(
+    @bytere.compile("^(a|aa)\\1$", extended=true).find_span("aaaa"),
+    Some((0, 4)),
+  )
+  assert_eq(@bytere.compile("(a)?b\\1", extended=true).find_span("b"), None)
+  assert_eq(
+    @bytere.compile("()\\1", extended=true).find_span("x"),
+    Some((0, 0)),
+  )
+  assert_eq(
+    @bytere.compile("(a*)b\\1", extended=true).find_span("aabaa"),
+    Some((0, 5)),
+  )
+  assert_eq(
+    @bytere.compile("(a|b)*\\1", extended=true).find_span("abb"),
+    Some((0, 3)),
+  )
+  let raw = @bytere.text(b"\x00\xff\x00\xff")
+  assert_eq(
+    @bytere.compile("(..)\\1", extended=true).find_span(raw),
+    Some((0, 4)),
+  )
+  assert_eq(
+    @bytere.compile("(a*)*\\1", extended=true).find("a").unwrap().groups,
+    [Some("a"), Some("")],
+  )
+  assert_eq(
+    @bytere.compile("(a*)*\\1", extended=true).find("aa").unwrap().groups,
+    [Some("aa"), Some("a")],
+  )
+  assert_eq(
+    @bytere.compile("(a*)*\\1", extended=true).find("aaaa").unwrap().groups,
+    [Some("aaaa"), Some("aa")],
+  )
+  assert_eq(
+    @bytere.compile("(a|aa)*\\1", extended=true).find("aaaa").unwrap().groups,
+    [Some("aaaa"), Some("a")],
+  )
+  assert_eq(
+    @bytere.compile("^(a|aa)(a*)\\1$", extended=true).find("aaaa").unwrap().groups,
+    [Some("aaaa"), Some("a"), Some("aa")],
+  )
+  // GNU reports the previous non-empty optional capture after an empty final
+  // iteration; the reference itself used that iteration's raw empty span.
+  let optional = @bytere.compile("(a?)*\\1", extended=true)
+  assert_eq(optional.find("").unwrap().groups, [Some(""), Some("")])
+  assert_eq(optional.find("a").unwrap().groups, [Some("a"), Some("a")])
+  assert_eq(optional.find("aa").unwrap().groups, [Some("aa"), Some("a")])
+  assert_eq(optional.find("aaaa").unwrap().groups, [Some("aaaa"), Some("a")])
+  assert_eq(optional.find_span("a"), Some((0, 1)))
+}
+
+///|
+test "byte regex rejects references to cloned nullable captures at compilation" {
+  for
+    source in [
+      "(a*){0,2}\\1", "(a*){0,3}\\1", "(a*){1,2}\\1", "(a*){1,}\\1", "(a*){2}\\1",
+      "(a*){2,}\\1", "(a*){2,3}\\1", "(a*)+\\1", "(a?){2}\\1", "(a|){0,2}\\1", "(){2}\\1",
+      "(^){2}\\1", "(a(b?)){2}\\2", "((a?){2})\\2", "()(\\1){2}\\2", "((a*)\\2){2}\\1",
+    ] {
+    let diagnostic = try {
+      ignore(@bytere.compile(source, extended=true))
+      "accepted"
+    } catch {
+      @bytere.PatternError(message) => message
+      failure => failure.to_string()
+    }
+    assert_eq(
+      diagnostic,
+      "backreference to a cloned nullable capture is unsupported",
+      msg=source,
+    )
+  }
+  let diagnostic = try {
+    ignore(@bytere.compile("\\(A*\\)\\{2,\\}\\1", ignore_case=true))
+    "accepted"
+  } catch {
+    @bytere.PatternError(message) => message
+    failure => failure.to_string()
+  }
+  assert_eq(
+    diagnostic, "backreference to a cloned nullable capture is unsupported",
+  )
+}
+
+///|
+test "byte regex boundary preserves nonnullable clones and noncloned captures" {
+  for
+    (source, input, expected) in [
+      ("(a){2}\\1", "aaa", Some((0, 3))),
+      ("(a+){2}\\1", "aaaaaa", Some((0, 6))),
+      ("(a(b?)){2}\\1", "aaa", Some((0, 3))),
+      ("(a*){0,1}\\1", "aaaa", Some((0, 4))),
+      ("(a*){1}\\1", "aaaa", Some((0, 4))),
+      ("(a*)*\\1", "aaaa", Some((0, 4))),
+      ("(a?)*\\1", "a", Some((0, 1))),
+      ("(){0}\\1", "", None),
+    ] {
+    assert_eq(
+      @bytere.compile(source, extended=true).find_span(input),
+      expected,
+      msg=source,
+    )
+  }
+  assert_eq(
+    @bytere.compile("((a*){2})\\1", extended=true).find("aa").unwrap().groups,
+    [Some("aa"), Some("a"), Some("")],
+  )
+  assert_eq(
+    @bytere.compile("^(a){2}\\1$", extended=true, ignore_case=true)
+    .find("aAA")
+    .unwrap().groups,
+    [Some("aAA"), Some("A")],
+  )
+}
+
+///|
+test "byte regex repeated groups retain GNU empty iteration captures" {
+  assert_eq(
+    @bytere.compile("((a*)*){2}", extended=true).find("aa").unwrap().groups,
+    [Some("aa"), Some(""), Some("")],
+  )
+  assert_eq(
+    @bytere.compile("(a*)*", extended=true).find("aa").unwrap().groups[1],
+    Some("aa"),
+  )
+  assert_eq(
+    @bytere.compile("(a*)*", extended=true).find("x").unwrap().groups[1],
+    Some(""),
+  )
+  assert_eq(
+    @bytere.compile("((a*)*)*", extended=true).find("aa").unwrap().groups,
+    [Some("aa"), Some("aa"), Some("aa")],
+  )
+  assert_eq(
+    @bytere.compile("(a*){2}", extended=true).find("aa").unwrap().groups[1],
+    Some(""),
+  )
+  assert_eq(
+    @bytere.compile("(a*){2,}", extended=true).find("aa").unwrap().groups[1],
+    Some("aa"),
+  )
+  assert_eq(
+    @bytere.compile("(a*){0,2}", extended=true).find("aa").unwrap().groups[1],
+    Some(""),
+  )
+  assert_eq(
+    @bytere.compile("(a|(b))*", extended=true).find("ba").unwrap().groups,
+    [Some("ba"), Some("a"), Some("b")],
+  )
+  assert_eq(
+    @bytere.compile("(a*)*\\1", extended=true).find_span("aaaa"),
+    Some((0, 4)),
+  )
+}
+
+///|
+test "byte regex endpoint filters consider shorter accepted alternatives" {
+  let pattern = @bytere.compile("a-|a", extended=true)
+  assert_eq(pattern.find_span("a-x"), Some((0, 2)))
+  assert_eq(pattern.find_span("a-x", word=true), Some((0, 1)))
+  assert_eq(
+    @bytere.compile("[a!]*b").find_span("za!b", word=true),
+    Some((3, 4)),
+  )
+  assert_eq(
+    @bytere.compile("a|aa", extended=true).find_span("aa", whole=true),
+    Some((0, 2)),
+  )
+  assert_eq(
+    @bytere.compile("a|aa", extended=true).find_span("zaa", whole=true),
+    None,
+  )
+  assert_eq(@bytere.compile("a").find_span("a", start=2), None)
+  assert_eq(@bytere.compile("a").find_span("a", start=-1), None)
+}
+
+///|
+test "byte regex literal prefix and capture-free rejection scan long records" {
+  let input = String::make(12000, 'a')
+  assert_eq(@bytere.compile("a*b").find_span(input), None)
+  assert_eq(@bytere.compile("(a*)*b", extended=true).find_span(input), None)
+  assert_eq(
+    @bytere.compile("prefix[0-9]*").find_span(input + "prefix123"),
+    Some((12000, 12009)),
+  )
+  assert_eq(
+    @bytere.compile("literal").find_span(input + "literal"),
+    Some((12000, 12007)),
+  )
+  assert_eq(@bytere.compile("").find_span("abc", start=2), Some((2, 2)))
+  let prefix = @bytere.compile("prefix[0-9]+$", extended=true)
+  assert_eq(
+    prefix.find_span("prefixX" + input + "prefix123"),
+    Some((12007, 12016)),
+  )
+  assert_eq(prefix.find_span("prefixX" + input), None)
+  assert_eq(
+    prefix.find_span("prefixX" + input + "prefix123", start=7),
+    Some((12007, 12016)),
+  )
+  assert_eq(prefix.find_span("prefixX" + input + "prefix123", whole=true), None)
+  assert_eq(prefix.find_span("prefixX" + input + "prefix123", word=true), None)
+}
+
+///|
+test "byte regex invalid syntax fails at compilation" {
+  for
+    source in [
+      "\\", "[a", "[z-a]", "[[:unknown:]]", "\\(", "\\)", "\\1", "\\(a\\1\\)", "a\\{3,2\\}",
+      "a\\{32768\\}",
+    ] {
+    let rejected = try {
+      ignore(@bytere.compile(source))
+      false
+    } catch {
+      _ => true
+    }
+    assert_true(rejected, msg=source)
+  }
+  for
+    source in [
+      "(?x)", "(a", "a)", "{1}", "{b", "a{3,2}", "a{32768}", "a{b", "a{2x}", "a{}",
+    ] {
+    let rejected = try {
+      ignore(@bytere.compile(source, extended=true))
+      false
+    } catch {
+      _ => true
+    }
+    assert_true(rejected, msg=source)
+  }
+}
+
+///|
+test "ASCII case folding preserves assertion grammar and negated classes" {
+  for
+    (source, input, expected) in [
+      ("\\B[A-Z]+\\W", "aB!", Some((1, 3))),
+      ("[[:upper:]]+", "aAz", Some((0, 3))),
+      ("[^A]+", "aAbB", Some((2, 4))),
+      ("\\S+", " Aa ", Some((1, 3))),
+      ("\\W+", "Ab !", Some((2, 4))),
+    ] {
+    let pattern = @bytere.compile(source, extended=true, ignore_case=true)
+    assert_eq(pattern.find_span(input), expected, msg=source)
+  }
+  let pattern = @bytere.compile("\\([A-Z]\\)\\1", ignore_case=true)
+  let hit = pattern.find("Aa").unwrap()
+  assert_eq(hit.groups, [Some("Aa"), Some("A")])
+  assert_true(@bytere.compile("A").find("a") is None)
+}

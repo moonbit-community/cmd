@@ -23,48 +23,59 @@ fn PatternRef::resolve(
 }
 
 ///|
-fn Address::matches(
+async fn Address::matches(
   self : Address,
-  line : Int32,
-  last : Bool,
+  input : Input,
   text : String,
   runtime : Runtime,
-) -> Bool raise {
+) -> Bool {
   match self {
-    Number(n) => n == line
-    Last => last
-    Search(re) => re.resolve(runtime).find(text) is Some(_)
+    Number(n) => n == input.number
+    Last => !input.has_next()
+    Search(re) => re.resolve(runtime).find_span(text) is Some(_)
   }
 }
 
 ///|
-fn Command::selected(
+async fn Command::selected(
   self : Command,
-  line : Int32,
-  last : Bool,
+  input : Input,
   text : String,
   runtime : Runtime,
-) -> Bool raise {
+) -> Bool {
   let mut selected = false
+  let line = input.number
   if self.last is Some(end) {
     let was_inside = self.inside
-    if !self.inside && self.first.unwrap().matches(line, last, text, runtime) {
+    let starts = if self.inside {
+      false
+    } else if self.first is Some(Number(n)) {
+      !self.closed && line >= n
+    } else {
+      self.first.unwrap().matches(input, text, runtime)
+    }
+    if !self.inside && starts {
       self.inside = true
     }
     selected = self.inside
     if self.inside {
       let ended = match end {
         Number(n) => line >= n
-        Last => last
-        Search(_) => was_inside && end.matches(line, last, text, runtime)
+        Last => !input.has_next()
+        Search(_) => was_inside && end.matches(input, text, runtime)
       }
       if ended {
         self.inside = false
+        self.closed = true
+        if end is Number(n) && line > n {
+          selected = !was_inside &&
+            self.first.unwrap().matches(input, text, runtime)
+        }
       }
     }
   } else {
     selected = self.first is None ||
-      self.first.unwrap().matches(line, last, text, runtime)
+      self.first.unwrap().matches(input, text, runtime)
   }
   if self.invert {
     !selected
@@ -164,59 +175,310 @@ async fn Runtime::emit(
   if terminated {
     @stdio.stdout.write(b"\n")
   }
-  self.missing_newline = !terminated && text != "" && !text.has_suffix("\n")
+  self.missing_newline = !terminated
 }
 
 ///|
-async fn execute_line(
-  commands : Array[Command],
-  line : @stream.Line,
-  number : Int32,
-  last : Bool,
-  quiet : Bool,
-  runtime : Runtime,
-) -> Bool {
-  let mut text = @bytere.text(line.data)
-  for command in commands {
-    if !command.selected(number, last, text, runtime) {
-      continue
-    }
-    match command.action {
-      Print => runtime.emit(text, line.terminated)
-      Number => runtime.emit(number.to_string(), true)
-      Delete => return false
-      Quit => {
-        if !quiet {
-          runtime.emit(text, line.terminated)
-        }
-        return true
-      }
-      Substitute(reference, replacement, global, occurrence, print) => {
-        let re = reference.resolve(runtime)
-        let mut r = 0
-        while r < replacement.length() {
-          if replacement[r] == '\\' && r + 1 < replacement.length() {
-            r += 1
-            if replacement[r] >= '1' &&
-              replacement[r] <= '9' &&
-              replacement[r].to_int() - 48 > re.group_count() {
-              fail("invalid replacement backreference")
-            }
-          }
-          r += 1
-        }
-        let (value, changed) = substitute(
-          re, text, replacement, global, occurrence,
-        )
-        text = value
-        if print && changed {
-          runtime.emit(text, line.terminated)
-        }
-      }
-    }
+struct Space {
+  text : String
+  terminated : Bool
+}
+
+///|
+fn Space::append(self : Space, other : Space) -> Space {
+  { text: self.text + "\n" + other.text, terminated: other.terminated, }
+}
+
+///|
+struct Input {
+  paths : Array[String]
+  mut index : Int32
+  mut path : String
+  mut file : @fs.File?
+  mut reader : &@io.Reader?
+  mut buffer : Bytes
+  mut position : Int32
+  mut number : Int32
+  mut status : Int32
+}
+
+///|
+fn Input::close(self : Input) -> Unit {
+  if self.file is Some(file) {
+    file.close()
   }
-  if !quiet {
-    runtime.emit(text, line.terminated)
+  self.file = None
+  self.reader = None
+  self.buffer = b""
+  self.position = 0
+}
+
+///|
+async fn Input::open_next(self : Input) -> Bool {
+  while self.index < self.paths.length() {
+    self.path = self.paths[self.index]
+    self.index += 1
+    if self.path == "-" {
+      self.reader = Some((@stdio.stdin : &@io.Reader))
+      return true
+    }
+    try {
+      let file = @fs.open(self.path, mode=ReadOnly)
+      self.file = Some(file)
+      self.reader = Some((file : &@io.Reader))
+      return true
+    } catch {
+      err => {
+        @stdio.stderr.write("sed: \{self.path}: \{err}\n")
+        self.status = 2
+      }
+    }
   }
   false
+}
+
+///|
+async fn Input::fill(self : Input) -> Bool {
+  if self.position < self.buffer.length() {
+    return true
+  }
+  guard self.reader is Some(reader) else { return false }
+  let chunk = reader.read_some(max_len=@stream.chunk_size) catch {
+    err => {
+      @stdio.stderr.write("sed: \{self.path}: \{err}\n")
+      self.status = 2
+      None
+    }
+  }
+  match chunk {
+    Some(bytes) => {
+      self.buffer = bytes
+      self.position = 0
+      true
+    }
+    None => {
+      self.close()
+      false
+    }
+  }
+}
+
+///|
+// EOF lookahead retains at most one bounded chunk, rather than consuming a
+// complete next record before n/N can flush their pending append output.
+async fn Input::has_next(self : Input) -> Bool {
+  for ;; {
+    if self.fill() {
+      return true
+    }
+    if !self.open_next() {
+      return false
+    }
+  }
+}
+
+///|
+async fn Input::next(self : Input) -> @stream.Line? {
+  guard self.has_next() else { return None }
+  let bytes : Array[Byte] = []
+  for ;; {
+    while self.position < self.buffer.length() {
+      let byte = self.buffer[self.position]
+      self.position += 1
+      if byte == b'\n' {
+        self.number += 1
+        return Some({ data: Bytes::from_array(bytes), terminated: true, })
+      }
+      bytes.push(byte)
+    }
+    if !self.fill() {
+      self.number += 1
+      return Some({ data: Bytes::from_array(bytes), terminated: false, })
+    }
+  }
+}
+
+///|
+async fn Runtime::finish_line(self : Runtime) -> Unit {
+  if self.missing_newline {
+    @stdio.stdout.write(b"\n")
+    self.missing_newline = false
+  }
+}
+
+///|
+async fn Runtime::text(self : Runtime, text : String) -> Unit {
+  if text != "" {
+    self.finish_line()
+    @stdio.stdout.write(@bytere.bytes(text))
+  }
+}
+
+///|
+async fn flush_append(
+  queue : Array[String],
+  runtime : Runtime,
+  force~ : Bool = false,
+) -> Unit {
+  if queue.is_empty() && !force {
+    return
+  }
+  runtime.finish_line()
+  for text in queue {
+    @stdio.stdout.write(@bytere.bytes(text))
+  }
+  queue.clear()
+}
+
+///|
+async fn execute(
+  commands : Array[Command],
+  input : Input,
+  quiet : Bool,
+  runtime : Runtime,
+) -> Unit {
+  let mut hold = Space::{ text: "", terminated: true, }
+  let queue : Array[String] = []
+  for ;; {
+    flush_append(queue, runtime)
+    guard input.next() is Some(line) else { break }
+    let mut pattern = Space::{
+      text: @bytere.text(line.data),
+      terminated: line.terminated,
+    }
+    let mut replaced = false
+    let mut pc = 0
+    let mut print_cycle = true
+    while pc < commands.length() {
+      let command = commands[pc]
+      let selected = command.selected(input, pattern.text, runtime)
+      if !selected {
+        pc = match command.action {
+          Group(target) => target
+          _ => pc + 1
+        }
+        continue
+      }
+      match command.action {
+        Label | EndGroup | Group(_) => ()
+        Jump(target) => {
+          pc = target
+          continue
+        }
+        TestJump(target, positive) => {
+          let jump = replaced == positive
+          if replaced {
+            replaced = false
+          }
+          if jump {
+            pc = target
+            continue
+          }
+        }
+        Print => runtime.emit(pattern.text, pattern.terminated)
+        PrintFirst =>
+          match pattern.text.find("\n") {
+            Some(end) => runtime.emit(pattern.text[:end].to_owned(), true)
+            None => runtime.emit(pattern.text, pattern.terminated)
+          }
+        Number => runtime.emit(input.number.to_string(), true)
+        Delete => {
+          print_cycle = false
+          break
+        }
+        DeleteFirst =>
+          match pattern.text.find("\n") {
+            Some(end) => {
+              pattern = { ..pattern, text: pattern.text[end + 1:].to_owned(), }
+              pc = 0
+              continue
+            }
+            None => {
+              print_cycle = false
+              break
+            }
+          }
+        Quit => {
+          if !quiet {
+            runtime.emit(pattern.text, pattern.terminated)
+          }
+          flush_append(queue, runtime, force=true)
+          return
+        }
+        HoldCopy => hold = pattern
+        HoldAppend => hold = hold.append(pattern)
+        Get => pattern = hold
+        GetAppend => pattern = pattern.append(hold)
+        Exchange => {
+          let previous = pattern
+          pattern = hold
+          hold = previous
+        }
+        Append(text) => queue.push(text)
+        Insert(text) => runtime.text(text)
+        Change(text) => {
+          if !command.inside {
+            runtime.text(text)
+          }
+          print_cycle = false
+          break
+        }
+        Next | Join => {
+          let join = command.action is Join
+          if !join && !quiet {
+            runtime.emit(pattern.text, pattern.terminated)
+          }
+          if !input.has_next() {
+            if join && !quiet {
+              runtime.emit(pattern.text, pattern.terminated)
+            }
+            print_cycle = false
+            break
+          }
+          flush_append(queue, runtime)
+          guard input.next() is Some(next) else {
+            print_cycle = false
+            break
+          }
+          let space = Space::{
+            text: @bytere.text(next.data),
+            terminated: next.terminated,
+          }
+          pattern = if join { pattern.append(space) } else { space }
+          replaced = false
+        }
+        Substitute(reference, replacement, global, occurrence, print) => {
+          let re = reference.resolve(runtime)
+          let mut r = 0
+          while r < replacement.length() {
+            if replacement[r] == '\\' && r + 1 < replacement.length() {
+              r += 1
+              if replacement[r] >= '1' &&
+                replacement[r] <= '9' &&
+                replacement[r].to_int() - 48 > re.group_count() {
+                fail("invalid replacement backreference")
+              }
+            }
+            r += 1
+          }
+          let (value, changed) = substitute(
+            re,
+            pattern.text,
+            replacement,
+            global,
+            occurrence,
+          )
+          pattern = { ..pattern, text: value, }
+          replaced = replaced || changed
+          if print && changed {
+            runtime.emit(pattern.text, pattern.terminated)
+          }
+        }
+      }
+      pc += 1
+    }
+    if print_cycle && !quiet {
+      runtime.emit(pattern.text, pattern.terminated)
+    }
+  }
 }

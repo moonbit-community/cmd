@@ -57,7 +57,7 @@ async fn partition(
           let mut found = None
           let begin = @cmp.maximum(first, searched + 1)
           for line in begin..<count {
-            if regex.execute(line_text(data, starts[line], starts[line + 1]))
+            if regex.find_span(line_text(data, starts[line], starts[line + 1]))
               is Some(_) {
               found = Some(line)
               break
@@ -113,8 +113,10 @@ fn help_message() -> String {
     #|      --help               display this help and exit
     #|      --version            display version and exit
     #|
-    #|Existing output paths, custom suffix formats, backreferences, non-ASCII
-    #|regex patterns, and locale-specific matching are unsupported.
+    #|BRE matching includes backreferences, byte classes and word assertions.
+    #|Backreferences to nullable captures cloned by repetition are unsupported.
+    #|Existing output paths, custom suffix formats and locale-specific matching
+    #|are unsupported.
   message
 }
 
@@ -122,7 +124,7 @@ fn help_message() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("csplit 0.1.2\n")
+    @stdio.stdout.write("csplit 0.2.0\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [
@@ -146,7 +148,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("csplit 0.1.2\n")
+    @stdio.stdout.write("csplit 0.2.0\n")
     return
   }
   let (controls, width) = try {
@@ -159,6 +161,11 @@ async fn main {
     }
     (parse_controls(parsed.operands[1:]), width)
   } catch {
+    @bytere.PatternError(message) => {
+      @stdio.stderr.write("csplit: \{message}\n")
+      @sys.exit(2)
+      return
+    }
     err => {
       @stdio.stderr.write("csplit: \{err}\n")
       @sys.exit(2)

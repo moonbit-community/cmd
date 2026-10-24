@@ -249,9 +249,12 @@ pub fn parse_intent(value : Json) -> ScopeIntent raise {
       @testkit.safe_relative_path(boundary.adr) &&
       boundary.support_record.has_prefix("docs/") &&
       boundary.adr.has_prefix("docs/adr/") &&
-      !boundary.rejection_tests.is_empty() else {
+      (
+        !boundary.rejection_tests.is_empty() ||
+        !boundary.replacement_behaviors.is_empty()
+      ) else {
       fail(
-        "boundary requires support, ADR, unlock condition and rejection evidence",
+        "boundary requires support, ADR, unlock condition and rejection or replacement evidence",
       )
     }
   }

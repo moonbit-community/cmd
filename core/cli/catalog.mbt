@@ -134,6 +134,9 @@ pub fn command_catalog() -> Array[CommandContract] {
         "cnewer", "newerXY", "used", "readable", "writable", "executable", "xtype",
       ],
     ),
+    // grep, sed, csplit and expr share compiled C-byte BRE/ERE matching;
+    // Capture backreferences and word assertions do not invoke a host engine.
+    // Referenced nullable captures cloned by repetition reject at compilation.
     contract("grep", Core, FileOrStdin, LineStream, [FileRead], [
       "after-context", "before-context", "basic-regexp", "binary-files", "byte-offset",
       "context", "count", "exclude", "extended-regexp", "file", "files-with-matches",
@@ -351,6 +354,8 @@ pub fn command_catalog() -> Array[CommandContract] {
       "binary", "check", "ignore-missing", "quiet", "status", "strict", "text", "warn",
       "zero",
     ]),
+    // The workspace sed instruction machine adds hold, branches and multiline
+    // cycles; in-place replacement remains a separate filesystem boundary.
     contract("sed", Core, FileOrStdin, ByteStream, [FileRead], [
       "expression", "file", "extended-regexp", "quiet", "silent", "in-place",
     ]),

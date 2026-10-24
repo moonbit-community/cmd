@@ -1,6 +1,6 @@
 # csplit
 
-Version **0.1.2** behavior is documented here. The
+Version **0.2.0** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -25,15 +25,19 @@ for created files unless `-s`/`--silent` or `-q`/`--quiet` is selected.
 `-z`/`--elide-empty-files` omits empty fragments. Split failures remove the files
 created by that invocation unless `-k`/`--keep-files` is used.
 
-Input is buffered and matching uses ASCII patterns over byte-valued lines.
-Existing output paths are refused. Backreferences, word extensions, non-ASCII
-patterns, locale-sensitive matching, custom suffix formats and
+Input is buffered. The shared C-byte BRE matcher compiles each expression once
+and supports capture backreferences, byte classes and word assertions.
+Backreferences to nullable captures cloned by repetition are rejected before
+input or output files are opened; ordinary references and non-cloned star paths
+remain supported. See the
+[workspace support record](../../docs/compatibility.md#workspace-matcher-and-sed-candidates).
+Existing output paths are refused. Locale-sensitive matching, custom suffix formats and
 `--suppress-matched` are rejected. `--help` and `--version` provide command
 information.
 
 ## Standalone metadata
 
-Standalone `--version` prints exactly `csplit 0.1.2` followed by one
+Standalone `--version` prints exactly `csplit 0.2.0` followed by one
 newline. Standalone `--help` starts with `Usage: csplit`, lists both
 metadata options, and ends with a newline. Both write to stdout, leave stdin
 unread, and exit with status 0. Exact-version publication and verification

@@ -6,6 +6,13 @@ Repository: `moonbit-community/cmd`
 
 Status: C0/C1/C3/C4 accepted. The benchmark pilot is merged; complete benchmarks, command algorithms and final publication remain pending.
 
+Current development: G1/G2 has a locally validated source commit in PR #47.
+B2 has functional coverage preparation and compact corpus sweeps,
+with complete sampling/resources still open. S2/S3 is implemented and locally
+checked; S1 uses the approved cloned-nullable-capture rejection profile;
+see the [S development report](reports/2026-10-24-s-matcher-sed.md). No G/S
+publication or overall performance acceptance is claimed.
+
 Source: `cmd-comprehensive-optimization-plan-2026-10-23.md`, supplied by the user.
 
 The user's 2026-10-24 direction removes C2. The execution baseline is accepted
@@ -625,6 +632,13 @@ limits; report worst-case resources without claiming linearity. Support captures
 pattern backreferences, C-byte classes/word assertions including applicable
 `\<`, `\>`, `\b`, `\B`. Preserve Pattern::find/Hit; verify expr and separately
 register changes for grep/csplit/tac/other consumers.
+
+The user's 2026-10-24 scope amendment rejects references to nullable captures
+whose closing capture is cloned by repetition, including bounded repeats, plus
+and cloning by outer groups. Preserve ordinary references, nonnullable repeated
+captures and non-cloned star paths. This is project algorithm work, not a public
+API gap. Retain explicit rejection regressions and the support/ADR unlock
+conditions; do not add a second GNU cache/replay system for this round.
 
 Sed explicitly owns PC, pattern/hold spaces, address-range state, substitution
 flag, deferred append queue and input state. Compile labels/groups/jumps.

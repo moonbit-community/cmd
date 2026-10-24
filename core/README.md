@@ -20,6 +20,21 @@ input/output buffers, 32 KiB history and bounded Huffman tables. Existing
 GNU interoperability and selected size results; performance acceptance remains
 pending. Only changed command packages select this new core coordinate.
 
+The same candidate parses C-byte BRE/ERE patterns once in `bytere`. `find`
+retains `Hit` captures; `find_span` returns offsets without allocating capture
+strings and omits capture state when no backreference can observe it. Ordinary
+expressions use ordered Thompson threads. Capturing searches retain distinct
+tag states; backreferences use an explicit stack and can require exponential
+resources. The optional `grep_syntax` selects GNU grep's literal malformed-ERE
+interval and unmatched-right-parenthesis rules; the default retains sed's
+stricter grammar. `ignore_case` expands ASCII literals/classes before class
+negation and compares backreferences without changing captured output bytes.
+No matching-step limit is imposed. Compilation rejects a reference when its
+group is structurally nullable and repetition emits multiple copies of its
+closing capture. This includes bounded repeats, plus and cloning by an outer
+group; nonnullable repeated captures and non-cloned star paths remain supported.
+See the [development report](../docs/reports/2026-10-24-s-matcher-sed.md).
+
 Published **0.7.0** uses async **0.22.5**.
 It added public `EmptyReplyFailure`, `PartialBodyFailure`, `ReceiveFailure` and
 `RewindFailure` classifications,

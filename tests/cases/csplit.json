@@ -216,8 +216,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/csplit@0.1.2 metadata contract",
-      "expected_stdout_text": "Usage: csplit [OPTION]... FILE PATTERN...\nSplit FILE (- for stdin) at line numbers or basic regular expressions.\nPatterns: NUMBER, /REGEXP/[OFFSET], %REGEXP%[OFFSET], {N}, {*}\n\n  -f, --prefix=PREFIX      Use PREFIX instead of xx.\n  -n, --digits=NUMBER      Use at least NUMBER suffix digits (default 2).\n  -s, --silent             Suppress output byte counts.\n  -q, --quiet              Same as --silent.\n  -k, --keep-files         Keep created fragments after a split error.\n  -z, --elide-empty-files  Omit empty output fragments.\n      --help               display this help and exit\n      --version            display version and exit\n\nExisting output paths, custom suffix formats, backreferences, non-ASCII\nregex patterns, and locale-specific matching are unsupported.\n",
+      "source_version": "workspace cli/csplit@0.2.0 metadata contract",
+      "expected_stdout_text": "Usage: csplit [OPTION]... FILE PATTERN...\nSplit FILE (- for stdin) at line numbers or basic regular expressions.\nPatterns: NUMBER, /REGEXP/[OFFSET], %REGEXP%[OFFSET], {N}, {*}\n\n  -f, --prefix=PREFIX      Use PREFIX instead of xx.\n  -n, --digits=NUMBER      Use at least NUMBER suffix digits (default 2).\n  -s, --silent             Suppress output byte counts.\n  -q, --quiet              Same as --silent.\n  -k, --keep-files         Keep created fragments after a split error.\n  -z, --elide-empty-files  Omit empty output fragments.\n      --help               display this help and exit\n      --version            display version and exit\n\nBRE matching includes backreferences, byte classes and word assertions.\nBackreferences to nullable captures cloned by repetition are unsupported.\nExisting output paths, custom suffix formats and locale-specific matching\nare unsupported.\n",
       "expected_stderr_text": ""
     },
     {
@@ -236,8 +236,138 @@
         "version"
       ],
       "source_version": "workspace cli/csplit@0.1.2 metadata contract",
-      "expected_stdout_text": "csplit 0.1.2\n",
+      "expected_stdout_text": "csplit 0.2.0\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "s1-csplit-pattern-backreference",
+      "command": "csplit",
+      "args": [
+        "-sz",
+        "-fpart-",
+        "-",
+        "/^\\(.\\)\\1$/",
+        "{*}"
+      ],
+      "stdin_text": "head\naa\ntail\nbb\nend\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11",
+      "expected_files": [
+        {
+          "path": "part-00",
+          "content_text": "head\n"
+        },
+        {
+          "path": "part-01",
+          "content_text": "aa\ntail\n"
+        },
+        {
+          "path": "part-02",
+          "content_text": "bb\nend\n"
+        }
+      ]
+    },
+    {
+      "id": "s1-csplit-word-assertion",
+      "command": "csplit",
+      "args": [
+        "-s",
+        "-fpart-",
+        "-",
+        "/\\<item\\>/"
+      ],
+      "stdin_text": "no\n_item\nitem!\nend\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11",
+      "expected_files": [
+        {
+          "path": "part-00",
+          "content_text": "no\n_item\n"
+        },
+        {
+          "path": "part-01",
+          "content_text": "item!\nend\n"
+        }
+      ]
+    },
+    {
+      "id": "s1-csplit-cloned-nullable-reference-boundary",
+      "command": "csplit",
+      "args": [
+        "missing-input",
+        "2",
+        "/\\(a*\\)\\{0,2\\}\\1/"
+      ],
+      "stdin_text": "unread\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "csplit: backreference to a cloned nullable capture is unsupported\n",
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "project matcher profile boundary",
+      "expected_rejection": "backreference to a cloned nullable capture is unsupported",
+      "expected_files": [
+        {
+          "path": "xx00",
+          "exists": false
+        },
+        {
+          "path": "xx01",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "s1-csplit-cloned-nullable-reference-preserves-output",
+      "command": "csplit",
+      "args": [
+        "missing-input",
+        "2",
+        "/\\(a*\\)\\{0,2\\}\\1/"
+      ],
+      "stdin_text": "unread\n",
+      "files": [
+        {
+          "path": "xx00",
+          "content_text": "keep"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "csplit: backreference to a cloned nullable capture is unsupported\n",
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "project matcher profile boundary",
+      "expected_rejection": "backreference to a cloned nullable capture is unsupported",
+      "expected_files": [
+        {
+          "path": "xx00",
+          "content_text": "keep"
+        },
+        {
+          "path": "xx01",
+          "exists": false
+        }
+      ]
     }
   ]
 }

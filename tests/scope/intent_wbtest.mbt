@@ -239,6 +239,26 @@ fn intent_reviewed_closure_regression() -> Unit raise {
   )
   assert_true(mapped.selection.build_prerequisites.contains("commands/sh"))
   assert_true(mapped.selection.build_prerequisites.contains("core/process"))
+  let replacement_only = intent_closure_review(
+    tree,
+    graph,
+    { ..extra, behaviors: [retired.behavior_id], },
+    boundaries=[{ ..mapping, rejection_tests: [], }],
+  )
+  assert_eq(parse_intent(replacement_only.to_json()), replacement_only)
+  assert_true(replacement_only.selection.behaviors.contains(child.behavior_id))
+  assert_false(
+    replacement_only.selection.behaviors.contains(rejection.behavior_id),
+  )
+  let no_evidence = {
+    ..replacement_only,
+    boundaries: [{ ..mapping, rejection_tests: [], replacement_behaviors: [], }],
+  }
+  try parse_intent(no_evidence.to_json()) catch {
+    _ => ()
+  } noraise {
+    _ => fail("a retired boundary still requires actual replacement evidence")
+  }
   let no_rules = intent_closure_tree(registry, "{\"schema\":1,\"rules\":[]}")
   let old_roots = sel_final_prerequisites(
     {

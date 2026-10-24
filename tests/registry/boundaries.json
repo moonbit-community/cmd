@@ -167,17 +167,6 @@
       "replacement_behaviors": []
     },
     {
-      "behavior_id": "case:p1-expr-backreference-boundary",
-      "support_record": "docs/compatibility.md",
-      "adr": "docs/adr/0008-data.md",
-      "current_limit": "The shared C-byte matcher rejects pattern backreferences and word assertions; expr must not approximate the unsupported expression.",
-      "unlock_condition": "Implement capture-aware matching and exact selection semantics in pure MoonBit, retain the public matcher adapters, and pass independent expr/shared-consumer BRE/ERE/backreference/empty-match/partial-error regressions before accepting this syntax.",
-      "rejection_tests": [
-        "case:p1-expr-backreference-boundary"
-      ],
-      "replacement_behaviors": []
-    },
-    {
       "behavior_id": "case:p1-fmt-prefix-boundary",
       "support_record": "docs/compatibility.md",
       "adr": "docs/adr/0003-streams.md",
@@ -207,17 +196,6 @@
       "unlock_condition": "Require released public metadata and safe replacement capabilities for source names/modes/times and fixed-GNU link/collision/failure-effect regressions. This does not defer implementable compression levels, Huffman selection or Reader decoding.",
       "rejection_tests": [
         "case:p1-gzip-inplace-boundary"
-      ],
-      "replacement_behaviors": []
-    },
-    {
-      "behavior_id": "case:p1-sed-hold-boundary",
-      "support_record": "docs/compatibility.md",
-      "adr": "docs/adr/0008-data.md",
-      "current_limit": "sed hold-space commands are outside the current substitution/address execution profile and scripts reject before processing input.",
-      "unlock_condition": "Implement explicit hold/pattern spaces, PC/branch/cycle state and the selected commands in pure MoonBit, then pass GNU empty/multiline/newline/swap/error-order and shared matcher Native/Wasm regressions; parsing/state work is not async-blocked.",
-      "rejection_tests": [
-        "case:p1-sed-hold-boundary"
       ],
       "replacement_behaviors": []
     },
@@ -438,6 +416,72 @@
       "unlock_condition": "Identify a released Wasm host containing the Windows rename fix, then pass independent Windows Native/Wasm file/directory symlink, junction, backup and unchanged-referent observations including held-open-stdin rejection and failure ordering. Missing host identity/privileges/observers remain infrastructure gaps, not successful or skipped acceptance.",
       "rejection_tests": [
         "scenario:mv-windows-wasm-links-boundary"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:s1-sed-bounded-empty-reference",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0008-data.md",
+      "current_limit": "The C-byte matcher rejects a referenced structurally nullable capture when repetition emits more than one closing save for that capture. This is a deliberate algorithm profile boundary, not a missing public API.",
+      "unlock_condition": "Implement and independently verify the selected GNU nullable/counting/capture/reference semantics in pure MoonBit, including adjacent bounds, nested captures, multiple references and unanchored search, before accepting this family. Preserve currently supported ordinary and non-cloned star behavior and prove resource/pruning limits without hidden step caps.",
+      "rejection_tests": [
+        "case:s1-sed-bounded-empty-reference"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:s1-sed-minimum-repeat-reference",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0008-data.md",
+      "current_limit": "The C-byte matcher rejects a referenced structurally nullable capture when repetition emits more than one closing save for that capture. This is a deliberate algorithm profile boundary, not a missing public API.",
+      "unlock_condition": "Implement and independently verify the selected GNU nullable/counting/capture/reference semantics in pure MoonBit, including adjacent bounds, nested captures, multiple references and unanchored search, before accepting this family. Preserve currently supported ordinary and non-cloned star behavior and prove resource/pruning limits without hidden step caps.",
+      "rejection_tests": [
+        "case:s1-sed-minimum-repeat-reference"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:s1-grep-cloned-nullable-reference-boundary",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0008-data.md",
+      "current_limit": "The C-byte matcher rejects a referenced structurally nullable capture when repetition emits more than one closing save for that capture. This is a deliberate algorithm profile boundary, not a missing public API.",
+      "unlock_condition": "Implement and independently verify the selected GNU nullable/counting/capture/reference semantics in pure MoonBit, including adjacent bounds, nested captures, multiple references and unanchored search, before accepting this family. Preserve currently supported ordinary and non-cloned star behavior and prove resource/pruning limits without hidden step caps.",
+      "rejection_tests": [
+        "case:s1-grep-cloned-nullable-reference-boundary"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:s1-expr-cloned-nullable-reference-boundary",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0008-data.md",
+      "current_limit": "The C-byte matcher rejects a referenced structurally nullable capture when repetition emits more than one closing save for that capture. This is a deliberate algorithm profile boundary, not a missing public API.",
+      "unlock_condition": "Implement and independently verify the selected GNU nullable/counting/capture/reference semantics in pure MoonBit, including adjacent bounds, nested captures, multiple references and unanchored search, before accepting this family. Preserve currently supported ordinary and non-cloned star behavior and prove resource/pruning limits without hidden step caps.",
+      "rejection_tests": [
+        "case:s1-expr-cloned-nullable-reference-boundary"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:s1-csplit-cloned-nullable-reference-boundary",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0008-data.md",
+      "current_limit": "The C-byte matcher rejects a referenced structurally nullable capture when repetition emits more than one closing save for that capture. This is a deliberate algorithm profile boundary, not a missing public API.",
+      "unlock_condition": "Implement and independently verify the selected GNU nullable/counting/capture/reference semantics in pure MoonBit, including adjacent bounds, nested captures, multiple references and unanchored search, before accepting this family. Preserve currently supported ordinary and non-cloned star behavior and prove resource/pruning limits without hidden step caps.",
+      "rejection_tests": [
+        "case:s1-csplit-cloned-nullable-reference-boundary"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:s1-csplit-cloned-nullable-reference-preserves-output",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0008-data.md",
+      "current_limit": "The C-byte matcher rejects a referenced structurally nullable capture when repetition emits more than one closing save for that capture. This is a deliberate algorithm profile boundary, not a missing public API.",
+      "unlock_condition": "Implement and independently verify the selected GNU nullable/counting/capture/reference semantics in pure MoonBit, including adjacent bounds, nested captures, multiple references and unanchored search, before accepting this family. Preserve currently supported ordinary and non-cloned star behavior and prove resource/pruning limits without hidden step caps.",
+      "rejection_tests": [
+        "case:s1-csplit-cloned-nullable-reference-preserves-output"
       ],
       "replacement_behaviors": []
     }

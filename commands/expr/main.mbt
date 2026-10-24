@@ -209,18 +209,18 @@ fn evaluate(args : Array[String]) -> String raise {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("expr 0.1.2\n")
+    @stdio.stdout.write("expr 0.2.0\n")
     return
   }
   let args = @env.args()[1:].to_owned()
   if args == ["--help"] {
     @stdio.stdout.write(
-      "Usage: expr EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nEvaluate integer/string expressions: | & comparisons + - * / % :\nFunctions: match, substr, index, length; + quotes one operand.\nC-locale byte strings; regex backreferences and locale collation are unsupported.\n",
+      "Usage: expr EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nEvaluate integer/string expressions: | & comparisons + - * / % :\nFunctions: match, substr, index, length; + quotes one operand.\nC-byte BRE supports captures, backreferences and word assertions; locale collation is unsupported.\nBackreferences to nullable captures cloned by repetition are unsupported.\n",
     )
     return
   }
   if args == ["--version"] {
-    @stdio.stdout.write("expr 0.1.2\n")
+    @stdio.stdout.write("expr 0.2.0\n")
     return
   }
   if args.get(0) == Some("--") {

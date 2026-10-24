@@ -34,7 +34,7 @@ priv struct GrepOptions {
 ///|
 priv enum Matcher {
   Fixed(Array[String], Bool, Bool)
-  Regular(Regex?, Bool, Bool)
+  Regular(Array[@bytere.Pattern], Bool, Bool)
 }
 
 ///|
@@ -113,9 +113,9 @@ fn Matcher::matches(
   original : String,
   ignore_case : Bool,
 ) -> Bool {
-  let line = if ignore_case { ascii_lower(original) } else { original }
   match self {
     Fixed(patterns, whole_line, word) => {
+      let line = if ignore_case { ascii_lower(original) } else { original }
       for pattern in patterns {
         if whole_line {
           if line == pattern {
@@ -129,9 +129,7 @@ fn Matcher::matches(
       }
       false
     }
-    Regular(Some(regex), false, false) => regex.execute(line) is Some(_)
-    Regular(None, _, _) => false
-    Regular(_, _, _) => self.next_match(line, 0) is Some(_)
+    Regular(_, _, _) => self.next_match(original, 0) is Some(_)
   }
 }
 
@@ -142,7 +140,7 @@ fn compile_matcher(
 ) -> Matcher raise {
   let normalized = patterns.map(value => {
     let byte_pattern = bytes_as_string(@utf8.encode(value))
-    if options.ignore_case {
+    if options.fixed && options.ignore_case {
       ascii_lower(byte_pattern)
     } else {
       byte_pattern
@@ -151,14 +149,18 @@ fn compile_matcher(
   if options.fixed {
     return Fixed(normalized, options.whole_line, options.word)
   }
-  if normalized.is_empty() {
-    return Regular(None, options.whole_line, options.word)
-  }
-  let wrapped : Array[String] = []
+  let compiled : Array[@bytere.Pattern] = []
   for pattern in normalized {
-    wrapped.push("(?:" + translate_regexp(pattern, options.extended) + ")")
+    compiled.push(
+      @bytere.compile(
+        pattern,
+        extended=options.extended,
+        grep_syntax=true,
+        ignore_case=options.ignore_case,
+      ),
+    )
   }
-  Regular(Some(Regex(wrapped.join("|"))), options.whole_line, options.word)
+  Regular(compiled, options.whole_line, options.word)
 }
 
 ///|
@@ -346,7 +348,7 @@ async fn process_source(
             continue
           }
           let original = bytes_as_string(record.data)
-          let line = if options.ignore_case {
+          let line = if options.fixed && options.ignore_case {
             ascii_lower(original)
           } else {
             original
@@ -414,7 +416,7 @@ async fn process_source(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("grep 0.2.2\n")
+    @stdio.stdout.write("grep 0.3.0\n")
     return
   }
   let args = @env.args()[1:]
@@ -458,7 +460,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: grep [-EFGivnclLqHhxwrbszo] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: grep [-EFGivnclLqHhxwrbszo] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nBackreferences to nullable captures cloned by repetition are unsupported.\n",
     )
     return
   }
@@ -554,6 +556,11 @@ async fn main {
     patterns.append(split_lines(text))
   }
   let matcher = compile_matcher(patterns, options) catch {
+    @bytere.PatternError(message) => {
+      @stdio.stderr.write("grep: invalid regular expression: \{message}\n")
+      @sys.exit(2)
+      return
+    }
     err => {
       @stdio.stderr.write("grep: invalid regular expression: \{err}\n")
       @sys.exit(2)
