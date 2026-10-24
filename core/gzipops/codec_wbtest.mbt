@@ -17,6 +17,15 @@ fn cursor(data : Bytes) -> @io.MemoryReader {
 }
 
 ///|
+fn crc32(data : BytesView) -> UInt32 {
+  let mut crc = 0xffffffffU
+  for byte in data {
+    crc = update_crc(crc, byte)
+  }
+  crc ^ 0xffffffffU
+}
+
+///|
 let abc = b"\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\x03\x4b\x4c\x4a\x06\x00\xc2\x41\x24\x35\x03\x00\x00\x00"
 
 ///|
