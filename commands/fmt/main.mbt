@@ -20,12 +20,15 @@ async fn run(args : ArrayView[String]) -> Int32 {
     @cli.option("goal", short='g'),
     @cli.flag("split-only", short='s'),
     @cli.flag("uniform-spacing", short='u'),
+    @cli.flag("crown-margin", short='c'),
+    @cli.flag("tagged-paragraph", short='t'),
+    @cli.option("prefix", short='p'),
     @cli.flag("help"),
     @cli.flag("version"),
   ])
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: fmt [-WIDTH] [-w WIDTH] [-g GOAL] [-su] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nReformat paragraphs, preserving indentation; default width 75.\n-s splits lines without joining; -u uses uniform spacing.\nC-locale byte columns. Crown/tagged margins and prefixes are not supported.\n",
+      "Usage: fmt [-WIDTH] [-w WIDTH] [-g GOAL] [-suct] [-p PREFIX] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nReformat paragraphs, preserving indentation; default width 75.\n-s splits lines without joining; -u uses uniform spacing.\n-c, --crown-margin allows a different first-line indent.\n-t, --tagged-paragraph preserves a hanging indent.\n-p, --prefix=PREFIX reformats only matching prefixed lines.\nC-locale byte columns; split takes precedence over crown, then tagged.\n",
     )
     return 0
   }
@@ -64,6 +67,9 @@ async fn run(args : ArrayView[String]) -> Int32 {
           goal,
           parsed.contains("split-only"),
           parsed.contains("uniform-spacing"),
+          crown=parsed.contains("crown-margin"),
+          tagged=parsed.contains("tagged-paragraph"),
+          prefix=@bytere.argument(parsed.last_value("prefix").unwrap_or("")),
         ),
       )
     } catch {

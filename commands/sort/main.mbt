@@ -30,6 +30,7 @@ priv struct Modifiers {
   mut fold_case : Bool
   mut ignore_nonprinting : Bool
   mut mode : CompareMode
+  mut ordering_modes : Int32
   mut reverse : Bool
 }
 
@@ -70,29 +71,132 @@ fn byte_is_alphanumeric(byte : Byte) -> Bool {
 }
 
 ///|
-fn mode_from_order(order : Array[String]) -> CompareMode {
-  for index = order.length() - 1; index >= 0; index = index - 1 {
-    match order[index] {
-      "numeric-sort" => return Numeric
-      "general-numeric-sort" => return GeneralNumeric
-      "human-numeric-sort" => return HumanNumeric
-      "month-sort" => return Month
-      "version-sort" => return Version
-      "random-sort" => return Random
-      _ => ()
+fn mode_from_flags(flags : Int32) -> CompareMode {
+  for
+    (mode, flag) in [
+      (Random, 16),
+      (Numeric, 1),
+      (GeneralNumeric, 2),
+      (HumanNumeric, 4),
+      (Month, 8),
+      (Version, 32),
+    ] {
+    if (flags & flag) != 0 {
+      return mode
     }
   }
   Lexical
 }
 
 ///|
-fn default_modifiers(parsed : @cli.ParsedArgs) -> Modifiers {
+fn ordering_flag(mode : CompareMode) -> Int32 {
+  match mode {
+    Numeric => 1
+    GeneralNumeric => 2
+    HumanNumeric => 4
+    Month => 8
+    Random => 16
+    Version => 32
+    Lexical => 0
+  }
+}
+
+///|
+fn add_ordering(modifiers : Modifiers, mode : CompareMode) -> Unit {
+  modifiers.ordering_modes = modifiers.ordering_modes | ordering_flag(mode)
+  if mode != Version || modifiers.mode == Lexical {
+    modifiers.mode = mode
+  }
+}
+
+///|
+fn validate_ordering(modifiers : Modifiers) -> Unit raise CliError {
+  let modes = modifiers.ordering_modes & 31
+  if (modes & (modes - 1)) == 0 {
+    return
+  }
+  let flags = StringBuilder()
+  if modifiers.ignore_leading_blanks {
+    flags.write_char('b')
+  }
+  if modifiers.dictionary_order {
+    flags.write_char('d')
+  }
+  if modifiers.fold_case {
+    flags.write_char('f')
+  }
+  if (modifiers.ordering_modes & 2) != 0 {
+    flags.write_char('g')
+  }
+  if (modifiers.ordering_modes & 4) != 0 {
+    flags.write_char('h')
+  }
+  if modifiers.ignore_nonprinting {
+    flags.write_char('i')
+  }
+  if (modifiers.ordering_modes & 8) != 0 {
+    flags.write_char('M')
+  }
+  if (modifiers.ordering_modes & 1) != 0 {
+    flags.write_char('n')
+  }
+  if (modifiers.ordering_modes & 16) != 0 {
+    flags.write_char('R')
+  }
+  if modifiers.reverse {
+    flags.write_char('r')
+  }
+  if (modifiers.ordering_modes & 32) != 0 {
+    flags.write_char('V')
+  }
+  raise CliError("sort: options '-\{flags.to_string()}' are incompatible")
+}
+
+///|
+fn default_modifiers(parsed : @cli.ParsedArgs) -> Modifiers raise CliError {
+  let mut ordering_modes = 0
+  for
+    (name, mode) in [
+      ("numeric-sort", Numeric),
+      ("general-numeric-sort", GeneralNumeric),
+      ("human-numeric-sort", HumanNumeric),
+      ("month-sort", Month),
+      ("random-sort", Random),
+      ("version-sort", Version),
+    ] {
+    if parsed.contains(name) {
+      ordering_modes = ordering_modes | ordering_flag(mode)
+    }
+  }
+  for value in parsed.values("sort") {
+    let choices = [
+      "general-numeric", "human-numeric", "month", "numeric", "random", "version",
+    ]
+    let selected = choices.filter(choice => choice.has_prefix(value))
+    if selected.length() != 1 {
+      let problem = if selected.is_empty() { "invalid" } else { "ambiguous" }
+      let valid = choices.map(choice => "  - '\{choice}'\n").join("")
+      raise CliError(
+        "sort: \{problem} argument '\{value}' for '--sort'\nValid arguments are:\n\{valid}Try 'sort --help' for more information.",
+      )
+    }
+    let mode = match selected[0] {
+      "general-numeric" => GeneralNumeric
+      "human-numeric" => HumanNumeric
+      "month" => Month
+      "numeric" => Numeric
+      "random" => Random
+      _ => Version
+    }
+    ordering_modes = ordering_modes | ordering_flag(mode)
+  }
   {
     ignore_leading_blanks: parsed.contains("ignore-leading-blanks"),
     dictionary_order: parsed.contains("dictionary-order"),
     fold_case: parsed.contains("ignore-case"),
     ignore_nonprinting: parsed.contains("ignore-nonprinting"),
-    mode: mode_from_order(parsed.order),
+    mode: mode_from_flags(ordering_modes),
+    ordering_modes,
     reverse: parsed.contains("reverse"),
   }
 }
@@ -114,11 +218,11 @@ fn apply_modifier(
       local_ordering.val = true
     }
     'g' => {
-      modifiers.mode = GeneralNumeric
+      add_ordering(modifiers, GeneralNumeric)
       local_ordering.val = true
     }
     'h' => {
-      modifiers.mode = HumanNumeric
+      add_ordering(modifiers, HumanNumeric)
       local_ordering.val = true
     }
     'i' => {
@@ -126,15 +230,15 @@ fn apply_modifier(
       local_ordering.val = true
     }
     'M' => {
-      modifiers.mode = Month
+      add_ordering(modifiers, Month)
       local_ordering.val = true
     }
     'n' => {
-      modifiers.mode = Numeric
+      add_ordering(modifiers, Numeric)
       local_ordering.val = true
     }
     'R' => {
-      modifiers.mode = Random
+      add_ordering(modifiers, Random)
       local_ordering.val = true
     }
     'r' => {
@@ -142,7 +246,7 @@ fn apply_modifier(
       local_ordering.val = true
     }
     'V' => {
-      modifiers.mode = Version
+      add_ordering(modifiers, Version)
       local_ordering.val = true
     }
     _ =>
@@ -195,6 +299,7 @@ fn parse_position(
     fold_case: false,
     ignore_nonprinting: false,
     mode: Lexical,
+    ordering_modes: 0,
     reverse: false,
   }
   let local_ordering = Ref(false)
@@ -207,6 +312,7 @@ fn parse_position(
     modifiers.fold_case = inherited.fold_case
     modifiers.ignore_nonprinting = inherited.ignore_nonprinting
     modifiers.mode = inherited.mode
+    modifiers.ordering_modes = inherited.ordering_modes
     modifiers.reverse = inherited.reverse
   }
   if inherited.ignore_leading_blanks {
@@ -265,6 +371,12 @@ fn parse_key(spec : String, inherited : Modifiers) -> KeySpec raise CliError {
         } else {
           Lexical
         },
+        ordering_modes: (if start_local {
+          start_modifiers.ordering_modes
+        } else {
+          0
+        }) |
+        (if end_local { end_modifiers.ordering_modes } else { 0 }),
         reverse: (start_local && start_modifiers.reverse) ||
         (end_local && end_modifiers.reverse),
       }
@@ -274,6 +386,9 @@ fn parse_key(spec : String, inherited : Modifiers) -> KeySpec raise CliError {
     Some(position)
   } else {
     None
+  }
+  if modifiers.ordering_modes != 0 {
+    modifiers.mode = mode_from_flags(modifiers.ordering_modes)
   }
   if end is Some(position) &&
     (
@@ -641,6 +756,7 @@ fn month_value(key : Bytes) -> Int32 {
     fold_case: true,
     ignore_nonprinting: false,
     mode: Lexical,
+    ordering_modes: 0,
     reverse: false,
   })
   let text = @utf8.decode(text) catch { _ => "" }
@@ -738,7 +854,7 @@ fn compare_prepared_key(
     HumanNumeric => human_compare(left, right)
     Month => month_value(left) - month_value(right)
     Version => version_compare(left, right)
-    Random => 0
+    Random => left.lexical_compare(right)
   }
   if modifiers.reverse {
     -result
@@ -794,16 +910,17 @@ fn make_entry(
   specs : Array[KeySpec],
   global : Modifiers,
   separator : Byte?,
+  seed~ : Bytes = b"",
 ) -> Entry {
   let keys = if specs.is_empty() {
-    if transforms_key(global) {
-      [transformed_key(record, global)]
+    if transforms_key(global) || global.mode == Random {
+      [prepared_key(record, global, seed)]
     } else {
       []
     }
   } else {
     specs.map(spec => {
-      transformed_key(extract_key(record, spec, separator), spec.modifiers)
+      prepared_key(extract_key(record, spec, separator), spec.modifiers, seed)
     })
   }
   { record, keys, index, }
@@ -811,17 +928,46 @@ fn make_entry(
 
 ///|
 fn normalized_args(args : ArrayView[String]) -> Array[String] {
-  args.map(arg => if arg == "--check=quiet" { "--check-quiet" } else { arg })
+  let result : Array[String] = []
+  let mut options = true
+  let mut value_next = false
+  for arg in args {
+    if value_next {
+      result.push(arg)
+      value_next = false
+      continue
+    }
+    if options && arg == "--" {
+      options = false
+    }
+    result.push(
+      if options && arg == "--check=quiet" {
+        "--check-quiet"
+      } else {
+        arg
+      },
+    )
+    if options {
+      if ["--key", "--field-separator", "--output", "--random-source", "--sort"].contains(
+          arg,
+        ) {
+        value_next = true
+      } else if arg.has_prefix("-") && !arg.has_prefix("--") {
+        for offset in 1..<arg.length() {
+          if arg[offset] is ('k' | 't' | 'o') {
+            value_next = offset + 1 == arg.length()
+            break
+          }
+        }
+      }
+    }
+  }
+  result
 }
 
 ///|
-async fn main {
-  let metadata_args = @env.args()[1:]
-  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("sort 0.2.2\n")
-    return
-  }
-  let parsed = @cli.parse(normalized_args(@env.args()[1:]), [
+fn parse_args(args : ArrayView[String]) -> @cli.ParsedArgs raise @cli.CliError {
+  @cli.parse(normalized_args(args), [
     @cli.flag("reverse", short='r'),
     @cli.flag("numeric-sort", short='n'),
     @cli.flag("general-numeric-sort", short='g'),
@@ -829,6 +975,11 @@ async fn main {
     @cli.flag("month-sort", short='M'),
     @cli.flag("version-sort", short='V'),
     @cli.flag("random-sort", short='R'),
+    @cli.option("sort"),
+    @cli.option("random-source"),
+    @cli.flag("stable", short='s'),
+    @cli.flag("merge", short='m'),
+    @cli.option("output", short='o'),
     @cli.flag("unique", short='u'),
     @cli.flag("ignore-case", short='f'),
     @cli.flag("ignore-leading-blanks", short='b'),
@@ -840,7 +991,129 @@ async fn main {
     @cli.option("key", short='k'),
     @cli.option("field-separator", short='t'),
     @cli.flag("help"),
-  ]) catch {
+  ])
+}
+
+///|
+fn one_path(
+  parsed : @cli.ParsedArgs,
+  name : String,
+  label : String,
+) -> String? raise CliError {
+  let values = parsed.values(name)
+  guard values.get(0) is Some(first) else { return None }
+  if values.any(value => value != first) {
+    raise CliError("sort: multiple \{label} specified")
+  }
+  Some(first)
+}
+
+///|
+async fn preflight_sources(sources : Array[String]) -> Unit {
+  for source in sources {
+    if source != "-" {
+      let file = @fs.open(source, mode=ReadOnly) catch {
+        @os_error.OSError(_) as error =>
+          raise CliError("sort: cannot read: \{source}: \{os_message(error)}")
+        error => raise error
+      }
+      file.close()
+    }
+  }
+}
+
+///|
+async fn prepare_output(path : String, merge : Bool) -> Unit {
+  let file = @fs.open(
+    path,
+    mode=WriteOnly,
+    create_mode=if merge { CreateNew } else { OpenOrCreate },
+  ) catch {
+    @os_error.OSError(_) as error if merge && error.is_EEXIST() =>
+      raise CliError("sort: unsupported capability: merge into existing output")
+    @os_error.OSError(_) as error =>
+      raise CliError("sort: open failed: \{path}: \{os_message(error)}")
+    error => raise error
+  }
+  file.close()
+}
+
+///|
+async fn execute_sort(parsed : @cli.ParsedArgs) -> Int32 {
+  let output_path = one_path(parsed, "output", "output files")
+  let source = one_path(parsed, "random-source", "random sources")
+  if parsed.contains("check") && parsed.contains("check-quiet") {
+    raise CliError("sort: options '-cC' are incompatible")
+  }
+  let global = default_modifiers(parsed)
+  let separator = match parsed.last_value("field-separator") {
+    Some(text) => {
+      let bytes = @utf8.encode(text)
+      if bytes.length() != 1 {
+        raise CliError("sort: the field separator must be a single byte")
+      }
+      Some(bytes[0])
+    }
+    None => None
+  }
+  let specs = parsed.values("key").map(key => parse_key(key, global))
+  if specs.is_empty() {
+    validate_ordering(global)
+  } else {
+    for spec in specs {
+      validate_ordering(spec.modifiers)
+    }
+  }
+  let need_random = if specs.is_empty() {
+    global.mode == Random
+  } else {
+    specs.any(spec => spec.modifiers.mode == Random)
+  }
+  let seed = if need_random { random_seed(source) } else { b"" }
+  let check = parsed.contains("check") || parsed.contains("check-quiet")
+  let check_letter = if parsed.contains("check-quiet") { "C" } else { "c" }
+  if check && output_path is Some(_) {
+    raise CliError("sort: options '-\{check_letter}o' are incompatible")
+  }
+  let sources = if parsed.operands.is_empty() { ["-"] } else { parsed.operands }
+  if check && sources.length() > 1 {
+    raise CliError(
+      "sort: extra operand '\{sources[1]}' not allowed with -\{check_letter}",
+    )
+  }
+  preflight_sources(sources)
+  if output_path is Some(path) {
+    prepare_output(path, parsed.contains("merge"))
+  }
+  sort_sources(
+    sources,
+    @stdio.stdout,
+    if parsed.contains("zero-terminated") {
+      b'\x00'
+    } else {
+      b'\n'
+    },
+    specs,
+    global,
+    separator,
+    unique=parsed.contains("unique"),
+    stable=parsed.contains("stable"),
+    merge=parsed.contains("merge"),
+    check~,
+    diagnose=parsed.contains("check"),
+    seed~,
+    output_path~,
+  )
+}
+
+///|
+async fn main {
+  let args = @env.args()[1:]
+  if args.length() == 1 && args[0] == "--version" {
+    @stdio.stdout.write("sort 0.2.2\n")
+    return
+  }
+  let parsed = parse_args(args) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("sort: \{message}: '\{option}'\n")
       @sys.exit(2)
@@ -849,80 +1122,18 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: sort [-bcdfghinMruVz] [-k KEY] [-t CHAR] [-c|-C] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n\nLarge inputs use temporary disk runs and require filesystem write access.\n",
+      "Usage: sort [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n\nLarge inputs use temporary disk runs and require filesystem write access.\n",
     )
     return
   }
-  let global = default_modifiers(parsed)
-  if global.mode == Random {
-    @stdio.stderr.write(
-      "sort: random sort requires a deterministic seed contract\n",
-    )
-    @sys.exit(2)
-    return
-  }
-  if parsed.contains("check") && parsed.contains("check-quiet") {
-    @stdio.stderr.write("sort: options '-c' and '-C' are incompatible\n")
-    @sys.exit(2)
-    return
-  }
-  let separator = match parsed.last_value("field-separator") {
-    Some(text) => {
-      let bytes = @utf8.encode(text)
-      if bytes.length() != 1 {
-        @stdio.stderr.write("sort: the field separator must be a single byte\n")
-        @sys.exit(2)
-        return
-      }
-      Some(bytes[0])
+  let status = execute_sort(parsed) catch {
+    CliError(message) => {
+      @stdio.stderr.write(message + "\n")
+      2
     }
-    None => None
-  }
-  let specs : Array[KeySpec] = []
-  for key in parsed.values("key") {
-    let spec = parse_key(key, global) catch {
-      CliError(message) => {
-        @stdio.stderr.write(message + "\n")
-        @sys.exit(2)
-        return
-      }
-    }
-    if spec.modifiers.mode == Random {
-      @stdio.stderr.write(
-        "sort: random sort requires a deterministic seed contract\n",
-      )
-      @sys.exit(2)
-      return
-    }
-    specs.push(spec)
-  }
-  let delimiter : Byte = if parsed.contains("zero-terminated") {
-    b'\x00'
-  } else {
-    b'\n'
-  }
-  let check = parsed.contains("check") || parsed.contains("check-quiet")
-  let sources = if parsed.operands.is_empty() { ["-"] } else { parsed.operands }
-  if check && sources.length() > 1 {
-    @stdio.stderr.write("sort: extra operand in check mode\n")
-    @sys.exit(2)
-    return
-  }
-  let status = sort_sources(
-    sources,
-    @stdio.stdout,
-    delimiter,
-    specs,
-    global,
-    separator,
-    unique=parsed.contains("unique"),
-    check~,
-    diagnose=parsed.contains("check"),
-  ) catch {
-    err => {
-      @stdio.stderr.write("sort: \{err}\n")
-      @sys.exit(1)
-      return
+    error => {
+      @stdio.stderr.write("sort: \{error}\n")
+      2
     }
   }
   if status != 0 {

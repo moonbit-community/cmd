@@ -12,7 +12,8 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": []
     },
     {
       "id": "p9-seq-descending",
@@ -26,7 +27,8 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": []
     },
     {
       "id": "p0-seq-two-operand-descending",
@@ -170,7 +172,8 @@
       "expected_stderr_text": "",
       "aliases": [
         "compat-text-line-706"
-      ]
+      ],
+      "coverage": []
     },
     {
       "id": "seq-descending-explicit",
@@ -190,7 +193,8 @@
       "expected_stderr_text": "",
       "aliases": [
         "compat-text-line-708"
-      ]
+      ],
+      "coverage": []
     },
     {
       "id": "compat-text-line-707",
@@ -206,7 +210,8 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "1\n2\n3\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": []
     },
     {
       "id": "compat-text-line-709",
@@ -224,7 +229,8 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "",
       "expected_stderr_contains": "zero increment",
-      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact.",
+      "coverage": []
     },
     {
       "id": "compat-catalog-line-218",
@@ -240,7 +246,10 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_contains": "Usage:",
       "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact.",
+      "coverage": [
+        "help"
+      ]
     },
     {
       "id": "compat-catalog-line-251",
@@ -255,7 +264,10 @@
       "comparison": "contract",
       "source_version": "workspace cli/seq@0.2.3 metadata contract",
       "expected_stderr_text": "",
-      "expected_stdout_text": "seq 0.2.3\n"
+      "expected_stdout_text": "seq 0.2.3\n",
+      "coverage": [
+        "version"
+      ]
     },
     {
       "id": "repair-edge-seq-long-aliases",
@@ -278,7 +290,11 @@
       "comparison": "contract",
       "normalizations": [],
       "source_version": "2026-10-11 command repair edge contract",
-      "oracle": true
+      "oracle": true,
+      "coverage": [
+        "equal-width",
+        "separator"
+      ]
     },
     {
       "id": "repair-edge-seq-precision-1e4097",
@@ -299,7 +315,8 @@
       "source_version": "2026-10-11 command repair edge contract",
       "expected_stderr_contains": "seq:",
       "diagnostic_reason": "Documented numeric resource bound rejects before output.",
-      "expected_rejection": "seq:"
+      "expected_rejection": "seq:",
+      "coverage": []
     },
     {
       "id": "repair-edge-seq-precision-1e-4097",
@@ -320,7 +337,8 @@
       "source_version": "2026-10-11 command repair edge contract",
       "expected_stderr_contains": "seq:",
       "diagnostic_reason": "Documented numeric resource bound rejects before output.",
-      "expected_rejection": "seq:"
+      "expected_rejection": "seq:",
+      "coverage": []
     },
     {
       "id": "release-metadata-seq-help",
@@ -338,7 +356,7 @@
         "help"
       ],
       "source_version": "workspace cli/seq@0.2.3 metadata contract",
-      "expected_stdout_text": "Usage: seq [-w] [-s STRING] [FIRST [INCREMENT]] LAST\nPrint an exact decimal sequence; the default increment is 1.\n  -w, --equal-width       pad numbers with leading zeroes\n  -s, --separator=STRING  separate numbers with STRING\n      --help              display this help and exit\n      --version           display version and exit\nNumeric operands are limited to 4096 characters; exponent and decimal scale must be within -4096..4096.\n",
+      "expected_stdout_text": "Usage: seq [-w] [-f FORMAT] [-s STRING] [FIRST [INCREMENT]] LAST\nPrint a numeric sequence; the default increment is 1.\n  -w, --equal-width       pad numbers with leading zeroes\n  -f, --format=FORMAT     use one e/E/f/F/g/G/a/A floating conversion\n  -s, --separator=STRING  separate numbers with STRING\n      --help              display this help and exit\n      --version           display version and exit\nWithout -f, exact decimal operands are limited to 4096 characters; exponent and decimal scale must be within -4096..4096.\n",
       "expected_stderr_text": ""
     },
     {
@@ -359,6 +377,758 @@
       "source_version": "workspace cli/seq@0.2.3 metadata contract",
       "expected_stdout_text": "seq 0.2.3\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o3-seq-format-basic",
+      "command": "seq",
+      "args": [
+        "-f",
+        "[%.2f]",
+        "1",
+        "0.5",
+        "2"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "5b312e30305d0a5b312e35305d0a5b322e30305d0a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-percent",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%%x=%.1f%%",
+        "1",
+        "0.5",
+        "2"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "25783d312e30250a25783d312e35250a25783d322e30250a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-separator",
+      "command": "seq",
+      "args": [
+        "-s",
+        ":",
+        "-f",
+        "[%g]",
+        "1",
+        "3"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "5b315d3a5b325d3a5b335d0a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "separator",
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-repeat",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%.1f",
+        "-f",
+        "%.2e",
+        "1",
+        "2"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "312e3030652b30300a322e3030652b30300a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-equal-width",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%.1f",
+        "-w",
+        "1",
+        "2"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "",
+      "oracle": true,
+      "expected_stderr_contains": "seq: format string may not be specified when printing equal width strings\n",
+      "diagnostic_reason": "The local Rosetta/binfmt oracle replaces argv0 with /oracle/bin/seq in the trailing help hint. The exact complete primary diagnostic line is asserted; raw oracle and Native/Wasm candidate stderr are retained separately. Stdout and status are exact. Native Linux CI binds its own oracle.",
+      "coverage": [
+        "format",
+        "equal-width"
+      ]
+    },
+    {
+      "id": "o3-seq-equal-width-format",
+      "command": "seq",
+      "args": [
+        "-w",
+        "-f",
+        "%.1f",
+        "1",
+        "2"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "",
+      "oracle": true,
+      "expected_stderr_contains": "seq: format string may not be specified when printing equal width strings\n",
+      "diagnostic_reason": "The local Rosetta/binfmt oracle replaces argv0 with /oracle/bin/seq in the trailing help hint. The exact complete primary diagnostic line is asserted; raw oracle and Native/Wasm candidate stderr are retained separately. Stdout and status are exact. Native Linux CI binds its own oracle.",
+      "coverage": [
+        "equal-width",
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-none",
+      "command": "seq",
+      "args": [
+        "-f",
+        "plain",
+        "1",
+        "2"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "7365713a20666f726d61742027706c61696e2720686173206e6f2025206469726563746976650a",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-only-percent",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%%",
+        "1",
+        "2"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "7365713a20666f726d6174202725252720686173206e6f2025206469726563746976650a",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-two",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%f %f",
+        "1",
+        "2"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "7365713a20666f726d617420272566202566272068617320746f6f206d616e79202520646972656374697665730a",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-integer",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%d",
+        "1",
+        "2"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "7365713a20666f726d617420272564272068617320756e6b6e6f776e202564206469726563746976650a",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-star",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%*f",
+        "1",
+        "2"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "7365713a20666f726d61742027252a66272068617320756e6b6e6f776e20252a206469726563746976650a",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-precision-star",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%.*f",
+        "1",
+        "2"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "7365713a20666f726d61742027252e2a66272068617320756e6b6e6f776e20252a206469726563746976650a",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-capital-l",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%.2Lf",
+        "1",
+        "2"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "312e30300a322e30300a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-lower-l",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%.2lf",
+        "1",
+        "2"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "7365713a20666f726d61742027252e326c66272068617320756e6b6e6f776e20256c206469726563746976650a",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-endpoints",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%.2f",
+        "0",
+        "0.1",
+        "0.3"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "302e30300a302e31300a302e32300a302e33300a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-more-precision",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%.20g",
+        "0.1",
+        "0.1",
+        "0.3"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "302e310a302e320a302e33303030303030303030303030303030303030310a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-binary-rounding",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%.30f",
+        "0.1",
+        "0.1",
+        "0.2"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "302e3130303030303030303030303030303030303030313335353235323731360a302e3230303030303030303030303030303030303030323731303530353433310a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-ties",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%.0f",
+        "0.5",
+        "1",
+        "2.5"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "300a320a320a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-hex",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%a",
+        "1.5",
+        "0.5",
+        "2.5"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "307863702d330a307838702d320a307861702d320a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-descending",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%g",
+        "3",
+        "-1",
+        "1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "330a320a310a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-empty",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%g",
+        "3",
+        "1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-negative-zero",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%a",
+        "-0",
+        "-1",
+        "-2"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "2d307830702b300a2d307838702d330a2d307838702d320a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-zero-step",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%g",
+        "1",
+        "0",
+        "2"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "",
+      "oracle": true,
+      "expected_stderr_contains": "seq: invalid Zero increment value: '0'\n",
+      "diagnostic_reason": "The local Rosetta/binfmt oracle replaces argv0 with /oracle/bin/seq in the trailing help hint. The exact complete primary diagnostic line is asserted; raw oracle and Native/Wasm candidate stderr are retained separately. Stdout and status are exact. Native Linux CI binds its own oracle.",
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-seq-format-nan",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%g",
+        "nan",
+        "2"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "",
+      "oracle": true,
+      "expected_stderr_contains": "seq: invalid 'not-a-number' argument: 'nan'\n",
+      "diagnostic_reason": "The local Rosetta/binfmt oracle replaces argv0 with /oracle/bin/seq in the trailing help hint. The exact complete primary diagnostic line is asserted; raw oracle and Native/Wasm candidate stderr are retained separately. Stdout and status are exact. Native Linux CI binds its own oracle.",
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-extra-seq-format-negative-zero",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%a",
+        "--",
+        "-0",
+        "1",
+        "1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "2d307830702b300a307838702d330a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-extra-seq-format-underflow-zero",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%g",
+        "1e-9999",
+        "1",
+        "0"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "300a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-extra-seq-format-left-width-endpoint",
+      "command": "seq",
+      "args": [
+        "-f",
+        "%-8.2f",
+        "0",
+        "0.1",
+        "0.3"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "302e3030202020200a302e3130202020200a302e3230202020200a302e3330202020200a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-extra-seq-format-signed-zero-pad",
+      "command": "seq",
+      "args": [
+        "-f",
+        "[%+010.2a]",
+        "-1.5",
+        "1",
+        "1.5"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "5b2d3078632e3030702d335d0a5b2d3078382e3030702d345d0a5b2b3078382e3030702d345d0a5b2b3078632e3030702d335d0a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o3-extra-seq-format-empty-range",
+      "command": "seq",
+      "args": [
+        "--format=%%[%.3g]%%",
+        "3",
+        "1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 frozen Linux amd64 numeric profile",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
     }
   ]
 }

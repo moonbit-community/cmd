@@ -22,9 +22,10 @@ fn help_message() -> String {
     #|Escapes: \a \b \e \f \n \r \t \v \\ \" \' \NNN \0NNN \xHH \uHHHH
     #|\UHHHHHHHH, and \c (stop all output).
     #|
-    #|Conversions: %s %c %b %d %i %u %o %x %X %f %e %E %g %G %%, with the
+    #|Conversions: %s %c %b %d %i %u %o %x %X %f %e %E %g %G %a %A %%, with the
     #|flags -+ 0#, field width, and precision (both accept *).
     #|%b interprets escapes in its argument.
+    #|Bare %q quotes an argument for a shell under the C-byte profile.
     #|
     #|Use -- before a FORMAT that starts with '-'.
   message
@@ -67,6 +68,9 @@ let int64_max_mag : UInt64 = 0x7FFF_FFFF_FFFF_FFFF
 
 ///|
 let int64_min_mag : UInt64 = 0x8000_0000_0000_0000
+
+///|
+let float_profile : @numfmt.Profile = @numfmt.Extended80
 
 ///|
 /// Parse a printf integer argument like strtoimax/strtoumax: leading blanks,
@@ -153,7 +157,7 @@ fn parse_integer(ctx : Ctx, text : String, unsigned~ : Bool) -> Int64 {
     overflow || mag > int64_max_mag
   }
   if range_error {
-    ctx.warn("printf: '\{text}': Result too large")
+    ctx.warn("printf: '\{text}': Numerical result out of range")
     return if unsigned {
       uint64_max.reinterpret_as_int64()
     } else if neg {
@@ -174,322 +178,42 @@ fn parse_integer(ctx : Ctx, text : String, unsigned~ : Bool) -> Int64 {
 }
 
 ///|
-fn matches_word(chars : Array[Char], start : Int32, word : String) -> Bool {
-  let want : Array[Char] = word.iter().collect()
-  if start + want.length() > chars.length() {
-    return false
-  }
-  for k, w in want {
-    let c = chars[start + k]
-    let lower = if c is ('A'..<='Z') {
-      (c.to_int() + 0x20).unsafe_to_char()
-    } else {
-      c
-    }
-    if lower != w {
-      return false
-    }
-  }
-  true
-}
-
-///|
-/// 2^exp with clamping: doubles overflow past 2^1024 and underflow below
-/// 2^-1075, so huge exponents can short-circuit instead of looping.
-fn pow2(exp : Int32) -> Double {
-  if exp > 1100 {
-    return 1.0 / 0.0
-  }
-  if exp < -1200 {
-    return 0.0
-  }
-  let mut result = 1.0
-  if exp >= 0 {
-    for _ in 0..<exp {
-      result *= 2.0
-    }
-  } else {
-    for _ in 0..<-exp {
-      result /= 2.0
-    }
-  }
-  result
-}
-
-///|
-/// m * 2^exp in two steps so a subnormal result is not lost to an
-/// intermediate pow2 underflow (e.g. a 2^63-scaled significand with a
-/// deeply negative exponent).
-fn scale2(m : Double, exp : Int32) -> Double {
-  if exp >= -600 {
-    m * pow2(exp)
-  } else {
-    m * pow2(-600) * pow2(exp + 600)
-  }
-}
-
-///|
-/// True for nonzero values below the smallest normal double; strtod flags
-/// these with ERANGE, and GNU printf reports them as range errors.
-fn is_subnormal(x : Double) -> Bool {
-  x != 0.0 && ((x.reinterpret_as_uint64() >> 52) & 0x7FF) == 0
-}
-
-///|
-/// Parse a printf float argument like strtod: leading blanks, 'C, inf/nan
-/// (with an optional payload), hex floats (0x1.8p+2), or the longest valid
-/// decimal prefix. Trailing text warns; out-of-range values become inf or 0
-/// with a range diagnostic, like GNU printf.
-fn parse_double_arg(ctx : Ctx, text : String) -> Double {
+fn parse_float_arg(ctx : Ctx, text : String) -> @numfmt.Value {
   let chars : Array[Char] = text.iter().collect()
-  let mut i = 0
-  while i < chars.length() && is_blank(chars[i]) {
-    i += 1
+  let mut index = 0
+  while index < chars.length() && is_blank(chars[index]) {
+    index += 1
   }
-  if i >= chars.length() {
-    ctx.warn("printf: '\{text}': expected a numeric value")
-    return 0.0
-  }
-  if chars[i] == '\'' || chars[i] == '"' {
-    if i + 1 >= chars.length() {
+  if index < chars.length() && chars[index] is ('\'' | '"') {
+    if index + 1 >= chars.length() {
       ctx.warn("printf: '\{text}': expected a numeric value")
-      return 0.0
+      return @numfmt.zero()
     }
-    if i + 2 < chars.length() {
-      let sb = StringBuilder()
-      for k in (i + 2)..<chars.length() {
-        sb.write_char(chars[k])
+    if index + 2 < chars.length() {
+      let suffix = StringBuilder()
+      for next in (index + 2)..<chars.length() {
+        suffix.write_char(chars[next])
       }
       ctx.notice(
-        "printf: warning: \{sb}: character(s) following character constant have been ignored",
+        "printf: warning: \{suffix}: character(s) following character constant have been ignored",
       )
     }
-    return chars[i + 1].to_int().to_double()
+    return @numfmt.parse_prefix(
+        chars[index + 1].to_int().to_string(),
+        float_profile,
+      ).0
   }
-  let mut neg = false
-  if chars[i] == '+' || chars[i] == '-' {
-    neg = chars[i] == '-'
-    i += 1
-  }
-  let mut value = 0.0
-  let mut end = i
-  let mut range_warned = false
-  if matches_word(chars, i, "infinity") {
-    value = 1.0 / 0.0
-    end = i + 8
-  } else if matches_word(chars, i, "inf") {
-    value = 1.0 / 0.0
-    end = i + 3
-  } else if matches_word(chars, i, "nan") {
-    value = 0.0 / 0.0
-    end = i + 3
-    // Consume an optional n-char payload like nan(0x123).
-    if end < chars.length() && chars[end] == '(' {
-      let mut j = end + 1
-      while j < chars.length() &&
-            chars[j] is ('0'..<='9' | 'a'..<='z' | 'A'..<='Z' | '_') {
-        j += 1
-      }
-      if j < chars.length() && chars[j] == ')' {
-        end = j + 1
-      }
-    }
-  } else if i + 1 < chars.length() &&
-    chars[i] == '0' &&
-    (chars[i + 1] == 'x' || chars[i + 1] == 'X') &&
-    i + 2 < chars.length() &&
-    (hex_val(chars[i + 2]) >= 0 || chars[i + 2] == '.') {
-    // Hexadecimal float: 0xH[.H][p[+-]D]. The significand accumulates in a
-    // 64-bit integer; digits beyond its capacity only adjust the exponent
-    // (integer part) or are dropped (fraction), which can differ from the
-    // correctly rounded result by at most one ULP on extreme inputs.
-    let mut j = i + 2
-    let mut mant : UInt64 = 0
-    let mant_cap : UInt64 = 0x0800_0000_0000_0000
-    let mut exp4 = 0
-    let mut any = false
-    let mut sticky = false
-    while j < chars.length() && hex_val(chars[j]) >= 0 {
-      if mant < mant_cap {
-        mant = mant * 16 + hex_val(chars[j]).to_int64().reinterpret_as_uint64()
-      } else {
-        exp4 += 1
-        if hex_val(chars[j]) != 0 {
-          sticky = true
-        }
-      }
-      any = true
-      j += 1
-    }
-    if j < chars.length() && chars[j] == '.' {
-      j += 1
-      while j < chars.length() && hex_val(chars[j]) >= 0 {
-        if mant < mant_cap {
-          mant = mant * 16 +
-            hex_val(chars[j]).to_int64().reinterpret_as_uint64()
-          exp4 -= 1
-        } else if hex_val(chars[j]) != 0 {
-          sticky = true
-        }
-        any = true
-        j += 1
-      }
-    }
-    // Dropped nonzero digits make the significand odd so the 64-bit to
-    // double conversion breaks round-half-even ties upward, like a sticky
-    // bit.
-    if sticky {
-      mant = mant | 1
-    }
-    if !any {
-      // "0x" with no digits parses as 0 with trailing garbage.
-      value = 0.0
-      end = i + 1
-    } else {
-      let mut p = 0
-      if j < chars.length() && (chars[j] == 'p' || chars[j] == 'P') {
-        let mut k = j + 1
-        let mut esign = 1
-        if k < chars.length() && (chars[k] == '+' || chars[k] == '-') {
-          if chars[k] == '-' {
-            esign = -1
-          }
-          k += 1
-        }
-        let mut ev = 0
-        let mut edigits = false
-        while k < chars.length() && chars[k] is ('0'..<='9') {
-          if ev < 1000000 {
-            ev = ev * 10 + (chars[k].to_int() - 0x30)
-          }
-          edigits = true
-          k += 1
-        }
-        if edigits {
-          if ev > 10000 {
-            ev = 10000
-          }
-          p = esign * ev
-          j = k
-        }
-      }
-      let total = 4 * exp4 + p
-      value = if mant == 0 { 0.0 } else { scale2(mant.to_double(), total) }
-      // strtod raises ERANGE for complete over/underflow and for INEXACT
-      // subnormals; an exact subnormal like 0x1p-1074 stays silent. The
-      // conversion is inexact when digits were dropped (sticky) or when the
-      // significand's lowest set bit lands below 2^-1074.
-      let inexact_subnormal = is_subnormal(value) &&
-        (sticky || total + mant.ctz() < -1074)
-      if mant != 0 && (value.is_inf() || value == 0.0 || inexact_subnormal) {
-        range_warned = true
-        ctx.warn("printf: '\{text}': Result too large")
-      }
-      end = j
-    }
-  } else {
-    // Decimal float: D[.D][e[+-]D]
-    let mut j = i
-    let mut any = false
-    let mut sig_digits = 0
-    let mut frac_zeros = 0
-    let mut seen_nonzero = false
-    while j < chars.length() && chars[j] is ('0'..<='9') {
-      any = true
-      if chars[j] != '0' || seen_nonzero {
-        seen_nonzero = true
-        sig_digits += 1
-      }
-      j += 1
-    }
-    let int_sig = sig_digits
-    if j < chars.length() && chars[j] == '.' {
-      j += 1
-      while j < chars.length() && chars[j] is ('0'..<='9') {
-        any = true
-        if int_sig == 0 && !seen_nonzero {
-          if chars[j] == '0' {
-            frac_zeros += 1
-          } else {
-            seen_nonzero = true
-          }
-        }
-        j += 1
-      }
-    }
-    if !any {
-      ctx.warn("printf: '\{text}': expected a numeric value")
-      return 0.0
-    }
-    let mut e10 = 0
-    if j < chars.length() && (chars[j] == 'e' || chars[j] == 'E') {
-      let mut k = j + 1
-      let mut esign = 1
-      if k < chars.length() && (chars[k] == '+' || chars[k] == '-') {
-        if chars[k] == '-' {
-          esign = -1
-        }
-        k += 1
-      }
-      let mut ev = 0
-      let mut edigits = false
-      while k < chars.length() && chars[k] is ('0'..<='9') {
-        if ev < 1000000 {
-          ev = ev * 10 + (chars[k].to_int() - 0x30)
-        }
-        edigits = true
-        k += 1
-      }
-      if edigits {
-        if ev > 100000 {
-          ev = 100000
-        }
-        e10 = esign * ev
-        j = k
-      }
-    }
-    let sb = StringBuilder()
-    sb.write_char('0')
-    for k in i..<j {
-      sb.write_char(chars[k])
-    }
-    value = @string.parse_double(sb.to_string()) catch {
-      _ => {
-        // Syntactically valid but out of double range: estimate the decimal
-        // exponent of the leading digit to pick inf versus 0.
-        let magnitude10 = if int_sig > 0 {
-          int_sig + e10
-        } else {
-          e10 - frac_zeros
-        }
-        range_warned = true
-        ctx.warn("printf: '\{text}': Result too large")
-        if magnitude10 > 0 {
-          1.0 / 0.0
-        } else {
-          0.0
-        }
-      }
-    }
-    // Silent underflow (to 0 or a subnormal) or overflow to inf is still a
-    // range error, matching strtod's ERANGE.
-    if !range_warned &&
-      seen_nonzero &&
-      (value == 0.0 || value.is_inf() || is_subnormal(value)) {
-      range_warned = true
-      ctx.warn("printf: '\{text}': Result too large")
-    }
-    end = j
-  }
-  // A range error supersedes the partial-conversion warning, like GNU.
-  if end < chars.length() && !range_warned {
+  let (number, consumed, range_error) = @numfmt.parse_prefix(
+    text, float_profile,
+  )
+  if consumed == 0 {
+    ctx.warn("printf: '\{text}': expected a numeric value")
+  } else if range_error {
+    ctx.warn("printf: '\{text}': Numerical result out of range")
+  } else if consumed < chars.length() {
     ctx.warn("printf: '\{text}': value not completely converted")
   }
-  if neg {
-    -value
-  } else {
-    value
-  }
+  number
 }
 
 ///|
@@ -559,7 +283,7 @@ fn emit_unsigned(
 fn emit_float(
   ctx : Ctx,
   conv : Char,
-  x : Double,
+  x : @numfmt.Value,
   width : Int32?,
   prec : Int32?,
   minus : Bool,
@@ -568,37 +292,19 @@ fn emit_float(
   zero : Bool,
   alt : Bool,
 ) -> Unit {
-  let upper = conv is ('E' | 'F' | 'G')
-  let bits_neg = x.reinterpret_as_uint64() >> 63 != 0
-  if x.is_nan() || x.is_inf() {
-    let mut body = if x.is_nan() { "nan" } else { "inf" }
-    if upper {
-      body = body.to_upper()
-    }
-    // GNU printf prints NaN unsigned; infinities honor the sign flags.
-    let sign = if x.is_nan() {
-      ""
-    } else if bits_neg {
-      "-"
-    } else if plus {
-      "+"
-    } else if space {
-      " "
-    } else {
-      ""
-    }
-    // The zero flag pads non-finite values with spaces, like C printf.
-    push_string_utf8(ctx.out, pad_field(sign, body, width, minus, false))
-    return
+  let body = @numfmt.format_magnitude(
+    x,
+    conv,
+    prec,
+    alt,
+    float_profile,
+    normalized_hex=false,
+  )
+  let nonfinite = match x {
+    @numfmt.Finite(_, _, _) => false
+    _ => true
   }
-  let p = prec.unwrap_or(6)
-  let dec = dec_of(x)
-  let body = match conv {
-    'f' | 'F' => fmt_f(dec, p, alt)
-    'e' | 'E' => fmt_e(dec, p, alt, upper)
-    _ => fmt_g(dec, p, alt, upper)
-  }
-  let sign = if dec.neg {
+  let sign = if x.is_negative() {
     "-"
   } else if plus {
     "+"
@@ -607,7 +313,15 @@ fn emit_float(
   } else {
     ""
   }
-  push_string_utf8(ctx.out, pad_field(sign, body, width, minus, zero && !minus))
+  let (prefix, body) = if conv is ('a' | 'A') && !nonfinite {
+    (sign + body[:2].to_owned(), body[2:].to_owned())
+  } else {
+    (sign, body)
+  }
+  push_string_utf8(
+    ctx.out,
+    pad_field(prefix, body, width, minus, zero && !minus && !nonfinite),
+  )
 }
 
 ///|
@@ -652,10 +366,10 @@ fn spec_valid(
 ) -> Bool {
   match conv {
     'd' | 'i' | 'u' => !alt
-    'o' | 'x' | 'X' | 'e' | 'E' | 'f' | 'F' | 'g' | 'G' => true
+    'o' | 'x' | 'X' | 'e' | 'E' | 'f' | 'F' | 'g' | 'G' | 'a' | 'A' => true
     's' => !zero && !alt
     'c' => !zero && !alt && prec is None
-    'b' | '%' =>
+    'b' | 'q' | '%' =>
       !minus &&
       !plus &&
       !space &&
@@ -876,10 +590,14 @@ fn scan_format(ctx : Ctx, chars : Array[Char]) -> Unit {
         let arg = ctx.next_arg().unwrap_or("")
         emit_b(ctx, arg)
       }
-      'f' | 'F' | 'e' | 'E' | 'g' | 'G' => {
+      'q' =>
+        if ctx.next_arg() is Some(arg) {
+          push_string_utf8(ctx.out, shell_quote(arg))
+        }
+      'f' | 'F' | 'e' | 'E' | 'g' | 'G' | 'a' | 'A' => {
         let x = match ctx.next_arg() {
-          Some(arg) => parse_double_arg(ctx, arg)
-          None => 0.0
+          Some(arg) => parse_float_arg(ctx, arg)
+          None => @numfmt.zero()
         }
         emit_float(ctx, conv, x, width, prec, minus, plus, space, zero, alt)
       }

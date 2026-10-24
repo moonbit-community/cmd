@@ -56,7 +56,7 @@ async test "workspace dependency manifests keep one async baseline and the selec
   let core_coordinate = "cli/core@" + dependency_manifest_field(core, "version")
   let commands = command_names(root + "commands")
   assert_eq(commands.length(), 79)
-  let independent = ["echo", "false", "printf", "seq", "sleep", "true"]
+  let independent = ["echo", "false", "sleep", "true"]
   let modules = ["core", "tests"]
   for command in commands {
     modules.push("commands/" + command)

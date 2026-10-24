@@ -79,8 +79,8 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("sort", Core, FileOrStdin, LineStream, [FileRead, FileWrite], [
       "check", "check-quiet", "dictionary-order", "field-separator", "general-numeric-sort",
       "human-numeric-sort", "ignore-case", "ignore-leading-blanks", "ignore-nonprinting",
-      "key", "month-sort", "numeric-sort", "random-sort", "reverse", "unique", "version-sort",
-      "zero-terminated",
+      "key", "merge", "month-sort", "numeric-sort", "output", "random-sort", "random-source",
+      "reverse", "sort", "stable", "unique", "version-sort", "zero-terminated",
     ]),
     contract("tail", Core, FileOrStdin, ByteStream, [FileRead], [
       "bytes", "follow", "lines", "quiet", "sleep-interval", "verbose",
@@ -156,7 +156,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       "logical", "physical",
     ]),
     contract("seq", Core, NoInput, LineStream, [], [
-      "equal-width", "separator", "version",
+      "equal-width", "format", "separator", "version",
     ]),
     contract("sha256sum", Core, FileOrStdin, LineStream, [FileRead], [
       "binary", "check", "ignore-missing", "quiet", "status", "strict", "text", "warn",
@@ -407,7 +407,8 @@ pub fn command_catalog() -> Array[CommandContract] {
     ),
     contract("expr", Core, NoInput, LineStream, [], ["expression-language"]),
     contract("fmt", Core, FileOrStdin, ByteStream, [FileRead], [
-      "width", "goal", "split-only", "uniform-spacing",
+      "width", "goal", "split-only", "uniform-spacing", "crown-margin", "tagged-paragraph",
+      "prefix",
     ]),
     // The gzip family streams input and output, including validation mode.
     contract("gzip", Extended, FileOrStdin, ByteStream, [FileRead], [

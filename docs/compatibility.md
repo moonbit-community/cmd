@@ -1,7 +1,7 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-10-24
+Updated: 2026-10-25
 
 Stage 0 publishes `cli/core@0.7.0`, `cli/curl@0.2.3`, `cli/mv@0.2.3`
 and `cli/wget@0.2.3` with async 0.22.5. The other 75 published commands
@@ -24,12 +24,38 @@ keep their earlier dependency and acceptance profiles.
 Authorization belongs to the caller/host. Catalog capabilities and the older
 restricted label describe requirements, not command-local policy.
 
+## Workspace O2-O4 option candidates
+
+Unpublished sort **0.2.2**, seq **0.2.3**, printf **0.2.2**, fmt **0.1.2** and
+expand/unexpand **0.1.3** add the selected sorting, numeric-format, paragraph
+and tab-grid families. Shared numeric, C-byte shell quoting and tab-stop code
+selects core **0.8.0**. Current source and private Native/Wasm GNU development
+observations are separate from PR/main, formal performance and publication
+acceptance; all existing published coordinates above remain unchanged.
+
+Sort adds stable ties, bounded fan-in merge, ordinary output aliases and exact
+16-byte seeded GNU random ordering. Merge assumes ordered inputs. Existing
+streaming merge outputs retain an explicit identity/error-effects rejection;
+normal output and new merge targets are supported. See ADR-0003 and ADR-0004.
+Fatal sort errors exit 2, including host temporary-write denial; denied spills
+retain empty stdout and the host diagnostic.
+Fmt adds crown/tagged/prefix behavior without replacing its paragraph optimizer.
+The shared tab cursor supports repeated lists and absolute/relative trailing
+grids with GNU precedence and control-byte behavior.
+
+Seq `-f` and printf use the frozen Linux amd64 Extended80 numeric profile on
+every backend, including exact hexadecimal/decimal rounding and selected
+endpoint recovery. Printf also supports GNU C-byte `%q`. This fixed profile is
+distinct from the macOS GNU build's binary64 long double; native ABI/locale
+equivalence is not inferred. The original default seq precision limits remain.
+The small local Rosetta argv0 diagnostic difference is recorded in ADR-0008.
+
 ## Workspace O1 text-option candidates
 
 Unpublished cut, uniq, comm, join and wc **0.2.2** add the selected complement,
 delimiter, duplicate-group, merge-header/field and total policies. Their current
-Native development comparisons are separate from required PR and actual-main
-acceptance and from publication. The exact contracts are in the current case
+PR #52 and actual-main run 40110917627 passed all required platform and
+coverage checks. Publication remains separate. The exact contracts are in the current case
 corpus and [streams ADR](adr/0003-streams.md).
 
 Wc -m now follows the selected C byte profile, including invalid UTF-8, and
@@ -316,7 +342,8 @@ claiming success; `local-only` is absent from MoonX by design.
 | `diff` | subset verified | Normal/unified/context text output, labels, binary detection and 0/1/2 statuses | Directory and whitespace modes remain project work; exact hunk choices for ambiguous alignments need separate comparison |
 | `patch` | subset verified | Exact unified/context hunks, reverse, stdout result, dry run, creation/deletion | Existing destination and named output require public source mode; fuzzy/offset/reject-file behavior is not claimed |
 | `split`, `csplit` | subset verified | Line/byte splitting, numeric/regex boundaries, suffixes, cleanup and keep-files; unpublished csplit 0.2.0 uses the shared span matcher | Existing output refuses until safe truncation is public; chunk/filter modes and the [shared matcher limits](#workspace-matcher-and-sed-candidates) remain open |
-| `expr`, `fmt` | subset verified | Integer/string expressions and BRE matches; paragraph width/goal/spacing; unpublished expr 0.2.0 uses the shared capture matcher | C-byte locale; [matcher limits](#workspace-matcher-and-sed-candidates) and remaining expression/formatting extensions are project work |
+| `expr` | subset verified | Integer/string expressions and BRE matches; unpublished 0.2.0 uses the shared capture matcher | C-byte locale; [matcher limits](#workspace-matcher-and-sed-candidates) and remaining expression extensions are project work |
+| `fmt` | subset verified | Unpublished 0.1.2 adds crown/tagged margins and prefix matching to width/goal/spacing optimization | C-byte locale; paragraph resources, PR/main and non-C width acceptance remain separate |
 | `gzip`, `gunzip`, `zcat` | subset verified | Unpublished 0.1.2: pure 32 KiB LZ, 3–258 byte matches, stored/fixed/dynamic costs, `-1`–`-9` and aliases; Reader decoding with 64 KiB input/output, 32 KiB history and main/secondary tables preserves members, CRC and error prefixes | Published 0.1.1 keeps its frozen profile. [G1 development evidence](reports/2026-10-24-g1-codec.md) covers GNU roundtrips and selected size limits; 30 codec tests pass Native/Wasm. Published delivery/performance remain open. Bytes callers retain input; levels are ignored during decoding/testing. Named replacement and saved metadata remain boundaries. |
 | `base32` | subset verified | RFC 4648 uppercase encode/decode, `-d`, `-i`, `-w`, stdin or one file | Nonstandard alphabets and locale diagnostics not claimed |
 | `cksum` | subset verified | POSIX CRC-32 and byte count for stdin or multiple files, ordered partial failure | GNU alternate algorithms and tagged output are not claimed |
@@ -349,17 +376,17 @@ claiming success; `local-only` is absent from MoonX by design.
 | `nl` | subset verified | `-b/-h/-f`, `-w`, `-s`, `-v`, `-i`, `-d`, `-p`, files/stdin | Locale-aware formatting not claimed |
 | `paste` | subset verified | parallel/serial `-s`, delimiter cycling `-d`, `-z` | Full malformed delimiter diagnostics not claimed |
 | `printenv` | subset verified | selected/all values and `-0`, mixed present/missing status | Wasm environment is policy-dependent |
-| `printf` | subset verified | reused formats, conversions, width/precision, flags, escapes, numeric repetition, `--` | Locale and every GNU diagnostic not claimed |
+| `printf` | subset verified | Unpublished 0.2.2 adds exact frozen-ABI hex floats and C-byte GNU `%q` to format reuse, flags and numeric conversions | Fixed Linux amd64 numeric profile; non-C locale and every GNU diagnostic not claimed |
 | `pwd` | subset verified | `-L`, `-P`, invalid logical `PWD` fallback | Logical/physical result follows Wasm cwd contract |
 | `rm` | subset verified | files/trees, `-r/-f/-d/-v`, failure ordering, root-preservation flags | Final dot/dot-dot operands are rejected, including Windows separators; explicit cwd paths do not receive additional policy |
 | `realpath` | subset verified | Existing path canonicalization, `-e`, `-z`, multiple operands | GNU missing-path `-m` semantics and every diagnostic byte are not claimed |
 | `rev` | subset verified | C-locale byte reversal per line, stdin or one file, line-feed preservation | Multibyte locale character semantics and multiple files are not claimed |
 | `rmdir` | subset verified | empty removal, `-p`, `-I`, `-v`, failure ordering | Full path diagnostics not claimed |
-| `seq` | subset verified | One/two/three operands, default +1, negative step, -w/-s, version and streaming output without a record-count cap | Operands limited to 4096 characters and exponent/scale to 4096; -f remains unavailable; 10,000,001 records verified |
+| `seq` | subset verified | Unpublished 0.2.3 adds single-conversion `-f`, frozen-ABI rounding and endpoint recovery; default +/- step, -w/-s and streaming output remain | Default path retains 4096-character/exponent/scale limits; formatted path uses the selected Extended80 range, not the host ABI; formal performance remains open |
 | `sh` | subset verified | Persistent `-i` line REPL and opaque Session; export/local variables, cwd, quoting/IFS/glob, arithmetic, substitution, read, bounded printf/test, functions and pipeline state isolation | No public isatty/raw/editing/recoverable SIGINT/job control/exec; remaining interpreter grammar restrictions are project work, listed in command README |
 | `sha256sum` | subset verified | file/stdin digest, `-c`, `-z`, quiet/status/strict/warn/ignore-missing verification modes | Binary manifest extensions and every warning byte not claimed |
 | `sleep` | subset verified | fractional values, `s/m/h/d`, multiple operands, help/version | Signal/cancellation parity not claimed |
-| `sort` | subset verified | repeated `-k` field/character modifiers with GNU blank boundaries; `-b -d -f -i -n -g -h -M -V -r -u -z`; `-c/-C` checks | `-R` is a verified rejection without a seed contract; locale/external-sort semantics not claimed |
+| `sort` | subset verified | Unpublished 0.2.2 adds stable/merge/output and exact seeded GNU random order to cached keys and bounded disk runs | Existing merge-output identity/error effects reject explicitly; non-C locale and formal RSS/performance remain open |
 | `tail` | subset verified | `-n`, `-c`, `+K`, `-q`, `-v`, `-f`/`--follow`, `-s`/`--sleep-interval` | `-f` follows open regular-file descriptors by polling; stdin/pipes stop at EOF; `-F` path-follow and rotation reopen are not claimed |
 | `tac` | subset verified | Reverse records from stdin or one file, `-s/--separator`, `-b/--before` | Regex separators and multiple input files are rejected; locale diagnostics not claimed |
 | `tee` | subset verified | stdin to stdout/files and `-a` append, partial-output ordering | Signal diagnostics not claimed |
@@ -389,7 +416,7 @@ positive result. They are probe targets, not product claims.
 
 Each row identifies the option families exercised successfully. Explicit
 rejections, including `chmod` incremental/reference modes,
-`cp -a/-p`, `ln` hard links, `mkdir` symbolic modes, `sort -R`, timestamp
+`cp -a/-p`, `ln` hard links, `mkdir` symbolic modes, existing merge outputs for sort, timestamp
 selectors for `touch`, and negative `xxd -s`, are recorded in their rows. The
 portable filesystem profile exposes file kind, regular-file size, a/m/c times,
 access checks, and symlink creation; mode reads, timestamp setters, hard links,
