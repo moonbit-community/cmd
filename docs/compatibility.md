@@ -1,7 +1,7 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-10-20
+Updated: 2026-10-24
 
 Stage 0 publishes `cli/core@0.7.0`, `cli/curl@0.2.3`, `cli/mv@0.2.3`
 and `cli/wget@0.2.3` with async 0.22.5. The other 75 published commands
@@ -23,6 +23,23 @@ keep their earlier dependency and acceptance profiles.
 
 Authorization belongs to the caller/host. Catalog capabilities and the older
 restricted label describe requirements, not command-local policy.
+
+## Workspace stream optimization candidates
+
+Unpublished core 0.8.0 uses a reusable 64 KiB line scanner. Comm, cut, head,
+join, jq, nl, paste, sed, sort, uniq and xxd now resolve that candidate so their
+published consumers can receive the scanner when a release is accepted.
+Cat reuses a 64 KiB copy buffer, wc computes selected counters, and strings
+streams accepted printable runs. Accepted options and byte profiles remain.
+Head batches output in 64 KiB blocks. Cp and mv select core 0.8.0 for new-file
+copying; mv advances to an unpublished 0.2.4 candidate because its dependency
+resolution changes. Existing filesystem capability boundaries remain.
+Sort caches comparison transformations and uses stable disk runs under a
+64 MiB accounted run budget with at most sixteen merge inputs. This budget
+does not include all allocator/GC or oversized-record costs and is not an RSS cap.
+The [development observations](reports/2026-10-24-stream-hotpaths.md) record
+local correctness and timing separately from final resources, MoonX and release
+acceptance. Current published coordinates above remain frozen.
 
 ## Accepted stage 0 subset: async 0.22.5
 

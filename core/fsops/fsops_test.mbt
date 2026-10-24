@@ -131,7 +131,12 @@ async test "copy supports explicit no-preserve mode only for new files" {
   defer (@fs.rmdir(root, recursive=true) catch { _ => () })
   let source = @fsops.join(root, "source")
   let destination = @fsops.join(root, "destination")
-  @fs.write_file(source, b"copy bytes")
+  let buffer = FixedArray::make(65536 * 2 + 7, b'\x00')
+  for index in 0..<buffer.length() {
+    buffer[index] = (index % 256).to_byte()
+  }
+  let bytes = buffer.unsafe_reinterpret_as_bytes()
+  @fs.write_file(source, bytes)
   try @fsops.copy_path(source, destination, false, true) catch {
     _ => assert_false(@fs.exists(destination))
   } noraise {
@@ -147,7 +152,8 @@ async test "copy supports explicit no-preserve mode only for new files" {
       preserve_permissions=false,
     ),
   )
-  assert_eq(@fs.read_file(destination).binary(), b"copy bytes")
+  assert_eq(@fs.read_file(source).binary(), bytes)
+  assert_eq(@fs.read_file(destination).binary(), bytes)
 }
 
 ///|

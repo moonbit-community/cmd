@@ -14,6 +14,8 @@ they are not an alternative support matrix.
 
 | Date | Report | Scope |
 | --- | --- | --- |
+| 2026-10-24 | [Stream hot paths](2026-10-24-stream-hotpaths.md) | Copy, shared scanner, selected wc counters and incremental strings development observations |
+| 2026-10-24 | [Gzip output/history buffer reuse](2026-10-24-gzip-hotpaths.md) | Smaller private decoder state, existing semantic regressions and direct Native/Wasm development comparison |
 | 2026-10-24 | [G2 streaming decoder](2026-10-24-g2-streaming.md) | Reader and Huffman-table implementation, byte/error regressions, direct timing and bounded-memory observations; final CI/release pending |
 | 2026-10-24 | [G1 DEFLATE encoder](2026-10-24-g1-codec.md) | Levels and complete block costs, GNU roundtrips, selected size limits and encoder resources; published delivery pending |
 | 2026-10-23 | [C1 shared producer and addition closure](2026-10-23-c1-shared-producer-closure/README.md) | Conservative shared producer scope and post-addition child artifacts; local validation in progress, remote acceptance pending |

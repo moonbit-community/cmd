@@ -25,7 +25,11 @@ pub fn Line::to_repr(Self) -> @debug.Repr
 pub struct LineScanner {
   reader : &@io.Reader
   pending : Array[Byte]
-  delimiter : Byte
+  delimiter : Bytes
+  buffer : FixedArray[Byte]
+  chunk : Bytes
+  mut offset : Int
+  mut limit : Int
   mut eof : Bool
 }
 pub fn LineScanner::new(&@io.Reader, delimiter? : Byte) -> Self

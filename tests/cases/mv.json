@@ -1007,7 +1007,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/mv@0.2.3 metadata contract",
+      "source_version": "workspace cli/mv@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nDeclining an interactive overwrite returns status 1 and preserves both files.\nTimestamps describe source and destination entries, including dangling links.\nEqual-time interactive/update targets require unavailable file identity metadata.\nWindows Wasm symlink/junction moves and link backups require a verified host fix.\n",
       "expected_stderr_text": ""
     },
@@ -1026,8 +1026,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/mv@0.2.3 metadata contract",
-      "expected_stdout_text": "mv 0.2.3\n",
+      "source_version": "workspace cli/mv@0.2.4 metadata contract",
+      "expected_stdout_text": "mv 0.2.4\n",
       "expected_stderr_text": ""
     }
   ]

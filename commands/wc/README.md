@@ -18,6 +18,10 @@ and receive a `total` row, while a single input has no leading padding.
 `--files0-from=FILE` reads NUL-delimited file names (`-` means stdin) and
 cannot be combined with positional file operands.
 
+Only selected counters run. Byte-only mode accumulates chunk sizes, line mode
+scans newline bytes, and character mode carries incomplete UTF-8 sequences
+across the reused 64 KiB read buffer.
+
 With no file operand, the command silently reads stdin until EOF; terminal,
 pipe, and redirection paths do not receive a repository-specific prompt.
 

@@ -27,8 +27,20 @@ last resort and remaining ties retain input order. `-R` is recognized but
 rejected before reading input because the package has no audited deterministic
 seed contract.
 
-The implementation remains bounded to in-process sorting and never creates
-temporary files. With no file operand, it silently reads stdin until EOF.
+Records and transformed keys are prepared once before comparison. Sorting uses
+a default 64 MiB accounted run budget and at most 16-way heap merges, with
+64 KiB input, output and merge buffers. Stable sequence IDs and prepared keys
+survive disk runs; `-u` keeps the first representative across run boundaries.
+Check mode retains only adjacent records. With no file operand, stdin is read
+until EOF.
+
+The run budget counts record/key payloads, entry/key slots, sequence IDs and
+reserved merge buffers/index space. It is not an RSS cap: the active input
+record, unique-key retention, allocator/GC overhead and oversized individual
+records can add storage. Oversized records are processed without truncation.
+Temporary directories and files are created exclusively with restrictive
+permissions and removed on normal completion or propagated errors; this does
+not promise cleanup after an unobservable crash or SIGKILL.
 
 ## Standalone metadata
 

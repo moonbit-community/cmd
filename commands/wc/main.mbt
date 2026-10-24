@@ -39,7 +39,7 @@ fn is_continuation(b : Byte) -> Bool {
 ///|
 /// Count valid UTF-8 encoded characters. Bytes that are not part of a valid
 /// sequence are skipped without being counted, like GNU wc -m.
-fn count_utf8_chars(data : Bytes, at_eof : Bool) -> (Int64, Int32) {
+fn count_utf8_chars(data : BytesView, at_eof : Bool) -> (Int64, Int32) {
   let mut count : Int64 = 0
   let mut i = 0
   while i < data.length() {
@@ -97,42 +97,66 @@ fn count_utf8_chars(data : Bytes, at_eof : Bool) -> (Int64, Int32) {
 }
 
 ///|
-async fn count_reader(reader : &@io.Reader) -> Counts {
+async fn count_reader(reader : &@io.Reader, selection : Selection) -> Counts {
   let counts = Counts::new()
   let pending : Array[Byte] = []
+  let buffer = FixedArray::make(@stream.chunk_size, b'\x00')
+  let data = buffer.unsafe_reinterpret_as_bytes()
   let mut in_word = false
   let mut line_width : Int64 = 0
-  while @stream.read_chunk(reader) is Some(chunk) {
-    counts.bytes += chunk.length().to_int64()
-    for b in chunk {
-      if b is b'\n' {
-        counts.lines += 1
-        counts.max_line_length = Int64::max(counts.max_line_length, line_width)
-        line_width = 0
-      } else if b is b'\t' {
-        line_width += 8 - line_width % 8
-      } else if b.to_int() >= 0x20 && b.to_int() <= 0x7E {
-        line_width += 1
-      }
-      if is_space_byte(b) {
-        in_word = false
-      } else if !in_word {
-        in_word = true
-        counts.words += 1
-      }
-      pending.push(b)
+  while reader.read(buffer, max_len=buffer.length()) is count && count > 0 {
+    let chunk = data[:count]
+    if selection.bytes {
+      counts.bytes += count.to_int64()
     }
-    let data = Bytes::from_array(pending)
-    let (chars, consumed) = count_utf8_chars(data, false)
-    counts.chars += chars
-    if consumed > 0 {
-      let remaining = pending[consumed:].to_owned()
+    if selection.lines || selection.words || selection.max_line_length {
+      for b in chunk {
+        if selection.lines && b is b'\n' {
+          counts.lines += 1
+        }
+        if selection.max_line_length {
+          if b is b'\n' {
+            counts.max_line_length = Int64::max(
+              counts.max_line_length,
+              line_width,
+            )
+            line_width = 0
+          } else if b is b'\t' {
+            line_width += 8 - line_width % 8
+          } else if b.to_int() >= 0x20 && b.to_int() <= 0x7E {
+            line_width += 1
+          }
+        }
+        if selection.words {
+          if is_space_byte(b) {
+            in_word = false
+          } else if !in_word {
+            in_word = true
+            counts.words += 1
+          }
+        }
+      }
+    }
+    if selection.chars {
+      let chars_data = if pending.is_empty() {
+        chunk
+      } else {
+        for byte in chunk {
+          pending.push(byte)
+        }
+        Bytes::from_array(pending)[:]
+      }
+      let (chars, consumed) = count_utf8_chars(chars_data, false)
+      counts.chars += chars
+      let remaining = chars_data[consumed:]
       pending.clear()
-      pending.append(remaining)
+      for byte in remaining {
+        pending.push(byte)
+      }
     }
   }
   if !pending.is_empty() {
-    counts.chars += count_utf8_chars(Bytes::from_array(pending), true).0
+    counts.chars += count_utf8_chars(Bytes::from_array(pending)[:], true).0
   }
   counts.max_line_length = Int64::max(counts.max_line_length, line_width)
   counts
@@ -237,13 +261,13 @@ async fn read_file_list(path : String) -> Array[String] {
 }
 
 ///|
-async fn count_source(path : String) -> Counts {
+async fn count_source(path : String, selection : Selection) -> Counts {
   if path == "-" {
-    count_reader(@stdio.stdin)
+    count_reader(@stdio.stdin, selection)
   } else {
     let file = @async_fs.open(path, mode=ReadOnly)
     defer file.close()
-    count_reader(file)
+    count_reader(file, selection)
   }
 }
 
@@ -318,12 +342,12 @@ async fn main {
   let total = Counts::new()
   let mut failed = false
   if files.is_empty() {
-    let counts = count_reader(@stdio.stdin)
+    let counts = count_reader(@stdio.stdin, selection)
     @stdio.stdout.write(render_counts(counts, selection, None, 1) + "\n")
   } else {
     let completed : Array[(Counts, String)] = []
     for path in files {
-      let counts = count_source(path) catch {
+      let counts = count_source(path, selection) catch {
         err => {
           @stdio.stderr.write("wc: \{err}\n")
           failed = true
