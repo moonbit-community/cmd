@@ -849,7 +849,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: sort [-bcdfghinMruVz] [-k KEY] [-t CHAR] [-c|-C] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: sort [-bcdfghinMruVz] [-k KEY] [-t CHAR] [-c|-C] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n\nLarge inputs use temporary disk runs and require filesystem write access.\n",
     )
     return
   }

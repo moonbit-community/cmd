@@ -61,7 +61,11 @@ performance or a new publication.
 Sort now prepares comparison transformations once, retaining stable sequence
 IDs and prepared keys in disk runs. It uses a 64 MiB accounted run budget,
 at most sixteen merge inputs, buffered output and an adjacent-record check
-path. Existing options remain. Nine focused tests pass on each backend,
+path. Catalog/help and release policy declare the temporary-write requirement.
+A real default-budget spill under a read-only host policy returns status 1,
+empty stdout and the host's file-write denial. The shared policy scenario retains
+that regression alongside allowed small in-memory sorting. Existing options
+remain. Nine focused tests pass on each backend,
 including forced small-budget merge rounds, unique representatives, binary
 records, input errors and truncated temporary records. Independent source
 review found no actionable correctness defect.

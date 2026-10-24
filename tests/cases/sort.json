@@ -589,7 +589,7 @@
         "help"
       ],
       "source_version": "workspace cli/sort@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: sort [-bcdfghinMruVz] [-k KEY] [-t CHAR] [-c|-C] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stdout_text": "Usage: sort [-bcdfghinMruVz] [-k KEY] [-t CHAR] [-c|-C] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n\nLarge inputs use temporary disk runs and require filesystem write access.\n",
       "expected_stderr_text": ""
     },
     {

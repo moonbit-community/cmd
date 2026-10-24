@@ -33,6 +33,9 @@ a default 64 MiB accounted run budget and at most 16-way heap merges, with
 survive disk runs; `-u` keeps the first representative across run boundaries.
 Check mode retains only adjacent records. With no file operand, stdin is read
 until EOF.
+Spilling requires the host to allow writes in its temporary directory. A denied
+temporary write fails before sorted output is emitted; small in-memory input
+and check mode do not create disk runs.
 
 The run budget counts record/key payloads, entry/key slots, sequence IDs and
 reserved merge buffers/index space. It is not an RSS cap: the active input

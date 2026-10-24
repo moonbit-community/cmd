@@ -542,6 +542,25 @@ async fn check_runtime_policy(root : String, failures : Array[String]) -> Unit {
     b"first\x00first\x00second\x00",
     failures,
   )
+  let sort_spill = moon_run(
+    root,
+    "read-workspace.json",
+    "sort",
+    [],
+    stdin=@utf8.encode("a\n".repeat(524288)),
+  ) catch {
+    err => {
+      failures.push("sort spill policy invocation failed: \{err}")
+      return
+    }
+  }
+  record(
+    sort_spill.status == 1 &&
+    sort_spill.stdout.is_empty() &&
+    @testkit.contains_bytes(sort_spill.stderr, "blocked file write"),
+    "sort must report host temporary-write denial before emitting output",
+    failures,
+  )
   expect_allowed(
     root,
     "uniq",

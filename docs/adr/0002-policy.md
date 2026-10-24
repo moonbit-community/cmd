@@ -2,12 +2,19 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-09-21
-Revision: Remove command-side environment allowlists and forced locale; retain environment regressions in the shared lifecycle scenario.
+Updated: 2026-10-24
+Revision: Retain host-owned authorization and record sort's conditional temporary-write requirement.
 
 ## Target and decision
 
 Commands preserve argv, inherited environment, cwd, streams and status according to upstream semantics. The embedding application/runtime host owns authorization. Explicit env -i/-u and shell export rules still modify the environment as requested. Catalog tiers/capabilities describe requirements, never authorize or filter execution.
+
+The unpublished sort candidate may create temporary runs after its in-memory
+budget fills. Its catalog includes FileWrite and the release profile marks it
+policy-sensitive. The host still decides authorization: small input and check
+mode can run without temporary writes, while denied spill creation fails before
+sorted output. The existing host-policy scenario observes both small read-only
+sorting and a real default-budget spill denied by the read-only policy.
 
 ## Alternatives and compatibility cost
 

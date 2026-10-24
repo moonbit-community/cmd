@@ -54586,7 +54586,7 @@
         "help",
         "version"
       ],
-      "policy_sensitive": false,
+      "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
         "p3-sort-month",
