@@ -71,6 +71,11 @@ exactly sixteen bytes; an ineffective random-source option does not open its
 source. A public random seed supplies ordinary `-R`. Merge assumes its inputs
 are already ordered, as GNU does; it does not validate or repair them. This
 corrects the optimization plan's earlier wording about merge validation.
+Fatal errors use GNU status 2, including failed temporary-file creation. The
+host policy regression retains the blocked-write diagnostic and empty stdout;
+its earlier status-1 expectation belonged to the pre-O2 generic error handler.
+Input read diagnostics are scoped to reads, so spool failures retain their
+actual operation instead of being labeled input failures.
 
 Ordinary named output consumes all inputs before truncating an existing file,
 including an input alias. New output creation and late-read failures retain

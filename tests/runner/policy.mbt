@@ -557,7 +557,7 @@ async fn check_runtime_policy(root : String, failures : Array[String]) -> Unit {
     }
   }
   record(
-    sort_spill.status == 1 &&
+    sort_spill.status == 2 &&
     sort_spill.stdout.is_empty() &&
     @testkit.contains_bytes(sort_spill.stderr, "blocked file write"),
     "sort must report host temporary-write denial before emitting output (status=\{sort_spill.status}, stdout_bytes=\{sort_spill.stdout.length()}, stderr=\{sort_spill.stderr})",

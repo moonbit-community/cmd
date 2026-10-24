@@ -63927,7 +63927,7 @@
         "status",
         "stdout",
         "stderr",
-        "file-content"
+        "file-type"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -63964,7 +63964,7 @@
         "status",
         "stdout",
         "stderr",
-        "file-content"
+        "file-type"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -64001,7 +64001,7 @@
         "status",
         "stdout",
         "stderr",
-        "file-content"
+        "file-type"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -64720,6 +64720,7 @@
         "status",
         "stdout",
         "stderr",
+        "file-type",
         "file-content"
       ],
       "oracle_profile": "pinned-oracle-v1"
@@ -64755,6 +64756,7 @@
         "status",
         "stdout",
         "stderr",
+        "file-type",
         "file-content"
       ],
       "oracle_profile": "pinned-oracle-v1"
@@ -64790,6 +64792,7 @@
         "status",
         "stdout",
         "stderr",
+        "file-type",
         "file-content"
       ],
       "oracle_profile": "pinned-oracle-v1"
@@ -64825,6 +64828,7 @@
         "status",
         "stdout",
         "stderr",
+        "file-type",
         "file-content"
       ],
       "oracle_profile": "pinned-oracle-v1"
@@ -64860,7 +64864,7 @@
         "status",
         "stdout",
         "stderr",
-        "file-content"
+        "file-type"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -64896,7 +64900,7 @@
         "status",
         "stdout",
         "stderr",
-        "file-content"
+        "file-type"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -64931,7 +64935,7 @@
         "status",
         "stdout",
         "stderr",
-        "file-content"
+        "file-type"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -64966,6 +64970,7 @@
         "status",
         "stdout",
         "stderr",
+        "file-type",
         "file-content"
       ],
       "oracle_profile": "pinned-oracle-v1"
@@ -65001,6 +65006,7 @@
         "status",
         "stdout",
         "stderr",
+        "file-type",
         "file-content"
       ],
       "oracle_profile": "pinned-oracle-v1"
@@ -65108,7 +65114,7 @@
         "status",
         "stdout",
         "stderr",
-        "file-content"
+        "file-type"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -65213,6 +65219,7 @@
         "status",
         "stdout",
         "stderr",
+        "file-type",
         "file-content"
       ],
       "oracle_profile": "pinned-oracle-v1"
@@ -65248,6 +65255,7 @@
         "status",
         "stdout",
         "stderr",
+        "file-type",
         "file-content"
       ],
       "oracle_profile": "pinned-oracle-v1"
@@ -65284,6 +65292,7 @@
         "status",
         "stdout",
         "stderr",
+        "file-type",
         "file-content"
       ],
       "oracle_profile": "pinned-oracle-v1"
@@ -65388,6 +65397,7 @@
         "status",
         "stdout",
         "stderr",
+        "file-type",
         "file-content"
       ],
       "oracle_profile": ""
@@ -65422,6 +65432,7 @@
         "status",
         "stdout",
         "stderr",
+        "file-type",
         "file-content"
       ],
       "oracle_profile": ""
@@ -70074,6 +70085,7 @@
         "status",
         "stdout",
         "stderr",
+        "file-type",
         "file-content",
         "file-mode",
         "file-identity"

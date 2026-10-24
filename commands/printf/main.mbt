@@ -292,14 +292,19 @@ fn emit_float(
   zero : Bool,
   alt : Bool,
 ) -> Unit {
-  let body = @numfmt.format_magnitude(x, conv, prec, alt, float_profile)
+  let body = @numfmt.format_magnitude(
+    x,
+    conv,
+    prec,
+    alt,
+    float_profile,
+    normalized_hex=false,
+  )
   let nonfinite = match x {
     @numfmt.Finite(_, _, _) => false
     _ => true
   }
-  let sign = if x is @numfmt.NaN(_) {
-    ""
-  } else if x.is_negative() {
+  let sign = if x.is_negative() {
     "-"
   } else if plus {
     "+"

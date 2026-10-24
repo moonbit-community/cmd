@@ -37,6 +37,8 @@ Sort adds stable ties, bounded fan-in merge, ordinary output aliases and exact
 16-byte seeded GNU random ordering. Merge assumes ordered inputs. Existing
 streaming merge outputs retain an explicit identity/error-effects rejection;
 normal output and new merge targets are supported. See ADR-0003 and ADR-0004.
+Fatal sort errors exit 2, including host temporary-write denial; denied spills
+retain empty stdout and the host diagnostic.
 Fmt adds crown/tagged/prefix behavior without replacing its paragraph optimizer.
 The shared tab cursor supports repeated lists and absolute/relative trailing
 grids with GNU precedence and control-byte behavior.

@@ -23,7 +23,8 @@ a character code. The format is reused until all arguments are consumed.
 Float conversions use the frozen GNU Linux amd64 extended-precision profile
 (64 significand bits and the x87 exponent range), with exact conversion and
 round-half-even on every supported host and backend. Hexadecimal `%a/%A` preserves negative zero, subnormals,
-special values and requested precision; zero padding follows the sign and
+special values and requested precision, with Linux GNU forms such as
+`0xcp-3` for 1.5. NaN retains its sign and requested plus/space flags. Zero padding follows the sign and
 `0x` prefix. The running host's long-double ABI is not selected, and non-C
 locale behavior is not claimed. Use `--` before a
 FORMAT that starts with `-`. Invalid numeric prefixes produce the converted

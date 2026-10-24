@@ -19,15 +19,18 @@ test "shell quote preserves GNU C byte and apostrophe choices" {
 test "hex and quote conversions retain missing reuse and fatal output prefix" {
   let context : Ctx = {
     out: [],
-    args: ["0", "two words"],
+    args: ["0", "two words", "1.5", "nan", "-nan", "-nan"],
     arg_index: 0,
     messages: [],
     exit_error: false,
     stop: false,
     fatal: None,
   }
-  scan_format(context, "[%a][%q]".iter().collect())
-  assert_eq(Bytes::from_array(context.out), b"[0x0p+0]['two words']")
+  scan_format(context, "[%a][%q][%a][%+a][% a][%A]".iter().collect())
+  assert_eq(
+    Bytes::from_array(context.out),
+    b"[0x0p+0]['two words'][0xcp-3][+nan][-nan][-NAN]",
+  )
   assert_true(context.fatal is None)
   let invalid : Ctx = {
     out: [],

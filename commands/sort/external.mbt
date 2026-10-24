@@ -488,7 +488,13 @@ async fn scan_source(
     }
   }
   let scanner = @stream.LineScanner::new(reader, delimiter~)
-  while scanner.next() is Some(line) {
+  for ;; {
+    let next = scanner.next() catch {
+      @os_error.OSError(_) as error =>
+        raise CliError("sort: read failed: \{path}: \{os_message(error)}")
+      error => raise error
+    }
+    guard next is Some(line) else { break }
     if !accept(line.data) {
       return false
     }
@@ -570,11 +576,7 @@ async fn sort_sources(
       entries.push(entry)
       retained += cost
       true
-    }) catch {
-      @os_error.OSError(_) as error =>
-        raise CliError("sort: read failed: \{source}: \{os_message(error)}")
-      error => raise error
-    }
+    })
     if !complete {
       return 1
     }

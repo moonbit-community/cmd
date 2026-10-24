@@ -61,7 +61,8 @@ survive disk runs; `-u` keeps the first representative across run boundaries.
 Check mode retains only adjacent records. With no file operand, stdin is read
 until EOF.
 Spilling requires the host to allow writes in its temporary directory. A denied
-temporary write fails before sorted output is emitted; small in-memory input
+temporary write exits 2 before sorted output is emitted, following GNU sort's
+fatal-error status; small in-memory input
 and check mode do not create disk runs.
 Under a Windows sandbox, the host must also provision `TMP` or `TEMP` for
 temporary-path lookup; the command preserves the environment supplied by the host.
