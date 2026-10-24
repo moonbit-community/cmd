@@ -79,17 +79,6 @@
       "replacement_behaviors": []
     },
     {
-      "behavior_id": "case:compat-text-line-468",
-      "support_record": "docs/compatibility.md",
-      "adr": "docs/adr/0003-streams.md",
-      "current_limit": "sort -R is recognized but rejected before input because the implementation lacks an audited GNU-compatible random-source/seed contract.",
-      "unlock_condition": "Implement the selected GNU random-source consumption, hashing/order/equal-key/duplicate/exhaustion contract with source identity and independent byte/error evidence; an arbitrary PRNG shuffle does not lift this boundary.",
-      "rejection_tests": [
-        "case:compat-text-line-468"
-      ],
-      "replacement_behaviors": []
-    },
-    {
       "behavior_id": "case:compat-text-touch-date-rejected",
       "support_record": "docs/compatibility.md",
       "adr": "docs/adr/0004-filesystem.md",
@@ -152,17 +141,6 @@
       "unlock_condition": "Require safe public handle identity/truncation and same-file alias/collision tests before supporting overwrite; retain ownership-bound partial-output cleanup and -k behavior.",
       "rejection_tests": [
         "case:p1-csplit-existing-boundary"
-      ],
-      "replacement_behaviors": []
-    },
-    {
-      "behavior_id": "case:p1-fmt-prefix-boundary",
-      "support_record": "docs/compatibility.md",
-      "adr": "docs/adr/0003-streams.md",
-      "current_limit": "fmt prefix selection (-p) is unimplemented paragraph-formatting work and currently rejects before output.",
-      "unlock_condition": "Implement prefix matching/preservation with margin, whitespace, width, long-word and paragraph interactions, then pass exact pinned GNU fmt Native/Wasm bytes/status regressions; no async API is required merely to parse this option.",
-      "rejection_tests": [
-        "case:p1-fmt-prefix-boundary"
       ],
       "replacement_behaviors": []
     },
@@ -417,6 +395,28 @@
       ],
       "current_limit": "Directory comparison of distinct character/block devices refuses because public device-number metadata is unavailable; FIFO/socket reports and top-level readable streams remain supported.",
       "unlock_condition": "Require released public rdev/device-number metadata and fixed GNU device equality/difference plus Native/Wasm effects before enabling this directory comparison.",
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o2-sort-merge-output-input-alias",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "Streaming merge refuses an existing output before mutation because public file identity/descriptor truncation cannot establish GNU alias and read-failure effects.",
+      "unlock_condition": "Require public same-file identity and opened-descriptor truncation, or an alternative implementation proving exact GNU normal, hard-link alias and late-read-error effects on Native/Wasm before enabling existing merge outputs.",
+      "rejection_tests": [
+        "case:o2-sort-merge-output-input-alias"
+      ],
+      "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:o2-sort-late-read-merge-existing",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0004-filesystem.md",
+      "current_limit": "Streaming merge refuses an existing output before mutation because public file identity/descriptor truncation cannot establish GNU alias and read-failure effects.",
+      "unlock_condition": "Require public same-file identity and opened-descriptor truncation, or an alternative implementation proving exact GNU normal, hard-link alias and late-read-error effects on Native/Wasm before enabling existing merge outputs.",
+      "rejection_tests": [
+        "case:o2-sort-late-read-merge-existing"
+      ],
       "replacement_behaviors": []
     }
   ]

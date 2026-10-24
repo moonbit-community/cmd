@@ -1,0 +1,37 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/core/numfmt"
+
+import {
+  "moonbitlang/core/bigint",
+}
+
+// Values
+pub fn compare(Value, Value) -> Int32
+
+pub fn format_magnitude(Value, Char, Int32?, Bool, Profile, normalized_hex? : Bool) -> String
+
+pub fn parse_prefix(String, Profile) -> (Value, Int32, Bool)
+
+pub fn sequence_value(Value, Value, @bigint.BigInt, Profile) -> Value
+
+pub fn zero(negative? : Bool) -> Value
+
+// Errors
+
+// Types and methods
+pub(all) enum Profile {
+  Binary64
+  Extended80
+  Binary128
+}
+
+pub(all) enum Value {
+  Finite(Bool, @bigint.BigInt, Int32)
+  Infinity(Bool)
+  NaN(Bool)
+}
+pub fn Value::is_negative(Self) -> Bool
+
+// Type aliases
+
+// Traits

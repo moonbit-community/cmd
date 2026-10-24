@@ -9,7 +9,8 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": []
     },
     {
       "id": "p3-sort-multiple-key-modifiers",
@@ -23,7 +24,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "field-separator",
+        "key"
+      ]
     },
     {
       "id": "p3-sort-general-numeric",
@@ -35,7 +40,10 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "general-numeric-sort"
+      ]
     },
     {
       "id": "p3-sort-general-numeric-classes",
@@ -47,7 +55,10 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "general-numeric-sort"
+      ]
     },
     {
       "id": "p3-sort-local-key-modifier-combination",
@@ -60,7 +71,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "field-separator",
+        "key"
+      ]
     },
     {
       "id": "p3-sort-blank-field-boundaries",
@@ -72,7 +87,10 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "key"
+      ]
     },
     {
       "id": "p3-sort-character-modifiers",
@@ -84,7 +102,12 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "ignore-leading-blanks",
+        "dictionary-order",
+        "ignore-case"
+      ]
     },
     {
       "id": "p3-sort-unique-key-stability",
@@ -98,7 +121,12 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "unique",
+        "field-separator",
+        "key"
+      ]
     },
     {
       "id": "p3-sort-human-numeric",
@@ -110,7 +138,10 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "human-numeric-sort"
+      ]
     },
     {
       "id": "p3-sort-month",
@@ -122,7 +153,10 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "month-sort"
+      ]
     },
     {
       "id": "p3-sort-version",
@@ -134,7 +168,10 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "version-sort"
+      ]
     },
     {
       "id": "p3-sort-zero-records",
@@ -146,7 +183,10 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "zero-terminated"
+      ]
     },
     {
       "id": "p3-sort-ignore-nonprinting",
@@ -158,7 +198,10 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "ignore-nonprinting"
+      ]
     },
     {
       "id": "p3-sort-ignore-case-c-locale",
@@ -170,7 +213,10 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "ignore-case"
+      ]
     },
     {
       "id": "p3-sort-check-quiet",
@@ -182,7 +228,10 @@
       "files": [],
       "environment": {},
       "expected_status": 1,
-      "normalizations": []
+      "normalizations": [],
+      "coverage": [
+        "check"
+      ]
     },
     {
       "id": "compat-text-line-372",
@@ -200,7 +249,11 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "b:2\na:10\nc:2\n",
       "expected_stdout_text": "c:2\nb:2\na:10\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "field-separator",
+        "key"
+      ]
     },
     {
       "id": "compat-text-line-381",
@@ -216,7 +269,10 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "inf\n1\n-inf\nnan\ntext\n",
       "expected_stdout_text": "text\nnan\n-inf\n1\ninf\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "general-numeric-sort"
+      ]
     },
     {
       "id": "compat-text-line-390",
@@ -233,7 +289,11 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "a:2\nb:10\n",
       "expected_stdout_text": "b:10\na:2\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "field-separator",
+        "key"
+      ]
     },
     {
       "id": "compat-text-line-399",
@@ -249,7 +309,10 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "x  b\nz a\ny   a\n",
       "expected_stdout_text": "y   a\nx  b\nz a\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "key"
+      ]
     },
     {
       "id": "compat-text-line-408",
@@ -267,7 +330,12 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "b:1\na:1\n",
       "expected_stdout_text": "b:1\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "unique",
+        "field-separator",
+        "key"
+      ]
     },
     {
       "id": "compat-text-line-417",
@@ -283,7 +351,10 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "999999K\n1M\n10K\n",
       "expected_stdout_text": "10K\n999999K\n1M\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "human-numeric-sort"
+      ]
     },
     {
       "id": "compat-text-line-426",
@@ -299,7 +370,12 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "  z!\na-\n B\n",
       "expected_stdout_text": "a-\n B\n  z!\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "ignore-leading-blanks",
+        "dictionary-order",
+        "ignore-case"
+      ]
     },
     {
       "id": "compat-text-line-435",
@@ -315,7 +391,10 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "[\na\n",
       "expected_stdout_text": "a\n[\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "ignore-case"
+      ]
     },
     {
       "id": "compat-text-line-436",
@@ -331,7 +410,10 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "file10\nfile2\nfile1\n",
       "expected_stdout_text": "file1\nfile2\nfile10\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "version-sort"
+      ]
     },
     {
       "id": "compat-text-line-445",
@@ -347,7 +429,10 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_hex": "62006100",
       "expected_stdout_hex": "61006200",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "zero-terminated"
+      ]
     },
     {
       "id": "compat-text-line-454",
@@ -363,7 +448,10 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "a\nb\n",
       "expected_stdout_text": "",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "check"
+      ]
     },
     {
       "id": "compat-text-line-467",
@@ -379,7 +467,10 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "b\na\n",
       "expected_stdout_text": "",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "check-quiet"
+      ]
     },
     {
       "id": "compat-text-line-468",
@@ -389,14 +480,16 @@
       ],
       "files": [],
       "environment": {},
-      "expected_status": 2,
+      "expected_status": 0,
       "normalizations": [],
       "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_text": "",
-      "expected_stderr_contains": "deterministic seed contract",
-      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact.",
-      "expected_rejection": "deterministic seed contract"
+      "source_version": "GNU coreutils 9.11 former algorithm restriction retired",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "random-sort"
+      ]
     },
     {
       "id": "compat-text-line-544",
@@ -423,7 +516,10 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "",
       "expected_stderr_contains": "extra operand",
-      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact.",
+      "coverage": [
+        "check"
+      ]
     },
     {
       "id": "compat-text-sort-check-diagnostic",
@@ -440,7 +536,10 @@
       "expected_stdout_text": "",
       "expected_stderr_contains": "disorder",
       "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted.",
-      "stdin_text": "b\na\n"
+      "stdin_text": "b\na\n",
+      "coverage": [
+        "check"
+      ]
     },
     {
       "id": "compat-catalog-line-259",
@@ -457,7 +556,8 @@
       "expected_stderr_text": "",
       "aliases": [
         "compat-stdin-sort"
-      ]
+      ],
+      "coverage": []
     },
     {
       "id": "repair-alias-sort-general-numeric-sort",
@@ -473,7 +573,10 @@
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
       "stdin_text": "inf\n1\n-inf\nnan\ntext\n",
       "expected_stdout_text": "text\nnan\n-inf\n1\ninf\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "general-numeric-sort"
+      ]
     },
     {
       "id": "repair-alias-sort-unique",
@@ -491,7 +594,12 @@
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
       "stdin_text": "b:1\na:1\n",
       "expected_stdout_text": "b:1\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "unique",
+        "field-separator",
+        "key"
+      ]
     },
     {
       "id": "repair-alias-sort-human-numeric-sort",
@@ -507,7 +615,10 @@
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
       "stdin_text": "999999K\n1M\n10K\n",
       "expected_stdout_text": "10K\n999999K\n1M\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "human-numeric-sort"
+      ]
     },
     {
       "id": "repair-alias-sort-ignore-case",
@@ -523,7 +634,10 @@
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
       "stdin_text": "[\na\n",
       "expected_stdout_text": "a\n[\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "ignore-case"
+      ]
     },
     {
       "id": "repair-alias-sort-version-sort",
@@ -539,7 +653,10 @@
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
       "stdin_text": "file10\nfile2\nfile1\n",
       "expected_stdout_text": "file1\nfile2\nfile10\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "version-sort"
+      ]
     },
     {
       "id": "repair-alias-sort-zero-terminated",
@@ -555,7 +672,10 @@
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
       "stdin_hex": "62006100",
       "expected_stdout_hex": "61006200",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "zero-terminated"
+      ]
     },
     {
       "id": "repair-alias-sort-check",
@@ -571,7 +691,10 @@
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
       "stdin_text": "a\nb\n",
       "expected_stdout_text": "",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "coverage": [
+        "check"
+      ]
     },
     {
       "id": "release-metadata-sort-help",
@@ -589,7 +712,7 @@
         "help"
       ],
       "source_version": "workspace cli/sort@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: sort [-bcdfghinMruVz] [-k KEY] [-t CHAR] [-c|-C] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n\nLarge inputs use temporary disk runs and require filesystem write access.\n",
+      "expected_stdout_text": "Usage: sort [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n\nLarge inputs use temporary disk runs and require filesystem write access.\n",
       "expected_stderr_text": ""
     },
     {
@@ -610,6 +733,1946 @@
       "source_version": "workspace cli/sort@0.2.2 metadata contract",
       "expected_stdout_text": "sort 0.2.2\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o2-sort-r-seed16",
+      "command": "sort",
+      "args": [
+        "-R",
+        "--random-source=seed16"
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [
+        {
+          "path": "seed16",
+          "content_text": "0123456789abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "alpha\nalpha\nzeta\n\nbeta\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-seed32-same-prefix",
+      "command": "sort",
+      "args": [
+        "-R",
+        "--random-source=seed32"
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [
+        {
+          "path": "seed32",
+          "content_text": "0123456789abcdefABCDEFGHIJKLMNOP"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "alpha\nalpha\nzeta\n\nbeta\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-repeat-R",
+      "command": "sort",
+      "args": [
+        "-RR",
+        "--random-source=seed16"
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [
+        {
+          "path": "seed16",
+          "content_text": "0123456789abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "alpha\nalpha\nzeta\n\nbeta\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-repeat-same-source",
+      "command": "sort",
+      "args": [
+        "-R",
+        "--random-source=seed16",
+        "--random-source=seed16"
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [
+        {
+          "path": "seed16",
+          "content_text": "0123456789abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "alpha\nalpha\nzeta\n\nbeta\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-distinct-source",
+      "command": "sort",
+      "args": [
+        "-R",
+        "--random-source=seed16",
+        "--random-source=seed-copy"
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [
+        {
+          "path": "seed16",
+          "content_text": "0123456789abcdef"
+        },
+        {
+          "path": "seed-copy",
+          "content_text": "0123456789abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: multiple random sources specified\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-no-r-empty-source",
+      "command": "sort",
+      "args": [
+        "--random-source=empty"
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [
+        {
+          "path": "empty",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "\nalpha\nalpha\nbeta\nzeta\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-no-r-missing-source",
+      "command": "sort",
+      "args": [
+        "--random-source=missing-seed"
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "\nalpha\nalpha\nbeta\nzeta\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-no-r-distinct-source",
+      "command": "sort",
+      "args": [
+        "--random-source=seed16",
+        "--random-source=seed-copy"
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [
+        {
+          "path": "seed16",
+          "content_text": "0123456789abcdef"
+        },
+        {
+          "path": "seed-copy",
+          "content_text": "0123456789abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: multiple random sources specified\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-empty-input-short-source",
+      "command": "sort",
+      "args": [
+        "-R",
+        "--random-source=short15"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "short15",
+          "content_text": "0123456789abcde"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: 'short15': end of file\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-empty-input-empty-source",
+      "command": "sort",
+      "args": [
+        "-R",
+        "--random-source=empty"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "empty",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: 'empty': end of file\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-one-record-short-source",
+      "command": "sort",
+      "args": [
+        "-R",
+        "--random-source=short15"
+      ],
+      "stdin_text": "one\n",
+      "files": [
+        {
+          "path": "short15",
+          "content_text": "0123456789abcde"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: 'short15': end of file\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-missing-seed-before-input-output",
+      "command": "sort",
+      "args": [
+        "-R",
+        "--random-source=missing-seed",
+        "-o",
+        "new-output",
+        "missing-input"
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: open failed: missing-seed: No such file or directory\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_files": [
+        {
+          "path": "new-output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "random-source",
+        "output"
+      ]
+    },
+    {
+      "id": "o2-sort-r-short-seed-before-input-output",
+      "command": "sort",
+      "args": [
+        "-R",
+        "--random-source=short15",
+        "-o",
+        "new-output",
+        "missing-input"
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [
+        {
+          "path": "short15",
+          "content_text": "0123456789abcde"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: 'short15': end of file\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_files": [
+        {
+          "path": "new-output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "random-source",
+        "output"
+      ]
+    },
+    {
+      "id": "o2-sort-r-good-seed-missing-input",
+      "command": "sort",
+      "args": [
+        "-R",
+        "--random-source=seed16",
+        "-o",
+        "new-output",
+        "missing-input"
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [
+        {
+          "path": "seed16",
+          "content_text": "0123456789abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: cannot read: missing-input: No such file or directory\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_files": [
+        {
+          "path": "new-output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "random-source",
+        "output"
+      ]
+    },
+    {
+      "id": "o2-sort-r-n-conflict-before-seed",
+      "command": "sort",
+      "args": [
+        "-Rn",
+        "--random-source=short15"
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [
+        {
+          "path": "short15",
+          "content_text": "0123456789abcde"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: options '-nR' are incompatible\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "numeric-sort",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-version-combination",
+      "command": "sort",
+      "args": [
+        "-RV",
+        "--random-source=seed16"
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [
+        {
+          "path": "seed16",
+          "content_text": "0123456789abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "alpha\nalpha\nzeta\n\nbeta\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "version-sort",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-global-r-local-n-ignores-seed",
+      "command": "sort",
+      "args": [
+        "-R",
+        "-k2,2n",
+        "--random-source=empty"
+      ],
+      "stdin_text": "b alpha\nz beta\na alpha\nc beta\n",
+      "files": [
+        {
+          "path": "empty",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a alpha\nb alpha\nc beta\nz beta\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "key",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-global-r-local-reverse-ignores-seed",
+      "command": "sort",
+      "args": [
+        "-R",
+        "-k2,2r",
+        "--random-source=empty"
+      ],
+      "stdin_text": "b alpha\nz beta\na alpha\nc beta\n",
+      "files": [
+        {
+          "path": "empty",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "c beta\nz beta\na alpha\nb alpha\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "key",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-key",
+      "command": "sort",
+      "args": [
+        "-R",
+        "-k2,2",
+        "--random-source=seed16"
+      ],
+      "stdin_text": "b alpha\nz beta\na alpha\nc beta\n",
+      "files": [
+        {
+          "path": "seed16",
+          "content_text": "0123456789abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a alpha\nb alpha\nc beta\nz beta\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "key",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-key-stable",
+      "command": "sort",
+      "args": [
+        "-Rs",
+        "-k2,2",
+        "--random-source=seed16"
+      ],
+      "stdin_text": "b alpha\nz beta\na alpha\nc beta\n",
+      "files": [
+        {
+          "path": "seed16",
+          "content_text": "0123456789abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "b alpha\na alpha\nz beta\nc beta\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "stable",
+        "key",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-key-unique",
+      "command": "sort",
+      "args": [
+        "-Ru",
+        "-k2,2",
+        "--random-source=seed16"
+      ],
+      "stdin_text": "b alpha\nz beta\na alpha\nc beta\n",
+      "files": [
+        {
+          "path": "seed16",
+          "content_text": "0123456789abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "b alpha\nz beta\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "unique",
+        "key",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-folded-key",
+      "command": "sort",
+      "args": [
+        "-k2,2Rf",
+        "--random-source=seed16"
+      ],
+      "stdin_text": "b Alpha\nz beta\na alpha\nc Beta\n",
+      "files": [
+        {
+          "path": "seed16",
+          "content_text": "0123456789abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "c Beta\nz beta\na alpha\nb Alpha\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "key",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-folded-key-stable",
+      "command": "sort",
+      "args": [
+        "-s",
+        "-k2,2Rf",
+        "--random-source=seed16"
+      ],
+      "stdin_text": "b Alpha\nz beta\na alpha\nc Beta\n",
+      "files": [
+        {
+          "path": "seed16",
+          "content_text": "0123456789abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "z beta\nc Beta\nb Alpha\na alpha\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "stable",
+        "key",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-folded-key-unique",
+      "command": "sort",
+      "args": [
+        "-u",
+        "-k2,2Rf",
+        "--random-source=seed16"
+      ],
+      "stdin_text": "b Alpha\nz beta\na alpha\nc Beta\n",
+      "files": [
+        {
+          "path": "seed16",
+          "content_text": "0123456789abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "z beta\nb Alpha\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "unique",
+        "key",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-stdin-consumes16",
+      "command": "sort",
+      "args": [
+        "-R",
+        "--random-source=/dev/stdin"
+      ],
+      "stdin_text": "0123456789abcdefzeta\nalpha\nbeta\nalpha\n\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "alpha\nalpha\nzeta\n\nbeta\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-no-r-stdin-consumes0",
+      "command": "sort",
+      "args": [
+        "--random-source=/dev/stdin"
+      ],
+      "stdin_text": "0123456789abcdefzeta\nalpha\nbeta\nalpha\n\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "\n0123456789abcdefzeta\nalpha\nalpha\nbeta\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-stdin-short15",
+      "command": "sort",
+      "args": [
+        "-R",
+        "--random-source=/dev/stdin"
+      ],
+      "stdin_text": "0123456789abcde",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: '/dev/stdin': end of file\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-merge",
+      "command": "sort",
+      "args": [
+        "-m",
+        "a",
+        "b"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a 2\nc 1\n"
+        },
+        {
+          "path": "b",
+          "content_text": "a 1\nb 3\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a 1\na 2\nb 3\nc 1\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "merge"
+      ]
+    },
+    {
+      "id": "o2-sort-merge-stable-key",
+      "command": "sort",
+      "args": [
+        "-ms",
+        "-k1,1",
+        "a",
+        "b"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a 2\nc 1\n"
+        },
+        {
+          "path": "b",
+          "content_text": "a 1\nb 3\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a 2\na 1\nb 3\nc 1\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "merge",
+        "stable",
+        "key"
+      ]
+    },
+    {
+      "id": "o2-sort-merge-unique-key",
+      "command": "sort",
+      "args": [
+        "-mu",
+        "-k1,1",
+        "a",
+        "b"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a 2\nc 1\n"
+        },
+        {
+          "path": "b",
+          "content_text": "a 1\nb 3\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a 2\nb 3\nc 1\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "merge",
+        "unique",
+        "key"
+      ]
+    },
+    {
+      "id": "o2-sort-merge-does-not-check-order",
+      "command": "sort",
+      "args": [
+        "-m",
+        "a",
+        "unsorted"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a 2\nc 1\n"
+        },
+        {
+          "path": "unsorted",
+          "content_text": "z 0\na 0\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a 2\nc 1\nz 0\na 0\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "merge"
+      ]
+    },
+    {
+      "id": "o2-sort-merge-check-single",
+      "command": "sort",
+      "args": [
+        "-mc",
+        "a"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a 2\nc 1\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "merge",
+        "check"
+      ]
+    },
+    {
+      "id": "o2-sort-merge-check-multiple",
+      "command": "sort",
+      "args": [
+        "-mc",
+        "a",
+        "b"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a 2\nc 1\n"
+        },
+        {
+          "path": "b",
+          "content_text": "a 1\nb 3\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: extra operand 'b' not allowed with -c\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "merge",
+        "check"
+      ]
+    },
+    {
+      "id": "o2-sort-output-new",
+      "command": "sort",
+      "args": [
+        "-o",
+        "new-output",
+        "a",
+        "b"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a 2\nc 1\n"
+        },
+        {
+          "path": "b",
+          "content_text": "a 1\nb 3\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_files": [
+        {
+          "path": "new-output",
+          "exists": true,
+          "content_text": "a 1\na 2\nb 3\nc 1\n"
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output"
+      ]
+    },
+    {
+      "id": "o2-sort-output-existing",
+      "command": "sort",
+      "args": [
+        "-o",
+        "existing-output",
+        "a",
+        "b"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a 2\nc 1\n"
+        },
+        {
+          "path": "b",
+          "content_text": "a 1\nb 3\n"
+        },
+        {
+          "path": "existing-output",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_files": [
+        {
+          "path": "existing-output",
+          "exists": true,
+          "content_text": "a 1\na 2\nb 3\nc 1\n"
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output"
+      ]
+    },
+    {
+      "id": "o2-sort-output-input-alias",
+      "command": "sort",
+      "args": [
+        "-o",
+        "a",
+        "a",
+        "b"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a 2\nc 1\n"
+        },
+        {
+          "path": "b",
+          "content_text": "a 1\nb 3\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_files": [
+        {
+          "path": "a",
+          "exists": true,
+          "content_text": "a 1\na 2\nb 3\nc 1\n"
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output"
+      ]
+    },
+    {
+      "id": "o2-sort-output-repeat-same",
+      "command": "sort",
+      "args": [
+        "-o",
+        "new-output",
+        "--output=new-output",
+        "a"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a 2\nc 1\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_files": [
+        {
+          "path": "new-output",
+          "exists": true,
+          "content_text": "a 2\nc 1\n"
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output"
+      ]
+    },
+    {
+      "id": "o2-sort-output-repeat-distinct",
+      "command": "sort",
+      "args": [
+        "-o",
+        "new-output",
+        "-o",
+        "./new-output",
+        "a"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a 2\nc 1\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: multiple output files specified\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_files": [
+        {
+          "path": "new-output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output"
+      ]
+    },
+    {
+      "id": "o2-sort-output-check-conflict",
+      "command": "sort",
+      "args": [
+        "-c",
+        "-o",
+        "new-output",
+        "a"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a 2\nc 1\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: options '-co' are incompatible\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_files": [
+        {
+          "path": "new-output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "check",
+        "output"
+      ]
+    },
+    {
+      "id": "o2-sort-output-missing-input-new",
+      "command": "sort",
+      "args": [
+        "-o",
+        "new-output",
+        "missing-input"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: cannot read: missing-input: No such file or directory\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_files": [
+        {
+          "path": "new-output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output"
+      ]
+    },
+    {
+      "id": "o2-sort-output-missing-input-existing",
+      "command": "sort",
+      "args": [
+        "-o",
+        "existing-output",
+        "missing-input"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing-output",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: cannot read: missing-input: No such file or directory\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_files": [
+        {
+          "path": "existing-output",
+          "exists": true,
+          "content_text": "KEEP\n"
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output"
+      ]
+    },
+    {
+      "id": "o2-sort-output-dash-is-file",
+      "command": "sort",
+      "args": [
+        "-o",
+        "-",
+        "a"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a 2\nc 1\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_files": [
+        {
+          "path": "-",
+          "exists": true,
+          "content_text": "a 2\nc 1\n"
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output"
+      ]
+    },
+    {
+      "id": "o2-sort-no-r-empty-name",
+      "command": "sort",
+      "args": [
+        "--random-source="
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "\nalpha\nalpha\nbeta\nzeta\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-empty-name",
+      "command": "sort",
+      "args": [
+        "-R",
+        "--random-source="
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: open failed: '': No such file or directory\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-short-seed-before-check-output-conflict",
+      "command": "sort",
+      "args": [
+        "-R",
+        "--random-source=short15",
+        "-c",
+        "-o",
+        "new-output"
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [
+        {
+          "path": "short15",
+          "content_text": "0123456789abcde"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: 'short15': end of file\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_files": [
+        {
+          "path": "new-output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "random-source",
+        "check",
+        "output"
+      ]
+    },
+    {
+      "id": "o2-sort-r-source-dash-missing",
+      "command": "sort",
+      "args": [
+        "-R",
+        "--random-source=-"
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: open failed: -: No such file or directory\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-source-dash-is-file",
+      "command": "sort",
+      "args": [
+        "-R",
+        "--random-source=-"
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [
+        {
+          "path": "-",
+          "content_text": "0123456789abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "alpha\nalpha\nzeta\n\nbeta\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-late-read-sort-new",
+      "command": "sort",
+      "args": [
+        "-o",
+        "output",
+        "a",
+        "input-dir"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a\nb\n"
+        },
+        {
+          "path": "input-dir",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: read failed: input-dir: Is a directory\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": true,
+          "content_text": ""
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output"
+      ]
+    },
+    {
+      "id": "o2-sort-late-read-sort-existing",
+      "command": "sort",
+      "args": [
+        "-o",
+        "output",
+        "a",
+        "input-dir"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a\nb\n"
+        },
+        {
+          "path": "input-dir",
+          "kind": "directory"
+        },
+        {
+          "path": "output",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: read failed: input-dir: Is a directory\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": true,
+          "content_text": "KEEP\n"
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "output"
+      ]
+    },
+    {
+      "id": "o2-sort-late-read-merge-new",
+      "command": "sort",
+      "args": [
+        "-m",
+        "-o",
+        "output",
+        "a",
+        "input-dir"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a\nb\n"
+        },
+        {
+          "path": "input-dir",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: read failed: input-dir: Is a directory\n",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": true,
+          "content_text": ""
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "merge",
+        "output"
+      ]
+    },
+    {
+      "id": "o2-sort-r-long-alias",
+      "command": "sort",
+      "args": [
+        "--random-sort",
+        "--random-source=seed16"
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [
+        {
+          "path": "seed16",
+          "content_text": "0123456789abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "alpha\nalpha\nzeta\n\nbeta\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-r-sort-alias",
+      "command": "sort",
+      "args": [
+        "--sort=random",
+        "--random-source=seed16"
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [
+        {
+          "path": "seed16",
+          "content_text": "0123456789abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "alpha\nalpha\nzeta\n\nbeta\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "sort",
+        "random-source"
+      ]
+    },
+    {
+      "id": "o2-sort-merge-output-input-alias",
+      "command": "sort",
+      "args": [
+        "-m",
+        "-o",
+        "a",
+        "a",
+        "b"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a 2\nc 1\n"
+        },
+        {
+          "path": "b",
+          "content_text": "a 1\nb 3\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: unsupported capability: merge into existing output\n",
+      "normalizations": [],
+      "source_version": "workspace sort 0.2.2 existing-merge-output boundary",
+      "expected_files": [
+        {
+          "path": "a",
+          "exists": true,
+          "content_text": "a 2\nc 1\n"
+        }
+      ],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_rejection": "unsupported capability: merge into existing output",
+      "coverage": [
+        "merge",
+        "output"
+      ]
+    },
+    {
+      "id": "o2-sort-late-read-merge-existing",
+      "command": "sort",
+      "args": [
+        "-m",
+        "-o",
+        "output",
+        "a",
+        "input-dir"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "a\nb\n"
+        },
+        {
+          "path": "input-dir",
+          "kind": "directory"
+        },
+        {
+          "path": "output",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: unsupported capability: merge into existing output\n",
+      "normalizations": [],
+      "source_version": "workspace sort 0.2.2 existing-merge-output boundary",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": true,
+          "content_text": "KEEP\n"
+        }
+      ],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_rejection": "unsupported capability: merge into existing output",
+      "coverage": [
+        "merge",
+        "output"
+      ]
+    },
+    {
+      "id": "o2-sort-output-hardlink-mode",
+      "command": "sort",
+      "args": [
+        "-o",
+        "input",
+        "alias"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "b\na\n",
+          "mode": 384
+        },
+        {
+          "path": "alias",
+          "kind": "hardlink",
+          "target": "input"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "normalizations": [],
+      "host_platforms": [
+        "linux",
+        "macos"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "a\nb\n",
+          "mode": 384,
+          "same_identity_as": "alias"
+        },
+        {
+          "path": "alias",
+          "content_text": "a\nb\n",
+          "mode": 384
+        }
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "coverage": [
+        "output"
+      ]
     }
   ]
 }

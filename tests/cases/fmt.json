@@ -18,7 +18,10 @@
       "expected_status": 0,
       "expected_stdout_text": "one two\nthree four\nfive six\n",
       "oracle": true,
-      "source_version": "coreutils-9.11"
+      "source_version": "coreutils-9.11",
+      "coverage": [
+        "width"
+      ]
     },
     {
       "files": [],
@@ -35,7 +38,8 @@
       "expected_status": 0,
       "expected_stdout_text": "one two\n\nthree\n",
       "oracle": true,
-      "source_version": "coreutils-9.11"
+      "source_version": "coreutils-9.11",
+      "coverage": []
     },
     {
       "files": [],
@@ -54,7 +58,10 @@
       "expected_status": 0,
       "expected_stdout_text": "one\ntwo\n",
       "oracle": true,
-      "source_version": "coreutils-9.11"
+      "source_version": "coreutils-9.11",
+      "coverage": [
+        "split-only"
+      ]
     },
     {
       "files": [],
@@ -73,7 +80,10 @@
       "expected_status": 0,
       "expected_stdout_text": "one two.  Three\n",
       "oracle": true,
-      "source_version": "coreutils-9.11"
+      "source_version": "coreutils-9.11",
+      "coverage": [
+        "uniform-spacing"
+      ]
     },
     {
       "files": [],
@@ -90,7 +100,8 @@
       "expected_status": 0,
       "expected_stdout_text": "  one two\nnext\n",
       "oracle": true,
-      "source_version": "coreutils-9.11"
+      "source_version": "coreutils-9.11",
+      "coverage": []
     },
     {
       "id": "p1-fmt-control-word-boundaries",
@@ -110,7 +121,11 @@
       "expected_stderr_text": "",
       "comparison": "contract",
       "oracle": true,
-      "source_version": "GNU coreutils 9.11"
+      "source_version": "GNU coreutils 9.11",
+      "coverage": [
+        "uniform-spacing",
+        "width"
+      ]
     },
     {
       "id": "p1-fmt-zero-width",
@@ -129,7 +144,10 @@
       "expected_stderr_text": "",
       "comparison": "contract",
       "oracle": true,
-      "source_version": "GNU coreutils 9.11"
+      "source_version": "GNU coreutils 9.11",
+      "coverage": [
+        "width"
+      ]
     },
     {
       "id": "p1-fmt-goal-only",
@@ -148,7 +166,10 @@
       "expected_stderr_text": "",
       "comparison": "contract",
       "oracle": true,
-      "source_version": "GNU coreutils 9.11"
+      "source_version": "GNU coreutils 9.11",
+      "coverage": [
+        "goal"
+      ]
     },
     {
       "files": [],
@@ -163,11 +184,14 @@
       "args": [
         "-p>"
       ],
-      "expected_status": 1,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "fmt: unknown short option\n",
-      "diagnostic_reason": "Parser wording includes the unsupported option.",
-      "expected_rejection": "unknown short option"
+      "expected_status": 0,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 former algorithm restriction retired",
+      "coverage": [
+        "prefix"
+      ]
     },
     {
       "files": [],
@@ -186,7 +210,10 @@
       "expected_status": 0,
       "expected_stdout_text": "one\ntwo\n",
       "oracle": true,
-      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "coverage": [
+        "split-only"
+      ]
     },
     {
       "files": [],
@@ -205,7 +232,10 @@
       "expected_status": 0,
       "expected_stdout_text": "one two.  Three\n",
       "oracle": true,
-      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias."
+      "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
+      "coverage": [
+        "uniform-spacing"
+      ]
     },
     {
       "id": "release-metadata-fmt-help",
@@ -223,7 +253,7 @@
         "help"
       ],
       "source_version": "workspace cli/fmt@0.1.2 metadata contract",
-      "expected_stdout_text": "Usage: fmt [-WIDTH] [-w WIDTH] [-g GOAL] [-su] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nReformat paragraphs, preserving indentation; default width 75.\n-s splits lines without joining; -u uses uniform spacing.\nC-locale byte columns. Crown/tagged margins and prefixes are not supported.\n",
+      "expected_stdout_text": "Usage: fmt [-WIDTH] [-w WIDTH] [-g GOAL] [-suct] [-p PREFIX] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nReformat paragraphs, preserving indentation; default width 75.\n-s splits lines without joining; -u uses uniform spacing.\n-c, --crown-margin allows a different first-line indent.\n-t, --tagged-paragraph preserves a hanging indent.\n-p, --prefix=PREFIX reformats only matching prefixed lines.\nC-locale byte columns; split takes precedence over crown, then tagged.\n",
       "expected_stderr_text": ""
     },
     {
@@ -244,6 +274,609 @@
       "source_version": "workspace cli/fmt@0.1.2 metadata contract",
       "expected_stdout_text": "fmt 0.1.2\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o3-fmt-crown",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-c"
+      ],
+      "stdin_hex": "2020616c70686120626574612067616d6d612064656c746120657073696c6f6e207a657461206574612074686574610a20202020696f7461206b61707061206c616d626461206d75206e75207869206f6d6963726f6e2070690a2020202072686f207369676d612074617520757073696c6f6e207068692063686920707369206f6d6567610a0a202074696e7920776f7264730a",
+      "files": [],
+      "expected_status": 0,
+      "coverage": [
+        "width",
+        "crown-margin"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "2020616c70686120626574612067616d6d612064656c74610a20202020657073696c6f6e207a657461206574610a20202020746865746120696f7461206b617070610a202020206c616d626461206d75206e752078690a202020206f6d6963726f6e2070692072686f207369676d610a2020202074617520757073696c6f6e20706869206368690a20202020707369206f6d6567610a0a202074696e7920776f7264730a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-fmt-tagged",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-t"
+      ],
+      "stdin_hex": "2020616c70686120626574612067616d6d612064656c746120657073696c6f6e207a657461206574612074686574610a20202020696f7461206b61707061206c616d626461206d75206e75207869206f6d6963726f6e2070690a2020202072686f207369676d612074617520757073696c6f6e207068692063686920707369206f6d6567610a0a202074696e7920776f7264730a",
+      "files": [],
+      "expected_status": 0,
+      "coverage": [
+        "width",
+        "tagged-paragraph"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "2020616c70686120626574612067616d6d612064656c74610a20202020657073696c6f6e207a657461206574610a20202020746865746120696f7461206b617070610a202020206c616d626461206d75206e752078690a202020206f6d6963726f6e2070692072686f207369676d610a2020202074617520757073696c6f6e20706869206368690a20202020707369206f6d6567610a0a202074696e7920776f7264730a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-fmt-tagged-context",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-t"
+      ],
+      "stdin_hex": "5469746c6520616c70686120626574612067616d6d612064656c746120657073696c6f6e207a6574610a20202020636f6e74696e756174696f6e20696f7461206b61707061206c616d626461206d75206e752078690a202020206d6f72652072686f207369676d612074617520757073696c6f6e0a0a41206c617465722073696e676c65206c696e6520616c70686120626574612067616d6d612064656c746120657073696c6f6e207a6574612065746120746865746120696f74610a",
+      "files": [],
+      "expected_status": 0,
+      "coverage": [
+        "width",
+        "tagged-paragraph"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "5469746c6520616c70686120626574612067616d6d610a2020202064656c746120657073696c6f6e207a6574610a20202020636f6e74696e756174696f6e20696f74610a202020206b61707061206c616d626461206d75206e750a202020207869206d6f72652072686f207369676d610a2020202074617520757073696c6f6e0a0a41206c617465722073696e676c65206c696e650a20202020616c70686120626574612067616d6d610a2020202064656c746120657073696c6f6e207a6574610a2020202065746120746865746120696f74610a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-fmt-tagged-single",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-t"
+      ],
+      "stdin_hex": "412073696e676c65206c696e6520616c70686120626574612067616d6d612064656c746120657073696c6f6e207a6574612065746120746865746120696f74610a",
+      "files": [],
+      "expected_status": 0,
+      "coverage": [
+        "width",
+        "tagged-paragraph"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "412073696e676c65206c696e6520616c70686120626574610a20202067616d6d612064656c746120657073696c6f6e0a2020207a6574612065746120746865746120696f74610a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-fmt-split-crown",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-s",
+        "-c"
+      ],
+      "stdin_hex": "2020616c70686120626574612067616d6d612064656c746120657073696c6f6e207a657461206574612074686574610a20202020696f7461206b61707061206c616d626461206d75206e75207869206f6d6963726f6e2070690a2020202072686f207369676d612074617520757073696c6f6e207068692063686920707369206f6d6567610a0a202074696e7920776f7264730a",
+      "files": [],
+      "expected_status": 0,
+      "coverage": [
+        "width",
+        "split-only",
+        "crown-margin"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "2020616c70686120626574612067616d6d612064656c74610a2020657073696c6f6e207a657461206574612074686574610a20202020696f7461206b61707061206c616d6264610a202020206d75206e75207869206f6d6963726f6e2070690a2020202072686f207369676d61207461750a20202020757073696c6f6e20706869206368690a20202020707369206f6d6567610a0a202074696e7920776f7264730a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-fmt-crown-repeat",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-c",
+        "--crown-margin"
+      ],
+      "stdin_hex": "2020616c70686120626574612067616d6d612064656c746120657073696c6f6e207a657461206574612074686574610a20202020696f7461206b61707061206c616d626461206d75206e75207869206f6d6963726f6e2070690a2020202072686f207369676d612074617520757073696c6f6e207068692063686920707369206f6d6567610a0a202074696e7920776f7264730a",
+      "files": [],
+      "expected_status": 0,
+      "coverage": [
+        "width",
+        "crown-margin"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "2020616c70686120626574612067616d6d612064656c74610a20202020657073696c6f6e207a657461206574610a20202020746865746120696f7461206b617070610a202020206c616d626461206d75206e752078690a202020206f6d6963726f6e2070692072686f207369676d610a2020202074617520757073696c6f6e20706869206368690a20202020707369206f6d6567610a0a202074696e7920776f7264730a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-fmt-prefix-space",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-p",
+        "> "
+      ],
+      "stdin_hex": "3e20616c70686120626574612067616d6d612064656c746120657073696c6f6e207a6574610a3e2065746120746865746120696f7461206b61707061206c616d626461206d750a706c61696e20756e746f756368656420706172616772617068206c6f6e67206c6f6e6720776f7264732065786163746c792070726573657276656420686572650a20203e20696e64656e74656420616c70686120626574612067616d6d612064656c74610a3e0a3e616c70686120776974686f7574206d61746368696e6720747261696c696e6720737061636520616c70686120626574612067616d6d610a3e20657073696c6f6e207a657461206574612074686574610a2320616c70686120626574612067616d6d612064656c746120657073696c6f6e207a6574610a",
+      "files": [],
+      "expected_status": 0,
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "3e20616c70686120626574612067616d6d612064656c74610a3e20657073696c6f6e207a657461206574612074686574610a3e20696f7461206b61707061206c616d626461206d750a706c61696e20756e746f756368656420706172616772617068206c6f6e67206c6f6e6720776f7264732065786163746c792070726573657276656420686572650a20203e20696e64656e74656420616c70686120626574610a20203e2067616d6d612064656c74610a3e0a3e616c70686120776974686f7574206d61746368696e6720747261696c696e6720737061636520616c70686120626574612067616d6d610a3e20657073696c6f6e207a657461206574612074686574610a2320616c70686120626574612067616d6d612064656c746120657073696c6f6e207a6574610a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-fmt-prefix-nospace",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-p",
+        ">"
+      ],
+      "stdin_hex": "3e20616c70686120626574612067616d6d612064656c746120657073696c6f6e207a6574610a3e2065746120746865746120696f7461206b61707061206c616d626461206d750a706c61696e20756e746f756368656420706172616772617068206c6f6e67206c6f6e6720776f7264732065786163746c792070726573657276656420686572650a20203e20696e64656e74656420616c70686120626574612067616d6d612064656c74610a3e0a3e616c70686120776974686f7574206d61746368696e6720747261696c696e6720737061636520616c70686120626574612067616d6d610a3e20657073696c6f6e207a657461206574612074686574610a2320616c70686120626574612067616d6d612064656c746120657073696c6f6e207a6574610a",
+      "files": [],
+      "expected_status": 0,
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "3e20616c70686120626574612067616d6d612064656c74610a3e20657073696c6f6e207a657461206574612074686574610a3e20696f7461206b61707061206c616d626461206d750a706c61696e20756e746f756368656420706172616772617068206c6f6e67206c6f6e6720776f7264732065786163746c792070726573657276656420686572650a20203e20696e64656e74656420616c70686120626574610a20203e2067616d6d612064656c74610a3e0a3e616c70686120776974686f7574206d61746368696e670a3e747261696c696e6720737061636520616c7068610a3e626574612067616d6d610a3e20657073696c6f6e207a657461206574612074686574610a2320616c70686120626574612067616d6d612064656c746120657073696c6f6e207a6574610a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-fmt-prefix-leading",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-p",
+        "  > "
+      ],
+      "stdin_hex": "3e20616c70686120626574612067616d6d612064656c746120657073696c6f6e207a6574610a3e2065746120746865746120696f7461206b61707061206c616d626461206d750a706c61696e20756e746f756368656420706172616772617068206c6f6e67206c6f6e6720776f7264732065786163746c792070726573657276656420686572650a20203e20696e64656e74656420616c70686120626574612067616d6d612064656c74610a3e0a3e616c70686120776974686f7574206d61746368696e6720747261696c696e6720737061636520616c70686120626574612067616d6d610a3e20657073696c6f6e207a657461206574612074686574610a2320616c70686120626574612067616d6d612064656c746120657073696c6f6e207a6574610a",
+      "files": [],
+      "expected_status": 0,
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "3e20616c70686120626574612067616d6d612064656c746120657073696c6f6e207a6574610a3e2065746120746865746120696f7461206b61707061206c616d626461206d750a706c61696e20756e746f756368656420706172616772617068206c6f6e67206c6f6e6720776f7264732065786163746c792070726573657276656420686572650a20203e20696e64656e74656420616c70686120626574610a20203e2067616d6d612064656c74610a3e0a3e616c70686120776974686f7574206d61746368696e6720747261696c696e6720737061636520616c70686120626574612067616d6d610a3e20657073696c6f6e207a657461206574612074686574610a2320616c70686120626574612067616d6d612064656c746120657073696c6f6e207a6574610a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-fmt-prefix-repeat",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-p",
+        "> ",
+        "-p",
+        "# "
+      ],
+      "stdin_hex": "3e20616c70686120626574612067616d6d612064656c746120657073696c6f6e207a6574610a3e2065746120746865746120696f7461206b61707061206c616d626461206d750a706c61696e20756e746f756368656420706172616772617068206c6f6e67206c6f6e6720776f7264732065786163746c792070726573657276656420686572650a20203e20696e64656e74656420616c70686120626574612067616d6d612064656c74610a3e0a3e616c70686120776974686f7574206d61746368696e6720747261696c696e6720737061636520616c70686120626574612067616d6d610a3e20657073696c6f6e207a657461206574612074686574610a2320616c70686120626574612067616d6d612064656c746120657073696c6f6e207a6574610a",
+      "files": [],
+      "expected_status": 0,
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "3e20616c70686120626574612067616d6d612064656c746120657073696c6f6e207a6574610a3e2065746120746865746120696f7461206b61707061206c616d626461206d750a706c61696e20756e746f756368656420706172616772617068206c6f6e67206c6f6e6720776f7264732065786163746c792070726573657276656420686572650a20203e20696e64656e74656420616c70686120626574612067616d6d612064656c74610a3e0a3e616c70686120776974686f7574206d61746368696e6720747261696c696e6720737061636520616c70686120626574612067616d6d610a3e20657073696c6f6e207a657461206574612074686574610a2320616c70686120626574612067616d6d612064656c74610a2320657073696c6f6e207a6574610a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-fmt-prefix-empty",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-p",
+        ""
+      ],
+      "stdin_hex": "3e20616c70686120626574612067616d6d612064656c746120657073696c6f6e207a6574610a3e2065746120746865746120696f7461206b61707061206c616d626461206d750a706c61696e20756e746f756368656420706172616772617068206c6f6e67206c6f6e6720776f7264732065786163746c792070726573657276656420686572650a20203e20696e64656e74656420616c70686120626574612067616d6d612064656c74610a3e0a3e616c70686120776974686f7574206d61746368696e6720747261696c696e6720737061636520616c70686120626574612067616d6d610a3e20657073696c6f6e207a657461206574612074686574610a2320616c70686120626574612067616d6d612064656c746120657073696c6f6e207a6574610a",
+      "files": [],
+      "expected_status": 0,
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "3e20616c70686120626574612067616d6d610a64656c746120657073696c6f6e207a657461203e0a65746120746865746120696f7461206b617070610a6c616d626461206d7520706c61696e0a756e746f7563686564207061726167726170680a6c6f6e67206c6f6e6720776f7264732065786163746c790a70726573657276656420686572650a20203e20696e64656e74656420616c70686120626574610a202067616d6d612064656c74610a3e203e616c70686120776974686f75740a6d61746368696e6720747261696c696e672073706163650a616c70686120626574612067616d6d61203e0a657073696c6f6e207a6574612065746120746865746120230a616c70686120626574612067616d6d612064656c74610a657073696c6f6e207a6574610a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-fmt-prefix-unterminated",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-p",
+        "> "
+      ],
+      "stdin_hex": "3e20616c70686120626574612067616d6d612064656c746120657073696c6f6e207a657461",
+      "files": [],
+      "expected_status": 0,
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "3e20616c70686120626574612067616d6d612064656c74610a3e20657073696c6f6e207a6574610a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-fmt-short-long",
+      "command": "fmt",
+      "args": [
+        "-w10",
+        "-t"
+      ],
+      "stdin_hex": "68656c6c6f0a0a61766572797665727976657279766572796c6f6e67776f7264207a0a",
+      "files": [],
+      "expected_status": 0,
+      "coverage": [
+        "width",
+        "tagged-paragraph"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "68656c6c6f0a0a61766572797665727976657279766572796c6f6e67776f72640a2020207a0a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-tagged",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-t"
+      ],
+      "stdin_hex": "2020616c70686120626574612067616d6d612064656c746120657073696c6f6e0a20207a6574612065746120746865746120696f7461206b617070610a20206c616d626461206d75206e75207869206f6d6963726f6e2070690a",
+      "files": [],
+      "expected_status": 0,
+      "coverage": [
+        "width",
+        "tagged-paragraph"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "2020616c70686120626574612067616d6d610a64656c746120657073696c6f6e0a20207a6574612065746120746865746120696f74610a6b617070610a20206c616d626461206d75206e752078690a6f6d6963726f6e2070690a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-crown-tagged",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-c",
+        "-t"
+      ],
+      "stdin_hex": "2020616c70686120626574612067616d6d612064656c746120657073696c6f6e0a20207a6574612065746120746865746120696f7461206b617070610a20206c616d626461206d75206e75207869206f6d6963726f6e2070690a",
+      "files": [],
+      "expected_status": 0,
+      "coverage": [
+        "width",
+        "crown-margin",
+        "tagged-paragraph"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "2020616c70686120626574612067616d6d612064656c74610a2020657073696c6f6e207a657461206574612074686574610a2020696f7461206b61707061206c616d626461206d750a20206e75207869206f6d6963726f6e2070690a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-tagged-crown",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-t",
+        "-c"
+      ],
+      "stdin_hex": "2020616c70686120626574612067616d6d612064656c746120657073696c6f6e0a20207a6574612065746120746865746120696f7461206b617070610a20206c616d626461206d75206e75207869206f6d6963726f6e2070690a",
+      "files": [],
+      "expected_status": 0,
+      "coverage": [
+        "width",
+        "tagged-paragraph",
+        "crown-margin"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "2020616c70686120626574612067616d6d612064656c74610a2020657073696c6f6e207a657461206574612074686574610a2020696f7461206b61707061206c616d626461206d750a20206e75207869206f6d6963726f6e2070690a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-fmt-unmatched-eof-plain",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-p",
+        ">> "
+      ],
+      "stdin_text": "plain untouched long line with no newline",
+      "files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "706c61696e20756e746f7563686564206c6f6e67206c696e652077697468206e6f206e65776c696e65",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-fmt-partial-prefix-eof-plain",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-p",
+        ">> "
+      ],
+      "stdin_text": ">",
+      "files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "3e",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-fmt-only-prefix-eof-plain",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-p",
+        ">> "
+      ],
+      "stdin_text": ">>",
+      "files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "3e3e0a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-fmt-prefix-spaces-eof-plain",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-p",
+        ">> "
+      ],
+      "stdin_text": ">>   ",
+      "files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "3e3e0a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-fmt-prefix-tab-indent-plain",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-p",
+        ">> "
+      ],
+      "stdin_text": " \t>> alpha beta gamma delta epsilon zeta\n\t>> eta theta iota kappa lambda\n",
+      "files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "093e3e20616c70686120626574610a093e3e2067616d6d612064656c74610a093e3e20657073696c6f6e0a093e3e207a657461206574610a093e3e20746865746120696f74610a093e3e206b61707061206c616d6264610a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-fmt-prefix-body-tabs-plain",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-p",
+        ">> "
+      ],
+      "stdin_text": ">> alpha\tbeta gamma delta epsilon zeta\n>> eta theta iota kappa lambda\n",
+      "files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "3e3e20616c70686109626574610a3e3e2067616d6d612064656c746120657073696c6f6e0a3e3e207a6574612065746120746865746120696f74610a3e3e206b61707061206c616d6264610a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-fmt-prefix-hanging-tagged",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-p",
+        ">> ",
+        "-t"
+      ],
+      "stdin_text": ">> alpha beta gamma delta epsilon zeta eta theta\n",
+      "files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "width",
+        "prefix",
+        "tagged-paragraph"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "3e3e20616c70686120626574612067616d6d610a3e3e64656c746120657073696c6f6e207a6574610a3e3e6574612074686574610a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
+    },
+    {
+      "id": "o3-fmt-prefix-blank-leading-tagged",
+      "command": "fmt",
+      "args": [
+        "-w24",
+        "-p",
+        ">> ",
+        "-t"
+      ],
+      "stdin_text": " \tplain\n>>\n>> \n  >> alpha beta gamma delta epsilon zeta\n  >> eta theta iota\n",
+      "files": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "width",
+        "prefix",
+        "tagged-paragraph"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile",
+      "expected_stdout_hex": "09706c61696e0a3e3e0a3e3e0a20203e3e20616c70686120626574612067616d6d610a20203e3e64656c746120657073696c6f6e207a6574610a20203e3e2065746120746865746120696f74610a",
+      "expected_stderr_hex": "",
+      "normalizations": [],
+      "environment": {
+        "LC_ALL": "C"
+      }
     }
   ]
 }

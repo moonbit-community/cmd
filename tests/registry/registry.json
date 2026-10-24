@@ -6006,7 +6006,8 @@
       "case_id": "p0-expand-initial",
       "aliases": [],
       "coverage": [
-        "initial-only"
+        "initial-only",
+        "initial"
       ],
       "required_backends": [
         "native",
@@ -6041,7 +6042,8 @@
       "aliases": [],
       "coverage": [
         "explicit-stops",
-        "post-final-stop"
+        "post-final-stop",
+        "tabs"
       ],
       "required_backends": [
         "native",
@@ -6064,9 +6066,9 @@
       "command": "expand",
       "owner": "commands/expand",
       "surface": [
-        "invalid-option-value",
         "options",
-        "stdin"
+        "stdin",
+        "operands"
       ],
       "status": "supported",
       "implementation": "json-case",
@@ -6074,7 +6076,8 @@
       "case_id": "p0-expand-rejects-unsorted-stops",
       "aliases": [],
       "coverage": [
-        "invalid-option-value"
+        "invalid-option-value",
+        "tabs"
       ],
       "required_backends": [
         "native",
@@ -6083,14 +6086,15 @@
       "platforms": [],
       "required_evidence": [
         "contract",
-        "backend-pair"
+        "backend-pair",
+        "upstream-differential"
       ],
       "observations": [
         "status",
-        "stderr",
-        "stdout"
+        "stdout",
+        "stderr"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:p1-expr-precedence",
@@ -6869,7 +6873,9 @@
       "source": "tests/cases/fmt.json",
       "case_id": "p1-fmt-width",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "width"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -6930,7 +6936,9 @@
       "source": "tests/cases/fmt.json",
       "case_id": "p1-fmt-split-only",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "split-only"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -6961,7 +6969,9 @@
       "source": "tests/cases/fmt.json",
       "case_id": "p1-fmt-uniform",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "uniform-spacing"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -7022,7 +7032,10 @@
       "source": "tests/cases/fmt.json",
       "case_id": "p1-fmt-control-word-boundaries",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "uniform-spacing",
+        "width"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -7053,7 +7066,9 @@
       "source": "tests/cases/fmt.json",
       "case_id": "p1-fmt-zero-width",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "width"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -7084,7 +7099,9 @@
       "source": "tests/cases/fmt.json",
       "case_id": "p1-fmt-goal-only",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "goal"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -7108,28 +7125,33 @@
       "owner": "commands/fmt",
       "surface": [
         "options",
-        "stdin"
+        "stdin",
+        "operands"
       ],
-      "status": "boundary",
+      "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/fmt.json",
       "case_id": "p1-fmt-prefix-boundary",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "prefix"
+      ],
       "required_backends": [
         "native",
         "wasm"
       ],
       "platforms": [],
       "required_evidence": [
-        "boundary"
+        "contract",
+        "backend-pair",
+        "upstream-differential"
       ],
       "observations": [
         "status",
-        "stderr",
-        "stdout"
+        "stdout",
+        "stderr"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:repair-alias-fmt-split-only",
@@ -7144,7 +7166,9 @@
       "source": "tests/cases/fmt.json",
       "case_id": "repair-alias-fmt-split-only",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "split-only"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -7175,7 +7199,9 @@
       "source": "tests/cases/fmt.json",
       "case_id": "repair-alias-fmt-uniform-spacing",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "uniform-spacing"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -15743,7 +15769,9 @@
       "source": "tests/cases/printf.json",
       "case_id": "phase3-printf-format",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "format"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -15770,7 +15798,9 @@
       "source": "tests/cases/printf.json",
       "case_id": "p9-printf-repeated-format",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "format"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -15796,7 +15826,9 @@
       "source": "tests/cases/printf.json",
       "case_id": "compat-text-line-695",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "format"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -15825,7 +15857,9 @@
       "source": "tests/cases/printf.json",
       "case_id": "compat-text-line-704",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "format"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -15854,7 +15888,9 @@
       "source": "tests/cases/printf.json",
       "case_id": "compat-text-line-705",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "format"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -15883,7 +15919,9 @@
       "source": "tests/cases/printf.json",
       "case_id": "compat-catalog-line-184",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "format"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -17397,7 +17435,9 @@
       "source": "tests/cases/seq.json",
       "case_id": "compat-catalog-line-218",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "help"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -17426,7 +17466,9 @@
       "source": "tests/cases/seq.json",
       "case_id": "compat-catalog-line-251",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "version"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -17456,7 +17498,10 @@
       "source": "tests/cases/seq.json",
       "case_id": "repair-edge-seq-long-aliases",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "equal-width",
+        "separator"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19388,7 +19433,10 @@
       "source": "tests/cases/sort.json",
       "case_id": "p3-sort-multiple-key-modifiers",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "field-separator",
+        "key"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19415,7 +19463,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "p3-sort-general-numeric",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "general-numeric-sort"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19442,7 +19492,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "p3-sort-general-numeric-classes",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "general-numeric-sort"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19469,7 +19521,10 @@
       "source": "tests/cases/sort.json",
       "case_id": "p3-sort-local-key-modifier-combination",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "field-separator",
+        "key"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19496,7 +19551,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "p3-sort-blank-field-boundaries",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "key"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19523,7 +19580,11 @@
       "source": "tests/cases/sort.json",
       "case_id": "p3-sort-character-modifiers",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "ignore-leading-blanks",
+        "dictionary-order",
+        "ignore-case"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19550,7 +19611,11 @@
       "source": "tests/cases/sort.json",
       "case_id": "p3-sort-unique-key-stability",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "unique",
+        "field-separator",
+        "key"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19577,7 +19642,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "p3-sort-human-numeric",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "human-numeric-sort"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19604,7 +19671,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "p3-sort-month",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "month-sort"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19631,7 +19700,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "p3-sort-version",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "version-sort"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19658,7 +19729,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "p3-sort-zero-records",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "zero-terminated"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19685,7 +19758,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "p3-sort-ignore-nonprinting",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "ignore-nonprinting"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19712,7 +19787,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "p3-sort-ignore-case-c-locale",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "ignore-case"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19739,7 +19816,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "p3-sort-check-quiet",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "check"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19766,7 +19845,10 @@
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-372",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "field-separator",
+        "key"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19796,7 +19878,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-381",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "general-numeric-sort"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19826,7 +19910,10 @@
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-390",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "field-separator",
+        "key"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19856,7 +19943,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-399",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "key"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19886,7 +19975,11 @@
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-408",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "unique",
+        "field-separator",
+        "key"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19916,7 +20009,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-417",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "human-numeric-sort"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19946,7 +20041,11 @@
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-426",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "ignore-leading-blanks",
+        "dictionary-order",
+        "ignore-case"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -19976,7 +20075,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-435",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "ignore-case"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -20006,7 +20107,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-436",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "version-sort"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -20036,7 +20139,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-445",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "zero-terminated"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -20066,7 +20171,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-454",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "check"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -20096,7 +20203,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-467",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "check-quiet"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -20118,28 +20227,34 @@
       "command": "sort",
       "owner": "commands/sort",
       "surface": [
-        "options"
+        "options",
+        "stdin",
+        "operands"
       ],
-      "status": "boundary",
+      "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-468",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "random-sort"
+      ],
       "required_backends": [
         "native",
         "wasm"
       ],
       "platforms": [],
       "required_evidence": [
-        "boundary"
+        "contract",
+        "backend-pair",
+        "upstream-differential"
       ],
       "observations": [
         "status",
-        "stderr",
-        "stdout"
+        "stdout",
+        "stderr"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-544",
@@ -20153,7 +20268,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-544",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "check"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -20183,7 +20300,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-sort-check-diagnostic",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "check"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -20244,7 +20363,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "repair-alias-sort-general-numeric-sort",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "general-numeric-sort"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -20274,7 +20395,11 @@
       "source": "tests/cases/sort.json",
       "case_id": "repair-alias-sort-unique",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "unique",
+        "field-separator",
+        "key"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -20304,7 +20429,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "repair-alias-sort-human-numeric-sort",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "human-numeric-sort"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -20334,7 +20461,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "repair-alias-sort-ignore-case",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "ignore-case"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -20364,7 +20493,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "repair-alias-sort-version-sort",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "version-sort"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -20394,7 +20525,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "repair-alias-sort-zero-terminated",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "zero-terminated"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -20424,7 +20557,9 @@
       "source": "tests/cases/sort.json",
       "case_id": "repair-alias-sort-check",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "check"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -22893,7 +23028,8 @@
       "case_id": "p0-unexpand-all",
       "aliases": [],
       "coverage": [
-        "all-blanks"
+        "all-blanks",
+        "all"
       ],
       "required_backends": [
         "native",
@@ -22926,7 +23062,8 @@
       "case_id": "p0-unexpand-first-only",
       "aliases": [],
       "coverage": [
-        "first-only"
+        "first-only",
+        "all"
       ],
       "required_backends": [
         "native",
@@ -22959,7 +23096,8 @@
       "case_id": "p0-unexpand-explicit-stops",
       "aliases": [],
       "coverage": [
-        "explicit-stops"
+        "explicit-stops",
+        "tabs"
       ],
       "required_backends": [
         "native",
@@ -22992,7 +23130,8 @@
       "case_id": "repair-alias-unexpand-tabs",
       "aliases": [],
       "coverage": [
-        "explicit-stops"
+        "explicit-stops",
+        "tabs"
       ],
       "required_backends": [
         "native",
@@ -63372,6 +63511,6574 @@
         "stderr"
       ],
       "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-seed16",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-seed16",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-seed32-same-prefix",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-seed32-same-prefix",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-repeat-R",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-repeat-R",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-repeat-same-source",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-repeat-same-source",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-distinct-source",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-distinct-source",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-no-r-empty-source",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-no-r-empty-source",
+      "aliases": [],
+      "coverage": [
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-no-r-missing-source",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-no-r-missing-source",
+      "aliases": [],
+      "coverage": [
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-no-r-distinct-source",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-no-r-distinct-source",
+      "aliases": [],
+      "coverage": [
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-empty-input-short-source",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-empty-input-short-source",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-empty-input-empty-source",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-empty-input-empty-source",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-one-record-short-source",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-one-record-short-source",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-missing-seed-before-input-output",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-missing-seed-before-input-output",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "random-source",
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-short-seed-before-input-output",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-short-seed-before-input-output",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "random-source",
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-good-seed-missing-input",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-good-seed-missing-input",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "random-source",
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-n-conflict-before-seed",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-n-conflict-before-seed",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "numeric-sort",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-version-combination",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-version-combination",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "version-sort",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-global-r-local-n-ignores-seed",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-global-r-local-n-ignores-seed",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "key",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-global-r-local-reverse-ignores-seed",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-global-r-local-reverse-ignores-seed",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "key",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-key",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-key",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "key",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-key-stable",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-key-stable",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "stable",
+        "key",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-key-unique",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-key-unique",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "unique",
+        "key",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-folded-key",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-folded-key",
+      "aliases": [],
+      "coverage": [
+        "key",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-folded-key-stable",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-folded-key-stable",
+      "aliases": [],
+      "coverage": [
+        "stable",
+        "key",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-folded-key-unique",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-folded-key-unique",
+      "aliases": [],
+      "coverage": [
+        "unique",
+        "key",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-stdin-consumes16",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-stdin-consumes16",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-no-r-stdin-consumes0",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-no-r-stdin-consumes0",
+      "aliases": [],
+      "coverage": [
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-stdin-short15",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-stdin-short15",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-merge",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-merge",
+      "aliases": [],
+      "coverage": [
+        "merge"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-merge-stable-key",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-merge-stable-key",
+      "aliases": [],
+      "coverage": [
+        "merge",
+        "stable",
+        "key"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-merge-unique-key",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-merge-unique-key",
+      "aliases": [],
+      "coverage": [
+        "merge",
+        "unique",
+        "key"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-merge-does-not-check-order",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-merge-does-not-check-order",
+      "aliases": [],
+      "coverage": [
+        "merge"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-merge-check-single",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-merge-check-single",
+      "aliases": [],
+      "coverage": [
+        "merge",
+        "check"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-merge-check-multiple",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-merge-check-multiple",
+      "aliases": [],
+      "coverage": [
+        "merge",
+        "check"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-output-new",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-output-new",
+      "aliases": [],
+      "coverage": [
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-output-existing",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-output-existing",
+      "aliases": [],
+      "coverage": [
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-output-input-alias",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-output-input-alias",
+      "aliases": [],
+      "coverage": [
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-output-repeat-same",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-output-repeat-same",
+      "aliases": [],
+      "coverage": [
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-output-repeat-distinct",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-output-repeat-distinct",
+      "aliases": [],
+      "coverage": [
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-output-check-conflict",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-output-check-conflict",
+      "aliases": [],
+      "coverage": [
+        "check",
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-output-missing-input-new",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-output-missing-input-new",
+      "aliases": [],
+      "coverage": [
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-output-missing-input-existing",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-output-missing-input-existing",
+      "aliases": [],
+      "coverage": [
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-output-dash-is-file",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-output-dash-is-file",
+      "aliases": [],
+      "coverage": [
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-no-r-empty-name",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-no-r-empty-name",
+      "aliases": [],
+      "coverage": [
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-empty-name",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-empty-name",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-short-seed-before-check-output-conflict",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-short-seed-before-check-output-conflict",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "random-source",
+        "check",
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-source-dash-missing",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-source-dash-missing",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-source-dash-is-file",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-source-dash-is-file",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-late-read-sort-new",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-late-read-sort-new",
+      "aliases": [],
+      "coverage": [
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-late-read-sort-existing",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-late-read-sort-existing",
+      "aliases": [],
+      "coverage": [
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-late-read-merge-new",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-late-read-merge-new",
+      "aliases": [],
+      "coverage": [
+        "merge",
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-long-alias",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-long-alias",
+      "aliases": [],
+      "coverage": [
+        "random-sort",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-r-sort-alias",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-r-sort-alias",
+      "aliases": [],
+      "coverage": [
+        "sort",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o2-sort-merge-output-input-alias",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-merge-output-input-alias",
+      "aliases": [],
+      "coverage": [
+        "merge",
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "boundary"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:o2-sort-late-read-merge-existing",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-late-read-merge-existing",
+      "aliases": [],
+      "coverage": [
+        "merge",
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "boundary"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:o3-seq-format-basic",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-basic",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-percent",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-percent",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-separator",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-separator",
+      "aliases": [],
+      "coverage": [
+        "separator",
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-repeat",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-repeat",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-equal-width",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-equal-width",
+      "aliases": [],
+      "coverage": [
+        "format",
+        "equal-width"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-equal-width-format",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-equal-width-format",
+      "aliases": [],
+      "coverage": [
+        "equal-width",
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-none",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-none",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-only-percent",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-only-percent",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-two",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-two",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-integer",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-integer",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-star",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-star",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-precision-star",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-precision-star",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-capital-l",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-capital-l",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-lower-l",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-lower-l",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-endpoints",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-endpoints",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-more-precision",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-more-precision",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-binary-rounding",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-binary-rounding",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-ties",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-ties",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-hex",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-hex",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-descending",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-descending",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-empty",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-empty",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-negative-zero",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-negative-zero",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-zero-step",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-zero-step",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-seq-format-nan",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-seq-format-nan",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-extra-seq-format-negative-zero",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-extra-seq-format-negative-zero",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-extra-seq-format-underflow-zero",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-extra-seq-format-underflow-zero",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-extra-seq-format-left-width-endpoint",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-extra-seq-format-left-width-endpoint",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-extra-seq-format-signed-zero-pad",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-extra-seq-format-signed-zero-pad",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-extra-seq-format-empty-range",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "o3-extra-seq-format-empty-range",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-printf-hex-flags",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/printf.json",
+      "case_id": "o3-printf-hex-flags",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-printf-hex-special",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/printf.json",
+      "case_id": "o3-printf-hex-special",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-printf-hex-precision",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/printf.json",
+      "case_id": "o3-printf-hex-precision",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-printf-hex-tie",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/printf.json",
+      "case_id": "o3-printf-hex-tie",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-printf-hex-star",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/printf.json",
+      "case_id": "o3-printf-hex-star",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-printf-hex-missing",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/printf.json",
+      "case_id": "o3-printf-hex-missing",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-printf-hex-character",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/printf.json",
+      "case_id": "o3-printf-hex-character",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-printf-hex-partial-error",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/printf.json",
+      "case_id": "o3-printf-hex-partial-error",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-printf-hex-trailing",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/printf.json",
+      "case_id": "o3-printf-hex-trailing",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-printf-hex-range",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/printf.json",
+      "case_id": "o3-printf-hex-range",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-printf-quote-values",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/printf.json",
+      "case_id": "o3-printf-quote-values",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-printf-quote-missing",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/printf.json",
+      "case_id": "o3-printf-quote-missing",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-printf-quote-width",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/printf.json",
+      "case_id": "o3-printf-quote-width",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-printf-quote-precision",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/printf.json",
+      "case_id": "o3-printf-quote-precision",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-printf-quote-flag",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/printf.json",
+      "case_id": "o3-printf-quote-flag",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-extra-printf-quote-punctuation",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/printf.json",
+      "case_id": "o3-extra-printf-quote-punctuation",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-extra-printf-quote-control-apostrophes",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/printf.json",
+      "case_id": "o3-extra-printf-quote-control-apostrophes",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-extra-printf-hex-nan-signs",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/printf.json",
+      "case_id": "o3-extra-printf-hex-nan-signs",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-extra-printf-hex-rounding-prefixes",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "options",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/printf.json",
+      "case_id": "o3-extra-printf-hex-rounding-prefixes",
+      "aliases": [],
+      "coverage": [
+        "format"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-crown",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-crown",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "crown-margin"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-tagged",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-tagged",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "tagged-paragraph"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-tagged-context",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-tagged-context",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "tagged-paragraph"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-tagged-single",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-tagged-single",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "tagged-paragraph"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-split-crown",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-split-crown",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "split-only",
+        "crown-margin"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-crown-repeat",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-crown-repeat",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "crown-margin"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-prefix-space",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-prefix-space",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-prefix-nospace",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-prefix-nospace",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-prefix-leading",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-prefix-leading",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-prefix-repeat",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-prefix-repeat",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-prefix-empty",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-prefix-empty",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-prefix-unterminated",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-prefix-unterminated",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-short-long",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-short-long",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "tagged-paragraph"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-tagged",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-tagged",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "tagged-paragraph"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-crown-tagged",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-crown-tagged",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "crown-margin",
+        "tagged-paragraph"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-tagged-crown",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-tagged-crown",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "tagged-paragraph",
+        "crown-margin"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-unmatched-eof-plain",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-unmatched-eof-plain",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-partial-prefix-eof-plain",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-partial-prefix-eof-plain",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-only-prefix-eof-plain",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-only-prefix-eof-plain",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-prefix-spaces-eof-plain",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-prefix-spaces-eof-plain",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-prefix-tab-indent-plain",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-prefix-tab-indent-plain",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-prefix-body-tabs-plain",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-prefix-body-tabs-plain",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "prefix"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-prefix-hanging-tagged",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-prefix-hanging-tagged",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "prefix",
+        "tagged-paragraph"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o3-fmt-prefix-blank-leading-tagged",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "o3-fmt-prefix-blank-leading-tagged",
+      "aliases": [],
+      "coverage": [
+        "width",
+        "prefix",
+        "tagged-paragraph"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-expand-absolute-grid",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/expand.json",
+      "case_id": "o4-expand-absolute-grid",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-expand-absolute-backspace-cr",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/expand.json",
+      "case_id": "o4-expand-absolute-backspace-cr",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-expand-relative-grid",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/expand.json",
+      "case_id": "o4-expand-relative-grid",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-expand-relative-backspace-cr",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/expand.json",
+      "case_id": "o4-expand-relative-backspace-cr",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-expand-standalone-absolute",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/expand.json",
+      "case_id": "o4-expand-standalone-absolute",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-expand-standalone-relative",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/expand.json",
+      "case_id": "o4-expand-standalone-relative",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-expand-fixed-tail",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/expand.json",
+      "case_id": "o4-expand-fixed-tail",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-expand-relative-zero",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/expand.json",
+      "case_id": "o4-expand-relative-zero",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-expand-absolute-zero",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/expand.json",
+      "case_id": "o4-expand-absolute-zero",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-expand-nonfinal-suffix",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/expand.json",
+      "case_id": "o4-expand-nonfinal-suffix",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-expand-conflicting-suffixes",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/expand.json",
+      "case_id": "o4-expand-conflicting-suffixes",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-expand-nonascending",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/expand.json",
+      "case_id": "o4-expand-nonascending",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-expand-zero-stop",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/expand.json",
+      "case_id": "o4-expand-zero-stop",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-expand-signed-overflow",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/expand.json",
+      "case_id": "o4-expand-signed-overflow",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-expand-long-tabs-alias",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/expand.json",
+      "case_id": "o4-expand-long-tabs-alias",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-expand-repeated-fixed-tabs",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/expand.json",
+      "case_id": "o4-expand-repeated-fixed-tabs",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-expand-int64-stop",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/expand.json",
+      "case_id": "o4-expand-int64-stop",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-absolute-grid",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-absolute-grid",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-backspace-cr",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-backspace-cr",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-relative-grid",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-relative-grid",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-standalone-absolute",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-standalone-absolute",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-standalone-relative",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-standalone-relative",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-fixed-tail",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-fixed-tail",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-relative-zero",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-relative-zero",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-absolute-zero",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-absolute-zero",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-nonfinal-suffix",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-nonfinal-suffix",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-conflicting-suffixes",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-conflicting-suffixes",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-nonascending",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-nonascending",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-zero-stop",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-zero-stop",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-signed-overflow",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-signed-overflow",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-tabs-first-only",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-tabs-first-only",
+      "aliases": [],
+      "coverage": [
+        "tabs",
+        "first-only"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-first-only-tabs",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-first-only-tabs",
+      "aliases": [],
+      "coverage": [
+        "first-only",
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-explicit-all",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-explicit-all",
+      "aliases": [],
+      "coverage": [
+        "all",
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-repeated-suffix",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-repeated-suffix",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-long-tabs-alias",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-long-tabs-alias",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-repeated-fixed-tabs",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-repeated-fixed-tabs",
+      "aliases": [],
+      "coverage": [
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-first-only-then-all",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-first-only-then-all",
+      "aliases": [],
+      "coverage": [
+        "first-only",
+        "all",
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-all-then-first-only",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-all-then-first-only",
+      "aliases": [],
+      "coverage": [
+        "all",
+        "first-only",
+        "tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-isolated-space",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-isolated-space",
+      "aliases": [],
+      "coverage": [
+        "all"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-space-run",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-space-run",
+      "aliases": [],
+      "coverage": [
+        "all"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o4-unexpand-initial-backspace",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/unexpand.json",
+      "case_id": "o4-unexpand-initial-backspace",
+      "aliases": [],
+      "coverage": [],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "package-test:commands/fmt/format_wbtest.mbt::fmt tagged continuation preserves the prefix without negative padding",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/fmt/format_wbtest.mbt::fmt tagged continuation preserves the prefix without negative padding",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "fmt tagged continuation preserves the prefix without negative padding"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/fmt/format_wbtest.mbt::fmt prefix eligibility preserves unmatched and partial EOF records",
+      "command": "fmt",
+      "owner": "commands/fmt",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/fmt/format_wbtest.mbt::fmt prefix eligibility preserves unmatched and partial EOF records",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "fmt prefix eligibility preserves unmatched and partial EOF records"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/seq/format_wbtest.mbt::seq format decodes literals and pads after the numeric prefix",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/seq/format_wbtest.mbt::seq format decodes literals and pads after the numeric prefix",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "seq format decodes literals and pads after the numeric prefix"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/seq/format_wbtest.mbt::seq rejects missing multiple integer and dynamic format conversions",
+      "command": "seq",
+      "owner": "commands/seq",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/seq/format_wbtest.mbt::seq rejects missing multiple integer and dynamic format conversions",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "seq rejects missing multiple integer and dynamic format conversions"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/sort/o2_wbtest.mbt::sort stable keys retain sequence order through external runs",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/sort/o2_wbtest.mbt::sort stable keys retain sequence order through external runs",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sort stable keys retain sequence order through external runs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/sort/o2_wbtest.mbt::sort merge preserves operand ties and assumes ordered inputs",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/sort/o2_wbtest.mbt::sort merge preserves operand ties and assumes ordered inputs",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sort merge preserves operand ties and assumes ordered inputs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/sort/o2_wbtest.mbt::sort seeded random keys survive external runs and unique selection",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/sort/o2_wbtest.mbt::sort seeded random keys survive external runs and unique selection",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sort seeded random keys survive external runs and unique selection"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/sort/o2_wbtest.mbt::sort option conflicts and effective random inheritance follow GNU",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/sort/o2_wbtest.mbt::sort option conflicts and effective random inheritance follow GNU",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sort option conflicts and effective random inheritance follow GNU"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/sort/o2_wbtest.mbt::sort output aliases consume input before truncation and preserve failures",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/sort/o2_wbtest.mbt::sort output aliases consume input before truncation and preserve failures",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sort output aliases consume input before truncation and preserve failures"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/sort/random_wbtest.mbt::sort random digests match fixed GNU MD5 vectors",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/sort/random_wbtest.mbt::sort random digests match fixed GNU MD5 vectors",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sort random digests match fixed GNU MD5 vectors"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/sort/random_wbtest.mbt::sort random seed consumes exactly sixteen bytes",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/sort/random_wbtest.mbt::sort random seed consumes exactly sixteen bytes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sort random seed consumes exactly sixteen bytes"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/expand/main_wbtest.mbt::expand absolute and relative repeating tails use distinct grids",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/expand/main_wbtest.mbt::expand absolute and relative repeating tails use distinct grids",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "expand absolute and relative repeating tails use distinct grids"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/expand/main_wbtest.mbt::expand repeated tab lists accumulate and retain zero suffix semantics",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/expand/main_wbtest.mbt::expand repeated tab lists accumulate and retain zero suffix semantics",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "expand repeated tab lists accumulate and retain zero suffix semantics"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/expand/main_wbtest.mbt::expand rejects invalid tab extensions before input",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/expand/main_wbtest.mbt::expand rejects invalid tab extensions before input",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "expand rejects invalid tab extensions before input"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/expand/main_wbtest.mbt::expand backspace and carriage return track byte columns",
+      "command": "expand",
+      "owner": "commands/expand",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/expand/main_wbtest.mbt::expand backspace and carriage return track byte columns",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "expand backspace and carriage return track byte columns"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/printf/format_wbtest.mbt::shell quote preserves GNU C byte and apostrophe choices",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/printf/format_wbtest.mbt::shell quote preserves GNU C byte and apostrophe choices",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "shell quote preserves GNU C byte and apostrophe choices"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/printf/format_wbtest.mbt::hex and quote conversions retain missing reuse and fatal output prefix",
+      "command": "printf",
+      "owner": "commands/printf",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/printf/format_wbtest.mbt::hex and quote conversions retain missing reuse and fatal output prefix",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "hex and quote conversions retain missing reuse and fatal output prefix"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/unexpand/main_wbtest.mbt::unexpand absolute and relative tails preserve blank columns",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/unexpand/main_wbtest.mbt::unexpand absolute and relative tails preserve blank columns",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "unexpand absolute and relative tails preserve blank columns"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/unexpand/main_wbtest.mbt::unexpand first-only overrides explicit and implicit all",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/unexpand/main_wbtest.mbt::unexpand first-only overrides explicit and implicit all",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "unexpand first-only overrides explicit and implicit all"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/unexpand/main_wbtest.mbt::unexpand pending blanks preserve isolated spaces and existing tabs",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/unexpand/main_wbtest.mbt::unexpand pending blanks preserve isolated spaces and existing tabs",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "unexpand pending blanks preserve isolated spaces and existing tabs"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/unexpand/main_wbtest.mbt::unexpand tab parser accumulates lists and rejects conflicting suffixes",
+      "command": "unexpand",
+      "owner": "commands/unexpand",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/unexpand/main_wbtest.mbt::unexpand tab parser accumulates lists and rejects conflicting suffixes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "unexpand tab parser accumulates lists and rejects conflicting suffixes"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/numfmt/format_wbtest.mbt::binary profiles round hexadecimal midpoint inputs to even",
+      "command": "",
+      "owner": "core/numfmt",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/numfmt/format_wbtest.mbt::binary profiles round hexadecimal midpoint inputs to even",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "binary profiles round hexadecimal midpoint inputs to even"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/numfmt/format_wbtest.mbt::binary64 format preserves hex ties subnormal zero and decimal precision",
+      "command": "",
+      "owner": "core/numfmt",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/numfmt/format_wbtest.mbt::binary64 format preserves hex ties subnormal zero and decimal precision",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "binary64 format preserves hex ties subnormal zero and decimal precision"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/numfmt/format_wbtest.mbt::numeric prefixes distinguish malformed overflow and exact subnormal",
+      "command": "",
+      "owner": "core/numfmt",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/numfmt/format_wbtest.mbt::numeric prefixes distinguish malformed overflow and exact subnormal",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "numeric prefixes distinguish malformed overflow and exact subnormal"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/numfmt/format_wbtest.mbt::sequence arithmetic rounds multiplication before addition",
+      "command": "",
+      "owner": "core/numfmt",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/numfmt/format_wbtest.mbt::sequence arithmetic rounds multiplication before addition",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sequence arithmetic rounds multiplication before addition"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/quoting/shell_wbtest.mbt::shell escaping preserves C profile byte groups",
+      "command": "",
+      "owner": "core/quoting",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/quoting/shell_wbtest.mbt::shell escaping preserves C profile byte groups",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "shell escaping preserves C profile byte groups"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:core/quoting/shell_wbtest.mbt::shell escaping supports forced and colon quoting",
+      "command": "",
+      "owner": "core/quoting",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "core/quoting/shell_wbtest.mbt::shell escaping supports forced and colon quoting",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "shell escaping supports forced and colon quoting"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:o2-sort-output-hardlink-mode",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "operands"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "o2-sort-output-hardlink-mode",
+      "aliases": [],
+      "coverage": [
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-content",
+        "file-mode",
+        "file-identity"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
     }
   ],
   "release_commands": [
@@ -63433,12 +70140,29 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
-        "p0-expand-initial",
         "p0-expand-basic-tabs",
+        "p0-expand-initial",
         "p0-expand-explicit-stops",
+        "p0-expand-rejects-unsorted-stops",
         "release-metadata-expand-help",
         "release-metadata-expand-version",
-        "p0-expand-rejects-unsorted-stops"
+        "o4-expand-absolute-grid",
+        "o4-expand-absolute-backspace-cr",
+        "o4-expand-relative-grid",
+        "o4-expand-relative-backspace-cr",
+        "o4-expand-standalone-absolute",
+        "o4-expand-standalone-relative",
+        "o4-expand-fixed-tail",
+        "o4-expand-relative-zero",
+        "o4-expand-absolute-zero",
+        "o4-expand-nonfinal-suffix",
+        "o4-expand-conflicting-suffixes",
+        "o4-expand-nonascending",
+        "o4-expand-zero-stop",
+        "o4-expand-signed-overflow",
+        "o4-expand-long-tabs-alias",
+        "o4-expand-repeated-fixed-tabs",
+        "o4-expand-int64-stop"
       ]
     },
     {
@@ -63532,13 +70256,37 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
-        "p0-unexpand-all",
         "p0-unexpand-leading",
+        "p0-unexpand-all",
         "p0-unexpand-first-only",
         "p0-unexpand-explicit-stops",
         "repair-alias-unexpand-tabs",
         "release-metadata-unexpand-help",
-        "release-metadata-unexpand-version"
+        "release-metadata-unexpand-version",
+        "o4-unexpand-absolute-grid",
+        "o4-unexpand-backspace-cr",
+        "o4-unexpand-relative-grid",
+        "o4-unexpand-standalone-absolute",
+        "o4-unexpand-standalone-relative",
+        "o4-unexpand-fixed-tail",
+        "o4-unexpand-relative-zero",
+        "o4-unexpand-absolute-zero",
+        "o4-unexpand-nonfinal-suffix",
+        "o4-unexpand-conflicting-suffixes",
+        "o4-unexpand-nonascending",
+        "o4-unexpand-zero-stop",
+        "o4-unexpand-signed-overflow",
+        "o4-unexpand-tabs-first-only",
+        "o4-unexpand-first-only-tabs",
+        "o4-unexpand-explicit-all",
+        "o4-unexpand-repeated-suffix",
+        "o4-unexpand-long-tabs-alias",
+        "o4-unexpand-repeated-fixed-tabs",
+        "o4-unexpand-first-only-then-all",
+        "o4-unexpand-all-then-first-only",
+        "o4-unexpand-isolated-space",
+        "o4-unexpand-space-run",
+        "o4-unexpand-initial-backspace"
       ]
     },
     {
@@ -64441,14 +71189,33 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "phase3-printf-format",
+        "p9-printf-repeated-format",
         "compat-text-line-695",
         "compat-text-line-704",
         "compat-text-line-705",
-        "phase3-printf-format",
         "compat-catalog-line-184",
-        "p9-printf-repeated-format",
         "release-metadata-printf-help",
-        "release-metadata-printf-version"
+        "release-metadata-printf-version",
+        "o3-printf-hex-flags",
+        "o3-printf-hex-special",
+        "o3-printf-hex-precision",
+        "o3-printf-hex-tie",
+        "o3-printf-hex-star",
+        "o3-printf-hex-missing",
+        "o3-printf-hex-character",
+        "o3-printf-hex-partial-error",
+        "o3-printf-hex-trailing",
+        "o3-printf-hex-range",
+        "o3-printf-quote-values",
+        "o3-printf-quote-missing",
+        "o3-printf-quote-width",
+        "o3-printf-quote-precision",
+        "o3-printf-quote-flag",
+        "o3-extra-printf-quote-punctuation",
+        "o3-extra-printf-quote-control-apostrophes",
+        "o3-extra-printf-hex-nan-signs",
+        "o3-extra-printf-hex-rounding-prefixes"
       ]
     },
     {
@@ -64520,31 +71287,61 @@
         "help",
         "version",
         "separator",
-        "equal-width"
+        "equal-width",
+        "format"
       ],
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
-        "p0-seq-version",
-        "p0-seq-separator",
         "phase3-seq-basic",
+        "p9-seq-descending",
+        "p0-seq-two-operand-descending",
+        "p0-seq-version",
+        "p0-seq-equal-width",
+        "p0-seq-separator",
         "p0-seq-one-number",
         "p0-seq-two-number",
-        "p9-seq-descending",
-        "p0-seq-equal-width",
         "p0-seq-three-number",
+        "seq-descending-default",
+        "seq-descending-explicit",
         "compat-text-line-707",
         "compat-text-line-709",
-        "seq-descending-default",
         "compat-catalog-line-218",
         "compat-catalog-line-251",
-        "seq-descending-explicit",
+        "repair-edge-seq-long-aliases",
+        "repair-edge-seq-precision-1e4097",
+        "repair-edge-seq-precision-1e-4097",
         "release-metadata-seq-help",
         "release-metadata-seq-version",
-        "repair-edge-seq-long-aliases",
-        "p0-seq-two-operand-descending",
-        "repair-edge-seq-precision-1e4097",
-        "repair-edge-seq-precision-1e-4097"
+        "o3-seq-format-basic",
+        "o3-seq-format-percent",
+        "o3-seq-format-separator",
+        "o3-seq-format-repeat",
+        "o3-seq-format-equal-width",
+        "o3-seq-equal-width-format",
+        "o3-seq-format-none",
+        "o3-seq-format-only-percent",
+        "o3-seq-format-two",
+        "o3-seq-format-integer",
+        "o3-seq-format-star",
+        "o3-seq-format-precision-star",
+        "o3-seq-format-capital-l",
+        "o3-seq-format-lower-l",
+        "o3-seq-format-endpoints",
+        "o3-seq-format-more-precision",
+        "o3-seq-format-binary-rounding",
+        "o3-seq-format-ties",
+        "o3-seq-format-hex",
+        "o3-seq-format-descending",
+        "o3-seq-format-empty",
+        "o3-seq-format-negative-zero",
+        "o3-seq-format-zero-step",
+        "o3-seq-format-nan",
+        "o3-extra-seq-format-negative-zero",
+        "o3-extra-seq-format-underflow-zero",
+        "o3-extra-seq-format-left-width-endpoint",
+        "o3-extra-seq-format-signed-zero-pad",
+        "o3-extra-seq-format-empty-range"
       ]
     },
     {
@@ -64650,14 +71447,31 @@
       "compare_profile": "gnu",
       "supported_options": [
         "help",
-        "version"
+        "version",
+        "stable",
+        "merge",
+        "output",
+        "random-sort",
+        "random-source",
+        "sort"
       ],
       "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
+        "phase3-sort-basic",
+        "p3-sort-multiple-key-modifiers",
+        "p3-sort-general-numeric",
+        "p3-sort-general-numeric-classes",
+        "p3-sort-local-key-modifier-combination",
+        "p3-sort-blank-field-boundaries",
+        "p3-sort-character-modifiers",
+        "p3-sort-unique-key-stability",
+        "p3-sort-human-numeric",
         "p3-sort-month",
         "p3-sort-version",
-        "phase3-sort-basic",
+        "p3-sort-zero-records",
+        "p3-sort-ignore-nonprinting",
+        "p3-sort-ignore-case-c-locale",
         "p3-sort-check-quiet",
         "compat-text-line-372",
         "compat-text-line-381",
@@ -64673,28 +71487,72 @@
         "compat-text-line-467",
         "compat-text-line-468",
         "compat-text-line-544",
-        "p3-sort-zero-records",
-        "p3-sort-human-numeric",
-        "compat-catalog-line-259",
-        "p3-sort-general-numeric",
-        "repair-alias-sort-check",
-        "repair-alias-sort-unique",
-        "p3-sort-ignore-nonprinting",
-        "release-metadata-sort-help",
-        "p3-sort-character-modifiers",
-        "p3-sort-ignore-case-c-locale",
-        "p3-sort-unique-key-stability",
-        "release-metadata-sort-version",
-        "repair-alias-sort-ignore-case",
-        "p3-sort-blank-field-boundaries",
-        "p3-sort-multiple-key-modifiers",
-        "repair-alias-sort-version-sort",
-        "p3-sort-general-numeric-classes",
         "compat-text-sort-check-diagnostic",
-        "repair-alias-sort-zero-terminated",
+        "compat-catalog-line-259",
+        "repair-alias-sort-general-numeric-sort",
+        "repair-alias-sort-unique",
         "repair-alias-sort-human-numeric-sort",
-        "p3-sort-local-key-modifier-combination",
-        "repair-alias-sort-general-numeric-sort"
+        "repair-alias-sort-ignore-case",
+        "repair-alias-sort-version-sort",
+        "repair-alias-sort-zero-terminated",
+        "repair-alias-sort-check",
+        "release-metadata-sort-help",
+        "release-metadata-sort-version",
+        "o2-sort-r-seed16",
+        "o2-sort-r-seed32-same-prefix",
+        "o2-sort-r-repeat-R",
+        "o2-sort-r-repeat-same-source",
+        "o2-sort-r-distinct-source",
+        "o2-sort-no-r-empty-source",
+        "o2-sort-no-r-missing-source",
+        "o2-sort-no-r-distinct-source",
+        "o2-sort-r-empty-input-short-source",
+        "o2-sort-r-empty-input-empty-source",
+        "o2-sort-r-one-record-short-source",
+        "o2-sort-r-missing-seed-before-input-output",
+        "o2-sort-r-short-seed-before-input-output",
+        "o2-sort-r-good-seed-missing-input",
+        "o2-sort-r-n-conflict-before-seed",
+        "o2-sort-r-version-combination",
+        "o2-sort-global-r-local-n-ignores-seed",
+        "o2-sort-global-r-local-reverse-ignores-seed",
+        "o2-sort-r-key",
+        "o2-sort-r-key-stable",
+        "o2-sort-r-key-unique",
+        "o2-sort-r-folded-key",
+        "o2-sort-r-folded-key-stable",
+        "o2-sort-r-folded-key-unique",
+        "o2-sort-r-stdin-consumes16",
+        "o2-sort-no-r-stdin-consumes0",
+        "o2-sort-r-stdin-short15",
+        "o2-sort-merge",
+        "o2-sort-merge-stable-key",
+        "o2-sort-merge-unique-key",
+        "o2-sort-merge-does-not-check-order",
+        "o2-sort-merge-check-single",
+        "o2-sort-merge-check-multiple",
+        "o2-sort-output-new",
+        "o2-sort-output-existing",
+        "o2-sort-output-input-alias",
+        "o2-sort-output-repeat-same",
+        "o2-sort-output-repeat-distinct",
+        "o2-sort-output-check-conflict",
+        "o2-sort-output-missing-input-new",
+        "o2-sort-output-missing-input-existing",
+        "o2-sort-output-dash-is-file",
+        "o2-sort-no-r-empty-name",
+        "o2-sort-r-empty-name",
+        "o2-sort-r-short-seed-before-check-output-conflict",
+        "o2-sort-r-source-dash-missing",
+        "o2-sort-r-source-dash-is-file",
+        "o2-sort-late-read-sort-new",
+        "o2-sort-late-read-sort-existing",
+        "o2-sort-late-read-merge-new",
+        "o2-sort-r-long-alias",
+        "o2-sort-r-sort-alias",
+        "o2-sort-merge-output-input-alias",
+        "o2-sort-late-read-merge-existing",
+        "o2-sort-output-hardlink-mode"
       ]
     },
     {
@@ -65540,24 +72398,51 @@
       "compare_profile": "gnu",
       "supported_options": [
         "help",
-        "version"
+        "version",
+        "crown-margin",
+        "tagged-paragraph",
+        "prefix"
       ],
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
         "p1-fmt-width",
-        "p1-fmt-indent",
-        "p1-fmt-uniform",
-        "p1-fmt-goal-only",
-        "p1-fmt-split-only",
-        "p1-fmt-zero-width",
         "p1-fmt-join-paragraph",
-        "p1-fmt-prefix-boundary",
-        "release-metadata-fmt-help",
-        "repair-alias-fmt-split-only",
-        "release-metadata-fmt-version",
+        "p1-fmt-split-only",
+        "p1-fmt-uniform",
+        "p1-fmt-indent",
         "p1-fmt-control-word-boundaries",
-        "repair-alias-fmt-uniform-spacing"
+        "p1-fmt-zero-width",
+        "p1-fmt-goal-only",
+        "p1-fmt-prefix-boundary",
+        "repair-alias-fmt-split-only",
+        "repair-alias-fmt-uniform-spacing",
+        "release-metadata-fmt-help",
+        "release-metadata-fmt-version",
+        "o3-fmt-crown",
+        "o3-fmt-tagged",
+        "o3-fmt-tagged-context",
+        "o3-fmt-tagged-single",
+        "o3-fmt-split-crown",
+        "o3-fmt-crown-repeat",
+        "o3-fmt-prefix-space",
+        "o3-fmt-prefix-nospace",
+        "o3-fmt-prefix-leading",
+        "o3-fmt-prefix-repeat",
+        "o3-fmt-prefix-empty",
+        "o3-fmt-prefix-unterminated",
+        "o3-fmt-short-long",
+        "o3-tagged",
+        "o3-crown-tagged",
+        "o3-tagged-crown",
+        "o3-fmt-unmatched-eof-plain",
+        "o3-fmt-partial-prefix-eof-plain",
+        "o3-fmt-only-prefix-eof-plain",
+        "o3-fmt-prefix-spaces-eof-plain",
+        "o3-fmt-prefix-tab-indent-plain",
+        "o3-fmt-prefix-body-tabs-plain",
+        "o3-fmt-prefix-hanging-tagged",
+        "o3-fmt-prefix-blank-leading-tagged"
       ]
     },
     {

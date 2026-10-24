@@ -4,11 +4,13 @@ import {
   "moonbitlang/async",
   "moonbitlang/async/fs",
   "moonbitlang/async/io",
+  "moonbitlang/async/os_error",
   "moonbitlang/async/stdio",
   "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/env",
   "moonbitlang/core/string",
   "moonbitlang/x/sys",
+  "moonbitlang/x/crypto",
 }
 
 supported_targets = "native+wasm"

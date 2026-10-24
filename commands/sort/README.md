@@ -23,9 +23,36 @@ Comparison uses C-locale byte rules without changing environment variables.
 Blank-separated fields retain their leading separator run unless `-b` applies;
 case folding maps lowercase ASCII to uppercase, and human numeric order compares
 sign, suffix magnitude, then numeric value. Key ties use the whole record as the
-last resort and remaining ties retain input order. `-R` is recognized but
-rejected before reading input because the package has no audited deterministic
-seed contract.
+last resort and remaining ties retain input order. `-s/--stable` suppresses that
+whole-record fallback, preserving input order among equal keys. `-u` retains
+the first representative under the selected keys.
+
+`-R/--random-sort` or `--sort=random` orders transformed keys by
+MD5(seed || effective key), comparing digest bytes and then key bytes on a
+digest collision. Equal keys remain together; ordinary record fallback, `-s`,
+`-u`, reverse ordering, and local key modifiers still apply. An effective
+random key consumes exactly 16 bytes from `--random-source=FILE` before input
+processing, even for empty input. Without a source, the public secure random
+API supplies the seed. A source named `-` is a literal file. Repeated identical
+source paths are allowed; different source strings conflict. A source is not
+read when local key comparison modifiers suppress global random ordering.
+
+`-m/--merge` merges already-sorted inputs without checking or repairing their
+order. Equal keys keep operand order and then source order with `-s` or `-u`.
+It shares the 16-way heap and temporary runs, including additional rounds for
+more than 16 operands.
+
+`-o/--output=FILE` writes to a named file with empty stdout; `-o -` names a
+literal file. Ordinary sorting consumes all input before truncating the output,
+so existing outputs and input aliases are supported. Missing inputs leave an
+output uncreated; a later read error can leave a newly created output empty
+while retaining an existing output's bytes. Check mode conflicts with output.
+Repeated identical output strings are allowed and distinct strings conflict.
+
+Merge accepts new output files. Merge into an existing output is rejected
+without mutation: the released filesystem API has no opened-file identity or
+descriptor truncation with which to protect aliased merge inputs. Lifting this
+boundary requires those public APIs and alias/error-effect regressions.
 
 Records and transformed keys are prepared once before comparison. Sorting uses
 a default 64 MiB accounted run budget and at most 16-way heap merges, with

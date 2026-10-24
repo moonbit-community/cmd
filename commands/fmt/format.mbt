@@ -67,6 +67,9 @@ fn paragraph(
   width : Int32,
   goal : Int32,
   tabs : Bool,
+  other_indent~ : Int32? = None,
+  prefix~ : String = "",
+  prefix_indent~ : Int32 = 0,
 ) -> String {
   if items.is_empty() {
     return ""
@@ -78,7 +81,8 @@ fn paragraph(
   let lengths = Array::make(n, 0)
   for i = n - 1; i >= 0; i = i - 1 {
     let mut end = i + 1
-    let mut len = indent + items[i].value.length()
+    let mut len = (if i == 0 { indent } else { other_indent.unwrap_or(indent) }) +
+      items[i].value.length()
     let mut best = 9223372036854775807L
     while end <= n {
       let mut cost = costs[end]
@@ -124,20 +128,19 @@ fn paragraph(
   let mut i = 0
   while i < n {
     let mut column = 0
-    let mut spaces = indent
+    let mut spaces = prefix_indent
+    if !prefix.is_empty() {
+      put_spaces(output, column, spaces, tabs)
+      column = prefix_indent + prefix.length()
+      output.write_string(prefix)
+      spaces = (if i == 0 { indent } else { other_indent.unwrap_or(indent) }) -
+        column
+    } else {
+      spaces = if i == 0 { indent } else { other_indent.unwrap_or(indent) }
+    }
     for j in i..<breaks[i] {
-      if tabs {
-        let target = (column + spaces) / 8 * 8
-        if target > column + 1 {
-          while column < target {
-            let next = (column / 8 + 1) * 8
-            spaces -= next - column
-            column = next
-            output.write_char('\t')
-          }
-        }
-      }
-      output.write_string(" ".repeat(spaces))
+      spaces = @cmp.maximum(0, spaces)
+      put_spaces(output, column, spaces, tabs)
       column += spaces + items[j].value.length()
       output.write_string(items[j].value)
       spaces = items[j].space
@@ -155,6 +158,9 @@ fn format(
   goal : Int32,
   split : Bool,
   uniform : Bool,
+  crown~ : Bool = false,
+  tagged~ : Bool = false,
+  prefix~ : String = "",
 ) -> Bytes {
   let text = @bytere.text(data)
   let lines = text.split("\n").map(v => v.to_owned()).collect()
@@ -162,36 +168,186 @@ fn format(
     ignore(lines.pop())
   }
   let output = StringBuilder()
-  let mut pending : Array[Word] = []
-  let mut indent = 0
+  let mut lead = 0
+  while lead < prefix.length() && prefix[lead] == ' ' {
+    lead += 1
+  }
+  let full = prefix.length() - lead
+  let mut finish = prefix.length()
+  while finish > lead && prefix[finish - 1] == ' ' {
+    finish -= 1
+  }
+  let literal = prefix[lead:finish].to_owned()
+  let parsed = Array::makei(lines.length(), index => {
+    parse_line(
+      lines[index],
+      literal,
+      lead,
+      full,
+      index < lines.length() - 1 || text.has_suffix("\n"),
+    )
+  })
+  let mut other_indent = 0
   let mut tabs = false
-  for line in lines {
-    let mut leading = 0
-    for c in line {
-      if c == ' ' {
-        leading += 1
-      } else if c == '\t' {
-        leading = (leading / 8 + 1) * 8
-        tabs = true
-      } else {
+  let mut index = 0
+  while index < parsed.length() {
+    let first = parsed[index]
+    tabs = tabs || first.prefix_tabs
+    if !first.eligible {
+      if first.indent > first.prefix_indent || !first.body.is_empty() {
+        put_spaces(output, 0, first.prefix_indent, tabs)
+        output.write_string(first.copy_prefix)
+        if !first.body.is_empty() {
+          let column = first.prefix_indent + first.copy_prefix.length()
+          put_spaces(output, column, first.indent - column, tabs)
+        }
+      }
+      output.write_string(first.body)
+      if first.copy_newline {
+        output.write_char('\n')
+      }
+      index += 1
+      continue
+    }
+    tabs = tabs || first.body.contains("\t")
+    let pending = words(first.body, first.indent, uniform)
+    index += 1
+    let same = if index < parsed.length() {
+      let next = parsed[index]
+      tabs = tabs || next.prefix_tabs
+      next.eligible && next.prefix_indent == first.prefix_indent
+    } else {
+      false
+    }
+    if split {
+      other_indent = first.indent
+    } else if crown {
+      other_indent = if same { parsed[index].indent } else { first.indent }
+    } else if tagged {
+      if same && parsed[index].indent != first.indent {
+        other_indent = parsed[index].indent
+      } else if other_indent == first.indent {
+        other_indent = if first.indent == 0 { 3 } else { 0 }
+      }
+    } else {
+      other_indent = first.indent
+    }
+    let join = !split &&
+      (!tagged || crown || (same && parsed[index].indent != first.indent))
+    while join && index < parsed.length() {
+      let next = parsed[index]
+      tabs = tabs || next.prefix_tabs
+      if !next.eligible ||
+        next.prefix_indent != first.prefix_indent ||
+        next.indent != other_indent {
         break
       }
+      tabs = tabs || next.body.contains("\t")
+      pending.append(words(next.body, next.indent, uniform))
+      index += 1
     }
-    if line.contains("\t") {
+    output.write_string(
+      paragraph(
+        pending,
+        first.indent,
+        width,
+        goal,
+        tabs,
+        other_indent=Some(other_indent),
+        prefix=literal,
+        prefix_indent=first.prefix_indent,
+      ),
+    )
+  }
+  @bytere.bytes(output.to_string())
+}
+
+///|
+priv struct InputLine {
+  body : String
+  indent : Int32
+  prefix_indent : Int32
+  prefix_tabs : Bool
+  eligible : Bool
+  copy_prefix : String
+  copy_newline : Bool
+}
+
+///|
+fn parse_line(
+  line : String,
+  prefix : String,
+  lead : Int32,
+  full : Int32,
+  terminated : Bool,
+) -> InputLine {
+  let mut index = 0
+  let mut column = 0
+  let mut tabs = false
+  while index < line.length() && line[index] is (' ' | '\t') {
+    if line[index] == '\t' {
       tabs = true
-    }
-    let next = words(line, leading, uniform)
-    if next.is_empty() || split || leading != indent {
-      output.write_string(paragraph(pending, indent, width, goal, tabs))
-      pending = []
-    }
-    indent = leading
-    if next.is_empty() {
-      output.write_char('\n')
+      column = (column / 8 + 1) * 8
     } else {
-      pending.append(next)
+      column += 1
+    }
+    index += 1
+  }
+  let prefix_indent = if prefix.is_empty() {
+    @cmp.minimum(lead, column)
+  } else {
+    column
+  }
+  let mut matched = 0
+  while matched < prefix.length() &&
+        index < line.length() &&
+        line[index] == prefix[matched] {
+    index += 1
+    column += 1
+    matched += 1
+  }
+  let matches = matched == prefix.length()
+  if matches && !prefix.is_empty() {
+    while index < line.length() && line[index] is (' ' | '\t') {
+      if line[index] == '\t' {
+        tabs = true
+        column = (column / 8 + 1) * 8
+      } else {
+        column += 1
+      }
+      index += 1
     }
   }
-  output.write_string(paragraph(pending, indent, width, goal, tabs))
-  @bytere.bytes(output.to_string())
+  let eligible = matches &&
+    prefix_indent >= lead &&
+    column >= prefix_indent + full &&
+    index < line.length()
+  {
+    body: line[index:].to_owned(),
+    indent: column,
+    prefix_indent,
+    prefix_tabs: tabs,
+    eligible,
+    copy_prefix: prefix[:matched].to_owned(),
+    copy_newline: terminated ||
+    (index == line.length() && column >= prefix_indent + prefix.length()),
+  }
+}
+
+///|
+fn put_spaces(
+  output : StringBuilder,
+  column : Int32,
+  spaces : Int32,
+  tabs : Bool,
+) -> Unit {
+  let target = column + @cmp.maximum(0, spaces)
+  let mut column = column
+  if tabs && column + 1 < target / 8 * 8 {
+    while column < target / 8 * 8 {
+      output.write_char('\t')
+      column = (column / 8 + 1) * 8
+    }
+  }
+  output.write_string(" ".repeat(target - column))
 }
