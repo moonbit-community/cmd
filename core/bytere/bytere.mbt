@@ -33,8 +33,15 @@ struct Pattern {
   groups : Int32
   backreferences : Bool
   ignore_case : Bool
-  literal : String?
+  literal : LiteralPattern?
   prefix : String
+}
+
+///|
+priv struct LiteralPattern {
+  text : String
+  begin : Bool
+  end : Bool
 }
 
 ///|
@@ -87,11 +94,7 @@ pub fn compile(
     groups: parser.closed.length(),
     backreferences: parser.backreferences,
     ignore_case,
-    literal: if tree.is_literal() {
-      Some(prefix.to_string())
-    } else {
-      None
-    },
+    literal: tree.literal_pattern(),
     prefix: prefix.to_string(),
   }
 }

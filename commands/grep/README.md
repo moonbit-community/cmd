@@ -18,6 +18,12 @@ notice;
 `--binary-files=without-match` skips binary inputs. `-s` suppresses file-read
 diagnostics without hiding status 2. Matching, offsets, and record boundaries
 use a byte-oriented C-locale profile without changing the process environment.
+Input and output use bounded blocks. Records within a block are views; retained
+storage grows with a cross-block record and requested context, rather than the
+entire input. `-q` and `-l` stop reading when their result is determined.
+Binary detection applies as chunks arrive, so text already emitted before a
+later NUL remains visible. Complete records and a partial final record survive
+a later input error; the error still produces status 2.
 `-o` emits nonempty, nonoverlapping matches using leftmost-longest selection;
 `-b -o` reports the offset of each match. No group separator is emitted without
 context options. BRE/ERE patterns are compiled once by the shared C-byte
