@@ -1,7 +1,12 @@
 ///|
 test "benchmark direct Wasm invocation preserves program arguments" {
+  let (wasm_root, wasm_artifact) = if @async.platform is Windows {
+    ("C:\\artifacts", "C:\\artifacts\\cli\\diff\\diff.wasm")
+  } else {
+    ("/artifacts", "/artifacts/cli/diff/diff.wasm")
+  }
   let options = Map([
-    ("--wasm-root", "/artifacts"),
+    ("--wasm-root", wasm_root),
     ("--moonrun", "/tools/moonrun"),
   ])
   let (program, args) = functional_candidate(
@@ -11,7 +16,7 @@ test "benchmark direct Wasm invocation preserves program arguments" {
     options,
   )
   assert_eq(program, "/tools/moonrun")
-  assert_eq(args, ["/artifacts/cli/diff/diff.wasm", "--", "-u", "a file", "b"])
+  assert_eq(args, [wasm_artifact, "--", "-u", "a file", "b"])
 }
 
 ///|
