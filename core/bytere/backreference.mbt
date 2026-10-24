@@ -1,17 +1,18 @@
 ///|
-priv struct RawState {
+priv struct RegisterState {
   pc : Int32
   position : Int32
-  captures : Array[Int32]
-} derive(Eq, Hash)
-
-///|
-priv struct RegisterState {
-  raw : RawState
   captures : Array[Int32]
   previous : Array[Int32]
   epsilon : Array[Int32]
 } derive(Eq, Hash)
+
+///|
+priv enum ReferenceResult {
+  Miss
+  InvalidSelection
+  Matched(Spans)
+}
 
 ///|
 fn reference_end(
@@ -23,17 +24,9 @@ fn reference_end(
 ) -> Int32? {
   let left = captures[group * 2]
   let right = captures[group * 2 + 1]
-  if left >= 0 && right >= left && position + right - left <= value.length() {
-    if ignore_case {
-      for offset in 0..<(right - left) {
-        if ascii_fold(value[left + offset].to_int()) !=
-          ascii_fold(value[position + offset].to_int()) {
-          return None
-        }
-      }
-    } else if value[left:right] != value[position:position + right - left] {
-      return None
-    }
+  if left >= 0 &&
+    right >= left &&
+    equal_reference(value, left, right, position, ignore_case) {
     Some(position + right - left)
   } else {
     None
@@ -41,173 +34,54 @@ fn reference_end(
 }
 
 ///|
-/// Optional-group output restoration is not a language transition. A later
-/// backreference must first see the actual current capture, including empty
-/// final iterations. These raw states retain every distinct capture history.
-fn Pattern::raw_next(
-  self : Pattern,
-  value : String,
-  state : RawState,
-) -> Array[RawState] {
-  let position = state.position
-  match self.program[state.pc] {
-    Accept => []
-    Split(first, second) => [{ ..state, pc: first, }, { ..state, pc: second, }]
-    Save(slot, next) => {
-      let captures = state.captures.copy()
-      captures[slot] = position
-      if slot % 2 == 0 {
-        captures[slot + 1] = -1
-      }
-      [{ ..state, pc: next, captures, }]
-    }
-    SaveOptional(group, next) => {
-      let captures = state.captures.copy()
-      captures[group * 2 + 1] = position
-      [{ ..state, pc: next, captures, }]
-    }
-    Assert(assertion, next) =>
-      if assertion.holds(value, position) {
-        [{ ..state, pc: next, }]
-      } else {
-        []
-      }
-    Byte(c, next) =>
-      if position < value.length() && value[position].to_int() == c {
-        [{ ..state, pc: next, position: position + 1, }]
-      } else {
-        []
-      }
-    Any(next) =>
-      if position < value.length() {
-        [{ ..state, pc: next, position: position + 1, }]
-      } else {
-        []
-      }
-    Class(members, next) =>
-      if position < value.length() &&
-        value[position].to_int() < 256 &&
-        members[value[position].to_int()] {
-        [{ ..state, pc: next, position: position + 1, }]
-      } else {
-        []
-      }
-    Reference(group, next) =>
-      match
-        reference_end(value, position, state.captures, group, self.ignore_case) {
-        Some(end) => [{ ..state, pc: next, position: end, }]
-        None => []
-      }
-  }
-}
-
-///|
-/// Language matching and output-register selection are separate. Every graph
-/// node includes all live capture spans; reverse pruning keeps full-state
-/// edges, never a union of instruction/position coordinates. Ambiguous inputs
-/// can still require exponential state and edge storage; there is no step cap.
-fn Pattern::backreference_at(
+fn Pattern::reference_result(
   self : Pattern,
   value : String,
   start : Int32,
   whole : Bool,
   word : Bool,
-  need_captures : Bool,
-) -> Spans? {
-  let initial = RawState::{
-    pc: self.entry,
-    position: start,
-    captures: Array::make(self.groups * 2, -1),
+) -> ReferenceResult {
+  let (cache, end, log) = self.candidate_log(value, start, whole, word)
+  guard end is Some(end) else { return Miss }
+  guard self.sift_candidates(value, start, end, whole, word, cache, log)
+    is Some((end, terminal, nodes)) else {
+    return Miss
   }
-  let stack = [initial]
-  let seen : Map[RawState, Bool] = Map([])
-  let edges : Map[RawState, Array[RawState]] = Map([])
-  let parents : Map[RawState, Array[RawState]] = Map([])
-  let terminals : Array[RawState] = []
-  let mut best : Spans? = None
-  while stack.pop() is Some(state) {
-    if seen.contains(state) {
-      continue
-    }
-    seen[state] = true
-    if self.program[state.pc] is Accept &&
-      accepted(value, start, state.position, whole, word) {
-      terminals.push(state)
-      if better(best, start, state.position) {
-        best = Some({ start, end: state.position, captures: state.captures, })
-      }
-    }
-    let next = self.raw_next(value, state)
-    if need_captures {
-      edges[state] = next
-      for child in next {
-        if parents.get(child) is Some(previous) {
-          previous.push(state)
-        } else {
-          parents[child] = [state]
-        }
-      }
-    }
-    for i = next.length() - 1; i >= 0; i = i - 1 {
-      stack.push(next[i])
-    }
+  match self.select_registers(value, start, end, terminal, nodes) {
+    Some(captures) => Matched({ start, end, captures, })
+    None => InvalidSelection
   }
-  guard best is Some(hit) else { return None }
-  if !need_captures {
-    return Some(hit)
-  }
-  let pending : Array[RawState] = []
-  for terminal in terminals {
-    if terminal.position == hit.end {
-      pending.push(terminal)
-    }
-  }
-  let valid : Map[RawState, Bool] = Map([])
-  while pending.pop() is Some(state) {
-    if valid.contains(state) {
-      continue
-    }
-    valid[state] = true
-    if parents.get(state) is Some(previous) {
-      pending.append(previous)
-    }
-  }
-  let captures = self
-    .select_registers(initial, hit.end, edges, valid)
-    .unwrap_or(hit.captures)
-  Some({ ..hit, captures, })
 }
 
 ///|
-/// Reconstruct over coherent surviving raw edges. GNU output registers restore
-/// earlier captures independently of the raw tags used to match a reference.
-/// At the winning endpoint, a zero-progress cycle with complete registers ends
-/// selection after its register update, as in GNU regexec.c's set_regs. The raw
-/// node still has a proven zero-byte continuation to an accepting endpoint.
-/// If selection fails, retain the raw winning path's captures.
+// Candidate spans determine the endpoint before output registers are restored.
+// A failed register selection ends the search, including later starting bytes.
 fn Pattern::select_registers(
   self : Pattern,
-  initial : RawState,
+  value : String,
+  start : Int32,
   end : Int32,
-  edges : Map[RawState, Array[RawState]],
-  valid : Map[RawState, Bool],
+  terminal : Int32,
+  nodes : Array[Map[Int32, Bool]],
 ) -> Array[Int32]? {
+  let captures = Array::make(self.groups * 2, -1)
   let stack = [
     RegisterState::{
-      raw: initial,
-      captures: initial.captures,
-      previous: initial.captures,
+      pc: self.entry,
+      position: start,
+      captures,
+      previous: captures,
       epsilon: [],
     },
   ]
   let seen : Map[RegisterState, Bool] = Map([])
   while stack.pop() is Some(state) {
-    if !valid.contains(state.raw) || seen.contains(state) {
+    let position = state.position
+    let pc = state.pc
+    if position > end || !nodes[position].contains(pc) || seen.contains(state) {
       continue
     }
     seen[state] = true
-    let pc = state.raw.pc
-    let position = state.raw.position
     let instruction = self.program[pc]
     let (captures, previous) = match instruction {
       Save(slot, _) =>
@@ -216,41 +90,50 @@ fn Pattern::select_registers(
         save_tags(state.captures, state.previous, group * 2 + 1, position, true)
       _ => (state.captures, state.previous)
     }
-    if instruction is Accept && position == end {
-      return Some(captures)
-    }
-    if state.epsilon.contains(pc) {
-      if position == end {
-        let mut complete = true
-        for group in 0..<self.groups {
-          if captures[group * 2] >= 0 && captures[group * 2 + 1] == -1 {
-            complete = false
-          }
+    if (position == end && pc == terminal) || state.epsilon.contains(pc) {
+      let mut complete = true
+      for group in 0..<self.groups {
+        if captures[group * 2] >= 0 && captures[group * 2 + 1] < 0 {
+          complete = false
         }
-        if complete {
-          return Some(captures)
-        }
+      }
+      if complete {
+        return Some(captures)
       }
       continue
     }
     let epsilon = state.epsilon.copy()
     epsilon.push(pc)
-    guard edges.get(state.raw) is Some(next) else { continue }
-    for i = next.length() - 1; i >= 0; i = i - 1 {
-      let child = next[i]
-      if !valid.contains(child) {
-        continue
+    let next = match instruction {
+      Split(first, second) => {
+        let choices = [(second, position)]
+        if !epsilon.contains(first) {
+          choices.push((first, position))
+        }
+        choices
       }
-      if instruction is Split(first, _) &&
-        child.pc == first &&
-        epsilon.contains(first) {
-        continue
-      }
+      Save(_, next) | SaveOptional(_, next) | Assert(_, next) =>
+        [(next, position)]
+      Reference(group, next) =>
+        match
+          reference_end(value, position, captures, group, self.ignore_case) {
+          Some(to) =>
+            [(if to == position { self.empty_next[pc] } else { next }, to)]
+          None => []
+        }
+      _ =>
+        match self.byte_next(value, pc, position) {
+          Some(next) => [(next, position + 1)]
+          None => []
+        }
+    }
+    for (next, to) in next {
       stack.push({
-        raw: child,
+        pc: next,
+        position: to,
         captures,
         previous,
-        epsilon: if child.position == position {
+        epsilon: if to == position {
           epsilon
         } else {
           []

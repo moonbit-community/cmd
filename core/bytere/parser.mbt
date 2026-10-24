@@ -6,7 +6,7 @@ priv enum Assertion {
   WordEnd
   WordBoundary
   NotWordBoundary
-}
+} derive(Eq, Hash)
 
 ///|
 priv enum Tree {
@@ -365,42 +365,6 @@ fn Parser::bracket(self : Parser) -> Array[Bool] raise PatternError {
     }
   }
   raise PatternError("unterminated bracket expression")
-}
-
-///|
-// Visit every branch, even after its nullability is known, so later closed
-// captures and references to them have their own structural nullability.
-fn Tree::nullable(self : Tree, captures : Array[Bool]) -> Bool {
-  match self {
-    Empty | Assert(_) => true
-    Literal(_) | Any | Class(_) => false
-    Reference(group) => captures[group]
-    Capture(group, inner) => {
-      let nullable = inner.nullable(captures)
-      captures[group] = nullable
-      nullable
-    }
-    Repeat(inner, minimum, _) => {
-      let nullable = inner.nullable(captures)
-      minimum == 0 || nullable
-    }
-    Sequence(parts) => {
-      let mut nullable = true
-      for part in parts {
-        let current = part.nullable(captures)
-        nullable = nullable && current
-      }
-      nullable
-    }
-    Choice(branches) => {
-      let mut nullable = false
-      for branch in branches {
-        let current = branch.nullable(captures)
-        nullable = nullable || current
-      }
-      nullable
-    }
-  }
 }
 
 ///|

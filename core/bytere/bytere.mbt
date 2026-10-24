@@ -26,6 +26,9 @@ pub fn argument(value : String) -> String {
 ///|
 struct Pattern {
   program : Array[Instruction]
+  conditions : Array[Array[Assertion]]
+  empty_next : Array[Int32]
+  original_nodes : Int32
   entry : Int32
   groups : Int32
   backreferences : Bool
@@ -64,31 +67,22 @@ pub fn compile(
   }
   let program = [Instruction::Accept]
   let entry = tree.emit(program, 0)
-  if parser.backreferences {
-    let nullable = Array::make(parser.closed.length(), false)
-    ignore(tree.nullable(nullable))
-    let closings = Array::make(parser.closed.length(), 0)
-    let referenced = Array::make(parser.closed.length(), false)
-    for instruction in program {
-      match instruction {
-        Save(slot, _) => if slot % 2 == 1 { closings[slot / 2] += 1 }
-        SaveOptional(group, _) => closings[group] += 1
-        Reference(group, _) => referenced[group] = true
-        _ => ()
-      }
-    }
-    for group in 0..<nullable.length() {
-      if nullable[group] && closings[group] > 1 && referenced[group] {
-        raise PatternError(
-          "backreference to a cloned nullable capture is unsupported",
-        )
-      }
-    }
+  let original_nodes = program.length()
+  let (conditions, empty_next) = if parser.backreferences {
+    constrain_program(program)
+  } else {
+    (
+      Array::makei(program.length(), _ => []),
+      Array::makei(program.length(), _ => 0),
+    )
   }
   let prefix = StringBuilder()
   ignore(tree.literal_prefix(prefix))
   {
     program,
+    conditions,
+    empty_next,
+    original_nodes,
     entry,
     groups: parser.closed.length(),
     backreferences: parser.backreferences,

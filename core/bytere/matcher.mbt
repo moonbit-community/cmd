@@ -7,14 +7,6 @@ priv struct Thread {
 }
 
 ///|
-priv struct State {
-  pc : Int32
-  position : Int32
-  captures : Array[Int32]
-  previous : Array[Int32]
-} derive(Eq, Hash)
-
-///|
 priv struct Tags {
   pc : Int32
   captures : Array[Int32]
@@ -111,13 +103,10 @@ fn Pattern::search(
   if self.backreferences {
     for left in start..<=value.length() {
       if self.prefix_at(value, left) {
-        let hit = if need_captures {
-          self.at(value, left, whole, word)
-        } else {
-          self.backreference_at(value, left, whole, word, false)
-        }
-        if hit is Some(hit) {
-          return Some(hit)
+        match self.reference_result(value, left, whole, word) {
+          Matched(hit) => return Some(hit)
+          InvalidSelection => return None
+          Miss => ()
         }
       }
       if whole {
@@ -260,96 +249,6 @@ fn Pattern::ordinary(
       break
     }
     position += 1
-  }
-  best
-}
-
-///|
-/// Backreferences consume captured byte spans directly. The explicit DFS stack
-/// preserves alternative/greedy order, with no recursion or matching-step cap.
-/// Only exact states are memoized, including all capture boundaries. Ambiguous
-/// backreference expressions can still require exponential time and memory.
-fn Pattern::at(
-  self : Pattern,
-  value : String,
-  start : Int32,
-  whole : Bool,
-  word : Bool,
-) -> Spans? {
-  if self.backreferences {
-    return self.backreference_at(value, start, whole, word, true)
-  }
-  let captures = Array::make(self.groups * 2, -1)
-  let stack = [
-    State::{ pc: self.entry, position: start, captures, previous: captures, },
-  ]
-  let seen : Map[State, Bool] = Map([])
-  let mut best : Spans? = None
-  while stack.pop() is Some(state) {
-    if seen.contains(state) {
-      continue
-    }
-    seen[state] = true
-    let position = state.position
-    match self.program[state.pc] {
-      Accept =>
-        if accepted(value, start, position, whole, word) &&
-          better(best, start, position) {
-          best = Some({ start, end: position, captures: state.captures, })
-        }
-      Split(first, second) => {
-        stack.push({ ..state, pc: second, })
-        stack.push({ ..state, pc: first, })
-      }
-      Save(slot, next) => {
-        let (captures, previous) = save_tags(
-          state.captures,
-          state.previous,
-          slot,
-          position,
-          false,
-        )
-        stack.push({ ..state, pc: next, captures, previous, })
-      }
-      SaveOptional(group, next) => {
-        let (captures, previous) = save_tags(
-          state.captures,
-          state.previous,
-          group * 2 + 1,
-          position,
-          true,
-        )
-        stack.push({ ..state, pc: next, captures, previous, })
-      }
-      Assert(assertion, next) =>
-        if assertion.holds(value, position) {
-          stack.push({ ..state, pc: next, })
-        }
-      Byte(c, next) =>
-        if position < value.length() && value[position].to_int() == c {
-          stack.push({ ..state, pc: next, position: position + 1, })
-        }
-      Any(next) =>
-        if position < value.length() {
-          stack.push({ ..state, pc: next, position: position + 1, })
-        }
-      Class(members, next) =>
-        if position < value.length() &&
-          value[position].to_int() < 256 &&
-          members[value[position].to_int()] {
-          stack.push({ ..state, pc: next, position: position + 1, })
-        }
-      Reference(group, next) => {
-        let left = state.captures[group * 2]
-        let right = state.captures[group * 2 + 1]
-        if left >= 0 &&
-          right >= left &&
-          position + right - left <= value.length() &&
-          value[left:right] == value[position:position + right - left] {
-          stack.push({ ..state, pc: next, position: position + right - left, })
-        }
-      }
-    }
   }
   best
 }

@@ -166,44 +166,54 @@ test "byte regex backreferences retain distinct capture states" {
 }
 
 ///|
-test "byte regex rejects references to cloned nullable captures at compilation" {
-  for
-    source in [
-      "(a*){0,2}\\1", "(a*){0,3}\\1", "(a*){1,2}\\1", "(a*){1,}\\1", "(a*){2}\\1",
-      "(a*){2,}\\1", "(a*){2,3}\\1", "(a*)+\\1", "(a?){2}\\1", "(a|){0,2}\\1", "(){2}\\1",
-      "(^){2}\\1", "(a(b?)){2}\\2", "((a?){2})\\2", "()(\\1){2}\\2", "((a*)\\2){2}\\1",
-    ] {
-    let diagnostic = try {
-      ignore(@bytere.compile(source, extended=true))
-      "accepted"
-    } catch {
-      @bytere.PatternError(message) => message
-      failure => failure.to_string()
+test "cloned nullable captures follow GNU candidate selection" {
+  for source in ["(a*){0,2}\\1", "(a*){2,}\\1"] {
+    let pattern = @bytere.compile(source, extended=true)
+    for input in ["", "a", "aa", "aaaa", "baab"] {
+      assert_true(pattern.find(input) is None, msg=source + " on " + input)
+      assert_eq(
+        pattern.find_span(input),
+        None,
+        msg=source + " span on " + input,
+      )
     }
+  }
+  for
+    (source, input, expected) in [
+      ("(a*){1,2}\\1", "aaa", [Some("aa"), Some("a")]),
+      ("(a?){2}\\1", "aaaa", [Some("aaa"), Some("a")]),
+      ("(a*){1,2}(a*){1,2}\\1\\2", "aaa", [Some("aaa"), Some(""), Some("a")]),
+      ("(a*){1,2}(a*){1,2}\\1\\2", "abb", [Some(""), Some(""), Some("")]),
+    ] {
     assert_eq(
-      diagnostic,
-      "backreference to a cloned nullable capture is unsupported",
+      @bytere.compile(source, extended=true).find(input).unwrap().groups,
+      expected,
       msg=source,
     )
   }
-  let diagnostic = try {
-    ignore(@bytere.compile("\\(A*\\)\\{2,\\}\\1", ignore_case=true))
-    "accepted"
-  } catch {
-    @bytere.PatternError(message) => message
-    failure => failure.to_string()
-  }
   assert_eq(
-    diagnostic, "backreference to a cloned nullable capture is unsupported",
+    @bytere.compile("(a?){0,2}(a?){1,2}\\1\\2", extended=true).find_span("aaaa"),
+    None,
   )
+  let repeated = @bytere.compile("(a|b?){2}\\1", extended=true)
+  assert_eq(repeated.find("abb").unwrap().groups, [Some("abb"), Some("b")])
+  assert_eq(repeated.find_span("xabb"), None)
+  assert_eq(
+    @bytere.compile("(a|b?){2}\\1$", extended=true).find_span("xabb"),
+    Some((1, 4)),
+  )
+  let anchored = @bytere.compile("^(a*){1,2}(a*){1,2}\\1\\2$", extended=true)
+  assert_eq(anchored.find_span(""), None)
+  assert_eq(anchored.find_span("a"), Some((0, 0)))
+  assert_eq(anchored.find_span("a", whole=true), None)
 }
 
 ///|
-test "byte regex boundary preserves nonnullable clones and noncloned captures" {
+test "byte regex counted capture controls agree with GNU" {
   for
     (source, input, expected) in [
       ("(a){2}\\1", "aaa", Some((0, 3))),
-      ("(a+){2}\\1", "aaaaaa", Some((0, 6))),
+      ("(a+){2}\\1", "aaaaaa", None),
       ("(a(b?)){2}\\1", "aaa", Some((0, 3))),
       ("(a*){0,1}\\1", "aaaa", Some((0, 4))),
       ("(a*){1}\\1", "aaaa", Some((0, 4))),
