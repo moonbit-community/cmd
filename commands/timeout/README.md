@@ -5,7 +5,9 @@ local-only; see the [support record](../../docs/compatibility.md).
 
 Run one command with a millisecond-precise wall-clock limit. Durations accept
 plain seconds or `ms`, `s`, `m`, `h`, and `d` suffixes. A timed-out command is
-forcefully cancelled and returns status 124. Process-group termination,
+forcefully cancelled and returns status 124. Durations round up to whole
+milliseconds and must fit the runtime timer range of 0 through 2,147,483,647 ms.
+Process-group termination,
 `--kill-after`, `--foreground`, `--preserve-status`, and signal selection are
 unsupported because the
 portable API only provides cancellation for the directly owned child process.
@@ -21,9 +23,16 @@ Normal completion returns the child status, timeout returns 124, invalid setup
 returns 125, and child launch errors return 126/127.
 
 ```sh
-moon run --target wasm --release commands/timeout -- 1s printf ok
+MOON_HOME="$HOME/.moon-accounts/cli" moon run --target wasm --release commands/timeout -- 1s printf ok
 ```
 
-The unreleased workspace adds standalone `--version`, which prints the command
-name and package version and exits successfully without reading input.
-Use `--help` to display usage.
+`--` ends option parsing before the duration; subsequent arguments belong to
+the child command. Use `--help` to display usage.
+
+## Standalone metadata
+
+Standalone `--version` prints exactly `timeout 0.2.1` followed by one
+newline. Standalone `--help` starts with `Usage: timeout`, lists both
+metadata options, and ends with a newline. Both write to stdout, leave stdin
+unread, and exit with status 0. These local metadata contracts do not change
+the package's local-only release status.

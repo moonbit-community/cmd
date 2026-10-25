@@ -3,12 +3,12 @@
 This documents version 0.2.2. The [support record](../../docs/compatibility.md)
 tracks platform verification and exact-version publication evidence separately.
 
-New-file copies reuse a 64 KiB buffer through the unpublished core 0.8.0
+New-file copies reuse a 64 KiB buffer through the core 0.8.0
 dependency. Existing preflight and filesystem capability boundaries remain.
 
 Copy regular files and directory trees to new destinations with
 `--no-preserve=mode` (and `-R`/`-r` for trees). Source modes cannot be read with
-the public async 0.22.4 API, so default copying is explicitly unavailable.
+the public async 0.22.5 API, so default copying is explicitly unavailable.
 New files use `0666 & ~umask`, and new directories use `0777 & ~umask`.
 Supports `-T`, `-v`, and `-H/-L/-P` traversal. No-clobber (`-n`) and
 `-u`/`--update` modes (`all`, `none`, `none-fail`, `older`) can select a no-op

@@ -6,9 +6,11 @@ published MoonX behavior; `moonx` examples use registry releases.
 
 Print the current working directory with `-L` and `-P`; the result follows the
 host cwd contract. `-L` uses `PWD` only when it is an
-absolute, dot-free path resolving to the current directory; otherwise it falls
-back to the physical cwd. The default is `-P`, or `-L` when
+slash-rooted, dot-free path resolving to the current directory; otherwise it
+falls back to the physical cwd. The default is `-P`, or `-L` when
 `POSIXLY_CORRECT` is present; the last explicit `-L`/`-P` wins.
+Non-option operands produce a warning and are ignored. Windows drive-prefixed
+`PWD` values do not pass the current logical-path check.
 
 ## Standalone metadata
 

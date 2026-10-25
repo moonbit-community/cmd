@@ -10,7 +10,8 @@ with `-E`, or fixed strings with `-F`; `-G` restores basic syntax. Options inclu
 `-H`, `-h`, `-x`, `-w`, `-e`, `-f`, and recursive `-r`. `-A/-B/-C` emit
 context with GNU-style selected/context separators, while `-z` switches input
 and output records to NUL. Recursive reads accept repeated `--include` and
-`--exclude` basename patterns using portable `*` and `?` wildcards.
+`--exclude` basename patterns using portable `*` and `?` wildcards. `-R` aliases
+the same traversal as `-r`; neither follows symbolic links during recursion.
 
 Binary input defaults to GNU 3.12's `grep: NAME: binary file matches` stderr
 notice;

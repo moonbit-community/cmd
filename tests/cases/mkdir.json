@@ -94,7 +94,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "Current workspace cli/mkdir standalone help contract",
+      "source_version": "workspace cli/mkdir@0.2.2 metadata contract",
       "expected_stdout_text": "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\nMODE accepts octal or symbolic permissions (rwxXst, copied classes and comma clauses).\nSticky-only +t yields 1755; a=rwx,+t yields 1777.\nOmitted-who expressions requiring the process umask are unavailable.\n",
       "expected_stderr_text": ""
     },

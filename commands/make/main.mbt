@@ -883,7 +883,7 @@ async fn run(arguments : Array[String]) -> Unit {
       jobs = @string.parse_int(argument[2:])
     } else if options && (argument == "-h" || argument == "--help") {
       @stdio.stdout.write(
-        "Usage: make [-Bkns] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+        "Usage: make [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\n",
       )
       return
     } else if options && argument.has_prefix("-") && argument != "-" {

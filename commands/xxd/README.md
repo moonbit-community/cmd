@@ -34,8 +34,9 @@ Negative or backward stdin seeks are rejected: the public stdin interface has
 no seek/borrowed-File operation, including when stdin is a redirected file.
 Include text accepts `-n NAME` and streams with the selected columns and limit.
 
-`-r`/`--revert` reverses addressed hex, plain hex, or binary dumps; little-endian
-and include reverse modes return the provider's unsupported-mode diagnostic.
+`-r`/`--reverse` (also `--revert`) reverses addressed hex, plain hex, or binary
+dumps; little-endian and include reverse modes return the provider's
+unsupported-mode diagnostic.
 Reverse `-s N` adds to addresses instead of skipping input. Loose garbage,
 incomplete digits, and columns follow the Vim provider. Stdout accepts forward
 holes as NUL bytes and rejects backward writes while retaining the emitted

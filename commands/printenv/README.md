@@ -5,10 +5,11 @@ Version **0.2.2** behavior is documented here. The
 published MoonX behavior; `moonx` examples use registry releases.
 
 Print selected environment values, or the complete environment when no names
-are supplied. `-0` emits NUL-delimited records. Existing names are emitted in
-operand order; any missing name makes the final status 1 without suppressing
-values found earlier or later. It reads the environment exposed by the host;
-the command does not filter variable names or force locale values.
+are supplied. Selected names print values alone; complete output prints
+`NAME=VALUE` records. `-0/--null` emits NUL-delimited records. Existing names
+are emitted in operand order; any missing name makes the final status 1 without
+suppressing values found earlier or later. It reads the environment exposed
+by the host; the command does not filter variable names or force locale values.
 
 ## Standalone metadata
 

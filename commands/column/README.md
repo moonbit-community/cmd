@@ -20,8 +20,9 @@ or 80. A width of `0` or `unlimited` prints one input record per line.
 fields; the default splits runs of space and TAB. `-o`/`--output-separator`
 replaces the default two spaces between table columns. Table alignment excludes
 complete ANSI color sequences from the display width while preserving their bytes.
-Empty input lines are skipped and every output record ends with a newline. Omit file
-operands for stdin; a literal `-` is a filename, as in util-linux 2.40.
+Blank and whitespace-only input lines are skipped; the first NUL ends the
+displayed contents of its input line. Every output record ends with a newline.
+Omit file operands for stdin; a literal `-` is a filename, as in util-linux 2.40.
 
 Layout follows the GNU/Linux C locale: non-ASCII bytes are escaped as
 `\xHH`. Non-ASCII input delimiters are rejected. Automatic terminal width,

@@ -15,7 +15,7 @@ With no operand, or with `-`, standard input is read. Multiple operands are
 processed in order; later file failures do not hide earlier results and produce
 an eventual nonzero status. `--help` and `--version` are available.
 
-The unpublished workspace candidate adds `-a/--algorithm`: `bsd`, `sysv`,
+`-a/--algorithm` selects `bsd`, `sysv`,
 `crc`, `crc32b`, `md5`, `sha1`, `sha224`, `sha256`, `sha384`,
 `sha512`, `sha2`, `sha3`, `blake2b`, and `sm3`. SHA2 and SHA3 require
 `-l/--length` 224, 256, 384 or 512 when hashing. BLAKE2b supports every
@@ -41,7 +41,8 @@ Hash input uses bounded buffers, including SHA3 and BLAKE2b; manifests are read
 one line at a time. Backslash, LF and CR in modern record filenames are escaped.
 Binary and text flags select record markers; neither translates input bytes on
 Windows. `--base64` and `--raw` conflict, and text output requires
-`--untagged`. This candidate does not change the frozen published coordinates.
+`--untagged`. Exact-version publication evidence is tracked separately in the
+[support record](../../docs/compatibility.md).
 
 ## Standalone metadata
 

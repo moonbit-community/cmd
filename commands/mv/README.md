@@ -1,11 +1,10 @@
 # mv
 
-This describes version 0.2.4. Its unpublished core 0.8.0 dependency reuses a
-64 KiB buffer for supported copy fallbacks. See the
+This describes version 0.2.4. See the
 [support record](../../docs/compatibility.md) for measured option combinations
 and backend limits; accepted options do not establish full compatibility.
 
-Move files and directories with the policy-checked atomic rename operation.
+Move files and directories with the public filesystem rename operation.
 Declining an interactive overwrite, including EOF, returns status 1 and leaves
 both paths unchanged; other operands are still processed. A no-clobber skip
 remains a successful no-op.
@@ -14,9 +13,9 @@ Supports force/no-clobber/interactive selection (`-f`/`-n`/`-i`), update modes
 (`-u`/`--update`), backup controls (`-b`/`--backup`, `-S`), explicit target
 paths (`-T`), directory destinations, and verbose output. Cross-filesystem
 copy-and-delete fallback is excluded because public APIs cannot preserve all
-required mode/link/time semantics. POSIX EXDEV can now be classified using
-async 0.22.4 host-platform information. The source remains intact when rename
-or backup commit fails.
+required mode/link/time semantics. POSIX EXDEV is classified using
+the released async host-platform information. The source remains intact when
+rename or backup commit fails.
 Classification of EXDEV does not add a cross-device fallback. Windows rename
 error classification and the remaining interactive/backup/update combinations
 still need independent validation.
@@ -46,7 +45,7 @@ backups, their targets and referent bytes. Wasm interactive refusal is checked
 with stdin kept open and no bytes sent: it must exit within the observer deadline,
 emit no overwrite prompt, and preserve the complete fixture. Replacing a
 destination link with a regular source without backup remains allowed on both
-backends and has separate Windows command rounds awaiting CI evidence. A real
+backends and is covered by the Windows command rounds. A real
 CLI post-backup failure remains unverified by these fixtures.
 
 Same-path moves fail before prompting or making backups, except an explicit

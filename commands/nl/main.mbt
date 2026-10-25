@@ -134,7 +134,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: nl [-b STYLE] [-h STYLE] [-f STYLE] [-v NUMBER] [-i NUMBER] [-l NUMBER] [-n FORMAT] [-w NUMBER] [-s STRING] [-d CC] [-p] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: nl [-b STYLE] [-h STYLE] [-f STYLE] [-v NUMBER] [-i NUMBER] [-l NUMBER] [-n FORMAT] [-w NUMBER] [-s STRING] [-d STRING] [-p] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
     )
     return
   }

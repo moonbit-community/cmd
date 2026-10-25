@@ -126,9 +126,10 @@ join, jq, nl, paste, sed, sort, uniq and xxd now resolve that candidate so their
 published consumers can receive the scanner when a release is accepted.
 Cat reuses a 64 KiB copy buffer, wc computes selected counters, and strings
 streams accepted printable runs. Accepted options and byte profiles remain.
-Head batches output in 64 KiB blocks. Cp and mv select core 0.8.0 for new-file
-copying; mv advances to an unpublished 0.2.4 candidate because its dependency
-resolution changes. Existing filesystem capability boundaries remain.
+Head batches output in 64 KiB blocks. Cp selects core 0.8.0 for new-file
+copying; mv also selects that coordinate and advances to an unpublished 0.2.4
+candidate because its dependency resolution changes. Mv uses rename and has no
+copy-and-delete fallback. Existing filesystem capability boundaries remain.
 Sort caches comparison transformations and uses stable disk runs under a
 64 MiB accounted run budget with at most sixteen merge inputs. This budget
 does not include all allocator/GC or oversized-record costs and is not an RSS cap.

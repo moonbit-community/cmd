@@ -129,7 +129,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: ln -s [-f|-i] [-r] [-n|-T] [-t DIRECTORY] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\n      --help      display this help and exit\n      --version   display version and exit\nThe last -f/--force or -i/--interactive selects overwrite behavior.\nDeclining an interactive overwrite returns status 1 without replacing the link.\n",
+      "Usage: ln -s [-f|-i] [-r] [-n] [-T] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\n       ln -s [-f|-i] [-r] [-n] [-b|--backup[=CONTROL]] [-S SUFFIX] -t DIRECTORY TARGET...\n      --help      display this help and exit\n      --version   display version and exit\nThe last -f/--force or -i/--interactive selects overwrite behavior.\nDeclining an interactive overwrite returns status 1 without replacing the link.\n",
     )
     return
   }

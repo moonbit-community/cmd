@@ -13,6 +13,7 @@ fn usage() -> String {
     #|Pause for NUMBER seconds, like sleep(1). NUMBER may be fractional.
     #|SUFFIX may be 's' (seconds, default), 'm' (minutes), 'h' (hours), or
     #|'d' (days). With multiple arguments, sleep for their sum.
+    #|The total is rounded up to milliseconds and capped at 2147483647 ms.
   message
 }
 

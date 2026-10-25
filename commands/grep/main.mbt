@@ -288,7 +288,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: grep [-EFGivnclLqHhxwrbszo] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: grep [-EFGivnclLqHhxwrRbszo] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n-r and -R recurse without following symbolic links.\n",
     )
     return
   }

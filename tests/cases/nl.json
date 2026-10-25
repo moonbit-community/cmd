@@ -115,7 +115,7 @@
         "help"
       ],
       "source_version": "workspace cli/nl@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: nl [-b STYLE] [-h STYLE] [-f STYLE] [-v NUMBER] [-i NUMBER] [-l NUMBER] [-n FORMAT] [-w NUMBER] [-s STRING] [-d CC] [-p] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stdout_text": "Usage: nl [-b STYLE] [-h STYLE] [-f STYLE] [-v NUMBER] [-i NUMBER] [-l NUMBER] [-n FORMAT] [-w NUMBER] [-s STRING] [-d STRING] [-p] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
     {

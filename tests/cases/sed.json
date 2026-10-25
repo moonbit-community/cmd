@@ -4,7 +4,11 @@
     {
       "id": "s1-sed-nullable-reference-address",
       "command": "sed",
-      "args": ["-n", "-E", "/(a*){0,2}\\1/p;/(a*){2,}\\1/p"],
+      "args": [
+        "-n",
+        "-E",
+        "/(a*){0,2}\\1/p;/(a*){2,}\\1/p"
+      ],
       "stdin_text": "aaaa\n",
       "files": [],
       "environment": {},
@@ -15,7 +19,10 @@
       "comparison": "contract",
       "source_version": "GNU sed 4.9",
       "oracle": true,
-      "coverage": ["-n", "-E"]
+      "coverage": [
+        "-n",
+        "-E"
+      ]
     },
     {
       "id": "p1-sed-substitution",
