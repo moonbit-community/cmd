@@ -1,6 +1,6 @@
 # csplit
 
-Version **0.2.0** behavior is documented here. The
+Version **0.2.1** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -40,7 +40,24 @@ those exact names.
 regex, ignored regex and numeric patterns. Empty elision reuses the next
 output suffix; suppression preserves the separate regex-search cursor.
 
-Input is buffered. The shared C-byte BRE matcher compiles each expression once
+Input is consumed once into an owned temporary snapshot before creating fragments.
+The snapshot and its 64-bit line-offset index stay on disk; each index/data cache
+is at most 64 KiB. Numeric splits copy byte ranges in 64 KiB blocks. Regex searches
+retain only the current line, so their extra memory includes the largest matched
+or searched line, rather than every input record. Temporary disk use is the input
+byte count plus eight bytes per line boundary, including the initial boundary.
+Created output paths remain in memory for failure cleanup. Regex line storage and
+numeric pattern/offset parsing keep their existing signed 32-bit limits; file and
+index positions use checked signed 64-bit arithmetic.
+
+The temporary directory and its files are exclusive to the invocation; snapshot
+files use mode 0600. They are removed after success, ordinary errors and cancellation
+observed by the runtime. A killed process or machine failure cannot guarantee that
+cleanup. Temp creation/write or input-read errors occur before fragment creation.
+After splitting begins, `-k` keeps completed or partial fragments; without it,
+the invocation removes only the fragment paths it created.
+
+The shared C-byte BRE matcher compiles each expression once
 and supports capture backreferences, byte classes and word assertions.
 Repeated nullable captures follow the tested GNU candidate and capture-register
 selection, including counted repeats and references. See the
@@ -51,7 +68,7 @@ information.
 
 ## Standalone metadata
 
-Standalone `--version` prints exactly `csplit 0.2.0` followed by one
+Standalone `--version` prints exactly `csplit 0.2.1` followed by one
 newline. Standalone `--help` starts with `Usage: csplit`, lists both
 metadata options, and ends with a newline. Both write to stdout, leave stdin
 unread, and exit with status 0. Exact-version publication and verification

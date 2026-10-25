@@ -1,0 +1,28 @@
+{
+  "input_bytes": "8388608",
+  "record_bytes": 8,
+  "records": 1048576,
+  "selected_columns": 128,
+  "args": [
+    "-c1024"
+  ],
+  "observation": "single diagnostic pair, no statistical performance claim",
+  "rows": [
+    {
+      "name": "candidate",
+      "status": 0,
+      "elapsed_us": 1823091.4999999998,
+      "output_bytes": "8388608",
+      "residual_temp_entries": 0
+    },
+    {
+      "name": "oracle",
+      "status": 0,
+      "elapsed_us": 202214.875,
+      "output_bytes": "8388608",
+      "residual_temp_entries": 0
+    }
+  ],
+  "output_equal": true,
+  "passed": true
+}

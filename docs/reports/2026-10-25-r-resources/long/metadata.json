@@ -1,0 +1,11 @@
+{
+  "kind": "direct-wasm-resource-observation",
+  "sample_interval_ms": 100,
+  "measurement": "monotonic stdout first-read/elapsed; named first-output uses polling; RSS and temporary logical/allocated disk are sampled lower bounds; sampling interval includes host observer execution; observer process and native oracle are outside candidate RSS",
+  "timeout": "direct child is hard-canceled and reaped; abrupt termination does not promise guest temporary cleanup",
+  "wasm_root": "/Users/winter/Documents/Moonbit/cmd/_build/wasm/release/build",
+  "moonrun": "/Users/winter/.moon/bin/moonrun",
+  "oracle_bin": "/private/tmp/cmd-native-oracle-2026-10-23/prefix/bin",
+  "distribution": "ascii",
+  "record_keys": "deterministic varying decimal keys; heldout widths7/89/4097/65537/128 with NUL/0xff on byte profiles; rev/diff remain ASCII"
+}

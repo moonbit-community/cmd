@@ -32,8 +32,15 @@ fn Output::path(self : Output, number : Int32) -> String raise OutputNameError {
 }
 
 ///|
-async fn Output::write(self : Output, content : BytesView) -> Unit {
-  if self.elide && content.is_empty() {
+async fn Output::write(
+  self : Output,
+  input : Snapshot,
+  first : Int64,
+  end : Int64,
+) -> Unit {
+  let start = input.offset(first)
+  let stop = input.offset(end)
+  if self.elide && start == stop {
     return
   }
   let path = self.path(self.paths.length())
@@ -43,43 +50,42 @@ async fn Output::write(self : Output, content : BytesView) -> Unit {
   let file = @fs.create(path, allow_existing=false)
   self.paths.push(path)
   defer file.close()
-  file.write(content)
+  input.copy(start, stop, file)
   if !self.quiet {
-    @stdio.stdout.write("\{content.length()}\n")
+    @stdio.stdout.write("\{stop - start}\n")
   }
 }
 
 ///|
 async fn partition(
-  data : Bytes,
+  data : Snapshot,
   controls : Array[Control],
   output : Output,
   suppress : Bool,
 ) -> Unit {
-  let starts = line_starts(data)
-  let count = starts.length() - 1
-  let mut first = 0
-  let mut searched = -1
+  let count = data.records
+  let mut first = 0L
+  let mut searched = -1L
   for control in controls {
-    let mut repetition = 0
+    let mut repetition = 0L
     while control.repeats is None ||
-          (control.repeats is Some(n) && repetition <= n) {
+          (control.repeats is Some(n) && repetition <= n.to_int64()) {
       let (cut, ignored) = match control.pattern {
         Line(number) => {
-          let target = number.to_int64() * (repetition.to_int64() + 1L) - 1L
-          if target >= count.to_int64() {
-            output.write(data[starts[first]:])
+          let target = number.to_int64() * (repetition + 1L) - 1L
+          if target >= count {
+            output.write(data, first, count)
             fail("line number out of range")
           }
-          let target = @cmp.maximum(first, target.to_int())
+          let target = @cmp.maximum(first, target)
           searched = @cmp.maximum(searched, target - 1)
           (target, false)
         }
         Expression(regex, offset, ignored) => {
           let mut found = None
           let begin = @cmp.maximum(first, searched + 1)
-          for line in begin..<count {
-            if regex.is_match(line_text(data, starts[line], starts[line + 1])) {
+          for line = begin; line < count; line = line + 1 {
+            if data.matches(line, regex) {
               found = Some(line)
               break
             }
@@ -87,7 +93,7 @@ async fn partition(
           match found {
             None => {
               if !ignored {
-                output.write(data[starts[first]:])
+                output.write(data, first, count)
               }
               if control.repeats is None {
                 return
@@ -95,27 +101,69 @@ async fn partition(
               fail("match not found")
             }
             Some(line) => {
-              let target = line.to_int64() + offset.to_int64()
-              if target < first.to_int64() || target > count.to_int64() {
-                if !ignored && target > count.to_int64() {
-                  output.write(data[starts[first]:])
+              let target = line + offset.to_int64()
+              if target < first || target > count {
+                if !ignored && target > count {
+                  output.write(data, first, count)
                 }
                 fail("line number out of range")
               }
-              searched = @cmp.maximum(line, target.to_int())
-              (target.to_int(), ignored)
+              searched = @cmp.maximum(line, target)
+              (target, ignored)
             }
           }
         }
       }
       if !ignored {
-        output.write(data[starts[first]:starts[cut]])
+        output.write(data, first, cut)
       }
       first = if suppress && cut < count { cut + 1 } else { cut }
       repetition += 1
     }
   }
-  output.write(data[starts[first]:])
+  output.write(data, first, count)
+}
+
+///|
+async fn process(
+  reader : &@io.Reader,
+  controls : Array[Control],
+  output : Output,
+  suppress : Bool,
+) -> Unit {
+  process_spool(
+    @fs.tmpdir(prefix="csplit-"),
+    reader,
+    controls,
+    output,
+    suppress,
+  )
+}
+
+///|
+async fn process_spool(
+  directory : String,
+  reader : &@io.Reader,
+  controls : Array[Control],
+  output : Output,
+  suppress : Bool,
+) -> Unit {
+  defer @fs.rmdir(directory, recursive=true)
+  let data = @fs.open(
+    directory + "/input",
+    mode=ReadWrite,
+    create_mode=CreateNew,
+    permission=0o600,
+  )
+  defer data.close()
+  let index = @fs.open(
+    directory + "/index",
+    mode=ReadWrite,
+    create_mode=CreateNew,
+    permission=0o600,
+  )
+  defer index.close()
+  partition(snapshot(reader, data, index), controls, output, suppress)
 }
 
 ///|
@@ -139,6 +187,7 @@ fn help_message() -> String {
     #|BRE matching includes backreferences, byte classes and word assertions.
     #|Existing output paths and locale-specific matching are unsupported.
     #|Windows output names ending in spaces or dots are rejected before input.
+    #|Input is snapshotted with a disk index; temporary write access is required.
   message
 }
 
@@ -146,7 +195,7 @@ fn help_message() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("csplit 0.2.0\n")
+    @stdio.stdout.write("csplit 0.2.1\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [
@@ -172,7 +221,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("csplit 0.2.0\n")
+    @stdio.stdout.write("csplit 0.2.1\n")
     return
   }
   let (controls, width, suffix) = try {
@@ -213,12 +262,23 @@ async fn main {
   try {
     ignore(output.path(0))
     let path = parsed.operands[0]
-    let data = if path == "-" {
-      @stdio.stdin.read_all().binary()
+    let source = if path == "-" {
+      None
     } else {
-      @fs.read_file(path).binary()
+      Some(@fs.open(path, mode=ReadOnly))
     }
-    partition(data, controls, output, parsed.contains("suppress-matched"))
+    defer (if source is Some(file) { file.close() })
+    let reader : &@io.Reader = match source {
+      Some(file) => {
+        let reader : &@io.Reader = file
+        reader
+      }
+      None => {
+        let reader : &@io.Reader = @stdio.stdin
+        reader
+      }
+    }
+    process(reader, controls, output, parsed.contains("suppress-matched"))
   } catch {
     err => {
       let name_boundary = err is UnsupportedOutputName

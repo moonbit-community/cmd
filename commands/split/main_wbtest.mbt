@@ -41,6 +41,18 @@ test "split counts complete records while preserving partial and binary records"
   assert_eq(partition_end(10L, 3L, 0L), 4L)
   assert_eq(partition_end(10L, 3L, 1L), 7L)
   assert_eq(partition_index(11L, 3L, 8L), 2L)
+  assert_eq(byte_position(2147483647L, 65536), 2147549183L)
+  assert_eq(byte_position(4294967295L, 65536), 4295032831L)
+  assert_eq(partition_end(4294967297L, 3L, 2L), 4294967297L)
+  assert_eq(partition_end(9223372036854775807L, 3L, 2L), 9223372036854775807L)
+  let overflow = try {
+    ignore(byte_position(9223372036854775800L, 8))
+    false
+  } catch {
+    SplitError(1, _) => true
+    err => raise err
+  }
+  assert_true(overflow)
 }
 
 ///|

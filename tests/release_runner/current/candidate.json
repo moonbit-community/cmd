@@ -1,7 +1,7 @@
 {
   "schema": 2,
   "candidate": true,
-  "core_version": "0.8.0",
+  "core_version": "0.8.1",
   "base_manifest": "active-cases.json",
   "commands": [
     {
@@ -99,7 +99,7 @@
     {
       "name": "column",
       "package_name": "cli/column",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -107,9 +107,11 @@
         "table",
         "version",
         "separator",
-        "output-separator"
+        "output-separator",
+        "fillrows",
+        "output-width"
       ],
-      "policy_sensitive": false
+      "policy_sensitive": true
     },
     {
       "name": "comm",
@@ -146,16 +148,22 @@
     {
       "name": "csplit",
       "package_name": "cli/csplit",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
         "help",
         "suffix-format",
         "suppress-matched",
-        "version"
+        "version",
+        "digits",
+        "elide-empty-files",
+        "keep-files",
+        "prefix",
+        "quiet",
+        "silent"
       ],
-      "policy_sensitive": false
+      "policy_sensitive": true
     },
     {
       "name": "curl",
@@ -208,7 +216,7 @@
     {
       "name": "diff",
       "package_name": "cli/diff",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -691,7 +699,7 @@
     {
       "name": "rev",
       "package_name": "cli/rev",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -820,7 +828,7 @@
     {
       "name": "sort",
       "package_name": "cli/sort",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -831,14 +839,33 @@
         "output",
         "random-sort",
         "random-source",
-        "sort"
+        "sort",
+        "batch-size",
+        "buffer-size",
+        "check",
+        "check-quiet",
+        "dictionary-order",
+        "field-separator",
+        "general-numeric-sort",
+        "human-numeric-sort",
+        "ignore-case",
+        "ignore-leading-blanks",
+        "ignore-nonprinting",
+        "key",
+        "month-sort",
+        "numeric-sort",
+        "reverse",
+        "temporary-directory",
+        "unique",
+        "version-sort",
+        "zero-terminated"
       ],
       "policy_sensitive": true
     },
     {
       "name": "split",
       "package_name": "cli/split",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -851,7 +878,9 @@
         "number",
         "numeric-suffixes",
         "suffix-length",
-        "version"
+        "version",
+        "bytes",
+        "lines"
       ],
       "policy_sensitive": true
     },
@@ -877,15 +906,17 @@
     {
       "name": "tac",
       "package_name": "cli/tac",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
         "help",
         "regex",
-        "version"
+        "version",
+        "before",
+        "separator"
       ],
-      "policy_sensitive": false
+      "policy_sensitive": true
     },
     {
       "name": "tail",
@@ -2795,6 +2826,14 @@
     "phase5-sh-while-until",
     "phase5-xargs-child-status",
     "phase5-xargs-replace",
+    "r2-csplit-quiet",
+    "r3-sort-batch-minimum",
+    "r3-sort-buffer-fanin-random",
+    "r3-sort-buffer-fanin-temporary-stable",
+    "r3-sort-buffer-percent-boundary",
+    "r3-sort-reverse",
+    "r3-sort-temporary-option-value",
+    "r3-sort-zero-percent-unique-temporary",
     "release-metadata-base32-help",
     "release-metadata-base32-version",
     "release-metadata-base64-help",

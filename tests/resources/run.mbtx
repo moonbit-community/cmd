@@ -1,0 +1,562 @@
+///|
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/async@0.22.5/process",
+  "moonbitlang/async@0.22.5/shell",
+  "moonbitlang/core/bench",
+  "moonbitlang/core/env",
+  "moonbitlang/core/string",
+  "moonbitlang/x@0.5.5/sys",
+}
+
+///|
+// Direct-child observations; no benchmark statistics or coverage claims.
+struct Observation {
+  status : Int32
+  elapsed_us : Double
+  first_output_us : Double?
+  kernel_peak_rss_bytes : Int64?
+  sampled_rss_bytes : Int64
+  sampled_temp_bytes : Int64
+  sampled_temp_allocated_bytes : Int64
+  sampled_temp_files : Int32
+  residual_temp_files : Int32
+  residual_temp_entries : Int32
+  residual_temp_bytes : Int64
+  output_bytes : Int64
+  timed_out : Bool
+} derive(ToJson)
+
+///|
+struct Samples {
+  mut first : Double?
+  mut rss : Int64
+  mut temp : Int64
+  mut allocated : Int64
+  mut files : Int32
+  mut complete : Bool
+}
+
+///|
+async fn tree_size(path : String) -> (Int64, Int32) {
+  let mut bytes = 0L
+  let mut files = 0
+  for name in @fs.readdir(path) {
+    let child = path + "/" + name
+    match @fs.kind(child, follow_symlink=false) {
+      Directory => {
+        let (size, count) = tree_size(child)
+        bytes += size
+        files += count
+      }
+      Regular => {
+        bytes += @fs.file_size(child)
+        files += 1
+      }
+      _ => ()
+    }
+  }
+  (bytes, files)
+}
+
+///|
+fn first_number(text : String) -> Int64? {
+  guard text.split("\n").next() is Some(line) else { return None }
+  guard line.split("\t").next() is Some(value) else { return None }
+  Some(@string.parse_int64(value.trim())) catch {
+    _ => None
+  }
+}
+
+///|
+async fn observe(
+  program : String,
+  args : Array[String],
+  input : String,
+  directory : String,
+  timeout : Int32,
+  kernel~ : Bool = false,
+) -> Observation {
+  if kernel {
+    return observe_kernel(program, args, input, directory)
+  }
+  @fs.mkdir(directory)
+  let effects = directory + "/effects"
+  let temporary = directory + "/temporary"
+  @fs.mkdir(effects)
+  @fs.mkdir(temporary)
+  let capture = @fs.create(directory + "/stdout")
+  defer capture.close()
+  let errors = @process.redirect_to_file(directory + "/stderr")
+  defer errors.close()
+  let stdin = @process.redirect_from_file(input)
+  let (reader, output) = @process.read_from_process()
+  defer reader.close()
+  let samples : Samples = {
+    first: None,
+    rss: 0L,
+    temp: 0L,
+    allocated: 0L,
+    files: 0,
+    complete: false,
+  }
+  let started = @bench.monotonic_clock_start()
+  let elapsed = Ref(0.0)
+  let status = @async.with_timeout_opt(timeout, () => {
+    @async.with_task_group() <| group => {
+      let child = @process.spawn(
+        group,
+        program,
+        args,
+        stdin~,
+        stdout=output,
+        stderr=errors,
+        cwd=effects[:],
+        extra_env=Map([
+          ("LC_ALL", "C"),
+          ("LANG", "C"),
+          ("TZ", "UTC"),
+          ("TMPDIR", temporary + "/"),
+          ("TMP", temporary),
+          ("TEMP", temporary),
+        ]),
+        cancel_handler=@process.hard_cancel(),
+      )
+      let consume = group.spawn(() => {
+        while reader.read_some(max_len=65536) is Some(bytes) {
+          if samples.first is None {
+            samples.first = Some(@bench.monotonic_clock_end(started))
+          }
+          capture.write(bytes)
+        }
+      })
+      let sample = group.spawn(() => {
+        while !samples.complete {
+          let rss = @shell.Cmd("/bin/ps", [
+            "-o",
+            "rss=",
+            "-p",
+            child.pid.to_string(),
+          ]).output()
+          if rss.exit_code() == 0 && first_number(rss.stdout()) is Some(value) {
+            samples.rss = samples.rss.max(value * 1024)
+          }
+          let sizes = tree_size(temporary) catch { _ => (0L, 0) }
+          samples.temp = samples.temp.max(sizes.0)
+          samples.files = samples.files.max(sizes.1)
+          let allocated = @shell.Cmd("/usr/bin/du", ["-sk", temporary]).output()
+          if allocated.exit_code() == 0 &&
+            first_number(allocated.stdout()) is Some(value) {
+            samples.allocated = samples.allocated.max(value * 1024)
+          }
+          if samples.first is None && tree_size(effects).0 > 0L {
+            samples.first = Some(@bench.monotonic_clock_end(started))
+          }
+          @async.sleep(100)
+        }
+      })
+      let status = child.wait()
+      consume.wait()
+      elapsed.val = @bench.monotonic_clock_end(started)
+      samples.complete = true
+      sample.wait()
+      status
+    }
+  })
+  let elapsed_us = if status is None {
+    @bench.monotonic_clock_end(started)
+  } else {
+    elapsed.val
+  }
+  let residual = tree_size(temporary)
+  {
+    status: status.unwrap_or(-999),
+    elapsed_us,
+    first_output_us: samples.first,
+    kernel_peak_rss_bytes: None,
+    sampled_rss_bytes: samples.rss,
+    sampled_temp_bytes: samples.temp,
+    sampled_temp_allocated_bytes: samples.allocated,
+    sampled_temp_files: samples.files,
+    residual_temp_files: residual.1,
+    residual_temp_entries: @fs.readdir(temporary).length(),
+    residual_temp_bytes: residual.0,
+    output_bytes: @fs.file_size(directory + "/stdout"),
+    timed_out: status is None,
+  }
+}
+
+///|
+async fn observe_kernel(
+  program : String,
+  args : Array[String],
+  input : String,
+  directory : String,
+) -> Observation {
+  @fs.mkdir(directory)
+  let effects = directory + "/effects"
+  let temporary = directory + "/temporary"
+  @fs.mkdir(effects)
+  @fs.mkdir(temporary)
+  let started = @bench.monotonic_clock_start()
+  // Known completed profiles only: the CI step owns the overall deadline.
+  let status = @shell.Cmd(
+    "/usr/bin/time",
+    ["-q", "-f", "%M", "-o", directory + "/rusage.txt", "--", program, ..args],
+    cwd=effects,
+    env=Map([
+      ("LC_ALL", "C"),
+      ("LANG", "C"),
+      ("TZ", "UTC"),
+      ("TMPDIR", temporary + "/"),
+      ("TMP", temporary),
+      ("TEMP", temporary),
+    ]),
+    stdin=FromFile(input),
+    stdout=ToFile(directory + "/stdout"),
+    stderr=ToFile(directory + "/stderr"),
+  ).status()
+  let elapsed_us = @bench.monotonic_clock_end(started)
+  let rss = @string.parse_int64(
+    @fs.read_file(directory + "/rusage.txt").text().trim(),
+  )
+  let residual = tree_size(temporary)
+  {
+    status,
+    elapsed_us,
+    first_output_us: None,
+    kernel_peak_rss_bytes: Some(rss * 1024L),
+    sampled_rss_bytes: 0L,
+    sampled_temp_bytes: 0L,
+    sampled_temp_allocated_bytes: 0L,
+    sampled_temp_files: 0,
+    residual_temp_files: residual.1,
+    residual_temp_entries: @fs.readdir(temporary).length(),
+    residual_temp_bytes: residual.0,
+    output_bytes: @fs.file_size(directory + "/stdout"),
+    timed_out: false,
+  }
+}
+
+///|
+async fn write_input(
+  path : String,
+  size : Int64,
+  record : Int64,
+  mixed : Bool,
+  binary : Bool,
+) -> Unit {
+  let file = @fs.create(path)
+  defer file.close()
+  let seed = if record == size && !mixed {
+    b"needle-alpha-beta-0123456789-"
+  } else {
+    b"needle alpha beta 0123456789 "
+  }
+  let widths = [7L, 89L, 4097L, 65537L, 128L]
+  let places = [
+    1000000000L, 100000000L, 10000000L, 1000000L, 100000L, 10000L, 1000L, 100L, 10L,
+    1L,
+  ]
+  let mut position = 0L
+  let mut row = 0L
+  let mut rank = 12345L
+  let mut column = 0L
+  let mut width = if mixed { widths[0] } else { record }
+  while position < size {
+    let count = (size - position).min(65536).to_int()
+    let bytes = Bytes::makei(count, index => {
+      let at = position + index.to_int64()
+      let end = column == width - 1 || at == size - 1
+      let byte = if end {
+        b'\n'
+      } else if binary && row % 3 == 1 && column == 13 {
+        b'\x00'
+      } else if binary && row % 3 == 1 && column == 31 {
+        b'\xff'
+      } else if column < 10 {
+        ((rank / places[column.to_int()] % 10).to_int() + 48).to_byte()
+      } else {
+        seed[((column - 10) % seed.length().to_int64()).to_int()]
+      }
+      if end {
+        row += 1
+        rank = (row * 1103515245L + 12345L) % 1000000007L
+        column = 0
+        if mixed {
+          width = widths[(row % widths.length().to_int64()).to_int()]
+        }
+      } else {
+        column += 1
+      }
+      byte
+    })
+    file.write(bytes)
+    position += count.to_int64()
+  }
+}
+
+///|
+async fn equal_files(left : String, right : String) -> Bool {
+  let a = @fs.open(left, mode=ReadOnly)
+  defer a.close()
+  let b = @fs.open(right, mode=ReadOnly)
+  defer b.close()
+  let size = a.size()
+  if size != b.size() {
+    return false
+  }
+  let mut position = 0L
+  while position < size {
+    let length = (size - position).min(65536).to_int()
+    if a.read_exactly_at(length, position~) !=
+      b.read_exactly_at(length, position~) {
+      return false
+    }
+    position += length.to_int64()
+  }
+  true
+}
+
+///|
+async fn equal_effects(left : String, right : String) -> Bool {
+  let a = @fs.readdir(left, sort=true)
+  let b = @fs.readdir(right, sort=true)
+  if a != b {
+    return false
+  }
+  for name in a {
+    if !equal_files(left + "/" + name, right + "/" + name) {
+      return false
+    }
+  }
+  true
+}
+
+///|
+fn arguments(
+  command : String,
+  input : String,
+  changed : String,
+  binary : Bool,
+) -> Array[String] {
+  match command {
+    "split" => ["-b", "8M", "-", "part-"]
+    "csplit" => ["-s", "-f", "part-", "-", "/^/"]
+    "sort" => ["-S", "4M"]
+    "column" => ["-t"]
+    "grep" => if binary { ["-a", "-F", "needle"] } else { ["-F", "needle"] }
+    "gzip" => ["-n", "-c"]
+    "diff" => ["--label", "left", "--label", "right", "-u", input, changed]
+    "strings" => ["-a"]
+    _ => []
+  }
+}
+
+///|
+async fn decode(program : String, input : String, output : String) -> Bool {
+  let result = @shell.Cmd(
+    program,
+    ["-d", "-c"],
+    stdin=FromFile(input),
+    stdout=ToFile(output),
+  ).status(timeout_ms=900000)
+  result == 0
+}
+
+///|
+async fn main {
+  let options : Map[String, String] = Map([])
+  let args = @env.args()[1:]
+  for index = 0; index < args.length(); index = index + 2 {
+    guard index + 1 < args.length() else { fail("option requires a value") }
+    options[args[index]] = args[index + 1]
+  }
+  let directory = options.get("--report-dir").unwrap()
+  let wasm = @fs.realpath(options.get("--wasm-root").unwrap())
+  let moonrun = @fs.realpath(options.get("--moonrun").unwrap())
+  let oracle = @fs.realpath(options.get("--oracle-bin").unwrap())
+  let commands = options
+    .get("--commands")
+    .unwrap_or("rev,strings,split,csplit,tac,column,sort,grep,gzip,diff")
+    .split(",")
+    .map(value => value.to_owned())
+    .collect()
+  let sizes : Array[Int64] = []
+  for
+    value in options
+    .get("--sizes")
+    .unwrap_or("8388608,67108864,536870912")
+    .split(",") {
+    let size = @string.parse_int64(value)
+    guard size > 0 else { fail("resource sizes must be positive") }
+    sizes.push(size)
+  }
+  let long = options.get("--long-record").unwrap_or("false") == "true"
+  let distribution = options.get("--distribution").unwrap_or("ascii")
+  guard distribution == "ascii" || distribution == "heldout" else {
+    fail("distribution must be ascii or heldout")
+  }
+  let timeout = @string.parse_int(
+    options.get("--timeout-ms").unwrap_or("900000"),
+  )
+  let rss_mode = options.get("--kernel-rss").unwrap_or("sampled")
+  guard rss_mode == "sampled" || rss_mode == "linux" else {
+    fail("--kernel-rss must be linux")
+  }
+  let kernel = rss_mode == "linux"
+  @fs.mkdir(directory, recursive=true, allow_exist=false)
+  let root = @fs.realpath(directory)
+  let metadata : Json = {
+    "kind": "direct-wasm-resource-observation",
+    "sample_interval_ms": if kernel {
+      0
+    } else {
+      100
+    },
+    "measurement": if kernel {
+      "Linux GNU time %M reports kernel ru_maxrss in KiB, converted to bytes; file redirects retain byte/effect comparison; first output and sampled fields are unavailable; observer and time supervisor are outside candidate RSS"
+    } else {
+      "monotonic stdout first-read/elapsed; named first-output uses polling; RSS and temporary logical/allocated disk are sampled lower bounds; sampling interval includes host observer execution; observer process and native oracle are outside candidate RSS"
+    },
+    "timeout": if kernel {
+      "known completed profiles have no per-row deadline; the CI step overall deadline stops the run and may leave partial reports or temporary files"
+    } else {
+      "direct child is hard-canceled and reaped; abrupt termination does not promise guest temporary cleanup"
+    },
+    "kernel_rss": kernel,
+    "wasm_root": wasm,
+    "moonrun": moonrun,
+    "oracle_bin": oracle,
+    "distribution": distribution,
+    "record_keys": "deterministic varying decimal keys; heldout widths7/89/4097/65537/128 with NUL/0xff on byte profiles; rev/diff remain ASCII",
+  }
+  @fs.write_file(root + "/metadata.json", metadata.stringify(indent=2))
+  let summary = @fs.create(root + "/summary.jsonl")
+  defer summary.close()
+  let mut failures = 0
+  for size in sizes {
+    let input = root + "/input-" + size.to_string()
+    let changed = input + ".changed"
+    let mut last_record = -1L
+    let mut last_binary = false
+    for command in commands {
+      let record = if long {
+        size
+      } else if command == "diff" {
+        4096L
+      } else {
+        80L
+      }
+      let mixed = distribution == "heldout" && !long
+      let binary = distribution == "heldout" &&
+        command != "rev" &&
+        command != "diff"
+      if record != last_record || binary != last_binary {
+        write_input(input, size, record, mixed, binary)
+        last_record = record
+        last_binary = binary
+      }
+      if command == "diff" {
+        write_input(changed, size, record, mixed, binary)
+        let file = @fs.open(changed, mode=WriteOnly)
+        defer file.close()
+        file.write_at(b"x", position=0)
+      }
+      let directory = root + "/" + command + "-" + size.to_string()
+      @fs.mkdir(directory)
+      println(
+        "resource start \{command} bytes=\{size} record=\{record} distribution=\{distribution}",
+      )
+      let argv = arguments(command, input, changed, binary)
+      let candidate = observe(
+        moonrun,
+        [wasm + "/cli/" + command + "/" + command + ".wasm", "--", ..argv],
+        input,
+        directory + "/candidate",
+        timeout,
+        kernel~,
+      )
+      let reference = observe(
+        oracle + "/" + command,
+        argv,
+        input,
+        directory + "/oracle",
+        timeout,
+        kernel~,
+      )
+      let expected = if command == "diff" { 1 } else { 0 }
+      let mut same = !candidate.timed_out &&
+        !reference.timed_out &&
+        candidate.status == expected &&
+        reference.status == expected &&
+        @fs.file_size(directory + "/candidate/stderr") == 0L &&
+        @fs.file_size(directory + "/oracle/stderr") == 0L
+      if command == "gzip" && same {
+        same = decode(
+            oracle + "/gzip",
+            directory + "/candidate/stdout",
+            directory + "/decoded-candidate",
+          ) &&
+          decode(
+            oracle + "/gzip",
+            directory + "/oracle/stdout",
+            directory + "/decoded-oracle",
+          ) &&
+          equal_files(input, directory + "/decoded-candidate") &&
+          equal_files(input, directory + "/decoded-oracle")
+      } else if same {
+        same = equal_files(
+          directory + "/candidate/stdout",
+          directory + "/oracle/stdout",
+        )
+      }
+      same = same &&
+        equal_effects(
+          directory + "/candidate/effects",
+          directory + "/oracle/effects",
+        ) &&
+        candidate.residual_temp_files == 0 &&
+        candidate.residual_temp_entries == 0
+      let result : Json = {
+        "command": command,
+        "bytes": size.to_string(),
+        "record_bytes": if mixed {
+          "mixed7/89/4097/65537/128"
+        } else {
+          record.to_string()
+        },
+        "distribution": distribution,
+        "binary_markers": binary,
+        "args": argv,
+        "candidate": candidate,
+        "oracle": reference,
+        "bytes_status_effects_equal": same,
+      }
+      @fs.write_file(directory + "/result.json", result.stringify(indent=2))
+      summary.write(result.stringify() + "\n")
+      println(
+        "resource done \{command} bytes=\{size} equal=\{same} rss=\{candidate.sampled_rss_bytes} temp=\{candidate.sampled_temp_bytes}",
+      )
+      if same {
+        for side in ["candidate", "oracle"] {
+          @fs.remove(directory + "/" + side + "/stdout")
+          @fs.rmdir(directory + "/" + side + "/effects", recursive=true)
+        }
+        if command == "gzip" {
+          @fs.remove(directory + "/decoded-candidate")
+          @fs.remove(directory + "/decoded-oracle")
+        }
+      } else {
+        failures += 1
+      }
+    }
+    @fs.remove(input)
+    if @fs.exists(changed) {
+      @fs.remove(changed)
+    }
+  }
+  println("resource completed failures=\{failures}")
+  @sys.exit(if failures == 0 { 0 } else { 1 })
+}

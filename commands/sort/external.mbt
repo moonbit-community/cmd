@@ -301,17 +301,23 @@ async fn merge_input_sources(
 
 ///|
 priv struct Spool {
-  mut root : String?
+  directories : Array[String]
+  roots : Array[String?]
   mut next : Int64
 }
 
 ///|
 async fn Spool::path(self : Spool) -> String {
-  let root = match self.root {
+  let slot = (self.next % self.roots.length().to_int64()).to_int()
+  let root = match self.roots[slot] {
     Some(root) => root
     None => {
-      let root = @fs.tmpdir(prefix="cli-sort-")
-      self.root = Some(root)
+      let root = if self.directories.is_empty() {
+        @fs.tmpdir(prefix="cli-sort-")
+      } else {
+        temporary_root(self.directories[slot])
+      }
+      self.roots[slot] = Some(root)
       root
     }
   }
@@ -416,14 +422,24 @@ async fn Spool::merge_sources(
 }
 
 ///|
-fn merge_count(runs : ArrayView[Run], budget : Int64) -> Int32 {
+fn merge_count(
+  runs : ArrayView[Run],
+  budget : Int64,
+  fan_in~ : Int32 = 16,
+) -> Int32 {
   let mut count = 0
   let mut retained : Int64 = 0
-  for run in runs[:runs.length().min(16)] {
-    if count >= 2 && retained + run.largest_entry > budget {
-      break
+  for run in runs[:runs.length().min(fan_in)] {
+    if run.largest_entry > budget - retained {
+      if count >= 2 {
+        break
+      }
+      // A merge must advance even when its first two records exceed the
+      // selected budget; saturating the estimate avoids offset overflow.
+      retained = budget
+    } else {
+      retained += run.largest_entry
     }
-    retained += run.largest_entry
     count += 1
   }
   count
@@ -436,6 +452,7 @@ async fn compact_runs(
   key_count : Int32,
   compare : (Entry, Entry) -> Int32,
   budget : Int64,
+  fan_in~ : Int32 = 16,
 ) -> Unit {
   for level in 0..<64 {
     for ;; {
@@ -444,15 +461,15 @@ async fn compact_runs(
         if run.level == level {
           indices.push(index)
         }
-        if indices.length() == 16 {
+        if indices.length() == fan_in {
           break
         }
       }
-      if indices.length() < 16 {
+      if indices.length() < fan_in {
         break
       }
       let group = indices.map(index => runs[index])
-      let count = merge_count(group, budget)
+      let count = merge_count(group, budget, fan_in~)
       let merged = spool.merge(group[:count], key_count, compare)
       for index = count - 1; index >= 0; index = index - 1 {
         runs.remove(indices[index]) |> ignore
@@ -518,6 +535,8 @@ async fn sort_sources(
   budget~ : Int64 = 67108864,
   seed~ : Bytes = b"",
   output_path~ : String? = None,
+  fan_in~ : Int32 = 16,
+  temporary_directories~ : Array[String] = [],
 ) -> Int32 {
   let compare = (left : Entry, right : Entry) => {
     let order = compare_entries(left, right, specs, global, !unique && !stable)
@@ -536,11 +555,19 @@ async fn sort_sources(
   } else {
     specs.length()
   }
-  // Reserve input/output and sixteen merge buffers plus the bounded run index.
-  let reserve : Int64 = 22 * 65536
+  // Reserve input/output and selected merge buffers plus the bounded run index.
+  let reserve = (fan_in + 6).to_int64() * 65536L
   let run_limit = (budget - reserve).max(1)
-  let spool : Spool = { root: None, next: 0, }
-  defer (if spool.root is Some(root) { @fs.rmdir(root, recursive=true) })
+  let spool : Spool = {
+    directories: temporary_directories,
+    roots: Array::make(temporary_directories.length().max(1), None),
+    next: 0,
+  }
+  defer (for root in spool.roots {
+    if root is Some(root) {
+      @fs.rmdir(root, recursive=true)
+    }
+  })
   let runs : Array[Run] = []
   let mut entries : Array[Entry] = []
   let mut retained : Int64 = 0
@@ -566,12 +593,12 @@ async fn sort_sources(
         return true
       }
       let cost = entry_cost(entry)
-      if !entries.is_empty() && retained + cost > run_limit {
+      if !entries.is_empty() && cost > run_limit - retained {
         runs.push(spool.write_run(entries, compare))
         entries = []
         retained = 0
         // Level carries bound the run directory by O(log records).
-        compact_runs(spool, runs, key_count, compare, run_limit)
+        compact_runs(spool, runs, key_count, compare, run_limit, fan_in~)
       }
       entries.push(entry)
       retained += cost
@@ -583,6 +610,25 @@ async fn sort_sources(
   }
   if check {
     return 0
+  }
+  // Named merge output is not opened for truncation or writing until every
+  // source has been consumed into owned runs. Preflight may create it empty.
+  if merge && (sources.length() > fan_in || output_path is Some(_)) {
+    for first = 0; first < sources.length(); first = first + fan_in {
+      runs.push(
+        spool.merge_sources(
+          sources[first:(first + fan_in).min(sources.length())],
+          delimiter,
+          specs,
+          global,
+          separator,
+          seed,
+          first.to_int64(),
+          compare,
+        ),
+      )
+      compact_runs(spool, runs, key_count, compare, run_limit, fan_in~)
+    }
   }
   let target = match output_path {
     Some(path) =>
@@ -618,7 +664,7 @@ async fn sort_sources(
       })
     }
   }
-  if merge && sources.length() <= 16 {
+  if merge && sources.length() <= fan_in && output_path is None {
     merge_input_sources(
       sources[:],
       delimiter,
@@ -632,35 +678,20 @@ async fn sort_sources(
     writer.flush()
     return 0
   }
-  if merge {
-    for first = 0; first < sources.length(); first = first + 16 {
-      runs.push(
-        spool.merge_sources(
-          sources[first:(first + 16).min(sources.length())],
-          delimiter,
-          specs,
-          global,
-          separator,
-          seed,
-          first.to_int64(),
-          compare,
-        ),
-      )
-      compact_runs(spool, runs, key_count, compare, run_limit)
-    }
-  } else if runs.is_empty() {
+  if !merge && runs.is_empty() {
     entries.sort_by(compare)
     for entry in entries {
       emit(entry)
     }
     writer.flush()
     return 0
-  } else if !entries.is_empty() {
+  } else if !merge && !entries.is_empty() {
     runs.push(spool.write_run(entries, compare))
     entries = []
   }
-  while runs.length() > 16 || merge_count(runs, run_limit) < runs.length() {
-    let count = merge_count(runs, run_limit)
+  while runs.length() > fan_in ||
+        merge_count(runs, run_limit, fan_in~) < runs.length() {
+    let count = merge_count(runs, run_limit, fan_in~)
     let merged = spool.merge(runs[:count], key_count, compare)
     let remaining = runs[count:].to_owned()
     runs.clear()

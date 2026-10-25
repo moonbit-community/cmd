@@ -70,27 +70,3 @@ fn parse_controls(values : ArrayView[String]) -> Array[Control] raise {
   }
   controls
 }
-
-///|
-fn line_starts(data : Bytes) -> Array[Int32] {
-  let result = [0]
-  for index in 0..<data.length() {
-    if data[index] == b'\n' {
-      result.push(index + 1)
-    }
-  }
-  if result[result.length() - 1] != data.length() {
-    result.push(data.length())
-  }
-  result
-}
-
-///|
-fn line_text(data : Bytes, start : Int32, end : Int32) -> String {
-  let output = StringBuilder()
-  let end = if end > start && data[end - 1] == b'\n' { end - 1 } else { end }
-  for index in start..<end {
-    output.write_char(data[index].to_int().unsafe_to_char())
-  }
-  output.to_string()
-}

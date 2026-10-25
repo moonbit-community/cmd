@@ -1,56 +1,4 @@
 ///|
-fn starts_with_at(data : Bytes, index : Int32, separator : Bytes) -> Bool {
-  if index + separator.length() > data.length() {
-    return false
-  }
-  for offset in 0..<separator.length() {
-    if data[index + offset] != separator[offset] {
-      return false
-    }
-  }
-  true
-}
-
-///|
-fn reverse_records(
-  data : Bytes,
-  separator : Bytes,
-  before : Bool,
-  regex~ : @bytere.Pattern? = None,
-) -> Bytes {
-  let output : Array[Byte] = []
-  let text = if regex is Some(_) { @bytere.text(data) } else { "" }
-  let mut search_end = data.length()
-  let mut past_end = data.length()
-  let mut first = true
-  while search_end > 0 {
-    let match_span = if regex is Some(pattern) {
-      pattern.rfind_span(text, search_end)
-    } else {
-      let mut position = search_end - separator.length()
-      while position >= 0 && !starts_with_at(data, position, separator) {
-        position -= 1
-      }
-      if position < 0 {
-        None
-      } else {
-        Some((position, position + separator.length()))
-      }
-    }
-    guard match_span is Some((start, end)) else { break }
-    let boundary = if before { start } else { end }
-    if before || !first || boundary != past_end {
-      output.append(data[boundary:past_end].to_array())
-    }
-    past_end = boundary
-    search_end = start
-    first = false
-  }
-  output.append(data[:past_end].to_array())
-  Bytes::from_array(output)
-}
-
-///|
 fn help_message() -> String {
   let message =
     #|Usage: tac [OPTION]... [FILE]...
@@ -63,6 +11,9 @@ fn help_message() -> String {
     #|  -b, --before             Attach the separator before records.
     #|  -s, --separator=STRING   Use STRING instead of newline.
     #|  -r, --regex              Use an Emacs-style byte regular expression.
+    #|
+    #|Nonseekable input and regex mode require temporary-directory write access.
+    #|Regex mode retains the complete input for arbitrary-span byte matching.
   message
 }
 
@@ -70,7 +21,7 @@ fn help_message() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("tac 0.1.3\n")
+    @stdio.stdout.write("tac 0.1.4\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [
@@ -127,8 +78,13 @@ async fn main {
   for path in paths {
     let mut opened = path == "-"
     try {
-      let data = if path == "-" {
-        @stdio.stdin.read_all().binary()
+      if path == "-" {
+        reverse_spooled(
+          @stdio.stdin,
+          separator,
+          parsed.contains("before"),
+          regex~,
+        )
       } else {
         let file = @fs.open(path, mode=ReadOnly)
         opened = true
@@ -138,11 +94,16 @@ async fn main {
           status = 1
           continue
         }
-        file.read_all().binary()
+        if file.kind() == @fs.FileKind::Regular && regex is None {
+          if has_extent(file, file.size()) {
+            reverse_file(file, separator, parsed.contains("before"))
+          } else {
+            reverse_spooled(file, separator, parsed.contains("before"))
+          }
+        } else {
+          reverse_spooled(file, separator, parsed.contains("before"), regex~)
+        }
       }
-      @stdio.stdout.write(
-        reverse_records(data, separator, parsed.contains("before"), regex~),
-      )
     } catch {
       error => {
         let message = error_message(error)

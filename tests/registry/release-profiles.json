@@ -247,9 +247,11 @@
       "supported_options": [
         "help",
         "regex",
-        "version"
+        "version",
+        "before",
+        "separator"
       ],
-      "policy_sensitive": false,
+      "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
         "o6-tac-alt-prefix-after",
@@ -1802,7 +1804,26 @@
         "output",
         "random-sort",
         "random-source",
-        "sort"
+        "sort",
+        "batch-size",
+        "buffer-size",
+        "check",
+        "check-quiet",
+        "dictionary-order",
+        "field-separator",
+        "general-numeric-sort",
+        "human-numeric-sort",
+        "ignore-case",
+        "ignore-leading-blanks",
+        "ignore-nonprinting",
+        "key",
+        "month-sort",
+        "numeric-sort",
+        "reverse",
+        "temporary-directory",
+        "unique",
+        "version-sort",
+        "zero-terminated"
       ],
       "policy_sensitive": true,
       "releasable": true,
@@ -1901,7 +1922,14 @@
         "o2-sort-r-sort-alias",
         "o2-sort-merge-output-input-alias",
         "o2-sort-late-read-merge-existing",
-        "o2-sort-output-hardlink-mode"
+        "o2-sort-output-hardlink-mode",
+        "r3-sort-buffer-fanin-temporary-stable",
+        "r3-sort-temporary-option-value",
+        "r3-sort-batch-minimum",
+        "r3-sort-buffer-percent-boundary",
+        "r3-sort-reverse",
+        "r3-sort-zero-percent-unique-temporary",
+        "r3-sort-buffer-fanin-random"
       ]
     },
     {
@@ -2920,7 +2948,9 @@
         "number",
         "numeric-suffixes",
         "suffix-length",
-        "version"
+        "version",
+        "bytes",
+        "lines"
       ],
       "policy_sensitive": true,
       "releasable": true,
@@ -2988,9 +3018,15 @@
         "help",
         "suffix-format",
         "suppress-matched",
-        "version"
+        "version",
+        "digits",
+        "elide-empty-files",
+        "keep-files",
+        "prefix",
+        "quiet",
+        "silent"
       ],
-      "policy_sensitive": false,
+      "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
         "o6-csplit-digits-after-suffix",
@@ -3035,7 +3071,8 @@
         "repair-alias-csplit-silent",
         "s1-csplit-pattern-backreference",
         "s1-csplit-word-assertion",
-        "o6-csplit-windows-suffix-name-boundary"
+        "o6-csplit-windows-suffix-name-boundary",
+        "r2-csplit-quiet"
       ]
     },
     {
@@ -3199,9 +3236,11 @@
         "table",
         "version",
         "separator",
-        "output-separator"
+        "output-separator",
+        "fillrows",
+        "output-width"
       ],
-      "policy_sensitive": false,
+      "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
         "p2-column-copy",

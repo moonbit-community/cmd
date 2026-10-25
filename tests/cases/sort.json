@@ -711,8 +711,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/sort@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: sort [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n\nLarge inputs use temporary disk runs and require filesystem write access.\n",
+      "source_version": "workspace cli/sort@0.2.3 metadata contract",
+      "expected_stdout_text": "Usage: sort [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [-S SIZE] [-T DIR] [--batch-size=N] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n\nLarge inputs use temporary disk runs and require filesystem write access.\n-S/--buffer-size selects an accounted byte budget (default units: KiB).\n-T/--temporary-directory may repeat; --batch-size uses at most 16 merge inputs.\nNonzero percentage buffer sizes require an unavailable physical-memory query.\n",
       "expected_stderr_text": ""
     },
     {
@@ -730,8 +730,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/sort@0.2.2 metadata contract",
-      "expected_stdout_text": "sort 0.2.2\n",
+      "source_version": "workspace cli/sort@0.2.3 metadata contract",
+      "expected_stdout_text": "sort 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -2677,6 +2677,284 @@
         "mode",
         "identity"
       ]
+    },
+    {
+      "id": "r3-sort-buffer-fanin-temporary-stable",
+      "command": "sort",
+      "args": [
+        "-S0b",
+        "--batch-size=2",
+        "-s",
+        "-k1,1",
+        "-T",
+        "tmp-a",
+        "--temporary-directory=tmp-b"
+      ],
+      "stdin_text": "b first\na one\nb second\na two\n",
+      "files": [
+        {
+          "path": "tmp-a",
+          "kind": "directory"
+        },
+        {
+          "path": "tmp-b",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a one\na two\nb first\nb second\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "tmp-a",
+          "kind": "directory",
+          "exists": true
+        },
+        {
+          "path": "tmp-b",
+          "kind": "directory",
+          "exists": true
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "buffer-size",
+        "batch-size",
+        "temporary-directory",
+        "stable",
+        "key"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile; R resource controls",
+      "oracle": true
+    },
+    {
+      "id": "r3-sort-temporary-option-value",
+      "command": "sort",
+      "args": [
+        "-S",
+        "0b",
+        "-T",
+        "--check=quiet",
+        "--batch-size=32"
+      ],
+      "stdin_text": "b\na\n",
+      "files": [
+        {
+          "path": "--check=quiet",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a\nb\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "--check=quiet",
+          "kind": "directory",
+          "exists": true
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "buffer-size",
+        "batch-size",
+        "temporary-directory"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile; R resource controls",
+      "oracle": true
+    },
+    {
+      "id": "r3-sort-batch-minimum",
+      "command": "sort",
+      "args": [
+        "--batch-size=1"
+      ],
+      "stdin_text": "unread\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: invalid --batch-size argument '1'\nsort: minimum --batch-size argument is '2'\n",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "batch-size"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile; R resource controls",
+      "oracle": true
+    },
+    {
+      "id": "r3-sort-buffer-percent-boundary",
+      "command": "sort",
+      "args": [
+        "-S20%",
+        "-o",
+        "untouched"
+      ],
+      "stdin_text": "unread\n",
+      "files": [
+        {
+          "path": "untouched",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: unsupported capability: percentage buffer size requires a public physical-memory query\n",
+      "expected_files": [
+        {
+          "path": "untouched",
+          "exists": true,
+          "content_text": "KEEP\n"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "buffer-size",
+        "output"
+      ],
+      "source_version": "workspace sort 0.2.3 public-memory-query boundary",
+      "oracle": false,
+      "expected_rejection": "percentage buffer size requires a public physical-memory query"
+    },
+    {
+      "id": "r3-sort-zero-percent-unique-temporary",
+      "command": "sort",
+      "args": [
+        "-S0%",
+        "--batch-size=2",
+        "-u",
+        "-k1,1",
+        "-T",
+        "tmp-a",
+        "--temporary-directory=tmp-b"
+      ],
+      "stdin_text": "b first\na one\nb second\na two\n",
+      "files": [
+        {
+          "path": "tmp-a",
+          "kind": "directory"
+        },
+        {
+          "path": "tmp-b",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a one\nb first\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "tmp-a",
+          "kind": "directory",
+          "exists": true
+        },
+        {
+          "path": "tmp-b",
+          "kind": "directory",
+          "exists": true
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "buffer-size",
+        "batch-size",
+        "temporary-directory",
+        "unique",
+        "key"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile; R resource controls",
+      "oracle": true
+    },
+    {
+      "id": "r3-sort-buffer-fanin-random",
+      "command": "sort",
+      "args": [
+        "-S0b",
+        "--batch-size=2",
+        "-R",
+        "--random-source=seed16"
+      ],
+      "stdin_text": "zeta\nalpha\nbeta\nalpha\n\n",
+      "files": [
+        {
+          "path": "seed16",
+          "content_text": "0123456789abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "alpha\nalpha\nzeta\n\nbeta\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "buffer-size",
+        "batch-size",
+        "random-sort",
+        "random-source"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile; R resource controls",
+      "oracle": true
+    },
+    {
+      "id": "r3-sort-reverse",
+      "command": "sort",
+      "args": [
+        "--reverse"
+      ],
+      "stdin_text": "a\nc\nb\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "c\nb\na\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "reverse"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile; R resource controls",
+      "oracle": true
     }
   ]
 }

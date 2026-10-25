@@ -1,6 +1,6 @@
 # column
 
-Version **0.1.3**. See the [support record](../../docs/compatibility.md) for release evidence.
+Version **0.1.4**. See the [support record](../../docs/compatibility.md) for release evidence.
 
 Arrange input into columns or an aligned table:
 
@@ -29,9 +29,25 @@ Layout follows the GNU/Linux C locale: non-ASCII bytes are escaped as
 locale display widths, tree/JSON output and the full util-linux table
 grammar are not implemented. `--help` and `--version` are available.
 
+Input is read once into a temporary snapshot before layout; later file changes
+cannot change the second pass. The snapshot and its index require temporary
+filesystem write access. Storage is proportional to the displayed input plus
+16 bytes per retained record. Memory retains the longest record, table column
+widths and fixed I/O buffers, rather than all input rows or the complete output.
+Table and small-grid caches retain at most 1 MiB of record pages and 64 KiB of
+index pages. Wide grids select up to 256 pages per cache from the output column
+count, raising those limits to 16 MiB and 1 MiB respectively. Pages are allocated
+only as read. The snapshot uses two temporary files. A record containing
+non-ASCII bytes can expand to four display bytes per input byte. Temporary
+files are removed on normal completion, errors and observable cancellation; forced process
+termination cannot guarantee cleanup.
+An input error preserves already consumed records and continues with later
+files. A temporary-file or output failure stops formatting; output may already
+contain a prefix once the formatting pass has begun.
+
 ## Standalone metadata
 
-Standalone `--version` prints exactly `column 0.1.3` followed by one
+Standalone `--version` prints exactly `column 0.1.4` followed by one
 newline. Standalone `--help` starts with `Usage: column`, lists both
 metadata options, and ends with a newline. Both write to stdout, leave stdin
 unread, and exit with status 0. Exact-version publication and verification

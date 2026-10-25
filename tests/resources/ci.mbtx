@@ -1,0 +1,106 @@
+///|
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/async@0.22.5/shell",
+  "moonbitlang/core/env",
+}
+
+///|
+async fn main {
+  let args = @env.args()
+  guard args.length() == 3 && args[1] == "--image" else {
+    fail("Usage: ci.mbtx --image SEALED_IMAGE_ID")
+  }
+  let image = args[2]
+  let workspace = @fs.realpath(".")
+  let reports = workspace + "/test-reports/resources-linux"
+  @fs.mkdir(reports, recursive=true, allow_exist=false)
+  let prefix = reports + "/oracle"
+  @fs.mkdir(prefix)
+  defer @fs.rmdir(prefix, recursive=true)
+  {
+    let created = @shell.Cmd("docker", ["create", image]).output()
+    created.check()
+    let container = created.stdout().trim().to_owned()
+    defer @shell.Cmd(
+      "docker",
+      ["rm", container],
+      stdout=Inherit,
+      stderr=Inherit,
+    ).run()
+    @shell.Cmd(
+      "docker",
+      ["cp", container + ":/oracle/.", prefix],
+      stdout=Inherit,
+      stderr=Inherit,
+    ).run()
+  }
+  let located = @shell.Cmd("which", ["moonrun"]).output()
+  located.check()
+  let moonrun = @fs.realpath(located.stdout().trim())
+  let previous = @env.get_env_var("LD_LIBRARY_PATH").unwrap_or("")
+  let libraries = prefix +
+    "/lib:" +
+    prefix +
+    "/lib64" +
+    (if previous.is_empty() { "" } else { ":" + previous })
+  let metadata : Json = {
+    "image_id": image,
+    "exported_prefix": prefix,
+    "reference_scope": "Binaries copied from the sealed image execute on the Linux host with its dynamic loader and system libraries; resource observations are not sealed-container upstream parity",
+    "parity_scope": "The separate Native/Wasm oracle fixture steps retain sealed-container upstream comparisons",
+    "moonrun": moonrun,
+    "LD_LIBRARY_PATH": libraries,
+  }
+  @fs.write_file(reports + "/setup.json", metadata.stringify(indent=2) + "\n")
+  let common = [
+    "run",
+    workspace + "/tests/resources/run.mbtx",
+    "--",
+    "--wasm-root",
+    workspace + "/_build/wasm/release/build",
+    "--moonrun",
+    moonrun,
+    "--oracle-bin",
+    prefix + "/bin",
+  ]
+  let profiles : Array[(String, Array[String])] = [
+    ("records", ["--sizes", "8388608,67108864,536870912"]),
+    ("long", ["--sizes", "67108864", "--long-record", "true"]),
+    ("heldout", ["--sizes", "8388608", "--distribution", "heldout"]),
+    (
+      "kernel-rss-linux",
+      [
+        "--kernel-rss", "linux", "--commands", "rev,split,csplit,tac,column,sort,diff",
+        "--sizes", "8388608,67108864,536870912",
+      ],
+    ),
+  ]
+  let results : Array[Json] = []
+  let mut failures = 0
+  for (name, options) in profiles {
+    let status = @shell.Cmd(
+      "moon",
+      [..common, "--report-dir", reports + "/" + name, ..options],
+      cwd=workspace,
+      env=Map([("LD_LIBRARY_PATH", libraries)]),
+      stdout=Inherit,
+      stderr=Inherit,
+    ).status() catch {
+      error => {
+        @fs.write_file(reports + "/" + name + "-error.txt", error.to_string())
+        -999
+      }
+    }
+    results.push({ "profile": name, "status": status })
+    @fs.write_file(
+      reports + "/profiles.json",
+      results.to_json().stringify(indent=2) + "\n",
+    )
+    if status != 0 {
+      failures += 1
+    }
+  }
+  guard failures == 0 else { fail("resource profiles failed: \{failures}") }
+}

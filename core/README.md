@@ -18,6 +18,11 @@ Cp selects the same coordinate for reusable 64 KiB new-file copying. Mv also
 selects core 0.8.0, but moves entries with rename and has no copy-and-delete
 fallback.
 
+Version **0.8.1** updates the public command catalog for the R resource work:
+column, csplit and tac declare temporary-file writes, and sort lists its
+buffer-size, temporary-directory and batch-size options. Runtime APIs and
+command dependency coordinates remain unchanged.
+
 `gzipops.encode` accepts an optional `level` argument, defaulting to six, for
 the private pure MoonBit 32 KiB LZ and stored/fixed/dynamic Huffman encoder.
 Levels one through nine control search effort; existing callers retain the

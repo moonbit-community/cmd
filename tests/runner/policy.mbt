@@ -563,6 +563,41 @@ async fn check_runtime_policy(root : String, failures : Array[String]) -> Unit {
     "sort must report host temporary-write denial before emitting output (status=\{sort_spill.status}, stdout_bytes=\{sort_spill.stdout.length()}, stderr=\{sort_spill.stderr})",
     failures,
   )
+  let fragments = @fs.tmpdir(prefix="cli-resource-policy-")
+  defer @fs.rmdir(fragments, recursive=true)
+  for
+    (command, args) in [
+      ("column", ["-t"]),
+      ("csplit", ["-s", "-f", fragments + "/part-", "-", "2"]),
+      ("tac", []),
+    ] {
+    let spool = moon_run(
+      root,
+      "read-workspace-temp-env.json",
+      command,
+      args,
+      stdin=b"first\nsecond\n",
+    ) catch {
+      error => {
+        failures.push(
+          "\{command} temporary-write policy invocation failed: \{error}",
+        )
+        continue
+      }
+    }
+    record(
+      spool.status != 0 &&
+      spool.stdout.is_empty() &&
+      @testkit.contains_bytes(spool.stderr, "blocked file write"),
+      "\{command} must report host temporary-write denial before emitting output (status=\{spool.status}, stdout_bytes=\{spool.stdout.length()}, stderr=\{spool.stderr})",
+      failures,
+    )
+  }
+  record(
+    @fs.readdir(fragments).is_empty(),
+    "temporary-write denial must not create csplit fragments",
+    failures,
+  )
   expect_allowed(
     root,
     "uniq",

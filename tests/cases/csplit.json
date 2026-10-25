@@ -92,7 +92,8 @@
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
-        "-k"
+        "-k",
+        "keep-files"
       ],
       "expected_files": [
         {
@@ -186,7 +187,8 @@
         "-s",
         "-z",
         "-f",
-        "-n"
+        "-n",
+        "silent"
       ],
       "expected_files": [
         {
@@ -216,8 +218,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/csplit@0.2.0 metadata contract",
-      "expected_stdout_text": "Usage: csplit [OPTION]... FILE PATTERN...\nSplit FILE (- for stdin) at line numbers or basic regular expressions.\nPatterns: NUMBER, /REGEXP/[OFFSET], %REGEXP%[OFFSET], {N}, {*}\n\n  -f, --prefix=PREFIX      Use PREFIX instead of xx.\n  -n, --digits=NUMBER      Use at least NUMBER suffix digits (default 2).\n  -b, --suffix-format=FORMAT  Use one d/i/u/o/x/X conversion for suffixes.\n      --suppress-matched    Omit the offset-adjusted split boundary line.\n  -s, --silent             Suppress output byte counts.\n  -q, --quiet              Same as --silent.\n  -k, --keep-files         Keep created fragments after a split error.\n  -z, --elide-empty-files  Omit empty output fragments.\n      --help               display this help and exit\n      --version            display version and exit\n\nBRE matching includes backreferences, byte classes and word assertions.\nExisting output paths and locale-specific matching are unsupported.\nWindows output names ending in spaces or dots are rejected before input.\n",
+      "source_version": "workspace cli/csplit@0.2.1 metadata contract",
+      "expected_stdout_text": "Usage: csplit [OPTION]... FILE PATTERN...\nSplit FILE (- for stdin) at line numbers or basic regular expressions.\nPatterns: NUMBER, /REGEXP/[OFFSET], %REGEXP%[OFFSET], {N}, {*}\n\n  -f, --prefix=PREFIX      Use PREFIX instead of xx.\n  -n, --digits=NUMBER      Use at least NUMBER suffix digits (default 2).\n  -b, --suffix-format=FORMAT  Use one d/i/u/o/x/X conversion for suffixes.\n      --suppress-matched    Omit the offset-adjusted split boundary line.\n  -s, --silent             Suppress output byte counts.\n  -q, --quiet              Same as --silent.\n  -k, --keep-files         Keep created fragments after a split error.\n  -z, --elide-empty-files  Omit empty output fragments.\n      --help               display this help and exit\n      --version            display version and exit\n\nBRE matching includes backreferences, byte classes and word assertions.\nExisting output paths and locale-specific matching are unsupported.\nWindows output names ending in spaces or dots are rejected before input.\nInput is snapshotted with a disk index; temporary write access is required.\n",
       "expected_stderr_text": ""
     },
     {
@@ -235,8 +237,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/csplit@0.2.0 metadata contract",
-      "expected_stdout_text": "csplit 0.2.0\n",
+      "source_version": "workspace cli/csplit@0.2.1 metadata contract",
+      "expected_stdout_text": "csplit 0.2.1\n",
       "expected_stderr_text": ""
     },
     {
@@ -1874,6 +1876,42 @@
         "prefix"
       ],
       "source_version": "Windows ordinary-path exact-name boundary; reject before input instead of silently trimming the output name"
+    },
+    {
+      "id": "r2-csplit-quiet",
+      "command": "csplit",
+      "args": [
+        "--quiet",
+        "-",
+        "2"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "xx00",
+          "content_text": "a\n"
+        },
+        {
+          "path": "xx01",
+          "content_text": "b\n"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "quiet"
+      ],
+      "source_version": "GNU coreutils 9.11 C profile; R resource controls",
+      "oracle": true
     }
   ]
 }
