@@ -273,7 +273,7 @@ async fn snapshot_into(
           }
           let format = if @async.platform is MacOS {
             if dimension == "mode" {
-              "%Lp"
+              "%Op"
             } else {
               "%d:%i"
             }
@@ -290,7 +290,13 @@ async fn snapshot_into(
           guard result.status == 0 else {
             fail("host stat failed: \{dimension}")
           }
-          metadata[dimension] = @utf8.decode(result.stdout).trim().to_owned()
+          let observed = @utf8.decode(result.stdout).trim().to_owned()
+          metadata[dimension] = if @async.platform is MacOS &&
+            dimension == "mode" {
+            (@string.parse_int(observed, base=8) & 0o7777).to_string(radix=8)
+          } else {
+            observed
+          }
         }
         "symlink-target" =>
           if kind == SymLink {
