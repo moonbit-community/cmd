@@ -35,5 +35,13 @@ The user requested a local documentation release without a PR or a new CI
 cycle. PR #55 was closed and its workflow was cancelled. Help and diagnostic
 strings are documentation corrections; command logic and dependencies are
 unchanged. The existing O-stage source validation and the local checks above
-are retained. Serial registry publication and exact-version MoonX functional
-acceptance are pending; their actual results will be recorded below.
+are retained. Serial registry publication completed for `cli/core@0.8.0` and
+76 new command versions, with status 0, `Server status: 200 OK`, and exact
+registry confirmation for every upload. Curl and wget retain `0.2.3`.
+Transient transport failures were retried only after confirming the coordinate
+was still absent. Exact-version MoonX functional acceptance is pending.
+
+`tests/release_runner/current/latest.json` records all 78 actual latest command
+coordinates for local acceptance. `current/published.json` remains the previous
+frozen cross-platform baseline; this local release does not create a new CI or
+historical archive workflow.

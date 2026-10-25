@@ -168,15 +168,19 @@ module and version before any release operation.
   Update the published manifest and release report with those results, then
   commit and push the documentation. Do not publish from a failing or
   unverified candidate.
-- Current baseline after the 2026-10-20 stage 0 release: core is 0.7.0.
-  There are 78 published commands: 39 at 0.2.1, five at 0.2.2, three at 0.2.3,
-  15 at 0.1.1, 15 at 0.1.2 and one at 0.1.3. Only curl, mv and wget moved to
-  0.2.3; the other 75 commands retain their prior coordinates and unpublished
-  workspace candidates. `timeout` remains local-only. Exact coordinates are
-  in tests/release_runner/current/published.json; source, uploads and published
-  acceptance are recorded in docs/reports/2026-10-20-stage0-release/README.md.
-  Earlier coordinates remain
-  frozen under tests/release_runner/historical/, including the 2026-10-11 repair.
+- Current registry baseline after the 2026-10-25 command release: core is 0.8.0.
+  There are 78 published commands: 38 at 0.2.2, seven at 0.2.3, five at 0.2.0,
+  14 at 0.1.3, 11 at 0.1.2, and one each at 0.1.4, 0.2.4 and 0.3.0.
+  Core and 76 command packages were uploaded; curl and wget retain 0.2.3.
+  Dependency declarations remain unchanged, including mixed core 0.7.0/0.8.0
+  coordinates. `timeout` remains local-only. Exact registry coordinates and
+  local-acceptance cases are in tests/release_runner/current/latest.json;
+  full local MoonX acceptance is pending. Publication and its local validation
+  scope are recorded in docs/reports/2026-10-25-command-release.md. This release
+  does not establish new cross-platform or final performance acceptance.
+  current/published.json retains the previous frozen baseline; earlier
+  coordinates remain under tests/release_runner/historical/, including stage 0
+  and the 2026-10-11 repair.
   Update this baseline whenever a later release changes it.
 
 ### Mandatory pure MoonBit boundary
