@@ -4,15 +4,16 @@
 It shares cases, fixtures, process capture, byte assertions, observations and
 report writing with the workspace runner through `testkit`.
 
-The 2026-10-25 release uses `current/latest.json` as an ordinary published
+The 2026-10-25 R release uses `current/latest.json` as an ordinary published
 manifest containing exact registry versions and the current local acceptance
-cases. Core 0.8.0 and 76 command packages have been uploaded; curl and wget
-retain 0.2.3. Local MoonX acceptance covered all 78 latest commands: the
-2,127-case run recorded 1,868 semantic passes, 186 availability passes,
-51 explicit boundary results, 22 platform skips and zero failures. Ten
+cases. Core 0.8.1 and seven changed command packages have been uploaded;
+the other 71 command versions are unchanged. Local MoonX acceptance covered
+all 78 latest commands: the 2,135-case run recorded 1,875 semantic passes,
+186 availability passes, 52 explicit boundary results, 22 platform skips
+and zero failures. Ten
 supplemental functional checks for find, test and yes also passed, so all 78
 commands have functional checks beyond metadata/availability. Their results
-are in `test-reports/moonx-latest-all-20261025/functional-extra.json`.
+are in `test-reports/moonx-r-latest-all-20261025/functional-extra.json`.
 Dependency declarations remain unchanged. Run the local consumer suite with:
 
 ```sh
@@ -24,7 +25,7 @@ MOON_HOME="$HOME/.moon-accounts/cli" moon run --target native tests/release_runn
 `current/published.json` remains the previous frozen baseline. This local
 release does not replace it through the archive/freezing workflow described
 below. Publication and the observed acceptance scope are recorded in the
-[release report](../../docs/reports/2026-10-25-command-release.md); no new
+[release report](../../docs/reports/2026-10-25-r-release.md); no new
 cross-platform or formal performance acceptance is claimed.
 
 Validate the retained preparation manifest against local package versions:

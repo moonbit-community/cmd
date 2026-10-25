@@ -168,18 +168,19 @@ module and version before any release operation.
   Update the published manifest and release report with those results, then
   commit and push the documentation. Do not publish from a failing or
   unverified candidate.
-- Current registry baseline after the 2026-10-25 command release: core is 0.8.0.
-  There are 78 published commands: 38 at 0.2.2, seven at 0.2.3, five at 0.2.0,
-  14 at 0.1.3, 11 at 0.1.2, and one each at 0.1.4, 0.2.4 and 0.3.0.
-  Core and 76 command packages were uploaded; curl and wget retain 0.2.3.
+- Current registry baseline after the 2026-10-25 R release: core is 0.8.1.
+  There are 78 published commands: 37 at 0.2.2, eight at 0.2.3, three at 0.2.0,
+  two at 0.2.1, 12 at 0.1.3, ten at 0.1.2, four at 0.1.4, and one each at
+  0.2.4 and 0.3.0. Core and seven changed command packages were uploaded;
+  the other 71 command versions are unchanged.
   Dependency declarations remain unchanged, including mixed core 0.7.0/0.8.0
   coordinates. `timeout` remains local-only. Exact registry coordinates and
   local-acceptance cases are in tests/release_runner/current/latest.json;
   local MoonX acceptance covers all 78 commands with zero failures. The
-  2,127-case run retains 51 explicit boundary results and 22 platform skips;
+  2,135-case run retains 52 explicit boundary results and 22 platform skips;
   ten supplemental find/test/yes functional checks also passed.
   Publication and its local validation
-  scope are recorded in docs/reports/2026-10-25-command-release.md. This release
+  scope are recorded in docs/reports/2026-10-25-r-release.md. This release
   does not establish new cross-platform or final performance acceptance.
   current/published.json retains the previous frozen baseline; earlier
   coordinates remain under tests/release_runner/historical/, including stage 0
