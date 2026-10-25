@@ -11,7 +11,7 @@ output, malformed-record warnings, strict parsing, and ignored missing files.
 `-b` emits the binary `*` marker and `-t` the text-space marker; the last one
 wins. With `--ignore-missing`, at least one listed file must still be verified.
 
-The unpublished workspace candidate uses the shared incremental checksum
+The command uses the shared incremental checksum
 engine. `--tag` writes BSD tagged records; verification accepts BSD/OpenSSL
 tagged records, GNU standard records and consistently BSD-reversed records.
 Ordinary output escapes backslash, LF and CR in filenames. `-z` disables

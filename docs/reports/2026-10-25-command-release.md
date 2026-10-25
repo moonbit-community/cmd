@@ -31,7 +31,9 @@ All-target strict checking and release builds passed locally. The metadata
 comparison passed all 237 Native, Wasm and backend-pair rows for 79 commands.
 The full candidate validates 78 packages and 2127 selected cases.
 
-Source CI, serial registry publication, and exact-version MoonX functional
-acceptance are pending. This preparation is not a publication or acceptance
-claim. Final results and any observed limitations will be recorded here after
-execution.
+The user requested a local documentation release without a PR or a new CI
+cycle. PR #55 was closed and its workflow was cancelled. Help and diagnostic
+strings are documentation corrections; command logic and dependencies are
+unchanged. The existing O-stage source validation and the local checks above
+are retained. Serial registry publication and exact-version MoonX functional
+acceptance are pending; their actual results will be recorded below.

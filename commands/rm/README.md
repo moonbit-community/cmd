@@ -16,7 +16,7 @@ any failure. File access authorization belongs to the caller or host. Accepting
 `--no-preserve-root` does not establish a tested root-deletion contract; that
 destructive operation is not part of the validation fixtures.
 
-The unpublished workspace candidate adds `-i` and bare
+The command supports `-i` and bare
 `--interactive`/`--interactive=always`, reading one response line from stdin
 after each prompt on stderr. An affirmative starts with y/Y; leading spaces
 are not trimmed, EOF declines, and a final unterminated response is accepted.

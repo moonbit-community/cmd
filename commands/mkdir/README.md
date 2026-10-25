@@ -11,7 +11,7 @@ Without `-m`, new directories use `0777 & ~umask`. With `-p -m MODE`, only the
 requested leaf receives MODE; newly created parents use the default mode.
 Existing directories accepted by `-p` keep their permissions. Numeric `-m`
 is applied after creation so the requested leaf mode is not reduced by umask.
-The unpublished workspace candidate adds symbolic modes evaluated from 0777:
+The command supports symbolic modes evaluated from 0777:
 explicit u/g/o/a classes, `+/-/=`, rwx/X, setuid/setgid/sticky bits, sequential
 copied classes and comma clauses. X applies because the target is a directory.
 Sticky modes follow GNU new-directory ordering: `+t` yields `01755`,
