@@ -85,7 +85,11 @@ POSIX mode. No unsafe `-u` mode is added.
 
 Mkdir compiles symbolic clauses and evaluates omitted-who rules across every
 possible 0777 umask. Results independent of the unknown mask are supported;
-truly mask-dependent results reject before creation. Unknown parent raw mode
+truly mask-dependent results reject before creation. GNU's affected-bit mask
+also controls special-bit finalization for new leaves: sticky-only `+t` yields
+1755, `a=rwx,+t` yields 1777 and `+t,a=rwx` yields 0777. Fixed GNU 9.11 Linux
+tmpfs observations and Native/Wasm regressions cover these ordered clauses.
+Unknown parent raw mode
 and GNU's temporary owner-permission adjustments remain narrow limits, as do
 unavailable Windows mode setters. An existing Windows `-p` no-op is supported.
 Lift only the relevant limit after public umask/raw-mode/setter operations and

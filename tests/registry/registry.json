@@ -96404,6 +96404,123 @@
         "status"
       ],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:o10-mkdir-symbolic-sticky-only",
+      "command": "mkdir",
+      "owner": "commands/mkdir",
+      "surface": [
+        "options",
+        "operands",
+        "stdin",
+        "filesystem"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/mkdir.json",
+      "case_id": "o10-mkdir-symbolic-sticky-only",
+      "aliases": [],
+      "coverage": [
+        "mode"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [
+        "posix"
+      ],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-type",
+        "file-mode"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o10-mkdir-symbolic-sticky-after-all",
+      "command": "mkdir",
+      "owner": "commands/mkdir",
+      "surface": [
+        "options",
+        "operands",
+        "stdin",
+        "filesystem"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/mkdir.json",
+      "case_id": "o10-mkdir-symbolic-sticky-after-all",
+      "aliases": [],
+      "coverage": [
+        "mode"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [
+        "posix"
+      ],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-type",
+        "file-mode"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:o10-mkdir-symbolic-sticky-before-all",
+      "command": "mkdir",
+      "owner": "commands/mkdir",
+      "surface": [
+        "options",
+        "operands",
+        "stdin",
+        "filesystem"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/mkdir.json",
+      "case_id": "o10-mkdir-symbolic-sticky-before-all",
+      "aliases": [],
+      "coverage": [
+        "mode"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [
+        "posix"
+      ],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-type",
+        "file-mode"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
     }
   ],
   "release_commands": [
@@ -97773,27 +97890,30 @@
       "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
-        "compat-catalog-line-158",
-        "compat-text-mkdir-partial-order",
-        "mkdir-parent-leaf-mode",
-        "o10-mkdir-existing-symlink-directory",
-        "o10-mkdir-omitted-recovered",
-        "o10-mkdir-symbolic-X-directory",
-        "o10-mkdir-symbolic-copy-sequential",
-        "o10-mkdir-symbolic-existing-unchanged",
-        "o10-mkdir-symbolic-explicit",
-        "o10-mkdir-symbolic-invalid-before-operands",
-        "o10-mkdir-symbolic-omitted-equals",
-        "o10-mkdir-symbolic-omitted-minus",
-        "o10-mkdir-symbolic-omitted-plus",
-        "o10-mkdir-symbolic-parent-leaf",
-        "o10-mkdir-symbolic-special",
-        "o10-mkdir-verbose-parents",
-        "o10-mkdir-windows-existing-symbolic-noop",
-        "o10-mkdir-windows-symbolic-boundary",
         "phase4-mkdir-parents",
+        "mkdir-parent-leaf-mode",
+        "compat-catalog-line-158",
+        "o10-mkdir-verbose-parents",
+        "o10-mkdir-symbolic-special",
+        "o10-mkdir-omitted-recovered",
+        "o10-mkdir-symbolic-explicit",
         "release-metadata-mkdir-help",
-        "release-metadata-mkdir-version"
+        "o10-mkdir-symbolic-X-directory",
+        "o10-mkdir-symbolic-parent-leaf",
+        "o10-mkdir-symbolic-sticky-only",
+        "release-metadata-mkdir-version",
+        "compat-text-mkdir-partial-order",
+        "o10-mkdir-symbolic-omitted-plus",
+        "o10-mkdir-symbolic-omitted-minus",
+        "o10-mkdir-symbolic-omitted-equals",
+        "o10-mkdir-symbolic-copy-sequential",
+        "o10-mkdir-symbolic-sticky-after-all",
+        "o10-mkdir-windows-symbolic-boundary",
+        "o10-mkdir-existing-symlink-directory",
+        "o10-mkdir-symbolic-sticky-before-all",
+        "o10-mkdir-symbolic-existing-unchanged",
+        "o10-mkdir-windows-existing-symbolic-noop",
+        "o10-mkdir-symbolic-invalid-before-operands"
       ]
     },
     {

@@ -13,11 +13,25 @@ test "mkdir symbolic evaluation follows directory X copied classes and operation
     ] {
     assert_eq(adjust_mode(compile_mode(mode), mask), expected)
   }
+  for mask in [0o022, 0o077, 0o000] {
+    for
+      (mode, expected) in [
+        ("+w", 0o777),
+        ("+t", 0o1755),
+        ("a=rwx,+t", 0o1777),
+        ("+t,a=rwx", 0o777),
+      ] {
+      assert_eq(adjust_mode(compile_mode(mode), mask), expected)
+    }
+  }
 }
 
 ///|
 test "mkdir rejects only symbolic results that require an unknown umask" {
   assert_eq(symbolic_mode("+w"), 0o777)
+  assert_eq(symbolic_mode("+t"), 0o1755)
+  assert_eq(symbolic_mode("a=rwx,+t"), 0o1777)
+  assert_eq(symbolic_mode("+t,a=rwx"), 0o777)
   assert_eq(symbolic_mode("="), 0)
   assert_eq(symbolic_mode("=r,a=rx"), 0o555)
   for mode in ["=rx", "-w", "+r-w"] {

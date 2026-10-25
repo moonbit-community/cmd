@@ -94,8 +94,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/mkdir@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\nMODE accepts octal or symbolic permissions (rwxXst, copied classes and comma clauses).\nOmitted-who expressions requiring the process umask are unavailable.\n",
+      "source_version": "Current workspace cli/mkdir standalone help contract",
+      "expected_stdout_text": "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\nMODE accepts octal or symbolic permissions (rwxXst, copied classes and comma clauses).\nSticky-only +t yields 1755; a=rwx,+t yields 1777.\nOmitted-who expressions requiring the process umask are unavailable.\n",
       "expected_stderr_text": ""
     },
     {
@@ -703,6 +703,123 @@
         "mode",
         "parents"
       ]
+    },
+    {
+      "id": "o10-mkdir-symbolic-sticky-only",
+      "command": "mkdir",
+      "args": [
+        "-m",
+        "+t",
+        "leaf"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "leaf",
+          "kind": "directory",
+          "mode": 1005
+        }
+      ],
+      "coverage": [
+        "mode"
+      ],
+      "observe": [
+        "mode"
+      ],
+      "source_version": "GNU coreutils 9.11 Linux tmpfs development observations; fixed CI oracle still required. Sticky-only creation differs from explicit-all clause ordering."
+    },
+    {
+      "id": "o10-mkdir-symbolic-sticky-after-all",
+      "command": "mkdir",
+      "args": [
+        "-m",
+        "a=rwx,+t",
+        "leaf"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "leaf",
+          "kind": "directory",
+          "mode": 1023
+        }
+      ],
+      "coverage": [
+        "mode"
+      ],
+      "observe": [
+        "mode"
+      ],
+      "source_version": "GNU coreutils 9.11 Linux tmpfs development observations; fixed CI oracle still required. Sticky-only creation differs from explicit-all clause ordering."
+    },
+    {
+      "id": "o10-mkdir-symbolic-sticky-before-all",
+      "command": "mkdir",
+      "args": [
+        "-m",
+        "+t,a=rwx",
+        "leaf"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "leaf",
+          "kind": "directory",
+          "mode": 511
+        }
+      ],
+      "coverage": [
+        "mode"
+      ],
+      "observe": [
+        "mode"
+      ],
+      "source_version": "GNU coreutils 9.11 Linux tmpfs development observations; fixed CI oracle still required. Sticky-only creation differs from explicit-all clause ordering."
     }
   ]
 }

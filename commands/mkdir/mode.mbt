@@ -85,6 +85,7 @@ fn compile_mode(text : String) -> Array[ModeChange] raise ModeError {
 ///|
 fn adjust_mode(changes : ArrayView[ModeChange], mask : Int32) -> Int32 {
   let mut mode = 0o777
+  let mut mode_bits = 0
   for change in changes {
     let omit = 0o6000 & change.mentioned.lnot()
     let value = if change.copy is Some(shift) {
@@ -96,14 +97,35 @@ fn adjust_mode(changes : ArrayView[ModeChange], mask : Int32) -> Int32 {
     let affected = if change.who == 0 { mask.lnot() } else { change.who }
     let value = value & affected & omit.lnot()
     mode = match change.op {
-      '=' =>
-        (mode & ((if change.who == 0 { 0 } else { change.who.lnot() }) | omit)) |
-        value
-      '+' => mode | value
-      _ => mode & value.lnot()
+      '=' => {
+        let preserved = (if change.who == 0 { 0 } else { change.who.lnot() }) |
+          omit
+        mode_bits = mode_bits | (0o7777 & preserved.lnot())
+        (mode & preserved) | value
+      }
+      '+' => {
+        mode_bits = mode_bits | value
+        mode | value
+      }
+      _ => {
+        mode_bits = mode_bits | value
+        mode & value.lnot()
+      }
     }
   }
-  mode & 0o7777
+  let mode = mode & 0o7777
+  // GNU creates special-mode directories without group/other write access,
+  // then applies chmod only when a requested bit differs from the new inode.
+  let created = if ((mode_bits & 0o6000) | (mode & 0o1000)) != 0 {
+    mode & (0o6022).lnot()
+  } else {
+    mode
+  }
+  if ((created ^ mode) & mode_bits) != 0 {
+    mode
+  } else {
+    created
+  }
 }
 
 ///|

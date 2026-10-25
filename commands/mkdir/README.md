@@ -14,6 +14,8 @@ is applied after creation so the requested leaf mode is not reduced by umask.
 The unpublished workspace candidate adds symbolic modes evaluated from 0777:
 explicit u/g/o/a classes, `+/-/=`, rwx/X, setuid/setgid/sticky bits, sequential
 copied classes and comma clauses. X applies because the target is a directory.
+Sticky modes follow GNU new-directory ordering: `+t` yields `01755`,
+`a=rwx,+t` yields `01777`, and `+t,a=rwx` yields `0777`.
 Omitted-who expressions are accepted when their final result is provably
 independent of all POSIX umasks, including `+w` and later explicit overrides.
 Expressions whose final value requires the unavailable process umask fail
