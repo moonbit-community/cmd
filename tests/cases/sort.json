@@ -2699,6 +2699,14 @@
         {
           "path": "tmp-b",
           "kind": "directory"
+        },
+        {
+          "path": "tmp-a/keep",
+          "content_text": "KEEP A\n"
+        },
+        {
+          "path": "tmp-b/keep",
+          "content_text": "KEEP B\n"
         }
       ],
       "environment": {
@@ -2719,6 +2727,16 @@
           "path": "tmp-b",
           "kind": "directory",
           "exists": true
+        },
+        {
+          "path": "tmp-a/keep",
+          "kind": "file",
+          "content_text": "KEEP A\n"
+        },
+        {
+          "path": "tmp-b/keep",
+          "kind": "file",
+          "content_text": "KEEP B\n"
         }
       ],
       "normalizations": [],
@@ -2748,6 +2766,10 @@
         {
           "path": "--check=quiet",
           "kind": "directory"
+        },
+        {
+          "path": "--check=quiet/keep",
+          "content_text": "KEEP\n"
         }
       ],
       "environment": {
@@ -2763,6 +2785,11 @@
           "path": "--check=quiet",
           "kind": "directory",
           "exists": true
+        },
+        {
+          "path": "--check=quiet/keep",
+          "kind": "file",
+          "content_text": "KEEP\n"
         }
       ],
       "normalizations": [],
@@ -2779,10 +2806,16 @@
       "id": "r3-sort-batch-minimum",
       "command": "sort",
       "args": [
-        "--batch-size=1"
+        "--batch-size=1",
+        "input"
       ],
-      "stdin_text": "unread\n",
-      "files": [],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "unread\n"
+        }
+      ],
       "environment": {
         "LC_ALL": "C",
         "LANG": "C",
@@ -2791,7 +2824,13 @@
       "expected_status": 2,
       "expected_stdout_text": "",
       "expected_stderr_text": "sort: invalid --batch-size argument '1'\nsort: minimum --batch-size argument is '2'\n",
-      "expected_files": [],
+      "expected_files": [
+        {
+          "path": "input",
+          "kind": "file",
+          "content_text": "unread\n"
+        }
+      ],
       "normalizations": [],
       "comparison": "contract",
       "coverage": [
@@ -2861,6 +2900,14 @@
         {
           "path": "tmp-b",
           "kind": "directory"
+        },
+        {
+          "path": "tmp-a/keep",
+          "content_text": "KEEP A\n"
+        },
+        {
+          "path": "tmp-b/keep",
+          "content_text": "KEEP B\n"
         }
       ],
       "environment": {
@@ -2881,6 +2928,16 @@
           "path": "tmp-b",
           "kind": "directory",
           "exists": true
+        },
+        {
+          "path": "tmp-a/keep",
+          "kind": "file",
+          "content_text": "KEEP A\n"
+        },
+        {
+          "path": "tmp-b/keep",
+          "kind": "file",
+          "content_text": "KEEP B\n"
         }
       ],
       "normalizations": [],
@@ -2919,7 +2976,13 @@
       "expected_status": 0,
       "expected_stdout_text": "alpha\nalpha\nzeta\n\nbeta\n",
       "expected_stderr_text": "",
-      "expected_files": [],
+      "expected_files": [
+        {
+          "path": "seed16",
+          "kind": "file",
+          "content_text": "0123456789abcdef"
+        }
+      ],
       "normalizations": [],
       "comparison": "contract",
       "coverage": [
@@ -2935,10 +2998,16 @@
       "id": "r3-sort-reverse",
       "command": "sort",
       "args": [
-        "--reverse"
+        "--reverse",
+        "input"
       ],
-      "stdin_text": "a\nc\nb\n",
-      "files": [],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "a\nc\nb\n"
+        }
+      ],
       "environment": {
         "LC_ALL": "C",
         "LANG": "C",
@@ -2947,7 +3016,13 @@
       "expected_status": 0,
       "expected_stdout_text": "c\nb\na\n",
       "expected_stderr_text": "",
-      "expected_files": [],
+      "expected_files": [
+        {
+          "path": "input",
+          "kind": "file",
+          "content_text": "a\nc\nb\n"
+        }
+      ],
       "normalizations": [],
       "comparison": "contract",
       "coverage": [
