@@ -33,6 +33,7 @@ both directions at each fuzz tier and automatically selects a detected reverse,
 including a create/delete whose expected existence is reversed. It reports the
 choice without reading confirmation from patch stdin. Without `-p`, only the
 basename is retained; unsafe traversal paths after stripping are rejected.
+`--no-backup-if-mismatch` is accepted; this profile does not create backups.
 
 Creating a file from `/dev/null` and deleting a file to `/dev/null` are
 supported when the result is unambiguous. Updating an existing pathname is
@@ -50,8 +51,9 @@ ranges account for earlier successful changes. New rejects default to
 `<output>.rej` (`-.rej` with `-o -`). `-r/--reject-file=FILE` selects one new
 reject file shared by the invocation, and `-r -` discards reject data. Reject
 files are exclusively created and remain open while appending this invocation's
-later rejects. Existing reject destinations are refused before target writes;
-they are never truncated or followed as a replacement workaround.
+later rejects. For each file patch, an existing reject destination is refused
+before that file's target writes; existing rejects are never truncated or
+followed as a replacement workaround.
 
 A partially applied deletion that would rewrite remaining existing content
 has the same mode-preservation boundary as an ordinary existing-file update.

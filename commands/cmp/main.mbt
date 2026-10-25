@@ -269,7 +269,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: cmp [-b] [-s|-l] [-n LIMIT] [-i SKIP[:SKIP2]] FILE1 FILE2\n  -b, --print-bytes  print differing octal and visible byte values\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: cmp [-b] [-s|-l] [-n LIMIT] [-i SKIP[:SKIP2]] FILE1 [FILE2]\n  -b, --print-bytes  print differing octal and visible byte values\n      --help      display this help and exit\n      --version   display version and exit\n",
     )
     return
   }

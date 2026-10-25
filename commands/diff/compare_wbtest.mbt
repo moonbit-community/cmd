@@ -9,21 +9,83 @@ test "normal edits retain byte records and missing line terminators" {
 }
 
 ///|
+test "record views and comparison classes preserve arbitrary bytes" {
+  let data = b"\xff\x00A\r\n\x80b"
+  let records = lines(data)
+  assert_eq(records.length(), 2)
+  assert_eq(records[0].value, data[:4])
+  assert_eq(records[0].value.start_offset(), 0)
+  assert_eq(records[1].value.start_offset(), 5)
+  assert_eq(records[1].value.data(), data)
+  assert_eq(
+    comparison_key(records[1], compare_options()).value.start_offset(),
+    5,
+  )
+  assert_true(records[0].terminated)
+  assert_true(!records[1].terminated)
+  let options = compare_options(ignore_case=true, strip_trailing_cr=true)
+  assert_eq(comparison_key(records[0], options), Line::{
+    value: b"\xff\x00a"[:],
+    terminated: true,
+  })
+  assert_eq(
+    normal(edits(lines(b"\xff\x00a\n"), lines(b"\x80\x00b"))),
+    b"1c1\n< \xff\x00a\n---\n> \x80\x00b\n\\ No newline at end of file\n",
+  )
+  assert_eq(
+    normal(
+      edits(
+        lines(b"\xff A\r\nnext\n"),
+        lines(b"\xffa\nnew\n"),
+        options=compare_options(ignore_case=true, ignore_all_space=true),
+      ),
+    ),
+    b"2c2\n< next\n---\n> new\n",
+  )
+}
+
+///|
+test "comparison class hashes follow view bytes and normalized terminators" {
+  let classes : Map[Line, Int32] = Map([])
+  classes[lines(b"prefix\na\n")[1]] = 7
+  assert_eq(classes.get(lines(b"a\n")[0]), Some(7))
+  assert_eq(classes.get(lines(b"a")[0]), None)
+  assert_eq(
+    classes.get(
+      comparison_key(
+        lines(b"A\r\n")[0],
+        compare_options(ignore_case=true, strip_trailing_cr=true),
+      ),
+    ),
+    Some(7),
+  )
+  assert_eq(
+    classes.get(
+      comparison_key(
+        lines(b"a \t")[0],
+        compare_options(ignore_trailing_space=true),
+      ),
+    ),
+    Some(7),
+  )
+}
+
+///|
 test "edit scripts reconstruct both sides with minimum edit count" {
   for mask in 0..<256 {
     let a = Array::makei(4, i => Line::{
       value: if (mask & (1 << i)) == 0 {
-        "a"
+        b"a"[:]
       } else {
-        "b"
+        b"b"[:]
       },
       terminated: true,
     })
     let b = Array::makei(4, i => Line::{
       value: if (mask & (1 << (i + 4))) == 0 {
-        "a"
+        b"a"[:]
       } else {
-        "b"
+        b"b"[:]
       },
       terminated: true,
     })
@@ -74,16 +136,19 @@ test "comparison keys preserve the selected C whitespace and case rules" {
     ignore_all_space=true,
     strip_trailing_cr=true,
   )
-  assert_eq(comparison_key(lines(b"A B \r\n")[0], all), "ab\n")
+  assert_eq(comparison_key(lines(b"A B \r\n")[0], all), lines(b"ab\n")[0])
   let changes = compare_options(ignore_space_change=true)
-  assert_eq(comparison_key(lines(b" a \tb  \n")[0], changes), " a b\n")
+  assert_eq(
+    comparison_key(lines(b" a \tb  \n")[0], changes),
+    lines(b" a b\n")[0],
+  )
   assert_true(
     comparison_key(lines(b"ab\n")[0], changes) !=
     comparison_key(lines(b"a b\n")[0], changes),
   )
   let trailing = compare_options(ignore_trailing_space=true)
-  assert_eq(comparison_key(lines(b"a \t")[0], trailing), "a\n")
-  assert_eq(comparison_key(lines(b"a\n")[0], trailing), "a\n")
+  assert_eq(comparison_key(lines(b"a \t")[0], trailing), lines(b"a\n")[0])
+  assert_eq(comparison_key(lines(b"a\n")[0], trailing), lines(b"a\n")[0])
   assert_true(
     comparison_key(lines(b"A\n")[0], compare_options(ignore_case=true)) !=
     comparison_key(lines(b"a")[0], compare_options(ignore_case=true)),
@@ -131,7 +196,7 @@ test "trailing CR input stripping includes displayed lines but not unterminated 
     comparison_key(lines(b"a\r")[0], options) !=
     comparison_key(lines(b"a")[0], options),
   )
-  assert_eq(comparison_key(lines(b"a\r\r\n")[0], options), "a\r\n")
+  assert_eq(comparison_key(lines(b"a\r\r\n")[0], options), lines(b"a\r\n")[0])
   assert_eq(
     normal(
       edits(lines(b"a\r\nb\r\na\r\na\r\n"), lines(b"b\na\na\na\n"), options~),
@@ -170,11 +235,11 @@ test "repeated records choose GNU-compatible aligned change groups" {
 ///|
 test "large unmatched bodies and common edges need no edit trace" {
   let left = Array::makei(4096, i => Line::{
-    value: "left-\{i}",
+    value: @bytere.bytes("left-\{i}")[:],
     terminated: true,
   })
   let right = Array::makei(4096, i => Line::{
-    value: "right-\{i}",
+    value: @bytere.bytes("right-\{i}")[:],
     terminated: true,
   })
   let changes = edits(left, right)

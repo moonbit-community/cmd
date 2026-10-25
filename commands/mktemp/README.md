@@ -16,7 +16,7 @@ collisions are retried before failure; files request mode 0600 and directories
 0700, subject to the operating system umask. Owner metadata and Windows
 permission-bit semantics are not claimed.
 
-The unpublished workspace candidate parses the template once. The final run
+The command parses the template once. The final run
 of X characters must contain at least three, and may precede an inferred
 suffix (`name.XXX.log`). `--suffix=TEXT` instead requires the original template
 to end in X. A suffix cannot contain a directory separator. Generated names

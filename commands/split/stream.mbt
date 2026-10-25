@@ -18,6 +18,14 @@ async fn record_segments(
 }
 
 ///|
+fn byte_position(total : Int64, count : Int32) -> Int64 raise SplitError {
+  if total > 9223372036854775807L - count.to_int64() {
+    raise SplitError(1, "input exceeds signed 64-bit file offsets")
+  }
+  total + count.to_int64()
+}
+
+///|
 async fn copy_count(
   reader : &@io.Reader,
   count : Int64,
@@ -188,7 +196,7 @@ async fn split_chunks(
     } else if selected == index + 1 {
       @stdio.stdout.write(bytes)
     }
-    position += bytes.length().to_int64()
+    position = byte_position(position, bytes.length())
     if end_record {
       record_start = position
     }

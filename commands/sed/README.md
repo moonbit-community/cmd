@@ -6,9 +6,9 @@ published MoonX behavior; `moonx` examples use registry releases.
 
 Edit byte-oriented text streams with `p`, `d`, `q`, `=`, and substitution
 `s/REGEXP/REPLACEMENT/`. Hold-space commands `h/H/g/G/x`, labels and branches
-`:/b/t/T`, nested addressed groups, and `n/N/P/D/a/i/c` are available in the
-unpublished workspace candidate. Read stdin when no input file is given or an operand
-is `-`. Multiple input files share line numbering, address ranges and the
+`:/b/t/T`, nested addressed groups, and `n/N/P/D/a/i/c` are available.
+Read stdin when no input file is given or an operand is `-`. Multiple input
+files share line numbering, address ranges and the
 last-line address `$`.
 
 ```sh

@@ -3,42 +3,73 @@
 Date: 2026-09-05
 Updated: 2026-10-25
 
-Stage 0 publishes `cli/core@0.7.0`, `cli/curl@0.2.3`, `cli/mv@0.2.3`
-and `cli/wget@0.2.3` with async 0.22.5. The other 75 published commands
-retain their registry coordinates and frozen expectations; their workspace
-dependency upgrades remain unpublished candidates. `timeout` stays local-only.
-The [stage 0 release report](reports/2026-10-20-stage0-release/README.md)
-records the four verified uploads, exact main-source three-platform gates,
-local MoonX contracts, published platform acceptance and immutable oracle.
+The 2026-10-25 release uploaded `cli/core@0.8.0` and 76 command packages.
+Curl and wget retain `0.2.3`; dependency declarations remain unchanged,
+including the mixed core 0.7.0/0.8.0 coordinates. `timeout` stays local-only.
+The [release report](reports/2026-10-25-command-release.md) records the local
+documentation checks, serial uploads and local MoonX acceptance of all 78
+latest command coordinates. The 2,127-case run recorded 1,868 semantic passes,
+186 availability passes, 51 explicit boundary results, 22 platform skips and
+zero failures. Ten supplemental functional checks passed for find, test and
+yes, completing functional coverage beyond metadata/availability for all 78
+commands. This release does not claim new
+cross-platform acceptance or completion of formal performance work.
 
 There are **79 local command modules and 78 published commands**.
-Published command versions are **39 at 0.2.1, 5 at 0.2.2, 3 at 0.2.3,
-15 at 0.1.1, 15 at 0.1.2 and 1 at 0.1.3**. Shared `cli/core` is **0.7.0**
+Published command versions are **38 at 0.2.2, 7 at 0.2.3, 5 at 0.2.0,
+14 at 0.1.3, 11 at 0.1.2, and one each at 0.1.4, 0.2.4 and 0.3.0**.
+Shared `cli/core` is **0.8.0**
 and is not counted as a command.
 
-The [metadata release](reports/2026-10-15-metadata-release/README.md)
+The [stage 0 release](reports/2026-10-20-stage0-release/README.md),
+[metadata release](reports/2026-10-15-metadata-release/README.md)
 and [fidelity repair](reports/2026-10-11-fidelity-repair/README.md) remain
-historical evidence for their original coordinates. The retained commands
-keep their earlier dependency and acceptance profiles.
+historical evidence for their original coordinates. Their reports and frozen
+expectations remain unchanged.
 
 Authorization belongs to the caller/host. Catalog capabilities and the
 restricted label describe requirements, not command-local policy.
 Split is Restricted because `--filter` can launch external children; the
 current tier counts and command list are recorded in [ADR-0002](adr/0002-policy.md).
 
+## Workspace R resource candidates
+
+Column/rev/tac **0.1.4**, csplit **0.2.1**, split **0.1.3** and sort **0.2.3**
+are new source candidates after the release above. Dependency versions remain
+unchanged. They are not added to the published counts or accepted registry
+inventory until publication and exact-version consumer checks complete.
+
+| Command | Storage and output contract | Retained boundary |
+| --- | --- | --- |
+| rev | One input record and a record-sized reversed buffer; completed records stream before the next read. | The fixed Linux C profile rejects non-ASCII records; storage follows the longest record. |
+| split | Byte/line modes stream; total-dependent modes measure regular files or spool; line-byte mode spools its pending prefix. Round-robin ordinary files close between records. | Piece names/state are O(visited pieces); round-robin filters retain one pipe/task per visited piece and their children have separate costs. Existing outputs still refuse. |
+| csplit | One input snapshot plus a disk index of 64-bit line boundaries; two caches of at most 64 KiB, a current regex line and created-output paths. Input/spool failure precedes fragment creation. | Disk is input bytes plus eight bytes per boundary. Regex-line indices and numeric patterns/offsets retain signed 32-bit limits; `-k` controls retention of owned fragments after later failure. |
+| tac | Fixed separators use backward 64 KiB reads and bounded overlap; stdin/nonregular/regex input spools before output. | Regular files can change concurrently. Regex requires O(input) memory and signed 32-bit matcher indices until a paged/seekable shared matcher is implemented and verified; no fixed overlap truncates arbitrary spans. |
+| column | Two-pass layout uses one displayed-record snapshot and disk index; no reopened input or complete output string. First output follows the attempted input pass. | Disk is displayed bytes plus sixteen bytes per record; memory includes the longest record, table widths and fixed buffers. Table/small-grid caches use at most 1 MiB data pages and 64 KiB index pages; wide grids grow on demand to at most 256 pages per cache (16 MiB data plus 1 MiB index). Late read errors preserve complete records; output failure may retain a prefix. |
+| sort | `-S/--buffer-size`, repeated `-T/--temporary-directory` and `--batch-size` control accounted run storage and merge fan-in, capped at sixteen. The default remains 64 MiB. | The budget is not an RSS cap and allows an oversized record. `0%` selects the minimum budget; nonzero percentage sizes reject before input effects until a public physical-memory-capacity query and rounding/overflow regressions exist. |
+
+Column, csplit and tac's spooled modes require temporary write access, which the
+catalog declares alongside sort and split. Invocation-owned temporary paths are
+exclusive and removed on success, ordinary errors and runtime-observable
+cancellation; SIGKILL and machine failure cannot guarantee cleanup. Preserve
+actual byte/status/effect and resource observations separately from source
+contracts and final platform acceptance. The [streams ADR](adr/0003-streams.md#r-streaming-and-temporary-storage-contracts)
+records the choices, limitations and unlock conditions.
+
 ## Workspace O5-O13 option candidates
 
-These unpublished implementation candidates extend the selected O stage; the
-registered cases and package tests describe current source behavior. Private
-Native/Wasm comparisons are development evidence. Required PR checks,
-actual-main acceptance, formal direct-Wasm resources/performance and publication
-remain separate gates. Tree uses directory sizes only when its released public
+The selected O-stage implementations are now published; the registered cases
+and package tests describe current source behavior. Private Native/Wasm
+comparisons remain development evidence. Current local MoonX acceptance is
+recorded in the release report; formal direct-Wasm resources/performance
+remains pending. Tree uses directory
+sizes only when its released public
 backend actually returns them; no portable inode-size constant is assumed.
 
 | Family | Current source behavior | Retained boundary |
 | --- | --- | --- |
 | split | All selected byte/line/round-robin `-n` forms, `-C`, suffix starts/growth, elision and pure MoonBit `--filter` sessions with `$FILE`, stdin and observed child status. | Restricted: external filter children require host process authorization. Ordinary existing outputs still reject. GNU's undefined hexadecimal FROM=a-f indexing is excluded; the workspace uses documented base-16 arithmetic. |
-| csplit, rev, tac | Csplit integer suffix descriptors and suppress-matched offsets; ordered rev/tac operands and tac's GNU Emacs C-byte regex selection. Rev follows frozen Linux C ASCII/NUL handling and rejects non-ASCII records before writing them. | Existing csplit outputs and Windows generated names ending in spaces/dots reject. Whole-input/index resource work is separate from option correctness. |
+| csplit, rev, tac | Csplit integer suffix descriptors and suppress-matched offsets; ordered rev/tac operands and tac's GNU Emacs C-byte regex selection. Rev follows frozen Linux C ASCII/NUL handling and rejects non-ASCII records before writing them. | Existing csplit outputs and Windows generated names ending in spaces/dots reject. New R snapshots, reverse reads and the regex memory limit are recorded above, separately from published option acceptance. |
 | od, hexdump, cmp, strings | Frozen Linux numeric formats, strings/traditional od offsets, custom hexdump formats/color rules, cmp byte notation and strings separators. | Wide strings encodings remain rejected. Hexdump forward stdin discard is an explicit extension: util-linux 2.40 rejects seek on a pipe, while equivalent named-file display supplies the byte reference. |
 | xxd | Autoskip/style/group/case/EBCDIC, wide named-input seeks, forward stdin discard, reverse address adjustment and new named outputs with backpatching. | Existing output alias/mode/content preservation needs public file identity and descriptor operations; backward/end-relative stdin positioning needs a seekable public input. |
 | checksum commands | Cksum algorithm/length selection, modern tagged/base64/raw records and checking; consistent tags, escaping and manifest flags for the four sum commands. | The selected C byte profile does not claim Windows text translation. Public digest implementations and bounded incremental state remain shared. |
@@ -55,12 +86,12 @@ status, stderr and later file effects without claiming captured stdout.
 
 ## Workspace O2-O4 option candidates
 
-Unpublished sort **0.2.2**, seq **0.2.3**, printf **0.2.2**, fmt **0.1.2** and
+Sort **0.2.2**, seq **0.2.3**, printf **0.2.2**, fmt **0.1.2** and
 expand/unexpand **0.1.3** add the selected sorting, numeric-format, paragraph
 and tab-grid families. Shared numeric, C-byte shell quoting and tab-stop code
-selects core **0.8.0**. Current source and private Native/Wasm GNU development
-observations are separate from PR/main, formal performance and publication
-acceptance; all existing published coordinates above remain unchanged.
+selects core **0.8.0**. These coordinates are published. Current source and
+private Native/Wasm GNU observations remain separate from the completed local
+MoonX acceptance and pending formal performance work.
 
 Sort adds stable ties, bounded fan-in merge, ordinary output aliases and exact
 16-byte seeded GNU random ordering. Merge assumes ordered inputs. Existing
@@ -81,10 +112,11 @@ The small local Rosetta argv0 diagnostic difference is recorded in ADR-0008.
 
 ## Workspace O1 text-option candidates
 
-Unpublished cut, uniq, comm, join and wc **0.2.2** add the selected complement,
+Cut, uniq, comm, join and wc **0.2.2** add the selected complement,
 delimiter, duplicate-group, merge-header/field and total policies. Their current
 PR #52 and actual-main run 40110917627 passed all required platform and
-coverage checks. Publication remains separate. The exact contracts are in the current case
+coverage checks. These coordinates are now published; current local MoonX
+acceptance is recorded in the release report. The exact contracts are in the current case
 corpus and [streams ADR](adr/0003-streams.md).
 
 Wc -m now follows the selected C byte profile, including invalid UTF-8, and
@@ -95,7 +127,7 @@ limit, independently of total-only output and counter correctness.
 
 ## Workspace diff and patch candidates
 
-Unpublished diff and patch **0.2.0** select core **0.8.0**. Diff adds C-byte
+Published diff and patch **0.2.0** select core **0.8.0**. Diff adds C-byte
 case/whitespace/blank/CR comparisons and ordinary directory workflows with
 recursive, new-file and unidirectional-new-file modes. Comparison keys are
 separate from displayed records; `--strip-trailing-cr` also strips the CR from
@@ -116,34 +148,37 @@ boundaries in [ADR-0004](adr/0004-filesystem.md). GNU interaction and extended
 binary/rename/mode patch formats are outside this selected profile.
 
 Performance acceptance now measures direct release Wasm, as selected by the
-user on 2026-10-24. MoonX launcher cost is outside that gate. Existing published
-coordinates and their semantic acceptance remain unchanged.
+user on 2026-10-24. MoonX launcher cost is outside that gate. Publication does
+not establish formal performance acceptance. Local MoonX acceptance of the
+current coordinates is recorded in the release report.
 
 ## Workspace stream optimization candidates
 
-Unpublished core 0.8.0 uses a reusable 64 KiB line scanner. Comm, cut, head,
-join, jq, nl, paste, sed, sort, uniq and xxd now resolve that candidate so their
-published consumers can receive the scanner when a release is accepted.
+Core 0.8.0 uses a reusable 64 KiB line scanner. Comm, cut, head, join, jq, nl,
+paste, sed, sort, uniq and xxd select that published core coordinate.
 Cat reuses a 64 KiB copy buffer, wc computes selected counters, and strings
 streams accepted printable runs. Accepted options and byte profiles remain.
-Head batches output in 64 KiB blocks. Cp and mv select core 0.8.0 for new-file
-copying; mv advances to an unpublished 0.2.4 candidate because its dependency
-resolution changes. Existing filesystem capability boundaries remain.
+Head batches output in 64 KiB blocks. Cp selects core 0.8.0 for new-file
+copying; mv **0.2.4** also selects that coordinate. Mv uses rename and has no
+copy-and-delete fallback. Existing filesystem capability boundaries remain.
 Sort caches comparison transformations and uses stable disk runs under a
 64 MiB accounted run budget with at most sixteen merge inputs. This budget
 does not include all allocator/GC or oversized-record costs and is not an RSS cap.
 The [development observations](reports/2026-10-24-stream-hotpaths.md) record
-local correctness and timing separately from final resources, MoonX and release
-acceptance. Current published coordinates above remain frozen.
+local correctness and timing separately from formal resources/performance.
+The [current release report](reports/2026-10-25-command-release.md) records
+publication and completed local MoonX acceptance.
 
 ## Workspace matcher and sed candidates
 
-Core **0.8.0**, grep **0.3.0**, and sed/expr/csplit **0.2.0** are unpublished
-workspace candidates. The published coordinates and frozen expectations above
-remain unchanged. [PR #49](https://github.com/moonbit-community/cmd/pull/49)
+Core **0.8.0**, grep **0.3.0**, and sed/expr/csplit **0.2.0** are published.
+Their current local MoonX acceptance is recorded in the release report.
+[PR #49](https://github.com/moonbit-community/cmd/pull/49)
 merged the S implementation after all required platform and coverage checks.
 The [S implementation report](reports/2026-10-24-s-matcher-sed.md) records its
-development evidence. Performance and publication remain separate roadmap gates.
+development evidence. Publication is recorded in the
+[current release report](reports/2026-10-25-command-release.md); formal
+performance remains separate.
 
 The shared C-byte matcher parses BRE/ERE once, supports the tested byte classes,
 word assertions and pattern backreferences, and exposes span-only search
@@ -151,7 +186,7 @@ to grep. Csplit and sed regex addresses use a capture-free predicate; expr and
 sed substitutions request capture registers, following GNU's distinct calls.
 Grep's ASCII `-i` expands literals/classes before class negation,
 preserves assertion escapes and compares references without changing captured
-bytes. The O6 tac candidate adds its distinct GNU Emacs syntax; nl retains its
+bytes. Tac adds its distinct GNU Emacs syntax; nl retains its
 earlier matcher profile.
 Distinct capture/reference states can require exponential resources; no hidden
 matching-step cap is imposed. Non-C locale and complete GNU grammar remain open.
@@ -169,13 +204,15 @@ Independent local GNU comparisons match all 1,095 applicable cases; three oracle
 faults are retained separately. The earlier compile-time rejection is removed
 and the consumer cases exercise supported matching. These development results
 do not establish complete GNU/POSIX compatibility. PR #49 supplies platform,
-oracle and coverage evidence for its scope; publication and performance remain.
+oracle and coverage evidence for its scope; current local MoonX acceptance
+is recorded in the release report and formal performance remains pending.
 
 ## Accepted stage 0 subset: async 0.22.5
 
-[Roadmap stage 0](command-roadmap.md) is accepted for the four coordinates
-above. The following implementation decisions and acceptance contracts are
-covered by the linked release evidence. Broader API, host and command-feature
+[Roadmap stage 0](command-roadmap.md) was accepted for core 0.7.0 and
+curl/mv/wget 0.2.3. The following implementation decisions and acceptance
+contracts retain their original [stage 0 release evidence](reports/2026-10-20-stage0-release/README.md).
+Broader API, host and command-feature
 limits remain explicit; this does not establish full upstream compatibility.
 
 | Accepted area | Implemented decision | Acceptance contract / retained boundary |
@@ -229,13 +266,16 @@ coordinates, including the old metadata behavior, separately.
 
 The historical metadata release verified its original coordinates with
 core 0.6.0. Its 72 core-dependent published commands requested that version.
-The three stage 0 commands now request core 0.7.0; the other 69 retain core
-0.6.0. Six independent commands remain independent and `timeout` stays local-only. New exact help
-and version cases cover all 78 published commands. The local exact
+The current command modules retain their declared mixed core 0.7.0/0.8.0
+coordinates. Six independent commands remain independent and `timeout` stays
+local-only. Exact help and version cases cover all 78 published commands.
+The historical local exact
 `cli/sh@0.2.1` probe passes both metadata operations, fixing the reported
-`sh@0.2.0` limitation. Full published acceptance and the current frozen pointer
+`sh@0.2.0` limitation. That release's published acceptance and frozen pointer
 are recorded in the [release report](reports/2026-10-15-metadata-release/README.md).
-These closed-stdin captures prove status and output bytes; they do not measure
+Completed local latest-coordinate MoonX acceptance is recorded in the
+[2026-10-25 release report](reports/2026-10-25-command-release.md).
+Closed-stdin captures prove status and output bytes; they do not measure
 whether an open input stream remains unread.
 
 This is the single support record for the `cmd` repository. It replaces the
@@ -271,14 +311,19 @@ runner that starts exact `moonx cli/<command>@<version>` invocations through
 MoonBit's process API and compares them with the pinned Linux oracle. It never
 builds a command package during a case. The selected versions and case IDs for
 the current release are recorded in
-[`tests/release_runner/current/published.json`](../tests/release_runner/current/published.json).
+[`tests/release_runner/current/latest.json`](../tests/release_runner/current/latest.json).
+This ordinary manifest selects the actual registry coordinates for local
+acceptance, whose results are recorded in the release report.
+`current/published.json` retains the previous
+frozen baseline; it is not the latest-coordinate pointer for this release.
 The next release is prepared through
 [`tests/release_runner/current/candidate.json`](../tests/release_runner/current/candidate.json),
 generated from the reviewed registry and local module versions. Earlier
 published manifests are preserved under `tests/release_runner/historical/` and
 require `--historical-replay`. Their frozen corpus and registry sidecars retain
 the original source identity; replay does not recreate historical acceptance.
-`latest`, version ranges and implicit package resolution are forbidden.
+The literal MoonX `latest` selector, version ranges and implicit package
+resolution are forbidden; `latest.json` still lists exact versions.
 
 The release manifest must cover every published command (78 commands; the
 `timeout` package remains local-only), and every option/operand form promoted in
@@ -292,7 +337,7 @@ For every release, update the package version, command README, release
 manifest and case coverage together. Validate the generated candidate before
 publication. Exact candidate execution additionally requires verified registry
 receipts through `--verify-candidate`; preparation alone does not authorize
-publication. Use the current published pointer for subsequent consumer checks.
+publication. Use the exact current release manifest for subsequent consumer checks.
 The consumer driver inserts `--` after the exact MoonX coordinate so the
 command's own leading `--` is preserved.
 
@@ -301,7 +346,7 @@ MOON_HOME="$HOME/.moon-accounts/cli" moon run --target native tests/release_runn
   --manifest tests/release_runner/current/candidate.json --suite validate \
   --report-dir test-reports/release-candidate-validation
 MOON_HOME="$HOME/.moon-accounts/cli" moon run --target native tests/release_runner -- \
-  --manifest tests/release_runner/current/published.json --suite smoke \
+  --manifest tests/release_runner/current/latest.json --suite smoke \
   --report-dir test-reports/release-published-smoke
 ```
 
@@ -338,8 +383,17 @@ Linux oracle remains the strict filesystem authority.
 
 ## Inventory
 
-The workspace contains **79 command modules**, with **78 published** and local-only `timeout`. Published command versions are **39 at 0.2.1, 5 at 0.2.2, 3 at 0.2.3, 15 at 0.1.1, 15 at 0.1.2 and 1 at 0.1.3**. Shared `cli/core` is **0.7.0** and is not counted as a command.
-Exact coordinates and selected cases are in [the current manifest](../tests/release_runner/current/published.json) and [stage 0 release report](reports/2026-10-20-stage0-release/README.md). Earlier manifests remain historical records under `tests/release_runner/historical/`.
+The workspace contains **79 command modules**, with **78 published** and
+local-only `timeout`. Published command versions are **38 at 0.2.2, 7 at
+0.2.3, 5 at 0.2.0, 14 at 0.1.3, 11 at 0.1.2, and one each at 0.1.4,
+0.2.4 and 0.3.0**. Shared `cli/core` is **0.8.0** and is not counted as a command.
+Exact registry coordinates and selected local-acceptance cases are in
+[the latest manifest](../tests/release_runner/current/latest.json) and
+[release report](reports/2026-10-25-command-release.md). Local MoonX acceptance
+covers all 78 commands, with zero failures and the documented boundaries and
+platform skips. The previous frozen baseline stays in
+`current/published.json`; earlier manifests remain under
+`tests/release_runner/historical/`.
 
 `timeout` is intentionally local-only because portable
 `ProcessGroupCancellation` is unavailable:
@@ -363,7 +417,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | --- | --- | --- | --- |
 | `fold` | subset verified | Byte/control-column folding, width, space breaks, files/stdin | C-locale profile; verify UTF-8 separately |
 | `strings` | workspace candidate | Streaming 7/8-bit extraction, TAB, decimal/octal/hex offsets, -o/-t precedence, filenames/stdin markers and selected output separators | Wide/object/Unicode/locale modes remain; unsupported encodings reject before processing |
-| `column` | subset verified | Default grid/-x, -c/COLUMNS, -t/-s/-o, empty fields, multiple files, final LF and table ANSI widths | C-byte display profile; full util-linux grammar and automatic terminal width remain |
+| `column` | subset verified | Default grid/-x, -c/COLUMNS, -t/-s/-o, empty fields, multiple files, final LF and table ANSI widths; R candidate 0.1.4 uses one indexed disk snapshot | Temporary write access; C-byte display profile, full util-linux grammar and automatic terminal width remain |
 | `which` | subset verified | Direct/PATH executable access, -a/-s, POSIX separators, empty/duplicate PATH entries and Windows PATHEXT | Shell aliases/functions are not visible; platform permission results follow the public access API |
 | `date` | subset verified | UTC/TZ, fixed offsets, checked 64-bit TZif/POSIX future rules, ISO local input, fractional epochs, selected ISO/RFC/format directives | Ambiguous/nonexistent local times reject; relative dates/additional directives and clock setting remain; x/time offset bounds are documented |
 | `od`, `hexdump` | workspace candidate | Frozen Linux float formats, od strings/traditional offsets, custom hexdump format/color units, partial elements and final offsets | Non-C/native-ABI equivalence is unclaimed; hexdump forward stdin skip is a documented extension, not util-linux pipe parity |
@@ -371,7 +425,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `sed` | subset verified | BRE/ERE substitution, captures, addresses/ranges and ordered scripts; unpublished 0.2.0 adds hold/branch/group/multiline/text execution and repeated nullable captures | [Workspace candidate scope](#workspace-matcher-and-sed-candidates) retains project diagnostic formatting and script-controlled space growth; current-revision acceptance, in-place editing and complete GNU grammar remain open |
 | `diff` | workspace candidate | Normal/unified/context output, selected C-byte whitespace/case rules and recursive directory/new-file modes with 0/1/2 statuses | Distinct directory device numbers need public metadata; full GNU grammar and every ambiguous alignment choice remain outside the selected scope |
 | `patch` | workspace candidate | Unified/context offset/fuzz matching, reverse detection, partial success, dry run and new reject files | Existing target/named-output mode preservation and existing-reject replacement retain their public-API boundaries |
-| `split`, `csplit` | workspace candidate | Selected chunk/line-byte/filter layouts and suffix starts/elision; integer csplit suffix formats, suppress-matched boundaries, cleanup and keep-files | Existing outputs refuse until safe identity/truncation effects are established; remaining resources and [matcher limits](#workspace-matcher-and-sed-candidates) stay explicit |
+| `split`, `csplit` | workspace candidate | Selected chunk/line-byte/filter layouts and suffix starts/elision; csplit suffix/suppress-matched/keep-files and indexed input snapshots; R candidates 0.1.3 and 0.2.1 | Existing outputs refuse until safe identity/truncation effects are established; filter tasks, created-output paths, regex-line storage and [matcher limits](#workspace-matcher-and-sed-candidates) remain explicit |
 | `expr` | subset verified | Integer/string expressions and BRE matches; unpublished 0.2.0 uses the shared capture matcher | C-byte locale; [matcher limits](#workspace-matcher-and-sed-candidates) and remaining expression extensions are project work |
 | `fmt` | subset verified | Unpublished 0.1.2 adds crown/tagged margins and prefix matching to width/goal/spacing optimization | C-byte locale; paragraph resources, PR/main and non-C width acceptance remain separate |
 | `gzip`, `gunzip`, `zcat` | subset verified | Unpublished 0.1.2: pure 32 KiB LZ, 3–258 byte matches, stored/fixed/dynamic costs, `-1`–`-9` and aliases; Reader decoding with 64 KiB input/output, 32 KiB history and main/secondary tables preserves members, CRC and error prefixes | Published 0.1.1 keeps its frozen profile. [G1 development evidence](reports/2026-10-24-g1-codec.md) covers GNU roundtrips and selected size limits; 30 codec tests pass Native/Wasm. Published delivery/performance remain open. Bytes callers retain input; levels are ignored during decoding/testing. Named replacement and saved metadata remain boundaries. |
@@ -410,15 +464,15 @@ claiming success; `local-only` is absent from MoonX by design.
 | `pwd` | subset verified | `-L`, `-P`, invalid logical `PWD` fallback | Logical/physical result follows Wasm cwd contract |
 | `rm` | workspace candidate | Files/trees, explicit per-entry/once interaction, last force/interactive policy, iterative prompt order and root-preservation flags | Automatic terminal-dependent write-protection prompts need public terminal/raw-mode metadata; final dot/dot-dot operands reject |
 | `realpath` | workspace candidate | Component-wise default/-e/-m, strip/no-symlinks, relative-to/base, quiet/NUL and ordered operands | Only unresolved physical link targets need readlink; lexical missing paths do not |
-| `rev` | workspace candidate | Ordered ASCII/NUL line reversal under the fixed Linux C profile, invalid-record rejection, completed-prefix retention and later-file continuation | Non-ASCII records fail before output; multibyte locale character semantics remain outside the selected profile |
+| `rev` | workspace candidate | R candidate 0.1.4 streams one ASCII/NUL record at a time under the fixed Linux C profile, with invalid-record rejection, prefix retention and later-file continuation | Storage follows the longest record; non-ASCII records fail before output and multibyte locale semantics remain outside the profile |
 | `rmdir` | subset verified | empty removal, `-p`, `-I`, `-v`, failure ordering | Full path diagnostics not claimed |
 | `seq` | subset verified | Unpublished 0.2.3 adds single-conversion `-f`, frozen-ABI rounding and endpoint recovery; default +/- step, -w/-s and streaming output remain | Default path retains 4096-character/exponent/scale limits; formatted path uses the selected Extended80 range, not the host ABI; formal performance remains open |
 | `sh` | subset verified | Persistent `-i` line REPL and opaque Session; export/local variables, cwd, quoting/IFS/glob, arithmetic, substitution, read, bounded printf/test, functions and pipeline state isolation | No public isatty/raw/editing/recoverable SIGINT/job control/exec; remaining interpreter grammar restrictions are project work, listed in command README |
 | `sha256sum` | workspace candidate | File/stdin digest, tags, escaped/tagged manifests and quiet/status/strict/warn/ignore-missing verification | Windows text transformation remains outside the selected C byte profile |
 | `sleep` | subset verified | fractional values, `s/m/h/d`, multiple operands, help/version | Signal/cancellation parity not claimed |
-| `sort` | subset verified | Unpublished 0.2.2 adds stable/merge/output and exact seeded GNU random order to cached keys and bounded disk runs | Existing merge-output identity/error effects reject explicitly; non-C locale and formal RSS/performance remain open |
+| `sort` | subset verified | Published 0.2.2 has stable/merge/output and exact seeded GNU random order; R candidate 0.2.3 adds buffer-size, temporary-directory and batch-size controls | Percentage budgets require public physical-memory capacity; existing merge-output identity/error effects reject explicitly, and non-C locale and formal RSS/performance remain open |
 | `tail` | workspace candidate | Existing line/byte/origin/follow profile plus NUL records, final terminators and ordered file headers | `-f` follows open descriptors; stdin/pipes stop at EOF; `-F` path-follow and rotation reopen remain outside scope |
-| `tac` | workspace candidate | Ordered reverse records, fixed or GNU Emacs byte-regex separators, before mode and nullable/overlap selection | Non-C locale and formal remaining whole-input/index resources remain open |
+| `tac` | workspace candidate | R candidate 0.1.4 uses backward block reads for fixed separators and owned input spools, retaining before/regex/nullable/overlap selection | Regex retains O(input) memory with signed 32-bit matcher indices until a paged/seekable matcher exists; non-C locale remains open |
 | `tee` | workspace candidate | stdin to stdout/files, append, five explicit output-error/pipe policies and observed partial/later-sink effects | Default SIGPIPE termination needs a released restore/raise API and has an exact status-2 rejection scenario |
 | `test` | subset verified | string/integer, file kinds, access, regular-file size, `!`, `-a`, `-o`, and the exercised dangling-link path | `-N`/`-nt`/`-ot` and special-file positive fixtures need independent probes; complete unary/binary ambiguity not claimed |
 | `tree` | workspace candidate | C text/JSON/safe HTML, iterative filters/prune/filelimit, explicit colors, actual public sizes and postorder disk-usage reporting | Linux directory size is supported; observed macOS directory size rejects and Windows follows its API result. Selected symlinks/raw-mode colors need readlink/mode; HTML page differences are deliberate |

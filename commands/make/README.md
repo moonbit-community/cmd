@@ -9,6 +9,7 @@ to select a makefile, `-C DIR` to change its working directory, `-n/--just-print
 for dry runs, `-s/--silent` to suppress recipe echo, and `-B/--always-make` to
 force rebuilding. Target operands and `NAME=VALUE` command-line assignments
 are accepted.
+Short flags must be separate arguments, for example `-n -s` rather than `-ns`.
 
 `include`, `-include`, `sinclude`, command-line variable assignment,
 `ifeq`/`ifneq`/`ifdef`/`ifndef`, pattern/static-pattern dependencies, and

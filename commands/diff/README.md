@@ -1,6 +1,6 @@
 # diff
 
-Version **0.2.0** behavior is documented here. The
+Version **0.2.1** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
@@ -29,8 +29,10 @@ containing another substantive change retain the blank changes.
 
 `--strip-trailing-cr` removes one CR immediately before each LF, including
 displayed lines; a CR in an unterminated final line remains. Other comparison
-transformations preserve the original displayed bytes. Comparison keys are
-prepared once, separately from the input records.
+transformations preserve the original displayed bytes. Input records are byte
+views into the two buffered files. Comparison classes reuse those views when
+possible; only transformed keys allocate additional bytes. Rendering converts
+displayed records to text without converting either complete input file.
 
 Directory entries are processed in C byte order. Without `-r/--recursive`, common
 subdirectories are reported without descent. `-N/--new-file` compares missing
@@ -56,7 +58,8 @@ Timestamp headers honor `TZ`, `TZDIR`,
 data is an error. Unified output uses ISO timestamps and context output uses the
 traditional weekday/month/day format. Use `--label` for stdin or hosts without
 a timezone database. `--help` and `--version` are available.
-Both files and their comparison keys remain buffered. Edit reconstruction uses
+Both files, record indexes, distinct comparison keys and patch output remain
+buffered. Unchanged keys share input bytes. Edit reconstruction uses
 bidirectional Myers frontiers and an explicit partition stack with O(N+M)
 auxiliary space, excluding input/key bytes and the produced edit/output records.
 Records without a possible counterpart bypass the edit search. Equivalent-line
@@ -66,7 +69,7 @@ guarantee for high edit density.
 
 ## Standalone metadata
 
-Standalone `--version` prints exactly `diff 0.2.0` followed by one
+Standalone `--version` prints exactly `diff 0.2.1` followed by one
 newline. Standalone `--help` starts with `Usage: diff`, lists both
 metadata options, and ends with a newline. Both write to stdout, leave stdin
 unread, and exit with status 0. Exact-version publication and verification

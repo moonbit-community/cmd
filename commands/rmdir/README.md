@@ -8,6 +8,9 @@ Remove empty directories. Supports parent removal (`-p`), verbose output
 (`-v`), and ignoring failures caused only by non-empty directories
 (`-I`/`--ignore-fail-on-non-empty`). Failed operands do not stop later
 directories from being attempted.
+With `-p`, parent traversal stops before the current working directory, any of
+its ancestors, or a filesystem root; the explicitly named operand is still
+attempted.
 
 ## Standalone metadata
 

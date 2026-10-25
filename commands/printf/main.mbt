@@ -22,7 +22,7 @@ fn help_message() -> String {
     #|Escapes: \a \b \e \f \n \r \t \v \\ \" \' \NNN \0NNN \xHH \uHHHH
     #|\UHHHHHHHH, and \c (stop all output).
     #|
-    #|Conversions: %s %c %b %d %i %u %o %x %X %f %e %E %g %G %a %A %%, with the
+    #|Conversions: %s %c %b %d %i %u %o %x %X %f %F %e %E %g %G %a %A %%, with the
     #|flags -+ 0#, field width, and precision (both accept *).
     #|%b interprets escapes in its argument.
     #|Bare %q quotes an argument for a shell under the C-byte profile.

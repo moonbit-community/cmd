@@ -15,8 +15,9 @@ moonx cli/fmt -s -w 40 notes.txt
 ```
 
 `-w/--width` sets the maximum width, with a default of 75. The GNU `-WIDTH`
-shorthand is also supported. `-g/--goal` sets the preferred width; when used
-alone, the maximum becomes goal plus 10. `-s/--split-only` keeps input lines
+shorthand is also supported. `-g/--goal` sets the preferred width and must not
+exceed the selected width. With no explicit width, goals from 0 through 75 are
+accepted and the maximum becomes goal plus 10. `-s/--split-only` keeps input lines
 separate, and `-u/--uniform-spacing` uses one space between words and two
 after sentence endings. Widths range from 0 through 2500; a long word is
 emitted intact even when it exceeds the width. Columns use a C-locale byte

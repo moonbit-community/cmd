@@ -27,7 +27,7 @@ Redirect behavior distinguishes ordinary data from upload streams. An explicit
 `--data-*` body as curl does, while 307/308 and upload streams preserve their
 body. Cross-origin redirects remove authorization headers.
 
-The workspace candidate rejects raw ASCII space, TAB, CR, LF and DEL in an
+The command rejects raw ASCII space, TAB, CR, LF and DEL in an
 initial URL path or query with status 3 before connecting, leaving an existing
 output file untouched. Already percent-encoded bytes remain encoded. For a
 followed Location, a path space becomes `%20`, a query space becomes `+`, and
@@ -42,7 +42,7 @@ is bounded by the runtime millisecond range.
 Network authorization belongs to the caller or host. The command does not
 embed an allowlist.
 
-The workspace candidate returns status 18 for an incomplete fixed-length or
+The command returns status 18 for an incomplete fixed-length or
 chunked response body, 52 for an EOF before any response bytes, and 56 for other
 response-read failures. Connection
 setup failures retain status 7. Bytes already written to stdout remain visible;
@@ -130,9 +130,9 @@ These are command implementation gaps, not limitations of async's public
 cookie parser. Like curl, cookie-jar write failures do not change the transfer
 exit status (verbose-mode warnings are not implemented).
 
-Version 0.2.1 supports a custom `-H 'Cookie: ...'` together with
+The command supports a custom `-H 'Cookie: ...'` together with
 matching stored cookies as two separate request fields, with stored cookies
-first. This correction is included in 0.2.1; historical 0.2.0 is unchanged. Literal `-b` cookies
+first. This correction has been included since 0.2.1; historical 0.2.0 is unchanged. Literal `-b` cookies
 can be combined with stored cookies and preserve curl's ordering. Explicit
 custom Cookie headers and literal `-b` data are scoped to the initial origin,
 matching curl 8.22. Jar cookies are selected again for the

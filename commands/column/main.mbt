@@ -44,107 +44,29 @@ fn display_width(field : String, table~ : Bool = false) -> Int32 {
 }
 
 ///|
-fn table(
-  lines : Array[String],
-  separator : String?,
-  output_separator : String,
-) -> String {
-  let rows = lines.map(line => split_fields(line, separator))
-  let widths : Array[Int32] = []
-  for row in rows {
-    for index, field in row {
-      while widths.length() <= index {
-        widths.push(0)
-      }
-      widths[index] = widths[index].max(display_width(field, table=true))
+fn input_line(data : Bytes) -> String? {
+  let line = StringBuilder()
+  for byte in data {
+    if byte == 0 {
+      break
+    }
+    if byte >= 128 {
+      let hex = "0123456789abcdef"
+      line.write_string("\\x")
+      line.write_char(hex[byte.to_int() / 16].to_char().unwrap())
+      line.write_char(hex[byte.to_int() % 16].to_char().unwrap())
+    } else {
+      line.write_char(byte.to_int().to_char().unwrap())
     }
   }
-  let output = StringBuilder()
-  for row in rows {
-    for index in 0..<widths.length() {
-      let field = row.get(index).unwrap_or("")
-      output.write_string(field)
-      if index + 1 < widths.length() {
-        output.write_string(
-          " ".repeat(widths[index] - display_width(field, table=true)),
-        )
-        output.write_string(output_separator)
-      }
-    }
-    output.write_char('\n')
-  }
-  output.to_string()
-}
-
-///|
-fn columns(lines : Array[String], width : Int32, fill_rows : Bool) -> String {
-  if lines.is_empty() {
-    return ""
-  }
-  let longest = lines
+  let value = line.to_string()
+  if value
     .iter()
-    .fold(init=0, (n, line) => n.max(display_width(line)))
-  if longest >= width {
-    return lines.join("\n") + "\n"
+    .all(c => c is (' ' | '\t' | '\r' | '\n' | '\u000b' | '\u000c')) {
+    None
+  } else {
+    Some(value)
   }
-  let stride = (longest / 8 + 1) * 8
-  let count = (width / stride).max(1).min(lines.length())
-  let rows = (lines.length() + count - 1) / count
-  let output = StringBuilder()
-  for row in 0..<rows {
-    let mut position = 0
-    let mut end_column = stride
-    for col in 0..<count {
-      let index = if fill_rows { row * count + col } else { row + col * rows }
-      if index >= lines.length() {
-        break
-      }
-      if col > 0 {
-        while (position / 8 + 1) * 8 <= end_column {
-          output.write_char('\t')
-          position = (position / 8 + 1) * 8
-        }
-        end_column += stride
-      }
-      output.write_string(lines[index])
-      position += display_width(lines[index])
-    }
-    output.write_char('\n')
-  }
-  output.to_string()
-}
-
-///|
-fn input_lines(data : Bytes) -> Array[String] {
-  let result : Array[String] = []
-  let mut start = 0
-  for end in 0..<=data.length() {
-    if end < data.length() && data[end] != b'\n' {
-      continue
-    }
-    let line = StringBuilder()
-    for byte in data[start:end] {
-      if byte == 0 {
-        break
-      }
-      if byte >= 128 {
-        let hex = "0123456789abcdef"
-        line.write_string("\\x")
-        line.write_char(hex[byte.to_int() / 16].to_char().unwrap())
-        line.write_char(hex[byte.to_int() % 16].to_char().unwrap())
-      } else {
-        line.write_char(byte.to_int().to_char().unwrap())
-      }
-    }
-    let value = line.to_string()
-    if !value
-      .iter()
-      .all(c => c is (' ' | '\t' | '\r' | '\n' | '\u000b' | '\u000c')) {
-      result.push(value)
-    }
-    start = end + 1
-  }
-  result
 }
 
 ///|
@@ -160,6 +82,7 @@ fn help_message() -> String {
     #|      --help                 display this help and exit
     #|      --version              display version and exit
     #|Layout uses the C locale. Bytes above ASCII are printed as \xHH.
+    #|Layout uses temporary files and requires filesystem write access.
     #|
   help
 }
@@ -168,7 +91,7 @@ fn help_message() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("column 0.1.3\n")
+    @stdio.stdout.write("column 0.1.4\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [
@@ -215,34 +138,19 @@ async fn main {
     @sys.exit(1)
     return
   }
-  let lines : Array[String] = []
-  let mut failed = false
-  if parsed.operands.is_empty() {
-    lines.append(input_lines(@stdio.stdin.read_all().binary()))
-  } else {
-    for path in parsed.operands {
-      // util-linux treats '-' as a filename; omitted operands select stdin.
-      let data = @fs.read_file(path).binary() catch {
-        err => {
-          @stdio.stderr.write("column: \{path}: \{err}\n")
-          failed = true
-          continue
-        }
-      }
-      lines.append(input_lines(data))
+  let failed = run_layout(
+    parsed.operands,
+    table=parsed.contains("table"),
+    separator~,
+    output_separator=parsed.last_value("output-separator").unwrap_or("  "),
+    width~,
+    fill_rows=parsed.contains("fillrows"),
+  ) catch {
+    err => {
+      @stdio.stderr.write("column: \{err}\n")
+      true
     }
   }
-  @stdio.stdout.write(
-    if parsed.contains("table") {
-      table(
-        lines,
-        separator,
-        parsed.last_value("output-separator").unwrap_or("  "),
-      )
-    } else {
-      columns(lines, width, parsed.contains("fillrows"))
-    },
-  )
   if failed {
     @sys.exit(1)
   }

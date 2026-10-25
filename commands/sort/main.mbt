@@ -948,13 +948,14 @@ fn normalized_args(args : ArrayView[String]) -> Array[String] {
       },
     )
     if options {
-      if ["--key", "--field-separator", "--output", "--random-source", "--sort"].contains(
-          arg,
-        ) {
+      if [
+          "--key", "--field-separator", "--output", "--random-source", "--sort",
+          "--buffer-size", "--temporary-directory", "--batch-size",
+        ].contains(arg) {
         value_next = true
       } else if arg.has_prefix("-") && !arg.has_prefix("--") {
         for offset in 1..<arg.length() {
-          if arg[offset] is ('k' | 't' | 'o') {
+          if arg[offset] is ('k' | 't' | 'o' | 'S' | 'T') {
             value_next = offset + 1 == arg.length()
             break
           }
@@ -980,6 +981,9 @@ fn parse_args(args : ArrayView[String]) -> @cli.ParsedArgs raise @cli.CliError {
     @cli.flag("stable", short='s'),
     @cli.flag("merge", short='m'),
     @cli.option("output", short='o'),
+    @cli.option("buffer-size", short='S'),
+    @cli.option("temporary-directory", short='T'),
+    @cli.option("batch-size"),
     @cli.flag("unique", short='u'),
     @cli.flag("ignore-case", short='f'),
     @cli.flag("ignore-leading-blanks", short='b'),
@@ -1040,6 +1044,7 @@ async fn prepare_output(path : String, merge : Bool) -> Unit {
 
 ///|
 async fn execute_sort(parsed : @cli.ParsedArgs) -> Int32 {
+  let (budget, fan_in) = resource_controls(parsed)
   let output_path = one_path(parsed, "output", "output files")
   let source = one_path(parsed, "random-source", "random sources")
   if parsed.contains("check") && parsed.contains("check-quiet") {
@@ -1103,6 +1108,9 @@ async fn execute_sort(parsed : @cli.ParsedArgs) -> Int32 {
     diagnose=parsed.contains("check"),
     seed~,
     output_path~,
+    budget~,
+    fan_in~,
+    temporary_directories=parsed.values("temporary-directory"),
   )
 }
 
@@ -1110,7 +1118,7 @@ async fn execute_sort(parsed : @cli.ParsedArgs) -> Int32 {
 async fn main {
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("sort 0.2.2\n")
+    @stdio.stdout.write("sort 0.2.3\n")
     return
   }
   let parsed = parse_args(args) catch {
@@ -1122,7 +1130,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: sort [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n\nLarge inputs use temporary disk runs and require filesystem write access.\n",
+      "Usage: sort [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [-S SIZE] [-T DIR] [--batch-size=N] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n\nLarge inputs use temporary disk runs and require filesystem write access.\n-S/--buffer-size selects an accounted byte budget (default units: KiB).\n-T/--temporary-directory may repeat; --batch-size uses at most 16 merge inputs.\nNonzero percentage buffer sizes require an unavailable physical-memory query.\n",
     )
     return
   }

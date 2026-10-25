@@ -4,6 +4,29 @@
 It shares cases, fixtures, process capture, byte assertions, observations and
 report writing with the workspace runner through `testkit`.
 
+The 2026-10-25 release uses `current/latest.json` as an ordinary published
+manifest containing exact registry versions and the current local acceptance
+cases. Core 0.8.0 and 76 command packages have been uploaded; curl and wget
+retain 0.2.3. Local MoonX acceptance covered all 78 latest commands: the
+2,127-case run recorded 1,868 semantic passes, 186 availability passes,
+51 explicit boundary results, 22 platform skips and zero failures. Ten
+supplemental functional checks for find, test and yes also passed, so all 78
+commands have functional checks beyond metadata/availability. Their results
+are in `test-reports/moonx-latest-all-20261025/functional-extra.json`.
+Dependency declarations remain unchanged. Run the local consumer suite with:
+
+```sh
+MOON_HOME="$HOME/.moon-accounts/cli" moon run --target native tests/release_runner -- \
+  --manifest tests/release_runner/current/latest.json --suite smoke \
+  --report-dir test-reports/release-latest-smoke
+```
+
+`current/published.json` remains the previous frozen baseline. This local
+release does not replace it through the archive/freezing workflow described
+below. Publication and the observed acceptance scope are recorded in the
+[release report](../../docs/reports/2026-10-25-command-release.md); no new
+cross-platform or formal performance acceptance is claimed.
+
 Validate the retained preparation manifest against local package versions:
 
 ```sh
@@ -36,7 +59,7 @@ against the selected candidate.
 The generator validates the complete candidate against its generated case
 index before writing it. It sorts command names, case files, and selected case
 IDs using a stable lexical order and never expands `supported_options` from
-case labels. `current/published.json` preserves the current exact release;
+case labels. `current/published.json` preserves the previous frozen release;
 `current/published.json.cases.json` retains its historical metadata expectations
 separately from the generated candidate corpus.
 
@@ -44,9 +67,9 @@ An optional candidate `release_scope` selects a nonempty, unique list of command
 names in lexical order. The candidate still contains and validates all release
 commands against their source modules. Only selected commands need upload
 receipts and new MoonX acceptance; the shared core receipt remains mandatory.
-For stage 0 the scope is `["curl", "mv", "wget"]`, with core 0.7.0. The remaining
-75 command coordinates and their frozen cases stay unchanged in the published
-inventory. Omitting the field retains a full release. A published manifest must
+For historical stage 0 the scope was `["curl", "mv", "wget"]`, with core 0.7.0.
+Its other 75 command coordinates and frozen cases remained unchanged.
+Omitting the field retains a full release. A published manifest must
 not contain `release_scope`.
 
 The legacy `publish_candidate.mbtx` uploader rejects scoped candidates before
@@ -61,7 +84,8 @@ and wget even though curl owns the scenario. Smoke runs check the scenario
 contract. Oracle scenario runs additionally require the sealed immutable image
 before reporting differential agreement.
 
-After publication, `--verify-candidate --freeze-evidence FILE` permits exact
+For the retained archive/freezing workflow, after publication,
+`--verify-candidate --freeze-evidence FILE` permits exact
 MoonX checks of the candidate only after the registry receipts have passed.
 It never uploads packages. Run separate smoke and differential suites into
 fresh report directories, then freeze with:

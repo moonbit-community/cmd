@@ -17,8 +17,8 @@ Supported: the escapes `\a \b \e \f \n \r \t \v \\ \" \' \NNN \0NNN \xHH
 \uHHHH \UHHHHHHHH \c` (stop output); the conversions `%s %c %b %d %i %u %o
 %x %X %f %F %e %E %g %G %a %A %%` with flags `-+ 0#`, field width, and precision
 (width and precision accept `*`). `%b` interprets escapes in its argument.
-Numeric arguments accept decimal, `0x` hex, leading-`0` octal, and `'C` for
-a character code. The format is reused until all arguments are consumed.
+Numeric arguments accept decimal, `0x` hex, leading-`0` octal, and `'C` or `"C`
+for a character code. The format is reused until all arguments are consumed.
 
 Float conversions use the frozen GNU Linux amd64 extended-precision profile
 (64 significand bits and the x87 exponent range), with exact conversion and

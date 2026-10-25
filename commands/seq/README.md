@@ -1,6 +1,6 @@
 # seq
 
-This documents the unpublished 0.2.3 candidate. The [support record](../../docs/compatibility.md)
+This documents version 0.2.3. The [support record](../../docs/compatibility.md)
 tracks platform verification and exact-version publication evidence separately.
 
 Print a numeric sequence using `LAST`, `FIRST LAST`, or
@@ -26,8 +26,8 @@ This preserves negative zero and exposes binary rounding at high precision;
 it does not select the running host's long-double ABI or claim non-C locale.
 The default exact-decimal path is unchanged.
 Output is streamed through a bounded 64 KiB buffer without a fixed record-count
-cap. `--version` reports the package version. The current published release is
-`cli/seq@0.2.2` and uses the GNU-compatible default `+1`.
+cap. `--version` reports the package version. The earlier published release
+`cli/seq@0.2.2` uses the GNU-compatible default `+1`.
 `--help` prints usage and `--version` prints the command and package version.
 
 ## Standalone metadata

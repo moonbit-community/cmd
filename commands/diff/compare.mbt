@@ -1,8 +1,8 @@
 ///|
 struct Line {
-  value : String
+  value : BytesView
   terminated : Bool
-} derive(Eq, Debug)
+} derive(Eq, Debug, Hash)
 
 ///|
 enum Edit {
@@ -13,17 +13,16 @@ enum Edit {
 
 ///|
 fn lines(data : Bytes) -> Array[Line] {
-  let text = @bytere.text(data)
   let result : Array[Line] = []
   let mut start = 0
-  for i in 0..<text.length() {
-    if text[i] == '\n' {
-      result.push({ value: text[start:i].to_owned(), terminated: true, })
+  for i in 0..<data.length() {
+    if data[i] == b'\n' {
+      result.push({ value: data[start:i], terminated: true, })
       start = i + 1
     }
   }
-  if start < text.length() {
-    result.push({ value: text[start:].to_owned(), terminated: false, })
+  if start < data.length() {
+    result.push({ value: data[start:], terminated: false, })
   }
   result
 }
@@ -58,36 +57,54 @@ fn compare_options(
 }
 
 ///|
-fn whitespace(char : Char) -> Bool {
-  char == ' ' ||
-  char == '\t' ||
-  char == '\r' ||
-  char == '\u000b' ||
-  char == '\u000c'
+fn whitespace(byte : Byte) -> Bool {
+  byte == b' ' ||
+  byte == b'\t' ||
+  byte == b'\r' ||
+  byte == b'\x0b' ||
+  byte == b'\x0c'
 }
 
 ///|
-fn comparison_key(line : Line, options : CompareOptions) -> String {
+fn comparison_key(line : Line, options : CompareOptions) -> Line {
   let mut end = line.value.length()
   if options.strip_trailing_cr &&
     line.terminated &&
     end > 0 &&
-    line.value[end - 1] == '\r' {
+    line.value[end - 1] == b'\r' {
     end -= 1
   }
   let ignore_space = options.ignore_all_space ||
     options.ignore_space_change ||
     options.ignore_trailing_space
   if ignore_space {
-    while end > 0 && whitespace(line.value[end - 1].to_int().unsafe_to_char()) {
+    while end > 0 && whitespace(line.value[end - 1]) {
       end -= 1
     }
   }
-  let out = StringBuilder()
+  let value = line.value[:end]
+  let transformed = (
+      options.ignore_case ||
+      options.ignore_all_space ||
+      options.ignore_space_change
+    ) &&
+    value
+    .iter()
+    .any(byte => {
+      (options.ignore_case && byte >= b'A' && byte <= b'Z') ||
+      (
+        (options.ignore_all_space || options.ignore_space_change) &&
+        whitespace(byte)
+      )
+    })
+  if !transformed {
+    return { value, terminated: line.terminated || ignore_space, }
+  }
+  let out = FixedArray::make(end, b'\x00')
+  let mut length = 0
   let mut pending_space = false
-  for i in 0..<end {
-    let char = line.value[i].to_int().unsafe_to_char()
-    if whitespace(char) {
+  for byte in value {
+    if whitespace(byte) {
       if options.ignore_all_space {
         continue
       }
@@ -97,27 +114,27 @@ fn comparison_key(line : Line, options : CompareOptions) -> String {
       }
     }
     if pending_space {
-      out.write_char(' ')
+      out[length] = b' '
+      length += 1
       pending_space = false
     }
-    out.write_char(
-      if options.ignore_case && char >= 'A' && char <= 'Z' {
-        (char.to_int() + 32).unsafe_to_char()
-      } else {
-        char
-      },
-    )
+    out[length] = if options.ignore_case && byte >= b'A' && byte <= b'Z' {
+      (byte.to_int() + 32).to_byte()
+    } else {
+      byte
+    }
+    length += 1
   }
-  if line.terminated || ignore_space {
-    out.write_char('\n')
+  {
+    value: out.unsafe_reinterpret_as_bytes()[:length],
+    terminated: line.terminated || ignore_space,
   }
-  out.to_string()
 }
 
 ///|
 fn blank_line(line : Line, options : CompareOptions) -> Bool {
   let key = comparison_key(line, options)
-  key == "" || key == "\n"
+  key.value.is_empty()
 }
 
 ///|
@@ -129,9 +146,9 @@ fn identical_input_line(left : Line, right : Line, strip_cr : Bool) -> Bool {
     return left.value == right.value
   }
   let left_end = left.value.length() -
-    (if left.value.has_suffix("\r") { 1 } else { 0 })
+    (if left.value.has_suffix(b"\r") { 1 } else { 0 })
   let right_end = right.value.length() -
-    (if right.value.has_suffix("\r") { 1 } else { 0 })
+    (if right.value.has_suffix(b"\r") { 1 } else { 0 })
   left.value[:left_end] == right.value[:right_end]
 }
 
@@ -333,7 +350,7 @@ fn edits(
     (a.length() - common_suffix + context).min(a.length()),
     (b.length() - common_suffix + context).min(b.length()),
   ]
-  let classes : Map[String, Int32] = Map([])
+  let classes : Map[Line, Int32] = Map([])
   let keys : Array[Array[Int32]] = []
   for side, input in [a, b] {
     let values = Array::make(input.length(), -1)
@@ -448,12 +465,14 @@ fn record(
 ) -> Unit {
   let value = if options.strip_trailing_cr &&
     line.terminated &&
-    line.value.has_suffix("\r") {
-    line.value[:line.value.length() - 1].to_owned()
+    line.value.has_suffix(b"\r") {
+    line.value[:line.value.length() - 1]
   } else {
     line.value
   }
-  out.write_string(prefix + value + "\n")
+  out.write_string(prefix)
+  out.write_string(@bytere.text(value))
+  out.write_char('\n')
   if !line.terminated {
     out.write_string("\\ No newline at end of file\n")
   }

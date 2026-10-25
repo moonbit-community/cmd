@@ -4,31 +4,22 @@ priv suberror InvalidCRecord {
 }
 
 ///|
-fn reverse_line(data : Bytes) -> Bytes {
-  let output : Array[Byte] = []
-  let mut index = data.length()
-  while index > 0 {
-    index -= 1
-    output.push(data[index])
-  }
-  Bytes::from_array(output)
+priv struct RevOutput {
+  writer : &@io.Writer
+  mut failed : Bool
 }
 
 ///|
-fn reverse_lines(data : Bytes) -> Bytes {
-  let output : Array[Byte] = []
-  let mut start = 0
-  for index, byte in data {
-    if byte == b'\n' {
-      output.append(reverse_line(data[start:index].to_owned()).to_array())
-      output.push(b'\n')
-      start = index + 1
-    }
+impl @io.Writer for RevOutput with fn write_once(self, data, offset~, len~) {
+  errdefer {
+    self.failed = true
   }
-  if start < data.length() {
-    output.append(reverse_line(data[start:].to_owned()).to_array())
-  }
-  Bytes::from_array(output)
+  self.writer.write_once(data, offset~, len~)
+}
+
+///|
+fn reverse_line(data : Bytes) -> Bytes {
+  FixedArray::makei(data.length(), index => data[data.length() - index - 1]).unsafe_reinterpret_as_bytes()
 }
 
 ///|
@@ -41,6 +32,7 @@ fn help_message() -> String {
     #|Reverse each line from ordered FILE operands, or standard input if absent.
     #|The fixed Linux C-locale profile reverses bytes and rejects non-ASCII records.
     #|An explicit - is a filename, as in the frozen util-linux profile.
+    #|Input streams one record at a time; memory follows the longest record.
   message
 }
 
@@ -48,7 +40,7 @@ fn help_message() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("rev 0.1.3\n")
+    @stdio.stdout.write("rev 0.1.4\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [@cli.flag("help")]) catch {
@@ -116,15 +108,28 @@ async fn reverse_reader(
   writer~ : &@io.Writer = @stdio.stdout,
 ) -> Unit {
   let lines = @stream.LineScanner::new(reader)
-  while lines.next() is Some(line) {
-    if line.data.iter().any(byte => byte.to_int() >= 128) {
-      raise InvalidCRecord
+  let sink : RevOutput = { writer, failed: false, }
+  let output = @io.BufferedWriter::new(sink, size=65536)
+  let processing_error = try {
+    while lines.next() is Some(line) {
+      if line.data.iter().any(byte => byte.to_int() >= 128) {
+        raise InvalidCRecord
+      }
+      output.write(reverse_line(line.data))
+      if line.terminated {
+        output.write(b"\n")
+      }
+      count.val += 1
     }
-    writer.write(reverse_lines(line.data))
-    if line.terminated {
-      writer.write(b"\n")
-    }
-    count.val += 1
+    None
+  } catch {
+    error => Some(error)
+  }
+  if !sink.failed {
+    output.flush()
+  }
+  if processing_error is Some(error) {
+    raise error
   }
 }
 

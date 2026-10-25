@@ -14,12 +14,15 @@ moonx cli/nl -b a -w 3 -s ' ' notes.txt
 Options: `-b a|t|n` number all/nonempty/no body lines (default `t`), `-h` and
 `-f` select header/footer styles, `-w N` sets number width (default 6), and
 `-s SEP` sets the separator (default TAB). `-v N` sets the initial number,
-`-i N` its increment, `-d CC` selects the two-byte section delimiter, and
+`-i N` its increment, `-d STRING` selects the section delimiter (default `\:`), and
 `-p` prevents page resets. `-n ln|rn|rz` selects left, right, or zero-padded
 number fields; `-l N` numbers only the last line in each complete group of N
 blank lines when style `a` is active. Section markers are replaced by blank
 lines. The locale-sensitive `pBRE` numbering style remains outside this fixed
 C-locale profile and is rejected.
+With `-d`, a single-byte value retains `:` as the second delimiter byte; an
+empty value disables section markers. Other values are used as supplied.
+Header, body and footer markers repeat the delimiter three, two and one times.
 
 With no file operand, the command silently reads stdin until EOF, matching the
 upstream terminal, pipe, redirection, and explicit `-` behavior.

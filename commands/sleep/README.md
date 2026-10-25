@@ -13,7 +13,9 @@ moonx cli/sleep 1m 30s   # arguments are summed
 ```
 
 NUMBER may be fractional; suffixes `s`, `m`, `h`, `d` scale it. With
-multiple arguments, sleeps for their sum.
+multiple arguments, sleeps for their sum. The delay rounds up to whole
+milliseconds and is capped at the runtime timer limit of 2,147,483,647 ms
+(about 24.9 days), including when the sum exceeds that limit.
 
 `--help` and `--version` are handled without sleeping. The version token matches
 the package version in `moon.mod`.

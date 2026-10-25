@@ -23,7 +23,7 @@ Verification supports `--quiet`, `--status`, `--strict`, `-w/--warn`, and
 `--ignore-missing`; these options require `-c`. Ignoring missing files still
 requires at least one file to be verified. Verification accepts uppercase or
 lowercase digests, escaped filenames, comments and CRLF checksum files.
-The unpublished workspace candidate adds `--tag` output and verification of
+The command supports `--tag` output and verification of
 BSD/OpenSSL tagged records. It reads manifests one line at a time, accepts
 GNU standard or consistently BSD-reversed records, and quotes verification
 filenames like GNU. `--quiet`, `--status` and `--warn` reset one another; the

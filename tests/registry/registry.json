@@ -1804,7 +1804,10 @@
       "source": "tests/cases/column.json",
       "case_id": "repair-column-fillrows",
       "aliases": [],
-      "coverage": [],
+      "coverage": [
+        "fillrows",
+        "output-width"
+      ],
       "required_backends": [
         "native",
         "wasm"
@@ -2730,7 +2733,8 @@
       "case_id": "p1-csplit-keep-failure",
       "aliases": [],
       "coverage": [
-        "-k"
+        "-k",
+        "keep-files"
       ],
       "required_backends": [
         "native",
@@ -2830,7 +2834,8 @@
         "-s",
         "-z",
         "-f",
-        "-n"
+        "-n",
+        "silent"
       ],
       "required_backends": [
         "native",
@@ -29467,11 +29472,11 @@
       ],
       "status": "supported",
       "implementation": "package-test",
-      "source": "commands/rev/main_wbtest.mbt::rev reverses bytes within each line and preserves newlines",
+      "source": "commands/rev/main_wbtest.mbt::rev reverses records across scanner blocks and preserves termination",
       "case_id": "",
       "aliases": [],
       "coverage": [
-        "rev reverses bytes within each line and preserves newlines"
+        "rev reverses records across scanner blocks and preserves termination"
       ],
       "required_backends": [
         "native",
@@ -29699,11 +29704,11 @@
       ],
       "status": "supported",
       "implementation": "package-test",
-      "source": "commands/tac/main_wbtest.mbt::tac supports a fixed multi-byte separator",
+      "source": "commands/tac/main_wbtest.mbt::tac supports fixed separators across backward blocks",
       "case_id": "",
       "aliases": [],
       "coverage": [
-        "tac supports a fixed multi-byte separator"
+        "tac supports fixed separators across backward blocks"
       ],
       "required_backends": [
         "native",
@@ -96521,6 +96526,1120 @@
         "file-mode"
       ],
       "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:r3-sort-buffer-fanin-temporary-stable",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "filesystem"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "r3-sort-buffer-fanin-temporary-stable",
+      "aliases": [],
+      "coverage": [
+        "buffer-size",
+        "batch-size",
+        "temporary-directory",
+        "stable",
+        "key"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-type",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:r3-sort-temporary-option-value",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "filesystem"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "r3-sort-temporary-option-value",
+      "aliases": [],
+      "coverage": [
+        "buffer-size",
+        "batch-size",
+        "temporary-directory"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-type",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:r3-sort-batch-minimum",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "filesystem"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "r3-sort-batch-minimum",
+      "aliases": [],
+      "coverage": [
+        "batch-size"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-type",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:r3-sort-buffer-percent-boundary",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "filesystem"
+      ],
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "r3-sort-buffer-percent-boundary",
+      "aliases": [],
+      "coverage": [
+        "buffer-size",
+        "output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "boundary"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-type",
+        "file-content"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/tac/main_wbtest.mbt::tac spools a nonseekable input and retains the complete regex span",
+      "command": "tac",
+      "owner": "commands/tac",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/tac/main_wbtest.mbt::tac spools a nonseekable input and retains the complete regex span",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "tac spools a nonseekable input and retains the complete regex span"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/tac/main_wbtest.mbt::tac byte ranges retain 64-bit sparse offsets",
+      "command": "tac",
+      "owner": "commands/tac",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/tac/main_wbtest.mbt::tac byte ranges retain 64-bit sparse offsets",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "tac byte ranges retain 64-bit sparse offsets"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [
+        "posix"
+      ],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/tac/main_wbtest.mbt::tac propagates output closure without retrying a buffered write",
+      "command": "tac",
+      "owner": "commands/tac",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/tac/main_wbtest.mbt::tac propagates output closure without retrying a buffered write",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "tac propagates output closure without retrying a buffered write"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/tac/main_wbtest.mbt::tac emits nothing when input spooling is interrupted",
+      "command": "tac",
+      "owner": "commands/tac",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/tac/main_wbtest.mbt::tac emits nothing when input spooling is interrupted",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "tac emits nothing when input spooling is interrupted"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/tac/main_wbtest.mbt::tac verifies nominal regular extents before using backward reads",
+      "command": "tac",
+      "owner": "commands/tac",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/tac/main_wbtest.mbt::tac verifies nominal regular extents before using backward reads",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "tac verifies nominal regular extents before using backward reads"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/sort/sort_wbtest.mbt::sort resource controls parse units maxima and protected option values",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/sort/sort_wbtest.mbt::sort resource controls parse units maxima and protected option values",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sort resource controls parse units maxima and protected option values"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/sort/sort_wbtest.mbt::sort resource controls reject invalid overflow and percentage requests",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/sort/sort_wbtest.mbt::sort resource controls reject invalid overflow and percentage requests",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sort resource controls reject invalid overflow and percentage requests"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/sort/sort_wbtest.mbt::sort merge accounting does not overflow near signed 64-bit budgets",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/sort/sort_wbtest.mbt::sort merge accounting does not overflow near signed 64-bit budgets",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sort merge accounting does not overflow near signed 64-bit budgets"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/sort/sort_wbtest.mbt::sort fan-in two retains oversized stable records and cleans multiple directories",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/sort/sort_wbtest.mbt::sort fan-in two retains oversized stable records and cleans multiple directories",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sort fan-in two retains oversized stable records and cleans multiple directories"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/sort/sort_wbtest.mbt::sort selected fan-in preserves merge source order and prepared random keys",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/sort/sort_wbtest.mbt::sort selected fan-in preserves merge source order and prepared random keys",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sort selected fan-in preserves merge source order and prepared random keys"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/sort/sort_wbtest.mbt::sort temporary run paths rotate between explicitly selected parents",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/sort/sort_wbtest.mbt::sort temporary run paths rotate between explicitly selected parents",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sort temporary run paths rotate between explicitly selected parents"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/sort/sort_wbtest.mbt::sort named merge output stays empty until all sources are safely spooled",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/sort/sort_wbtest.mbt::sort named merge output stays empty until all sources are safely spooled",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sort named merge output stays empty until all sources are safely spooled"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/column/main_wbtest.mbt::column snapshot handles index pages and reordered grid access",
+      "command": "column",
+      "owner": "commands/column",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/column/main_wbtest.mbt::column snapshot handles index pages and reordered grid access",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "column snapshot handles index pages and reordered grid access"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/column/main_wbtest.mbt::column formats the consumed snapshot after source mutation",
+      "command": "column",
+      "owner": "commands/column",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/column/main_wbtest.mbt::column formats the consumed snapshot after source mutation",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "column formats the consumed snapshot after source mutation"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/column/main_wbtest.mbt::column consumes long byte records and preserves unterminated EOF",
+      "command": "column",
+      "owner": "commands/column",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/column/main_wbtest.mbt::column consumes long byte records and preserves unterminated EOF",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "column consumes long byte records and preserves unterminated EOF"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/column/main_wbtest.mbt::column layout and disk index arithmetic cross 2 GiB and 4 GiB",
+      "command": "column",
+      "owner": "commands/column",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/column/main_wbtest.mbt::column layout and disk index arithmetic cross 2 GiB and 4 GiB",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "column layout and disk index arithmetic cross 2 GiB and 4 GiB"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/column/main_wbtest.mbt::column retains complete records before an input failure",
+      "command": "column",
+      "owner": "commands/column",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/column/main_wbtest.mbt::column retains complete records before an input failure",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "column retains complete records before an input failure"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/column/main_wbtest.mbt::column stops on a failed output and retains its written prefix",
+      "command": "column",
+      "owner": "commands/column",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/column/main_wbtest.mbt::column stops on a failed output and retains its written prefix",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "column stops on a failed output and retains its written prefix"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/csplit/main_wbtest.mbt::csplit pages indexes and regex records across block boundaries",
+      "command": "csplit",
+      "owner": "commands/csplit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/csplit/main_wbtest.mbt::csplit pages indexes and regex records across block boundaries",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "csplit pages indexes and regex records across block boundaries"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/csplit/main_wbtest.mbt::csplit spool retains negative-offset repeat and suppression cursors",
+      "command": "csplit",
+      "owner": "commands/csplit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/csplit/main_wbtest.mbt::csplit spool retains negative-offset repeat and suppression cursors",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "csplit spool retains negative-offset repeat and suppression cursors"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/csplit/main_wbtest.mbt::csplit input failure and observed cancellation create no fragments",
+      "command": "csplit",
+      "owner": "commands/csplit",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/csplit/main_wbtest.mbt::csplit input failure and observed cancellation create no fragments",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "csplit input failure and observed cancellation create no fragments"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:r3-sort-reverse",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "filesystem"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "r3-sort-reverse",
+      "aliases": [],
+      "coverage": [
+        "reverse"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-type",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:r2-csplit-quiet",
+      "command": "csplit",
+      "owner": "commands/csplit",
+      "surface": [
+        "options",
+        "stdin",
+        "filesystem"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/csplit.json",
+      "case_id": "r2-csplit-quiet",
+      "aliases": [],
+      "coverage": [
+        "quiet"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-type",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "package-test:commands/rev/main_wbtest.mbt::rev flushes complete records after a producer read failure",
+      "command": "rev",
+      "owner": "commands/rev",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/rev/main_wbtest.mbt::rev flushes complete records after a producer read failure",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "rev flushes complete records after a producer read failure"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/rev/main_wbtest.mbt::rev never replays a partially failed buffered output",
+      "command": "rev",
+      "owner": "commands/rev",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/rev/main_wbtest.mbt::rev never replays a partially failed buffered output",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "rev never replays a partially failed buffered output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/diff/compare_wbtest.mbt::record views and comparison classes preserve arbitrary bytes",
+      "command": "diff",
+      "owner": "commands/diff",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/diff/compare_wbtest.mbt::record views and comparison classes preserve arbitrary bytes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "record views and comparison classes preserve arbitrary bytes"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/diff/compare_wbtest.mbt::comparison class hashes follow view bytes and normalized terminators",
+      "command": "diff",
+      "owner": "commands/diff",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/diff/compare_wbtest.mbt::comparison class hashes follow view bytes and normalized terminators",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "comparison class hashes follow view bytes and normalized terminators"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:r3-sort-zero-percent-unique-temporary",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "filesystem"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "r3-sort-zero-percent-unique-temporary",
+      "aliases": [],
+      "coverage": [
+        "buffer-size",
+        "batch-size",
+        "temporary-directory",
+        "unique",
+        "key"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-type",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:r3-sort-buffer-fanin-random",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "options",
+        "stdin",
+        "filesystem"
+      ],
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "r3-sort-buffer-fanin-random",
+      "aliases": [],
+      "coverage": [
+        "buffer-size",
+        "batch-size",
+        "random-sort",
+        "random-source"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair",
+        "upstream-differential"
+      ],
+      "observations": [
+        "status",
+        "stdout",
+        "stderr",
+        "file-type",
+        "file-content"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "package-test:commands/sort/sort_wbtest.mbt::sort temporary parent failure cleans owned runs and preserves output",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/sort/sort_wbtest.mbt::sort temporary parent failure cleans owned runs and preserves output",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sort temporary parent failure cleans owned runs and preserves output"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/sort/sort_wbtest.mbt::sort temporary entry writes propagate a partial writer failure",
+      "command": "sort",
+      "owner": "commands/sort",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/sort/sort_wbtest.mbt::sort temporary entry writes propagate a partial writer failure",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "sort temporary entry writes propagate a partial writer failure"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "package-test:commands/column/main_wbtest.mbt::column wide grid retains interleaved index pages without changing bytes",
+      "command": "column",
+      "owner": "commands/column",
+      "surface": [
+        "package-api"
+      ],
+      "status": "supported",
+      "implementation": "package-test",
+      "source": "commands/column/main_wbtest.mbt::column wide grid retains interleaved index pages without changing bytes",
+      "case_id": "",
+      "aliases": [],
+      "coverage": [
+        "column wide grid retains interleaved index pages without changing bytes"
+      ],
+      "required_backends": [
+        "native",
+        "wasm"
+      ],
+      "platforms": [],
+      "required_evidence": [
+        "contract",
+        "backend-pair"
+      ],
+      "observations": [
+        "status"
+      ],
+      "oracle_profile": ""
     }
   ],
   "release_commands": [
@@ -96770,9 +97889,11 @@
       "supported_options": [
         "help",
         "regex",
-        "version"
+        "version",
+        "before",
+        "separator"
       ],
-      "policy_sensitive": false,
+      "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
         "o6-tac-alt-prefix-after",
@@ -98325,7 +99446,26 @@
         "output",
         "random-sort",
         "random-source",
-        "sort"
+        "sort",
+        "batch-size",
+        "buffer-size",
+        "check",
+        "check-quiet",
+        "dictionary-order",
+        "field-separator",
+        "general-numeric-sort",
+        "human-numeric-sort",
+        "ignore-case",
+        "ignore-leading-blanks",
+        "ignore-nonprinting",
+        "key",
+        "month-sort",
+        "numeric-sort",
+        "reverse",
+        "temporary-directory",
+        "unique",
+        "version-sort",
+        "zero-terminated"
       ],
       "policy_sensitive": true,
       "releasable": true,
@@ -98424,7 +99564,14 @@
         "o2-sort-r-sort-alias",
         "o2-sort-merge-output-input-alias",
         "o2-sort-late-read-merge-existing",
-        "o2-sort-output-hardlink-mode"
+        "o2-sort-output-hardlink-mode",
+        "r3-sort-buffer-fanin-temporary-stable",
+        "r3-sort-temporary-option-value",
+        "r3-sort-batch-minimum",
+        "r3-sort-buffer-percent-boundary",
+        "r3-sort-reverse",
+        "r3-sort-zero-percent-unique-temporary",
+        "r3-sort-buffer-fanin-random"
       ]
     },
     {
@@ -99443,7 +100590,9 @@
         "number",
         "numeric-suffixes",
         "suffix-length",
-        "version"
+        "version",
+        "bytes",
+        "lines"
       ],
       "policy_sensitive": true,
       "releasable": true,
@@ -99511,9 +100660,15 @@
         "help",
         "suffix-format",
         "suppress-matched",
-        "version"
+        "version",
+        "digits",
+        "elide-empty-files",
+        "keep-files",
+        "prefix",
+        "quiet",
+        "silent"
       ],
-      "policy_sensitive": false,
+      "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
         "o6-csplit-digits-after-suffix",
@@ -99558,7 +100713,8 @@
         "repair-alias-csplit-silent",
         "s1-csplit-pattern-backreference",
         "s1-csplit-word-assertion",
-        "o6-csplit-windows-suffix-name-boundary"
+        "o6-csplit-windows-suffix-name-boundary",
+        "r2-csplit-quiet"
       ]
     },
     {
@@ -99722,9 +100878,11 @@
         "table",
         "version",
         "separator",
-        "output-separator"
+        "output-separator",
+        "fillrows",
+        "output-width"
       ],
-      "policy_sensitive": false,
+      "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
         "p2-column-copy",

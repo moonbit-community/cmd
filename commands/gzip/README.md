@@ -1,24 +1,24 @@
 # gzip
 
-This documents the **unpublished workspace 0.1.2** candidate. The current
-published release is **cli/gzip@0.1.1** with its frozen stored-block encoder;
-the compression levels below require the workspace candidate. The
-[support record](../../docs/compatibility.md) separates these profiles.
+This documents version **0.1.2**. The
+[support record](../../docs/compatibility.md) tracks platform verification and
+exact-version publication evidence separately, including the frozen 0.1.1
+stored-block encoder.
 
 Compress stdin to a gzip stream, or use `-c -n` to compress named files while
 keeping the originals:
 
 ```sh
-printf 'hello\n' | moonx cli/gzip@0.1.1 > hello.gz
-moonx cli/gzip@0.1.1 -cn notes.txt > notes.txt.gz
-moonx cli/gzip@0.1.1 -dc notes.txt.gz
-moonx cli/gzip@0.1.1 -t notes.txt.gz
+printf 'hello\n' | moonx cli/gzip > hello.gz
+moonx cli/gzip -cn notes.txt > notes.txt.gz
+moonx cli/gzip -dc notes.txt.gz
+moonx cli/gzip -t notes.txt.gz
 ```
 
 `-d`/`--decompress` decodes, `-t`/`--test` checks compressed data without writing
 decoded bytes, and `-c`/`--stdout` selects stdout. `-n`/`--no-name` omits saved
 names and timestamps. Multiple operands are processed in order; `-` reads stdin.
-The workspace encoder uses pure MoonBit LZ matching with a 32 KiB history and
+The encoder uses pure MoonBit LZ matching with a 32 KiB history and
 3–258 byte matches. It compares complete stored/fixed/dynamic DEFLATE bit costs,
 including headers and alignment, and can extend an open Huffman block. Input is
 processed in 64 KiB chunks with bounded history, tokens and coding tables.

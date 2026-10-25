@@ -1,7 +1,7 @@
 ///|
 pub fn help(command : String) -> String {
   "Usage: \{command} [OPTION]... [FILE]...\n" +
-  "Compress or decompress gzip streams; no FILE or - reads stdin.\n" +
+  "Process gzip streams; no FILE or - reads stdin.\n" +
   "Input and output use bounded buffers.\n\n" +
   "  -c, --stdout       Write to stdout and keep input files.\n" +
   "  -d, --decompress   Decompress (default for gunzip and zcat).\n" +
@@ -13,7 +13,10 @@ pub fn help(command : String) -> String {
   "      --best         Same as -9.\n" +
   "      --help         display this help and exit\n" +
   "      --version      display version and exit\n\n" +
-  "Named-file compression requires -cn; decompression requires -c.\n" +
+  "Named-file gzip compression requires -cn.\n" +
+  "Named-file gzip/gunzip decompression requires -c unless testing with -t.\n" +
+  "zcat writes named inputs to stdout by default.\n" +
+  "Compression levels are ignored when decompressing or testing.\n" +
   "In-place replacement, saved-name metadata and recursion are unsupported.\n"
 }
 

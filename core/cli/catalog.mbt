@@ -78,15 +78,16 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("printf", Core, NoInput, ByteStream, [], ["help"]),
     contract("sleep", Core, NoInput, LineStream, [], ["help", "version"]),
     contract("sort", Core, FileOrStdin, LineStream, [FileRead, FileWrite], [
-      "check", "check-quiet", "dictionary-order", "field-separator", "general-numeric-sort",
-      "human-numeric-sort", "ignore-case", "ignore-leading-blanks", "ignore-nonprinting",
-      "key", "merge", "month-sort", "numeric-sort", "output", "random-sort", "random-source",
-      "reverse", "sort", "stable", "unique", "version-sort", "zero-terminated",
+      "batch-size", "buffer-size", "check", "check-quiet", "dictionary-order", "field-separator",
+      "general-numeric-sort", "human-numeric-sort", "ignore-case", "ignore-leading-blanks",
+      "ignore-nonprinting", "key", "merge", "month-sort", "numeric-sort", "output",
+      "random-sort", "random-source", "reverse", "sort", "stable", "temporary-directory",
+      "unique", "version-sort", "zero-terminated",
     ]),
     contract("tail", Core, FileOrStdin, ByteStream, [FileRead], [
       "bytes", "follow", "lines", "quiet", "sleep-interval", "verbose", "zero-terminated",
     ]),
-    contract("tac", Core, FileOrStdin, ByteStream, [FileRead], [
+    contract("tac", Core, FileOrStdin, ByteStream, [FileRead, FileWrite], [
       "before", "regex", "separator",
     ]),
     contract("tr", Core, OptionalStdin, ByteStream, [], [
@@ -454,7 +455,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       "all", "bytes", "encoding", "octal", "print-file-name", "radix", "output-separator",
       "version",
     ]),
-    contract("column", Core, FileOrStdin, LineStream, [FileRead], [
+    contract("column", Core, FileOrStdin, LineStream, [FileRead, FileWrite], [
       "table", "separator", "output-separator", "output-width", "fillrows", "version",
     ]),
     contract(

@@ -12,11 +12,11 @@ moonx cli/join -t, -1 2 -2 1 a.csv b.csv
 ```
 
 Options: `-1 N` / `-2 N` choose the join field in each file (default 1), `-z`
-uses NUL-delimited records,
-`-t CHAR` field separator (default: runs of blanks, output separated by a
-single space). `-a 1|2` includes unpairable rows, `-v 1|2` selects only
-unpairable rows, and `-e STRING` supplies missing or empty fields. `-i` /
-`--ignore-case` ignores ASCII case while comparing keys, preserving original
+uses NUL-delimited records. `-t CHAR` selects a single-byte field separator
+(default: runs of blanks,
+output separated by a single space). `-a 1|2` includes unpairable rows,
+`-v 1|2` selects only unpairable rows, and `-e STRING` supplies missing or empty
+fields. `-i` / `--ignore-case` ignores ASCII case while comparing keys, preserving original
 bytes in output. `--header` emits the first records together without comparing
 their keys or checking header order, including with `-v`.
 
@@ -32,6 +32,8 @@ The default reports disorder after an unpairable row makes it observable,
 continues output, and exits nonzero at the end. Diagnostics identify the input
 file, record number and offending record.
 The merge streams both inputs and retains only the current equal-key runs.
+Use `-` for either input to read stdin; selecting stdin for both inputs is
+rejected before reading either one.
 
 ## Standalone metadata
 

@@ -16,6 +16,7 @@ fn help_message() -> String {
     #|      --help               display this help and exit
     #|      --version            display version and exit
     #|Existing named outputs are refused; filters own their explicit file writes.
+    #|Line-byte and unknown-size partition layouts require temporary write access.
   message
 }
 
@@ -64,7 +65,7 @@ async fn process(
               let mut size = 0L
               while reader.read_some(max_len=65536) is Some(bytes) {
                 spool.write(bytes)
-                size += bytes.length().to_int64()
+                size = byte_position(size, bytes.length())
               }
               size
             }
@@ -81,7 +82,7 @@ async fn process(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("split 0.1.2\n")
+    @stdio.stdout.write("split 0.1.3\n")
     return
   }
   let parsed = parse_args(@env.args()[1:]) catch {
@@ -96,7 +97,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("split 0.1.2\n")
+    @stdio.stdout.write("split 0.1.3\n")
     return
   }
   try {

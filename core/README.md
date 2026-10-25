@@ -9,12 +9,19 @@ It retains the shared incremental MD5/SHA-1/SHA-512, C-byte regular-expression
 adaptation and gzip stream codecs. Earlier command packages continue to use
 their published core-compatible versions.
 
-The unpublished workspace candidate targets **0.8.0**. Its line scanner
-reuses a 64 KiB read buffer and searches only unconsumed bytes.
+Version **0.8.0** provides the stream and matcher implementation below. Its
+line scanner reuses a 64 KiB read buffer and searches only unconsumed bytes.
 Only a record spanning reads needs accumulation; returned lines own their bytes.
-The comm, cut, head, join, jq, nl, paste, sed, sort, uniq and xxd candidates select
+The comm, cut, head, join, jq, nl, paste, sed, sort, uniq and xxd modules select
 this core coordinate for that implementation.
-Cp and mv select the same coordinate for reusable 64 KiB new-file copying.
+Cp selects the same coordinate for reusable 64 KiB new-file copying. Mv also
+selects core 0.8.0, but moves entries with rename and has no copy-and-delete
+fallback.
+
+Version **0.8.1** updates the public command catalog for the R resource work:
+column, csplit and tac declare temporary-file writes, and sort lists its
+buffer-size, temporary-directory and batch-size options. Runtime APIs and
+command dependency coordinates remain unchanged.
 
 `gzipops.encode` accepts an optional `level` argument, defaulting to six, for
 the private pure MoonBit 32 KiB LZ and stored/fixed/dynamic Huffman encoder.
@@ -25,9 +32,9 @@ input/output buffers and bounded Huffman tables. The output buffer also retains
 the last 32 KiB needed for backreferences, avoiding a separate history copy. Existing
 `decode(Bytes, ...)` callers retain their supplied bytes. The G1 report records
 GNU interoperability and selected size results; performance acceptance remains
-pending. Only changed command packages select this new core coordinate.
+pending. Command modules retain their declared core coordinates.
 
-The same candidate parses C-byte BRE/ERE patterns once in `bytere`. `find`
+Core 0.8.0 parses C-byte BRE/ERE patterns once in `bytere`. `find`
 retains `Hit` captures; `find_span` returns offsets without allocating capture
 strings and omits capture state when no backreference can observe it. Ordinary
 expressions use ordered Thompson threads. Capturing searches retain distinct
@@ -43,9 +50,9 @@ by independent GNU comparisons. `is_match` retains candidate pruning without
 restoring output registers, as GNU csplit and sed regex addresses do.
 See the [development report](../docs/reports/2026-10-24-s-matcher-sed.md).
 
-Published **0.7.0** uses async **0.22.5**.
-It added public `EmptyReplyFailure`, `PartialBodyFailure`, `ReceiveFailure` and
-`RewindFailure` classifications,
+Core 0.8.0 retains async **0.22.5** and the transfer profile introduced in
+version **0.7.0**, including public `EmptyReplyFailure`, `PartialBodyFailure`,
+`ReceiveFailure` and `RewindFailure` classifications,
 `OutputStarted` path/offset observations, and `resume_skip_existing` for callers
 that retain an already delivered prefix. Public `TransferProfile` defaults to
 `StrictProfile`; command callers select `CurlProfile` or `WgetProfile` for the
@@ -94,7 +101,7 @@ resume prefix preserves it. These command profiles leave strict default behavior
 Curl redirects that must replay already uploaded stdin report `RewindFailure`
 in the request phase; a separate retry-all attempt can read the now-empty stdin.
 Header and chunk-edge contracts require fresh execution and fixed-oracle
-verification; full HTTP parity is not claimed. Candidate
+verification; full HTTP parity is not claimed.
 Native/Wasm, fixed-oracle and published-consumer acceptance requires separate
 evidence in the [support record](../docs/compatibility.md).
 
@@ -104,13 +111,13 @@ regular-file-size reads, atime/mtime/ctime timestamps, access checks, and
 symbolic-link creation on Native/Wasm. It also centralizes nanosecond comparison,
 age buckets, update/backup decisions, and preflighted copy traversal. Permission
 reads, arbitrary timestamp setters, hard links, readlink, special-file creation,
-remain unavailable in both the published async 0.22.4 baseline and candidate
-async 0.22.5. POSIX EXDEV classification uses the
+remain unavailable in both the historical async 0.22.4 baseline and the current
+async 0.22.5 dependency. POSIX EXDEV classification uses the
 actual host platform; it does not provide metadata-preserving cross-device
 copying. Existing-file copy overwrite is rejected, and new-file copying must
 explicitly select `--no-preserve=mode`.
 
 Async 0.22.5 repairs Native Windows rename of symlinks/junctions. Wasm uses the
-installed host implementation, so the candidate `mv` retains a Windows Wasm
+installed host implementation, so `mv` retains a Windows Wasm
 link-rename boundary until that host and its link/referent behavior are verified.
 No host program or native stub implements a command workaround.

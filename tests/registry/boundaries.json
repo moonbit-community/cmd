@@ -660,6 +660,17 @@
         "package-test:tests/runner/env_boundary_wbtest.mbt::Windows Native env rejects empty child environments before launch"
       ],
       "replacement_behaviors": []
+    },
+    {
+      "behavior_id": "case:r3-sort-buffer-percent-boundary",
+      "support_record": "docs/compatibility.md",
+      "adr": "docs/adr/0003-streams.md",
+      "current_limit": "Nonzero percentage sort buffer sizes are refused before input/output effects because released public MoonBit APIs do not expose a physical-memory query. Zero percent, byte and binary-unit budgets remain supported.",
+      "unlock_condition": "Require a released public host physical-memory query and independent Native/Wasm percentage parsing, memory-derived budget, error-order and unchanged-output tests before enabling percent budgets; never substitute an arbitrary fixed RAM estimate.",
+      "rejection_tests": [
+        "case:r3-sort-buffer-percent-boundary"
+      ],
+      "replacement_behaviors": []
     }
   ]
 }

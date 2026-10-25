@@ -236,6 +236,13 @@ jobs:
           umask 022
           ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite oracle --backend wasm --oracle-image "${{ steps.seal_oracle.outputs.image_id }}" --oracle-profile test-reports/oracle-profile/profile.json --report-dir test-reports/oracle-wasm
 
+      - name: Direct-Wasm Linux resource observations
+        if: ${{ !cancelled() && runner.os == 'Linux' && steps.seal_oracle.outcome == 'success' && steps.build_wasm.outcome == 'success' }}
+        timeout-minutes: 120
+        run: >-
+          moon run tests/resources/ci.mbtx --
+          --image "${{ steps.seal_oracle.outputs.image_id }}"
+
       - name: Resolve published-test launcher
         id: moonx
         if: ${{ !cancelled() && steps.build_native.outcome == 'success' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || (runner.os == 'Linux' && steps.coverage_requirements.outputs.published_differential == 'true')) }}
@@ -312,6 +319,7 @@ jobs:
           tests/metadata/generate_release_cases.mbtx
           tests/release_runner/prepare_metadata_release.mbtx
           tests/release_runner/publish_candidate.mbtx
+          tests/resources/run.mbtx tests/resources/ci.mbtx
 
       - name: Verify generated files
         if: ${{ !cancelled() && steps.check_source.outcome == 'success' }}
@@ -327,7 +335,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: cmd-test-reports-${{ matrix.os }}
-          path: test-reports
+          path: |
+            test-reports
+            !test-reports/resources-linux/oracle/**
           if-no-files-found: ignore
 
   coverage-audit:

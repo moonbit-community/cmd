@@ -15,7 +15,7 @@ moonx cli/realpath -z input.txt other.txt
 `-z`/`--zero` terminates records with NUL bytes. Operands are handled
 independently; a failed operand does not erase earlier output.
 
-The unpublished workspace candidate defaults to allowing a missing final
+The command defaults to allowing a missing final
 component (`-E/--canonicalize`), while `-e` requires every component.
 `-m/--canonicalize-missing` also permits missing and non-directory components.
 `-s/--strip/--no-symlinks` suppresses link expansion; only `-ms` is fully

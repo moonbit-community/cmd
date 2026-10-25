@@ -3,7 +3,7 @@
 Status: Accepted
 Date: 2026-09-05
 Updated: 2026-10-25
-Revision: Extend selected split, reverse, numeric-dump and pipe-output profiles while retaining explicit stream and signal limits.
+Revision: Define R-stage streaming, snapshot, bounded wide-grid caches, temporary-storage and failure effects while retaining explicit matcher, metadata and signal limits.
 
 ## Target and decision
 
@@ -11,7 +11,7 @@ Preserve byte streams, final newlines and partial output. Set LC_ALL=C explicitl
 
 ## Alternatives and compatibility cost
 
-The unpublished core 0.8.0 line scanner owns one 64 KiB read buffer, tracks the
+The shared core 0.8.0 line scanner owns one 64 KiB read buffer, tracks the
 unconsumed range and uses the public single-byte search operation. It does not
 rescan an accumulated prefix or copy the remaining chunk for each line. Only
 cross-chunk records accumulate; returned lines own their bytes before refill.
@@ -122,8 +122,8 @@ width, precision and literal percent. Suppress-matched applies to the adjusted
 split boundary, including repeated and negative-offset patterns. Rev and tac
 process operands in order without invented separators. Tac compiles GNU Emacs
 C-byte regexes and selects rightmost start/longest end, with explicit progress
-for nullable separators. Resource acceptance for remaining whole-input/index
-paths is still a separate R task.
+for nullable separators. The R resource contracts below distinguish fixed
+separators from the matcher path's whole-input storage.
 
 Od decodes the frozen Linux amd64 float profile, including binary16, bfloat16,
 binary32/64, x87 Extended80 and binary128, through the shared numeric package.
@@ -162,6 +162,82 @@ closed-pipe scenarios remain source contracts pending the required platform,
 coverage, actual-main and publication gates. They do not certify RSS bounds or
 the formal direct-Wasm performance targets.
 
+## R streaming and temporary-storage contracts
+
+The R candidates are column/rev/tac **0.1.4**, csplit **0.2.1**, split **0.1.3**
+and sort **0.2.3**. These source versions do not change dependency coordinates
+or establish publication. Keep the 2026-10-25 published baseline and its exact
+MoonX results separate from new source acceptance.
+
+Rev consumes and validates one record, then reverses ASCII/NUL bytes into one
+record-sized output buffer. Its storage is O(64 KiB + longest record); a late
+input failure retains completed output. It does not retain all input records.
+
+Split streams byte/line modes. Total-size layouts use a regular file's observed
+size or an owned spool; a live regular file is not an immutable snapshot.
+Line-byte mode spools its pending record prefix instead of accumulating an
+arbitrarily long line. Round-robin ordinary outputs close after each record;
+their name/state entries remain O(visited pieces). Round-robin filters retain
+one live pipe and shell task per visited piece, plus any child/filter-owned
+resources; they do not claim a fixed process or memory bound. Completed files
+remain after a later read, write, suffix or filter error.
+
+Csplit first records a single input snapshot and a disk index of 64-bit line
+boundaries. It retains two caches of at most 64 KiB each, a current regex line
+and the created-output paths required for cleanup. Disk use is input bytes
+plus eight bytes per boundary, including the initial entry. Numeric pattern
+and offset parsing, and a single regex line's matcher indices, retain their
+existing signed 32-bit limits. Input or spool failure precedes output creation;
+later failures remove owned fragments unless `-k` keeps completed or partial
+outputs. A paged index avoids claiming O(records) offsets are bounded memory.
+
+Tac searches fixed separators backwards on opened regular files using 64 KiB
+blocks and separator overlap; selected byte ranges are copied in blocks.
+Storage is O(block + separator length), including a very long record. Standard
+input, nonregular files and regex mode use an owned disk spool. No output for
+that operand begins until its spool succeeds. A regular file's concurrent
+mutation is not a snapshot guarantee. Regex mode retains O(input) memory in
+addition to its spool because the shared matcher requires a contiguous byte
+string with signed 32-bit indices. Preserve arbitrary separator spans and
+nullable progress rather than silently restricting overlap. Lift this memory
+limitation only with a shared matcher API over paged/seekable input and matching
+Native/Wasm arbitrary-span, anchor, overlap and nullable-separator regressions.
+
+Column consumes all operands once into a displayed-record snapshot, computes
+global widths and then formats from that snapshot. Disk use is displayed bytes
+plus sixteen bytes per retained record, across two temporary files. Memory
+retains the longest record, global table-width vector and fixed I/O buffers.
+Table and small-grid caches retain at most 1 MiB of record pages and 64 KiB of
+index pages. Grid caches select sixteen to 256 pages from the output column
+count to avoid thrashing interleaved cursors; their fixed upper limits are
+16 MiB of record pages and 1 MiB of index pages, allocated only as read.
+The first output follows the attempted input pass. Late input errors preserve
+complete records and continue with later files; temporary-write failure aborts
+before formatting.
+An output error may leave an emitted prefix. Reopening mutable source files
+for the second pass and retaining a complete output string were rejected.
+
+Sort's `-S/--buffer-size` selects its accounted data budget, defaulting to
+64 MiB; unsuffixed values use KiB. `-T/--temporary-directory` selects temporary
+locations and may repeat. `--batch-size` selects the merge fan-in within the
+implementation's maximum of sixteen inputs. Active/oversized records and
+runtime allocation overhead remain separate from the budget, which is not an
+RSS limit. Nonzero percentage buffer sizes reject before input/output effects; `0%`
+uses the minimum budget without a capacity query. Released
+public APIs do not expose physical-memory capacity. Lift this rejection only
+when that query exists and percentage rounding, overflow and Native/Wasm
+behavior are verified; guessed constants or a host child are not substitutes.
+
+Csplit, column and tac's spooled modes require temporary-filesystem write
+access. The catalog declares FileWrite for these commands as well as sort and
+split. Spool directories are created exclusively and their files use mode
+0600 where supported. Deferred cleanup owns only those invocation paths and
+runs on success, ordinary failure and runtime-observable cancellation. Neither
+SIGKILL nor a machine failure can guarantee unwinding. Package regressions and
+registered command/policy cases target exact bytes, effects, long records and
+wide-offset arithmetic; final resource observations and platform acceptance
+must report the workloads actually run rather than infer a process RSS cap.
+
 ## Versions and evidence
 
 Baseline: async 0.22.4, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-20.
@@ -184,12 +260,12 @@ reports are separate from full upstream differential certification.
 
 | Commands | Choice and reason | Rejected alternative and compatibility cost | Evidence and condition for expansion |
 | --- | --- | --- | --- |
-| rev, tac | Ordered operands; rev reverses ASCII/NUL lines under the frozen Linux C profile and tac supports GNU Emacs byte separators with nullable progress. | Rev rejects non-ASCII records before output; neither command performs multibyte-locale decoding or newline normalization. Whole-input/index resource acceptance remains separate R work. | `rev.json`, `tac.json`, production-reader package regressions and pinned Linux Native/Wasm observations; older release evidence remains frozen. |
+| rev, tac | Ordered operands; rev retains one ASCII/NUL record and tac reads fixed separators backwards with bounded block/overlap storage. Tac's GNU Emacs matcher preserves nullable progress. | Rev rejects non-ASCII records before output. Tac regex retains O(input) memory and a spool until a paged/seekable matcher interface is implemented and verified; neither command claims multibyte-locale decoding. | `rev.json`, `tac.json` and package regressions cover current source; pinned Linux O-stage observations and older releases remain distinct evidence. |
 | expand, unexpand, fold | C-byte columns, explicit tab stops and control-byte rules; fold preserves input bytes and uses space breaks only when requested. Deterministic byte contracts require no terminal discovery. | Reject UTF-8 replacement decoding and assuming one code point occupies one display column. Non-C widths remain unimplemented; fold handles tabs/backspace/CR in column mode. | Their JSON contracts and fold package tests; expand locale claims only after wide/combining/malformed input and tab/control interactions pass the selected upstream oracle. |
 | od, hexdump | Concatenate operands and preserve partial words, duplicate blocks and final offsets; the O7 candidate adds the frozen Linux float ABI, strings/legacy offsets and custom hexdump format/color units. | No host delegation or inferred native ABI. Forward stdin skip is a documented read/discard extension; backward positioning needs a seekable input. | `od.json`, `hexdump.json`, numeric/format package tests and fixed-provider Native/Wasm development observations; PR/main and publication remain separate. |
 | fmt | Width/goal paragraph optimization, crown/tagged margins and prefix selection with C-byte indentation and sentence spacing; no file rewrite. | Do not substitute fold or discard long words. Paragraph storage and non-C display widths remain separate work. | Current `fmt.json`, named regressions and O3 GNU margin/prefix/tab/EOF observations; PR/main and formal resources remain separate gates. |
 | strings | Streaming C-byte scanning, GNU d/o/x offsets, last -o/-t selection, seven-column padding, TAB, filename prefixes, s/S encodings and selected output separators. | Reject b/l/B/L before input until wide decoding is implemented. No BFD/FFI or host fallback; locale/object sections remain project work. | Binutils 2.44 JSON and package contracts plus selected separator/cross-block development observations. Wide modes require endian/minimum-length/offset/invalid-input differentials. |
-| column | Default vertical column layout; -x row layout, explicit -c/COLUMNS/80 width; -t combines all files, preserves empty fields and emits LF with two-space defaults. | Buffer records to determine global widths. Reject copying input as default columnation and per-file independent tables. GNU/Linux C-locale non-ASCII bytes are escaped; non-ASCII delimiters reject. Terminal width discovery and full Unicode widths remain separate capabilities. | Util-linux 2.40, Native/Wasm byte contracts and Linux oracle; [repair evidence](../reports/2026-10-11-fidelity-repair/README.md). Add terminal discovery only with public terminal APIs; expand locale widths against versioned Unicode/locale data. |
+| column | Default vertical/-x grid and global -t layout use one indexed disk snapshot; retained caches and the current record replace whole-input/output buffers. | Temporary writes are required. GNU/Linux C-locale non-ASCII bytes are escaped; non-ASCII delimiters reject. Automatic terminal discovery and full Unicode widths remain separate capabilities. | Current spool/layout package regressions and command contracts; historical util-linux 2.40 evidence remains in the [repair report](../reports/2026-10-11-fidelity-repair/README.md). Add terminal discovery only with public APIs and expand locale widths against versioned Unicode/locale data. |
 
 Raw observations and exact invocations are in
 [the follow-up audit](../reports/2026-10-11-command-followups/README.md).

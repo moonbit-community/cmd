@@ -24,6 +24,8 @@ stops, with zero disabling tabs. Explicit values override `COLUMNS` and
 Layouts use each candidate column's maximum rendered name width, including
 classification suffixes, rather than dividing by a global maximum. Tabs
 replace at least two spaces. Effective color output disables tabs.
+Without an explicit format, output uses one name per line, including on a
+terminal.
 
 Names support GNU C-locale `literal`, `shell`, `shell-always`, `shell-escape`,
 `shell-escape-always`, `c`, `c-maybe`, `escape`, `locale`, and `clocale`
@@ -42,6 +44,7 @@ definitions, normal/reset/end sequences and wrapping follow GNU coreutils
 9.11. `never` ignores `LS_COLORS` entirely. With an empty `LS_COLORS`,
 `TERM` and `COLORTERM` select whether the built-in palette is enabled;
 automatic terminal detection remains unavailable.
+Bare `--color` selects `always`; `--color=auto` is rejected before listing.
 
 The public filesystem API cannot read raw mode bits, capability xattrs or
 link counts. Therefore a collection containing a regular file explicitly

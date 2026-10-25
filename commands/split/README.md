@@ -1,6 +1,6 @@
 # split
 
-Version **0.1.2** behavior is documented here. The
+Version **0.1.3** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates workspace acceptance
 from exact published MoonX coordinates.
 
@@ -70,6 +70,14 @@ Sequential pieces await EOF and completion before starting the next filter;
 round-robin filters remain active together. Empty pieces invoke the filter
 unless `-e` suppresses them. A successful filter may ignore stdin.
 
+Byte/record streaming uses at most one ordinary output file handle at a time;
+round-robin files close after each complete record and reopen only for their next
+record. Round robin retains one name/state entry per visited piece. With a filter,
+each visited piece instead owns one live pipe and shell task until input ends;
+their total resources grow with the selected piece count. Filter commands may
+create further children or allocate their own buffers. This mode preserves live
+filter input and does not claim a constant-memory or fixed-child-count bound.
+
 Filters own their explicit file writes: split does not pre-create or truncate
 FILE. Nonzero filter exits propagate with FILE and command diagnostics;
 actual SIGPIPE termination is distinguished from a normal exit141. A filter
@@ -79,7 +87,7 @@ retain completed output; owned temporary spools are removed.
 
 ## Standalone metadata
 
-Standalone `--version` prints exactly `split 0.1.2` and one newline.
+Standalone `--version` prints exactly `split 0.1.3` and one newline.
 Standalone `--help` starts with `Usage: split`, includes both metadata
 options, and ends with a newline. Both write to stdout, leave stdin unread,
 and exit 0. Publication and acceptance are recorded separately.
