@@ -175,7 +175,10 @@ module and version before any release operation.
   Dependency declarations remain unchanged, including mixed core 0.7.0/0.8.0
   coordinates. `timeout` remains local-only. Exact registry coordinates and
   local-acceptance cases are in tests/release_runner/current/latest.json;
-  full local MoonX acceptance is pending. Publication and its local validation
+  local MoonX acceptance covers all 78 commands with zero failures. The
+  2,127-case run retains 51 explicit boundary results and 22 platform skips;
+  ten supplemental find/test/yes functional checks also passed.
+  Publication and its local validation
   scope are recorded in docs/reports/2026-10-25-command-release.md. This release
   does not establish new cross-platform or final performance acceptance.
   current/published.json retains the previous frozen baseline; earlier

@@ -7,8 +7,12 @@ The 2026-10-25 release uploaded `cli/core@0.8.0` and 76 command packages.
 Curl and wget retain `0.2.3`; dependency declarations remain unchanged,
 including the mixed core 0.7.0/0.8.0 coordinates. `timeout` stays local-only.
 The [release report](reports/2026-10-25-command-release.md) records the local
-documentation checks and serial uploads. Full local MoonX acceptance of the
-78 latest command coordinates is pending. This release does not claim new
+documentation checks, serial uploads and local MoonX acceptance of all 78
+latest command coordinates. The 2,127-case run recorded 1,868 semantic passes,
+186 availability passes, 51 explicit boundary results, 22 platform skips and
+zero failures. Ten supplemental functional checks passed for find, test and
+yes, completing functional coverage beyond metadata/availability for all 78
+commands. This release does not claim new
 cross-platform acceptance or completion of formal performance work.
 
 There are **79 local command modules and 78 published commands**.
@@ -32,8 +36,9 @@ current tier counts and command list are recorded in [ADR-0002](adr/0002-policy.
 
 The selected O-stage implementations are now published; the registered cases
 and package tests describe current source behavior. Private Native/Wasm
-comparisons remain development evidence. Full local MoonX acceptance and
-formal direct-Wasm resources/performance remain pending. Tree uses directory
+comparisons remain development evidence. Current local MoonX acceptance is
+recorded in the release report; formal direct-Wasm resources/performance
+remains pending. Tree uses directory
 sizes only when its released public
 backend actually returns them; no portable inode-size constant is assumed.
 
@@ -61,8 +66,8 @@ Sort **0.2.2**, seq **0.2.3**, printf **0.2.2**, fmt **0.1.2** and
 expand/unexpand **0.1.3** add the selected sorting, numeric-format, paragraph
 and tab-grid families. Shared numeric, C-byte shell quoting and tab-stop code
 selects core **0.8.0**. These coordinates are published. Current source and
-private Native/Wasm GNU observations remain separate from the pending local
-MoonX acceptance and formal performance work.
+private Native/Wasm GNU observations remain separate from the completed local
+MoonX acceptance and pending formal performance work.
 
 Sort adds stable ties, bounded fan-in merge, ordinary output aliases and exact
 16-byte seeded GNU random ordering. Merge assumes ordered inputs. Existing
@@ -86,8 +91,8 @@ The small local Rosetta argv0 diagnostic difference is recorded in ADR-0008.
 Cut, uniq, comm, join and wc **0.2.2** add the selected complement,
 delimiter, duplicate-group, merge-header/field and total policies. Their current
 PR #52 and actual-main run 40110917627 passed all required platform and
-coverage checks. These coordinates are now published; full local MoonX
-acceptance remains pending. The exact contracts are in the current case
+coverage checks. These coordinates are now published; current local MoonX
+acceptance is recorded in the release report. The exact contracts are in the current case
 corpus and [streams ADR](adr/0003-streams.md).
 
 Wc -m now follows the selected C byte profile, including invalid UTF-8, and
@@ -120,8 +125,8 @@ binary/rename/mode patch formats are outside this selected profile.
 
 Performance acceptance now measures direct release Wasm, as selected by the
 user on 2026-10-24. MoonX launcher cost is outside that gate. Publication does
-not establish formal performance acceptance; full local MoonX acceptance of
-the current coordinates remains pending.
+not establish formal performance acceptance. Local MoonX acceptance of the
+current coordinates is recorded in the release report.
 
 ## Workspace stream optimization candidates
 
@@ -138,12 +143,12 @@ does not include all allocator/GC or oversized-record costs and is not an RSS ca
 The [development observations](reports/2026-10-24-stream-hotpaths.md) record
 local correctness and timing separately from formal resources/performance.
 The [current release report](reports/2026-10-25-command-release.md) records
-publication; full local MoonX acceptance remains pending.
+publication and completed local MoonX acceptance.
 
 ## Workspace matcher and sed candidates
 
 Core **0.8.0**, grep **0.3.0**, and sed/expr/csplit **0.2.0** are published.
-Their full local MoonX acceptance remains pending.
+Their current local MoonX acceptance is recorded in the release report.
 [PR #49](https://github.com/moonbit-community/cmd/pull/49)
 merged the S implementation after all required platform and coverage checks.
 The [S implementation report](reports/2026-10-24-s-matcher-sed.md) records its
@@ -176,7 +181,7 @@ faults are retained separately. The earlier compile-time rejection is removed
 and the consumer cases exercise supported matching. These development results
 do not establish complete GNU/POSIX compatibility. PR #49 supplies platform,
 oracle and coverage evidence for its scope; current local MoonX acceptance
-and formal performance remain pending.
+is recorded in the release report and formal performance remains pending.
 
 ## Accepted stage 0 subset: async 0.22.5
 
@@ -244,7 +249,7 @@ The historical local exact
 `cli/sh@0.2.1` probe passes both metadata operations, fixing the reported
 `sh@0.2.0` limitation. That release's published acceptance and frozen pointer
 are recorded in the [release report](reports/2026-10-15-metadata-release/README.md).
-Current latest-coordinate MoonX acceptance is pending in the
+Completed local latest-coordinate MoonX acceptance is recorded in the
 [2026-10-25 release report](reports/2026-10-25-command-release.md).
 Closed-stdin captures prove status and output bytes; they do not measure
 whether an open input stream remains unread.
@@ -284,7 +289,8 @@ builds a command package during a case. The selected versions and case IDs for
 the current release are recorded in
 [`tests/release_runner/current/latest.json`](../tests/release_runner/current/latest.json).
 This ordinary manifest selects the actual registry coordinates for local
-acceptance, which is pending. `current/published.json` retains the previous
+acceptance, whose results are recorded in the release report.
+`current/published.json` retains the previous
 frozen baseline; it is not the latest-coordinate pointer for this release.
 The next release is prepared through
 [`tests/release_runner/current/candidate.json`](../tests/release_runner/current/candidate.json),
@@ -359,8 +365,9 @@ local-only `timeout`. Published command versions are **38 at 0.2.2, 7 at
 0.2.4 and 0.3.0**. Shared `cli/core` is **0.8.0** and is not counted as a command.
 Exact registry coordinates and selected local-acceptance cases are in
 [the latest manifest](../tests/release_runner/current/latest.json) and
-[release report](reports/2026-10-25-command-release.md). Full local MoonX
-acceptance remains pending. The previous frozen baseline stays in
+[release report](reports/2026-10-25-command-release.md). Local MoonX acceptance
+covers all 78 commands, with zero failures and the documented boundaries and
+platform skips. The previous frozen baseline stays in
 `current/published.json`; earlier manifests remain under
 `tests/release_runner/historical/`.
 

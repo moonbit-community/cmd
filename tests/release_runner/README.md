@@ -7,7 +7,12 @@ report writing with the workspace runner through `testkit`.
 The 2026-10-25 release uses `current/latest.json` as an ordinary published
 manifest containing exact registry versions and the current local acceptance
 cases. Core 0.8.0 and 76 command packages have been uploaded; curl and wget
-retain 0.2.3. Full local MoonX acceptance of all 78 latest commands is pending.
+retain 0.2.3. Local MoonX acceptance covered all 78 latest commands: the
+2,127-case run recorded 1,868 semantic passes, 186 availability passes,
+51 explicit boundary results, 22 platform skips and zero failures. Ten
+supplemental functional checks for find, test and yes also passed, so all 78
+commands have functional checks beyond metadata/availability. Their results
+are in `test-reports/moonx-latest-all-20261025/functional-extra.json`.
 Dependency declarations remain unchanged. Run the local consumer suite with:
 
 ```sh
