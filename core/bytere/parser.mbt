@@ -2,6 +2,8 @@
 priv enum Assertion {
   Begin
   End
+  LineBegin
+  LineEnd
   WordBegin
   WordEnd
   WordBoundary
@@ -26,6 +28,7 @@ priv enum Tree {
 priv struct Parser {
   source : String
   extended : Bool
+  emacs : Bool
   grep_syntax : Bool
   ignore_case : Bool
   mut index : Int32
@@ -41,8 +44,11 @@ fn Parser::code(self : Parser, index : Int32) -> Int32 {
 
 ///|
 fn Parser::operator(self : Parser, code : Int32) -> Bool {
+  if self.emacs && (code == 123 || code == 125) {
+    return false
+  }
   self.index < self.source.length() &&
-  (if self.extended || code == 42 {
+  (if self.extended || code == 42 || (self.emacs && (code == 43 || code == 63)) {
     self.code(self.index) == code
   } else {
     self.code(self.index) == 92 &&
@@ -56,7 +62,13 @@ fn Parser::take(self : Parser, code : Int32) -> Bool {
   if !self.operator(code) {
     return false
   }
-  self.index += if self.extended || code == 42 { 1 } else { 2 }
+  self.index += if self.extended ||
+    code == 42 ||
+    (self.emacs && (code == 43 || code == 63)) {
+    1
+  } else {
+    2
+  }
   true
 }
 
@@ -177,13 +189,14 @@ fn Parser::atom(self : Parser, first : Bool) -> Tree raise PatternError {
   let c = self.code(self.index)
   self.index += 1
   match c {
-    46 => Any
+    46 => if self.emacs { Class(Array::makei(256, c => c != 10)) } else { Any }
     91 => Class(self.bracket())
-    94 if self.extended || first => Assert(Begin)
+    94 if self.extended || first =>
+      Assert(if self.emacs { LineBegin } else { Begin })
     36 if self.extended ||
       self.index == self.source.length() ||
       self.operator(124) ||
-      self.operator(41) => Assert(End)
+      self.operator(41) => Assert(if self.emacs { LineEnd } else { End })
     92 => {
       guard self.index < self.source.length() else {
         raise PatternError("trailing backslash in regular expression")
@@ -209,7 +222,7 @@ fn Parser::atom(self : Parser, first : Bool) -> Tree raise PatternError {
         87 => Class(byte_class("word").map(v => !v))
         115 => Class(byte_class("space"))
         83 => Class(byte_class("space").map(v => !v))
-        43 | 63 | 123 if !self.extended =>
+        43 | 63 | 123 if !self.extended && !self.emacs =>
           raise PatternError("repetition operator has no preceding expression")
         _ => self.literal(escaped)
       }
@@ -294,7 +307,8 @@ fn Parser::bracket_item(
   self : Parser,
 ) -> (Array[Bool], Int32?) raise PatternError {
   let c = self.code(self.index)
-  if c == 91 &&
+  if !self.emacs &&
+    c == 91 &&
     self.index + 1 < self.source.length() &&
     self.code(self.index + 1) is (58 | 46 | 61) {
     let marker = self.code(self.index + 1)
@@ -352,7 +366,10 @@ fn Parser::bracket(self : Parser) -> Array[Bool] raise PatternError {
       self.code(self.index + 1) != 93 {
       self.index += 1
       let (_, last) = self.bracket_item()
-      guard single is Some(left) && last is Some(right) && left <= right else {
+      guard single is Some(left) && last is Some(right) else {
+        raise PatternError("invalid bracket range")
+      }
+      if left > right && !self.emacs {
         raise PatternError("invalid bracket range")
       }
       for c in left..<=right {

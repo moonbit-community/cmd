@@ -4,12 +4,15 @@ package "cli/core/checksum"
 // Values
 pub async fn run(Algorithm, ArrayView[String], String) -> Int
 
+pub async fn run_cksum(ArrayView[String], String) -> Int
+
 // Errors
 
 // Types and methods
 pub(all) enum Algorithm {
   Md5
   Sha1
+  Sha256
   Sha512
 }
 

@@ -11,6 +11,18 @@ output, malformed-record warnings, strict parsing, and ignored missing files.
 `-b` emits the binary `*` marker and `-t` the text-space marker; the last one
 wins. With `--ignore-missing`, at least one listed file must still be verified.
 
+The unpublished workspace candidate uses the shared incremental checksum
+engine. `--tag` writes BSD tagged records; verification accepts BSD/OpenSSL
+tagged records, GNU standard records and consistently BSD-reversed records.
+Ordinary output escapes backslash, LF and CR in filenames. `-z` disables
+escaping. Verification reads manifests one line at a time and quotes result
+filenames like GNU. `--quiet`, `--status` and `--warn` reset one another; the
+last one wins. Status mode still reports actual read errors. Explicit `--tag`,
+`-b/-t`, and `-z` cannot be combined with checking; `--tag` cannot use `-t`.
+Malformed or empty manifests, strict checking, missing files and mismatches
+follow the same rules as md5sum, sha1sum and sha512sum. Binary/text flags keep
+input bytes unchanged on Windows. Candidate work does not alter frozen releases.
+
 With no file operand, the command silently reads stdin until EOF, matching the
 upstream terminal, pipe, redirection, and explicit `-` behavior.
 

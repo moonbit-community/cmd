@@ -9,7 +9,7 @@ priv struct ReferenceLimit {
 ///|
 priv struct Sift {
   pattern : Pattern
-  value : String
+  value : StringView
   original : Array[Map[Int32, Bool]]
   cache : CandidateCache
   states : Array[Map[Int32, Bool]]
@@ -263,7 +263,7 @@ fn Sift::backward(
 ///|
 fn Pattern::sift_candidates(
   self : Pattern,
-  value : String,
+  value : StringView,
   start : Int32,
   end : Int32,
   whole : Bool,

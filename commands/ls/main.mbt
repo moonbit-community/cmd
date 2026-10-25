@@ -24,6 +24,12 @@ priv struct LsOptions {
   sort : SortMode
   time : @fsops.TimestampKind
   links : LinkMode
+  layout : Layout
+  width : Int64
+  tabsize : UInt64
+  quoting : QuoteStyle
+  hide_controls : Bool
+  color : Bool
 }
 
 ///|
@@ -186,12 +192,19 @@ async fn sorted_entries(
 ) -> Array[LsEntry] {
   let names = @fs.readdir(
     path,
-    include_hidden=options.all || options.almost_all,
-    include_special=options.all,
+    include_hidden=true,
+    include_special=false,
     sort=false,
   )
+  if options.all {
+    names.push(".")
+    names.push("..")
+  }
   let entries : Array[LsEntry] = []
   for name in names {
+    if name.has_prefix(".") && !options.all && !options.almost_all {
+      continue
+    }
     let full_path = join_path(path, name)
     let entry = read_entry(name, full_path, options, false) catch {
       @fsops.FsOpError(_) as error => raise error
@@ -221,12 +234,53 @@ async fn sorted_entries(
 }
 
 ///|
-async fn print_entry(entry : LsEntry, options : LsOptions) -> Unit {
-  let suffix = match entry.kind {
-    Some(kind) if options.classify => indicator(entry.path, kind)
-    _ => ""
+async fn print_entries(
+  entries : Array[LsEntry],
+  options : LsOptions,
+  palette : Palette?,
+  used : Ref[Bool],
+) -> Unit {
+  let names : Array[DisplayName] = []
+  let quoted_flags : Array[Bool] = []
+  let mut some_quoted = false
+  for entry in entries {
+    let (text, width, quoted) = quote_name(
+      entry.name,
+      options.quoting,
+      options.hide_controls,
+      extra=if options.classify { "=>@|" } else { "" },
+    )
+    let suffix = match entry.kind {
+      Some(kind) if options.classify => indicator(entry.path, kind)
+      _ => ""
+    }
+    let color = match palette {
+      Some(palette) => entry_color(entry, palette)
+      None => None
+    }
+    names.push({
+      text,
+      width: width + suffix.length(),
+      color,
+      suffix,
+      pad: false,
+    })
+    quoted_flags.push(quoted)
+    some_quoted = some_quoted || quoted
   }
-  @stdio.stdout.write(entry.name + suffix + "\n")
+  if some_quoted &&
+    options.width > 0 &&
+    options.layout is (Columns | Across) &&
+    options.quoting is (Shell | ShellEscape | CMaybe) {
+    for index, name in names {
+      if !quoted_flags[index] {
+        names[index] = { ..name, width: name.width + 1, pad: true, }
+      }
+    }
+  }
+  write_layout(names, options, palette, used, async fn(bytes) {
+    @stdio.stdout.write(bytes)
+  })
 }
 
 ///|
@@ -236,18 +290,26 @@ async fn print_directory(
   show_header : Bool,
   printed_section : Ref[Bool],
   status : Ref[Int32],
+  palette : Palette?,
+  used : Ref[Bool],
 ) -> Array[String] {
   if show_header {
     if printed_section.val {
       @stdio.stdout.write("\n")
     }
-    @stdio.stdout.write(path + ":\n")
+    let (header, _, _) = quote_name(
+      path,
+      options.quoting,
+      options.hide_controls,
+      extra=":",
+    )
+    @stdio.stdout.write(header + ":\n")
   }
   printed_section.val = true
   let entries = sorted_entries(path, options, status)
+  print_entries(entries, options, palette, used)
   let child_dirs : Array[String] = []
   for entry in entries {
-    print_entry(entry, options)
     if options.recursive &&
       entry.kind == Some(Directory) &&
       entry.name != "." &&
@@ -277,13 +339,39 @@ fn parse_time(value : String) -> @fsops.TimestampKind raise @cli.CliError {
 fn parse_arguments(
   args : ArrayView[String],
 ) -> @cli.ParsedArgs raise @cli.CliError {
-  @cli.parse(args, [
+  let normalized : Array[String] = []
+  let mut options = true
+  for arg in args {
+    if arg == "--" {
+      options = false
+    }
+    normalized.push(
+      if options && arg == "--color" {
+        "--color=always"
+      } else {
+        arg
+      },
+    )
+  }
+  @cli.parse(normalized[:], [
     @cli.flag("all", short='a'),
     @cli.flag("almost-all", short='A'),
     @cli.flag("directory", short='d'),
     @cli.flag("classify", short='F'),
     @cli.flag("recursive", short='R'),
     @cli.flag("one", short='1'),
+    @cli.flag("columns", short='C'),
+    @cli.flag("across", short='x'),
+    @cli.flag("commas", short='m'),
+    @cli.option("width", short='w'),
+    @cli.option("tabsize", short='T'),
+    @cli.flag("escape", short='b'),
+    @cli.flag("literal", short='N'),
+    @cli.flag("quote", short='Q'),
+    @cli.flag("hide-control-chars", short='q'),
+    @cli.flag("show-control-chars"),
+    @cli.option("quoting-style"),
+    @cli.option("color"),
     @cli.flag("sort-time", short='t'),
     @cli.flag("access-time", short='u'),
     @cli.flag("change-time", short='c'),
@@ -299,6 +387,58 @@ fn parse_arguments(
 
 ///|
 fn ls_options(parsed : @cli.ParsedArgs) -> LsOptions raise @cli.CliError {
+  let layout = match
+    parsed.last_occurrence(["one", "columns", "across", "commas"]) {
+    Some("columns") => Columns
+    Some("across") => Across
+    Some("commas") => Commas
+    _ => Lines
+  }
+  let quoting = match
+    parsed.last_occurrence(["escape", "literal", "quote", "quoting-style"]) {
+    Some("escape") => Escape
+    Some("literal") => Literal
+    Some("quote") => CQuote
+    Some("quoting-style") => {
+      let value = parsed.last_value("quoting-style").unwrap()
+      guard quote_style(value) is Some(style) else {
+        raise @cli.CliError(
+          kind=InvalidValue,
+          option=value,
+          message="invalid quoting style",
+        )
+      }
+      style
+    }
+    _ =>
+      quote_style(@env.get_env_var("QUOTING_STYLE").unwrap_or("literal")).unwrap_or(
+        Literal,
+      )
+  }
+  let color = match parsed.last_value("color") {
+    None | Some("never") | Some("no") | Some("none") => false
+    Some("always") | Some("yes") | Some("force") => true
+    Some(value) =>
+      raise @cli.CliError(
+        kind=InvalidValue,
+        option=value,
+        message="color must be always or never; automatic terminal detection is unavailable",
+      )
+  }
+  let (width, _) = dimension(
+    parsed,
+    "width",
+    "COLUMNS",
+    80UL,
+    layout != Lines || color,
+  )
+  let (tabsize, _) = dimension(
+    parsed,
+    "tabsize",
+    "TABSIZE",
+    8UL,
+    layout != Lines,
+  )
   let selected_time = match
     parsed.last_occurrence(["access-time", "change-time", "time"]) {
     Some("access-time") => @fsops.TimestampKind::AccessTime
@@ -341,6 +481,15 @@ fn ls_options(parsed : @cli.ParsedArgs) -> LsOptions raise @cli.CliError {
     sort,
     time: selected_time,
     links,
+    layout,
+    width: width.reinterpret_as_int64(),
+    tabsize,
+    quoting,
+    hide_controls: parsed.last_occurrence([
+      "hide-control-chars", "show-control-chars",
+    ]) ==
+    Some("hide-control-chars"),
+    color,
   }
 }
 
@@ -360,17 +509,50 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: ls [-aAdF1RrtucS] [-H|-L|-P] [--time=WORD] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -H follows command-line links; -L follows all links; -P follows none (extension).\n  -u, -c and --time select and imply time sorting unless -S or -t selects a sort.\n  -S requires regular files; metadata-rich long listing is not supported.\n",
+      "Usage: ls [-aAdF1RCxmrtucSbqNQ] [-w WIDTH] [-T TABSIZE] [-H|-L|-P] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -C lists down columns; -x across rows; -m uses commas; -1 uses lines.\n  -w, --width=COLS sets line width (0 unlimited); -T, --tabsize=COLS sets tabs.\n  -b escapes names; -N is literal; -Q uses C quotes; -q replaces control bytes.\n      --quoting-style=STYLE selects GNU C-locale quoting.\n      --show-control-chars displays remaining control bytes.\n      --color=always,never controls explicit type/extension colors.\n  Active su/sg/ex/ca/mh or tw/ow/st colors require unavailable metadata.\n  -H follows command-line links; -L follows all links; -P follows none (extension).\n  -u, -c and --time select and imply time sorting unless -S or -t selects a sort.\n  -S requires regular files; metadata-rich long listing is not supported.\n",
     )
     return
   }
-  let options = ls_options(parsed) catch {
+  if invalid_display_option(parsed) is Some((message, status)) {
+    @stdio.stderr.write(message)
+    @sys.exit(status)
+    return
+  }
+  let mut options = ls_options(parsed) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("ls: \{message}: '\{option}'\n")
       @sys.exit(2)
       return
     }
   }
+  for
+    (option, env, default, needed) in [
+      ("width", "COLUMNS", 80UL, options.layout != Lines || options.color),
+      ("tabsize", "TABSIZE", 8UL, options.layout != Lines),
+    ] {
+    let (_, warning) = dimension(parsed, option, env, default, needed) catch {
+      _ => (default, None)
+    }
+    if warning is Some(warning) {
+      @stdio.stderr.write(warning)
+    }
+  }
+  if parsed.last_occurrence(["escape", "literal", "quote", "quoting-style"])
+    is None &&
+    @env.get_env_var("QUOTING_STYLE") is Some(value) &&
+    quote_style(value) is None {
+    @stdio.stderr.write(
+      "ls: ignoring invalid value of environment variable QUOTING_STYLE: " +
+      @quoting.locale_quote(@utf8.encode(value)[:]) +
+      "\n",
+    )
+  }
+  let (palette, color_warning) = color_palette(options.color)
+  @stdio.stderr.write(color_warning)
+  if palette is Some(_) {
+    options = { ..options, tabsize: 0UL, }
+  }
+  let used_color = Ref(false)
   let operands = parsed.operands
   let paths = if operands.is_empty() { ["."] } else { operands }
   let status = Ref(0)
@@ -399,8 +581,17 @@ async fn main {
     return
   }
   directories.sort_by((left, right) => compare_entries(left, right, options))
-  for entry in files {
-    print_entry(entry, options)
+  print_entries(files, options, palette, used_color) catch {
+    @fsops.FsOpError(message) => {
+      @stdio.stderr.write("ls: \{message}\n")
+      @sys.exit(2)
+      return
+    }
+    err => {
+      @stdio.stderr.write("ls: \{err}\n")
+      @sys.exit(2)
+      return
+    }
   }
   let printed_section = Ref(!files.is_empty())
   let show_top_header = paths.length() > 1 || options.recursive
@@ -428,7 +619,15 @@ async fn main {
         show_top_header || !first,
         printed_section,
         status,
+        palette,
+        used_color,
       ) catch {
+        @fsops.FsOpError(message) => {
+          @stdio.stderr.write("ls: \{message}\n")
+          status.val = 2
+          first = false
+          continue
+        }
         err => {
           @stdio.stderr.write("ls: cannot open '\{path}': \{err}\n")
           status.val = 2
@@ -446,6 +645,11 @@ async fn main {
         pending.clear()
       }
     }
+  }
+  if used_color.val &&
+    palette is Some(palette) &&
+    !(palette.codes["lc"] == b"\x1b[" && palette.codes["rc"] == b"m") {
+    @stdio.stdout.write(palette.codes["lc"] + palette.codes["rc"])
   }
   if status.val != 0 {
     @sys.exit(status.val)

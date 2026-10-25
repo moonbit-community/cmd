@@ -1,5 +1,8 @@
 ///|
 pub(all) enum Profile {
+  Binary16
+  BFloat16
+  Binary32
   Binary64
   Extended80
   Binary128
@@ -15,6 +18,9 @@ pub(all) enum Value {
 ///|
 fn limits(profile : Profile) -> (Int32, Int32, Int32) {
   match profile {
+    Binary16 => (11, -14, 15)
+    BFloat16 => (8, -126, 127)
+    Binary32 => (24, -126, 127)
     Binary64 => (53, -1022, 1023)
     Extended80 => (64, -16382, 16383)
     Binary128 => (113, -16382, 16383)

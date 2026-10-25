@@ -1,5 +1,9 @@
 ///|
-fn normalize_status(status : Int32) -> Int32 {
+fn normalize_status(status : Int32, context : Context) -> Int32 {
+  context.last_signal = match @async.platform {
+    Windows => None
+    _ => if status < 0 { Some(-status) } else { None }
+  }
   if status < 0 {
     128 - status
   } else {
@@ -16,6 +20,7 @@ fn clone_context(context : Context, capture? : StringBuilder) -> Context {
     name: context.name,
     cwd: context.cwd,
     last_status: context.last_status,
+    last_signal: None,
     exited: false,
     exit_status: 0,
     capture: match capture {
@@ -119,7 +124,7 @@ async fn run_external(prepared : Prepared, context : Context) -> Int32 {
         no_console_window=true,
       )
       buffer.write_string(output.text())
-      normalize_status(status)
+      normalize_status(status, context)
     } else {
       let execution : @child_process.ExecutionContext = {
         cwd: context.cwd,
@@ -136,6 +141,7 @@ async fn run_external(prepared : Prepared, context : Context) -> Int32 {
           stdout?,
           stderr?,
         ),
+        context,
       )
     }
   }
@@ -310,7 +316,10 @@ async fn eval_statement(statement : Statement, context : Context) -> Int32 {
     }
     GroupStatement(body, subshell) =>
       if subshell {
-        run_jobs(body, clone_context(context))
+        let child = clone_context(context)
+        let status = run_jobs(body, child)
+        context.last_signal = child.last_signal
+        status
       } else {
         run_jobs(body, context)
       }
@@ -396,6 +405,7 @@ async fn execute_prepared(prepared : Prepared, context : Context) -> Int32 {
 
 ///|
 async fn run_command(command : Command, context : Context) -> Int32 {
+  context.last_signal = None
   let prepared = prepare(command, context) catch {
     ShellError(message) => {
       context.exited = true
@@ -452,7 +462,13 @@ async fn run_command(command : Command, context : Context) -> Int32 {
     }
     execute_prepared(prepared, context)
   } catch {
-    @io.PipeClosed => 141
+    @io.PipeClosed => {
+      context.last_signal = match @async.platform {
+        Windows => None
+        _ => Some(13)
+      }
+      141
+    }
     err => {
       write_output(context, "sh: \{err}\n", error=true)
       1
@@ -470,7 +486,7 @@ async fn run_pipeline(pipeline : Pipeline, context : Context) -> Int32 {
     for _ in 1..<pipeline.commands.length() {
       pipes.push(@io.pipe())
     }
-    let tasks : Array[@async.Task[Int32]] = []
+    let tasks : Array[@async.Task[(Int32, Int32?)]] = []
     for index, command in pipeline.commands {
       let child = clone_context(context)
       if index > 0 {
@@ -489,13 +505,16 @@ async fn run_pipeline(pipeline : Pipeline, context : Context) -> Int32 {
               pipes[index].1.close()
             }
           }
-          run_command(command, child)
+          let status = run_command(command, child)
+          (status, child.last_signal)
         }),
       )
     }
     let mut status = 0
     for task in tasks {
-      status = task.wait()
+      let (result, signal) = task.wait()
+      status = result
+      context.last_signal = signal
     }
     status
   }

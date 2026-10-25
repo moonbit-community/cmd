@@ -176,7 +176,7 @@
         "help"
       ],
       "source_version": "workspace cli/xxd@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: xxd [-ipr] [-c COLS] [-l LEN] [-s OFFSET] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stdout_text": "Usage: xxd [OPTION]... [INFILE [OUTFILE]]\nDisplay bytes or reverse an addressed, plain, or binary dump.\n  -a, --autoskip       toggle suppression of zero lines\n  -b, --bits           binary digit display\n  -e, --little         little-endian groups\n  -E, --ebcdic         EBCDIC character display\n  -g, --group=N        bytes per group\n  -u, --upper          uppercase hexadecimal digits\n  -o, --offset=N       add N to displayed offsets\n  -p, -ps, --plain     plain hexadecimal display\n  -i, --include        C include display\n  -r, --reverse        reverse a dump\n  -c, --cols=N         bytes per line\n  -l, --len=N          maximum input bytes\n  -s, --seek=[+][-]N   input seek or reverse address adjustment\n  -n, --name=NAME      C include symbol\n      --help           display this help and exit\n      --version        display version and exit\n",
       "expected_stderr_text": ""
     },
     {
@@ -197,6 +197,1591 @@
       "source_version": "workspace cli/xxd@0.2.2 metadata contract",
       "expected_stdout_text": "xxd 0.2.2\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o8-xxd-bits",
+      "command": "xxd",
+      "args": [
+        "-b"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "bits"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a20303031313030303020303031313030303120303031313030313020303031313030313120303031313031303020303031313031303120203031323334350a30303030303030363a20303031313031313020303031313031313120303031313130303020303031313130303120303130303030303120303130303030313020203637383941420a30303030303030633a20303130303030313120303130303031303020303130303031303120303130303031313020303130303031313120303130303130303020204344454647480a30303030303031323a2030313030313030312030313030313031302030313030313031312030313030313130302030313030313130312030313030313131302020494a4b4c4d4e0a30303030303031383a20303130303131313120303130313030303020303130313030303120303130313030313020303130313030313120303130313031303020204f50515253540a30303030303031653a203031303130313031203031303130313130203031303130313131203031303131303030203031303131303031203031303131303130202055565758595a0a30303030303032343a20303030303130313020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-little-endian",
+      "command": "xxd",
+      "args": [
+        "-e"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "little"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a203333333233313330203337333633353334203432343133393338203436343534343433202020303132333435363738394142434445460a30303030303031303a2034613439343834372034653464346334622035323531353034662035363535353435332020204748494a4b4c4d4e4f505152535455560a30303030303032303a2035613539353835372020202020202030612020202020202020202020202020202020202020205758595a2e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-ebcdic",
+      "command": "xxd",
+      "args": [
+        "-E"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "ebcdic"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a2033303331203332333320333433352033363337203338333920343134322034333434203435343620202e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e0a30303030303031303a2034373438203439346120346234632034643465203466353020353135322035333534203535353620202e2e2e2e2e3c282b7c262e2e2e2e2e2e0a30303030303032303a2035373538203539356120306120202020202020202020202020202020202020202020202020202020202e2e2e212e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-group-none",
+      "command": "xxd",
+      "args": [
+        "-g0"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "group"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a2033303331333233333334333533363337333833393431343234333434343534362020303132333435363738394142434445460a30303030303031303a20343734383439346134623463346434653466353035313532353335343535353620204748494a4b4c4d4e4f505152535455560a30303030303032303a20353735383539356130612020202020202020202020202020202020202020202020205758595a2e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-group-three",
+      "command": "xxd",
+      "args": [
+        "-g3"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "group"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a20333033313332203333333433352033363337333820333934313432203433343434352034362020303132333435363738394142434445460a30303030303031303a203437343834392034613462346320346434653466203530353135322035333534353520353620204748494a4b4c4d4e4f505152535455560a30303030303032303a203537353835392035613061202020202020202020202020202020202020202020202020202020205758595a2e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-group-ragged",
+      "command": "xxd",
+      "args": [
+        "-g4",
+        "-c6"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "cols",
+        "group"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a203330333133323333203334333520203031323334350a30303030303030363a203336333733383339203431343220203637383941420a30303030303030633a203433343434353436203437343820204344454647480a30303030303031323a20343934613462346320346434652020494a4b4c4d4e0a30303030303031383a203466353035313532203533353420204f50515253540a30303030303031653a2035353536353735382035393561202055565758595a0a30303030303032343a203061202020202020202020202020202e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-upper",
+      "command": "xxd",
+      "args": [
+        "-u"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "upper"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a203330333120333233332033343335203336333720333833392034313432203433343420343534362020303132333435363738394142434445460a30303030303031303a2034373438203439344120344234432034443445203446353020353135322035333534203535353620204748494a4b4c4d4e4f505152535455560a30303030303032303a2035373538203539354120304120202020202020202020202020202020202020202020202020202020205758595a2e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-display-offset",
+      "command": "xxd",
+      "args": [
+        "-o16"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "offset"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303031303a203330333120333233332033343335203336333720333833392034313432203433343420343534362020303132333435363738394142434445460a30303030303032303a2034373438203439346120346234632034643465203466353020353135322035333534203535353620204748494a4b4c4d4e4f505152535455560a30303030303033303a2035373538203539356120306120202020202020202020202020202020202020202020202020202020205758595a2e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-display-offset-negative",
+      "command": "xxd",
+      "args": [
+        "-o-2"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "offset"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "666666666666666666666666666666653a203330333120333233332033343335203336333720333833392034313432203433343420343534362020303132333435363738394142434445460a30303030303030653a2034373438203439346120346234632034643465203466353020353135322035333534203535353620204748494a4b4c4d4e4f505152535455560a30303030303031653a2035373538203539356120306120202020202020202020202020202020202020202020202020202020205758595a2e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-autoskip",
+      "command": "xxd",
+      "args": [
+        "-a"
+      ],
+      "stdin_text": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "files": [],
+      "coverage": [
+        "autoskip"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a2030303030203030303020303030302030303030203030303020303030302030303030203030303020202e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e0a2a0a30303030303034303a2030303030203030303020303030302030303030203030303020303030302030303030203030303020202e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-mode-bits-little",
+      "command": "xxd",
+      "args": [
+        "-b",
+        "-e"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "bits",
+        "little"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a203333333233313330203337333633353334203432343133393338203436343534343433202020303132333435363738394142434445460a30303030303031303a2034613439343834372034653464346334622035323531353034662035363535353435332020204748494a4b4c4d4e4f505152535455560a30303030303032303a2035613539353835372020202020202030612020202020202020202020202020202020202020205758595a2e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-mode-little-bits",
+      "command": "xxd",
+      "args": [
+        "-e",
+        "-b"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "bits",
+        "little"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a20303031313030303020303031313030303120303031313030313020303031313030313120303031313031303020303031313031303120203031323334350a30303030303030363a20303031313031313020303031313031313120303031313130303020303031313130303120303130303030303120303130303030313020203637383941420a30303030303030633a20303130303030313120303130303031303020303130303031303120303130303031313020303130303031313120303130303130303020204344454647480a30303030303031323a2030313030313030312030313030313031302030313030313031312030313030313130302030313030313130312030313030313131302020494a4b4c4d4e0a30303030303031383a20303130303131313120303130313030303020303130313030303120303130313030313020303130313030313120303130313031303020204f50515253540a30303030303031653a203031303130313031203031303130313130203031303130313131203031303131303030203031303131303031203031303131303130202055565758595a0a30303030303032343a20303030303130313020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-mode-bits-plain",
+      "command": "xxd",
+      "args": [
+        "-b",
+        "-p"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "bits",
+        "plain"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "3330333133323333333433353336333733383339343134323433343434353436343734383439346134623463346434653466353035313532353335340a35353536353735383539356130610a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-mode-plain-bits",
+      "command": "xxd",
+      "args": [
+        "-p",
+        "-b"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "bits",
+        "plain"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a20303031313030303020303031313030303120303031313030313020303031313030313120303031313031303020303031313031303120203031323334350a30303030303030363a20303031313031313020303031313031313120303031313130303020303031313130303120303130303030303120303130303030313020203637383941420a30303030303030633a20303130303030313120303130303031303020303130303031303120303130303031313020303130303031313120303130303130303020204344454647480a30303030303031323a2030313030313030312030313030313031302030313030313031312030313030313130302030313030313130312030313030313131302020494a4b4c4d4e0a30303030303031383a20303130303131313120303130313030303020303130313030303120303130313030313020303130313030313120303130313031303020204f50515253540a30303030303031653a203031303130313031203031303130313130203031303130313131203031303131303030203031303131303031203031303131303130202055565758595a0a30303030303032343a20303030303130313020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-ebcdic-bits",
+      "command": "xxd",
+      "args": [
+        "-E",
+        "-b"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "bits",
+        "ebcdic"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a20303031313030303020303031313030303120303031313030313020303031313030313120303031313031303020303031313031303120202e2e2e2e2e2e0a30303030303030363a20303031313031313020303031313031313120303031313130303020303031313130303120303130303030303120303130303030313020202e2e2e2e2e2e0a30303030303030633a20303130303030313120303130303031303020303130303031303120303130303031313020303130303031313120303130303130303020202e2e2e2e2e2e0a30303030303031323a20303130303130303120303130303130313020303130303130313120303130303131303020303130303131303120303130303131313020202e2e2e3c282b0a30303030303031383a20303130303131313120303130313030303020303130313030303120303130313030313020303130313030313120303130313031303020207c262e2e2e2e0a30303030303031653a20303130313031303120303130313031313020303130313031313120303130313130303020303130313130303120303130313130313020202e2e2e2e2e210a30303030303032343a20303030303130313020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-reverse-little-reject",
+      "command": "xxd",
+      "args": [
+        "-r",
+        "-e"
+      ],
+      "stdin_text": "00000000: 41\n",
+      "files": [],
+      "coverage": [
+        "little",
+        "revert"
+      ],
+      "expected_status": 255,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "7878643a20536f7272792c2063616e6e6f742072657665727420746869732074797065206f662068657864756d700a",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-reverse-bits-incomplete",
+      "command": "xxd",
+      "args": [
+        "-r",
+        "-b"
+      ],
+      "stdin_text": "00000000: 41\n",
+      "files": [],
+      "coverage": [
+        "bits",
+        "revert"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-stdin-forward-relative",
+      "command": "xxd",
+      "args": [
+        "-s",
+        "+4"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "seek"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030343a2033343335203336333720333833392034313432203433343420343534362034373438203439346120203435363738394142434445464748494a0a30303030303031343a2034623463203464346520346635302035313532203533353420353535362035373538203539356120204b4c4d4e4f505152535455565758595a0a30303030303032343a2030612020202020202020202020202020202020202020202020202020202020202020202020202020202e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-stdin-end-relative-reject",
+      "command": "xxd",
+      "args": [
+        "-s",
+        "-4"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "seek"
+      ],
+      "expected_status": 4,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "7878643a20536f7272792c2063616e6e6f74207365656b2e0a",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-stdin-relative-backward-reject",
+      "command": "xxd",
+      "args": [
+        "-s",
+        "+-4"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "seek"
+      ],
+      "expected_status": 4,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "7878643a20536f7272792c2063616e6e6f74207365656b2e0a",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-file-end-relative",
+      "command": "xxd",
+      "args": [
+        "-s",
+        "-4",
+        "input"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n"
+        }
+      ],
+      "coverage": [
+        "seek"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303032313a20353835392035613061202020202020202020202020202020202020202020202020202020202020202058595a2e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-file-forward-relative",
+      "command": "xxd",
+      "args": [
+        "-s",
+        "+4",
+        "input"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n"
+        }
+      ],
+      "coverage": [
+        "seek"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030343a2033343335203336333720333833392034313432203433343420343534362034373438203439346120203435363738394142434445464748494a0a30303030303031343a2034623463203464346520346635302035313532203533353420353535362035373538203539356120204b4c4d4e4f505152535455565758595a0a30303030303032343a2030612020202020202020202020202020202020202020202020202020202020202020202020202020202e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-file-relative-backward-reject",
+      "command": "xxd",
+      "args": [
+        "-s",
+        "+-4",
+        "input"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n"
+        }
+      ],
+      "coverage": [
+        "seek"
+      ],
+      "expected_status": 4,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "7878643a20536f7272792c2063616e6e6f74207365656b2e0a",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-new-output",
+      "command": "xxd",
+      "args": [
+        "input",
+        "output"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n"
+        }
+      ],
+      "coverage": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "30303030303030303a203330333120333233332033343335203336333720333833392034313432203433343420343534362020303132333435363738394142434445460a30303030303031303a2034373438203439346120346234632034643465203466353020353135322035333534203535353620204748494a4b4c4d4e4f505152535455560a30303030303032303a2035373538203539356120306120202020202020202020202020202020202020202020202020202020205758595a2e0a"
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-reverse-adjust-positive",
+      "command": "xxd",
+      "args": [
+        "-r",
+        "-s",
+        "4"
+      ],
+      "stdin_text": "00000002: 41\n",
+      "files": [],
+      "coverage": [
+        "revert",
+        "seek"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "00000000000041",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-reverse-adjust-negative",
+      "command": "xxd",
+      "args": [
+        "-r",
+        "-s",
+        "-2"
+      ],
+      "stdin_text": "00000002: 41\n",
+      "files": [],
+      "coverage": [
+        "revert",
+        "seek"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "41",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-reverse-adjust-before-zero",
+      "command": "xxd",
+      "args": [
+        "-r",
+        "-s",
+        "-4"
+      ],
+      "stdin_text": "00000002: 41\n",
+      "files": [],
+      "coverage": [
+        "revert",
+        "seek"
+      ],
+      "expected_status": 5,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "7878643a20536f7272792c2063616e6e6f74207365656b206261636b77617264732e0a",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-bits-group-two",
+      "command": "xxd",
+      "args": [
+        "-b",
+        "-g2",
+        "-c4"
+      ],
+      "stdin_text": "ABC\n",
+      "files": [],
+      "coverage": [
+        "bits",
+        "cols",
+        "group"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a2030313030303030313031303030303130203031303030303131303030303130313020204142432e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-group-empty",
+      "command": "xxd",
+      "args": [
+        "-g",
+        ""
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "group"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a2033303331333233333334333533363337333833393431343234333434343534362020303132333435363738394142434445460a30303030303031303a20343734383439346134623463346434653466353035313532353335343535353620204748494a4b4c4d4e4f505152535455560a30303030303032303a20353735383539356130612020202020202020202020202020202020202020202020205758595a2e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-group-invalid",
+      "command": "xxd",
+      "args": [
+        "-g",
+        "xyz"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "group"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a2033303331333233333334333533363337333833393431343234333434343534362020303132333435363738394142434445460a30303030303031303a20343734383439346134623463346434653466353035313532353335343535353620204748494a4b4c4d4e4f505152535455560a30303030303032303a20353735383539356130612020202020202020202020202020202020202020202020205758595a2e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-little-group-invalid",
+      "command": "xxd",
+      "args": [
+        "-e",
+        "-g3"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "group",
+        "little"
+      ],
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "7878643a206e756d626572206f66206f6374657473207065722067726f7570206d757374206265206120706f776572206f6620322077697468202d652e0a",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-little-group-zero",
+      "command": "xxd",
+      "args": [
+        "-e",
+        "-g0",
+        "-c6"
+      ],
+      "stdin_text": "012345",
+      "files": [],
+      "coverage": [
+        "cols",
+        "group",
+        "little"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a203335333420202020333133302033333332323334350a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-columns-zero",
+      "command": "xxd",
+      "args": [
+        "-c0",
+        "-l1"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "cols",
+        "len"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a203330202020202020202020202020202020202020202020202020202020202020202020202020202020300a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-columns-too-large",
+      "command": "xxd",
+      "args": [
+        "-c257"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "cols"
+      ],
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "7878643a20696e76616c6964206e756d626572206f6620636f6c756d6e7320286d61782e20323536292e0a",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-plain-unwrapped-upper",
+      "command": "xxd",
+      "args": [
+        "-ps",
+        "-c0",
+        "-u"
+      ],
+      "stdin_text": "\u0000«",
+      "files": [],
+      "coverage": [
+        "plain",
+        "seek",
+        "upper"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "3030433241420a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-autoskip-toggle",
+      "command": "xxd",
+      "args": [
+        "-a",
+        "-a"
+      ],
+      "stdin_text": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "files": [],
+      "coverage": [
+        "autoskip"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a2030303030203030303020303030302030303030203030303020303030302030303030203030303020202e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e0a30303030303031303a2030303030203030303020303030302030303030203030303020303030302030303030203030303020202e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e0a30303030303032303a2030303030203030303020303030302030303030203030303020303030302030303030203030303020202e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-autoskip-three-final",
+      "command": "xxd",
+      "args": [
+        "-a"
+      ],
+      "stdin_text": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+      "files": [],
+      "coverage": [
+        "autoskip"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a2030303030203030303020303030302030303030203030303020303030302030303030203030303020202e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e0a30303030303031303a2030303030203030303020303030302030303030203030303020303030302030303030203030303020202e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e0a30303030303032303a2030303030203030303020303030302030303030203030303020303030302030303030203030303020202e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-autoskip-interior",
+      "command": "xxd",
+      "args": [
+        "-a"
+      ],
+      "stdin_text": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000A",
+      "files": [],
+      "coverage": [
+        "autoskip"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a2030303030203030303020303030302030303030203030303020303030302030303030203030303020202e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e0a2a0a30303030303033303a203431202020202020202020202020202020202020202020202020202020202020202020202020202020410a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-reverse-bits-valid",
+      "command": "xxd",
+      "args": [
+        "-r",
+        "-b"
+      ],
+      "stdin_text": "00000000: 01000001 01000010  AB\n",
+      "files": [],
+      "coverage": [
+        "bits",
+        "revert"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "4142",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-reverse-bits-new-output",
+      "command": "xxd",
+      "args": [
+        "-r",
+        "-b",
+        "input",
+        "output"
+      ],
+      "stdin_text": "00000002: 01000001 01000010  AB\n",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "00000002: 01000001 01000010  AB\n"
+        }
+      ],
+      "coverage": [
+        "bits",
+        "revert"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "00004142"
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-reverse-plain-odd-garbage",
+      "command": "xxd",
+      "args": [
+        "-r",
+        "-ps"
+      ],
+      "stdin_text": "41z 4",
+      "files": [],
+      "coverage": [
+        "plain",
+        "revert",
+        "seek"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "41",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-reverse-plain-adjustment",
+      "command": "xxd",
+      "args": [
+        "-r",
+        "-p",
+        "-s4"
+      ],
+      "stdin_text": "41",
+      "files": [],
+      "coverage": [
+        "plain",
+        "revert",
+        "seek"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "0000000041",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-reverse-backward-stdout",
+      "command": "xxd",
+      "args": [
+        "-r"
+      ],
+      "stdin_text": "00000002: 41\n00000000: 42\n",
+      "files": [],
+      "coverage": [
+        "revert"
+      ],
+      "expected_status": 5,
+      "expected_stdout_hex": "000041",
+      "expected_stderr_hex": "7878643a20536f7272792c2063616e6e6f74207365656b206261636b77617264732e0a",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-reverse-backward-new-output",
+      "command": "xxd",
+      "args": [
+        "-r",
+        "input",
+        "output"
+      ],
+      "stdin_text": "00000002: 41\n00000000: 42\n",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "00000002: 41\n00000000: 42\n"
+        }
+      ],
+      "coverage": [
+        "revert"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": true,
+          "kind": "file",
+          "content_hex": "420041"
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-reverse-little-new-output-reject",
+      "command": "xxd",
+      "args": [
+        "-r",
+        "-e",
+        "input",
+        "output"
+      ],
+      "stdin_text": "00000000: 41\n",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "00000000: 41\n"
+        }
+      ],
+      "coverage": [
+        "little",
+        "revert"
+      ],
+      "expected_status": 255,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "7878643a20536f7272792c2063616e6e6f742072657665727420746869732074797065206f662068657864756d700a",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": true,
+          "kind": "file",
+          "content_hex": ""
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-include-columns-limit-upper",
+      "command": "xxd",
+      "args": [
+        "-i",
+        "-u",
+        "-c2",
+        "-l3",
+        "-nfixture"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "cols",
+        "include",
+        "len",
+        "name",
+        "upper"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "756e7369676e6564206368617220666978747572655b5d203d207b0a2020305833302c20305833312c0a2020305833320a7d3b0a756e7369676e656420696e7420666978747572655f6c656e203d20333b0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-include-byte-name",
+      "command": "xxd",
+      "args": [
+        "-i",
+        "-néfile"
+      ],
+      "stdin_text": "A",
+      "files": [],
+      "coverage": [
+        "include",
+        "name"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "756e7369676e65642063686172205f5f66696c655b5d203d207b0a2020307834310a7d3b0a756e7369676e656420696e74205f5f66696c655f6c656e203d20313b0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-file-end-relative-zero",
+      "command": "xxd",
+      "args": [
+        "-s-37",
+        "input"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n"
+        }
+      ],
+      "coverage": [
+        "seek"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "30303030303030303a203330333120333233332033343335203336333720333833392034313432203433343420343534362020303132333435363738394142434445460a30303030303031303a2034373438203439346120346234632034643465203466353020353135322035333534203535353620204748494a4b4c4d4e4f505152535455560a30303030303032303a2035373538203539356120306120202020202020202020202020202020202020202020202020202020205758595a2e0a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-file-seek-past-eof",
+      "command": "xxd",
+      "args": [
+        "-s100",
+        "input"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n"
+        }
+      ],
+      "coverage": [
+        "seek"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-stdin-seek-past-eof",
+      "command": "xxd",
+      "args": [
+        "-s100"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "seek"
+      ],
+      "expected_status": 4,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "7878643a20536f7272792c2063616e6e6f74207365656b2e0a",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-display-offset-wide",
+      "command": "xxd",
+      "args": [
+        "-o0x100000000",
+        "-c1",
+        "-l1"
+      ],
+      "stdin_text": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "files": [],
+      "coverage": [
+        "cols",
+        "len",
+        "offset"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "3130303030303030303a2033302020300a",
+      "expected_stderr_hex": "",
+      "expected_files": [
+        {
+          "path": "output",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed native Vim 9.1.0000 source / xxd 2023-10-25; /private/tmp/cmd-native-oracle-2026-10-23/manifest.json; LC_ALL=C",
+      "environment": {},
+      "normalizations": []
+    },
+    {
+      "id": "o8-xxd-existing-output-rejection",
+      "command": "xxd",
+      "args": [
+        "input",
+        "output"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "ABC"
+        },
+        {
+          "path": "output",
+          "content_text": "keep"
+        }
+      ],
+      "expected_status": 3,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "xxd: existing output requires a public file-identity API\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "exists": true,
+          "kind": "file",
+          "content_text": "ABC"
+        },
+        {
+          "path": "output",
+          "exists": true,
+          "kind": "file",
+          "content_text": "keep"
+        }
+      ],
+      "comparison": "boundary",
+      "oracle": false,
+      "coverage": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_rejection": "existing output requires a public file-identity API"
+    },
+    {
+      "id": "o8-xxd-existing-output-alias-rejection",
+      "command": "xxd",
+      "args": [
+        "input",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "ABC"
+        }
+      ],
+      "expected_status": 3,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "xxd: existing output requires a public file-identity API\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "exists": true,
+          "kind": "file",
+          "content_text": "ABC"
+        }
+      ],
+      "comparison": "boundary",
+      "oracle": false,
+      "coverage": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_rejection": "existing output requires a public file-identity API"
+    },
+    {
+      "id": "o8-xxd-reverse-existing-output-rejection",
+      "command": "xxd",
+      "args": [
+        "-r",
+        "input",
+        "output"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "00000000: 41\n"
+        },
+        {
+          "path": "output",
+          "content_text": "keep"
+        }
+      ],
+      "expected_status": 3,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "xxd: existing output requires a public file-identity API\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "exists": true,
+          "kind": "file",
+          "content_text": "00000000: 41\n"
+        },
+        {
+          "path": "output",
+          "exists": true,
+          "kind": "file",
+          "content_text": "keep"
+        }
+      ],
+      "comparison": "boundary",
+      "oracle": false,
+      "coverage": [
+        "revert"
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_rejection": "existing output requires a public file-identity API"
     }
   ]
 }

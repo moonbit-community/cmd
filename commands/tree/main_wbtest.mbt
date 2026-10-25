@@ -25,39 +25,52 @@ test "tree option parsing keeps the last level and supports clusters" {
 ///|
 test "tree rejects negative levels" {
   try parse_arguments(["-L", "-1"]) catch {
-    TreeError(message) => assert_true(message.contains("invalid level"))
+    TreeError(message) => assert_true(message.contains("Invalid level"))
   } noraise {
     _ => fail("negative level must be rejected")
   }
 }
 
 ///|
-test "tree rendering uses deterministic branch glyphs" {
+async test "tree rendering uses deterministic C locale branches" {
   let root : TreeNode = {
     name: ".",
     path: ".",
     kind: Directory,
     children: [
-      { name: "a", path: "./a", kind: Directory, children: [], },
-      { name: "b", path: "./b", kind: Regular, children: [], },
+      {
+        name: "a",
+        path: "./a",
+        kind: Directory,
+        children: [],
+        size: None,
+        note: None,
+        limited: false,
+      },
+      {
+        name: "b",
+        path: "./b",
+        kind: Regular,
+        children: [],
+        size: None,
+        note: None,
+        limited: false,
+      },
     ],
+    size: None,
+    note: None,
+    limited: false,
   }
-  let output = StringBuilder()
+  let bytes = @buffer.Buffer()
+  let output = TreeOutput::new(chunk => bytes.write_bytes(chunk[:]))
   render_node(
     root,
-    {
-      all: false,
-      directories_only: false,
-      full_path: false,
-      level: None,
-      no_report: true,
-      help: false,
-      version: false,
-    },
+    parse_arguments(["--noreport"]).options,
     "",
     true,
     true,
     output,
   )
-  assert_eq(output.to_string(), ".\n├── a\n└── b\n")
+  output.flush()
+  assert_eq(@utf8.decode(bytes.to_bytes()), ".\n|-- a\n`-- b\n")
 }

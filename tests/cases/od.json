@@ -223,12 +223,16 @@
       "stdin_text": "abcd",
       "files": [],
       "environment": {},
-      "expected_status": 1,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "od: unsupported format 'f'; use a, c, or integer d/u/o/x formats\n",
-      "expected_rejection": "unsupported format",
-      "comparison": "boundary",
-      "normalizations": []
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "30303030303030202020312e36373737393939652b32320a303030303030340a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
     },
     {
       "id": "od-skip-past-eof",
@@ -261,7 +265,7 @@
         "help"
       ],
       "source_version": "workspace cli/od@0.1.2 metadata contract",
-      "expected_stdout_text": "Usage: od [OPTION]... [FILE]...\nDump concatenated files, or stdin when no FILE or FILE - is given.\n  -A, --address-radix=d|o|x|n  address base, or no addresses\n  -j, --skip-bytes=N          skip N input bytes\n  -N, --read-bytes=N          print at most N bytes\n  -t, --format=TYPE           a, c, d/u/o/x with size 1,2,4,8; optional z\n  -a -b -c -d -i -l -o -s -x  traditional named/integer formats\n      --endian=little|big     byte order (default little)\n  -w[N], --width[=N]         bytes per line (default 16, bare option 32)\n  -v, --output-duplicates    do not replace repeated blocks with *\n      --help                 display this help and exit\n      --version              display version and exit\n",
+      "expected_stdout_text": "Usage: od [OPTION]... [FILE]...\nDump concatenated files, or stdin when no FILE or FILE - is given.\n  -A, --address-radix=d|o|x|n  address base, or no addresses\n  -j, --skip-bytes=N          skip N input bytes\n  -N, --read-bytes=N          print at most N bytes\n  -t, --format=TYPE           a, c, integers 1/2/4/8; floats 2/4/8/16; optional z\n  -a -b -c -d -i -l -o -s -x  traditional named/integer formats\n  -f -e -F                    traditional float or double formats\n      --endian=little|big     byte order (default little)\n  -w[N], --width[=N]         bytes per line (default 16, bare option 32)\n  -v, --output-duplicates    do not replace repeated blocks with *\n  -S N, --strings[=N]       print NUL-terminated printable strings (default 3)\n      --traditional        accept old offset and label operands\n      --help                 display this help and exit\n      --version              display version and exit\n",
       "expected_stderr_text": ""
     },
     {
@@ -282,6 +286,1197 @@
       "source_version": "workspace cli/od@0.1.2 metadata contract",
       "expected_stdout_text": "od 0.1.2\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o7-od-alias-f",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "-w16",
+        "-t",
+        "f"
+      ],
+      "stdin_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "20202020202020202020202020202020202020202020202030202020202020202020202020202020202020202020202020300a20202020202020202020202020202020202020202020202030202020202020202020202020202020202020202020202020300a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format",
+        "output-duplicates",
+        "width"
+      ]
+    },
+    {
+      "id": "o7-od-alias-f2",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "-w16",
+        "-t",
+        "f2"
+      ],
+      "stdin_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "20202020202020202020202020202030202020202020202020202020202020302020202020202020202020202020203020202020202020202020202020202030202020202020202020202020202020302020202020202020202020202020203020202020202020202020202020202030202020202020202020202020202020300a20202020202020202020202020202030202020202020202020202020202020302020202020202020202020202020203020202020202020202020202020202030202020202020202020202020202020302020202020202020202020202020203020202020202020202020202020202030202020202020202020202020202020300a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format",
+        "output-duplicates",
+        "width"
+      ]
+    },
+    {
+      "id": "o7-od-alias-f4",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "-w16",
+        "-t",
+        "f4"
+      ],
+      "stdin_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "202020202020202020202020202020302020202020202020202020202020203020202020202020202020202020202030202020202020202020202020202020300a202020202020202020202020202020302020202020202020202020202020203020202020202020202020202020202030202020202020202020202020202020300a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format",
+        "output-duplicates",
+        "width"
+      ]
+    },
+    {
+      "id": "o7-od-alias-f8",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "-w16",
+        "-t",
+        "f8"
+      ],
+      "stdin_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "20202020202020202020202020202020202020202020202030202020202020202020202020202020202020202020202020300a20202020202020202020202020202020202020202020202030202020202020202020202020202020202020202020202020300a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format",
+        "output-duplicates",
+        "width"
+      ]
+    },
+    {
+      "id": "o7-od-alias-f16",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "-w16",
+        "-t",
+        "f16"
+      ],
+      "stdin_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "2020202020202020202020202020202020202020202020202020202020300a2020202020202020202020202020202020202020202020202020202020300a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format",
+        "output-duplicates",
+        "width"
+      ]
+    },
+    {
+      "id": "o7-od-alias-fF",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "-w16",
+        "-t",
+        "fF"
+      ],
+      "stdin_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "202020202020202020202020202020302020202020202020202020202020203020202020202020202020202020202030202020202020202020202020202020300a202020202020202020202020202020302020202020202020202020202020203020202020202020202020202020202030202020202020202020202020202020300a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format",
+        "output-duplicates",
+        "width"
+      ]
+    },
+    {
+      "id": "o7-od-alias-fD",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "-w16",
+        "-t",
+        "fD"
+      ],
+      "stdin_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "20202020202020202020202020202020202020202020202030202020202020202020202020202020202020202020202020300a20202020202020202020202020202020202020202020202030202020202020202020202020202020202020202020202020300a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format",
+        "output-duplicates",
+        "width"
+      ]
+    },
+    {
+      "id": "o7-od-alias-fL",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "-w16",
+        "-t",
+        "fL"
+      ],
+      "stdin_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "2020202020202020202020202020202020202020202020202020202020300a2020202020202020202020202020202020202020202020202020202020300a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format",
+        "output-duplicates",
+        "width"
+      ]
+    },
+    {
+      "id": "o7-od-alias-fH",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "-w16",
+        "-t",
+        "fH"
+      ],
+      "stdin_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "20202020202020202020202020202030202020202020202020202020202020302020202020202020202020202020203020202020202020202020202020202030202020202020202020202020202020302020202020202020202020202020203020202020202020202020202020202030202020202020202020202020202020300a20202020202020202020202020202030202020202020202020202020202020302020202020202020202020202020203020202020202020202020202020202030202020202020202020202020202020302020202020202020202020202020203020202020202020202020202020202030202020202020202020202020202020300a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format",
+        "output-duplicates",
+        "width"
+      ]
+    },
+    {
+      "id": "o7-od-alias-fB",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "-w16",
+        "-t",
+        "fB"
+      ],
+      "stdin_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "20202020202020202020202020202030202020202020202020202020202020302020202020202020202020202020203020202020202020202020202020202030202020202020202020202020202020302020202020202020202020202020203020202020202020202020202020202030202020202020202020202020202020300a20202020202020202020202020202030202020202020202020202020202020302020202020202020202020202020203020202020202020202020202020202030202020202020202020202020202020302020202020202020202020202020203020202020202020202020202020202030202020202020202020202020202020300a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format",
+        "output-duplicates",
+        "width"
+      ]
+    },
+    {
+      "id": "o7-od-alias-f10",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "-w16",
+        "-t",
+        "f10"
+      ],
+      "stdin_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "6f643a20696e76616c6964207479706520737472696e672027663130273b0a746869732073797374656d20646f65736e27742070726f7669646520612031302d6279746520666c6f6174696e6720706f696e7420747970650a",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format",
+        "output-duplicates",
+        "width"
+      ]
+    },
+    {
+      "id": "o7-od-alias-f12",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "-w16",
+        "-t",
+        "f12"
+      ],
+      "stdin_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "6f643a20696e76616c6964207479706520737472696e672027663132273b0a746869732073797374656d20646f65736e27742070726f7669646520612031322d6279746520666c6f6174696e6720706f696e7420747970650a",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format",
+        "output-duplicates",
+        "width"
+      ]
+    },
+    {
+      "id": "o7-od-alias-f1",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "-w16",
+        "-t",
+        "f1"
+      ],
+      "stdin_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "6f643a20696e76616c6964207479706520737472696e6720276631273b0a746869732073797374656d20646f65736e27742070726f76696465206120312d6279746520666c6f6174696e6720706f696e7420747970650a",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format",
+        "output-duplicates",
+        "width"
+      ]
+    },
+    {
+      "id": "o7-od-alias-f32",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "-w16",
+        "-t",
+        "f32"
+      ],
+      "stdin_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "6f643a20696e76616c6964207479706520737472696e672027663332273b0a746869732073797374656d20646f65736e27742070726f7669646520612033322d6279746520666c6f6174696e6720706f696e7420747970650a",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format",
+        "output-duplicates",
+        "width"
+      ]
+    },
+    {
+      "id": "o7-01-od-float-values",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "-tf4"
+      ],
+      "stdin_hex": "0000803f000000800000807f0000c07f01000000cdcccc3d",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "2020202020202020202020202020203120202020202020202020202020202d3020202020202020202020202020696e66202020202020202020202020206e616e0a202020202020202020202031652d343520202020202020202020202020302e310a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format",
+        "output-duplicates"
+      ]
+    },
+    {
+      "id": "o7-02-od-float-big",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "--endian=big",
+        "-tf4"
+      ],
+      "stdin_hex": "3f800000800000007f8000007fc00000000000013dcccccd",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "2020202020202020202020202020203120202020202020202020202020202d3020202020202020202020202020696e66202020202020202020202020206e616e0a202020202020202020202031652d343520202020202020202020202020302e310a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "endian",
+        "format",
+        "output-duplicates"
+      ]
+    },
+    {
+      "id": "o7-03-od-double-values",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "-tf8"
+      ],
+      "stdin_hex": "000000000000f03f0000000000000080000000000000f07f000000000000f87f01000000000000009a9999999999b93f",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "2020202020202020202020202020202020202020202020203120202020202020202020202020202020202020202020202d300a20202020202020202020202020202020202020202020696e66202020202020202020202020202020202020202020206e616e0a2020202020202020202020202020202020202035652d33323420202020202020202020202020202020202020202020302e310a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format",
+        "output-duplicates"
+      ]
+    },
+    {
+      "id": "o7-04-od-x87-values",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "-tf16"
+      ],
+      "stdin_hex": "0000000000000080ff3f000000000000000000000000000000800000000000000000000000000080ff7f00000000000000000000000000c0ff7f00000000000001000000000000000000000000000000cdccccccccccccccfb3f000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "2020202020202020202020202020202020202020202020202020202020310a202020202020202020202020202020202020202020202020202020202d300a202020202020202020202020202020202020202020202020202020696e660a2020202020202020202020202020202020202020202020202020206e616e0a202020202020202020202020202020202020202020202034652d343935310a202020202020202020202020202020202020202020202020202020302e310a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format",
+        "output-duplicates"
+      ]
+    },
+    {
+      "id": "o7-05-od-short-4-little",
+      "command": "od",
+      "args": [
+        "-An",
+        "--endian=little",
+        "-tf4"
+      ],
+      "stdin_hex": "80",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "202020202020202020312e38652d34330a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "endian",
+        "format"
+      ]
+    },
+    {
+      "id": "o7-06-od-short-4-big",
+      "command": "od",
+      "args": [
+        "-An",
+        "--endian=big",
+        "-tf4"
+      ],
+      "stdin_hex": "80",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "20202020202020202020202020202d300a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "endian",
+        "format"
+      ]
+    },
+    {
+      "id": "o7-07-od-short-8-little",
+      "command": "od",
+      "args": [
+        "-An",
+        "--endian=little",
+        "-tf8"
+      ],
+      "stdin_hex": "80",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "2020202020202020202020202020202020362e33652d3332320a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "endian",
+        "format"
+      ]
+    },
+    {
+      "id": "o7-08-od-short-8-big",
+      "command": "od",
+      "args": [
+        "-An",
+        "--endian=big",
+        "-tf8"
+      ],
+      "stdin_hex": "80",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "20202020202020202020202020202020202020202020202d300a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "endian",
+        "format"
+      ]
+    },
+    {
+      "id": "o7-09-od-short-16-little",
+      "command": "od",
+      "args": [
+        "-An",
+        "--endian=little",
+        "-tf16"
+      ],
+      "stdin_hex": "80",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "2020202020202020202020202020202020202020342e3637652d343934390a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "endian",
+        "format"
+      ]
+    },
+    {
+      "id": "o7-10-od-short-16-big",
+      "command": "od",
+      "args": [
+        "-An",
+        "--endian=big",
+        "-tf16"
+      ],
+      "stdin_hex": "80",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "2020202020202020202020202020202020202020202020202020202020300a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "endian",
+        "format"
+      ]
+    },
+    {
+      "id": "o7-11-od-half-values",
+      "command": "od",
+      "args": [
+        "-An",
+        "-tfH"
+      ],
+      "stdin_hex": "003c0080007c007e0100662e",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "2020202020202020202020202020203120202020202020202020202020202d3020202020202020202020202020696e66202020202020202020202020206e616e202020352e39363034363435652d30382020202020302e3039393937353538360a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format"
+      ]
+    },
+    {
+      "id": "o7-12-od-bfloat-values",
+      "command": "od",
+      "args": [
+        "-An",
+        "-tfB"
+      ],
+      "stdin_hex": "803f0080807fc07f0100cd3d",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "2020202020202020202020202020203120202020202020202020202020202d3020202020202020202020202020696e66202020202020202020202020206e616e202020202020392e31383335652d34312020202020302e3130303039373635360a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format"
+      ]
+    },
+    {
+      "id": "o7-13-od-multiple-float-trailer",
+      "command": "od",
+      "args": [
+        "-An",
+        "-tf4z",
+        "-tx1"
+      ],
+      "stdin_hex": "6162636465666768696a6b6c6d6e6f70",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "202020312e36373737393939652b323220202020342e333731303232652b3234202020312e31333834303033652b3237202020322e39363430313636652b323920203e6162636465666768696a6b6c6d6e6f703c0a202036312020363220203633202036342020363520203636202036372020363820203639202036612020366220203663202036642020366520203666202037300a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format"
+      ]
+    },
+    {
+      "id": "o7-14-od-old-offset",
+      "command": "od",
+      "args": [
+        "-c",
+        "+2"
+      ],
+      "stdin_hex": "6162636465660a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "303030303030322020206320202064202020652020206620205c6e0a303030303030370a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "character"
+      ]
+    },
+    {
+      "id": "o7-15-od-traditional-label",
+      "command": "od",
+      "args": [
+        "--traditional",
+        "-Ax",
+        "-tx1",
+        "+2",
+        "+20"
+      ],
+      "stdin_hex": "616263646566",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "3030303030322028303030303130292036332036342036352036360a3030303030362028303030303134290a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format",
+        "traditional"
+      ]
+    },
+    {
+      "id": "o7-16-od-traditional-hidden-address-label",
+      "command": "od",
+      "args": [
+        "--traditional",
+        "-An",
+        "-tx1",
+        "2.",
+        "16."
+      ],
+      "stdin_hex": "616263646566",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "2830303030303032292036332036342036352036360a2830303030303036290a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format",
+        "traditional"
+      ]
+    },
+    {
+      "id": "o7-17-od-modern-file-looking-offset",
+      "command": "od",
+      "args": [
+        "-tx1",
+        "+2"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "+2",
+          "content_hex": "61626364"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "303030303030302036312036322036332036340a303030303030340a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "o7-18-od-traditional-many-files",
+      "command": "od",
+      "args": [
+        "--traditional",
+        "first",
+        "second"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "first",
+          "content_hex": "61626364"
+        },
+        {
+          "path": "second",
+          "content_hex": "65666768"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "oracle": true,
+      "expected_stderr_contains": "od: extra operand 'second'\nod: compatibility mode supports at most one file\n",
+      "diagnostic_reason": "The local Rosetta/binfmt oracle replaces argv0 with /oracle/bin/od only in the trailing help hint. Both complete primary diagnostic lines, stdout and status are asserted; both raw stderr streams are retained. Native Linux CI binds its own oracle.",
+      "coverage": [
+        "traditional"
+      ]
+    },
+    {
+      "id": "o7-19-od-strings-eof",
+      "command": "od",
+      "args": [
+        "-An",
+        "-S"
+      ],
+      "stdin_hex": "6162630064650061626364",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "oracle": true,
+      "expected_stderr_contains": "option requires an argument -- 'S'\n",
+      "diagnostic_reason": "The local Rosetta/binfmt oracle replaces argv0 with /oracle/bin/od in libc's diagnostic prefix and trailing help hint. The exact missing-short-option-argument diagnostic body, stdout and status are asserted; complete oracle and Native/Wasm candidate streams are retained separately.",
+      "coverage": [
+        "address-radix",
+        "strings"
+      ]
+    },
+    {
+      "id": "o7-20-od-strings-nul-limit",
+      "command": "od",
+      "args": [
+        "-S3",
+        "-N4"
+      ],
+      "stdin_hex": "616263007461696c",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "30303030303030206162630a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "read-bytes",
+        "strings"
+      ]
+    },
+    {
+      "id": "o7-21-od-strings-limit-terminates",
+      "command": "od",
+      "args": [
+        "-An",
+        "-S3",
+        "-N3"
+      ],
+      "stdin_hex": "616263646566",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "6162630a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "read-bytes",
+        "strings"
+      ]
+    },
+    {
+      "id": "o7-22-od-strings-zero-minimum",
+      "command": "od",
+      "args": [
+        "-An",
+        "-S0"
+      ],
+      "stdin_hex": "006100016200",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "0a610a620a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "strings"
+      ]
+    },
+    {
+      "id": "o7-23-od-strings-cross-file",
+      "command": "od",
+      "args": [
+        "-An",
+        "-S3",
+        "-j2",
+        "first",
+        "second"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "first",
+          "content_hex": "78786162"
+        },
+        {
+          "path": "second",
+          "content_hex": "63006261640a58595a007461696c"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "6162630a58595a0a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "skip-bytes",
+        "strings"
+      ]
+    },
+    {
+      "id": "o7-24-od-strings-format-conflict",
+      "command": "od",
+      "args": [
+        "-S3",
+        "-tf4"
+      ],
+      "stdin_hex": "61626300",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "6f643a206e6f2074797065206d617920626520737065636966696564207768656e2064756d70696e6720737472696e67730a",
+      "oracle": true,
+      "coverage": [
+        "format",
+        "strings"
+      ]
+    },
+    {
+      "id": "o7-od-negative-nan-f4",
+      "command": "od",
+      "args": [
+        "-An",
+        "-t",
+        "f4"
+      ],
+      "stdin_hex": "0000c0ff",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "2020202020202020202020202d6e616e0a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format"
+      ]
+    },
+    {
+      "id": "o7-od-negative-nan-f8",
+      "command": "od",
+      "args": [
+        "-An",
+        "-t",
+        "f8"
+      ],
+      "stdin_hex": "000000000000f8ff",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "2020202020202020202020202020202020202020202d6e616e0a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format"
+      ]
+    },
+    {
+      "id": "o7-od-negative-nan-f16",
+      "command": "od",
+      "args": [
+        "-An",
+        "-t",
+        "f16"
+      ],
+      "stdin_hex": "00000000000000c0ffff000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "20202020202020202020202020202020202020202020202020202d6e616e0a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format"
+      ]
+    },
+    {
+      "id": "o7-od-long-strings-default",
+      "command": "od",
+      "args": [
+        "-An",
+        "--strings"
+      ],
+      "stdin_hex": "6162630064650061626364",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "6162630a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "strings"
+      ]
+    },
+    {
+      "id": "o7-od-short-strings-separate-count",
+      "command": "od",
+      "args": [
+        "-An",
+        "-S",
+        "3"
+      ],
+      "stdin_hex": "6162630064650061626364",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "6162630a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "strings"
+      ]
+    },
+    {
+      "id": "o7-od-float-width-fallback",
+      "command": "od",
+      "args": [
+        "-An",
+        "-w8",
+        "-tf16"
+      ],
+      "stdin_hex": "0000000000000080ff3f000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "2020202020202020202020202020202020202020202020202020202020310a",
+      "expected_stderr_hex": "6f643a207761726e696e673a20696e76616c696420776964746820383b207573696e6720313620696e73746561640a",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format",
+        "width"
+      ]
+    },
+    {
+      "id": "o7-od-traditional-count-range",
+      "command": "od",
+      "args": [
+        "--traditional",
+        "9223372036854775808."
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "6f643a20393232333337323033363835343737353830382e3a204e756d65726963616c20726573756c74206f7574206f662072616e67650a",
+      "oracle": true,
+      "coverage": [
+        "traditional"
+      ]
+    },
+    {
+      "id": "o7-od-x87-unnormal-positive",
+      "command": "od",
+      "args": [
+        "-An",
+        "-tf16"
+      ],
+      "stdin_hex": "0100000000000000ff3f000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "2020202020202020202020202020202020202020202020202020206e616e0a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format"
+      ]
+    },
+    {
+      "id": "o7-od-x87-unnormal-negative",
+      "command": "od",
+      "args": [
+        "-An",
+        "-tf16"
+      ],
+      "stdin_hex": "0100000000000000ffbf000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "20202020202020202020202020202020202020202020202020202d6e616e0a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format"
+      ]
+    },
+    {
+      "id": "o7-od-x87-pseudo-infinity",
+      "command": "od",
+      "args": [
+        "-An",
+        "-tf16"
+      ],
+      "stdin_hex": "0000000000000000ff7f000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Frozen Linux amd64 /oracle/bin/od; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stdout_hex": "2020202020202020202020202020202020202020202020202020206e616e0a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": [
+        "address-radix",
+        "format"
+      ]
     }
   ]
 }

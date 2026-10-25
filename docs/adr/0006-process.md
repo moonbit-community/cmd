@@ -2,8 +2,8 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-11
-Revision: Record yes pipe termination and which lookup choices; correct the executable-access API attribution without claiming platform-complete command resolution.
+Updated: 2026-10-25
+Revision: Add split filter sessions, env split strings and xargs byte/confirmation boundaries without expanding process or shell guarantees.
 
 ## Target and decision
 
@@ -22,6 +22,52 @@ child timeout scenario retains partial output and records each lifecycle phase
 so a cleanup stall remains diagnosable in CI.
 
 ## Alternatives and compatibility cost
+
+The unpublished O5 split filter reuses the pure MoonBit shell Session with
+public pipes and a per-piece FILE environment. The small public `last_signal`
+query preserves raw signal termination separately from an ordinary exit 141;
+pipeline status follows the last command. This is observation of the public
+process result, not signal sending, exec replacement or descendant control.
+No host shell implements a product command.
+
+O13 env `-S` parses its selected quote, escape, comment and stop grammar,
+expands `${NAME}` from the original environment, and splices words back into
+option processing. Shell metacharacters remain literal child arguments. The
+grammar is env-specific and does not widen the shell profile in ADR-0007.
+
+Windows Native `env` rejects a child with an empty final environment before
+spawn (status 125). In released async 0.22.5, `OsEnv::make` allocates this
+environment block without writing its NUL terminators when inheritance is
+disabled and there are no entries; the O-stage Windows run returned
+`ERROR_INVALID_PARAMETER`. Public process APIs share this construction path.
+Empty enumeration, nonempty final assignments, POSIX and Wasm remain supported.
+Do not inject a variable or temporarily rewrite global environment state to
+approximate an empty child environment. Lift the restriction after a released
+public implementation fixes the block and actual Windows Native/Wasm
+child-observed empty-environment, stream and status regressions pass. The
+Native-only Windows harness checks the explicit rejection, empty enumeration
+and a successful nonempty child; POSIX keeps the real empty-child contract.
+
+Xargs `-d` scans raw bytes with the selected named/octal/hex escape rules;
+`-0` and `-d` use last-option precedence. Existing batching and child-tail
+arguments remain distinct from command options. A valid UTF-8 argument prefix
+can use String argv, while an invalid-byte prefix rejects before launch.
+Lift that transport boundary only after a released raw-byte argv API and
+Native/Wasm child-observed byte, NUL and size-limit comparisons pass.
+
+Xargs `-p` independently opens the confirmation channel and serializes prompts
+before each child; argument stdin is never the confirmation reader. On hosts
+without that channel it fails before reading argument stdin or launching,
+including the explicit empty `-r` preflight. This stronger preflight is a
+documented boundary rather than GNU empty-input parity. A host exposing the
+independent channel can lift its host limitation through yes/no/EOF and child
+effect tests. Opening a character device is public; absence of a usable
+console is not a missing character-device API.
+The no-channel fixtures apply to the observed POSIX CI profile. Windows CI
+opens `CONIN$`: nonempty `-p` waits for confirmation and empty `-p -r` exits 0
+without a prompt or child. The latter has its own Windows contract. Separate
+confirmation-reader tests cover yes/no/EOF; unattended console availability
+must not be relabeled as a missing-channel rejection.
 
 Reject spawn+wait as exec replacement and direct-PID kill as descendant cleanup. Process groups are not authorization. handle_cancellation cannot clear current task cancellation. Timeout remains a local direct-child subset, not a published portable process-group guarantee.
 

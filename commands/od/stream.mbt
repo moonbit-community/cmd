@@ -11,6 +11,7 @@ struct DumpState {
   mut offset : Int64
   mut previous : Bytes?
   mut squeezed : Bool
+  mut label : Int64?
 }
 
 ///|
@@ -28,7 +29,15 @@ fn DumpState::row(self : DumpState) -> String {
     }
   } else {
     self.squeezed = false
-    render_row(data, self.offset, self.width, self.formats, self.base, self.big)
+    render_row(
+      data,
+      self.offset,
+      self.width,
+      self.formats,
+      self.base,
+      self.big,
+      label=self.label,
+    )
   }
   self.previous = Some(data)
   self.offset += data.length().to_int64()

@@ -4,7 +4,10 @@ pub fn expand_text(
   root : String,
   http_base? : String,
 ) -> String {
-  let expanded = value.replace_all(old="${WORK}", new=root)
+  let expanded = value
+    .replace_all(old="${WORK}", new=root)
+    .replace_all(old="${PRINTF_CHILD}", new=option_child_source("printf"))
+    .replace_all(old="${PRINTENV_CHILD}", new=option_child_source("printenv"))
   match http_base {
     Some(base) => expanded.replace_all(old="${HTTP_BASE}", new=base)
     None => expanded
@@ -17,7 +20,15 @@ pub fn expand_args(
   root : String,
   http_base? : String,
 ) -> Array[String] {
-  args.map(arg => expand_text(arg, root, http_base?))
+  let result : Array[String] = []
+  for arg in args {
+    match arg {
+      "${PRINTF_CHILD}" => result.append(option_child_words("printf"))
+      "${PRINTENV_CHILD}" => result.append(option_child_words("printenv"))
+      _ => result.push(expand_text(arg, root, http_base?))
+    }
+  }
+  result
 }
 
 ///|
@@ -262,7 +273,7 @@ async fn snapshot_into(
           }
           let format = if @async.platform is MacOS {
             if dimension == "mode" {
-              "%Lp"
+              "%Op"
             } else {
               "%d:%i"
             }
@@ -279,7 +290,13 @@ async fn snapshot_into(
           guard result.status == 0 else {
             fail("host stat failed: \{dimension}")
           }
-          metadata[dimension] = @utf8.decode(result.stdout).trim().to_owned()
+          let observed = @utf8.decode(result.stdout).trim().to_owned()
+          metadata[dimension] = if @async.platform is MacOS &&
+            dimension == "mode" {
+            (@string.parse_int(observed, base=8) & 0o7777).to_string(radix=8)
+          } else {
+            observed
+          }
         }
         "symlink-target" =>
           if kind == SymLink {

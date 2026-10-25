@@ -55,12 +55,14 @@ pub(all) struct Hit {
 pub fn compile(
   pattern : String,
   extended~ : Bool = false,
+  emacs~ : Bool = false,
   grep_syntax~ : Bool = false,
   ignore_case~ : Bool = false,
 ) -> Pattern raise {
   let parser = Parser::{
     source: pattern,
     extended,
+    emacs,
     grep_syntax,
     ignore_case,
     index: 0,
@@ -152,4 +154,35 @@ pub fn Pattern::find_span(
 /// when GNU's separate output-register selection would fail.
 pub fn Pattern::is_match(self : Pattern, value : String) -> Bool {
   self.search(value, 0, false, false, false, restore_registers=false) is Some(_)
+}
+
+///|
+/// Search starts from end-1 towards zero, selecting the longest match at the
+/// rightmost start within the borrowed logical prefix. Empty matches at end
+/// are excluded so callers can advance by a previous match's start.
+pub fn Pattern::rfind_span(
+  self : Pattern,
+  value : String,
+  end : Int32,
+) -> (Int32, Int32)? {
+  if end <= 0 || end > value.length() {
+    return None
+  }
+  let value = value[:end]
+  for start = end - 1; start >= 0; start = start - 1 {
+    if !self.prefix_at(value, start) {
+      continue
+    }
+    if self.backreferences {
+      match self.reference_result(value, start, false, false, true) {
+        Matched(hit) => return Some((hit.start, hit.end))
+        InvalidSelection => return None
+        Miss => ()
+      }
+    } else if self.ordinary(value, start, false, false, false, start_only=true)
+      is Some(hit) {
+      return Some((hit.start, hit.end))
+    }
+  }
+  None
 }

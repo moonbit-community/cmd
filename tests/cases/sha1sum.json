@@ -110,7 +110,8 @@
       "normalizations": [],
       "expected_status": 1,
       "expected_stdout_text": "",
-      "expected_stderr_text": "sha1sum: the --zero option is not supported when verifying checksums\n",
+      "expected_stderr_text": "sha1sum: the --zero option is not supported when verifying checksums\nTry 'sha1sum --help' for more information.\n",
+      "source_version": "GNU coreutils 9.11 C profile; standalone command-name diagnostics",
       "comparison": "contract"
     },
     {
@@ -144,7 +145,7 @@
         "help"
       ],
       "source_version": "workspace cli/sha1sum@0.1.2 metadata contract",
-      "expected_stdout_text": "Usage: sha1sum [OPTION]... [FILE]...\nPrint or check SHA1 checksums. With no FILE, or FILE -, read stdin.\n\n  -b, --binary          mark output as binary\n  -t, --text            mark output as text (default)\n  -c, --check           read checksums from FILEs and check them\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification output\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nChecks use standard GNU untagged records. BSD tagged records are not supported.\nInput bytes are unchanged by -b or -t on every supported platform.\n",
+      "expected_stdout_text": "Usage: sha1sum [OPTION]... [FILE]...\nPrint or check checksums. With no FILE, or FILE -, read stdin.\n\n  -b, --binary          mark untagged output as binary\n  -t, --text            mark untagged output as text (default)\n      --tag             print BSD tagged records\n  -c, --check           read checksum records and verify files\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification results and summaries\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nInput bytes are unchanged by -b or -t on every supported platform.\n",
       "expected_stderr_text": ""
     },
     {
@@ -165,6 +166,36 @@
       "source_version": "workspace cli/sha1sum@0.1.2 metadata contract",
       "expected_stdout_text": "sha1sum 0.1.2\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o9-sha1sum-tag",
+      "command": "sha1sum",
+      "args": [
+        "--tag",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "5348413120287061796c6f616429203d20303363666437343336363166303739373566613266313232306335313934636261666634383435310a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "tag"
+      ]
     }
   ]
 }

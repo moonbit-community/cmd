@@ -30,7 +30,7 @@
         "help"
       ],
       "source_version": "workspace cli/cksum@0.1.3 metadata contract",
-      "expected_stdout_text": "Usage: cksum [FILE]...\n\nPrint CRC checksum and byte count for each FILE.\nWith no FILE, or when FILE is -, read standard input.\n      --help       display this help and exit\n      --version    display version and exit\n\nThis release implements the POSIX CRC-32 form. GNU alternate\nalgorithms and tagged output are not included in this strict subset.\n",
+      "expected_stdout_text": "Usage: cksum [OPTION]... [FILE]...\nPrint or check checksums. With no FILE, or FILE -, read stdin.\n\n  -a, --algorithm=TYPE  bsd, sysv, crc (default), crc32b, md5, sha1,\n                        sha224, sha256, sha384, sha512, sha2, sha3, blake2b, sm3\n  -l, --length=BITS     SHA2/SHA3: 224, 256, 384, 512; BLAKE2b: 8..512 by 8\n      --untagged        omit algorithm tags (modern digests default to tags)\n      --base64          encode modern digests in Base64\n      --raw             write digest bytes without names or separators\n  -b, --binary          mark untagged output as binary\n  -t, --text            mark untagged output as text (default)\n      --tag             print BSD tagged records\n  -c, --check           read checksum records and verify files\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification results and summaries\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nInput bytes are unchanged by -b or -t on every supported platform.\n",
       "expected_stderr_text": ""
     },
     {
@@ -51,6 +51,1585 @@
       "source_version": "workspace cli/cksum@0.1.3 metadata contract",
       "expected_stdout_text": "cksum 0.1.3\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o9-default",
+      "command": "cksum",
+      "args": [
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "313131323833373037382034207061796c6f61640a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": []
+    },
+    {
+      "id": "o9-bsd",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "bsd",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "3038323838202020202031207061796c6f61640a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm"
+      ]
+    },
+    {
+      "id": "o9-sysv",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sysv",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "3330342031207061796c6f61640a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm"
+      ]
+    },
+    {
+      "id": "o9-crc32b",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "crc32b",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "313230303132383333342034207061796c6f61640a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm"
+      ]
+    },
+    {
+      "id": "o9-md5",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "md5",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "4d443520287061796c6f616429203d2030626565383962303761323438653237633833666333643539353132313363310a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm"
+      ]
+    },
+    {
+      "id": "o9-sha1",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha1",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "5348413120287061796c6f616429203d20303363666437343336363166303739373566613266313232306335313934636261666634383435310a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm"
+      ]
+    },
+    {
+      "id": "o9-sha256-alias",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha256",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "53484132353620287061796c6f616429203d20656465616166663366313737346164323838383637333737306336643634303937653339316263333632643764366662333439383264646630656664313863620a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm"
+      ]
+    },
+    {
+      "id": "o9-sha224",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha224",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "53484132323420287061796c6f616429203d2066356339336236663036663763353664376561373230633132316533623166623637333065356366356631386437373662663066326438380a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm"
+      ]
+    },
+    {
+      "id": "o9-sha384",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha384",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "53484133383420287061796c6f616429203d206538643134323062346666343163336631323138366438393461393965316334616136383164613739633437303037653964616465636439656362303438326565316532323435313065373438343037386330323839663334333936623963330a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm"
+      ]
+    },
+    {
+      "id": "o9-sha512",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha512",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "53484135313220287061796c6f616429203d2034663238356430633063633737323836643837333137393862376161653236333965323832373064343136366634306437363963626264636135323330373134643834383438336433363465326633396665366362393038336331353232396233396133333631356562633664353736303566376334336636393036373339640a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm"
+      ]
+    },
+    {
+      "id": "o9-sha2-224",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha2",
+        "-l",
+        "224",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "53484132323420287061796c6f616429203d2066356339336236663036663763353664376561373230633132316533623166623637333065356366356631386437373662663066326438380a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "length"
+      ]
+    },
+    {
+      "id": "o9-sha2-256",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha2",
+        "-l",
+        "256",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "53484132353620287061796c6f616429203d20656465616166663366313737346164323838383637333737306336643634303937653339316263333632643764366662333439383264646630656664313863620a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "length"
+      ]
+    },
+    {
+      "id": "o9-sha2-384",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha2",
+        "-l",
+        "384",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "53484133383420287061796c6f616429203d206538643134323062346666343163336631323138366438393461393965316334616136383164613739633437303037653964616465636439656362303438326565316532323435313065373438343037386330323839663334333936623963330a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "length"
+      ]
+    },
+    {
+      "id": "o9-sha2-512",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha2",
+        "-l",
+        "512",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "53484135313220287061796c6f616429203d2034663238356430633063633737323836643837333137393862376161653236333965323832373064343136366634306437363963626264636135323330373134643834383438336433363465326633396665366362393038336331353232396233396133333631356562633664353736303566376334336636393036373339640a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "length"
+      ]
+    },
+    {
+      "id": "o9-sha3-224",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha3",
+        "-l",
+        "224",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "534841332d32323420287061796c6f616429203d2036333165393939623934613964646363363766333433626530626365616435663035306661306464616663323539666566373131353462390a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "length"
+      ]
+    },
+    {
+      "id": "o9-sha3-256",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha3",
+        "-l",
+        "256",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "534841332d32353620287061796c6f616429203d20383535653737626239643866633036386361383132613339643037626164353064633031326437663037633334366437653536613466323530373565343037300a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "length"
+      ]
+    },
+    {
+      "id": "o9-sha3-384",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha3",
+        "-l",
+        "384",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "534841332d33383420287061796c6f616429203d206237323732323039343063303632316530323236323763316666326635373762313532663938373366626633336134646539653562383131306435626163383437656336636262653663353463353233653862396633333632396637616130340a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "length"
+      ]
+    },
+    {
+      "id": "o9-sha3-512",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha3",
+        "-l",
+        "512",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "534841332d35313220287061796c6f616429203d2063663337656535383636326234323862303864396331316361636164343963643962336163656563373437386261333532643836303964323961663063363061363066343533303438343738626131643961316366316263313765653161623030306134373961646562633335626139363534643863636361356233396138620a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "length"
+      ]
+    },
+    {
+      "id": "o9-blake-8",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "blake2b",
+        "-l",
+        "8",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "424c414b4532622d3820287061796c6f616429203d2063350a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "length"
+      ]
+    },
+    {
+      "id": "o9-blake-128",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "blake2b",
+        "-l",
+        "128",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "424c414b4532622d31323820287061796c6f616429203d2036336130333733386137336238613232323865303736356264313737373432390a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "length"
+      ]
+    },
+    {
+      "id": "o9-blake-256",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "blake2b",
+        "-l",
+        "256",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "424c414b4532622d32353620287061796c6f616429203d20366532353634306261613766396434313836363633643830653764363261383264343835313635313332326162346536383134373533333236306331336430330a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "length"
+      ]
+    },
+    {
+      "id": "o9-blake2b",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "blake2b",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "424c414b45326220287061796c6f616429203d2034323635323661643361613939616336626262393835353563366333306235613535313839643064373533376439323134303533623838366633363561383462643765363863393162353434613866343835666138343263306561396662633466623932323737323930323634653638356565643965363762373632316663390a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm"
+      ]
+    },
+    {
+      "id": "o9-sm3",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sm3",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "534d3320287061796c6f616429203d20313264346538303465316663666463313831656433383361613037626137366363363964386165646362623737343264366532386666346662373737366333340a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm"
+      ]
+    },
+    {
+      "id": "o9-md5-base64",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "md5",
+        "--base64",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "4d443520287061796c6f616429203d20432b364a73486f6b6a696649503850566c52495477513d3d0a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "base64"
+      ]
+    },
+    {
+      "id": "o9-md5-raw",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "md5",
+        "--raw",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "0bee89b07a248e27c83fc3d5951213c1",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "raw"
+      ]
+    },
+    {
+      "id": "o9-bsd-raw",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "bsd",
+        "--raw",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "2060",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "raw"
+      ]
+    },
+    {
+      "id": "o9-sysv-zero",
+      "command": "cksum",
+      "args": [
+        "-asysv",
+        "-z",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "3330342031207061796c6f616400",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "zero"
+      ]
+    },
+    {
+      "id": "o9-cksum-untagged-base64",
+      "command": "cksum",
+      "args": [
+        "-asha2",
+        "-l256",
+        "--untagged",
+        "--base64",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "37657176382f463353744b49686e4e334447316b4358343547384e69313962374e4a677433773739474d733d20207061796c6f61640a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "base64",
+        "length",
+        "untagged"
+      ]
+    },
+    {
+      "id": "o9-cksum-untagged-text",
+      "command": "cksum",
+      "args": [
+        "-amd5",
+        "--untagged",
+        "-t",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "306265653839623037613234386532376338336663336435393531323133633120207061796c6f61640a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "text",
+        "untagged"
+      ]
+    },
+    {
+      "id": "o9-sha2",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha2",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "cksum: --algorithm=sha2 requires specifying --length 224, 256, 384, or 512\n",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm"
+      ]
+    },
+    {
+      "id": "o9-sha3",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha3",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "cksum: --algorithm=sha3 requires specifying --length 224, 256, 384, or 512\n",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm"
+      ]
+    },
+    {
+      "id": "o9-length-alone",
+      "command": "cksum",
+      "args": [
+        "-l",
+        "256",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "cksum: --length is only supported with --algorithm blake2b, sha2, or sha3\n",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "length"
+      ]
+    },
+    {
+      "id": "o9-sha3-length7",
+      "command": "cksum",
+      "args": [
+        "-asha3",
+        "-l7",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "cksum: invalid length: '7'\ncksum: digest length for 'SHA3' must be 224, 256, 384, or 512\n",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "length"
+      ]
+    },
+    {
+      "id": "o9-blake-length7",
+      "command": "cksum",
+      "args": [
+        "-ablake2b",
+        "-l7",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "cksum: invalid length: '7'\ncksum: length is not a multiple of 8\n",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "length"
+      ]
+    },
+    {
+      "id": "o9-blake-length520",
+      "command": "cksum",
+      "args": [
+        "-ablake2b",
+        "-l520",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "cksum: invalid length: '520'\ncksum: maximum digest length for 'BLAKE2b' is 512 bits\n",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "length"
+      ]
+    },
+    {
+      "id": "o9-legacy-explicit-check",
+      "command": "cksum",
+      "args": [
+        "-acrc",
+        "-c",
+        "manifest-legacy"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        },
+        {
+          "path": "manifest-legacy",
+          "content_text": "1112837078 4 payload\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "cksum: --check is not supported with --algorithm={bsd,sysv,crc,crc32b}\n",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "check"
+      ]
+    },
+    {
+      "id": "o9-base64-raw",
+      "command": "cksum",
+      "args": [
+        "--base64",
+        "--raw",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "cksum: --base64 and --raw are mutually exclusive\nTry 'cksum --help' for more information.\n",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "base64",
+        "raw"
+      ]
+    },
+    {
+      "id": "o9-raw-multiple",
+      "command": "cksum",
+      "args": [
+        "-amd5",
+        "--raw",
+        "payload",
+        "empty"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        },
+        {
+          "path": "empty",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "cksum: the --raw option is not supported with multiple files\n",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "raw"
+      ]
+    },
+    {
+      "id": "o9-cksum-check-zero",
+      "command": "cksum",
+      "args": [
+        "-c",
+        "-z",
+        "empty"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "empty",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "cksum: the --zero option is not supported when verifying checksums\nTry 'cksum --help' for more information.\n",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "check",
+        "zero"
+      ]
+    },
+    {
+      "id": "o9-cksum-check-tag",
+      "command": "cksum",
+      "args": [
+        "-c",
+        "--tag",
+        "empty"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "empty",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "cksum: the --tag option is meaningless when verifying checksums\nTry 'cksum --help' for more information.\n",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "check",
+        "tag"
+      ]
+    },
+    {
+      "id": "o9-cksum-text",
+      "command": "cksum",
+      "args": [
+        "-amd5",
+        "-t",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "cksum: --text mode is only supported with --untagged\nTry 'cksum --help' for more information.\n",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "text"
+      ]
+    },
+    {
+      "id": "o9-auto-check-all-modern",
+      "command": "cksum",
+      "args": [
+        "-c",
+        "manifest-all-modern"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        },
+        {
+          "path": "manifest-all-modern",
+          "content_text": "MD5 (payload) = 0bee89b07a248e27c83fc3d5951213c1\nSHA1 (payload) = 03cfd743661f07975fa2f1220c5194cbaff48451\nSHA224 (payload) = f5c93b6f06f7c56d7ea720c121e3b1fb6730e5cf5f18d776bf0f2d88\nSHA256 (payload) = edeaaff3f1774ad2888673770c6d64097e391bc362d7d6fb34982ddf0efd18cb\nSHA384 (payload) = e8d1420b4ff41c3f12186d894a99e1c4aa681da79c47007e9dadecd9ecb0482ee1e224510e7484078c0289f34396b9c3\nSHA512 (payload) = 4f285d0c0cc77286d8731798b7aae2639e28270d4166f40d769cbbdca5230714d848483d364e2f39fe6cb9083c15229b39a33615ebc6d57605f7c43f6906739d\nSHA224 (payload) = f5c93b6f06f7c56d7ea720c121e3b1fb6730e5cf5f18d776bf0f2d88\nSHA256 (payload) = edeaaff3f1774ad2888673770c6d64097e391bc362d7d6fb34982ddf0efd18cb\nSHA384 (payload) = e8d1420b4ff41c3f12186d894a99e1c4aa681da79c47007e9dadecd9ecb0482ee1e224510e7484078c0289f34396b9c3\nSHA512 (payload) = 4f285d0c0cc77286d8731798b7aae2639e28270d4166f40d769cbbdca5230714d848483d364e2f39fe6cb9083c15229b39a33615ebc6d57605f7c43f6906739d\nSHA3-224 (payload) = 631e999b94a9ddcc67f343be0bcead5f050fa0ddafc259fef71154b9\nSHA3-256 (payload) = 855e77bb9d8fc068ca812a39d07bad50dc012d7f07c346d7e56a4f25075e4070\nSHA3-384 (payload) = b727220940c0621e022627c1ff2f577b152f9873fbf33a4de9e5b8110d5bac847ec6cbbe6c54c523e8b9f33629f7aa04\nSHA3-512 (payload) = cf37ee58662b428b08d9c11cacad49cd9b3aceec7478ba352d8609d29af0c60a60f453048478ba1d9a1cf1bc17ee1ab000a479adebc35ba9654d8ccca5b39a8b\nBLAKE2b-8 (payload) = c5\nBLAKE2b-128 (payload) = 63a03738a73b8a2228e0765bd1777429\nBLAKE2b-256 (payload) = 6e25640baa7f9d4186663d80e7d62a82d4851651322ab4e68147533260c13d03\nBLAKE2b (payload) = 426526ad3aa99ac6bbb98555c6c30b5a55189d0d7537d9214053b886f365a84bd7e68c91b544a8f485fa842c0ea9fbc4fb92277290264e685eed9e67b7621fc9\nSM3 (payload) = 12d4e804e1fcfdc181ed383aa07ba76cc69d8aedcbb7742d6e28ff4fb7776c34\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "7061796c6f61643a204f4b0a7061796c6f61643a204f4b0a7061796c6f61643a204f4b0a7061796c6f61643a204f4b0a7061796c6f61643a204f4b0a7061796c6f61643a204f4b0a7061796c6f61643a204f4b0a7061796c6f61643a204f4b0a7061796c6f61643a204f4b0a7061796c6f61643a204f4b0a7061796c6f61643a204f4b0a7061796c6f61643a204f4b0a7061796c6f61643a204f4b0a7061796c6f61643a204f4b0a7061796c6f61643a204f4b0a7061796c6f61643a204f4b0a7061796c6f61643a204f4b0a7061796c6f61643a204f4b0a7061796c6f61643a204f4b0a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "check"
+      ]
+    },
+    {
+      "id": "o9-auto-check-untagged",
+      "command": "cksum",
+      "args": [
+        "-c",
+        "manifest-md5-untagged"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        },
+        {
+          "path": "manifest-md5-untagged",
+          "content_text": "0bee89b07a248e27c83fc3d5951213c1  payload\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "cksum: manifest-md5-untagged: no properly formatted checksum lines found\n",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "check"
+      ]
+    },
+    {
+      "id": "o9-explicit-check-untagged",
+      "command": "cksum",
+      "args": [
+        "-amd5",
+        "-c",
+        "manifest-md5-untagged"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        },
+        {
+          "path": "manifest-md5-untagged",
+          "content_text": "0bee89b07a248e27c83fc3d5951213c1  payload\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "7061796c6f61643a204f4b0a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "algorithm",
+        "check"
+      ]
+    },
+    {
+      "id": "o9-check-base64-auto",
+      "command": "cksum",
+      "args": [
+        "-c",
+        "manifest-md5-base64"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        },
+        {
+          "path": "manifest-md5-base64",
+          "content_text": "MD5 (payload) = C+6JsHokjifIP8PVlRITwQ==\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "7061796c6f61643a204f4b0a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "check"
+      ]
+    },
+    {
+      "id": "o9-check-warn-auto",
+      "command": "cksum",
+      "args": [
+        "-w",
+        "-c",
+        "manifest-bad-and-good"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        },
+        {
+          "path": "manifest-bad-and-good",
+          "content_text": "bad\nMD5 (payload) = 0bee89b07a248e27c83fc3d5951213c1\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "7061796c6f61643a204f4b0a",
+      "expected_stderr_text": "cksum: manifest-bad-and-good: 1: improperly formatted CRC checksum line\ncksum: WARNING: 1 line is improperly formatted\n",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "check",
+        "warn"
+      ]
+    },
+    {
+      "id": "o9-check-strict-auto",
+      "command": "cksum",
+      "args": [
+        "--strict",
+        "-c",
+        "manifest-bad-and-good"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        },
+        {
+          "path": "manifest-bad-and-good",
+          "content_text": "bad\nMD5 (payload) = 0bee89b07a248e27c83fc3d5951213c1\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "7061796c6f61643a204f4b0a",
+      "expected_stderr_text": "cksum: WARNING: 1 line is improperly formatted\n",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "check",
+        "strict"
+      ]
+    },
+    {
+      "id": "o9-check-ignore-all",
+      "command": "cksum",
+      "args": [
+        "--ignore-missing",
+        "-c",
+        "manifest-missing"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        },
+        {
+          "path": "manifest-missing",
+          "content_text": "MD5 (missing) = 0bee89b07a248e27c83fc3d5951213c1\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "cksum: manifest-missing: no file was verified\n",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "check",
+        "ignore-missing"
+      ]
     }
   ]
 }

@@ -88,3 +88,29 @@ test "time sorting uses nanoseconds with bytewise ties and reverse order" {
     compare_entries(newer, older, ls_options(parse_arguments(["-S"]))) > 0,
   )
 }
+
+///|
+async test "C profile all and almost all select dot names" {
+  let root = @fs.tmpdir(prefix="mooncmd-ls-dot-names")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  @fs.write_file(root + "/.hidden", "")
+  @fs.write_file(root + "/visible", "")
+  @fs.mkdir(root + "/.directory")
+  let names = async fn(args : Array[String]) {
+    let status = Ref(0)
+    let entries = sorted_entries(
+      root,
+      ls_options(parse_arguments(args)),
+      status,
+    )
+    assert_eq(status.val, 0)
+    entries.map(entry => entry.name)
+  }
+  assert_eq(names([]), ["visible"])
+  for args in [["-A"], ["-aA"]] {
+    assert_eq(names(args), [".directory", ".hidden", "visible"])
+  }
+  for args in [["-a"], ["-Aa"]] {
+    assert_eq(names(args), [".", "..", ".directory", ".hidden", "visible"])
+  }
+}

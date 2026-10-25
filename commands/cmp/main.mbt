@@ -45,6 +45,93 @@ async fn drop_bytes(reader : &@io.Reader, count : Int64) -> Unit {
 }
 
 ///|
+fn visible_byte(byte : Byte) -> String {
+  let mut code = byte.to_int()
+  let mut prefix = ""
+  if code >= 128 {
+    prefix = "M-"
+    code -= 128
+  }
+  if code < 32 {
+    prefix + "^" + (code + 64).unsafe_to_char().to_string()
+  } else if code == 127 {
+    prefix + "^?"
+  } else {
+    prefix + code.unsafe_to_char().to_string()
+  }
+}
+
+///|
+fn first_difference(
+  left_name : String,
+  right_name : String,
+  position : Int64,
+  line : Int64,
+  left : Byte,
+  right : Byte,
+  print_bytes : Bool,
+) -> String {
+  let unit = if print_bytes { "byte" } else { "char" }
+  let prefix = "\{left_name} \{right_name} differ: \{unit} \{position}, line \{line}"
+  if print_bytes {
+    prefix +
+    " is \{pad_left(left.to_int().to_string(radix=8), 3)} \{visible_byte(left)} \{pad_left(right.to_int().to_string(radix=8), 3)} \{visible_byte(right)}\n"
+  } else {
+    prefix + "\n"
+  }
+}
+
+///|
+fn verbose_difference(
+  position : Int64,
+  left : Byte,
+  right : Byte,
+  width : Int32,
+  print_bytes : Bool,
+) -> String {
+  let prefix = "\{pad_left(position.to_string(), width)} \{pad_left(left.to_int().to_string(radix=8), 3)}"
+  let right_octal = pad_left(right.to_int().to_string(radix=8), 3)
+  if print_bytes {
+    let shown = visible_byte(left)
+    prefix +
+    " " +
+    shown +
+    " ".repeat(4 - shown.length()) +
+    " " +
+    right_octal +
+    " " +
+    visible_byte(right) +
+    "\n"
+  } else {
+    prefix + " " + right_octal + "\n"
+  }
+}
+
+///|
+async fn offset_width(
+  sources : Array[String],
+  skips : (Int64, Int64),
+  limit : Int64?,
+) -> Int32 {
+  let mut maximum = limit.unwrap_or(9223372036854775807L)
+  for index, source in sources {
+    if source == "-" {
+      continue
+    }
+    try {
+      if @fs.kind(source) == Regular {
+        let size = @fs.file_size(source)
+        let skip = if index == 0 { skips.0 } else { skips.1 }
+        maximum = maximum.min((size - skip).max(0L))
+      }
+    } catch {
+      _ => ()
+    }
+  }
+  maximum.to_string().length()
+}
+
+///|
 async fn compare_readers(
   left : &@io.Reader,
   right : &@io.Reader,
@@ -55,6 +142,8 @@ async fn compare_readers(
   limit : Int64?,
   skip_left : Int64,
   skip_right : Int64,
+  print_bytes : Bool,
+  width : Int32,
 ) -> Bool {
   drop_bytes(left, skip_left)
   drop_bytes(right, skip_right)
@@ -65,6 +154,7 @@ async fn compare_readers(
   let mut compared : Int64 = 0
   let mut line : Int64 = 1
   let mut different = false
+  let mut line_start = true
   while limit is None || compared < limit.unwrap() {
     if left_chunk is None || left_pos >= left_chunk.unwrap().length() {
       left_chunk = left.read_some(max_len=65536)
@@ -80,9 +170,17 @@ async fn compare_readers(
         different = true
         if !silent {
           let shorter = if left_chunk is None { left_name } else { right_name }
-          @stdio.stderr.write(
-            "cmp: EOF on \{display_name(shorter)} after byte \{compared}, line \{line}\n",
-          )
+          let ending = if compared == 0 {
+            " which is empty"
+          } else if verbose {
+            " after byte \{compared}"
+          } else if line_start {
+            " after byte \{compared}, line \{line - 1}"
+          } else {
+            " after byte \{compared}, in line \{line}"
+          }
+          let name = @quoting.locale_quote(@utf8.encode(shorter)[:])
+          @stdio.stderr.write("cmp: EOF on \{name}\{ending}\n")
         }
         break
       }
@@ -107,18 +205,25 @@ async fn compare_readers(
             let position = compared + offset.to_int64() + 1
             if !silent && !verbose {
               @stdio.stdout.write(
-                "\{display_name(left_name)} \{display_name(right_name)} differ: char \{position}, line \{line}\n",
+                first_difference(
+                  left_name, right_name, position, line, left_byte, right_byte, print_bytes,
+                ),
               )
               return true
             }
             if verbose && !silent {
               @stdio.stdout.write(
-                "\{pad_left(position.to_string(), 6)} \{pad_left(left_byte.to_int().to_string(radix=8), 3)} \{pad_left(right_byte.to_int().to_string(radix=8), 3)}\n",
+                verbose_difference(
+                  position, left_byte, right_byte, width, print_bytes,
+                ),
               )
             }
           }
           if left_byte == b'\n' {
             line += 1
+            line_start = true
+          } else {
+            line_start = false
           }
         }
         left_pos += take
@@ -128,15 +233,6 @@ async fn compare_readers(
     }
   }
   different
-}
-
-///|
-fn display_name(path : String) -> String {
-  if path == "-" {
-    "standard input"
-  } else {
-    path
-  }
 }
 
 ///|
@@ -160,6 +256,7 @@ async fn main {
     @cli.flag("silent", short='s'),
     @cli.flag("quiet"),
     @cli.flag("verbose", short='l'),
+    @cli.flag("print-bytes", short='b'),
     @cli.option("bytes", short='n'),
     @cli.option("ignore-initial", short='i'),
     @cli.flag("help"),
@@ -172,7 +269,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: cmp [-s|-l] [-n LIMIT] [-i SKIP[:SKIP2]] FILE1 FILE2\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: cmp [-b] [-s|-l] [-n LIMIT] [-i SKIP[:SKIP2]] FILE1 FILE2\n  -b, --print-bytes  print differing octal and visible byte values\n      --help      display this help and exit\n      --version   display version and exit\n",
     )
     return
   }
@@ -214,6 +311,8 @@ async fn main {
     return
   }
   let sources = if files.length() == 1 { [files[0], "-"] } else { files }
+  let width = offset_width(sources, (skip_left, skip_right), limit)
+  let print_bytes = parsed.contains("print-bytes")
   if sources[0] == "-" && sources[1] == "-" {
     @stdio.stderr.write("cmp: expected two distinct input sources\n")
     @sys.exit(2)
@@ -233,6 +332,8 @@ async fn main {
         limit,
         skip_left,
         skip_right,
+        print_bytes,
+        width,
       )
     } else if sources[1] == "-" {
       let left = @fs.open(sources[0], mode=ReadOnly)
@@ -247,6 +348,8 @@ async fn main {
         limit,
         skip_left,
         skip_right,
+        print_bytes,
+        width,
       )
     } else {
       let left = @fs.open(sources[0], mode=ReadOnly)
@@ -263,6 +366,8 @@ async fn main {
         limit,
         skip_left,
         skip_right,
+        print_bytes,
+        width,
       )
     }
   } catch {

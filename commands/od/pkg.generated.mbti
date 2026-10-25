@@ -8,8 +8,6 @@ package "cli/od"
 // Types and methods
 type DumpState
 
-type Format
-
 // Type aliases
 
 // Traits

@@ -221,6 +221,11 @@ fn expand_fixture_args(
 }
 
 ///|
+fn unexpected_oracle_transport_status(status : Int32, expected : Int32) -> Bool {
+  [125, 126, 127].contains(status) && status != expected
+}
+
+///|
 async fn run_case(
   fixture : OracleCase,
   bin_root : String,
@@ -321,6 +326,10 @@ async fn run_case(
     "-w",
     fixture.working_directory("/work"),
   ]
+  if @testkit.option_child_required(fixture) {
+    let helper = @testkit.option_child_path()
+    docker_args.append(["-v", helper + ":" + helper + ":ro"])
+  }
   let oracle_environment = controlled_environment(
     @testkit.expand_environment(fixture.environment, "/work", http_base~),
   )
@@ -367,7 +376,7 @@ async fn run_case(
   if oracle_run.timed_out {
     return ["infrastructure: oracle-timeout: partial streams retained"]
   }
-  if [125, 126, 127].contains(oracle.status) {
+  if unexpected_oracle_transport_status(oracle.status, fixture.expected_status) {
     return [
       "infrastructure: oracle unavailable, Docker status \{oracle.status}",
     ]

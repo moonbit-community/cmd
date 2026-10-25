@@ -363,7 +363,11 @@ async fn execute_package_test(
     id: entry.behavior_id,
     command: entry.command,
     result: "skip",
-    verification: "contract",
+    verification: if entry.status == "boundary" {
+      "boundary"
+    } else {
+      "contract"
+    },
     stage: "platform",
     detail: "case excludes " + host,
     platform: host,

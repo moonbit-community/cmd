@@ -21,6 +21,11 @@ offsets, padded to at least seven columns. `-o` is octal; the last `-o` or
 do not add it automatically. `-a`/`--all` and bare `-` select whole-file
 scanning. With no files, stdin is read once.
 
+`-s/--output-separator=STR` replaces the newline after each accepted string,
+including the final one. An empty separator joins the runs without adding
+bytes; repeated options use the last value. Prefixes and byte offsets are
+unchanged, and a separator is not emitted for a run below the minimum.
+
 Input is scanned in 64 KiB chunks. Once a run reaches the selected minimum,
 its bytes are emitted incrementally; storage is bounded by the chunk buffer
 and a candidate prefix shorter than the minimum. Offsets use 64-bit counters.

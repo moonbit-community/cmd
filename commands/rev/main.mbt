@@ -1,4 +1,9 @@
 ///|
+priv suberror InvalidCRecord {
+  InvalidCRecord
+}
+
+///|
 fn reverse_line(data : Bytes) -> Bytes {
   let output : Array[Byte] = []
   let mut index = data.length()
@@ -33,8 +38,9 @@ fn help_message() -> String {
     #|      --help      display this help and exit
     #|      --version   display version and exit
     #|
-    #|Reverse the characters of every line from standard input or one file.
-    #|This implementation uses C-locale byte order and preserves line feeds.
+    #|Reverse each line from ordered FILE operands, or standard input if absent.
+    #|The fixed Linux C-locale profile reverses bytes and rejects non-ASCII records.
+    #|An explicit - is a filename, as in the frozen util-linux profile.
   message
 }
 
@@ -56,24 +62,90 @@ async fn main {
     @stdio.stdout.write(help_message() + "\n")
     return
   }
-  if parsed.operands.length() > 1 {
-    @stdio.stderr.write("rev: multiple input files are not supported\n")
-    @sys.exit(2)
+  if parsed.operands.is_empty() {
+    let lines = Ref(0L)
+    reverse_reader(@stdio.stdin, lines) catch {
+      error => {
+        @stdio.stderr.write(
+          "rev: stdin: " +
+          lines.val.to_string() +
+          ": " +
+          error_message(error) +
+          "\n",
+        )
+        @sys.exit(1)
+      }
+    }
     return
   }
-  let path = if parsed.operands.is_empty() { "-" } else { parsed.operands[0] }
-  let data = try {
-    if path == "-" {
-      @stdio.stdin.read_all().binary()
-    } else {
-      @fs.read_file(path).binary()
-    }
-  } catch {
-    err => {
-      @stdio.stderr.write("rev: \{err}\n")
-      @sys.exit(1)
-      return
+  let mut status = 0
+  for path in parsed.operands {
+    let mut opened = false
+    let lines = Ref(0L)
+    try {
+      let file = @fs.open(path, mode=ReadOnly)
+      opened = true
+      defer file.close()
+      if file.kind() == @fs.FileKind::Directory {
+        @stdio.stderr.write("rev: " + path + ": 0: Is a directory\n")
+        status = 1
+      } else {
+        reverse_reader(file, lines)
+      }
+    } catch {
+      error => {
+        let prefix = if opened {
+          "rev: " + path + ": " + lines.val.to_string() + ": "
+        } else {
+          "rev: cannot open " + path + ": "
+        }
+        @stdio.stderr.write(prefix + error_message(error) + "\n")
+        status = 1
+      }
     }
   }
-  @stdio.stdout.write(reverse_lines(data))
+  if status != 0 {
+    @sys.exit(status)
+  }
+}
+
+///|
+async fn reverse_reader(
+  reader : &@io.Reader,
+  count : Ref[Int64],
+  writer~ : &@io.Writer = @stdio.stdout,
+) -> Unit {
+  let lines = @stream.LineScanner::new(reader)
+  while lines.next() is Some(line) {
+    if line.data.iter().any(byte => byte.to_int() >= 128) {
+      raise InvalidCRecord
+    }
+    writer.write(reverse_lines(line.data))
+    if line.terminated {
+      writer.write(b"\n")
+    }
+    count.val += 1
+  }
+}
+
+///|
+fn error_message(error : Error) -> String {
+  match error {
+    InvalidCRecord => "Invalid or incomplete multibyte or wide character"
+    @os_error.OSError(code, ..) as error =>
+      if error.is_ENOENT() {
+        "No such file or directory"
+      } else if error.is_EACCES() {
+        "Permission denied"
+      } else if error.is_ENOTDIR() {
+        "Not a directory"
+      } else if !@platform.is_windows() && code == 21 {
+        "Is a directory"
+      } else if !@platform.is_windows() && code == 9 {
+        "Bad file descriptor"
+      } else {
+        error.to_string()
+      }
+    _ => error.to_string()
+  }
 }

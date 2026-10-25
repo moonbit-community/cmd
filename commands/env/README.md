@@ -24,6 +24,27 @@ then apply the requested removals and assignments. `LANG`, `LC_ALL`, and other
 names are neither filtered nor rewritten. Host authorization still applies to
 the child working directory and executable.
 
+Windows Native cannot currently launch a child whose final environment is
+empty: released async 0.22.5 does not initialize its empty Win32 environment
+block. This path rejects before launch with status 125 and an explicit
+unsupported-capability diagnostic. Empty environment enumeration without a
+child remains supported, as do launches with a nonempty final environment,
+Windows Wasm and POSIX. Lifting this restriction requires a released async
+fix and a real Windows Native empty-environment launch regression.
+
+`-S STRING` / `--split-string=STRING` expands one string into argument words
+at the current option position. Single/double quotes, GNU split-string escapes,
+token-start comments, and `${NAME}` expansion are supported; this is not shell
+evaluation. Expansions read the original inherited environment, including
+when `-i` or `-u` will remove the variable from the child's environment. Words
+from later command-line arguments remain after the expanded words. Malformed
+quotes, escapes, or variable syntax fail with status 125 before launch.
+
+Without a command, environment enumeration has no ordering guarantee. The
+public process environment is a map, while GNU's order also varies with the
+host C library. Use a command such as `printenv A B` when an ordered list of
+specific values is needed.
+
 ## Standalone metadata
 
 Standalone `--version` prints exactly `env 0.2.2` followed by one

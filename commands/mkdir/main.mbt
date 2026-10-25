@@ -43,17 +43,30 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\nNote: MODE currently accepts numeric octal permissions only.\n",
+      "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\nMODE accepts octal or symbolic permissions (rwxXst, copied classes and comma clauses).\nSticky-only +t yields 1755; a=rwx,+t yields 1777.\nOmitted-who expressions requiring the process umask are unavailable.\n",
     )
     return
   }
+  let mut symbolic = false
   let permission = match parsed.last_value("mode") {
     Some(value) =>
       parse_mode(value) catch {
         _ => {
-          @stdio.stderr.write("mkdir: invalid mode: '\{value}'\n")
-          @sys.exit(1)
-          return
+          symbolic = true
+          symbolic_mode(value) catch {
+            InvalidMode => {
+              @stdio.stderr.write("mkdir: invalid mode '\{value}'\n")
+              @sys.exit(1)
+              return
+            }
+            NeedsUmask => {
+              @stdio.stderr.write(
+                "mkdir: unsupported capability: symbolic mode requires process umask\n",
+              )
+              @sys.exit(2)
+              return
+            }
+          }
         }
       }
     None => 0o777
@@ -66,30 +79,38 @@ async fn main {
     @sys.exit(1)
     return
   }
+  if symbolic && !@platform.permission_mutation_supported() {
+    for directory in directories {
+      if parents && directory_exists(directory) {
+        continue
+      }
+      @stdio.stderr.write(
+        "mkdir: unsupported capability: symbolic directory permission setter\n",
+      )
+      @sys.exit(2)
+      return
+    }
+  }
   let mut failed = false
   for directory in directories {
     let created = try {
-      match @fsops.kind_if_exists(directory) {
-        Some(Directory) if parents => false
-        Some(_) => fail("path already exists")
-        None => {
-          if parents {
-            @fs.mkdir(
-              @fsops.dirname(directory),
-              permission=0o777,
-              recursive=true,
-            )
-          }
-          @fs.mkdir(directory, permission~)
-          if parsed.contains("mode") {
-            @fs.chmod(directory, permission)
-          }
-          true
+      if parents && directory_exists(directory) {
+        false
+      } else {
+        if parents {
+          create_parents(@fsops.dirname(directory), verbose)
         }
+        @fs.mkdir(directory, permission~)
+        if parsed.contains("mode") {
+          @fs.chmod(directory, permission)
+        }
+        true
       }
     } catch {
       err => {
-        @stdio.stderr.write("mkdir: cannot create '\{directory}': \{err}\n")
+        @stdio.stderr.write(
+          "mkdir: cannot create directory '\{directory}': \{mkdir_error(err)}\n",
+        )
         failed = true
         false
       }

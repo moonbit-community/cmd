@@ -33,7 +33,7 @@
         "help"
       ],
       "source_version": "workspace cli/realpath@0.1.3 metadata contract",
-      "expected_stdout_text": "Usage: realpath [-e] [-z] NAME...\n      --help      display this help and exit\n      --version   display version and exit\n  -e, --canonicalize-existing  require every path component to exist\n  -z, --zero                   separate output with NUL bytes\n",
+      "expected_stdout_text": "Usage: realpath [OPTION]... NAME...\n  -e, --canonicalize-existing  require every component to exist\n  -E, --canonicalize           allow a missing final component (default)\n  -m, --canonicalize-missing   allow missing or non-directory components\n  -s, --strip, --no-symlinks   do not expand symbolic links\n      --relative-to=DIR        print relative to DIR\n      --relative-base=DIR      use relative output only inside DIR\n  -q, --quiet                 suppress operand errors\n  -z, --zero                  terminate output with NUL\n      --help                  display this help and exit\n      --version               display version and exit\n",
       "expected_stderr_text": ""
     },
     {
@@ -54,6 +54,1759 @@
       "source_version": "workspace cli/realpath@0.1.3 metadata contract",
       "expected_stdout_text": "realpath 0.1.3\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o10-realpath-missing-last-default",
+      "command": "realpath",
+      "args": [
+        "existing/missing"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "leaf",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "<WORK>/existing/missing\n",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "leaf",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": []
+    },
+    {
+      "id": "o10-realpath-missing-middle-default",
+      "command": "realpath",
+      "args": [
+        "missing/child"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "leaf",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "realpath: missing/child: No such file or directory\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "leaf",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": []
+    },
+    {
+      "id": "o10-realpath-lexical-missing",
+      "command": "realpath",
+      "args": [
+        "-ms",
+        "missing/../new/./child/../../last"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "leaf",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "<WORK>/last\n",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "leaf",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "canonicalize-missing",
+        "strip"
+      ]
+    },
+    {
+      "id": "o10-realpath-strip-existing-link",
+      "command": "realpath",
+      "args": [
+        "-s",
+        "link/../leaf"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "leaf",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "existing/child"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "<WORK>/leaf\n",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "leaf",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "existing/child"
+        }
+      ],
+      "coverage": [
+        "strip"
+      ],
+      "observe": [
+        "symlink-target"
+      ]
+    },
+    {
+      "id": "o10-realpath-physical-existing-link",
+      "command": "realpath",
+      "args": [
+        "link/../leaf"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "leaf",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "existing/child"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "<WORK>/existing/leaf\n",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "leaf",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "existing/child"
+        }
+      ],
+      "coverage": [],
+      "observe": [
+        "symlink-target"
+      ]
+    },
+    {
+      "id": "o10-realpath-strip-file-slash",
+      "command": "realpath",
+      "args": [
+        "-s",
+        "file/../leaf"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "leaf",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "realpath: file/../leaf: Not a directory\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "leaf",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "strip"
+      ]
+    },
+    {
+      "id": "o10-realpath-missing-file-slash",
+      "command": "realpath",
+      "args": [
+        "-m",
+        "file/../leaf"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "leaf",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "<WORK>/leaf\n",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "leaf",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "canonicalize-missing"
+      ]
+    },
+    {
+      "id": "o10-realpath-relative-to",
+      "command": "realpath",
+      "args": [
+        "-ms",
+        "--relative-to=existing",
+        "existing",
+        "existing/child",
+        "other"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "leaf",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": ".\nchild\n../other\n",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "leaf",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "canonicalize-missing",
+        "relative-to",
+        "strip"
+      ]
+    },
+    {
+      "id": "o10-realpath-relative-base-only",
+      "command": "realpath",
+      "args": [
+        "-ms",
+        "--relative-base=existing",
+        "existing/child",
+        "other"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "leaf",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "child\n<WORK>/other\n",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "leaf",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "canonicalize-missing",
+        "relative-base",
+        "strip"
+      ]
+    },
+    {
+      "id": "o10-realpath-relative-base-prefix-boundary",
+      "command": "realpath",
+      "args": [
+        "-ms",
+        "--relative-base=existing",
+        "--relative-to=existing/child",
+        "existing/other",
+        "existingish"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "leaf",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "../other\n<WORK>/existingish\n",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "leaf",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "canonicalize-missing",
+        "relative-base",
+        "relative-to",
+        "strip"
+      ]
+    },
+    {
+      "id": "o10-realpath-relative-to-outside-base",
+      "command": "realpath",
+      "args": [
+        "-ms",
+        "--relative-base=existing",
+        "--relative-to=other",
+        "existing/child",
+        "other/child"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "leaf",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "<WORK>/existing/child\n<WORK>/other/child\n",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "leaf",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "canonicalize-missing",
+        "relative-base",
+        "relative-to",
+        "strip"
+      ]
+    },
+    {
+      "id": "o10-realpath-relative-existing-file-base",
+      "command": "realpath",
+      "args": [
+        "-e",
+        "--relative-to=file",
+        "existing"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "leaf",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "realpath: file: Not a directory\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "leaf",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "canonicalize-existing",
+        "relative-to"
+      ]
+    },
+    {
+      "id": "o10-realpath-quiet-operand",
+      "command": "realpath",
+      "args": [
+        "-qe",
+        "missing",
+        "existing"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "leaf",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "<WORK>/existing\n",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "leaf",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "canonicalize-existing",
+        "quiet"
+      ]
+    },
+    {
+      "id": "o10-realpath-quiet-invalid-base",
+      "command": "realpath",
+      "args": [
+        "-qe",
+        "--relative-to=missing",
+        "existing"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "leaf",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "realpath: missing: No such file or directory\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "leaf",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "canonicalize-existing",
+        "quiet",
+        "relative-to"
+      ]
+    },
+    {
+      "id": "o10-realpath-mode-last-m",
+      "command": "realpath",
+      "args": [
+        "-em",
+        "missing/child"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "leaf",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "<WORK>/missing/child\n",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "leaf",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "canonicalize-existing",
+        "canonicalize-missing"
+      ]
+    },
+    {
+      "id": "o10-realpath-mode-last-e",
+      "command": "realpath",
+      "args": [
+        "-me",
+        "missing/child"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "leaf",
+          "content_text": "KEEP\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "realpath: missing/child: No such file or directory\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "leaf",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        }
+      ],
+      "coverage": [
+        "canonicalize-existing",
+        "canonicalize-missing"
+      ]
+    },
+    {
+      "id": "o10-realpath-physical-missing-link",
+      "command": "realpath",
+      "args": [
+        "-m",
+        "link/../leaf"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "leaf",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "existing/child"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "<WORK>/existing/leaf\n",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "leaf",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "existing/child"
+        }
+      ],
+      "coverage": [
+        "canonicalize-missing"
+      ],
+      "observe": [
+        "symlink-target"
+      ]
+    },
+    {
+      "id": "o10-realpath-strip-last-alias",
+      "command": "realpath",
+      "args": [
+        "--no-symlinks",
+        "--canonicalize-missing",
+        "missing/x"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "leaf",
+          "content_text": "KEEP\n"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "existing/child"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "<WORK>/missing/x\n",
+      "expected_stderr_text": "",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "directory"
+        },
+        {
+          "path": "existing/child",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "file",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "leaf",
+          "kind": "file",
+          "content_hex": "4b4545500a"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "existing/child"
+        }
+      ],
+      "coverage": [
+        "canonicalize-missing",
+        "no-symlinks"
+      ],
+      "observe": [
+        "symlink-target"
+      ]
+    },
+    {
+      "id": "o10-realpath-quiet-usage-missing",
+      "command": "realpath",
+      "args": [
+        "-q"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "realpath: missing operand\nTry 'realpath --help' for more information.\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [],
+      "coverage": [
+        "quiet"
+      ]
+    },
+    {
+      "id": "o10-realpath-missing-relative-to",
+      "command": "realpath",
+      "args": [
+        "--relative-to"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "realpath: option '--relative-to' requires an argument\nTry 'realpath --help' for more information.\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [],
+      "coverage": [
+        "relative-to"
+      ]
+    },
+    {
+      "id": "o10-realpath-missing-relative-base",
+      "command": "realpath",
+      "args": [
+        "--relative-base"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the case directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Host path separator only."
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "realpath: option '--relative-base' requires an argument\nTry 'realpath --help' for more information.\n",
+      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "oracle": true,
+      "comparison": "contract",
+      "expected_files": [],
+      "coverage": [
+        "relative-base"
+      ]
+    },
+    {
+      "id": "o10-realpath-missing-physical-link-boundary",
+      "command": "realpath",
+      "args": [
+        "-m",
+        "dangling/child"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "expected_rejection": "unresolved symbolic-link target (readlink)",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "realpath: unsupported capability: unresolved symbolic-link target (readlink)\n",
+      "normalizations": [],
+      "comparison": "boundary",
+      "source_version": "Selected public API boundary; fixed GNU counterpart is retained in private N/W observations",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ],
+      "oracle": false,
+      "coverage": [
+        "canonicalize-missing"
+      ]
+    },
+    {
+      "id": "o10-realpath-missing-final-physical-link-boundary",
+      "command": "realpath",
+      "args": [
+        "dangling"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "expected_rejection": "unresolved symbolic-link target (readlink)",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "realpath: unsupported capability: unresolved symbolic-link target (readlink)\n",
+      "normalizations": [],
+      "comparison": "boundary",
+      "source_version": "Selected public API boundary; fixed GNU counterpart is retained in private N/W observations",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ],
+      "oracle": false,
+      "coverage": []
+    },
+    {
+      "id": "o10-realpath-relative-root-self",
+      "command": "realpath",
+      "args": [
+        "-ms",
+        "--relative-to=/",
+        "/"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": ".\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "relative-to",
+        "canonicalize-missing",
+        "strip"
+      ],
+      "source_version": "GNU coreutils 9.11 fixed native root-to-self observation; independent of fixture directory depth"
     }
   ]
 }

@@ -109,6 +109,13 @@ passes cannot replace this direct comparison. Registry platform exclusions
 remain explicit skips. Every report directory includes `run-metadata.json`;
 each case references its run, registry and artifact identities.
 
+The mktemp option scenario compares checked name/type/empty/mode relationships;
+random names and raw streams remain untouched in retained evidence. Tee's
+closed-pipe scenario compares actual status, stderr and sink type/content,
+without claiming captured stdout. Their deterministic relation receipts are
+written only after the real assertions pass; launch descriptions and random
+pathnames are not ordinary-output normalizers.
+
 `--suite paired --report-dir test-reports` runs that same comparison while
 retaining the actual side reports as `contract-native`, `contract-wasm`,
 `scenarios-native`, `scenarios-wasm`, and `backend-pair` subdirectories. All

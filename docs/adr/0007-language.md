@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-09-21
+Updated: 2026-10-25
 Revision note: stdin shell names strip generated `.exe` and `.wasm` suffixes
 consistently. Explicit `-c` names and script paths remain verbatim. This chooses
 the logical command basename over backend artifact naming; relocated binaries
@@ -21,6 +21,13 @@ parameter, arithmetic and command substitution with double-quoted escape
 rules. Re-lexing ENV as shell source was rejected after Windows CI exposed
 lost path separators. Native/Wasm shell tests cover literal filenames and
 startup loading; the continuous-input scenario verifies the real CLI path.
+
+The O5 split filter candidate reuses this Session and its existing grammar with
+public pipes and a per-piece FILE variable. The small `last_signal` result
+query retains signal termination separately from explicit exit 141; it does
+not add signal control, terminal behavior or shell syntax. O13 env `-S` uses a
+separate command-specific word grammar and passes literal metacharacters to
+children; it does not route through a host shell or expand this language scope.
 
 ## Alternatives and compatibility cost
 

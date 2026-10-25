@@ -25,13 +25,28 @@ for created files unless `-s`/`--silent` or `-q`/`--quiet` is selected.
 `-z`/`--elide-empty-files` omits empty fragments. Split failures remove the files
 created by that invocation unless `-k`/`--keep-files` is used.
 
+`-b/--suffix-format` replaces the default digits with exactly one d/i/u/o/x/X
+integer conversion, literal text and `%%`. Width, precision, left/zero padding
+and applicable alternate/thousands flags follow the GNU C profile. Repeated
+formats use the last; `-b` determines layout independently of `-n` ordering.
+Invalid formats fail before file creation.
+Windows ordinary filesystem paths trim trailing spaces and dots. A generated
+name with either ending is therefore refused with status 2 before reading
+input; it never silently creates a differently named fragment. Verbatim-name
+support requires verified Native/Wasm creation, reading and observation of
+those exact names.
+
+`--suppress-matched` omits the line at the offset-adjusted split boundary for
+regex, ignored regex and numeric patterns. Empty elision reuses the next
+output suffix; suppression preserves the separate regex-search cursor.
+
 Input is buffered. The shared C-byte BRE matcher compiles each expression once
 and supports capture backreferences, byte classes and word assertions.
 Repeated nullable captures follow the tested GNU candidate and capture-register
 selection, including counted repeats and references. See the
 [workspace support record](../../docs/compatibility.md#workspace-matcher-and-sed-candidates).
-Existing output paths are refused. Locale-sensitive matching, custom suffix formats and
-`--suppress-matched` are rejected. `--help` and `--version` provide command
+Existing output paths are refused. Locale-sensitive matching is outside the
+selected profile. `--help` and `--version` provide command
 information.
 
 ## Standalone metadata

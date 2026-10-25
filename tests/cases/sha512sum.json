@@ -122,7 +122,7 @@
         "help"
       ],
       "source_version": "workspace cli/sha512sum@0.1.2 metadata contract",
-      "expected_stdout_text": "Usage: sha512sum [OPTION]... [FILE]...\nPrint or check SHA512 checksums. With no FILE, or FILE -, read stdin.\n\n  -b, --binary          mark output as binary\n  -t, --text            mark output as text (default)\n  -c, --check           read checksums from FILEs and check them\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification output\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nChecks use standard GNU untagged records. BSD tagged records are not supported.\nInput bytes are unchanged by -b or -t on every supported platform.\n",
+      "expected_stdout_text": "Usage: sha512sum [OPTION]... [FILE]...\nPrint or check checksums. With no FILE, or FILE -, read stdin.\n\n  -b, --binary          mark untagged output as binary\n  -t, --text            mark untagged output as text (default)\n      --tag             print BSD tagged records\n  -c, --check           read checksum records and verify files\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification results and summaries\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nInput bytes are unchanged by -b or -t on every supported platform.\n",
       "expected_stderr_text": ""
     },
     {
@@ -143,6 +143,36 @@
       "source_version": "workspace cli/sha512sum@0.1.2 metadata contract",
       "expected_stdout_text": "sha512sum 0.1.2\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o9-sha512sum-tag",
+      "command": "sha512sum",
+      "args": [
+        "--tag",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "53484135313220287061796c6f616429203d2034663238356430633063633737323836643837333137393862376161653236333965323832373064343136366634306437363963626264636135323330373134643834383438336433363465326633396665366362393038336331353232396233396133333631356562633664353736303566376334336636393036373339640a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "tag"
+      ]
     }
   ]
 }

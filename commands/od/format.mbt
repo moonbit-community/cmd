@@ -4,10 +4,11 @@ priv suberror OdError {
 }
 
 ///|
-struct Format {
+priv struct Format {
   kind : Char
   size : Int32
   trailer : Bool
+  floating : FloatKind?
 }
 
 ///|
@@ -57,14 +58,66 @@ fn parse_formats(text : String) -> Array[Format] raise OdError {
       kind != 'd' &&
       kind != 'u' &&
       kind != 'o' &&
-      kind != 'x' {
+      kind != 'x' &&
+      kind != 'f' {
       raise OdError(
-        "unsupported format '\{kind}'; use a, c, or integer d/u/o/x formats",
+        "unsupported format '\{kind}'; use a, c, integer d/u/o/x, or f formats",
       )
     }
     i += 1
+    let mut floating : FloatKind? = None
     let mut size = if kind == 'a' || kind == 'c' { 1 } else { 4 }
-    if kind != 'a' && kind != 'c' && i < text.length() {
+    if kind == 'f' {
+      size = 8
+      floating = Some(Double)
+      if i < text.length() {
+        match text[i] {
+          'B' => {
+            floating = Some(BFloat)
+            size = 2
+            i += 1
+          }
+          'H' => {
+            floating = Some(Half)
+            size = 2
+            i += 1
+          }
+          'F' => {
+            floating = Some(Single)
+            size = 4
+            i += 1
+          }
+          'D' => i += 1
+          'L' => {
+            floating = Some(Extended80)
+            size = 16
+            i += 1
+          }
+          '0'..<='9' => {
+            let start = i
+            while i < text.length() && text[i] is ('0'..<='9') {
+              i += 1
+            }
+            size = @string.parse_int(text[start:i]) catch {
+              _ => raise OdError("invalid type string '\{text}'")
+            }
+            floating = Some(
+              match size {
+                2 => Half
+                4 => Single
+                8 => Double
+                16 => Extended80
+                _ =>
+                  raise OdError(
+                    "invalid type string '\{text}';\nthis system doesn't provide a \{size}-byte floating point type",
+                  )
+              },
+            )
+          }
+          _ => ()
+        }
+      }
+    } else if kind != 'a' && kind != 'c' && i < text.length() {
       match text[i] {
         '1' | 'C' => {
           size = 1
@@ -89,7 +142,7 @@ fn parse_formats(text : String) -> Array[Format] raise OdError {
     if trailer {
       i += 1
     }
-    result.push({ kind, size, trailer, })
+    result.push({ kind, size, trailer, floating, })
   }
   if result.is_empty() {
     raise OdError("empty output format")
@@ -99,6 +152,9 @@ fn parse_formats(text : String) -> Array[Format] raise OdError {
 
 ///|
 fn Format::width(self : Format) -> Int32 {
+  if self.floating is Some(kind) {
+    return kind.width()
+  }
   match self.kind {
     'a' | 'c' => 3
     'x' => self.size * 2
@@ -172,6 +228,13 @@ fn Format::field(
   start : Int32,
   big : Bool,
 ) -> String {
+  if self.floating is Some(kind) {
+    let text = @numfmt.format_roundtrip(
+      float_at(data, start, self.size, big, kind),
+      kind.profile(),
+    )
+    return spaces(self.width() - text.length()) + text
+  }
   if self.kind == 'a' || self.kind == 'c' {
     return character(data[start], self.kind == 'a')
   }
@@ -215,6 +278,7 @@ fn render_row(
   formats : Array[Format],
   base : Int32,
   big : Bool,
+  label~ : Int64? = None,
 ) -> String {
   let mut line_width = 0
   for format in formats {
@@ -222,8 +286,20 @@ fn render_row(
   }
   let out = StringBuilder()
   for index, format in formats {
-    let prefix = address(offset, base)
-    out.write_string(if index == 0 { prefix } else { spaces(prefix.length()) })
+    let prefix = labeled_address(offset, base, label)
+    out.write_string(
+      if index == 0 {
+        prefix
+      } else {
+        spaces(
+          if base == 0 && label is Some(_) {
+            7
+          } else {
+            address(offset, base).length()
+          },
+        )
+      },
+    )
     let fields = width / format.size
     let padding = line_width - fields * format.width()
     let count = (data.length() + format.size - 1) / format.size

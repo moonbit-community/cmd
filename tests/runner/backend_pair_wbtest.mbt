@@ -124,6 +124,73 @@ async test "scenario pair snapshots detect byte and exit-status differences" {
 }
 
 ///|
+async test "option scenario pairs compare proved relations while retaining random names and launcher records" {
+  let directory = @fs.tmpdir(prefix="mooncmd-option-pair-")
+  defer @fs.rmdir(directory, recursive=true)
+  for
+    (id, command, receipt) in [
+      ("mktemp-option-effects", "mktemp", "mktemp-relations.json"),
+      ("tee-output-errors", "tee", "tee-relations.json"),
+    ] {
+    for backend in ["native", "wasm"] {
+      let work = directory + "/" + id + "/" + backend + "/work"
+      @fs.mkdir(work, recursive=true)
+      @fs.write_file(work + "/" + backend + "-random-name", "raw")
+      @fs.write_file(
+        work + "/launch.json",
+        backend + " executable and arguments",
+      )
+      @fs.write_file(
+        work + "/" + receipt,
+        "{\"status\":0,\"kind\":\"file\",\"empty\":true}",
+      )
+    }
+    let fixture : @testkit.Case = @json.from_json({
+      "id": Json(id),
+      "command": Json(command),
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+    })
+    let native = scenario_pair_snapshot(
+      directory + "/" + id + "/native",
+      fixture,
+    )
+    assert_eq(
+      native,
+      scenario_pair_snapshot(directory + "/" + id + "/wasm", fixture),
+    )
+    @fs.write_file(
+      directory + "/" + id + "/wasm/work/" + receipt,
+      "{\"status\":0,\"kind\":\"file\",\"empty\":false}",
+    )
+    assert_true(
+      native != scenario_pair_snapshot(directory + "/" + id + "/wasm", fixture),
+    )
+    assert_true(
+      @fs.exists(directory + "/" + id + "/native/work/native-random-name"),
+    )
+    let dimensions = option_scenario_pair_observations(fixture)
+    assert_true(
+      dimensions.contains("file-type") && dimensions.contains("file-content"),
+    )
+    assert_eq(dimensions.contains("stdout"), command == "mktemp")
+    assert_eq(dimensions.contains("file-mode"), command == "mktemp")
+    if command == "mktemp" {
+      assert_false(
+        option_scenario_pair_observations({
+          ..fixture,
+          id: "mktemp-option-effects-windows",
+        }).contains("file-mode"),
+      )
+    }
+  }
+}
+
+///|
 async test "scenario pair snapshots bind both allocated network origins and retain other ports" {
   let directory = @fs.tmpdir(prefix="mooncmd-two-network-origins-")
   defer @fs.rmdir(directory, recursive=true)

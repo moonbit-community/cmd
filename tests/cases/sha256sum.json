@@ -230,7 +230,7 @@
         "help"
       ],
       "source_version": "workspace cli/sha256sum@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: sha256sum [-c] [-z] [--quiet] [--status] [--strict] [--warn] [--ignore-missing] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stdout_text": "Usage: sha256sum [OPTION]... [FILE]...\nPrint or check checksums. With no FILE, or FILE -, read stdin.\n\n  -b, --binary          mark untagged output as binary\n  -t, --text            mark untagged output as text (default)\n      --tag             print BSD tagged records\n  -c, --check           read checksum records and verify files\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification results and summaries\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nInput bytes are unchanged by -b or -t on every supported platform.\n",
       "expected_stderr_text": ""
     },
     {
@@ -251,6 +251,70 @@
       "source_version": "workspace cli/sha256sum@0.2.2 metadata contract",
       "expected_stdout_text": "sha256sum 0.2.2\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o9-sha256sum-tag",
+      "command": "sha256sum",
+      "args": [
+        "--tag",
+        "payload"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "53484132353620287061796c6f616429203d20656465616166663366313737346164323838383637333737306336643634303937653339316263333632643764366662333439383264646630656664313863620a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "tag"
+      ]
+    },
+    {
+      "id": "o9-sha256sum-check-tag",
+      "command": "sha256sum",
+      "args": [
+        "-c",
+        "manifest-sha256"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        },
+        {
+          "path": "manifest-sha256",
+          "content_text": "SHA256 (payload) = edeaaff3f1774ad2888673770c6d64097e391bc362d7d6fb34982ddf0efd18cb\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "7061796c6f61643a204f4b0a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "check"
+      ]
     }
   ]
 }

@@ -215,7 +215,8 @@
       "normalizations": [],
       "expected_status": 1,
       "expected_stdout_text": "",
-      "expected_stderr_text": "md5sum: verification options require --check\n",
+      "expected_stderr_text": "md5sum: the --strict option is meaningful only when verifying checksums\nTry 'md5sum --help' for more information.\n",
+      "source_version": "GNU coreutils 9.11 C profile; standalone command-name diagnostics",
       "comparison": "contract"
     },
     {
@@ -237,16 +238,31 @@
       "id": "checksum-md5sum-tag-boundary",
       "command": "md5sum",
       "args": [
-        "--tag"
+        "--tag",
+        "payload"
       ],
-      "files": [],
-      "environment": {},
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "4d443520287061796c6f616429203d2030626565383962303761323438653237633833666333643539353132313363310a",
+      "expected_stderr_text": "",
       "normalizations": [],
-      "expected_status": 1,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "md5sum: unknown option: 'tag'\n",
-      "comparison": "boundary",
-      "expected_rejection": "unknown option"
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "tag"
+      ]
     },
     {
       "id": "release-metadata-md5sum-help",
@@ -264,7 +280,7 @@
         "help"
       ],
       "source_version": "workspace cli/md5sum@0.1.2 metadata contract",
-      "expected_stdout_text": "Usage: md5sum [OPTION]... [FILE]...\nPrint or check MD5 checksums. With no FILE, or FILE -, read stdin.\n\n  -b, --binary          mark output as binary\n  -t, --text            mark output as text (default)\n  -c, --check           read checksums from FILEs and check them\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification output\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nChecks use standard GNU untagged records. BSD tagged records are not supported.\nInput bytes are unchanged by -b or -t on every supported platform.\n",
+      "expected_stdout_text": "Usage: md5sum [OPTION]... [FILE]...\nPrint or check checksums. With no FILE, or FILE -, read stdin.\n\n  -b, --binary          mark untagged output as binary\n  -t, --text            mark untagged output as text (default)\n      --tag             print BSD tagged records\n  -c, --check           read checksum records and verify files\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification results and summaries\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nInput bytes are unchanged by -b or -t on every supported platform.\n",
       "expected_stderr_text": ""
     },
     {
@@ -285,6 +301,280 @@
       "source_version": "workspace cli/md5sum@0.1.2 metadata contract",
       "expected_stdout_text": "md5sum 0.1.2\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o9-sum-check-base64",
+      "command": "md5sum",
+      "args": [
+        "-c",
+        "manifest-md5-base64"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        },
+        {
+          "path": "manifest-md5-base64",
+          "content_text": "MD5 (payload) = C+6JsHokjifIP8PVlRITwQ==\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "md5sum: manifest-md5-base64: no properly formatted checksum lines found\n",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "check"
+      ]
+    },
+    {
+      "id": "o9-sum-status-missing",
+      "command": "md5sum",
+      "args": [
+        "--status",
+        "-c",
+        "manifest-missing"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        },
+        {
+          "path": "manifest-missing",
+          "content_text": "MD5 (missing) = 0bee89b07a248e27c83fc3d5951213c1\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "md5sum: missing: No such file or directory\n",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "check",
+        "status"
+      ]
+    },
+    {
+      "id": "o9-sum-status-wrong",
+      "command": "md5sum",
+      "args": [
+        "--status",
+        "-c",
+        "manifest-wrong"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        },
+        {
+          "path": "manifest-wrong",
+          "content_text": "MD5 (payload) = 00000000000000000000000000000000\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "check",
+        "status"
+      ]
+    },
+    {
+      "id": "o9-sum-status-empty",
+      "command": "md5sum",
+      "args": [
+        "--status",
+        "-c",
+        "empty"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "empty",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "md5sum: empty: no properly formatted checksum lines found\n",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "check",
+        "status"
+      ]
+    },
+    {
+      "id": "o9-sum-status-warn",
+      "command": "md5sum",
+      "args": [
+        "--status",
+        "-w",
+        "-c",
+        "manifest-bad-and-good"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc\n"
+        },
+        {
+          "path": "manifest-bad-and-good",
+          "content_text": "bad\nMD5 (payload) = 0bee89b07a248e27c83fc3d5951213c1\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "7061796c6f61643a204f4b0a",
+      "expected_stderr_text": "md5sum: manifest-bad-and-good: 1: improperly formatted MD5 checksum line\nmd5sum: WARNING: 1 line is improperly formatted\n",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "coverage": [
+        "check",
+        "status",
+        "warn"
+      ]
+    },
+    {
+      "id": "o9-sum-check-escaped",
+      "command": "md5sum",
+      "args": [
+        "-c",
+        "name-1.manifest",
+        "name-2.manifest",
+        "name-3.manifest"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "name-1.manifest",
+          "content_text": "\\MD5 (a\\\\b) = 0bee89b07a248e27c83fc3d5951213c1\n"
+        },
+        {
+          "path": "name-2.manifest",
+          "content_text": "\\MD5 (a\\nb) = 0bee89b07a248e27c83fc3d5951213c1\n"
+        },
+        {
+          "path": "name-3.manifest",
+          "content_text": "\\MD5 (a\\rb) = 0bee89b07a248e27c83fc3d5951213c1\n"
+        },
+        {
+          "path": "a\\b",
+          "content_text": "abc\n"
+        },
+        {
+          "path": "a\nb",
+          "content_text": "abc\n"
+        },
+        {
+          "path": "a\rb",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "27615c62273a204f4b0a27612724275c6e272762273a204f4b0a27612724275c72272762273a204f4b0a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "host_platforms": [
+        "posix"
+      ],
+      "coverage": [
+        "check"
+      ]
+    },
+    {
+      "id": "o9-sum-tag-escaped",
+      "command": "md5sum",
+      "args": [
+        "--tag",
+        "a\\b",
+        "a\nb",
+        "a\rb"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a\\b",
+          "content_text": "abc\n"
+        },
+        {
+          "path": "a\nb",
+          "content_text": "abc\n"
+        },
+        {
+          "path": "a\rb",
+          "content_text": "abc\n"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "5c4d44352028615c5c6229203d2030626565383962303761323438653237633833666333643539353132313363310a5c4d44352028615c6e6229203d2030626565383962303761323438653237633833666333643539353132313363310a5c4d44352028615c726229203d2030626565383962303761323438653237633833666333643539353132313363310a",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "oracle": true,
+      "comparison": "contract",
+      "source_version": "GNU coreutils 9.11 fixed native development observations on 2026-10-25; immutable Linux CI required",
+      "host_platforms": [
+        "posix"
+      ],
+      "coverage": [
+        "tag"
+      ]
     }
   ]
 }

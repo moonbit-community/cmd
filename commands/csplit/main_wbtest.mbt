@@ -28,3 +28,12 @@ test "csplit parses BRE and repeats before any output files are created" {
   }
   assert_eq(pattern.find_span("zaab"), Some((1, 3)))
 }
+
+///|
+test "csplit suffix integers distinguish precision alternate prefix and width" {
+  assert_eq(suffix_format("pre%%-%03d.out").render(0), "pre%-000.out")
+  assert_eq(suffix_format("%#04x").render(1), "0x01")
+  assert_eq(suffix_format("%.0d").render(0), "")
+  assert_eq(suffix_format("%#.0o").render(0), "0")
+  assert_eq(suffix_format("%-3d").render(1), "1  ")
+}

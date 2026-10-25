@@ -13,8 +13,32 @@ moonx cli/realpath -z input.txt other.txt
 
 `-e`/`--canonicalize-existing` requires every component to exist, and
 `-z`/`--zero` terminates records with NUL bytes. Operands are handled
-independently; a failed operand does not erase earlier output. Missing-path `-m`
-semantics and other metadata-dependent modes are not included.
+independently; a failed operand does not erase earlier output.
+
+The unpublished workspace candidate defaults to allowing a missing final
+component (`-E/--canonicalize`), while `-e` requires every component.
+`-m/--canonicalize-missing` also permits missing and non-directory components.
+`-s/--strip/--no-symlinks` suppresses link expansion; only `-ms` is fully
+lexical. Bare `-s` still checks existence and intermediate directories.
+Physical modes walk components and expand resolvable links with the public
+filesystem API, so `link/..` follows the actual target before traversing up.
+Missing ordinary paths are supported without a blanket physical-mode rejection.
+On Windows, physical modes also expand existing 8.3 aliases through the public
+`fs.realpath` API; `-s` keeps the supplied lexical spelling.
+
+`--relative-to=DIR` computes relative output after canonicalization.
+`--relative-base=DIR` limits relative output to descendants and defaults the
+reference directory to the same base. Component boundaries are respected;
+if the reference is outside the base, all operands remain absolute. Existing
+mode requires the reference/base to be directories. `-q/--quiet` suppresses
+operand failures, preserving failure status and successful output; invalid
+reference initialization and usage errors remain visible.
+
+An identified symbolic link that public `fs.realpath` cannot expand is a
+narrow boundary when missing-mode resolution needs its target text. No public
+readlink API is available, so those cases fail with an explicit diagnostic
+and status 2 rather than pretending the link is an ordinary lexical component.
+`-ms` can handle the same spelling lexically. Published coordinates remain frozen.
 `--help` prints usage and `--version` prints the command and package version.
 
 ## Standalone metadata

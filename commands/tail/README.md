@@ -17,6 +17,12 @@ N bytes, `-c +K` from byte K, `-q`/`-v` header control, `-f`/`--follow` to
 follow an open file descriptor, and `-s SEC`/`--sleep-interval SEC` to set the
 polling interval (default 1 second).
 
+`-z` / `--zero-terminated` selects NUL-delimited records for `-n`, including
+`+K` selection and file suffix scans. Existing terminators are preserved and
+an unterminated final record gains no NUL. Byte selection is unchanged, and
+multi-file headers remain newline-terminated. When both `-n` and `-c` occur,
+the last option selects the mode.
+
 The observed file paths produced the requested line/byte suffixes and `+K`
 forms. Follow mode emits the initial selection, then emits bytes appended to
 each regular file. A file truncated in place is followed from byte zero. The

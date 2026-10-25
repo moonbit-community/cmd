@@ -4,7 +4,7 @@ type CandidateCache = Map[(Int32, Int32), Array[(Int32, Int32)]]
 ///|
 fn Pattern::epsilon_nodes(
   self : Pattern,
-  value : String,
+  value : StringView,
   position : Int32,
   node : Int32,
   nodes : Map[Int32, Bool],
@@ -22,7 +22,7 @@ fn Pattern::epsilon_nodes(
       }
       Save(_, next) | SaveOptional(_, next) => pending.push(next)
       Assert(assertion, next) =>
-        if assertion is End || assertion.holds(value, position) {
+        if assertion is (End | LineEnd) || assertion.holds(value, position) {
           pending.push(next)
         }
       _ => ()
@@ -33,7 +33,7 @@ fn Pattern::epsilon_nodes(
 ///|
 fn Pattern::byte_next(
   self : Pattern,
-  value : String,
+  value : StringView,
   pc : Int32,
   position : Int32,
 ) -> Int32? {
@@ -61,7 +61,7 @@ fn Pattern::byte_next(
 ///|
 fn Pattern::arrival(
   self : Pattern,
-  value : String,
+  value : StringView,
   from : (Int32, Int32),
   to : (Int32, Int32),
   group : Int32,
@@ -96,7 +96,7 @@ fn Pattern::arrival(
           stack.push((next, position))
         }
       Assert(assertion, next) =>
-        if assertion is End || assertion.holds(value, position) {
+        if assertion is (End | LineEnd) || assertion.holds(value, position) {
           stack.push((next, position))
         }
       Reference(_, next) =>
@@ -125,7 +125,7 @@ fn Pattern::arrival(
 
 ///|
 fn equal_reference(
-  value : String,
+  value : StringView,
   left : Int32,
   right : Int32,
   position : Int32,
@@ -153,7 +153,7 @@ fn equal_reference(
 // crossing another close/open of that group. Cache spans, not report tags.
 fn Pattern::candidate_log(
   self : Pattern,
-  value : String,
+  value : StringView,
   start : Int32,
   whole : Bool,
   word : Bool,

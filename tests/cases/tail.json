@@ -207,7 +207,7 @@
         "help"
       ],
       "source_version": "workspace cli/tail@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: tail [-f] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stdout_text": "Usage: tail [-fz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n  -z, --zero-terminated  use NUL as the record delimiter\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
     {
@@ -228,6 +228,301 @@
       "source_version": "workspace cli/tail@0.2.2 metadata contract",
       "expected_stdout_text": "tail 0.2.2\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o13-tail-z-last",
+      "command": "tail",
+      "args": [
+        "-z",
+        "-n2"
+      ],
+      "stdin_hex": "6100620063",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "620063",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "lines",
+        "zero-terminated"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tail-z-origin",
+      "command": "tail",
+      "args": [
+        "-z",
+        "-n+2"
+      ],
+      "stdin_hex": "6100620063",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "620063",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "lines",
+        "zero-terminated"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tail-z-zero",
+      "command": "tail",
+      "args": [
+        "-z",
+        "-n0"
+      ],
+      "stdin_hex": "6100620063",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "lines",
+        "zero-terminated"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tail-z-empty",
+      "command": "tail",
+      "args": [
+        "-z",
+        "-n1"
+      ],
+      "stdin_hex": "",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "lines",
+        "zero-terminated"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tail-z-bytes",
+      "command": "tail",
+      "args": [
+        "-z",
+        "-c2"
+      ],
+      "stdin_hex": "6100620063",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "0063",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "zero-terminated"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tail-z-repeat",
+      "command": "tail",
+      "args": [
+        "-z",
+        "--zero-terminated",
+        "-n1"
+      ],
+      "stdin_hex": "6100620063",
+      "files": [],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "63",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "lines",
+        "zero-terminated"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tail-z-multi",
+      "command": "tail",
+      "args": [
+        "-z",
+        "-n1",
+        "first",
+        "second"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "first",
+          "content_hex": "610062"
+        },
+        {
+          "path": "second",
+          "content_hex": "58005900"
+        }
+      ],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "3d3d3e206669727374203c3d3d0a620a3d3d3e207365636f6e64203c3d3d0a5900",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "lines",
+        "zero-terminated"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tail-z-multi-quiet",
+      "command": "tail",
+      "args": [
+        "-z",
+        "-q",
+        "-n1",
+        "first",
+        "second"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "first",
+          "content_hex": "610062"
+        },
+        {
+          "path": "second",
+          "content_hex": "58005900"
+        }
+      ],
+      "environment": {
+        "O13_TEST": "two words",
+        "O13_EMPTY": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "625900",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "lines",
+        "quiet",
+        "zero-terminated"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tail-z-long",
+      "command": "tail",
+      "args": [
+        "--zero-terminated",
+        "-n1"
+      ],
+      "stdin_text": "a\u0000b\u0000c",
+      "files": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "63",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "lines",
+        "zero-terminated"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tail-z-last-bytes",
+      "command": "tail",
+      "args": [
+        "-z",
+        "-n1",
+        "-c2"
+      ],
+      "stdin_text": "a\u0000b\u0000c",
+      "files": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "0063",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "lines",
+        "zero-terminated"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "o13-tail-z-last-lines",
+      "command": "tail",
+      "args": [
+        "-z",
+        "-c1",
+        "-n2"
+      ],
+      "stdin_text": "a\u0000b\u0000c",
+      "files": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "620063",
+      "expected_stderr_text": "",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "bytes",
+        "lines",
+        "zero-terminated"
+      ],
+      "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
     }
   ]
 }

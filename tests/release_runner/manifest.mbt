@@ -93,6 +93,8 @@ fn validate_release_manifest(
   base : BaseManifest,
 ) -> Array[String] {
   let failures : Array[String] = []
+  let selected = selected_cases(manifest, base)
+  let included_case_ids = Set::from_array(selected.map(fixture => fixture.id))
   failures.append(release_scope_errors(manifest))
   if manifest.schema != 1 && manifest.schema != 2 {
     failures.push("release manifest: expected schema 1 or 2")
@@ -171,8 +173,7 @@ fn validate_release_manifest(
     for old_id in fixture.aliases.unwrap_or([]) {
       case_ids[old_id] = true
     }
-    if !seen.contains(fixture.command) &&
-      selected_cases(manifest, base).any(item => item.id == fixture.id) {
+    if !seen.contains(fixture.command) && included_case_ids.contains(fixture.id) {
       failures.push("\{fixture.id}: command is not in release manifest")
     }
     ignore(fixture.input()) catch {
@@ -255,9 +256,11 @@ fn validate_release_manifest(
         fixture.comparison == Some("scenario") ||
         fixture.comparison == Some("oracle-scenario")
       ) &&
-      selected_cases(manifest, base).any(selected => selected.id == fixture.id) {
+      included_case_ids.contains(fixture.id) {
       if !release_network_scenario(fixture) &&
         !release_mv_scenario(fixture) &&
+        !release_mktemp_scenario(fixture) &&
+        !release_tee_scenario(fixture) &&
         !release_diff_device_scenario(fixture) {
         failures.push(
           "\{fixture.id}: stateful scenario has no exact published executor",
@@ -360,7 +363,7 @@ fn validate_release_manifest(
   for row in manifest.commands {
     for option in row.supported_options {
       let mut covered = false
-      for fixture in selected_cases(manifest, base) {
+      for fixture in selected {
         if fixture.command == row.name {
           match fixture.coverage {
             Some(items) if items.contains(option) => covered = true

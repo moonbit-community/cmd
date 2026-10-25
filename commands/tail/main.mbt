@@ -74,20 +74,24 @@ fn parse_sleep_interval(text : String) -> Int32 raise CliError {
 /// Select lines from an in-memory buffer (used for streamed input after the
 /// ring buffer has trimmed it down). A trailing newline terminates the final
 /// line rather than starting an empty one.
-fn select_lines(data : Bytes, spec : CountSpec) -> BytesView {
+fn select_lines(
+  data : Bytes,
+  spec : CountSpec,
+  delimiter~ : Byte = b'\n',
+) -> BytesView {
   match spec {
     Last(n) => {
       if n <= 0 || data.length() == 0 {
         return data[0:0]
       }
-      let mut i = if data[data.length() - 1] is b'\n' {
+      let mut i = if data[data.length() - 1] == delimiter {
         data.length() - 2
       } else {
         data.length() - 1
       }
       let mut newlines : Int64 = 0
       while i >= 0 {
-        if data[i] is b'\n' {
+        if data[i] == delimiter {
           newlines += 1
           if newlines == n {
             return data[i + 1:]
@@ -103,7 +107,7 @@ fn select_lines(data : Bytes, spec : CountSpec) -> BytesView {
       }
       let mut seen : Int64 = 0
       for i in 0..<data.length() {
-        if data[i] is b'\n' {
+        if data[i] == delimiter {
           seen += 1
           if seen == k - 1 {
             return data[i + 1:]
@@ -131,10 +135,10 @@ fn select_bytes(data : Bytes, spec : CountSpec) -> BytesView {
 }
 
 ///|
-fn count_newlines(chunk : Bytes) -> Int32 {
+fn count_newlines(chunk : Bytes, delimiter~ : Byte = b'\n') -> Int32 {
   let mut n = 0
   for b in chunk {
-    if b is b'\n' {
+    if b == delimiter {
       n += 1
     }
   }
@@ -175,6 +179,7 @@ async fn tail_file(
   file : @fs.File,
   spec : CountSpec,
   bytes_mode : Bool,
+  delimiter~ : Byte = b'\n',
 ) -> Int64 {
   let size = file.size()
   if bytes_mode {
@@ -203,14 +208,14 @@ async fn tail_file(
         }
         let chunk = file.read_exactly_at(len, position=pos - len.to_int64())
         let mut idx = chunk.length() - 1
-        if at_file_end && chunk[idx] is b'\n' {
+        if at_file_end && chunk[idx] == delimiter {
           // The trailing newline terminates the last line rather than
           // starting an empty one.
           idx -= 1
         }
         at_file_end = false
         while idx >= 0 {
-          if chunk[idx] is b'\n' {
+          if chunk[idx] == delimiter {
             newlines += 1
             if newlines == n {
               start = pos - len.to_int64() + idx.to_int64() + 1
@@ -241,7 +246,7 @@ async fn tail_file(
         }
         let chunk = file.read_exactly_at(len, position=pos)
         for i in 0..<chunk.length() {
-          if chunk[i] is b'\n' {
+          if chunk[i] == delimiter {
             seen += 1
             if seen == k - 1 {
               stream_range(file, pos + i.to_int64() + 1, size)
@@ -275,6 +280,7 @@ async fn tail_stream(
   r : &@io.Reader,
   spec : CountSpec,
   bytes_mode : Bool,
+  delimiter~ : Byte = b'\n',
 ) -> Unit {
   let buf : FixedArray[Byte] = FixedArray::make(chunk_size, 0)
   match spec {
@@ -304,7 +310,7 @@ async fn tail_stream(
                 ignore(chunks.remove(0))
               }
             } else {
-              let c = count_newlines(chunk).to_int64()
+              let c = count_newlines(chunk, delimiter~).to_int64()
               counts.push(c)
               total_newlines += c
               // Keep more than n newlines beyond the dropped prefix so the
@@ -324,7 +330,7 @@ async fn tail_stream(
       if bytes_mode {
         @stdio.stdout.write(select_bytes(data, spec))
       } else {
-        @stdio.stdout.write(select_lines(data, spec))
+        @stdio.stdout.write(select_lines(data, spec, delimiter~))
       }
     }
     FromStart(k) =>
@@ -355,7 +361,7 @@ async fn tail_stream(
               }
               let mut emitted = false
               for i in 0..<chunk.length() {
-                if chunk[i] is b'\n' {
+                if chunk[i] == delimiter {
                   remaining -= 1
                   if remaining == 0 {
                     @stdio.stdout.write(chunk[i + 1:])
@@ -445,6 +451,7 @@ async fn main {
     @cli.flag("quiet", short='q'),
     @cli.flag("verbose", short='v'),
     @cli.flag("follow", short='f'),
+    @cli.flag("zero-terminated", short='z'),
     @cli.option("lines", short='n'),
     @cli.option("bytes", short='c'),
     @cli.option("sleep-interval", short='s'),
@@ -458,26 +465,23 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: tail [-f] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: tail [-fz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n  -z, --zero-terminated  use NUL as the record delimiter\n      --help      display this help and exit\n      --version   display version and exit\n",
     )
     return
   }
   let quiet = parsed.contains("quiet")
   let verbose = parsed.contains("verbose")
   let follow = parsed.contains("follow")
-  if parsed.contains("lines") && parsed.contains("bytes") {
-    @stdio.stderr.write("tail: lines and bytes are mutually exclusive\n")
-    @sys.exit(2)
-    return
+  let delimiter = if parsed.contains("zero-terminated") {
+    b'\x00'
+  } else {
+    b'\n'
   }
   let (spec, bytes_mode) = try {
-    match parsed.last_value("bytes") {
-      Some(text) => (parse_spec(text), true)
-      None =>
-        match parsed.last_value("lines") {
-          Some(text) => (parse_spec(text), false)
-          None => (Last(10), false)
-        }
+    match parsed.last_occurrence(["lines", "bytes"]) {
+      Some("bytes") => (parse_spec(parsed.last_value("bytes").unwrap()), true)
+      Some(_) => (parse_spec(parsed.last_value("lines").unwrap()), false)
+      None => (Last(10), false)
     }
   } catch {
     CliError(msg) => {
@@ -511,12 +515,12 @@ async fn main {
     }
     try {
       if path == "-" {
-        tail_stream(@stdio.stdin, spec, bytes_mode)
+        tail_stream(@stdio.stdin, spec, bytes_mode, delimiter~)
       } else {
         let file = @fs.open(path, mode=ReadOnly)
         errdefer file.close()
         if file.kind() is Regular {
-          let offset = tail_file(file, spec, bytes_mode)
+          let offset = tail_file(file, spec, bytes_mode, delimiter~)
           if follow {
             follow_states.push({
               file,
@@ -529,7 +533,7 @@ async fn main {
           }
         } else {
           // Named pipes and devices are not seekable; stream them instead.
-          tail_stream(file, spec, bytes_mode)
+          tail_stream(file, spec, bytes_mode, delimiter~)
           file.close()
         }
       }

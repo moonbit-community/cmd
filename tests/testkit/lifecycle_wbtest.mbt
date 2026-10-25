@@ -155,6 +155,17 @@ async test "missing metadata observer never produces a partial snapshot" {
   let root = @fs.tmpdir(prefix="mooncmd-observer-missing-")
   defer (@fs.rmdir(root, recursive=true) catch { _ => () })
   @fs.write_file(root + "/preserved", b"original bytes")
+  let modes = [("sticky", 0o1755, "1755"), ("setuid", 0o4777, "4777")]
+  for (name, permission, _) in modes {
+    @fs.mkdir(root + "/" + name)
+    @fs.chmod(root + "/" + name, permission)
+  }
+  let entries = snapshot(root, observe=["mode"], content=false)
+  for (name, _, expected) in modes {
+    let matches = entries.filter(entry => entry.path == name)
+    assert_eq(matches.length(), 1)
+    assert_eq(matches[0].metadata["mode"], expected)
+  }
   try snapshot(root, observe=["mode"], stat_path=root + "/missing-stat") catch {
     error =>
       assert_true(

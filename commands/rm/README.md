@@ -14,8 +14,31 @@ does not receive an extra repository policy. Operand failures do
 not prevent later safe operands from being processed; the final status records
 any failure. File access authorization belongs to the caller or host. Accepting
 `--no-preserve-root` does not establish a tested root-deletion contract; that
-destructive operation is not part of the validation fixtures. Interactive
-`-i`/`-I` modes are not implemented.
+destructive operation is not part of the validation fixtures.
+
+The unpublished workspace candidate adds `-i` and bare
+`--interactive`/`--interactive=always`, reading one response line from stdin
+after each prompt on stderr. An affirmative starts with y/Y; leading spaces
+are not trimmed, EOF declines, and a final unterminated response is accepted.
+Recursive confirmation prompts before descending into nonempty directories,
+then for each child and the final directory removal. A child refusal still
+permits the later parent prompt and attempted removal, as GNU does.
+Traversal uses an explicit stack and does not follow symbolic links.
+Prompt, verbose and error labels retain the original operand spelling; generated
+child components use `/` while filesystem access uses the platform path.
+
+`-I`/`--interactive=once` prompts once before inspection for recursive removal
+or more than three original operands. Declining returns success and preserves
+all operands. `-f` clears interaction and ignores missing files; selecting
+always/once later restores missing-file diagnostics. `--interactive=never`
+clears prompts while retaining the current ignore-missing state. The options
+are applied in argument order. GNU no/none/yes aliases and unambiguous
+prefixes are accepted. Explicit interaction works with piped stdin and does
+not require a terminal or a separate `/dev/tty` channel.
+
+Implicit terminal-sensitive write-protection prompting still needs a released
+isatty API. Explicit prompts use real effective-write access for their labels;
+permission bits are not fabricated. Published coordinates remain frozen.
 
 ## Standalone metadata
 

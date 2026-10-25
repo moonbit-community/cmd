@@ -1629,7 +1629,7 @@
         "help"
       ],
       "source_version": "workspace cli/ls@0.2.3 metadata contract",
-      "expected_stdout_text": "Usage: ls [-aAdF1RrtucS] [-H|-L|-P] [--time=WORD] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -H follows command-line links; -L follows all links; -P follows none (extension).\n  -u, -c and --time select and imply time sorting unless -S or -t selects a sort.\n  -S requires regular files; metadata-rich long listing is not supported.\n",
+      "expected_stdout_text": "Usage: ls [-aAdF1RCxmrtucSbqNQ] [-w WIDTH] [-T TABSIZE] [-H|-L|-P] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -C lists down columns; -x across rows; -m uses commas; -1 uses lines.\n  -w, --width=COLS sets line width (0 unlimited); -T, --tabsize=COLS sets tabs.\n  -b escapes names; -N is literal; -Q uses C quotes; -q replaces control bytes.\n      --quoting-style=STYLE selects GNU C-locale quoting.\n      --show-control-chars displays remaining control bytes.\n      --color=always,never controls explicit type/extension colors.\n  Active su/sg/ex/ca/mh or tw/ow/st colors require unavailable metadata.\n  -H follows command-line links; -L follows all links; -P follows none (extension).\n  -u, -c and --time select and imply time sorting unless -S or -t selects a sort.\n  -S requires regular files; metadata-rich long listing is not supported.\n",
       "expected_stderr_text": ""
     },
     {
@@ -1650,6 +1650,5806 @@
       "source_version": "workspace cli/ls@0.2.3 metadata contract",
       "expected_stdout_text": "ls 0.2.3\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "o11-quote-literal",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=never",
+        "--quoting-style=literal",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "23686173680a24646f6c6c61720a2d646173680a3b73656d690a6120620a6261636b5c736c6173680a62656c6c076e616d650a636f6d6d612c6e616d650a63720d6e616d650a646f75626c652271756f74650a6573631b6e616d650a676c6f622a5b785d3f0a6c696e650a6e616d650a706c61696e0a73696e676c652771756f74650a746162096e616d650ac3a90ae4b8ad0a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one",
+        "quoting-style"
+      ]
+    },
+    {
+      "id": "o11-quote-shell",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=never",
+        "--quoting-style=shell",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "272368617368270a2724646f6c6c6172270a2d646173680a273b73656d69270a27612062270a276261636b5c736c617368270a62656c6c076e616d650a636f6d6d612c6e616d650a2763720d6e616d65270a27646f75626c652271756f7465270a6573631b6e616d650a27676c6f622a5b785d3f270a276c696e650a6e616d65270a706c61696e0a2273696e676c652771756f7465220a27746162096e616d65270ac3a90ae4b8ad0a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one",
+        "quoting-style"
+      ]
+    },
+    {
+      "id": "o11-quote-shell-always",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=never",
+        "--quoting-style=shell-always",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "272368617368270a2724646f6c6c6172270a272d64617368270a273b73656d69270a27612062270a276261636b5c736c617368270a2762656c6c076e616d65270a27636f6d6d612c6e616d65270a2763720d6e616d65270a27646f75626c652271756f7465270a276573631b6e616d65270a27676c6f622a5b785d3f270a276c696e650a6e616d65270a27706c61696e270a2273696e676c652771756f7465220a27746162096e616d65270a27c3a9270a27e4b8ad270a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one",
+        "quoting-style"
+      ]
+    },
+    {
+      "id": "o11-quote-shell-escape",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=never",
+        "--quoting-style=shell-escape",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "272368617368270a2724646f6c6c6172270a2d646173680a273b73656d69270a27612062270a276261636b5c736c617368270a2762656c6c2724275c6127276e616d65270a636f6d6d612c6e616d650a2763722724275c7227276e616d65270a27646f75626c652271756f7465270a276573632724275c30333327276e616d65270a27676c6f622a5b785d3f270a276c696e652724275c6e27276e616d65270a706c61696e0a2273696e676c652771756f7465220a277461622724275c7427276e616d65270a272724275c3330335c323531270a272724275c3334345c3237305c323535270a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one",
+        "quoting-style"
+      ]
+    },
+    {
+      "id": "o11-quote-shell-escape-always",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=never",
+        "--quoting-style=shell-escape-always",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "272368617368270a2724646f6c6c6172270a272d64617368270a273b73656d69270a27612062270a276261636b5c736c617368270a2762656c6c2724275c6127276e616d65270a27636f6d6d612c6e616d65270a2763722724275c7227276e616d65270a27646f75626c652271756f7465270a276573632724275c30333327276e616d65270a27676c6f622a5b785d3f270a276c696e652724275c6e27276e616d65270a27706c61696e270a2273696e676c652771756f7465220a277461622724275c7427276e616d65270a272724275c3330335c323531270a272724275c3334345c3237305c323535270a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one",
+        "quoting-style"
+      ]
+    },
+    {
+      "id": "o11-quote-c",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=never",
+        "--quoting-style=c",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "222368617368220a2224646f6c6c6172220a222d64617368220a223b73656d69220a22612062220a226261636b5c5c736c617368220a2262656c6c5c616e616d65220a22636f6d6d612c6e616d65220a2263725c726e616d65220a22646f75626c655c2271756f7465220a226573635c3033336e616d65220a22676c6f622a5b785d3f220a226c696e655c6e6e616d65220a22706c61696e220a2273696e676c652771756f7465220a227461625c746e616d65220a225c3330335c323531220a225c3334345c3237305c323535220a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one",
+        "quoting-style"
+      ]
+    },
+    {
+      "id": "o11-quote-c-maybe",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=never",
+        "--quoting-style=c-maybe",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "23686173680a24646f6c6c61720a2d646173680a3b73656d690a6120620a6261636b5c736c6173680a2262656c6c5c616e616d65220a636f6d6d612c6e616d650a2263725c726e616d65220a22646f75626c655c2271756f7465220a226573635c3033336e616d65220a676c6f622a5b785d3f0a226c696e655c6e6e616d65220a706c61696e0a73696e676c652771756f74650a227461625c746e616d65220a225c3330335c323531220a225c3334345c3237305c323535220a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one",
+        "quoting-style"
+      ]
+    },
+    {
+      "id": "o11-quote-escape",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=never",
+        "--quoting-style=escape",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "23686173680a24646f6c6c61720a2d646173680a3b73656d690a615c20620a6261636b5c5c736c6173680a62656c6c5c616e616d650a636f6d6d612c6e616d650a63725c726e616d650a646f75626c652271756f74650a6573635c3033336e616d650a676c6f622a5b785d3f0a6c696e655c6e6e616d650a706c61696e0a73696e676c652771756f74650a7461625c746e616d650a5c3330335c3235310a5c3334345c3237305c3235350a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one",
+        "quoting-style"
+      ]
+    },
+    {
+      "id": "o11-quote-locale",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=never",
+        "--quoting-style=locale",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "272368617368270a2724646f6c6c6172270a272d64617368270a273b73656d69270a27612062270a276261636b5c5c736c617368270a2762656c6c5c616e616d65270a27636f6d6d612c6e616d65270a2763725c726e616d65270a27646f75626c652271756f7465270a276573635c3033336e616d65270a27676c6f622a5b785d3f270a276c696e655c6e6e616d65270a27706c61696e270a2773696e676c655c2771756f7465270a277461625c746e616d65270a275c3330335c323531270a275c3334345c3237305c323535270a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one",
+        "quoting-style"
+      ]
+    },
+    {
+      "id": "o11-quote-clocale",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=never",
+        "--quoting-style=clocale",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "222368617368220a2224646f6c6c6172220a222d64617368220a223b73656d69220a22612062220a226261636b5c5c736c617368220a2262656c6c5c616e616d65220a22636f6d6d612c6e616d65220a2263725c726e616d65220a22646f75626c655c2271756f7465220a226573635c3033336e616d65220a22676c6f622a5b785d3f220a226c696e655c6e6e616d65220a22706c61696e220a2273696e676c652771756f7465220a227461625c746e616d65220a225c3330335c323531220a225c3334345c3237305c323535220a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one",
+        "quoting-style"
+      ]
+    },
+    {
+      "id": "o11-columns-width20-spaces",
+      "command": "ls",
+      "args": [
+        "-C",
+        "-w20",
+        "-T0",
+        "--",
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "layout",
+          "kind": "directory"
+        },
+        {
+          "path": "layout/a",
+          "content_text": ""
+        },
+        {
+          "path": "layout/bb",
+          "content_text": ""
+        },
+        {
+          "path": "layout/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "layout/dddd",
+          "content_text": ""
+        },
+        {
+          "path": "layout/eeeee",
+          "content_text": ""
+        },
+        {
+          "path": "layout/f",
+          "content_text": ""
+        },
+        {
+          "path": "layout/gg",
+          "content_text": ""
+        },
+        {
+          "path": "layout/hhh",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "61202020206464646420202067670a6262202020656565656520206868680a6363632020660a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "columns",
+        "tabsize",
+        "width"
+      ]
+    },
+    {
+      "id": "o11-horizontal-width20-spaces",
+      "command": "ls",
+      "args": [
+        "-x",
+        "-w20",
+        "-T0",
+        "--",
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "layout",
+          "kind": "directory"
+        },
+        {
+          "path": "layout/a",
+          "content_text": ""
+        },
+        {
+          "path": "layout/bb",
+          "content_text": ""
+        },
+        {
+          "path": "layout/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "layout/dddd",
+          "content_text": ""
+        },
+        {
+          "path": "layout/eeeee",
+          "content_text": ""
+        },
+        {
+          "path": "layout/f",
+          "content_text": ""
+        },
+        {
+          "path": "layout/gg",
+          "content_text": ""
+        },
+        {
+          "path": "layout/hhh",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "612020202020626220202020206363630a64646464202065656565652020660a6767202020206868680a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "across",
+        "tabsize",
+        "width"
+      ]
+    },
+    {
+      "id": "o11-commas-width20",
+      "command": "ls",
+      "args": [
+        "-m",
+        "-w20",
+        "--",
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "layout",
+          "kind": "directory"
+        },
+        {
+          "path": "layout/a",
+          "content_text": ""
+        },
+        {
+          "path": "layout/bb",
+          "content_text": ""
+        },
+        {
+          "path": "layout/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "layout/dddd",
+          "content_text": ""
+        },
+        {
+          "path": "layout/eeeee",
+          "content_text": ""
+        },
+        {
+          "path": "layout/f",
+          "content_text": ""
+        },
+        {
+          "path": "layout/gg",
+          "content_text": ""
+        },
+        {
+          "path": "layout/hhh",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "612c2062622c206363632c20646464642c0a65656565652c20662c2067672c206868680a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "commas",
+        "width"
+      ]
+    },
+    {
+      "id": "o11-columns-width0",
+      "command": "ls",
+      "args": [
+        "-C",
+        "-w0",
+        "-T8",
+        "--",
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "layout",
+          "kind": "directory"
+        },
+        {
+          "path": "layout/a",
+          "content_text": ""
+        },
+        {
+          "path": "layout/bb",
+          "content_text": ""
+        },
+        {
+          "path": "layout/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "layout/dddd",
+          "content_text": ""
+        },
+        {
+          "path": "layout/eeeee",
+          "content_text": ""
+        },
+        {
+          "path": "layout/f",
+          "content_text": ""
+        },
+        {
+          "path": "layout/gg",
+          "content_text": ""
+        },
+        {
+          "path": "layout/hhh",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "61202062622020636363202064646464202065656565652020662020676720206868680a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "columns",
+        "tabsize",
+        "width"
+      ]
+    },
+    {
+      "id": "o11-commas-width0",
+      "command": "ls",
+      "args": [
+        "-m",
+        "-w0",
+        "--",
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "layout",
+          "kind": "directory"
+        },
+        {
+          "path": "layout/a",
+          "content_text": ""
+        },
+        {
+          "path": "layout/bb",
+          "content_text": ""
+        },
+        {
+          "path": "layout/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "layout/dddd",
+          "content_text": ""
+        },
+        {
+          "path": "layout/eeeee",
+          "content_text": ""
+        },
+        {
+          "path": "layout/f",
+          "content_text": ""
+        },
+        {
+          "path": "layout/gg",
+          "content_text": ""
+        },
+        {
+          "path": "layout/hhh",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "612c2062622c206363632c20646464642c2065656565652c20662c2067672c206868680a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "commas",
+        "width"
+      ]
+    },
+    {
+      "id": "o11-columns-width1",
+      "command": "ls",
+      "args": [
+        "-C",
+        "-w1",
+        "-T0",
+        "--",
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "layout",
+          "kind": "directory"
+        },
+        {
+          "path": "layout/a",
+          "content_text": ""
+        },
+        {
+          "path": "layout/bb",
+          "content_text": ""
+        },
+        {
+          "path": "layout/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "layout/dddd",
+          "content_text": ""
+        },
+        {
+          "path": "layout/eeeee",
+          "content_text": ""
+        },
+        {
+          "path": "layout/f",
+          "content_text": ""
+        },
+        {
+          "path": "layout/gg",
+          "content_text": ""
+        },
+        {
+          "path": "layout/hhh",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "610a62620a6363630a646464640a65656565650a660a67670a6868680a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "columns",
+        "tabsize",
+        "width"
+      ]
+    },
+    {
+      "id": "o11-columns-width30-tabs8",
+      "command": "ls",
+      "args": [
+        "-C",
+        "-w30",
+        "-T8",
+        "--",
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "layout",
+          "kind": "directory"
+        },
+        {
+          "path": "layout/a",
+          "content_text": ""
+        },
+        {
+          "path": "layout/bb",
+          "content_text": ""
+        },
+        {
+          "path": "layout/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "layout/dddd",
+          "content_text": ""
+        },
+        {
+          "path": "layout/eeeee",
+          "content_text": ""
+        },
+        {
+          "path": "layout/f",
+          "content_text": ""
+        },
+        {
+          "path": "layout/gg",
+          "content_text": ""
+        },
+        {
+          "path": "layout/hhh",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "612020206363632020206565656565202067670a626220206464646420206609206868680a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "columns",
+        "tabsize",
+        "width"
+      ]
+    },
+    {
+      "id": "o11-columns-width30-tabs0",
+      "command": "ls",
+      "args": [
+        "-C",
+        "-w30",
+        "-T0",
+        "--",
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "layout",
+          "kind": "directory"
+        },
+        {
+          "path": "layout/a",
+          "content_text": ""
+        },
+        {
+          "path": "layout/bb",
+          "content_text": ""
+        },
+        {
+          "path": "layout/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "layout/dddd",
+          "content_text": ""
+        },
+        {
+          "path": "layout/eeeee",
+          "content_text": ""
+        },
+        {
+          "path": "layout/f",
+          "content_text": ""
+        },
+        {
+          "path": "layout/gg",
+          "content_text": ""
+        },
+        {
+          "path": "layout/hhh",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "612020206363632020206565656565202067670a62622020646464642020662020202020206868680a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "columns",
+        "tabsize",
+        "width"
+      ]
+    },
+    {
+      "id": "o11-columns-widthhex",
+      "command": "ls",
+      "args": [
+        "-C",
+        "-w0x14",
+        "-T0",
+        "--",
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "layout",
+          "kind": "directory"
+        },
+        {
+          "path": "layout/a",
+          "content_text": ""
+        },
+        {
+          "path": "layout/bb",
+          "content_text": ""
+        },
+        {
+          "path": "layout/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "layout/dddd",
+          "content_text": ""
+        },
+        {
+          "path": "layout/eeeee",
+          "content_text": ""
+        },
+        {
+          "path": "layout/f",
+          "content_text": ""
+        },
+        {
+          "path": "layout/gg",
+          "content_text": ""
+        },
+        {
+          "path": "layout/hhh",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "61202020206464646420202067670a6262202020656565656520206868680a6363632020660a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "columns",
+        "tabsize",
+        "width"
+      ]
+    },
+    {
+      "id": "o11-alignment-shell-escape",
+      "command": "ls",
+      "args": [
+        "-C",
+        "-w20",
+        "-T0",
+        "--quoting-style=shell-escape",
+        "--",
+        "alignment"
+      ],
+      "files": [
+        {
+          "path": "alignment",
+          "kind": "directory"
+        },
+        {
+          "path": "alignment/a",
+          "content_text": ""
+        },
+        {
+          "path": "alignment/b b",
+          "content_text": ""
+        },
+        {
+          "path": "alignment/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "alignment/d",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "20612020202020206363630a2762206227202020640a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "columns",
+        "quoting-style",
+        "tabsize",
+        "width"
+      ]
+    },
+    {
+      "id": "o11-alignment-width0",
+      "command": "ls",
+      "args": [
+        "-C",
+        "-w0",
+        "--quoting-style=shell-escape",
+        "--",
+        "alignment"
+      ],
+      "files": [
+        {
+          "path": "alignment",
+          "kind": "directory"
+        },
+        {
+          "path": "alignment/a",
+          "content_text": ""
+        },
+        {
+          "path": "alignment/b b",
+          "content_text": ""
+        },
+        {
+          "path": "alignment/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "alignment/d",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "612020276220622720206363632020640a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "columns",
+        "quoting-style",
+        "width"
+      ]
+    },
+    {
+      "id": "o11-flag-b-then-N",
+      "command": "ls",
+      "args": [
+        "-1",
+        "-bN",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "23686173680a24646f6c6c61720a2d646173680a3b73656d690a6120620a6261636b5c736c6173680a62656c6c076e616d650a636f6d6d612c6e616d650a63720d6e616d650a646f75626c652271756f74650a6573631b6e616d650a676c6f622a5b785d3f0a6c696e650a6e616d650a706c61696e0a73696e676c652771756f74650a746162096e616d650ac3a90ae4b8ad0a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "escape",
+        "literal",
+        "one"
+      ]
+    },
+    {
+      "id": "o11-flag-N-then-b",
+      "command": "ls",
+      "args": [
+        "-1",
+        "-Nb",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "23686173680a24646f6c6c61720a2d646173680a3b73656d690a615c20620a6261636b5c5c736c6173680a62656c6c5c616e616d650a636f6d6d612c6e616d650a63725c726e616d650a646f75626c652271756f74650a6573635c3033336e616d650a676c6f622a5b785d3f0a6c696e655c6e6e616d650a706c61696e0a73696e676c652771756f74650a7461625c746e616d650a5c3330335c3235310a5c3334345c3237305c3235350a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "escape",
+        "literal",
+        "one"
+      ]
+    },
+    {
+      "id": "o11-flag-b-then-Q",
+      "command": "ls",
+      "args": [
+        "-1",
+        "-bQ",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "222368617368220a2224646f6c6c6172220a222d64617368220a223b73656d69220a22612062220a226261636b5c5c736c617368220a2262656c6c5c616e616d65220a22636f6d6d612c6e616d65220a2263725c726e616d65220a22646f75626c655c2271756f7465220a226573635c3033336e616d65220a22676c6f622a5b785d3f220a226c696e655c6e6e616d65220a22706c61696e220a2273696e676c652771756f7465220a227461625c746e616d65220a225c3330335c323531220a225c3334345c3237305c323535220a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "escape",
+        "one",
+        "quote"
+      ]
+    },
+    {
+      "id": "o11-flag-q-then-N",
+      "command": "ls",
+      "args": [
+        "-1",
+        "-qN",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "23686173680a24646f6c6c61720a2d646173680a3b73656d690a6120620a6261636b5c736c6173680a62656c6c3f6e616d650a636f6d6d612c6e616d650a63723f6e616d650a646f75626c652271756f74650a6573633f6e616d650a676c6f622a5b785d3f0a6c696e653f6e616d650a706c61696e0a73696e676c652771756f74650a7461623f6e616d650a3f3f0a3f3f3f0a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "hide-control-chars",
+        "literal",
+        "one"
+      ]
+    },
+    {
+      "id": "o11-flag-Q-then-q",
+      "command": "ls",
+      "args": [
+        "-1",
+        "-Qq",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "222368617368220a2224646f6c6c6172220a222d64617368220a223b73656d69220a22612062220a226261636b5c5c736c617368220a2262656c6c5c616e616d65220a22636f6d6d612c6e616d65220a2263725c726e616d65220a22646f75626c655c2271756f7465220a226573635c3033336e616d65220a22676c6f622a5b785d3f220a226c696e655c6e6e616d65220a22706c61696e220a2273696e676c652771756f7465220a227461625c746e616d65220a225c3330335c323531220a225c3334345c3237305c323535220a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "hide-control-chars",
+        "one",
+        "quote"
+      ]
+    },
+    {
+      "id": "o11-flag-q-then-show",
+      "command": "ls",
+      "args": [
+        "-1",
+        "-q",
+        "--show-control-chars",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "23686173680a24646f6c6c61720a2d646173680a3b73656d690a6120620a6261636b5c736c6173680a62656c6c076e616d650a636f6d6d612c6e616d650a63720d6e616d650a646f75626c652271756f74650a6573631b6e616d650a676c6f622a5b785d3f0a6c696e650a6e616d650a706c61696e0a73696e676c652771756f74650a746162096e616d650ac3a90ae4b8ad0a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "hide-control-chars",
+        "one",
+        "show-control-chars"
+      ]
+    },
+    {
+      "id": "o11-flag-show-then-q",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--show-control-chars",
+        "-q",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "23686173680a24646f6c6c61720a2d646173680a3b73656d690a6120620a6261636b5c736c6173680a62656c6c3f6e616d650a636f6d6d612c6e616d650a63723f6e616d650a646f75626c652271756f74650a6573633f6e616d650a676c6f622a5b785d3f0a6c696e653f6e616d650a706c61696e0a73696e676c652771756f74650a7461623f6e616d650a3f3f0a3f3f3f0a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "hide-control-chars",
+        "one",
+        "show-control-chars"
+      ]
+    },
+    {
+      "id": "o11-env-quote-c",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "c",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "222368617368220a2224646f6c6c6172220a222d64617368220a223b73656d69220a22612062220a226261636b5c5c736c617368220a2262656c6c5c616e616d65220a22636f6d6d612c6e616d65220a2263725c726e616d65220a22646f75626c655c2271756f7465220a226573635c3033336e616d65220a22676c6f622a5b785d3f220a226c696e655c6e6e616d65220a22706c61696e220a2273696e676c652771756f7465220a227461625c746e616d65220a225c3330335c323531220a225c3334345c3237305c323535220a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "one"
+      ]
+    },
+    {
+      "id": "o11-env-c-explicit-b",
+      "command": "ls",
+      "args": [
+        "-1",
+        "-b",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "c",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "23686173680a24646f6c6c61720a2d646173680a3b73656d690a615c20620a6261636b5c5c736c6173680a62656c6c5c616e616d650a636f6d6d612c6e616d650a63725c726e616d650a646f75626c652271756f74650a6573635c3033336e616d650a676c6f622a5b785d3f0a6c696e655c6e6e616d650a706c61696e0a73696e676c652771756f74650a7461625c746e616d650a5c3330335c3235310a5c3334345c3237305c3235350a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "escape",
+        "one"
+      ]
+    },
+    {
+      "id": "o11-env-invalid-quote",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--",
+        "alignment"
+      ],
+      "files": [
+        {
+          "path": "alignment",
+          "kind": "directory"
+        },
+        {
+          "path": "alignment/a",
+          "content_text": ""
+        },
+        {
+          "path": "alignment/b b",
+          "content_text": ""
+        },
+        {
+          "path": "alignment/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "alignment/d",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "bogus",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "610a6220620a6363630a640a",
+      "expected_stderr_hex": "6c733a2069676e6f72696e6720696e76616c69642076616c7565206f6620656e7669726f6e6d656e74207661726961626c652051554f54494e475f5354594c453a2027626f677573270a",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "one"
+      ]
+    },
+    {
+      "id": "o11-env-invalid-explicit-Q",
+      "command": "ls",
+      "args": [
+        "-1Q",
+        "--",
+        "alignment"
+      ],
+      "files": [
+        {
+          "path": "alignment",
+          "kind": "directory"
+        },
+        {
+          "path": "alignment/a",
+          "content_text": ""
+        },
+        {
+          "path": "alignment/b b",
+          "content_text": ""
+        },
+        {
+          "path": "alignment/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "alignment/d",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "bogus",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "2261220a22622062220a22636363220a2264220a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "one",
+        "quote"
+      ]
+    },
+    {
+      "id": "o11-env-width-tabsize",
+      "command": "ls",
+      "args": [
+        "-C",
+        "--",
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "layout",
+          "kind": "directory"
+        },
+        {
+          "path": "layout/a",
+          "content_text": ""
+        },
+        {
+          "path": "layout/bb",
+          "content_text": ""
+        },
+        {
+          "path": "layout/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "layout/dddd",
+          "content_text": ""
+        },
+        {
+          "path": "layout/eeeee",
+          "content_text": ""
+        },
+        {
+          "path": "layout/f",
+          "content_text": ""
+        },
+        {
+          "path": "layout/gg",
+          "content_text": ""
+        },
+        {
+          "path": "layout/hhh",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "20",
+        "TABSIZE": "4",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "610920646464640967670a626209206565656565096868680a6363632020660a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "columns"
+      ]
+    },
+    {
+      "id": "o11-env-width-explicit",
+      "command": "ls",
+      "args": [
+        "-C",
+        "-w30",
+        "-T0",
+        "--",
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "layout",
+          "kind": "directory"
+        },
+        {
+          "path": "layout/a",
+          "content_text": ""
+        },
+        {
+          "path": "layout/bb",
+          "content_text": ""
+        },
+        {
+          "path": "layout/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "layout/dddd",
+          "content_text": ""
+        },
+        {
+          "path": "layout/eeeee",
+          "content_text": ""
+        },
+        {
+          "path": "layout/f",
+          "content_text": ""
+        },
+        {
+          "path": "layout/gg",
+          "content_text": ""
+        },
+        {
+          "path": "layout/hhh",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "bogus",
+        "TABSIZE": "bogus",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "612020206363632020206565656565202067670a62622020646464642020662020202020206868680a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "columns",
+        "tabsize",
+        "width"
+      ]
+    },
+    {
+      "id": "o11-env-invalid-width-tab",
+      "command": "ls",
+      "args": [
+        "-C",
+        "--",
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "layout",
+          "kind": "directory"
+        },
+        {
+          "path": "layout/a",
+          "content_text": ""
+        },
+        {
+          "path": "layout/bb",
+          "content_text": ""
+        },
+        {
+          "path": "layout/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "layout/dddd",
+          "content_text": ""
+        },
+        {
+          "path": "layout/eeeee",
+          "content_text": ""
+        },
+        {
+          "path": "layout/f",
+          "content_text": ""
+        },
+        {
+          "path": "layout/gg",
+          "content_text": ""
+        },
+        {
+          "path": "layout/hhh",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "bogus",
+        "TABSIZE": "bogus",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "612020626220206363632020646464642020656565656520206620206767096868680a",
+      "expected_stderr_hex": "6c733a2069676e6f72696e6720696e76616c696420776964746820696e20656e7669726f6e6d656e74207661726961626c6520434f4c554d4e533a2027626f677573270a6c733a2069676e6f72696e6720696e76616c6964207461622073697a6520696e20656e7669726f6e6d656e74207661726961626c652054414253495a453a2027626f677573270a",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "columns"
+      ]
+    },
+    {
+      "id": "o11-color-markers",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=always",
+        "--",
+        "colors"
+      ],
+      "files": [
+        {
+          "path": "colors",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/plain",
+          "content_text": ""
+        },
+        {
+          "path": "colors/note.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/upper.TXT",
+          "content_text": ""
+        },
+        {
+          "path": "colors/mix.TxT",
+          "content_text": ""
+        },
+        {
+          "path": "colors/archive.tar.gz",
+          "content_text": ""
+        },
+        {
+          "path": "colors/ex.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/other-x.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/dir.txt",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/sticky",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/link",
+          "kind": "symlink",
+          "target": "plain"
+        },
+        {
+          "path": "colors/orphan",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": "lc=<:rc=>:ec=!:rs=R:fi=F:di=D:ln=L:or=O:pi=P:so=S:ex=X:su=0:sg=0:ca=0:mh=0:tw=W:ow=Y:st=K:*.txt=T:*.gz=G:*.tar.gz=A:su=0:sg=0:ex=0:ca=0:mh=0:tw=0:ow=0:st=0"
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "213c413e617263686976652e7461722e677a210a3c443e6469722e747874210a3c543e65782e747874210a3c4c3e6c696e6b210a3c543e6d69782e547854210a3c543e6e6f74652e747874210a3c4f3e6f727068616e210a3c543e6f746865722d782e747874210a3c463e706c61696e210a3c443e737469636b79210a3c543e75707065722e545854210a3c3e",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one"
+      ]
+    },
+    {
+      "id": "o11-color-never",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=never",
+        "--",
+        "colors"
+      ],
+      "files": [
+        {
+          "path": "colors",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/plain",
+          "content_text": ""
+        },
+        {
+          "path": "colors/note.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/upper.TXT",
+          "content_text": ""
+        },
+        {
+          "path": "colors/mix.TxT",
+          "content_text": ""
+        },
+        {
+          "path": "colors/archive.tar.gz",
+          "content_text": ""
+        },
+        {
+          "path": "colors/ex.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/other-x.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/dir.txt",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/sticky",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/link",
+          "kind": "symlink",
+          "target": "plain"
+        },
+        {
+          "path": "colors/orphan",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": "lc=<:rc=>:ec=!:rs=R:fi=F:di=D:ln=L:or=O:pi=P:so=S:ex=X:su=0:sg=0:ca=0:mh=0:tw=W:ow=Y:st=K:*.txt=T:*.gz=G:*.tar.gz=A"
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "617263686976652e7461722e677a0a6469722e7478740a65782e7478740a6c696e6b0a6d69782e5478540a6e6f74652e7478740a6f727068616e0a6f746865722d782e7478740a706c61696e0a737469636b790a75707065722e5458540a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one"
+      ]
+    },
+    {
+      "id": "o11-color-ex-disabled",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=always",
+        "--",
+        "colors"
+      ],
+      "files": [
+        {
+          "path": "colors",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/plain",
+          "content_text": ""
+        },
+        {
+          "path": "colors/note.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/upper.TXT",
+          "content_text": ""
+        },
+        {
+          "path": "colors/mix.TxT",
+          "content_text": ""
+        },
+        {
+          "path": "colors/archive.tar.gz",
+          "content_text": ""
+        },
+        {
+          "path": "colors/ex.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/other-x.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/dir.txt",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/sticky",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/link",
+          "kind": "symlink",
+          "target": "plain"
+        },
+        {
+          "path": "colors/orphan",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": "lc=<:rc=>:ec=!:rs=R:fi=F:di=D:ln=L:or=O:pi=P:so=S:ex=X:su=0:sg=0:ca=0:mh=0:tw=W:ow=Y:st=K:*.txt=T:*.gz=G:*.tar.gz=A:ex=0:su=0:sg=0:ex=0:ca=0:mh=0:tw=0:ow=0:st=0"
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "213c413e617263686976652e7461722e677a210a3c443e6469722e747874210a3c543e65782e747874210a3c4c3e6c696e6b210a3c543e6d69782e547854210a3c543e6e6f74652e747874210a3c4f3e6f727068616e210a3c543e6f746865722d782e747874210a3c463e706c61696e210a3c443e737469636b79210a3c543e75707065722e545854210a3c3e",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one"
+      ]
+    },
+    {
+      "id": "o11-color-case-specific-ext",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=always",
+        "--",
+        "colors"
+      ],
+      "files": [
+        {
+          "path": "colors",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/plain",
+          "content_text": ""
+        },
+        {
+          "path": "colors/note.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/upper.TXT",
+          "content_text": ""
+        },
+        {
+          "path": "colors/mix.TxT",
+          "content_text": ""
+        },
+        {
+          "path": "colors/archive.tar.gz",
+          "content_text": ""
+        },
+        {
+          "path": "colors/ex.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/other-x.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/dir.txt",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/sticky",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/link",
+          "kind": "symlink",
+          "target": "plain"
+        },
+        {
+          "path": "colors/orphan",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": "lc=<:rc=>:ec=!:rs=R:fi=F:di=D:ln=L:or=O:pi=P:so=S:ex=X:su=0:sg=0:ca=0:mh=0:tw=W:ow=Y:st=K:*.txt=T:*.gz=G:*.tar.gz=A:*.TXT=U:su=0:sg=0:ex=0:ca=0:mh=0:tw=0:ow=0:st=0"
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "213c413e617263686976652e7461722e677a210a3c443e6469722e747874210a3c543e65782e747874210a3c4c3e6c696e6b210a3c463e6d69782e547854210a3c543e6e6f74652e747874210a3c4f3e6f727068616e210a3c543e6f746865722d782e747874210a3c463e706c61696e210a3c443e737469636b79210a3c553e75707065722e545854210a3c3e",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one"
+      ]
+    },
+    {
+      "id": "o11-color-last-short-ext",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=always",
+        "--",
+        "colors"
+      ],
+      "files": [
+        {
+          "path": "colors",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/plain",
+          "content_text": ""
+        },
+        {
+          "path": "colors/note.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/upper.TXT",
+          "content_text": ""
+        },
+        {
+          "path": "colors/mix.TxT",
+          "content_text": ""
+        },
+        {
+          "path": "colors/archive.tar.gz",
+          "content_text": ""
+        },
+        {
+          "path": "colors/ex.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/other-x.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/dir.txt",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/sticky",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/link",
+          "kind": "symlink",
+          "target": "plain"
+        },
+        {
+          "path": "colors/orphan",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": "lc=<:rc=>:ec=!:rs=R:fi=F:di=D:ln=L:or=O:pi=P:so=S:ex=X:su=0:sg=0:ca=0:mh=0:tw=W:ow=Y:st=K:*.txt=T:*.gz=G:*.tar.gz=A:*.gz=Z:su=0:sg=0:ex=0:ca=0:mh=0:tw=0:ow=0:st=0"
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "213c5a3e617263686976652e7461722e677a210a3c443e6469722e747874210a3c543e65782e747874210a3c4c3e6c696e6b210a3c543e6d69782e547854210a3c543e6e6f74652e747874210a3c4f3e6f727068616e210a3c543e6f746865722d782e747874210a3c463e706c61696e210a3c443e737469636b79210a3c543e75707065722e545854210a3c3e",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one"
+      ]
+    },
+    {
+      "id": "o11-color-link-target",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=always",
+        "--",
+        "colors"
+      ],
+      "files": [
+        {
+          "path": "colors",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/plain",
+          "content_text": ""
+        },
+        {
+          "path": "colors/note.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/upper.TXT",
+          "content_text": ""
+        },
+        {
+          "path": "colors/mix.TxT",
+          "content_text": ""
+        },
+        {
+          "path": "colors/archive.tar.gz",
+          "content_text": ""
+        },
+        {
+          "path": "colors/ex.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/other-x.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/dir.txt",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/sticky",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/link",
+          "kind": "symlink",
+          "target": "plain"
+        },
+        {
+          "path": "colors/orphan",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": "lc=<:rc=>:ec=!:rs=R:fi=F:di=D:ln=L:or=O:pi=P:so=S:ex=X:su=0:sg=0:ca=0:mh=0:tw=W:ow=Y:st=K:*.txt=T:*.gz=G:*.tar.gz=A:ln=target:su=0:sg=0:ex=0:ca=0:mh=0:tw=0:ow=0:st=0"
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "213c413e617263686976652e7461722e677a210a3c443e6469722e747874210a3c543e65782e747874210a3c463e6c696e6b210a3c543e6d69782e547854210a3c543e6e6f74652e747874210a3c4f3e6f727068616e210a3c543e6f746865722d782e747874210a3c463e706c61696e210a3c443e737469636b79210a3c543e75707065722e545854210a3c3e",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one"
+      ]
+    },
+    {
+      "id": "o11-color-always-tabs8",
+      "command": "ls",
+      "args": [
+        "-C",
+        "-w30",
+        "-T8",
+        "--color=always",
+        "--",
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "layout",
+          "kind": "directory"
+        },
+        {
+          "path": "layout/a",
+          "content_text": ""
+        },
+        {
+          "path": "layout/bb",
+          "content_text": ""
+        },
+        {
+          "path": "layout/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "layout/dddd",
+          "content_text": ""
+        },
+        {
+          "path": "layout/eeeee",
+          "content_text": ""
+        },
+        {
+          "path": "layout/f",
+          "content_text": ""
+        },
+        {
+          "path": "layout/gg",
+          "content_text": ""
+        },
+        {
+          "path": "layout/hhh",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": "fi=31:su=0:sg=0:ex=0:ca=0:mh=0:tw=0:ow=0:st=0"
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "1b5b306d1b5b33316d611b5b306d2020201b5b33316d6363631b5b306d2020201b5b33316d65656565651b5b306d20201b5b33316d67671b5b306d0a1b5b33316d62621b5b306d20201b5b33316d646464641b5b306d20201b5b33316d661b5b306d2020202020201b5b33316d6868681b5b306d0a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "columns",
+        "tabsize",
+        "width"
+      ]
+    },
+    {
+      "id": "o11-color-always-then-never",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=always",
+        "--color=never",
+        "--",
+        "colors"
+      ],
+      "files": [
+        {
+          "path": "colors",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/plain",
+          "content_text": ""
+        },
+        {
+          "path": "colors/note.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/upper.TXT",
+          "content_text": ""
+        },
+        {
+          "path": "colors/mix.TxT",
+          "content_text": ""
+        },
+        {
+          "path": "colors/archive.tar.gz",
+          "content_text": ""
+        },
+        {
+          "path": "colors/ex.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/other-x.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/dir.txt",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/sticky",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/link",
+          "kind": "symlink",
+          "target": "plain"
+        },
+        {
+          "path": "colors/orphan",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": "lc=<:rc=>:ec=!:rs=R:fi=F:di=D:ln=L:or=O:pi=P:so=S:ex=X:su=0:sg=0:ca=0:mh=0:tw=W:ow=Y:st=K:*.txt=T:*.gz=G:*.tar.gz=A"
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "617263686976652e7461722e677a0a6469722e7478740a65782e7478740a6c696e6b0a6d69782e5478540a6e6f74652e7478740a6f727068616e0a6f746865722d782e7478740a706c61696e0a737469636b790a75707065722e5458540a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one"
+      ]
+    },
+    {
+      "id": "o11-color-invalid-never",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=never",
+        "--",
+        "alignment"
+      ],
+      "files": [
+        {
+          "path": "alignment",
+          "kind": "directory"
+        },
+        {
+          "path": "alignment/a",
+          "content_text": ""
+        },
+        {
+          "path": "alignment/b b",
+          "content_text": ""
+        },
+        {
+          "path": "alignment/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "alignment/d",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": "xx=bogus"
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "610a6220620a6363630a640a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one"
+      ]
+    },
+    {
+      "id": "o11-term-dumb-empty-colors",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=always",
+        "--",
+        "colors"
+      ],
+      "files": [
+        {
+          "path": "colors",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/plain",
+          "content_text": ""
+        },
+        {
+          "path": "colors/note.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/upper.TXT",
+          "content_text": ""
+        },
+        {
+          "path": "colors/mix.TxT",
+          "content_text": ""
+        },
+        {
+          "path": "colors/archive.tar.gz",
+          "content_text": ""
+        },
+        {
+          "path": "colors/ex.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/other-x.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/dir.txt",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/sticky",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/link",
+          "kind": "symlink",
+          "target": "plain"
+        },
+        {
+          "path": "colors/orphan",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": "",
+        "TERM": "dumb",
+        "COLORTERM": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "617263686976652e7461722e677a0a6469722e7478740a65782e7478740a6c696e6b0a6d69782e5478540a6e6f74652e7478740a6f727068616e0a6f746865722d782e7478740a706c61696e0a737469636b790a75707065722e5458540a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one"
+      ]
+    },
+    {
+      "id": "o11-all-mode-categories-disabled",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=always",
+        "--",
+        "colors"
+      ],
+      "files": [
+        {
+          "path": "colors",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/plain",
+          "content_text": ""
+        },
+        {
+          "path": "colors/note.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/upper.TXT",
+          "content_text": ""
+        },
+        {
+          "path": "colors/mix.TxT",
+          "content_text": ""
+        },
+        {
+          "path": "colors/archive.tar.gz",
+          "content_text": ""
+        },
+        {
+          "path": "colors/ex.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/other-x.txt",
+          "content_text": ""
+        },
+        {
+          "path": "colors/dir.txt",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/sticky",
+          "kind": "directory"
+        },
+        {
+          "path": "colors/link",
+          "kind": "symlink",
+          "target": "plain"
+        },
+        {
+          "path": "colors/orphan",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": "lc=<:rc=>:ec=!:rs=R:fi=F:di=D:ln=L:or=O:pi=P:ex=0:su=0:sg=0:ca=0:mh=0:tw=0:ow=0:st=0:*.txt=T:su=0:sg=0:ex=0:ca=0:mh=0:tw=0:ow=0:st=0"
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "213c463e617263686976652e7461722e677a210a3c443e6469722e747874210a3c543e65782e747874210a3c4c3e6c696e6b210a3c543e6d69782e547854210a3c543e6e6f74652e747874210a3c4f3e6f727068616e210a3c543e6f746865722d782e747874210a3c463e706c61696e210a3c443e737469636b79210a3c543e75707065722e545854210a3c3e",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one"
+      ]
+    },
+    {
+      "id": "o11-invalid-colors-always",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=always",
+        "--",
+        "alignment"
+      ],
+      "files": [
+        {
+          "path": "alignment",
+          "kind": "directory"
+        },
+        {
+          "path": "alignment/a",
+          "content_text": ""
+        },
+        {
+          "path": "alignment/b b",
+          "content_text": ""
+        },
+        {
+          "path": "alignment/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "alignment/d",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": "xx=bogus"
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "610a6220620a6363630a640a",
+      "expected_stderr_hex": "6c733a20756e7265636f676e697a6564207072656669783a20277878270a6c733a20756e7061727361626c652076616c756520666f72204c535f434f4c4f525320656e7669726f6e6d656e74207661726961626c650a",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one"
+      ]
+    },
+    {
+      "id": "o11-negative-width",
+      "command": "ls",
+      "args": [
+        "-C",
+        "--width=-1",
+        "--",
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "layout",
+          "kind": "directory"
+        },
+        {
+          "path": "layout/a",
+          "content_text": ""
+        },
+        {
+          "path": "layout/bb",
+          "content_text": ""
+        },
+        {
+          "path": "layout/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "layout/dddd",
+          "content_text": ""
+        },
+        {
+          "path": "layout/eeeee",
+          "content_text": ""
+        },
+        {
+          "path": "layout/f",
+          "content_text": ""
+        },
+        {
+          "path": "layout/gg",
+          "content_text": ""
+        },
+        {
+          "path": "layout/hhh",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 2,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "6c733a20696e76616c6964206c696e652077696474683a20272d31270a",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "columns",
+        "width"
+      ]
+    },
+    {
+      "id": "o11-overflow-width",
+      "command": "ls",
+      "args": [
+        "-C",
+        "--width=18446744073709551616000",
+        "--",
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "layout",
+          "kind": "directory"
+        },
+        {
+          "path": "layout/a",
+          "content_text": ""
+        },
+        {
+          "path": "layout/bb",
+          "content_text": ""
+        },
+        {
+          "path": "layout/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "layout/dddd",
+          "content_text": ""
+        },
+        {
+          "path": "layout/eeeee",
+          "content_text": ""
+        },
+        {
+          "path": "layout/f",
+          "content_text": ""
+        },
+        {
+          "path": "layout/gg",
+          "content_text": ""
+        },
+        {
+          "path": "layout/hhh",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "61202062622020636363202064646464202065656565652020662020676720206868680a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "columns",
+        "width"
+      ]
+    },
+    {
+      "id": "o11-negative-tabsize",
+      "command": "ls",
+      "args": [
+        "-C",
+        "--tabsize=-1",
+        "--",
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "layout",
+          "kind": "directory"
+        },
+        {
+          "path": "layout/a",
+          "content_text": ""
+        },
+        {
+          "path": "layout/bb",
+          "content_text": ""
+        },
+        {
+          "path": "layout/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "layout/dddd",
+          "content_text": ""
+        },
+        {
+          "path": "layout/eeeee",
+          "content_text": ""
+        },
+        {
+          "path": "layout/f",
+          "content_text": ""
+        },
+        {
+          "path": "layout/gg",
+          "content_text": ""
+        },
+        {
+          "path": "layout/hhh",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 2,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "6c733a20696e76616c6964207461622073697a653a20272d31270a",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "columns",
+        "tabsize"
+      ]
+    },
+    {
+      "id": "o11-format-last-wins",
+      "command": "ls",
+      "args": [
+        "-C",
+        "-x",
+        "-m",
+        "-w20",
+        "--",
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "layout",
+          "kind": "directory"
+        },
+        {
+          "path": "layout/a",
+          "content_text": ""
+        },
+        {
+          "path": "layout/bb",
+          "content_text": ""
+        },
+        {
+          "path": "layout/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "layout/dddd",
+          "content_text": ""
+        },
+        {
+          "path": "layout/eeeee",
+          "content_text": ""
+        },
+        {
+          "path": "layout/f",
+          "content_text": ""
+        },
+        {
+          "path": "layout/gg",
+          "content_text": ""
+        },
+        {
+          "path": "layout/hhh",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "612c2062622c206363632c20646464642c0a65656565652c20662c2067672c206868680a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "across",
+        "columns",
+        "commas",
+        "width"
+      ]
+    },
+    {
+      "id": "o11-classification-escape",
+      "command": "ls",
+      "args": [
+        "-F",
+        "--quoting-style=escape",
+        "more"
+      ],
+      "files": [
+        {
+          "path": "more",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a:b",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a=b",
+          "content_text": ""
+        },
+        {
+          "path": "more/at@",
+          "content_text": ""
+        },
+        {
+          "path": "more/pipe|",
+          "content_text": ""
+        },
+        {
+          "path": "more/star*",
+          "content_text": ""
+        },
+        {
+          "path": "more/close]",
+          "content_text": ""
+        },
+        {
+          "path": "more/a b",
+          "content_text": ""
+        },
+        {
+          "path": "more/raw.bin",
+          "content_text": ""
+        },
+        {
+          "path": "more/line\nname",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": "",
+        "TERM": "dumb",
+        "COLORTERM": "",
+        "COLUMNS": "80",
+        "TABSIZE": "8"
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "615c20620a613a622f0a615c3d620a61745c400a636c6f73655d0a6c696e655c6e6e616d650a706970655c7c0a7261772e62696e0a737461722a0a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "classify",
+        "quoting-style"
+      ]
+    },
+    {
+      "id": "o11-classification-c-maybe",
+      "command": "ls",
+      "args": [
+        "-F",
+        "--quoting-style=c-maybe",
+        "more"
+      ],
+      "files": [
+        {
+          "path": "more",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a:b",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a=b",
+          "content_text": ""
+        },
+        {
+          "path": "more/at@",
+          "content_text": ""
+        },
+        {
+          "path": "more/pipe|",
+          "content_text": ""
+        },
+        {
+          "path": "more/star*",
+          "content_text": ""
+        },
+        {
+          "path": "more/close]",
+          "content_text": ""
+        },
+        {
+          "path": "more/a b",
+          "content_text": ""
+        },
+        {
+          "path": "more/raw.bin",
+          "content_text": ""
+        },
+        {
+          "path": "more/line\nname",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": "",
+        "TERM": "dumb",
+        "COLORTERM": "",
+        "COLUMNS": "80",
+        "TABSIZE": "8"
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "6120620a613a622f0a22613d62220a22617440220a636c6f73655d0a226c696e655c6e6e616d65220a22706970657c220a7261772e62696e0a737461722a0a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "classify",
+        "quoting-style"
+      ]
+    },
+    {
+      "id": "o11-classification-shell",
+      "command": "ls",
+      "args": [
+        "-F",
+        "--quoting-style=shell",
+        "more"
+      ],
+      "files": [
+        {
+          "path": "more",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a:b",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a=b",
+          "content_text": ""
+        },
+        {
+          "path": "more/at@",
+          "content_text": ""
+        },
+        {
+          "path": "more/pipe|",
+          "content_text": ""
+        },
+        {
+          "path": "more/star*",
+          "content_text": ""
+        },
+        {
+          "path": "more/close]",
+          "content_text": ""
+        },
+        {
+          "path": "more/a b",
+          "content_text": ""
+        },
+        {
+          "path": "more/raw.bin",
+          "content_text": ""
+        },
+        {
+          "path": "more/line\nname",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": "",
+        "TERM": "dumb",
+        "COLORTERM": "",
+        "COLUMNS": "80",
+        "TABSIZE": "8"
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "27612062270a613a622f0a27613d62270a27617440270a636c6f73655d0a276c696e650a6e616d65270a27706970657c270a7261772e62696e0a27737461722a270a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "classify",
+        "quoting-style"
+      ]
+    },
+    {
+      "id": "o11-recursive-shell",
+      "command": "ls",
+      "args": [
+        "-R",
+        "--quoting-style=shell",
+        "more"
+      ],
+      "files": [
+        {
+          "path": "more",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a:b",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a=b",
+          "content_text": ""
+        },
+        {
+          "path": "more/at@",
+          "content_text": ""
+        },
+        {
+          "path": "more/pipe|",
+          "content_text": ""
+        },
+        {
+          "path": "more/star*",
+          "content_text": ""
+        },
+        {
+          "path": "more/close]",
+          "content_text": ""
+        },
+        {
+          "path": "more/a b",
+          "content_text": ""
+        },
+        {
+          "path": "more/raw.bin",
+          "content_text": ""
+        },
+        {
+          "path": "more/line\nname",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": "",
+        "TERM": "dumb",
+        "COLORTERM": "",
+        "COLUMNS": "80",
+        "TABSIZE": "8"
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "6d6f72653a0a27612062270a613a620a27613d62270a6174400a636c6f73655d0a276c696e650a6e616d65270a27706970657c270a7261772e62696e0a27737461722a270a0a276d6f72652f613a62273a0a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "quoting-style",
+        "recursive"
+      ]
+    },
+    {
+      "id": "o11-recursive-escape",
+      "command": "ls",
+      "args": [
+        "-R",
+        "--quoting-style=escape",
+        "more"
+      ],
+      "files": [
+        {
+          "path": "more",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a:b",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a=b",
+          "content_text": ""
+        },
+        {
+          "path": "more/at@",
+          "content_text": ""
+        },
+        {
+          "path": "more/pipe|",
+          "content_text": ""
+        },
+        {
+          "path": "more/star*",
+          "content_text": ""
+        },
+        {
+          "path": "more/close]",
+          "content_text": ""
+        },
+        {
+          "path": "more/a b",
+          "content_text": ""
+        },
+        {
+          "path": "more/raw.bin",
+          "content_text": ""
+        },
+        {
+          "path": "more/line\nname",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": "",
+        "TERM": "dumb",
+        "COLORTERM": "",
+        "COLUMNS": "80",
+        "TABSIZE": "8"
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "6d6f72653a0a615c20620a613a620a613d620a6174400a636c6f73655d0a6c696e655c6e6e616d650a706970657c0a7261772e62696e0a737461722a0a0a6d6f72652f615c3a623a0a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "quoting-style",
+        "recursive"
+      ]
+    },
+    {
+      "id": "o11-recursive-c-maybe",
+      "command": "ls",
+      "args": [
+        "-R",
+        "--quoting-style=c-maybe",
+        "more"
+      ],
+      "files": [
+        {
+          "path": "more",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a:b",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a=b",
+          "content_text": ""
+        },
+        {
+          "path": "more/at@",
+          "content_text": ""
+        },
+        {
+          "path": "more/pipe|",
+          "content_text": ""
+        },
+        {
+          "path": "more/star*",
+          "content_text": ""
+        },
+        {
+          "path": "more/close]",
+          "content_text": ""
+        },
+        {
+          "path": "more/a b",
+          "content_text": ""
+        },
+        {
+          "path": "more/raw.bin",
+          "content_text": ""
+        },
+        {
+          "path": "more/line\nname",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": "",
+        "TERM": "dumb",
+        "COLORTERM": "",
+        "COLUMNS": "80",
+        "TABSIZE": "8"
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "6d6f72653a0a6120620a613a620a613d620a6174400a636c6f73655d0a226c696e655c6e6e616d65220a706970657c0a7261772e62696e0a737461722a0a0a226d6f72652f613a62223a0a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "quoting-style",
+        "recursive"
+      ]
+    },
+    {
+      "id": "o11-raw-color-bytes",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=always",
+        "more"
+      ],
+      "files": [
+        {
+          "path": "more",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a:b",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a=b",
+          "content_text": ""
+        },
+        {
+          "path": "more/at@",
+          "content_text": ""
+        },
+        {
+          "path": "more/pipe|",
+          "content_text": ""
+        },
+        {
+          "path": "more/star*",
+          "content_text": ""
+        },
+        {
+          "path": "more/close]",
+          "content_text": ""
+        },
+        {
+          "path": "more/a b",
+          "content_text": ""
+        },
+        {
+          "path": "more/raw.bin",
+          "content_text": ""
+        },
+        {
+          "path": "more/line\nname",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": "lc=\\xFF:rc=^@:ec=!:rs=R:fi=F:di=D:*.bin=\\033[31m:ex=0:su=0:sg=0:ca=0:mh=0:tw=0:ow=0:st=0",
+        "TERM": "dumb",
+        "COLORTERM": "",
+        "COLUMNS": "80",
+        "TABSIZE": "8"
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "21ff4600612062210aff4400613a62210aff4600613d62210aff4600617440210aff4600636c6f73655d210aff46006c696e650a6e616d65210aff4600706970657c210aff1b5b33316d007261772e62696e210aff4600737461722a210aff00",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one"
+      ]
+    },
+    {
+      "id": "o11-normal-color-reset",
+      "command": "ls",
+      "args": [
+        "-m",
+        "-w20",
+        "--color=always",
+        "more"
+      ],
+      "files": [
+        {
+          "path": "more",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a:b",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a=b",
+          "content_text": ""
+        },
+        {
+          "path": "more/at@",
+          "content_text": ""
+        },
+        {
+          "path": "more/pipe|",
+          "content_text": ""
+        },
+        {
+          "path": "more/star*",
+          "content_text": ""
+        },
+        {
+          "path": "more/close]",
+          "content_text": ""
+        },
+        {
+          "path": "more/a b",
+          "content_text": ""
+        },
+        {
+          "path": "more/raw.bin",
+          "content_text": ""
+        },
+        {
+          "path": "more/line\nname",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": "lc=<:rc=>:rs=R:no=N:fi=F:di=D:ex=0:su=0:sg=0:ca=0:mh=0:tw=0:ow=0:st=0",
+        "TERM": "dumb",
+        "COLORTERM": "",
+        "COLUMNS": "80",
+        "TABSIZE": "8"
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "3c523e3c4e3e3c3e3c463e6120623c523e2c203c4e3e3c3e3c443e613a623c523e2c203c4e3e3c3e3c463e613d623c523e2c203c4e3e3c3e3c463e6174403c523e2c0a3c4e3e3c3e3c463e636c6f73655d3c523e2c203c4e3e3c3e3c463e6c696e650a6e616d653c523e2c0a3c4e3e3c3e3c463e706970657c3c523e2c203c4e3e3c3e3c463e7261772e62696e3c523e2c0a3c4e3e3c3e3c463e737461722a3c523e0a3c3e",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "commas",
+        "width"
+      ]
+    },
+    {
+      "id": "o11-color-wrap-clear",
+      "command": "ls",
+      "args": [
+        "-1",
+        "-w4",
+        "--color=always",
+        "more"
+      ],
+      "files": [
+        {
+          "path": "more",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a:b",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a=b",
+          "content_text": ""
+        },
+        {
+          "path": "more/at@",
+          "content_text": ""
+        },
+        {
+          "path": "more/pipe|",
+          "content_text": ""
+        },
+        {
+          "path": "more/star*",
+          "content_text": ""
+        },
+        {
+          "path": "more/close]",
+          "content_text": ""
+        },
+        {
+          "path": "more/a b",
+          "content_text": ""
+        },
+        {
+          "path": "more/raw.bin",
+          "content_text": ""
+        },
+        {
+          "path": "more/line\nname",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": "lc=<:rc=>:ec=!:rs=R:fi=F:di=D:cl=C:ex=0:su=0:sg=0:ca=0:mh=0:tw=0:ow=0:st=0",
+        "TERM": "dumb",
+        "COLORTERM": "",
+        "COLUMNS": "80",
+        "TABSIZE": "8"
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "213c463e612062210a3c443e613a62210a3c463e613d62210a3c463e617440210a3c463e636c6f73655d21430a3c463e6c696e650a6e616d6521430a3c463e706970657c21430a3c463e7261772e62696e21430a3c463e737461722a21430a3c3e",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "one",
+        "width"
+      ]
+    },
+    {
+      "id": "o11-color-quote-padding",
+      "command": "ls",
+      "args": [
+        "-C",
+        "-w30",
+        "-T8",
+        "--color=always",
+        "--quoting-style=shell-escape",
+        "more"
+      ],
+      "files": [
+        {
+          "path": "more",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a:b",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a=b",
+          "content_text": ""
+        },
+        {
+          "path": "more/at@",
+          "content_text": ""
+        },
+        {
+          "path": "more/pipe|",
+          "content_text": ""
+        },
+        {
+          "path": "more/star*",
+          "content_text": ""
+        },
+        {
+          "path": "more/close]",
+          "content_text": ""
+        },
+        {
+          "path": "more/a b",
+          "content_text": ""
+        },
+        {
+          "path": "more/raw.bin",
+          "content_text": ""
+        },
+        {
+          "path": "more/line\nname",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": "lc=<:rc=>:ec=!:rs=R:fi=F:di=D:ex=0:su=0:sg=0:ca=0:mh=0:tw=0:ow=0:st=0",
+        "TERM": "dumb",
+        "COLORTERM": "",
+        "COLUMNS": "80",
+        "TABSIZE": "8"
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "213c463e276120622721202020203c463e276c696e652724275c6e27276e616d6527210a203c443e613a622120202020203c463e27706970657c27210a3c463e27613d62272120202020203c463e7261772e62696e210a203c463e6174402120202020203c463e27737461722a27210a203c463e636c6f73655d210a3c3e",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "color",
+        "columns",
+        "quoting-style",
+        "tabsize",
+        "width"
+      ]
+    },
+    {
+      "id": "o11-color-classify-suffix",
+      "command": "ls",
+      "args": [
+        "-F",
+        "--color=always",
+        "--quoting-style=shell-escape",
+        "more"
+      ],
+      "files": [
+        {
+          "path": "more",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a:b",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a=b",
+          "content_text": ""
+        },
+        {
+          "path": "more/at@",
+          "content_text": ""
+        },
+        {
+          "path": "more/pipe|",
+          "content_text": ""
+        },
+        {
+          "path": "more/star*",
+          "content_text": ""
+        },
+        {
+          "path": "more/close]",
+          "content_text": ""
+        },
+        {
+          "path": "more/a b",
+          "content_text": ""
+        },
+        {
+          "path": "more/raw.bin",
+          "content_text": ""
+        },
+        {
+          "path": "more/line\nname",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": "lc=<:rc=>:ec=!:rs=R:fi=F:di=D:ex=0:su=0:sg=0:ca=0:mh=0:tw=0:ow=0:st=0",
+        "TERM": "dumb",
+        "COLORTERM": "",
+        "COLUMNS": "80",
+        "TABSIZE": "8"
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "213c463e2761206227210a3c443e613a62212f0a3c463e27613d6227210a3c463e2761744027210a3c463e636c6f73655d210a3c463e276c696e652724275c6e27276e616d6527210a3c463e27706970657c27210a3c463e7261772e62696e210a3c463e27737461722a27210a3c3e",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "classify",
+        "color",
+        "quoting-style"
+      ]
+    },
+    {
+      "id": "o11-width-int64-limit",
+      "command": "ls",
+      "args": [
+        "-C",
+        "-w9223372036854775807",
+        "-T0",
+        "more"
+      ],
+      "files": [
+        {
+          "path": "more",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a:b",
+          "kind": "directory"
+        },
+        {
+          "path": "more/a=b",
+          "content_text": ""
+        },
+        {
+          "path": "more/at@",
+          "content_text": ""
+        },
+        {
+          "path": "more/pipe|",
+          "content_text": ""
+        },
+        {
+          "path": "more/star*",
+          "content_text": ""
+        },
+        {
+          "path": "more/close]",
+          "content_text": ""
+        },
+        {
+          "path": "more/a b",
+          "content_text": ""
+        },
+        {
+          "path": "more/raw.bin",
+          "content_text": ""
+        },
+        {
+          "path": "more/line\nname",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": "",
+        "TERM": "dumb",
+        "COLORTERM": "",
+        "COLUMNS": "80",
+        "TABSIZE": "8"
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "6120622020613a622020613d6220206174402020636c6f73655d20206c696e650a6e616d652020706970657c20207261772e62696e2020737461722a0a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "columns",
+        "tabsize",
+        "width"
+      ]
+    },
+    {
+      "id": "o11-invalid-width-before-valid",
+      "command": "ls",
+      "args": [
+        "-w-1",
+        "-w20",
+        "more"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": "",
+        "TERM": "dumb",
+        "COLORTERM": "",
+        "COLUMNS": "80",
+        "TABSIZE": "8"
+      },
+      "stdin_text": "",
+      "expected_status": 2,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "6c733a20696e76616c6964206c696e652077696474683a20272d31270a",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "width"
+      ]
+    },
+    {
+      "id": "o11-invalid-tab-before-valid",
+      "command": "ls",
+      "args": [
+        "-T-1",
+        "-T0",
+        "more"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": "",
+        "TERM": "dumb",
+        "COLORTERM": "",
+        "COLUMNS": "80",
+        "TABSIZE": "8"
+      },
+      "stdin_text": "",
+      "expected_status": 2,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "6c733a20696e76616c6964207461622073697a653a20272d31270a",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "tabsize"
+      ]
+    },
+    {
+      "id": "o11-invalid-tab-overflow",
+      "command": "ls",
+      "args": [
+        "-T18446744073709551615",
+        "more"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": "",
+        "TERM": "dumb",
+        "COLORTERM": "",
+        "COLUMNS": "80",
+        "TABSIZE": "8"
+      },
+      "stdin_text": "",
+      "expected_status": 2,
+      "expected_stdout_hex": "",
+      "expected_stderr_hex": "6c733a20696e76616c6964207461622073697a653a20273138343436373434303733373039353531363135273a2056616c756520746f6f206c6172676520666f7220646566696e6564206461746120747970650a",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "tabsize"
+      ]
+    },
+    {
+      "id": "o11-invalid-quote-before-valid",
+      "command": "ls",
+      "args": [
+        "--quoting-style=bogus",
+        "-Q",
+        "more"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": "",
+        "TERM": "dumb",
+        "COLORTERM": "",
+        "COLUMNS": "80",
+        "TABSIZE": "8"
+      },
+      "stdin_text": "",
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stderr_contains": "ls: invalid argument 'bogus' for '--quoting-style'\nValid arguments are:\n  - 'literal'\n  - 'shell'\n  - 'shell-always'\n  - 'shell-escape'\n  - 'shell-escape-always'\n  - 'c'\n  - 'c-maybe'\n  - 'escape'\n  - 'locale'\n  - 'clocale'\n",
+      "diagnostic_reason": "The local Rosetta/binfmt immutable oracle overrides argv0 with /oracle/bin/ls in the final help hint. The entire substantive diagnostic and valid-argument list are asserted exactly. Raw oracle and Native/Wasm candidate streams remain separate; stdout and status are exact. Native Linux CI binds its own oracle.",
+      "normalizations": [],
+      "coverage": [
+        "quote",
+        "quoting-style"
+      ]
+    },
+    {
+      "id": "o11-invalid-color-before-valid",
+      "command": "ls",
+      "args": [
+        "--color=bogus",
+        "--color=never",
+        "more"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": "",
+        "TERM": "dumb",
+        "COLORTERM": "",
+        "COLUMNS": "80",
+        "TABSIZE": "8"
+      },
+      "stdin_text": "",
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stderr_contains": "ls: invalid argument 'bogus' for '--color'\nValid arguments are:\n  - 'always', 'yes', 'force'\n  - 'never', 'no', 'none'\n  - 'auto', 'tty', 'if-tty'\n",
+      "diagnostic_reason": "The local Rosetta/binfmt immutable oracle overrides argv0 with /oracle/bin/ls in the final help hint. The entire substantive diagnostic and valid-argument list are asserted exactly. Raw oracle and Native/Wasm candidate streams remain separate; stdout and status are exact. Native Linux CI binds its own oracle.",
+      "normalizations": [],
+      "coverage": [
+        "color"
+      ]
+    },
+    {
+      "id": "o11-ambiguous-quoting",
+      "command": "ls",
+      "args": [
+        "--quoting-style=sh"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "QUOTING_STYLE": "literal"
+      },
+      "expected_status": 1,
+      "expected_stdout_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "expected_stderr_contains": "ls: ambiguous argument 'sh' for '--quoting-style'\nValid arguments are:\n  - 'literal'\n  - 'shell'\n  - 'shell-always'\n  - 'shell-escape'\n  - 'shell-escape-always'\n  - 'c'\n  - 'c-maybe'\n  - 'escape'\n  - 'locale'\n  - 'clocale'\n",
+      "diagnostic_reason": "The local Rosetta/binfmt immutable oracle overrides argv0 with /oracle/bin/ls in the final help hint. The entire substantive diagnostic and valid-argument list are asserted exactly. Raw oracle and Native/Wasm candidate streams remain separate; stdout and status are exact. Native Linux CI binds its own oracle.",
+      "normalizations": [],
+      "coverage": [
+        "quoting-style"
+      ]
+    },
+    {
+      "id": "o11-boundary-regular-ex",
+      "command": "ls",
+      "args": [
+        "--color=always",
+        "plain"
+      ],
+      "files": [
+        {
+          "path": "plain",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": "ex=X:su=0:sg=0:ca=0:mh=0:tw=0:ow=0:st=0"
+      },
+      "stdin_text": "",
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "ls: color selectors ex require unavailable mode, capability or link-count metadata; disable those LS_COLORS selectors\n",
+      "oracle": false,
+      "comparison": "boundary",
+      "source_version": "Pure MoonBit ls color boundary: released public metadata lacks raw mode/capability/link count; enable after the relevant public reader is released. GNU parity is not claimed.",
+      "normalizations": [],
+      "expected_rejection": "require unavailable mode, capability or link-count metadata",
+      "coverage": [
+        "color"
+      ]
+    },
+    {
+      "id": "o11-boundary-directory-tw",
+      "command": "ls",
+      "args": [
+        "-d",
+        "--color=always",
+        "directory"
+      ],
+      "files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": "tw=W:su=0:sg=0:ex=0:ca=0:mh=0:ow=0:st=0"
+      },
+      "stdin_text": "",
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "ls: color selectors tw require unavailable mode, capability or link-count metadata; disable those LS_COLORS selectors\n",
+      "oracle": false,
+      "comparison": "boundary",
+      "source_version": "Pure MoonBit ls color boundary: released public metadata lacks raw mode/capability/link count; enable after the relevant public reader is released. GNU parity is not claimed.",
+      "normalizations": [],
+      "expected_rejection": "require unavailable mode, capability or link-count metadata",
+      "coverage": [
+        "color",
+        "directory"
+      ]
+    },
+    {
+      "id": "o11-boundary-target-ex",
+      "command": "ls",
+      "args": [
+        "--color=always",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "plain",
+          "content_text": ""
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "plain"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": "ln=target:ex=X:su=0:sg=0:ca=0:mh=0:tw=0:ow=0:st=0"
+      },
+      "stdin_text": "",
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "ls: color selectors ex require unavailable mode, capability or link-count metadata; disable those LS_COLORS selectors\n",
+      "oracle": false,
+      "comparison": "boundary",
+      "source_version": "Pure MoonBit ls color boundary: released public metadata lacks raw mode/capability/link count; enable after the relevant public reader is released. GNU parity is not claimed.",
+      "host_platforms": [
+        "posix"
+      ],
+      "normalizations": [],
+      "expected_rejection": "require unavailable mode, capability or link-count metadata",
+      "coverage": [
+        "color"
+      ]
+    },
+    {
+      "id": "o11-c-dot-default",
+      "command": "ls",
+      "args": [
+        "selection"
+      ],
+      "files": [
+        {
+          "path": "selection",
+          "kind": "directory"
+        },
+        {
+          "path": "selection/.directory",
+          "kind": "directory"
+        },
+        {
+          "path": "selection/.hidden",
+          "content_text": ""
+        },
+        {
+          "path": "selection/visible",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "76697369626c650a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": []
+    },
+    {
+      "id": "o11-c-dot-almost-all",
+      "command": "ls",
+      "args": [
+        "-A",
+        "selection"
+      ],
+      "files": [
+        {
+          "path": "selection",
+          "kind": "directory"
+        },
+        {
+          "path": "selection/.directory",
+          "kind": "directory"
+        },
+        {
+          "path": "selection/.hidden",
+          "content_text": ""
+        },
+        {
+          "path": "selection/visible",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "2e6469726563746f72790a2e68696464656e0a76697369626c650a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "almost-all"
+      ]
+    },
+    {
+      "id": "o11-c-dot-all",
+      "command": "ls",
+      "args": [
+        "-a",
+        "selection"
+      ],
+      "files": [
+        {
+          "path": "selection",
+          "kind": "directory"
+        },
+        {
+          "path": "selection/.directory",
+          "kind": "directory"
+        },
+        {
+          "path": "selection/.hidden",
+          "content_text": ""
+        },
+        {
+          "path": "selection/visible",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "2e0a2e2e0a2e6469726563746f72790a2e68696464656e0a76697369626c650a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "all"
+      ]
+    },
+    {
+      "id": "o11-c-shell-repeated-apostrophes",
+      "command": "ls",
+      "args": [
+        "--quoting-style=shell",
+        "selection"
+      ],
+      "files": [
+        {
+          "path": "selection",
+          "kind": "directory"
+        },
+        {
+          "path": "selection/a'$'b",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "QUOTING_STYLE": "literal",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "2761275c272724275c272762270a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
+      "normalizations": [],
+      "coverage": [
+        "quoting-style"
+      ]
     }
   ]
 }

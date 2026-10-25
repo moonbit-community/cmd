@@ -21,7 +21,7 @@ priv struct Spans {
 }
 
 ///|
-fn word_byte(value : String, index : Int32) -> Bool {
+fn word_byte(value : StringView, index : Int32) -> Bool {
   if index < 0 || index >= value.length() {
     return false
   }
@@ -33,12 +33,18 @@ fn word_byte(value : String, index : Int32) -> Bool {
 }
 
 ///|
-fn Assertion::holds(self : Assertion, value : String, position : Int32) -> Bool {
+fn Assertion::holds(
+  self : Assertion,
+  value : StringView,
+  position : Int32,
+) -> Bool {
   let left = word_byte(value, position - 1)
   let right = word_byte(value, position)
   match self {
     Begin => position == 0
     End => position == value.length()
+    LineBegin => position == 0 || value[position - 1] == '\n'
+    LineEnd => position == value.length() || value[position] == '\n'
     WordBegin => !left && right
     WordEnd => left && !right
     WordBoundary => left != right
@@ -48,7 +54,7 @@ fn Assertion::holds(self : Assertion, value : String, position : Int32) -> Bool 
 
 ///|
 fn accepted(
-  value : String,
+  value : StringView,
   start : Int32,
   end : Int32,
   whole : Bool,
@@ -59,7 +65,11 @@ fn accepted(
 }
 
 ///|
-fn Pattern::prefix_at(self : Pattern, value : String, position : Int32) -> Bool {
+fn Pattern::prefix_at(
+  self : Pattern,
+  value : StringView,
+  position : Int32,
+) -> Bool {
   position + self.prefix.length() <= value.length() &&
   value[position:position + self.prefix.length()] == self.prefix
 }
@@ -75,7 +85,7 @@ fn better(best : Spans?, start : Int32, end : Int32) -> Bool {
 ///|
 fn Pattern::search(
   self : Pattern,
-  value : String,
+  value : StringView,
   start : Int32,
   whole : Bool,
   word : Bool,
@@ -150,11 +160,12 @@ fn Pattern::search(
 /// because their program counters agree.
 fn Pattern::ordinary(
   self : Pattern,
-  value : String,
+  value : StringView,
   start : Int32,
   whole : Bool,
   word : Bool,
   need_captures : Bool,
+  start_only~ : Bool = false,
 ) -> Spans? {
   let mut threads : Array[Thread] = []
   let mut best : Spans? = None
@@ -162,11 +173,15 @@ fn Pattern::ordinary(
   while position <= value.length() {
     // Every possible match starts with this literal prefix. With no live
     // threads there is no intermediate position whose state must be kept.
-    if threads.is_empty() && best is None && !self.prefix.is_empty() {
+    if !start_only &&
+      threads.is_empty() &&
+      best is None &&
+      !self.prefix.is_empty() {
       guard value[position:].find(self.prefix) is Some(offset) else { break }
       position += offset
     }
     if best is None &&
+      (!start_only || position == start) &&
       (!whole || position == 0) &&
       (!word || !word_byte(value, position - 1)) &&
       self.prefix_at(value, position) {
@@ -266,7 +281,7 @@ fn Pattern::ordinary(
       }
     }
     threads = next_threads
-    if best is Some(_) && threads.is_empty() {
+    if (best is Some(_) || start_only) && threads.is_empty() {
       break
     }
     position += 1
