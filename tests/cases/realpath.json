@@ -385,6 +385,9 @@
       ],
       "coverage": [
         "strip"
+      ],
+      "observe": [
+        "symlink-target"
       ]
     },
     {
@@ -476,7 +479,10 @@
           "target": "existing/child"
         }
       ],
-      "coverage": []
+      "coverage": [],
+      "observe": [
+        "symlink-target"
+      ]
     },
     {
       "id": "o10-realpath-strip-file-slash",
@@ -1491,6 +1497,9 @@
       ],
       "coverage": [
         "canonicalize-missing"
+      ],
+      "observe": [
+        "symlink-target"
       ]
     },
     {
@@ -1587,6 +1596,9 @@
       "coverage": [
         "canonicalize-missing",
         "no-symlinks"
+      ],
+      "observe": [
+        "symlink-target"
       ]
     },
     {

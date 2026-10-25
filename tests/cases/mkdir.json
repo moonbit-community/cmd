@@ -151,6 +151,9 @@
       ],
       "coverage": [
         "mode"
+      ],
+      "observe": [
+        "mode"
       ]
     },
     {
@@ -186,6 +189,9 @@
         }
       ],
       "coverage": [
+        "mode"
+      ],
+      "observe": [
         "mode"
       ]
     },
@@ -223,6 +229,9 @@
       ],
       "coverage": [
         "mode"
+      ],
+      "observe": [
+        "mode"
       ]
     },
     {
@@ -258,6 +267,9 @@
         }
       ],
       "coverage": [
+        "mode"
+      ],
+      "observe": [
         "mode"
       ]
     },
@@ -339,6 +351,9 @@
       "coverage": [
         "mode",
         "parents"
+      ],
+      "observe": [
+        "mode"
       ]
     },
     {
@@ -458,6 +473,9 @@
         "mode",
         "parents",
         "verbose"
+      ],
+      "observe": [
+        "mode"
       ]
     },
     {
@@ -517,6 +535,9 @@
       "coverage": [
         "mode",
         "parents"
+      ],
+      "observe": [
+        "symlink-target"
       ]
     },
     {
@@ -552,6 +573,9 @@
         }
       ],
       "coverage": [
+        "mode"
+      ],
+      "observe": [
         "mode"
       ]
     },
@@ -668,10 +692,7 @@
       "normalizations": [],
       "comparison": "contract",
       "oracle": true,
-      "source_version": "GNU coreutils9.11 existing-directory no-op observation; actual Windows CI still required",
-      "host_platforms": [
-        "windows"
-      ],
+      "source_version": "GNU coreutils 9.11 existing-directory no-op; portable fixture retains the Windows contract and requires Linux upstream evidence.",
       "expected_files": [
         {
           "path": "existing",

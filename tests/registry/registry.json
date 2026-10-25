@@ -85284,9 +85284,7 @@
         "native",
         "wasm"
       ],
-      "platforms": [
-        "windows"
-      ],
+      "platforms": [],
       "required_evidence": [
         "contract",
         "backend-pair",
