@@ -22,8 +22,6 @@ async test "rejection detects same-content replacement of an existing file" {
   require_lifecycle_observers(["/bin/sh", "/bin/mv", "/usr/bin/stat"])
   let root = @fs.tmpdir(prefix="mooncmd-rejection-identity-")
   defer (@fs.rmdir(root, recursive=true) catch { _ => () })
-  @fs.mkdir(root + "/cli/replace-reject", recursive=true)
-  @fs.symlink(root + "/cli/replace-reject/replace-reject.exe", target="/bin/sh")
   // The observer replaces the file with preallocated identical bytes and then
   // rejects the operation. Only the preserved device/inode detects the mutation.
   @fs.write_file(root + "/replacement", b"preserved bytes")
@@ -47,7 +45,13 @@ async test "rejection detects same-content replacement of an existing file" {
     "observe": ["identity"],
     "normalizations": [],
   })
-  let report = execute_contract(fixture, root, false, root + "/reports")
+  let report = execute_contract(
+    fixture,
+    root,
+    false,
+    root + "/reports",
+    observer="/bin/sh",
+  )
   assert_eq(report.result, "fail", msg=report.detail)
   assert_eq(report.stage, "assertion")
   assert_true(report.detail.contains("rejected operation changed fixture"))

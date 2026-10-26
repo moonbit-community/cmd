@@ -16,7 +16,6 @@ struct CommandRow {
   name : String
   baseline : String
   status : String
-  native : String
   wasm : String
   capabilities : Array[String]
 } derive(FromJson, Debug)
@@ -51,7 +50,7 @@ fn validate_manifest(manifest : Manifest) -> Array[String] {
       ) {
       failures.push("\{row.name}: invalid status '\{row.status}'")
     }
-    if row.baseline == "" || row.native == "" || row.wasm == "" {
+    if row.baseline == "" || row.wasm == "" {
       failures.push(
         "\{row.name}: baseline and target classifications are required",
       )
@@ -232,7 +231,7 @@ async fn run_case(
   oracle_image : String,
   http_base : String,
   https_base : String,
-  wasm : Bool,
+  _wasm : Bool,
   report_dir : String,
   docker_user : String,
 ) -> Array[String] {
@@ -277,16 +276,8 @@ async fn run_case(
     []
   }
   let candidate_run = @testkit.run_with_deadline(
-    if wasm {
-      "moonrun"
-    } else {
-      @testkit.executable_path(bin_root, fixture.command)
-    },
-    if wasm {
-      [@testkit.wasm_path(bin_root, fixture.command), "--", ..args]
-    } else {
-      args
-    },
+    @testkit.command_program(),
+    @testkit.command_args(bin_root, fixture.command, args),
     fixture.timeout_ms.unwrap_or(15000),
     stdin~,
     cwd=fixture.working_directory(candidate_root),
@@ -305,6 +296,10 @@ async fn run_case(
   }
   if candidate_run.timed_out {
     return ["candidate-timeout: partial streams retained"]
+  }
+  if fixture.comparison == Some("contract") {
+    failures.append(@testkit.check_contract(fixture, candidate, candidate_root))
+    failures.append(@testkit.check_expected_files(fixture, candidate_root))
   }
   let docker_args = [
     "run",
@@ -348,11 +343,6 @@ async fn run_case(
       expand_fixture_args(fixture.args, http_base, https_base),
       "/work",
     ),
-  )
-  @testkit.record_execution_environment(
-    fixture.command,
-    extra_env=oracle_environment,
-    inherit_env=false,
   )
   let oracle_run = @testkit.run_oracle_with_deadline(
     "docker",

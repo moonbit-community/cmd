@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-25
+Updated: 2026-10-26
 
 The pinned GNU coreutils 9.11 Linux run also establishes status 1 when an
 interactive ln/mv overwrite is declined, including EOF. Preserve both paths,
@@ -10,6 +10,12 @@ continue other operands, and aggregate the failure. A no-clobber/update skip
 remains a distinct successful no-op. Earlier golden status 0 was wrong;
 real Native/Wasm and published regressions retain the corrected upstream status.
 Revision: Retain the stage 0 Windows rename contract and add selected O8-O12 path, mode, prompt, size and display candidates with operation-specific public-API limits.
+
+Delivery validation update (2026-10-26): [ADR-0001](0001-evidence.md) and the
+[Wasm CI migration](../ci-wasm-migration.md) define current acceptance. Future
+regressions and boundary unlock conditions below require Wasm on applicable
+hosts and exact-version MoonX acceptance; Native command runs and backend
+pairing are retired. Dated Native observations retain their historical scope.
 
 ## D-stage patch candidate
 

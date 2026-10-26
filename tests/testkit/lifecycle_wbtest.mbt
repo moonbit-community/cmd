@@ -185,10 +185,8 @@ async test "snapshot failure after success retains streams and infrastructure cl
   require_lifecycle_observers(["/bin/rm"])
   let root = @fs.tmpdir(prefix="mooncmd-snapshot-failure-")
   defer (@fs.rmdir(root, recursive=true) catch { _ => () })
-  @fs.mkdir(root + "/cli/remove-fixture", recursive=true)
   // This host observer destroys its own fixture to exercise the harness's
   // snapshot failure path; it is not a command package implementation.
-  @fs.symlink(root + "/cli/remove-fixture/remove-fixture.exe", target="/bin/rm")
   let fixture : Case = @json.from_json({
     "id": "snapshot-failure",
     "command": "remove-fixture",
@@ -207,6 +205,7 @@ async test "snapshot failure after success retains streams and infrastructure cl
     false,
     root + "/reports",
     retain_success=true,
+    observer="/bin/rm",
   )
   assert_eq(report.result, "infra", msg=report.detail)
   assert_eq(report.stage, "snapshot")
@@ -258,11 +257,6 @@ async test "cleanup permission failure retains candidate evidence" {
   // Restore access even when the regression fails, so a test fault cannot
   // leave deliberately protected directories in the caller's temp root.
   defer (ignore(run("/bin/chmod", ["700", evidence])) catch { _ => () })
-  @fs.mkdir(root + "/cli/protect-evidence", recursive=true)
-  @fs.symlink(
-    root + "/cli/protect-evidence/protect-evidence.exe",
-    target="/bin/chmod",
-  )
   let fixture : Case = @json.from_json({
     "id": "cleanup-failure",
     "command": "protect-evidence",
@@ -275,7 +269,13 @@ async test "cleanup permission failure retains candidate evidence" {
     "expected_stderr_text": "",
     "normalizations": [],
   })
-  let report = execute_contract(fixture, root, false, root + "/reports")
+  let report = execute_contract(
+    fixture,
+    root,
+    false,
+    root + "/reports",
+    observer="/bin/chmod",
+  )
   assert_eq(report.result, "infra", msg=report.detail)
   assert_eq(report.stage, "cleanup")
   assert_eq(report.evidence, Some(evidence + ".cleanup-evidence"))

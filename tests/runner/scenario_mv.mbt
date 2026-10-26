@@ -4,32 +4,18 @@ fn windows_mv_scenario(id : String) -> Bool {
 }
 
 ///|
-fn windows_mv_scenario_backend(id : String, wasm : Bool) -> Bool {
-  @mv_scenarios.backend_selected(id, wasm)
-}
-
-///|
 async fn windows_mv_links_scenario(
   root : String,
-  wasm : Bool,
+  _wasm : Bool,
   work : String,
 ) -> Unit {
   @mv_scenarios.run(
     {
-      program: if wasm {
-        "moonrun"
-      } else {
-        @testkit.executable_path(root, "mv")
-      },
-      prefix: if wasm {
-        [@testkit.wasm_path(root, "mv"), "--"]
-      } else {
-        []
-      },
+      program: @testkit.command_program(),
+      prefix: @testkit.command_args(root, "mv", []),
       source_version: "workspace",
-      published: false,
+      published: @testkit.published_mode(),
     },
-    wasm,
     work,
   )
 }

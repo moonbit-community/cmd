@@ -1,4 +1,17 @@
 ///|
+async fn command_names(root : String) -> Array[String] {
+  let names : Array[String] = []
+  for name in @fs.readdir(root) {
+    if @fs.kind(root + "/" + name) is Directory &&
+      @fs.exists(root + "/" + name + "/moon.mod") {
+      names.push(name)
+    }
+  }
+  names.sort()
+  names
+}
+
+///|
 fn dependency_manifest_field(text : String, key : String) -> String raise {
   let prefix = key + " = "
   let values = []

@@ -62,7 +62,7 @@ async test "published case overrides preserve old bytes and reject invalid mappi
 }
 
 ///|
-async test "absolute corpus references load and fingerprint the selected source files" {
+async test "absolute corpus references load the selected source files" {
   let root = @fs.tmpdir(prefix="mooncmd-absolute-corpus")
   defer (@fs.rmdir(root, recursive=true) catch { _ => () })
   @fs.mkdir(root + "/sources")
@@ -84,20 +84,15 @@ async test "absolute corpus references load and fingerprint the selected source 
   let selected = load_cases(index)
   assert_eq(selected.length(), 1)
   assert_eq(selected[0].expected_stdout_text, Some("original\n"))
-  let before = manifest_digest(index)
-  assert_true(before != "")
   let changed = { ..fixture, expected_stdout_text: Some("changed\n"), }
   @fs.write_file(replacement, Json({ "cases": [changed] }).stringify())
   assert_eq(load_cases(index)[0].expected_stdout_text, Some("changed\n"))
-  let after = manifest_digest(index)
-  assert_true(after != "" && after != before)
   // Relative references keep their existing resolution from the index parent.
   @fs.write_file(
     index,
     Json({ "case_files": ["../sources/current.json"] }).stringify(),
   )
   assert_eq(load_cases(index)[0].id, fixture.id)
-  assert_true(manifest_digest(index) != "")
 }
 
 ///|

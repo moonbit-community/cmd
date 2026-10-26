@@ -1,10 +1,14 @@
 # cmd
 
-Pure-MoonBit command-line utilities for Native and Wasm. Each published
+Pure-MoonBit command-line utilities delivered as Wasm through MoonX. Each published
 command is an independent `cli/<command>` MoonX module. The support listed here
 is a measured subset of the corresponding upstream command; it does not claim
 complete GNU/POSIX compatibility. See the [support record](docs/compatibility.md)
 for exact versions, observed behavior and boundaries.
+
+Development acceptance runs current Wasm commands on Linux, macOS and Windows.
+Native is used for test tools. Resource observations and exact-version MoonX
+acceptance have separate manual workflows; see [tests](tests/README.md).
 
 ## Features
 
@@ -33,6 +37,6 @@ is not a published MoonX feature.
 Every workspace command also follows one metadata contract: standalone
 `--help` prints usage and exits 0, while standalone `--version` prints
 `<command> <package-version>` and exits 0. Both paths leave
-stdin untouched. The current Native and Wasm regressions pass all 79 workspace
+stdin untouched. The Wasm development suite checks all 79 workspace
 commands; published coordinates are promoted only through the release and
 exact MoonX checks described in the support record.

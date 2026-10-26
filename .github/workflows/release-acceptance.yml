@@ -1,236 +1,97 @@
 name: release acceptance
 
 on:
-  workflow_call:
-    inputs:
-      source_sha:
-        description: Exact published source SHA, also selected as the workflow ref
-        required: true
-        type: string
-      source_gate_run_id:
-        description: Successful three-platform check workflow run for this SHA
-        required: true
-        type: string
-      outgoing_release_id:
-        description: Unique archive name for the outgoing current published snapshot
-        required: true
-        type: string
   workflow_dispatch:
     inputs:
-      source_sha:
-        description: Exact published source SHA, also selected as the workflow ref
-        required: true
-        type: string
-      source_gate_run_id:
-        description: Successful three-platform check workflow run for this SHA
-        required: true
-        type: string
-      outgoing_release_id:
-        description: Unique archive name for the outgoing current published snapshot
-        required: true
-        type: string
+      manifest:
+        description: Exact published coordinates to verify; no packages are uploaded
+        type: choice
+        options: [latest, candidate]
+        default: latest
 
 permissions:
   contents: read
-  actions: read
+
+concurrency:
+  group: release-acceptance-${{ github.ref }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
-  source-gate:
-    runs-on: ubuntu-24.04
-    outputs:
-      source_sha: ${{ steps.gate.outputs.source_sha }}
-    steps:
-      - name: Require successful exact-source validation on every platform
-        id: gate
-        shell: pwsh
-        env:
-          GH_TOKEN: ${{ github.token }}
-          SOURCE_SHA: ${{ inputs.source_sha }}
-          SOURCE_GATE_RUN_ID: ${{ inputs.source_gate_run_id }}
-          OUTGOING_RELEASE_ID: ${{ inputs.outgoing_release_id }}
-        run: |
-          if ($env:SOURCE_SHA -cnotmatch '^[0-9a-f]{40}$') { throw 'Expected a full source SHA' }
-          if ($env:SOURCE_SHA -cne $env:GITHUB_SHA) { throw 'Dispatch ref and validated source SHA differ' }
-          if ($env:SOURCE_GATE_RUN_ID -notmatch '^[0-9]+$') { throw 'Invalid source gate run ID' }
-          if ($env:OUTGOING_RELEASE_ID -notmatch '^[A-Za-z0-9_-]+$') { throw 'Invalid outgoing snapshot ID' }
-          $run = gh api "repos/$env:GITHUB_REPOSITORY/actions/runs/$env:SOURCE_GATE_RUN_ID" | ConvertFrom-Json
-          if ($LASTEXITCODE -ne 0) { throw 'Cannot read source gate run' }
-          if ($run.path -cne '.github/workflows/check.yml' -or $run.head_sha -cne $env:SOURCE_SHA -or $run.status -cne 'completed' -or $run.conclusion -cne 'success') { throw 'Source gate identity or result mismatch' }
-          $jobs = gh api "repos/$env:GITHUB_REPOSITORY/actions/runs/$env:SOURCE_GATE_RUN_ID/jobs?per_page=100" | ConvertFrom-Json
-          if ($LASTEXITCODE -ne 0) { throw 'Cannot read source gate jobs' }
-          foreach ($platform in @('ubuntu-24.04', 'macos-15', 'windows-2025')) {
-            $matching = @($jobs.jobs | Where-Object { $_.name -ceq $platform })
-            if ($matching.Count -ne 1 -or $matching[0].status -cne 'completed' -or $matching[0].conclusion -cne 'success') { throw "Missing successful source platform: $platform" }
-          }
-          "source_sha=$env:SOURCE_SHA" >> $env:GITHUB_OUTPUT
-
-  smoke:
-    needs: source-gate
-    name: published smoke (${{ matrix.label }})
+  acceptance:
+    name: published functional (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - os: ubuntu-24.04
-            label: linux
-          - os: macos-15
-            label: macos
-          - os: windows-2025
-            label: windows
-    runs-on: ${{ matrix.os }}
+        os: [ubuntu-24.04, macos-15, windows-2025]
     env:
       LANG: C
       LC_ALL: C
       TZ: UTC
+      DOCKER_BUILD_RECORD_RETENTION_DAYS: 30
+      CMD_RELEASE_MANIFEST: tests/release_runner/current/${{ inputs.manifest }}.json
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ needs.source-gate.outputs.source_sha }}
           submodules: recursive
-          fetch-depth: 0
       - uses: hustcer/setup-moonbit@v1.23
         with:
           version: 0.10.15+943464bfa
           core-version: 0.10.15+943464bfa
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - name: Resolve the runner's exact launcher and cache
-        shell: pwsh
+      - name: Toolchain and dependencies
         run: |
-          $moonxPath = (Get-Command moonx -CommandType Application).Source
-          "CMD_MOONX=$moonxPath" >> $env:GITHUB_ENV
-          "MOON_HOME=$(Split-Path (Split-Path $moonxPath -Parent) -Parent)" >> $env:GITHUB_ENV
-      - run: moon version --all
-      - run: moon update
-      - run: moon build --target native --release --deny-warn tests/release_runner
-      - name: Retain and verify exact official registry receipts
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
-          --prepare-freeze-evidence test-reports/release-acceptance
-          --smoke-report smoke --semantic-report windows-contracts
-      - name: Verify all published candidate commands
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
-          --manifest tests/release_runner/current/candidate.json
-          --verify-candidate --freeze-evidence test-reports/release-acceptance/evidence.json
-          --suite smoke --moonx "${{ env.CMD_MOONX }}" --jobs 1 --timeout-ms 120000
-          --report-dir test-reports/release-acceptance/smoke
-      - name: Prove Windows-only selected contracts and boundaries
-        if: runner.os == 'Windows'
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
-          --manifest tests/release_runner/current/candidate.json
-          --verify-candidate --freeze-evidence test-reports/release-acceptance/evidence.json
-          --suite differential --moonx "${{ env.CMD_MOONX }}" --jobs 1 --timeout-ms 120000
-          --host-contracts
-          --report-dir test-reports/release-acceptance/windows-contracts
-      - name: Ensure acceptance did not modify committed source
-        run: git diff --exit-code
-      - name: Retain published acceptance evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-acceptance-${{ matrix.label }}
-          path: test-reports/release-acceptance
-          if-no-files-found: error
-
-  freeze:
-    needs: [source-gate, smoke]
-    name: pinned differential and frozen publication
-    runs-on: ubuntu-24.04
-    timeout-minutes: 180
-    env:
-      LANG: C
-      LC_ALL: C
-      TZ: UTC
-      OUTGOING_RELEASE_ID: ${{ inputs.outgoing_release_id }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.source-gate.outputs.source_sha }}
-          submodules: recursive
-          fetch-depth: 0
-      - uses: hustcer/setup-moonbit@v1.23
-        with:
-          version: 0.10.15+943464bfa
-          core-version: 0.10.15+943464bfa
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - name: Resolve the runner's exact launcher and cache
-        shell: pwsh
-        run: |
-          $moonxPath = (Get-Command moonx -CommandType Application).Source
-          "CMD_MOONX=$moonxPath" >> $env:GITHUB_ENV
-          "MOON_HOME=$(Split-Path (Split-Path $moonxPath -Parent) -Parent)" >> $env:GITHUB_ENV
-      - run: moon version --all
-      - run: moon update
-      - run: moon build --target native --release --deny-warn tests/release_runner
-      - name: Prepare fresh freeze evidence with all platform report paths
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
-          --prepare-freeze-evidence test-reports/release-freeze
-          --smoke-report inputs/linux/smoke
-          --smoke-report inputs/macos/smoke
-          --smoke-report inputs/windows/smoke
-          --semantic-report differential
-          --semantic-report inputs/windows/windows-contracts
-      - uses: actions/download-artifact@v4
-        with:
-          name: release-acceptance-linux
-          path: test-reports/release-freeze/inputs/linux
-      - uses: actions/download-artifact@v4
-        with:
-          name: release-acceptance-macos
-          path: test-reports/release-freeze/inputs/macos
-      - uses: actions/download-artifact@v4
-        with:
-          name: release-acceptance-windows
-          path: test-reports/release-freeze/inputs/windows
+          mkdir -p test-reports
+          moon version --all | tee test-reports/toolchain.log
+          moon update
+      - name: Linux listener observer
+        if: runner.os == 'Linux'
+        run: command -v lsof || (sudo apt-get update && sudo apt-get install --yes lsof)
+      - name: Build acceptance tools
+        run: moon build --target native --release --deny-warn tests/runner tests/release_runner
       - uses: docker/setup-buildx-action@v3
-      - name: Build pinned oracle
+        if: runner.os == 'Linux'
+        with:
+          buildkitd-config-inline: |
+            [worker.oci]
+              max-parallelism = 2
+      - name: Pinned upstream image
+        id: oracle
+        if: runner.os == 'Linux'
         uses: docker/build-push-action@v6
         with:
           context: tests/runner/image
           load: true
-          tags: mooncmd-oracle:release
+          tags: mooncmd-oracle:phase0
           cache-from: type=gha,scope=mooncmd-oracle
           cache-to: type=gha,mode=max,scope=mooncmd-oracle
-      - name: Seal immutable oracle identity in the evidence directory
-        id: oracle
-        shell: bash
-        run: |
-          mkdir -p test-reports/release-freeze/oracle-profile
-          cp tests/runner/image/profile.json tests/runner/image/Dockerfile tests/runner/image/versions.sh test-reports/release-freeze/oracle-profile/
-          oracle_image_id=$(docker image inspect --format='{{.Id}}' mooncmd-oracle:release)
-          ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe --seal-oracle "$oracle_image_id" --oracle-profile test-reports/release-freeze/oracle-profile/profile.json
-          docker run --rm "$oracle_image_id" /usr/local/bin/versions.sh > test-reports/release-freeze/oracle-versions.txt
-          docker image inspect --format='{{.Id}}' "$oracle_image_id" > test-reports/release-freeze/oracle-image.txt
-          printf 'image_id=%s\n' "$oracle_image_id" >> "$GITHUB_OUTPUT"
-      - name: Compare every candidate selection with its required oracle or contract
-        shell: bash
-        run: |
-          umask 022
-          ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe --manifest tests/release_runner/current/candidate.json --verify-candidate --freeze-evidence test-reports/release-freeze/evidence.json --suite differential --moonx "$CMD_MOONX" --oracle-image "${{ steps.oracle.outputs.image_id }}" --oracle-profile test-reports/release-freeze/oracle-profile/profile.json --jobs 4 --timeout-ms 120000 --report-dir test-reports/release-freeze/differential
-      - name: Freeze only after live registry and complete combined evidence pass
-        id: freeze
-        shell: bash
-        run: |
-          ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe --manifest tests/release_runner/current/candidate.json --freeze-published --freeze-evidence test-reports/release-freeze/evidence.json --release-id "$OUTGOING_RELEASE_ID" --oracle-profile test-reports/release-freeze/oracle-profile/profile.json
-          git diff --stat
-      - name: Retain generated snapshots for local review and commit
-        if: steps.freeze.outcome == 'success'
+      - name: Record pinned oracle
+        if: runner.os == 'Linux'
+        run: moon run tests/oracle.mbtx -- --image '${{ steps.oracle.outputs.imageid }}'
+      - name: Exact-version functional acceptance
+        run: moon run tests/ci.mbtx -- published 2>&1 | tee test-reports/published.log
+      - name: Preserve acceptance results
+        if: ${{ always() && !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: release-frozen-snapshots
+          name: published-results-${{ matrix.os }}
+          path: test-reports
+          retention-days: 30
+          if-no-files-found: error
+      - name: Preserve interrupted acceptance logs
+        if: cancelled()
+        uses: actions/upload-artifact@v4
+        with:
+          name: published-results-${{ matrix.os }}
           path: |
-            tests/release_runner/current/
-            tests/release_runner/historical/
-          if-no-files-found: error
-      - name: Retain complete freeze evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-freeze-evidence
-          path: test-reports/release-freeze
-          if-no-files-found: error
+            test-reports/*.log
+            test-reports/*.json
+            test-reports/oracle-*.txt
+          retention-days: 30
+          if-no-files-found: warn

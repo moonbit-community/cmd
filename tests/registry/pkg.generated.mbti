@@ -4,60 +4,16 @@ package "mooxCLI/cmd-tests/registry"
 import {
   "moonbitlang/core/debug",
   "moonbitlang/core/json",
-  "mooxCLI/cmd-tests/testkit",
 }
 
 // Values
-pub fn behavior_ids(Registry) -> Array[String]
-
-pub fn case_sources(Registry) -> Array[String]
-
-pub fn implementation_ids(Registry, String) -> Array[String]
-
 pub async fn load(String) -> Registry raise Failure
 
-pub async fn migrate_workspace_release_metadata() -> Unit
-
-pub async fn refresh_package_tests(Registry, root? : String) -> Registry
-
-pub async fn refresh_workspace_registry() -> Unit
-
-pub async fn strengthen_workspace_backend_pairs() -> Unit
-
 pub fn validate(Registry) -> Array[String]
-
-pub fn validate_case_bindings(Registry, ArrayView[String]) -> Array[String]
-
-pub fn validate_frozen_registry(Registry) -> Array[String]
-
-pub async fn validate_selected_cases(Registry, ArrayView[@testkit.Case], root? : String) -> Array[String]
-
-pub async fn validate_source_bindings(Registry, root? : String) -> Array[String]
 
 // Errors
 
 // Types and methods
-pub(all) enum ImplementationBinding {
-  PackageTest(file~ : String, name~ : String)
-  JsonCase(file~ : String, case_id~ : String)
-  StatefulScenario(file~ : String, name~ : String)
-  CompatibilityCohort(file~ : String, name~ : String)
-  PolicyTest(file~ : String, name~ : String)
-  MetadataProbe(file~ : String, command~ : String)
-}
-
-type LifecycleCase derive(@json.FromJson)
-pub fn LifecycleCase::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
-
-type LifecycleRegistry derive(@json.FromJson)
-pub fn LifecycleRegistry::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
-
-type PlatformException derive(@json.FromJson)
-pub fn PlatformException::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
-
-type PlatformExceptions derive(@json.FromJson)
-pub fn PlatformExceptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
-
 pub(all) struct Registry {
   schema : Int
   entries : Array[RegistryEntry]
@@ -70,26 +26,16 @@ pub fn Registry::to_repr(Self) -> @debug.Repr
 pub(all) struct RegistryEntry {
   behavior_id : String
   command : String
-  owner : String
-  surface : Array[String]
   status : String
   implementation : String
   source : String
   case_id : String
   aliases : Array[String]
-  coverage : Array[String]
-  required_backends : Array[String]
   platforms : Array[String]
-  required_evidence : Array[String]
-  observations : Array[String]
   oracle_profile : String
 } derive(ToJson, @debug.Debug, @json.FromJson)
-pub fn RegistryEntry::binding(Self) -> ImplementationBinding raise Failure
-pub fn RegistryEntry::evidence_ids(Self) -> Array[String] raise Failure
 pub fn RegistryEntry::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 pub fn RegistryEntry::is_case(Self) -> Bool
-pub fn RegistryEntry::is_oracle_bound(Self) -> Bool
-pub fn RegistryEntry::requires_backend_pair(Self) -> Bool
 pub fn RegistryEntry::to_json(Self) -> Json
 pub fn RegistryEntry::to_repr(Self) -> @debug.Repr
 

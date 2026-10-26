@@ -25,13 +25,15 @@ fn functional_candidate(
   args : Array[String],
   coordinate : String?,
   options : Map[String, String],
-) -> (String, Array[String]) {
+) -> (String, Array[String]) raise {
   if options.get("--wasm-root") is Some(root) {
     (options["--moonrun"], [@testkit.wasm_path(root, command), "--", ..args])
   } else if coordinate is Some(coordinate) {
     (options["--moonx"], [coordinate, "--", ..args])
   } else {
-    (@testkit.executable_path(options["--native-root"], command), args)
+    fail(
+      "functional candidate requires Wasm artifacts or an exact published coordinate",
+    )
   }
 }
 
@@ -546,10 +548,8 @@ async fn run_functional(options : Map[String, String], sample~ : Bool) -> Bool {
       }
       let pending = if workload.pending is Some(reason) {
         Some(reason)
-      } else if !wasm &&
-        coordinate is None &&
-        options.get("--native-root") is None {
-        Some("timeout is local-only; provide --native-root for its diagnostic")
+      } else if !wasm && coordinate is None {
+        Some("timeout is local-only; use workspace Wasm for its diagnostic")
       } else {
         None
       }

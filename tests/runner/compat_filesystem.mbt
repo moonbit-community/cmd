@@ -3,10 +3,11 @@ async fn run_tail_follow_cases(
   bin_root : String,
   failures : Array[String],
 ) -> Unit {
-  let tail = @testkit.executable_path(bin_root, "tail")
+  let tail = @testkit.command_program()
+  let prefix = @testkit.command_args(bin_root, "tail", [])
   let append_lines = run_tail_follow_process(
     tail,
-    ["--follow", "--sleep-interval", "0.02", "-n", "2"],
+    [..prefix, "--follow", "--sleep-interval", "0.02", "-n", "2"],
     [b"one\ntwo\nthree\n"],
     [b"four\n"],
     [None],
@@ -17,7 +18,7 @@ async fn run_tail_follow_cases(
   )
   let append_bytes = run_tail_follow_process(
     tail,
-    ["-f", "-s", "0.02", "-c", "2"],
+    [..prefix, "-f", "-s", "0.02", "-c", "2"],
     [b"abcdef"],
     [b"gh"],
     [None],
@@ -26,7 +27,7 @@ async fn run_tail_follow_cases(
   record_tail_follow_result(append_bytes, b"efgh", "byte append", failures)
   let no_newline = run_tail_follow_process(
     tail,
-    ["-f", "-s", "0.02", "-n", "1"],
+    [..prefix, "-f", "-s", "0.02", "-n", "1"],
     [b"left"],
     [b"-right\n"],
     [None],
@@ -35,7 +36,7 @@ async fn run_tail_follow_cases(
   record_tail_follow_result(no_newline, b"left-right\n", "no newline", failures)
   let truncated = run_tail_follow_process(
     tail,
-    ["-f", "-s", "0.02"],
+    [..prefix, "-f", "-s", "0.02"],
     [b"before\n"],
     [b"append\n"],
     [Some(b"reset\n")],
@@ -46,7 +47,7 @@ async fn run_tail_follow_cases(
   )
   let multiple = run_tail_follow_process(
     tail,
-    ["-f", "-s", "0.02", "-q", "-n", "1"],
+    [..prefix, "-f", "-s", "0.02", "-q", "-n", "1"],
     [b"first\n", b"second\n"],
     [b"first-add\n", b"second-add\n"],
     [None, None],
@@ -57,7 +58,7 @@ async fn run_tail_follow_cases(
   )
   let with_headers = run_tail_follow_process(
     tail,
-    ["-f", "-s", "0.02", "-v", "-n", "1"],
+    [..prefix, "-f", "-s", "0.02", "-v", "-n", "1"],
     [b"header-one\n", b"header-two\n"],
     [b"", b""],
     [None, None],
@@ -73,7 +74,7 @@ async fn run_tail_follow_cases(
   }
   let default_interval = run_tail_follow_process(
     tail,
-    ["-f", "-q", "-n", "1"],
+    [..prefix, "-f", "-q", "-n", "1"],
     [b"ready\n"],
     [b"default\n"],
     [None],

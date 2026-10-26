@@ -2,8 +2,14 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-11
+Updated: 2026-10-26
 Revision: Record observed successful-but-wrong profiles as defects; do not bless them through retrospective ADRs or passing local contracts.
+
+Delivery validation update (2026-10-26): [ADR-0001](0001-evidence.md) and the
+[Wasm CI migration](../ci-wasm-migration.md) define current acceptance. Future
+regressions and boundary unlock conditions below require Wasm on applicable
+hosts and exact-version MoonX acceptance; Native command runs and backend
+pairing are retired. Dated Native observations retain their historical scope.
 
 ## Target and decision
 

@@ -6,15 +6,6 @@ pub(all) struct RunResult {
 }
 
 ///|
-pub fn executable_path(root : String, command : String) -> String {
-  @path.Path(root)
-  .join(Path("cli"))
-  .join(Path(command))
-  .join(Path(command + ".exe"))
-  .to_string()
-}
-
-///|
 /// Resolve a release or debug Wasm command artifact.
 pub fn wasm_path(root : String, command : String) -> String {
   @path.Path(root)

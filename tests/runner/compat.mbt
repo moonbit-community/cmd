@@ -4,6 +4,11 @@ fn compat_fail(message : String, failures : Array[String]) -> Unit {
 }
 
 ///|
+async fn cleanup_compat_fixture(root : String) -> Unit {
+  @async.protect_from_cancel(() => @fs.rmdir(root, recursive=true))
+}
+
+///|
 async fn check_catalog(
   bin_root : String,
   require_binaries : Bool,
@@ -22,10 +27,10 @@ async fn check_catalog(
       compat_fail("catalog: duplicate command '\{contract.name}'", failures)
     }
     names[contract.name] = true
-    if require_binaries {
-      let path = @testkit.executable_path(bin_root, contract.name)
+    if require_binaries && !@testkit.published_mode() {
+      let path = @testkit.wasm_path(bin_root, contract.name)
       if !@fs.exists(path) {
-        compat_fail("catalog: missing native binary '\{path}'", failures)
+        compat_fail("catalog: missing Wasm artifact '\{path}'", failures)
       }
     }
   }
@@ -41,8 +46,7 @@ async fn expect(
   stdout : Bytes,
   failures : Array[String],
 ) -> Unit {
-  let path = @testkit.executable_path(bin_root, command)
-  let result = @testkit.run(path, args, stdin?) catch {
+  let result = @testkit.run_command(bin_root, command, args, stdin?) catch {
     err => {
       compat_fail("\{command}: failed to execute: \{err}", failures)
       return
@@ -50,7 +54,7 @@ async fn expect(
   }
   if result.status != status {
     compat_fail(
-      "\{command}: expected status \{status}, got \{result.status}; stderr=\{result.stderr.to_unchecked_string()}",
+      "\{command}: expected status \{status}, got \{result.status}; stderr=\{@utf8.decode_lossy(result.stderr)}",
       failures,
     )
   }
@@ -76,7 +80,7 @@ async fn run_tail_follow_process(
   poll_wait_ms~ : Int32 = 160,
 ) -> (Bytes, Bytes) {
   let root = @fs.tmpdir(prefix="mooncmd-tail-follow")
-  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  defer cleanup_compat_fixture(root)
   let paths : Array[String] = []
   for index in 0..<initial.length() {
     let path = @path.Path(root).join(Path("log-\{index}")).to_string()
@@ -90,7 +94,6 @@ async fn run_tail_follow_process(
   let stdout = @process.redirect_to_file(stdout_path)
   let stderr = @process.redirect_to_file(stderr_path)
   @async.with_task_group <| group => {
-    @testkit.record_execution_environment(program)
     let child = @process.spawn(
       group,
       program,
@@ -163,10 +166,11 @@ async fn run_environment_boundary_cases(
   failures : Array[String],
 ) -> Unit {
   let secret_name = "MOOXCLI_COMPAT_SECRET"
-  let secret_value = "must-cross-native-process-boundary"
+  let secret_value = "must-cross-command-process-boundary"
   let injected : Map[String, String] = Map([(secret_name, secret_value)])
-  let sh = @testkit.run(
-    @testkit.executable_path(bin_root, "sh"),
+  let sh = @testkit.run_command(
+    bin_root,
+    "sh",
     ["-c", "export"],
     extra_env=injected,
   ) catch {
@@ -180,16 +184,17 @@ async fn run_environment_boundary_cases(
   }
   record_result(
     sh.status == 0 && @testkit.contains_bytes(sh.stdout, secret_value),
-    "sh: parent environment variable did not cross the native shell boundary",
+    "sh: parent environment variable did not cross the command shell boundary",
     failures,
   )
 
   let root = @fs.tmpdir(prefix="mooncmd-environment")
-  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  defer cleanup_compat_fixture(root)
   let makefile = @path.Path(root).join(Path("Makefile")).to_string()
   @fs.write_file(makefile, b"all:\n\t@export\n")
-  let make = @testkit.run(
-    @testkit.executable_path(bin_root, "make"),
+  let make = @testkit.run_command(
+    bin_root,
+    "make",
     ["-s", "-f", makefile],
     extra_env=injected,
   ) catch {
@@ -203,14 +208,15 @@ async fn run_environment_boundary_cases(
   }
   record_result(
     make.status == 0 && @testkit.contains_bytes(make.stdout, secret_value),
-    "make: parent environment variable did not cross the native recipe boundary",
+    "make: parent environment variable did not cross the command recipe boundary",
     failures,
   )
 
-  let printenv = @testkit.executable_path(bin_root, "printenv")
-  let xargs = @testkit.run(
-    @testkit.executable_path(bin_root, "xargs"),
-    [printenv, secret_name],
+  let printenv = @testkit.command_line(bin_root, "printenv", [])
+  let xargs = @testkit.run_command(
+    bin_root,
+    "xargs",
+    [..printenv, secret_name],
     stdin=b"",
     extra_env=injected,
   ) catch {
@@ -224,13 +230,14 @@ async fn run_environment_boundary_cases(
   }
   record_result(
     xargs.status == 0 && @testkit.contains_bytes(xargs.stdout, secret_value),
-    "xargs: parent environment variable did not cross the native child boundary",
+    "xargs: parent environment variable did not cross the command child boundary",
     failures,
   )
 
-  let env = @testkit.run(
-    @testkit.executable_path(bin_root, "env"),
-    ["printenv", secret_name],
+  let env = @testkit.run_command(
+    bin_root,
+    "env",
+    [..printenv, secret_name],
     extra_env=injected,
   ) catch {
     err => {
@@ -243,7 +250,7 @@ async fn run_environment_boundary_cases(
   }
   record_result(
     env.status == 0 && @testkit.contains_bytes(env.stdout, secret_value),
-    "env: parent environment variable did not cross the native child boundary",
+    "env: parent environment variable did not cross the command child boundary",
     failures,
   )
 }
@@ -268,8 +275,12 @@ async fn expect_round_trip(
   input : Bytes,
   failures : Array[String],
 ) -> Unit {
-  let executable = @testkit.executable_path(bin_root, command)
-  let encoded = @testkit.run(executable, encode_args, stdin=input) catch {
+  let encoded = @testkit.run_command(
+    bin_root,
+    command,
+    encode_args,
+    stdin=input,
+  ) catch {
     err => {
       compat_fail("\{command}: encoder failed to run: \{err}", failures)
       return
@@ -282,7 +293,12 @@ async fn expect_round_trip(
     )
     return
   }
-  let decoded = @testkit.run(executable, decode_args, stdin=encoded.stdout) catch {
+  let decoded = @testkit.run_command(
+    bin_root,
+    command,
+    decode_args,
+    stdin=encoded.stdout,
+  ) catch {
     err => {
       compat_fail("\{command}: decoder failed to run: \{err}", failures)
       return

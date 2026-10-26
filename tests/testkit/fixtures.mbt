@@ -426,7 +426,7 @@ pub fn snapshots_equal(
 }
 
 ///|
-/// Produce a deterministic, byte-oriented representation for backend-pair
+/// Produce a deterministic, byte-oriented representation for filesystem
 /// comparisons. Metadata keys are sorted so the representation is independent
 /// of map insertion order.
 pub fn snapshot_fingerprint(entries : ArrayView[SnapshotEntry]) -> String {

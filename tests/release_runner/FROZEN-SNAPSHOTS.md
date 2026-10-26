@@ -1,5 +1,10 @@
 # Frozen publication snapshots
 
+Historical design reference, retired 2026-10-26. The mechanisms below are no
+longer active entrypoints or publication requirements. Existing frozen files
+remain unchanged. Use [current acceptance](README.md), `latest.json` and its
+independent current expectations; do not generate new freeze/receipt archives.
+
 Publication freezing and historical replay have different evidence meanings. A
 new publication must pass the live exact registry, MoonX and semantic gates.
 Recovering an old corpus from Git establishes its source contents only; it does

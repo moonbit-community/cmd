@@ -1,5 +1,10 @@
 # Direct-Wasm resource observations
 
+The `resource-observations` workflow is manual only. It builds the selected ref's
+Wasm commands and defaults to the complete existing matrix. Choose an existing
+profile (`records`, `long`, `heldout`, `kernel-rss-linux`) and optional comma-separated
+commands for diagnosis. Ordinary development and release checks do not start it.
+
 Build and stage the current release Wasm artifacts first, using the existing
 testkit layout `ARTIFACT_ROOT/cli/COMMAND/COMMAND.wasm`. Then run from the
 repository root:
@@ -66,10 +71,11 @@ JSON results and stderr remain in the report directory. After successful exact
 comparison, large stdout/fragment/decode captures are removed to bound retained
 disk space. Failed captures remain. Inputs are generated deterministically in
 64 KiB blocks and reused within the current size; their generation is outside
-candidate timing. This script makes no coverage-audit or upstream-parity claim.
+candidate timing. These observations do not establish upstream parity or formal
+statistical performance acceptance.
 
-Linux CI runs `tests/resources/ci.mbtx --image SEALED_IMAGE_ID` after the
-sealed-container fixture comparisons. It exports that image's `/oracle` prefix
+The manual Linux workflow runs `tests/resources/ci.mbtx --image SEALED_IMAGE_ID`.
+It exports the pinned image's `/oracle` prefix
 and runs the three profiles above serially with the host MoonBit toolchain,
 followed by a separate kernel-peak profile for rev, split, csplit, tac, column,
 sort and diff at 8, 64 and 512 MiB.

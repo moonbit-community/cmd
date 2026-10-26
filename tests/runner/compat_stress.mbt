@@ -3,8 +3,8 @@ async fn run_stress_cases(bin_root : String, failures : Array[String]) -> Unit {
   // Cross the former product cap; count records without constructing a second
   // 79 MiB expected string or millions of split String objects.
   let run = @testkit.run_with_deadline(
-    @testkit.executable_path(bin_root, "seq"),
-    ["10000001"],
+    @testkit.command_program(),
+    @testkit.command_args(bin_root, "seq", ["10000001"]),
     120000,
     stdin=b"",
   )

@@ -13,11 +13,12 @@ async fn moon_run(
     .join(Path("tests/fixtures/policy"))
     .join(Path(policy))
     .to_string()
-  let moon_args = [
-    "--policy",
-    policy_path,
-    @testkit.wasm_path(policy_wasm_root.val, command),
-  ]
+  let moon_args = @testkit.command_args(
+    policy_wasm_root.val,
+    command,
+    [],
+    policy=policy_path,
+  )
   let resolved_args : Array[String] = []
   for arg in args {
     if arg.has_prefix("tests/") {
@@ -27,7 +28,7 @@ async fn moon_run(
     }
   }
   moon_args.append(resolved_args)
-  @testkit.run("moonrun", moon_args, stdin?, cwd=root)
+  @testkit.run(@testkit.command_program(), moon_args, stdin?, cwd=root)
 }
 
 ///|
@@ -246,8 +247,9 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
       }
     }
     record(
-      manifest.contains("supported_targets = \"native+wasm\""),
-      "\{contract.name}: must support native+wasm",
+      manifest.contains("supported_targets = \"native+wasm\"") ||
+      manifest.contains("supported_targets = \"wasm\""),
+      "\{contract.name}: Wasm product target is missing",
       failures,
     )
     if contract.tier != Restricted {
@@ -336,6 +338,9 @@ async fn expect_denied(
   stdin : Bytes?,
   failures : Array[String],
 ) -> Unit {
+  if !@testkit.command_available(command) {
+    return
+  }
   let result = moon_run(root, policy, command, args, stdin?) catch {
     err => {
       failures.push("\{command}: policy invocation failed: \{err}")
@@ -1168,19 +1173,21 @@ async fn check_process_and_network_policy(
     "find: allowed child output mismatch: status=\{find_exec.status}, stdout=\{find_exec.stdout}, stderr=\{find_exec.stderr}",
     failures,
   )
-  let timeout = moon_run(root, "process-echo.json", "timeout", [
-    "1s", "echo", "timeout-policy-ok",
-  ]) catch {
-    err => {
-      failures.push("timeout: allowed process failed: \{err}")
-      return
+  if @testkit.command_available("timeout") {
+    let timeout = moon_run(root, "process-echo.json", "timeout", [
+      "1s", "echo", "timeout-policy-ok",
+    ]) catch {
+      err => {
+        failures.push("timeout: allowed process failed: \{err}")
+        return
+      }
     }
+    record(
+      stdout_is(timeout, b"timeout-policy-ok\n"),
+      "timeout: allowed process output mismatch",
+      failures,
+    )
   }
-  record(
-    stdout_is(timeout, b"timeout-policy-ok\n"),
-    "timeout: allowed process output mismatch",
-    failures,
-  )
   let sh = moon_run(root, "process-printf.json", "sh", [
     "-c", "printf '%s' \"$(printf policy-shell-ok)\"",
   ]) catch {

@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-25
+Updated: 2026-10-26
 Revision note: stdin shell names strip generated `.exe` and `.wasm` suffixes
 consistently. Explicit `-c` names and script paths remain verbatim. This chooses
 the logical command basename over backend artifact naming; relocated binaries
@@ -10,6 +10,12 @@ with either suffix therefore expose the suffix-free name. The portable
 `compat-text-line-165` JSON contract exercises both backends. Revisit only if
 the launcher exposes a stable caller-supplied logical argv[0].
 Revision: Integrate persistent shell and synchronized make scenarios into both-backend validation.
+
+Delivery validation update (2026-10-26): [ADR-0001](0001-evidence.md) and the
+[Wasm CI migration](../ci-wasm-migration.md) define current acceptance. Future
+regressions and boundary unlock conditions below require Wasm on applicable
+hosts and exact-version MoonX acceptance; Native command runs and backend
+pairing are retired. Dated Native observations retain their historical scope.
 
 ## Target and decision
 

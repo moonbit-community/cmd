@@ -15,6 +15,12 @@ type CommandRow derive(@debug.Debug, @json.FromJson)
 
 type Manifest derive(@debug.Debug, @json.FromJson)
 
+type MetadataObservation derive(@json.FromJson)
+
+type PublishedCommand derive(@json.FromJson)
+
+type PublishedSelection derive(@json.FromJson)
+
 type ScenarioTimestampObservation derive(ToJson, @json.FromJson)
 
 // Type aliases

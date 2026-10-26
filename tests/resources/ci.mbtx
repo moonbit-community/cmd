@@ -46,10 +46,12 @@ async fn main {
     "/lib64" +
     (if previous.is_empty() { "" } else { ":" + previous })
   let metadata : Json = {
+    "revision": @env.get_env_var("GITHUB_SHA").unwrap_or("local"),
+    "platform": "linux",
     "image_id": image,
     "exported_prefix": prefix,
     "reference_scope": "Binaries copied from the sealed image execute on the Linux host with its dynamic loader and system libraries; resource observations are not sealed-container upstream parity",
-    "parity_scope": "The separate Native/Wasm oracle fixture steps retain sealed-container upstream comparisons",
+    "parity_scope": "The separate Wasm oracle fixture checks retain container-based upstream comparisons",
     "moonrun": moonrun,
     "LD_LIBRARY_PATH": libraries,
   }
@@ -79,7 +81,24 @@ async fn main {
   ]
   let results : Array[Json] = []
   let mut failures = 0
+  let selected_profile = @env.get_env_var("CMD_RESOURCE_PROFILE").unwrap_or("all")
+  let selected_commands = @env.get_env_var("CMD_RESOURCE_COMMANDS").unwrap_or("")
+  guard selected_profile == "all" || profiles.any(row => row.0 == selected_profile) else {
+    fail("unknown resource profile: " + selected_profile)
+  }
   for (name, options) in profiles {
+    if selected_profile != "all" && name != selected_profile { continue }
+    let options = if selected_commands.is_empty() { options } else {
+      let filtered : Array[String] = []
+      let mut index = 0
+      while index < options.length() {
+        if options[index] == "--commands" { index += 2 } else {
+          filtered.push(options[index])
+          index += 1
+        }
+      }
+      [..filtered, "--commands", selected_commands]
+    }
     let status = @shell.Cmd(
       "moon",
       [..common, "--report-dir", reports + "/" + name, ..options],

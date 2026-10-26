@@ -2,8 +2,14 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-20
+Updated: 2026-10-26
 Revision: Own HTTP/1 framing through the released passthrough API and apply explicit command profiles for URL targets, response cookies, EOF, file buffering, retry reset and selected-filename lifetime in the accepted async 0.22.5 stage 0 subset.
+
+Delivery validation update (2026-10-26): [ADR-0001](0001-evidence.md) and the
+[Wasm CI migration](../ci-wasm-migration.md) define current acceptance. Future
+regressions and boundary unlock conditions below require Wasm on applicable
+hosts and exact-version MoonX acceptance; Native command runs and backend
+pairing are retired. Dated Native observations retain their historical scope.
 
 ## Target and decision
 

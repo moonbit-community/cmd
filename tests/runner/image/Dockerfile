@@ -1,4 +1,4 @@
-FROM ubuntu@sha256:2e863c44b718727c860746568e1d54afd13b2fa71b160f5cd9058fc436217b30
+FROM ubuntu@sha256:2e863c44b718727c860746568e1d54afd13b2fa71b160f5cd9058fc436217b30 AS toolchain
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG COREUTILS_VERSION=9.11
@@ -56,6 +56,10 @@ RUN apt-get update \
 
 WORKDIR /build
 
+RUN mkdir -p /oracle/bin
+
+FROM toolchain AS build-coreutils
+
 RUN curl --fail --location --retry 5 \
       "https://ftp.gnu.org/gnu/coreutils/coreutils-${COREUTILS_VERSION}.tar.xz" \
       --output coreutils.tar.xz \
@@ -63,10 +67,12 @@ RUN curl --fail --location --retry 5 \
   && tar --extract --file coreutils.tar.xz \
   && cd "coreutils-${COREUTILS_VERSION}" \
   && FORCE_UNSAFE_CONFIGURE=1 ./configure --prefix=/oracle --disable-nls \
-  && make -j"$(nproc)" \
+  && make -j2 \
   && make install-strip \
   && cd /build \
   && rm -rf coreutils.tar.xz "coreutils-${COREUTILS_VERSION}"
+
+FROM toolchain AS build-diffutils
 
 RUN curl --fail --location --retry 5 \
       "https://ftp.gnu.org/gnu/diffutils/diffutils-${DIFFUTILS_VERSION}.tar.xz" \
@@ -75,10 +81,12 @@ RUN curl --fail --location --retry 5 \
   && tar --extract --file diffutils.tar.xz \
   && cd "diffutils-${DIFFUTILS_VERSION}" \
   && ./configure --prefix=/oracle --disable-nls \
-  && make -j"$(nproc)" \
+  && make -j2 \
   && make install-strip \
   && cd /build \
   && rm -rf diffutils.tar.xz "diffutils-${DIFFUTILS_VERSION}"
+
+FROM toolchain AS build-findutils
 
 RUN curl --fail --location --retry 5 \
       "https://ftp.gnu.org/gnu/findutils/findutils-${FINDUTILS_VERSION}.tar.xz" \
@@ -87,10 +95,12 @@ RUN curl --fail --location --retry 5 \
   && tar --extract --file findutils.tar.xz \
   && cd "findutils-${FINDUTILS_VERSION}" \
   && ./configure --prefix=/oracle --disable-nls \
-  && make -j"$(nproc)" \
+  && make -j2 \
   && make install-strip \
   && cd /build \
   && rm -rf findutils.tar.xz "findutils-${FINDUTILS_VERSION}"
+
+FROM toolchain AS build-grep
 
 RUN curl --fail --location --retry 5 \
       "https://ftp.gnu.org/gnu/grep/grep-${GREP_VERSION}.tar.xz" \
@@ -99,10 +109,12 @@ RUN curl --fail --location --retry 5 \
   && tar --extract --file grep.tar.xz \
   && cd "grep-${GREP_VERSION}" \
   && ./configure --prefix=/oracle --disable-nls \
-  && make -j"$(nproc)" \
+  && make -j2 \
   && make install-strip \
   && cd /build \
   && rm -rf grep.tar.xz "grep-${GREP_VERSION}"
+
+FROM toolchain AS build-wget
 
 RUN curl --fail --location --retry 5 \
       "https://ftp.gnu.org/gnu/wget/wget-${WGET_VERSION}.tar.gz" \
@@ -111,10 +123,12 @@ RUN curl --fail --location --retry 5 \
   && tar --extract --file wget.tar.gz \
   && cd "wget-${WGET_VERSION}" \
   && ./configure --prefix=/oracle --disable-nls --with-ssl=openssl \
-  && make -j"$(nproc)" \
+  && make -j2 \
   && make install-strip \
   && cd /build \
   && rm -rf wget.tar.gz "wget-${WGET_VERSION}"
+
+FROM toolchain AS build-make
 
 RUN curl --fail --location --retry 5 \
       "https://ftp.gnu.org/gnu/make/make-${MAKE_VERSION}.tar.lz" \
@@ -123,10 +137,12 @@ RUN curl --fail --location --retry 5 \
   && tar --extract --lzip --file make.tar.lz \
   && cd "make-${MAKE_VERSION}" \
   && ./configure --prefix=/oracle --disable-nls \
-  && make -j"$(nproc)" \
+  && make -j2 \
   && make install-strip \
   && cd /build \
   && rm -rf make.tar.lz "make-${MAKE_VERSION}"
+
+FROM toolchain AS build-curl
 
 RUN curl --fail --location --retry 5 \
       "https://curl.se/download/curl-${CURL_VERSION}.tar.xz" \
@@ -135,10 +151,12 @@ RUN curl --fail --location --retry 5 \
   && tar --extract --file curl.tar.xz \
   && cd "curl-${CURL_VERSION}" \
   && ./configure --prefix=/oracle --disable-nls --with-openssl \
-  && make -j"$(nproc)" \
+  && make -j2 \
   && make install-strip \
   && cd /build \
   && rm -rf curl.tar.xz "curl-${CURL_VERSION}"
+
+FROM toolchain AS build-dash
 
 RUN curl --fail --location --retry 5 \
       "https://git.kernel.org/pub/scm/utils/dash/dash.git/snapshot/dash-${DASH_VERSION}.tar.gz" \
@@ -148,16 +166,20 @@ RUN curl --fail --location --retry 5 \
   && cd "dash-${DASH_VERSION}" \
   && autoreconf --force --install \
   && ./configure --prefix=/oracle \
-  && make -j"$(nproc)" \
+  && make -j2 \
   && make install-strip \
   && cd /build \
   && rm -rf dash.tar.gz "dash-${DASH_VERSION}"
+
+FROM toolchain AS build-jq
 
 RUN curl --fail --location --retry 5 \
       "https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/jq-linux-amd64" \
       --output /oracle/bin/jq \
   && echo "${JQ_SHA256}  /oracle/bin/jq" | sha256sum --check --strict \
   && chmod 0755 /oracle/bin/jq
+
+FROM toolchain AS build-vim
 
 RUN curl --fail --location --retry 5 \
       "https://github.com/vim/vim/archive/refs/tags/v${VIM_VERSION}.tar.gz" \
@@ -168,7 +190,7 @@ RUN curl --fail --location --retry 5 \
   && install -m 0755 "vim-${VIM_VERSION}/src/xxd/xxd" /oracle/bin/xxd \
   && rm -rf vim.tar.gz "vim-${VIM_VERSION}"
 
-RUN ln -s /oracle/bin/dash /oracle/bin/sh
+FROM toolchain AS build-sed
 
 RUN curl --fail --location --retry 5 \
       "https://ftp.gnu.org/gnu/sed/sed-${SED_VERSION}.tar.xz" \
@@ -177,10 +199,12 @@ RUN curl --fail --location --retry 5 \
   && tar --extract --file sed.tar.xz \
   && cd "sed-${SED_VERSION}" \
   && ./configure --prefix=/oracle --disable-nls \
-  && make -j"$(nproc)" \
+  && make -j2 \
   && make install-strip \
   && cd /build \
   && rm -rf sed.tar.xz "sed-${SED_VERSION}"
+
+FROM toolchain AS build-patch
 
 RUN curl --fail --location --retry 5 \
       "https://ftp.gnu.org/gnu/patch/patch-${PATCH_VERSION}.tar.xz" \
@@ -189,10 +213,12 @@ RUN curl --fail --location --retry 5 \
   && tar --extract --file patch.tar.xz \
   && cd "patch-${PATCH_VERSION}" \
   && ./configure --prefix=/oracle \
-  && make -j"$(nproc)" \
+  && make -j2 \
   && make install-strip \
   && cd /build \
   && rm -rf patch.tar.xz "patch-${PATCH_VERSION}"
+
+FROM toolchain AS build-gzip
 
 RUN curl --fail --location --retry 5 \
       "https://ftp.gnu.org/gnu/gzip/gzip-${GZIP_VERSION}.tar.xz" \
@@ -201,10 +227,12 @@ RUN curl --fail --location --retry 5 \
   && tar --extract --file gzip.tar.xz \
   && cd "gzip-${GZIP_VERSION}" \
   && ./configure --prefix=/oracle \
-  && make -j"$(nproc)" \
+  && make -j2 \
   && make install-strip \
   && cd /build \
   && rm -rf gzip.tar.xz "gzip-${GZIP_VERSION}"
+
+FROM toolchain AS build-util-linux
 
 RUN curl --fail --location --retry 5 \
       "https://www.kernel.org/pub/linux/utils/util-linux/v${UTIL_LINUX_VERSION}/util-linux-${UTIL_LINUX_VERSION}.tar.xz" \
@@ -213,12 +241,14 @@ RUN curl --fail --location --retry 5 \
   && tar --extract --file util-linux.tar.xz \
   && cd "util-linux-${UTIL_LINUX_VERSION}" \
   && ./configure --prefix=/oracle --disable-nls --disable-shared --without-python --without-systemd --disable-liblastlog2 --without-ncursesw --without-ncurses \
-  && make -j"$(nproc)" hexdump column rev \
+  && make -j2 hexdump column rev \
   && install -m 0755 hexdump /oracle/bin/hexdump \
   && install -m 0755 column /oracle/bin/column \
   && install -m 0755 rev /oracle/bin/rev \
   && cd /build \
   && rm -rf util-linux.tar.xz "util-linux-${UTIL_LINUX_VERSION}"
+
+FROM toolchain AS build-binutils
 
 ARG BINUTILS_VERSION=2.44
 ARG BINUTILS_SHA256=ce2017e059d63e67ddb9240e9d4ec49c2893605035cd60e92ad53177f4377237
@@ -230,10 +260,12 @@ RUN curl --fail --location --retry 5 \
   && tar --extract --file binutils.tar.xz \
   && cd "binutils-${BINUTILS_VERSION}" \
   && ./configure --prefix=/oracle --disable-nls --disable-gdb --disable-gprof --disable-gprofng --disable-gas --disable-ld --disable-gold --disable-sim --disable-werror --without-zstd --with-system-zlib \
-  && make -j"$(nproc)" all-binutils \
+  && make -j2 all-binutils \
   && install -m 0755 binutils/strings /oracle/bin/strings \
   && cd /build \
   && rm -rf binutils.tar.xz "binutils-${BINUTILS_VERSION}"
+
+FROM toolchain AS build-tree
 
 ARG TREE_VERSION=2.2.1
 ARG TREE_SHA256=68ac45dc78c0c311ada06200ffc3c285e74223ba208061f8d15ffac25e44b2ec
@@ -243,9 +275,30 @@ RUN curl --fail --location --retry 5 \
       --output tree.tgz \
   && echo "${TREE_SHA256}  tree.tgz" | sha256sum --check --strict \
   && tar --extract --file tree.tgz \
-  && make -C "tree-${TREE_VERSION}" -j"$(nproc)" \
+  && make -C "tree-${TREE_VERSION}" -j2 \
   && install -m 0755 "tree-${TREE_VERSION}/tree" /oracle/bin/tree \
   && rm -rf tree.tgz "tree-${TREE_VERSION}"
+
+FROM toolchain AS oracle
+
+COPY --from=build-coreutils /oracle/ /oracle/
+COPY --from=build-diffutils /oracle/ /oracle/
+COPY --from=build-findutils /oracle/ /oracle/
+COPY --from=build-grep /oracle/ /oracle/
+COPY --from=build-wget /oracle/ /oracle/
+COPY --from=build-make /oracle/ /oracle/
+COPY --from=build-curl /oracle/ /oracle/
+COPY --from=build-dash /oracle/ /oracle/
+COPY --from=build-jq /oracle/ /oracle/
+COPY --from=build-vim /oracle/ /oracle/
+COPY --from=build-sed /oracle/ /oracle/
+COPY --from=build-patch /oracle/ /oracle/
+COPY --from=build-gzip /oracle/ /oracle/
+COPY --from=build-util-linux /oracle/ /oracle/
+COPY --from=build-binutils /oracle/ /oracle/
+COPY --from=build-tree /oracle/ /oracle/
+
+RUN ln -s /oracle/bin/dash /oracle/bin/sh
 
 COPY --chmod=0755 entrypoint.sh versions.sh /usr/local/bin/
 
