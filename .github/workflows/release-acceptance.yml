@@ -33,6 +33,7 @@ jobs:
       LANG: C
       LC_ALL: C
       TZ: UTC
+      DOCKER_BUILD_RECORD_RETENTION_DAYS: 30
       CMD_RELEASE_MANIFEST: tests/release_runner/current/${{ inputs.manifest }}.json
     steps:
       - uses: actions/checkout@v4

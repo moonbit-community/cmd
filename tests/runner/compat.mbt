@@ -49,7 +49,7 @@ async fn expect(
   }
   if result.status != status {
     compat_fail(
-      "\{command}: expected status \{status}, got \{result.status}; stderr=\{result.stderr.to_unchecked_string()}",
+      "\{command}: expected status \{status}, got \{result.status}; stderr=\{@utf8.decode_lossy(result.stderr)}",
       failures,
     )
   }

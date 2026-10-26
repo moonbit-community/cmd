@@ -45,7 +45,7 @@ async fn invocation(
     completed.output.status == 0 else {
     fail(
       "metadata observer failed or timed out: " +
-      completed.output.stderr.to_unchecked_string(),
+      @utf8.decode_lossy(completed.output.stderr),
     )
   }
   let observation : MetadataObservation = @json.from_json(

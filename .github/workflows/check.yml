@@ -35,10 +35,16 @@ jobs:
       LANG: C
       LC_ALL: C
       TZ: UTC
+      DOCKER_BUILD_RECORD_RETENTION_DAYS: 7
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+      - name: Compute compilation cache key
+        id: cache-key
+        env:
+          CACHE_PREFIX: wasm-ci-v3-${{ runner.os }}-${{ runner.arch }}-0.10.15-${{ hashFiles('moon.work', '**/moon.mod', '**/moon.pkg', '!**/.mooncakes/**', '!**/_build/**', '!**/target/**') }}
+        run: echo "prefix=$CACHE_PREFIX" >> "$GITHUB_OUTPUT"
       - uses: hustcer/setup-moonbit@v1.23
         with:
           version: 0.10.15+943464bfa
@@ -62,9 +68,9 @@ jobs:
             _build/.moon_db
             _build/native/release
             _build/wasm/release
-          key: wasm-ci-v2-${{ runner.os }}-${{ runner.arch }}-0.10.15-${{ hashFiles('moon.work', '**/moon.mod', '**/moon.pkg') }}-${{ github.sha }}
+          key: ${{ steps.cache-key.outputs.prefix }}-${{ github.sha }}
           restore-keys: |
-            wasm-ci-v2-${{ runner.os }}-${{ runner.arch }}-0.10.15-${{ hashFiles('moon.work', '**/moon.mod', '**/moon.pkg') }}-
+            ${{ steps.cache-key.outputs.prefix }}-
       - name: Linux listener observer
         if: runner.os == 'Linux'
         run: command -v lsof || (sudo apt-get update && sudo apt-get install --yes lsof)
@@ -141,4 +147,4 @@ jobs:
             _build/.moon_db
             _build/native/release
             _build/wasm/release
-          key: wasm-ci-v2-${{ runner.os }}-${{ runner.arch }}-0.10.15-${{ hashFiles('moon.work', '**/moon.mod', '**/moon.pkg') }}-${{ github.sha }}
+          key: ${{ steps.cache-key.outputs.prefix }}-${{ github.sha }}

@@ -76,8 +76,8 @@ module and version before any release operation.
 
 - Use the same prefix for registry updates, checks, builds, runs and releases:
   `MOON_HOME="$HOME/.moon-accounts/cli" moon update`,
-  `MOON_HOME="$HOME/.moon-accounts/cli" moon check --target all --deny-warn`,
-  `MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --release`,
+  `MOON_HOME="$HOME/.moon-accounts/cli" moon check --target wasm --deny-warn`,
+  `MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release`,
   `MOON_HOME="$HOME/.moon-accounts/cli" moon run <package>`, and
   `MOON_HOME="$HOME/.moon-accounts/cli" moon publish` from the verified module.
   Preparing a candidate does not authorize publication.

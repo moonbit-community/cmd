@@ -32,6 +32,7 @@ jobs:
       LANG: C
       LC_ALL: C
       TZ: UTC
+      DOCKER_BUILD_RECORD_RETENTION_DAYS: 30
       CMD_RESOURCE_PROFILE: ${{ inputs.profile }}
       CMD_RESOURCE_COMMANDS: ${{ inputs.commands }}
     steps:

@@ -71,7 +71,8 @@ JSON results and stderr remain in the report directory. After successful exact
 comparison, large stdout/fragment/decode captures are removed to bound retained
 disk space. Failed captures remain. Inputs are generated deterministically in
 64 KiB blocks and reused within the current size; their generation is outside
-candidate timing. This script makes no coverage-audit or upstream-parity claim.
+candidate timing. These observations do not establish upstream parity or formal
+statistical performance acceptance.
 
 The manual Linux workflow runs `tests/resources/ci.mbtx --image SEALED_IMAGE_ID`.
 It exports the pinned image's `/oracle` prefix

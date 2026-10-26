@@ -56,7 +56,8 @@ package versions differ. Child commands use the same selected coordinate map.
 ## Validation record
 
 Local Wasm package tests passed: 491/491. Native harness tests, including the
-new failure paths, passed: 114/114. A complete workspace functional run with
+new failure paths and an injected successful process returning the wrong package
+version, passed: 115/115. A complete workspace functional run with
 the entire Native product artifact directory temporarily moved away recorded
 2,027 passing results (including explicit boundaries), 18 platform skips and
 zero failures. Scenario records are no longer duplicated. Its six suite stages
@@ -71,7 +72,16 @@ fixed-oracle cat/unlink checks also passed locally with the pinned image. These
 local results do not replace the planned complete hosted Linux comparison or
 three-platform release workflow.
 
-Implementation and hosted validation are in progress. Hosted duration, three-platform
-MoonX acceptance and actual-main acceptance must be recorded from real runs.
-The previous successful main run 40193652755 is a historical cost baseline,
-not evidence for this implementation.
+The complete hosted MoonX workflow
+[40270955851](https://github.com/moonbit-community/cmd/actions/runs/40270955851)
+passed on Linux, macOS and Windows with all 78 exact published coordinates;
+Linux also passed the complete pinned upstream comparison. It built only Native
+acceptance tools, so product execution did not depend on workspace command
+artifacts. No package was uploaded and no published manifest was rewritten.
+
+The controlled cold run at `0e80efd` passed all three development jobs within
+20 minutes. Detailed phase timings, counts and cached measurements are recorded
+in [CI performance](ci-performance.md). The previous successful main run
+40193652755 is a historical cost baseline, not evidence for this implementation.
+Final PR, branch-protection transition, actual-main verification and the manual
+resource entrypoint remain pending until their recorded hosted runs complete.

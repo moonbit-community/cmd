@@ -79,6 +79,8 @@ async fn load_published_commands(
 async fn prime_published_commands(
   selected : Array[String],
   reports : Array[@testkit.CaseReport],
+  execute~ : async (String, Array[String], Int32) -> @testkit.TimedRun =
+    (program, args, timeout) => @testkit.run_with_deadline(program, args, timeout),
 ) -> Unit {
   for contract in @cli.command_catalog() {
     let name = contract.name
@@ -87,7 +89,7 @@ async fn prime_published_commands(
       continue
     }
     let start = @async.now()
-    let result = @testkit.run_with_deadline(
+    let result = execute(
       @testkit.command_program(),
       @testkit.command_args("", name, ["--version"]),
       120000,
@@ -100,8 +102,8 @@ async fn prime_published_commands(
       result.output.stdout !=
       @utf8.encode(name + " " + @testkit.command_version(name).unwrap() + "\n") {
       failures.push(
-        "exact-version startup failed: " +
-        result.output.stderr.to_unchecked_string(),
+        "exact-version startup failed for \{name}@\{@testkit.command_version(name).unwrap()}: status=\{result.output.status}, timed_out=\{result.timed_out}, stdout=\{result.output.stdout}, stderr=" +
+        @utf8.decode_lossy(result.output.stderr),
       )
     }
     @testkit.append_report(reports, {

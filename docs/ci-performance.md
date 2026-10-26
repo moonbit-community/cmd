@@ -16,13 +16,89 @@ restoring output directories alone loses the executor's build history. Cache
 restoration and saving are separate: a cold run restores no dependency,
 compilation or Docker layers, then saves successful compiler state for later
 normal runs. Tests still execute on every run, including an exact cache hit.
+The dependency key is computed once immediately after checkout and excludes
+downloaded and generated package files. Restore and save use that same value;
+re-evaluating a recursive manifest hash after the build changes the key and
+prevents restoration, as observed in the preliminary cached run at `0e80efd`.
 
 The pinned oracle recipe builds its 16 upstream components in independent
 stages and assembles their prefixes in the original installation order. BuildKit
 admits at most two stages concurrently and each Make build uses two jobs.
 Versions, source checksums, configure options and the base image stay unchanged.
-The recipe checksum changes with this build-layout change. Cold-image duration
-and full upstream comparison must be measured on the resulting image.
+The recipe checksum changes with this build-layout change. The cold build and
+complete upstream comparison passed on the resulting image.
+
+## Hosted migration measurements
+
+The preliminary cold run uses candidate `0e80efd8ade24b1e510827fc7ebbb8588ba82e79`
+with the unchanged pinned toolchain. Durations below come from GitHub job and
+step timestamps; functional/oracle splits come from the uploaded `stages.json`.
+They include setup, tests, reports and cache saving. Runner totals are the sum
+of actual job elapsed times, not billing-rounded minutes. Dispatch-to-result
+time and job queue time are reported separately.
+
+| Run | Linux | macOS | Windows | Runner total | Dispatch to last result |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| [Cold, caches disabled](https://github.com/moonbit-community/cmd/actions/runs/40270933353) | 18:49 | 4:56 | 12:42 | 36:27 | 18:53 |
+
+The cold run disabled dependency/compiler and Docker-layer restoration. It saved
+successful compilation state for the following normal runs. Linux/macOS queued
+for 3 seconds each and Windows for 2 seconds. This satisfies the cold-run ceiling;
+it does not establish normal cached duration by itself.
+
+Cold phase durations (seconds; functional subphases are rounded):
+
+| Phase | Linux | macOS | Windows |
+| --- | ---: | ---: | ---: |
+| Runner setup, checkout and toolchain | 12 | 19 | 28 |
+| Dependencies | 2 | 3 | 12 |
+| Product and test-tool checks | 5 | 8 | 8 |
+| Wasm command build | 10 | 11 | 13 |
+| Native test-driver build | 151 | 57 | 147 |
+| Wasm batch tests | 31 | 30 | 55 |
+| Native harness batch tests | 212 | 75 | 307 |
+| Docker builder, image and profile preparation | 369 | 0 | 0 |
+| Functional assertions | 88 | 84 | 182 |
+| Fixed upstream comparison | 235 | 0 | 0 |
+| Interfaces and formatting | 3 | 0 | 0 |
+| Test-report upload | 1 | 1 | 1 |
+
+Subphase sums exclude small driver/step-transition overheads. Each platform ran
+491 Wasm package tests and 114 harness tests at this measured candidate. Linux
+recorded 2,220 passing functional/comparison results, 15 explicit platform skips
+and no failures. Later diagnostic-only changes add a wrong-version injection
+regression; their final PR and main checks are separate from this fixed-candidate
+measurement series.
+
+The earlier cold attempt at `40efae2`
+([run](https://github.com/moonbit-community/cmd/actions/runs/40268916908)) exceeded
+the Linux 20-minute limit and was cancelled by the job deadline. It is a failed
+attempt, not performance acceptance. The final candidate parallelizes the pinned
+oracle build and retains cancellation diagnostics without racing live fixtures.
+
+The previous successful main run
+[40193652755](https://github.com/moonbit-community/cmd/actions/runs/40193652755)
+remains the historical baseline: 70:50 overall, 108:25 accumulated runner time,
+including the former audit job. No old workflow was rerun for this comparison.
+
+## Manual published acceptance
+
+[Run 40270955851](https://github.com/moonbit-community/cmd/actions/runs/40270955851)
+passed on all three platforms at `0e80efd`, using the 78 exact coordinates in
+`latest.json`, with no workspace Wasm command build and no package publication.
+Linux also completed the full pinned upstream comparison. Counts include
+explicit boundaries and startup-resolution checks; skips remain distinct.
+
+| Platform | Pass | Platform skip | Failure | Job duration |
+| --- | ---: | ---: | ---: | ---: |
+| Linux | 2,287 | 15 | 0 | 19:34 |
+| macOS | 2,094 | 18 | 0 | 10:28 |
+| Windows | 1,961 | 151 | 0 | 9:06 |
+
+These manual durations are outside daily CI targets. Successful test artifacts
+were approximately 68-87 KB compressed per platform. Native remains limited to
+test tools, and every published product invocation uses its selected MoonX
+coordinate, including scenario children.
 
 ## Historical optimization record
 
