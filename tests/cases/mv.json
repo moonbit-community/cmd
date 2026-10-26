@@ -2,22 +2,6 @@
   "schema": 2,
   "cases": [
     {
-      "id": "mv-windows-native-links",
-      "command": "mv",
-      "args": [],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "scenario",
-      "host_platforms": [
-        "windows"
-      ],
-      "timeout_ms": 120000,
-      "source_version": "Windows Native async 0.22.5 link rename: command effects and independent reparse-point/referent observation"
-    },
-    {
       "id": "mv-windows-wasm-links-boundary",
       "command": "mv",
       "args": [],

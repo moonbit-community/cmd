@@ -71,7 +71,7 @@ async test "shared network executor retains exact identity and incomplete output
 }
 
 ///|
-async test "shared network workspace receipts preserve backend pair observation bytes" {
+async test "shared network observations preserve raw bytes across launch adapters" {
   let work = @fs.tmpdir(prefix="mooncmd-network-legacy-")
   defer (@fs.rmdir(work, recursive=true) catch { _ => () })
   let executor : Executor = {

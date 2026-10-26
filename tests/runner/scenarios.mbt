@@ -20,7 +20,7 @@ async fn scenario_read_exact(
 async fn scenario_run(
   work : String,
   root : String,
-  wasm : Bool,
+  _wasm : Bool,
   command : String,
   args : Array[String],
   stdin~ : Bytes = b"",
@@ -33,16 +33,8 @@ async fn scenario_run(
   }
   let prefix = traces + "/" + command + "-\{@fs.readdir(traces).length()}"
   let completed = @testkit.run_with_deadline(
-    if wasm {
-      "moonrun"
-    } else {
-      @testkit.executable_path(root, command)
-    },
-    if wasm {
-      [@testkit.wasm_path(root, command), "--", ..args]
-    } else {
-      args
-    },
+    @testkit.command_program(),
+    @testkit.command_args(root, command, args),
     15000,
     stdin~,
     cwd?,
@@ -109,25 +101,12 @@ async fn shell_interactive_scenario(
 ) -> Unit {
   let startup = work + "/startup.sh"
   @fs.write_file(startup, "STARTUP=loaded\n")
-  let program = if wasm {
-    "moonrun"
-  } else {
-    @testkit.executable_path(root, "sh")
-  }
-  let args = if wasm {
-    [@testkit.wasm_path(root, "sh"), "--", "-i"]
-  } else {
-    ["-i"]
-  }
+  let program = @testkit.command_program()
+  let args = @testkit.command_args(root, "sh", ["-i"])
   @async.with_task_group(group => {
     let (stdin, writer) = @process.write_to_process()
     let (stdout, output) = @process.read_from_process()
     let (stderr, error) = @process.read_from_process()
-    @testkit.record_execution_environment(program, extra_env={
-      "PS1": "P> ",
-      "PS2": "C> ",
-      "ENV": startup,
-    })
     let child = @process.spawn(
       group,
       program,
@@ -333,35 +312,16 @@ async fn execute_scenario(
   } else {
     "contract"
   }
-  let wrong_backend = windows_mv_scenario(fixture.id) &&
-    !windows_mv_scenario_backend(fixture.id, wasm)
-  if !fixture.platform_applies() || wrong_backend {
-    let report = suite_report(
-      report_id,
-      if wasm {
-        "wasm"
-      } else {
-        "native"
-      },
-      start,
-      [],
-    )
+  if !fixture.platform_applies() {
+    let report = suite_report(report_id, "wasm", start, [])
     return {
       ..report,
       command: fixture.command,
       result: "skip",
       verification,
-      stage: if !fixture.platform_applies() {
-        "platform"
-      } else {
-        "backend"
-      },
-      detail: if !fixture.platform_applies() {
-        "case applies only to: " +
-        fixture.host_platforms.unwrap_or([]).join(", ")
-      } else {
-        "Windows mv Native support and Wasm refusal require separate executions"
-      },
+      stage: "platform",
+      detail: "case applies only to: " +
+      fixture.host_platforms.unwrap_or([]).join(", "),
       observations: [],
     }
   }
@@ -408,7 +368,6 @@ async fn execute_scenario(
           network_transfer_scenario(root, wasm, work)
         "network-transfer-boundaries-oracle" =>
           network_transfer_scenario(root, wasm, work, oracle_image?)
-        "mv-windows-native-links" => windows_mv_links_scenario(root, wasm, work)
         "mv-windows-wasm-links-boundary" =>
           windows_mv_links_scenario(root, wasm, work)
         _ => fail("unknown scenario: " + fixture.id)
@@ -423,16 +382,7 @@ async fn execute_scenario(
   if completed is None {
     failures.push("scenario deadline expired")
   }
-  let report = suite_report(
-    report_id,
-    if wasm {
-      "wasm"
-    } else {
-      "native"
-    },
-    start,
-    failures,
-  )
+  let report = suite_report(report_id, "wasm", start, failures)
   let mut cleanup_error = false
   if failures.is_empty() && !retain_success {
     @async.protect_from_cancel(() => @fs.rmdir(evidence, recursive=true)) catch {

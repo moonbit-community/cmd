@@ -135,14 +135,14 @@ pub fn Case::platform_applies(self : Case) -> Bool {
 ///|
 pub async fn run_artifact(
   root : String,
-  wasm : Bool,
+  _wasm : Bool,
   command : String,
   args : Array[String],
   stdin? : Bytes,
   cwd? : String,
   extra_env~ : Map[String, String] = Map([]),
 ) -> RunResult {
-  let program = if wasm { "moonrun" } else { executable_path(root, command) }
-  let args = if wasm { [wasm_path(root, command), "--", ..args] } else { args }
+  let program = command_program()
+  let args = command_args(root, command, args)
   run(program, args, stdin?, cwd?, extra_env~)
 }

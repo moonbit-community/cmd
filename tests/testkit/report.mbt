@@ -18,11 +18,7 @@ pub(all) struct CaseReport {
 ///|
 pub fn CaseReport::semantic_pass(self : CaseReport) -> Bool {
   self.result == "pass" &&
-  (
-    self.verification == "contract" ||
-    self.verification == "differential" ||
-    self.verification == "backend-pair"
-  ) &&
+  (self.verification == "contract" || self.verification == "differential") &&
   self.missing_observations.is_empty()
 }
 
@@ -31,81 +27,46 @@ pub async fn write_reports(
   directory : String,
   reports : ArrayView[CaseReport],
 ) -> Unit {
-  let metadata = collect_run_metadata("run-" + @async.now().to_string())
-  write_reports_with_metadata(directory, reports, metadata)
-}
-
-///|
-/// Write reports together with one run-level reproducibility record.  The
-/// report rows repeat only the stable run references; full fingerprints live
-/// in `run-metadata.json`.
-pub async fn write_reports_with_metadata(
-  directory : String,
-  reports : ArrayView[CaseReport],
-  metadata : RunMetadata,
-) -> Unit {
+  guard !reports.is_empty() else { fail("required suite produced no results") }
   @fs.mkdir(directory, recursive=true, allow_exist=true)
-  let lock = directory + "/.report-write-lock"
-  @fs.mkdir(lock) catch {
-    _ => fail("report directory already has an active writer: " + directory)
+  guard !@fs.exists(directory + "/summary.jsonl") else {
+    fail("report already exists: " + directory)
   }
-  defer (@fs.rmdir(lock) catch { _ => () })
-  for name in ["run-metadata.json", "summary.jsonl", "summary.md"] {
-    if @fs.exists(directory + "/" + name) {
-      fail(
-        "report already exists: " +
-        directory +
-        "; choose a fresh report directory",
-      )
-    }
-  }
-  @fs.write_file(
-    directory + "/run-metadata.json",
-    canonical_json(@json.to_json(metadata)),
-  )
   @fs.write_file(
     directory + "/summary.jsonl",
-    reports
-    .map(item => enriched_case_report_json(item, metadata).stringify())
-    .join("\n") +
-    "\n",
+    reports.map(item => ToJson::to_json(item).stringify()).join("\n") + "\n",
   )
+  let summary : Json = {
+    "schema": 2,
+    "platform": host_platform(),
+    "revision": @env.get_env_var("GITHUB_SHA").unwrap_or("local"),
+    "mode": if published_mode() {
+      "moonx"
+    } else {
+      "wasm"
+    },
+    "commands": published_commands,
+    "completed_at_ms": @async.now(),
+    "passed": reports.filter(row => row.result == "pass").length(),
+    "failed": reports
+    .filter(row => row.result == "fail" || row.result == "infra")
+    .length(),
+    "skipped": reports.filter(row => row.result == "skip").length(),
+  }
+  @fs.write_file(directory + "/run.json", summary.stringify(indent=2) + "\n")
   let lines = StringBuilder()
   lines.write(
-    "Run: \{metadata.run_id} | reproducibility: \{metadata.reproducibility_status} | metadata: run-metadata.json\n\n",
+    "| Case | Result | Kind | ms | Detail |\n| --- | --- | --- | --- | --- |\n",
   )
-  lines.write(
-    "| Case | Result | Verification | Backend | ms | Stage | Detail |\n| --- | --- | --- | --- | --- | --- | --- |\n",
-  )
-  for item in reports {
-    let detail = item.detail
+  for row in reports {
+    let detail = row.detail
       .replace_all(old="|", new="\\|")
       .replace_all(old="\n", new="<br>")
     lines.write(
-      "| \{item.id} | \{item.result} | \{item.verification} | \{item.backend} | \{item.duration_ms} | \{item.stage} | \{detail} |\n",
+      "| \{row.id} | \{row.result} | \{row.verification} | \{row.duration_ms} | \{detail} |\n",
     )
   }
   @fs.write_file(directory + "/summary.md", lines.to_string())
-}
-
-///|
-fn enriched_case_report_json(
-  report : CaseReport,
-  metadata : RunMetadata,
-) -> Json {
-  let value = ToJson::to_json(report)
-  match value {
-    Object(fields) => {
-      fields["run_id"] = Json(metadata.run_id)
-      fields["registry_revision"] = Json(metadata.registry_hash)
-      fields["artifact_id"] = Json(artifact_id(metadata))
-      fields["oracle_profile_id"] = Json(metadata.oracle_profile_id)
-      fields["reproducibility_status"] = Json(metadata.reproducibility_status)
-      fields["run_metadata"] = Json("run-metadata.json")
-      Json::object(fields)
-    }
-    _ => value
-  }
 }
 
 ///|

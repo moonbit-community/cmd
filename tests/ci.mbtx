@@ -1,0 +1,39 @@
+///|
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/async@0.22.5/shell",
+  "moonbitlang/core/env",
+}
+
+///|
+async fn main {
+  let args = @env.args()
+  guard args.length() == 2 && ["functional", "published"].contains(args[1]) else {
+    fail("Usage: ci.mbtx functional|published")
+  }
+  let published = args[1] == "published"
+  let root = @fs.realpath(".")
+  let program = root + "/_build/native/release/build/mooxCLI/cmd-tests/" +
+    (if published { "release_runner/release_runner.exe" } else { "runner/runner.exe" })
+  let arguments = [
+    "--suite", if @async.platform is Linux { "all" } else { "functional" },
+    "--jobs", if published { "1" } else { "4" },
+    "--report-dir", root + "/test-reports/" + (if published { "published" } else { "functional" }),
+  ]
+  if published {
+    arguments.append(["--manifest", @env.get_env_var("CMD_RELEASE_MANIFEST").unwrap_or("tests/release_runner/current/latest.json")])
+  }
+  if @async.platform is Linux {
+    let image = @fs.read_file("test-reports/oracle-image.txt").text().trim().to_owned()
+    arguments.append(["--oracle-image", image, "--oracle-profile", "test-reports/oracle-profile/profile.json"])
+  }
+  let started = @async.now()
+  let status = @shell.Cmd(program, arguments, stdout=Inherit, stderr=Inherit).status()
+  let timing : Json = { "mode": args[1], "duration_ms": @async.now() - started, "status": status }
+  @fs.write_file("test-reports/execution.json", timing.stringify(indent=2) + "\n")
+  if @env.get_env_var("GITHUB_STEP_SUMMARY") is Some(path) {
+    @fs.write_file(path, "Command validation: " + timing.stringify() + "\n", append=true)
+  }
+  guard status == 0 else { fail("command validation failed with status \{status}") }
+}

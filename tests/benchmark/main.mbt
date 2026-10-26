@@ -581,7 +581,7 @@ async fn main {
   }
   if args.is_empty() || args.contains("--help") {
     println(
-      "Usage: benchmark run|baseline --wasm-root ABS --moonrun ABS --oracle-bin ABS [--report-dir DIR] [--manifest FILE] [--profile FILE]\n       benchmark run|baseline --moonx ABS --oracle-bin ABS [--native-root DIR] [other options]\n       benchmark report --report-dir DIR\n       Direct Wasm uses schema-2 workloads; baseline checks correctness without a performance verdict.",
+      "Usage: benchmark run|baseline --wasm-root ABS --moonrun ABS --oracle-bin ABS [--report-dir DIR] [--manifest FILE] [--profile FILE]\n       benchmark run|baseline --moonx ABS --oracle-bin ABS [other options]\n       benchmark report --report-dir DIR\n       Direct Wasm uses schema-2 workloads; baseline checks correctness without a performance verdict.",
     )
     return
   }
@@ -593,7 +593,7 @@ async fn main {
     }
     guard [
       "--moonx", "--moonrun", "--wasm-root", "--oracle-bin", "--report-dir", "--manifest",
-      "--profile", "--native-root",
+      "--profile",
     ].contains(args[index]) else {
       fail("unknown option: " + args[index])
     }

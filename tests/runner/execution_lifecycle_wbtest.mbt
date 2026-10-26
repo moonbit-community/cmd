@@ -30,12 +30,8 @@ async test "workspace fixture failures preserve completed results and infrastruc
     assert_true(reports[1].detail.contains(phase))
     assert_false(reports[1].semantic_pass())
     assert_eq(reports[1].observations, [])
-    let metadata = @testkit.collect_run_metadata(
-      "workspace-lifecycle-fixture",
-      started_at_ms=started,
-    )
-    @testkit.write_reports_with_metadata(root, reports, metadata)
-    assert_true(@fs.exists(root + "/run-metadata.json"))
+    @testkit.write_reports(root, reports)
+    assert_true(@fs.exists(root + "/run.json"))
     let rows : Array[Json] = []
     for line in @fs.read_file(root + "/summary.jsonl").text().split("\n") {
       if line != "" {

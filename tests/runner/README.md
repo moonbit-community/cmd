@@ -1,244 +1,49 @@
-# Workspace command test runner
+# Workspace Wasm and published command driver
 
-The Native test driver executes prebuilt workspace commands. It shares case,
-fixture, process, HTTP and report helpers with the [release runner](../release_runner/README.md)
-through `testkit`. It never builds commands or substitutes a host command for a
-candidate implementation.
+The Native driver executes either prebuilt Wasm commands or exact published
+MoonX coordinates through one shared command launcher. It does not build
+commands, fall back to Native products, or substitute host tools for products.
 
-| Suite | Scope | Command backend |
-| --- | --- | --- |
-| `contract` | Selected catalog cases with output/status/effect contracts or explicit rejection boundaries | Native or Wasm |
-| `backend-pair` | Direct status/stream/file comparison of both executions after each contract passes | Native and Wasm |
-| `paired` | Execute contracts/scenarios once per backend and write all five contract/scenario/pair roles | Native and Wasm |
-| `scenarios` | Registered persistent-input, network and lifecycle scenarios | Native or Wasm |
-| `compat` | Retained compatibility cohorts | Native |
-| `policy` | Host authorization allow/deny cases | Wasm |
-| `gnu` | Host GNU differential checks, without the compat suite | Native/Linux |
-| `oracle` | Selected cases and network rounds compared with the pinned upstream container | Native or Wasm/Linux |
-| `stress` | Stress cases, without the compat suite | Native |
-| `all` | compat, contract, backend-pair, policy, oracle and scenarios | Selected backend, both for pairing, Wasm for policy |
+| Suite | Contents |
+| --- | --- |
+| functional | Metadata, compat, contracts, stateful scenarios, policy and bounded stress correctness |
+| metadata | Standalone help/version and existing metadata aliases |
+| compat | Catalog, environment, child-command composition, streaming, tail and network cohorts |
+| contract | Applicable JSON assertions and explicit rejection boundaries |
+| scenarios | Persistent input, filesystem, process and network interactions |
+| policy | Wasm/MoonX permissions and supported platform boundaries |
+| stress | Bounded output and streaming correctness; no resource sampling |
+| oracle | Pinned Linux upstream comparisons |
+| all | Functional checks and pinned upstream comparisons |
 
-`--gnu-diff` and `--stress` remain aliases for adding their independent suites.
-Repeated suite selections run once; neither extension implicitly reruns compat.
-The default suite is `compat`, and the default backend is Native.
+The default is `functional` with the Wasm backend. `--backend wasm` is accepted
+for explicit diagnostic commands. Native and pairing modes are removed.
 
-Policy admission checks production imports rather than test-only observers.
-Only complete import blocks explicitly marked `for "test"` or `for "wbtest"`
-are excluded; aliases retain the authority of their imported package. The
-admission scanner accepts formatted, line-based import blocks and rejects
-unrecognized scopes, incomplete import syntax, and unquoted import tokens after
-another statement on the same line.
-
-## Build and select
-
-Build serially with the local publishing account, retaining the PATH toolchain:
-
-```sh
-MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --release --deny-warn
+```text
+MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --release --deny-warn tests/runner
 MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release --deny-warn
+MOON_HOME="$HOME/.moon-accounts/cli" ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite functional --report-dir test-reports/functional
+MOON_HOME="$HOME/.moon-accounts/cli" ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite contract --command sort --list
 ```
 
-Default artifact roots are `_build/native/release/build` and
-`_build/wasm/release/build`. Override with `--native-root` or `--wasm-root`.
-The default manifest is `tests/fixtures/runner/cases.json`. It indexes per-command
-case files; schema 1 remains readable for historical replay. Validate or list
-cases before creating fixtures or launching commands:
+`--wasm-root` changes the prebuilt artifact directory. `--manifest` changes the
+case index. Repeat `--command` and `--case` to select diagnostics; unknown and
+empty selections fail. `--report-dir` must be fresh. Normal independent cases
+use `--jobs 4`; timestamped, delayed, network and stateful fixtures run serially.
+Failures retain bytes and fixture effects. No automatic assertion retries occur.
 
-```sh
-./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --validate-only
-./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite contract --command jq --list
-./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite contract --command jq --backend wasm --report-dir test-reports/jq-wasm
-./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite backend-pair --command jq --report-dir test-reports/jq-pair
-./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite scenarios --backend native --report-dir test-reports/scenarios-native
-./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite policy --report-dir test-reports/policy-wasm
-```
+`--published-manifest FILE --moonx PATH` selects exact coordinates and their
+expected case snapshot. Every product child uses the same inventory. The
+driver first resolves each selected coordinate serially with a bounded version
+probe. Publication diagnostics must use `--jobs 1` through the release wrapper.
+The driver never publishes or edits manifests.
 
-`--command NAME` and `--case ID` may repeat. Selections within one kind form a
-union; command and case filters intersect. An unknown command/case or empty
-selection returns 2. A failed assertion or unavailable required infrastructure
-returns 1. Platform exclusions produce an explicit skip with a reason.
+Linux `all` checks a contract and its matching upstream comparison using one
+candidate invocation when both share the same fixture. Stateful comparisons
+retain separate fresh fixtures. `--oracle-image` and `--oracle-profile` must
+identify the fixed reference; unavailable references fail as infrastructure.
 
-`--list` respects the selected suites. Retained multi-command cohorts have stable
-IDs such as `compat-tail-follow`; command filtering selects cohorts containing
-that command, and the complete selected cohort runs. They are supplemental
-grouped assertions, not individual option certification. Old duplicate case IDs
-remain aliases and select their canonical case once.
-
-Ordinary independent contract and differential cases use at most four concurrent tasks by
-default; set `--jobs N` to change this. Stateful scenarios remain serial.
-Local cases default to a 15-second deadline, Docker/MoonX cases to 120 seconds;
-`timeout_ms` overrides the case deadline. A runner deadline is distinguished
-from the candidate deliberately returning status 124. Direct children are
-cancelled and waited in an uncancellable cleanup region; this does not promise
-control over arbitrary grandchildren.
-
-## Cases and evidence
-
-Cases declare stdin, fixture files, environment, arguments, status, output and
-required observations. Prefer `stdin_text`/`content_text` and text expectations
-for ordinary text; use hex for binary or invalid UTF-8. Text and hex for the same
-field are mutually exclusive. Preserve stable case IDs when moving cases.
-`delay_ms` remains available for fixture timestamp ordering; multi-step behavior
-uses a MoonBit scenario instead of encoding a new script language in JSON.
-`oracle: true` also selects a contract for the pinned differential suite without
-copying its definition. Newly migrated boundary contracts run in the contract suite on both
-backends; they are not implicitly upstream differential cases, since their
-expected status describes candidate refusal. Frozen differential boundary
-fixtures keep their separate upstream status and unchanged-state checks. The
-ls link/time cases exclude GNU-incompatible `-P`
-extensions; jq explicit-color cases run against jq 1.8.2. Reasoned diagnostic
-fragments are checked on both sides; other stream comparisons use full bytes.
-
-A contract checks stdout and stderr, including explicitly empty streams. Partial
-diagnostic assertions require `diagnostic_reason`; forbidden internal-error
-strings alone do not establish correct behavior. `expected_rejection` describes
-a boundary and must not be counted as upstream parity. Supported operations may
-have partial output and earlier successful filesystem effects before failing.
-
-The result vocabulary is `pass`, `fail`, `skip`, `infra`; the independent
-verification vocabulary is `availability`, `contract`, `differential`,
-`backend-pair`, `boundary`. Reports include source version, backend, platform, case duration,
-failure stage and observed/missing dimensions. Use `--report-dir DIR` for
-`summary.jsonl`, `summary.md` and retained failure artifacts. Successful fixture
-workspaces are removed. Keep a fresh directory per run so evidence is not
-silently overwritten.
-
-`backend-pair` compares fresh Native and Wasm executions of every selected
-contract, retaining both raw results on failure. Separate backend contract
-passes cannot replace this direct comparison. Registry platform exclusions
-remain explicit skips. Every report directory includes `run-metadata.json`;
-each case references its run, registry and artifact identities.
-
-The mktemp option scenario compares checked name/type/empty/mode relationships;
-random names and raw streams remain untouched in retained evidence. Tee's
-closed-pipe scenario compares actual status, stderr and sink type/content,
-without claiming captured stdout. Their deterministic relation receipts are
-written only after the real assertions pass; launch descriptions and random
-pathnames are not ordinary-output normalizers.
-
-`--suite paired --report-dir test-reports` runs that same comparison while
-retaining the actual side reports as `contract-native`, `contract-wasm`,
-`scenarios-native`, `scenarios-wasm`, and `backend-pair` subdirectories. All
-five roles share one run's metadata. Boundaries and single-backend Windows
-scenarios still execute separately on their applicable backends; platform
-exclusions retain the original skip rows. Each paired fixture starts with
-independent Native and Wasm state. Successful contract rows omit evidence paths
-after the pair comparison removes their captures; failed captures and scenario
-traces remain available. This mode cannot be combined with other suites or
-`--backend wasm`. Existing single-suite commands remain available.
-
-Windows `mv` uses two independent scenario identities:
-`mv-windows-native-links` checks Native support and
-`mv-windows-wasm-links-boundary` checks Wasm refusal before mutation. Selecting
-the other backend produces an explicit skip; neither scenario is a backend-pair
-claim. Both cover file, directory and dangling symlinks plus actual junctions,
-with absent/existing targets, no-clobber, backup, and backup-failure recovery.
-Separate rounds back up each destination link type while moving a regular source.
-Regular-source replacement of each destination link type without backup remains
-allowed and must succeed with the expected file effects on both backends.
-Wasm additionally checks both rejection paths with `-i`, holding stdin open and
-sending no bytes: exit must be observed within five seconds, without an overwrite
-prompt or mutation. The lifecycle record distinguishes observed exit from timeout
-and retains redirected streams even when the deadline expires. These cases do
-not claim `-u` timestamp-based link skipping; the Wasm guard runs before it.
-Before those rounds, existing runner helper modes check immediate exit with
-stdin open, blocked input, and retained partial streams after cancellation.
-A package regression rejects timeout, cleanup failure and unobserved exit
-independently; it does not substitute for these actual process controls.
-Every round compares the complete fixture snapshot, including referent bytes,
-link targets, and PowerShell-observed `SymbolicLink` versus `Junction` type.
-The fixed observer records its version and raw output; an unavailable observer
-or missing symlink privilege fails verification. CLI backup-failure recovery
-means a failed backup attempt preserves state and a later valid attempt works.
-Post-backup commit rollback, including Windows link/junction type, target and
-referent preservation, is tested separately through package fault injection;
-these scenarios do not claim a real CLI post-backup filesystem failure.
-Successful Windows `mv` scenarios retain their snapshots and command/observer
-streams alongside the report so the supported and rejected effects remain
-reviewable without rerunning the host.
-
-JSON contracts declare partial filesystem expectations in `expected_files`:
-each entry names a relative `path` and may assert `exists`, `kind`,
-`content_text`/`content_hex`, octal-valued integer `mode`, symlink `target`, or
-`same_identity_as`. Each requested `observe` dimension must have an actual
-expectation. `cwd` is a safe fixture-relative directory. `${WORK}` expands in
-arguments, text input, fixture text and text expectations; hex stays literal.
-`stdout_order: "lines"` is reserved for declared unordered output and preserves
-line multiplicity and termination. `expected_*_contains_all` requires every
-fragment and a `diagnostic_reason`. Time relationships remain stateful tests.
-Output-only contracts cannot claim filesystem dimensions.
-Generic filesystem snapshots inspect path, kind and file bytes. Explicit
-observations add mode, symlink target, hard-link equivalence or timestamps.
-Metadata is sampled before reading file content to avoid observation-induced
-atime changes. Inode numbers are converted to equivalence classes within each
-fixture. Time checks compare fixed values or before/after relationships; they
-must not compare separate fixture creation times as equal. POSIX-only observer
-cases state their platform requirement; missing required measurements cannot
-produce a semantic pass.
-
-## Upstream and CI
-
-Pinned comparison needs Docker, the image built from `image/`, and a reviewed
-sealed profile. The default `image/profile.json` starts unsealed, so it
-cannot certify upstream differential evidence. After building the image, obtain
-its immutable ID and explicitly seal a staged copy of the reviewed inputs:
-
-```sh
-docker build --tag mooncmd-oracle:phase0 tests/runner/image
-docker image inspect --format='{{.Id}}' mooncmd-oracle:phase0
-mkdir -p test-reports/oracle-profile
-cp tests/runner/image/profile.json tests/runner/image/Dockerfile tests/runner/image/versions.sh test-reports/oracle-profile/
-./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --seal-oracle sha256:<reviewed-image-id> --oracle-profile test-reports/oracle-profile/profile.json
-./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite oracle --oracle-image mooncmd-oracle:phase0 --oracle-profile test-reports/oracle-profile/profile.json --report-dir test-reports/oracle-native
-```
-
-Sealing verifies build-recipe checksums and captures source checksums and the
-version inventory from the selected immutable image. `--oracle-profile FILE`
-selects both the profile and its adjacent `Dockerfile`/`versions.sh`; omission
-retains the tracked default path. A copied profile must match the tracked
-profile ID, version, image name, base digest and recipe checksums, as well as
-selected registry profile requirements. A sealed tracked identity cannot be
-replaced by an override. Reports use the verified profile's actual ID.
-
-CI seals only the copy under ignored `test-reports/oracle-profile/` and uploads
-it with the reports. Tracked inputs and generated-file checks remain unchanged.
-Supply that saved profile to the coverage audit with `--oracle-profile FILE`.
-Review the resulting profile as part of the run evidence. Every oracle run
-rechecks the resolved image ID
-and inventory; a mismatch or unavailable observer yields `infra`. Subsequent
-container launches use that verified ID, so mutable tags cannot change a run.
-The image recipe pins GNU coreutils 9.11, jq 1.8.2 and the other command upstreams.
-HTTP and HTTPS fixtures are local; command contracts do not depend on a public
-service. Installed host curl/wget results are separate evidence from this pinned
-oracle.
-
-Command-oracle invocations reserve a unique Docker name and ownership label.
-On interrupted or abnormal execution, the shared testkit records lifecycle
-observations outside the compared fixture tree, verifies the full container
-ID/name/label before removal, and checks absence afterward. Failed control
-calls, lost evidence and interrupted creation without an observed identity
-remain `infra`; their reservation is retained for diagnosis. A normal status-0
-`docker run --rm` keeps its fast path. The published runner and shared network
-scenarios use the same adapter. Profile sealing/version-inventory launches
-retain their separate direct-child execution boundary. See
-[the C0 investigation](../../docs/reports/2026-10-23-c0-investigation/README.md)
-for the reproduced cleanup defect and historical timeout uncertainty.
-
-Launch the entire host runner with `umask 022` for oracle comparisons, matching
-the image entrypoint and existing CI setup. This gives Native/Wasm candidates
-and host-created fixtures the same creation mask while preserving actual file
-mode observations.
-Cross-architecture execution must also preserve the supplied command name in
-`argv[0]`. Record the emulator version and binfmt flags; Rosetta registrations
-without preserve-argv0 can replace it with an absolute path. Correct that test
-environment before comparison instead of normalizing diagnostics or shell `$0`.
-
-The CI workflow configures package checks on Linux/macOS/Windows, reuses one
-Native/Wasm release build per host, and executes contracts/scenarios on both
-backends. Linux oracle, GNU checks and candidate manifest validation reuse those
-builds. Scheduled and manual runs add stress and published consumer checks.
-Oracle steps use the sealing and verification above; recording a Docker tag or versions file alone
-does not satisfy that gate. The checked-in unsealed profile supplies no
-successful immutable-oracle execution evidence. Reports retain actual
-selection/execution evidence; command inventory labels and README claims do not
-certify option coverage by themselves.
+The process observer records direct-child deadlines, output and cleanup errors.
+Container comparisons additionally retain the existing owned-container cleanup
+protocol. Report writing failures remain failures; no audit or source sealing
+is needed to report actual execution.

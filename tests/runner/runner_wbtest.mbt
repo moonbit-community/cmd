@@ -53,38 +53,7 @@ test "open stdin observations reject deadlines cleanup errors and missing exit" 
 }
 
 ///|
-test "backend pair normalizes only declared workspace output placeholders" {
-  let fixture : @testkit.Case = @json.from_json({
-    "id": "path",
-    "command": "which",
-    "args": [],
-    "files": [],
-    "environment": {},
-    "expected_status": 0,
-    "normalizations": [],
-    "expected_stdout_text": "${WORK}/bin\\tool\n",
-  })
-  assert_eq(
-    pair_stream(fixture, b"/native/bin\\tool\n", "stdout", "/native"),
-    pair_stream(fixture, b"/wasm/bin\\tool\n", "stdout", "/wasm"),
-  )
-  assert_eq(
-    pair_stream(fixture, b"/native/error", "stderr", "/native"),
-    b"/native/error",
-  )
-  let literal = { ..fixture, expected_stdout_text: Some("/native/bin/tool\n"), }
-  assert_eq(
-    pair_stream(literal, b"/native/bin/tool\n", "stdout", "/native"),
-    b"/native/bin/tool\n",
-  )
-  assert_true(
-    pair_stream(fixture, b"/native/bin/wrong\n", "stdout", "/native") !=
-    pair_stream(fixture, b"/wasm/bin/tool\n", "stdout", "/wasm"),
-  )
-}
-
-///|
-test "scenario reports preserve legacy and typed evidence identities" {
+test "one scenario execution preserves its selectable ID and failure" {
   let fixture : @testkit.Case = @json.from_json({
     "id": "shared",
     "command": "sh",
@@ -95,13 +64,12 @@ test "scenario reports preserve legacy and typed evidence identities" {
     "normalizations": [],
   })
   let reports : Array[@testkit.CaseReport] = []
-  let base = suite_report("scenario:shared", "native", 0L, ["observed failure"])
+  let base = suite_report("scenario:shared", "wasm", 0L, ["observed failure"])
   append_scenario_reports(reports, fixture, base)
-  assert_eq(reports.length(), 2)
+  assert_eq(reports.length(), 1)
   assert_eq(reports[0].id, "shared")
-  assert_eq(reports[1].id, "scenario:shared")
   assert_eq(reports[0].result, "fail")
-  assert_eq(reports[1].detail, reports[0].detail)
+  assert_eq(reports[0].detail, "observed failure")
 }
 
 ///|
@@ -130,80 +98,15 @@ async test "scenario scheduler stays serial with eight requested jobs" {
     assert_eq(active.val, 1)
     events.push("finish:" + fixture.id)
     active.val -= 1
-    suite_report("scenario:" + fixture.id, "native", @async.now(), [])
+    suite_report("scenario:" + fixture.id, "wasm", @async.now(), [])
   })
   assert_eq(peak.val, 1)
   assert_eq(active.val, 0)
-  assert_eq(reports.length(), 16)
+  assert_eq(reports.length(), 8)
   assert_eq(events.length(), 16)
   for index = 0; index < cases.length(); index = index + 1 {
     assert_eq(events[index * 2], "start:serial-\{index}")
     assert_eq(events[index * 2 + 1], "finish:serial-\{index}")
-    assert_eq(reports[index * 2].id, "serial-\{index}")
-    assert_eq(reports[index * 2 + 1].id, "scenario:serial-\{index}")
-  }
-}
-
-///|
-test "suite filtering respects case kind before fixtures or artifacts" {
-  let cohorts = cohort_cases()
-  let selected = @testkit.select_cases(cohorts, ["tail"], ["compat-tail-follow"])
-  assert_eq(selected.length(), 1)
-  assert_true(case_in_suites(selected[0], ["compat"]))
-  assert_false(case_in_suites(selected[0], ["oracle", "contract", "scenarios"]))
-  assert_true(
-    cohorts
-    .filter(item => case_in_suites(item, ["gnu"]))
-    .all(item => item.id == "gnu-host"),
-  )
-  let boundary : @testkit.Case = @json.from_json({
-    "id": "candidate-boundary",
-    "command": "cp",
-    "args": [],
-    "files": [],
-    "environment": {},
-    "expected_status": 1,
-    "normalizations": [],
-    "comparison": "contract",
-    "expected_rejection": "metadata unavailable",
-  })
-  assert_true(case_in_suites(boundary, ["contract"]))
-  assert_true(paired_single_execution(boundary))
-  assert_false(
-    paired_single_execution({ ..boundary, expected_rejection: None, }),
-  )
-  assert_false(case_in_suites(boundary, ["oracle"]))
-  assert_true(
-    case_in_suites({ ..boundary, comparison: None, expected_status: 0, }, [
-      "oracle",
-    ]),
-  )
-}
-
-///|
-test "Windows mv scenarios select their actual backend and never claim a pair" {
-  for id in ["mv-windows-native-links", "mv-windows-wasm-links-boundary"] {
-    let fixture : @testkit.Case = @json.from_json({
-      "id": id,
-      "command": "mv",
-      "args": [],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "scenario",
-    })
-    assert_true(case_in_suites(fixture, ["scenarios"]))
-    assert_false(case_in_suites(fixture, ["backend-pair"]))
-    assert_true(paired_single_execution(fixture))
-    assert_false(case_in_suites(fixture, ["contract", "oracle"]))
-    assert_eq(
-      windows_mv_scenario_backend(id, false),
-      id == "mv-windows-native-links",
-    )
-    assert_eq(
-      windows_mv_scenario_backend(id, true),
-      id == "mv-windows-wasm-links-boundary",
-    )
+    assert_eq(reports[index].id, "serial-\{index}")
   }
 }

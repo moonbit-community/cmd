@@ -6,6 +6,7 @@ pub async fn execute_contract(
   report_dir : String,
   http_base? : String,
   retain_success~ : Bool = false,
+  observer? : String,
 ) -> CaseReport {
   let start = @async.now()
   let verification = if fixture.expected_rejection is Some(_) {
@@ -13,7 +14,8 @@ pub async fn execute_contract(
   } else {
     "contract"
   }
-  let backend = if wasm { "wasm" } else { "native" }
+  ignore(wasm)
+  let backend = if observer is Some(_) { "observer" } else { "wasm" }
   let base : CaseReport = {
     id: fixture.id,
     command: fixture.command,
@@ -70,15 +72,11 @@ pub async fn execute_contract(
     stage = "candidate"
     let args = expand_args(fixture.args, fixture_root, http_base?)
     let completed = run_with_deadline(
-      if wasm {
-        "moonrun"
-      } else {
-        executable_path(root, fixture.command)
-      },
-      if wasm {
-        [wasm_path(root, fixture.command), "--", ..args]
-      } else {
+      observer.unwrap_or(command_program()),
+      if observer is Some(_) {
         args
+      } else {
+        command_args(root, fixture.command, args)
       },
       fixture.timeout_ms.unwrap_or(15000),
       stdin=fixture.input(root=fixture_root, http_base?),

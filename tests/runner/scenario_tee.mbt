@@ -1,22 +1,14 @@
 ///|
 async fn tee_modes_scenario(
   root : String,
-  wasm : Bool,
+  _wasm : Bool,
   work : String,
   default_only : Bool,
   oracle_image? : String,
 ) -> Unit {
   @testkit.check_tee_modes(
-    if wasm {
-      "moonrun"
-    } else {
-      @testkit.executable_path(root, "tee")
-    },
-    if wasm {
-      [@testkit.wasm_path(root, "tee"), "--"]
-    } else {
-      []
-    },
+    @testkit.command_program(),
+    @testkit.command_args(root, "tee", []),
     work,
     default_only~,
   )

@@ -17,11 +17,10 @@ pub async fn run_with_deadline(
   cwd? : String,
   extra_env~ : Map[String, String] = Map([]),
   inherit_env~ : Bool = true,
-  capture_environment~ : Bool = true,
+  read_stream~ : async (@process.ReadFromProcess) -> Bytes? = reader => {
+    reader.read_some()
+  },
 ) -> TimedRun {
-  if capture_environment {
-    record_execution_environment(program, extra_env~, inherit_env~)
-  }
   let stdout_buffer = @buffer.Buffer()
   let stderr_buffer = @buffer.Buffer()
   let exit_status = Ref(-1)
@@ -65,12 +64,12 @@ pub async fn run_with_deadline(
         reader_err.close()
       })
       let out_task = group.spawn(() => {
-        while reader_out.read_some() is Some(bytes) {
+        while read_stream(reader_out) is Some(bytes) {
           stdout_buffer.write_bytes(bytes)
         }
       })
       let err_task = group.spawn(() => {
-        while reader_err.read_some() is Some(bytes) {
+        while read_stream(reader_err) is Some(bytes) {
           stderr_buffer.write_bytes(bytes)
         }
       })

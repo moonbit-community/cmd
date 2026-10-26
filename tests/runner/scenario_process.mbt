@@ -90,7 +90,6 @@ async fn process_lifecycle_scenario(
   @async.with_task_group(group => {
     let (reader, output) = @process.read_from_process()
     defer reader.close()
-    @testkit.record_execution_environment(helper)
     let child = @process.spawn(
       group,
       helper,

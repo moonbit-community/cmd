@@ -5,16 +5,12 @@ fn workspace_network_executor(
 ) -> @network_scenarios.Executor {
   {
     invoke: invocation => {
-      let program = if wasm {
-        "moonrun"
-      } else {
-        @testkit.executable_path(root, invocation.command)
-      }
-      let args = if wasm {
-        [@testkit.wasm_path(root, invocation.command), "--", ..invocation.args]
-      } else {
-        invocation.args
-      }
+      let program = @testkit.command_program()
+      let args = @testkit.command_args(
+        root,
+        invocation.command,
+        invocation.args,
+      )
       {
         run: @testkit.run_with_deadline(
           program,

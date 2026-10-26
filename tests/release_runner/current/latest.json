@@ -2,7 +2,7 @@
   "schema": 2,
   "candidate": false,
   "core_version": "0.8.1",
-  "base_manifest": "active-cases.json",
+  "base_manifest": "latest-cases.json",
   "commands": [
     {
       "name": "base32",

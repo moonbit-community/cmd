@@ -1,16 +1,6 @@
 ///|
 pub fn supports(id : String) -> Bool {
-  id == "mv-windows-native-links" || id == "mv-windows-wasm-links-boundary"
-}
-
-///|
-pub fn backend_selected(id : String, wasm : Bool) -> Bool {
-  id ==
-  (if wasm {
-    "mv-windows-wasm-links-boundary"
-  } else {
-    "mv-windows-native-links"
-  })
+  id == "mv-windows-wasm-links-boundary"
 }
 
 ///|
@@ -231,7 +221,6 @@ async fn observe_exit_with_open_stdin(
   let status = Ref(-1)
   let exited_with_stdin_open = Ref(false)
   let cleanup_error : Ref[String?] = Ref(None)
-  @testkit.record_execution_environment(program)
   let started = @async.now()
   let finished = @async.with_timeout_opt(timeout_ms, () => {
     @async.with_task_group(group => {
@@ -335,7 +324,6 @@ async fn windows_mv_open_stdin_controls(work : String) -> Unit {
 ///|
 async fn windows_mv_link_round(
   launch : Launch,
-  wasm : Bool,
   work : String,
   link_kind : String,
   operation : String,
@@ -412,11 +400,7 @@ async fn windows_mv_link_round(
     @testkit.canonical_json({
       "operation": operation,
       "link_kind": link_kind,
-      "backend": if wasm {
-        "wasm"
-      } else {
-        "native"
-      },
+      "backend": "wasm",
       "status": result.status,
       "args": args,
     }),
@@ -437,7 +421,7 @@ async fn windows_mv_link_round(
     assert_eq(result.status, 0)
     assert_eq(result.stderr, b"")
     assert_true(@testkit.snapshots_equal(before, after))
-  } else if wasm && operation != "destination-link-replace" {
+  } else if operation != "destination-link-replace" {
     assert_eq(result.status, 1)
     assert_true(
       @utf8.decode(result.stderr).contains(
@@ -448,31 +432,6 @@ async fn windows_mv_link_round(
       assert_false(@utf8.decode(result.stderr).contains("overwrite '"))
     }
     assert_true(@testkit.snapshots_equal(before, after))
-  } else if operation == "backup-failure-recovery" {
-    // The first CLI call fails while creating the backup. The second call
-    // proves the unchanged fixture can recover; this is not post-backup rollback.
-    assert_eq(result.status, 1)
-    assert_true(@utf8.decode(result.stderr).contains("mv:"))
-    assert_true(@testkit.snapshots_equal(before, after))
-    let recovered = run_mv(
-      launch,
-      work,
-      ["-T", "--backup=simple", "source", "target"],
-      directory,
-    )
-    let recovered_snapshot = windows_mv_snapshot(
-      directory,
-      trace + ".recovered",
-    )
-    assert_eq(recovered.status, 0)
-    assert_eq(recovered.stdout, b"")
-    assert_eq(recovered.stderr, b"")
-    assert_true(
-      @testkit.snapshots_equal(
-        expected_windows_mv_success(before, true),
-        recovered_snapshot,
-      ),
-    )
   } else {
     assert_eq(result.status, 0)
     assert_eq(result.stderr, b"")
@@ -489,31 +448,19 @@ async fn windows_mv_link_round(
 }
 
 ///|
-pub async fn run(launch : Launch, wasm : Bool, work : String) -> Unit {
+pub async fn run(launch : Launch, work : String) -> Unit {
   guard @async.platform is Windows else {
     fail("Windows mv scenario selected on another platform")
   }
-  if wasm {
-    windows_mv_open_stdin_controls(work)
-  }
+  windows_mv_open_stdin_controls(work)
   for link_kind in ["file", "directory", "dangling", "junction"] {
     for
       operation in [
         "absent", "replace", "no-clobber", "backup", "destination-link-backup", "destination-link-replace",
-        "backup-failure-recovery",
+        "backup-failure-recovery", "interactive-refusal", "destination-link-interactive-refusal",
       ] {
-      windows_mv_link_round(launch, wasm, work, link_kind, operation) catch {
+      windows_mv_link_round(launch, work, link_kind, operation) catch {
         error => fail("\{link_kind}/\{operation}: \{error}")
-      }
-    }
-    if wasm {
-      for
-        operation in [
-          "interactive-refusal", "destination-link-interactive-refusal",
-        ] {
-        windows_mv_link_round(launch, wasm, work, link_kind, operation) catch {
-          error => fail("\{link_kind}/\{operation}: \{error}")
-        }
       }
     }
   }

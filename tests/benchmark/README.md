@@ -29,8 +29,8 @@ The schema-2 `functional.json` adds a first real functional/startup path for all
 cover mktemp/realpath/tree/yes and controlled child work. Env/sh/make/xargs use
 the same pure-MoonBit helper on both sides; curl/wget perform real POST requests
 against the existing pure-MoonBit loopback fixture. Sleep requests10ms. Timeout
-remains a source-Native diagnostic and requires an explicit `--native-root`;
-without it the row is pending, not passed. All other candidates use the exact
+remains local-only and is diagnosed through workspace Wasm. In MoonX mode its
+row is pending, not passed. All other published candidates use the exact
 coordinate from the current published manifest, never a workspace candidate.
 
 After an explicit release build, check one pair per functional workload:

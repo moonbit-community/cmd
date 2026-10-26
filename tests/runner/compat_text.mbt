@@ -16,23 +16,29 @@ async fn run_text_process_composition_cases(
 ) -> Unit {
   let root = @fs.tmpdir(prefix="mooncmd-text-composition")
   defer (@fs.rmdir(root, recursive=true) catch { _ => () })
-  let find = @testkit.run(@testkit.executable_path(bin_root, "find"), [
-    root,
-    "-maxdepth",
-    "0",
-    "-exec",
-    @testkit.executable_path(bin_root, "false"),
-    ";",
-  ])
+  let find = @testkit.run_command(
+    bin_root,
+    "find",
+    [
+      root,
+      "-maxdepth",
+      "0",
+      "-exec",
+      ..@testkit.command_line(bin_root, "false", []),
+      ";",
+    ],
+  )
   record_result(
     find.status == 0 && find.stdout.is_empty() && find.stderr.is_empty(),
     "find: -exec false must not turn a successful traversal into status 1",
     failures,
   )
-  let printf = @testkit.executable_path(bin_root, "printf")
-  let batched_find = @testkit.run(@testkit.executable_path(bin_root, "find"), [
-    root, "-maxdepth", "0", "-exec", printf, "%s\\n", "{}", "+",
-  ])
+  let printf = @testkit.command_line(bin_root, "printf", [])
+  let batched_find = @testkit.run_command(
+    bin_root,
+    "find",
+    [root, "-maxdepth", "0", "-exec", ..printf, "%s\\n", "{}", "+"],
+  )
   record_result(
     batched_find.status == 0 &&
     batched_find.stderr.is_empty() &&
@@ -43,39 +49,35 @@ async fn run_text_process_composition_cases(
   let xargs_cases : Array[(String, Array[String], Bytes, Int32, Bytes)] = [
     (
       "replace-lines",
-      ["-I{}", printf, "<%s>\\n", "{}"],
+      ["-I{}", ..printf, "<%s>\\n", "{}"],
       b"first line\nsecond line\n",
       0,
       b"<first line>\n<second line>\n",
     ),
     (
       "line-limit",
-      ["-L", "1", printf, "[%s]\\n"],
+      ["-L", "1", ..printf, "[%s]\\n"],
       b"a b\nc d\n",
       0,
       b"[a]\n[b]\n[c]\n[d]\n",
     ),
     (
       "eof-marker",
-      ["-E", "STOP", printf, "[%s]\\n"],
+      ["-E", "STOP", ..printf, "[%s]\\n"],
       b"a STOP b\n",
       0,
       b"[a]\n",
     ),
     (
       "child-failure",
-      [@testkit.executable_path(bin_root, "false")],
+      [..@testkit.command_line(bin_root, "false", [])],
       b"value\n",
       123,
       b"",
     ),
   ]
   for (name, args, input, status, output) in xargs_cases {
-    let result = @testkit.run(
-      @testkit.executable_path(bin_root, "xargs"),
-      args,
-      stdin=input,
-    )
+    let result = @testkit.run_command(bin_root, "xargs", args, stdin=input)
     record_result(
       result.status == status &&
       result.stdout == output &&
@@ -86,9 +88,10 @@ async fn run_text_process_composition_cases(
   }
   let work = @path.Path(root).join(Path("work")).to_string()
   @fs.mkdir(work)
-  let env = @testkit.run(
-    @testkit.executable_path(bin_root, "env"),
-    ["-C", work, @testkit.executable_path(bin_root, "printenv"), "PHASE345"],
+  let env = @testkit.run_command(
+    bin_root,
+    "env",
+    ["-C", work, ..@testkit.command_line(bin_root, "printenv", []), "PHASE345"],
     extra_env=Map([("PHASE345", "visible")]),
   )
   record_result(
@@ -98,13 +101,11 @@ async fn run_text_process_composition_cases(
     "env: -C child execution mismatch",
     failures,
   )
-  let repeated_cwd = @testkit.run(@testkit.executable_path(bin_root, "env"), [
-    "-C",
-    work,
-    "-C",
-    ".",
-    @testkit.executable_path(bin_root, "pwd"),
-  ])
+  let repeated_cwd = @testkit.run_command(
+    bin_root,
+    "env",
+    ["-C", work, "-C", ".", ..@testkit.command_line(bin_root, "pwd", [])],
+  )
   let current = @fs.realpath(".")
   record_result(
     repeated_cwd.status == 0 &&
@@ -122,12 +123,11 @@ async fn run_sleep_cancel_case(
   failures : Array[String],
 ) -> Unit {
   let sleep_cancelled = @async.with_task_group <| group => {
-    let program = @testkit.executable_path(bin_root, "sleep")
-    @testkit.record_execution_environment(program)
+    let program = @testkit.command_program()
     let child = @process.spawn(
       group,
       program,
-      ["60"],
+      @testkit.command_args(bin_root, "sleep", ["60"]),
       cancel_handler=@process.hard_cancel(),
       no_wait=true,
     )

@@ -18,7 +18,6 @@ test "workspace manifest accepts explicit link kinds without accepting invalid f
       name: command.name,
       baseline: "fixture",
       status: "unmeasured",
-      native: "fixture",
       wasm: "fixture",
       capabilities: [],
     }),

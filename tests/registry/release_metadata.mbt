@@ -1,6 +1,6 @@
 ///|
-/// Reviewed release policy belongs to the same hashed registry as behavior
-/// ownership. Package versions are read separately from current moon.mod files.
+/// Release support and case selection. Candidate package versions are read
+/// separately from current moon.mod files.
 pub(all) struct ReleaseCommandMetadata {
   name : String
   package_name : String

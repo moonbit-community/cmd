@@ -1,4 +1,20 @@
 ///|
+fn metadata_cases() -> Array[@testkit.Case] raise {
+  @cli.command_catalog().map(contract => {
+    @json.from_json({
+      "id": "metadata:" + contract.name,
+      "command": contract.name,
+      "args": [],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "metadata",
+    })
+  })
+}
+
+///|
 /// Legacy multi-command scenarios retain their original assertions. Register
 /// their scope explicitly so filtering never silently executes the whole suite.
 fn cohort_cases() -> Array[@testkit.Case] raise {
@@ -17,11 +33,6 @@ fn cohort_cases() -> Array[@testkit.Case] raise {
     ("compat-http", "compat", ["curl", "wget"]),
     ("compat-https", "compat", ["curl", "wget"]),
     ("compat-proxy", "compat", ["curl", "wget"]),
-    (
-      "gnu-host",
-      "gnu",
-      ["base64", "cat", "cut", "head", "sha256sum", "sort", "tail", "tr"],
-    ),
     (
       "stress-streams",
       "stress",
@@ -47,11 +58,7 @@ fn cohort_cases() -> Array[@testkit.Case] raise {
       related_commands: Some(commands),
       comparison: Some(suite),
       source_version: Some("workspace 0.2.0 retained cohort"),
-      host_platforms: if suite == "gnu" {
-        Some(["linux"])
-      } else {
-        None
-      },
+      host_platforms: None,
     }
   })
 }
@@ -62,10 +69,6 @@ fn case_in_suites(fixture : @testkit.Case, suites : Array[String]) -> Bool {
   suites.any(suite => {
     match suite {
       "contract" => kind == "contract" || fixture.expected_rejection is Some(_)
-      "backend-pair" =>
-        (kind == "contract" || kind == "scenario") &&
-        fixture.expected_rejection is None &&
-        !windows_mv_scenario(fixture.id)
       "oracle" =>
         kind == "differential" ||
         kind == "exact" ||
@@ -88,13 +91,7 @@ async fn execute_cohort(
 ) -> @testkit.CaseReport {
   let start = @async.now()
   let kind = fixture.comparison.unwrap()
-  let level = if kind == "policy" {
-    "boundary"
-  } else if kind == "gnu" {
-    "supplementary"
-  } else {
-    "contract"
-  }
+  let level = if kind == "policy" { "boundary" } else { "contract" }
   let report_id = if kind == "policy" {
     "policy:" + fixture.id
   } else {
@@ -127,14 +124,6 @@ async fn execute_cohort(
       detail: "cohort requires GNU/Linux",
     }
   }
-  if backend == "wasm" && kind != "policy" {
-    return {
-      ..base,
-      result: "skip",
-      stage: "backend",
-      detail: "retained cohort uses Native; portable contracts and scenarios cover Wasm",
-    }
-  }
   let failures : Array[String] = []
   let mut infrastructure = false
   try {
@@ -149,7 +138,6 @@ async fn execute_cohort(
       "compat-http" => run_http_cases(bin_root, failures)
       "compat-https" => run_https_cases(bin_root, failures)
       "compat-proxy" => run_proxy_cases(bin_root, failures)
-      "gnu-host" => run_gnu_differential(bin_root, failures)
       "stress-streams" => run_stress_cases(bin_root, failures)
       "policy-host" =>
         run_policy_suite(project_root, @fs.realpath(wasm_root), failures)
