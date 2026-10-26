@@ -46,6 +46,8 @@ async fn main {
     "/lib64" +
     (if previous.is_empty() { "" } else { ":" + previous })
   let metadata : Json = {
+    "revision": @env.get_env_var("GITHUB_SHA").unwrap_or("local"),
+    "platform": "linux",
     "image_id": image,
     "exported_prefix": prefix,
     "reference_scope": "Binaries copied from the sealed image execute on the Linux host with its dynamic loader and system libraries; resource observations are not sealed-container upstream parity",

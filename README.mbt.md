@@ -37,6 +37,6 @@ is not a published MoonX feature.
 Every workspace command also follows one metadata contract: standalone
 `--help` prints usage and exits 0, while standalone `--version` prints
 `<command> <package-version>` and exits 0. Both paths leave
-stdin untouched. The current Native and Wasm regressions pass all 79 workspace
+stdin untouched. The Wasm development suite checks all 79 workspace
 commands; published coordinates are promoted only through the release and
 exact MoonX checks described in the support record.

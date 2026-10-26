@@ -371,6 +371,9 @@ async fn main {
   let args = @env.args()[1:]
   for index = 0; index < args.length(); index = index + 2 {
     guard index + 1 < args.length() else { fail("option requires a value") }
+    guard ["--report-dir", "--wasm-root", "--moonrun", "--oracle-bin", "--commands", "--sizes", "--long-record", "--distribution", "--timeout-ms", "--kernel-rss"].contains(args[index]) && !options.contains(args[index]) else {
+      fail("unknown or duplicate resource option: " + args[index])
+    }
     options[args[index]] = args[index + 1]
   }
   let directory = options.get("--report-dir").unwrap()
@@ -383,6 +386,13 @@ async fn main {
     .split(",")
     .map(value => value.to_owned())
     .collect()
+  let seen : Set[String] = Set([])
+  for command in commands {
+    guard ["rev", "strings", "split", "csplit", "tac", "column", "sort", "grep", "gzip", "diff"].contains(command) && !seen.contains(command) else {
+      fail("unknown, empty or duplicate resource command: " + command)
+    }
+    seen.add(command)
+  }
   let sizes : Array[Int64] = []
   for
     value in options
@@ -393,7 +403,9 @@ async fn main {
     guard size > 0 else { fail("resource sizes must be positive") }
     sizes.push(size)
   }
-  let long = options.get("--long-record").unwrap_or("false") == "true"
+  let long_option = options.get("--long-record").unwrap_or("false")
+  guard ["true", "false"].contains(long_option) else { fail("--long-record must be true or false") }
+  let long = long_option == "true"
   let distribution = options.get("--distribution").unwrap_or("ascii")
   guard distribution == "ascii" || distribution == "heldout" else {
     fail("distribution must be ascii or heldout")
@@ -401,6 +413,7 @@ async fn main {
   let timeout = @string.parse_int(
     options.get("--timeout-ms").unwrap_or("900000"),
   )
+  guard timeout > 0 else { fail("resource timeout must be positive") }
   let rss_mode = options.get("--kernel-rss").unwrap_or("sampled")
   guard rss_mode == "sampled" || rss_mode == "linux" else {
     fail("--kernel-rss must be linux")

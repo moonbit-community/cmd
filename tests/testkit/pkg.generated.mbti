@@ -11,6 +11,8 @@ import {
 }
 
 // Values
+pub fn append_report(Array[CaseReport], CaseReport) -> Unit
+
 pub fn bytes_equal(Bytes, Bytes) -> Bool
 
 pub fn canonical_json(Json) -> String

@@ -58174,7 +58174,7 @@
       "host_platforms": [
         "linux"
       ],
-      "diagnostic_reason": "Directory inode sizes are host filesystem metadata. Local contract fragments confirm the output fields and selection; Native/Wasm backend-pair and immutable GNU upstream runs compare complete stdout/stderr/status on the same host fixture profile. Package tests independently compute actual public sizes and selected subtree sums; no portable 4096-byte golden is asserted.",
+      "diagnostic_reason": "Directory inode sizes are host filesystem metadata. Local contract fragments confirm the output fields and selection; Wasm and immutable GNU upstream runs compare complete stdout/stderr/status on the same host fixture profile. Package tests independently compute actual public sizes and selected subtree sums; no portable 4096-byte golden is asserted.",
       "source_version": "sha256:07b51f4f1c98e70915b95bb0c39e8ec2b2d3133c672568c52fd34bc222c18ed2; tree 2.2.1",
       "stdin_text": "",
       "normalizations": [],
@@ -58221,7 +58221,7 @@
       "host_platforms": [
         "linux"
       ],
-      "diagnostic_reason": "Directory inode sizes are host filesystem metadata. Local contract fragments confirm the output fields and selection; Native/Wasm backend-pair and immutable GNU upstream runs compare complete stdout/stderr/status on the same host fixture profile. Package tests independently compute actual public sizes and selected subtree sums; no portable 4096-byte golden is asserted.",
+      "diagnostic_reason": "Directory inode sizes are host filesystem metadata. Local contract fragments confirm the output fields and selection; Wasm and immutable GNU upstream runs compare complete stdout/stderr/status on the same host fixture profile. Package tests independently compute actual public sizes and selected subtree sums; no portable 4096-byte golden is asserted.",
       "source_version": "sha256:07b51f4f1c98e70915b95bb0c39e8ec2b2d3133c672568c52fd34bc222c18ed2; tree 2.2.1",
       "stdin_text": "",
       "normalizations": [],
@@ -58268,7 +58268,7 @@
       "host_platforms": [
         "linux"
       ],
-      "diagnostic_reason": "Directory inode sizes are host filesystem metadata. Local contract fragments confirm the output fields and selection; Native/Wasm backend-pair and immutable GNU upstream runs compare complete stdout/stderr/status on the same host fixture profile. Package tests independently compute actual public sizes and selected subtree sums; no portable 4096-byte golden is asserted.",
+      "diagnostic_reason": "Directory inode sizes are host filesystem metadata. Local contract fragments confirm the output fields and selection; Wasm and immutable GNU upstream runs compare complete stdout/stderr/status on the same host fixture profile. Package tests independently compute actual public sizes and selected subtree sums; no portable 4096-byte golden is asserted.",
       "source_version": "sha256:07b51f4f1c98e70915b95bb0c39e8ec2b2d3133c672568c52fd34bc222c18ed2; tree 2.2.1",
       "stdin_text": "",
       "normalizations": [],
@@ -58315,7 +58315,7 @@
       "host_platforms": [
         "linux"
       ],
-      "diagnostic_reason": "Directory inode sizes are host filesystem metadata. Local contract fragments confirm the output fields and selection; Native/Wasm backend-pair and immutable GNU upstream runs compare complete stdout/stderr/status on the same host fixture profile. Package tests independently compute actual public sizes and selected subtree sums; no portable 4096-byte golden is asserted.",
+      "diagnostic_reason": "Directory inode sizes are host filesystem metadata. Local contract fragments confirm the output fields and selection; Wasm and immutable GNU upstream runs compare complete stdout/stderr/status on the same host fixture profile. Package tests independently compute actual public sizes and selected subtree sums; no portable 4096-byte golden is asserted.",
       "source_version": "sha256:07b51f4f1c98e70915b95bb0c39e8ec2b2d3133c672568c52fd34bc222c18ed2; tree 2.2.1",
       "stdin_text": "",
       "normalizations": [],
@@ -58365,7 +58365,7 @@
       "host_platforms": [
         "linux"
       ],
-      "diagnostic_reason": "Directory inode sizes are host filesystem metadata. Local contract fragments confirm the output fields and selection; Native/Wasm backend-pair and immutable GNU upstream runs compare complete stdout/stderr/status on the same host fixture profile. Package tests independently compute actual public sizes and selected subtree sums; no portable 4096-byte golden is asserted.",
+      "diagnostic_reason": "Directory inode sizes are host filesystem metadata. Local contract fragments confirm the output fields and selection; Wasm and immutable GNU upstream runs compare complete stdout/stderr/status on the same host fixture profile. Package tests independently compute actual public sizes and selected subtree sums; no portable 4096-byte golden is asserted.",
       "source_version": "sha256:07b51f4f1c98e70915b95bb0c39e8ec2b2d3133c672568c52fd34bc222c18ed2; tree 2.2.1",
       "stdin_text": "",
       "normalizations": [],
@@ -58415,7 +58415,7 @@
       "host_platforms": [
         "linux"
       ],
-      "diagnostic_reason": "Directory inode sizes are host filesystem metadata. Local contract fragments confirm the output fields and selection; Native/Wasm backend-pair and immutable GNU upstream runs compare complete stdout/stderr/status on the same host fixture profile. Package tests independently compute actual public sizes and selected subtree sums; no portable 4096-byte golden is asserted.",
+      "diagnostic_reason": "Directory inode sizes are host filesystem metadata. Local contract fragments confirm the output fields and selection; Wasm and immutable GNU upstream runs compare complete stdout/stderr/status on the same host fixture profile. Package tests independently compute actual public sizes and selected subtree sums; no portable 4096-byte golden is asserted.",
       "source_version": "sha256:07b51f4f1c98e70915b95bb0c39e8ec2b2d3133c672568c52fd34bc222c18ed2; tree 2.2.1",
       "stdin_text": "",
       "normalizations": [],
@@ -58466,7 +58466,7 @@
       "host_platforms": [
         "linux"
       ],
-      "diagnostic_reason": "Directory inode sizes are host filesystem metadata. Local contract fragments confirm the output fields and selection; Native/Wasm backend-pair and immutable GNU upstream runs compare complete stdout/stderr/status on the same host fixture profile. Package tests independently compute actual public sizes and selected subtree sums; no portable 4096-byte golden is asserted.",
+      "diagnostic_reason": "Directory inode sizes are host filesystem metadata. Local contract fragments confirm the output fields and selection; Wasm and immutable GNU upstream runs compare complete stdout/stderr/status on the same host fixture profile. Package tests independently compute actual public sizes and selected subtree sums; no portable 4096-byte golden is asserted.",
       "source_version": "sha256:07b51f4f1c98e70915b95bb0c39e8ec2b2d3133c672568c52fd34bc222c18ed2; tree 2.2.1",
       "stdin_text": "",
       "normalizations": [],

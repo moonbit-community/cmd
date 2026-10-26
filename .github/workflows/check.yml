@@ -96,7 +96,7 @@ jobs:
         if: runner.os == 'Linux'
         run: moon run tests/oracle.mbtx -- --image '${{ steps.oracle.outputs.imageid }}'
       - name: Wasm functional checks and Linux upstream comparisons
-        run: moon run tests/ci.mbtx -- functional
+        run: moon run tests/ci.mbtx -- functional 2>&1 | tee test-reports/functional.log
       - name: Interfaces and harness formatting
         if: runner.os == 'Linux'
         run: |

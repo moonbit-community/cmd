@@ -40,7 +40,10 @@ jobs:
           core-version: 0.10.15+943464bfa
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - run: moon version --all
+      - name: Toolchain and report directory
+        run: |
+          mkdir -p test-reports
+          moon version --all | tee test-reports/toolchain.log
       - run: moon update
       - run: moon build --target wasm --release --deny-warn
       - uses: docker/setup-buildx-action@v3
@@ -62,6 +65,7 @@ jobs:
         with:
           name: resource-observations-linux
           path: |
+            test-reports/toolchain.log
             test-reports/resources-linux
             !test-reports/resources-linux/oracle/**
           retention-days: 30

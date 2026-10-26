@@ -23,6 +23,15 @@ pub fn CaseReport::semantic_pass(self : CaseReport) -> Bool {
 }
 
 ///|
+/// Emit completed results immediately so cancelled jobs retain useful logs.
+pub fn append_report(reports : Array[CaseReport], report : CaseReport) -> Unit {
+  reports.push(report)
+  println(
+    "\{report.result} \{report.verification} \{report.id} \{report.duration_ms}ms \{report.detail}",
+  )
+}
+
+///|
 pub async fn write_reports(
   directory : String,
   reports : ArrayView[CaseReport],

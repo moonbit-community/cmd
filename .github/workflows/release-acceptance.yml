@@ -70,7 +70,7 @@ jobs:
         if: runner.os == 'Linux'
         run: moon run tests/oracle.mbtx -- --image '${{ steps.oracle.outputs.imageid }}'
       - name: Exact-version functional acceptance
-        run: moon run tests/ci.mbtx -- published
+        run: moon run tests/ci.mbtx -- published 2>&1 | tee test-reports/published.log
       - name: Preserve acceptance results
         if: always()
         uses: actions/upload-artifact@v4

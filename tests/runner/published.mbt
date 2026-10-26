@@ -104,7 +104,7 @@ async fn prime_published_commands(
         result.output.stderr.to_unchecked_string(),
       )
     }
-    reports.push({
+    @testkit.append_report(reports, {
       ..suite_report("published-resolution:" + name, "moonx", start, failures),
       command: name,
       verification: "availability",

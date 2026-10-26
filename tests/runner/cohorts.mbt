@@ -139,8 +139,7 @@ async fn execute_cohort(
       "compat-https" => run_https_cases(bin_root, failures)
       "compat-proxy" => run_proxy_cases(bin_root, failures)
       "stress-streams" => run_stress_cases(bin_root, failures)
-      "policy-host" =>
-        run_policy_suite(project_root, @fs.realpath(wasm_root), failures)
+      "policy-host" => run_policy_suite(project_root, wasm_root, failures)
       _ => fail("unregistered cohort")
     }
   } catch {

@@ -296,13 +296,6 @@ async fn execute_scenario(
   let report_id = "scenario:" + fixture.id
   let device_boundary = fixture.id == "diff-directory-devices-boundary"
   let tee_boundary = fixture.id == "tee-default-pipe-boundary"
-  let retain_success = retain_success ||
-    device_boundary ||
-    windows_mv_scenario(fixture.id) ||
-    fixture.id == "network-transfer-boundaries" ||
-    fixture.id == "network-transfer-boundaries-oracle" ||
-    fixture.id.has_prefix("mktemp-option-effects") ||
-    fixture.id.has_prefix("tee-")
   let verification = if device_boundary ||
     tee_boundary ||
     fixture.id == "mv-windows-wasm-links-boundary" {

@@ -2,8 +2,14 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-25
+Updated: 2026-10-26
 Revision: Add split filter sessions, env split strings and xargs byte/confirmation boundaries without expanding process or shell guarantees.
+
+Delivery validation update (2026-10-26): [ADR-0001](0001-evidence.md) and the
+[Wasm CI migration](../ci-wasm-migration.md) define current acceptance. Future
+regressions and boundary unlock conditions below require Wasm on applicable
+hosts and exact-version MoonX acceptance; Native command runs and backend
+pairing are retired. Dated Native observations retain their historical scope.
 
 ## Target and decision
 
@@ -44,9 +50,10 @@ Empty enumeration, nonempty final assignments, POSIX and Wasm remain supported.
 Do not inject a variable or temporarily rewrite global environment state to
 approximate an empty child environment. Lift the restriction after a released
 public implementation fixes the block and actual Windows Native/Wasm
-child-observed empty-environment, stream and status regressions pass. The
-Native-only Windows harness checks the explicit rejection, empty enumeration
-and a successful nonempty child; POSIX keeps the real empty-child contract.
+child-observed empty-environment, stream and status regressions pass. The retired
+Native-only Windows harness recorded the explicit rejection, empty enumeration
+and a successful nonempty child. Current Wasm checks retain the real empty-child
+contract on applicable hosts; Native-only behavior is outside delivery scope.
 
 Xargs `-d` scans raw bytes with the selected named/octal/hex escape rules;
 `-0` and `-d` use last-option precedence. Existing batching and child-tail

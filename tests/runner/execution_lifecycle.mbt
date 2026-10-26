@@ -10,7 +10,7 @@ async fn retain_execution_failure(
 ) -> Unit {
   execute() catch {
     error =>
-      reports.push({
+      @testkit.append_report(reports, {
         id: "runner:execution-infrastructure",
         command: "runner",
         result: "infra",

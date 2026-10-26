@@ -55,7 +55,7 @@ fn append_scenario_reports(
   fixture : @testkit.Case,
   report : @testkit.CaseReport,
 ) -> Unit {
-  reports.push({ ..report, id: fixture.id, })
+  @testkit.append_report(reports, { ..report, id: fixture.id, })
 }
 
 ///|
@@ -348,13 +348,15 @@ async fn run_driver() -> Unit {
             fixture in selected.filter(item => {
               item.comparison == Some("metadata")
             }) {
-            reports.push(
+            @testkit.append_report(
+              reports,
               metadata_report(fixture.command, bin_root, backend, report_dir),
             )
           }
         "compat" | "stress" | "policy" =>
           for fixture in selected.filter(item => item.comparison == Some(suite)) {
-            reports.push(
+            @testkit.append_report(
+              reports,
               execute_cohort(
                 fixture, bin_root, backend, project_root, wasm_root,
               ),
@@ -411,7 +413,8 @@ async fn run_driver() -> Unit {
                     }
                   None => item
                 }
-                reports.push(
+                @testkit.append_report(
+                  reports,
                   @testkit.execute_contract(
                     transformed,
                     bin_root,
@@ -452,7 +455,7 @@ async fn run_driver() -> Unit {
                   observations: [],
                   missing_observations: @testkit.contract_observations(fixture),
                 }
-                reports.push(report)
+                @testkit.append_report(reports, report)
               }
               continue
             }
@@ -477,7 +480,8 @@ async fn run_driver() -> Unit {
             },
           )
           let selected = selected.filter(item => {
-            case_in_suites(item, ["oracle"]) && item.comparison != Some("oracle-scenario")
+            case_in_suites(item, ["oracle"]) &&
+            item.comparison != Some("oracle-scenario")
           })
           if selected.is_empty() && !suites.contains("metadata") {
             continue
@@ -517,7 +521,7 @@ async fn run_driver() -> Unit {
                 let begin = @async.now()
                 if !fixture.platform_applies() {
                   let report = suite_report(fixture.id, backend, begin, [])
-                  reports.push({
+                  @testkit.append_report(reports, {
                     ..report,
                     command: fixture.command,
                     result: "skip",
@@ -563,7 +567,7 @@ async fn run_driver() -> Unit {
                 } else {
                   "assertion"
                 }
-                reports.push({
+                @testkit.append_report(reports, {
                   ..report,
                   command: fixture.command,
                   source_version: fixture.source_version.unwrap_or(
@@ -625,11 +629,6 @@ async fn run_driver() -> Unit {
     ToJson::to_json(stage_durations).stringify(indent=2) + "\n",
   )
   @testkit.write_reports(report_dir, reports)
-  for report in reports {
-    println(
-      "\{report.result} \{report.verification} \{report.id} \{report.duration_ms}ms \{report.detail}",
-    )
-  }
   println(
     "semantic passes: \{reports.filter(item => item.semantic_pass()).length()}; report: \{report_dir}",
   )
