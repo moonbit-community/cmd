@@ -22,6 +22,10 @@ drains stderr for the retained error payload API. Stderr may grow with the child
 diagnostic output; this is separate from incremental search stdout. Normal EOF
 checks exit status; early close cancels the owned task group and reaps its direct
 child in an uncancellable completion wait. No descendant-tree guarantee exists.
+The pipe handles outlive the task group that reads them, so pending Windows I/O
+cancellation completes before close. Normal completion also waits for stderr EOF
+before retiring its drain task; child diagnostics cannot be lost to task-group
+shutdown. The retained early-close and cancellation tests exercise these paths.
 Portable pure-MoonBit fixtures exercise early close; original process tests are
 retained. Lift process-tree limits only after released public group cancellation
 and three-host Wasm lifecycle evidence. See [rg ledger](../rg/implementation.md).

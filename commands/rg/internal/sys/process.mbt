@@ -35,13 +35,19 @@ pub async fn Process::spawn(
       changed.broadcast()
     }
     started.val = true
-    try
+    try {
+      // Pending Windows reads must finish cancellation before pipe handles close.
+      let (stdout_reader, stdout_sink) = @process.read_from_process()
+      defer stdout_reader.close()
+      let (stderr_reader, stderr_sink) = @process.read_from_process()
+      defer stderr_reader.close()
+      let stderr_complete = Ref(false)
       @async.with_task_group() <| group => {
-        let (stdout_reader, stdout_sink) = @process.read_from_process()
-        defer stdout_reader.close()
-        let (stderr_reader, stderr_sink) = @process.read_from_process()
-        defer stderr_reader.close()
         group.spawn_bg() <| () => {
+          defer {
+            stderr_complete.val = true
+            changed.broadcast()
+          }
           let chunk = FixedArray::make(8192, b'\x00')
           for ;; {
             let count = stderr_reader.read(chunk)
@@ -70,8 +76,11 @@ pub async fn Process::spawn(
         changed.broadcast()
         output.write_reader(stdout_reader)
         ignore(process.wait())
+        while !stderr_complete.val {
+          changed.wait()
+        }
       }
-    catch {
+    } catch {
       error => {
         failure.val = Some(error)
         changed.broadcast()
