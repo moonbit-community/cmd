@@ -1,7 +1,13 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-10-25
+Updated: 2026-10-26
+
+Current delivery acceptance targets Wasm through MoonX on Linux, macOS and
+Windows. Native implementations may remain compilable, but Native command tests
+and backend pairing are no longer delivery gates. Dated Native observations
+below retain their historical meaning. See [Wasm CI migration](ci-wasm-migration.md)
+for development checks and separate manual release/resource workflows.
 
 The 2026-10-25 R release uploaded `cli/core@0.8.1` and seven changed command
 packages. The other 71 command versions and all dependency declarations remain
@@ -282,6 +288,11 @@ Completed local latest-coordinate MoonX acceptance is recorded in the
 Closed-stdin captures prove status and output bytes; they do not measure
 whether an open input stream remains unread.
 
+The current shared metadata observer additionally passes a sentinel through an
+inherited input descriptor and reads the remaining bytes after the command
+exits. Both launch modes must preserve the complete sentinel. This assertion
+belongs to the new suite; it does not retroactively strengthen the dated probes.
+
 This is the single support record for the `cmd` repository. It replaces the
 former matrix. Historical implementation stages are archived in
 [`reports/README.md`](reports/README.md); claims are promoted through the
@@ -528,11 +539,11 @@ parser or transformation is absent.
 
 ## Reproduction rule
 
-Build native and Wasm artifacts once, then pass their build roots to the
-unified runner. The runner creates isolated directories, captures stdout,
+Build Wasm commands and the Native test driver once, then pass the Wasm build
+root to the unified runner. The runner creates isolated directories, captures stdout,
 stderr, exit status, and side effects independently, and applies network policy
 only in the policy suite. Record positive and negative cases together. Update
-this record and the command README only after native semantics, the applicable
+this record and the command README only after Wasm semantics, the applicable
 pinned oracle cases, and Wasm policy checks are repeatable.
 
 Per-command decisions are in [`docs/adr/README.md`](adr/README.md). Historical

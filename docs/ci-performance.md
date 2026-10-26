@@ -1,3 +1,19 @@
+# CI performance
+
+Updated: 2026-10-26
+
+The active design is [Wasm CI migration](ci-wasm-migration.md): three parallel
+Wasm development jobs, separate manual resource and MoonX acceptance workflows,
+no audit or daily schedule. The target is 10 minutes ideally, under 15 minutes
+normally, at most 20 minutes without abnormal queueing, and under 45 total runner
+minutes. These targets require measured cold and warm runs; they are not claimed
+as achieved by removing old steps.
+
+## Historical optimization record
+
+The following entries describe the former CI and retain their original results.
+They do not define current gates or certify this migration.
+
 # CI execution reuse
 
 Updated: 2026-10-24

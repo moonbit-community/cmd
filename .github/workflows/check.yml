@@ -2,48 +2,35 @@ name: check
 
 on:
   push:
-    branches:
-      - master
-      - main
+    branches: [main, master]
   pull_request:
   workflow_dispatch:
     inputs:
-      release_acceptance:
-        description: Verify already published candidate packages and freeze evidence
+      use_cache:
+        description: Restore dependency and compilation caches
         type: boolean
-        default: false
-      source_gate_run_id:
-        description: Successful three-platform check run for this exact source
-        type: string
-        default: ''
-      outgoing_release_id:
-        description: Unique archive name for the outgoing published snapshot
-        type: string
-        default: ''
-      audit_base:
-        description: Optional exact base SHA for a manual change audit
-        type: string
-        default: ''
-  schedule:
-    - cron: '17 3 * * *'
+        default: true
 
-env:
-  CMD_AUDIT_BASE: ${{ github.event.pull_request.base.sha || github.event.before || inputs.audit_base || '' }}
-  CMD_AUDIT_PR_HEAD: ${{ github.event.pull_request.head.sha || '' }}
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   check:
-    if: ${{ !inputs.release_acceptance }}
     name: ${{ matrix.os }}
-    timeout-minutes: 360
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - ubuntu-24.04
-          - macos-15
-          - windows-2025
-    runs-on: ${{ matrix.os }}
+        os: [ubuntu-24.04, macos-15, windows-2025]
     env:
       LANG: C
       LC_ALL: C
@@ -51,356 +38,76 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
           submodules: recursive
-          # Current published provenance verifies its recorded source commit.
-          # A shallow checkout cannot establish that immutable association.
-          fetch-depth: 0
-
-      - name: Setup MoonBit
-        uses: hustcer/setup-moonbit@v1.23
-        with:
-          version: 0.10.15+943464bfa
-          core-version: 0.10.15+943464bfa
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Record toolchain
-        run: moon version --all
-
-      - name: Install Linux listener observer
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install --yes lsof
-
-      - name: Verify macOS listener observer
-        if: runner.os == 'macOS'
-        run: test -x /usr/sbin/lsof
-
-      - name: Update registry
-        run: moon update
-
-      - name: Build release coverage CLI
-        run: moon build --target native --release --deny-warn tests/coverage/cli
-
-      - name: Resolve reviewed coverage requirements
-        id: coverage_requirements
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/coverage/cli/cli.exe
-          --ci requirements
-
-      - name: Check
-        id: check_source
-        run: moon check --target all --deny-warn
-
-      - name: Test remaining JS and Wasm-GC targets
-        shell: bash
-        run: |
-          mkdir -p test-reports
-          moon test --target js 2>&1 | tee test-reports/package-tests.log
-          moon test --target wasm-gc 2>&1 | tee -a test-reports/package-tests.log
-
-      - name: Retain package test diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: package-test-logs-${{ matrix.os }}
-          path: test-reports/package-tests.log
-
-      - name: Build Native release commands and test drivers
-        id: build_native
-        if: ${{ !cancelled() && steps.check_source.outcome == 'success' }}
-        run: moon build --target native --release --deny-warn
-
-      - name: Build Wasm release commands
-        id: build_wasm
-        if: ${{ !cancelled() && steps.check_source.outcome == 'success' }}
-        run: moon build --target wasm --release --deny-warn
-
-      - name: Compare Native and Wasm command metadata
-        if: ${{ !cancelled() && steps.build_native.outcome == 'success' && steps.build_wasm.outcome == 'success' }}
-        timeout-minutes: 10
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/metadata/metadata.exe
-          pair --report-dir test-reports/metadata-pair
-
-      - name: Validate workspace cases
-        if: ${{ !cancelled() && steps.build_native.outcome == 'success' }}
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
-          --manifest tests/fixtures/runner/cases.json --validate-only
-
-      - name: Validate unpublished candidate manifest
-        if: ${{ !cancelled() && steps.build_native.outcome == 'success' }}
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
-          --manifest tests/release_runner/current/candidate.json --suite validate
-          --report-dir test-reports/candidate-validation
-
-      - name: Native compatibility
-        if: ${{ !cancelled() && steps.build_native.outcome == 'success' }}
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
-          --suite compat --report-dir test-reports/compat-native
-
-      - name: Native command contracts when Wasm build is unavailable
-        if: ${{ !cancelled() && steps.build_native.outcome == 'success' && steps.build_wasm.outcome != 'success' }}
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
-          --suite contract --backend native --jobs 1 --report-dir test-reports/contract-native
-
-      - name: Native scenarios when Wasm build is unavailable
-        if: ${{ !cancelled() && steps.build_native.outcome == 'success' && steps.build_wasm.outcome != 'success' }}
-        timeout-minutes: 3
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
-          --suite scenarios --backend native --report-dir test-reports/scenarios-native
-
-      - name: Execute and compare Native and Wasm contracts and scenarios once
-        if: ${{ !cancelled() && steps.build_native.outcome == 'success' && steps.build_wasm.outcome == 'success' }}
-        timeout-minutes: 20
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
-          --suite paired --jobs 1 --report-dir test-reports
-
-      - name: Compare all applicable registered package tests on Native and Wasm
-        if: ${{ !cancelled() && steps.build_native.outcome == 'success' && steps.build_wasm.outcome == 'success' }}
-        timeout-minutes: 90
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/packages/packages.exe
-          --backend pair --all --report-dir test-reports/package-pair
-
-      - name: Record all applicable Native-only harness package tests
-        if: ${{ !cancelled() && steps.build_native.outcome == 'success' }}
-        timeout-minutes: 90
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/packages/packages.exe
-          --backend native --all --native-only
-          --report-dir test-reports/package-native-only
-
-      - name: GNU differential
-        if: ${{ !cancelled() && runner.os == 'Linux' && steps.build_native.outcome == 'success' }}
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
-          --suite gnu --report-dir test-reports/gnu-native
-
-      - name: Wasm policy
-        if: ${{ !cancelled() && steps.build_native.outcome == 'success' && steps.build_wasm.outcome == 'success' }}
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
-          --suite policy --report-dir test-reports/policy-wasm
-
-      - name: Setup Docker Buildx
-        id: setup_docker
-        if: ${{ !cancelled() && runner.os == 'Linux' && steps.build_native.outcome == 'success' }}
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build pinned oracle image
-        id: build_oracle
-        if: ${{ !cancelled() && runner.os == 'Linux' && steps.setup_docker.outcome == 'success' }}
-        timeout-minutes: 45
-        uses: docker/build-push-action@v6
-        with:
-          context: tests/runner/image
-          load: true
-          tags: mooncmd-oracle:phase0
-          cache-from: type=gha,scope=mooncmd-oracle
-          cache-to: type=gha,mode=max,scope=mooncmd-oracle
-
-      - name: Seal copied oracle profile and retain image identity
-        id: seal_oracle
-        if: ${{ !cancelled() && runner.os == 'Linux' && steps.build_oracle.outcome == 'success' }}
-        shell: bash
-        timeout-minutes: 5
-        run: |
-          mkdir -p test-reports/oracle-profile
-          cp tests/runner/image/profile.json tests/runner/image/Dockerfile tests/runner/image/versions.sh test-reports/oracle-profile/
-          oracle_image_id=$(docker image inspect --format='{{.Id}}' mooncmd-oracle:phase0)
-          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --seal-oracle "$oracle_image_id" --oracle-profile test-reports/oracle-profile/profile.json
-          docker run --rm "$oracle_image_id" /usr/local/bin/versions.sh > test-reports/oracle-versions.txt
-          docker image inspect --format='{{.Id}}' "$oracle_image_id" > test-reports/oracle-image.txt
-          printf 'image_id=%s\n' "$oracle_image_id" >> "$GITHUB_OUTPUT"
-
-      - name: Compare pinned upstream fixtures on Native
-        if: ${{ !cancelled() && runner.os == 'Linux' && steps.seal_oracle.outcome == 'success' }}
-        timeout-minutes: 30
-        shell: bash
-        run: |
-          umask 022
-          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite oracle --oracle-image "${{ steps.seal_oracle.outputs.image_id }}" --oracle-profile test-reports/oracle-profile/profile.json --report-dir test-reports/oracle-native
-
-      - name: Compare pinned upstream fixtures on Wasm
-        if: ${{ !cancelled() && runner.os == 'Linux' && steps.seal_oracle.outcome == 'success' && steps.build_wasm.outcome == 'success' }}
-        timeout-minutes: 30
-        shell: bash
-        run: |
-          umask 022
-          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite oracle --backend wasm --oracle-image "${{ steps.seal_oracle.outputs.image_id }}" --oracle-profile test-reports/oracle-profile/profile.json --report-dir test-reports/oracle-wasm
-
-      - name: Direct-Wasm Linux resource observations
-        if: ${{ !cancelled() && runner.os == 'Linux' && steps.seal_oracle.outcome == 'success' && steps.build_wasm.outcome == 'success' }}
-        timeout-minutes: 120
-        run: >-
-          moon run tests/resources/ci.mbtx --
-          --image "${{ steps.seal_oracle.outputs.image_id }}"
-
-      - name: Resolve published-test launcher
-        id: moonx
-        if: ${{ !cancelled() && steps.build_native.outcome == 'success' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || (runner.os == 'Linux' && steps.coverage_requirements.outputs.published_differential == 'true')) }}
-        shell: pwsh
-        run: |
-          $moonxPath = (Get-Command moonx -CommandType Application).Source
-          "CMD_MOONX=$moonxPath" >> $env:GITHUB_ENV
-          # Pin the runner's own cache root for both MoonX and artifact hashing.
-          $publishedMoonHome = Split-Path (Split-Path $moonxPath -Parent) -Parent
-          "MOON_HOME=$publishedMoonHome" >> $env:GITHUB_ENV
-
-      - name: Published-version smoke
-        if: ${{ !cancelled() && steps.moonx.outcome == 'success' }}
-        timeout-minutes: 60
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
-          --manifest tests/release_runner/current/published.json --suite smoke
-          --moonx "${{ env.CMD_MOONX }}"
-          --jobs 1 --timeout-ms 120000
-          --report-dir test-reports/published-smoke
-
-      - name: Published-version differential
-        if: ${{ !cancelled() && runner.os == 'Linux' && steps.moonx.outcome == 'success' && steps.seal_oracle.outcome == 'success' }}
-        timeout-minutes: 60
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
-          --manifest tests/release_runner/current/published.json --suite differential
-          --moonx "${{ env.CMD_MOONX }}"
-          --oracle-image "${{ steps.seal_oracle.outputs.image_id }}"
-          --oracle-profile test-reports/oracle-profile/profile.json
-          --jobs 4 --timeout-ms 120000
-          --report-dir test-reports/published-differential
-
-      - name: Current published Windows contracts and boundaries
-        if: ${{ !cancelled() && runner.os == 'Windows' && steps.moonx.outcome == 'success' }}
-        timeout-minutes: 15
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe
-          --manifest tests/release_runner/current/published.json --suite differential
-          --moonx "${{ env.CMD_MOONX }}"
-          --jobs 1 --timeout-ms 120000
-          --case compat-filesystem-windows-chmod-boundary
-          --case compat-filesystem-windows-ln-boundary
-          --case rm-final-parent-backslash
-          --case repair-which-windows-pathext
-          --report-dir test-reports/published-windows-contracts
-
-      - name: Stress scenarios
-        if: ${{ !cancelled() && steps.build_native.outcome == 'success' }}
-        timeout-minutes: 15
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe
-          --suite stress --report-dir test-reports/stress-native
-
-      - name: Generated interfaces
-        if: ${{ !cancelled() && steps.check_source.outcome == 'success' }}
-        run: moon info
-
-      # Stage the new compiler's formatting migration in the harness. Its
-      # rewrites of untouched core/command syntax belong to a separate change.
-      - name: Format test harness packages
-        if: ${{ !cancelled() && steps.check_source.outcome == 'success' }}
-        run: >-
-          moon fmt tests/testkit tests/runner tests/release_runner tests/registry
-          tests/registry/cli tests/coverage tests/coverage/cli tests/scope tests/metadata tests/packages
-
-      - name: Check automation script formatting
-        if: ${{ !cancelled() && steps.check_source.outcome == 'success' }}
-        run: >-
-          moon fmt --check tests/coverage/audit.mbtx tests/coverage/push.mbtx
-          tests/coverage/ci.mbtx tests/coverage/prepare_ci_change.mbtx
-          tests/metadata/verify.mbtx tests/packages/run.mbtx
-          tests/registry/refresh.mbtx
-          tests/metadata/generate_release_cases.mbtx
-          tests/release_runner/prepare_metadata_release.mbtx
-          tests/release_runner/publish_candidate.mbtx
-          tests/resources/run.mbtx tests/resources/ci.mbtx
-
-      - name: Verify generated files
-        if: ${{ !cancelled() && steps.check_source.outcome == 'success' }}
-        run: git diff --exit-code
-
-      - name: Bind complete platform evidence to this workflow run
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/coverage/cli/cli.exe
-          --ci stamp test-reports
-
-      - name: Upload reports and failed fixtures
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: cmd-test-reports-${{ matrix.os }}
-          path: |
-            test-reports
-            !test-reports/resources-linux/oracle/**
-          if-no-files-found: ignore
-
-  coverage-audit:
-    name: coverage-audit
-    needs: check
-    if: ${{ always() && !inputs.release_acceptance }}
-    runs-on: ubuntu-24.04
-    timeout-minutes: 30
-    permissions:
-      contents: read
-      actions: read
-    env:
-      CMD_MATRIX_RESULT: ${{ needs.check.result }}
-      LANG: C
-      LC_ALL: C
-      TZ: UTC
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.sha }}
-          submodules: recursive
-          fetch-depth: 0
       - uses: hustcer/setup-moonbit@v1.23
         with:
           version: 0.10.15+943464bfa
           core-version: 0.10.15+943464bfa
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - uses: actions/download-artifact@v4
+      - name: Toolchain and report directory
+        run: |
+          mkdir -p test-reports
+          moon version --all | tee test-reports/toolchain.log
+      - uses: actions/cache@v4
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.use_cache }}
         with:
-          pattern: cmd-test-reports-*
-          path: test-reports/ci
-      - run: moon update
-      - name: Build release coverage CLI
-        run: moon build --target native --release --deny-warn tests/coverage/cli
-      - name: Resolve reviewed coverage requirements
-        id: coverage_requirements
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/coverage/cli/cli.exe
-          --ci requirements
-      - name: Build the frozen publication validator when required
-        if: steps.coverage_requirements.outputs.published_differential == 'true'
-        run: moon build --target native --release --deny-warn tests/release_runner
-      - name: Audit reviewed impact against all exact-source platform evidence
-        run: >-
-          ./_build/native/release/build/mooxCLI/cmd-tests/coverage/cli/cli.exe
-          --ci audit test-reports/ci
-          test-reports/coverage-audit/audit.md
-      - name: Preserve coverage audit evidence
+          path: |
+            ~/.moon/cache/deps
+            .mooncakes
+            core/.mooncakes
+            tests/.mooncakes
+            commands/*/.mooncakes
+            _build/native/release
+            _build/wasm/release
+          key: wasm-ci-v1-${{ runner.os }}-${{ runner.arch }}-0.10.15-${{ hashFiles('moon.work', '**/moon.mod', '**/moon.pkg') }}-${{ github.sha }}
+          restore-keys: |
+            wasm-ci-v1-${{ runner.os }}-${{ runner.arch }}-0.10.15-${{ hashFiles('moon.work', '**/moon.mod', '**/moon.pkg') }}-
+      - name: Linux listener observer
+        if: runner.os == 'Linux'
+        run: command -v lsof || (sudo apt-get update && sudo apt-get install --yes lsof)
+      - name: Dependencies
+        run: moon update
+      - name: Check Wasm products
+        run: moon check --target wasm --deny-warn
+      - name: Check Native test tools
+        run: moon check --target native --deny-warn tests/runner tests/release_runner tests/testkit tests/registry tests/network_scenarios tests/mv_scenarios tests/benchmark
+      - name: Build Wasm commands once
+        run: moon build --target wasm --release --deny-warn
+      - name: Build test driver
+        run: moon build --target native --release --deny-warn tests/runner
+      - name: Wasm package tests
+        run: moon test --target wasm --release --deny-warn --no-parallelize 2>&1 | tee test-reports/packages-wasm.log
+      - name: Native test-tool regressions
+        run: moon test --target native --release --deny-warn --no-parallelize tests/testkit tests/registry tests/network_scenarios tests/mv_scenarios tests/runner tests/release_runner tests/benchmark 2>&1 | tee test-reports/packages-harness.log
+      - uses: docker/setup-buildx-action@v3
+        if: runner.os == 'Linux'
+      - name: Pinned upstream image
+        id: oracle
+        if: runner.os == 'Linux'
+        uses: docker/build-push-action@v6
+        with:
+          context: tests/runner/image
+          load: true
+          tags: mooncmd-oracle:phase0
+          cache-from: ${{ (github.event_name != 'workflow_dispatch' || inputs.use_cache) && 'type=gha,scope=mooncmd-oracle' || '' }}
+          cache-to: type=gha,mode=max,scope=mooncmd-oracle
+      - name: Record pinned oracle
+        if: runner.os == 'Linux'
+        run: moon run tests/oracle.mbtx -- --image '${{ steps.oracle.outputs.imageid }}'
+      - name: Wasm functional checks and Linux upstream comparisons
+        run: moon run tests/ci.mbtx -- functional
+      - name: Interfaces and harness formatting
+        if: runner.os == 'Linux'
+        run: |
+          moon info
+          moon fmt --check tests
+          git diff --exit-code
+      - name: Preserve results and failure diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-audit
-          path: test-reports/coverage-audit
-          if-no-files-found: error
-
-  release_acceptance:
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.release_acceptance }}
-    uses: ./.github/workflows/release-acceptance.yml
-    permissions:
-      contents: read
-      actions: read
-    with:
-      source_sha: ${{ github.sha }}
-      source_gate_run_id: ${{ inputs.source_gate_run_id }}
-      outgoing_release_id: ${{ inputs.outgoing_release_id }}
+          name: cmd-test-reports-${{ matrix.os }}
+          path: test-reports
+          retention-days: 7
+          if-no-files-found: warn

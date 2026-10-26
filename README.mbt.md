@@ -1,10 +1,14 @@
 # cmd
 
-Pure-MoonBit command-line utilities for Native and Wasm. Each published
+Pure-MoonBit command-line utilities delivered as Wasm through MoonX. Each published
 command is an independent `cli/<command>` MoonX module. The support listed here
 is a measured subset of the corresponding upstream command; it does not claim
 complete GNU/POSIX compatibility. See the [support record](docs/compatibility.md)
 for exact versions, observed behavior and boundaries.
+
+Development acceptance runs current Wasm commands on Linux, macOS and Windows.
+Native is used for test tools. Resource observations and exact-version MoonX
+acceptance have separate manual workflows; see [tests](tests/README.md).
 
 ## Features
 

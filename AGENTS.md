@@ -89,44 +89,24 @@ module and version before any release operation.
   catalog, compatibility record and relevant regression together. Record
   tradeoffs in the existing canonical ADR with an Updated date, evidence and
   conditions for lifting limitations. Keep historical reports immutable.
-- Before every push, if any file under `core/` or `commands/` changes command
-  behavior, accepted options or operands, output streams, filesystem/network/
-  process effects, capability policy, platform support, dependency resolution,
-  metadata, or package version, perform the command-by-command coverage audit.
-  The audit must map each changed behavior to a stable registry entry and to
-  the required package, contract, scenario, policy, backend-pair,
-  upstream-differential, published-differential, or boundary evidence. Record
-  affected commands, case IDs, required Native/Wasm runs, oracle profile, and
-  any uncovered or deferred boundary. A passing test command or a larger case
-  count does not prove coverage completeness. Do not push applicable changes
-  while the audit report is missing or the audit returns nonzero. An explicit
-  boundary/rejection case must pass the audit with its rejection evidence and
-  ADR/support-record unlock condition; it does not bypass the gate. Use the
-  reviewed `tests/coverage/push.mbtx` workflow documented in
-  `tests/coverage/README.md` to audit and push the exact committed revision.
-- Mainline changes must use a PR and the required three-platform checks plus
-  `coverage-audit`. Keep `tests/coverage/ci-change.json` current for the complete
-  proposed range. It declares impact, never passing results or report paths;
-  CI binds real evidence at its exact checked-out revision. Harness-only changes
-  still require registered harness regression evidence. Do not bypass branch
-  protection or substitute a feature-branch run for the final main commit.
-- Round-specific PR bootstrap (2026-10-24): for the current comprehensive
-  B2/G/S/D/O/R round, the user authorizes new and corrective feature-branch
-  pushes after relevant local correctness passes and the existing C1
-  prepare/verify and coverage audit run. Retain nonzero findings for missing
-  exact-revision or remote evidence; never label them passing. If `push.mbtx`
-  stops on those findings, a non-force direct Git push may bootstrap PR CI.
-  This authorization carries across corrective commits without per-SHA
-  confirmation. Fix local correctness and scope defects before pushing. All
-  three platform checks and `coverage-audit` must pass before merge, followed
-  by actual-main validation. Performance and release gates remain unchanged;
-  see the optimization plan section 15 and coverage README.
-- Verification serves the current workspace and current published coordinates.
-  Retain this CI run's reports, required source/artifact/oracle identities and
-  failure diagnostics. These identities prevent stale or substituted evidence;
-  they are not a requirement to archive every release or recover old images.
-  Historical evidence backfill and GitHub Release verification archives are
-  outside the test system's maintenance scope.
+- Product delivery and required correctness acceptance target Wasm through MoonX.
+  Development CI runs the complete applicable Wasm suite on Linux, macOS and
+  Windows. Native is retained only for test tools and their own regressions.
+- Mainline changes use a PR and the required ubuntu-24.04, macos-15 and
+  windows-2025 checks, followed by actual-main validation. Do not bypass branch
+  protection. The former C1 coverage audit, change declaration, source/artifact
+  sealing and audit-before-push wrapper are retired by the 2026-10-26 CI plan.
+  Run relevant local correctness checks before a normal non-force branch push.
+- Resource observations and exact-version MoonX acceptance are separate manual
+  workflows. Neither runs implicitly on ordinary PRs or main pushes. Publishing
+  still requires passing development checks, followed by complete three-platform
+  acceptance of the uploaded exact coordinates and Linux upstream comparison.
+- Keep current candidate and published expectations separate. latest.json is the
+  current published-coordinate authority; acceptance never rewrites the repository.
+  Do not republish unchanged commands or generate new historical snapshot chains.
+- Retain concise results, stage durations and failure diagnostics. Preserve
+  existing historical reports without backfill. Missing artifacts, empty required
+  selections, deadlines and cleanup/report failures cannot count as success.
 - Upstream differential evidence must use a verified immutable oracle profile
   containing the image digest, tool-version inventory, and source or
   distribution checksums. A mutable Docker tag, host PATH tool, handwritten

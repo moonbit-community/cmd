@@ -1,3 +1,10 @@
+# Active CI amendment: 2026-10-26
+
+[Wasm CI migration](ci-wasm-migration.md) supersedes the CI, scope, audit,
+Native product and publication-freeze requirements of this earlier algorithm
+plan. Historical measurements remain dated evidence. Algorithm workloads,
+statistical thresholds and command behavior requirements remain unchanged.
+
 # Comprehensive algorithm, performance and CI optimization execution plan
 
 Date: 2026-10-23; execution direction revised 2026-10-24
@@ -55,14 +62,9 @@ until the whole selected O stage is accepted; R and issue #32 follow O.
 
 Source: `cmd-comprehensive-optimization-plan-2026-10-23.md`, supplied by the user.
 
-The user's 2026-10-24 direction removes C2. The execution baseline is accepted
-main `f2769846996ec0dc9d03d55014aa2f749bf1fbb6`. Keep the unmerged C2 work
-on its local branch; do not carry it into subsequent changes. Retain C1's full
-three-platform checks, coverage audit and daily schedule. Do not introduce a
-root PR coordinator, isolated guard, handoff-audit framework or scoped/weekly
-activation. Reduce demonstrated duplication and runtime cost with small,
-maintainable changes; avoid additional hash checks and defensive frameworks.
-The scope design below remains C1 background, not a new activation stage.
+The 2026-10-26 CI decision supersedes C1's audit, declarations, backend pairing
+and daily schedule. Use full Wasm development checks and independent manual
+resource/MoonX workflows. No change-based selection system is enabled.
 
 This is the English repository counterpart of the selected comprehensive plan.
 It does not certify completion of any stage. Existing historical reports remain
@@ -77,8 +79,7 @@ distinguishes the reproduced command-oracle cleanup defect from the historical
 timeout whose cause remains unconfirmed. The separate
 [C0 actual-main acceptance](reports/2026-10-23-c0-acceptance/README.md) records
 the completed four-check gate at main `4180e527`. C1 subsequently completed at
-`f2769846`, including actual-main run `39955744640`. Full/shadow execution stays
-in effect.
+`f2769846`, including actual-main run `39955744640`. Those historical checks are superseded by the current Wasm CI decision.
 
 ## 1. Objective, decisions and boundaries
 
@@ -96,15 +97,15 @@ issues in the same order only after final acceptance.
 | Question | Selected decision |
 | --- | --- |
 | Delivery performance | Direct release Wasm through moonrun, including runtime startup, command work, flush and exit; no MoonX launcher |
-| Native/direct Wasm | Native supplies independent development/correctness evidence; direct Wasm supplies performance acceptance |
+| Native/direct Wasm | Wasm supplies product correctness and performance acceptance; Native supplies test tools |
 | Performance gate location | Fixed local macOS and Linux environments, outside required hosted CI timing statuses |
 | Windows | Three-platform correctness; diagnostic timing only until a stable host exists |
 | Candidate publication | Necessary final joint-acceptance `-rc.N` coordinates only; no ordinary-PR candidates |
-| PR validation | Existing C1 full execution and current impact declaration |
+| PR validation | Full applicable Wasm validation on three platforms |
 | Ordinary main | Full validation of the real main commit |
-| Periodic full runs | Existing daily full source/published checks; full before release |
-| Scope inputs | Existing coverage prepare/verify and sole `tests/coverage/ci-change.json` |
-| Freshness | Actual content, change set, dependency, registry, policy and base fingerprints |
+| Periodic full runs | No schedule; resource and MoonX acceptance are manual |
+| Scope inputs | Full applicable test set; no change declaration |
+| Run identity | Commit, platform, toolchain, mode and exact published coordinates |
 | New commands | No awk/tar/zip/unzip in this round |
 
 Unknown impact, broad shared infrastructure changes, release freezes and repairs
@@ -130,8 +131,7 @@ The performance target is parity or better; the maximum accepted cost is 1.5x
 for **each applicable workload**. Averages, removed slow rows, changed
 correctness and disabled upstream optimizations cannot establish acceptance.
 
-Engineering defaults include the existing daily schedule, schema-v2 declarations,
-105 paired samples with bootstrap, 64 KiB I/O,
+Statistical benchmark defaults retain 105 paired samples with bootstrap, 64 KiB I/O,
 64 MiB sort accounting and 16-way merge. Internal parameters may evolve with
 reviewable evidence. Do not independently relax scope, the 1.5x ceiling,
 evidence requirements or completion conditions. Explain contract changes with
@@ -224,240 +224,24 @@ there is no reliable compiler-task timing to attribute all Native cost to MSVC,
 antivirus, disk or one MoonBit component. Docker preparation took seconds and
 dependency updates about 1-6 seconds; mirrors are not the primary explanation.
 
-Priority order:
+The historical optimization directions above are replaced by the current
+[Wasm CI migration](ci-wasm-migration.md). Three OS jobs build Wasm independently
+and reuse it locally. Package tests execute in batches; ordinary CI omits
+Native products, audits, publication checks and resource matrices. The targets
+are 10 minutes ideally, under 15 minutes normally, at most 20 minutes without
+abnormal queueing, and under 45 total runner minutes. Measure cold and warm
+runs before claiming savings.
 
-1. Trusted PR impact closure, including negative and transitive cases and
-   selected/full intersection equivalence.
-2. One preparation/build plan/test inventory per module/package/backend;
-   preserve case set and identities while reducing Moon calls/builds.
-3. Exact ordinary-package/registry execution mapping; retain unmapped tests.
-4. Backend-pair consumes this run's independently executed raw observations,
-   including bytes, status and required side effects, never just pass labels.
-5. Minimal audit artifacts with retrievable raw evidence and failure diagnostics.
-6. Correct toolchain/dependency/build cache keys and cancellation of superseded
-   runs belonging to the same PR only.
-7. Measured concurrency 1/2/4 and Native internal build settings, including
-   resources, stability and total CPU cost.
+## 4. Current CI scope
 
-### 3.1 Package inventory and duplicate removal
+Full applicable Wasm tests run on all three platforms. The former scope and
+change-declaration design is retired; no change-based test selection is enabled.
+See [Wasm CI migration](ci-wasm-migration.md).
 
-The plan observed about 513 Native and 287 Wasm registered backend/test
-combinations. Recount live. Group code-build, compiled-test inventory and
-name-to-index mapping by compilation unit/backend; freeze output. Test names
-must be unique and selected tests present. Explicitly parse attributes, skips
-and target restrictions. Preserve doctests, JS, Wasm-GC and any tests outside
-Native/Wasm registry responsibility.
+## 5. Current triggers
 
-Verify this toolchain's supported `--index`/`--frozen` contract before use;
-continue selecting individual tests through supported Moon entrypoints. Do not
-invent a direct-driver protocol or depend on a private generated-code ABI.
-Generate source/test-name mappings after compilation. Prove that exactly
-the expected tests actually ran; exit 0 can mean zero tests. Store one verified
-shared artifact per build unit instead of copying and rereading every large
-artifact for each case. Remove the duplicate ordinary
-entrypoint only after every original inventory item has an execution owner.
-
-### 3.2 Other reuse and cache conditions
-
-Reuse requires identical run, attempt, checkout, backend, artifact, fixture,
-argv, environment and observation contract. Native and Wasm each execute;
-side-effect fixtures start independently clean. Oracle observations may be
-shared only for deterministic inputs/behavior and identical identity. Network,
-state, time and randomness cases remain independent by default; persistent
-containers do not provide automatic isolation.
-
-Linux smoke/freeze may reuse the same-source, same-configuration build, while
-each required consumer check still executes. Split the roughly 475 MB platform
-report transfer into compact audit receipts and detailed diagnostics. Raw
-evidence must remain retrievable by content identity; a hash without available
-content fails audit.
-
-Cache allowed dependencies and intermediate artifacts using OS, architecture,
-toolchain, SDK, dependency graph, backend and flags. Never cache developer
-credentials/tokens or reusable passing test results. Validate identity and
-execute correctness on cache hits; rebuild untrusted/mismatched entries. Main
-never inherits PR pass results. Cancel only superseded runs of the same PR;
-preserve failure logs and do not cancel main/daily/release for unrelated PRs.
-
-Serialize Moon check/test/build/info/fmt because of `_build/.moon-lock`.
-Measure Moon-internal concurrency separately. Initially allow at most two
-already-built independent direct fixtures concurrently; network, lifecycle,
-stress and time-sensitive cases remain serial unless stability and total CPU
-measurements justify expansion.
-
-Engineering goals are 5-10 minutes for small warm-cache PRs, about 20 minutes
-maximum for warm full Windows, 25 minutes for the full pipeline, and at least
-30% fewer raw runner minutes with the same full coverage. These are unproven
-optimization goals, not timeout policies or permission to drop tests. Record
-cold/warm build/test/oracle/upload/audit, task/Moon/case counts, transferred
-bytes and CPU/wall time. Do one full cold/warm comparison, then evaluate three
-naturally occurring successful runs instead of manufacturing repeated full CI.
-
-## 4. Scope schema, closure and freshness
-
-| File/layer | Responsibility |
-| --- | --- |
-| Existing coverage prepare/verify | Reuse C1 entrypoints without a new coordinator |
-| `tests/coverage/ci-change.json` | Sole current impact declaration; schema upgrade; requirements only |
-| `tests/coverage/` | Diff, dependency closure, declaration checks and evidence binding |
-| `tests/registry/` | Stable command/behavior/case/owner/backend/observations and non-import associations |
-| `tests/coverage/push.mbtx` | Existing exact-commit audit and controlled push |
-| Coverage README/AGENTS | Operational contract, exceptions and freshness requirements |
-
-The existing `prepare_ci_change.mbtx` hardcodes a historical base, reports and
-cases. Generalize before use. `ci_input.mbt` strictly rejects unknown fields;
-phase schema migration explicitly.
-
-Minimum scope is **automatic closure union reviewed human additions**. Authors
-may add indirect effects but cannot remove automatic consumers, cases, backends
-or observations. Human review adds requirement semantics, unstructured coupling,
-historical defects and multi-command scenarios. Unprovable impact expands scope.
-
-Read the complete target-base/head diff, including add/modify/delete/rename,
-type, Git mode and old/new blobs. Build both base and candidate dependency
-graphs and use their union, including test dependencies, backend conditions and
-external resolution. Read registry ownership plus shared fixtures, child
-command launches, policy/scenario/cohort/catalog/release relationships. Include
-toolchain, workspace, selection-policy and workflow widening rules.
-
-Reverse dependency closure selects consumers/tests. Forward dependency closure
-selects build prerequisites; it does not automatically retest every unchanged
-prerequisite's behavior. A changed command selects its complete applicable
-registered behavior collection and linked integrations, not only new cases.
-
-| Change | Minimum selection |
-| --- | --- |
-| Command behavior/dependency/version | Complete related package, contract, metadata, policy, pair, applicable oracle/scenario and published association |
-| Core implementation/API | Union of old/new reverse consumers; all compile consumers for API changes |
-| Catalog literal row | Narrow only if strict recognition proves helpers/structure unchanged; corresponding commands plus global invariants |
-| Catalog helper/control flow/unknown expression | Normal core closure |
-| Registry/manifest data row | Compare stable IDs; select both-side owners and global uniqueness/reference checks |
-| Shared runner/testkit/fixture | Every consumer of the layer; general layers normally full |
-| Resolver/audit policy/toolchain/workspace global configuration | Full plus registered harness regressions |
-| Command README/help/support | Check declared behavior/metadata/registry consistency; no blanket docs exemption |
-| New narrative historical report/allowed index | Narrow docs-only rules and immutable-history/reference checks |
-| Deleted test/command/module | Old-side consumers, removed acceptance conditions and replacement evidence |
-| Unknown path/syntax/owner | Explain and run full; never silently empty |
-| Malformed/missing/forged declaration | Reject; widening does not repair broken input |
-
-AGENTS, ADRs, compatibility, README and `.mbt.md` are not general docs-only
-directories. Preserve historical immutability checks for edits/deletes/moves.
-
-### 4.1 Schema-v2 identities
-
-Final field names are frozen by C1, not established APIs merely because this
-table describes them.
-
-| Group | Required identity |
-| --- | --- |
-| Schema/policy | Schema and parser/selector rule version or digest |
-| Base | Target ref and exact base SHA aligned with actual PR target |
-| Payload | Tree fingerprint of managed tracked content, excluding declaration itself |
-| Change set | Full old/new paths, blob IDs, modes, change types and canonical digest |
-| Dependency/registry | Both graph identities, registry and non-import rule identities |
-| Impact | Commands/behaviors/options/operands/core and required backend/evidence/observations |
-| Extra impact | Human additions and reasons; cannot narrow closure |
-| Boundaries | Deferred/uncovered/boundary with ADR/unlock/rejection-test mapping |
-| Published | Published-contract/manifest effect and affected exact coordinates |
-
-Do not write pass labels, local report paths or historical run IDs into intent.
-CI binds real execution receipts to its actual checkout. Do not embed the
-self-containing commit SHA in intent; exact head/merge SHA belongs in execution
-receipts. Any managed source/test/support/dependency/rule change must refresh
-payload/change fingerprints. Whitespace, timestamps and nonces cannot repair
-staleness. Identical tree/base with only a commit-message change or re-push needs
-no meaningless declaration edit.
-
-### 4.2 Prepare, verify and trusted execution
-
-Finish implementation/tests/docs/format/interfaces, resolve and synchronize the
-target base, and stage intended content. Preparation reads the intended staged
-tree and rejects unstaged managed changes. Generate closure plus readable
-explanation, retain reviewed extras, generate/stage intent, commit, recompute
-against exact clean HEAD and run the required audit/push. Later content changes
-return to preparation.
-
-Remote preflight validates schema/base/head/synthetic merge/payload/closure and
-requirements before expensive builds. PR receipts bind GitHub's synthetic merge
-SHA and verify its parents are the expected base and PR head. Base advances
-require synchronization and refreshed validation. Main computes the actual
-first-parent/before..after range, retaining applicable reviewed extras and union
-impact across multi-commit pushes; squash/merge cannot reuse a PR head receipt.
-
-GitHub workflows run after a push is accepted. Remote failure blocks merge;
-the local wrapper supplies rejection before push. Selection minimums use the
-reviewed target-branch policy. Changes to resolver/policy/workflow/audit force
-full validation and cannot approve their own reduced scope. No additional
-trusted-base guard is part of this round.
-
-Keep required status names `ubuntu-24.04`, `macos-15`, `windows-2025` and
-`coverage-audit`. An optional selector preflight job is checked by final audit.
-Legal empty scope requires an explicit valid classification and per-platform
-executed/not-applicable responsibility. Missing jobs/evidence, failed selection
-or skipped required jobs must never aggregate green.
-
-## 5. Trigger matrix, migration and harness regressions
-
-| Trigger | Source | Published | Required identity |
-| --- | --- | --- | --- |
-| PR | Existing full three-platform/backend execution | Current C1 publication conditions | Fresh intent; actual synthetic merge |
-| Main push | Full validation of the actual merge | Current C1 publication conditions | Fresh actual-main evidence |
-| Daily schedule | All 79 commands/core and applicable source regressions | All current 78 coordinates | Existing UTC `17 3 * * *` |
-| Manual full | Full source | Source/published/both selectable | Selection recorded in receipt |
-| Freeze/RC/formal | Full actual-main source and release closure | Baseline before release, exact new coordinates after; linked unchanged consumers | Run before release, independently of the schedule |
-| Global selector/policy/toolchain | Full | Full when published interpretation/execution affected | Prevent self-authorized scope reduction |
-
-Schedules may run late. Daily full executes even when source is unchanged; build
-cache is allowed, prior passing results are not. Schedule/manual full use
-explicit `regression-only/full`: derive requirements from current main and full
-registry, without fabricated PR changes or stale-intent filtering. Receipts
-record trigger, full/scoped, source, run/attempt, scope fingerprint and execution
-responsibility. Unresolvable before SHA, rewritten history or unknown base on
-main means full, not empty. Future merge queue support must validate its real
-queue SHA before using it. Benchmark parser/statistics/sampling/gate unit tests
-run in normal CI; noisy hosted timings never become required performance gates.
-
-Linux runs applicable contracts/policy/Native/Wasm/pair, immutable oracle and
-relevant consumers plus Linux boundaries. macOS runs real source/consumer,
-filesystem/process and pair checks, not compilation alone. Windows retains
-real path/link/locking/output behavior including stage-0 mv directory-entry and
-referent observations and separate Native/Wasm runtime identity. Missing Windows
-permission/observer/host capability is unfinished or an explicit boundary;
-nonzero status alone does not prove no damage. Targeted affected resource,
-process and network stress stays in PRs; retain current full stress execution.
-Never move sole semantic evidence away just because its name contains stress.
-
-| PR label | Work | Its own acceptance |
-| --- | --- | --- |
-| C0 | Mainline timeout classification/fix and valid current evidence | Existing full three-platform/audit |
-| C1 | Schema v2, generic parsing/closure/freshness and negatives; explicit old-schema transition | Full execution, selector shadow, expected-scope comparison |
-| C3 | Package precompile/inventory/duplicate removal/pair reuse | Equivalent complete execution and observation set; retain unmapped tests |
-| C4 | Artifacts/cache/release build reuse/timing/controlled concurrency | Relevant regressions and complete cold/warm comparison |
-
-C2 is removed. Continue directly from accepted C1 to C3/C4, which may split.
-Keep full execution and avoid new coordination or proof layers. Old schema is
-accepted only through the explicit migration path; ordinary new PRs ultimately
-require freshness. Never alter historical reports retroactively.
-
-Register meaningful regressions for stale content, timestamp/whitespace-only
-intent refresh, missing direct/transitive consumers and lost human extras;
-base advance, wrong merge parents/source SHA, unstaged changes and post-prepare
-edits; deletion/rename/import removal and old/new graph/backend differences;
-non-import scenarios; literal catalog narrowing versus helper/unknown widening;
-global uniqueness; legal-empty versus corrupt intent and unknown-owner full;
-selector/audit changes forcing full; duplicate/missing/attributed test inventory,
-zero-test success, wrong index and changing artifact; wrong backend/artifact/
-oracle/run/attempt, missing raw observations, tampered cache/frozen files and
-both pair sides reusing one execution; scoped/full intersection equality;
-main/daily triggers resisting PR intent; unchanged-source daily execution;
-and missing/failed/skipped mandatory platform/selector aggregation.
-
-On full-regression failure retain source/package/toolchain/oracle/logs and
-classify source, published, infrastructure or observation deficiency. Pause
-affected changes/releases after impact analysis. Unrelated PRs require explicit
-dependency analysis; neither freeze the whole repository automatically nor
-continue releases unattended. Fix with the complete relevant matrix and one
-full recovery run, not only the single failing case.
+PRs and main pushes run development validation. Resource observations and exact
+MoonX acceptance are manual workflows. There is no daily full run.
 
 ## 6. Performance acceptance contract
 
@@ -652,7 +436,7 @@ decoder window/I/O/bounded tables separately from Bytes caller memory.
 G1 delivers raw codec/levels/cost selection with independent vectors/properties,
 GNU two-way interoperability and size/development data. G2 delivers Reader and
 envelope/three-CLI prefix/status/effects, byte-feed, corruption/members,
-Native/Wasm/pair and resources. GNU 1.14 decodes project output and the project
+Wasm and resources. GNU 1.14 decodes project output and the project
 decodes every GNU level; compressed bytes need not match. Every level actually
 shrinks designated compressible data. At least 8 MiB compressible target size
 is <=1.05x same-level GNU; incompressible overhead <=`max(1 KiB, 0.1% input)`.
@@ -818,7 +602,7 @@ sequences; tree structured output follows oracle conflict rules and stays valid.
 Every option includes canonical/alias/cluster/long=value where applicable,
 missing/invalid/zero/negative/overflow and operands after `--`; conflicts/repeats/
 ordering and valid combinations; empty/stdin/multifile/binary/no delimiter/later
-failure/prefix/collision/permission cases; bytes/status/effects, Native/Wasm/pair
+failure/prefix/collision/permission cases; bytes/status/effects, Wasm
 and applicable platforms. Update source/tests/README/help/catalog/support/ADR/
 registry together, including shared existing behavior impact.
 
@@ -878,7 +662,7 @@ no unexplained regressions.
 ## 13. Complete 79-command and 12-core review register
 
 Each row needs owning stage, source hotspot review, normal/small/error inputs,
-applicable scaling, Native/Wasm development data and final real MoonX data.
+applicable scaling, Wasm development data and final real MoonX data.
 Allowed dispositions are optimized with evidence; already satisfactory with
 evidence; explicit capability boundary; failed performance target. The latter
 two are not performance passes. Source plus measurement must justify no change.
@@ -992,7 +776,7 @@ profiles/generated code to distinguish algorithm, adapter, compiler and runtime.
 Package invariants do not replace CLI bytes/effects; contracts do not establish
 upstream agreement; scenarios do not cover every option; nonzero exit does not
 prove no filesystem/network/process damage; rejection does not implement a
-capability; actual Native/Wasm pair does not imply GNU parity; floating PATH
+capability; a product contract pass does not imply GNU parity; floating PATH
 tools/availability do not establish immutable differential; source/moonrun does
 not establish exact published behavior; timing does not establish correctness
 or an untested platform. Preserve pass/fail/skip/infra separately from semantic/
@@ -1022,49 +806,32 @@ zero terminator/trailer/zero body, complete/close-delimited/HEAD/204/304, prefix
 partial file/remove-on-error/-OJ/output failures; wget stdout/-O/default/-c,
 fail-then-success requests/Range/final bytes/no duplicates or extra files;
 Windows mv file/directory/dangling links/junctions, same-volume -T/replacement/
--n/backup/recovery with entries/targets/referents/Native/Wasm moonrun. Preserve
+-n/backup/recovery with entries/targets/referents/Wasm moonrun. Preserve
 safe conservative rejection if host defects persist; optimization cannot remove
 the checks that prevent damage.
 
-## 15. Existing push and merge gates
+## 15. Push and merge gates
 
-Reuse C1's prepare, verify, audit and push entrypoints. C2's handoff and AGENTS
-migration are removed. Apply the existing rules to the actual change: harness
-changes require their registered regression evidence; command behavior changes
-require the existing command-by-command coverage audit. PR, actual-main and
-release acceptance retain the full three-platform checks and coverage-audit.
-Pending checks stay pending. Do not add duplicate evidence systems or rerun
-unchanged checks without a new reason.
+Run relevant local checks serially, update interfaces and formatting, review the
+diff, then commit and push a feature branch normally. Merge through a PR after
+ubuntu-24.04, macos-15 and windows-2025 pass; validate actual main afterwards.
+Coverage audits, backend pairing, change declarations and sealed source/receipt
+proofs are no longer gates. Native product execution is outside delivery scope.
 
-For this comprehensive B2/G/S/D/O/R round, the user's 2026-10-24 authorization
-permits new and corrective PR branch pushes once relevant local correctness
-passes and the existing C1 prepare/verify and coverage audit run. Preserve
-nonzero findings for missing exact-revision or remote evidence as pending;
-do not manufacture a passing audit. A non-force direct Git push may bootstrap
-CI when the existing push launcher stops on those findings. Authorization
-continues across corrective commits without per-SHA confirmation; local
-correctness and scope defects still require repair. All three platform checks
-and coverage-audit must pass before merge, then validate actual main. This
-round-specific exception does not change the original per-row MoonX
-performance, resource, RC, publication or completion gates.
-
-Daily sequence: existing PATH and `MOON_HOME="$HOME/.moon-accounts/cli"`; freeze
-the PR's behaviors/options/conflicts/cases/workloads; implement/relevant serial
-check/test/build; finally info/fmt and review generated diffs; rerun checks only
-for actual new impact; staged prepare/review scope; commit,
-verify/audit/wrapper push; PR checks/merge/new actual-main evidence; report stage
-as merged pending combined publication and keep issue open.
+Formal statistical performance criteria below remain separate from CI resource
+observations. Release exact-version acceptance remains required after upload;
+ordinary PRs do not publish or run MoonX consumers.
 
 ## 16. Order and stage exits
 
 ```text
 C0 main/evidence and workspace preservation
- -> accepted C1 baseline (C2 removed; retain full daily CI)
+ -> Wasm CI migration (full applicable development validation)
  -> C3/C4 execution/build reuse/cache/artifacts/timing
  -> B1/B2 benchmark/oracle/corpus/startup floor
  -> G1/G2 -> S1/S2/S3 -> D1/D2/D3 -> O1..O13 -> R1..R4
  -> remaining 79-command/12-core review and integrated optimization
- -> source freeze/full actual-main checks/RC publication
+ -> full actual-main checks/RC publication
  -> real RC MoonX semantics and macOS/Linux performance
  -> formal publication/exact formal MoonX acceptance
  -> release-record PR/actual-main validation/ordered issue closure
@@ -1077,7 +844,7 @@ CI and benchmark prerequisite PRs separate from gzip algorithms.
 
 Preparation exits only with main failure handled, pinned identities, trustworthy
 scope/harness, inventory and first floor. Each feature exits with implementation,
-package/CLI/effect/policy/pair/oracle, synchronized records, development resource/
+package/CLI/effect/policy/oracle, synchronized records, development resource/
 timing and fresh scope. Each G/S/D/O/R stage finishes all selected implementable
 algorithms/options plus explicit legitimate child boundaries before advancing.
 Full review exits with measured disposition on all 91 rows and no unexplained
@@ -1169,20 +936,19 @@ CI/profile/package/performance applicability/remaining children/unlocks. Do not
 close on stage merge, automatically close #10/#20/#38, begin #35 or imply another
 round after this finish.
 
-Deliver canonical current plan/status; fixed scope/freshness/association and
-harness tests; same-coverage cold/warm CI cost evidence; exact option/conflict
+Deliver canonical current plan/status; launcher, scheduling and harness failure-path tests; same-coverage cold/warm CI cost evidence; exact option/conflict
 matrix; 79/12 source/hotspot/baseline/candidate/time/memory/complexity/disposition;
 sealed host/VM/tools/oracle/corpus/held-out; raw pairs/statistics/per-row gate/
 noisy/fail/inconclusive/resources/floor; current package/CLI/scenario/policy/
-pair/upstream/published/platform/rejection audit; candidate/RC/formal manifests,
+upstream/published/platform/rejection results; candidate/RC/formal manifests,
 account-check record without secrets, upload/registry/consumer evidence; original
 issue/child mapping; and concise final report with exact coordinates, residual
 local work and no implicit follow-on task.
 
 Completion requires all of the following together:
 
-- Scope/freshness/reuse regressions pass, mandatory platforms/audit cannot be
-  skipped green, and current daily/release full execution remains intact.
+- Launcher/reuse regressions pass and all three required Wasm platforms pass.
+  Manual release acceptance remains complete; skipped work never counts as passed.
 - All selected #27/#28/#30/#33/#32 algorithms/options finish in order.
 - Gzip incremental decode, diff linear space and resource/failure contracts
   have measured evidence.
@@ -1200,13 +966,12 @@ Completion requires all of the following together:
 ## 19. Execution entry and references
 
 Read plan/current rules, verify source/dirty/main/published baseline; preserve
-interfaces/old draft; resume accepted C1 with C2 removed; finish
-C3/C4 with equivalent-set comparison; finish B1/B2 and disclose real startup/algorithm
+interfaces/old draft; follow the current Wasm CI migration; finish B1/B2 and disclose real startup/algorithm
 risks; proceed G/S/D/O/R/full review/RC/formal/closure. Planned paths/subcommands
 become executable instructions only after implementation/verification. C/G/S/D/
 O/R labels are work packages, not existing GitHub PR numbers.
 
-Relevant repository sources are [coverage](../tests/coverage/README.md),
+Relevant repository sources are [testing](../tests/README.md),
 [registry](../tests/registry/README.md),
 [release runner](../tests/release_runner/README.md),
 [ADRs](adr/README.md), [compatibility](compatibility.md),

@@ -1,0 +1,68 @@
+name: resource observations
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: Resource profile
+        type: choice
+        options: [all, records, long, heldout, kernel-rss-linux]
+        default: all
+      commands:
+        description: Optional comma-separated command names
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: resources-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  resources:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    env:
+      LANG: C
+      LC_ALL: C
+      TZ: UTC
+      CMD_RESOURCE_PROFILE: ${{ inputs.profile }}
+      CMD_RESOURCE_COMMANDS: ${{ inputs.commands }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: hustcer/setup-moonbit@v1.23
+        with:
+          version: 0.10.15+943464bfa
+          core-version: 0.10.15+943464bfa
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - run: moon version --all
+      - run: moon update
+      - run: moon build --target wasm --release --deny-warn
+      - uses: docker/setup-buildx-action@v3
+      - name: Pinned upstream image
+        id: oracle
+        uses: docker/build-push-action@v6
+        with:
+          context: tests/runner/image
+          load: true
+          tags: mooncmd-oracle:phase0
+          cache-from: type=gha,scope=mooncmd-oracle
+          cache-to: type=gha,mode=max,scope=mooncmd-oracle
+      - name: Observe selected resource profiles
+        timeout-minutes: 120
+        run: moon run tests/resources/ci.mbtx -- --image '${{ steps.oracle.outputs.imageid }}'
+      - name: Preserve resource observations
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resource-observations-linux
+          path: |
+            test-reports/resources-linux
+            !test-reports/resources-linux/oracle/**
+          retention-days: 30
+          if-no-files-found: warn
