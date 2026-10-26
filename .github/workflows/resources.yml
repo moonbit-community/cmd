@@ -12,6 +12,11 @@ on:
         description: Optional comma-separated command names
         type: string
         default: ''
+      diagnostic_phase:
+        description: Hypothesis set for stability-diagnostic only
+        type: choice
+        options: [observer, cache]
+        default: observer
 
 permissions:
   contents: read
@@ -35,6 +40,7 @@ jobs:
       DOCKER_BUILD_RECORD_RETENTION_DAYS: 30
       CMD_RESOURCE_PROFILE: ${{ inputs.profile }}
       CMD_RESOURCE_COMMANDS: ${{ inputs.commands }}
+      CMD_BENCH_DIAGNOSTIC_PHASE: ${{ inputs.diagnostic_phase }}
     steps:
       - uses: actions/checkout@v4
         with:

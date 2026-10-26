@@ -30,6 +30,16 @@ do not use an intervention's completion status as stability acceptance. Select
 a correction only after the observations support it, then require the complete
 resource profile with the existing thresholds and fresh final-head checks.
 
+The first controlled Linux x64 run, 40395472012 at 87dc76b, completed every
+window but produced only 17/23 stable cases for either observer and 14/23 for
+either settling or one-CPU affinity. None is a selected correction. A second
+diagnostic phase tests equal input preloading and adds minimal direct-Wasm
+controls plus separate per-invocation kernel counters. Counter wrappers and
+their coarse CPU-time resolution remain diagnostic only. Preserve the original
+short-input workloads and complete process timing; changing sample units or
+averaging away single-process variation would require a separate acceptance
+decision, not a stability fix.
+
 ### Performance wave 4 candidate (2026-10-26)
 
 This extends unpublished core 0.8.2 and grep 0.3.1, with wave-3 commit

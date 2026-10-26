@@ -5,6 +5,11 @@ by date and delivery milestone rather than by a single package version.
 
 ## 2026-10-27
 
+- Linux diagnostic run 40395472012 completed all controlled windows but found
+  no stable full selection: 17/23 for either observer, 14/23 with settling or
+  one-CPU affinity. Retained these rejected approaches and added a cache/control
+  phase with separate kernel-counter observations. Stability remains unresolved;
+  performance PR #60 remains unmerged.
 - Added an explicit Linux stability diagnostic to investigate the six noisy
   workloads in resource run 40346450167. It compares observer backends, a fixed
   between-arm pause and one-CPU affinity while retaining every sample and the

@@ -125,3 +125,21 @@ interference; they do not change acceptance settings or establish stability.
 Completion requires every diagnostic window, and no failed sample is retried
 or discarded. `plan.json` and `runs.json` retain the diagnostic selection and
 report paths. The ordinary `performance` profile keeps its existing thresholds.
+
+The `cache` diagnostic phase adds direct-Wasm `true` and empty-input grep as
+controls. It compares the Native observer with an explicit complete input read
+before each arm, outside timing. A separate Linux counter arm uses GNU time
+under GNU timeout's process-group deadline to retain CPU seconds, voluntary and
+involuntary switches, faults and kernel peak RSS for each invocation. Those
+wrapped elapsed times include observation overhead and are not acceptance
+measurements. GNU time's CPU-time fields have centisecond resolution; they
+cannot resolve a single millisecond-scale CPU difference. No MoonX invocation
+or startup subtraction is used. `diagnostic_phase` selects the hypothesis set
+only for the explicit diagnostic profile.
+
+The first Linux x64 diagnostic (run 40395472012, commit 87dc76b) retained all
+23 workloads in both windows. The existing Wasm observer and Native observer
+each had 17 stable workloads; the 100 ms pause and one-CPU variants each had
+14. No variant passed the complete stability gate. One-CPU CPU-pressure
+observations increased substantially. These negative results do not justify
+adopting a pause, replacing the observer, or restricting acceptance to one CPU.

@@ -29,6 +29,12 @@ async fn main {
     )
   }
   let root = args[1]
+  let phase = @env.get_env_var("CMD_BENCH_DIAGNOSTIC_PHASE").unwrap_or(
+    "observer",
+  )
+  guard phase == "observer" || phase == "cache" else {
+    fail("unknown diagnostic phase")
+  }
   @fs.mkdir(root, recursive=true, allow_exist=false)
   @fs.mkdir(root + "/results")
   let commands = args[4].split(",").map(value => value.to_owned()).collect()
@@ -57,6 +63,9 @@ async fn main {
     }
   }
   guard !cases.is_empty() else { fail("empty diagnostic selection") }
+  if phase == "cache" {
+    cases.append(["true-empty", "grep-regex-empty"])
+  }
   let script = "tests/benchmark/explore.mbtx"
   guard execute(
       "moon",
@@ -125,17 +134,29 @@ async fn main {
   } else {
     ""
   }
-  let variants : Array[(String, String, String, Bool)] = [
-    ("wasm-observer", "wasm", "0", false),
-    ("native-observer", "native", "0", false),
-    ("native-settle-100ms", "native", "100", false),
-  ]
-  if linux {
-    variants.push(("native-one-cpu", "native", "0", true))
+  let variants : Array[(String, String, String, Bool, Bool, Bool)] = if phase ==
+    "observer" {
+    [
+      ("wasm-observer", "wasm", "0", false, false, false),
+      ("native-observer", "native", "0", false, false, false),
+      ("native-settle-100ms", "native", "100", false, false, false),
+    ]
+  } else {
+    [
+      ("native-control", "native", "0", false, false, false),
+      ("native-preload", "native", "0", false, true, false),
+    ]
+  }
+  if linux && phase == "observer" {
+    variants.push(("native-one-cpu", "native", "0", true, false, false))
+  }
+  if linux && phase == "cache" {
+    variants.push(("native-rusage", "native", "0", false, false, true))
   }
   let plan : Json = {
     "scope": "Controlled diagnostic, never resource or stability acceptance; all raw samples retained without retry or removal",
     "cases": cases,
+    "phase": phase,
     "rounds": 2,
     "measured_pairs_per_window": 9,
     "single_cpu": cpu,
@@ -148,7 +169,7 @@ async fn main {
     // Reverse variant order in the second window to expose temporal drift.
     for step in 0..<variants.length() {
       let index = if round == 0 { step } else { variants.length() - step - 1 }
-      let (name, target, settle, pinned) = variants[index]
+      let (name, target, settle, pinned, preload, rusage) = variants[index]
       let log = root + "/" + name + "-" + round.to_string() + ".log"
       if linux {
         @fs.write_file(
@@ -190,7 +211,11 @@ async fn main {
           launch
         },
         log,
-        env=Map([("CMD_BENCH_SETTLE_MS", settle)]),
+        env=Map([
+          ("CMD_BENCH_SETTLE_MS", settle),
+          ("CMD_BENCH_PRELOAD", if preload { "1" } else { "0" }),
+          ("CMD_BENCH_RUSAGE", if rusage { "1" } else { "0" }),
+        ]),
       )
       if linux {
         @fs.write_file(
