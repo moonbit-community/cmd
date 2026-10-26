@@ -49,7 +49,8 @@ jobs:
         run: |
           mkdir -p test-reports
           moon version --all | tee test-reports/toolchain.log
-      - uses: actions/cache@v4
+      - uses: actions/cache/restore@v4
+        id: compilation-cache
         if: ${{ github.event_name != 'workflow_dispatch' || inputs.use_cache }}
         with:
           path: |
@@ -58,11 +59,12 @@ jobs:
             core/.mooncakes
             tests/.mooncakes
             commands/*/.mooncakes
+            _build/.moon_db
             _build/native/release
             _build/wasm/release
-          key: wasm-ci-v1-${{ runner.os }}-${{ runner.arch }}-0.10.15-${{ hashFiles('moon.work', '**/moon.mod', '**/moon.pkg') }}-${{ github.sha }}
+          key: wasm-ci-v2-${{ runner.os }}-${{ runner.arch }}-0.10.15-${{ hashFiles('moon.work', '**/moon.mod', '**/moon.pkg') }}-${{ github.sha }}
           restore-keys: |
-            wasm-ci-v1-${{ runner.os }}-${{ runner.arch }}-0.10.15-${{ hashFiles('moon.work', '**/moon.mod', '**/moon.pkg') }}-
+            wasm-ci-v2-${{ runner.os }}-${{ runner.arch }}-0.10.15-${{ hashFiles('moon.work', '**/moon.mod', '**/moon.pkg') }}-
       - name: Linux listener observer
         if: runner.os == 'Linux'
         run: command -v lsof || (sudo apt-get update && sudo apt-get install --yes lsof)
@@ -82,6 +84,10 @@ jobs:
         run: moon test --target native --release --deny-warn --no-parallelize tests/testkit tests/registry tests/network_scenarios tests/mv_scenarios tests/runner tests/release_runner tests/benchmark 2>&1 | tee test-reports/packages-harness.log
       - uses: docker/setup-buildx-action@v3
         if: runner.os == 'Linux'
+        with:
+          buildkitd-config-inline: |
+            [worker.oci]
+              max-parallelism = 2
       - name: Pinned upstream image
         id: oracle
         if: runner.os == 'Linux'
@@ -104,10 +110,35 @@ jobs:
           moon fmt --check tests
           git diff --exit-code
       - name: Preserve results and failure diagnostics
-        if: always()
+        if: ${{ always() && !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: cmd-test-reports-${{ matrix.os }}
           path: test-reports
           retention-days: 7
           if-no-files-found: warn
+      - name: Preserve interrupted-run logs
+        if: cancelled()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cmd-test-reports-${{ matrix.os }}
+          path: |
+            test-reports/*.log
+            test-reports/*.json
+            test-reports/oracle-*.txt
+          retention-days: 7
+          if-no-files-found: warn
+      - name: Save dependency and compilation state
+        if: ${{ success() && steps.compilation-cache.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ~/.moon/cache/deps
+            .mooncakes
+            core/.mooncakes
+            tests/.mooncakes
+            commands/*/.mooncakes
+            _build/.moon_db
+            _build/native/release
+            _build/wasm/release
+          key: wasm-ci-v2-${{ runner.os }}-${{ runner.arch }}-0.10.15-${{ hashFiles('moon.work', '**/moon.mod', '**/moon.pkg') }}-${{ github.sha }}

@@ -1405,7 +1405,9 @@ async fn run_proxy_cases(bin_root : String, failures : Array[String]) -> Unit {
       ["-qO-", url],
       extra_env=Map([
         ("http_proxy", proxy_url),
-        ("HTTP_PROXY", ""),
+        // Windows launchers collapse environment names without regard to case.
+        // Both spellings must describe the same fixture proxy.
+        ("HTTP_PROXY", proxy_url),
         ("NO_PROXY", ""),
         ("no_proxy", ""),
       ]),
@@ -1416,7 +1418,7 @@ async fn run_proxy_cases(bin_root : String, failures : Array[String]) -> Unit {
       wget_proxy.status == 0 &&
       @testkit.bytes_equal(wget_proxy.stdout, b"hello") &&
       proxy_requests.val == 2,
-      "HTTP CONNECT proxy transfer mismatch",
+      "HTTP CONNECT proxy transfer mismatch: curl status=\{curl_proxy.status} stdout=\{curl_proxy.stdout} stderr=\{curl_proxy.stderr}; wget status=\{wget_proxy.status} stdout=\{wget_proxy.stdout} stderr=\{wget_proxy.stderr}; connections=\{proxy_requests.val}",
       failures,
     )
     let curl_bypass = @testkit.run_command(
@@ -1442,7 +1444,7 @@ async fn run_proxy_cases(bin_root : String, failures : Array[String]) -> Unit {
       wget_bypass.status == 0 &&
       @testkit.bytes_equal(wget_bypass.stdout, b"hello") &&
       proxy_requests.val == 2,
-      "curl --noproxy or wget --no-proxy did not bypass the proxy",
+      "proxy bypass mismatch: curl status=\{curl_bypass.status} stdout=\{curl_bypass.stdout} stderr=\{curl_bypass.stderr}; wget status=\{wget_bypass.status} stdout=\{wget_bypass.stdout} stderr=\{wget_bypass.stderr}; connections=\{proxy_requests.val}",
       failures,
     )
   }

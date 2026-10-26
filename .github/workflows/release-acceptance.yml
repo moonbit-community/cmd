@@ -56,6 +56,10 @@ jobs:
         run: moon build --target native --release --deny-warn tests/runner tests/release_runner
       - uses: docker/setup-buildx-action@v3
         if: runner.os == 'Linux'
+        with:
+          buildkitd-config-inline: |
+            [worker.oci]
+              max-parallelism = 2
       - name: Pinned upstream image
         id: oracle
         if: runner.os == 'Linux'
@@ -72,10 +76,21 @@ jobs:
       - name: Exact-version functional acceptance
         run: moon run tests/ci.mbtx -- published 2>&1 | tee test-reports/published.log
       - name: Preserve acceptance results
-        if: always()
+        if: ${{ always() && !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: published-results-${{ matrix.os }}
           path: test-reports
           retention-days: 30
           if-no-files-found: error
+      - name: Preserve interrupted acceptance logs
+        if: cancelled()
+        uses: actions/upload-artifact@v4
+        with:
+          name: published-results-${{ matrix.os }}
+          path: |
+            test-reports/*.log
+            test-reports/*.json
+            test-reports/oracle-*.txt
+          retention-days: 30
+          if-no-files-found: warn

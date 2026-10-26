@@ -9,6 +9,21 @@ normally, at most 20 minutes without abnormal queueing, and under 45 total runne
 minutes. These targets require measured cold and warm runs; they are not claimed
 as achieved by removing old steps.
 
+The compilation cache includes `_build/.moon_db` together with release compiler
+outputs. In the pinned Moon revision, this file is the shared incremental-build
+database ([executor source](https://github.com/moonbitlang/moon/blob/748b63c/crates/moonbuild/src/execution/n2.rs#L122));
+restoring output directories alone loses the executor's build history. Cache
+restoration and saving are separate: a cold run restores no dependency,
+compilation or Docker layers, then saves successful compiler state for later
+normal runs. Tests still execute on every run, including an exact cache hit.
+
+The pinned oracle recipe builds its 16 upstream components in independent
+stages and assembles their prefixes in the original installation order. BuildKit
+admits at most two stages concurrently and each Make build uses two jobs.
+Versions, source checksums, configure options and the base image stay unchanged.
+The recipe checksum changes with this build-layout change. Cold-image duration
+and full upstream comparison must be measured on the resulting image.
+
 ## Historical optimization record
 
 The following entries describe the former CI and retain their original results.

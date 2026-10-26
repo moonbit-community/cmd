@@ -20,6 +20,10 @@ concurrency:
   group: resources-${{ github.ref }}
   cancel-in-progress: false
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   resources:
     runs-on: ubuntu-24.04
@@ -47,6 +51,10 @@ jobs:
       - run: moon update
       - run: moon build --target wasm --release --deny-warn
       - uses: docker/setup-buildx-action@v3
+        with:
+          buildkitd-config-inline: |
+            [worker.oci]
+              max-parallelism = 2
       - name: Pinned upstream image
         id: oracle
         uses: docker/build-push-action@v6
@@ -58,15 +66,27 @@ jobs:
           cache-to: type=gha,mode=max,scope=mooncmd-oracle
       - name: Observe selected resource profiles
         timeout-minutes: 120
-        run: moon run tests/resources/ci.mbtx -- --image '${{ steps.oracle.outputs.imageid }}'
+        run: moon run tests/resources/ci.mbtx -- --image '${{ steps.oracle.outputs.imageid }}' 2>&1 | tee test-reports/resources.log
       - name: Preserve resource observations
-        if: always()
+        if: ${{ always() && !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: resource-observations-linux
           path: |
             test-reports/toolchain.log
+            test-reports/resources.log
             test-reports/resources-linux
             !test-reports/resources-linux/oracle/**
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Preserve interrupted resource logs
+        if: cancelled()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resource-observations-linux
+          path: |
+            test-reports/*.log
+            test-reports/resources-linux/setup.json
+            test-reports/resources-linux/profiles.json
           retention-days: 30
           if-no-files-found: warn

@@ -7,7 +7,7 @@
   "image_digest": "",
   "versions": "",
   "versions_sha256": "",
-  "dockerfile_sha256": "13ca418a1e714d91165a72c3a35eee159d6429689609dc29444b8291decba403",
+  "dockerfile_sha256": "303d6a2f5d3b54d97b6a4d1d12c59dd48f08edf7e62ed62124b478832fe853f2",
   "versions_script_sha256": "206b3c56d7438078d13bd0caca869c478162c7a6155e2126adf97577d6713c2c",
   "sources": [],
   "binding_status": "unsealed: collect current image identity and upstream inventory with seal-oracle; historical image identities are not reused"
