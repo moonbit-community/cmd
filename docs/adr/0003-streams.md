@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-26
+Updated: 2026-10-27
 Revision: Define R-stage streaming, snapshot, bounded wide-grid caches, temporary-storage and failure effects while retaining explicit matcher, metadata and signal limits.
 
 Delivery validation update (2026-10-26): [ADR-0001](0001-evidence.md) and the
@@ -12,6 +12,23 @@ hosts and exact-version MoonX acceptance; Native command runs and backend
 pairing are retired. Dated Native observations retain their historical scope.
 
 ## Target and decision
+
+### Stability investigation (2026-10-27)
+
+Linux resource run 40346450167 passed 95 resource comparisons and the exact
+outputs of both 23-case performance windows, but six workloads failed the
+unchanged 5% dispersion or 10% drift thresholds. GNU cut samples exhibit an
+order-associated timing difference in both windows; this does not identify
+its physical cause or explain every Wasm-side failure. The merge remains
+conditional on complete passing development and resource results.
+
+The explicit `stability-diagnostic` profile compares the existing observer,
+a Native observer, a fixed between-arm pause and single-CPU affinity while
+keeping the candidate Wasm and inputs fixed. These are diagnostic interventions,
+not adopted execution settings. Preserve every original and diagnostic sample;
+do not use an intervention's completion status as stability acceptance. Select
+a correction only after the observations support it, then require the complete
+resource profile with the existing thresholds and fresh final-head checks.
 
 ### Performance wave 4 candidate (2026-10-26)
 

@@ -67,6 +67,17 @@ async fn measure(
   input : String,
   prefix : String,
 ) -> Sample {
+  // Diagnostic settling is outside the complete child-process interval.
+  // The default and acceptance profile retain zero delay.
+  let settle = @string.parse_int(
+    @env.get_env_var("CMD_BENCH_SETTLE_MS").unwrap_or("0"),
+  )
+  guard settle >= 0 && settle <= 1000 else {
+    fail("invalid diagnostic settling interval")
+  }
+  if settle > 0 {
+    @async.sleep(settle)
+  }
   let output = @process.redirect_to_file(prefix + ".out")
   defer output.close()
   let errors = @process.redirect_to_file(prefix + ".err")
@@ -233,9 +244,21 @@ async fn main {
     println("corpora prepared")
     return
   }
-  let cu = if mode == "ci" { args[6].trim_end(chars="/").to_owned() + "/" } else { lab + "/oracles/coreutils-9.11/src/" }
-  let gnugrep = if mode == "ci" { cu + "grep" } else { lab + "/oracles/grep-3.12/src/grep" }
-  let gzip = if mode == "ci" { cu + "gzip" } else { lab + "/oracles/gzip-1.14/gzip" }
+  let cu = if mode == "ci" {
+    args[6].trim_end(chars="/").to_owned() + "/"
+  } else {
+    lab + "/oracles/coreutils-9.11/src/"
+  }
+  let gnugrep = if mode == "ci" {
+    cu + "grep"
+  } else {
+    lab + "/oracles/grep-3.12/src/grep"
+  }
+  let gzip = if mode == "ci" {
+    cu + "gzip"
+  } else {
+    lab + "/oracles/gzip-1.14/gzip"
+  }
   let wasmroot = args[2].trim_end(chars="/").to_owned() + "/"
   add("true-empty", "true", [], "empty", cu + "true")
   add("cat-64m", "cat", [], "text64m", cu + "cat")
@@ -253,7 +276,11 @@ async fn main {
   add("uniq-8m", "uniq", [], "text8m", cu + "uniq")
   add("grep-fixed-8m", "grep", ["-F", "-c", "alpha"], "text8m", gnugrep)
   add("grep-fixed-64m", "grep", ["-F", "-c", "alpha"], "text64m", gnugrep)
-  let needles = ["absent0", "absent1", "absent2", "absent3", "absent4", "absent5", "absent6", "absent7", "absent8", "absent9", "absent10", "absent11", "absent12", "absent13", "absent14", "gamma"]
+  let needles = [
+    "absent0", "absent1", "absent2", "absent3", "absent4", "absent5", "absent6",
+    "absent7", "absent8", "absent9", "absent10", "absent11", "absent12", "absent13",
+    "absent14", "gamma",
+  ]
   let many_count = ["-F", "-c"]
   let many_span = ["-F", "-o"]
   let many_miss = ["-F", "-c"]
@@ -266,21 +293,50 @@ async fn main {
   add("grep-many-count-64m", "grep", many_count, "text64m", gnugrep)
   add("grep-many-span-1m", "grep", many_span, "text1m", gnugrep)
   add("grep-many-miss-8m", "grep", many_miss, "text8m", gnugrep, status=1)
-  for (name, patterns, status) in [
-    ("short", ["a", "be", "ga", "0"], 0),
-    ("dense", ["alpha", "beta", "gamma", "012"], 0),
-    ("distributed", ["zebra", "jungle", "quartz", "violet", "window", "xenon", "yellow", "kernel", "orange", "purple", "socket", "tensor", "umber", "vector", "walrus", "yonder"], 1),
-  ] {
+  for
+    (name, patterns, status) in [
+      ("short", ["a", "be", "ga", "0"], 0),
+      ("dense", ["alpha", "beta", "gamma", "012"], 0),
+      (
+        "distributed",
+        [
+          "zebra", "jungle", "quartz", "violet", "window", "xenon", "yellow", "kernel",
+          "orange", "purple", "socket", "tensor", "umber", "vector", "walrus", "yonder",
+        ],
+        1,
+      ),
+    ] {
     let options = ["-F", "-c"]
-    for pattern in patterns { options.append(["-e", pattern]) }
-    add("grep-set-" + name + "-64m", "grep", options, "text64m", gnugrep, status~)
+    for pattern in patterns {
+      options.append(["-e", pattern])
+    }
+    add(
+      "grep-set-" + name + "-64m",
+      "grep",
+      options,
+      "text64m",
+      gnugrep,
+      status~,
+    )
   }
   add("grep-overlap-8k", "grep", ["-E", "-o", "a|a.*z"], "overlap8k", gnugrep)
   add("grep-overlap-16k", "grep", ["-E", "-o", "a|a.*z"], "overlap16k", gnugrep)
   add("grep-span-many-1m", "grep", ["-E", "-o", "[a-z]+"], "text1m", gnugrep)
   add("grep-span-literal-1m", "grep", ["-o", "alpha"], "text1m", gnugrep)
-  add("grep-span-long-8m", "grep", ["-E", "-o", "[0-9]{4}.*gamma"], "long8m", gnugrep)
-  add("grep-span-word-1m", "grep", ["-w", "-E", "-o", "[a-z]+"], "text1m", gnugrep)
+  add(
+    "grep-span-long-8m",
+    "grep",
+    ["-E", "-o", "[0-9]{4}.*gamma"],
+    "long8m",
+    gnugrep,
+  )
+  add(
+    "grep-span-word-1m",
+    "grep",
+    ["-w", "-E", "-o", "[a-z]+"],
+    "text1m",
+    gnugrep,
+  )
   add("grep-span-empty-1m", "grep", ["-E", "-o", "a?"], "text1m", gnugrep)
   add(
     "grep-miss-8m",
@@ -344,7 +400,14 @@ async fn main {
     gnugrep,
     status=1,
   )
-  add("grep-regex-miss-64m", "grep", ["-E", "-c", "[0-9]{4}.*absent_xyz"], "text64m", gnugrep, status=1)
+  add(
+    "grep-regex-miss-64m",
+    "grep",
+    ["-E", "-c", "[0-9]{4}.*absent_xyz"],
+    "text64m",
+    gnugrep,
+    status=1,
+  )
   add(
     "grep-regex-empty",
     "grep",
@@ -390,7 +453,15 @@ async fn main {
     let reference = if mode == "ab" {
       let original : Invocation = {
         program: candidate.program,
-        args: [args[6].trim_end(chars="/").to_owned() + "/" + case.command + "/" + case.command + ".wasm", "--"],
+        args: [
+          args[6].trim_end(chars="/").to_owned() +
+          "/" +
+          case.command +
+          "/" +
+          case.command +
+          ".wasm",
+          "--",
+        ],
       }
       original.args.append(case.args)
       original
@@ -448,6 +519,7 @@ async fn main {
       }
     }
     let row : Json = {
+      "settle_ms": @env.get_env_var("CMD_BENCH_SETTLE_MS").unwrap_or("0"),
       "case": Json(case),
       "candidate_invocation": Json(candidate),
       "reference_invocation": Json(reference),

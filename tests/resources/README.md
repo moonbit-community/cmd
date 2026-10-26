@@ -91,8 +91,7 @@ Failed profiles do not suppress later profiles, and `profiles.json` is updated
 after each completed profile. A step
 deadline can leave partial reports. The normal artifact upload retains them;
 the exported oracle prefix is removed on observed completion or failure.
-The artifact excludes that copied prefix if the whole step is killed. Both
-resource observer scripts retain their existing bare import headers.
+The artifact excludes that copied prefix if the whole step is killed.
 
 The `performance` profile runs 23 selected cut/uniq/wc/grep workloads through
 `tests/benchmark/explore.mbtx`, using the exported oracle executables. Two
@@ -112,3 +111,17 @@ gate: this is a repeatability check, not the formal 105-pair acceptance suite.
 The complete matrix and focused command selections both retain raw samples.
 An `all` selection for unrelated commands explicitly skips this profile; an
 explicit `performance` selection with no applicable commands fails.
+
+`stability-diagnostic` is an explicit investigation profile and is excluded
+from `all`. It preserves two windows of the same selected workloads for the
+existing Wasm observer, a release Native observer, a Native observer with a
+100 ms pause before each arm, and (on Linux) a Native observer confined to one
+allowed CPU. Both candidate and reference inherit the same affinity. The
+second window reverses variant order. Product commands remain the same release
+Wasm files; pauses are outside the complete child-process interval. CPU
+topology, affinity, aggregate scheduler counters and pressure snapshots accompany
+the raw observations. These interventions test hypotheses about measurement
+interference; they do not change acceptance settings or establish stability.
+Completion requires every diagnostic window, and no failed sample is retried
+or discarded. `plan.json` and `runs.json` retain the diagnostic selection and
+report paths. The ordinary `performance` profile keeps its existing thresholds.

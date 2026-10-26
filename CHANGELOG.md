@@ -3,6 +3,14 @@
 This repository integrates multiple command packages, so changes are recorded
 by date and delivery milestone rather than by a single package version.
 
+## 2026-10-27
+
+- Added an explicit Linux stability diagnostic to investigate the six noisy
+  workloads in resource run 40346450167. It compares observer backends, a fixed
+  between-arm pause and one-CPU affinity while retaining every sample and the
+  same release Wasm commands. This is diagnostic infrastructure, not a stability
+  fix or acceptance result. The ordinary resource gate and thresholds are unchanged.
+
 ## 2026-10-26
 
 - Extended the manual resource workflow to cover cut/uniq/wc alongside the
