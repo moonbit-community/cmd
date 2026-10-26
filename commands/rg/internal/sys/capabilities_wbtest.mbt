@@ -46,6 +46,7 @@ async test "cancelled process reads still close pipes and reap the direct child"
   let process = Process::spawn("moon", [
     "run",
     "internal/sys/testdata/process_fixture.mbtx",
+    "--warn-list=-a",
     "--target-dir",
     root + "/build",
     "--",

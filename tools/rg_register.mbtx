@@ -1,10 +1,9 @@
-----
+///|
 import {
-  "moonbitlang/async",
-  "moonbitlang/async/fs",
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/fs",
   "moonbitlang/core/json",
 }
-----
 
 ///|
 fn object(value : Json) -> Map[String, Json] {

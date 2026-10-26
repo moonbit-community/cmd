@@ -1,11 +1,10 @@
-----
+///|
 import {
-  "moonbitlang/async",
-  "moonbitlang/async/stdio",
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/stdio",
   "moonbitlang/core/env",
-  "moonbitlang/x/sys",
+  "moonbitlang/x@0.5.5/sys",
 }
-----
 
 ///|
 async fn main {

@@ -94,7 +94,7 @@ current local PATH toolchain (MoonBit 0.10.17). These are baseline observations.
 Current local validation includes 1,565/1,565 workspace Wasm package tests,
 1,074/1,074 rg Native tests and 117/117 Native test-tool regressions. The 34 rg
 CLI contracts, separate metadata stdin-preservation probe, 26 direct backend
-contracts and candidate generator passed. Test
+contracts and candidate generator passed.
 The complete local functional run records 2,062 passes, zero failures and 18
 explicit platform skips, including all 80 metadata probes. Imported fixture
 bytes are protected from checkout newline conversion by `.gitattributes`.
@@ -102,8 +102,7 @@ The local 0.10.17 interface printer spells 32-bit aliases `Int32`/`UInt32`;
 new interfaces use CI 0.10.15's equivalent `Int`/`UInt` spelling. The thirteen
 unrelated existing-interface spelling diffs are excluded from this migration.
 
-Test
-reports are retained by the normal CI artifact workflow; local logs are outside
+Test reports are retained by the normal CI artifact workflow; local logs are outside
 the repository. Hosted checks use the repository's pinned 0.10.15 toolchain.
 
 The unchanged fixed Rust integration harness ran separately against Native and
