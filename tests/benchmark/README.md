@@ -284,6 +284,16 @@ It uses the same correctness checks and sampling as `prototype`. Each run retain
 raw samples and final output/error files under `results/`. Exploratory medians
 cannot replace the full 105-pair, noise-qualified, immutable-provider workflow.
 
+The `grep-adaptive-*` rows exercise the production literal planner. Six rows
+combine shared/diverse first bytes with all-`a` collision inputs at 64 KiB,
+256 KiB and 1 MiB. Four use all-`Z` sparse input at 1/64 MiB. Dense records,
+a collision prefix followed by 64 MiB of sparse records, and a 4096-byte pattern
+set exceeding the trie-state budget complete thirteen cases. `prepare` builds
+every corpus deterministically; measured `grep -F -c` includes compilation,
+record handling and output. The existing workload rows are retained. The
+separate resource profile measures RSS and temporary effects without wrapping
+the ordinary timed processes.
+
 Each fresh report directory contains expanded `profile.json`, the actual
 `manifest.json`, `sampling-plan.json`, and `report.json`. Each workload keeps
 `trials.jsonl`, `row.json`, its input, and one reusable stdout/stderr file per

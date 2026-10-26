@@ -2,7 +2,7 @@
 
 The `resource-observations` workflow is manual only. It builds the selected ref's
 Wasm commands and defaults to the complete existing matrix. Choose an existing
-profile (`records`, `long`, `heldout`, `kernel-rss-linux`, `performance`) and optional comma-separated
+profile (`records`, `long`, `heldout`, `kernel-rss-linux`, `performance`, `literal-planner`) and optional comma-separated
 commands for diagnosis. Ordinary development and release checks do not start it.
 
 Build and stage the current release Wasm artifacts first, using the existing
@@ -80,11 +80,12 @@ It exports the pinned image's `/oracle` prefix
 and runs the three profiles above serially with the host MoonBit toolchain,
 followed by a separate kernel-peak profile for rev, split, csplit, tac, column,
 sort, diff, cut, uniq and wc at 8, 64 and 512 MiB. The complete resource selection
-contains 95 byte/status/effect/cleanup comparisons.
+retains its 95 byte/status/effect/cleanup comparisons. The additional literal
+planner profile contributes sixteen, bringing the complete selection to 111.
 The exported reference uses the host's dynamic loader and system libraries;
 these resource observations do not replace sealed-container upstream parity.
 Reports remain under
-`test-reports/resources-linux/{records,long,heldout,kernel-rss-linux,performance}`.
+`test-reports/resources-linux/{records,long,heldout,kernel-rss-linux,performance,literal-planner}`.
 Sampled candidate/reference invocations have a 15-minute deadline; kernel-mode
 invocations rely on the CI resource step's 120-minute overall deadline.
 Failed profiles do not suppress later profiles, and `profiles.json` is updated
@@ -93,12 +94,15 @@ deadline can leave partial reports. The normal artifact upload retains them;
 the exported oracle prefix is removed on observed completion or failure.
 The artifact excludes that copied prefix if the whole step is killed.
 
-The `performance` profile runs 23 selected cut/uniq/wc/grep workloads through
+The `performance` profile runs 36 selected cut/uniq/wc/grep workloads through
 `tests/benchmark/explore.mbtx`, using the exported oracle executables. Two
 separate windows each use one warmup and nine alternating direct-Wasm/GNU pairs,
 with exact status, stdout and stderr checks after every pair. This exercises
 short/long/repeated records, word counting, multi-literal sets, regex spans and
 overlapping suffixes. It never measures MoonX or subtracts runtime startup.
+The original 23 workloads remain; thirteen additional grep cases cover two
+collision families at 64 KiB / 256 KiB / 1 MiB, sparse inputs at 1/64 MiB, dense
+hits, collision-to-sparse transitions and exhausted automaton construction.
 Long-record cut and required-literal regex misses use 64 MiB inputs: the first
 local 8 MiB pilot had stable Wasm windows but noisy millisecond-scale GNU
 references. Increasing input size retains the same algorithmic case and
@@ -111,6 +115,19 @@ gate: this is a repeatability check, not the formal 105-pair acceptance suite.
 The complete matrix and focused command selections both retain raw samples.
 An `all` selection for unrelated commands explicitly skips this profile; an
 explicit `performance` selection with no applicable commands fails.
+
+The Linux `literal-planner` profile runs `literal.mbtx` separately from timing.
+It uses sampled and kernel RSS observers for sixteen fixed patterns with a
+shared two-byte suffix: shared-first and diverse-first collision misses,
+diverse-first sparse misses (each 8/64 MiB, one-MiB records), and a 4096-byte
+pattern set whose trie exceeds 1024 states (64 KiB / 1 MiB). `run.mbtx` exposes
+these as `--distribution literal-shared|literal-diverse|literal-sparse|literal-budget`
+and requires `--commands grep`. Each side must exit 1 with `0\n`, empty stderr,
+equal effects and no residual candidate entries. Table bounds and whole-process
+RSS are distinct; these runs include runtime and I/O memory. The `all` selection
+skips this profile only when grep is explicitly excluded. Previous stability
+failures and the maintainer's PR #60 integration exception do not grant a pass
+to this new candidate.
 
 `stability-diagnostic` is an explicit investigation profile and is excluded
 from `all`. It preserves two windows of the same selected workloads for the

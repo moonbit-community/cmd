@@ -13,14 +13,104 @@ pairing are retired. Dated Native observations retain their historical scope.
 
 ## Target and decision
 
+### Adaptive literal planner (2026-10-27)
+
+PR #60 merged as `6705ea8` after the maintainer explicitly accepted unresolved
+repeatability for that integration. Its final head passed all three development
+checks; actual-main run [40406545144](https://github.com/moonbit-community/cmd/actions/runs/40406545144)
+also passed Linux, macOS and Windows. Documentation PR #59 was merged first.
+The exception does not turn failed resource stability into a pass, change the
+5% dispersion / 10% drift rules, or authorize publication. Original observations
+and the unsuccessful observer/cache/CPU interventions remain historical evidence.
+
+The next candidate promotes the isolated literal-planner pilot into the shared
+pure-MoonBit matcher. Long literals begin with the two-byte shift plan. Within
+a 4096-byte progress window, at least 256 candidate verifications and more than
+four candidates per progressed byte can request a bounded automaton. Switching
+occurs only after every candidate at the current start has failed; the automaton
+resumes at the next start. Hashes and counters never establish a match.
+
+The compiled set owns its pattern array and lazily caches at most one automaton.
+The existing 4096-byte pattern and 1024-state budgets remain. If construction
+exceeds its state budget, the current scan resumes safely with shifts and no
+later scan retries construction. Subsequent inputs start with shifts even when
+the automaton is cached, retaining the sparse-input fast path. No input view or
+record-dependent result is retained across calls. Accepted spans return directly;
+the internal handoff uses a negative start that never escapes the public API.
+
+The shift table has 16 KiB of integer payload. A cached automaton adds at most
+2,105,344 bytes for transitions and terminal lengths, plus byte classes, owned
+pattern references, temporary construction maps and object overhead. This is an
+algorithmic table bound, not a process RSS cap. Public signatures and command
+options are unchanged; the packages remain unpublished core 0.8.2 / grep 0.3.1.
+
+The exploratory driver adds thirteen real grep workloads: shared/diverse-first
+collision families at 64 KiB, 256 KiB and 1 MiB, sparse inputs at 1/64 MiB, a
+collision-to-sparse sequence, dense hits and a construction-budget fallback.
+All previous 23 manual performance workloads remain. The separate literal
+resource profile adds sampled and kernel RSS observations for both collision
+families, sparse input and failed construction, including output/status/effects,
+timeouts and residual temporary entries. Ordinary timing does not enable RSS
+observation. Detailed results and remaining limits are recorded with the
+candidate's validation; Linux stability remains a separate unresolved question.
+
+Deeper follow-ups are reducing the duplicated terminal-length table without
+adding a hot-loop division, and bounded block-transfer summaries for repeated
+regex suffix states. Neither is selected: require independent sparse/dense and
+large-alphabet measurements, cache-exhaustion checks and a bounded memory model
+before changing those engines.
+
+Local macOS arm64 validation compares real release-Wasm grep against frozen
+merged-main `6705ea8` and, separately, the existing GNU grep 3.12 build. Each
+comparison has two windows of one warmup plus nine alternating pairs, including
+runtime initialization, I/O and exit. All 26 workloads (thirteen new and thirteen
+existing grep controls) passed exact status/stdout/stderr comparison in both
+windows. All 26 old/new comparisons met the unchanged stability formulas; only
+21/26 GNU comparisons did, with five noisy millisecond-scale reference rows.
+Those failed windows are retained and were not retried.
+
+| Workload | New / old median ms, first window | Old/new speedup, both windows |
+| --- | ---: | ---: |
+| Shared-first collisions, 1 MiB | 32.23 / 459.23 | 14.25x / 14.63x |
+| Diverse-first collisions, 1 MiB | 33.36 / 466.39 | 13.98x / 14.26x |
+| Shared-first sparse, 64 MiB | 47.81 / 47.81 | 1.00x / 1.01x |
+| Diverse-first sparse, 64 MiB | 47.96 / 47.86 | 1.00x / 1.01x |
+| Collision prefix then sparse, 64 MiB | 50.03 / 52.00 | 1.04x / 1.05x |
+| Dense hits, approximately 1 MiB | 19.17 / 20.31 | 1.06x / 1.06x |
+| Trie-budget fallback, 64 KiB | 42.30 / 42.65 | 1.01x / 1.00x |
+
+The first integrated variant allocated an extra result object per hit. It
+retained collision gains but slowed the existing many-pattern and dense count
+controls by about 15%. Returning the existing span directly removed that
+regression from dense counts (under 0.5% in both final windows). Many-pattern
+and short-pattern controls still show about 2–3% regressions; these small paired
+observations do not establish their general significance. The original rejected
+variant and its full windows remain alongside the refined result.
+
+This does not achieve every 1–3x GNU target: final shared/diverse collision
+ratios are about 7.7–8.0x / 12.9x; budget fallback is about 23–24x. Sparse
+64 MiB ratios are about 2.7x / 0.93x. Faster relative-to-old execution is not
+equivalent to GNU parity or a Linux stability correction. Raw reports, immutable
+Wasm copies, hashes and scripts are indexed under
+`test-reports/adaptive-literal-20261027/`; the complete local working evidence
+remains in `/private/tmp/cmd-adaptive-20261027/`.
+
+Local validation passed 1,611 release-Wasm package tests, 117 Native tool tests,
+and 2,062 functional cases with 19 explicit skips. Eight sampled resource smoke
+comparisons passed status/output/effects with no timeouts or residual temporary
+entries. Sampled RSS is only a lower bound; Linux kernel observations and the
+expanded full CI profile are separate checks. Generated public interfaces are
+unchanged. No package was published or frozen expectation rewritten.
+
 ### Stability investigation (2026-10-27)
 
 Linux resource run 40346450167 passed 95 resource comparisons and the exact
 outputs of both 23-case performance windows, but six workloads failed the
 unchanged 5% dispersion or 10% drift thresholds. GNU cut samples exhibit an
 order-associated timing difference in both windows; this does not identify
-its physical cause or explain every Wasm-side failure. The merge remains
-conditional on complete passing development and resource results.
+its physical cause or explain every Wasm-side failure. At this investigation
+stage the merge was conditional on complete development and resource results;
+the later, explicitly scoped integration exception is recorded above.
 
 The explicit `stability-diagnostic` profile compares the existing observer,
 a Native observer, a fixed between-arm pause and single-CPU affinity while

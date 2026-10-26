@@ -34,10 +34,36 @@ fn median(values : Array[Double]) -> Double {
 }
 
 ///|
+fn complete(row : Map[String, Json]) -> Bool {
+  let samples = array(row["samples"])
+  if samples.length() != 10 {
+    return false
+  }
+  let expected = object(row["case"])["status"]
+  for index in 0..<samples.length() {
+    let sample = object(samples[index])
+    if sample["trial"] != Json(index) ||
+      sample["warmup"] != Json(index == 0) ||
+      sample["equivalent"] != Json(true) {
+      return false
+    }
+    for side in ["candidate", "reference"] {
+      let observed = object(sample[side])
+      if observed["status"] != expected || number(observed["elapsed_us"]) <= 0.0 {
+        return false
+      }
+    }
+  }
+  true
+}
+
+///|
 fn spread(row : Map[String, Json], side : String) -> Double {
   let values = array(row["samples"]).filter_map(sample => {
     let sample = object(sample)
-    if sample["warmup"] == Json(true) { None } else {
+    if sample["warmup"] == Json(true) {
+      None
+    } else {
       Some(number(object(sample[side])["elapsed_us"]))
     }
   })
@@ -56,7 +82,9 @@ async fn run(args : Array[String], log : String) -> Unit {
 ///|
 async fn main {
   let args = @env.args()
-  guard args.length() == 5 else { fail("Usage: performance.mbtx REPORT_DIR WASM_CLI_ROOT ORACLE_BIN COMMANDS") }
+  guard args.length() == 5 else {
+    fail("Usage: performance.mbtx REPORT_DIR WASM_CLI_ROOT ORACLE_BIN COMMANDS")
+  }
   let root = args[1]
   @fs.mkdir(root, recursive=true, allow_exist=false)
   @fs.mkdir(root + "/results")
@@ -64,31 +92,80 @@ async fn main {
     ("cut", ["cut-8m", "cut-tiny-8m", "cut-long-64m", "cut-fields-8m"]),
     ("uniq", ["uniq-8m", "uniq-tiny-8m", "uniq-long-8m", "uniq-repeated-8m"]),
     ("wc", ["wc-l-64m", "wc-w-64m"]),
-    ("grep", ["grep-fixed-64m", "grep-many-count-64m", "grep-many-miss-8m", "grep-set-short-64m", "grep-set-dense-64m", "grep-set-distributed-64m", "grep-overlap-8k", "grep-overlap-16k", "grep-span-long-8m", "grep-span-1m", "grep-span-many-1m", "grep-regex-64m", "grep-regex-miss-64m"]),
+    (
+      "grep",
+      [
+        "grep-fixed-64m", "grep-many-count-64m", "grep-many-miss-8m", "grep-set-short-64m",
+        "grep-set-dense-64m", "grep-set-distributed-64m", "grep-overlap-8k", "grep-overlap-16k",
+        "grep-span-long-8m", "grep-span-1m", "grep-span-many-1m", "grep-regex-64m",
+        "grep-regex-miss-64m",
+      ],
+    ),
   ]
   let selected = args[4].split(",").map(value => value.to_owned()).collect()
   if !args[4].is_empty() {
     let seen : Set[String] = Set([])
     for command in selected {
-      guard ["rev", "strings", "split", "csplit", "tac", "column", "sort", "grep", "gzip", "diff", "cut", "uniq", "wc"].contains(command) && !seen.contains(command) else { fail("unknown, empty or duplicate command: " + command) }
+      guard [
+          "rev", "strings", "split", "csplit", "tac", "column", "sort", "grep", "gzip",
+          "diff", "cut", "uniq", "wc",
+        ].contains(command) &&
+        !seen.contains(command) else {
+        fail("unknown, empty or duplicate command: " + command)
+      }
       seen.add(command)
     }
   }
   let cases : Array[String] = []
   for (command, names) in groups {
-    if args[4].is_empty() || selected.contains(command) { cases.append(names) }
+    if args[4].is_empty() || selected.contains(command) {
+      cases.append(names)
+    }
+  }
+  if args[4].is_empty() || selected.contains("grep") {
+    for family in ["shared", "diverse"] {
+      for size in ["64k", "256k", "1m"] {
+        cases.push("grep-adaptive-" + family + "-collision-" + size)
+      }
+      for size in ["1m", "64m"] {
+        cases.push("grep-adaptive-" + family + "-sparse-" + size)
+      }
+    }
+    cases.append([
+      "grep-adaptive-mixed-64m", "grep-adaptive-dense-1m", "grep-adaptive-budget-64k",
+    ])
   }
   guard !cases.is_empty() else { fail("no applicable performance cases") }
   let script = "tests/benchmark/explore.mbtx"
-  run(["run", script, "--", root, args[2], "prepare", cases.join(","), "9"], root + "/prepare.log")
+  run(
+    ["run", script, "--", root, args[2], "prepare", cases.join(","), "9"],
+    root + "/prepare.log",
+  )
   let rounds : Array[Array[Json]] = []
   for index in 0..<2 {
     let log = root + "/round-" + index.to_string() + ".log"
-    run(["run", script, "--", root, args[2], "ci", cases.join(","), "9", args[3]], log)
-    let reports = @fs.read_file(log).text().split("\n").filter_map(line => if line.has_prefix("REPORT ") { Some(line[7:].to_owned()) } else { None }).collect()
-    guard reports.length() == 1 else { fail("missing or ambiguous performance report") }
+    run(
+      ["run", script, "--", root, args[2], "ci", cases.join(","), "9", args[3]],
+      log,
+    )
+    let reports = @fs.read_file(log)
+      .text()
+      .split("\n")
+      .filter_map(line => {
+        if line.has_prefix("REPORT ") {
+          Some(line[7:].to_owned())
+        } else {
+          None
+        }
+      })
+      .collect()
+    guard reports.length() == 1 else {
+      fail("missing or ambiguous performance report")
+    }
     let rows = array(@json.parse(@fs.read_file(reports[0]).text()))
-    guard rows.length() == cases.length() else { fail("incomplete performance selection") }
+    guard rows.length() == cases.length() else {
+      fail("incomplete performance selection")
+    }
     rounds.push(rows)
   }
   let results : Array[Json] = []
@@ -97,7 +174,15 @@ async fn main {
     let first = object(rounds[0][index])
     let second = object(rounds[1][index])
     let id = object(first["case"])["id"]
-    guard first["case"] == second["case"] && first["passed"] == Json(true) && second["passed"] == Json(true) else { fail("performance rows differ or failed correctness") }
+    guard first["case"] == second["case"] &&
+      first["passed"] == Json(true) &&
+      second["passed"] == Json(true) &&
+      complete(first) &&
+      complete(second) else {
+      fail(
+        "performance rows differ, failed correctness or have incomplete samples",
+      )
+    }
     let sides : Array[Json] = []
     for side in ["candidate", "reference"] {
       let a = number(first[side + "_median_us"])
@@ -107,16 +192,30 @@ async fn main {
       let mad_b = spread(second, side)
       let passed = drift <= 0.10 && mad_a <= 0.05 && mad_b <= 0.05
       stable = stable && passed
-      sides.push({ "side": side, "median_drift": drift, "first_mad_ratio": mad_a, "second_mad_ratio": mad_b, "stable": passed })
+      sides.push({
+        "side": side,
+        "median_drift": drift,
+        "first_mad_ratio": mad_a,
+        "second_mad_ratio": mad_b,
+        "stable": passed,
+      })
     }
-    results.push({ "id": id, "round_1_ratio": first["ratio"], "round_2_ratio": second["ratio"], "stability": sides })
+    results.push({
+      "id": id,
+      "round_1_ratio": first["ratio"],
+      "round_2_ratio": second["ratio"],
+      "stability": sides,
+    })
   }
   let report : Json = {
     "scope": "Two diagnostic windows, each with one warmup and nine alternating direct-Wasm/GNU pairs; no MoonX timing, no startup subtraction, no formal ratio acceptance",
     "stability_rule": "Each side must have MAD/median <= 5% in both windows and median difference / mean of medians <= 10%",
-    "stable": stable, "cases": results,
+    "stable": stable,
+    "cases": results,
   }
   @fs.write_file(root + "/stability.json", report.stringify(indent=2))
   println("performance cases=\{cases.length()} stable=\{stable}")
-  guard stable else { fail("performance windows were noisy; retain both windows for review") }
+  guard stable else {
+    fail("performance windows were noisy; retain both windows for review")
+  }
 }

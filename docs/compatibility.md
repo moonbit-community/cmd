@@ -1,7 +1,7 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-10-26
+Updated: 2026-10-27
 
 Current delivery acceptance targets Wasm through MoonX on Linux, macOS and
 Windows. Native implementations may remain compilable, but Native command tests
@@ -27,11 +27,16 @@ candidates; `timeout` is local-only. The performance candidates preserve command
 options and C-byte semantics. They add synchronous record visitors, SIMD/word
 counting, conservative block rejection, flat bounded DFA transitions,
 precomputed span closures, bounded byte endpoint automata, adaptive literal sets
-and reuse of proven self-looping suffixes within one record. Span output
+and reuse of proven self-looping suffixes within one record. Dense literal
+verification can switch to one lazily cached bounded automaton; failed
+construction is not retried and later sparse records retain shift scanning. Span output
 resumes after each output flush; captured spans, word/whole filters,
 binary input decisions and failure effects retain their existing contracts.
 Selected local measurements are diagnostic, not cross-platform or formal
-performance acceptance; see [ADR-0003](adr/0003-streams.md#performance-wave-4-candidate-2026-10-26).
+performance acceptance; see [ADR-0003](adr/0003-streams.md#adaptive-literal-planner-2026-10-27).
+PR #60's integration and actual-main development checks passed on all three
+hosts after an explicit maintainer exception for unresolved resource stability.
+That exception does not establish formal performance or release acceptance.
 The wave-2 held-out comparison also records an existing difference: empty-pattern
 `grep -v -c` prints `0` here, whereas GNU grep 3.12 exits without stdout. Both
 exit 1. This is not a new fast-path regression or a claim of full GNU parity.

@@ -80,6 +80,7 @@ async fn main {
       ],
     ),
     ("performance", []),
+    ("literal-planner", []),
     ("stability-diagnostic", []),
   ]
   let results : Array[Json] = []
@@ -99,6 +100,23 @@ async fn main {
       continue
     }
     if selected_profile != "all" && name != selected_profile {
+      continue
+    }
+    if name == "literal-planner" &&
+      !selected_commands.is_empty() &&
+      !selected_commands.split(",").any(command => command == "grep") {
+      guard selected_profile == "all" else {
+        fail("literal-planner requires grep")
+      }
+      results.push({
+        "profile": name,
+        "status": Json::null(),
+        "skipped": "grep not selected",
+      })
+      @fs.write_file(
+        reports + "/profiles.json",
+        Json(results).stringify(indent=2) + "\n",
+      )
       continue
     }
     if name == "performance" &&
@@ -149,6 +167,16 @@ async fn main {
           workspace + "/_build/wasm/release/build/cli",
           prefix + "/bin",
           selected_commands,
+        ]
+      } else if name == "literal-planner" {
+        [
+          "run",
+          workspace + "/tests/resources/literal.mbtx",
+          "--",
+          reports + "/literal-planner",
+          workspace + "/_build/wasm/release/build",
+          moonrun,
+          prefix + "/bin",
         ]
       } else if name == "performance" {
         [

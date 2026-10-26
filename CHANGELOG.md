@@ -5,6 +5,25 @@ by date and delivery milestone rather than by a single package version.
 
 ## 2026-10-27
 
+- Integrated performance PR #60 as `6705ea8` after documentation PR #59,
+  with the maintainer's explicit exception for unresolved repeatability.
+  Final-head checks and [actual-main run 40406545144](https://github.com/moonbit-community/cmd/actions/runs/40406545144)
+  passed Linux, macOS and Windows. Failed resource stability remains failed;
+  thresholds, published coordinates and frozen expectations are unchanged.
+- Promoted the adaptive literal pilot into the unpublished core/grep candidate:
+  dense verification can lazily build one bounded automaton, budget exhaustion
+  safely resumes shifts, and subsequent sparse inputs keep the shift fast path.
+  Added independent span/offset/folding/record regressions, thirteen real-command
+  performance workloads and sixteen sampled/kernel resource comparisons.
+  Real-command local pairs improved 1 MiB collision inputs by 13.98x–14.63x
+  over merged main while preserving sparse throughput. An initial 15% dense
+  count regression was corrected; two existing controls retain 2–3% regressions.
+  All 26 old/new rows were stable, while five of 26 GNU rows remained noisy and
+  several GNU ratios exceeded 3x. These are diagnostic results, not acceptance.
+  Local validation passed 1,611 Wasm tests, 117 tool tests, 2,062 functional
+  cases (19 skips), and eight resource smoke comparisons; interfaces are unchanged.
+  See [ADR-0003](docs/adr/0003-streams.md#adaptive-literal-planner-2026-10-27).
+
 - Cache/control diagnostic 40398697579 completed every window but retained
   unstable empty-input controls and no passing full selection. Input preloading
   is not a selected fix. Added a separate Linux perf null-counter diagnostic
@@ -14,7 +33,7 @@ by date and delivery milestone rather than by a single package version.
   no stable full selection: 17/23 for either observer, 14/23 with settling or
   one-CPU affinity. Retained these rejected approaches and added a cache/control
   phase with separate kernel-counter observations. Stability remains unresolved;
-  performance PR #60 remains unmerged.
+  performance PR #60 was still unmerged at this investigation stage.
 - Added an explicit Linux stability diagnostic to investigate the six noisy
   workloads in resource run 40346450167. It compares observer backends, a fixed
   between-arm pause and one-CPU affinity while retaining every sample and the
