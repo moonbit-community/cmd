@@ -34,15 +34,5 @@ The `timeout` package is local-only while a portable public process-group
 interface is unavailable. Its status is recorded in the support record and it
 is not a published MoonX feature.
 
-The new [rg 0.1.0 candidate](commands/rg/README.md) searches explicit files,
-directories and `-` for stdin. It is unpublished. Compressed search (`-z`) is
-deferred; its former experiment is retained only in Git history.
-
-Every workspace command follows one metadata contract: standalone `--help`
-prints usage and exits 0, while standalone `--version` prints
-`<command> <package-version>` and exits 0. Both leave stdin untouched. The Wasm
-development suite checks all 80 workspace commands; published coordinates are
-promoted only through the release and exact MoonX checks in the support record.
-
 Dated delivery milestones are in [CHANGELOG.md](CHANGELOG.md); current design
 decisions are in [docs/adr](docs/adr/README.md).
