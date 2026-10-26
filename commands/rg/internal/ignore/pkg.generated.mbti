@@ -7,23 +7,23 @@ import {
 }
 
 // Values
-pub fn compare_utf8(String, String) -> Int
+pub fn compare_utf8(String, String) -> Int32
 
 pub async fn gitconfig_excludes_path() -> String?
 
 // Errors
 pub(all) suberror IgnoreError {
   Partial(Array[IgnoreError])
-  WithLineNumber(line~ : Int, err~ : IgnoreError)
+  WithLineNumber(line~ : Int32, err~ : IgnoreError)
   WithPath(path~ : String, err~ : IgnoreError)
-  WithDepth(depth~ : Int, err~ : IgnoreError)
+  WithDepth(depth~ : Int32, err~ : IgnoreError)
   Loop(ancestor~ : String, child~ : String)
   Io(@sys.IOError)
   Glob(glob~ : String?, err~ : String)
   UnrecognizedFileType(String)
   InvalidDefinition
 } derive(@debug.Debug)
-pub fn IgnoreError::depth(Self) -> Int?
+pub fn IgnoreError::depth(Self) -> Int32?
 pub fn IgnoreError::into_io_error(Self) -> @sys.IOError?
 pub fn IgnoreError::io_error(Self) -> @sys.IOError?
 pub fn IgnoreError::is_io(Self) -> Bool
@@ -35,7 +35,7 @@ pub impl Show for IgnoreError
 pub struct DirEntry {
   // private fields
 }
-pub fn DirEntry::depth(Self) -> Int
+pub fn DirEntry::depth(Self) -> Int32
 pub fn DirEntry::error(Self) -> IgnoreError?
 pub fn DirEntry::file_name(Self) -> String
 pub fn DirEntry::file_type(Self) -> @sys.FileType?
@@ -59,12 +59,12 @@ pub struct Gitignore {
 pub fn Gitignore::empty() -> Self
 pub async fn Gitignore::global() -> (Self, IgnoreError?)
 pub fn Gitignore::is_empty(Self) -> Bool
-pub fn Gitignore::len(Self) -> Int
+pub fn Gitignore::len(Self) -> Int32
 pub fn Gitignore::matched(Self, String, Bool) -> Match[GitignoreGlob]
 pub fn Gitignore::matched_path_or_any_parents(Self, String, Bool) -> Match[GitignoreGlob]
 pub async fn Gitignore::new(String) -> (Self, IgnoreError?)
-pub fn Gitignore::num_ignores(Self) -> Int
-pub fn Gitignore::num_whitelists(Self) -> Int
+pub fn Gitignore::num_ignores(Self) -> Int32
+pub fn Gitignore::num_whitelists(Self) -> Int32
 pub fn Gitignore::path(Self) -> String
 pub impl @debug.Debug for Gitignore
 
@@ -108,8 +108,8 @@ pub struct Override {
 pub fn Override::empty() -> Self
 pub fn Override::is_empty(Self) -> Bool
 pub fn Override::matched(Self, String, Bool) -> Match[OverrideGlob]
-pub fn Override::num_ignores(Self) -> Int
-pub fn Override::num_whitelists(Self) -> Int
+pub fn Override::num_ignores(Self) -> Int32
+pub fn Override::num_whitelists(Self) -> Int32
 pub fn Override::path(Self) -> String
 
 pub struct OverrideBuilder {
@@ -132,7 +132,7 @@ pub struct Types {
 pub fn Types::definitions(Self) -> ArrayView[FileTypeDef]
 pub fn Types::empty() -> Self
 pub fn Types::is_empty(Self) -> Bool
-pub fn Types::len(Self) -> Int
+pub fn Types::len(Self) -> Int32
 pub fn Types::matched(Self, String, Bool) -> Match[TypesGlob]
 pub impl @debug.Debug for Types
 
@@ -183,19 +183,19 @@ pub fn WalkBuilder::git_ignore(Self, Bool) -> Self
 pub fn WalkBuilder::hidden(Self, Bool) -> Self
 pub fn WalkBuilder::ignore(Self, Bool) -> Self
 pub fn WalkBuilder::ignore_case_insensitive(Self, Bool) -> Self
-pub fn WalkBuilder::max_depth(Self, Int?) -> Self
+pub fn WalkBuilder::max_depth(Self, Int32?) -> Self
 pub fn WalkBuilder::max_filesize(Self, UInt64?) -> Self
-pub fn WalkBuilder::min_depth(Self, Int?) -> Self
+pub fn WalkBuilder::min_depth(Self, Int32?) -> Self
 pub fn WalkBuilder::new(String) -> Self
 pub fn WalkBuilder::overrides(Self, Override) -> Self
 pub fn WalkBuilder::parents(Self, Bool) -> Self
 pub fn WalkBuilder::require_git(Self, Bool) -> Self
 pub fn WalkBuilder::same_file_system(Self, Bool) -> Self
 pub async fn WalkBuilder::skip_stdout(Self, Bool) -> Self
-pub fn WalkBuilder::sort_by_file_name(Self, (String, String) -> Int) -> Self
-pub fn WalkBuilder::sort_by_file_path(Self, (String, String) -> Int) -> Self
+pub fn WalkBuilder::sort_by_file_name(Self, (String, String) -> Int32) -> Self
+pub fn WalkBuilder::sort_by_file_path(Self, (String, String) -> Int32) -> Self
 pub fn WalkBuilder::standard_filters(Self, Bool) -> Self
-pub fn WalkBuilder::threads(Self, Int) -> Self
+pub fn WalkBuilder::threads(Self, Int32) -> Self
 pub fn WalkBuilder::types(Self, Types) -> Self
 
 pub struct WalkParallel {

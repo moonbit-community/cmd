@@ -38,7 +38,7 @@ pub fn Buffer::ansi() -> Self
 pub fn Buffer::as_vec(Self) -> ByteVec
 pub fn Buffer::clear(Self) -> Unit
 pub fn Buffer::is_empty(Self) -> Bool
-pub fn Buffer::len(Self) -> Int
+pub fn Buffer::len(Self) -> Int32
 pub fn Buffer::no_color() -> Self
 pub fn Buffer::to_bytes(Self) -> Bytes
 pub impl Write for Buffer
@@ -48,19 +48,19 @@ pub struct ByteVec {
   // private fields
 }
 #alias("_[_]")
-pub fn ByteVec::at(Self, Int) -> Byte
+pub fn ByteVec::at(Self, Int32) -> Byte
 pub fn ByteVec::clear(Self) -> Unit
 pub fn ByteVec::extend_bytes(Self, BytesView) -> Unit
-pub fn ByteVec::extend_slice(Self, FixedArray[Byte], Int, Int) -> Unit
+pub fn ByteVec::extend_slice(Self, FixedArray[Byte], Int32, Int32) -> Unit
 pub fn ByteVec::extend_string(Self, StringView) -> Unit
 pub fn ByteVec::is_empty(Self) -> Bool
-pub fn ByteVec::length(Self) -> Int
-pub fn ByteVec::new(capacity? : Int) -> Self
+pub fn ByteVec::length(Self) -> Int32
+pub fn ByteVec::new(capacity? : Int32) -> Self
 pub fn ByteVec::push(Self, Byte) -> Unit
-pub fn ByteVec::slice_to_bytes(Self, Int, Int) -> Bytes
+pub fn ByteVec::slice_to_bytes(Self, Int32, Int32) -> Bytes
 pub fn ByteVec::storage(Self) -> FixedArray[Byte]
 pub fn ByteVec::to_bytes(Self) -> Bytes
-pub fn ByteVec::truncate(Self, Int) -> Unit
+pub fn ByteVec::truncate(Self, Int32) -> Unit
 pub impl Write for ByteVec
 
 pub(all) enum Color {
@@ -138,7 +138,7 @@ pub(all) enum ParseColorErrorKind {
 
 // Traits
 pub(open) trait Write {
-  async fn write_slice(Self, FixedArray[Byte], Int, Int) -> Unit
+  async fn write_slice(Self, FixedArray[Byte], Int32, Int32) -> Unit
   async fn write_bytes(Self, BytesView) -> Unit = _
   async fn flush(Self) -> Unit = _
 }

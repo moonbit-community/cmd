@@ -1,4 +1,4 @@
-///|
+----
 import {
   "moonbitlang/async@0.22.5",
   "moonbitlang/async@0.22.5/fs",
@@ -7,6 +7,7 @@ import {
   "moonbitlang/core/env",
   "moonbitlang/core/encoding/utf8",
 }
+----
 
 ///|
 struct Case { id : String; args : Array[String]; input : String; status : Int; stdout : String; stderr_contains : String } derive(ToJson)

@@ -15,7 +15,7 @@ pub fn duration_as_secs_f64(Int64) -> Double
 
 pub fn format_duration_human(Int64) -> String
 
-pub fn format_fixed(Double, Int) -> String
+pub fn format_fixed(Double, Int32) -> String
 
 pub fn hyperlink_aliases() -> Array[HyperlinkAlias]
 
@@ -61,7 +61,7 @@ pub struct HyperlinkAlias {
   // private fields
 } derive(@debug.Debug)
 pub fn HyperlinkAlias::description(Self) -> String
-pub fn HyperlinkAlias::display_priority(Self) -> Int?
+pub fn HyperlinkAlias::display_priority(Self) -> Int32?
 pub fn HyperlinkAlias::format(Self) -> String
 pub fn HyperlinkAlias::name(Self) -> String
 
@@ -146,7 +146,7 @@ pub fn JsonWriter::new(@termcolor.ByteVec, pretty? : Bool) -> Self
 pub fn JsonWriter::null(Self) -> Unit
 pub fn JsonWriter::uint64(Self, UInt64) -> Unit
 pub fn JsonWriter::write_escaped_string(Self, String) -> Unit
-pub fn JsonWriter::write_escaped_utf8(Self, FixedArray[Byte], Int, Int) -> Unit
+pub fn JsonWriter::write_escaped_utf8(Self, FixedArray[Byte], Int32, Int32) -> Unit
 
 pub struct PathPrinter {
   // private fields

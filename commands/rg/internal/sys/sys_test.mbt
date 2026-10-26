@@ -51,7 +51,6 @@ fn fixture_args(root : String, mode : String) -> Array[String] {
   [
     "run",
     "internal/sys/testdata/process_fixture.mbtx",
-    "--warn-list=-a",
     "--target-dir",
     root + "/build",
     "--",

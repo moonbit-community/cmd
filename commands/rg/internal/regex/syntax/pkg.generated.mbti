@@ -7,9 +7,9 @@ import {
 }
 
 // Values
-pub fn canonicalize_ranges(Array[(Int, Int)], unicode? : Bool) -> Array[(Int, Int)]
+pub fn canonicalize_ranges(Array[(Int32, Int32)], unicode? : Bool) -> Array[(Int32, Int32)]
 
-pub fn encode_utf8(@buffer.Buffer, Int) -> Unit
+pub fn encode_utf8(@buffer.Buffer, Int32) -> Unit
 
 pub fn escape(String) -> String
 
@@ -23,11 +23,11 @@ pub fn parse(String, config? : ParseConfig) -> Hir raise SyntaxError
 
 pub fn parse_ast(String, config? : ParserConfig) -> Ast raise SyntaxError
 
-pub fn rank(Int) -> Int
+pub fn rank(Int32) -> Int32
 
 pub fn translate(String, Ast, config? : TranslatorConfig) -> Hir raise SyntaxError
 
-pub fn utf8_len(Int) -> Int
+pub fn utf8_len(Int32) -> Int32
 
 // Errors
 pub suberror SyntaxError {
@@ -71,8 +71,8 @@ pub(all) enum Ast {
 pub fn Ast::span(Self) -> Span
 
 pub(all) enum Class {
-  Unicode(Array[(Int, Int)])
-  Bytes(Array[(Int, Int)])
+  Unicode(Array[(Int32, Int32)])
+  Bytes(Array[(Int32, Int32)])
 } derive(Eq, @debug.Debug)
 pub fn Class::case_fold_simple(Self) -> Self
 pub fn Class::difference(Self, Self) -> Self
@@ -81,12 +81,12 @@ pub fn Class::is_ascii(Self) -> Bool
 pub fn Class::is_empty(Self) -> Bool
 pub fn Class::is_unicode(Self) -> Bool
 pub fn Class::literal(Self) -> Bytes?
-pub fn Class::maximum_len(Self) -> Int?
-pub fn Class::minimum_len(Self) -> Int?
+pub fn Class::maximum_len(Self) -> Int32?
+pub fn Class::minimum_len(Self) -> Int32?
 pub fn Class::negate(Self) -> Self
-pub fn Class::new_bytes(Array[(Int, Int)]) -> Self
-pub fn Class::new_unicode(Array[(Int, Int)]) -> Self
-pub fn Class::ranges(Self) -> Array[(Int, Int)]
+pub fn Class::new_bytes(Array[(Int32, Int32)]) -> Self
+pub fn Class::new_unicode(Array[(Int32, Int32)]) -> Self
+pub fn Class::ranges(Self) -> Array[(Int32, Int32)]
 pub fn Class::symmetric_difference(Self, Self) -> Self
 pub fn Class::to_bytes(Self) -> Self?
 pub fn Class::to_unicode(Self) -> Self?
@@ -165,10 +165,10 @@ pub(all) enum ClassUnicodeOpKind {
 pub(all) enum Dot {
   AnyChar
   AnyByte
-  AnyCharExcept(Int)
+  AnyCharExcept(Int32)
   AnyCharExceptLF
   AnyCharExceptCRLF
-  AnyByteExcept(Int)
+  AnyByteExcept(Int32)
   AnyByteExceptLF
   AnyByteExceptCRLF
 }
@@ -197,7 +197,7 @@ pub(all) enum ErrorKind {
   GroupNameUnexpectedEof
   GroupUnclosed
   GroupUnopened
-  NestLimitExceeded(Int)
+  NestLimitExceeded(Int32)
   RepetitionCountInvalid
   RepetitionCountDecimalEmpty
   RepetitionCountUnclosed
@@ -225,10 +225,10 @@ pub(all) enum ExtractKind {
 
 pub(all) struct Extractor {
   kind : ExtractKind
-  limit_class : Int
-  limit_repeat : Int
-  limit_literal_len : Int
-  limit_total : Int
+  limit_class : Int32
+  limit_repeat : Int32
+  limit_literal_len : Int32
+  limit_total : Int32
 }
 pub fn Extractor::extract(Self, Hir) -> Seq
 pub fn Extractor::new() -> Self
@@ -266,8 +266,8 @@ pub(all) struct Group {
 } derive(Eq, @debug.Debug)
 
 pub(all) enum GroupKind {
-  CaptureIndex(Int)
-  CaptureName(Int, String)
+  CaptureIndex(Int32)
+  CaptureName(Int32, String)
   NonCapturing(Flags)
 } derive(Eq, @debug.Debug)
 
@@ -282,7 +282,7 @@ pub(all) struct Hir {
   props : Props
 } derive(Eq, @debug.Debug)
 pub fn Hir::alternation(Array[Self]) -> Self
-pub fn Hir::capture(Int, String?, Self) -> Self
+pub fn Hir::capture(Int32, String?, Self) -> Self
 pub fn Hir::class(Class) -> Self
 pub fn Hir::concat(Array[Self]) -> Self
 pub fn Hir::dot(Dot) -> Self
@@ -291,7 +291,7 @@ pub fn Hir::fail() -> Self
 pub fn Hir::is_empty_kind(Self) -> Bool
 pub fn Hir::literal(Bytes) -> Self
 pub fn Hir::look(Look) -> Self
-pub fn Hir::repetition(Int, Int?, Bool, Self) -> Self
+pub fn Hir::repetition(Int32, Int32?, Bool, Self) -> Self
 pub fn Hir::to_string(Self) -> String
 pub impl Show for Hir
 
@@ -300,8 +300,8 @@ pub(all) enum HirKind {
   Literal(Bytes)
   Class(Class)
   Look(Look)
-  Repetition(min~ : Int, max~ : Int?, greedy~ : Bool, Hir)
-  Capture(index~ : Int, name~ : String?, Hir)
+  Repetition(min~ : Int32, max~ : Int32?, greedy~ : Bool, Hir)
+  Capture(index~ : Int32, name~ : String?, Hir)
   Concat(Array[Hir])
   Alternation(Array[Hir])
 } derive(Eq, @debug.Debug)
@@ -312,14 +312,14 @@ pub(all) struct Lit {
 } derive(Compare, Eq, @debug.Debug)
 pub fn Lit::exact(Bytes) -> Self
 pub fn Lit::inexact(Bytes) -> Self
-pub fn Lit::len(Self) -> Int
+pub fn Lit::len(Self) -> Int32
 
 pub(all) struct Literal {
   span : Span
   kind : LiteralKind
   c : Char
 } derive(Eq, @debug.Debug)
-pub fn Literal::byte(Self) -> Int?
+pub fn Literal::byte(Self) -> Int32?
 
 pub(all) enum LiteralKind {
   Verbatim
@@ -351,11 +351,11 @@ pub(all) enum Look {
   WordStartHalfUnicode
   WordEndHalfUnicode
 } derive(Eq, Hash, @debug.Debug)
-pub fn Look::as_bit(Self) -> UInt
+pub fn Look::as_bit(Self) -> UInt32
 pub fn Look::reversed(Self) -> Self
 
 pub(all) struct LookSet {
-  bits : UInt
+  bits : UInt32
 } derive(Eq, Hash, @debug.Debug)
 pub fn LookSet::contains(Self, Look) -> Bool
 pub fn LookSet::contains_anchor(Self) -> Bool
@@ -387,36 +387,36 @@ pub(all) struct ParseConfig {
   unicode : Bool
   utf8 : Bool
   octal : Bool
-  nest_limit : Int
-  line_terminator : Int
+  nest_limit : Int32
+  line_terminator : Int32
 }
 pub fn ParseConfig::default() -> Self
 
 pub(all) struct ParserConfig {
   ignore_whitespace : Bool
-  nest_limit : Int
+  nest_limit : Int32
   octal : Bool
   empty_min_range : Bool
 }
 pub fn ParserConfig::default() -> Self
 
 pub(all) struct Position {
-  offset : Int
-  line : Int
-  column : Int
+  offset : Int32
+  line : Int32
+  column : Int32
 } derive(Compare, Eq, @debug.Debug)
 
 pub(all) struct Props {
-  minimum_len : Int?
-  maximum_len : Int?
+  minimum_len : Int32?
+  maximum_len : Int32?
   look_set : LookSet
   look_set_prefix : LookSet
   look_set_suffix : LookSet
   look_set_prefix_any : LookSet
   look_set_suffix_any : LookSet
   utf8 : Bool
-  explicit_captures_len : Int
-  static_explicit_captures_len : Int?
+  explicit_captures_len : Int32
+  static_explicit_captures_len : Int32?
   literal : Bool
   alternation_literal : Bool
 } derive(Eq, @debug.Debug)
@@ -436,9 +436,9 @@ pub(all) enum RepetitionKind {
 } derive(Eq, @debug.Debug)
 
 pub(all) enum RepetitionRange {
-  Exactly(Int)
-  AtLeast(Int)
-  Bounded(Int, Int)
+  Exactly(Int32)
+  AtLeast(Int32)
+  Bounded(Int32, Int32)
 } derive(Eq, @debug.Debug)
 
 pub(all) struct Seq {
@@ -454,18 +454,18 @@ pub fn Seq::is_empty(Self) -> Bool
 pub fn Seq::is_exact(Self) -> Bool
 pub fn Seq::is_finite(Self) -> Bool
 pub fn Seq::is_inexact(Self) -> Bool
-pub fn Seq::keep_first_bytes(Self, Int) -> Unit
-pub fn Seq::keep_last_bytes(Self, Int) -> Unit
-pub fn Seq::len(Self) -> Int?
+pub fn Seq::keep_first_bytes(Self, Int32) -> Unit
+pub fn Seq::keep_last_bytes(Self, Int32) -> Unit
+pub fn Seq::len(Self) -> Int32?
 pub fn Seq::literals(Self) -> Array[Lit]?
 pub fn Seq::longest_common_prefix(Self) -> Bytes?
 pub fn Seq::longest_common_suffix(Self) -> Bytes?
 pub fn Seq::make_inexact(Self) -> Unit
 pub fn Seq::make_infinite(Self) -> Unit
-pub fn Seq::max_cross_len(Self, Self) -> Int?
-pub fn Seq::max_literal_len(Self) -> Int?
-pub fn Seq::max_union_len(Self, Self) -> Int?
-pub fn Seq::min_literal_len(Self) -> Int?
+pub fn Seq::max_cross_len(Self, Self) -> Int32?
+pub fn Seq::max_literal_len(Self) -> Int32?
+pub fn Seq::max_union_len(Self, Self) -> Int32?
+pub fn Seq::min_literal_len(Self) -> Int32?
 pub fn Seq::minimize_by_preference(Self) -> Unit
 pub fn Seq::optimize_for_prefix_by_preference(Self) -> Unit
 pub fn Seq::optimize_for_suffix_by_preference(Self) -> Unit
@@ -483,7 +483,7 @@ pub fn Span::new(Position, Position) -> Self
 
 pub(all) struct TranslatorConfig {
   utf8 : Bool
-  line_terminator : Int
+  line_terminator : Int32
   case_insensitive : Bool
   multi_line : Bool
   dot_matches_new_line : Bool

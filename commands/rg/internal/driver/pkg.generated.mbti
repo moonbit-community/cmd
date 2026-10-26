@@ -67,7 +67,7 @@ pub fn parse_low_raw(Array[String]) -> LowArgs raise RgError
 
 pub let rg_version : String
 
-pub async fn run_main(Array[String]) -> Int
+pub async fn run_main(Array[String]) -> Int32
 
 pub fn set_errored() -> Unit
 
@@ -140,11 +140,11 @@ pub(all) enum ContextMode {
 pub fn ContextMode::default() -> Self
 
 pub(all) struct ContextModeLimited {
-  before : Int?
-  after : Int?
-  both : Int?
+  before : Int32?
+  after : Int32?
+  both : Int32?
 } derive(Eq, @debug.Debug)
-pub fn ContextModeLimited::get(Self) -> (Int, Int)
+pub fn ContextModeLimited::get(Self) -> (Int32, Int32)
 
 pub(all) enum EncodingMode {
   Auto
@@ -208,7 +208,7 @@ pub fn HiArgs::quit_after_match(Self) -> Bool
 pub fn HiArgs::searcher(Self) -> @searcher.Searcher
 pub fn HiArgs::stats(Self) -> @printer.Stats?
 pub fn HiArgs::stdout(Self) -> &@termcolor.WriteColor
-pub fn HiArgs::threads(Self) -> Int
+pub fn HiArgs::threads(Self) -> Int32
 pub fn HiArgs::types(Self) -> @ignore.Types
 
 pub(all) enum IndexMode {
@@ -253,7 +253,7 @@ pub(all) struct LowArgs {
   ignore_file : Array[String]
   mut ignore_file_case_insensitive : Bool
   mut include_zero : Bool
-  mut index : Int
+  mut index : Int32
   mut index_force : Bool
   mut index_path : String?
   mut invert_match : Bool
@@ -262,7 +262,7 @@ pub(all) struct LowArgs {
   mut max_columns : UInt64?
   mut max_columns_preview : Bool
   mut max_count : UInt64?
-  mut max_depth : Int?
+  mut max_depth : Int32?
   mut max_filesize : UInt64?
   mut mmap : MmapMode
   mut multiline : Bool
@@ -292,10 +292,10 @@ pub(all) struct LowArgs {
   mut sort : SortMode?
   mut stats : Bool
   mut stop_on_nonmatch : Bool
-  mut threads : Int?
+  mut threads : Int32?
   mut trim : Bool
   type_changes : Array[TypeChange]
-  mut unrestricted : Int
+  mut unrestricted : Int32
   mut vimgrep : Bool
   mut with_filename : Bool?
 }
@@ -365,7 +365,7 @@ pub(all) enum SpecialMode {
 pub struct StdoutWriter {
   // private fields
 }
-pub fn StdoutWriter::new(Int, Bool) -> Self
+pub fn StdoutWriter::new(Int32, Bool) -> Self
 pub impl @termcolor.Write for StdoutWriter
 
 pub(all) enum TypeChange {

@@ -27,9 +27,9 @@ pub(all) struct Config {
   ignore_whitespace : Bool
   unicode : Bool
   octal : Bool
-  size_limit : Int
-  dfa_size_limit : Int
-  nest_limit : Int
+  size_limit : Int32
+  dfa_size_limit : Int32
+  nest_limit : Int32
   line_terminator : @matcher.LineTerminator?
   ban : Byte?
   crlf : Bool
@@ -65,16 +65,16 @@ pub fn RegexMatcherBuilder::build_many(Self, Array[String]) -> RegexMatcher rais
 pub fn RegexMatcherBuilder::case_insensitive(Self, Bool) -> Self
 pub fn RegexMatcherBuilder::case_smart(Self, Bool) -> Self
 pub fn RegexMatcherBuilder::crlf(Self, Bool) -> Self
-pub fn RegexMatcherBuilder::dfa_size_limit(Self, Int) -> Self
+pub fn RegexMatcherBuilder::dfa_size_limit(Self, Int32) -> Self
 pub fn RegexMatcherBuilder::dot_matches_new_line(Self, Bool) -> Self
 pub fn RegexMatcherBuilder::fixed_strings(Self, Bool) -> Self
 pub fn RegexMatcherBuilder::ignore_whitespace(Self, Bool) -> Self
 pub fn RegexMatcherBuilder::line_terminator(Self, Byte?) -> Self
 pub fn RegexMatcherBuilder::multi_line(Self, Bool) -> Self
-pub fn RegexMatcherBuilder::nest_limit(Self, Int) -> Self
+pub fn RegexMatcherBuilder::nest_limit(Self, Int32) -> Self
 pub fn RegexMatcherBuilder::new() -> Self
 pub fn RegexMatcherBuilder::octal(Self, Bool) -> Self
-pub fn RegexMatcherBuilder::size_limit(Self, Int) -> Self
+pub fn RegexMatcherBuilder::size_limit(Self, Int32) -> Self
 pub fn RegexMatcherBuilder::swap_greed(Self, Bool) -> Self
 pub fn RegexMatcherBuilder::unicode(Self, Bool) -> Self
 pub fn RegexMatcherBuilder::whole_line(Self, Bool) -> Self

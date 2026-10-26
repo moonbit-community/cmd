@@ -5,7 +5,6 @@ async test "CommandReader stops a command early without error" {
   let rdr = @cli.CommandReader::new("moon", [
     "run",
     "internal/sys/testdata/process_fixture.mbtx",
-    "--warn-list=-a",
     "--target-dir",
     root + "/build",
     "--",

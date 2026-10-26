@@ -11,15 +11,15 @@ pub(all) struct TestCase {
   name : String
   regex : String
   haystack : Bytes
-  matches : Array[Array[(Int, Int)?]]
+  matches : Array[Array[(Int32, Int32)?]]
   compiles : Bool
   anchored : Bool
   case_insensitive : Bool
   unicode : Bool
   utf8 : Bool
-  match_limit : Int?
-  bounds : (Int, Int)?
-  line_terminator : Int?
+  match_limit : Int32?
+  bounds : (Int32, Int32)?
+  line_terminator : Int32?
 }
 
 // Type aliases

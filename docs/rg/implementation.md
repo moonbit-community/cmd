@@ -98,12 +98,15 @@ contracts and candidate generator passed.
 The complete local functional run records 2,062 passes, zero failures and 18
 explicit platform skips, including all 80 metadata probes. Imported fixture
 bytes are protected from checkout newline conversion by `.gitattributes`.
-The local 0.10.17 interface printer spells 32-bit aliases `Int32`/`UInt32`;
-new interfaces use CI 0.10.15's equivalent `Int`/`UInt` spelling. The thirteen
-unrelated existing-interface spelling diffs are excluded from this migration.
+The user requested upgrading CI to the latest toolchain. All three workflows
+now select 0.10.17+d971670cd and matching core, with a new compilation cache key.
+The official latest Darwin/aarch64 checksums for moon, moonc and moonrun matched
+the local binaries on 2026-10-26; `moon version --all` identifies this release.
+Generated interfaces follow this compiler's `Int32`/`UInt32` alias spelling;
+existing signatures retain equivalent types.
 
 Test reports are retained by the normal CI artifact workflow; local logs are outside
-the repository. Hosted checks use the repository's pinned 0.10.15 toolchain.
+the repository. Hosted checks use the same 0.10.17 release as local validation.
 
 The unchanged fixed Rust integration harness ran separately against Native and
 Wasm candidates with distinct temporary roots. Each selected 323 host-applicable

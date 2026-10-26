@@ -77,13 +77,13 @@ pub fn GlobSet::empty() -> Self
 pub fn GlobSet::is_empty(Self) -> Bool
 pub fn GlobSet::is_match(Self, String) -> Bool
 pub fn GlobSet::is_match_candidate(Self, Candidate) -> Bool
-pub fn GlobSet::len(Self) -> Int
-pub fn GlobSet::matches(Self, String) -> Array[Int]
+pub fn GlobSet::len(Self) -> Int32
+pub fn GlobSet::matches(Self, String) -> Array[Int32]
 pub fn GlobSet::matches_all(Self, String) -> Bool
 pub fn GlobSet::matches_all_candidate(Self, Candidate) -> Bool
-pub fn GlobSet::matches_candidate(Self, Candidate) -> Array[Int]
-pub fn GlobSet::matches_candidate_into(Self, Candidate, Array[Int]) -> Unit
-pub fn GlobSet::matches_into(Self, String, Array[Int]) -> Unit
+pub fn GlobSet::matches_candidate(Self, Candidate) -> Array[Int32]
+pub fn GlobSet::matches_candidate_into(Self, Candidate, Array[Int32]) -> Unit
+pub fn GlobSet::matches_into(Self, String, Array[Int32]) -> Unit
 pub fn GlobSet::new(ArrayView[Glob]) -> Self raise GlobError
 pub impl Default for GlobSet
 

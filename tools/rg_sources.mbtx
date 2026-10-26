@@ -1,4 +1,4 @@
-///|
+----
 import {
   "moonbitlang/async@0.22.5",
   "moonbitlang/async@0.22.5/fs",
@@ -6,6 +6,7 @@ import {
   "moonbitlang/core/json",
   "moonbitlang/core/env",
 }
+----
 
 ///|
 async fn digest(path : String) -> String {

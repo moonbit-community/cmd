@@ -15,7 +15,7 @@ pub async fn cleanup_file_if_exists(String) -> Unit
 
 pub async fn commit_temporary_file(String, String, replace? : Bool) -> Unit
 
-pub fn compare_timestamps(FileTimestamp, FileTimestamp) -> Int
+pub fn compare_timestamps(FileTimestamp, FileTimestamp) -> Int32
 
 pub async fn copy_path(String, String, Bool, Bool) -> Bool
 
@@ -33,9 +33,9 @@ pub async fn kind_if_exists(String) -> @fs.FileKind?
 
 pub async fn metadata_if_exists(String, follow_symlink? : Bool) -> FileMetadata?
 
-pub async fn open_output(String, OutputMode, permission? : Int) -> @fs.File
+pub async fn open_output(String, OutputMode, permission? : Int32) -> @fs.File
 
-pub async fn open_unique_numbered_output(String, permission? : Int) -> (String, @fs.File)
+pub async fn open_unique_numbered_output(String, permission? : Int32) -> (String, @fs.File)
 
 pub fn overwrite_decision(UpdateMode, FileTimestamp, FileTimestamp?) -> OverwriteDecision
 
@@ -79,7 +79,7 @@ pub(all) struct FileMetadata {
   kind : @fs.FileKind
   size : Int64?
   mtime_seconds : Int64
-  mtime_nanoseconds : Int
+  mtime_nanoseconds : Int32
 } derive(Eq, @debug.Debug)
 pub fn FileMetadata::equal(Self, Self) -> Bool
 pub fn FileMetadata::not_equal(Self, Self) -> Bool
@@ -87,7 +87,7 @@ pub fn FileMetadata::to_repr(Self) -> @debug.Repr
 
 pub(all) struct FileTimestamp {
   seconds : Int64
-  nanoseconds : Int
+  nanoseconds : Int32
 } derive(Eq, @debug.Debug)
 pub fn FileTimestamp::equal(Self, Self) -> Bool
 pub fn FileTimestamp::not_equal(Self, Self) -> Bool

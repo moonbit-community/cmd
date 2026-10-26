@@ -2,44 +2,44 @@
 package "cli/rg/internal/memchr"
 
 // Values
-pub fn count(Byte, FixedArray[Byte], Int, Int) -> Int
+pub fn count(Byte, FixedArray[Byte], Int32, Int32) -> Int32
 
-pub fn memchr(Byte, FixedArray[Byte], Int, Int) -> Int
+pub fn memchr(Byte, FixedArray[Byte], Int32, Int32) -> Int32
 
-pub fn memchr2(Byte, Byte, FixedArray[Byte], Int, Int) -> Int
+pub fn memchr2(Byte, Byte, FixedArray[Byte], Int32, Int32) -> Int32
 
-pub fn memchr3(Byte, Byte, Byte, FixedArray[Byte], Int, Int) -> Int
+pub fn memchr3(Byte, Byte, Byte, FixedArray[Byte], Int32, Int32) -> Int32
 
-pub fn memrchr(Byte, FixedArray[Byte], Int, Int) -> Int
+pub fn memrchr(Byte, FixedArray[Byte], Int32, Int32) -> Int32
 
-pub let teddy_max_literals : Int
+pub let teddy_max_literals : Int32
 
 // Errors
 
 // Types and methods
 pub struct Finder {
   needle : FixedArray[Byte]
-  i1 : Int
-  i2 : Int
+  i1 : Int32
+  i2 : Int32
 }
-pub fn Finder::find(Self, FixedArray[Byte], Int, Int) -> Int
+pub fn Finder::find(Self, FixedArray[Byte], Int32, Int32) -> Int32
 pub fn Finder::needle(Self) -> FixedArray[Byte]
-pub fn Finder::new(FixedArray[Byte], Int, Int) -> Self
+pub fn Finder::new(FixedArray[Byte], Int32, Int32) -> Self
 
 pub struct PairSet {
-  o1 : Int
-  o2 : Int
+  o1 : Int32
+  o2 : Int32
   s1 : FixedArray[Byte]
   s2 : FixedArray[Byte]
 }
-pub fn PairSet::find(Self, FixedArray[Byte], Int, Int) -> Int
-pub fn PairSet::new(Int, Array[Byte], Int, Array[Byte]) -> Self
+pub fn PairSet::find(Self, FixedArray[Byte], Int32, Int32) -> Int32
+pub fn PairSet::new(Int32, Array[Byte], Int32, Array[Byte]) -> Self
 
 pub struct Teddy {
   // private fields
 }
-pub fn Teddy::find(Self, FixedArray[Byte], Int, Int) -> (Int, Int)?
-pub fn Teddy::find_span(Self, FixedArray[Byte], Int, Int) -> Int64
+pub fn Teddy::find(Self, FixedArray[Byte], Int32, Int32) -> (Int32, Int32)?
+pub fn Teddy::find_span(Self, FixedArray[Byte], Int32, Int32) -> Int64
 pub fn Teddy::new(Array[FixedArray[Byte]]) -> Self?
 
 // Type aliases
