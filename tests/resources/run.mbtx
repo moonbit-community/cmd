@@ -1,4 +1,4 @@
-///|
+----
 import {
   "moonbitlang/async@0.22.5",
   "moonbitlang/async@0.22.5/fs",
@@ -6,9 +6,11 @@ import {
   "moonbitlang/async@0.22.5/shell",
   "moonbitlang/core/bench",
   "moonbitlang/core/env",
+  "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/string",
   "moonbitlang/x@0.5.5/sys",
 }
+----
 
 ///|
 // Direct-child observations; no benchmark statistics or coverage claims.
@@ -246,6 +248,7 @@ async fn write_input(
   record : Int64,
   mixed : Bool,
   binary : Bool,
+  literal~ : String = "",
 ) -> Unit {
   let file = @fs.create(path)
   defer file.close()
@@ -271,6 +274,12 @@ async fn write_input(
       let end = column == width - 1 || at == size - 1
       let byte = if end {
         b'\n'
+      } else if !literal.is_empty() {
+        if literal == "literal-sparse" {
+          b'Z'
+        } else {
+          b'a'
+        }
       } else if binary && row % 3 == 1 && column == 13 {
         b'\x00'
       } else if binary && row % 3 == 1 && column == 31 {
@@ -373,7 +382,11 @@ async fn main {
   let args = @env.args()[1:]
   for index = 0; index < args.length(); index = index + 2 {
     guard index + 1 < args.length() else { fail("option requires a value") }
-    guard ["--report-dir", "--wasm-root", "--moonrun", "--oracle-bin", "--commands", "--sizes", "--long-record", "--distribution", "--timeout-ms", "--kernel-rss"].contains(args[index]) && !options.contains(args[index]) else {
+    guard [
+        "--report-dir", "--wasm-root", "--moonrun", "--oracle-bin", "--commands",
+        "--sizes", "--long-record", "--distribution", "--timeout-ms", "--kernel-rss",
+      ].contains(args[index]) &&
+      !options.contains(args[index]) else {
       fail("unknown or duplicate resource option: " + args[index])
     }
     options[args[index]] = args[index + 1]
@@ -384,13 +397,19 @@ async fn main {
   let oracle = @fs.realpath(options.get("--oracle-bin").unwrap())
   let commands = options
     .get("--commands")
-    .unwrap_or("rev,strings,split,csplit,tac,column,sort,grep,gzip,diff,cut,uniq,wc")
+    .unwrap_or(
+      "rev,strings,split,csplit,tac,column,sort,grep,gzip,diff,cut,uniq,wc",
+    )
     .split(",")
     .map(value => value.to_owned())
     .collect()
   let seen : Set[String] = Set([])
   for command in commands {
-    guard ["rev", "strings", "split", "csplit", "tac", "column", "sort", "grep", "gzip", "diff", "cut", "uniq", "wc"].contains(command) && !seen.contains(command) else {
+    guard [
+        "rev", "strings", "split", "csplit", "tac", "column", "sort", "grep", "gzip",
+        "diff", "cut", "uniq", "wc",
+      ].contains(command) &&
+      !seen.contains(command) else {
       fail("unknown, empty or duplicate resource command: " + command)
     }
     seen.add(command)
@@ -406,11 +425,19 @@ async fn main {
     sizes.push(size)
   }
   let long_option = options.get("--long-record").unwrap_or("false")
-  guard ["true", "false"].contains(long_option) else { fail("--long-record must be true or false") }
+  guard ["true", "false"].contains(long_option) else {
+    fail("--long-record must be true or false")
+  }
   let long = long_option == "true"
   let distribution = options.get("--distribution").unwrap_or("ascii")
-  guard distribution == "ascii" || distribution == "heldout" else {
-    fail("distribution must be ascii or heldout")
+  let literal = distribution.has_prefix("literal-")
+  guard [
+    "ascii", "heldout", "literal-shared", "literal-diverse", "literal-sparse", "literal-budget",
+  ].contains(distribution) else {
+    fail("unknown resource distribution")
+  }
+  guard !literal || commands == ["grep"] else {
+    fail("literal distributions require grep only")
   }
   let timeout = @string.parse_int(
     options.get("--timeout-ms").unwrap_or("900000"),
@@ -445,7 +472,11 @@ async fn main {
     "moonrun": moonrun,
     "oracle_bin": oracle,
     "distribution": distribution,
-    "record_keys": "deterministic varying decimal keys; heldout widths7/89/4097/65537/128 with NUL/0xff on byte profiles; rev/diff remain ASCII",
+    "record_keys": if literal {
+      "all a collision misses or all Z sparse misses; sixteen fixed patterns with common suffix; one-MiB records unless long-record is selected"
+    } else {
+      "deterministic varying decimal keys; heldout widths7/89/4097/65537/128 with NUL/0xff on byte profiles; rev/diff remain ASCII"
+    },
   }
   @fs.write_file(root + "/metadata.json", metadata.stringify(indent=2))
   let summary = @fs.create(root + "/summary.jsonl")
@@ -459,6 +490,8 @@ async fn main {
     for command in commands {
       let record = if long {
         size
+      } else if literal {
+        1048576L
       } else if command == "diff" {
         4096L
       } else {
@@ -469,7 +502,14 @@ async fn main {
         command != "rev" &&
         command != "diff"
       if record != last_record || binary != last_binary {
-        write_input(input, size, record, mixed, binary)
+        write_input(
+          input,
+          size,
+          record,
+          mixed,
+          binary,
+          literal=if literal { distribution } else { "" },
+        )
         last_record = record
         last_binary = binary
       }
@@ -484,7 +524,24 @@ async fn main {
       println(
         "resource start \{command} bytes=\{size} record=\{record} distribution=\{distribution}",
       )
-      let argv = arguments(command, input, changed, binary)
+      let argv = if literal {
+        let result = ["-F", "-c"]
+        let length = if distribution == "literal-budget" { 256 } else { 32 }
+        let marker = if distribution == "literal-shared" { 28 } else { 0 }
+        for number in 0..<16 {
+          let pattern = Bytes::makei(length, index => {
+            if index == marker {
+              (98 + number).to_byte()
+            } else {
+              b'a'
+            }
+          })
+          result.append(["-e", @utf8.decode(pattern)])
+        }
+        result
+      } else {
+        arguments(command, input, changed, binary)
+      }
       let candidate = observe(
         moonrun,
         [wasm + "/cli/" + command + "/" + command + ".wasm", "--", ..argv],
@@ -501,7 +558,7 @@ async fn main {
         timeout,
         kernel~,
       )
-      let expected = if command == "diff" { 1 } else { 0 }
+      let expected = if command == "diff" || literal { 1 } else { 0 }
       let mut same = !candidate.timed_out &&
         !reference.timed_out &&
         candidate.status == expected &&

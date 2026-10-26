@@ -1,0 +1,70 @@
+----
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/async@0.22.5/process",
+  "moonbitlang/core/env",
+}
+----
+
+///|
+async fn main {
+  let args = @env.args()
+  guard args.length() == 5 else {
+    fail("Usage: literal.mbtx REPORT_DIR WASM_ROOT MOONRUN ORACLE_BIN")
+  }
+  let root = args[1]
+  @fs.mkdir(root, recursive=true, allow_exist=false)
+  let results : Array[Json] = []
+  let mut failures = 0
+  for shape in ["shared", "diverse", "sparse", "budget"] {
+    for mode in ["sampled", "linux"] {
+      let name = shape + "-" + mode
+      let output = @process.redirect_to_file(root + "/" + name + ".log")
+      let status = @process.run(
+        "moon",
+        [
+          "run",
+          "tests/resources/run.mbtx",
+          "--",
+          "--report-dir",
+          root + "/" + name,
+          "--wasm-root",
+          args[2],
+          "--moonrun",
+          args[3],
+          "--oracle-bin",
+          args[4],
+          "--commands",
+          "grep",
+          "--kernel-rss",
+          mode,
+          "--distribution",
+          "literal-" + shape,
+          "--sizes",
+          if shape == "budget" {
+            "65536,1048576"
+          } else {
+            "8388608,67108864"
+          },
+        ],
+        stdout=output,
+        stderr=output,
+      ) catch {
+        error => {
+          @fs.write_file(root + "/" + name + "-error.txt", error.to_string())
+          -999
+        }
+      }
+      output.close()
+      results.push({ "shape": shape, "observer": mode, "status": status })
+      @fs.write_file(root + "/profiles.json", Json(results).stringify(indent=2))
+      if status != 0 {
+        failures += 1
+      }
+    }
+  }
+  guard failures == 0 else {
+    fail("literal resource profiles failed: \{failures}")
+  }
+}

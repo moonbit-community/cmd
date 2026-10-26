@@ -6,6 +6,8 @@ priv struct LiteralShift {
   minimum : Int32
   shifts : FixedArray[Int32]
   buckets : Map[Int32, Array[Bytes]]
+  patterns : Array[Bytes]
+  can_switch : Bool
 }
 
 ///|
@@ -36,7 +38,11 @@ fn LiteralShift::new(patterns : Array[Bytes]) -> LiteralShift? {
       None => buckets[key] = [pattern]
     }
   }
-  Some({ minimum, shifts, buckets, })
+  let mut can_switch = false
+  for (_, group) in buckets {
+    can_switch = can_switch || group.length() > 4
+  }
+  Some({ minimum, shifts, buckets, patterns: patterns.copy(), can_switch, })
 }
 
 ///|
@@ -45,11 +51,15 @@ fn LiteralShift::find(
   value : BytesView,
   start : Int32,
   first_only : Bool,
+  allow_switch~ : Bool,
 ) -> (Int32, Int32)? {
   if start < 0 || self.minimum > value.length() - start {
     return None
   }
   let mut position = start + self.minimum - 1
+  let mut window_start = position
+  let mut checks = 0
+  let adaptive = allow_switch && self.can_switch
   while position < value.length() {
     let key = pair_hash(value[position - 1], value[position])
     let shift = self.shifts[key]
@@ -63,6 +73,13 @@ fn LiteralShift::find(
     let left = position - self.minimum + 1
     let mut length = 0
     if self.buckets.get(key) is Some(group) {
+      if adaptive {
+        if position - window_start >= 4096 {
+          window_start = position
+          checks = 0
+        }
+        checks += group.length()
+      }
       for pattern in group {
         if pattern.length() > length &&
           pattern.length() <= value.length() - left &&
@@ -76,6 +93,13 @@ fn LiteralShift::find(
     }
     if length > 0 {
       return Some((left, left + length))
+    }
+    // All candidate starts through `left` are resolved. The counter only
+    // chooses an engine; it never establishes a match or skips an unchecked start.
+    if adaptive && checks >= 256 && checks > (position - window_start + 1) * 4 {
+      // A negative start is an internal handoff, never a match. Returning
+      // ordinary spans directly avoids allocating a second result per hit.
+      return Some((-1, left + 1))
     }
     position += 1
   }

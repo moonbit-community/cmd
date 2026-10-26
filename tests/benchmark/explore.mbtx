@@ -273,6 +273,43 @@ async fn corpus(
 }
 
 ///|
+fn adaptive_patterns(marker : Int32, length~ : Int32 = 32) -> Array[Bytes] {
+  Array::makei(16, number => {
+    Bytes::makei(length, index => {
+      if index == marker {
+        (98 + number).to_byte()
+      } else {
+        b'a'
+      }
+    })
+  })
+}
+
+///|
+async fn adaptive_corpora() -> Unit {
+  for (name, size) in [("64k", 65536), ("256k", 262144), ("1m", 1048576)] {
+    @fs.write_file(lab + "/collision-" + name, Bytes::make(size, b'a') + b"\n")
+  }
+  let sparse = Bytes::make(1048575, b'Z') + b"\n"
+  @fs.write_file(lab + "/sparse-1m", sparse)
+  let large = @fs.create(lab + "/sparse-64m")
+  defer large.close()
+  let mixed = @fs.create(lab + "/mixed-64m")
+  defer mixed.close()
+  mixed.write(Bytes::make(8192, b'a') + b"\n")
+  for _ in 0..<64 {
+    large.write(sparse)
+    mixed.write(sparse)
+  }
+  let dense = @fs.create(lab + "/dense-literals-1m")
+  defer dense.close()
+  let patterns = adaptive_patterns(28)
+  for index in 0..<32768 {
+    dense.write(patterns[index % patterns.length()] + b"\n")
+  }
+}
+
+///|
 async fn main {
   let args = @env.args()
   guard args.length() >= 6 else {
@@ -291,6 +328,7 @@ async fn main {
     fail("ci requires an exported oracle bin directory")
   }
   if mode == "prepare" {
+    adaptive_corpora()
     @fs.write_file(lab + "/empty", b"")
     @fs.write_file(lab + "/overlap8k", Bytes::make(8192, b'a') + b"\n")
     @fs.write_file(lab + "/overlap16k", Bytes::make(16384, b'a') + b"\n")
@@ -349,6 +387,58 @@ async fn main {
     lab + "/oracles/gzip-1.14/gzip"
   }
   let wasmroot = args[2].trim_end(chars="/").to_owned() + "/"
+  for (family, marker) in [("shared", 28), ("diverse", 0)] {
+    let options = ["-F", "-c"]
+    for pattern in adaptive_patterns(marker) {
+      options.append(["-e", @utf8.decode(pattern)])
+    }
+    for size in ["64k", "256k", "1m"] {
+      add(
+        "grep-adaptive-" + family + "-collision-" + size,
+        "grep",
+        options,
+        "collision-" + size,
+        gnugrep,
+        status=1,
+      )
+    }
+    for size in ["1m", "64m"] {
+      add(
+        "grep-adaptive-" + family + "-sparse-" + size,
+        "grep",
+        options,
+        "sparse-" + size,
+        gnugrep,
+        status=1,
+      )
+    }
+    if family == "diverse" {
+      add(
+        "grep-adaptive-mixed-64m",
+        "grep",
+        options,
+        "mixed-64m",
+        gnugrep,
+        status=1,
+      )
+    } else {
+      add(
+        "grep-adaptive-dense-1m", "grep", options, "dense-literals-1m", gnugrep,
+      )
+    }
+  }
+  let budget_options = ["-F", "-c"]
+  for pattern in adaptive_patterns(0, length=256) {
+    budget_options.append(["-e", @utf8.decode(pattern)])
+  }
+  add(
+    "grep-adaptive-budget-64k",
+    "grep",
+    budget_options,
+    "collision-64k",
+    gnugrep,
+    status=1,
+  )
   add("true-empty", "true", [], "empty", cu + "true")
   add("cat-64m", "cat", [], "text64m", cu + "cat")
   add("wc-l-64m", "wc", ["-l"], "text64m", cu + "wc")
