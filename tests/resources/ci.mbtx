@@ -1,10 +1,11 @@
-///|
+----
 import {
   "moonbitlang/async@0.22.5",
   "moonbitlang/async@0.22.5/fs",
   "moonbitlang/async@0.22.5/shell",
   "moonbitlang/core/env",
 }
+----
 
 ///|
 async fn main {
@@ -74,25 +75,60 @@ async fn main {
     (
       "kernel-rss-linux",
       [
-        "--kernel-rss", "linux", "--commands", "rev,split,csplit,tac,column,sort,diff",
+        "--kernel-rss", "linux", "--commands", "rev,split,csplit,tac,column,sort,diff,cut,uniq,wc",
         "--sizes", "8388608,67108864,536870912",
       ],
     ),
+    ("performance", []),
+    ("stability-diagnostic", []),
   ]
   let results : Array[Json] = []
   let mut failures = 0
-  let selected_profile = @env.get_env_var("CMD_RESOURCE_PROFILE").unwrap_or("all")
-  let selected_commands = @env.get_env_var("CMD_RESOURCE_COMMANDS").unwrap_or("")
-  guard selected_profile == "all" || profiles.any(row => row.0 == selected_profile) else {
+  let selected_profile = @env.get_env_var("CMD_RESOURCE_PROFILE").unwrap_or(
+    "all",
+  )
+  let selected_commands = @env.get_env_var("CMD_RESOURCE_COMMANDS").unwrap_or(
+    "",
+  )
+  guard selected_profile == "all" ||
+    profiles.any(row => row.0 == selected_profile) else {
     fail("unknown resource profile: " + selected_profile)
   }
   for (name, options) in profiles {
-    if selected_profile != "all" && name != selected_profile { continue }
-    let options = if selected_commands.is_empty() { options } else {
+    if name == "stability-diagnostic" && selected_profile == "all" {
+      continue
+    }
+    if selected_profile != "all" && name != selected_profile {
+      continue
+    }
+    if name == "performance" &&
+      !selected_commands.is_empty() &&
+      !selected_commands
+      .split(",")
+      .any(command => ["cut", "uniq", "wc", "grep"].contains(command.to_owned())) {
+      guard selected_profile == "all" else {
+        fail("no applicable performance commands")
+      }
+      results.push({
+        "profile": name,
+        "status": Json::null(),
+        "skipped": "no applicable performance commands",
+      })
+      @fs.write_file(
+        reports + "/profiles.json",
+        Json(results).stringify(indent=2) + "\n",
+      )
+      continue
+    }
+    let options = if selected_commands.is_empty() {
+      options
+    } else {
       let filtered : Array[String] = []
       let mut index = 0
       while index < options.length() {
-        if options[index] == "--commands" { index += 2 } else {
+        if options[index] == "--commands" {
+          index += 2
+        } else {
           filtered.push(options[index])
           index += 1
         }
@@ -101,7 +137,32 @@ async fn main {
     }
     let status = @shell.Cmd(
       "moon",
-      [..common, "--report-dir", reports + "/" + name, ..options],
+      if name == "stability-diagnostic" {
+        [
+          "run",
+          "--target",
+          "native",
+          "--release",
+          workspace + "/tests/resources/stability_diagnostic.mbtx",
+          "--",
+          reports + "/stability-diagnostic",
+          workspace + "/_build/wasm/release/build/cli",
+          prefix + "/bin",
+          selected_commands,
+        ]
+      } else if name == "performance" {
+        [
+          "run",
+          workspace + "/tests/resources/performance.mbtx",
+          "--",
+          reports + "/performance",
+          workspace + "/_build/wasm/release/build/cli",
+          prefix + "/bin",
+          selected_commands,
+        ]
+      } else {
+        [..common, "--report-dir", reports + "/" + name, ..options]
+      },
       cwd=workspace,
       env=Map([("LD_LIBRARY_PATH", libraries)]),
       stdout=Inherit,
@@ -115,7 +176,7 @@ async fn main {
     results.push({ "profile": name, "status": status })
     @fs.write_file(
       reports + "/profiles.json",
-      results.to_json().stringify(indent=2) + "\n",
+      Json(results).stringify(indent=2) + "\n",
     )
     if status != 0 {
       failures += 1

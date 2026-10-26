@@ -2,7 +2,7 @@
 
 The `resource-observations` workflow is manual only. It builds the selected ref's
 Wasm commands and defaults to the complete existing matrix. Choose an existing
-profile (`records`, `long`, `heldout`, `kernel-rss-linux`) and optional comma-separated
+profile (`records`, `long`, `heldout`, `kernel-rss-linux`, `performance`) and optional comma-separated
 commands for diagnosis. Ordinary development and release checks do not start it.
 
 Build and stage the current release Wasm artifacts first, using the existing
@@ -17,8 +17,9 @@ MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/resources/run.mbtx -- \
   --report-dir /absolute/new-report-directory
 ```
 
-The observer runs rev, strings, split, csplit, tac, column, sort, grep, gzip
-and diff serially on 8, 64 and 512 MiB inputs. Records are 80 bytes except for
+The observer runs rev, strings, split, csplit, tac, column, sort, grep, gzip,
+diff, cut, uniq and wc serially on 8, 64 and 512 MiB inputs. Cut selects bytes
+1–8, uniq compares adjacent records, and wc counts newlines. Records are 80 bytes except for
 diff's 4096-byte records, which avoid millions of duplicate record descriptors.
 Each record begins with a deterministic varying decimal key, so reverse ordering
 is observable and sorting must reorder the records.
@@ -78,16 +79,85 @@ The manual Linux workflow runs `tests/resources/ci.mbtx --image SEALED_IMAGE_ID`
 It exports the pinned image's `/oracle` prefix
 and runs the three profiles above serially with the host MoonBit toolchain,
 followed by a separate kernel-peak profile for rev, split, csplit, tac, column,
-sort and diff at 8, 64 and 512 MiB.
+sort, diff, cut, uniq and wc at 8, 64 and 512 MiB. The complete resource selection
+contains 95 byte/status/effect/cleanup comparisons.
 The exported reference uses the host's dynamic loader and system libraries;
 these resource observations do not replace sealed-container upstream parity.
 Reports remain under
-`test-reports/resources-linux/{records,long,heldout,kernel-rss-linux}`.
+`test-reports/resources-linux/{records,long,heldout,kernel-rss-linux,performance}`.
 Sampled candidate/reference invocations have a 15-minute deadline; kernel-mode
 invocations rely on the CI resource step's 120-minute overall deadline.
 Failed profiles do not suppress later profiles, and `profiles.json` is updated
 after each completed profile. A step
 deadline can leave partial reports. The normal artifact upload retains them;
 the exported oracle prefix is removed on observed completion or failure.
-The artifact excludes that copied prefix if the whole step is killed. Both
-scripts retain bare import headers for the pinned MoonBit 0.10.15 CI parser.
+The artifact excludes that copied prefix if the whole step is killed.
+
+The `performance` profile runs 23 selected cut/uniq/wc/grep workloads through
+`tests/benchmark/explore.mbtx`, using the exported oracle executables. Two
+separate windows each use one warmup and nine alternating direct-Wasm/GNU pairs,
+with exact status, stdout and stderr checks after every pair. This exercises
+short/long/repeated records, word counting, multi-literal sets, regex spans and
+overlapping suffixes. It never measures MoonX or subtracts runtime startup.
+Long-record cut and required-literal regex misses use 64 MiB inputs: the first
+local 8 MiB pilot had stable Wasm windows but noisy millisecond-scale GNU
+references. Increasing input size retains the same algorithmic case and
+stability thresholds; that original failed diagnostic remains recorded.
+`stability.json` reports both windows and requires MAD/median at most 5% for
+each side in each window, and a difference between window medians at most 10%
+of their mean. Noisy windows fail and remain available; no automatic retry or
+sample removal is performed. GNU ratios are reported without imposing a ratio
+gate: this is a repeatability check, not the formal 105-pair acceptance suite.
+The complete matrix and focused command selections both retain raw samples.
+An `all` selection for unrelated commands explicitly skips this profile; an
+explicit `performance` selection with no applicable commands fails.
+
+`stability-diagnostic` is an explicit investigation profile and is excluded
+from `all`. It preserves two windows of the same selected workloads for the
+existing Wasm observer, a release Native observer, a Native observer with a
+100 ms pause before each arm, and (on Linux) a Native observer confined to one
+allowed CPU. Both candidate and reference inherit the same affinity. The
+second window reverses variant order. Product commands remain the same release
+Wasm files; pauses are outside the complete child-process interval. CPU
+topology, affinity, aggregate scheduler counters and pressure snapshots accompany
+the raw observations. These interventions test hypotheses about measurement
+interference; they do not change acceptance settings or establish stability.
+Completion requires every diagnostic window, and no failed sample is retried
+or discarded. `plan.json` and `runs.json` retain the diagnostic selection and
+report paths. The ordinary `performance` profile keeps its existing thresholds.
+
+The `cache` diagnostic phase adds direct-Wasm `true` and empty-input grep as
+controls. It compares the Native observer with an explicit complete input read
+before each arm, outside timing. A separate Linux counter arm uses GNU time
+under GNU timeout's process-group deadline to retain CPU seconds, voluntary and
+involuntary switches, faults and kernel peak RSS for each invocation. Those
+wrapped elapsed times include observation overhead and are not acceptance
+measurements. GNU time's CPU-time fields have centisecond resolution; they
+cannot resolve a single millisecond-scale CPU difference. No MoonX invocation
+or startup subtraction is used. `diagnostic_phase` selects the hypothesis set
+only for the explicit diagnostic profile.
+
+The Linux-only `cpu` phase compares the unwrapped Native observer with
+`perf stat --null`, retaining high-resolution elapsed, user and system time
+for every invocation. Null mode does not request hardware counters or change
+kernel permissions. CI installs the distribution's Linux tools, and the report
+records the actual executable and version. A preflight and every sample require
+all three accounting fields. The outer process time includes the wrapper and
+remains separate from perf's child accounting; neither replaces acceptance time.
+
+The first Linux x64 diagnostic (run 40395472012, commit 87dc76b) retained all
+23 workloads in both windows. The existing Wasm observer and Native observer
+each had 17 stable workloads; the 100 ms pause and one-CPU variants each had
+14. No variant passed the complete stability gate. One-CPU CPU-pressure
+observations increased substantially. These negative results do not justify
+adopting a pause, replacing the observer, or restricting acceptance to one CPU.
+
+The cache/control run 40398697579 at 8fcdad5 retained all 25 workloads in both
+windows, including the two empty-input controls. Unwrapped Native and preloaded
+variants each had 16/25 stable workloads; GNU-time observation had 15/25. The
+unwrapped Wasm `true` control drifted from 9.54 to 8.46 ms (11.9%), demonstrating
+that some variability exists without text processing. This does not identify
+runtime compilation, allocation, host scheduling or storage as the unique
+cause. GNU time's coarse CPU values cannot resolve the remaining distinction.
+The host CPU differed from the first diagnostic, so cross-run absolute times
+cannot establish an improvement. No tested intervention is a stability fix.

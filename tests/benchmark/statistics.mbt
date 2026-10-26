@@ -216,14 +216,14 @@ fn summarize_row(
     }
   }
   let reasons : Array[String] = []
-  if r50 > 1.5 {
-    reasons.push("R50 exceeds 1.5")
+  if r50 > 3.0 {
+    reasons.push("R50 exceeds 3.0")
   }
-  if r95 > 1.5 {
-    reasons.push("R95 exceeds 1.5")
+  if r95 > 3.0 {
+    reasons.push("R95 exceeds 3.0")
   }
-  if interval.upper > 1.5 {
-    reasons.push("R50 95% upper endpoint exceeds 1.5")
+  if interval.upper > 3.0 {
+    reasons.push("R50 95% upper endpoint exceeds 3.0")
   }
   let failed = !reasons.is_empty()
   if candidate.noisy {

@@ -23,10 +23,44 @@ column, csplit and tac declare temporary-file writes, and sort lists its
 buffer-size, temporary-directory and batch-size options. Runtime APIs and
 command dependency coordinates remain unchanged.
 
-Candidate **0.8.2** adds the restricted `rg` command contract and its explicit
-file/stdin search options. The core runtime is unchanged. Existing published
-command coordinates and dependencies retain their versions; only the new rg
-candidate selects core 0.8.2. This candidate has not been published.
+Candidate **0.8.2** adds the restricted `rg` command contract and four
+performance waves. `stream.RecordReader` returns batches with synchronous record
+iteration and immutable byte views; only split records are assembled. Reads are
+at most 1 MiB, and retained storage follows a block plus the longest record.
+`stream.flush_buffer` consumes queued bytes before writing, preventing a failed
+partial write from being retried during deferred cleanup. The original
+`LineScanner` API remains available. `RecordBatch.each_while` visits views without
+per-record result objects and pauses after a consumed record for output flushing.
+`stream.count_byte` counts bytes in offset views using bounded word loads.
+
+`bytere.Pattern.record_matcher()` creates consumer-owned boolean search state.
+Its `required_literal()` exposes a conservative rejection filter; an empty
+literal provides no rejection guarantee. The byte DFA is initialized on demand,
+uses a flat transition table and avoids decoding ordinary byte records. The
+cache allows at most 256 subsets for programs of at most 256 instructions.
+Word/whole filters and cache exhaustion use span search. Assertion-free,
+reference-free span programs of at most 256 instructions precompute epsilon
+closures and reuse integer worklists. Other span searches and captured searches
+retain the existing engines and register rules. Scratch state belongs to the
+record matcher; a span plan has at most 256 squared closure entries.
+`RecordMatcher.search_bytes()` borrows a record and exposes resumed byte spans.
+The package-level `search_bytes()` shares fallback text conversion across
+multiple patterns. Eligible unfiltered spans use a reverse DFA to mark feasible
+starts, followed by an anchored forward DFA for the longest endpoint. Each DFA
+has at most 256 states; exhaustion reruns the current query through the span
+engine. Start bitmaps retain about one bit per input byte per eligible pattern.
+Word/whole filters, assertions, references and larger programs retain their
+respective fallback paths. Literal byte searches avoid conversion as well.
+For long records, forward endpoint queries skip proven self-loop transitions
+and reuse a proven suffix within that immutable record. This does not provide
+a general linear-time enumeration bound. `LiteralSet` compiles nonempty literal
+sets within 4096 total bytes: two-byte shifts when all literals have at least
+three bytes, otherwise a byte-class Aho-Corasick table with at most 1024 states.
+`find_span` selects the leftmost-longest match; `find_any` returns an occurrence
+without resolving longest ties. Grep uses the latter only for record counting.
+The cut/uniq/wc 0.2.3 and
+grep 0.3.1 candidates select this core coordinate, alongside rg. These candidates
+have not been published. See [the stream ADR](../docs/adr/0003-streams.md#performance-wave-4-candidate-2026-10-26).
 
 `gzipops.encode` accepts an optional `level` argument, defaulting to six, for
 the private pure MoonBit 32 KiB LZ and stored/fixed/dynamic Huffman encoder.

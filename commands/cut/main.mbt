@@ -98,24 +98,26 @@ fn output_delimiter_bytes(value : String) -> Bytes {
 }
 
 ///|
-fn cut_fields(
-  line : Bytes,
+fn cut_fields_into(
+  line : BytesView,
   ranges : Array[(Int32, Int32)],
   delimiter : Byte,
   only_delimited : Bool,
   output_delimiter : Bytes,
-) -> Bytes? {
+  kept : @buffer.Buffer,
+) -> Bool {
   if !line.iter().any(byte => byte == delimiter) {
     if only_delimited {
-      return None
+      return false
     }
-    return Some(line)
+    kept.write_bytes(line)
+    return true
   }
-  let kept = @buffer.Buffer(size_hint=line.length())
   let mut start = 0
   let mut field = 1
   let mut range_index = 0
   let mut first = true
+  let last_field = ranges.last().map(range => range.1).unwrap_or(0)
   for index in 0..<=line.length() {
     if index == line.length() || line[index] == delimiter {
       while range_index < ranges.length() && ranges[range_index].1 < field {
@@ -130,18 +132,22 @@ fn cut_fields(
       }
       start = index + 1
       field += 1
+      if field > last_field {
+        break
+      }
     }
   }
-  Some(kept.to_bytes())
+  true
 }
 
 ///|
-fn cut_characters(
-  line : Bytes,
+#inline
+fn cut_characters_into(
+  line : BytesView,
   ranges : Array[(Int32, Int32)],
   output_delimiter : Bytes?,
-) -> Bytes {
-  let out = @buffer.Buffer(size_hint=line.length())
+  out : @buffer.Buffer,
+) -> Unit {
   let mut first = true
   for (lo, hi) in ranges {
     if lo > line.length() {
@@ -150,10 +156,14 @@ fn cut_characters(
     if !first && output_delimiter is Some(separator) {
       out.write_bytes(separator)
     }
-    out.write_bytes(line[lo - 1:Int32::min(hi, line.length())])
+    let end = Int32::min(hi, line.length())
+    if end == lo {
+      out.write_byte(line[lo - 1])
+    } else {
+      out.write_bytes(line[lo - 1:end])
+    }
     first = false
   }
-  out.to_bytes()
 }
 
 ///|
@@ -276,48 +286,51 @@ async fn process_reader(
   record_delimiter : Byte,
   only_delimited : Bool,
   output_delimiter : Bytes?,
+  writer~ : &@io.Writer = @stdio.stdout,
 ) -> Unit {
   if field_ranges is Some(ranges) && ranges.is_empty() {
-    cut_no_fields(reader, delimiter, record_delimiter, only_delimited)
+    cut_no_fields(reader, delimiter, record_delimiter, only_delimited, writer~)
     return
   }
-  let scanner = @stream.LineScanner::new(reader, delimiter=record_delimiter)
   let field_output_delimiter = output_delimiter.unwrap_or(
     Bytes::from_array([delimiter]),
   )
   if field_ranges is Some(ranges) && delimiter == record_delimiter {
     cut_same_delimiter(
-      scanner, ranges, delimiter, only_delimited, field_output_delimiter,
+      @stream.LineScanner::new(reader, delimiter=record_delimiter),
+      ranges,
+      delimiter,
+      only_delimited,
+      field_output_delimiter,
+      writer~,
     )
     return
   }
-  while scanner.next() is Some(line) {
-    match field_ranges {
-      Some(ranges) =>
-        match
-          cut_fields(
-            line.data,
-            ranges,
-            delimiter,
-            only_delimited,
-            field_output_delimiter,
+  let scanner = @stream.RecordReader::new(reader, delimiter=record_delimiter)
+  let output = @buffer.Buffer(size_hint=@stream.chunk_size)
+  defer @stream.flush_buffer(writer, output)
+  let consume_record : (BytesView, Bool) -> Bool = match
+    (field_ranges, char_ranges) {
+    (Some(ranges), _) =>
+      (line, _) => {
+        if cut_fields_into(
+            line, ranges, delimiter, only_delimited, field_output_delimiter, output,
           ) {
-          Some(out) => {
-            @stdio.stdout.write(out)
-            @stdio.stdout.write(Bytes::from_array([record_delimiter]))
-          }
-          None => ()
+          output.write_byte(record_delimiter)
         }
-      None =>
-        match char_ranges {
-          Some(ranges) => {
-            @stdio.stdout.write(
-              cut_characters(line.data, ranges, output_delimiter),
-            )
-            @stdio.stdout.write(Bytes::from_array([record_delimiter]))
-          }
-          None => ()
-        }
+        output.length() < @stream.chunk_size
+      }
+    (None, Some(ranges)) =>
+      (line, _) => {
+        cut_characters_into(line, ranges, output_delimiter, output)
+        output.write_byte(record_delimiter)
+        output.length() < @stream.chunk_size
+      }
+    _ => (_, _) => true
+  }
+  while scanner.next_batch() is Some(batch) {
+    while !batch.each_while(consume_record) {
+      @stream.flush_buffer(writer, output)
     }
   }
 }
@@ -326,7 +339,7 @@ async fn process_reader(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("cut 0.2.2\n")
+    @stdio.stdout.write("cut 0.2.3\n")
     return
   }
   let args = @env.args()[1:]

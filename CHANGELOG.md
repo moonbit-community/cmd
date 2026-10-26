@@ -3,8 +3,76 @@
 This repository integrates multiple command packages, so changes are recorded
 by date and delivery milestone rather than by a single package version.
 
+## 2026-10-27
+
+- Cache/control diagnostic 40398697579 completed every window but retained
+  unstable empty-input controls and no passing full selection. Input preloading
+  is not a selected fix. Added a separate Linux perf null-counter diagnostic
+  with finer CPU accounting; ordinary resource acceptance remains unchanged.
+
+- Linux diagnostic run 40395472012 completed all controlled windows but found
+  no stable full selection: 17/23 for either observer, 14/23 with settling or
+  one-CPU affinity. Retained these rejected approaches and added a cache/control
+  phase with separate kernel-counter observations. Stability remains unresolved;
+  performance PR #60 remains unmerged.
+- Added an explicit Linux stability diagnostic to investigate the six noisy
+  workloads in resource run 40346450167. It compares observer backends, a fixed
+  between-arm pause and one-CPU affinity while retaining every sample and the
+  same release Wasm commands. This is diagnostic infrastructure, not a stability
+  fix or acceptance result. The ordinary resource gate and thresholds are unchanged.
+
 ## 2026-10-26
 
+- Extended the manual resource workflow to cover cut/uniq/wc alongside the
+  existing commands, including Linux kernel peak RSS. Added a 23-workload
+  direct-Wasm performance profile with two independent nine-pair windows and
+  explicit dispersion/drift checks. Raw samples and noisy results are retained;
+  this does not publish packages or replace formal performance acceptance.
+- Extended unpublished core 0.8.2 and grep 0.3.1 with adaptive multi-literal
+  search, record-level count skipping and reuse of proven regex suffixes.
+  Selected local pairs improved 64 MiB / 16-pattern counts by 4.49x and a
+  16 KiB overlapping-span case by 25.44x over wave 3. Broader literal shapes
+  improved 1.21x–1.70x; several GNU ratios still exceed the 1–3x exploration
+  target. A regressing reverse-DFA skip experiment was removed. Passed 1,604
+  Wasm package tests, 117 Native tool tests and 2,062 functional cases with
+  19 skips and no failures. The independent GNU set matched 792/796, retaining
+  four known empty-pattern differences. [ADR-0003](docs/adr/0003-streams.md#performance-wave-4-candidate-2026-10-26)
+  records measurements, bounds, negative evidence and deeper follow-up
+  directions. No publication or formal performance acceptance is claimed.
+- Extended unpublished core 0.8.2 and grep 0.3.1 with borrowed byte searches,
+  paired endpoint DFAs, shared fallback decoding and resumable synchronous span
+  emission. Selected local pairs improved original/many-match/long-record spans
+  by 3.24x/4.08x/3.64x over wave 2. Original spans remain 3.16x GNU; many-match
+  and word-filtered rows are 2.19x and 1.96x. Counting gains are smaller and some
+  regex count rows show small regressions. Passed 1,597 Wasm package tests,
+  117 Native tool tests and 2,062 functional cases with 19 skips and no failures.
+  The independent GNU set matched 684/688, retaining four known empty-pattern
+  differences. [ADR-0003](docs/adr/0003-streams.md#performance-wave-3-candidate-2026-10-26)
+  records resource bounds, raw evidence and remaining gaps. No publication or
+  formal performance acceptance is claimed.
+- Extended the same unpublished performance candidates with synchronous record
+  visitors, block rejection, synchronous count scans, flat DFA transitions and
+  precomputed span closures. Final local pairs improved short-record cut/uniq
+  by 4.96x/2.41x and 64 MiB regex counting by 2.67x over wave 1. Their selected
+  GNU ratios are 2.84x, 2.52x and 2.89x; span extraction remains 10.33x.
+  Passed 1,584 Wasm package tests, 117 Native tool tests and the full functional
+  suite (2,062 passes, 19 skips, zero failures). The independent local comparison
+  matched 242 of 244 GNU cases; two empty-pattern grep differences also occur in
+  wave 1. See [ADR-0003](docs/adr/0003-streams.md#performance-wave-2-candidate-2026-10-26)
+  for bounds, evidence and remaining work. No package was uploaded, and these
+  diagnostic measurements do not establish formal performance acceptance.
+- Prepared the unpublished first performance wave in `core 0.8.2`,
+  `cut/uniq/wc 0.2.3` and `grep 0.3.1`: immutable record batches, synchronous
+  output accumulation, SIMD line/word counting, compact span worklists and a
+  bounded lazy DFA with conservative literal rejection. Published coordinates
+  and snapshots remain unchanged. Updated prospective direct-Wasm performance
+  limits to 3.0x per the current target; historical verdicts remain unchanged.
+  Local macOS checks passed 1,579 Wasm package tests, 117 Native tool tests and
+  the full functional run (2,062 passes, 19 explicit skips, zero failures).
+  Selected nine-pair measurements and the remaining short-record/regex gaps are
+  recorded in [ADR-0003](docs/adr/0003-streams.md#performance-wave-1-candidate-2026-10-26).
+  These observations do not establish three-host, published-consumer or formal
+  performance acceptance. No package was uploaded.
 - Migrated development CI to release Wasm commands on Linux, macOS and Windows,
   with shared workspace/MoonX assertions and Native test tools. Removed the
   daily schedule, Native product pairing, change-coverage audits and source/

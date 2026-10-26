@@ -180,7 +180,7 @@
     {
       "name": "cut",
       "package_name": "cli/cut",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -360,7 +360,7 @@
     {
       "name": "grep",
       "package_name": "cli/grep",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -1052,7 +1052,7 @@
     {
       "name": "uniq",
       "package_name": "cli/uniq",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -1086,7 +1086,7 @@
     {
       "name": "wc",
       "package_name": "cli/wc",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [

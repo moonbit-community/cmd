@@ -1,8 +1,33 @@
 # grep
 
-Version **0.3.0** behavior is documented here. The
+Unpublished candidate **0.3.1** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
+
+The candidate uses core 0.8.2's bounded flat byte DFA and required-literal
+rejection for eligible boolean searches. A block filter skips complete records
+only when the required literals are absent and inversion/context are disabled;
+binary inspection and incomplete tails keep their existing paths. Counting
+processes buffered records synchronously. Assertion-free, reference-free span
+programs can precompute epsilon closures. Eligible `-o` searches use bounded
+reverse/forward automata over byte views to select leftmost-longest spans.
+Multiple patterns share fallback text conversion; each eligible pattern retains
+a start bitmap for the current record. Span output advances synchronously until
+its 64 KiB flush threshold, then resumes the same record. Single-literal counts
+locate matching records directly when case/word/whole filters are absent and the
+literal cannot cross a record delimiter. Word/whole filters, assertions, references and cache
+exhaustion preserve existing matching rules. Cached state is owned by each
+compiled record matcher.
+
+Four or more nonempty fixed patterns can share a compiled literal set instead
+of searching every pattern separately. Patterns of at least three bytes use
+two-byte shifts; shorter sets use a byte-class Aho-Corasick table. Compilation
+is bounded by 4096 literal bytes and, for the automaton, 1024 states. Empty or
+oversized sets and word/whole filters keep the existing path. Eligible counts
+locate a matching record and skip its remaining hits. Long-record regex spans
+also reuse proven self-looping suffixes within one immutable record, while
+retaining leftmost-longest selection. See [ADR-0003](../../docs/adr/0003-streams.md#performance-wave-4-candidate-2026-10-26)
+for measured gains, rejected experiments and remaining performance gaps.
 
 Search text using basic regular expressions by default, extended expressions
 with `-E`, or fixed strings with `-F`; `-G` restores basic syntax. Options include
@@ -40,7 +65,7 @@ line/file, 1 for no selection, and 2 for an error.
 
 ## Standalone metadata
 
-Standalone `--version` prints exactly `grep 0.3.0` followed by one
+Standalone `--version` prints exactly `grep 0.3.1` followed by one
 newline. Standalone `--help` starts with `Usage: grep`, lists both
 metadata options, and ends with a newline. Both write to stdout, leave stdin
 unread, and exit with status 0. Exact-version publication and verification

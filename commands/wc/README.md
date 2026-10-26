@@ -1,8 +1,12 @@
 # wc for moonx
 
-Version **0.2.2** behavior is documented here. The
+Unpublished candidate **0.2.3** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
+
+The candidate counts newlines and C-byte words with SIMD masks and carries word
+state across blocks. Display-width requests retain scalar counting; -m and -c
+still count bytes. Input buffers are 1 MiB.
 
 Count lines, words, and bytes without installing anything:
 
@@ -39,7 +43,7 @@ pipe, and redirection paths do not receive a repository-specific prompt.
 
 ## Standalone metadata
 
-Standalone `--version` prints exactly `wc 0.2.2` followed by one
+Standalone `--version` prints exactly `wc 0.2.3` followed by one
 newline. Standalone `--help` starts with `Usage: wc`, lists both
 metadata options, and ends with a newline. Both write to stdout, leave stdin
 unread, and exit with status 0. Exact-version publication and verification

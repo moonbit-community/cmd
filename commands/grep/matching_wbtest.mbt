@@ -10,6 +10,7 @@ fn Matcher::next_match(
     return None
   }
   match self {
+    ManyFixed(set) => set.find_span(@bytere.bytes(line), start=position)
     Fixed(patterns, whole, word) => {
       let bytes = Bytes::makei(line.length(), index => {
         line[index].to_int().to_byte()

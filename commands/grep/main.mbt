@@ -34,7 +34,8 @@ priv struct GrepOptions {
 ///|
 priv enum Matcher {
   Fixed(Array[Bytes], Bool, Bool)
-  Regular(Array[@bytere.Pattern], Bool, Bool)
+  ManyFixed(@bytere.LiteralSet)
+  Regular(Array[@bytere.RecordMatcher], Bool, Bool)
 }
 
 ///|
@@ -82,9 +83,15 @@ fn compile_matcher(
         bytes
       }
     })
+    if !options.whole_line &&
+      !options.word &&
+      literals.length() >= 4 &&
+      @bytere.LiteralSet::new(literals) is Some(set) {
+      return ManyFixed(set)
+    }
     return Fixed(literals, options.whole_line, options.word)
   }
-  let compiled : Array[@bytere.Pattern] = []
+  let compiled : Array[@bytere.RecordMatcher] = []
   for pattern in patterns {
     compiled.push(
       @bytere.compile(
@@ -92,7 +99,7 @@ fn compile_matcher(
         extended=options.extended,
         grep_syntax=true,
         ignore_case=options.ignore_case,
-      ),
+      ).record_matcher(),
     )
   }
   Regular(compiled, options.whole_line, options.word)
@@ -245,7 +252,7 @@ async fn process_source(
 async fn main {
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("grep 0.3.0\n")
+    @stdio.stdout.write("grep 0.3.1\n")
     return
   }
   let parsed = @cli.parse(args, [
