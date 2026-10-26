@@ -53,7 +53,7 @@ selection: candidate spans determine the endpoint, followed by capture-register
 restoration. Counted repeats, nested captures and multiple references are covered
 by independent GNU comparisons. `is_match` retains candidate pruning without
 restoring output registers, as GNU csplit and sed regex addresses do.
-See the [development report](../docs/reports/2026-10-24-s-matcher-sed.md).
+See the [development summary](../CHANGELOG.md#2026-10-24).
 
 Core 0.8.0 retains async **0.22.5** and the transfer profile introduced in
 version **0.7.0**, including public `EmptyReplyFailure`, `PartialBodyFailure`,

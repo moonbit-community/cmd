@@ -1,9 +1,0 @@
-{
-  "coordinate": "cli/sh@0.2.1",
-  "help_status": 0,
-  "version_status": 0,
-  "help_shape": "passed",
-  "version_exact_bytes": "passed",
-  "stderr_empty": true,
-  "stdin_observation": "closed; unread-input behavior not measured"
-}

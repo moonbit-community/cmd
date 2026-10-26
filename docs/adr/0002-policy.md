@@ -15,8 +15,10 @@ pairing are retired. Dated Native observations retain their historical scope.
 
 Commands preserve argv, inherited environment, cwd, streams and status according to upstream semantics. The embedding application/runtime host owns authorization. Explicit env -i/-u and shell export rules still modify the environment as requested. Catalog tiers/capabilities describe requirements, never authorize or filter execution.
 
-The current 79-command catalog has 69 Core/Extended commands and ten Restricted
-commands: chmod, curl, env, find, make, sh, split, timeout, wget and xargs.
+The current 80-command catalog has 69 Core/Extended commands and eleven
+Restricted commands: chmod, curl, env, find, make, rg, sh, split, timeout, wget
+and xargs. Rg is an unpublished candidate; its --pre option can spawn a
+user-selected process.
 Split's `--filter` uses the pure MoonBit shell and can launch external children,
 so its existing ProcessSpawn capability also requires the Restricted tier and
 a policy-sensitive release profile. Builtins alone do not prove process
@@ -24,7 +26,7 @@ authorization. The policy-host cohort exercises an actual controlled external
 filter child with process permission denied and explicitly allowed; it grants
 no unrelated process or filesystem authority.
 
-The unpublished sort candidate may create temporary runs after its in-memory
+Published sort 0.2.3 may create temporary runs after its in-memory
 budget fills. Its catalog includes FileWrite and the release profile marks it
 policy-sensitive. The host still decides authorization: small input and check
 mode can run without temporary writes, while denied spill creation fails before
@@ -46,11 +48,18 @@ remain rejected by command semantics. An explicit named working directory is
 not an additional authorization boundary. Tests exercise the decision helper
 and disposable fixtures only; no root deletion is executed.
 
-Baseline: async 0.22.4, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-20.
-core/process/default_environment returns the complete environment on both backends. The `process-lifecycle` CLI scenario checks an unrelated variable and both C/POSIX LC_ALL values through a pure MoonBit child. The original published audit retains the old filtered results; its follow-up fidelity probe is archived with the 2026-09-21 evidence.
-Historical results remain in [the audit](../reports/2026-09-19-command-fidelity-audit.md).
-Candidate runtime results are recorded separately from published versions.
+Current dependencies are declared in `core/moon.mod` (async 0.22.5,
+x 0.5.5 and moonjq 0.2.0). `core/process/default_environment` returns the
+complete host environment; env/export semantics modify it only when requested.
+The policy suite checks actual allowed/denied children and temporary writes.
+Historical filtering was removed by the 0.2.0 fidelity work, not retained as
+a current safety feature. Published coordinates remain independent of the
+catalog-only core 0.8.2 workspace candidate.
 
 ## Revisit when
 
 Only upstream command rules justify local environment changes. Adapt changing host authorization interfaces without changing command semantics.
+
+## Source review (2026-10-26)
+
+The complete-environment correction begins at `6fff343`; split authority changed in `db9dfe7`, and rg joined the catalog in `c048555`. Current sources are [catalog.mbt](../../core/cli/catalog.mbt), [process.mbt](../../core/process/process.mbt) and the [policy suite](../../tests/runner/policy.mbt). Catalog tiers never grant permissions.

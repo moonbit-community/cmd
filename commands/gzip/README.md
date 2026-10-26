@@ -27,8 +27,8 @@ and `--best` aliases `-9`. The last level option wins, including grouped short
 options. Levels are accepted and ignored when decompressing or testing.
 Compressed bytes need not match GNU's encoding. All nine levels pass the
 direct Native/Wasm GNU roundtrips and selected size limits in the
-[G1 development report](../../docs/reports/2026-10-24-g1-codec.md).
-Published MoonX and performance acceptance remain open.
+[G1 development summary](../../CHANGELOG.md#2026-10-24).
+Published 0.1.2 was accepted through MoonX on all three hosts on 2026-10-26; formal performance acceptance remains open.
 
 Decompression accepts concatenated members, optional names, comments and extra
 header fields, and verifies header CRC, payload CRC and size. Decoded bytes
@@ -38,7 +38,7 @@ the warning). Input and format failures return 1. Both directions stream input
 and output in bounded chunks. Decoding uses 64 KiB input/output buffers, a
 32 KiB history window and bounded Huffman lookup tables; it does not retain the
 whole compressed input or decoded output.
-The [G2 development report](../../docs/reports/2026-10-24-g2-streaming.md)
+The [G2 development summary](../../CHANGELOG.md#2026-10-24)
 records byte/error checks, direct timings and memory observations.
 
 Named-file compression requires `-cn`; named-file decompression requires `-c`

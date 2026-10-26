@@ -1,7 +1,0 @@
-{
-  "source_revision": "7829269d1a3b751768e6f64a0d305cd76282ee02",
-  "coordinate": "cli/curl@0.2.3",
-  "archive_sha256": "cbbeeec50e29f3acd57f5531bae2c016b85b2251aa84272ee5cf4048e21b4a2e",
-  "verified": true,
-  "verification_directory": "_build/verification/stage0-2026-10-20/curl"
-}

@@ -18,7 +18,7 @@ Implement curl/wget HTTP/HTTPS with public async APIs. Basic auth, cookie select
 ## Stage 0: response failures and retry output
 
 Stage 0 publishes core 0.7.0 and curl/wget 0.2.3. The
-[release report](../reports/2026-10-20-stage0-release/README.md) records exact main-source
+[release summary](../../CHANGELOG.md#2026-10-20) records exact main-source
 Native/Wasm gates, sealed-oracle comparisons and local/published MoonX results.
 The implementation uses async 0.22.5 and a project-owned pure
 MoonBit HTTP/1 wire adapter. A fresh public `Client` establishes the connection,
@@ -93,11 +93,11 @@ cross-scope duplicate-cookie compatibility; those remain within issue #34.
 Malformed response-cookie handling remains separate from final outgoing-field
 CR/LF validation above.
 
-The fixed URL/cookie and ordering/overflow probes establish expectations for
-these cases. Fresh registered Native/Wasm, backend-pair and sealed-oracle
-results are retained in the release evidence, including raw request bytes,
-connection counts, final bodies and existing-output effects. Published status
-comes from the exact-version acceptance, separately from exploratory probes.
+The fixed URL/cookie and ordering/overflow probes established expectations for
+these cases. Historical Native/Wasm and sealed-oracle results remain in Git,
+including raw request bytes, connection counts, final bodies and existing-output
+effects. Current registered Wasm and exact-MoonX checks preserve these contracts;
+published status comes from exact-version acceptance, separately from probes.
 
 An owned output sink closes on every exit from its private scope, including
 task cancellation. This lifetime guarantee does not define GNU signal behavior,
@@ -146,14 +146,15 @@ that header. These are curl-specific output decisions; the strict and Wget
 profiles retain their own existing rules. The calibrated 404/500 responses ignore
 Content-Disposition and use ordinary lazy URL-derived output; `-f` rejects them
 with 22 before transfer output opens. The status-selection observations are
-retained in `cmd-curl-cd-status-oracle-1`; they are expectations for fresh
-registered Native/Wasm and sealed-oracle acceptance, not candidate pass results.
+retained historically in `cmd-curl-cd-status-oracle-1`; current registered Wasm
+and pinned-oracle cases validate the implementation. A probe alone is not
+published acceptance.
 
 The fixed curl 8.22 observations in `cmd-curl-retry-empty-oracle-1` and
 `cmd-curl-retry-lifecycle-oracle-1` retain streams, request sequences and file
 bytes, including the empty file observed before the retry response. They define
-the expected lifecycle; fresh registered Native/Wasm command and sealed-oracle
-comparisons remain required before acceptance. Retry reset is implemented with
+the expected lifecycle; registered Wasm command and pinned-oracle comparisons
+remain the current regression path. Retry reset is implemented with
 released path-based open operations. Public descriptor truncation and file
 identity are still absent, so reset does not guarantee the same descriptor or
 inode after concurrent pathname replacement. This narrower boundary remains in
@@ -241,73 +242,53 @@ chunked truncation, malformed chunks, bodyless/close-delimited controls, file
 retention/cleanup, retries, Range requests and output-name reuse. Registration or
 a passing focused parser probe does not certify command parity: retain Native,
 Wasm, fixed curl/Wget oracle and exact published-consumer results with their
-real statuses, output files and wire requests. Published core remains 0.6.0 and
-the existing command coordinates remain unchanged until the release gates pass.
+real statuses, output files and wire requests. Stage 0 published these profiles
+in core 0.7.0 and curl/wget 0.2.3; those commands still request that core
+coordinate even though the workspace core has advanced.
 The dated cookie/authentication evidence below retains its original baseline.
 
 ## Alternatives and compatibility cost
 
 Reject host curl/wget delegation, own FFI and permanent exclusion of implementable protocol state. Explicit Basic credentials use a command-specific scope: the public transport defaults to the initial origin, while Wget selects all origins for `--user/--password`. Custom authorization headers retain their separate redirect behavior. Applying curl's scope to Wget was rejected because it changes authenticated redirects despite the caller supplying explicit credentials. Basic auth tests do not imply all protocols, authentication mechanisms, browser cookie policy or exact progress bytes.
 
-## Retained cookie/authentication evidence
+## Current authentication and cookie routing
 
-This section preserves the earlier version checks and candidate status at the
-time they were recorded. Subsequent publication of the Cookie corrections is
-recorded in the support record; these paragraphs are not stage-0 acceptance.
-Its two-map/public-list discussion records the earlier transport design; the
-current project-work boundary for ordinary repeated headers is defined above.
+Wget `--user/--password --auth-no-challenge` supplies explicit Basic
+credentials on every selected request, including cross-origin redirects.
+Without it, each unchallenged origin first supplies a Basic challenge.
+Challenge state is per origin within one transfer; GNU's hostname-level
+reuse across ports or separate operands is not claimed. Curl's literal
+cookies and custom Cookie headers remain scoped to the initial origin;
+stored cookies are selected for each destination.
 
-The fixed GNU Wget 1.25.0 Linux oracle in CI run `35575026875` sends
-`--user/--password --auth-no-challenge` credentials through a redirect from
-`127.0.0.1` to `localhost`; the previous candidate incorrectly omitted them.
-The [GNU Wget manual](https://www.gnu.org/software/wget/manual/html_node/HTTP-Options.html)
-defines preemptive Basic authentication for all requests. Without that option,
-each previously unchallenged origin must issue its own Basic challenge before
-explicit credentials are sent. The transport keeps challenge state per origin,
-so one server's challenge does not enable unsolicited authentication to another.
-Core HTTP fixture regressions cover default origin restriction, Wget preemptive
-redirects, and challenge-driven redirects. Their execution results are recorded
-by the release validation; registration alone is not a pass. Additional host,
-port or authentication-cache behavior requires a fixed upstream fixture before
-expanding this profile.
-The [Wget 1.25.0 implementation](https://git.savannah.gnu.org/cgit/wget.git/tree/src/http.c?h=v1.25.0)
-selects global command-line credentials again for each URL and caches Basic
-challenges by hostname. This implementation currently caches them per origin
-within a transfer. Reusing a challenge across ports or separate URL operands is
-not yet claimed; adding a shared command-session authentication cache requires
-specific upstream comparison cases. Credentials can still answer a new Basic
-challenge at each allowed origin.
+Curl emits matching jar cookies and an explicit Cookie field separately.
+Wget's `ReplaceStored` policy makes its explicit field replace outgoing
+jar cookies without disabling response storage, and forwards that explicit
+field across origins. This is independent of Authorization routing. The
+project HTTP/1 adapter now serializes these fields; the older two-map async
+transport was an implementation step, not a requirement for a new public
+header-list API. General ordered duplicate request fields remain project
+work under the contract described above.
 
-The current workspace sends matching jar cookies through persistent client headers
-and an explicit curl `Cookie:` through per-request headers. async 0.22.4 emits
-these separately and in that order. Wget selects `ReplaceStored` so its explicit
-field replaces outgoing jar cookies without disabling response-cookie storage.
-Wget also forwards that explicit field across origins, as its 1.25.0 wire probe
-shows; curl removes it. An independent `custom_cookie_cross_origin` flag preserves
-this difference without changing Basic or custom Authorization handling.
-The earlier single-map rejection was too restrictive. A pure MoonBit raw TCP
-probe confirmed the public API path and compared curl 8.7.1 and Wget 1.25.0;
-core tests assert the wire fields and redirect behavior, and the shared CLI
-scenario compares against pinned Linux tools when its oracle suite runs.
-Reject CRLF injection, concatenating fields, or maintaining a second HTTP stack:
-none is needed for this case. The compatibility cost is limited to unsupported
-arbitrary ordered repeated headers: two maps do not replace an ordered list.
-That remaining limit can be lifted by a public list API plus wire-level tests.
-These corrections are local candidate changes, not changes to published 0.2.0.
-Literal curl
-`-b` cookies and custom Cookie headers are restricted to the initial origin;
-stored jar cookies are selected for the redirect destination. The pinned curl
-8.22.0 Linux oracle removed literal cookies on a cross-host redirect, unlike
-the older macOS probe. The fixed-version oracle defines the current contract.
-PSL/IDNA and cookie
-prefix rules remain project work rather than async limitations.
+Historical curl 8.7.1 host probes are not the pinned curl 8.22.0 oracle.
+Cookie prefix rules, PSL/IDNA, arbitrary authentication mechanisms and full
+jar serialization remain outside the selected profile. The fixed raw-wire
+fixtures distinguish header validation, response-cookie storage and later
+request bytes. No host curl/wget or private transport implementation is used.
 
-Recheck baseline: async 0.22.4, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-20,
-moonc 0.10.14+7d59c7ec9. The original 0.2.0 release used the earlier pinned toolchain.
-Command option tests, core/netops cookie tests and `network-auth-cookie` exercise the implemented profile against loopback HTTP fixtures. `network-auth-cookie-oracle` preserves the old probe's live output/status and jar-mode comparisons against the pinned Linux oracle. Its implementation and CI registration are not a local Linux pass. The original probe remains archived. Only final passing options are promoted in the support record.
-Historical results remain in [the audit](../reports/2026-09-19-command-fidelity-audit.md).
-Candidate runtime results are recorded separately from published versions.
+## Versions and evidence
+
+The source trail starts with the 0.2.0 cookie repair (`1841411`) and
+continues through the public-passthrough adapter (`68b2010`), retry output
+lifetime (`00d3df3`) and URL/cookie calibration (`0bb2d54`). Stage 0 exact
+publication and three-platform acceptance are summarized under 2026-10-20
+in CHANGELOG.md. Current wire/package and command scenarios remain the
+executable assertions; those historical results do not cover future changes.
 
 ## Revisit when
 
 Extend additional protocol/auth/cookie behavior with direct upstream fixtures; new APIs alone are not evidence of implemented behavior.
+
+## Source review (2026-10-26)
+
+Current sources are [HTTP wire framing](../../core/netops/http_wire.mbt), [request serialization](../../core/netops/http_wire_request.mbt), [transfer state](../../core/netops/transfer.mbt), [sink lifetime](../../core/netops/transfer_sink.mbt) and [command scenarios](../../tests/network_scenarios/). Profile, cookie, header, retry and sink regressions live in core/netops alongside these files.

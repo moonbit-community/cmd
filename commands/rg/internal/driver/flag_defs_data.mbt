@@ -1110,7 +1110,7 @@ pub let flag_defs : Array[FlagDef] = [
     doc_variable: None,
     doc_category: Input,
     doc_short: "Compressed search is deferred (rejected).",
-    doc_long: "Compressed search is deferred in cli/rg. An effective -z or --search-zip exits with status 2. --no-search-zip or a later --pre retains option precedence. Decoder construction is preserved in experiments/rg-compression.",
+    doc_long: "Compressed search is deferred in cli/rg. An effective -z or --search-zip exits with status 2. --no-search-zip or a later --pre retains option precedence.",
     doc_choices: [],
     completion_type: Other,
   },

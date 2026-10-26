@@ -25,7 +25,7 @@ byte count. Strings use byte offsets and C-locale ordering. The shared BRE
 matcher supports pattern backreferences, byte classes and word assertions.
 Repeated nullable captures follow the tested GNU candidate and capture-register
 selection, including counted repeats and references. See the
-[workspace support record](../../docs/compatibility.md#workspace-matcher-and-sed-candidates).
+[workspace support record](../../docs/compatibility.md#published-matcher-and-sed-profiles).
 Locale-aware character operations are not included. `--help`, `--version`, and
 the leading `--` separator are available.
 

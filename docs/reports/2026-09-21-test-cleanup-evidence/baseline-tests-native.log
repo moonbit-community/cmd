@@ -1,5 +1,0 @@
-sh: arithmetic division by zero
-"one"
-"two"
-make: recipe for 'broken' failed with status 1
-Total tests: 132, passed: 132, failed: 0.

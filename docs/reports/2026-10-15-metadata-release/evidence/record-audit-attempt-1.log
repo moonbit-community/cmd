@@ -1,4 +1,0 @@
-
-coverage audit infrastructure: JsonDecodeError((/core_impact, String::from_json: expected string))
-
-Failure(push.mbtx:90:5-90:70@moon/test/single FAILED: coverage audit rejected push; status 2)

@@ -19,12 +19,12 @@ The rg module retains its reader/sink algorithms and makes actual reads, sink
 writes, directory advancement and stdout flushing asynchronous. It does not
 load ordinary files or accumulate search stdout as an async workaround. Existing
 multiline and sorted traversal retain their explicit larger storage paths.
-The `-z` adapter is deferred outside the workspace; no decoder/resource claim
+The removed `-z` adapter survives only in Git history; no decoder/resource claim
 applies to the candidate. Unavailable stdin kind is an explicit status-2 search
 boundary, with explicit paths and `-` covered by portable contracts. Automatic
 terminal presentation chooses plain output; it is not reported as a successful
 terminal query. Lift these limits only after public APIs and three-host Wasm
-regressions exist. Evidence and remaining checks: [rg ledger](../rg/implementation.md).
+regressions exist. Evidence and remaining checks: [rg support profile](../../docs/compatibility.md#rg-candidate).
 
 Preserve byte streams, final newlines and partial output. Set LC_ALL=C explicitly in differential fixtures; inherit caller locale in real commands. C-byte collation tests do not certify non-C behavior. Keep bounded sort and descriptor-follow tail as declared subsets.
 
@@ -39,7 +39,7 @@ number of records. The existing constructor/next calls and delimiter behavior
 remain; the generated structural interface records the new state.
 
 Plain cat copies reuse a 64 KiB buffer across operands. Wc computes only selected
-counters. Its current candidate follows the frozen C byte profile: both -c and
+counters. Its published implementation follows the frozen C byte profile: both -c and
 -m count every byte, including malformed UTF-8, with no decoder or pending
 sequence state. The earlier UTF-8 counter observations remain historical.
 Strings retains a candidate prefix only until the requested minimum, then
@@ -53,8 +53,8 @@ record/key payloads, bookkeeping and reserved buffers; active/oversized records
 and runtime allocation overhead remain explicit additional costs. Preserve
 first-representative unique behavior and error cleanup before raising the budget
 or widening options; require measured RSS before claiming a memory cap.
-These are implementation candidates with package and command regressions;
-published coordinates and final performance acceptance remain separate.
+These implementations were published on 2026-10-25 with package and command
+regressions. Their release does not establish formal performance acceptance.
 
 Rev selects the fixed Linux C-locale util-linux 2.40 profile. It reverses
 ASCII/NUL records without decoding and rejects a record containing a non-ASCII
@@ -67,7 +67,7 @@ Reject universal newline normalization, whole-output trimming and forced locale.
 
 ## O1 selected text options
 
-The unpublished 0.2.2 candidates add cut complements/output delimiters, uniq
+The published 0.2.2 commands add cut complements/output delimiters, uniq
 member/group output, comm column delimiters/totals, join ASCII-folded keys/
 headers/automatic output fields, and wc total policies. Cut keeps distinct
 adjacent explicit spans when an output delimiter makes their boundary visible.
@@ -125,7 +125,7 @@ Selected GNU cases and named package regressions supply Native/Wasm evidence;
 private development observations remain distinct from committed PR/main,
 formal performance and publication acceptance.
 
-## O5-O8 and O13 stream candidates
+## Published split, display and pipe profiles
 
 Split uses bounded reads and owned spools for total-dependent layouts. Byte,
 line-aligned and round-robin selection preserve empty partitions, elision,
@@ -176,17 +176,17 @@ with the created sink empty, rather than inventing signal status -13. Lift
 this boundary only after a released signal API and actual Native/Wasm
 closed-pipe termination/prefix/cleanup comparisons pass.
 
-The new selected cases, named package tests, generated mktemp relationships and
-closed-pipe scenarios remain source contracts pending the required platform,
-coverage, actual-main and publication gates. They do not certify RSS bounds or
-the formal direct-Wasm performance targets.
+Selected cases, package tests, generated mktemp relationships and real
+closed-pipe scenarios retain these published profiles. Current delivery checks
+run them through Wasm and exact-version MoonX as applicable. They do not certify
+RSS bounds or the formal direct-Wasm performance targets.
 
 ## R streaming and temporary-storage contracts
 
-The R candidates are column/rev/tac **0.1.4**, csplit **0.2.1**, split **0.1.3**
-and sort **0.2.3**. These source versions do not change dependency coordinates
-or establish publication. Keep the 2026-10-25 published baseline and its exact
-MoonX results separate from new source acceptance.
+The R release published column/rev/tac **0.1.4**, csplit **0.2.1**, split
+**0.1.3**, sort **0.2.3** and core **0.8.1** on 2026-10-25. Dependency
+coordinates were unchanged. The changelog records local MoonX acceptance and
+the later three-platform replay separately from resource/performance claims.
 
 Rev consumes and validates one record, then reverses ASCII/NUL bytes into one
 record-sized output buffer. Its storage is O(64 KiB + longest record); a late
@@ -259,10 +259,11 @@ must report the workloads actually run rather than infer a process RSS cap.
 
 ## Versions and evidence
 
-Baseline: async 0.22.4, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-20.
-Exact CLI contracts in tests/cases cover grep, base64 and shell substitution on both backends. The original audit records the previous mismatches; the original fidelity probe is retained in the 2026-09-21 evidence archive.
-Historical results remain in [the audit](../reports/2026-09-19-command-fidelity-audit.md).
-Candidate runtime results are recorded separately from published versions.
+The current core line scanner, command buffers and spools are checked by
+package tests, `tests/cases/<command>.json` and shared stateful scenarios.
+The 2026-10-24/25 changelog records their implementation and publication.
+Use current Wasm and exact-MoonX checks; former two-backend observations
+retain their dated scope and are not required delivery backends.
 
 ## Revisit when
 
@@ -270,24 +271,22 @@ Add locale profiles only when implementation and oracle evidence cover them; nev
 
 ## Migrated text and binary profiles
 
-The target remains each command's upstream behavior. These are bounded release
-choices, not permission to reinterpret accepted upstream flags. Evidence below
-uses MoonBit 2026-09-20, async 0.22.4 and x 0.5.5; the first eleven commands are
-released at 0.1.1 and subsequent additions at 0.1.0. Per-command byte contracts
-are in `tests/cases/<command>.json`; package tests and the three-platform release
-reports are separate from full upstream differential certification.
+The target remains each command's selected upstream behavior. Current
+coordinates are in `tests/release_runner/current/latest.json`; package and
+CLI assertions live alongside the implementation. These decisions do not
+reinterpret accepted flags or certify every upstream option.
 
 | Commands | Choice and reason | Rejected alternative and compatibility cost | Evidence and condition for expansion |
 | --- | --- | --- | --- |
 | rev, tac | Ordered operands; rev retains one ASCII/NUL record and tac reads fixed separators backwards with bounded block/overlap storage. Tac's GNU Emacs matcher preserves nullable progress. | Rev rejects non-ASCII records before output. Tac regex retains O(input) memory and a spool until a paged/seekable matcher interface is implemented and verified; neither command claims multibyte-locale decoding. | `rev.json`, `tac.json` and package regressions cover current source; pinned Linux O-stage observations and older releases remain distinct evidence. |
 | expand, unexpand, fold | C-byte columns, explicit tab stops and control-byte rules; fold preserves input bytes and uses space breaks only when requested. Deterministic byte contracts require no terminal discovery. | Reject UTF-8 replacement decoding and assuming one code point occupies one display column. Non-C widths remain unimplemented; fold handles tabs/backspace/CR in column mode. | Their JSON contracts and fold package tests; expand locale claims only after wide/combining/malformed input and tab/control interactions pass the selected upstream oracle. |
-| od, hexdump | Concatenate operands and preserve partial words, duplicate blocks and final offsets; the O7 candidate adds the frozen Linux float ABI, strings/legacy offsets and custom hexdump format/color units. | No host delegation or inferred native ABI. Forward stdin skip is a documented read/discard extension; backward positioning needs a seekable input. | `od.json`, `hexdump.json`, numeric/format package tests and fixed-provider Native/Wasm development observations; PR/main and publication remain separate. |
+| od, hexdump | Concatenate operands and preserve partial words, duplicate blocks and final offsets; the published O7 implementation adds the frozen Linux float ABI, strings/legacy offsets and custom hexdump format/color units. | No host delegation or inferred native ABI. Forward stdin skip is a documented read/discard extension; backward positioning needs a seekable input. | `od.json`, `hexdump.json`, numeric/format package tests and fixed-provider Native/Wasm development observations; PR/main and publication remain separate. |
 | fmt | Width/goal paragraph optimization, crown/tagged margins and prefix selection with C-byte indentation and sentence spacing; no file rewrite. | Do not substitute fold or discard long words. Paragraph storage and non-C display widths remain separate work. | Current `fmt.json`, named regressions and O3 GNU margin/prefix/tab/EOF observations; PR/main and formal resources remain separate gates. |
 | strings | Streaming C-byte scanning, GNU d/o/x offsets, last -o/-t selection, seven-column padding, TAB, filename prefixes, s/S encodings and selected output separators. | Reject b/l/B/L before input until wide decoding is implemented. No BFD/FFI or host fallback; locale/object sections remain project work. | Binutils 2.44 JSON and package contracts plus selected separator/cross-block development observations. Wide modes require endian/minimum-length/offset/invalid-input differentials. |
-| column | Default vertical/-x grid and global -t layout use one indexed disk snapshot; retained caches and the current record replace whole-input/output buffers. | Temporary writes are required. GNU/Linux C-locale non-ASCII bytes are escaped; non-ASCII delimiters reject. Automatic terminal discovery and full Unicode widths remain separate capabilities. | Current spool/layout package regressions and command contracts; historical util-linux 2.40 evidence remains in the [repair report](../reports/2026-10-11-fidelity-repair/README.md). Add terminal discovery only with public APIs and expand locale widths against versioned Unicode/locale data. |
+| column | Default vertical/-x grid and global -t layout use one indexed disk snapshot; retained caches and the current record replace whole-input/output buffers. | Temporary writes are required. GNU/Linux C-locale non-ASCII bytes are escaped; non-ASCII delimiters reject. Automatic terminal discovery and full Unicode widths remain separate capabilities. | Current spool/layout package regressions and command contracts; historical util-linux 2.40 evidence remains in the [repair summary](../../CHANGELOG.md#2026-10-11). Add terminal discovery only with public APIs and expand locale widths against versioned Unicode/locale data. |
 
-Raw observations and exact invocations are in
-[the follow-up audit](../reports/2026-10-11-command-followups/README.md).
+The [changelog](../../CHANGELOG.md#2026-10-11) summarizes the original follow-up
+audit; full observations remain in Git history.
 
 `seq` streams without an arbitrary ten-million-record cutoff. Counting records
 is unnecessary for separator placement; a boolean avoids both that semantic
@@ -307,5 +306,9 @@ The second column review also compares controls and ANSI color sequences against
 util-linux 2.40: table widths ignore complete control + `[` ... `m` sequences,
 while the default grid retains its printable-character width rule. Output bytes
 are preserved; this is not terminal detection or automatic color generation.
-The [prioritized register](../command-followups.md) tracks fixes without
+The [support record](../compatibility.md) tracks current profiles without
 turning known defects into positive compatibility claims.
+
+## Source review (2026-10-26)
+
+Buffer/scanner and external-sort work is `1ffa967`; text options are `5dbe51d`/`2e867a3`; the snapshot/reverse-read changes are `87ca302`. Current sources: [stream.mbt](../../core/stream/stream.mbt), [sort](../../commands/sort/external.mbt), [csplit snapshot](../../commands/csplit/snapshot.mbt), [column spool](../../commands/column/spool.mbt), [tac](../../commands/tac/) and [rev](../../commands/rev/). Their package tests and JSON contracts retain the exact resource/error boundaries above.

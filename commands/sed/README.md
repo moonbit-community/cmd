@@ -37,7 +37,7 @@ Scripts compile before input is opened, including label and group resolution.
 The shared C-byte BRE/ERE matcher supports pattern backreferences, byte classes
 and word assertions. Repeated nullable captures follow the tested GNU candidate
 and capture-register selection, including counted repeats and references. See the
-[workspace support record](../../docs/compatibility.md#workspace-matcher-and-sed-candidates).
+[workspace support record](../../docs/compatibility.md#published-matcher-and-sed-profiles).
 In-place editing and locale-aware matching remain outside this profile.
 Unsupported syntax is rejected before input is processed.
 `--help` and `--version` are available. Exit status is 0 on success, 1 for an

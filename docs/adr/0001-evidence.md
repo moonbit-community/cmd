@@ -86,8 +86,9 @@ The current published inventory has independent expected cases. Changing
 workspace versions or help text must not change the expected bytes for an old
 coordinate. Published dependencies are exercised by real MoonX execution after
 upload. A workspace build cannot establish published dependency resolution.
-No receipt/archive/freezing pipeline is maintained. Historical files are kept
-unchanged, with their original limitations.
+No receipt/archive/freezing pipeline is maintained. Historical published manifests remain
+unchanged. Dated report summaries are in CHANGELOG.md; removed reports are
+recoverable from Git history with their original limitations.
 
 ## Cost and reconsideration
 
@@ -96,8 +97,12 @@ required development checks, with queue time separately visible. Resource and
 publication workflows have independent budgets. Record actual cold/warm job
 durations and runner usage; a timeout is a failure, not a performance success.
 
-Retire duplicate executions only when their assertions remain covered. Keep a
-one-time migration ledger for this refactor, not an ongoing audit service.
+Retire duplicate executions only when their assertions remain covered. Use the
+changelog for dated migration results, not an ongoing audit service.
 Reintroducing a product backend requires an explicit delivery decision and
 its own supported-platform contract. Changing the oracle or lifecycle model
 requires equivalent observable correctness and cleanup guarantees.
+
+## Source review (2026-10-26)
+
+The Wasm-only transition is `e61d1c6`/`894433a`/`40efae2`; test-tool build reuse is `bf5e02b`. Current authorities are [check.yml](../../.github/workflows/check.yml), [ci.mbtx](../../tests/ci.mbtx), [runner](../../tests/runner/), [metadata observer](../../tests/runner/metadata.mbt) and [oracle verification](../../tests/testkit/oracle.mbt). These implement the gates rather than the retired coverage system.

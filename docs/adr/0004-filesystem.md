@@ -9,7 +9,7 @@ interactive ln/mv overwrite is declined, including EOF. Preserve both paths,
 continue other operands, and aggregate the failure. A no-clobber/update skip
 remains a distinct successful no-op. Earlier golden status 0 was wrong;
 real Native/Wasm and published regressions retain the corrected upstream status.
-Revision: Retain the stage 0 Windows rename contract and add selected O8-O12 path, mode, prompt, size and display candidates with operation-specific public-API limits.
+Revision: Retain the Windows rename contract and published path, mode, prompt, size and display profiles with operation-specific public-API limits.
 
 Delivery validation update (2026-10-26): [ADR-0001](0001-evidence.md) and the
 [Wasm CI migration](../ci-wasm-migration.md) define current acceptance. Future
@@ -17,9 +17,7 @@ regressions and boundary unlock conditions below require Wasm on applicable
 hosts and exact-version MoonX acceptance; Native command runs and backend
 pairing are retired. Dated Native observations retain their historical scope.
 
-## D-stage patch candidate
-
-### rg path and identity boundary (2026-10-26)
+## rg path and identity boundary (2026-10-26)
 
 The rg candidate uses public async directory/file/realpath/mtime operations.
 Windows cwd, canonical results and operand paths use a consistent slash form
@@ -35,9 +33,11 @@ rejects missing creation metadata. The public String path API does not establish
 raw invalid-UTF-8 path preservation or readlink text support. Unlock requires
 released descriptor/device/inode, link-text, creation-time and raw-path APIs,
 with hardlink, symlink-loop, redirected-output and platform-specific Wasm tests.
-Current contracts and source evidence: [rg ledger](../rg/implementation.md).
+Current contracts and source evidence: [rg support profile](../../docs/compatibility.md#rg-candidate).
 
-The unpublished patch 0.2.0 candidate supports offset/fuzz selection, mixed
+## Published patch and diff behavior
+
+Published patch 0.2.0 supports offset/fuzz selection, mixed
 hunk results and new unified/context rejects. A failed hunk retains its input
 region and allows later hunks; stdout and dry-run remain useful without unsafe
 existing-file replacement. Batch mode selects a detected reverse explicitly.
@@ -57,7 +57,7 @@ them, and top-level readable operands retain stream comparison. Comparing
 distinct character/block device numbers inside directories requires public
 device metadata; path spelling or content must not impersonate that metadata.
 
-## O2 sort output candidate
+## Sort output and identity
 
 Ordinary sort creates a new named output before reading, retains an existing
 target until every source is consumed, and then writes through a truncating
@@ -72,7 +72,7 @@ it is an input. Lift this restriction after those APIs, or another algorithm,
 prove normal, alias, mode and late-failure effects on Native/Wasm against GNU.
 It does not restrict ordinary sort output or merge to a new target/stdout.
 
-## O8-O12 filesystem option candidates
+## Path, mode, prompt and display options
 
 Xxd creates new second-operand outputs exclusively and writes reverse offsets
 through public positioned writes. Existing outputs reject before mutation:
@@ -158,14 +158,14 @@ metadata; fixed-provider safe HTML bodies are compared separately from that
 documented page contract. Neither safe escaping nor retained generic errors is
 a missing-API claim.
 
-These are unpublished source candidates. Selected JSON and package regressions
-retain the boundaries; required PR, actual-main and published-coordinate
-acceptance remain separate.
+These selected profiles were published in the 2026-10-25 command release.
+Current JSON/package regressions retain their boundaries. Future changes still
+require the current Wasm platform and exact-coordinate acceptance gates.
 
 ## Stage 0: Windows link rename
 
 Stage 0 publishes `cli/mv@0.2.3` with core 0.7.0 and async 0.22.5.
-The [release report](../reports/2026-10-20-stage0-release/README.md) records independent Windows
+The [release summary](../../CHANGELOG.md#2026-10-20) records independent Windows
 Native/Wasm execution, exact published-host rejection and runtime identities.
 The upstream
 [Native implementation](https://github.com/moonbitlang/async/blob/11749dec32e2b4de8cc8a6101e18110019c29893/src/internal/event_loop/fs.c#L1504)
@@ -220,8 +220,8 @@ their original verification baseline, not a new acceptance result.
 
 ## Target and decision
 
-The retained ls link/time corrections must also be released as `cli/ls@0.2.1`:
-the old 0.2.0 coordinate fails the new time-order contracts. Follow command-line
+The ls link/time corrections were published in `cli/ls@0.2.1` and are retained
+in the current 0.2.2 coordinate; the old 0.2.0 coordinate failed those contracts. Follow command-line
 links with `-H`, all selected links with `-L`, and preserve the documented `-P`
 extension. `-u/-c/--time` imply time ordering unless an explicit `-S/-t` selects
 sorting; retain GNU 9.11 tie, dangling-link and precedence contracts. Reject
@@ -252,7 +252,7 @@ absence; Linux fixed GNU is the independent oracle, Windows contracts are separa
 Implement each backend's maximum correct subset. Public async 0.22.4 lacks identity, mode reads and handle truncation. Default cp therefore fails instead of creating wrong permissions. GNU --no-preserve=mode supports new destinations with 0666/0777 subject to umask; existing regular-file overwrite is rejected. No-clobber/update no-ops remain. Touch creates missing files and implements -c for missing operands; existing timestamp updates fail without content writes. Numeric chmod follows command-line symlinks and skips recursively encountered symlinks. mkdir -p -m applies the requested mode only to the leaf. Exotic umasks requiring temporary owner permissions remain uncertified.
 
 Public `fs.realpath` supplies existing-target canonicalization. The O10
-candidate above adds supportable missing-path and lexical operations without
+implementation above adds supportable missing-path and lexical operations without
 inventing an unresolved symlink target. Public directory traversal does not
 provide readlink, raw mode or inode identity; tree's selected profile must
 state only the operations for which those values are actually necessary.
@@ -270,14 +270,14 @@ pass. This observation capability does not expand product command APIs.
 ## Alternatives and compatibility cost
 
 The original patch profile applied exact unified/context hunks to stdout or in a
-dry run, and supported unambiguous creation/deletion. The D candidate above
+dry run, and supported unambiguous creation/deletion. The published D implementation above
 extends matching and reject handling. Existing-file replacement
 and named `-o` output refuse because GNU patch preserves source mode. Unlike cp,
 patch may replace the target inode: rename itself is available. Reject direct
 truncate/write because it mutates hard-link aliases, and reject default-mode
 temporary replacement because it loses source permissions. The compatibility
 cost is that ordinary `patch < change.diff` cannot update an existing file yet.
-Evidence: [2026-10-10 inode/mode observation](../reports/2026-10-10-patch-file-semantics.md),
+Evidence: [2026-10-10 inode/mode observation](../../CHANGELOG.md#2026-10-10),
 async 0.22.4 public fs interface and exact-hunk contract cases. Reopen ordinary
 writeback after public mode metadata and fixed GNU mode/link regressions pass.
 
@@ -289,33 +289,27 @@ Ordinary partial output/cleanup behavior remains separately tested.
 
 Reject realpath as inode identity, temporary rename as inode-preserving overwrite, content rewrites as touch, internal imports and own FFI. This intentionally contracts the old false-success surface. POSIX EXDEV is now classifiable via async.platform, but correct mv fallback still requires mode/link/timestamp preservation.
 
-The 2026-09-21 public API recheck found a possible Linux Native procfs route,
-not a portable fd API. Unix Native exposes OS fd, Windows exposes HANDLE and
-Wasm an opaque host handle. Keep this route experimental until fdinfo/mountinfo
-identity, bind mounts, path replacement, permission changes and missing procfs
-are tested together. It does not recover source mode. The compatibility cost
-remains refusal of existing-file copies; no content/lock/access heuristic is
-accepted as identity or metadata. See the [recheck](../reports/2026-09-21-public-api-recheck.md).
+A historical Linux Native procfs experiment was not a portable public file
+identity API and is not a product path. It neither supplies source mode nor
+solves races, missing procfs, bind mounts or path replacement. Wasm delivery
+must not recover identity through private APIs or host-child workarounds.
 
 ## Versions and evidence
 
-Recheck: async 0.22.4, x 0.5.5, moonjq 0.1.2; moon 0.1.20260920,
-moonc 0.10.14+7d59c7ec9. Original release evidence retains its earlier baseline.
-The unified filesystem scenarios retain the former standalone fidelity probe's
-same-file/hard-link source preservation, new-file copy, unchanged mtime/content
-on touch rejection, parent/leaf permissions and chmod symlink assertions. Their
-reports identify the tested backend and observed dimensions. Linux pinned
-oracle validation remains a separate gate from local macOS results. The
-support record distinguishes public from internal capabilities.
-Historical results remain in [the audit](../reports/2026-09-19-command-fidelity-audit.md).
-Candidate runtime results are recorded separately from published versions.
+Current product dependencies use async 0.22.5. Source guards in `core/fsops`
+and the affected commands retain the missing public metadata/handle limits.
+The shared filesystem scenarios assert untouched aliases, new-file effects,
+touch preservation, parent/leaf permissions and symlink behavior. Host
+metadata observers are test tools, never product implementations.
+The changelog records the 0.2.0 corrections, later fidelity repair and
+async 0.22.5 Windows split. New acceptance targets the supported Wasm hosts.
 
 ## Migrated filesystem profiles
 
 Target: preserve upstream path effects and fail without destructive guesses.
 The table records current workspace profiles and their public-API boundaries.
-Historical migration evidence uses async 0.22.4 on MoonBit 2026-09-20 and the
-0.1.1/0.1.0 release reports; current cases are in `tests/cases/<command>.json`.
+Current cases are in `tests/cases/<command>.json`; earlier migration and
+release results are summarized by date in CHANGELOG.md.
 Every row retains the pure MoonBit boundary; host observers never implement it.
 
 | Commands | Choice and reason | Rejected alternative / compatibility cost | Evidence and unlock condition |
@@ -329,4 +323,8 @@ Every row retains the pure MoonBit boundary; host observers never implement it.
 
 ## Revisit when
 
-Reopen when released public handle identity/mode, truncate, time setters and link APIs support the required semantics. Validate Native/Wasm independently; missing public identity does not mean Wasm hosts have no inode capability.
+Reopen when released public handle identity/mode, truncate, time setters and link APIs support the required semantics. Validate applicable Wasm hosts independently; missing public identity does not mean Wasm hosts have no inode capability.
+
+## Source review (2026-10-26)
+
+Fidelity/alias corrections are `c1ff8a2`; Windows rename handling is `68b2010`; patch extensions are `73503a3`; path/mode options are `db9dfe7`/`1b7ce14`. Current sources: [fsops](../../core/fsops/), [mv](../../commands/mv/), [patch](../../commands/patch/main.mbt), [sort output](../../commands/sort/main.mbt) and [filesystem scenarios](../../tests/runner/scenario_filesystem.mbt). Rg normalization is `446c162`, retained in [its system package](../../commands/rg/internal/sys/).

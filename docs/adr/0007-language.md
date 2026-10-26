@@ -7,9 +7,9 @@ Revision note: stdin shell names strip generated `.exe` and `.wasm` suffixes
 consistently. Explicit `-c` names and script paths remain verbatim. This chooses
 the logical command basename over backend artifact naming; relocated binaries
 with either suffix therefore expose the suffix-free name. The portable
-`compat-text-line-165` JSON contract exercises both backends. Revisit only if
+`compat-text-line-165` JSON contract exercises the Wasm delivery path. Revisit only if
 the launcher exposes a stable caller-supplied logical argv[0].
-Revision: Integrate persistent shell and synchronized make scenarios into both-backend validation.
+Revision: Retain persistent shell sessions and synchronized make scheduling under Wasm/MoonX delivery validation.
 
 Delivery validation update (2026-10-26): [ADR-0001](0001-evidence.md) and the
 [Wasm CI migration](../ci-wasm-migration.md) define current acceptance. Future
@@ -28,7 +28,7 @@ rules. Re-lexing ENV as shell source was rejected after Windows CI exposed
 lost path separators. Native/Wasm shell tests cover literal filenames and
 startup loading; the continuous-input scenario verifies the real CLI path.
 
-The O5 split filter candidate reuses this Session and its existing grammar with
+The published split filter reuses this Session and its existing grammar with
 public pipes and a per-piece FILE variable. The small `last_signal` result
 query retains signal termination separately from explicit exit 141; it does
 not add signal control, terminal behavior or shell syntax. O13 env `-S` uses a
@@ -41,18 +41,22 @@ Reject host interpreter delegation, exec as an external command, CharDevice as i
 
 ## Versions and evidence
 
-Baseline: async 0.22.4, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-20.
-The 2026-09-20 Native/Wasm shell tests each passed 15/15, and the original
-interactive probe passed on both with stdin held open. Current unified scenarios
-retain those assertions, with a pure MoonBit one-line foreground helper instead
-of host `head`. They test immediate execution, prompts, startup ENV, multiline
-input, persistent state, read, foreground input, syntax recovery, EOF and exit.
-Make scenarios use ready/ack synchronization for overlap, shared prerequisites
-and failed dependencies. CI runs the applicable scenarios against both command
-backends; reports, rather than workflow configuration alone, establish results.
-Historical results remain in [the audit](../reports/2026-09-19-command-fidelity-audit.md).
-Candidate runtime results are recorded separately from published versions.
+Commit `6fff343` introduced the persistent Session and dependency-ready
+scheduler; `1c3dd27` corrected Windows startup paths and cancellation order.
+The original Native/Wasm observations are summarized under 2026-09-20/21
+in CHANGELOG.md. Current delivery scenarios execute Wasm or selected exact
+MoonX coordinates, including their foreground children.
+
+Continuous-input scenarios verify immediate execution, PS1/PS2, ENV,
+multiline input, persistent state, read, foreground input, syntax recovery,
+EOF and exit. Make tests use ready/ack synchronization for real overlap,
+shared prerequisites and failure propagation. Passing pipe-based sessions
+does not establish PTY, terminal editing or job-control support.
 
 ## Revisit when
 
 Expand interpreter grammar through oracle-backed tests. Enable advanced terminal behavior only when public interfaces satisfy the documented lifecycle requirements.
+
+## Source review (2026-10-26)
+
+Current sources are [Session](../../core/shell/session.mbt), [executor](../../core/shell/executor.mbt), [make scheduler](../../commands/make/scheduler.mbt) and [shared scenarios](../../tests/runner/scenarios.mbt). Their tests preserve immediate input, dependency ordering and failure propagation; `db9dfe7` added the filter signal observation without expanding terminal support.

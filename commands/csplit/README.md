@@ -61,7 +61,7 @@ The shared C-byte BRE matcher compiles each expression once
 and supports capture backreferences, byte classes and word assertions.
 Repeated nullable captures follow the tested GNU candidate and capture-register
 selection, including counted repeats and references. See the
-[workspace support record](../../docs/compatibility.md#workspace-matcher-and-sed-candidates).
+[workspace support record](../../docs/compatibility.md#published-matcher-and-sed-profiles).
 Existing output paths are refused. Locale-sensitive matching is outside the
 selected profile. `--help` and `--version` provide command
 information.

@@ -1,7 +1,0 @@
-{
-  "source_revision": "7829269d1a3b751768e6f64a0d305cd76282ee02",
-  "coordinate": "cli/core@0.7.0",
-  "archive_sha256": "5645f84c76ed32a385bffee770e7416fd6a31222aa8ded8f469e33377725a913",
-  "verified": true,
-  "verification_directory": "_build/verification/stage0-2026-10-20/core"
-}
