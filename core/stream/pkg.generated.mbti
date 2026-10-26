@@ -3,11 +3,14 @@ package "cli/core/stream"
 
 import {
   "moonbitlang/async/io",
+  "moonbitlang/core/buffer",
   "moonbitlang/core/debug",
 }
 
 // Values
 pub let chunk_size : Int32
+
+pub async fn flush_buffer(&@io.Writer, @buffer.Buffer) -> Unit
 
 pub async fn read_chunk(&@io.Reader) -> Bytes?
 
@@ -34,6 +37,18 @@ pub struct LineScanner {
 }
 pub fn LineScanner::new(&@io.Reader, delimiter? : Byte) -> Self
 pub async fn LineScanner::next(Self) -> Line?
+
+type RecordBatch
+pub fn RecordBatch::next(Self) -> RecordView?
+
+type RecordReader
+pub fn RecordReader::new(&@io.Reader, delimiter? : Byte) -> Self
+pub async fn RecordReader::next_batch(Self) -> RecordBatch?
+
+pub(all) struct RecordView {
+  data : BytesView
+  terminated : Bool
+}
 
 // Type aliases
 

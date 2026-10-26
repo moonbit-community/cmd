@@ -167,6 +167,9 @@ fn Pattern::ordinary(
   need_captures : Bool,
   start_only~ : Bool = false,
 ) -> Spans? {
+  if !need_captures {
+    return self.span_ordinary(value, start, whole, word, start_only)
+  }
   let mut threads : Array[Thread] = []
   let mut best : Spans? = None
   let mut position = start

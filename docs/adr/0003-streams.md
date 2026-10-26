@@ -13,6 +13,79 @@ pairing are retired. Dated Native observations retain their historical scope.
 
 ## Target and decision
 
+### Performance wave 1 candidate (2026-10-26)
+
+The implementation target is direct release-Wasm elapsed time within 1-3x of
+fixed GNU/Rust counterparts, excluding MoonX resolution/launch costs. Runtime
+startup, command I/O and exit remain timed. This supersedes the prospective 1.5x
+performance threshold, not historical verdicts or correctness acceptance.
+
+Cut and uniq consume immutable record batches with synchronous byte-view
+processing and 64 KiB output thresholds. Reads are at most 1 MiB; only split
+records are assembled. Views may retain their backing block. Storage follows
+the largest input/output record, delimiter expansion and a few blocks, not all
+records. Failed flushes consume their queue before the write, so deferred
+cleanup cannot replay a partially written prefix. Input errors flush completed
+output without manufacturing an EOF record. Cut's special equal-delimiter and
+empty-selection behavior is preserved. Wc uses 16-byte SIMD newline and C-space
+masks with a carried word-boundary bit; display-width requests retain scalar
+counting. Both -m and -c continue to count bytes.
+
+Grep separates boolean acceptance from leftmost-longest span extraction. A
+conservative mandatory literal can reject a record; an assertion-free program
+of at most 256 instructions can use a lazy byte-class DFA capped at 256 subsets.
+Cache exhaustion disables that cache and reruns the current record through the
+span engine. Assertions, word/whole filters and backreferences keep existing
+acceptance rules. Span-only Thompson searches retain ordered starts in reusable
+integer worklists. Captured searches keep distinct tag states. Buffered grep
+records are consumed synchronously while its existing refill path preserves
+binary detection, byte offsets, partial-error records and early exits.
+
+These decisions draw on the buffer/consume separation in
+[Rust BufRead](https://doc.rust-lang.org/std/io/trait.BufRead.html) and the
+specialized engines and scratch state described by
+[regex-automata](https://docs.rs/regex-automata/latest/regex_automata/meta/index.html).
+All implementation and orchestration here remain pure MoonBit.
+
+Local macOS arm64 observations use GNU coreutils 9.11 and grep 3.12 built with
+`-O3`, one warmup and nine alternating pairs, exact output/status/stderr checks,
+regular-file stdin and captured stdout. Representative medians, in milliseconds:
+
+| Workload | Candidate | GNU | Ratio |
+| --- | ---: | ---: | ---: |
+| wc -l, 64 MiB | 19.32 | 9.53 | 2.03 |
+| wc -w, 64 MiB | 23.09 | 56.97 | 0.41 |
+| cut -b 1-8, 8 MiB / 80-byte records | 23.01 | 4.86 | 4.73 |
+| uniq, same records | 33.48 | 14.91 | 2.25 |
+| grep -Ec '[0-9]{4}.*gamma', 1 MiB | 20.94 | 2.13 | 9.84 |
+| same grep expression, 64 MiB | 276.61 | 34.95 | 7.91 |
+| grep regex miss, 8 MiB | 41.49 | 2.14 | 19.40 |
+| grep -Eo span extraction, 1 MiB | 129.59 | 9.07 | 14.28 |
+| cut, 8 MiB / 2-byte records | 343.34 | 21.41 | 16.04 |
+| uniq, same short records | 621.49 | 101.29 | 6.14 |
+
+The earlier buffer-only prototypes took about 86 ms for cut and 91 ms for uniq.
+Fresh paired comparisons against the original release artifacts measured about
+84x/61x improvements for cut/uniq, 5.6x/7.3x for wc line/word counting, and 34x
+for the 1 MiB regex count.
+The compact regex worklist took about 92 ms on the 1 MiB regex row before DFA
+and buffered iteration. Required-literal rejection reduced the regex miss from
+83 to 41 ms. The word SIMD path is a further change beyond the newline pilot.
+Increasing record reads from 64 KiB to 1 MiB had only a small effect; it does not
+resolve the short-record bottleneck. These are diagnostic medians, not a formal
+performance pass, Linux oracle parity or a publication claim.
+
+The next experiments should fuse scanning, selection and output for dense short
+records; skip nonmatching blocks with safe literal candidates before record
+materialization; and accelerate span endpoints without changing leftmost-longest
+or backreference behavior. A bigger buffer alone is not sufficient. Gate any
+extension on held-out short/long/duplicate/binary inputs, errors and cancellation,
+followed by three-host Wasm correctness and qualified performance sampling.
+Reproduction uses `tests/benchmark/explore.mbtx`; raw local evidence is retained
+under `/private/tmp/cmd-perf-lab-20261026/`, with final manifests and hashes.
+Published manifests remain frozen; candidate coordinates are core 0.8.2,
+cut/uniq/wc 0.2.3 and grep 0.3.1. No package was uploaded.
+
 ### rg migration candidate (2026-10-26)
 
 The rg module retains its reader/sink algorithms and makes actual reads, sink

@@ -19,7 +19,10 @@ Use a workload manifest pointing at current cases to assess new workspace
 features. Rows record `direct-wasm`, no publication coordinate, actual argv and
 the artifact root. Timing includes moonrun startup, I/O and exit, without MoonX
 or subtraction of empty-runtime time. Correctness, 5 warmups, 105 pairs, noise
-rules and the three 1.5x conditions below remain. The older `--moonx` mode and
+rules remain. The user's 2026-10-26 target is a 1-3x runtime ratio relative to
+GNU/Rust counterparts: all three upper limits below are now 3.0x. Faster results
+are permitted; 1x is not a lower acceptance bound. Historical reports retain
+their original 1.5x verdicts. The older `--moonx` mode and
 retained reports describe the previous published baseline; MoonX timing is no
 longer a cmd performance gate. Exact published-consumer semantics remain part
 of release acceptance.
@@ -244,12 +247,39 @@ p95 is sorted element 100. Bootstrap uses the released core ChaCha8 PRNG and
 95% endpoints are sorted elements 250 and 9750, without interpolation.
 
 A row passes only when R50, R95 and the R50 interval upper endpoint are all
-at most 1.5. MAD/median above 5% or block-median range above 10% of the overall
+at most 3.0. MAD/median above 5% or block-median range above 10% of the overall
 median marks either side noisy. Noisy rows cannot pass. Missing samples are
 inconclusive; correctness failures stay failed. This pilot has no automatic
 retry, slow-sample deletion or aggregate compensation.
 
 ## Retained files
+
+### Exploratory implementation comparisons
+
+`explore.mbtx` is a separate diagnostic probe, not a delivery verdict. It uses
+one warmup followed by a requested number of alternating process pairs, validates
+status/stderr/bytes after every pair, and fails on empty/unknown selection,
+timeouts or unequal output. It measures release Wasm through `moonrun` on PATH,
+including runtime startup, file I/O and exit. It never invokes MoonX or subtracts
+runtime startup. Input is a redirected regular file, not a pipe. Small-input
+ratios and GNU metadata shortcuts must be interpreted accordingly.
+
+```text
+MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/benchmark/explore.mbtx -- \
+  /absolute/lab /absolute/build/cli/ prepare cut-8m 9
+MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/benchmark/explore.mbtx -- \
+  /absolute/lab /absolute/build/cli/ prototype cut-8m,uniq-8m,wc-l-64m,wc-w-64m,grep-regex-1m 9
+MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/benchmark/explore.mbtx -- \
+  /absolute/lab /absolute/build/cli/ ab cut-8m,uniq-8m,wc-l-64m,grep-regex-1m 9 /absolute/baseline/cli/
+```
+
+The lab and `results/` directories must exist. `prepare` generates deterministic
+corpora without fetching/building references. The expected reference layout is
+`oracles/coreutils-9.11/src/`, `oracles/grep-3.12/src/`, and, for optional other
+rows, `oracles/gzip-1.14/gzip` and pinned `oracles/bin/{rg,jq}`. Bind executable,
+source and input hashes separately before interpreting results. Each run retains
+raw samples and final output/error files under `results/`. Exploratory medians
+cannot replace the full 105-pair, noise-qualified, immutable-provider workflow.
 
 Each fresh report directory contains expanded `profile.json`, the actual
 `manifest.json`, `sampling-plan.json`, and `report.json`. Each workload keeps

@@ -33,6 +33,26 @@ fn GrepInput::new(
 ///|
 // A record inside one immutable chunk is a view. Only a cross-chunk record
 // needs accumulation; consumed prefixes are never rescanned or recopied.
+fn GrepInput::next_buffered(self : GrepInput) -> Record? {
+  guard self.error is None else { return None }
+  let start = self.position
+  guard self.bytes[start:].find(self.delimiter) is Some(relative) else {
+    return None
+  }
+  let end = start + relative
+  let offset = self.offset
+  self.position = end + 1
+  self.offset += (relative + 1).to_int64()
+  self.number += 1L
+  Some({
+    data: self.bytes[start:end],
+    terminated: true,
+    number: self.number,
+    offset,
+  })
+}
+
+///|
 async fn GrepInput::next(self : GrepInput) -> Record? {
   if self.error is Some(error) {
     raise error
@@ -122,7 +142,8 @@ fn Matcher::matches_record(
       let line = if ignore_case { folded_bytes(record)[:] } else { record }
       fixed_span(patterns, line, 0, whole, word) is Some(_)
     }
-    Regular(_, _, _) => self.next_match(bytes_as_string(record), 0) is Some(_)
+    Regular(patterns, whole, word) =>
+      patterns.iter().any(pattern => pattern.matches(record, whole~, word~))
   }
 }
 
@@ -215,7 +236,10 @@ async fn process_reader(
   for ;; {
     let record = {
       errdefer output.flush()
-      input.next()
+      match input.next_buffered() {
+        Some(record) => Some(record)
+        None => input.next()
+      }
     }
     guard record is Some(record) else { break }
     if emit_records &&

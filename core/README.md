@@ -23,10 +23,23 @@ column, csplit and tac declare temporary-file writes, and sort lists its
 buffer-size, temporary-directory and batch-size options. Runtime APIs and
 command dependency coordinates remain unchanged.
 
-Candidate **0.8.2** adds the restricted `rg` command contract and its explicit
-file/stdin search options. The core runtime is unchanged. Existing published
-command coordinates and dependencies retain their versions; only the new rg
-candidate selects core 0.8.2. This candidate has not been published.
+Candidate **0.8.2** adds the restricted `rg` command contract and the first
+performance wave. `stream.RecordReader` returns batches with synchronous record
+iteration and immutable byte views; only split records are assembled. Reads are
+at most 1 MiB, and retained storage follows a block plus the longest record.
+`stream.flush_buffer` consumes queued bytes before writing, preventing a failed
+partial write from being retried during deferred cleanup. The original
+`LineScanner` API remains available.
+
+`bytere.Pattern.record_matcher()` creates consumer-owned boolean search state.
+Its mandatory-literal rejection and bounded lazy DFA avoid decoding ordinary
+byte records. The cache allows at most 256 subsets for programs of at most 256
+instructions; assertions, word/whole filters, references and cache exhaustion
+retain the existing span engine. Span-only Thompson searches use reusable
+integer worklists; captured/backreference searches retain their register rules.
+`find_span` still selects the leftmost-longest match. The cut/uniq/wc 0.2.3 and
+grep 0.3.1 candidates select this core coordinate, alongside rg. These candidates
+have not been published. See [the stream ADR](../docs/adr/0003-streams.md#performance-wave-1-candidate-2026-10-26).
 
 `gzipops.encode` accepts an optional `level` argument, defaulting to six, for
 the private pure MoonBit 32 KiB LZ and stored/fixed/dynamic Huffman encoder.

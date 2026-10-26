@@ -150,6 +150,8 @@ pub fn command_catalog() -> Array[CommandContract] {
     // grep, sed, csplit and expr share compiled C-byte BRE/ERE matching;
     // Capture backreferences and word assertions do not invoke a host engine.
     // Repeated nullable captures use GNU candidate and capture-register selection.
+    // Candidate grep accelerates boolean records with a bounded byte DFA;
+    // span extraction and unsupported DFA contexts retain those same contracts.
     contract("grep", Core, FileOrStdin, LineStream, [FileRead], [
       "after-context", "before-context", "basic-regexp", "binary-files", "byte-offset",
       "context", "count", "exclude", "extended-regexp", "file", "files-with-matches",

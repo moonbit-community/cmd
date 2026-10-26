@@ -208,7 +208,7 @@ test "BRE operators are literal until escaped and ERE operators are active" {
 ///|
 test "only matching chooses leftmost longest across alternatives and patterns" {
   let regex = Matcher::Regular(
-    [@bytere.compile("a|aa", extended=true)],
+    [@bytere.compile("a|aa", extended=true).record_matcher()],
     false,
     false,
   )
@@ -221,14 +221,14 @@ test "only matching chooses leftmost longest across alternatives and patterns" {
 ///|
 test "only matching preserves anchors and word boundaries on resumed searches" {
   let anchored = Matcher::Regular(
-    [@bytere.compile("^a|b$", extended=true)],
+    [@bytere.compile("^a|b$", extended=true).record_matcher()],
     false,
     false,
   )
   assert_eq(anchored.next_match("aaab", 0), Some((0, 1)))
   assert_eq(anchored.next_match("aaab", 1), Some((3, 4)))
   let words = Matcher::Regular(
-    [@bytere.compile("a|aa", extended=true)],
+    [@bytere.compile("a|aa", extended=true).record_matcher()],
     false,
     true,
   )
@@ -239,14 +239,17 @@ test "only matching preserves anchors and word boundaries on resumed searches" {
 ///|
 test "multiple expressions keep independent backreferences and word filtering" {
   let matcher = Matcher::Regular(
-    [@bytere.compile("\\(a\\)\\1"), @bytere.compile("\\(b\\)\\1")],
+    [
+      @bytere.compile("\\(a\\)\\1").record_matcher(),
+      @bytere.compile("\\(b\\)\\1").record_matcher(),
+    ],
     false,
     false,
   )
   assert_eq(matcher.next_match("zbb aa", 0), Some((1, 3)))
   assert_eq(matcher.next_match("zbb aa", 3), Some((4, 6)))
   let words = Matcher::Regular(
-    [@bytere.compile("foo.|foo", extended=true)],
+    [@bytere.compile("foo.|foo", extended=true).record_matcher()],
     false,
     true,
   )

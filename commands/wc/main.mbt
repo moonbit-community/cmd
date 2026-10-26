@@ -41,7 +41,7 @@ async fn count_reader(
     Some(counts) => counts
     None => Counts::new()
   }
-  let buffer = FixedArray::make(@stream.chunk_size, b'\x00')
+  let buffer = FixedArray::make(1048576, b'\x00')
   let data = buffer.unsafe_reinterpret_as_bytes()
   let mut in_word = false
   let mut line_width : Int64 = 0
@@ -56,7 +56,66 @@ async fn count_reader(
     if selection.chars {
       counts.chars += count.to_int64()
     }
-    if selection.lines || selection.words || selection.max_line_length {
+    if selection.lines && !selection.words && !selection.max_line_length {
+      let newline = @v128.i8x16_splat(b'\n')
+      let mut offset = 0
+      let mut found = 0
+      while offset + 16 <= count {
+        found += @v128.i8x16_bitmask(
+          @v128.i8x16_eq(@v128.v128_load(buffer, offset), newline),
+        ).popcnt()
+        offset += 16
+      }
+      while offset < count {
+        if buffer[offset] == b'\n' {
+          found += 1
+        }
+        offset += 1
+      }
+      counts.lines += found.to_int64()
+    } else if selection.words && !selection.max_line_length {
+      let mut offset = 0
+      let mut lines = 0
+      let mut words = 0
+      while offset + 16 <= count {
+        let block = @v128.v128_load(buffer, offset)
+        let spaces = @v128.i8x16_bitmask(
+          @v128.v128_or_(
+            @v128.i8x16_eq(block, @v128.i8x16_splat(b' ')),
+            @v128.v128_and_(
+              @v128.i8x16_ge_u(block, @v128.i8x16_splat(b'\t')),
+              @v128.i8x16_le_u(block, @v128.i8x16_splat(b'\r')),
+            ),
+          ),
+        )
+        // A word starts at a non-space byte preceded by space, including the
+        // carried final-byte classification from the preceding vector/read.
+        let preceding_space = if in_word { 0 } else { 1 }
+        words += ((spaces ^ 0xFFFF) & ((spaces << 1) | preceding_space)).popcnt()
+        in_word = (spaces & 0x8000) == 0
+        if selection.lines {
+          lines += @v128.i8x16_bitmask(
+            @v128.i8x16_eq(block, @v128.i8x16_splat(b'\n')),
+          ).popcnt()
+        }
+        offset += 16
+      }
+      while offset < count {
+        let byte = buffer[offset]
+        if selection.lines && byte == b'\n' {
+          lines += 1
+        }
+        if is_space_byte(byte) {
+          in_word = false
+        } else if !in_word {
+          words += 1
+          in_word = true
+        }
+        offset += 1
+      }
+      counts.words += words.to_int64()
+      counts.lines += lines.to_int64()
+    } else if selection.lines || selection.words || selection.max_line_length {
       for b in chunk {
         if selection.lines && b is b'\n' {
           counts.lines += 1
@@ -315,7 +374,7 @@ async fn count_source(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("wc 0.2.2\n")
+    @stdio.stdout.write("wc 0.2.3\n")
     return
   }
   let args = @env.args()[1:]

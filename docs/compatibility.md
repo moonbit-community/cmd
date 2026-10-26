@@ -22,8 +22,13 @@ commands. This release does not claim new
 cross-platform acceptance or completion of formal performance work.
 
 There are **80 local command modules and 78 published commands**. Local
-`rg 0.1.0` and catalog-only `core 0.8.2` are unpublished candidates; `timeout`
-is local-only.
+`rg 0.1.0`, `core 0.8.2`, `cut/uniq/wc 0.2.3` and `grep 0.3.1` are unpublished
+candidates; `timeout` is local-only. The performance candidates preserve command
+options and C-byte semantics. They add batched record processing, SIMD counting,
+and bounded boolean regex acceleration; captured spans, word/whole filters,
+binary input decisions and failure effects retain their existing contracts.
+Selected local measurements are diagnostic, not cross-platform or formal
+performance acceptance; see [ADR-0003](adr/0003-streams.md#performance-wave-1-candidate-2026-10-26).
 Published command versions are **37 at 0.2.2, 8 at 0.2.3, 3 at 0.2.0,
 2 at 0.2.1, 12 at 0.1.3, 10 at 0.1.2, 4 at 0.1.4, and one each at
 0.2.4 and 0.3.0**. Shared `cli/core` is **0.8.1**

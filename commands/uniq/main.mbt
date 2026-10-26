@@ -176,12 +176,12 @@ fn is_blank(byte : Byte) -> Bool {
 
 ///|
 fn comparison_key(
-  line : Bytes,
+  line : BytesView,
   skip_fields : Int32,
   skip_chars : Int32,
   check_chars : Int32?,
   ignore_case : Bool,
-) -> Bytes {
+) -> BytesView {
   let mut start = 0
   for _ in 0..<skip_fields {
     while start < line.length() && is_blank(line[start]) {
@@ -197,7 +197,7 @@ fn comparison_key(
     None => line.length()
   }
   if !ignore_case {
-    return line[start:end].to_owned()
+    return line[start:end]
   }
   let folded : Array[Byte] = []
   for byte in line[start:end] {
@@ -210,13 +210,13 @@ fn comparison_key(
       },
     )
   }
-  Bytes::from_array(folded)
+  Bytes::from_array(folded)[:]
 }
 
 ///|
-async fn write_group(
-  writer : &@io.Writer,
-  line : Bytes,
+fn write_group(
+  writer : @buffer.Buffer,
+  line : BytesView,
   count : Int32,
   show_count : Bool,
   only_repeated : Bool,
@@ -234,20 +234,20 @@ async fn write_group(
   }
   if selected {
     if show_count {
-      writer.write(pad_left(count.to_string(), 7) + " ")
+      writer.write_string_utf8(pad_left(count.to_string(), 7) + " ")
     }
     write_record(writer, line, delimiter)
   }
 }
 
 ///|
-async fn write_record(
-  writer : &@io.Writer,
-  line : Bytes,
+fn write_record(
+  writer : @buffer.Buffer,
+  line : BytesView,
   delimiter : Byte,
 ) -> Unit {
-  writer.write(line)
-  writer.write(if delimiter is b'\x00' { b"\x00" } else { b"\n" })
+  writer.write_bytes(line)
+  writer.write_byte(delimiter)
 }
 
 ///|
@@ -264,73 +264,81 @@ async fn process_reader(
   mode : OutputMode,
   writer~ : &@io.Writer = @stdio.stdout,
 ) -> Unit {
-  let scanner = @stream.LineScanner::new(reader, delimiter~)
-  let mut previous : Bytes? = None
-  let mut previous_key : Bytes? = None
+  let scanner = @stream.RecordReader::new(reader, delimiter~)
+  let destination = writer
+  let writer = @buffer.Buffer(size_hint=@stream.chunk_size)
+  defer @stream.flush_buffer(destination, writer)
+  let mut previous : BytesView? = None
+  let mut previous_key : BytesView? = None
   let mut count = 0
   let mut repeated_group_printed = false
-  while scanner.next() is Some(record) {
-    let key = comparison_key(
-      record.data,
-      skip_fields,
-      skip_chars,
-      check_chars,
-      ignore_case,
-    )
-    match mode {
-      EveryGroup(separator) => {
-        let first_group = previous_key is None
-        let new_group = previous_key is None || previous_key != Some(key)
-        if new_group &&
-          (
-            separator is (Prepend | Both) ||
-            (!first_group && separator is (Separate | Append))
-          ) {
-          write_record(writer, b"", delimiter)
+  while scanner.next_batch() is Some(batch) {
+    while batch.next() is Some(record) {
+      let key = comparison_key(
+        record.data,
+        skip_fields,
+        skip_chars,
+        check_chars,
+        ignore_case,
+      )
+      match mode {
+        EveryGroup(separator) => {
+          let first_group = previous_key is None
+          let new_group = previous_key is None || previous_key != Some(key)
+          if new_group &&
+            (
+              separator is (Prepend | Both) ||
+              (!first_group && separator is (Separate | Append))
+            ) {
+            write_record(writer, b"", delimiter)
+          }
+          write_record(writer, record.data, delimiter)
+          previous_key = Some(key)
         }
-        write_record(writer, record.data, delimiter)
-        previous_key = Some(key)
-      }
-      AllRepeated(separator) =>
-        match (previous, previous_key) {
-          (Some(pending), Some(old_key)) if old_key == key => {
-            if count == 1 {
-              if separator is Prepend ||
-                (separator is Separate && repeated_group_printed) {
-                write_record(writer, b"", delimiter)
+        AllRepeated(separator) =>
+          match (previous, previous_key) {
+            (Some(pending), Some(old_key)) if old_key == key => {
+              if count == 1 {
+                if separator is Prepend ||
+                  (separator is Separate && repeated_group_printed) {
+                  write_record(writer, b"", delimiter)
+                }
+                repeated_group_printed = true
+                count = 2
               }
-              repeated_group_printed = true
-              count = 2
-            }
-            write_record(writer, pending, delimiter)
-            previous = Some(record.data)
-          }
-          _ => {
-            if count > 1 && !only_unique && previous is Some(pending) {
               write_record(writer, pending, delimiter)
+              previous = Some(record.data)
             }
-            previous = Some(record.data)
-            previous_key = Some(key)
-            count = 1
+            _ => {
+              if count > 1 && !only_unique && previous is Some(pending) {
+                write_record(writer, pending, delimiter)
+              }
+              previous = Some(record.data)
+              previous_key = Some(key)
+              count = 1
+            }
           }
-        }
-      Summarize =>
-        match (previous, previous_key) {
-          (Some(_), Some(old_key)) if old_key == key => count += 1
-          (Some(old), _) => {
-            write_group(
-              writer, old, count, show_count, only_repeated, only_unique, delimiter,
-            )
-            previous = Some(record.data)
-            previous_key = Some(key)
-            count = 1
+        Summarize =>
+          match (previous, previous_key) {
+            (Some(_), Some(old_key)) if old_key == key => count += 1
+            (Some(old), _) => {
+              write_group(
+                writer, old, count, show_count, only_repeated, only_unique, delimiter,
+              )
+              previous = Some(record.data)
+              previous_key = Some(key)
+              count = 1
+            }
+            _ => {
+              previous = Some(record.data)
+              previous_key = Some(key)
+              count = 1
+            }
           }
-          _ => {
-            previous = Some(record.data)
-            previous_key = Some(key)
-            count = 1
-          }
-        }
+      }
+      if writer.length() >= @stream.chunk_size {
+        @stream.flush_buffer(destination, writer)
+      }
     }
   }
   match mode {
@@ -356,7 +364,7 @@ async fn process_reader(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("uniq 0.2.2\n")
+    @stdio.stdout.write("uniq 0.2.3\n")
     return
   }
   let args = @env.args()[1:]

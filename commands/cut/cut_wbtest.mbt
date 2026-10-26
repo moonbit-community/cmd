@@ -107,3 +107,30 @@ async test "cut field selection preserves undelimited records and NUL fields" {
     assert_eq(no_fields_output(input), expected)
   }
 }
+
+///|
+fn cut_characters(
+  line : BytesView,
+  ranges : Array[(Int32, Int32)],
+  separator : Bytes?,
+) -> Bytes {
+  let output = @buffer.Buffer()
+  cut_characters_into(line, ranges, separator, output)
+  output.to_bytes()
+}
+
+///|
+fn cut_fields(
+  line : BytesView,
+  ranges : Array[(Int32, Int32)],
+  delimiter : Byte,
+  only_delimited : Bool,
+  separator : Bytes,
+) -> Bytes? {
+  let output = @buffer.Buffer()
+  if cut_fields_into(line, ranges, delimiter, only_delimited, separator, output) {
+    Some(output.to_bytes())
+  } else {
+    None
+  }
+}

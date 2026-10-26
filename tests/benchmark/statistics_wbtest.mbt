@@ -68,24 +68,24 @@ test "benchmark bootstrap resamples pairs and uses ratio of medians" {
 ///|
 test "benchmark complete row accepts inclusive delivery threshold" {
   let samples : Array[PairedSample] = Array::make(105, {
-    candidate_us: 15.0,
+    candidate_us: 30.0,
     upstream_us: 10.0,
   })
   let row = summarize_row(samples, correctness_ok=true)
   assert_true(row.verdict is Pass)
   assert_eq(row.reasons, [])
   let summary = row.statistics.unwrap()
-  assert_eq(summary.r50, 1.5)
-  assert_eq(summary.r95, 1.5)
-  assert_eq(summary.r50_interval95.lower, 1.5)
-  assert_eq(summary.r50_interval95.upper, 1.5)
+  assert_eq(summary.r50, 3.0)
+  assert_eq(summary.r95, 3.0)
+  assert_eq(summary.r50_interval95.lower, 3.0)
+  assert_eq(summary.r50_interval95.upper, 3.0)
 }
 
 ///|
 test "benchmark p95 failure cannot be hidden by a passing median" {
   let samples : Array[PairedSample] = Array::makei(105, index => {
     candidate_us: if index >= 99 {
-      20.0
+      40.0
     } else {
       10.0
     },
@@ -95,14 +95,14 @@ test "benchmark p95 failure cannot be hidden by a passing median" {
   assert_true(row.verdict is Fail)
   let summary = row.statistics.unwrap()
   assert_eq(summary.r50, 1.0)
-  assert_eq(summary.r95, 2.0)
-  assert_true(row.reasons.contains("R95 exceeds 1.5"))
+  assert_eq(summary.r95, 4.0)
+  assert_true(row.reasons.contains("R95 exceeds 3.0"))
 }
 
 ///|
 test "benchmark interval upper bound can reject passing median and p95 ratios" {
   let samples : Array[PairedSample] = Array::makei(105, index => {
-    candidate_us: 150.0,
+    candidate_us: 300.0,
     upstream_us: if index < 52 {
       90.0
     } else {
@@ -112,10 +112,10 @@ test "benchmark interval upper bound can reject passing median and p95 ratios" {
   let row = summarize_row(samples, correctness_ok=true)
   assert_true(row.verdict is Fail)
   let summary = row.statistics.unwrap()
-  assert_eq(summary.r50, 1.5)
-  assert_eq(summary.r95, 1.5)
-  assert_eq(summary.r50_interval95.upper, 150.0 / 90.0)
-  assert_eq(row.reasons, ["R50 95% upper endpoint exceeds 1.5"])
+  assert_eq(summary.r50, 3.0)
+  assert_eq(summary.r95, 3.0)
+  assert_eq(summary.r50_interval95.upper, 300.0 / 90.0)
+  assert_eq(row.reasons, ["R50 95% upper endpoint exceeds 3.0"])
 }
 
 ///|

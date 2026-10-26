@@ -1,8 +1,13 @@
 # grep
 
-Version **0.3.0** behavior is documented here. The
+Unpublished candidate **0.3.1** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
+
+The candidate uses core 0.8.2's bounded byte DFA and required-literal rejection
+for eligible boolean searches. Word/whole filters, assertions, references and
+cache exhaustion preserve existing matching rules. `-o` continues to select
+leftmost-longest spans. Cached state is owned by each compiled record matcher.
 
 Search text using basic regular expressions by default, extended expressions
 with `-E`, or fixed strings with `-F`; `-G` restores basic syntax. Options include
@@ -40,7 +45,7 @@ line/file, 1 for no selection, and 2 for an error.
 
 ## Standalone metadata
 
-Standalone `--version` prints exactly `grep 0.3.0` followed by one
+Standalone `--version` prints exactly `grep 0.3.1` followed by one
 newline. Standalone `--help` starts with `Usage: grep`, lists both
 metadata options, and ends with a newline. Both write to stdout, leave stdin
 unread, and exit with status 0. Exact-version publication and verification

@@ -5,6 +5,18 @@ by date and delivery milestone rather than by a single package version.
 
 ## 2026-10-26
 
+- Prepared the unpublished first performance wave in `core 0.8.2`,
+  `cut/uniq/wc 0.2.3` and `grep 0.3.1`: immutable record batches, synchronous
+  output accumulation, SIMD line/word counting, compact span worklists and a
+  bounded lazy DFA with conservative literal rejection. Published coordinates
+  and snapshots remain unchanged. Updated prospective direct-Wasm performance
+  limits to 3.0x per the current target; historical verdicts remain unchanged.
+  Local macOS checks passed 1,579 Wasm package tests, 117 Native tool tests and
+  the full functional run (2,062 passes, 19 explicit skips, zero failures).
+  Selected nine-pair measurements and the remaining short-record/regex gaps are
+  recorded in [ADR-0003](docs/adr/0003-streams.md#performance-wave-1-candidate-2026-10-26).
+  These observations do not establish three-host, published-consumer or formal
+  performance acceptance. No package was uploaded.
 - Migrated development CI to release Wasm commands on Linux, macOS and Windows,
   with shared workspace/MoonX assertions and Native test tools. Removed the
   daily schedule, Native product pairing, change-coverage audits and source/

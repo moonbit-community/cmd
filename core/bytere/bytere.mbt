@@ -35,6 +35,7 @@ struct Pattern {
   ignore_case : Bool
   literal : LiteralPattern?
   prefix : String
+  required_literal : Bytes
 }
 
 ///|
@@ -98,6 +99,7 @@ pub fn compile(
     ignore_case,
     literal: tree.literal_pattern(),
     prefix: prefix.to_string(),
+    required_literal: bytes(tree.required_literal()),
   }
 }
 
