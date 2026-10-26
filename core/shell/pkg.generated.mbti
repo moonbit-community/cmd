@@ -7,11 +7,11 @@ import {
 }
 
 // Values
-pub async fn capture(String, name? : String, args? : Array[String], env? : Map[String, String], cwd? : String) -> (Int, String)
+pub async fn capture(String, name? : String, args? : Array[String], env? : Map[String, String], cwd? : String) -> (Int32, String)
 
 pub async fn read_line(&@io.Reader) -> String?
 
-pub async fn run(String, name? : String, args? : Array[String], env? : Map[String, String], cwd? : String) -> Int
+pub async fn run(String, name? : String, args? : Array[String], env? : Map[String, String], cwd? : String) -> Int32
 
 // Errors
 pub(all) suberror ShellError {
@@ -22,15 +22,15 @@ pub(all) suberror ShellError {
 type Session
 pub async fn Session::feed(Self, String) -> SessionResult
 pub async fn Session::finish(Self) -> SessionResult
-pub fn Session::last_signal(Self) -> Int?
+pub fn Session::last_signal(Self) -> Int32?
 pub async fn Session::load_startup(Self) -> Unit
 pub fn Session::new(name? : String, args? : Array[String], env? : Map[String, String], cwd? : String, input? : &@io.Reader, output? : &@io.Writer, error? : &@io.Writer, interactive? : Bool) -> Self
 pub fn Session::prompt(Self, continuation? : Bool) -> String
 
 pub(all) enum SessionResult {
   NeedMoreInput
-  Completed(Int)
-  Exit(Int)
+  Completed(Int32)
+  Exit(Int32)
 } derive(Eq, @debug.Debug)
 pub fn SessionResult::equal(Self, Self) -> Bool
 pub fn SessionResult::not_equal(Self, Self) -> Bool

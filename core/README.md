@@ -23,6 +23,11 @@ column, csplit and tac declare temporary-file writes, and sort lists its
 buffer-size, temporary-directory and batch-size options. Runtime APIs and
 command dependency coordinates remain unchanged.
 
+Candidate **0.8.2** adds the restricted `rg` command contract and its explicit
+file/stdin search options. The core runtime is unchanged. Existing published
+command coordinates and dependencies retain their versions; only the new rg
+candidate selects core 0.8.2. This candidate has not been published.
+
 `gzipops.encode` accepts an optional `level` argument, defaulting to six, for
 the private pure MoonBit 32 KiB LZ and stored/fixed/dynamic Huffman encoder.
 Levels one through nine control search effort; existing callers retain the

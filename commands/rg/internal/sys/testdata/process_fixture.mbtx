@@ -1,0 +1,37 @@
+----
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/stdio",
+  "moonbitlang/core/env",
+  "moonbitlang/x@0.5.5/sys",
+}
+----
+
+///|
+async fn main {
+  match @env.args().get(1).unwrap_or("stream") {
+    "status" => {
+      @stdio.stdout.write(b"out\n")
+      @stdio.stderr.write(b"err\n")
+      @sys.exit(3)
+    }
+    "copy" => {
+      let chunk = FixedArray::make(4096, b'\x00')
+      for ;; {
+        let count = @stdio.stdin.read(chunk)
+        if count == 0 { return }
+        @stdio.stdout.write(Bytes::from_array(chunk[:count]))
+      }
+    }
+    "duplex" => {
+      for _ in 0..<2000 {
+        @stdio.stdout.write(b"0123456789012345678901234567890123456789\n")
+        @stdio.stderr.write(b"e0123456789012345678901234567890123456789\n")
+      }
+      return
+    }
+    _ => ()
+  }
+  let chunk = Bytes::makei(8192, i => b"foo\n"[i % 4])
+  for ;; { @stdio.stdout.write(chunk) }
+}

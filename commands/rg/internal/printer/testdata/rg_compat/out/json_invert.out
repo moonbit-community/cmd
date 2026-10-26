@@ -1,0 +1,4 @@
+{"type":"begin","data":{"path":{"text":"sherlock"}}}
+{"type":"match","data":{"path":{"text":"sherlock"},"lines":{"text":"and exhibited clearly, with a label attached.\n"},"line_number":6,"absolute_offset":321,"submatches":[]}}
+{"type":"end","data":{"path":{"text":"sherlock"},"binary_offset":null,"stats":{"elapsed":{"secs":0,"nanos":16375,"human":"0.000016s"},"searches":1,"searches_with_match":1,"bytes_searched":367,"bytes_printed":227,"matched_lines":1,"matches":0}}}
+{"data":{"elapsed_total":{"human":"0.000436s","nanos":435959,"secs":0},"stats":{"bytes_printed":227,"bytes_searched":367,"elapsed":{"human":"0.000016s","nanos":16375,"secs":0},"matched_lines":1,"matches":0,"searches":1,"searches_with_match":1}},"type":"summary"}

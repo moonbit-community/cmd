@@ -1,0 +1,31 @@
+----
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/shell",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/env",
+}
+----
+
+///|
+async fn main {
+  let root = @env.args()[1]
+  let revision = @shell.Cmd("git", ["rev-parse", "HEAD"], cwd=root).output()
+  revision.check()
+  assert_eq(revision.stdout().trim().to_owned(), "3fce3b5bb0236da2df6d99672afb8a719642eca7")
+  let dest = "commands/rg/internal/codec/stream/testdata"
+  @fs.mkdir(dest, recursive=true, allow_exist=true)
+  let inventory = StringBuilder()
+  inventory.write_string("source_revision\tpath\tsha256\tdestination\n")
+  for ext in ["gz", "bz2", "lz4", "br", "zst", "xz", "lzma", "Z"] {
+    let path = "tests/data/sherlock." + ext
+    let sum = @shell.Cmd("shasum", ["-a", "256", path], cwd=root).output()
+    sum.check()
+    let digest = sum.stdout().split(" ").next().unwrap()
+    let target = dest + "/sherlock." + ext
+    @fs.write_file(target, @fs.read_file(root + "/" + path))
+    inventory.write_string("3fce3b5bb0236da2df6d99672afb8a719642eca7\t\{path}\t\{digest}\t\{target}\n")
+  }
+  @fs.write_file("docs/rg/fixture-inventory.tsv", @utf8.encode(inventory.to_string()))
+}

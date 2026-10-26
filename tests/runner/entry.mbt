@@ -76,6 +76,10 @@ async fn run_scenario_batch(
 ///|
 async fn run_driver() -> Unit {
   let raw = @env.args()[1:]
+  if @env.get_env_var("CMD_RG_PREPROCESSOR") is Some(mode) {
+    run_rg_preprocessor(mode, raw)
+    return
+  }
   if raw.get(0) == Some("--metadata-observer") {
     metadata_observer(raw[1:])
     return

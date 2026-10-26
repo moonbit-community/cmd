@@ -1,0 +1,5 @@
+{"type":"begin","data":{"path":{"text":"latin1"}}}
+{"type":"match","data":{"path":{"text":"latin1"},"lines":{"bytes":"Y2Fm6SBTaGVybG9jayD//go="},"line_number":1,"absolute_offset":0,"submatches":[{"match":{"text":"Sherlock"},"start":5,"end":13}]}}
+{"type":"match","data":{"path":{"text":"latin1"},"lines":{"text":"ok Sherlock\n"},"line_number":2,"absolute_offset":17,"submatches":[{"match":{"text":"Sherlock"},"start":3,"end":11}]}}
+{"type":"end","data":{"path":{"text":"latin1"},"binary_offset":null,"stats":{"elapsed":{"secs":0,"nanos":18542,"human":"0.000019s"},"searches":1,"searches_with_match":1,"bytes_searched":29,"bytes_printed":432,"matched_lines":2,"matches":2}}}
+{"data":{"elapsed_total":{"human":"0.000508s","nanos":508250,"secs":0},"stats":{"bytes_printed":432,"bytes_searched":29,"elapsed":{"human":"0.000019s","nanos":18542,"secs":0},"matched_lines":2,"matches":2,"searches":1,"searches_with_match":1}},"type":"summary"}

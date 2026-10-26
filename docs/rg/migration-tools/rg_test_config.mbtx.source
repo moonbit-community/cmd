@@ -1,0 +1,37 @@
+----
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/encoding/utf8",
+}
+----
+
+///|
+async fn main {
+  for component in ["ignore", "searcher", "termcolor", "printer", "driver", "cli"] {
+    let root = "commands/rg/internal/" + component
+    let pkg = root + "/moon.pkg"
+    let mut config = @fs.read_file(pkg).text()
+    let names = @fs.readdir(root)
+    for (suffix, kind) in [("_test.mbt", "test"), ("_wbtest.mbt", "wbtest")] {
+      let mut uses_async = false
+      for name in names {
+        if name.has_suffix(suffix) && @fs.read_file(root + "/" + name).text().contains("async test ") { uses_async = true }
+      }
+      let import_line = "import { \"moonbitlang/async\" } for \"" + kind + "\""
+      config = config.replace_all(old=import_line, new="")
+      if uses_async {
+        let ending = "} for \"" + kind + "\""
+        if config.find(ending) is Some(end) {
+          let start = config[:end].rev_find("import {").unwrap() + 8
+          if !config[start:end].contains("\"moonbitlang/async\"") {
+            config = config[:start].to_owned() + "\n  \"moonbitlang/async\"," + config[start:].to_owned()
+          }
+        } else {
+          config += "\n" + import_line + "\n"
+        }
+      }
+    }
+    @fs.write_file(pkg, @utf8.encode(config))
+  }
+}

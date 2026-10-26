@@ -1,0 +1,8 @@
+{"type":"begin","data":{"path":{"text":"sherlock"}}}
+{"type":"match","data":{"path":{"text":"sherlock"},"lines":{"text":"For the Doctor Watsons of this world, as opposed to the Sherlock\n"},"line_number":1,"absolute_offset":0,"submatches":[{"match":{"text":"Watson"},"start":15,"end":21}]}}
+{"type":"context","data":{"path":{"text":"sherlock"},"lines":{"text":"Holmeses, success in the province of detective work must always\n"},"line_number":2,"absolute_offset":65,"submatches":[]}}
+{"type":"context","data":{"path":{"text":"sherlock"},"lines":{"text":"can extract a clew from a wisp of straw or a flake of cigar ash;\n"},"line_number":4,"absolute_offset":193,"submatches":[]}}
+{"type":"match","data":{"path":{"text":"sherlock"},"lines":{"text":"but Doctor Watson has to have it taken out for him and dusted,\n"},"line_number":5,"absolute_offset":258,"submatches":[{"match":{"text":"Watson"},"start":11,"end":17}]}}
+{"type":"context","data":{"path":{"text":"sherlock"},"lines":{"text":"and exhibited clearly, with a label attached.\n"},"line_number":6,"absolute_offset":321,"submatches":[]}}
+{"type":"end","data":{"path":{"text":"sherlock"},"binary_offset":null,"stats":{"elapsed":{"secs":0,"nanos":19334,"human":"0.000019s"},"searches":1,"searches_with_match":1,"bytes_searched":367,"bytes_printed":1093,"matched_lines":2,"matches":2}}}
+{"data":{"elapsed_total":{"human":"0.000432s","nanos":431834,"secs":0},"stats":{"bytes_printed":1093,"bytes_searched":367,"elapsed":{"human":"0.000019s","nanos":19334,"secs":0},"matched_lines":2,"matches":2,"searches":1,"searches_with_match":1}},"type":"summary"}

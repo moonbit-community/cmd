@@ -2,9 +2,9 @@
 package "cli/core/checksum"
 
 // Values
-pub async fn run(Algorithm, ArrayView[String], String) -> Int
+pub async fn run(Algorithm, ArrayView[String], String) -> Int32
 
-pub async fn run_cksum(ArrayView[String], String) -> Int
+pub async fn run_cksum(ArrayView[String], String) -> Int32
 
 // Errors
 

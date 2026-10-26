@@ -848,6 +848,19 @@
       "capabilities": [
         "clock"
       ]
+    },
+    {
+      "name": "rg",
+      "baseline": "ripgrep-3fce3b5bb0236da2df6d99672afb8a719642eca7",
+      "status": "partial",
+      "native": "workspace",
+      "wasm": "workspace",
+      "capabilities": [
+        "files",
+        "explicit-stdin",
+        "recursive-search",
+        "user-preprocessor"
+      ]
     }
   ],
   "cases": [],
@@ -930,6 +943,7 @@
     "../../cases/strings.json",
     "../../cases/column.json",
     "../../cases/which.json",
-    "../../cases/date.json"
+    "../../cases/date.json",
+    "../../cases/rg.json"
   ]
 }

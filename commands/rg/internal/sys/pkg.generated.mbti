@@ -1,0 +1,150 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/rg/internal/sys"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn args() -> Array[String]
+
+pub async fn canonicalize(String) -> String
+
+pub async fn create_dir_all(String) -> Unit
+
+pub fn current_dir() -> String?
+
+pub fn env_var(String) -> String?
+
+pub fn env_vars() -> Array[(String, String)]
+
+pub fn exit(Int32) -> Unit
+
+pub async fn file_len(String) -> Int64
+
+pub async fn file_times(String) -> FileTimes
+
+pub fn from_error(Error) -> IOError
+
+pub fn hostname() -> String?
+
+pub fn is_tty(Int32) -> Capability[Bool]
+
+pub fn is_windows() -> Bool
+
+pub async fn metadata(String) -> Metadata
+
+pub fn mmap_supported() -> Bool
+
+pub fn normalize_path(String) -> String
+
+pub fn now_nanos() -> Int64
+
+pub async fn path_exists(String) -> Bool
+
+pub async fn read_dir(String) -> Array[DirEntry]
+
+pub async fn read_fd(Int32, FixedArray[Byte], Int32, Int32) -> Int32
+
+pub async fn read_file(String) -> Bytes
+
+pub fn read_link(String) -> String raise IOError
+
+pub async fn remove_dir_all(String) -> Unit
+
+pub async fn remove_file(String) -> Unit
+
+pub async fn run_command(String, Array[String], stdin_path? : String) -> ProcessOutput
+
+pub fn stdin_is_readable() -> Capability[Bool]
+
+pub async fn symlink(String, String) -> Unit
+
+pub async fn symlink_metadata(String) -> Metadata
+
+pub async fn write_fd(Int32, FixedArray[Byte], Int32, Int32) -> Unit
+
+pub async fn write_file(String, Bytes) -> Unit
+
+// Errors
+pub suberror IOError {
+  IOError(kind~ : IOErrorKind, code~ : Int32, message~ : String)
+} derive(@debug.Debug)
+pub fn IOError::code(Self) -> Int32
+pub fn IOError::from_errno(Int32) -> Self
+pub fn IOError::kind(Self) -> IOErrorKind
+pub fn IOError::message(Self) -> String
+pub fn IOError::other(IOErrorKind, String) -> Self
+pub fn IOError::to_string(Self) -> String
+pub impl Show for IOError
+
+// Types and methods
+pub(all) enum Capability[T] {
+  Available(T)
+  Unavailable(String)
+} derive(Eq, @debug.Debug)
+
+pub(all) struct DirEntry {
+  name : String
+  file_type : FileType?
+} derive(Eq, @debug.Debug)
+
+pub struct File {
+  // private fields
+}
+pub fn File::close(Self) -> Unit
+pub async fn File::open(String) -> Self
+pub async fn File::read(Self, FixedArray[Byte], Int32, Int32) -> Int32
+
+pub(all) struct FileTimes {
+  modified : Int64?
+  accessed : Int64?
+  created : Int64?
+} derive(Eq, @debug.Debug)
+
+pub(all) enum FileType {
+  File
+  Dir
+  Symlink
+  Other
+} derive(Eq, @debug.Debug)
+
+pub(all) enum IOErrorKind {
+  NotFound
+  PermissionDenied
+  AlreadyExists
+  InvalidInput
+  Interrupted
+  BrokenPipe
+  IsADirectory
+  NotADirectory
+  Unsupported
+  Other
+} derive(Eq, @debug.Debug)
+
+pub(all) struct Metadata {
+  file_type : FileType
+  len : Int64
+  dev : UInt64?
+  ino : UInt64?
+} derive(Eq, @debug.Debug)
+pub fn Metadata::is_dir(Self) -> Bool
+pub fn Metadata::is_file(Self) -> Bool
+pub fn Metadata::is_symlink(Self) -> Bool
+
+pub struct Process {
+  // private fields
+}
+pub async fn Process::finish(Self) -> (Int32, Bytes)
+pub async fn Process::read(Self, FixedArray[Byte], Int32, Int32) -> Int32
+pub async fn Process::spawn(String, Array[String], stdin_path? : String) -> Self
+
+pub(all) struct ProcessOutput {
+  status : Int32
+  stdout : Bytes
+  stderr : Bytes
+} derive(Eq, @debug.Debug)
+
+// Type aliases
+
+// Traits

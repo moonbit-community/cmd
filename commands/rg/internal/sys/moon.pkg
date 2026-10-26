@@ -1,0 +1,23 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/io",
+  "moonbitlang/async/process",
+  "moonbitlang/async/cond_var",
+  "moonbitlang/core/buffer",
+  "moonbitlang/async/stdio",
+  "moonbitlang/async/os_error",
+  "moonbitlang/core/env",
+  "moonbitlang/x/sys" @exit,
+}
+
+supported_targets = "native+wasm"
+
+warnings = "-implicit_impl_as_method"
+
+import {
+  "cli/rg/internal/sys",
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/env",
+} for "test"

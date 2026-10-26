@@ -1,0 +1,17 @@
+import {
+  "cli/rg/internal/codec/bzip2",
+  "cli/rg/internal/codec/brotli",
+  "cli/rg/internal/codec/lz4",
+  "cli/rg/internal/codec/zstd",
+  "moonbit-community/flate/gzip",
+  "moonbit-community/flate/checksum" @crc,
+  "moonbitlang/x/crypto",
+  "moonbitlang/async/fs",
+}
+
+warnings = "-implicit_impl_as_method"
+
+import {
+  "moonbitlang/async",
+  "moonbitlang/core/buffer",
+} for "wbtest"

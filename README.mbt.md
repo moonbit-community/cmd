@@ -15,7 +15,7 @@ acceptance have separate manual workflows; see [tests](tests/README.md).
 - [x] Text, data and archives: `base32`, `base64`, `cat`, `cksum`, `cmp`,
   `column`, `comm`, `cut`, `date`, `diff`, `echo`, `expand`, `expr`, `fmt`,
   `fold`, `grep`, `gunzip`, `gzip`, `head`, `hexdump`, `join`, `jq`, `jqlog`,
-  `md5sum`, `nl`, `od`, `paste`, `printf`, `rev`, `sed`, `seq`, `sha1sum`,
+  `md5sum`, `nl`, `od`, `paste`, `printf`, `rev`, `rg`, `sed`, `seq`, `sha1sum`,
   `sha256sum`, `sha512sum`, `sort`, `strings`, `tac`, `tail`, `tr`, `uniq`,
   `wc`, `xxd`, and `zcat`.
 - [x] Files and paths: `basename`, `chmod`, `cp`, `csplit`, `dirname`, `find`,
@@ -34,9 +34,13 @@ The `timeout` package is local-only while a portable public process-group
 interface is unavailable. Its status is recorded in the support record and it
 is not a published MoonX feature.
 
+The new [rg 0.1.0 candidate](commands/rg/README.md) searches explicit files,
+directories and `-` for stdin. It is unpublished. Compressed search (`-z`) is
+deferred; its development snapshot is retained in `experiments/rg-compression`.
+
 Every workspace command also follows one metadata contract: standalone
 `--help` prints usage and exits 0, while standalone `--version` prints
 `<command> <package-version>` and exits 0. Both paths leave
-stdin untouched. The Wasm development suite checks all 79 workspace
+stdin untouched. The Wasm development suite checks all 80 workspace
 commands; published coordinates are promoted only through the release and
 exact MoonX checks described in the support record.

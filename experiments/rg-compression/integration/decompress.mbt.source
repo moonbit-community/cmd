@@ -1,0 +1,235 @@
+///|
+priv struct DecompressionCommand {
+  glob : String
+  bin : String
+  args : Array[String]
+}
+
+///|
+/// A builder for a matcher that maps file paths to decompression commands.
+pub struct DecompressionMatcherBuilder {
+  priv commands : Array[DecompressionCommand]
+  priv mut defaults : Bool
+}
+
+///|
+pub fn DecompressionMatcherBuilder::new() -> DecompressionMatcherBuilder {
+  { commands: [], defaults: true, }
+}
+
+///|
+pub fn DecompressionMatcherBuilder::defaults(
+  self : DecompressionMatcherBuilder,
+  yes : Bool,
+) -> DecompressionMatcherBuilder {
+  self.defaults = yes
+  self
+}
+
+///|
+/// Associates a glob with a command (`program args... <path>`).
+pub fn DecompressionMatcherBuilder::associate(
+  self : DecompressionMatcherBuilder,
+  glob : String,
+  program : String,
+  args : Array[String],
+) -> DecompressionMatcherBuilder {
+  self.commands.push({ glob, bin: program, args, })
+  self
+}
+
+///|
+pub fn DecompressionMatcherBuilder::build(
+  self : DecompressionMatcherBuilder,
+) -> DecompressionMatcher raise CommandError {
+  let defaults = if self.defaults {
+    default_decompression_commands()
+  } else {
+    []
+  }
+  let builder = @globset.GlobSetBuilder::new()
+  let commands = []
+  let all = defaults.copy()
+  all.append(self.commands)
+  for cmd in all {
+    let glob = @globset.Glob::new(cmd.glob) catch {
+      e => raise CommandOther(e.to_string())
+    }
+    ignore(builder.add(glob))
+    commands.push(cmd)
+  }
+  let globs = builder.build() catch { e => raise CommandOther(e.to_string()) }
+  { globs, commands, }
+}
+
+///|
+/// Matches file paths to decompression commands.
+pub struct DecompressionMatcher {
+  priv globs : @globset.GlobSet
+  priv commands : Array[DecompressionCommand]
+}
+
+///|
+pub fn DecompressionMatcher::new() -> DecompressionMatcher {
+  DecompressionMatcherBuilder::new().build() catch {
+    _ => abort("built-in matching rules should always compile")
+  }
+}
+
+///|
+/// Returns the (program, args) to decompress the given path, if any. The
+/// path itself is not included in the args.
+pub fn DecompressionMatcher::command(
+  self : DecompressionMatcher,
+  path : String,
+) -> (String, Array[String])? {
+  let matches = self.globs.matches(path)
+  if matches.length() == 0 {
+    return None
+  }
+  let cmd = self.commands[matches[matches.length() - 1]]
+  Some((cmd.bin, cmd.args.copy()))
+}
+
+///|
+pub fn DecompressionMatcher::has_command(
+  self : DecompressionMatcher,
+  path : String,
+) -> Bool {
+  self.globs.is_match(path)
+}
+
+///|
+/// A reader that decompresses a file with an internal decoder if its path
+/// matches a known compressed format, or reads it directly otherwise.
+pub enum DecompressionReader {
+  Decoded(@codec.Reader)
+  Passthru(@sys.File)
+}
+
+///|
+pub async fn DecompressionReader::new(
+  path : String,
+  matcher~ : DecompressionMatcher = DecompressionMatcher::new(),
+) -> DecompressionReader {
+  match matcher.command(path) {
+    None => Passthru(@sys.File::open(path) catch { e => raise CommandIo(@sys.from_error(e)) })
+    Some((bin, args)) => {
+      let format : @codec.Format = match bin {
+        "gzip" => Gzip
+        "bzip2" => Bzip2
+        "lz4" => Lz4
+        "brotli" => Brotli
+        "zstd" => Zstd
+        "uncompress" => Compress
+        "xz" if args.contains("--format=lzma") => Lzma
+        "xz" => Xz
+        _ => raise CommandOther("custom decompression commands are not part of cli/rg")
+      }
+      Decoded(@codec.Reader::open(path, format))
+    }
+  }
+}
+
+///|
+pub async fn DecompressionReader::read(
+  self : DecompressionReader,
+  buf : FixedArray[Byte],
+  start : Int32,
+  len : Int32,
+) -> Int32 {
+  match self {
+    Decoded(r) => r.read(buf, start, len)
+    Passthru(f) => f.read(buf, start, len) catch { e => raise CommandIo(@sys.from_error(e)) }
+  }
+}
+
+///|
+pub fn DecompressionReader::close(
+  self : DecompressionReader,
+) -> Unit {
+  match self {
+    Decoded(r) => r.close()
+    Passthru(f) => f.close()
+  }
+}
+
+///|
+/// Resolves a program name. On Unix this is the identity.
+pub fn resolve_binary(prog : String) -> String {
+  prog
+}
+
+///|
+fn default_decompression_commands() -> Array[DecompressionCommand] {
+  let gzip = ["gzip", "-d", "-c"]
+  let bzip = ["bzip2", "-d", "-c"]
+  let xz = ["xz", "-d", "-c"]
+  let lz4 = ["lz4", "-d", "-c"]
+  let lzma = ["xz", "--format=lzma", "-d", "-c"]
+  let brotli = ["brotli", "-d", "-c"]
+  let zstd = ["zstd", "-q", "-d", "-c"]
+  let uncompress = ["uncompress", "-c"]
+  let cmds = []
+  let add = (glob : String, args : Array[String]) => {
+    cmds.push({ glob, bin: resolve_binary(args[0]), args: args[1:].to_owned(), })
+  }
+  add("*.gz", gzip)
+  add("*.tgz", gzip)
+  add("*.bz2", bzip)
+  add("*.tbz2", bzip)
+  add("*.xz", xz)
+  add("*.txz", xz)
+  add("*.lz4", lz4)
+  add("*.lzma", lzma)
+  add("*.br", brotli)
+  add("*.zst", zstd)
+  add("*.zstd", zstd)
+  add("*.Z", uncompress)
+  cmds
+}
+
+///|
+/// Returns true if stdin can be usefully read (a file or pipe, not a tty).
+pub fn is_readable_stdin() -> @sys.Capability[Bool] {
+  @sys.stdin_is_readable()
+}
+
+///|
+/// Returns the hostname of the current system.
+pub fn hostname() -> String? {
+  @sys.hostname()
+}
+
+///|
+/// Reads patterns from a file, one per line, with errors that include the
+/// path (and line number).
+pub async fn patterns_from_path(path : String) -> Array[String] {
+  let data = @sys.read_file(path) catch {
+    e => raise PatternsError("\{path}: \{e}")
+  }
+  patterns_from_bytes(data) catch {
+    PatternsError(msg) => raise PatternsError("\{path}:\{msg}")
+  }
+}
+
+///|
+/// Reads patterns from stdin, one per line.
+pub async fn patterns_from_stdin() -> Array[String] {
+  let buf = Buffer()
+  let chunk = FixedArray::make(65536, b'\x00')
+  while true {
+    let n = @sys.read_fd(0, chunk, 0, chunk.length()) catch {
+      e => raise PatternsError("<stdin>:\{e}")
+    }
+    if n == 0 {
+      break
+    }
+    for i in 0..<n {
+      buf.write_byte(chunk[i])
+    }
+  }
+  patterns_from_bytes(buf.to_bytes()) catch {
+    PatternsError(msg) => raise PatternsError("<stdin>:\{msg}")
+  }
+}

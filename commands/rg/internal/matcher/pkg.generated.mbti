@@ -1,0 +1,91 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/rg/internal/matcher"
+
+import {
+  "moonbitlang/core/buffer",
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn[M : Matcher] captures_iter_at(M, FixedArray[Byte], Int32, Int32, Int32, Captures, (Captures) -> Bool) -> Unit
+
+pub fn[M : Matcher] find_iter(M, FixedArray[Byte], Int32, Int32, (Match) -> Bool) -> Unit
+
+pub fn[M : Matcher] find_iter_at(M, FixedArray[Byte], Int32, Int32, Int32, (Match) -> Bool) -> Unit
+
+pub fn interpolate(Bytes, (Int32, @buffer.Buffer) -> Unit, (String) -> Int32?, @buffer.Buffer) -> Unit
+
+pub fn[M : Matcher] is_match_at(M, FixedArray[Byte], Int32, Int32, Int32) -> Bool
+
+pub fn[M : Matcher] replace(M, FixedArray[Byte], Int32, Int32, @buffer.Buffer, (Match, @buffer.Buffer) -> Bool) -> Unit
+
+pub fn[M : Matcher] replace_with_captures_at(M, FixedArray[Byte], Int32, Int32, Int32, Captures, @buffer.Buffer, (Captures, @buffer.Buffer) -> Bool) -> Unit
+
+// Errors
+
+// Types and methods
+pub struct ByteSet {
+  // private fields
+}
+pub fn ByteSet::add(Self, Byte) -> Unit
+pub fn ByteSet::add_all(Self, Byte, Byte) -> Unit
+pub fn ByteSet::contains(Self, Byte) -> Bool
+pub fn ByteSet::empty() -> Self
+pub fn ByteSet::full() -> Self
+pub fn ByteSet::remove(Self, Byte) -> Unit
+pub fn ByteSet::remove_all(Self, Byte, Byte) -> Unit
+pub impl @debug.Debug for ByteSet
+
+pub struct Captures {
+  slots : FixedArray[Int32]
+}
+pub fn Captures::as_match(Self) -> Match
+pub fn Captures::get(Self, Int32) -> Match?
+pub fn Captures::interpolate(Self, (String) -> Int32?, FixedArray[Byte], Int32, Bytes, @buffer.Buffer) -> Unit
+pub fn Captures::is_empty(Self) -> Bool
+pub fn Captures::len(Self) -> Int32
+pub fn Captures::new(Int32) -> Self
+
+pub(all) enum LineMatchKind {
+  Confirmed(Int32)
+  Candidate(Int32)
+} derive(Eq, @debug.Debug)
+
+pub(all) enum LineTerminator {
+  Byte(Byte)
+  CRLF
+} derive(Eq, Hash, @debug.Debug)
+pub fn LineTerminator::as_byte(Self) -> Byte
+pub fn LineTerminator::as_bytes(Self) -> Bytes
+pub fn LineTerminator::byte(Byte) -> Self
+pub fn LineTerminator::crlf() -> Self
+pub fn LineTerminator::default() -> Self
+pub fn LineTerminator::is_crlf(Self) -> Bool
+pub fn LineTerminator::is_suffix(Self, FixedArray[Byte], Int32, Int32) -> Bool
+
+pub(all) struct Match {
+  start : Int32
+  end : Int32
+} derive(Eq, Hash, @debug.Debug)
+pub fn Match::is_empty(Self) -> Bool
+pub fn Match::len(Self) -> Int32
+pub fn Match::new(Int32, Int32) -> Self
+pub fn Match::offset(Self, Int32) -> Self
+pub fn Match::with_end(Self, Int32) -> Self
+pub fn Match::with_start(Self, Int32) -> Self
+pub fn Match::zero(Int32) -> Self
+
+// Type aliases
+
+// Traits
+pub(open) trait Matcher {
+  fn find_at(Self, FixedArray[Byte], Int32, Int32, Int32) -> Match?
+  fn new_captures(Self) -> Captures
+  fn capture_count(Self) -> Int32 = _
+  fn capture_index(Self, String) -> Int32? = _
+  fn captures_at(Self, FixedArray[Byte], Int32, Int32, Int32, Captures) -> Bool = _
+  fn shortest_match_at(Self, FixedArray[Byte], Int32, Int32, Int32) -> Int32? = _
+  fn non_matching_bytes(Self) -> ByteSet? = _
+  fn line_terminator(Self) -> LineTerminator? = _
+  fn find_candidate_line(Self, FixedArray[Byte], Int32, Int32) -> LineMatchKind? = _
+}

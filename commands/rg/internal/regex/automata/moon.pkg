@@ -1,0 +1,11 @@
+import {
+  "cli/rg/internal/regex/syntax",
+  "cli/rg/internal/regex/unicode",
+  "cli/rg/internal/memchr",
+}
+
+warnings = "-implicit_impl_as_method"
+
+import {
+  "cli/rg/internal/regex/internal/testdata",
+} for "test"

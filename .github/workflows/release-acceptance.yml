@@ -41,8 +41,8 @@ jobs:
           submodules: recursive
       - uses: hustcer/setup-moonbit@v1.23
         with:
-          version: 0.10.15+943464bfa
-          core-version: 0.10.15+943464bfa
+          version: 0.10.17+d971670cd
+          core-version: 0.10.17+d971670cd
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Toolchain and dependencies

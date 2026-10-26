@@ -1,0 +1,46 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/rg/internal/regex"
+
+import {
+  "cli/rg/internal/regex/syntax",
+  "moonbitlang/core/debug",
+}
+
+// Values
+
+// Errors
+pub suberror RegexError {
+  Syntax(@syntax.SyntaxError)
+  TooBig(Int32)
+} derive(@debug.Debug)
+pub fn RegexError::to_string(Self) -> String
+pub impl Show for RegexError
+
+// Types and methods
+pub struct Regex {
+  // private fields
+}
+pub fn Regex::captures_at(Self, FixedArray[Byte], Int32, Int32, Int32, Int32, FixedArray[Int32]) -> Bool
+pub fn Regex::captures_len(Self) -> Int32
+pub fn Regex::find(Self, Bytes) -> (Int32, Int32)?
+pub fn Regex::find_all(Self, Bytes) -> Array[(Int32, Int32)]
+pub fn Regex::find_at(Self, FixedArray[Byte], Int32, Int32, Int32, Int32) -> (Int32, Int32)?
+pub fn Regex::from_hir(@syntax.Hir, config? : RegexConfig) -> Self raise RegexError
+pub fn Regex::group_index(Self, String) -> Int32?
+pub fn Regex::group_names(Self) -> Array[String?]
+pub fn Regex::hir(Self) -> @syntax.Hir
+pub fn Regex::is_accelerated(Self) -> Bool
+pub fn Regex::is_match(Self, Bytes) -> Bool
+pub fn Regex::is_match_at(Self, FixedArray[Byte], Int32, Int32, Int32, Int32) -> Bool
+pub fn Regex::new(String) -> Self raise RegexError
+pub fn Regex::search_half(Self, FixedArray[Byte], Int32, Int32, Int32, Int32, earliest? : Bool) -> Int32?
+
+pub(all) struct RegexConfig {
+  nfa_size_limit : Int32?
+  dfa_state_limit : Int32
+}
+pub fn RegexConfig::default() -> Self
+
+// Type aliases
+
+// Traits

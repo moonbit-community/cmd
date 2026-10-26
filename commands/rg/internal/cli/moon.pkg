@@ -1,0 +1,13 @@
+import {
+  "cli/rg/internal/sys",
+  "moonbitlang/core/encoding/utf8",
+}
+
+warnings = "-implicit_impl_as_method"
+
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+} for "test"
+
+supported_targets = "native+wasm"

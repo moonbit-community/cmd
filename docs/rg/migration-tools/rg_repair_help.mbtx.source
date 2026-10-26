@@ -1,0 +1,43 @@
+----
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+}
+----
+
+///|
+async fn main {
+  let path = "commands/rg/internal/driver/flag_defs_data.mbt"
+  let original = @fs.read_file("/tmp/cmd-rg-source-20261026/core/flag_defs_data.mbt").text()
+  let docs = original.split("\n").filter(line => {
+    let line = line.trim()
+    line.has_prefix("doc_short:") || line.has_prefix("doc_long:")
+  }).map(line => line.to_owned()).collect()
+  let lines = @fs.read_file(path).text().split("\n").map(line => line.to_owned()).collect()
+  let mut index = 0
+  let mut name = ""
+  for i in 0..<lines.length() {
+    let line = lines[i].trim()
+    if line.strip_prefix("name_long: \"") is Some(rest) && rest.find("\"") is Some(end) {
+      name = rest[:end].to_owned()
+    }
+    if line.has_prefix("doc_short:") || line.has_prefix("doc_long:") {
+      let short = line.has_prefix("doc_short:")
+      lines[i] = match name {
+        "search-zip" => if short {
+          "    doc_short: \"Compressed search is deferred (rejected).\","
+        } else {
+          "    doc_long: \"Compressed search is deferred in cli/rg. An effective -z or --search-zip exits with status 2. --no-search-zip or a later --pre retains option precedence. Decoder construction is preserved in experiments/rg-compression.\","
+        }
+        "help" => if short { "    doc_short: \"display this help and exit\"," }
+          else { "    doc_long: \"display this help and exit. Use -h for short option descriptions. Standalone --help leaves stdin unread and bypasses configuration.\"," }
+        "version" => if short { "    doc_short: \"display version and exit\"," }
+          else { "    doc_long: \"display version and exit. Standalone --version prints rg and the command module version, followed by a newline.\"," }
+        _ => docs[index]
+      }
+      index += 1
+    }
+  }
+  assert_eq(index, docs.length())
+  @fs.write_file(path, lines.join("\n"))
+}

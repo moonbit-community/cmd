@@ -15,7 +15,7 @@ pub fn validate(Registry) -> Array[String]
 
 // Types and methods
 pub(all) struct Registry {
-  schema : Int
+  schema : Int32
   entries : Array[RegistryEntry]
   release_commands : Array[ReleaseCommandMetadata]
 } derive(ToJson, @debug.Debug, @json.FromJson)

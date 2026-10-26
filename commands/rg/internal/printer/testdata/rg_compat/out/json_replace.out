@@ -1,0 +1,5 @@
+{"type":"begin","data":{"path":{"text":"sherlock"}}}
+{"type":"match","data":{"path":{"text":"sherlock"},"lines":{"text":"For the Doctor Watsons of this world, as opposed to the Sherlock\n"},"line_number":1,"absolute_offset":0,"submatches":[{"match":{"text":"Sherlock"},"replacement":{"text":"<Sherlock>"},"start":56,"end":64}]}}
+{"type":"match","data":{"path":{"text":"sherlock"},"lines":{"text":"be, to a very large extent, the result of luck. Sherlock Holmes\n"},"line_number":3,"absolute_offset":129,"submatches":[{"match":{"text":"Sherlock"},"replacement":{"text":"<Sherlock>"},"start":48,"end":56}]}}
+{"type":"end","data":{"path":{"text":"sherlock"},"binary_offset":null,"stats":{"elapsed":{"secs":0,"nanos":24125,"human":"0.000024s"},"searches":1,"searches_with_match":1,"bytes_searched":367,"bytes_printed":606,"matched_lines":2,"matches":2}}}
+{"data":{"elapsed_total":{"human":"0.000516s","nanos":516333,"secs":0},"stats":{"bytes_printed":606,"bytes_searched":367,"elapsed":{"human":"0.000024s","nanos":24125,"secs":0},"matched_lines":2,"matches":2,"searches":1,"searches_with_match":1}},"type":"summary"}

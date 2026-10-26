@@ -1,0 +1,94 @@
+----
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/shell",
+  "moonbitlang/core/env",
+  "moonbitlang/core/encoding/utf8",
+}
+----
+
+///|
+async fn main {
+  let args = @env.args()
+  guard args.length() == 3 else {
+    fail("Usage: moon run tools/rg_import.mbtx -- RG_SOURCE COMPRESS_SOURCE")
+  }
+  let roots = [args[1], args[2]]
+  let revisions = [
+    "2727c25819b00ddd1a0e9b24f9cb683931d64edf",
+    "89e8a942e6d88c369aa6517a1f8b3c4030ec0670",
+  ]
+  let inventory = StringBuilder()
+  inventory.write_string("source\tpath\tsha256\tdestination\tstatus\n")
+  for source in 0..<roots.length() {
+    let root = roots[source]
+    let rev = @shell.Cmd("git", ["rev-parse", "HEAD"], cwd=root).output()
+    rev.check()
+    guard rev.stdout().trim().to_owned() == revisions[source] else {
+      fail("Unexpected source revision: \{root}")
+    }
+    let listing = @shell.Cmd("git", ["ls-files", "-z"], cwd=root).output()
+    listing.check()
+    for entry in listing.stdout().split("\u0000") {
+      let path = entry.to_owned()
+      if path.is_empty() { continue }
+      let first = path.split("/").next().unwrap().to_owned()
+      let selected_package = if source == 0 {
+        first != "cmd" && first != "scripts" && first != ".github" &&
+        first != "sys" && path.contains("/")
+      } else {
+        ["bzip2", "brotli", "zstd", "lz4", "checksum"].contains(first) &&
+        !path.contains("/async/")
+      }
+      let replaced_binding = source == 1 &&
+        ["checksum/checksum_hw.mbt", "brotli/large_fixture_test.mbt"].contains(path)
+      let fixture = selected_package && path.contains("/testdata/") &&
+        ![".py", ".sh", ".rs", ".c", ".mbti"].any(extension => path.has_suffix(extension))
+      let import_file = selected_package && !replaced_binding &&
+        (path.has_suffix(".mbt") || path.has_suffix("moon.pkg") || fixture)
+      let dest = if source == 0 {
+        let path = if first == "core" {
+          "driver/" + path[5:].to_owned()
+        } else { path }
+        "commands/rg/internal/" + path
+      } else {
+        "commands/rg/internal/codec/" + path
+      }
+      let sum = @shell.Cmd("shasum", ["-a", "256", path], cwd=root).output()
+      sum.check()
+      let digest = sum.stdout().split(" ").next().unwrap().to_owned()
+      inventory.write_string("\{source}\t\{path}\t\{digest}\t")
+      if import_file {
+        let parent = dest[:dest.rev_find("/").unwrap()].to_owned()
+        @fs.mkdir(parent, recursive=true, allow_exist=true)
+        if fixture && !path.has_suffix(".mbt") && !path.has_suffix("moon.pkg") {
+          if !@fs.exists(dest) { @fs.write_file(dest, @fs.read_file(root + "/" + path)) }
+          inventory.write_string("\{dest}\timported-fixture\n")
+          continue
+        }
+        let mut text = @fs.read_file(root + "/" + path).text()
+        text = text.replace_all(
+          old="moonbit-community/rg/core", new="cli/rg/internal/driver",
+        ).replace_all(old="moonbit-community/rg/", new="cli/rg/internal/")
+        text = text.replace_all(
+          old="bikallem/compress/", new="cli/rg/internal/codec/",
+        ).replace_all(old="bikallem/blit", new="cli/rg/internal/codec/blit")
+        // Existing migrated files are never overwritten by a repeated import.
+        if !@fs.exists(dest) { @fs.write_file(dest, @utf8.encode(text)) }
+        inventory.write_string("\{dest}\timported\n")
+      } else {
+        inventory.write_string("-\trequires-classification\n")
+      }
+    }
+  }
+  @fs.mkdir("docs/rg", recursive=true, allow_exist=true)
+  @fs.write_file("docs/rg/source-inventory.tsv", @utf8.encode(inventory.to_string()))
+  @fs.write_file("commands/rg/LICENSE", @fs.read_file(roots[0] + "/LICENSE"))
+  let fixture_root = "commands/rg/internal/codec/brotli/testdata"
+  @fs.mkdir(fixture_root, recursive=true, allow_exist=true)
+  for fixture in ["woff2_dejavu_tables.br", "woff2_dejavu_tables.bin"] {
+    @fs.write_file(fixture_root + "/" + fixture,
+      @fs.read_file(roots[1] + "/testdata/" + fixture))
+  }
+}

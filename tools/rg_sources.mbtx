@@ -1,0 +1,73 @@
+----
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/async@0.22.5/shell",
+  "moonbitlang/core/json",
+  "moonbitlang/core/env",
+}
+----
+
+///|
+async fn digest(path : String) -> String {
+  let result = @shell.Cmd("shasum", ["-a", "256", path]).output()
+  result.check()
+  result.stdout().split(" ").next().unwrap().to_owned()
+}
+
+///|
+async fn main {
+  let args = @env.args()
+  guard args.length() == 2 else { fail("Usage: rg_sources.mbtx RG_SOURCE") }
+  @fs.write_file("commands/rg/THIRD_PARTY_NOTICES.md", @fs.read_file(args[1] + "/THIRD_PARTY_NOTICES.md"))
+  @fs.write_file("commands/rg/LICENSE-APACHE", @fs.read_file("LICENSE"))
+  let path = "docs/rg/source-inventory.tsv"
+  let report = StringBuilder()
+  for (line) in @fs.read_file(path).text().split("\n") {
+    if line.is_empty() { continue }
+    let fields = line.split("\t").map(value => value.to_owned()).collect()
+    if fields.length() != 5 || fields[0] == "source" { report.write_string(line.to_owned() + "\n"); continue }
+    if fields[0] == "1" {
+      fields[3] = fields[3].replace_all(old="commands/rg/internal/codec/", new="experiments/rg-compression/internal/codec/")
+      fields[4] = if @fs.exists(fields[3]) { "archived-compression-source" } else { "excluded-compression-upstream-component" }
+    } else if fields[1] == "cli/decompress.mbt" {
+      fields[3] = "experiments/rg-compression/integration/decompress.mbt.source"
+      fields[4] = "archived-compression-integration"
+    } else if fields[1] == "cli/decompress_test.mbt" {
+      fields[3] = "experiments/rg-compression/integration/decompress_test.mbt.source"
+      if !@fs.exists(fields[3]) { @fs.write_file(fields[3], @fs.read_file(args[1] + "/" + fields[1])) }
+      fields[4] = "archived-compression-test"
+    } else if fields[1] == "LICENSE" || fields[1] == "THIRD_PARTY_NOTICES.md" {
+      fields[3] = "commands/rg/" + fields[1]
+      fields[4] = "retained-notice"
+    } else if fields[1].has_prefix("sys/") {
+      fields[3] = "commands/rg/internal/sys"
+      fields[4] = "replaced-with-released-public-async-apis"
+    } else if fields[1].has_prefix("cmd/") {
+      fields[3] = "commands/rg/main.mbt"
+      fields[4] = "replaced-thin-async-entrypoint"
+    } else if fields[4] == "requires-classification" {
+      fields[4] = if fields[1].has_suffix(".mbti") { "regenerated-interface" }
+        else if fields[1].has_prefix("scripts/") { "excluded-host-generator-frozen-data-retained" }
+        else { "excluded-upstream-project-metadata" }
+    } else {
+      fields[4] = if @fs.exists(fields[3]) { fields[4] } else { "needs-disposition" }
+    }
+    report.write_string(fields.join("\t") + "\n")
+  }
+  @fs.write_file(path, report.to_string())
+  let recipe = "tests/runner/image/"
+  let profile_path = recipe + "profile.json"
+  guard @json.parse(@fs.read_file(profile_path).text()) is Object(profile) else { fail("profile object required") }
+  profile["dockerfile_sha256"] = Json(digest(recipe + "Dockerfile"))
+  profile["versions_script_sha256"] = Json(digest(recipe + "versions.sh"))
+  @fs.write_file(profile_path, Json(profile).stringify(indent=2) + "\n")
+  @fs.mkdir("docs/rg/migration-tools", recursive=true, allow_exist=true)
+  for file in ["rg_adjust", "rg_archive_compression", "rg_disable_compression", "rg_effects", "rg_fixtures", "rg_import", "rg_modernize", "rg_test_config", "rg_repair_help"] {
+    let original = "tools/" + file + ".mbtx"
+    if @fs.exists(original) {
+      @fs.write_file("docs/rg/migration-tools/" + file + ".mbtx.source", @fs.read_file(original))
+      @fs.remove(original)
+    }
+  }
+}

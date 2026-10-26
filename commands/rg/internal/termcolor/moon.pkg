@@ -1,0 +1,5 @@
+warnings = "-implicit_impl_as_method"
+
+import {
+  "moonbitlang/async",
+} for "test"

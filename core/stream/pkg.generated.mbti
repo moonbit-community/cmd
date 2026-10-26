@@ -7,7 +7,7 @@ import {
 }
 
 // Values
-pub let chunk_size : Int
+pub let chunk_size : Int32
 
 pub async fn read_chunk(&@io.Reader) -> Bytes?
 
@@ -28,8 +28,8 @@ pub struct LineScanner {
   delimiter : Bytes
   buffer : FixedArray[Byte]
   chunk : Bytes
-  mut offset : Int
-  mut limit : Int
+  mut offset : Int32
+  mut limit : Int32
   mut eof : Bool
 }
 pub fn LineScanner::new(&@io.Reader, delimiter? : Byte) -> Self

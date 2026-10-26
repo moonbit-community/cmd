@@ -1,0 +1,78 @@
+----
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/shell",
+  "moonbitlang/core/json",
+  "moonbitlang/core/string",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/env",
+}
+----
+
+///|
+struct Diagnostic { error_code : Int; path : String; loc : String } derive(FromJson)
+
+///|
+async fn apply_effects(log : String) -> Int {
+  let edits : Map[String, Array[Int]] = Map([])
+  for line in log.split("\n") {
+    let diagnostic : Diagnostic = @json.from_json(@json.parse(line)) catch { _ => continue }
+    if diagnostic.error_code != 4149 { continue }
+    let lineno = @string.parse_int(diagnostic.loc.split(":").next().unwrap().to_owned())
+    if !edits.contains(diagnostic.path) { edits[diagnostic.path] = [] }
+    edits[diagnostic.path].push(lineno)
+  }
+  let mut changed = 0
+  for path, lines in edits {
+    let source = @fs.read_file(path).text()
+    let blocks = source.split("///|").map(s => s.to_owned()).collect()
+    let mut first_line = 1
+    for i in 0..<blocks.length() {
+      let block = blocks[i]
+      let line_count = block.iter().filter(c => c == '\n').count()
+      let selected = lines.any(line => line >= first_line && line <= first_line + line_count)
+      first_line += line_count
+      if !selected || block.contains("async fn ") || block.contains("async fn[") || block.contains("async test ") { continue }
+      let marker = if block.contains("test \"") {
+        block.find("test \"")
+      } else if block.contains("fn ") { block.find("fn ") } else { block.find("fn[") }
+      guard marker is Some(at) else { continue }
+      if block.contains(" impl ") || block.has_prefix("\nimpl ") {
+        // Trait method effects must be changed in the trait declaration.
+        continue
+      }
+      let mut next = block[:at].to_owned() + "async " + block[at:].to_owned()
+      let signature = at + 6
+      if next[signature:].find("{") is Some(body_offset) {
+        let body = signature + body_offset
+        if next[signature:body].find(" raise") is Some(effect_offset) {
+          let effect = signature + effect_offset
+          next = next[:effect].to_owned() + " " + next[body:].to_owned()
+        }
+      }
+      blocks[i] = next
+      changed += 1
+    }
+    let next = blocks.join("///|")
+    if next != source { @fs.write_file(path, @utf8.encode(next)) }
+  }
+  changed
+}
+
+///|
+async fn main {
+  let selectors = @env.args()[1:].to_owned()
+  if selectors.is_empty() { selectors.push("commands/rg/internal/ignore") }
+  @fs.mkdir("test-reports/rg-effects", recursive=true, allow_exist=true)
+  for pass in 0..<30 {
+    let args = ["check", "--target", "wasm", "--output-json"]
+    args.append(selectors)
+    let output = @shell.Cmd("moon", args).output()
+    let log = output.stdout()
+    @fs.write_file("test-reports/rg-effects/\{pass}.jsonl", @utf8.encode(log))
+    let changed = apply_effects(log)
+    println("Async propagation pass \{pass}: \{changed} declarations")
+    if changed == 0 { break }
+  }
+}
