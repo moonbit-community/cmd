@@ -506,6 +506,7 @@ async test "walk/sort_by_file_name" {
 async test "walk/errors" {
   let td = TempDir::new("walk-errors")
   let missing = td.join("missing")
+  let diagnostic = missing_kind_diagnostic(missing)
   let errs = []
   for r in WalkBuilder::new(missing).build().iter() {
     if r is Err(e) {
@@ -516,7 +517,7 @@ async test "walk/errors" {
   }
   assert_eq(errs.length(), 1)
   assert_true(errs[0].contains(missing))
-  assert_true(errs[0].contains("No such file or directory"))
+  assert_true(errs[0].contains(diagnostic))
   let errs = []
   WalkBuilder::new(missing)
   .build_parallel()
@@ -530,8 +531,17 @@ async test "walk/errors" {
   })
   assert_eq(errs.length(), 1)
   assert_true(errs[0].contains(missing))
-  assert_true(errs[0].contains("No such file or directory"))
+  assert_true(errs[0].contains(diagnostic))
   td.close()
+}
+
+///|
+// Check preservation of the public host diagnostic without assuming Unix text.
+async fn missing_kind_diagnostic(path : String) -> String {
+  ignore(@fs.kind(path, follow_symlink=false)) catch {
+    error => return error.to_string()
+  }
+  fail("missing-path fixture unexpectedly exists")
 }
 
 ///|
