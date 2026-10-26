@@ -91,11 +91,12 @@ One-time adaptation scripts are preserved as
 
 The unmodified source passed 1,069 Native and 1,019 Wasm package tests with the
 current local PATH toolchain (MoonBit 0.10.17). These are baseline observations.
-Current local validation includes 1,565/1,565 workspace Wasm package tests,
-1,074/1,074 rg Native tests and 117/117 Native test-tool regressions. The 34 rg
+Current local validation includes 1,566/1,566 workspace Wasm package tests,
+1,075/1,075 rg Native tests and 117/117 Native test-tool regressions. The 34 portable rg
 CLI contracts, separate metadata stdin-preservation probe, 26 direct backend
 contracts and candidate generator passed.
-The complete local functional run records 2,062 passes, zero failures and 18
+An additional Windows backslash-operand contract runs on that host. The earlier
+complete local functional run recorded 2,062 passes, zero failures and 18
 explicit platform skips, including all 80 metadata probes. Imported fixture
 bytes are protected from checkout newline conversion by `.gitattributes`.
 The user requested upgrading CI to the latest toolchain. All three workflows
@@ -104,6 +105,11 @@ The official latest Darwin/aarch64 checksums for moon, moonc and moonrun matched
 the local binaries on 2026-10-26; `moon version --all` identifies this release.
 Generated interfaces follow this compiler's `Int32`/`UInt32` alias spelling;
 existing signatures retain equivalent types.
+
+Windows path normalization retains drive roots and canonical prefixes. Process
+pipe handles outlive their task group, allowing Windows cancellation to complete
+before close. Normal EOF waits for the complete stderr drain. The retained
+early-close, cancellation and duplex-output tests cover the lifecycle change.
 
 Test reports are retained by the normal CI artifact workflow; local logs are outside
 the repository. Hosted checks use the same 0.10.17 release as local validation.
