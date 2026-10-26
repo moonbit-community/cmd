@@ -1,0 +1,10 @@
+import {
+  "cli/rg/internal/regex/syntax",
+  "cli/rg/internal/regex/automata",
+}
+
+import {
+  "cli/rg/internal/regex/internal/testdata",
+} for "test"
+
+warnings = "-implicit_impl_as_method"

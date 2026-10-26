@@ -1,0 +1,99 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/rg/internal/globset"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn escape(String) -> String
+
+// Errors
+pub suberror GlobError {
+  GlobError(glob~ : String?, kind~ : ErrorKind)
+} derive(Eq, @debug.Debug)
+pub fn GlobError::glob(Self) -> String?
+pub fn GlobError::kind(Self) -> ErrorKind
+pub fn GlobError::to_string(Self) -> String
+pub impl Show for GlobError
+
+// Types and methods
+pub struct Candidate {
+  // private fields
+}
+pub fn Candidate::from_bytes(Bytes) -> Self
+pub fn Candidate::new(String) -> Self
+pub impl @debug.Debug for Candidate
+
+pub(all) enum ErrorKind {
+  InvalidRecursive
+  UnclosedClass
+  InvalidRange(Char, Char)
+  UnopenedAlternates
+  UnclosedAlternates
+  NestedAlternates
+  DanglingEscape
+  Regex(String)
+} derive(Eq, @debug.Debug)
+pub fn ErrorKind::to_string(Self) -> String
+pub impl Show for ErrorKind
+
+pub struct Glob {
+  // private fields
+}
+pub fn Glob::compile_matcher(Self) -> GlobMatcher
+pub fn Glob::glob(Self) -> String
+pub fn Glob::new(String) -> Self raise GlobError
+pub fn Glob::regex(Self) -> String
+pub impl Eq for Glob
+pub impl Hash for Glob
+pub impl Show for Glob
+pub impl @debug.Debug for Glob
+
+pub struct GlobBuilder {
+  // private fields
+} derive(@debug.Debug)
+pub fn GlobBuilder::allow_unclosed_class(Self, Bool) -> Self
+pub fn GlobBuilder::backslash_escape(Self, Bool) -> Self
+pub fn GlobBuilder::build(Self) -> Glob raise GlobError
+pub fn GlobBuilder::case_insensitive(Self, Bool) -> Self
+pub fn GlobBuilder::empty_alternates(Self, Bool) -> Self
+pub fn GlobBuilder::literal_separator(Self, Bool) -> Self
+pub fn GlobBuilder::new(String) -> Self
+
+pub struct GlobMatcher {
+  // private fields
+}
+pub fn GlobMatcher::glob(Self) -> Glob
+pub fn GlobMatcher::is_match(Self, String) -> Bool
+pub fn GlobMatcher::is_match_candidate(Self, Candidate) -> Bool
+pub impl @debug.Debug for GlobMatcher
+
+pub struct GlobSet {
+  // private fields
+}
+pub fn GlobSet::builder() -> GlobSetBuilder
+pub fn GlobSet::empty() -> Self
+pub fn GlobSet::is_empty(Self) -> Bool
+pub fn GlobSet::is_match(Self, String) -> Bool
+pub fn GlobSet::is_match_candidate(Self, Candidate) -> Bool
+pub fn GlobSet::len(Self) -> Int
+pub fn GlobSet::matches(Self, String) -> Array[Int]
+pub fn GlobSet::matches_all(Self, String) -> Bool
+pub fn GlobSet::matches_all_candidate(Self, Candidate) -> Bool
+pub fn GlobSet::matches_candidate(Self, Candidate) -> Array[Int]
+pub fn GlobSet::matches_candidate_into(Self, Candidate, Array[Int]) -> Unit
+pub fn GlobSet::matches_into(Self, String, Array[Int]) -> Unit
+pub fn GlobSet::new(ArrayView[Glob]) -> Self raise GlobError
+pub impl Default for GlobSet
+
+pub struct GlobSetBuilder {
+  // private fields
+} derive(@debug.Debug)
+pub fn GlobSetBuilder::add(Self, Glob) -> Self
+pub fn GlobSetBuilder::build(Self) -> GlobSet raise GlobError
+pub fn GlobSetBuilder::new() -> Self
+
+// Type aliases
+
+// Traits

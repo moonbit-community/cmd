@@ -70,13 +70,13 @@ async test "workspace dependency manifests keep one async baseline and the selec
     dependency_manifest_field(core, "version")
   let selected_core_coordinate = "cli/core@0.8.0"
   let commands = command_names(root + "commands")
-  assert_eq(commands.length(), 79)
+  assert_eq(commands.length(), 80)
   let independent = ["echo", "false", "sleep", "true"]
   let modules = ["core", "tests"]
   for command in commands {
     modules.push("commands/" + command)
   }
-  assert_eq(modules.length(), 81)
+  assert_eq(modules.length(), 82)
   for directory in modules {
     let text = @fs.read_file(root + directory + "/moon.mod").text()
     let expected_name = if directory == "core" {

@@ -1,0 +1,711 @@
+///|
+test "round-trip: small data" {
+  let test_data : Array[Bytes] = [
+    b"a",
+    b"Hello, World!",
+    b"The quick brown fox jumps over the lazy dog.",
+    Bytes::makei(100, fn(i) { (i % 256).to_byte() }),
+  ]
+  for data in test_data {
+    let compressed = @zstd.compress(data)
+    let decompressed = @zstd.decompress(compressed)
+    inspect(decompressed == data, content="true")
+  }
+}
+
+///|
+test "round-trip: 1KB data" {
+  let data = Bytes::makei(1024, fn(i) { (i % 256).to_byte() })
+  let compressed = @zstd.compress(data)
+  let decompressed = @zstd.decompress(compressed)
+  inspect(decompressed.length(), content="1024")
+  inspect(decompressed == data, content="true")
+}
+
+///|
+test "round-trip: 10KB data" {
+  let data = Bytes::makei(10000, fn(i) { (i % 256).to_byte() })
+  let compressed = @zstd.compress(data)
+  let decompressed = @zstd.decompress(compressed)
+  inspect(decompressed.length(), content="10000")
+  inspect(decompressed == data, content="true")
+}
+
+///|
+test "round-trip: 100KB data" {
+  let data = Bytes::makei(100000, fn(i) { (i % 256).to_byte() })
+  let compressed = @zstd.compress(data)
+  let decompressed = @zstd.decompress(compressed)
+  inspect(decompressed.length(), content="100000")
+  inspect(decompressed == data, content="true")
+}
+
+///|
+test "round-trip: large repetitive data" {
+  let buf = @blit.Buffer::new()
+  for _ in 0..<500 {
+    buf.write_bytes(b"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+  }
+  let data = buf.to_bytes()
+  let compressed = @zstd.compress(data)
+  let decompressed = @zstd.decompress(compressed)
+  inspect(decompressed == data, content="true")
+  // Compressed blocks should achieve meaningful compression on repetitive data
+  inspect(compressed.length() < data.length(), content="true")
+}
+
+///|
+test "round-trip: ascii-biased text" {
+  let buf = @blit.Buffer::new()
+  for i in 0..<256 {
+    buf.write_bytes(
+      @utf8.encode(
+        "log level=info service=api shard=\{i % 7} user=user\{i % 19} region=eu-west-1 action=read path=/v1/item/\{i % 23}\n"[:],
+      ),
+    )
+  }
+  let data = buf.to_bytes()
+  let compressed = @zstd.compress(data)
+  let decompressed = @zstd.decompress(compressed)
+  assert_eq(decompressed, data)
+  assert_true(compressed.length() < data.length())
+}
+
+///|
+test "round-trip: all zeros 1KB" {
+  let data = Bytes::make(1024, b'\x00')
+  let compressed = @zstd.compress(data)
+  let decompressed = @zstd.decompress(compressed)
+  inspect(decompressed == data, content="true")
+  inspect(compressed.length() < data.length(), content="true")
+}
+
+///|
+test "round-trip: all byte values" {
+  let data = Bytes::makei(256, fn(i) { i.to_byte() })
+  let compressed = @zstd.compress(data)
+  let decompressed = @zstd.decompress(compressed)
+  inspect(decompressed == data, content="true")
+}
+
+///|
+test "round-trip: 1MB repeating text" {
+  let pattern = "The quick brown fox jumps over the lazy dog. "
+  let pattern_bytes = @utf8.encode(pattern[:])
+  let plen = pattern_bytes.length()
+  let buf = @blit.Buffer::new()
+  let mut written = 0
+  while written + plen <= 1048576 {
+    buf.write_bytes(pattern_bytes)
+    written += plen
+  }
+  let remaining = 1048576 - written
+  for i in 0..<remaining {
+    buf.write_byte(pattern_bytes[i])
+  }
+  let data = buf.to_bytes()
+  let compressed = @zstd.compress(data)
+  let decompressed = @zstd.decompress(compressed)
+  assert_eq(data.length(), decompressed.length())
+  assert_eq(data, decompressed)
+  // Should compress very well
+  assert_true(compressed.length() < 300)
+}
+
+///|
+test "signal protocol: chunked input" {
+  let data = Bytes::makei(1024, fn(i) { (i % 256).to_byte() })
+  let compressed = @zstd.compress(data)
+  let d = @zstd.Inflater::new()
+  let buf = @blit.Buffer::new()
+  let chunk_size = 11
+  let mut pos = 0
+  loop d.decode() {
+    Await =>
+      if pos >= compressed.length() {
+        inspect(false, content="true")
+        break
+      } else {
+        let end = if pos + chunk_size > compressed.length() {
+          compressed.length()
+        } else {
+          pos + chunk_size
+        }
+        let chunk = Bytes::makei(end - pos, fn(i) { compressed[pos + i] })
+        d.src(chunk[:])
+        pos = end
+        continue d.decode()
+      }
+    Data(chunk) => {
+      buf.write_bytesview(chunk)
+      continue d.decode()
+    }
+    End => inspect(buf.to_bytes() == data, content="true")
+    Error(e) => raise e
+  }
+}
+
+///|
+test "signal protocol: deflater streaming" {
+  let data = Bytes::makei(1024, fn(i) { (i % 256).to_byte() })
+  let d = @zstd.Deflater::new()
+  match d.encode(Some(data[:512])) {
+    Ok => ()
+    Data(_) | End => ()
+    Error(e) => raise e
+  }
+  match d.encode(Some(data[512:])) {
+    Ok => ()
+    Data(_) | End => ()
+    Error(e) => raise e
+  }
+  let buf = @blit.Buffer::new()
+  match d.encode(None) {
+    Data(out) => buf.write_bytesview(out)
+    End => ()
+    Ok => ()
+    Error(e) => raise e
+  }
+  let compressed = buf.to_bytes()
+  let decompressed = @zstd.decompress(compressed)
+  assert_eq(decompressed, data)
+}
+
+///|
+fn raw_dict_fixture() -> Bytes {
+  b"alpha token group one. beta token group two. gamma token group three. raw dictionary fixture."
+}
+
+///|
+fn formatted_dict_with_id(dict : Bytes, dict_id : UInt) -> Bytes {
+  Bytes::makei(dict.length(), fn(i) {
+    if i == 4 {
+      (dict_id & 0xFFU).to_byte()
+    } else if i == 5 {
+      ((dict_id >> 8) & 0xFFU).to_byte()
+    } else if i == 6 {
+      ((dict_id >> 16) & 0xFFU).to_byte()
+    } else if i == 7 {
+      ((dict_id >> 24) & 0xFFU).to_byte()
+    } else {
+      dict[i]
+    }
+  })
+}
+
+///|
+test "round-trip: with raw dictionary" {
+  let dict = raw_dict_fixture()
+  let data = dict + b" tail bytes that do not appear in the dictionary."
+  let compressed_no_dict = @zstd.compress(data)
+  let compressed_with_dict = @zstd.compress(data, dict~)
+  let decompressed = @zstd.decompress(compressed_with_dict, dict~)
+  assert_eq(decompressed, data)
+  assert_true(compressed_with_dict.length() < compressed_no_dict.length())
+  let missing_dict = (try Result::Ok(@zstd.decompress(compressed_with_dict)) catch { e => Result::Err(e) })
+  match missing_dict {
+    Err(_) => ()
+    Ok(_) => fail("expected dictionary-backed frame to require the dictionary")
+  }
+}
+
+///|
+test "round-trip: with short raw dictionary" {
+  let dict = b"abc"
+  let data = b"abcabcabcabcxyzabcabc"
+  let compressed = @zstd.compress(data, dict~)
+  let decompressed = @zstd.decompress(compressed, dict~)
+  assert_eq(decompressed, data)
+  let d = @zstd.Inflater::new(dict~)
+  let buf = @blit.Buffer::new()
+  d.src(compressed[:])
+  loop d.decode() {
+    Await => fail("unexpected Await with full input")
+    Data(chunk) => {
+      buf.write_bytesview(chunk)
+      continue d.decode()
+    }
+    End => break
+    Error(e) => raise e
+  }
+  assert_eq(buf.to_bytes(), data)
+}
+
+///|
+test "round-trip: with short raw dictionary using zstd magic prefix" {
+  let dict = b"\x37\xa4\x30\xecxy"
+  let data = dict + dict + b" trailing payload"
+  let compressed = @zstd.compress(data, dict~)
+  let decompressed = @zstd.decompress(compressed, dict~)
+  assert_eq(decompressed, data)
+}
+
+///|
+test "round-trip: repeated data stays compact with raw dictionary" {
+  let dict = raw_dict_fixture()
+  let data = Bytes::make(200000, b'Z')
+  let compressed = @zstd.compress(data, dict~)
+  let decompressed = @zstd.decompress(compressed, dict~)
+  assert_eq(decompressed, data)
+  assert_true(compressed.length() < 64)
+}
+
+///|
+test "round-trip: malformed formatted dictionary is rejected on encode" {
+  let valid = formatted_dict_fixture()
+  let dict = Bytes::makei(32, fn(i) { valid[i] })
+  let result = (try Result::Ok(@zstd.compress(b"raw fallback payload", dict~)) catch { e => Result::Err(e) })
+  match result {
+    Err(_) => ()
+    Ok(_) => fail("expected malformed formatted dictionary to be rejected")
+  }
+}
+
+///|
+test "signal protocol: malformed formatted dictionary is rejected at deflater construction" {
+  let valid = formatted_dict_fixture()
+  let dict = Bytes::makei(32, fn(i) { valid[i] })
+  let result = (try Result::Ok(@zstd.Deflater::new(dict~)) catch { e => Result::Err(e) })
+  match result {
+    Err(_) => ()
+    Ok(_) => fail("expected malformed formatted dictionary to be rejected")
+  }
+}
+
+///|
+test "zstd formatted frame rejects malformed fallback dictionary" {
+  let valid = formatted_dict_fixture()
+  let malformed = Bytes::makei(32, fn(i) { valid[i] })
+  let compressed = @zstd.compress(formatted_dict_fixture_input(), dict=valid)
+  let result = (try Result::Ok(@zstd.decompress(compressed, dict=malformed)) catch { e => Result::Err(e) })
+  guard result is Err(_) else {
+    fail(
+      "expected formatted dictionary frame to reject malformed fallback dictionary",
+    )
+  }
+}
+
+///|
+test "plain zstd frame rejects malformed formatted dictionary on one-shot decode" {
+  let valid = formatted_dict_fixture()
+  let malformed = Bytes::makei(32, fn(i) { valid[i] })
+  let compressed = @zstd.compress(b"plain frame with no dictionary", level=Best)
+  let result = (try Result::Ok(@zstd.decompress(compressed, dict=malformed)) catch { e => Result::Err(e) })
+  guard result is Err(_) else {
+    fail("expected malformed formatted dictionary to fail closed on decode")
+  }
+}
+
+///|
+test "streaming zstd inflater rejects malformed formatted dictionary before decode" {
+  let valid = formatted_dict_fixture()
+  let malformed = Bytes::makei(32, fn(i) { valid[i] })
+  let d = @zstd.Inflater::new(dict=malformed)
+  match d.decode() {
+    Error(_) => ()
+    _ => fail("expected malformed formatted dictionary to fail before decode")
+  }
+}
+
+///|
+test "plain zstd frame ignores unrelated formatted dictionary" {
+  let data = Bytes::makei(8192, fn(i) {
+    if i % 29 < 7 {
+      b'A'
+    } else if i % 13 < 5 {
+      b'B'
+    } else {
+      (i * 17 % 251).to_byte()
+    }
+  })
+  let compressed = @zstd.compress(data, level=Best)
+  let decoded = @zstd.decompress(compressed, dict=formatted_dict_fixture())
+  assert_eq(decoded, data)
+}
+
+///|
+test "zstd can select dictionaries per concatenated frame" {
+  let dict1 = formatted_dict_fixture()
+  let dict2 = formatted_dict_with_id(dict1, 0x21436587U)
+  let plain = b"plain zstd frame"
+  let data1 = formatted_dict_fixture_input()
+  let data2 = data1 + b"\nextra shard=2 cluster=9"
+  let combined = @zstd.compress(plain) +
+    @zstd.compress(data1, dict=dict1) +
+    @zstd.compress(data2, dict=dict2)
+  let decoded = @zstd.decompress_with_dictionaries(combined, [dict1, dict2])
+  assert_eq(decoded, plain + data1 + data2)
+}
+
+///|
+test "zstd concatenated decode fails when a later frame dictionary is missing" {
+  let dict1 = formatted_dict_fixture()
+  let dict2 = formatted_dict_with_id(dict1, 0x78563412U)
+  let combined = @zstd.compress(formatted_dict_fixture_input(), dict=dict1) +
+    @zstd.compress(
+      formatted_dict_fixture_input() + b"\nservice=search cluster=4",
+      dict=dict2,
+    )
+  let result = (try Result::Ok(@zstd.decompress_with_dictionaries(combined, [dict1])) catch { e => Result::Err(e) })
+  match result {
+    Err(@zstd.ZstdError::InvalidHeader(_)) => ()
+    _ => fail("expected missing later dictionary to fail")
+  }
+}
+
+///|
+test "streaming zstd inflater can select dictionaries per concatenated frame" {
+  let dict1 = formatted_dict_fixture()
+  let dict2 = formatted_dict_with_id(dict1, 0x78563412U)
+  let data1 = formatted_dict_fixture_input()
+  let data2 = b"plain frame before second dict"
+  let data3 = data1 + b"\nservice=search cluster=4"
+  let combined = @zstd.compress(data1, dict=dict1) +
+    @zstd.compress(data2) +
+    @zstd.compress(data3, dict=dict2)
+  let d = @zstd.Inflater::new_with_dictionaries([dict1, dict2])
+  let buf = @blit.Buffer::new()
+  d.src(combined[:])
+  loop d.decode() {
+    Await => fail("unexpected Await with full input")
+    Data(chunk) => {
+      buf.write_bytesview(chunk)
+      continue d.decode()
+    }
+    End => break
+    Error(e) => raise e
+  }
+  assert_eq(buf.to_bytes(), data1 + data2 + data3)
+}
+
+///|
+test "zstd can select raw dictionaries per concatenated frame order" {
+  let dict1 = raw_dict_fixture()
+  let dict2 = Bytes::makei(dict1.length(), fn(i) {
+    if i % 17 < 9 {
+      b'R'
+    } else {
+      (97 + i * 13 % 26).to_byte()
+    }
+  })
+  let data1 = dict1 + b" first raw dictionary payload"
+  let plain = b"plain frame between raw dictionary frames"
+  let data2 = dict2 + b" second raw dictionary payload"
+  let combined = @zstd.compress(data1, dict=dict1) +
+    @zstd.compress(plain) +
+    @zstd.compress(data2, dict=dict2)
+  let decoded = @zstd.decompress_with_dictionaries(combined, [dict1, b"", dict2])
+  assert_eq(decoded, data1 + plain + data2)
+}
+
+///|
+test "zstd concatenated raw-dictionary decode fails when a later slot is missing" {
+  let dict1 = raw_dict_fixture()
+  let dict2 = Bytes::makei(dict1.length(), fn(i) {
+    if i % 19 < 8 {
+      b'S'
+    } else {
+      (65 + i * 11 % 26).to_byte()
+    }
+  })
+  let combined = @zstd.compress(dict1 + b" first raw payload", dict=dict1) +
+    @zstd.compress(b"plain middle frame") +
+    @zstd.compress(dict2 + b" second raw payload", dict=dict2)
+  let result = (try Result::Ok(@zstd.decompress_with_dictionaries(combined, [dict1, b""])) catch { e => Result::Err(e) })
+  match result {
+    Err(@zstd.ZstdError::InvalidHeader(_)) => ()
+    _ => fail("expected later raw-dictionary slot exhaustion to fail")
+  }
+}
+
+///|
+test "zstd lone empty raw placeholder fails selection for later raw frame" {
+  let dict = raw_dict_fixture()
+  let plain = b"plain frame before raw dictionary frame"
+  let raw = dict + b" raw payload that requires the dictionary"
+  let combined = @zstd.compress(plain) + @zstd.compress(raw, dict~)
+  let result = (try Result::Ok(@zstd.decompress_with_dictionaries(combined, [b""])) catch { e => Result::Err(e) })
+  match result {
+    Err(@zstd.ZstdError::InvalidHeader(_)) => ()
+    _ => fail("expected lone empty raw placeholder to exhaust before raw frame")
+  }
+}
+
+///|
+test "streaming zstd inflater can select raw dictionaries per concatenated frame order" {
+  let dict1 = raw_dict_fixture()
+  let dict2 = Bytes::makei(dict1.length(), fn(i) {
+    if i % 23 < 11 {
+      b'T'
+    } else {
+      (48 + i * 7 % 10).to_byte()
+    }
+  })
+  let data1 = dict1 + b" streaming raw payload one"
+  let plain = b"plain frame between streaming raw frames"
+  let data2 = dict2 + b" streaming raw payload two"
+  let combined = @zstd.compress(data1, dict=dict1) +
+    @zstd.compress(plain) +
+    @zstd.compress(data2, dict=dict2)
+  let d = @zstd.Inflater::new_with_dictionaries([dict1, b"", dict2])
+  let buf = @blit.Buffer::new()
+  d.src(combined[:])
+  loop d.decode() {
+    Await => fail("unexpected Await with full input")
+    Data(chunk) => {
+      buf.write_bytesview(chunk)
+      continue d.decode()
+    }
+    End => break
+    Error(e) => raise e
+  }
+  assert_eq(buf.to_bytes(), data1 + plain + data2)
+}
+
+///|
+test "streaming zstd lone empty raw placeholder fails before later raw frame decode" {
+  let dict = raw_dict_fixture()
+  let plain = b"plain frame before raw dictionary frame"
+  let raw = dict + b" streaming raw payload that requires the dictionary"
+  let combined = @zstd.compress(plain) + @zstd.compress(raw, dict~)
+  let d = @zstd.Inflater::new_with_dictionaries([b""])
+  let buf = @blit.Buffer::new()
+  d.src(combined[:])
+  loop d.decode() {
+    Await => fail("unexpected Await with full input")
+    Data(chunk) => {
+      buf.write_bytesview(chunk)
+      continue d.decode()
+    }
+    End => fail("expected raw-dictionary slot exhaustion")
+    Error(@zstd.ZstdError::InvalidHeader(_)) => break
+    Error(e) => fail("expected InvalidHeader for raw slot exhaustion, got \{Repr(e)}")
+  }
+  assert_eq(buf.to_bytes(), plain)
+}
+
+///|
+test "signal protocol: inflater emits before checksum" {
+  let data = Bytes::makei(4096, fn(i) { (i * 17 % 251).to_byte() })
+  let compressed = @zstd.compress(data)
+  let d = @zstd.Inflater::new()
+  let buf = @blit.Buffer::new()
+  d.src(compressed[:compressed.length() - 4])
+  let mut saw_data = false
+  loop d.decode() {
+    Await => break
+    Data(chunk) => {
+      saw_data = true
+      buf.write_bytesview(chunk)
+      continue d.decode()
+    }
+    End => fail("expected checksum bytes to still be outstanding")
+    Error(e) => raise e
+  }
+  assert_true(saw_data)
+  d.src(compressed[compressed.length() - 4:])
+  loop d.decode() {
+    Await => fail("expected checksum completion after trailer")
+    Data(chunk) => {
+      buf.write_bytesview(chunk)
+      continue d.decode()
+    }
+    End => break
+    Error(e) => raise e
+  }
+  assert_eq(buf.to_bytes(), data)
+}
+
+///|
+test "round-trip: fast mode still compresses repeated data" {
+  let buf = @blit.Buffer::new()
+  for _ in 0..<256 {
+    buf.write_bytes(b"fast mode repeated payload ")
+  }
+  let data = buf.to_bytes()
+  let compressed = @zstd.compress(data, level=Fast)
+  let decompressed = @zstd.decompress(compressed)
+  assert_eq(decompressed, data)
+  assert_true(compressed.length() < data.length())
+}
+
+///|
+test "signal protocol: deflater emits before finish on full block" {
+  let full_block = 131072
+  let data = Bytes::makei(full_block + 4096, fn(i) { (i * 11 % 251).to_byte() })
+  let d = @zstd.Deflater::new()
+  let out = @blit.Buffer::new()
+  match d.encode(Some(data[:full_block])) {
+    Data(chunk) => {
+      assert_true(chunk.length() > 0)
+      out.write_bytesview(chunk)
+    }
+    Ok =>
+      fail("expected compressed output once a full zstd block was available")
+    End => fail("unexpected end")
+    Error(e) => raise e
+  }
+  match d.encode(Some(data[full_block:])) {
+    Data(chunk) => out.write_bytesview(chunk)
+    Ok | End => ()
+    Error(e) => raise e
+  }
+  match d.encode(None) {
+    Data(chunk) => out.write_bytesview(chunk)
+    Ok | End => ()
+    Error(e) => raise e
+  }
+  let compressed = out.to_bytes()
+  let decompressed = @zstd.decompress(compressed)
+  assert_eq(decompressed, data)
+}
+
+///|
+fn zstd_level_fixture() -> Bytes {
+  let buf = @blit.Buffer::new()
+  for _ in 0..<128 {
+    buf.write_bytes(b"aaaaabaaaaacaaaaadaaaaefaaaaabaaaaacaaaaadaaaaef")
+    buf.write_bytes(b"token-1 route=/v1/item/123 status=200 cluster=alpha ")
+    buf.write_bytes(b"aaaaabaaaaacaaaaadaaaaefaaaaabaaaaacaaaaadaaaaeg")
+  }
+  buf.to_bytes()
+}
+
+///|
+fn zstd_search_depth_fixture() -> Bytes {
+  let long = b"ABCDabcdefghijklmnopqrstuvwxyz0123456789"
+  let short = b"ABCDzzzz"
+  let buf = @blit.Buffer::new()
+  for i in 0..<96 {
+    buf.write_bytes(long)
+    buf.write_byte((i % 251).to_byte())
+    buf.write_bytes(b"--")
+    buf.write_bytes(short)
+    buf.write_byte((i * 17 % 251).to_byte())
+    buf.write_bytes(b"++")
+    buf.write_bytes(long)
+    buf.write_byte((i % 13).to_byte())
+    buf.write_bytes(b"\n")
+  }
+  buf.to_bytes()
+}
+
+///|
+fn zstd_archive_depth_fixture() -> Bytes {
+  let long = b"ABCDabcdefghijklmnopqrstuvwxyz0123456789--long-match-anchor--"
+  let buf = @blit.Buffer::new()
+  buf.write_bytes(long)
+  for i in 0..<23 {
+    buf.write_bytes(b"ABCDzzzz")
+    buf.write_byte((i * 29 % 251).to_byte())
+    buf.write_bytes(b"|")
+  }
+  buf.write_bytes(long)
+  buf.to_bytes()
+}
+
+///|
+fn zstd_archive_repeat_fixture() -> Bytes {
+  let buf = @blit.Buffer::new()
+  for i in 0..<16 {
+    buf.write_bytes(zstd_archive_depth_fixture())
+    buf.write_byte((i * 17 % 251).to_byte())
+    buf.write_bytes(b"\n")
+  }
+  buf.to_bytes()
+}
+
+///|
+test "compression levels change zstd one-shot output" {
+  let data = zstd_level_fixture()
+  let fast = @zstd.compress(data, level=Fast)
+  let best = @zstd.compress(data, level=Best)
+  assert_eq(@zstd.decompress(fast), data)
+  assert_eq(@zstd.decompress(best), data)
+  assert_true(best.length() <= fast.length())
+}
+
+///|
+test "signal protocol: zstd deflater honors compression level" {
+  let data = zstd_level_fixture()
+  let fast = @zstd.Deflater::new(level=Fast)
+  let best = @zstd.Deflater::new(level=Best)
+  let fast_buf = @blit.Buffer::new()
+  let best_buf = @blit.Buffer::new()
+  match fast.encode(Some(data[:])) {
+    Data(out) => fast_buf.write_bytesview(out)
+    Ok | End => ()
+    Error(e) => raise e
+  }
+  loop fast.encode(None) {
+    Data(out) => {
+      fast_buf.write_bytesview(out)
+      continue fast.encode(None)
+    }
+    End => break
+    Ok => ()
+    Error(e) => raise e
+  }
+  match best.encode(Some(data[:])) {
+    Data(out) => best_buf.write_bytesview(out)
+    Ok | End => ()
+    Error(e) => raise e
+  }
+  loop best.encode(None) {
+    Data(out) => {
+      best_buf.write_bytesview(out)
+      continue best.encode(None)
+    }
+    End => break
+    Ok => ()
+    Error(e) => raise e
+  }
+  let fast_out = fast_buf.to_bytes()
+  let best_out = best_buf.to_bytes()
+  assert_eq(@zstd.decompress(fast_out), data)
+  assert_eq(@zstd.decompress(best_out), data)
+  assert_true(best_out.length() <= fast_out.length())
+}
+
+///|
+test "higher zstd levels search deeper hash history" {
+  let data = zstd_search_depth_fixture()
+  let fast = @zstd.compress(data, level=Fast)
+  let best = @zstd.compress(data, level=Best)
+  assert_eq(@zstd.decompress(fast), data)
+  assert_eq(@zstd.decompress(best), data)
+  assert_true(best.length() < fast.length())
+}
+
+///|
+test "higher explicit zstd levels use broader search tiers" {
+  let data = zstd_search_depth_fixture()
+  let best = @zstd.compress(data, level=Best)
+  let deeper = @zstd.compress(data, level=Level(22))
+  assert_eq(@zstd.decompress(best), data)
+  assert_eq(@zstd.decompress(deeper), data)
+  assert_true(deeper.length() <= best.length())
+}
+
+///|
+test "best zstd level now uses a shallow archive tier" {
+  let data = zstd_archive_repeat_fixture()
+  let best = @zstd.compress(data, level=Best)
+  let no_archive = @zstd.compress(data, level=Level(19))
+  assert_eq(@zstd.decompress(best), data)
+  assert_eq(@zstd.decompress(no_archive), data)
+  assert_true(best.length() < no_archive.length())
+}
+
+///|
+test "mid-deep zstd archive tiers beat the no-archive tier on repeated anchors" {
+  let data = zstd_archive_repeat_fixture()
+  let no_archive = @zstd.compress(data, level=Level(19))
+  let shallow_archive = @zstd.compress(data, level=Level(22))
+  let medium_archive = @zstd.compress(data, level=Level(24))
+  assert_eq(@zstd.decompress(no_archive), data)
+  assert_eq(@zstd.decompress(shallow_archive), data)
+  assert_eq(@zstd.decompress(medium_archive), data)
+  assert_true(shallow_archive.length() < no_archive.length())
+  assert_true(medium_archive.length() <= shallow_archive.length())
+}

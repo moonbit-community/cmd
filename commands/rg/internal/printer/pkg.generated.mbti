@@ -1,0 +1,290 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/rg/internal/printer"
+
+import {
+  "cli/rg/internal/matcher",
+  "cli/rg/internal/searcher",
+  "cli/rg/internal/termcolor",
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn default_color_specs() -> Array[UserColorSpec]
+
+pub fn duration_as_secs_f64(Int64) -> Double
+
+pub fn format_duration_human(Int64) -> String
+
+pub fn format_fixed(Double, Int) -> String
+
+pub fn hyperlink_aliases() -> Array[HyperlinkAlias]
+
+pub fn write_duration_json(JsonWriter, Int64, sorted_keys? : Bool) -> Unit
+
+// Errors
+pub(all) suberror ColorError {
+  UnrecognizedOutType(String)
+  UnrecognizedSpecType(String)
+  UnrecognizedColor(String, String)
+  UnrecognizedStyle(String)
+  InvalidFormat(String)
+} derive(Eq, @debug.Debug)
+pub fn ColorError::to_string(Self) -> String
+pub impl Show for ColorError
+
+pub(all) suberror HyperlinkFormatError {
+  HyperlinkFormatError(HyperlinkFormatErrorKind)
+} derive(Eq, @debug.Debug)
+pub fn HyperlinkFormatError::kind(Self) -> HyperlinkFormatErrorKind
+pub fn HyperlinkFormatError::to_string(Self) -> String
+pub impl Show for HyperlinkFormatError
+
+pub(all) suberror PrinterError {
+  PrinterError(String)
+} derive(@debug.Debug)
+pub impl Show for PrinterError
+
+// Types and methods
+pub struct ColorSpecs {
+  // private fields
+} derive(Eq, @debug.Debug)
+pub fn ColorSpecs::column(Self) -> @termcolor.ColorSpec
+pub fn ColorSpecs::default() -> Self
+pub fn ColorSpecs::default_with_color() -> Self
+pub fn ColorSpecs::highlight(Self) -> @termcolor.ColorSpec
+pub fn ColorSpecs::line(Self) -> @termcolor.ColorSpec
+pub fn ColorSpecs::matched(Self) -> @termcolor.ColorSpec
+pub fn ColorSpecs::new(ArrayView[UserColorSpec]) -> Self
+pub fn ColorSpecs::path(Self) -> @termcolor.ColorSpec
+
+pub struct HyperlinkAlias {
+  // private fields
+} derive(@debug.Debug)
+pub fn HyperlinkAlias::description(Self) -> String
+pub fn HyperlinkAlias::display_priority(Self) -> Int?
+pub fn HyperlinkAlias::format(Self) -> String
+pub fn HyperlinkAlias::name(Self) -> String
+
+pub struct HyperlinkConfig {
+  // private fields
+}
+pub fn HyperlinkConfig::default() -> Self
+pub fn HyperlinkConfig::environment(Self) -> HyperlinkEnvironment
+pub fn HyperlinkConfig::format(Self) -> HyperlinkFormat
+pub fn HyperlinkConfig::new(HyperlinkEnvironment, HyperlinkFormat) -> Self
+
+pub struct HyperlinkEnvironment {
+  // private fields
+}
+pub fn HyperlinkEnvironment::canonicalize(Self, (async (String) -> String?)?) -> Self
+pub fn HyperlinkEnvironment::get_host(Self) -> String?
+pub fn HyperlinkEnvironment::get_wsl_prefix(Self) -> String?
+pub fn HyperlinkEnvironment::host(Self, String?) -> Self
+pub fn HyperlinkEnvironment::new() -> Self
+pub fn HyperlinkEnvironment::wsl_prefix(Self, String?) -> Self
+
+pub struct HyperlinkFormat {
+  // private fields
+} derive(Eq, @debug.Debug)
+pub fn HyperlinkFormat::empty() -> Self
+pub fn HyperlinkFormat::into_config(Self, HyperlinkEnvironment) -> HyperlinkConfig
+pub fn HyperlinkFormat::is_empty(Self) -> Bool
+pub fn HyperlinkFormat::is_line_dependent(Self) -> Bool
+pub fn HyperlinkFormat::parse(String) -> Self raise HyperlinkFormatError
+pub fn HyperlinkFormat::to_string(Self) -> String
+pub impl Show for HyperlinkFormat
+
+pub(all) enum HyperlinkFormatErrorKind {
+  NoVariables
+  NoPathVariable
+  NoLineVariable
+  InvalidVariable(String)
+  InvalidScheme
+  InvalidCloseVariable
+  UnclosedVariable
+} derive(Eq, @debug.Debug)
+
+pub struct JSON {
+  // private fields
+}
+pub fn JSON::get_mut(Self) -> &@termcolor.WriteColor
+pub fn JSON::has_written(Self) -> Bool
+pub fn JSON::new(&@termcolor.Write) -> Self
+pub fn JSON::sink(Self, &@matcher.Matcher) -> JSONSink
+pub fn JSON::sink_with_path(Self, &@matcher.Matcher, String) -> JSONSink
+
+pub struct JSONBuilder {
+  // private fields
+}
+pub fn JSONBuilder::always_begin_end(Self, Bool) -> Self
+pub fn JSONBuilder::build(Self, &@termcolor.Write) -> JSON
+pub fn JSONBuilder::clock(Self, () -> Int64) -> Self
+pub fn JSONBuilder::new() -> Self
+pub fn JSONBuilder::pretty(Self, Bool) -> Self
+pub fn JSONBuilder::replacement(Self, Bytes?) -> Self
+
+pub struct JSONSink {
+  // private fields
+}
+pub fn JSONSink::binary_byte_offset(Self) -> Int64?
+pub fn JSONSink::has_match(Self) -> Bool
+pub fn JSONSink::match_count(Self) -> Int64
+pub fn JSONSink::stats(Self) -> Stats
+pub impl @searcher.Sink for JSONSink
+
+pub struct JsonWriter {
+  // private fields
+}
+pub fn JsonWriter::begin_array(Self) -> Unit
+pub fn JsonWriter::begin_object(Self) -> Unit
+pub fn JsonWriter::element(Self) -> Unit
+pub fn JsonWriter::end_array(Self) -> Unit
+pub fn JsonWriter::end_object(Self) -> Unit
+pub fn JsonWriter::end_value(Self) -> Unit
+pub fn JsonWriter::key(Self, String) -> Unit
+pub fn JsonWriter::new(@termcolor.ByteVec, pretty? : Bool) -> Self
+pub fn JsonWriter::null(Self) -> Unit
+pub fn JsonWriter::uint64(Self, UInt64) -> Unit
+pub fn JsonWriter::write_escaped_string(Self, String) -> Unit
+pub fn JsonWriter::write_escaped_utf8(Self, FixedArray[Byte], Int, Int) -> Unit
+
+pub struct PathPrinter {
+  // private fields
+}
+pub fn PathPrinter::get_mut(Self) -> &@termcolor.WriteColor
+pub async fn PathPrinter::write(Self, String) -> Unit
+
+pub struct PathPrinterBuilder {
+  // private fields
+}
+pub fn PathPrinterBuilder::build(Self, &@termcolor.WriteColor) -> PathPrinter
+pub fn PathPrinterBuilder::color_specs(Self, ColorSpecs) -> Self
+pub fn PathPrinterBuilder::hyperlink(Self, HyperlinkConfig) -> Self
+pub fn PathPrinterBuilder::new() -> Self
+pub fn PathPrinterBuilder::separator(Self, Byte?) -> Self
+pub fn PathPrinterBuilder::terminator(Self, Byte) -> Self
+
+pub struct Standard {
+  // private fields
+}
+pub fn Standard::get_mut(Self) -> &@termcolor.WriteColor
+pub fn Standard::has_written(Self) -> Bool
+pub fn Standard::new(&@termcolor.WriteColor) -> Self
+pub fn Standard::new_no_color(&@termcolor.Write) -> Self
+pub fn Standard::sink(Self, &@matcher.Matcher) -> StandardSink
+pub fn Standard::sink_with_path(Self, &@matcher.Matcher, String) -> StandardSink
+
+pub struct StandardBuilder {
+  // private fields
+}
+pub fn StandardBuilder::build(Self, &@termcolor.WriteColor) -> Standard
+pub fn StandardBuilder::build_no_color(Self, &@termcolor.Write) -> Standard
+pub fn StandardBuilder::byte_offset(Self, Bool) -> Self
+pub fn StandardBuilder::clock(Self, () -> Int64) -> Self
+pub fn StandardBuilder::color_specs(Self, ColorSpecs) -> Self
+pub fn StandardBuilder::column(Self, Bool) -> Self
+pub fn StandardBuilder::heading(Self, Bool) -> Self
+pub fn StandardBuilder::hyperlink(Self, HyperlinkConfig) -> Self
+pub fn StandardBuilder::max_columns(Self, Int64?) -> Self
+pub fn StandardBuilder::max_columns_preview(Self, Bool) -> Self
+pub fn StandardBuilder::new() -> Self
+pub fn StandardBuilder::only_matching(Self, Bool) -> Self
+pub fn StandardBuilder::path(Self, Bool) -> Self
+pub fn StandardBuilder::path_terminator(Self, Byte?) -> Self
+pub fn StandardBuilder::per_match(Self, Bool) -> Self
+pub fn StandardBuilder::per_match_one_line(Self, Bool) -> Self
+pub fn StandardBuilder::replacement(Self, Bytes?) -> Self
+pub fn StandardBuilder::separator_context(Self, Bytes?) -> Self
+pub fn StandardBuilder::separator_field_context(Self, Bytes) -> Self
+pub fn StandardBuilder::separator_field_match(Self, Bytes) -> Self
+pub fn StandardBuilder::separator_path(Self, Byte?) -> Self
+pub fn StandardBuilder::separator_search(Self, Bytes?) -> Self
+pub fn StandardBuilder::stats(Self, Bool) -> Self
+pub fn StandardBuilder::trim_ascii(Self, Bool) -> Self
+
+pub struct StandardSink {
+  // private fields
+}
+pub fn StandardSink::binary_byte_offset(Self) -> Int64?
+pub fn StandardSink::has_match(Self) -> Bool
+pub fn StandardSink::match_count(Self) -> Int64
+pub fn StandardSink::stats(Self) -> Stats?
+pub impl @searcher.Sink for StandardSink
+
+pub struct Stats {
+  // private fields
+} derive(Eq, @debug.Debug)
+pub fn Stats::add_bytes_printed(Self, Int64) -> Unit
+pub fn Stats::add_bytes_searched(Self, Int64) -> Unit
+pub fn Stats::add_elapsed(Self, Int64) -> Unit
+pub fn Stats::add_matched_lines(Self, Int64) -> Unit
+pub fn Stats::add_matches(Self, Int64) -> Unit
+pub fn Stats::add_searches(Self, Int64) -> Unit
+pub fn Stats::add_searches_with_match(Self, Int64) -> Unit
+pub fn Stats::add_stats(Self, Self) -> Unit
+pub fn Stats::bytes_printed(Self) -> Int64
+pub fn Stats::bytes_searched(Self) -> Int64
+pub fn Stats::clone(Self) -> Self
+pub fn Stats::elapsed(Self) -> Int64
+pub fn Stats::matched_lines(Self) -> Int64
+pub fn Stats::matches(Self) -> Int64
+pub fn Stats::new() -> Self
+pub fn Stats::searches(Self) -> Int64
+pub fn Stats::searches_with_match(Self) -> Int64
+pub fn Stats::write_json(Self, JsonWriter, sorted_keys? : Bool) -> Unit
+pub impl Add for Stats
+
+pub struct Summary {
+  // private fields
+}
+pub fn Summary::get_mut(Self) -> &@termcolor.WriteColor
+pub fn Summary::has_written(Self) -> Bool
+pub fn Summary::new(&@termcolor.WriteColor) -> Self
+pub fn Summary::new_no_color(&@termcolor.Write) -> Self
+pub fn Summary::sink(Self, &@matcher.Matcher) -> SummarySink
+pub fn Summary::sink_with_path(Self, &@matcher.Matcher, String) -> SummarySink
+
+pub struct SummaryBuilder {
+  // private fields
+}
+pub fn SummaryBuilder::build(Self, &@termcolor.WriteColor) -> Summary
+pub fn SummaryBuilder::build_no_color(Self, &@termcolor.Write) -> Summary
+pub fn SummaryBuilder::clock(Self, () -> Int64) -> Self
+pub fn SummaryBuilder::color_specs(Self, ColorSpecs) -> Self
+pub fn SummaryBuilder::exclude_zero(Self, Bool) -> Self
+pub fn SummaryBuilder::hyperlink(Self, HyperlinkConfig) -> Self
+pub fn SummaryBuilder::kind(Self, SummaryKind) -> Self
+pub fn SummaryBuilder::new() -> Self
+pub fn SummaryBuilder::path(Self, Bool) -> Self
+pub fn SummaryBuilder::path_terminator(Self, Byte?) -> Self
+pub fn SummaryBuilder::separator_field(Self, Bytes) -> Self
+pub fn SummaryBuilder::separator_path(Self, Byte?) -> Self
+pub fn SummaryBuilder::stats(Self, Bool) -> Self
+
+pub(all) enum SummaryKind {
+  Count
+  CountMatches
+  PathWithMatch
+  PathWithoutMatch
+  QuietWithMatch
+  QuietWithoutMatch
+} derive(Eq, @debug.Debug)
+
+pub struct SummarySink {
+  // private fields
+}
+pub fn SummarySink::binary_byte_offset(Self) -> Int64?
+pub fn SummarySink::has_match(Self) -> Bool
+pub fn SummarySink::match_count(Self) -> Int64
+pub fn SummarySink::stats(Self) -> Stats?
+pub impl @searcher.Sink for SummarySink
+
+pub struct UserColorSpec {
+  // private fields
+} derive(Eq, @debug.Debug)
+pub fn UserColorSpec::parse(String) -> Self raise ColorError
+pub fn UserColorSpec::to_color_spec(Self) -> @termcolor.ColorSpec
+
+// Type aliases
+
+// Traits

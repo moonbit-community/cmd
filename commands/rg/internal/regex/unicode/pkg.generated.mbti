@@ -1,0 +1,44 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/rg/internal/regex/unicode"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn class(ClassQuery) -> Array[(Int, Int)] raise UnicodeError
+
+pub fn each_fold_in_range(Int, Int, (Int, ArrayView[Int]) -> Unit) -> Unit
+
+pub fn fold_overlaps(Int, Int) -> Bool
+
+pub fn is_uppercase(Int) -> Bool
+
+pub fn is_word_character(Int) -> Bool
+
+pub fn perl_digit() -> Array[(Int, Int)]
+
+pub fn perl_space() -> Array[(Int, Int)]
+
+pub fn perl_word() -> Array[(Int, Int)]
+
+pub fn simple_fold(Int) -> Array[Int]
+
+pub fn symbolic_name_normalize(String) -> String
+
+// Errors
+pub(all) suberror UnicodeError {
+  PropertyNotFound
+  PropertyValueNotFound
+} derive(Eq, @debug.Debug)
+
+// Types and methods
+pub(all) enum ClassQuery {
+  OneLetter(Char)
+  Binary(String)
+  ByValue(String, String)
+}
+
+// Type aliases
+
+// Traits

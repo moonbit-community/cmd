@@ -1,4 +1,5 @@
 import {
+  "moonbitlang/core/json",
   "mooxCLI/cmd-tests/registry",
   "mooxCLI/cmd-tests/testkit",
   "moonbitlang/async",

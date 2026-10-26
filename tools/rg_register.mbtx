@@ -1,0 +1,64 @@
+----
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/json",
+}
+----
+
+///|
+fn object(value : Json) -> Map[String, Json] {
+  guard value is Object(fields) else { abort("expected object") }
+  fields
+}
+
+///|
+fn array(value : Json) -> Array[Json] {
+  guard value is Array(items) else { abort("expected array") }
+  items
+}
+
+///|
+async fn save(path : String, value : Json) -> Unit {
+  @fs.write_file(path, value.stringify(indent=2) + "\n")
+}
+
+///|
+async fn main {
+  let cases = array(object(@json.parse(@fs.read_file("tests/cases/rg.json").text()))["cases"])
+  let index_path = "tests/registry/registry.json"
+  let index = object(@json.parse(@fs.read_file(index_path).text()))
+  let entries = array(index["entries"]).filter(row => object(row)["command"] != "rg")
+  for fixture in cases {
+    let fields = object(fixture)
+    let id = fields["id"]
+    guard id is String(id) else { abort("case id required") }
+    entries.push({ "behavior_id": "case:" + id, "command": "rg",
+      "status": if id.contains("boundary") { "boundary" } else { "supported" },
+      "implementation": "json-case", "source": "tests/cases/rg.json", "case_id": id,
+      "aliases": [], "platforms": [],
+      "oracle_profile": if fields.get("oracle") == Some(true.to_json()) { "pinned-oracle-v1" } else { "" } })
+  }
+  entries.push({ "behavior_id": "metadata:rg", "command": "rg", "status": "supported",
+    "implementation": "metadata-probe", "source": "tests/runner/metadata.mbt", "case_id": "",
+    "aliases": [], "platforms": [], "oracle_profile": "" })
+  index["entries"] = entries.to_json()
+  let releases = array(index["release_commands"]).filter(row => object(row)["name"] != "rg")
+  releases.push({ "name": "rg", "package_name": "cli/rg", "compare_profile": "ripgrep",
+    "supported_options": ["help", "version", "regexp", "fixed-strings", "ignore-case", "glob", "json", "pre"],
+    "policy_sensitive": true, "releasable": true, "case_ids": cases.map(row => object(row)["id"]) })
+  index["release_commands"] = releases.to_json()
+  save(index_path, index.to_json())
+  let manifest_path = "tests/fixtures/runner/cases.json"
+  let manifest = object(@json.parse(@fs.read_file(manifest_path).text()))
+  let commands = array(manifest["commands"]).filter(row => object(row)["name"] != "rg")
+  commands.push({ "name": "rg", "baseline": "ripgrep-3fce3b5bb0236da2df6d99672afb8a719642eca7",
+    "status": "partial", "native": "workspace", "wasm": "workspace",
+    "capabilities": ["files", "explicit-stdin", "recursive-search", "user-preprocessor"] })
+  manifest["commands"] = commands.to_json()
+  let files = array(manifest["case_files"])
+  if !files.contains("../../cases/rg.json") { files.push("../../cases/rg.json") }
+  manifest["case_files"] = files.to_json()
+  save(manifest_path, manifest.to_json())
+  println("Registered rg contracts and candidate selection; published manifests untouched.")
+}

@@ -1,0 +1,23 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/rg/internal/osstr"
+
+// Values
+pub fn decode(BytesView) -> String
+
+pub fn encode(String) -> Bytes
+
+pub fn has_escapes(String) -> Bool
+
+pub fn is_white_space(Char) -> Bool
+
+pub fn to_lossy(String) -> String
+
+pub fn trim_white_space(String) -> String
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

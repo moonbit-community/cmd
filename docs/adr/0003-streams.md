@@ -13,6 +13,19 @@ pairing are retired. Dated Native observations retain their historical scope.
 
 ## Target and decision
 
+### rg migration candidate (2026-10-26)
+
+The rg module retains its reader/sink algorithms and makes actual reads, sink
+writes, directory advancement and stdout flushing asynchronous. It does not
+load ordinary files or accumulate search stdout as an async workaround. Existing
+multiline and sorted traversal retain their explicit larger storage paths.
+The `-z` adapter is deferred outside the workspace; no decoder/resource claim
+applies to the candidate. Unavailable stdin kind is an explicit status-2 search
+boundary, with explicit paths and `-` covered by portable contracts. Automatic
+terminal presentation chooses plain output; it is not reported as a successful
+terminal query. Lift these limits only after public APIs and three-host Wasm
+regressions exist. Evidence and remaining checks: [rg ledger](../rg/implementation.md).
+
 Preserve byte streams, final newlines and partial output. Set LC_ALL=C explicitly in differential fixtures; inherit caller locale in real commands. C-byte collation tests do not certify non-C behavior. Keep bounded sort and descriptor-follow tail as declared subsets.
 
 ## Alternatives and compatibility cost

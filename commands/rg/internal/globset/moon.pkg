@@ -1,0 +1,10 @@
+import {
+  "cli/rg/internal/osstr",
+  "cli/rg/internal/regex",
+  "cli/rg/internal/regex/syntax",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/debug",
+  "moonbitlang/core/cmp",
+}
+
+warnings = "-implicit_impl_as_method"

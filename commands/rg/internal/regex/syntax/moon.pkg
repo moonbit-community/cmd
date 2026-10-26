@@ -1,0 +1,6 @@
+import {
+  "cli/rg/internal/regex/unicode",
+  "moonbitlang/core/encoding/utf8",
+}
+
+warnings = "-implicit_impl_as_method"

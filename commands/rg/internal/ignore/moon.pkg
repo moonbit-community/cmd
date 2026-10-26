@@ -1,0 +1,21 @@
+import {
+  "cli/rg/internal/globset",
+  "cli/rg/internal/regex",
+  "cli/rg/internal/regex/syntax",
+  "cli/rg/internal/sys",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/debug",
+}
+
+supported_targets = "native+wasm"
+
+warnings = "-implicit_impl_as_method"
+
+import {
+  "moonbitlang/async",
+} for "test"
+
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+} for "wbtest"

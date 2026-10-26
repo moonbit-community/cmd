@@ -1,0 +1,24 @@
+import {
+  "cli/rg/internal/matcher",
+  "cli/rg/internal/searcher",
+  "cli/rg/internal/termcolor",
+  "cli/rg/internal/osstr",
+  "cli/rg/internal/regex/automata",
+  "cli/rg/internal/regex/syntax",
+  "moonbitlang/core/buffer",
+  "moonbitlang/core/bigint",
+}
+
+import {
+  "moonbitlang/async",
+  "cli/rg/internal/grep_regex",
+  "cli/rg/internal/osstr",
+  "moonbitlang/core/encoding/utf8",
+} for "test"
+
+import {
+  "moonbitlang/async",
+  "moonbitlang/core/encoding/utf8",
+} for "wbtest"
+
+warnings = "-implicit_impl_as_method"

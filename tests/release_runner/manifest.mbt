@@ -56,10 +56,16 @@ async fn generate_candidate() -> Unit {
     "case_ids": ids,
     "extra_cases": [],
   }
+  let source : Json = @json.parse(
+    @fs.read_file("tests/fixtures/runner/cases.json").text(),
+  )
+  guard source is Object(fields) && fields.get("case_files") is Some(case_files) else {
+    fail("candidate corpus requires the canonical case-file index")
+  }
   let corpus : Json = {
     "schema": 2,
-    "cases": cases,
-    "case_files": [],
+    "cases": [],
+    "case_files": case_files,
     "case_overrides": [],
   }
   @fs.write_file(

@@ -1,0 +1,26 @@
+----
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+}
+----
+
+///|
+async fn normalize(directory : String) -> Unit {
+  for name in @fs.readdir(directory, include_hidden=false) {
+    if name == "_build" || name == "target" { continue }
+    let path = directory + "/" + name
+    if @fs.kind(path) is Directory {
+      normalize(path)
+    } else if name == "pkg.generated.mbti" {
+      // CI 0.10.15 spells the 32-bit aliases Int/UInt. Local 0.10.17 preserves
+      // explicit Int32/UInt32 spelling; the types and public signatures agree.
+      let text = @fs.read_file(path).text()
+        .replace_all(old="Int32", new="Int")
+      @fs.write_file(path, text)
+    }
+  }
+}
+
+///|
+async fn main { normalize("commands/rg") }

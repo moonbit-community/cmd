@@ -1,0 +1,153 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/rg/internal/termcolor"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+
+// Errors
+pub(all) suberror ColorChoiceParseError {
+  ColorChoiceParseError(String)
+} derive(Eq, @debug.Debug)
+pub fn ColorChoiceParseError::to_string(Self) -> String
+pub impl Show for ColorChoiceParseError
+
+pub(all) suberror ParseColorError {
+  ParseColorError(kind~ : ParseColorErrorKind, given~ : String)
+} derive(Eq, @debug.Debug)
+pub fn ParseColorError::invalid(Self) -> String
+pub fn ParseColorError::kind(Self) -> ParseColorErrorKind
+pub fn ParseColorError::to_string(Self) -> String
+pub impl Show for ParseColorError
+
+// Types and methods
+pub struct Ansi {
+  // private fields
+}
+pub fn Ansi::get_ref(Self) -> &Write
+pub fn Ansi::new(&Write) -> Self
+pub impl Write for Ansi
+pub impl WriteColor for Ansi
+
+pub struct Buffer {
+  // private fields
+}
+pub fn Buffer::ansi() -> Self
+pub fn Buffer::as_vec(Self) -> ByteVec
+pub fn Buffer::clear(Self) -> Unit
+pub fn Buffer::is_empty(Self) -> Bool
+pub fn Buffer::len(Self) -> Int
+pub fn Buffer::no_color() -> Self
+pub fn Buffer::to_bytes(Self) -> Bytes
+pub impl Write for Buffer
+pub impl WriteColor for Buffer
+
+pub struct ByteVec {
+  // private fields
+}
+#alias("_[_]")
+pub fn ByteVec::at(Self, Int) -> Byte
+pub fn ByteVec::clear(Self) -> Unit
+pub fn ByteVec::extend_bytes(Self, BytesView) -> Unit
+pub fn ByteVec::extend_slice(Self, FixedArray[Byte], Int, Int) -> Unit
+pub fn ByteVec::extend_string(Self, StringView) -> Unit
+pub fn ByteVec::is_empty(Self) -> Bool
+pub fn ByteVec::length(Self) -> Int
+pub fn ByteVec::new(capacity? : Int) -> Self
+pub fn ByteVec::push(Self, Byte) -> Unit
+pub fn ByteVec::slice_to_bytes(Self, Int, Int) -> Bytes
+pub fn ByteVec::storage(Self) -> FixedArray[Byte]
+pub fn ByteVec::to_bytes(Self) -> Bytes
+pub fn ByteVec::truncate(Self, Int) -> Unit
+pub impl Write for ByteVec
+
+pub(all) enum Color {
+  Black
+  Blue
+  Green
+  Red
+  Cyan
+  Magenta
+  Yellow
+  White
+  Ansi256(Byte)
+  Rgb(Byte, Byte, Byte)
+} derive(Eq, @debug.Debug)
+pub fn Color::parse(String) -> Self raise ParseColorError
+
+pub(all) enum ColorChoice {
+  Always
+  AlwaysAnsi
+  Auto
+  Never
+} derive(Eq, @debug.Debug)
+pub fn ColorChoice::default() -> Self
+pub fn ColorChoice::parse(String) -> Self raise ColorChoiceParseError
+pub fn ColorChoice::should_attempt_color(Self, String?, Bool) -> Bool
+
+pub struct ColorSpec {
+  // private fields
+} derive(Eq, @debug.Debug)
+pub fn ColorSpec::bg(Self) -> Color?
+pub fn ColorSpec::bold(Self) -> Bool
+pub fn ColorSpec::clear(Self) -> Unit
+pub fn ColorSpec::clone(Self) -> Self
+pub fn ColorSpec::dimmed(Self) -> Bool
+pub fn ColorSpec::fg(Self) -> Color?
+pub fn ColorSpec::intense(Self) -> Bool
+pub fn ColorSpec::is_none(Self) -> Bool
+pub fn ColorSpec::italic(Self) -> Bool
+pub fn ColorSpec::new() -> Self
+pub fn ColorSpec::reset(Self) -> Bool
+pub fn ColorSpec::set_bg(Self, Color?) -> Self
+pub fn ColorSpec::set_bold(Self, Bool) -> Self
+pub fn ColorSpec::set_dimmed(Self, Bool) -> Self
+pub fn ColorSpec::set_fg(Self, Color?) -> Self
+pub fn ColorSpec::set_intense(Self, Bool) -> Self
+pub fn ColorSpec::set_italic(Self, Bool) -> Self
+pub fn ColorSpec::set_reset(Self, Bool) -> Self
+pub fn ColorSpec::set_strikethrough(Self, Bool) -> Self
+pub fn ColorSpec::set_underline(Self, Bool) -> Self
+pub fn ColorSpec::strikethrough(Self) -> Bool
+pub fn ColorSpec::underline(Self) -> Bool
+
+pub struct HyperlinkSpec {
+  uri : Bytes?
+} derive(Eq, @debug.Debug)
+pub fn HyperlinkSpec::close() -> Self
+pub fn HyperlinkSpec::open(Bytes) -> Self
+pub fn HyperlinkSpec::uri(Self) -> Bytes?
+
+pub struct NoColor {
+  // private fields
+}
+pub fn NoColor::get_ref(Self) -> &Write
+pub fn NoColor::new(&Write) -> Self
+pub impl Write for NoColor
+pub impl WriteColor for NoColor
+
+pub(all) enum ParseColorErrorKind {
+  InvalidName
+  InvalidAnsi256
+  InvalidRgb
+} derive(Eq, @debug.Debug)
+
+// Type aliases
+
+// Traits
+pub(open) trait Write {
+  async fn write_slice(Self, FixedArray[Byte], Int, Int) -> Unit
+  async fn write_bytes(Self, BytesView) -> Unit = _
+  async fn flush(Self) -> Unit = _
+}
+
+pub(open) trait WriteColor : Write {
+  fn supports_color(Self) -> Bool
+  async fn set_color(Self, ColorSpec) -> Unit
+  async fn reset(Self) -> Unit
+  fn is_synchronous(Self) -> Bool = _
+  async fn set_hyperlink(Self, HyperlinkSpec) -> Unit = _
+  fn supports_hyperlinks(Self) -> Bool = _
+}

@@ -8,6 +8,7 @@ pub fn expand_text(
     .replace_all(old="${WORK}", new=root)
     .replace_all(old="${PRINTF_CHILD}", new=option_child_source("printf"))
     .replace_all(old="${PRINTENV_CHILD}", new=option_child_source("printenv"))
+    .replace_all(old="${RG_PREPROCESSOR}", new=option_child_path())
   match http_base {
     Some(base) => expanded.replace_all(old="${HTTP_BASE}", new=base)
     None => expanded

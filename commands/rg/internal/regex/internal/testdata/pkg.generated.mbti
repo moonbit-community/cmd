@@ -1,0 +1,27 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/rg/internal/regex/internal/testdata"
+
+// Values
+pub let cases : Array[TestCase]
+
+// Errors
+
+// Types and methods
+pub(all) struct TestCase {
+  name : String
+  regex : String
+  haystack : Bytes
+  matches : Array[Array[(Int, Int)?]]
+  compiles : Bool
+  anchored : Bool
+  case_insensitive : Bool
+  unicode : Bool
+  utf8 : Bool
+  match_limit : Int?
+  bounds : (Int, Int)?
+  line_terminator : Int?
+}
+
+// Type aliases
+
+// Traits

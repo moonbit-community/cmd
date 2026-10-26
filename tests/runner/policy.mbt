@@ -220,12 +220,13 @@ fn admission_has_process_authority(manifest : String) -> Bool raise {
 ///|
 async fn check_admission(root : String, failures : Array[String]) -> Unit {
   let expected_restricted = [
-    "chmod", "curl", "env", "find", "make", "sh", "split", "timeout", "wget", "xargs",
+    "chmod", "curl", "env", "find", "make", "rg", "sh", "split", "timeout", "wget",
+    "xargs",
   ]
   let catalog = @cli.command_catalog()
   record(
-    catalog.length() == 79,
-    "catalog must contain exactly 79 commands",
+    catalog.length() == 80,
+    "catalog must contain exactly 80 commands",
     failures,
   )
   let mut default_count = 0
@@ -292,8 +293,8 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
     failures,
   )
   record(
-    restricted_count == 10,
-    "restricted tier must contain 10 commands",
+    restricted_count == 11,
+    "restricted tier must contain 11 commands",
     failures,
   )
   for name in expected_restricted {

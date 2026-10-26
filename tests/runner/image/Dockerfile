@@ -279,6 +279,29 @@ RUN curl --fail --location --retry 5 \
   && install -m 0755 "tree-${TREE_VERSION}/tree" /oracle/bin/tree \
   && rm -rf tree.tgz "tree-${TREE_VERSION}"
 
+FROM toolchain AS build-ripgrep
+
+ARG RUST_VERSION=1.97.1
+ARG RUST_SHA256=88f28fa9af20594179f85d6df67078dfd6fa93e2f6da5e1e9b0ac4997988ca4f
+ARG RIPGREP_VERSION=3fce3b5bb0236da2df6d99672afb8a719642eca7
+ARG RIPGREP_SHA256=e2c23831f1057a7e15575a72a64a900b317a86661561a786a36795717d602561
+
+RUN curl --fail --location --retry 5 \
+      "https://static.rust-lang.org/dist/rust-${RUST_VERSION}-x86_64-unknown-linux-gnu.tar.xz" \
+      --output rust.tar.xz \
+  && echo "${RUST_SHA256}  rust.tar.xz" | sha256sum --check --strict \
+  && tar --extract --file rust.tar.xz \
+  && "./rust-${RUST_VERSION}-x86_64-unknown-linux-gnu/install.sh" \
+      --prefix=/opt/rust --components=rustc,cargo,rust-std-x86_64-unknown-linux-gnu --disable-ldconfig \
+  && curl --fail --location --retry 5 \
+      "https://codeload.github.com/BurntSushi/ripgrep/tar.gz/${RIPGREP_VERSION}" \
+      --output ripgrep.tar.gz \
+  && echo "${RIPGREP_SHA256}  ripgrep.tar.gz" | sha256sum --check --strict \
+  && tar --extract --file ripgrep.tar.gz \
+  && cd "ripgrep-${RIPGREP_VERSION}" \
+  && PATH=/opt/rust/bin:$PATH cargo build --release --locked --bin rg \
+  && install -m 0755 target/release/rg /oracle/bin/rg
+
 FROM toolchain AS oracle
 
 COPY --from=build-coreutils /oracle/ /oracle/
@@ -297,6 +320,7 @@ COPY --from=build-gzip /oracle/ /oracle/
 COPY --from=build-util-linux /oracle/ /oracle/
 COPY --from=build-binutils /oracle/ /oracle/
 COPY --from=build-tree /oracle/ /oracle/
+COPY --from=build-ripgrep /oracle/ /oracle/
 
 RUN ln -s /oracle/bin/dash /oracle/bin/sh
 

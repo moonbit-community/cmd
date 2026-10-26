@@ -21,7 +21,7 @@ yes, completing functional coverage beyond metadata/availability for all 78
 commands. This release does not claim new
 cross-platform acceptance or completion of formal performance work.
 
-There are **79 local command modules and 78 published commands**.
+There are **80 local command modules and 78 published commands**.
 Published command versions are **37 at 0.2.2, 8 at 0.2.3, 3 at 0.2.0,
 2 at 0.2.1, 12 at 0.1.3, 10 at 0.1.2, 4 at 0.1.4, and one each at
 0.2.4 and 0.3.0**. Shared `cli/core` is **0.8.1**
@@ -396,10 +396,58 @@ The Windows smoke profile explicitly records POSIX-only permission and symbolic
 link cases as `skipped_platform`; Linux/macOS run those cases, and the pinned
 Linux oracle remains the strict filesystem authority.
 
+## rg candidate
+
+Updated: 2026-10-26. `cli/rg@0.1.0` and the catalog-only `cli/core@0.8.2` are
+unpublished candidates. Existing published command versions and dependencies
+are unchanged. Sources, tests and observed dispositions are indexed in
+[`docs/rg`](rg/implementation.md). The fixed source is rg.mbt 0.2.0
+`2727c25819b00ddd1a0e9b24f9cb683931d64edf`; the semantic oracle revision is
+`3fce3b5bb0236da2df6d99672afb8a719642eca7`.
+
+Explicit files/directories and `-` for stdin support the imported regex/Unicode,
+encoding, glob/ignore, context/replacement, counts, binary/text, multiline,
+sorting, JSON and user-selected preprocessing paths. Ordinary search uses
+incremental async readers and sinks. Multiline and path sorting retain their
+original materialization. Only command behavior is migrated; former library
+interfaces are private implementation details.
+
+Effective `-z`/`--search-zip` rejects with status 2 and no stdout. Compression
+development is explicitly deferred and preserved in
+[`experiments/rg-compression`](../experiments/rg-compression/README.md), outside
+the workspace. No compression-format acceptance or performance gate is claimed.
+`--no-search-zip` and a later `--pre` preserve the imported parser precedence.
+
+| Public capability gap | Executable behavior | Unlock condition |
+| --- | --- | --- |
+| stdin kind | No-path search exits 2, explaining `specify a path or -`; explicit path/stdin works; `--files` defaults to cwd | Released portable standard-input type API, tested on all three Wasm hosts |
+| terminal kind | Auto color/headings choose plain output; explicit color/heading remains available | Released public terminal query; do not infer terminal state from environment |
+| device/inode and stdout identity | `--one-file-system` exits 2; redirected-output same-file exclusion is unavailable | Public metadata/descriptor identity with hardlink and race-sensitive regressions |
+| readlink and raw paths | No raw-byte path or link-text API is advertised; canonical public realpath detects followed directory loops | Public link-text/raw-path APIs with invalid-UTF-8 and loop fixtures |
+| creation time | `--sort created` / `--sortr created` reject unsupported metadata | Released creation-time metadata with per-platform ordering assertions |
+
+The imported implementation remains single-threaded, has no real mmap and has
+no PCRE2 engine. `--threads` does not create parallel workers; mmap flags retain
+their existing ordinary-read implementation. OS diagnostics retain public
+runtime messages rather than fabricated errno translations. Elapsed JSON times
+derive from the public millisecond clock and are not CPU/resource measurements.
+
+`--pre` consumes child stdout incrementally, drains stderr concurrently and
+reaps the direct child on completion/early close/cancellation. Stderr diagnostic
+storage follows the imported accumulated-error API. No process-tree cleanup
+promise is made. See [ADR-0006](adr/0006-process.md).
+
+Ordinary Wasm contracts, supplemental Native runs, fixed-upstream harness
+observations and sealed Linux oracle results are distinct evidence classes.
+Raw upstream cases using implicit input are retained as boundary differences,
+not renamed or counted as compatibility passes. The Linux oracle recipe pins
+the exact ripgrep source hash, Rust distribution hash and Cargo.lock; only a
+current CI-sealed image identity can establish differential acceptance.
+
 ## Inventory
 
-The workspace contains **79 command modules**, with **78 published** and
-local-only `timeout`. Published command versions are **37 at 0.2.2, 8 at
+The workspace contains **80 command modules**, with **78 published**, unpublished
+`rg 0.1.0` and local-only `timeout`. Published command versions are **37 at 0.2.2, 8 at
 0.2.3, 3 at 0.2.0, 2 at 0.2.1, 12 at 0.1.3, 10 at 0.1.2, 4 at 0.1.4,
 and one each at 0.2.4 and 0.3.0**. Shared `cli/core` is **0.8.1** and is not
 counted as a command.
@@ -463,6 +511,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `false` | subset verified | any args: no output, status 1; help/version return 0 | Metadata text is package-versioned |
 | `find` | restricted | names/paths/types, `-empty/-size`, metadata predicates, access checks, `-xtype`, depth/actions | File/process policy required; P8 time/reference/access combinations still need independent probes; ownership, inode, link-count, and full GNU expression grammar not claimed |
 | `grep` | subset verified | Default BRE / `-G`, ERE / `-E`, byte-based `-F`, `-o` leftmost-longest, context-only separators, existing context/file/binary options; published 0.3.0 adds the shared matcher, grammar-preserving ASCII `-i`, streaming input/output and early `-q`/`-l` completion | [Workspace matcher limits](#workspace-matcher-and-sed-candidates), non-C locale classes/case folding and worst-case capture/reference resources remain open |
+| `rg` | unpublished candidate | Fixed rg.mbt 0.2.0 algorithms and Unicode data; asynchronous explicit-file/directory/stdin search, glob/ignore, output modes and user preprocessing | [rg candidate](#rg-candidate); effective `-z` rejects; no-path search needs explicit input; public system API and inherited engine limits remain |
 | `head` | subset verified | `-n`, `-c`, signed/attached/long/legacy counts and decimal/binary/IEC size suffixes, `-z`, `-q/-v`, files/stdin and headers | Counts are bounded by signed 64-bit storage; locale-aware records are not claimed |
 | `join` | subset verified | Field/unpaired/empty output, `-z`, ASCII ignore-case, headers, automatic or accumulated explicit output fields, last order policy | Locale behavior beyond the fixed C profile not claimed |
 | `jq` | subset verified | Consecutive JSON, -s/-R/-n/-e, AST binding, partial output before errors, -C/-M/JQ_COLORS, tostring/tojson and Unicode string slices | Released moonjq 0.2.0 plus public-AST adapter; full evaluator/modules/streaming/diagnostics and automatic TTY color are not claimed |

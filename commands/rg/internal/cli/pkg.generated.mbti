@@ -1,0 +1,70 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/rg/internal/cli"
+
+import {
+  "cli/rg/internal/sys",
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn escape(BytesView) -> String
+
+pub fn hostname() -> String?
+
+pub fn is_readable_stdin() -> @sys.Capability[Bool]
+
+pub fn parse_human_readable_size(String) -> UInt64 raise ParseSizeError
+
+pub fn pattern_from_bytes(BytesView) -> String raise InvalidPatternError
+
+pub fn patterns_from_bytes(Bytes) -> Array[String] raise PatternsError
+
+pub async fn patterns_from_path(String) -> Array[String]
+
+pub async fn patterns_from_stdin() -> Array[String]
+
+pub fn unescape(String) -> Bytes
+
+pub fn utf8_valid_up_to(BytesView) -> Int?
+
+// Errors
+pub suberror CommandError {
+  CommandIo(@sys.IOError)
+  CommandStderr(Bytes)
+} derive(@debug.Debug)
+pub fn CommandError::to_string(Self) -> String
+pub impl Show for CommandError
+
+pub suberror InvalidPatternError {
+  InvalidPatternError(original~ : String, valid_up_to~ : Int)
+} derive(Eq, @debug.Debug)
+pub fn InvalidPatternError::to_string(Self) -> String
+pub fn InvalidPatternError::valid_up_to(Self) -> Int
+pub impl Show for InvalidPatternError
+
+pub suberror ParseSizeError {
+  InvalidFormat(String)
+  InvalidInt(String, String)
+  Overflow(String)
+} derive(Eq, @debug.Debug)
+pub fn ParseSizeError::to_string(Self) -> String
+pub impl Show for ParseSizeError
+
+pub suberror PatternsError {
+  PatternsError(String)
+} derive(@debug.Debug)
+pub fn PatternsError::to_string(Self) -> String
+pub impl Show for PatternsError
+
+// Types and methods
+pub struct CommandReader {
+  // private fields
+}
+pub async fn CommandReader::close(Self) -> Unit
+pub async fn CommandReader::new(String, Array[String], stdin_path? : String) -> Self
+pub async fn CommandReader::read(Self, FixedArray[Byte], Int, Int) -> Int
+pub async fn CommandReader::read_to_end(Self) -> Bytes
+
+// Type aliases
+
+// Traits

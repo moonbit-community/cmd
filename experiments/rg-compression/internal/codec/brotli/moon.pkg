@@ -1,0 +1,10 @@
+import {
+  "cli/rg/internal/codec/blit",
+}
+
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+} for "wbtest"
+
+warnings = "-implicit_impl_as_method-deprecated_syntax"

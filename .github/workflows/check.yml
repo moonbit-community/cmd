@@ -80,7 +80,7 @@ jobs:
       - name: Check Wasm products
         run: moon check --target wasm --deny-warn
       - name: Check Native test tools
-        run: moon check --target native --deny-warn tests/runner tests/release_runner tests/testkit tests/registry tests/network_scenarios tests/mv_scenarios tests/benchmark
+        run: moon check --target native --deny-warn tests/runner tests/release_runner tests/testkit tests/registry tests/network_scenarios tests/mv_scenarios tests/benchmark tests/rg_launcher
       - name: Build Wasm commands once
         run: moon build --target wasm --release --deny-warn
       - name: Build test driver

@@ -19,6 +19,19 @@ pairing are retired. Dated Native observations retain their historical scope.
 
 ## D-stage patch candidate
 
+### rg path and identity boundary (2026-10-26)
+
+The rg candidate uses public async directory/file/realpath/mtime operations.
+Metadata identities are optional; it never invents device or inode zero.
+Canonical paths detect followed directory loops. `--one-file-system` rejects
+with status 2 because device identity is unavailable. Same-file exclusion for a
+redirected stdout descriptor cannot be established. Creation-time sorting
+rejects missing creation metadata. The public String path API does not establish
+raw invalid-UTF-8 path preservation or readlink text support. Unlock requires
+released descriptor/device/inode, link-text, creation-time and raw-path APIs,
+with hardlink, symlink-loop, redirected-output and platform-specific Wasm tests.
+Current contracts and source evidence: [rg ledger](../rg/implementation.md).
+
 The unpublished patch 0.2.0 candidate supports offset/fuzz selection, mixed
 hunk results and new unified/context rejects. A failed hunk retains its input
 region and allows later hunks; stdout and dry-run remain useful without unsafe

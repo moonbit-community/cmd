@@ -13,6 +13,19 @@ pairing are retired. Dated Native observations retain their historical scope.
 
 ## Target and decision
 
+### rg preprocessing candidate (2026-10-26)
+
+`--pre` remains explicit user-selected process authority; the rg catalog tier is
+restricted. Public async process/pipe APIs preserve argv, cwd and environment.
+An async memory reader applies backpressure to stdout, while a concurrent task
+drains stderr for the retained error payload API. Stderr may grow with the child
+diagnostic output; this is separate from incremental search stdout. Normal EOF
+checks exit status; early close cancels the owned task group and reaps its direct
+child in an uncancellable completion wait. No descendant-tree guarantee exists.
+Portable pure-MoonBit fixtures exercise early close; original process tests are
+retained. Lift process-tree limits only after released public group cancellation
+and three-host Wasm lifecycle evidence. See [rg ledger](../rg/implementation.md).
+
 Forward argv, cwd, stdio and complete environment through public process APIs. Distinguish cancellation requests, signals, process exit, wait/reap and pipe EOF. Cancel all owned fixture processes before waiting for cleanup. async 0.22.4 ordinary catch does not catch cancellation; defer cleanup must be nocancel, using protect_from_cancel when required.
 
 Both Native test drivers share process execution and fixture cleanup. Ordinary

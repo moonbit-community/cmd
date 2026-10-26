@@ -332,6 +332,26 @@ pub fn command_catalog() -> Array[CommandContract] {
       ],
       exit_codes=[0, 1, 2, 3, 4, 5, 7, 8],
     ),
+    // Explicit paths or '-' are required when stdin kind cannot be detected.
+    // Compression is deferred; preprocessing remains user-selected authority.
+    contract(
+      "rg",
+      Restricted,
+      FileOrStdin,
+      LineStream,
+      [FileRead, ProcessSpawn],
+      [
+        "regexp", "file", "fixed-strings", "ignore-case", "smart-case", "word-regexp",
+        "line-regexp", "invert-match", "only-matching", "replace", "line-number",
+        "byte-offset", "count", "count-matches", "files", "files-with-matches", "files-without-match",
+        "quiet", "max-count", "before-context", "after-context", "context", "glob",
+        "iglob", "hidden", "no-ignore", "ignore-file", "type", "type-not", "type-add",
+        "type-list", "follow", "max-depth", "sort", "sortr", "multiline", "multiline-dotall",
+        "crlf", "null", "null-data", "text", "binary", "encoding", "json", "color",
+        "colors", "heading", "with-filename", "no-filename", "pre", "pre-glob", "no-config",
+      ],
+      exit_codes=[0, 1, 2],
+    ),
     contract("yes", Core, NoInput, ByteStream, [], []),
     contract(
       "fold",

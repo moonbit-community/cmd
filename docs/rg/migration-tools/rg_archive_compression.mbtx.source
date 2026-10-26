@@ -1,0 +1,49 @@
+----
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/shell",
+  "moonbitlang/core/encoding/utf8",
+}
+----
+
+///|
+async fn copy_tree(source : String, target : String, inventory : StringBuilder) -> Unit {
+  @fs.mkdir(target, recursive=true, allow_exist=true)
+  for name in @fs.readdir(source, include_hidden=true) {
+    let from = source + "/" + name
+    let to = target + "/" + name
+    if @fs.kind(from, follow_symlink=false) is Directory {
+      copy_tree(from, to, inventory)
+    } else {
+      guard !@fs.exists(to) else { fail("Compression snapshot already exists: " + to) }
+      @fs.write_file(to, @fs.read_file(from))
+      let sum = @shell.Cmd("shasum", ["-a", "256", to]).output()
+      sum.check()
+      inventory.write_string(sum.stdout())
+    }
+  }
+}
+
+///|
+async fn main {
+  let root = "experiments/rg-compression"
+  guard !@fs.exists(root) else { fail("Compression snapshot must never be overwritten") }
+  let inventory = StringBuilder()
+  copy_tree("commands/rg/internal/codec", root + "/internal/codec", inventory)
+  @fs.mkdir(root + "/integration", recursive=true)
+  for (source, target) in [
+    ("commands/rg/internal/cli/decompress.mbt", "decompress.mbt.source"),
+    ("commands/rg/internal/driver/search.mbt", "search.mbt.source"),
+    ("tools/rg_smoke.mbtx", "smoke.mbtx.source"),
+    ("docs/rg/source-inventory.tsv", "source-inventory.tsv"),
+    ("docs/rg/fixture-inventory.tsv", "fixture-inventory.tsv"),
+    ("test-reports/rg-smoke/cases.jsonl", "cli-contracts.jsonl"),
+  ] {
+    @fs.write_file(root + "/integration/" + target, @fs.read_file(source))
+  }
+  @fs.write_file(root + "/SHA256SUMS", @utf8.encode(inventory.to_string()))
+  @fs.write_file(root + "/moon.mod", @utf8.encode(
+    "name = \"cli/rg\"\nversion = \"0.1.0\"\npreferred_target = \"wasm\"\nlicense = \"MIT AND Apache-2.0\"\nimport {\n  \"moonbitlang/async@0.22.5\",\n  \"moonbitlang/x@0.5.5\",\n  \"moonbit-community/flate@0.9.0\",\n}\n"))
+  @fs.write_file(root + "/moon.work", b"members = [\".\"]\n")
+}

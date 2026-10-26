@@ -19,7 +19,9 @@ fn option_child_executable(program : String) -> String {
 pub fn option_child_required(fixture : Case) -> Bool {
   fixture.id.has_prefix("tee-output-errors") ||
   fixture.args.any(arg => {
-    arg.contains("${PRINTF_CHILD}") || arg.contains("${PRINTENV_CHILD}")
+    arg.contains("${PRINTF_CHILD}") ||
+    arg.contains("${PRINTENV_CHILD}") ||
+    arg.contains("${RG_PREPROCESSOR}")
   })
 }
 
