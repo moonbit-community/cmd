@@ -54,6 +54,13 @@ test "compact spans agree with tagged matching at resumed starts and filtered en
                 msg=source + " boolean on " + input,
               )
             }
+            if !start_only {
+              assert_eq(
+                matcher.find_span(input, start~, whole~, word~),
+                expected.map(hit => (hit.start, hit.end)),
+                msg=source + " cached span on " + input,
+              )
+            }
           }
         }
       }
@@ -85,6 +92,7 @@ test "record DFA handles every byte and case folding without decoding" {
 test "record DFA budget exhaustion falls back and keeps subsequent searches correct" {
   let pattern = compile("(a|b)*a(a|b){9}", extended=true)
   let matcher = pattern.record_matcher()
+  assert_true(!matcher.matches(b""))
   assert_true(matcher.dfa is Some(_))
   for number in 0..<512 {
     let input = Bytes::makei(9, index => {

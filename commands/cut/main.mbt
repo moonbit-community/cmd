@@ -117,6 +117,7 @@ fn cut_fields_into(
   let mut field = 1
   let mut range_index = 0
   let mut first = true
+  let last_field = ranges.last().map(range => range.1).unwrap_or(0)
   for index in 0..<=line.length() {
     if index == line.length() || line[index] == delimiter {
       while range_index < ranges.length() && ranges[range_index].1 < field {
@@ -131,12 +132,16 @@ fn cut_fields_into(
       }
       start = index + 1
       field += 1
+      if field > last_field {
+        break
+      }
     }
   }
   true
 }
 
 ///|
+#inline
 fn cut_characters_into(
   line : BytesView,
   ranges : Array[(Int32, Int32)],
@@ -151,7 +156,12 @@ fn cut_characters_into(
     if !first && output_delimiter is Some(separator) {
       out.write_bytes(separator)
     }
-    out.write_bytes(line[lo - 1:Int32::min(hi, line.length())])
+    let end = Int32::min(hi, line.length())
+    if end == lo {
+      out.write_byte(line[lo - 1])
+    } else {
+      out.write_bytes(line[lo - 1:end])
+    }
     first = false
   }
 }
@@ -299,32 +309,28 @@ async fn process_reader(
   let scanner = @stream.RecordReader::new(reader, delimiter=record_delimiter)
   let output = @buffer.Buffer(size_hint=@stream.chunk_size)
   defer @stream.flush_buffer(writer, output)
+  let consume_record : (BytesView, Bool) -> Bool = match
+    (field_ranges, char_ranges) {
+    (Some(ranges), _) =>
+      (line, _) => {
+        if cut_fields_into(
+            line, ranges, delimiter, only_delimited, field_output_delimiter, output,
+          ) {
+          output.write_byte(record_delimiter)
+        }
+        output.length() < @stream.chunk_size
+      }
+    (None, Some(ranges)) =>
+      (line, _) => {
+        cut_characters_into(line, ranges, output_delimiter, output)
+        output.write_byte(record_delimiter)
+        output.length() < @stream.chunk_size
+      }
+    _ => (_, _) => true
+  }
   while scanner.next_batch() is Some(batch) {
-    while batch.next() is Some(line) {
-      match field_ranges {
-        Some(ranges) =>
-          if cut_fields_into(
-              line.data,
-              ranges,
-              delimiter,
-              only_delimited,
-              field_output_delimiter,
-              output,
-            ) {
-            output.write_byte(record_delimiter)
-          }
-        None =>
-          match char_ranges {
-            Some(ranges) => {
-              cut_characters_into(line.data, ranges, output_delimiter, output)
-              output.write_byte(record_delimiter)
-            }
-            None => ()
-          }
-      }
-      if output.length() >= @stream.chunk_size {
-        @stream.flush_buffer(writer, output)
-      }
+    while !batch.each_while(consume_record) {
+      @stream.flush_buffer(writer, output)
     }
   }
 }

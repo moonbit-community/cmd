@@ -5,11 +5,27 @@
 struct RecordMatcher {
   pattern : Pattern
   mut dfa : RecordDfa?
+  mut initialized : Bool
+  mut span_plan : SpanPlan?
+  mut span_initialized : Bool
 }
 
 ///|
 pub fn Pattern::record_matcher(self : Pattern) -> RecordMatcher {
-  { pattern: self, dfa: RecordDfa::new(self), }
+  {
+    pattern: self,
+    dfa: None,
+    initialized: false,
+    span_plan: None,
+    span_initialized: false,
+  }
+}
+
+///|
+/// Every matching record contains this literal. An empty result provides no
+/// rejection guarantee. This is a filter only, never a substitute for matching.
+pub fn RecordMatcher::required_literal(self : RecordMatcher) -> Bytes {
+  self.pattern.required_literal
 }
 
 ///|
@@ -23,13 +39,17 @@ pub fn RecordMatcher::matches(
   if required.length() >= 2 && value.find(required) is None {
     return false
   }
+  if !whole && !word && !self.initialized {
+    self.dfa = RecordDfa::new(self.pattern)
+    self.initialized = true
+  }
   if !whole && !word && self.dfa is Some(dfa) {
     match dfa.matches(value) {
       Some(result) => return result
       None => self.dfa = None
     }
   }
-  self.pattern.find_span(text(value), whole~, word~) is Some(_)
+  self.find_span(text(value), whole~, word~) is Some(_)
 }
 
 ///|
@@ -42,13 +62,19 @@ pub fn RecordMatcher::find_span(
   whole~ : Bool = false,
   word~ : Bool = false,
 ) -> (Int32, Int32)? {
+  if self.pattern.literal is None && !self.span_initialized {
+    self.span_plan = SpanPlan::new(self.pattern)
+    self.span_initialized = true
+  }
+  if self.span_plan is Some(plan) {
+    return plan.find(self.pattern, value, start, whole, word)
+  }
   self.pattern.find_span(value, start~, whole~, word~)
 }
 
 ///|
 priv struct RecordState {
   nodes : Array[Int32]
-  edges : FixedArray[Int32]
 }
 
 ///|
@@ -58,6 +84,7 @@ priv struct RecordDfa {
   representatives : Array[Int32]
   states : Array[RecordState]
   ids : Map[Array[Int32], Int32]
+  edges : FixedArray[Int32]
 }
 
 ///|
@@ -107,12 +134,10 @@ fn RecordDfa::new(pattern : Pattern) -> RecordDfa? {
     representatives,
     states: [],
     ids: Map([]),
+    edges: FixedArray::make(256 * representatives.length(), -1),
   }
   let nodes = dfa.closure([pattern.entry])
-  dfa.states.push({
-    nodes,
-    edges: FixedArray::make(representatives.length(), -1),
-  })
+  dfa.states.push({ nodes, })
   dfa.ids[nodes] = 0
   Some(dfa)
 }
@@ -142,12 +167,14 @@ fn RecordDfa::closure(self : RecordDfa, stack : Array[Int32]) -> Array[Int32] {
 ///|
 fn RecordDfa::transition(
   self : RecordDfa,
-  state : Int32,
+  row_offset : Int32,
   class : Int32,
 ) -> Int32 {
-  let row = self.states[state]
-  if row.edges[class] != -1 {
-    return row.edges[class]
+  let width = self.representatives.length()
+  let row = self.states[row_offset / width]
+  let slot = row_offset + class
+  if self.edges[slot] != -1 {
+    return self.edges[slot]
   }
   let byte = self.representatives[class]
   // In an unanchored boolean search a fresh start is eligible after every byte.
@@ -164,27 +191,25 @@ fn RecordDfa::transition(
   let nodes = self.closure(seeds)
   // Accept is instruction zero in every emitted program.
   if nodes[0] == 0 {
-    row.edges[class] = -2
+    self.edges[slot] = -2
     return -2
   }
   if self.ids.get(nodes) is Some(existing) {
-    row.edges[class] = existing
-    return existing
+    self.edges[slot] = existing * width
+    return existing * width
   }
   if self.states.length() >= 256 {
     return -3
   }
   let next = self.states.length()
   self.ids[nodes] = next
-  self.states.push({
-    nodes,
-    edges: FixedArray::make(self.representatives.length(), -1),
-  })
-  row.edges[class] = next
-  next
+  self.states.push({ nodes, })
+  self.edges[slot] = next * width
+  next * width
 }
 
 ///|
+#inline
 fn RecordDfa::matches(self : RecordDfa, value : BytesView) -> Bool? {
   if self.states[0].nodes[0] == 0 {
     return Some(true)
@@ -192,7 +217,7 @@ fn RecordDfa::matches(self : RecordDfa, value : BytesView) -> Bool? {
   let mut state = 0
   for byte in value {
     let class = self.classes[byte.to_int()]
-    let edge = self.states[state].edges[class]
+    let edge = self.edges[state + class]
     let next = if edge == -1 { self.transition(state, class) } else { edge }
     if next == -2 {
       return Some(true)

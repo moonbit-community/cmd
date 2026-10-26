@@ -5,7 +5,9 @@ Unpublished candidate **0.2.3** behavior is documented here. The
 published MoonX behavior; `moonx` examples use registry releases.
 
 The candidate retains byte views for current records/keys and batches output
-through core 0.8.2. Group separators and duplicate-selection rules are unchanged.
+through core 0.8.2. A synchronous batch visitor processes records until an output
+flush is needed; unmodified keys reuse the original view. Group separators and
+duplicate-selection rules are unchanged.
 
 Filter adjacent repeated lines (pipe through sort first for global dedup):
 

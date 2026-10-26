@@ -9,6 +9,7 @@ priv struct GrepInput {
   mut number : Int64
   mut binary : Bool
   mut error : Error?
+  mut prefiltered : Bool
 }
 
 ///|
@@ -27,6 +28,7 @@ fn GrepInput::new(
     number: 0L,
     binary: false,
     error: None,
+    prefiltered: false,
   }
 }
 
@@ -85,6 +87,7 @@ async fn GrepInput::next(self : GrepInput) -> Record? {
         }
         Some(bytes) => {
           self.bytes = bytes
+          self.prefiltered = false
           self.position = 0
           if self.binary_mode != Text && bytes.find(b"\x00") is Some(_) {
             self.binary = true
@@ -142,8 +145,14 @@ fn Matcher::matches_record(
       let line = if ignore_case { folded_bytes(record)[:] } else { record }
       fixed_span(patterns, line, 0, whole, word) is Some(_)
     }
-    Regular(patterns, whole, word) =>
-      patterns.iter().any(pattern => pattern.matches(record, whole~, word~))
+    Regular(patterns, whole, word) => {
+      for pattern in patterns {
+        if pattern.matches(record, whole~, word~) {
+          return true
+        }
+      }
+      false
+    }
   }
 }
 
@@ -234,6 +243,16 @@ async fn process_reader(
     !options.files_without_match &&
     !options.quiet
   for ;; {
+    if !options.invert && !options.context_enabled {
+      input.skip_nonmatching(matcher, options.ignore_case)
+    }
+    if !emit_records && !options.quiet && !options.files_with_matches {
+      selected_count += input.count_buffered(
+        matcher,
+        options.ignore_case,
+        options.invert,
+      )
+    }
     let record = {
       errdefer output.flush()
       match input.next_buffered() {

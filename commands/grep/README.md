@@ -4,10 +4,15 @@ Unpublished candidate **0.3.1** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
-The candidate uses core 0.8.2's bounded byte DFA and required-literal rejection
-for eligible boolean searches. Word/whole filters, assertions, references and
-cache exhaustion preserve existing matching rules. `-o` continues to select
-leftmost-longest spans. Cached state is owned by each compiled record matcher.
+The candidate uses core 0.8.2's bounded flat byte DFA and required-literal
+rejection for eligible boolean searches. A block filter skips complete records
+only when the required literals are absent and inversion/context are disabled;
+binary inspection and incomplete tails keep their existing paths. Counting
+processes buffered records synchronously. Assertion-free, reference-free span
+programs can precompute epsilon closures, while `-o` continues to select
+leftmost-longest spans. Word/whole filters, assertions, references and cache
+exhaustion preserve existing matching rules. Cached state is owned by each
+compiled record matcher.
 
 Search text using basic regular expressions by default, extended expressions
 with `-E`, or fixed strings with `-F`; `-G` restores basic syntax. Options include

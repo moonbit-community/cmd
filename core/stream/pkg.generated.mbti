@@ -10,6 +10,8 @@ import {
 // Values
 pub let chunk_size : Int32
 
+pub fn count_byte(BytesView, Byte) -> Int32
+
 pub async fn flush_buffer(&@io.Writer, @buffer.Buffer) -> Unit
 
 pub async fn read_chunk(&@io.Reader) -> Bytes?
@@ -39,6 +41,7 @@ pub fn LineScanner::new(&@io.Reader, delimiter? : Byte) -> Self
 pub async fn LineScanner::next(Self) -> Line?
 
 type RecordBatch
+pub fn RecordBatch::each_while(Self, (BytesView, Bool) -> Bool) -> Bool
 pub fn RecordBatch::next(Self) -> RecordView?
 
 type RecordReader

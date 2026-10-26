@@ -40,6 +40,40 @@ struct RecordReader {
 }
 
 ///|
+/// Visit records without allocating a `RecordView` and optional result for each
+/// record. Return true when exhausted, or false after consuming the record whose
+/// visitor returned false. Resume with the same batch after flushing output.
+#inline
+pub fn RecordBatch::each_while(
+  self : RecordBatch,
+  visitor : (BytesView, Bool) -> Bool,
+) -> Bool {
+  if self.first is Some(data) {
+    self.first = None
+    if !visitor(data[:], self.terminated) {
+      return false
+    }
+  }
+  while self.offset < self.data.length() {
+    let start = self.offset
+    let mut end = start
+    // Avoid setting up a vector search for very short records.
+    let short_end = (start + 4).min(self.data.length())
+    while end < short_end && self.data[end] != self.delimiter[0] {
+      end += 1
+    }
+    if end == short_end {
+      end += self.data[end:].find(self.delimiter).unwrap()
+    }
+    self.offset = end + 1
+    if !visitor(self.data[start:end], true) {
+      return false
+    }
+  }
+  true
+}
+
+///|
 pub fn RecordReader::new(
   reader : &@io.Reader,
   delimiter~ : Byte = b'\n',

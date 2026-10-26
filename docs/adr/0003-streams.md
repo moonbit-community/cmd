@@ -13,6 +13,99 @@ pairing are retired. Dated Native observations retain their historical scope.
 
 ## Target and decision
 
+### Performance wave 2 candidate (2026-10-26)
+
+This extends the same unpublished coordinates from wave 1. Product code and
+diagnostic orchestration remain pure MoonBit. Direct release-Wasm launch-to-exit
+timing includes runtime initialization, I/O and exit; MoonX is not measured.
+
+`RecordBatch.each_while` invokes a synchronous consumer until its output needs
+flushing. It avoids a RecordView/Option result per record and checks the first
+four bytes before setting up a delimiter search. Cut selects its byte or field
+consumer once per input, writes singleton byte selections directly, and stops
+field traversal after the last selected field. Existing equal-delimiter and
+empty-selection compatibility paths remain separate. Uniq reuses unchanged key
+views. Output flushing stays asynchronous, with the same partial-write and
+input-error behavior as wave 1.
+
+Grep checks a conservative mandatory literal once per buffered block. Only
+complete records can be rejected; inversion and context disable this path.
+Refill still inspects binary input and retains incomplete tails. Offsets and
+record numbers advance with a word-at-a-time delimiter count bounded by the
+BytesView, including its start offset. Count consumers process the remaining
+complete records synchronously without record objects or async continuations.
+
+The deeper engine changes are lazy construction and a flat DFA transition table:
+the current state is a row offset, removing object lookup and multiplication
+from each byte transition. At most 256 subsets and 256 byte classes occupy the
+table; the existing program/state limits and fallback remain. A separate lazy
+span plan precomputes epsilon closures for assertion-free, reference-free
+programs of at most 256 instructions. It reuses ordered integer worklists and
+preserves leftmost-longest selection, including resumed, word and whole-record
+search. Closure storage is quadratic in program size, bounded by 256 squared
+entries, plus worklists. Literal patterns keep their literal path; assertions,
+backreferences and larger programs keep the existing engines. This is an
+allocation/work bound, not measured RSS acceptance.
+
+Final local macOS arm64 diagnostic medians use the same GNU 9.11/3.12 builds,
+regular-file stdin, captured stdout, one warmup and nine alternating pairs per
+row, with exact status/stdout/stderr comparisons:
+
+| Workload | Candidate ms | GNU ms | Ratio |
+| --- | ---: | ---: | ---: |
+| cut -b 1-8, 8 MiB / 80-byte records | 16.21 | 4.93 | 3.29 |
+| cut -f 1,3, same input | 33.37 | 9.86 | 3.38 |
+| cut -b 1, 8 MiB / 2-byte records | 69.10 | 24.32 | 2.84 |
+| uniq, 8 MiB / 80-byte records | 23.78 | 14.82 | 1.60 |
+| uniq, 8 MiB / 2-byte records | 257.51 | 102.37 | 2.52 |
+| uniq -c, 8 MiB / identical records | 16.09 | 7.82 | 2.06 |
+| grep fixed count, 8 MiB | 22.16 | 3.81 | 5.82 |
+| grep fixed miss, 8 MiB | 16.51 | 2.10 | 7.86 |
+| grep -Ec '[0-9]{4}.*gamma', 1 MiB | 16.29 | 2.17 | 7.52 |
+| same regex count, 64 MiB | 103.15 | 35.64 | 2.89 |
+| grep regex miss, 8 MiB | 17.47 | 2.32 | 7.54 |
+| grep -Eo span extraction, 1 MiB | 94.98 | 9.19 | 10.33 |
+
+Separate final pairs against frozen wave-1 artifacts measured 4.96x for short
+cut records, 2.41x for short uniq records, 2.67x for the 64 MiB regex count,
+2.34x for regex rejection and 1.39x for span extraction. Normal cut and uniq
+improved about 1.36x. Incremental prototypes attribute useful additional gains
+to the synchronous count loop (about 274 to 131 ms), then the flat DFA table
+(about 131 to 102 ms). Precomputed span closures reduced the span workload from
+about 129 to 94 ms. These observations support engine/data-layout specialization
+beyond simply increasing the input buffer.
+
+Validation passed 1,584 release-Wasm package tests, 117 Native test-tool tests,
+and the full functional suite (2,062 passes, 19 explicit skips, zero failures).
+The span oracle matrix compares the new matcher with the retained tagged
+engine, across resumed starts and word/whole filters. New regressions cover
+visitor stop/resume, retained views, offset byte counts and cross-block filtering.
+An independent 244-case local GNU comparison covers binary/NUL data, long
+records, inverse/context output, groups and backreferences: 242 match exactly;
+two retain an existing difference for empty-pattern `grep -v -c` (candidate
+prints `0`, GNU 3.12 exits without stdout; both exit 1). Both mismatches reproduce
+with the frozen wave-1 artifact. No new mismatch appeared in that set, but this
+is not a full GNU parity pass. Lifting that difference requires a separate
+early-exit/stdin-preservation contract and pinned three-host regressions.
+
+The next measured bottleneck is span extraction: it remains over 10x GNU even
+after closure precomputation. A byte-view span engine that avoids intermediate
+String conversion and an endpoint-oriented search plan are candidates for the
+next experiment, not established gains. Fixed-string search also still scans
+records after a positive block filter; a block search that locates candidate
+records once, including multiple patterns, should be tested separately. Ordinary
+cut remains slightly above 3x. These extensions must preserve leftmost-longest,
+binary/context/early-exit semantics and the retained fallback engines, then pass
+held-out workloads before acceptance. Short-command timing is not corrected by
+subtracting startup, and an observed median below 3x is not a formal pass.
+
+`tests/benchmark/explore.mbtx` reproduces paired measurements. Wave-2 scripts,
+raw reports, artifact hashes and validation logs are retained in
+`test-reports/performance-wave2-evidence/manifest.json`; the prototype workspace
+is `/private/tmp/cmd-perf-wave2-20261026`. There is no formal 105-pair result,
+sealed Linux parity, Linux/Windows validation, publication or exact-version
+consumer acceptance for this change. Published manifests remain frozen.
+
 ### Performance wave 1 candidate (2026-10-26)
 
 The implementation target is direct release-Wasm elapsed time within 1-3x of

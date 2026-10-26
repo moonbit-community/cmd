@@ -5,6 +5,9 @@ Unpublished candidate **0.2.3** behavior is documented here. The
 published MoonX behavior; `moonx` examples use registry releases.
 
 The candidate batches immutable input views and output bytes through core 0.8.2.
+It selects a synchronous byte/field visitor once per input and stops field
+selection after the last requested field, with separate compatibility paths
+for equal delimiters and empty selections.
 Options, record endings and special field-delimiter cases retain their contracts.
 
 Select fields or character positions from each line:

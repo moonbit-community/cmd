@@ -197,6 +197,9 @@ fn comparison_key(
     None => line.length()
   }
   if !ignore_case {
+    if start == 0 && end == line.length() {
+      return line
+    }
     return line[start:end]
   }
   let folded : Array[Byte] = []
@@ -272,73 +275,70 @@ async fn process_reader(
   let mut previous_key : BytesView? = None
   let mut count = 0
   let mut repeated_group_printed = false
-  while scanner.next_batch() is Some(batch) {
-    while batch.next() is Some(record) {
-      let key = comparison_key(
-        record.data,
-        skip_fields,
-        skip_chars,
-        check_chars,
-        ignore_case,
-      )
-      match mode {
-        EveryGroup(separator) => {
-          let first_group = previous_key is None
-          let new_group = previous_key is None || previous_key != Some(key)
-          if new_group &&
-            (
-              separator is (Prepend | Both) ||
-              (!first_group && separator is (Separate | Append))
-            ) {
-            write_record(writer, b"", delimiter)
-          }
-          write_record(writer, record.data, delimiter)
-          previous_key = Some(key)
+  let consume_record = fn(record : BytesView, _terminated : Bool) -> Bool {
+    let key = comparison_key(
+      record, skip_fields, skip_chars, check_chars, ignore_case,
+    )
+    match mode {
+      EveryGroup(separator) => {
+        let first_group = previous_key is None
+        let new_group = previous_key is None || previous_key != Some(key)
+        if new_group &&
+          (
+            separator is (Prepend | Both) ||
+            (!first_group && separator is (Separate | Append))
+          ) {
+          write_record(writer, b"", delimiter)
         }
-        AllRepeated(separator) =>
-          match (previous, previous_key) {
-            (Some(pending), Some(old_key)) if old_key == key => {
-              if count == 1 {
-                if separator is Prepend ||
-                  (separator is Separate && repeated_group_printed) {
-                  write_record(writer, b"", delimiter)
-                }
-                repeated_group_printed = true
-                count = 2
+        write_record(writer, record, delimiter)
+        previous_key = Some(key)
+      }
+      AllRepeated(separator) =>
+        match (previous, previous_key) {
+          (Some(pending), Some(old_key)) if old_key == key => {
+            if count == 1 {
+              if separator is Prepend ||
+                (separator is Separate && repeated_group_printed) {
+                write_record(writer, b"", delimiter)
               }
+              repeated_group_printed = true
+              count = 2
+            }
+            write_record(writer, pending, delimiter)
+            previous = Some(record)
+          }
+          _ => {
+            if count > 1 && !only_unique && previous is Some(pending) {
               write_record(writer, pending, delimiter)
-              previous = Some(record.data)
             }
-            _ => {
-              if count > 1 && !only_unique && previous is Some(pending) {
-                write_record(writer, pending, delimiter)
-              }
-              previous = Some(record.data)
-              previous_key = Some(key)
-              count = 1
-            }
+            previous = Some(record)
+            previous_key = Some(key)
+            count = 1
           }
-        Summarize =>
-          match (previous, previous_key) {
-            (Some(_), Some(old_key)) if old_key == key => count += 1
-            (Some(old), _) => {
-              write_group(
-                writer, old, count, show_count, only_repeated, only_unique, delimiter,
-              )
-              previous = Some(record.data)
-              previous_key = Some(key)
-              count = 1
-            }
-            _ => {
-              previous = Some(record.data)
-              previous_key = Some(key)
-              count = 1
-            }
+        }
+      Summarize =>
+        match (previous, previous_key) {
+          (Some(_), Some(old_key)) if old_key == key => count += 1
+          (Some(old), _) => {
+            write_group(
+              writer, old, count, show_count, only_repeated, only_unique, delimiter,
+            )
+            previous = Some(record)
+            previous_key = Some(key)
+            count = 1
           }
-      }
-      if writer.length() >= @stream.chunk_size {
-        @stream.flush_buffer(destination, writer)
-      }
+          _ => {
+            previous = Some(record)
+            previous_key = Some(key)
+            count = 1
+          }
+        }
+    }
+    writer.length() < @stream.chunk_size
+  }
+  while scanner.next_batch() is Some(batch) {
+    while !batch.each_while(consume_record) {
+      @stream.flush_buffer(destination, writer)
     }
   }
   match mode {

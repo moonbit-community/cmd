@@ -5,6 +5,17 @@ by date and delivery milestone rather than by a single package version.
 
 ## 2026-10-26
 
+- Extended the same unpublished performance candidates with synchronous record
+  visitors, block rejection, synchronous count scans, flat DFA transitions and
+  precomputed span closures. Final local pairs improved short-record cut/uniq
+  by 4.96x/2.41x and 64 MiB regex counting by 2.67x over wave 1. Their selected
+  GNU ratios are 2.84x, 2.52x and 2.89x; span extraction remains 10.33x.
+  Passed 1,584 Wasm package tests, 117 Native tool tests and the full functional
+  suite (2,062 passes, 19 skips, zero failures). The independent local comparison
+  matched 242 of 244 GNU cases; two empty-pattern grep differences also occur in
+  wave 1. See [ADR-0003](docs/adr/0003-streams.md#performance-wave-2-candidate-2026-10-26)
+  for bounds, evidence and remaining work. No package was uploaded, and these
+  diagnostic measurements do not establish formal performance acceptance.
 - Prepared the unpublished first performance wave in `core 0.8.2`,
   `cut/uniq/wc 0.2.3` and `grep 0.3.1`: immutable record batches, synchronous
   output accumulation, SIMD line/word counting, compact span worklists and a
