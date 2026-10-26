@@ -5,7 +5,27 @@ pub fn args() -> Array[String] {
 
 ///|
 pub fn current_dir() -> String? {
-  @env.current_dir()
+  @env.current_dir().map(normalize_path)
+}
+
+///|
+fn normalize_windows_path(path : String) -> String {
+  let path = path.replace_all(old="\\", new="/")
+  if path.strip_prefix("//?/UNC/") is Some(rest) {
+    "//" + rest.to_owned()
+  } else {
+    path.strip_prefix("//?/").unwrap_or(path[:]).to_owned()
+  }
+}
+
+///|
+/// Internal lexical paths use slash separators on all hosts.
+pub fn normalize_path(path : String) -> String {
+  if is_windows() {
+    normalize_windows_path(path)
+  } else {
+    path
+  }
 }
 
 ///|

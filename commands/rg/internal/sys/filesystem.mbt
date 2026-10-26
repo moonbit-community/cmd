@@ -71,9 +71,8 @@ pub async fn path_exists(path : String) -> Bool {
 
 ///|
 pub async fn canonicalize(path : String) -> String {
-  @fs.realpath(path) catch {
-    e => raise io_error(e)
-  }
+  let resolved = @fs.realpath(path) catch { e => raise io_error(e) }
+  normalize_path(resolved)
 }
 
 ///|

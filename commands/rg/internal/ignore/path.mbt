@@ -1,8 +1,9 @@
-// Helpers that mirror the semantics of Rust's `std::path::Path` on Unix,
-// operating on `String` paths with `/` separators.
+// Lexical path helpers use normalized slash separators. Windows drive prefixes
+// remain distinct from the root and from relative path components.
 
 ///|
 priv enum PathComp {
+  Prefix(String)
   Root
   CurDir
   ParentDir
@@ -16,7 +17,12 @@ fn path_components(path : String) -> Array[(PathComp, Int32, Int32)] {
   let out = []
   let n = path.length()
   let mut i = 0
-  if n > 0 && path[0] == '/' {
+  if @sys.is_windows() && path.length() >= 3 && path[1] == ':' && path[2] == '/' {
+    out.push((Prefix(path[:2].to_owned()), 0, 2))
+    out.push((Root, 2, 3))
+    i = 3
+  }
+  if i == 0 && n > 0 && path[0] == '/' {
     out.push((Root, 0, 1))
     while i < n && path[i] == '/' {
       i += 1
@@ -74,7 +80,7 @@ fn path_file_name(path : String) -> String? {
 ///|
 /// Like Rust's `Path::join` (`PathBuf::push`) on Unix.
 fn path_join(base : String, child : String) -> String {
-  if child.has_prefix("/") {
+  if path_has_root(child) {
     return child
   }
   if base == "" || base.has_suffix("/") {
@@ -109,7 +115,8 @@ fn path_strip_prefix(path : String, base : String) -> String? {
 ///|
 /// Like Rust's `Path::has_root` on Unix.
 fn path_has_root(path : String) -> Bool {
-  path.has_prefix("/")
+  path.has_prefix("/") ||
+  (@sys.is_windows() && path.length() >= 3 && path[1] == ':' && path[2] == '/')
 }
 
 ///|

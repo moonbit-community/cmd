@@ -41,7 +41,9 @@ off; explicit output controls work. Device/inode identity, descriptor identity,
 readlink, creation time and raw non-UTF-8 paths are unavailable publicly.
 `--one-file-system` and creation-time sorting reject. Canonical paths detect
 followed directory loops; redirected-output same-file exclusion cannot be proven.
-Paths are represented with the runtime's String API. See the
+Paths are represented with the runtime's String API.
+Windows operands and canonical paths are normalized for the internal lexical
+matcher while retaining their drive and UNC prefixes. See the
 [support record](../../docs/compatibility.md#rg-candidate) and
 [migration ledger](../../docs/rg/implementation.md) for precise acceptance and
 unlock conditions. This is a command migration, with no compatibility promise

@@ -22,6 +22,11 @@ pairing are retired. Dated Native observations retain their historical scope.
 ### rg path and identity boundary (2026-10-26)
 
 The rg candidate uses public async directory/file/realpath/mtime operations.
+Windows cwd, canonical results and operand paths use a consistent slash form
+inside the imported lexical algorithms. Drive prefixes remain separate from
+root components, so parent traversal stops at the drive root and prefix checks
+do not equate different drives. Backslash operands have a Windows CLI contract;
+the canonical-prefix conversion has portable unit coverage.
 Metadata identities are optional; it never invents device or inode zero.
 Canonical paths detect followed directory loops. `--one-file-system` rejects
 with status 2 because device identity is unavailable. Same-file exclusion for a

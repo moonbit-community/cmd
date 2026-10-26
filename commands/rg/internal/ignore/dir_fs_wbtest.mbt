@@ -2,10 +2,10 @@
 // writable scratch directory with symlinks and file removal).
 
 ///|
-fn partial(err : IgnoreError) -> Array[IgnoreError] {
+fn partial(err : IgnoreError) -> Array[IgnoreError] raise Failure {
   match err {
     Partial(errs) => errs
-    _ => abort("expected partial error but got \{err}")
+    _ => fail("expected partial error but got \{err}")
   }
 }
 

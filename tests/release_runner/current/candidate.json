@@ -2522,6 +2522,7 @@
     "repair-strings-encoding-S",
     "rg-boundary-creation-time",
     "rg-boundary-file-identity",
+    "rg-windows-backslash-path",
     "rm-final-parent-backslash",
     "sed-spec-T-clears-success",
     "sed-spec-append-autoprint",

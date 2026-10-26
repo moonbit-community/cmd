@@ -45,6 +45,13 @@ test "pathutil/hidden_and_prefix" {
 
 ///|
 test "path/parent" {
+  if @sys.is_windows() {
+    assert_eq(path_parent("C:/"), None)
+    assert_eq(path_parent("C:/work"), Some("C:/"))
+    assert_eq(path_join("C:/work", "D:/file"), "D:/file")
+    assert_eq(path_strip_prefix("C:/work/file", "D:/work"), None)
+    assert_true(path_has_root("C:/work/file"))
+  }
   debug_inspect(
     path_parent("foo/bar"),
     content=(

@@ -342,7 +342,7 @@ pub async fn WalkBuilder::build_parallel(self : WalkBuilder) -> WalkParallel {
 /// be preferred over building multiple `Walk` iterators since this
 /// enables reusing resources across iteration.
 pub fn WalkBuilder::add(self : WalkBuilder, path : String) -> WalkBuilder {
-  self.paths.push(path)
+  self.paths.push(@sys.normalize_path(path))
   self
 }
 

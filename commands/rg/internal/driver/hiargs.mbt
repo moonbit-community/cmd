@@ -216,7 +216,7 @@ async fn paths_from_low(state : State, low : LowArgs) -> Paths {
         "error: attempted to read patterns from stdin while also searching stdin",
       )
     }
-    paths.push(path)
+    paths.push(@sys.normalize_path(path))
   }
   low.positional.clear()
   log_debug(

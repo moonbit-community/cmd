@@ -9,10 +9,10 @@ fn sorted(paths : Array[String]) -> Array[String] {
 }
 
 ///|
-fn rel(prefix : String, path : String) -> String {
+fn rel(prefix : String, path : String) -> String raise Failure {
   match path_strip_prefix(path, prefix) {
     Some(p) => p
-    None => abort("\{path} is not under \{prefix}")
+    None => fail("\{path} is not under \{prefix}")
   }
 }
 
@@ -575,7 +575,9 @@ async test "walk/parallel quit and skip" {
   .run(() => {
     r => {
       let dent = r.unwrap()
-      let p = rel(td.path(), dent.path())
+      let p = path_strip_prefix(dent.path(), td.path()).unwrap_or(
+        "outside root: " + dent.path(),
+      )
       got.push(p)
       if p == "a" {
         Skip
@@ -596,7 +598,10 @@ async test "walk/parallel quit and skip" {
   .build_parallel()
   .run(() => {
     r => {
-      got.push(rel(td.path(), r.unwrap().path()))
+      let path = r.unwrap().path()
+      got.push(
+        path_strip_prefix(path, td.path()).unwrap_or("outside root: " + path),
+      )
       Quit
     }
   })

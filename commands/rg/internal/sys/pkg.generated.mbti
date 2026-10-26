@@ -36,6 +36,8 @@ pub async fn metadata(String) -> Metadata
 
 pub fn mmap_supported() -> Bool
 
+pub fn normalize_path(String) -> String
+
 pub fn now_nanos() -> Int64
 
 pub async fn path_exists(String) -> Bool

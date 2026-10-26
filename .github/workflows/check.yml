@@ -86,7 +86,7 @@ jobs:
       - name: Build test driver
         run: moon build --target native --deny-warn tests/runner
       - name: Wasm package tests
-        run: moon test --target wasm --release --deny-warn --no-parallelize 2>&1 | tee test-reports/packages-wasm.log
+        run: moon test --target wasm --release --deny-warn --no-parallelize --verbose 2>&1 | tee test-reports/packages-wasm.log
       - name: Native test-tool regressions
         run: moon test --target native --deny-warn --no-parallelize tests/testkit tests/registry tests/network_scenarios tests/mv_scenarios tests/runner tests/release_runner tests/benchmark 2>&1 | tee test-reports/packages-harness.log
       - uses: docker/setup-buildx-action@v3

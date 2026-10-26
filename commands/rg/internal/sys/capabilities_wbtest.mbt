@@ -15,6 +15,19 @@ test "unavailable system detection remains explicit" {
 }
 
 ///|
+test "Windows lexical paths retain drives and canonical prefixes" {
+  assert_eq(normalize_windows_path("C:\\work\\tree\\file"), "C:/work/tree/file")
+  assert_eq(normalize_windows_path("\\\\?\\C:\\work\\file"), "C:/work/file")
+  assert_eq(
+    normalize_windows_path("\\\\?\\UNC\\host\\share\\file"),
+    "//host/share/file",
+  )
+  if !is_windows() {
+    assert_eq(normalize_path("literal\\name"), "literal\\name")
+  }
+}
+
+///|
 async test "released filesystem operations preserve chunks and unknown identities" {
   let root = @fs.tmpdir(prefix="rg-system-contract-")
   defer @fs.rmdir(root, recursive=true)

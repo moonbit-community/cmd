@@ -25217,6 +25217,17 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
+      "behavior_id": "case:rg-windows-backslash-path",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "rg-windows-backslash-path",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
       "behavior_id": "case:rg-preprocessor-copy",
       "command": "rg",
       "status": "supported",
@@ -28977,6 +28988,7 @@
         "rg-file-lines",
         "rg-explicit-stdin",
         "rg-no-match",
+        "rg-windows-backslash-path",
         "rg-preprocessor-copy",
         "rg-preprocessor-early-stop",
         "rg-preprocessor-partial-failure",

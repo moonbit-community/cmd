@@ -23,7 +23,11 @@ async fn run_rg_preprocessor(mode : String, args : ArrayView[String]) -> Unit {
     "stream" => {
       let chunk = Bytes::makei(8192, i => b"alpha\n"[i % 6])
       for ;; {
-        @stdio.stdout.write(chunk)
+        // This fixture's consumer deliberately closes stdout after matching.
+        // A closed pipe ends the producer without adding a child diagnostic.
+        @stdio.stdout.write(chunk) catch {
+          _ => return
+        }
       }
     }
     _ => fail("unknown rg preprocessor fixture")

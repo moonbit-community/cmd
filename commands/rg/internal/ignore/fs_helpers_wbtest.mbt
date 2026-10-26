@@ -17,11 +17,11 @@ async fn TempDir::new(name : String) -> TempDir {
   }
   if exists {
     @sys.remove_dir_all(path) catch {
-      e => abort("failed to remove \{path}: \{e}")
+      e => fail("failed to remove \{path}: \{e}")
     }
   }
   @sys.create_dir_all(path) catch {
-    e => abort("failed to create \{path}: \{e}")
+    e => fail("failed to create \{path}: \{e}")
   }
   TempDir(path)
 }
@@ -39,34 +39,34 @@ fn TempDir::join(self : TempDir, p : String) -> String {
 ///|
 async fn TempDir::close(self : TempDir) -> Unit {
   @sys.remove_dir_all(self.0) catch {
-    e => abort("failed to remove \{self.0}: \{e}")
+    e => fail("failed to remove \{self.0}: \{e}")
   }
 }
 
 ///|
 async fn wfile(path : String, contents : String) -> Unit {
   @sys.write_file(path, @utf8.encode(contents)) catch {
-    e => abort("failed to write \{path}: \{e}")
+    e => fail("failed to write \{path}: \{e}")
   }
 }
 
 ///|
 async fn wfile_size(path : String, size : Int32) -> Unit {
   @sys.write_file(path, Bytes::make(size, b'\x00')) catch {
-    e => abort("failed to write \{path}: \{e}")
+    e => fail("failed to write \{path}: \{e}")
   }
 }
 
 ///|
 async fn mkdirp(path : String) -> Unit {
   @sys.create_dir_all(path) catch {
-    e => abort("failed to create \{path}: \{e}")
+    e => fail("failed to create \{path}: \{e}")
   }
 }
 
 ///|
 async fn symlink(src : String, dst : String) -> Unit {
   @sys.symlink(src, dst) catch {
-    e => abort("failed to symlink \{dst} -> \{src}: \{e}")
+    e => fail("failed to symlink \{dst} -> \{src}: \{e}")
   }
 }
