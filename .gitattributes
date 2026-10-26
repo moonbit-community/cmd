@@ -1,3 +1,2 @@
 # Imported fixtures include deliberate CRLF and trailing blank lines.
 commands/rg/internal/**/testdata/** -text -whitespace
-experiments/rg-compression/internal/**/testdata/** -text -whitespace

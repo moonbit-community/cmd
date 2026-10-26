@@ -29,9 +29,9 @@ the restricted command tier because it can spawn a user-selected program.
 
 **Compressed search is deferred.** An effective `-z`/`--search-zip` exits 2 before
 opening input. `--no-search-zip` and a later `--pre` preserve parser precedence.
-The decoder work, fixtures, tests and former integration source are saved under
-[`experiments/rg-compression`](../../experiments/rg-compression/README.md), outside
-the workspace. This candidate has no decoder dependency and performs no implicit
+The former decoder work, fixtures, tests and integration source are retained
+only in Git history; see the [support record](../../docs/compatibility.md#rg-candidate).
+This candidate has no decoder dependency and performs no implicit
 system decompression. Compression files without `-z` follow ordinary byte-search
 semantics, as in upstream rg.
 
@@ -45,7 +45,7 @@ Paths are represented with the runtime's String API.
 Windows operands and canonical paths are normalized for the internal lexical
 matcher while retaining their drive and UNC prefixes. See the
 [support record](../../docs/compatibility.md#rg-candidate) and
-[migration ledger](../../docs/rg/implementation.md) for precise acceptance and
+[architecture decisions](../../docs/adr/README.md) for precise acceptance and
 unlock conditions. This is a command migration, with no compatibility promise
 for the former `moonbit-community/rg/*` library APIs.
 

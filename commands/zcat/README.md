@@ -28,8 +28,8 @@ The [shared encoder](../gzip/README.md) uses pure MoonBit 32 KiB LZ
 history, 3–258 byte matches, 64 KiB chunks and stored/fixed/dynamic cost selection.
 The G1 frontend GNU cases pass on Native and Wasm; performance acceptance
 remains pending. See the
-[G1 development report](../../docs/reports/2026-10-24-g1-codec.md).
-The [G2 report](../../docs/reports/2026-10-24-g2-streaming.md) records streaming
+[G1 development summary](../../CHANGELOG.md#2026-10-24).
+The [G2 development summary](../../CHANGELOG.md#2026-10-24) records streaming
 byte/error checks, direct timings and memory observations.
 
 Only gzip input is accepted. Other compression formats, filename suffix

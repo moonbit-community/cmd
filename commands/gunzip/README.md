@@ -29,8 +29,8 @@ compressed input or decoded output. The shared
 [gzip encoder](../gzip/README.md) now uses 32 KiB LZ history, 3–258 byte matches,
 64 KiB input chunks and stored/fixed/dynamic block selection. The G1 frontend
 GNU cases pass on Native and Wasm; performance acceptance remains pending. See the
-[G1 development report](../../docs/reports/2026-10-24-g1-codec.md).
-The [G2 report](../../docs/reports/2026-10-24-g2-streaming.md) records the
+[G1 development summary](../../CHANGELOG.md#2026-10-24).
+The [G2 development summary](../../CHANGELOG.md#2026-10-24) records the
 streaming decoder's byte/error checks and resource observations.
 
 Named-file replacement without `-c` is rejected. Other compression formats,

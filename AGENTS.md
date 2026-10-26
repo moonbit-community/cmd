@@ -88,7 +88,8 @@ module and version before any release operation.
 - A behavior or option change must update the command README, help, shared
   catalog, compatibility record and relevant regression together. Record
   tradeoffs in the existing canonical ADR with an Updated date, evidence and
-  conditions for lifting limitations. Keep historical reports immutable.
+  conditions for lifting limitations. Keep dated delivery summaries in
+  CHANGELOG.md; preserve historical claims and recover full reports from Git.
 - Product delivery and required correctness acceptance target Wasm through MoonX.
   Development CI runs the complete applicable Wasm suite on Linux, macOS and
   Windows. Native is retained only for test tools and their own regressions.
@@ -105,7 +106,7 @@ module and version before any release operation.
   current published-coordinate authority; acceptance never rewrites the repository.
   Do not republish unchanged commands or generate new historical snapshot chains.
 - Retain concise results, stage durations and failure diagnostics. Preserve
-  existing historical reports without backfill. Missing artifacts, empty required
+  historical evidence in Git without backfill. Missing artifacts, empty required
   selections, deadlines and cleanup/report failures cannot count as success.
 - Upstream differential evidence must use a verified immutable oracle profile
   containing the image digest, tool-version inventory, and source or
@@ -145,7 +146,7 @@ module and version before any release operation.
   version before moving to the next package. Never run publishes in parallel.
 - After all uploads, run exact published-consumer smoke and contract checks
   with `MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/<cmd>@<version> ...`.
-  Update the published manifest and release report with those results, then
+  Update the published manifest and CHANGELOG.md with those results, then
   commit and push the documentation. Do not publish from a failing or
   unverified candidate.
 - Current registry baseline after the 2026-10-25 R release: core is 0.8.1.
@@ -160,11 +161,14 @@ module and version before any release operation.
   2,135-case run retains 52 explicit boundary results and 22 platform skips;
   ten supplemental find/test/yes functional checks also passed.
   Publication and its local validation
-  scope are recorded in docs/reports/2026-10-25-r-release.md. This release
+  scope are summarized in CHANGELOG.md under 2026-10-25. This release
   does not establish new cross-platform or final performance acceptance.
   current/published.json retains the previous frozen baseline; earlier
   coordinates remain under tests/release_runner/historical/, including stage 0
   and the 2026-10-11 repair.
+  The separate 2026-10-26 manual acceptance run 40270955851 passed all three
+  platforms and the full pinned Linux comparison for those same 78 coordinates;
+  it did not publish packages or establish formal performance acceptance.
   Update this baseline whenever a later release changes it.
 
 ### Mandatory pure MoonBit boundary

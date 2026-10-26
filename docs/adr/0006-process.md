@@ -28,9 +28,9 @@ before retiring its drain task; child diagnostics cannot be lost to task-group
 shutdown. The retained early-close and cancellation tests exercise these paths.
 Portable pure-MoonBit fixtures exercise early close; original process tests are
 retained. Lift process-tree limits only after released public group cancellation
-and three-host Wasm lifecycle evidence. See [rg ledger](../rg/implementation.md).
+and three-host Wasm lifecycle evidence. See [rg support profile](../../docs/compatibility.md#rg-candidate).
 
-Forward argv, cwd, stdio and complete environment through public process APIs. Distinguish cancellation requests, signals, process exit, wait/reap and pipe EOF. Cancel all owned fixture processes before waiting for cleanup. async 0.22.4 ordinary catch does not catch cancellation; defer cleanup must be nocancel, using protect_from_cancel when required.
+Forward argv, cwd, stdio and complete environment through public process APIs. Distinguish cancellation requests, signals, process exit, wait/reap and pipe EOF. Cancel all owned fixture processes before waiting for cleanup. async 0.22.5 ordinary catch does not catch cancellation; defer cleanup must be nocancel, using protect_from_cancel when required.
 
 Both Native test drivers share process execution and fixture cleanup. Ordinary
 local cases have a 15-second default deadline; Docker and MoonX cases have a
@@ -46,7 +46,7 @@ so a cleanup stall remains diagnosable in CI.
 
 ## Alternatives and compatibility cost
 
-The unpublished O5 split filter reuses the pure MoonBit shell Session with
+The published split filter reuses the pure MoonBit shell Session with
 public pipes and a per-piece FILE environment. The small public `last_signal`
 query preserves raw signal termination separately from an ordinary exit 141;
 pipeline status follows the last command. This is observation of the public
@@ -103,7 +103,8 @@ through hard_cancel. graceful_cancel additionally escalates after a timeout.
 Reject this workaround because it would reintroduce false success; release a
 standalone kill subset only when signal/target selection and failure reporting
 are faithful. The needed API is public signal sending with observable OS errors,
-separate from task cancellation. Probe: ../reports/2026-09-21-api-probes/cancellation-is-not-kill.mbtx.
+separate from task cancellation. The original probe is recoverable from the pre-cleanup Git history;
+this does not turn cancellation into a supported signal-sending API.
 
 Reject sleep-duration guesses as proof of concurrency. Ready/ack synchronization
 establishes that independent make recipes overlap while shared prerequisites
@@ -113,20 +114,21 @@ turns an unstable process test into a pass.
 
 ## Versions and evidence
 
-Baseline: async 0.22.4, x 0.5.5, moonjq 0.1.2; MoonBit 2026-09-20.
-Upgrade-only Native 104/104 and Wasm 91/91 tests passed after adapting fixture cleanup. Shell/process tests and continuous-input probes cover owned pipes and waiting. The upstream gap register separates exec, group signalling, terminal ownership and lifecycle events.
-Historical results remain in [the audit](../reports/2026-09-19-command-fidelity-audit.md).
-Candidate runtime results are recorded separately from published versions.
+Current process code uses public async 0.22.5 APIs. Shell/process package
+tests and shared stateful scenarios observe owned pipes, direct-child waits,
+timeouts, inherited environment and continuous input. Rg's pipe-ordering
+fix is commit `880f4ad`; its early-close and cancellation regressions remain
+under `commands/rg/internal/sys`. Process-group, exec and terminal claims
+require separate released APIs and actual Wasm-host evidence.
 
 ## Migrated process-adjacent profiles
 
-`yes@0.1.1` uses a repeated byte producer, public stream writes and downstream
+Published `yes@0.1.3` uses a repeated byte producer, public stream writes and downstream
 closure to terminate. The target is an unbounded producer without unbounded
 allocation. Reject generating an infinite in-memory string, swallowing a write
 failure as success, or invoking host yes. Exact SIGPIPE status/diagnostic parity
 is still unverified and is distinct from observing EOF/termination. Evidence:
-`tests/cases/yes.json`, pipe lifecycle coverage and the 0.1.1 release report on
-async 0.22.4 / MoonBit 2026-09-20. Expand the signal claim only after closed-pipe
+`tests/cases/yes.json`, pipe lifecycle coverage and the dated release entries in CHANGELOG.md. Expand the signal claim only after closed-pipe
 status/cleanup comparisons on Native/Wasm per host; ordinary output is usable.
 
 `which` uses public `fs.can_execute` plus regular-file kind on POSIX. Access
@@ -139,7 +141,7 @@ aliases/functions, which belong to a different process's state.
 
 The change intentionally stops reporting mode-0644 POSIX files as commands.
 Evidence: async 0.22.4 public access APIs, the original
-[Native/Wasm/MoonX probe](../reports/2026-10-11-command-followups/README.md),
+[Native/Wasm/MoonX probe](../../CHANGELOG.md#2026-10-11),
 and repaired 0644/0755/symlink/PATH/backslash/Windows fixtures. Add shell-aware
 lookup only through an explicitly supplied shell session; ordinary PATH lookup
 does not depend on a future metadata API. Mode-query absence
@@ -148,3 +150,7 @@ remains real for cp/chmod, but must not be reused to justify this false success.
 ## Revisit when
 
 Require released public exec/process-group/event APIs and validate descendant scope, cancellation, wait/reap and pipe closure separately on each backend.
+
+## Source review (2026-10-26)
+
+Current sources are [process.mbt](../../core/process/process.mbt), [test execution](../../tests/testkit/execute.mbt), [process scenarios](../../tests/runner/scenario_process.mbt), [rg process ownership](../../commands/rg/internal/sys/process.mbt), [env](../../commands/env/) and [xargs](../../commands/xargs/). Original Session/process work is `6fff343`; env/filter extensions are `db9dfe7`/`f366030`.

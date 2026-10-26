@@ -79,9 +79,9 @@ The workspace runner's `sh-interactive-session` scenario verifies persistent
 open stdin, ENV, PS1/PS2, immediate execution, multiline input, variables,
 functions, cwd, read, foreground input, error recovery, EOF and exit. Its
 foreground helper reads one line in pure MoonBit. Run the prebuilt driver with
-`--suite scenarios --case sh-interactive-session --backend native` or `wasm`.
+`--suite scenarios --case sh-interactive-session --backend wasm`.
 See [test instructions](../../tests/runner/README.md). The original probe is
-retained under `docs/reports/2026-09-21-test-cleanup-evidence/repro/`.
+retained in Git history; dated milestones are in [CHANGELOG.md](../../CHANGELOG.md).
 
 ## Standalone metadata
 

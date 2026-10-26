@@ -78,8 +78,8 @@ recorded 2,094 passes (including startup and boundaries), 18 platform skips and
 zero failures. The identical inherited-stdin metadata checks, shared scenarios,
 policy allow/deny paths and stream assertions ran through MoonX. Seven focused
 fixed-oracle cat/unlink checks also passed locally with the pinned image. These
-local results do not replace the planned complete hosted Linux comparison or
-three-platform release workflow.
+local results are distinct from the complete hosted Linux comparison and
+three-platform release workflow recorded below.
 
 The complete hosted MoonX workflow
 [40270955851](https://github.com/moonbit-community/cmd/actions/runs/40270955851)
@@ -88,12 +88,15 @@ Linux also passed the complete pinned upstream comparison. It built only Native
 acceptance tools, so product execution did not depend on workspace command
 artifacts. No package was uploaded and no published manifest was rewritten.
 
-The controlled cold run at `0e80efd` passed all three development jobs within
-20 minutes. Detailed phase timings, counts and cached measurements are recorded
-in [CI performance](ci-performance.md). The previous successful main run
-40193652755 is a historical cost baseline, not evidence for this implementation.
-Final PR checks, the branch-protection transition, actual-main verification and
-the manual resource entrypoint are tracked in
-[PR #57](https://github.com/moonbit-community/cmd/pull/57). A fresh Native-debug
-build passed all 117 harness tests locally; its complete functional run retained
-2,027 passes and 18 platform skips. Product Wasm builds remain release builds.
+PR #57 completed the migration and branch-protection transition. Later
+[PR #58](https://github.com/moonbit-community/cmd/pull/58) and actual-main run
+[40307223749](https://github.com/moonbit-community/cmd/actions/runs/40307223749)
+passed all three development jobs, including 1,566 Wasm package tests and 117
+Native harness tests per host. Product Wasm builds remain release builds;
+Native test tools use debug builds.
+
+The preliminary cold timing run at `635f355` used release-built tools, before
+the final debug-tool configuration. Its timings are summarized in the
+[changelog](../CHANGELOG.md#2026-10-26); it is not a controlled warm-cache or
+final-configuration performance result. Full historical measurements remain
+in Git at `65b4b7eea24c8215776c40721e1e00ad436268ce`.

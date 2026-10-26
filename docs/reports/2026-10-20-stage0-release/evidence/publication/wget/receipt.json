@@ -1,7 +1,0 @@
-{
-  "source_revision": "7829269d1a3b751768e6f64a0d305cd76282ee02",
-  "coordinate": "cli/wget@0.2.3",
-  "archive_sha256": "99f7b69e5d42a3a46aa715734c06525d92c8d544eac01cd7cd9c0e8d004cff2f",
-  "verified": true,
-  "verification_directory": "_build/verification/stage0-2026-10-20/wget"
-}

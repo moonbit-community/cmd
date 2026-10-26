@@ -33,7 +33,7 @@ assertions. Each `-e` expression retains its own capture numbering. `-i` folds
 C-byte literals, classes and backreferences while preserving assertion grammar.
 Repeated nullable captures follow the tested GNU candidate and capture-register
 selection, including counted repeats and references. See the
-[workspace support record](../../docs/compatibility.md#workspace-matcher-and-sed-candidates).
+[workspace support record](../../docs/compatibility.md#published-matcher-and-sed-profiles).
 Locale-sensitive collation and
 multibyte case folding are not currently implemented. Exit statuses are 0 for a selected
 line/file, 1 for no selection, and 2 for an error.
