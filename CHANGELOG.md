@@ -5,6 +5,11 @@ by date and delivery milestone rather than by a single package version.
 
 ## 2026-10-26
 
+- Extended the manual resource workflow to cover cut/uniq/wc alongside the
+  existing commands, including Linux kernel peak RSS. Added a 23-workload
+  direct-Wasm performance profile with two independent nine-pair windows and
+  explicit dispersion/drift checks. Raw samples and noisy results are retained;
+  this does not publish packages or replace formal performance acceptance.
 - Extended unpublished core 0.8.2 and grep 0.3.1 with adaptive multi-literal
   search, record-level count skipping and reuse of proven regex suffixes.
   Selected local pairs improved 64 MiB / 16-pattern counts by 4.49x and a

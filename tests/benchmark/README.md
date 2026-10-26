@@ -277,7 +277,10 @@ The lab and `results/` directories must exist. `prepare` generates deterministic
 corpora without fetching/building references. The expected reference layout is
 `oracles/coreutils-9.11/src/`, `oracles/grep-3.12/src/`, and, for optional other
 rows, `oracles/gzip-1.14/gzip` and pinned `oracles/bin/{rg,jq}`. Bind executable,
-source and input hashes separately before interpreting results. Each run retains
+source and input hashes separately before interpreting results. The `ci` mode
+accepts an exported oracle `bin` directory as its final argument for the
+cut/uniq/wc/grep resource profile; the enclosing workflow records its image ID.
+It uses the same correctness checks and sampling as `prototype`. Each run retains
 raw samples and final output/error files under `results/`. Exploratory medians
 cannot replace the full 105-pair, noise-qualified, immutable-provider workflow.
 

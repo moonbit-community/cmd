@@ -74,10 +74,11 @@ async fn main {
     (
       "kernel-rss-linux",
       [
-        "--kernel-rss", "linux", "--commands", "rev,split,csplit,tac,column,sort,diff",
+        "--kernel-rss", "linux", "--commands", "rev,split,csplit,tac,column,sort,diff,cut,uniq,wc",
         "--sizes", "8388608,67108864,536870912",
       ],
     ),
+    ("performance", []),
   ]
   let results : Array[Json] = []
   let mut failures = 0
@@ -88,6 +89,13 @@ async fn main {
   }
   for (name, options) in profiles {
     if selected_profile != "all" && name != selected_profile { continue }
+    if name == "performance" && !selected_commands.is_empty() &&
+      !selected_commands.split(",").any(command => ["cut", "uniq", "wc", "grep"].contains(command.to_owned())) {
+      guard selected_profile == "all" else { fail("no applicable performance commands") }
+      results.push({ "profile": name, "status": Json::null(), "skipped": "no applicable performance commands" })
+      @fs.write_file(reports + "/profiles.json", results.to_json().stringify(indent=2) + "\n")
+      continue
+    }
     let options = if selected_commands.is_empty() { options } else {
       let filtered : Array[String] = []
       let mut index = 0
@@ -101,7 +109,11 @@ async fn main {
     }
     let status = @shell.Cmd(
       "moon",
-      [..common, "--report-dir", reports + "/" + name, ..options],
+      if name == "performance" {
+        ["run", workspace + "/tests/resources/performance.mbtx", "--", reports + "/performance", workspace + "/_build/wasm/release/build/cli", prefix + "/bin", selected_commands]
+      } else {
+        [..common, "--report-dir", reports + "/" + name, ..options]
+      },
       cwd=workspace,
       env=Map([("LD_LIBRARY_PATH", libraries)]),
       stdout=Inherit,

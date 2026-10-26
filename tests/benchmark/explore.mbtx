@@ -177,15 +177,18 @@ async fn main {
   let args = @env.args()
   guard args.length() >= 6 else {
     fail(
-      "Usage: explore.mbtx LAB WASM_CLI_ROOT prepare|prototype|ab CASE_IDS PAIRS [BASELINE_CLI_ROOT]",
+      "Usage: explore.mbtx LAB WASM_CLI_ROOT prepare|prototype|ab|ci CASE_IDS PAIRS [BASELINE_CLI_ROOT|ORACLE_BIN]",
     )
   }
   let mode = args[3]
-  guard mode == "prepare" || mode == "prototype" || mode == "ab" else {
+  guard mode == "prepare" || mode == "prototype" || mode == "ab" || mode == "ci" else {
     fail("invalid mode")
   }
   if mode == "ab" && args.length() != 7 {
     fail("ab requires a baseline root")
+  }
+  if mode == "ci" && args.length() != 7 {
+    fail("ci requires an exported oracle bin directory")
   }
   if mode == "prepare" {
     @fs.write_file(lab + "/empty", b"")
@@ -194,6 +197,7 @@ async fn main {
     corpus("text8m", 8388608, 80, false)
     corpus("text64m", 67108864, 80, false)
     corpus("long8m", 8388608, 1048576, false)
+    corpus("long64m", 67108864, 1048576, false)
     corpus("text1m", 1048576, 80, false)
     corpus("entropy8m", 8388608, 80, false, entropy=true)
     corpus(
@@ -229,9 +233,9 @@ async fn main {
     println("corpora prepared")
     return
   }
-  let cu = lab + "/oracles/coreutils-9.11/src/"
-  let gnugrep = lab + "/oracles/grep-3.12/src/grep"
-  let gzip = lab + "/oracles/gzip-1.14/gzip"
+  let cu = if mode == "ci" { args[6].trim_end(chars="/").to_owned() + "/" } else { lab + "/oracles/coreutils-9.11/src/" }
+  let gnugrep = if mode == "ci" { cu + "grep" } else { lab + "/oracles/grep-3.12/src/grep" }
+  let gzip = if mode == "ci" { cu + "gzip" } else { lab + "/oracles/gzip-1.14/gzip" }
   let wasmroot = args[2].trim_end(chars="/").to_owned() + "/"
   add("true-empty", "true", [], "empty", cu + "true")
   add("cat-64m", "cat", [], "text64m", cu + "cat")
@@ -320,6 +324,7 @@ async fn main {
   add("jq-select-1m", "jq", ["-c", ".id"], "json1m", lab + "/oracles/bin/jq")
   add("cut-fields-8m", "cut", ["-f", "1,3", "-d", " "], "text8m", cu + "cut")
   add("cut-long-8m", "cut", ["-b", "1-8"], "long8m", cu + "cut")
+  add("cut-long-64m", "cut", ["-b", "1-8"], "long64m", cu + "cut")
   add("cut-tiny-8m", "cut", ["-b", "1"], "tiny8m", cu + "cut")
   add("uniq-repeated-8m", "uniq", ["-c"], "repeat8m", cu + "uniq")
   add("uniq-long-8m", "uniq", [], "long8m", cu + "uniq")
@@ -339,6 +344,7 @@ async fn main {
     gnugrep,
     status=1,
   )
+  add("grep-regex-miss-64m", "grep", ["-E", "-c", "[0-9]{4}.*absent_xyz"], "text64m", gnugrep, status=1)
   add(
     "grep-regex-empty",
     "grep",

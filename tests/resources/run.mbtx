@@ -347,6 +347,8 @@ fn arguments(
     "sort" => ["-S", "4M"]
     "column" => ["-t"]
     "grep" => if binary { ["-a", "-F", "needle"] } else { ["-F", "needle"] }
+    "cut" => ["-b", "1-8"]
+    "wc" => ["-l"]
     "gzip" => ["-n", "-c"]
     "diff" => ["--label", "left", "--label", "right", "-u", input, changed]
     "strings" => ["-a"]
@@ -382,13 +384,13 @@ async fn main {
   let oracle = @fs.realpath(options.get("--oracle-bin").unwrap())
   let commands = options
     .get("--commands")
-    .unwrap_or("rev,strings,split,csplit,tac,column,sort,grep,gzip,diff")
+    .unwrap_or("rev,strings,split,csplit,tac,column,sort,grep,gzip,diff,cut,uniq,wc")
     .split(",")
     .map(value => value.to_owned())
     .collect()
   let seen : Set[String] = Set([])
   for command in commands {
-    guard ["rev", "strings", "split", "csplit", "tac", "column", "sort", "grep", "gzip", "diff"].contains(command) && !seen.contains(command) else {
+    guard ["rev", "strings", "split", "csplit", "tac", "column", "sort", "grep", "gzip", "diff", "cut", "uniq", "wc"].contains(command) && !seen.contains(command) else {
       fail("unknown, empty or duplicate resource command: " + command)
     }
     seen.add(command)

@@ -6,7 +6,7 @@ on:
       profile:
         description: Resource profile
         type: choice
-        options: [all, records, long, heldout, kernel-rss-linux]
+        options: [all, records, long, heldout, kernel-rss-linux, performance]
         default: all
       commands:
         description: Optional comma-separated command names
