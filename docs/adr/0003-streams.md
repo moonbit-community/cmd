@@ -40,6 +40,16 @@ short-input workloads and complete process timing; changing sample units or
 averaging away single-process variation would require a separate acceptance
 decision, not a stability fix.
 
+The second run, 40398697579 at 8fcdad5, completed the 25-case cache/control
+selection, but Native control and preloading each passed only 16/25 stability
+rows, and GNU-time observation passed 15/25. Empty-input Wasm `true` itself
+showed 11.9% between-window drift. This establishes a contribution outside
+text-processing workloads without attributing it uniquely to the runtime or
+host. Input preloading is not adopted. The Linux-only `cpu` diagnostic adds
+`perf stat --null` accounting, with no PMU permission changes, to distinguish
+CPU consumption from elapsed variation. Its wrapper overhead and child CPU
+accounting are explicitly separate from unchanged acceptance measurements.
+
 ### Performance wave 4 candidate (2026-10-26)
 
 This extends unpublished core 0.8.2 and grep 0.3.1, with wave-3 commit

@@ -60,6 +60,7 @@ struct Sample {
   status : Int32?
   stdout_bytes : Int64
   rusage : String?
+  perf : String?
 } derive(ToJson)
 
 ///|
@@ -93,6 +94,10 @@ async fn measure(
   }
   let rusage = @env.get_env_var("CMD_BENCH_RUSAGE").unwrap_or("0")
   guard rusage == "0" || rusage == "1" else { fail("invalid rusage setting") }
+  let perf = @env.get_env_var("CMD_BENCH_PERF").unwrap_or("")
+  guard perf.is_empty() || rusage == "0" else {
+    fail("counter observers must use separate diagnostic arms")
+  }
   let output = @process.redirect_to_file(prefix + ".out")
   defer output.close()
   let errors = @process.redirect_to_file(prefix + ".err")
@@ -105,7 +110,29 @@ async fn measure(
     ("TZ", "UTC"),
     ("RIPGREP_CONFIG_PATH", ""),
   ])
-  let status = if rusage == "1" {
+  let status = if !perf.is_empty() {
+    Some(
+      @process.run(
+        "/usr/bin/timeout",
+        [
+          "--kill-after=2s",
+          "20s",
+          perf,
+          "stat",
+          "--null",
+          "-o",
+          prefix + ".perf",
+          "--",
+          invocation.program,
+          ..invocation.args,
+        ],
+        stdin~,
+        stdout=output,
+        stderr=errors,
+        extra_env=environment,
+      ),
+    )
+  } else if rusage == "1" {
     // GNU timeout owns a process group, so its deadline covers time and the
     // measured descendant. Counter collection is a separate diagnostic arm.
     Some(
@@ -142,10 +169,22 @@ async fn measure(
     })
   }
   let elapsed_us = @bench.monotonic_clock_end(start)
+  let perf_report = if perf.is_empty() {
+    None
+  } else {
+    let report = @fs.read_file(prefix + ".perf").text()
+    for field in ["seconds time elapsed", "seconds user", "seconds sys"] {
+      guard report.contains(field) else {
+        fail("incomplete perf accounting: \{field}")
+      }
+    }
+    Some(report)
+  }
   {
     elapsed_us,
     status,
     stdout_bytes: @fs.file_size(prefix + ".out"),
+    perf: perf_report,
     rusage: if rusage == "1" {
       Some(@fs.read_file(prefix + ".rusage").text())
     } else {
@@ -572,6 +611,7 @@ async fn main {
       "settle_ms": @env.get_env_var("CMD_BENCH_SETTLE_MS").unwrap_or("0"),
       "preload": @env.get_env_var("CMD_BENCH_PRELOAD").unwrap_or("0"),
       "rusage": @env.get_env_var("CMD_BENCH_RUSAGE").unwrap_or("0"),
+      "perf": @env.get_env_var("CMD_BENCH_PERF").unwrap_or(""),
       "case": Json(case),
       "candidate_invocation": Json(candidate),
       "reference_invocation": Json(reference),

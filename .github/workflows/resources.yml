@@ -15,7 +15,7 @@ on:
       diagnostic_phase:
         description: Hypothesis set for stability-diagnostic only
         type: choice
-        options: [observer, cache]
+        options: [observer, cache, cpu]
         default: observer
 
 permissions:
@@ -57,6 +57,11 @@ jobs:
           moon version --all | tee test-reports/toolchain.log
       - run: moon update
       - run: moon build --target wasm --release --deny-warn
+      - name: Install CPU accounting observer
+        if: ${{ inputs.profile == 'stability-diagnostic' && inputs.diagnostic_phase == 'cpu' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends linux-tools-generic
       - uses: docker/setup-buildx-action@v3
         with:
           buildkitd-config-inline: |

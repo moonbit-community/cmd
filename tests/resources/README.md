@@ -137,9 +137,27 @@ cannot resolve a single millisecond-scale CPU difference. No MoonX invocation
 or startup subtraction is used. `diagnostic_phase` selects the hypothesis set
 only for the explicit diagnostic profile.
 
+The Linux-only `cpu` phase compares the unwrapped Native observer with
+`perf stat --null`, retaining high-resolution elapsed, user and system time
+for every invocation. Null mode does not request hardware counters or change
+kernel permissions. CI installs the distribution's Linux tools, and the report
+records the actual executable and version. A preflight and every sample require
+all three accounting fields. The outer process time includes the wrapper and
+remains separate from perf's child accounting; neither replaces acceptance time.
+
 The first Linux x64 diagnostic (run 40395472012, commit 87dc76b) retained all
 23 workloads in both windows. The existing Wasm observer and Native observer
 each had 17 stable workloads; the 100 ms pause and one-CPU variants each had
 14. No variant passed the complete stability gate. One-CPU CPU-pressure
 observations increased substantially. These negative results do not justify
 adopting a pause, replacing the observer, or restricting acceptance to one CPU.
+
+The cache/control run 40398697579 at 8fcdad5 retained all 25 workloads in both
+windows, including the two empty-input controls. Unwrapped Native and preloaded
+variants each had 16/25 stable workloads; GNU-time observation had 15/25. The
+unwrapped Wasm `true` control drifted from 9.54 to 8.46 ms (11.9%), demonstrating
+that some variability exists without text processing. This does not identify
+runtime compilation, allocation, host scheduling or storage as the unique
+cause. GNU time's coarse CPU values cannot resolve the remaining distinction.
+The host CPU differed from the first diagnostic, so cross-run absolute times
+cannot establish an improvement. No tested intervention is a stability fix.

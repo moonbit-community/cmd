@@ -5,6 +5,11 @@ by date and delivery milestone rather than by a single package version.
 
 ## 2026-10-27
 
+- Cache/control diagnostic 40398697579 completed every window but retained
+  unstable empty-input controls and no passing full selection. Input preloading
+  is not a selected fix. Added a separate Linux perf null-counter diagnostic
+  with finer CPU accounting; ordinary resource acceptance remains unchanged.
+
 - Linux diagnostic run 40395472012 completed all controlled windows but found
   no stable full selection: 17/23 for either observer, 14/23 with settling or
   one-CPU affinity. Retained these rejected approaches and added a cache/control

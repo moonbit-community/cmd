@@ -32,7 +32,7 @@ async fn main {
   let phase = @env.get_env_var("CMD_BENCH_DIAGNOSTIC_PHASE").unwrap_or(
     "observer",
   )
-  guard phase == "observer" || phase == "cache" else {
+  guard phase == "observer" || phase == "cache" || phase == "cpu" else {
     fail("unknown diagnostic phase")
   }
   @fs.mkdir(root, recursive=true, allow_exist=false)
@@ -63,7 +63,7 @@ async fn main {
     }
   }
   guard !cases.is_empty() else { fail("empty diagnostic selection") }
-  if phase == "cache" {
+  if phase != "observer" {
     cases.append(["true-empty", "grep-regex-empty"])
   }
   let script = "tests/benchmark/explore.mbtx"
@@ -110,6 +110,49 @@ async fn main {
     }
   }
   let linux = @fs.exists("/proc/self/status")
+  let perf = if phase == "cpu" {
+    guard linux else { fail("CPU accounting requires Linux perf") }
+    let candidates = []
+    for name in @fs.readdir("/usr/lib/linux-tools", sort=true) {
+      let path = "/usr/lib/linux-tools/" + name + "/perf"
+      if @fs.exists(path) {
+        candidates.push(path)
+      }
+    }
+    guard !candidates.is_empty() else { fail("missing Linux perf executable") }
+    let path = candidates[candidates.length() - 1]
+    guard execute(path, ["version"], root + "/perf-version.txt") == 0 else {
+      fail("perf version check failed")
+    }
+    guard execute(
+        "/usr/bin/timeout",
+        [
+          "--kill-after=2s",
+          "20s",
+          path,
+          "stat",
+          "--null",
+          "-o",
+          root + "/perf-preflight.txt",
+          "--",
+          args[3] + "/true",
+        ],
+        root + "/perf-preflight.log",
+        env=Map([("LC_ALL", "C"), ("LANG", "C")]),
+      ) ==
+      0 else {
+      fail("perf accounting preflight failed")
+    }
+    let report = @fs.read_file(root + "/perf-preflight.txt").text()
+    for field in ["seconds time elapsed", "seconds user", "seconds sys"] {
+      guard report.contains(field) else {
+        fail("missing perf accounting field")
+      }
+    }
+    path
+  } else {
+    ""
+  }
   if linux {
     ignore(execute("lscpu", [], root + "/lscpu.txt"))
     @fs.write_file(
@@ -141,10 +184,15 @@ async fn main {
       ("native-observer", "native", "0", false, false, false),
       ("native-settle-100ms", "native", "100", false, false, false),
     ]
-  } else {
+  } else if phase == "cache" {
     [
       ("native-control", "native", "0", false, false, false),
       ("native-preload", "native", "0", false, true, false),
+    ]
+  } else {
+    [
+      ("native-control", "native", "0", false, false, false),
+      ("native-perf", "native", "0", false, false, false),
     ]
   }
   if linux && phase == "observer" {
@@ -157,6 +205,7 @@ async fn main {
     "scope": "Controlled diagnostic, never resource or stability acceptance; all raw samples retained without retry or removal",
     "cases": cases,
     "phase": phase,
+    "perf": perf,
     "rounds": 2,
     "measured_pairs_per_window": 9,
     "single_cpu": cpu,
@@ -215,6 +264,7 @@ async fn main {
           ("CMD_BENCH_SETTLE_MS", settle),
           ("CMD_BENCH_PRELOAD", if preload { "1" } else { "0" }),
           ("CMD_BENCH_RUSAGE", if rusage { "1" } else { "0" }),
+          ("CMD_BENCH_PERF", if name == "native-perf" { perf } else { "" }),
         ]),
       )
       if linux {
