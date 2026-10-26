@@ -5,6 +5,7 @@ fn Matcher::may_match_block(
   ignore_case : Bool,
 ) -> Bool {
   match self {
+    ManyFixed(set) => ignore_case || set.matches(data)
     Fixed(patterns, _, _) =>
       ignore_case ||
       patterns.iter().any(pattern => data.find(pattern) is Some(_))
@@ -47,6 +48,11 @@ fn GrepInput::count_buffered(
   ignore_case : Bool,
   invert : Bool,
 ) -> UInt64 {
+  if !ignore_case &&
+    matcher is ManyFixed(set) &&
+    !set.contains_byte(self.delimiter[0]) {
+    return self.count_literals(set, invert)
+  }
   if !ignore_case &&
     matcher is Fixed([literal], false, false) &&
     literal.find(self.delimiter) is None {
@@ -95,6 +101,31 @@ fn GrepInput::count_literal(
       matched += 1
       position = end + 1
     }
+  }
+  self.position += complete.length()
+  self.offset += complete.length().to_int64()
+  self.number += records.to_int64()
+  (if invert { records - matched } else { matched }).to_uint64()
+}
+
+///|
+fn GrepInput::count_literals(
+  self : GrepInput,
+  set : @bytere.LiteralSet,
+  invert : Bool,
+) -> UInt64 {
+  let remaining = self.bytes[self.position:]
+  guard remaining.rev_find(self.delimiter) is Some(last) else { return 0UL }
+  let complete = remaining[:last + 1]
+  let records = @stream.count_byte(complete, self.delimiter[0])
+  let mut matched = 0
+  let mut position = 0
+  while position < complete.length() {
+    guard set.find_any(complete, start=position) is Some((_, end)) else {
+      break
+    }
+    position = end + complete[end:].find(self.delimiter).unwrap() + 1
+    matched += 1
   }
   self.position += complete.length()
   self.offset += complete.length().to_int64()

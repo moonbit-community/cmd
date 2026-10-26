@@ -20,6 +20,15 @@ priv struct EndpointDfa {
   ids : Map[Array[Int32], Int32]
   edges : FixedArray[Int32]
   accepting : FixedArray[Bool]
+  skips : FixedArray[LoopSkip]
+}
+
+///|
+priv enum LoopSkip {
+  Unknown
+  Scalar
+  All
+  Until(Bytes)
 }
 
 ///|
@@ -96,6 +105,7 @@ fn EndpointDfa::new(
     ids: Map([]),
     edges: FixedArray::make(256 * representatives.length(), -1),
     accepting: FixedArray::make(256 * representatives.length(), false),
+    skips: FixedArray::make(256, Unknown),
   }
   let initial = self.closure([self.entry])
   self.accepting[0] = initial.contains(self.accept)
@@ -228,4 +238,94 @@ fn SpanDfa::longest(self : SpanDfa, value : BytesView, start : Int32) -> Int32 {
     }
   }
   best
+}
+
+///|
+fn SpanDfa::longest_skipping(
+  self : SpanDfa,
+  value : BytesView,
+  start : Int32,
+  suffix : SpanSuffix,
+) -> Int32 {
+  let mut state = 0
+  let mut best = if self.forward.accepting[0] { start } else { -1 }
+  let mut position = start
+  while position < value.length() {
+    if state == suffix.state && position >= suffix.start {
+      if suffix.accepting {
+        best = value.length()
+      }
+      break
+    }
+    if value.length() - position >= 64 {
+      let skipped = match self.forward.skip(state) {
+        Until(byte) =>
+          value[position:].find(byte).unwrap_or(value.length() - position)
+        All => value.length() - position
+        _ => 0
+      }
+      if skipped > 0 {
+        let before = position
+        position += skipped
+        if self.forward.accepting[state] {
+          best = position
+        }
+        if position == value.length() {
+          suffix.state = state
+          suffix.start = before
+          suffix.accepting = self.forward.accepting[state]
+          break
+        }
+      }
+    }
+    state = self.forward.step(state, value[position])
+    if state == -3 {
+      return -3
+    }
+    if state == -2 {
+      break
+    }
+    if self.forward.accepting[state] {
+      best = position + 1
+    }
+    position += 1
+  }
+  best
+}
+
+///|
+/// A proven self-looping suffix has the same future from every later position.
+/// The memo belongs to one immutable record, not to the shared automaton.
+priv struct SpanSuffix {
+  mut state : Int32
+  mut start : Int32
+  mut accepting : Bool
+}
+
+///|
+/// Skip only bytes whose transition is proven to return to the same state.
+/// Resolving this row remains subject to the ordinary subset-cache budget.
+fn EndpointDfa::skip(self : EndpointDfa, state : Int32) -> LoopSkip {
+  let id = state / self.representatives.length()
+  if !(self.skips[id] is Unknown) {
+    return self.skips[id]
+  }
+  let mut escape = -1
+  for byte in 0..<256 {
+    let target = self.step(state, byte.to_byte())
+    if target == -3 || (target != state && escape >= 0) {
+      self.skips[id] = Scalar
+      return Scalar
+    }
+    if target != state {
+      escape = byte
+    }
+  }
+  let skip = if escape < 0 {
+    All
+  } else {
+    Until(Bytes::from_array([escape.to_byte()]))
+  }
+  self.skips[id] = skip
+  skip
 }

@@ -75,6 +75,7 @@ struct RecordSearch {
   word : Bool
   input : RecordText
   mut starts : FixedArray[UInt64]?
+  mut suffix : SpanSuffix?
 }
 
 ///|
@@ -108,6 +109,7 @@ pub fn RecordMatcher::search_bytes(
     word,
     input: { value, decoded: None, },
     starts: None,
+    suffix: None,
   }
 }
 
@@ -133,7 +135,15 @@ pub fn search_bytes(
   word~ : Bool = false,
 ) -> Array[RecordSearch] {
   let input : RecordText = { value, decoded: None, }
-  patterns.map(matcher => { matcher, value, whole, word, input, starts: None, })
+  patterns.map(matcher => {
+    matcher,
+    value,
+    whole,
+    word,
+    input,
+    starts: None,
+    suffix: None,
+  })
 }
 
 ///|
@@ -167,7 +177,13 @@ pub fn RecordSearch::find_span(
       match self.starts {
         Some(bits) => {
           guard next_start(bits, start) is Some(left) else { return None }
-          let right = dfa.longest(self.value, left)
+          if self.suffix is None && self.value.length() - left >= 4096 {
+            self.suffix = Some({ state: -1, start: 0, accepting: false, })
+          }
+          let right = match self.suffix {
+            Some(suffix) => dfa.longest_skipping(self.value, left, suffix)
+            None => dfa.longest(self.value, left)
+          }
           if right >= left {
             return Some((left, right))
           }

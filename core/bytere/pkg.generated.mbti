@@ -24,6 +24,13 @@ pub(all) struct Hit {
   groups : Array[String?]
 }
 
+type LiteralSet
+pub fn LiteralSet::contains_byte(Self, Byte) -> Bool
+pub fn LiteralSet::find_any(Self, BytesView, start? : Int32) -> (Int32, Int32)?
+pub fn LiteralSet::find_span(Self, BytesView, start? : Int32) -> (Int32, Int32)?
+pub fn LiteralSet::matches(Self, BytesView) -> Bool
+pub fn LiteralSet::new(Array[Bytes]) -> Self?
+
 type Pattern
 pub fn Pattern::find(Self, String, start? : Int32) -> Hit?
 pub fn Pattern::find_span(Self, String, start? : Int32, whole? : Bool, word? : Bool) -> (Int32, Int32)?

@@ -13,6 +13,117 @@ pairing are retired. Dated Native observations retain their historical scope.
 
 ## Target and decision
 
+### Performance wave 4 candidate (2026-10-26)
+
+This extends unpublished core 0.8.2 and grep 0.3.1, with wave-3 commit
+`d9107de` as the frozen comparison. Command options, help, catalog contracts,
+published coordinates and published expectations are unchanged. Measurements
+remain direct release Wasm through `moonrun`, including runtime initialization,
+I/O and exit, with no MoonX timing or startup subtraction.
+
+Grep compiles four or more fixed patterns into one `LiteralSet` when word/whole
+filters are absent. Nonempty sets have at most 4096 total literal bytes. If the
+shortest literal has at least three bytes, a 4096-entry table skips on hashed
+two-byte suffixes of the shortest prefix, then verifies complete candidate
+literals. The conservative shifts follow the multiple-pattern method in
+[Wu and Manber, TR 94-17](https://cs.arizona.edu/sites/default/files/TR94-17.pdf).
+Hash collisions reduce skips or add verification work; they cannot establish
+a match. Shorter patterns select a byte-class Aho-Corasick table with at most
+1024 states and 257 classes, including the other-byte class. Transition and
+accepted-length tables together use at most 2,105,344 bytes of integer payload;
+construction maps and object overhead are additional. Longer-pattern sets do
+not construct this trie. Empty or over-budget sets retain per-pattern search.
+
+`LiteralSet.find_span` preserves earliest-start, longest-end selection.
+`find_any` stops after a verified occurrence without resolving longest ties.
+For delimiter-free patterns it cannot skip an earlier matching record, so the
+count path uses it to find a record and skip its remaining hits. Inversion
+counts complete records minus matched records; incomplete tails retain the
+record path. Case folding retains per-record matching, and word/whole filters
+retain the original fixed matcher. The public API adds only the opaque literal
+set and its construction, occurrence, span, boolean and delimiter queries.
+
+Long-record regex endpoint queries now skip a region only after proving that
+every consumed byte leaves the forward DFA in the same state. If that region
+reaches the record end, one constant-size certificate records the state, suffix
+start and acceptance. Later queries reaching the same state inside that suffix
+can reuse its result. The certificate belongs to one immutable record, supports
+resumed or decreasing start offsets, and is never shared between records.
+Selection starts at 4096 remaining bytes; actual self-loop skips require at
+least 64 remaining bytes. Ordinary short searches retain the scalar endpoint
+loop. Cache exhaustion still reruns the current query through the existing
+fallback. This handles a concrete repeated-suffix case without claiming a
+general linear-time bound for ambiguous regex enumeration.
+
+Final local macOS arm64 observations use pinned local GNU 9.11/3.12 builds,
+regular-file stdin, captured stdout, one warmup and nine alternating pairs.
+All 15 final rows passed exact status/stdout/stderr comparison. Candidate and
+GNU columns are median milliseconds; speedup comes from a separate paired
+comparison against wave 3, rather than dividing across different runs.
+
+| Workload | Candidate | GNU | GNU ratio | Wave-3 speedup |
+| --- | ---: | ---: | ---: | ---: |
+| 16 fixed patterns, count, 8 MiB | 26.74 | 4.90 | 5.46 | 2.39x |
+| Same patterns, count, 64 MiB | 91.05 | 28.59 | 3.18 | 4.49x |
+| Same patterns, spans, 1 MiB | 21.03 | 3.50 | 6.00 | 1.32x |
+| 16 fixed patterns, miss, 8 MiB | 20.71 | 6.16 | 3.36 | 1.50x |
+| Four short patterns, count, 64 MiB | 81.75 | 22.54 | 3.63 | 1.42x |
+| Four dense patterns, count, 64 MiB | 96.00 | 28.11 | 3.42 | 1.21x |
+| 16 distributed prefixes, miss, 64 MiB | 76.16 | 38.83 | 1.96 | 1.70x |
+| `a\|a.*z`, spans, 8 KiB of `a` | 16.05 | 45.19 | 0.36 | 7.60x |
+| Same expression, 16 KiB of `a` | 18.13 | 172.61 | 0.11 | 25.44x |
+| Regex spans, 8 MiB / 1 MiB records | 83.04 | 19.91 | 4.17 | 1.09x |
+| Original regex spans, 1 MiB | 29.44 | 9.32 | 3.16 | 0.98x |
+| Many regex spans, 1 MiB | 32.71 | 14.64 | 2.23 | 0.98x |
+| Single fixed count, 64 MiB | 60.01 | 18.27 | 3.28 | 1.00x |
+| Regex count, 64 MiB | 104.85 | 35.68 | 2.94 | 1.00x |
+| Regex miss, 8 MiB | 18.58 | 2.35 | 7.92 | 0.98x |
+
+The 16-pattern hit set contains `absent0` through `absent14` and `gamma`;
+the miss set replaces `gamma` with `absent15`. Additional short, dense and
+distributed-prefix rows prevent conclusions from resting on that shape alone.
+Exact arguments and reproducible corpora are in `tests/benchmark/explore.mbtx`.
+The `a|a.*z` rows expose repeated suffix scans in both the previous candidate
+and GNU, and do not represent all regex workloads. Short span/miss rows show
+about 2% regressions in the final pairs; this small window does not establish
+their significance. The candidate Wasm grows from 421,685 to 434,882 bytes.
+
+Two rejected approaches constrain the next design. Aho-Corasick alone improved
+the original 64 MiB multi-pattern count from 405 to 133 ms, but regressed the
+8 MiB miss from 31 to 33 ms. Selecting two-byte shifts for longer patterns
+improved both. Applying self-loop skipping to the reverse start bitmap made
+long records worse, about 125 versus 89 ms, so that experiment was removed.
+The retained forward skip gives a modest long-record gain; reusing its proven
+suffix gives the much larger overlapping-match gain. `reverse-trial.mbt` and
+the raw intermediate reports preserve the negative experiment.
+
+The next deeper candidates are bounded block-transfer summaries for forward
+states that revisit non-self-looping suffixes, and a literal planner that can
+switch from shifts to an automaton when verification collisions become dense.
+These remain unimplemented: require independent collision-heavy, sparse/dense
+and record-size scaling measurements, preserved leftmost-longest/offset/error
+semantics, and explicit memory bounds before selecting them. A universal
+automaton or universal skip strategy is not supported by this wave's results.
+The general long-record and small-input gaps above remain outside the 1–3x
+exploration target; further work needs a measured scan/I/O breakdown.
+
+Validation passed 1,604 release-Wasm package tests, 117 Native tool tests and
+2,062 functional cases, with 19 explicit skips and zero failures. The expanded
+independent GNU comparison matched 792 of 796 cases. All four mismatches are
+the existing empty-pattern `grep -v -c` difference, reproduced with frozen
+wave-3 Wasm; the GNU-equivalence run remains failed. New cases cover both
+literal plans, folded/word/whole/NUL options, partial and cross-buffer records,
+resumed views, hash collisions, trie-budget fallback, earliest endpoint versus
+earliest start, and interleaved suffix searches on different records.
+
+Raw reports, source patch, executable/corpus hashes, frozen artifacts, scripts
+and stage durations are indexed by
+`test-reports/performance-wave4-evidence/manifest.json`. Final rebuilt Wasm is
+byte-identical to the measured artifact. These are diagnostic observations,
+not formal 105-pair/p95/confidence acceptance, sealed Linux parity, Linux/Windows
+validation, pipe-throughput/RSS acceptance or published-consumer acceptance.
+No package was uploaded; the original checkout remains unchanged.
+
 ### Performance wave 3 candidate (2026-10-26)
 
 This extends unpublished core 0.8.2 and grep 0.3.1 from wave 2, retaining the

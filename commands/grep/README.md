@@ -19,6 +19,16 @@ literal cannot cross a record delimiter. Word/whole filters, assertions, referen
 exhaustion preserve existing matching rules. Cached state is owned by each
 compiled record matcher.
 
+Four or more nonempty fixed patterns can share a compiled literal set instead
+of searching every pattern separately. Patterns of at least three bytes use
+two-byte shifts; shorter sets use a byte-class Aho-Corasick table. Compilation
+is bounded by 4096 literal bytes and, for the automaton, 1024 states. Empty or
+oversized sets and word/whole filters keep the existing path. Eligible counts
+locate a matching record and skip its remaining hits. Long-record regex spans
+also reuse proven self-looping suffixes within one immutable record, while
+retaining leftmost-longest selection. See [ADR-0003](../../docs/adr/0003-streams.md#performance-wave-4-candidate-2026-10-26)
+for measured gains, rejected experiments and remaining performance gaps.
+
 Search text using basic regular expressions by default, extended expressions
 with `-E`, or fixed strings with `-F`; `-G` restores basic syntax. Options include
 `-E`, `-F`, `-G`, `-o`, `-i`, `-v`, `-n`, `-b`, `-c`, `-l`, `-L`, `-q`,

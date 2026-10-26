@@ -23,7 +23,7 @@ column, csplit and tac declare temporary-file writes, and sort lists its
 buffer-size, temporary-directory and batch-size options. Runtime APIs and
 command dependency coordinates remain unchanged.
 
-Candidate **0.8.2** adds the restricted `rg` command contract and three
+Candidate **0.8.2** adds the restricted `rg` command contract and four
 performance waves. `stream.RecordReader` returns batches with synchronous record
 iteration and immutable byte views; only split records are assembled. Reads are
 at most 1 MiB, and retained storage follows a block plus the longest record.
@@ -51,9 +51,16 @@ has at most 256 states; exhaustion reruns the current query through the span
 engine. Start bitmaps retain about one bit per input byte per eligible pattern.
 Word/whole filters, assertions, references and larger programs retain their
 respective fallback paths. Literal byte searches avoid conversion as well.
-`find_span` still selects the leftmost-longest match. The cut/uniq/wc 0.2.3 and
+For long records, forward endpoint queries skip proven self-loop transitions
+and reuse a proven suffix within that immutable record. This does not provide
+a general linear-time enumeration bound. `LiteralSet` compiles nonempty literal
+sets within 4096 total bytes: two-byte shifts when all literals have at least
+three bytes, otherwise a byte-class Aho-Corasick table with at most 1024 states.
+`find_span` selects the leftmost-longest match; `find_any` returns an occurrence
+without resolving longest ties. Grep uses the latter only for record counting.
+The cut/uniq/wc 0.2.3 and
 grep 0.3.1 candidates select this core coordinate, alongside rg. These candidates
-have not been published. See [the stream ADR](../docs/adr/0003-streams.md#performance-wave-3-candidate-2026-10-26).
+have not been published. See [the stream ADR](../docs/adr/0003-streams.md#performance-wave-4-candidate-2026-10-26).
 
 `gzipops.encode` accepts an optional `level` argument, defaulting to six, for
 the private pure MoonBit 32 KiB LZ and stored/fixed/dynamic Huffman encoder.

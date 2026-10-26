@@ -5,6 +5,17 @@ by date and delivery milestone rather than by a single package version.
 
 ## 2026-10-26
 
+- Extended unpublished core 0.8.2 and grep 0.3.1 with adaptive multi-literal
+  search, record-level count skipping and reuse of proven regex suffixes.
+  Selected local pairs improved 64 MiB / 16-pattern counts by 4.49x and a
+  16 KiB overlapping-span case by 25.44x over wave 3. Broader literal shapes
+  improved 1.21x–1.70x; several GNU ratios still exceed the 1–3x exploration
+  target. A regressing reverse-DFA skip experiment was removed. Passed 1,604
+  Wasm package tests, 117 Native tool tests and 2,062 functional cases with
+  19 skips and no failures. The independent GNU set matched 792/796, retaining
+  four known empty-pattern differences. [ADR-0003](docs/adr/0003-streams.md#performance-wave-4-candidate-2026-10-26)
+  records measurements, bounds, negative evidence and deeper follow-up
+  directions. No publication or formal performance acceptance is claimed.
 - Extended unpublished core 0.8.2 and grep 0.3.1 with borrowed byte searches,
   paired endpoint DFAs, shared fallback decoding and resumable synchronous span
   emission. Selected local pairs improved original/many-match/long-record spans

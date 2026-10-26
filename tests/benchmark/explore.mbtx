@@ -189,6 +189,8 @@ async fn main {
   }
   if mode == "prepare" {
     @fs.write_file(lab + "/empty", b"")
+    @fs.write_file(lab + "/overlap8k", Bytes::make(8192, b'a') + b"\n")
+    @fs.write_file(lab + "/overlap16k", Bytes::make(16384, b'a') + b"\n")
     corpus("text8m", 8388608, 80, false)
     corpus("text64m", 67108864, 80, false)
     corpus("long8m", 8388608, 1048576, false)
@@ -247,6 +249,30 @@ async fn main {
   add("uniq-8m", "uniq", [], "text8m", cu + "uniq")
   add("grep-fixed-8m", "grep", ["-F", "-c", "alpha"], "text8m", gnugrep)
   add("grep-fixed-64m", "grep", ["-F", "-c", "alpha"], "text64m", gnugrep)
+  let needles = ["absent0", "absent1", "absent2", "absent3", "absent4", "absent5", "absent6", "absent7", "absent8", "absent9", "absent10", "absent11", "absent12", "absent13", "absent14", "gamma"]
+  let many_count = ["-F", "-c"]
+  let many_span = ["-F", "-o"]
+  let many_miss = ["-F", "-c"]
+  for needle in needles {
+    many_count.append(["-e", needle])
+    many_span.append(["-e", needle])
+    many_miss.append(["-e", if needle == "gamma" { "absent15" } else { needle }])
+  }
+  add("grep-many-count-8m", "grep", many_count, "text8m", gnugrep)
+  add("grep-many-count-64m", "grep", many_count, "text64m", gnugrep)
+  add("grep-many-span-1m", "grep", many_span, "text1m", gnugrep)
+  add("grep-many-miss-8m", "grep", many_miss, "text8m", gnugrep, status=1)
+  for (name, patterns, status) in [
+    ("short", ["a", "be", "ga", "0"], 0),
+    ("dense", ["alpha", "beta", "gamma", "012"], 0),
+    ("distributed", ["zebra", "jungle", "quartz", "violet", "window", "xenon", "yellow", "kernel", "orange", "purple", "socket", "tensor", "umber", "vector", "walrus", "yonder"], 1),
+  ] {
+    let options = ["-F", "-c"]
+    for pattern in patterns { options.append(["-e", pattern]) }
+    add("grep-set-" + name + "-64m", "grep", options, "text64m", gnugrep, status~)
+  }
+  add("grep-overlap-8k", "grep", ["-E", "-o", "a|a.*z"], "overlap8k", gnugrep)
+  add("grep-overlap-16k", "grep", ["-E", "-o", "a|a.*z"], "overlap16k", gnugrep)
   add("grep-span-many-1m", "grep", ["-E", "-o", "[a-z]+"], "text1m", gnugrep)
   add("grep-span-literal-1m", "grep", ["-o", "alpha"], "text1m", gnugrep)
   add("grep-span-long-8m", "grep", ["-E", "-o", "[0-9]{4}.*gamma"], "long8m", gnugrep)

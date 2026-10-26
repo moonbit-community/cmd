@@ -34,6 +34,7 @@ priv struct GrepOptions {
 ///|
 priv enum Matcher {
   Fixed(Array[Bytes], Bool, Bool)
+  ManyFixed(@bytere.LiteralSet)
   Regular(Array[@bytere.RecordMatcher], Bool, Bool)
 }
 
@@ -82,6 +83,12 @@ fn compile_matcher(
         bytes
       }
     })
+    if !options.whole_line &&
+      !options.word &&
+      literals.length() >= 4 &&
+      @bytere.LiteralSet::new(literals) is Some(set) {
+      return ManyFixed(set)
+    }
     return Fixed(literals, options.whole_line, options.word)
   }
   let compiled : Array[@bytere.RecordMatcher] = []

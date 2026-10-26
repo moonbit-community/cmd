@@ -143,6 +143,8 @@ fn Matcher::matches_record(
   ignore_case : Bool,
 ) -> Bool {
   match self {
+    ManyFixed(set) =>
+      set.matches(if ignore_case { folded_bytes(record)[:] } else { record })
     Fixed(patterns, whole, word) => {
       let line = if ignore_case { folded_bytes(record)[:] } else { record }
       fixed_span(patterns, line, 0, whole, word) is Some(_)
@@ -173,6 +175,14 @@ fn MatchEmitter::new(
   options : GrepOptions,
 ) -> MatchEmitter {
   let next : (Int32) -> (Int32, Int32)? = match matcher {
+    ManyFixed(set) => {
+      let line = if options.ignore_case {
+        folded_bytes(record.data)[:]
+      } else {
+        record.data
+      }
+      position => set.find_span(line, start=position)
+    }
     Fixed(patterns, whole, word) => {
       let line = if options.ignore_case {
         folded_bytes(record.data)[:]
