@@ -21,8 +21,8 @@ fn cohort_cases() -> Array[@testkit.Case] raise {
   let all = @cli.command_catalog().map(item => item.name)
   let specs : Array[(String, String, Array[String])] = [
     ("compat-catalog", "compat", all),
-    ("compat-environment", "compat", ["sh", "make", "xargs", "env"]),
-    ("compat-chunks", "compat", ["base64", "xxd", "tr"]),
+    ("compat-environment", "compat", ["sh", "make", "xargs", "env", "printenv"]),
+    ("compat-chunks", "compat", ["base64", "xxd"]),
     (
       "compat-process-composition",
       "compat",
@@ -33,13 +33,7 @@ fn cohort_cases() -> Array[@testkit.Case] raise {
     ("compat-http", "compat", ["curl", "wget"]),
     ("compat-https", "compat", ["curl", "wget"]),
     ("compat-proxy", "compat", ["curl", "wget"]),
-    (
-      "stress-streams",
-      "stress",
-      [
-        "cat", "head", "tail", "tee", "base64", "xxd", "wc", "tr", "sort", "uniq",
-      ],
-    ),
+    ("stress-streams", "stress", ["seq", "wc"]),
     ("policy-host", "policy", all),
   ]
   specs.map(spec => {

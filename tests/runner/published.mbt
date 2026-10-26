@@ -79,8 +79,11 @@ async fn load_published_commands(
 async fn prime_published_commands(
   selected : Array[String],
   reports : Array[@testkit.CaseReport],
-  execute~ : async (String, Array[String], Int32) -> @testkit.TimedRun =
-    (program, args, timeout) => @testkit.run_with_deadline(program, args, timeout),
+  execute~ : async (String, Array[String], Int32) -> @testkit.TimedRun = (
+    program,
+    args,
+    timeout,
+  ) => @testkit.run_with_deadline(program, args, timeout),
 ) -> Unit {
   for contract in @cli.command_catalog() {
     let name = contract.name

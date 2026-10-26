@@ -14,7 +14,9 @@ async fn main {
   }
   let published = args[1] == "published"
   let root = @fs.realpath(".")
-  let program = root + "/_build/native/release/build/mooxCLI/cmd-tests/" +
+  let profile = @env.get_env_var("CMD_TEST_PROFILE").unwrap_or("release")
+  guard ["debug", "release"].contains(profile) else { fail("unknown test-tool profile: " + profile) }
+  let program = root + "/_build/native/" + profile + "/build/mooxCLI/cmd-tests/" +
     (if published { "release_runner/release_runner.exe" } else { "runner/runner.exe" })
   let arguments = [
     "--suite", if @async.platform is Linux { "all" } else { "functional" },
@@ -30,7 +32,7 @@ async fn main {
   }
   let started = @async.now()
   let status = @shell.Cmd(program, arguments, stdout=Inherit, stderr=Inherit).status()
-  let timing : Json = { "mode": args[1], "duration_ms": @async.now() - started, "status": status }
+  let timing : Json = { "mode": args[1], "tool_profile": profile, "duration_ms": @async.now() - started, "status": status }
   @fs.write_file("test-reports/execution.json", timing.stringify(indent=2) + "\n")
   if @env.get_env_var("GITHUB_STEP_SUMMARY") is Some(path) {
     @fs.write_file(path, "Command validation: " + timing.stringify() + "\n", append=true)

@@ -13,12 +13,14 @@ async fn main {
     fail("Usage: oracle.mbtx --image sha256:IMAGE-ID")
   }
   let image = args[2]
+  let profile = @env.get_env_var("CMD_TEST_PROFILE").unwrap_or("release")
+  guard ["debug", "release"].contains(profile) else { fail("unknown test-tool profile: " + profile) }
   let directory = "test-reports/oracle-profile"
   @fs.mkdir(directory, recursive=true)
   for name in ["profile.json", "Dockerfile", "versions.sh"] {
     @fs.write_file(directory + "/" + name, @fs.read_file("tests/runner/image/" + name).binary())
   }
-  @shell.Cmd("./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe", [
+  @shell.Cmd("./_build/native/" + profile + "/build/mooxCLI/cmd-tests/runner/runner.exe", [
     "--seal-oracle", image, "--oracle-profile", directory + "/profile.json",
   ], stdout=Inherit, stderr=Inherit).run()
   let versions = @shell.Cmd("docker", ["run", "--rm", image, "/usr/local/bin/versions.sh"]).output()

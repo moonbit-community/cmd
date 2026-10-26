@@ -15,7 +15,7 @@ async fn run_text_process_composition_cases(
   failures : Array[String],
 ) -> Unit {
   let root = @fs.tmpdir(prefix="mooncmd-text-composition")
-  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  defer cleanup_compat_fixture(root)
   let find = @testkit.run_command(
     bin_root,
     "find",

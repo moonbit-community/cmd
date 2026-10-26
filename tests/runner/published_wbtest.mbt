@@ -59,7 +59,7 @@ async test "published startup rejects a successful process returning the wrong v
         assert_eq(program, "moonx")
         assert_eq(args, ["cli/cat@0.2.2", "--", "--version"])
         {
-          output: { status: 0, stdout: output, stderr: b"" },
+          output: { status: 0, stdout: output, stderr: b"", },
           timed_out: false,
           cleanup_error: None,
         }
@@ -71,6 +71,8 @@ async test "published startup rejects a successful process returning the wrong v
     assert_eq(accepted, output == b"cat 0.2.2\n")
     assert_eq(reports.length(), 1)
     assert_eq(reports[0].result, if accepted { "pass" } else { "fail" })
-    if !accepted { assert_true(reports[0].detail.contains("cat@0.2.2")) }
+    if !accepted {
+      assert_true(reports[0].detail.contains("cat@0.2.2"))
+    }
   }
 }

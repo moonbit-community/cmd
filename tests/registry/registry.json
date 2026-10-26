@@ -9688,7 +9688,7 @@
     },
     {
       "behavior_id": "cohort:stress-streams",
-      "command": "cat",
+      "command": "seq",
       "status": "supported",
       "implementation": "compatibility-cohort",
       "source": "tests/runner/cohorts.mbt::stress-streams",

@@ -25,16 +25,21 @@ Keep the current PATH toolchain and prefix every Moon invocation with
 ```text
 MOON_HOME="$HOME/.moon-accounts/cli" moon check --target wasm --deny-warn
 MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release --deny-warn
-MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --release --deny-warn tests/runner
+MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --deny-warn tests/runner
 MOON_HOME="$HOME/.moon-accounts/cli" moon test --target wasm --release --deny-warn --no-parallelize
-MOON_HOME="$HOME/.moon-accounts/cli" moon test --target native --release --deny-warn --no-parallelize tests/testkit tests/registry tests/network_scenarios tests/mv_scenarios tests/runner tests/release_runner tests/benchmark
-MOON_HOME="$HOME/.moon-accounts/cli" ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite functional --report-dir test-reports/local-functional
+MOON_HOME="$HOME/.moon-accounts/cli" moon test --target native --deny-warn --no-parallelize tests/testkit tests/registry tests/network_scenarios tests/mv_scenarios tests/runner tests/release_runner tests/benchmark
+MOON_HOME="$HOME/.moon-accounts/cli" ./_build/native/debug/build/mooxCLI/cmd-tests/runner/runner.exe --suite functional --report-dir test-reports/local-functional
 ```
 
 Use a fresh report directory. `functional` includes metadata, contracts,
 stateful scenarios, retained compatibility cohorts, permission checks and
 bounded stream correctness regressions. `--suite all` additionally requires
 the pinned Linux oracle. See [runner usage](runner/README.md).
+
+Daily Native tools use debug builds to reduce C compilation cost; Wasm products
+and their package tests remain release builds. CI sets `CMD_TEST_PROFILE=debug`
+for `tests/ci.mbtx` and `tests/oracle.mbtx`. Those scripts default to release
+tools for the separate published-acceptance workflow.
 
 The [runtime index](registry/README.md) supplies stable case selections and
 release policy. Ordinary package tests execute in batches through Moon;

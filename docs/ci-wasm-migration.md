@@ -56,13 +56,22 @@ package versions differ. Child commands use the same selected coordinate map.
 ## Validation record
 
 Local Wasm package tests passed: 491/491. Native harness tests, including the
-new failure paths and an injected successful process returning the wrong package
-version, passed: 115/115. A complete workspace functional run with
+new failure paths, an injected successful process returning the wrong package
+version, stream-command selection and compatibility-fixture cleanup failures,
+passed: 117/117. A complete workspace functional run with
 the entire Native product artifact directory temporarily moved away recorded
 2,027 passing results (including explicit boundaries), 18 platform skips and
 zero failures. Scenario records are no longer duplicated. Its six suite stages
 took about 56 seconds on this local macOS machine; this is not hosted CI timing.
 The artifact directory was restored after the run.
+
+After strict cleanup was extended to the retained compatibility fixtures, a
+fresh full workspace run again recorded 2,027 passes, 18 platform skips and zero
+failures. All ten compatibility/stream cohorts also passed through exact-version
+MoonX after serial startup of the 78 selected coordinates. Diagnostic selectors
+now associate the stream cohort with its actual `seq`/`wc` invocations and include
+the `printenv` child in environment composition. These changes preserve the
+full-suite assertions and make cleanup errors fail the containing cohort.
 
 Local exact-coordinate MoonX functional acceptance of all 78 current commands
 recorded 2,094 passes (including startup and boundaries), 18 platform skips and
@@ -83,5 +92,8 @@ The controlled cold run at `0e80efd` passed all three development jobs within
 20 minutes. Detailed phase timings, counts and cached measurements are recorded
 in [CI performance](ci-performance.md). The previous successful main run
 40193652755 is a historical cost baseline, not evidence for this implementation.
-Final PR, branch-protection transition, actual-main verification and the manual
-resource entrypoint remain pending until their recorded hosted runs complete.
+Final PR checks, the branch-protection transition, actual-main verification and
+the manual resource entrypoint are tracked in
+[PR #57](https://github.com/moonbit-community/cmd/pull/57). A fresh Native-debug
+build passed all 117 harness tests locally; its complete functional run retained
+2,027 passes and 18 platform skips. Product Wasm builds remain release builds.

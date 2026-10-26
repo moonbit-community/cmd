@@ -4,6 +4,11 @@ fn compat_fail(message : String, failures : Array[String]) -> Unit {
 }
 
 ///|
+async fn cleanup_compat_fixture(root : String) -> Unit {
+  @async.protect_from_cancel(() => @fs.rmdir(root, recursive=true))
+}
+
+///|
 async fn check_catalog(
   bin_root : String,
   require_binaries : Bool,
@@ -75,7 +80,7 @@ async fn run_tail_follow_process(
   poll_wait_ms~ : Int32 = 160,
 ) -> (Bytes, Bytes) {
   let root = @fs.tmpdir(prefix="mooncmd-tail-follow")
-  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  defer cleanup_compat_fixture(root)
   let paths : Array[String] = []
   for index in 0..<initial.length() {
     let path = @path.Path(root).join(Path("log-\{index}")).to_string()
@@ -184,7 +189,7 @@ async fn run_environment_boundary_cases(
   )
 
   let root = @fs.tmpdir(prefix="mooncmd-environment")
-  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  defer cleanup_compat_fixture(root)
   let makefile = @path.Path(root).join(Path("Makefile")).to_string()
   @fs.write_file(makefile, b"all:\n\t@export\n")
   let make = @testkit.run_command(

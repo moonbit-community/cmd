@@ -9,8 +9,23 @@ normally, at most 20 minutes without abnormal queueing, and under 45 total runne
 minutes. These targets require measured cold and warm runs; they are not claimed
 as achieved by removing old steps.
 
-The compilation cache includes `_build/.moon_db` together with release compiler
-outputs. In the pinned Moon revision, this file is the shared incremental-build
+Wasm products and package tests use release builds. Daily Native test tools use
+debug builds: a fresh local driver build took 3.96 seconds, while hosted release
+tool compilation remained a major cost even after a confirmed cache hit reduced
+90 build tasks to nine. Harness assertions and product launch modes are unchanged.
+Manual published acceptance keeps its existing release-tool configuration. The
+fresh local debug harness build and all 117 tests took 6.83 seconds; the complete
+workspace functional suite still passed. These are local observations, not
+hosted timing predictions.
+
+Final required PR and actual-main results are tracked in
+[PR #57](https://github.com/moonbit-community/cmd/pull/57). The preliminary hosted
+measurements below use release tools. A controlled cold/two-warm series for the
+final debug-tool configuration is not claimed.
+
+The compilation cache includes `_build/.moon_db` together with Wasm release and
+Native debug compiler outputs, and keys distinguish these configurations.
+In the pinned Moon revision, this file is the shared incremental-build
 database ([executor source](https://github.com/moonbitlang/moon/blob/748b63c/crates/moonbuild/src/execution/n2.rs#L122));
 restoring output directories alone loses the executor's build history. Cache
 restoration and saving are separate: a cold run restores no dependency,
@@ -28,9 +43,9 @@ Versions, source checksums, configure options and the base image stay unchanged.
 The recipe checksum changes with this build-layout change. The cold build and
 complete upstream comparison passed on the resulting image.
 
-## Hosted migration measurements
+## Preliminary release-tool measurements
 
-The preliminary cold run uses candidate `0e80efd8ade24b1e510827fc7ebbb8588ba82e79`
+The preliminary runs use candidate `635f355817c191023d913428384ae3e4c75970d0`
 with the unchanged pinned toolchain. Durations below come from GitHub job and
 step timestamps; functional/oracle splits come from the uploaded `stages.json`.
 They include setup, tests, reports and cache saving. Runner totals are the sum
@@ -39,36 +54,46 @@ time and job queue time are reported separately.
 
 | Run | Linux | macOS | Windows | Runner total | Dispatch to last result |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| [Cold, caches disabled](https://github.com/moonbit-community/cmd/actions/runs/40270933353) | 18:49 | 4:56 | 12:42 | 36:27 | 18:53 |
+| [Cold, caches disabled](https://github.com/moonbit-community/cmd/actions/runs/40273387917) | 13:35 | 5:48 | 12:44 | 32:07 | 14:26 |
 
 The cold run disabled dependency/compiler and Docker-layer restoration. It saved
-successful compilation state for the following normal runs. Linux/macOS queued
-for 3 seconds each and Windows for 2 seconds. This satisfies the cold-run ceiling;
+successful compilation state for the following normal runs. Job queue time was
+3 seconds on Linux and 4 seconds each on macOS and Windows; 48 additional seconds
+elapsed before GitHub created the jobs. This satisfies the cold-run ceiling;
 it does not establish normal cached duration by itself.
 
 Cold phase durations (seconds; functional subphases are rounded):
 
 | Phase | Linux | macOS | Windows |
 | --- | ---: | ---: | ---: |
-| Runner setup, checkout and toolchain | 12 | 19 | 28 |
-| Dependencies | 2 | 3 | 12 |
-| Product and test-tool checks | 5 | 8 | 8 |
-| Wasm command build | 10 | 11 | 13 |
-| Native test-driver build | 151 | 57 | 147 |
-| Wasm batch tests | 31 | 30 | 55 |
-| Native harness batch tests | 212 | 75 | 307 |
-| Docker builder, image and profile preparation | 369 | 0 | 0 |
-| Functional assertions | 88 | 84 | 182 |
-| Fixed upstream comparison | 235 | 0 | 0 |
-| Interfaces and formatting | 3 | 0 | 0 |
-| Test-report upload | 1 | 1 | 1 |
+| Runner setup, checkout, cache key and toolchain | 13 | 17 | 39 |
+| Dependencies | 1 | 1 | 8 |
+| Product and test-tool checks | 3 | 7 | 8 |
+| Wasm command build | 7 | 12 | 13 |
+| Native test-driver build | 87 | 66 | 145 |
+| Wasm batch tests | 22 | 36 | 55 |
+| Native harness batch tests | 122 | 98 | 294 |
+| Docker builder, image and profile preparation | 302 | 0 | 0 |
+| Functional assertions | 67 | 96 | 188 |
+| Fixed upstream comparison | 177 | 0 | 0 |
+| Interfaces and formatting | 2 | 0 | 0 |
+| Test-report upload | 1 | 2 | 2 |
 
 Subphase sums exclude small driver/step-transition overheads. Each platform ran
-491 Wasm package tests and 114 harness tests at this measured candidate. Linux
+491 Wasm package tests and 115 harness tests at this measured candidate. Linux
 recorded 2,220 passing functional/comparison results, 15 explicit platform skips
-and no failures. Later diagnostic-only changes add a wrong-version injection
-regression; their final PR and main checks are separate from this fixed-candidate
-measurement series.
+and no failures. Subsequent selector and cleanup-error regressions increase the
+harness total to 117, and formatting checks cover the entire workspace. These
+changes preserve full functional assertions; their final PR and actual-main
+checks are separate from this fixed-candidate measurement series.
+
+The preliminary cold run at `0e80efd`
+([40270933353](https://github.com/moonbit-community/cmd/actions/runs/40270933353))
+also passed: Linux 18:49, macOS 4:56, Windows 12:42, runner total 36:27 and wall
+time 18:53. Its attempted normal-cache follow-up missed compilation caches
+because restore/save keys differed, and was superseded by the corrected series.
+Hosted machine variation affects these observations; the cold-time difference
+between the two candidates is not attributed to the cache-key correction.
 
 The earlier cold attempt at `40efae2`
 ([run](https://github.com/moonbit-community/cmd/actions/runs/40268916908)) exceeded

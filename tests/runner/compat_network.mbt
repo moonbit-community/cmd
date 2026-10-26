@@ -450,7 +450,7 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       failures,
     )
     let output_root = @fs.tmpdir(prefix="mooncmd-http")
-    defer (@fs.rmdir(output_root, recursive=true) catch { _ => () })
+    defer cleanup_compat_fixture(output_root)
     let output = @path.Path(output_root).join(Path("response")).to_string()
     let wget_log = @path.Path(output_root).join(Path("wget.log")).to_string()
     let wget_logged = @testkit.run_command(bin_root, "wget", [
@@ -617,7 +617,7 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       failures,
     )
     let data_root = @fs.tmpdir(prefix="mooncmd-http-data")
-    defer (@fs.rmdir(data_root, recursive=true) catch { _ => () })
+    defer cleanup_compat_fixture(data_root)
     let data_path = @path.Path(data_root).join(Path("input.bin")).to_string()
     @fs.write_file(data_path, b"a\r\nb\x00c")
     let curl_form_file = @testkit.run_command(bin_root, "curl", [
@@ -722,7 +722,7 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       failures,
     )
     let named_root = @fs.tmpdir(prefix="mooncmd-http-name")
-    defer (@fs.rmdir(named_root, recursive=true) catch { _ => () })
+    defer cleanup_compat_fixture(named_root)
     let curl_named = @testkit.run_command(
       bin_root,
       "curl",
@@ -888,7 +888,7 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       failures,
     )
     let resume_root = @fs.tmpdir(prefix="mooncmd-http-resume")
-    defer (@fs.rmdir(resume_root, recursive=true) catch { _ => () })
+    defer cleanup_compat_fixture(resume_root)
     let resume_path = @path.Path(resume_root).join(Path("range")).to_string()
     let range_ignore_path = @path.Path(resume_root)
       .join(Path("range-ignore"))
@@ -955,7 +955,7 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       failures,
     )
     let input_root = @fs.tmpdir(prefix="mooncmd-http-input")
-    defer (@fs.rmdir(input_root, recursive=true) catch { _ => () })
+    defer cleanup_compat_fixture(input_root)
     let input_one = @path.Path(input_root).join(Path("urls-one")).to_string()
     let input_two = @path.Path(input_root).join(Path("urls-two")).to_string()
     let input_mixed = @path.Path(input_root)
@@ -1165,7 +1165,7 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       failures,
     )
     let collision_root = @fs.tmpdir(prefix="mooncmd-http-collision")
-    defer (@fs.rmdir(collision_root, recursive=true) catch { _ => () })
+    defer cleanup_compat_fixture(collision_root)
     let original = @path.Path(collision_root).join(Path("fixed")).to_string()
     let numbered = original + ".1"
     @fs.write_file(original, b"original")
@@ -1195,7 +1195,7 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       failures,
     )
     let wget_name_root = @fs.tmpdir(prefix="mooncmd-http-wget-name")
-    defer (@fs.rmdir(wget_name_root, recursive=true) catch { _ => () })
+    defer cleanup_compat_fixture(wget_name_root)
     let wget_encoded = @path.Path(wget_name_root)
       .join(Path("encoded.txt"))
       .to_string()
@@ -1285,7 +1285,7 @@ async fn run_https_cases(bin_root : String, failures : Array[String]) -> Unit {
       .join(Path("tests/fixtures/http/key.pem"))
       .to_string()
     let output_root = @fs.tmpdir(prefix="mooncmd-https")
-    defer (@fs.rmdir(output_root, recursive=true) catch { _ => () })
+    defer cleanup_compat_fixture(output_root)
     let log = @path.Path(output_root).join(Path("server.log")).to_string()
     let program = @env.args()[0]
     let server = @process.spawn(

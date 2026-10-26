@@ -20,10 +20,10 @@ The default is `functional` with the Wasm backend. `--backend wasm` is accepted
 for explicit diagnostic commands. Native and pairing modes are removed.
 
 ```text
-MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --release --deny-warn tests/runner
+MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --deny-warn tests/runner
 MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release --deny-warn
-MOON_HOME="$HOME/.moon-accounts/cli" ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite functional --report-dir test-reports/functional
-MOON_HOME="$HOME/.moon-accounts/cli" ./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite contract --command sort --list
+MOON_HOME="$HOME/.moon-accounts/cli" ./_build/native/debug/build/mooxCLI/cmd-tests/runner/runner.exe --suite functional --report-dir test-reports/functional
+MOON_HOME="$HOME/.moon-accounts/cli" ./_build/native/debug/build/mooxCLI/cmd-tests/runner/runner.exe --suite contract --command sort --list
 ```
 
 `--wasm-root` changes the prebuilt artifact directory. `--manifest` changes the
