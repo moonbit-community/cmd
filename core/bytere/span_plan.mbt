@@ -9,6 +9,7 @@ priv struct SpanPlan {
   next_pcs : Array[Int32]
   next_starts : Array[Int32]
   seen : FixedArray[Int32]
+  prefix : Bytes?
 }
 
 ///|
@@ -45,6 +46,11 @@ fn SpanPlan::new(pattern : Pattern) -> SpanPlan? {
     next_pcs: [],
     next_starts: [],
     seen: FixedArray::make(pattern.program.length(), -1),
+    prefix: if pattern.prefix.iter().all(code => code.to_int() < 256) {
+      Some(bytes(pattern.prefix))
+    } else {
+      None
+    },
   })
 }
 
@@ -68,15 +74,15 @@ fn SpanPlan::insert(
 }
 
 ///|
-fn SpanPlan::find(
+fn[I : SpanInput] SpanPlan::find(
   self : SpanPlan,
   pattern : Pattern,
-  value : StringView,
+  value : I,
   start : Int32,
   whole : Bool,
   word : Bool,
 ) -> (Int32, Int32)? {
-  if start < 0 || start > value.length() || (whole && start != 0) {
+  if start < 0 || start > value.span_length() || (whole && start != 0) {
     return None
   }
   let mut pcs = self.pcs
@@ -93,15 +99,18 @@ fn SpanPlan::find(
   let mut position = start
   let mut best_start = -1
   let mut best_end = -1
-  while position <= value.length() {
+  while position <= value.span_length() {
     if pcs.is_empty() && best_start < 0 && !pattern.prefix.is_empty() {
-      guard value[position:].find(pattern.prefix) is Some(offset) else { break }
+      guard value.span_prefix(pattern.prefix, self.prefix, position)
+        is Some(offset) else {
+        break
+      }
       position += offset
     }
     if best_start < 0 &&
       (!whole || position == 0) &&
-      (!word || !word_byte(value, position - 1)) &&
-      pattern.prefix_at(value, position) {
+      (!word || !span_word(value, position - 1)) &&
+      span_prefix_at(value, pattern.prefix, position) {
       self.insert(pattern.entry, position, position, pcs, starts)
     }
     for index in 0..<pcs.length() {
@@ -111,7 +120,11 @@ fn SpanPlan::find(
       }
       match pattern.program[pcs[index]] {
         Accept =>
-          if accepted(value, left, position, whole, word) &&
+          if (!whole || (left == 0 && position == value.span_length())) &&
+            (
+              !word ||
+              (!span_word(value, left - 1) && !span_word(value, position))
+            ) &&
             (
               best_start < 0 ||
               left < best_start ||
@@ -121,17 +134,17 @@ fn SpanPlan::find(
             best_end = position
           }
         Byte(byte, next) =>
-          if position < value.length() && value[position].to_int() == byte {
+          if position < value.span_length() && value.span_code(position) == byte {
             self.insert(next, left, position + 1, next_pcs, next_starts)
           }
         Class(members, next) =>
-          if position < value.length() &&
-            value[position].to_int() < 256 &&
-            members[value[position].to_int()] {
+          if position < value.span_length() &&
+            value.span_code(position) < 256 &&
+            members[value.span_code(position)] {
             self.insert(next, left, position + 1, next_pcs, next_starts)
           }
         Any(next) =>
-          if position < value.length() {
+          if position < value.span_length() {
             self.insert(next, left, position + 1, next_pcs, next_starts)
           }
         _ => abort("non-consuming instruction in span closure")

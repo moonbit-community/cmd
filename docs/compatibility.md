@@ -25,11 +25,12 @@ There are **80 local command modules and 78 published commands**. Local
 `rg 0.1.0`, `core 0.8.2`, `cut/uniq/wc 0.2.3` and `grep 0.3.1` are unpublished
 candidates; `timeout` is local-only. The performance candidates preserve command
 options and C-byte semantics. They add synchronous record visitors, SIMD/word
-counting, conservative block rejection, flat bounded DFA transitions and
-precomputed span closures; captured spans, word/whole filters,
+counting, conservative block rejection, flat bounded DFA transitions,
+precomputed span closures and bounded byte endpoint automata. Span output
+resumes after each output flush; captured spans, word/whole filters,
 binary input decisions and failure effects retain their existing contracts.
 Selected local measurements are diagnostic, not cross-platform or formal
-performance acceptance; see [ADR-0003](adr/0003-streams.md#performance-wave-2-candidate-2026-10-26).
+performance acceptance; see [ADR-0003](adr/0003-streams.md#performance-wave-3-candidate-2026-10-26).
 The wave-2 held-out comparison also records an existing difference: empty-pattern
 `grep -v -c` prints `0` here, whereas GNU grep 3.12 exits without stdout. Both
 exit 1. This is not a new fast-path regression or a claim of full GNU parity.

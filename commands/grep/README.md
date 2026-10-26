@@ -9,8 +9,13 @@ rejection for eligible boolean searches. A block filter skips complete records
 only when the required literals are absent and inversion/context are disabled;
 binary inspection and incomplete tails keep their existing paths. Counting
 processes buffered records synchronously. Assertion-free, reference-free span
-programs can precompute epsilon closures, while `-o` continues to select
-leftmost-longest spans. Word/whole filters, assertions, references and cache
+programs can precompute epsilon closures. Eligible `-o` searches use bounded
+reverse/forward automata over byte views to select leftmost-longest spans.
+Multiple patterns share fallback text conversion; each eligible pattern retains
+a start bitmap for the current record. Span output advances synchronously until
+its 64 KiB flush threshold, then resumes the same record. Single-literal counts
+locate matching records directly when case/word/whole filters are absent and the
+literal cannot cross a record delimiter. Word/whole filters, assertions, references and cache
 exhaustion preserve existing matching rules. Cached state is owned by each
 compiled record matcher.
 

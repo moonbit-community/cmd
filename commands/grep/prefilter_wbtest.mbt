@@ -83,3 +83,24 @@ async test "counting batches retain inverted matches NUL records and final fragm
     }
   }
 }
+
+///|
+async test "fixed block counts reject cross-record literals and deduplicate hits" {
+  for (literal, expected) in [(b"aa", 2UL), (b"", 4UL), (b"a\na", 0UL)] {
+    for invert in [false, true] {
+      let reader = @io.MemoryReader(_ => ())
+      defer reader.close()
+      let input = GrepInput::new(reader, b'\n', Text)
+      input.bytes = b"aaaa\na\naaaa\n\ntailaa"
+      let actual = input.count_buffered(
+        Fixed([literal], false, false),
+        false,
+        invert,
+      )
+      assert_eq(actual, if invert { 4UL - expected } else { expected })
+      assert_eq(input.number, 4L)
+      assert_eq(input.offset, 13L)
+      assert_eq(input.bytes[input.position:], b"tailaa")
+    }
+  }
+}

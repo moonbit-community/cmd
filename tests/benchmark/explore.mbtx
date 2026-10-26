@@ -230,7 +230,7 @@ async fn main {
   let cu = lab + "/oracles/coreutils-9.11/src/"
   let gnugrep = lab + "/oracles/grep-3.12/src/grep"
   let gzip = lab + "/oracles/gzip-1.14/gzip"
-  let wasmroot = args[2]
+  let wasmroot = args[2].trim_end(chars="/").to_owned() + "/"
   add("true-empty", "true", [], "empty", cu + "true")
   add("cat-64m", "cat", [], "text64m", cu + "cat")
   add("wc-l-64m", "wc", ["-l"], "text64m", cu + "wc")
@@ -246,6 +246,12 @@ async fn main {
   add("tr-8m", "tr", ["a-z", "A-Z"], "text8m", cu + "tr")
   add("uniq-8m", "uniq", [], "text8m", cu + "uniq")
   add("grep-fixed-8m", "grep", ["-F", "-c", "alpha"], "text8m", gnugrep)
+  add("grep-fixed-64m", "grep", ["-F", "-c", "alpha"], "text64m", gnugrep)
+  add("grep-span-many-1m", "grep", ["-E", "-o", "[a-z]+"], "text1m", gnugrep)
+  add("grep-span-literal-1m", "grep", ["-o", "alpha"], "text1m", gnugrep)
+  add("grep-span-long-8m", "grep", ["-E", "-o", "[0-9]{4}.*gamma"], "long8m", gnugrep)
+  add("grep-span-word-1m", "grep", ["-w", "-E", "-o", "[a-z]+"], "text1m", gnugrep)
+  add("grep-span-empty-1m", "grep", ["-E", "-o", "a?"], "text1m", gnugrep)
   add(
     "grep-miss-8m",
     "grep",
@@ -352,7 +358,7 @@ async fn main {
     let reference = if mode == "ab" {
       let original : Invocation = {
         program: candidate.program,
-        args: [args[6] + case.command + "/" + case.command + ".wasm", "--"],
+        args: [args[6].trim_end(chars="/").to_owned() + "/" + case.command + "/" + case.command + ".wasm", "--"],
       }
       original.args.append(case.args)
       original

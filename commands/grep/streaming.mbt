@@ -10,6 +10,7 @@ priv struct GrepInput {
   mut binary : Bool
   mut error : Error?
   mut prefiltered : Bool
+  mut pending_match : MatchEmitter?
 }
 
 ///|
@@ -29,6 +30,7 @@ fn GrepInput::new(
     binary: false,
     error: None,
     prefiltered: false,
+    pending_match: None,
   }
 }
 
@@ -157,14 +159,19 @@ fn Matcher::matches_record(
 }
 
 ///|
-async fn write_matches(
+priv struct MatchEmitter {
+  record : Record
+  next : (Int32) -> (Int32, Int32)?
+  mut hit : (Int32, Int32)?
+  selected : Bool
+}
+
+///|
+fn MatchEmitter::new(
   record : Record,
-  path : String,
   matcher : Matcher,
   options : GrepOptions,
-  prefix_filename : Bool,
-  output : &@io.Writer,
-) -> Bool {
+) -> MatchEmitter {
   let next : (Int32) -> (Int32, Int32)? = match matcher {
     Fixed(patterns, whole, word) => {
       let line = if options.ignore_case {
@@ -174,39 +181,101 @@ async fn write_matches(
       }
       position => fixed_span(patterns, line, position, whole, word)
     }
-    Regular(_, _, _) => {
-      let line = bytes_as_string(record.data)
-      position => matcher.next_match(line, position)
+    Regular(patterns, whole, word) => {
+      let searches = @bytere.search_bytes(patterns, record.data, whole~, word~)
+      position => {
+        let mut best : (Int32, Int32)? = None
+        for search in searches {
+          if search.find_span(start=position) is Some(hit) {
+            match best {
+              Some((start, end)) =>
+                if hit.0 < start || (hit.0 == start && hit.1 > end) {
+                  best = Some(hit)
+                }
+              None => best = Some(hit)
+            }
+          }
+        }
+        best
+      }
     }
   }
-  let mut position = 0
-  let first = next(position)
-  let mut hit = first
-  while hit is Some((start, end)) {
-    if end > start {
-      write_record(
-        {
-          data: record.data[start:end],
-          terminated: record.terminated && end == record.data.length(),
-          number: record.number,
-          offset: record.offset + start.to_int64(),
-        },
-        path,
-        options,
-        prefix_filename,
-        true,
-        output,
-      )
-      position = end
+  let first = next(0)
+  { record, next, hit: first, selected: first is Some(_), }
+}
+
+///|
+fn MatchEmitter::consume(
+  self : MatchEmitter,
+  path : String,
+  options : GrepOptions,
+  prefix_filename : Bool,
+  buffer : @buffer.Buffer,
+) -> Bool {
+  let record = self.record
+  while self.hit is Some((start, end)) {
+    let position = if end > start {
+      if prefix_filename {
+        buffer.write_string_utf8(path)
+        buffer.write_byte(b':')
+      }
+      if options.line_number {
+        buffer.write_string_utf8(record.number.to_string())
+        buffer.write_byte(b':')
+      }
+      if options.byte_offset {
+        buffer.write_string_utf8((record.offset + start.to_int64()).to_string())
+        buffer.write_byte(b':')
+      }
+      buffer.write_bytes(record.data[start:end])
+      buffer.write_byte(if options.zero_terminated { b'\x00' } else { b'\n' })
+      end
     } else {
-      position = start + 1
+      start + 1
     }
-    if position > record.data.length() {
+    self.hit = if position > record.data.length() {
+      None
+    } else {
+      (self.next)(position)
+    }
+    if buffer.length() >= @stream.chunk_size {
+      return false
+    }
+  }
+  true
+}
+
+///|
+/// Resume a pending record after output flushing, then consume buffered records
+/// synchronously. Only refill and flush cross an async boundary.
+fn GrepInput::emit_buffered(
+  self : GrepInput,
+  path : String,
+  matcher : Matcher,
+  options : GrepOptions,
+  prefix_filename : Bool,
+  buffer : @buffer.Buffer,
+) -> UInt64 {
+  let mut selected = 0UL
+  for ;; {
+    let emitter = match self.pending_match {
+      Some(emitter) => emitter
+      None => {
+        guard self.next_buffered() is Some(record) else { break }
+        let emitter = MatchEmitter::new(record, matcher, options)
+        self.pending_match = Some(emitter)
+        emitter
+      }
+    }
+    if !emitter.consume(path, options, prefix_filename, buffer) {
       break
     }
-    hit = next(position)
+    if emitter.selected {
+      selected += 1UL
+    }
+    self.pending_match = None
   }
-  first is Some(_)
+  selected
 }
 
 ///|
@@ -233,6 +302,8 @@ async fn process_reader(
     },
   )
   let output = @io.BufferedWriter::new(stdout, size=65536)
+  let spans = @buffer.Buffer(size_hint=@stream.chunk_size)
+  defer @stream.flush_buffer(stdout, spans)
   let before : @deque.Deque[Record] = @deque.Deque([])
   let mut selected_count = 0UL
   let mut emitted_through = 0L
@@ -245,6 +316,18 @@ async fn process_reader(
   for ;; {
     if !options.invert && !options.context_enabled {
       input.skip_nonmatching(matcher, options.ignore_case)
+    }
+    if emit_records &&
+      options.only_matching &&
+      !options.invert &&
+      (!input.binary || options.binary_mode != Report) {
+      selected_count += input.emit_buffered(
+        path, matcher, options, prefix_filename, spans,
+      )
+      if spans.length() >= @stream.chunk_size {
+        @stream.flush_buffer(stdout, spans)
+        continue
+      }
     }
     if !emit_records && !options.quiet && !options.files_with_matches {
       selected_count += input.count_buffered(
@@ -265,9 +348,7 @@ async fn process_reader(
       options.only_matching &&
       !options.invert &&
       (!input.binary || options.binary_mode != Report) {
-      if write_matches(record, path, matcher, options, prefix_filename, output) {
-        selected_count += 1UL
-      }
+      input.pending_match = Some(MatchEmitter::new(record, matcher, options))
       continue
     }
     let matched = matcher.matches_record(record.data, options.ignore_case)
@@ -288,6 +369,7 @@ async fn process_reader(
     }
     if input.binary && options.binary_mode == Report {
       if keep && !binary_reported {
+        @stream.flush_buffer(stdout, spans)
         output.flush()
         let name = if path == "-" { "(standard input)" } else { path }
         stderr.write("grep: \{name}: binary file matches\n")

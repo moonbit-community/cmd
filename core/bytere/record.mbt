@@ -8,6 +8,9 @@ struct RecordMatcher {
   mut initialized : Bool
   mut span_plan : SpanPlan?
   mut span_initialized : Bool
+  mut span_dfa : SpanDfa?
+  mut span_dfa_initialized : Bool
+  byte_literal : Bytes?
 }
 
 ///|
@@ -18,6 +21,9 @@ pub fn Pattern::record_matcher(self : Pattern) -> RecordMatcher {
     initialized: false,
     span_plan: None,
     span_initialized: false,
+    span_dfa: None,
+    span_dfa_initialized: false,
+    byte_literal: self.literal.map(literal => bytes(literal.text)),
   }
 }
 
@@ -67,7 +73,7 @@ pub fn RecordMatcher::find_span(
     self.span_initialized = true
   }
   if self.span_plan is Some(plan) {
-    return plan.find(self.pattern, value, start, whole, word)
+    return plan.find(self.pattern, value[:], start, whole, word)
   }
   self.pattern.find_span(value, start~, whole~, word~)
 }
@@ -106,8 +112,27 @@ fn RecordDfa::new(pattern : Pattern) -> RecordDfa? {
     pattern.program.iter().any(instruction => instruction is Assert(_, _)) {
     return None
   }
+  let (classes, representatives) = byte_classes(pattern.program)
+  let dfa = RecordDfa::{
+    pattern,
+    classes,
+    representatives,
+    states: [],
+    ids: Map([]),
+    edges: FixedArray::make(256 * representatives.length(), -1),
+  }
+  let nodes = dfa.closure([pattern.entry])
+  dfa.states.push({ nodes, })
+  dfa.ids[nodes] = 0
+  Some(dfa)
+}
+
+///|
+fn byte_classes(
+  program : Array[Instruction],
+) -> (FixedArray[Int32], Array[Int32]) {
   let classes = FixedArray::make(256, 0)
-  for instruction in pattern.program {
+  for instruction in program {
     let partitions : Map[(Int32, Bool), Int32] = Map([])
     for byte in 0..<256 {
       let key = (classes[byte], instruction.consumes(byte))
@@ -128,18 +153,7 @@ fn RecordDfa::new(pattern : Pattern) -> RecordDfa? {
       representatives.push(byte)
     }
   }
-  let dfa = RecordDfa::{
-    pattern,
-    classes,
-    representatives,
-    states: [],
-    ids: Map([]),
-    edges: FixedArray::make(256 * representatives.length(), -1),
-  }
-  let nodes = dfa.closure([pattern.entry])
-  dfa.states.push({ nodes, })
-  dfa.ids[nodes] = 0
-  Some(dfa)
+  (classes, representatives)
 }
 
 ///|

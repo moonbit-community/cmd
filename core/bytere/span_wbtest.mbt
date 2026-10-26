@@ -55,6 +55,14 @@ test "compact spans agree with tagged matching at resumed starts and filtered en
               )
             }
             if !start_only {
+              let storage = b"prefix" + bytes(input) + b"suffix"
+              assert_eq(
+                matcher
+                .search_bytes(storage[6:6 + input.length()], whole~, word~)
+                .find_span(start~),
+                expected.map(hit => (hit.start, hit.end)),
+                msg=source + " byte span on " + input,
+              )
               assert_eq(
                 matcher.find_span(input, start~, whole~, word~),
                 expected.map(hit => (hit.start, hit.end)),
@@ -124,4 +132,43 @@ test "record DFA budget exhaustion falls back and keeps subsequent searches corr
       )
     }
   }
+}
+
+///|
+test "endpoint caches fall back on exhaustion and keep old searches valid" {
+  let pattern = compile("(a|b)*a(a|b){9}", extended=true)
+  let matcher = pattern.record_matcher()
+  let retained = matcher.search_bytes(b"aaaaaaaaaa")
+  assert_eq(retained.find_span(), Some((0, 10)))
+  assert_true(matcher.span_dfa is Some(_))
+  for number in 0..<2048 {
+    let input = Bytes::makei(12, index => {
+      if (number & (1 << index)) == 0 {
+        b'a'
+      } else {
+        b'b'
+      }
+    })
+    let search = matcher.search_bytes(input)
+    for start in [0, 1, 3, 12] {
+      assert_eq(
+        search.find_span(start~),
+        pattern.find_span(text(input), start~),
+      )
+    }
+  }
+  assert_true(matcher.span_dfa is None)
+  assert_eq(retained.find_span(), Some((0, 10)))
+}
+
+///|
+test "multiple fallback searches share one record conversion" {
+  let searches = search_bytes(
+    [compile("^a").record_matcher(), compile("\\(a\\)\\1").record_matcher()],
+    b"aa",
+  )
+  assert_true(searches[1].input.decoded is None)
+  assert_eq(searches[1].find_span(), Some((0, 2)))
+  assert_true(searches[0].input.decoded is Some(_))
+  assert_eq(searches[0].find_span(), Some((0, 1)))
 }

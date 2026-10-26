@@ -23,7 +23,7 @@ column, csplit and tac declare temporary-file writes, and sort lists its
 buffer-size, temporary-directory and batch-size options. Runtime APIs and
 command dependency coordinates remain unchanged.
 
-Candidate **0.8.2** adds the restricted `rg` command contract and two
+Candidate **0.8.2** adds the restricted `rg` command contract and three
 performance waves. `stream.RecordReader` returns batches with synchronous record
 iteration and immutable byte views; only split records are assembled. Reads are
 at most 1 MiB, and retained storage follows a block plus the longest record.
@@ -43,9 +43,17 @@ reference-free span programs of at most 256 instructions precompute epsilon
 closures and reuse integer worklists. Other span searches and captured searches
 retain the existing engines and register rules. Scratch state belongs to the
 record matcher; a span plan has at most 256 squared closure entries.
+`RecordMatcher.search_bytes()` borrows a record and exposes resumed byte spans.
+The package-level `search_bytes()` shares fallback text conversion across
+multiple patterns. Eligible unfiltered spans use a reverse DFA to mark feasible
+starts, followed by an anchored forward DFA for the longest endpoint. Each DFA
+has at most 256 states; exhaustion reruns the current query through the span
+engine. Start bitmaps retain about one bit per input byte per eligible pattern.
+Word/whole filters, assertions, references and larger programs retain their
+respective fallback paths. Literal byte searches avoid conversion as well.
 `find_span` still selects the leftmost-longest match. The cut/uniq/wc 0.2.3 and
 grep 0.3.1 candidates select this core coordinate, alongside rg. These candidates
-have not been published. See [the stream ADR](../docs/adr/0003-streams.md#performance-wave-2-candidate-2026-10-26).
+have not been published. See [the stream ADR](../docs/adr/0003-streams.md#performance-wave-3-candidate-2026-10-26).
 
 `gzipops.encode` accepts an optional `level` argument, defaulting to six, for
 the private pure MoonBit 32 KiB LZ and stored/fixed/dynamic Huffman encoder.

@@ -13,6 +13,99 @@ pairing are retired. Dated Native observations retain their historical scope.
 
 ## Target and decision
 
+### Performance wave 3 candidate (2026-10-26)
+
+This extends unpublished core 0.8.2 and grep 0.3.1 from wave 2, retaining the
+pure MoonBit and direct release-Wasm measurement boundaries. No MoonX timing or
+startup subtraction is used. The frozen comparison commit is `340b356`.
+
+`RecordMatcher.search_bytes` borrows a record and returns resumed byte offsets.
+The package-level `search_bytes` constructor shares fallback text conversion
+across patterns. Literal searches use bytes directly. Other eligible span
+searches use a reverse unanchored DFA to mark every feasible start, then an
+anchored forward DFA to select the longest endpoint at the earliest start.
+The start/end separation is related to the paired automata described by
+[Rust regex-automata](https://docs.rs/regex-automata/0.4.18/regex_automata/dfa/regex/struct.Regex.html).
+Here the reverse pass records all feasible starts to preserve GNU
+leftmost-longest selection: in `a.*z|b` on `abz`, the earlier `a` start wins even
+though the `b` alternative accepts sooner.
+
+Each DFA has at most 256 states and 256 byte classes; eligible programs have at
+most 256 instructions and no assertions or backreferences. Cache exhaustion
+disables the pair and reruns the current query through the retained span engine.
+Word/whole filters use the span plan, and assertion/reference/large-program
+fallbacks share one lazily decoded record. Each eligible search retains a bitmap
+of `floor(record_bytes / 64) + 1` 64-bit words. Aggregate bitmap storage grows
+with record size and pattern count. This is not an RSS cap. The reverse pass is
+reused across resumed searches, but forward longest-match searches can revisit
+suffixes for ambiguous patterns; no general linear-time enumeration claim is
+made. Literal and nullable searches preserve empty spans and progress rules.
+
+Grep's span emitter resumes a record after its 64 KiB output threshold. Both
+matching and output accumulation run synchronously inside buffered input;
+only refill and output flush cross async boundaries. Output storage follows a
+flush block plus the largest emitted match/prefix, without accumulating the
+expanded output of all matches in a long record. Binary decisions, offsets,
+partial input-error records and failed-write non-replay remain covered. A
+single fixed literal count can locate matching records directly and skip repeat
+hits in the same record; case/word/whole filters and literals containing the
+record delimiter retain the record path.
+
+Final local macOS arm64 observations use the same GNU 9.11/3.12 builds, one
+warmup and nine alternating pairs with exact status/stdout/stderr comparison.
+Input is a regular file and stdout is captured. Times are median milliseconds:
+
+| Workload | Candidate | GNU | Ratio |
+| --- | ---: | ---: | ---: |
+| grep -Eo '[0-9]{4}.*gamma', 1 MiB | 28.62 | 9.06 | 3.16 |
+| grep -Eo '[a-z]+', 1 MiB / many matches | 31.73 | 14.45 | 2.19 |
+| grep -o alpha, 1 MiB | 21.32 | 6.21 | 3.43 |
+| regex spans, 8 MiB / 1 MiB records | 89.88 | 19.81 | 4.54 |
+| grep -wEo '[a-z]+', 1 MiB | 59.52 | 30.29 | 1.96 |
+| grep -Eo 'a?', 1 MiB | 64.32 | 66.13 | 0.97 |
+| grep -Fc alpha, 8 MiB | 20.90 | 3.59 | 5.82 |
+| same fixed count, 64 MiB | 59.70 | 18.00 | 3.32 |
+| regex count, 64 MiB | 104.90 | 35.45 | 2.96 |
+| regex miss, 8 MiB | 18.04 | 2.35 | 7.69 |
+
+Separate final pairs against wave 2 measured 3.24x for the original span row,
+4.08x for many matches, 2.00x for literal spans, 3.64x for long records, 1.87x
+for word-filtered spans and 3.85x for nullable spans. Fixed counts improved
+1.06x/1.24x at 8/64 MiB. Regex counting did not improve: the 64 MiB pair was
+104.48 versus 103.48 ms, and the miss pair 18.52 versus 17.47 ms. The candidate
+Wasm also grew from about 388 to 412 KiB. These observations do not isolate the
+cause of the small counting regressions.
+
+The staged experiment is useful evidence: byte views alone took 94.56 versus
+93.41 ms on the original span workload, so removing conversion was insufficient.
+The endpoint pair reduced it to 37.85 ms; synchronous output accumulation then
+reduced it to about 31.81 ms, and buffered-record emission to about 28.68 ms.
+An overlapping test/measurement attempt is excluded; the output-accumulation
+figure uses the later serialized run. The next experiments should target
+revisited endpoint suffixes on long records, word-aware endpoint states, and
+multi-literal block search. Their additional gains are unverified. Benchmark
+both sparse and dense matches and record-size scaling before broadening any
+engine selection; increasing buffers or removing conversions alone has not
+resolved these gaps.
+
+Validation passed 1,597 release-Wasm package tests, 117 Native tool tests and
+the full functional suite (2,062 passes, 19 explicit skips, zero failures).
+The independent local GNU set matched 684 of 688 cases. The four mismatches
+are the existing empty-pattern `grep -v -c` output difference, reproduced with
+wave-2 artifacts on all four inputs. No new mismatch appeared in that set.
+Additional regressions cover earliest-start versus earliest-end selection,
+resumed offset views, all byte values, cache exhaustion with retained searches,
+shared fallback conversion, multi-pattern span selection, NUL prefixes and
+input/output failures. Package interface changes are limited to the new byte
+search entry points and opaque `RecordSearch` type.
+
+Raw reports, executable/corpus hashes, frozen Wasm artifacts, scripts and stage
+durations are indexed by `test-reports/performance-wave3-evidence/manifest.json`.
+Reproduction uses the extended `tests/benchmark/explore.mbtx` and the retained
+`/private/tmp/cmd-perf-wave3-20261026` lab. These are selected diagnostic medians,
+not formal 105-pair/p95/confidence acceptance, sealed Linux parity, three-host
+validation or published-consumer acceptance. No package was uploaded.
+
 ### Performance wave 2 candidate (2026-10-26)
 
 This extends the same unpublished coordinates from wave 1. Product code and

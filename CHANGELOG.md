@@ -5,6 +5,17 @@ by date and delivery milestone rather than by a single package version.
 
 ## 2026-10-26
 
+- Extended unpublished core 0.8.2 and grep 0.3.1 with borrowed byte searches,
+  paired endpoint DFAs, shared fallback decoding and resumable synchronous span
+  emission. Selected local pairs improved original/many-match/long-record spans
+  by 3.24x/4.08x/3.64x over wave 2. Original spans remain 3.16x GNU; many-match
+  and word-filtered rows are 2.19x and 1.96x. Counting gains are smaller and some
+  regex count rows show small regressions. Passed 1,597 Wasm package tests,
+  117 Native tool tests and 2,062 functional cases with 19 skips and no failures.
+  The independent GNU set matched 684/688, retaining four known empty-pattern
+  differences. [ADR-0003](docs/adr/0003-streams.md#performance-wave-3-candidate-2026-10-26)
+  records resource bounds, raw evidence and remaining gaps. No publication or
+  formal performance acceptance is claimed.
 - Extended the same unpublished performance candidates with synchronous record
   visitors, block rejection, synchronous count scans, flat DFA transitions and
   precomputed span closures. Final local pairs improved short-record cut/uniq

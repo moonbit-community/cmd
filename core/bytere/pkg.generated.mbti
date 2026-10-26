@@ -8,6 +8,8 @@ pub fn bytes(StringView) -> Bytes
 
 pub fn compile(String, extended? : Bool, emacs? : Bool, grep_syntax? : Bool, ignore_case? : Bool) -> Pattern raise
 
+pub fn search_bytes(ArrayView[RecordMatcher], BytesView, whole? : Bool, word? : Bool) -> Array[RecordSearch]
+
 pub fn text(BytesView) -> String
 
 // Errors
@@ -34,6 +36,10 @@ type RecordMatcher
 pub fn RecordMatcher::find_span(Self, String, start? : Int32, whole? : Bool, word? : Bool) -> (Int32, Int32)?
 pub fn RecordMatcher::matches(Self, BytesView, whole? : Bool, word? : Bool) -> Bool
 pub fn RecordMatcher::required_literal(Self) -> Bytes
+pub fn RecordMatcher::search_bytes(Self, BytesView, whole? : Bool, word? : Bool) -> RecordSearch
+
+type RecordSearch
+pub fn RecordSearch::find_span(Self, start? : Int32) -> (Int32, Int32)?
 
 // Type aliases
 
