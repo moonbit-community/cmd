@@ -11,7 +11,9 @@ async test "command README coordinates match source and preserve unpublished bou
     let directory = root + "commands/" + name
     let module_text = @fs.read_file(directory + "/moon.mod").text()
     let version = dependency_manifest_field(module_text, "version")
-    let readme = @fs.read_file(directory + "/README.md").text()
+    let readme = @fs.read_file(directory + "/README.md")
+      .text()
+      .replace_all(old="\r\n", new="\n")
     assert_true(readme.has_prefix("# " + name + "\n"))
     assert_true(readme.contains("MoonX"))
     for section in ["Supported scope", "Options", "Limitations", "Examples"] {
