@@ -29,7 +29,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/tac@0.1.4 metadata contract",
+      "source_version": "workspace cli/tac@0.1.5 metadata contract",
       "expected_stdout_text": "Usage: tac [OPTION]... [FILE]...\n      --help      display this help and exit\n      --version   display version and exit\n\nWrite each FILE to standard output, last line first.\nWith no FILE, or when FILE is -, read standard input.\n\n  -b, --before             Attach the separator before records.\n  -s, --separator=STRING   Use STRING instead of newline.\n  -r, --regex              Use an Emacs-style byte regular expression.\n\nNonseekable input and regex mode require temporary-directory write access.\nRegex mode retains the complete input for arbitrary-span byte matching.\n",
       "expected_stderr_text": ""
     },
@@ -48,8 +48,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/tac@0.1.4 metadata contract",
-      "expected_stdout_text": "tac 0.1.4\n",
+      "source_version": "workspace cli/tac@0.1.5 metadata contract",
+      "expected_stdout_text": "tac 0.1.5\n",
       "expected_stderr_text": ""
     },
     {

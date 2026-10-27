@@ -29,7 +29,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/cksum@0.1.3 metadata contract",
+      "source_version": "workspace cli/cksum@0.1.4 metadata contract",
       "expected_stdout_text": "Usage: cksum [OPTION]... [FILE]...\nPrint or check checksums. With no FILE, or FILE -, read stdin.\n\n  -a, --algorithm=TYPE  bsd, sysv, crc (default), crc32b, md5, sha1,\n                        sha224, sha256, sha384, sha512, sha2, sha3, blake2b, sm3\n  -l, --length=BITS     SHA2/SHA3: 224, 256, 384, 512; BLAKE2b: 8..512 by 8\n      --untagged        omit algorithm tags (modern digests default to tags)\n      --base64          encode modern digests in Base64\n      --raw             write digest bytes without names or separators\n  -b, --binary          mark untagged output as binary\n  -t, --text            mark untagged output as text (default)\n      --tag             print BSD tagged records\n  -c, --check           read checksum records and verify files\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification results and summaries\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nInput bytes are unchanged by -b or -t on every supported platform.\n",
       "expected_stderr_text": ""
     },
@@ -48,8 +48,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/cksum@0.1.3 metadata contract",
-      "expected_stdout_text": "cksum 0.1.3\n",
+      "source_version": "workspace cli/cksum@0.1.4 metadata contract",
+      "expected_stdout_text": "cksum 0.1.4\n",
       "expected_stderr_text": ""
     },
     {

@@ -206,7 +206,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/tail@0.2.2 metadata contract",
+      "source_version": "workspace cli/tail@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: tail [-fz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n  -z, --zero-terminated  use NUL as the record delimiter\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -225,8 +225,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/tail@0.2.2 metadata contract",
-      "expected_stdout_text": "tail 0.2.2\n",
+      "source_version": "workspace cli/tail@0.2.3 metadata contract",
+      "expected_stdout_text": "tail 0.2.3\n",
       "expected_stderr_text": ""
     },
     {

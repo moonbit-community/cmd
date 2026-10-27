@@ -354,7 +354,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("rm 0.2.2\n")
+    @stdio.stdout.write("rm 0.2.3\n")
     return
   }
   let mut preserve_root = true

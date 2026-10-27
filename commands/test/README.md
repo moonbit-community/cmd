@@ -1,27 +1,36 @@
 # test
 
-Version **0.2.2** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
+Evaluate conditions for MoonX.
 
-Evaluate string, integer, file-kind, access, size, and nanosecond timestamp
-predicates. In addition to `-e/-f/-d/-r/-w/-x`, the portable profile supports
-`-L/-h`, `-p/-S/-b/-c`, `-s`, `-N`, and `-nt/-ot`. Logical negation, AND
-(`-a`), OR (`-o`), and parentheses are supported. Exit status is 0 for true,
-1 for false, and 2 for an invalid expression or runtime error. Missing files
-are false; newer/older comparisons use GNU missing-side semantics.
+```sh
+moonx cli/test@0.2.3 EXPRESSION
+```
 
-Timestamp comparisons and positive special-file predicates are implemented,
-but their complete backend/host combinations still need independent probes.
-`-t` terminal detection, permission-bit/owner predicates, and same-file `-ef`
-are not implemented. Public async file kind/time/access reads do not imply
-public file identity or mode reads. File-access authorization belongs to the
-caller or host.
+## Supported scope
 
-## Standalone metadata
+Evaluate string/integer comparisons and file type, access, size and timestamp predicates. Exit 0 for true, 1 for false and 2 for errors.
 
-Standalone `--version` prints exactly `test 0.2.2` followed by one
-newline. Standalone `--help` starts with `Usage: test`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+## Options
+
+| Option | Description |
+| --- | --- |
+| `-n / -z STRING` | Test nonempty / empty strings. |
+| `= / != / -eq / -ne / -gt / -ge / -lt / -le` | Compare strings or integers. |
+| `-e / -f / -d / -L / -h / -p / -S / -b / -c` | Test existence or file type. |
+| `-r / -w / -x / -s / -N` | Test access, nonempty size or modification since access. |
+| `-nt / -ot` | Compare file modification times. |
+| `! / -a / -o / ( )` | Negate or combine expressions. |
+| `--help` / `--version` | Show help / package version. |
+
+## Limitations
+
+- Terminal -t, permission-bit/owner predicates and same-file -ef are unsupported.
+
+## Examples
+
+```sh
+moonx cli/test@0.2.3 -f notes.txt
+moonx cli/test@0.2.3 3 -gt 2
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

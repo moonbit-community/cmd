@@ -187,7 +187,7 @@ async fn copy_one(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("cp 0.2.2\n")
+    @stdio.stdout.write("cp 0.2.3\n")
     return
   }
   let parsed = @cli.parse(normalized_args(@env.args()[1:]), [
@@ -219,7 +219,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: cp [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: cp [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nCopying requires --no-preserve=mode and a new destination. Existing-file overwrites, archive and preserve modes are unsupported. Parsed force/interactive/backup flags do not enable replacement.\n",
     )
     return
   }

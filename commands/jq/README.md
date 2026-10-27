@@ -1,69 +1,47 @@
-# jq for moonx
+# jq
 
-Malformed `--argjson` input returns status 2 and the jq 1.8.2 argument-error
-diagnostic, including its help/manual guidance; no filter output is emitted.
-
-Version **0.2.3** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
-
-Run jq-compatible JSON filters without installing a separate binary:
+Filter JSON for MoonX.
 
 ```sh
-printf '%s' '{"name":"Moon"}' | moonx cli/jq -r '.name'
-moonx cli/jq -n -c '{ok: true, values: [1, 2]}'
-moonx cli/jq -c '.items[]' data.json
+moonx cli/jq@0.2.4 [OPTION]... [FILTER] [FILE...]
 ```
 
-`moonx` uses the linear-memory WebAssembly build by default. Arguments after
-`cli/jq` are passed directly to the jq-compatible command.
+## Supported scope
 
-Supported options:
+Apply jq-compatible filters to consecutive JSON values, files or stdin. Supports maps, reduce, assignments, try/catch, variables and Unicode string slices. No filter selects identity.
 
-- `-c`, `--compact-output`: print compact JSON.
-- `-r`, `--raw-output`: print strings without JSON quotes.
-- `-f`, `--from-file FILE`: read the filter from `FILE`.
-- `-n`, `--null-input`: evaluate once with `null` input.
-- `-l`, `--logs`: process newline-delimited JSON and skip invalid lines.
-- `-S`, `--sort-keys`: recursively sort object keys for deterministic output.
-- `-j`, `--join-output`: print strings without quotes and omit separators between filter results.
-- `-s`, `--slurp`: evaluate one array containing all input values.
-- `-R`, `--raw-input`: treat each input line as a JSON string.
-- `-e`, `--exit-status`: return 1 for false/null and 4 when no result is produced.
-- `--arg NAME VALUE`, `--argjson NAME JSON`: bind values lexically for `$NAME`,
-  including string interpolation and local variable shadowing.
-- `--indent N` and `--tab`: select pretty-print indentation. `N` ranges from
-  `-1` (tabs) through `7`; `0` preserves line breaks without indentation.
-  The last of `-c`, `--indent` and `--tab` selects formatting.
-- `-C`, `--color-output`: emit jq 1.8.2 ANSI colors, including on redirected output.
-- `-M`, `--monochrome-output`: disable colors; this wins over `-C` in either order.
+## Options
 
-`JQ_COLORS` supplies colon-separated SGR codes for null, false, true, numbers,
-strings, arrays, objects and object keys. Omitted palette entries retain their
-defaults; invalid values warn on stderr and use the default palette, without
-changing the query's exit status. Raw string results (`-r`/`-j`) remain uncolored.
-Without `-C`, output is monochrome: automatic TTY detection awaits a public
-`isatty` API. Explicit `-C` works independently of `NO_COLOR`, as in upstream jq.
-`-l/--logs` is a project extension and cannot be combined with `-n` or `-R`.
+| Option | Description |
+| --- | --- |
+| `-c, --compact-output` | print compact JSON |
+| `-r, --raw-output` | print strings without JSON quotes |
+| `-j, --join-output` | raw output without result separators |
+| `-n, --null-input` | evaluate once with null; do not read inputs |
+| `-s, --slurp` | collect input values in an array |
+| `-R, --raw-input` | read text lines; -Rs reads all text |
+| `-l, --logs` | skip non-JSON lines (project extension) |
+| `-S, --sort-keys` | sort object keys recursively |
+| `-e, --exit-status` | return 1 for false/null, 4 for no result |
+| `-f, --from-file FILE` | read the filter from FILE |
+| `--arg NAME VALUE` | bind a string variable |
+| `--argjson NAME JSON` | bind a JSON variable |
+| `--indent N` | indentation -1 (tabs) through 7 |
+| `--tab` | indent with tabs |
+| `-C, --color-output` | emit ANSI colors (JQ_COLORS customizes the palette) |
+| `-M, --monochrome-output` | disable colors, including when -C is present |
+| `--help` / `--version` | Show help / package version. |
 
-Ordinary input accepts consecutive JSON values, including multiline objects,
-and emits completed values before EOF. `-s` collects all JSON values from all
-inputs; `-Rs` collects their exact text as one string. Parsing errors preserve
-already emitted results and exit with status 4. `-n` evaluates once without
-reading input files; `-e` reflects the final emitted value. With no filter the
-identity filter is used.
+## Limitations
 
-The evaluator is MoonJQ 0.2.0. `tostring` preserves strings and serializes other
-values; `tojson` emits JSON text. String slices use Unicode scalar indices,
-including negative and open bounds, in nested filters as well as at the top
-level. Numeric/boolean/object slices fail instead of silently returning null.
-Map, reduce, assignment and try/catch use the evaluator's public AST; modules,
-the `--stream` event representation, and every jq 1.8.2 diagnostic are not claimed.
+- Modules, --stream events and full jq compatibility are unsupported.
+- Color requires explicit -C; automatic terminal color is unavailable. -l/--logs skips invalid lines and conflicts with -n/-R.
 
-## Standalone metadata
+## Examples
 
-Standalone `--version` prints exactly `jq 0.2.3` followed by one
-newline. Standalone `--help` starts with `Usage: jq`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+```sh
+printf '%s' '{"name":"Moon"}' | moonx cli/jq@0.2.4 -r '.name'
+moonx cli/jq@0.2.4 -n -c '{ok: true, values: [1, 2]}'
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0007-language.md)

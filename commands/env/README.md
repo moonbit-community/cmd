@@ -1,54 +1,36 @@
 # env
 
-This documents version 0.2.2. The [support record](../../docs/compatibility.md)
-tracks platform verification and exact-version publication evidence separately.
+Inspect environments and launch commands for MoonX.
 
-Print the environment or execute one command with explicit environment
-changes. Supports `-i`/`--ignore-environment` and `-u NAME`/`--unset=NAME`.
-The common GNU path also accepts bare `-` as an empty-environment request,
-`-0`/`--null` for NUL-separated output, and `-C`/`--chdir` for the child
-working directory. `--null` with a child command fails with status 125.
-Command execution uses MoonBit's policy-visible process API, never a shell;
-the command and every argument are passed as separate argv entries. Because
-execution can create a child process, the caller or host may require process
-authorization. The command itself does not implement an allowlist.
+```sh
+moonx cli/env@0.2.3 [-i] [-0] [-u NAME] [-C DIR] [-S STRING] [NAME=VALUE]... [COMMAND [ARG]...]
+```
 
-Option/assignment precedence, repeated unsets, `--`, command lookup, and exit
-statuses 125 (command setup), 126 (not invokable), and 127 (not found) are
-covered by the P2 profile. Non-empty assignment names are passed through even
-when they are not shell identifiers, and the first assignment ends option
-scanning. `--help` and `--version` return successful output.
+## Supported scope
 
-Both backends start from the complete environment made available by the host,
-then apply the requested removals and assignments. `LANG`, `LC_ALL`, and other
-names are neither filtered nor rewritten. Host authorization still applies to
-the child working directory and executable.
+Print the environment or apply assignments/unsets and run one executable with separate arguments. The first assignment ends option scanning.
 
-Windows Native cannot currently launch a child whose final environment is
-empty: released async 0.22.5 does not initialize its empty Win32 environment
-block. This path rejects before launch with status 125 and an explicit
-unsupported-capability diagnostic. Empty environment enumeration without a
-child remains supported, as do launches with a nonempty final environment,
-Windows Wasm and POSIX. Lifting this restriction requires a released async
-fix and a real Windows Native empty-environment launch regression.
+## Options
 
-`-S STRING` / `--split-string=STRING` expands one string into argument words
-at the current option position. Single/double quotes, GNU split-string escapes,
-token-start comments, and `${NAME}` expansion are supported; this is not shell
-evaluation. Expansions read the original inherited environment, including
-when `-i` or `-u` will remove the variable from the child's environment. Words
-from later command-line arguments remain after the expanded words. Malformed
-quotes, escapes, or variable syntax fail with status 125 before launch.
+| Option | Description |
+| --- | --- |
+| `-i, --ignore-environment` | Start with an empty environment; bare - is equivalent. |
+| `-u, --unset=NAME` | Remove a variable. |
+| `-0, --null` | Separate printed entries with NUL. |
+| `-C, --chdir=DIR` | Set the child working directory. |
+| `-S, --split-string=STRING` | Split quotes, escapes and original-environment substitutions. |
+| `--help` / `--version` | Show help / package version. |
 
-Without a command, environment enumeration has no ordering guarantee. The
-public process environment is a map, while GNU's order also varies with the
-host C library. Use a command such as `printenv A B` when an ordered list of
-specific values is needed.
+## Limitations
 
-## Standalone metadata
+- --null cannot be used with a child command. Environment listing order is unspecified.
+- Split-string parsing is not shell evaluation.
 
-Standalone `--version` prints exactly `env 0.2.2` followed by one
-newline. Standalone `--help` starts with `Usage: env`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+## Examples
+
+```sh
+moonx cli/env@0.2.3
+moonx cli/env@0.2.3 MODE=test moonx cli/printenv@0.2.3 MODE
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0006-process.md)

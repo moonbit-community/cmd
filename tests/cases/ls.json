@@ -1628,7 +1628,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/ls@0.2.3 metadata contract",
+      "source_version": "workspace cli/ls@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: ls [-aAdF1RCxmrtucSbqNQ] [-w WIDTH] [-T TABSIZE] [-H|-L|-P] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -C lists down columns; -x across rows; -m uses commas; -1 uses lines.\n  -w, --width=COLS sets line width (0 unlimited); -T, --tabsize=COLS sets tabs.\n  -b escapes names; -N is literal; -Q uses C quotes; -q replaces control bytes.\n      --quoting-style=STYLE selects GNU C-locale quoting.\n      --show-control-chars displays remaining control bytes.\n      --color=always,never controls explicit type/extension colors.\n  Active su/sg/ex/ca/mh or tw/ow/st colors require unavailable metadata.\n  -H follows command-line links; -L follows all links; -P follows none (extension).\n  -u, -c and --time select and imply time sorting unless -S or -t selects a sort.\n  -S requires regular files; metadata-rich long listing is not supported.\n",
       "expected_stderr_text": ""
     },
@@ -1647,8 +1647,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/ls@0.2.3 metadata contract",
-      "expected_stdout_text": "ls 0.2.3\n",
+      "source_version": "workspace cli/ls@0.2.4 metadata contract",
+      "expected_stdout_text": "ls 0.2.4\n",
       "expected_stderr_text": ""
     },
     {

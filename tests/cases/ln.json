@@ -553,7 +553,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/ln@0.2.3 metadata contract",
+      "source_version": "workspace cli/ln@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: ln -s [-f|-i] [-r] [-n] [-T] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\n       ln -s [-f|-i] [-r] [-n] [-b|--backup[=CONTROL]] [-S SUFFIX] -t DIRECTORY TARGET...\n      --help      display this help and exit\n      --version   display version and exit\nThe last -f/--force or -i/--interactive selects overwrite behavior.\nDeclining an interactive overwrite returns status 1 without replacing the link.\n",
       "expected_stderr_text": ""
     },
@@ -572,8 +572,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/ln@0.2.3 metadata contract",
-      "expected_stdout_text": "ln 0.2.3\n",
+      "source_version": "workspace cli/ln@0.2.4 metadata contract",
+      "expected_stdout_text": "ln 0.2.4\n",
       "expected_stderr_text": ""
     }
   ]

@@ -1,50 +1,41 @@
 # make
 
-Version **0.2.2** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
+Run a Make language subset for MoonX.
 
-`cli/make` provides a Make subset implemented in MoonBit. Use `-f/--file FILE`
-to select a makefile, `-C DIR` to change its working directory, `-n/--just-print`
-for dry runs, `-s/--silent` to suppress recipe echo, and `-B/--always-make` to
-force rebuilding. Target operands and `NAME=VALUE` command-line assignments
-are accepted.
-Short flags must be separate arguments, for example `-n -s` rather than `-ns`.
+```sh
+moonx cli/make@0.2.3 [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]
+```
 
-`include`, `-include`, `sinclude`, command-line variable assignment,
-`ifeq`/`ifneq`/`ifdef`/`ifndef`, pattern/static-pattern dependencies, and
-automatic variables (`$@`, `$<`, `$^`, `$+`, `$*`, `$@D`, `$@F`, `$<D`, `$<F`)
-are supported in the implemented slice. `-j N` schedules independent targets
-concurrently with at most N recipe chains, and bare `-j` permits all ready
-targets. Shared prerequisites execute once. `-k` continues independent targets
-after recipe failures, and `-W`
-marks targets depending on the named file out of date. The full GNU built-in
-database, jobserver and secondary expansion remain outside the supported
-subset. `$(shell ...)` uses the MoonBit shell, converts embedded newlines to
-spaces, strips trailing newlines and updates `.SHELLSTATUS`. `-C` supplies the
-recipe and shell-function working directory.
+## Supported scope
 
-Each external command in a recipe is launched through the public MoonBit
-process API. The complete Makefile is never forwarded to a host `make`
-executable. The remaining
-language surface is listed in the
-[support record](../../docs/compatibility.md).
+Build targets with dependencies, variables, includes, conditionals, patterns, automatic variables, exports and parallel recipe chains.
 
-Recipes inherit the complete caller environment plus explicitly exported and
-command-line make variables. `export NAME[=VALUE]` and `unexport NAME` control
-exports; unexported make variables remain local. Bare `export`/`unexport` are
-rejected.
-Authorization is applied by the caller or host, and locale variables are not
-rewritten.
+## Options
 
-Shell functions receive explicit exports as well. Recursive exported values
-that themselves invoke `$(shell ...)` are explicitly rejected; GNU's special
-export-recursion fallback remains project interpreter work.
+| Option | Description |
+| --- | --- |
+| `-f, --file FILE` | Select a makefile. |
+| `-C DIR` | Change working directory. |
+| `-n, --just-print` | Print recipes without running them. |
+| `-s, --silent` | Suppress recipe echo. |
+| `-B, --always-make` | Force rebuilding. |
+| `-j [N]` | Run up to N recipe chains; bare -j allows all ready targets. |
+| `-k` | Continue independent targets after failures. |
+| `-W FILE` | Treat FILE as newly modified. |
+| `NAME=VALUE / TARGET` | Set variables / select targets. |
+| `--help` / `--version` | Show help / package version. |
 
-## Standalone metadata
+## Limitations
 
-Standalone `--version` prints exactly `make 0.2.2` followed by one
-newline. Standalone `--help` starts with `Usage: make`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+- Short flags must be separate: use -n -s, not -ns.
+- GNU's complete built-in database, jobserver, secondary expansion and recursive shell-valued exports are unsupported.
+- Recipes use the supported sh language subset.
+
+## Examples
+
+```sh
+moonx cli/make@0.2.3 -n
+moonx cli/make@0.2.3 -f build.mk -j 2 all
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0007-language.md)

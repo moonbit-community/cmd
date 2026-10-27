@@ -21,9 +21,15 @@ yes, completing functional coverage beyond metadata/availability for all 78
 commands. This release does not claim new
 cross-platform acceptance or completion of formal performance work.
 
-There are **80 local command modules and 78 published commands**. Local
-`rg 0.1.0`, `core 0.8.2`, `cut/uniq/wc 0.2.3` and `grep 0.3.1` are unpublished
-candidates; `timeout` is local-only. The performance candidates preserve command
+There are **80 local command modules and 78 published commands**. The current
+[candidate manifest](../tests/release_runner/current/candidate.json) prepares
+78 new command versions with concise MoonX READMEs and synchronized metadata.
+`rg 0.1.0` and `timeout` are excluded from this release and remain unpublished.
+Live registry inspection on 2026-10-27 found `core 0.8.2`, `cut/uniq/wc 0.2.3`
+and `grep 0.3.1` already uploaded; this observation does not establish their
+consumer acceptance. Fetched core 0.8.2 matches the workspace source exactly,
+so dependent release candidates select that coordinate without republishing
+core. The retained performance changes preserve command
 options and C-byte semantics. They add synchronous record visitors, SIMD/word
 counting, conservative block rejection, flat bounded DFA transitions,
 precomputed span closures, bounded byte endpoint automata, adaptive literal sets
@@ -40,10 +46,9 @@ That exception does not establish formal performance or release acceptance.
 The wave-2 held-out comparison also records an existing difference: empty-pattern
 `grep -v -c` prints `0` here, whereas GNU grep 3.12 exits without stdout. Both
 exit 1. This is not a new fast-path regression or a claim of full GNU parity.
-Published command versions are **37 at 0.2.2, 8 at 0.2.3, 3 at 0.2.0,
-2 at 0.2.1, 12 at 0.1.3, 10 at 0.1.2, 4 at 0.1.4, and one each at
-0.2.4 and 0.3.0**. Shared `cli/core` is **0.8.1**
-and is not counted as a command.
+The R release inventory below remains historical. The current checked-in
+published expectations are retained until this release's exact-coordinate
+acceptance completes. Shared core is not counted as a command.
 
 The [stage 0 release](../CHANGELOG.md#2026-10-20),
 [metadata release](../CHANGELOG.md#2026-10-18)

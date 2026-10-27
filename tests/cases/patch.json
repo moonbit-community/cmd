@@ -478,7 +478,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/patch@0.2.0 metadata contract",
+      "source_version": "workspace cli/patch@0.2.1 metadata contract",
       "expected_stdout_text": "Usage: patch [OPTION]... [ORIGINALFILE [PATCHFILE]]\nApply unified or context patches with offsets, fuzz and rejected hunks.\n  -p, --strip=N       remove N leading file-name components\n  -i, --input=FILE    read the patch from FILE instead of stdin\n  -o, --output=-      write patched files to stdout\n  -r, --reject-file=FILE  write rejected hunks to a new FILE; - discards\n  -d, --directory=DIR resolve target paths relative to DIR\n  -R, --reverse       apply additions as removals and vice versa\n      --dry-run       check without writing or deleting files\n  -s, --quiet         suppress routine file messages\n  -u, --unified       require unified input\n  -c, --context       require context input\n  -t, --batch         select a detected reverse without prompting\n  -F, --fuzz=N        ignore up to N outer context lines (default 2)\n      --no-backup-if-mismatch  accept the no-backup strict profile\n      --help          display this help and exit\n      --version       display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -497,8 +497,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/patch@0.2.0 metadata contract",
-      "expected_stdout_text": "patch 0.2.0\n",
+      "source_version": "workspace cli/patch@0.2.1 metadata contract",
+      "expected_stdout_text": "patch 0.2.1\n",
       "expected_stderr_text": ""
     },
     {

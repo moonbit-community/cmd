@@ -252,7 +252,7 @@ async fn process_source(
 async fn main {
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("grep 0.3.1\n")
+    @stdio.stdout.write("grep 0.3.2\n")
     return
   }
   let parsed = @cli.parse(args, [

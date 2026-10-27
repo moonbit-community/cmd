@@ -1,44 +1,39 @@
-# join for moonx
+# join
 
-Version **0.2.2** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
-
-Join lines of two files sorted on their join fields:
+Join sorted text files for MoonX.
 
 ```sh
-moonx cli/join people.txt colors.txt
-moonx cli/join -t, -1 2 -2 1 a.csv b.csv
+moonx cli/join@0.2.3 [options] FILE1 FILE2
 ```
 
-Options: `-1 N` / `-2 N` choose the join field in each file (default 1), `-z`
-uses NUL-delimited records. `-t CHAR` selects a single-byte field separator
-(default: runs of blanks,
-output separated by a single space). `-a 1|2` includes unpairable rows,
-`-v 1|2` selects only unpairable rows, and `-e STRING` supplies missing or empty
-fields. `-i` / `--ignore-case` ignores ASCII case while comparing keys, preserving original
-bytes in output. `--header` emits the first records together without comparing
-their keys or checking header order, including with `-v`.
+## Supported scope
 
-`-o LIST` selects join/output fields. `-o auto` freezes the number of fields
-from each first record (the header with `--header`), omits later extra fields,
-and pads missing fields with the `-e` replacement or empty fields. Repeated
-explicit output lists accumulate and take precedence over `auto` in either
-argument order.
+Join two files on matching fields; default keys are the first blank-separated field. Either input may be stdin, but not both.
 
-`--check-order` rejects an out-of-order input key immediately;
-`--nocheck-order` disables order checks. The last order flag takes effect.
-The default reports disorder after an unpairable row makes it observable,
-continues output, and exits nonzero at the end. Diagnostics identify the input
-file, record number and offending record.
-The merge streams both inputs and retains only the current equal-key runs.
-Use `-` for either input to read stdin; selecting stdin for both inputs is
-rejected before reading either one.
+## Options
 
-## Standalone metadata
+| Option | Description |
+| --- | --- |
+| `-1 N / -2 N` | Choose each file's join field. |
+| `-t CHAR` | Set a single-byte field separator. |
+| `-a 1\|2 / -v 1\|2` | Include / select only unpairable rows. |
+| `-e STRING` | Replace missing or empty fields. |
+| `-i, --ignore-case` | Compare keys ignoring ASCII case. |
+| `-o LIST\|auto` | Choose output fields. |
+| `--header` | Join first records without comparing their keys. |
+| `--check-order / --nocheck-order` | Enable immediate order checking / disable checks. |
+| `-z, --zero-terminated` | Use NUL-delimited records. |
+| `--help` / `--version` | Show help / package version. |
 
-Standalone `--version` prints exactly `join 0.2.2` followed by one
-newline. Standalone `--help` starts with `Usage: join`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+## Limitations
+
+- Inputs must be sorted on the selected keys using the C-byte profile; locale-aware collation is unsupported.
+
+## Examples
+
+```sh
+moonx cli/join@0.2.3 people.txt colors.txt
+moonx cli/join@0.2.3 -t, -1 2 -2 1 a.csv b.csv
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

@@ -63,9 +63,9 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "seq 0.2.3\n",
+      "expected_stdout_text": "seq 0.2.4\n",
       "expected_stderr_text": "",
-      "source_version": "workspace cli/seq@0.2.3 metadata contract"
+      "source_version": "workspace cli/seq@0.2.4 metadata contract"
     },
     {
       "id": "p0-seq-equal-width",
@@ -262,9 +262,9 @@
       "expected_status": 0,
       "normalizations": [],
       "comparison": "contract",
-      "source_version": "workspace cli/seq@0.2.3 metadata contract",
+      "source_version": "workspace cli/seq@0.2.4 metadata contract",
       "expected_stderr_text": "",
-      "expected_stdout_text": "seq 0.2.3\n",
+      "expected_stdout_text": "seq 0.2.4\n",
       "coverage": [
         "version"
       ]
@@ -355,7 +355,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/seq@0.2.3 metadata contract",
+      "source_version": "workspace cli/seq@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: seq [-w] [-f FORMAT] [-s STRING] [FIRST [INCREMENT]] LAST\nPrint a numeric sequence; the default increment is 1.\n  -w, --equal-width       pad numbers with leading zeroes\n  -f, --format=FORMAT     use one e/E/f/F/g/G/a/A floating conversion\n  -s, --separator=STRING  separate numbers with STRING\n      --help              display this help and exit\n      --version           display version and exit\nWithout -f, exact decimal operands are limited to 4096 characters; exponent and decimal scale must be within -4096..4096.\n",
       "expected_stderr_text": ""
     },
@@ -374,8 +374,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/seq@0.2.3 metadata contract",
-      "expected_stdout_text": "seq 0.2.3\n",
+      "source_version": "workspace cli/seq@0.2.4 metadata contract",
+      "expected_stdout_text": "seq 0.2.4\n",
       "expected_stderr_text": ""
     },
     {

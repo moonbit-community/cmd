@@ -1,66 +1,41 @@
 # mv
 
-This describes version 0.2.4. See the
-[support record](../../docs/compatibility.md) for measured option combinations
-and backend limits; accepted options do not establish full compatibility.
+Move files and directories for MoonX.
 
-Move files and directories with the public filesystem rename operation.
-Declining an interactive overwrite, including EOF, returns status 1 and leaves
-both paths unchanged; other operands are still processed. A no-clobber skip
-remains a successful no-op.
+```sh
+moonx cli/mv@0.2.5 [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST
+```
 
-Supports force/no-clobber/interactive selection (`-f`/`-n`/`-i`), update modes
-(`-u`/`--update`), backup controls (`-b`/`--backup`, `-S`), explicit target
-paths (`-T`), directory destinations, and verbose output. Cross-filesystem
-copy-and-delete fallback is excluded because public APIs cannot preserve all
-required mode/link/time semantics. POSIX EXDEV is classified using
-the released async host-platform information. The source remains intact when
-rename or backup commit fails.
-Classification of EXDEV does not add a cross-device fallback. Windows rename
-error classification and the remaining interactive/backup/update combinations
-still need independent validation.
+## Supported scope
 
-The async 0.22.5 Native implementation opens Windows symlinks and junctions as
-reparse points when renaming them. Wasm imports rename from the installed host,
-so the dependency update does not establish that the host contains this fix.
-Windows Wasm therefore rejects moving a symlink/junction or backing up a
-destination link before prompting or changing paths. No-clobber and update-none
-skips still preserve both paths. This does not establish `-u` timestamp-based
-skips for links: Windows Wasm rejects those guarded operations before checking
-timestamps. Reopen these operations only after a fixed host
-is identified and Windows Native/Wasm regressions separately verify the link
-and its referent. The file and directory symlink fixtures force real symlinks;
-the Windows junction fixture deliberately permits junction creation. Missing
-Windows link privileges or observer support are verification failures, not
-evidence that the rename behavior works.
+Rename or move into directories, with overwrite selection, update modes and backups.
 
-Source and destination timestamps describe the directory entries themselves,
-so replacing or backing up an existing target also accepts a dangling source
-link on verified backends. The Windows scenarios separately exercise Native
-link moves and Wasm rejection, comparing link type/target and referent bytes
-before and after each operation. Backup-creation failure preserves the fixture
-and permits a later valid retry. Restoration after a completed backup is covered
-by package-level rename fault injection, including Windows link and junction
-backups, their targets and referent bytes. Wasm interactive refusal is checked
-with stdin kept open and no bytes sent: it must exit within the observer deadline,
-emit no overwrite prompt, and preserve the complete fixture. Replacing a
-destination link with a regular source without backup remains allowed on both
-backends and is covered by the Windows command rounds. A real
-CLI post-backup failure remains unverified by these fixtures.
+## Options
 
-Same-path moves fail before prompting or making backups, except an explicit
-no-clobber/update-none skip. After rename, the source entry must have disappeared;
-a same-inode hard-link no-op reports failure and preserves both names. Public
-identity metadata is unavailable before the operation. Equal-time targets with
-`-i` or `-u` therefore reject explicitly: equal timestamps cannot distinguish
-an alias from a separate file. This includes separate files whose mtimes happen
-to match. Other processes recreating the source during rename also cause a
-postcondition error; no second deletion is attempted.
+| Option | Description |
+| --- | --- |
+| `-f, --force` | Replace without asking. |
+| `-i, --interactive` | Ask before replacing; refusal or EOF returns 1. |
+| `-n, --no-clobber` | Skip existing targets successfully. |
+| `-u, --update[=MODE]` | Select older (bare -u/--update), all, none or none-fail. |
+| `-b, --backup[=CONTROL]` | Back up targets: none, simple, numbered or existing; bare flag selects existing. |
+| `-S, --suffix=SUFFIX` | Set simple backup suffix; default ~. |
+| `-T, --no-target-directory` | Treat target as a complete path; one source only. |
+| `-v, --verbose` | Show moves. |
+| `--help` / `--version` | Show help / package version. |
 
-## Standalone metadata
+## Limitations
 
-Standalone `--version` prints exactly `mv 0.2.4` followed by one
-newline. Standalone `--help` starts with `Usage: mv`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+- Cross-filesystem moves are unsupported.
+- Windows rejects moving symlinks/junctions and backing up destination links; explicit skip modes remain available.
+- -i/-u reject equal source/target timestamps. Same-path and same-file hard-link moves fail, except explicit skip modes.
+
+## Examples
+
+```sh
+moonx cli/mv@0.2.5 old.txt new.txt
+moonx cli/mv@0.2.5 -n report.txt archive/
+moonx cli/mv@0.2.5 --backup=simple report.txt archive/
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

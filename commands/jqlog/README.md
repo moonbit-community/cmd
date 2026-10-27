@@ -1,31 +1,34 @@
 # jqlog
 
-Version **0.2.3** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
-
-`cli/jqlog` applies a jq-compatible filter to each valid JSON line and skips
-non-JSON lines. The first operand is the filter; an optional second operand is
-raw input text (`-` selects stdin). Before the filter, `-f/--file PATH` reads
-input from a file, and `-h/--help` prints usage. File-access authorization
-belongs to the caller or host. The evaluator is MoonJQ 0.2.0 with the same
-string-conversion and Unicode-scalar slice adapter as `cli/jq`. Invalid JSON lines are skipped;
-filter evaluation errors return nonzero and preserve results already written.
-Each result is emitted as compact JSON followed by a newline. Options precede
-the filter; `--` ends option parsing for a filter beginning with `-`.
-
-`--help` and parser errors always end with a newline so output can be safely
-composed with other command-line tools.
+Filter JSON log lines for MoonX.
 
 ```sh
-cat logs.ndjson | moonx cli/jqlog '.message'
-moonx cli/jqlog -f logs.ndjson '.message'
+moonx cli/jqlog@0.2.4 [options] <query> [input]
 ```
 
-## Standalone metadata
+## Supported scope
 
-Standalone `--version` prints exactly `jqlog 0.2.3` followed by one
-newline. Standalone `--help` starts with `Usage: jqlog`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+Apply a jq-compatible filter to each valid JSON line and emit compact JSON. Read stdin by default, or pass raw input as the second operand.
+
+## Options
+
+| Option | Description |
+| --- | --- |
+| `-f, --file PATH` | Read log input from a file. |
+| `FILTER [TEXT]` | Select a filter and optional literal input; - means stdin. |
+| `--` | End options before a filter beginning with -. |
+| `--help` / `--version` | Show help / package version. |
+
+## Limitations
+
+- Invalid JSON lines are skipped. Filter errors return failure and preserve earlier results.
+- Supports the same bounded filter language as jq; not the full jq CLI.
+
+## Examples
+
+```sh
+moonx cli/jqlog@0.2.4 -f logs.ndjson '.message'
+printf '%s\n' '{"level":"info"}' | moonx cli/jqlog@0.2.4 '.level'
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0007-language.md)

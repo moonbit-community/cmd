@@ -130,7 +130,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/printf@0.2.2 metadata contract",
+      "source_version": "workspace cli/printf@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: printf FORMAT [ARGUMENT...]\n      --help      display this help and exit\n      --version   display version and exit\n\nFormat and print ARGUMENTs under control of FORMAT, like printf(1).\nThe FORMAT is reused as necessary to consume all arguments.\n\nEscapes: \\a \\b \\e \\f \\n \\r \\t \\v \\\\ \\\" \\' \\NNN \\0NNN \\xHH \\uHHHH\n\\UHHHHHHHH, and \\c (stop all output).\n\nConversions: %s %c %b %d %i %u %o %x %X %f %F %e %E %g %G %a %A %%, with the\nflags -+ 0#, field width, and precision (both accept *).\n%b interprets escapes in its argument.\nBare %q quotes an argument for a shell under the C-byte profile.\n\nUse -- before a FORMAT that starts with '-'.\n",
       "expected_stderr_text": ""
     },
@@ -149,8 +149,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/printf@0.2.2 metadata contract",
-      "expected_stdout_text": "printf 0.2.2\n",
+      "source_version": "workspace cli/printf@0.2.3 metadata contract",
+      "expected_stdout_text": "printf 0.2.3\n",
       "expected_stderr_text": ""
     },
     {

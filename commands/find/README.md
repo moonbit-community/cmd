@@ -1,37 +1,40 @@
 # find
 
-Version **0.2.2** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
+Search directory trees for MoonX.
 
-Walk directory trees without following symbolic links. Supports `-name` and
-`-path` shell patterns, `-type`, `-xtype`, `-empty`, `-size`, `-amin/-atime`,
-`-cmin/-ctime`, `-mmin/-mtime`, `-newer`, `-anewer`, `-cnewer`, `-newerXY`,
-`-used`, `-readable/-writable/-executable`, depth limits, `-depth`, `-prune`,
-negation, AND/OR composition, and newline or NUL output. `-exec COMMAND ... ;` runs one direct child per match, while
-`-exec COMMAND ... +` batches paths in deterministic traversal order under a
-64 KiB argument budget. `-delete` removes matching files and empty directories
-in postorder. Only one output/execution action is accepted, and `-exec` must
-be the final expression action. In `-newerXY`, X and Y are limited to `a`,
-`c`, or `m`; birth-time and literal-time selectors are not implemented.
+```sh
+moonx cli/find@0.2.3 [PATH...] [EXPRESSION]
+```
 
-The caller or host grants file reads, mutation for `-delete`, and process
-launches for `-exec`. Child commands inherit the complete caller environment,
-including locale variables. The command adds no authorization allowlist.
-Actions are parsed before traversal and
-unsupported expressions fail without side effects. The profile does not follow
-symlinks or claim ownership/link-target predicates or the full findutils
-expression language. Time references are read once before traversal and all
-entries share one fixed current-time sample.
+## Supported scope
 
-Time/reference/access combinations and special-file predicates remain
-partially verified; option acceptance is not a claim of complete findutils
-compatibility.
+Walk without following symbolic links. Combine predicates with negation, AND and OR; print matching paths, execute commands or delete matches.
 
-## Standalone metadata
+## Options
 
-Standalone `--version` prints exactly `find 0.2.2` followed by one
-newline. Standalone `--help` starts with `Usage: find`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+| Option | Description |
+| --- | --- |
+| `-name PATTERN / -path PATTERN` | Match names / paths with shell patterns. |
+| `-type / -xtype / -empty / -size` | Test entry type, emptiness or size. |
+| `-amin / -atime / -cmin / -ctime / -mmin / -mtime` | Test access, status-change or modification age. |
+| `-newer / -anewer / -cnewer / -newerXY / -used` | Compare timestamps; X/Y support a, c and m. |
+| `-readable / -writable / -executable` | Test effective access. |
+| `-mindepth / -maxdepth / -depth / -prune` | Control traversal. |
+| `-print / -print0` | Print newline / NUL-delimited paths. |
+| `-exec COMMAND ... ; / +` | Execute per match / in batches. |
+| `-delete` | Delete matches in postorder. |
+| `--help` / `--version` | Show help / package version. |
+
+## Limitations
+
+- Symlink following, ownership/link-target predicates and the complete findutils language are unsupported.
+- Only one output/execution action is accepted; -exec must be the final expression action. Birth-time and literal-time selectors are unsupported.
+
+## Examples
+
+```sh
+moonx cli/find@0.2.3 . -name '*.mbt'
+moonx cli/find@0.2.3 . -type f -maxdepth 2 -print0
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

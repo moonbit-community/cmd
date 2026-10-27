@@ -1,29 +1,39 @@
 # ln
 
-Version **0.2.3** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
+Create symbolic links for MoonX.
 
-Declining an interactive overwrite, including EOF, returns status 1 without
-changing the destination; other operands are still processed.
+```sh
+moonx cli/ln@0.2.4 -s [-f|-i] [-r] [-n] [-T] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME
+```
 
-Create symbolic links with `-s`, including force/interactive replacement
-(`-f`/`-i`, last option wins), relative targets (`-r`), target directories (`-t`), explicit link
-destinations (`-T`), backup controls (`-b`, `-S`), directory destinations, and
-verbose output. `-n` only disables following a destination symlink; it is not
-an alias for `-T`. Target-directory and replacement combinations are accepted
-by the implementation but do not yet have complete differential coverage.
+## Supported scope
 
-Hard links are unavailable through the public async 0.22.5 filesystem API on
-both Native and Wasm, so `ln` without `-s` fails before mutation. Symbolic-link
-creation is currently enabled on POSIX hosts only. These implementation limits
-are separate from caller/host file-access authorization; see the
-filesystem decision record in [ADR-0004](../../docs/adr/0004-filesystem.md).
+Create POSIX symbolic links with explicit destinations or target directories, replacement, relative targets and backups.
 
-## Standalone metadata
+## Options
 
-Standalone `--version` prints exactly `ln 0.2.3` followed by one
-newline. Standalone `--help` starts with `Usage: ln`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+| Option | Description |
+| --- | --- |
+| `-s, --symbolic` | Create a symbolic link; required. |
+| `-f, --force / -i, --interactive` | Replace existing targets / ask first. |
+| `-r, --relative` | Use a relative symbolic-link target. |
+| `-t, --target-directory=DIR` | Create links in DIR. |
+| `-T, --no-target-directory` | Treat destination as the complete link path. |
+| `-n, --no-dereference` | Do not follow a destination directory symlink. |
+| `-b, --backup[=CONTROL] / -S, --suffix=SUFFIX` | Back up replaced targets / choose backup suffix. |
+| `-v, --verbose` | Show created links. |
+| `--help` / `--version` | Show help / package version. |
+
+## Limitations
+
+- Hard links and Windows link creation are unsupported.
+- Declining an overwrite, including EOF, returns 1.
+
+## Examples
+
+```sh
+moonx cli/ln@0.2.4 -s target.txt link.txt
+moonx cli/ln@0.2.4 -sr target.txt link.txt
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

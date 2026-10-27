@@ -1,6 +1,6 @@
 name = "cli/hexdump"
 
-version = "0.1.2"
+version = "0.1.3"
 
 readme = "README.md"
 
@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "hexdump command for MoonX."
 
 import {
-  "cli/core@0.8.0",
+  "cli/core@0.8.2",
   "moonbitlang/async@0.22.5",
   "moonbitlang/x@0.5.5",
 }

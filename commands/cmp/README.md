@@ -1,26 +1,35 @@
 # cmp
 
-Version **0.2.2** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
+Compare two byte streams for MoonX.
 
-Compare two inputs byte by byte. Supports silent mode (`-s`), listing every
-difference (`-l`), a byte limit (`-n`), and independent initial skips (`-i`).
-`-b/--print-bytes` adds the differing octal values and visible byte notation
-(`^@`, `^?`, and `M-` for controls and high bytes) to the first difference or
-the `-l` listing. Listing offsets use the applicable input/limit width.
-When FILE2 is omitted it defaults to stdin; `-l` and `-s` are rejected when
-combined.
-Exit statuses are 0 for equal, 1 for different, and 2 for an error.
-Comparison and status selection remain byte-oriented under `LC_ALL=C`, and an
-error takes precedence over a difference that could not be fully examined.
-The frozen Linux C profile labels an ordinary first difference `char`; `-b`
-labels it `byte` and includes the byte values.
+```sh
+moonx cli/cmp@0.2.3 [-b] [-s|-l] [-n LIMIT] [-i SKIP[:SKIP2]] FILE1 [FILE2]
+```
 
-## Standalone metadata
+## Supported scope
 
-Standalone `--version` prints exactly `cmp 0.2.2` followed by one
-newline. Standalone `--help` starts with `Usage: cmp`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+Compare files or stdin; omitted FILE2 means stdin. Exit 0 for equal inputs, 1 for differences and 2 for errors.
+
+## Options
+
+| Option | Description |
+| --- | --- |
+| `-b, --print-bytes` | Show differing byte values. |
+| `-s, --silent, --quiet` | Report status only. |
+| `-l, --verbose` | List every differing byte. |
+| `-n, --bytes=LIMIT` | Compare at most LIMIT bytes. |
+| `-i, --ignore-initial=SKIP[:SKIP2]` | Skip initial bytes independently. |
+| `--help` / `--version` | Show help / package version. |
+
+## Limitations
+
+- -l and -s cannot be combined.
+
+## Examples
+
+```sh
+moonx cli/cmp@0.2.3 first.bin second.bin
+moonx cli/cmp@0.2.3 -n 16 first.bin second.bin
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

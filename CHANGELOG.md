@@ -5,6 +5,17 @@ by date and delivery milestone rather than by a single package version.
 
 ## 2026-10-27
 
+- Prepared a MoonX documentation release for the 78 published commands. All
+  80 command READMEs now focus on supported scope, options, limitations and
+  examples, with links to the capability matrix and ADRs. Corrected misleading
+  filesystem help and rg's inherited upstream thread/mmap/terminal claims;
+  rg's short version now identifies cli/rg. rg and timeout are excluded from
+  this release. Command versions advance independently and core dependencies
+  select the existing 0.8.2, whose fetched registry source matches this checkout.
+  Local validation passed 1,612 Wasm tests, 118 test-tool regressions and
+  2,062 functional checks with 19 platform skips. Publication and exact-version
+  acceptance are pending; frozen expectations remain unchanged.
+
 - Integrated performance PR #60 as `6705ea8` after documentation PR #59,
   with the maintainer's explicit exception for unresolved repeatability.
   Final-head checks and [actual-main run 40406545144](https://github.com/moonbit-community/cmd/actions/runs/40406545144)

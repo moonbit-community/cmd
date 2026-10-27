@@ -1,40 +1,34 @@
 # mkdir
 
-This documents version 0.2.2. The [support record](../../docs/compatibility.md)
-tracks platform verification and exact-version publication evidence separately.
+Create directories for MoonX.
 
-Create one or more directories. Supports recursive parent creation (`-p`),
-numeric octal modes (`-m`), and verbose output (`-v`). Failed operands do not
-stop later directories from being attempted.
+```sh
+moonx cli/mkdir@0.2.3 [-p] [-m MODE] [-v] DIRECTORY...
+```
 
-Without `-m`, new directories use `0777 & ~umask`. With `-p -m MODE`, only the
-requested leaf receives MODE; newly created parents use the default mode.
-Existing directories accepted by `-p` keep their permissions. Numeric `-m`
-is applied after creation so the requested leaf mode is not reduced by umask.
-The command supports symbolic modes evaluated from 0777:
-explicit u/g/o/a classes, `+/-/=`, rwx/X, setuid/setgid/sticky bits, sequential
-copied classes and comma clauses. X applies because the target is a directory.
-Sticky modes follow GNU new-directory ordering: `+t` yields `01755`,
-`a=rwx,+t` yields `01777`, and `+t,a=rwx` yields `0777`.
-Omitted-who expressions are accepted when their final result is provably
-independent of all POSIX umasks, including `+w` and later explicit overrides.
-Expressions whose final value requires the unavailable process umask fail
-before creation with status 2 and an explicit capability diagnostic. No umask
-is guessed from environment, effective access or probe-file permissions.
+## Supported scope
 
-Parent creation retains its ordinary POSIX behavior. Exact GNU owner
-write/search additions under restrictive umasks, preservation of inherited
-directory special bits, and Windows permission-bit semantics require actual
-umask/permission observation unavailable in the released portable APIs.
-New symbolic leaves explicitly reject platforms where the portable permission
-setter is unavailable; existing directories accepted by -p need no setter.
-Calculated symbolic modes and real per-platform setter effects are separate
-claims. Frozen published coordinates remain unchanged.
+Create multiple directories and optional parents. Failed operands do not stop later attempts; -p preserves existing directory modes.
 
-## Standalone metadata
+## Options
 
-Standalone `--version` prints exactly `mkdir 0.2.2` followed by one
-newline. Standalone `--help` starts with `Usage: mkdir`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+| Option | Description |
+| --- | --- |
+| `-p, --parents` | Create missing parent directories. |
+| `-m, --mode=MODE` | Set the leaf mode, numeric or supported symbolic. |
+| `-v, --verbose` | Show created directories. |
+| `--help` / `--version` | Show help / package version. |
+
+## Limitations
+
+- Symbolic modes whose result depends on the current umask are rejected before creation.
+- Windows permission-bit semantics and exact GNU parent permissions under restrictive umasks are unsupported.
+
+## Examples
+
+```sh
+moonx cli/mkdir@0.2.3 -p output/reports
+moonx cli/mkdir@0.2.3 -m 700 private-dir
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

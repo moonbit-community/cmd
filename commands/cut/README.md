@@ -1,46 +1,39 @@
-# cut for moonx
+# cut
 
-Unpublished candidate **0.2.3** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
-
-The candidate batches immutable input views and output bytes through core 0.8.2.
-It selects a synchronous byte/field visitor once per input and stops field
-selection after the last requested field, with separate compatibility paths
-for equal delimiters and empty selections.
-Options, record endings and special field-delimiter cases retain their contracts.
-
-Select fields or character positions from each line:
+Select fields and byte positions for MoonX.
 
 ```sh
-printf 'x,y,z\n' | moonx cli/cut -d, -f1,3
-moonx cli/cut -c 1-4 fixed.txt
+moonx cli/cut@0.2.4 (-b LIST | -c LIST | -f LIST [-d CHAR] [-s]) [--complement] [--output-delimiter=STRING] [-z] [FILE...]
 ```
 
-Options: `-f LIST` field list, `-b LIST` byte list, `-c LIST` character list
-(the latter two are identical under the fixed C-locale byte profile), `-d CHAR` field
-delimiter (default TAB), `-s` skip lines without the delimiter, and `-z`
-for NUL-delimited records. `--complement` selects positions outside the list;
-`--output-delimiter=STRING` joins selected fields or byte/character ranges.
-An empty output delimiter emits one NUL. Lists
-accept `N`, `N-M`, `N-`, and `-M`, separated by commas; output preserves
-input order. Overlapping ranges merge; adjacent explicitly listed ranges retain
-their output separator, so `-b1-2,3-4 --output-delimiter='|'` prints `ab|cd`.
+## Supported scope
 
-An empty `-d` value selects NUL as the field delimiter. Non-delimited records
-pass through unchanged unless `-s` is present when the selection contains fields.
-If complement removes every field, GNU 9.11 handles undelimited input by blocks:
-a block containing field separators emits only record terminators, and an
-unterminated tail can be omitted. This behavior is retained for compatibility.
-When field and record delimiters are identical, field positions span the input
-file rather than resetting at every delimiter; a final delimiter terminates
-the last field without creating an extra empty field.
-Delimiter and `-s` options are rejected outside field mode.
+Select positions from files or stdin. Lists accept N, N-M, N- and -M; output preserves input order. The default field separator is TAB.
 
-## Standalone metadata
+## Options
 
-Standalone `--version` prints exactly `cut 0.2.3` followed by one
-newline. Standalone `--help` starts with `Usage: cut`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+| Option | Description |
+| --- | --- |
+| `-b, --bytes=LIST` | Select bytes. |
+| `-c, --characters=LIST` | Select characters under the C-byte profile. |
+| `-f, --fields=LIST` | Select fields. |
+| `-d, --delimiter=CHAR` | Set the field delimiter; empty means NUL. |
+| `-s, --only-delimited` | Skip undelimited records in field mode. |
+| `--complement` | Invert the selected positions. |
+| `--output-delimiter=STRING` | Join selected fields/ranges; empty means NUL. |
+| `-z, --zero-terminated` | Use NUL-delimited records. |
+| `--help` / `--version` | Show help / package version. |
+
+## Limitations
+
+- -c counts bytes, not Unicode characters.
+- -d and -s require field mode. Equal field and record delimiters make field positions span the input file.
+
+## Examples
+
+```sh
+printf 'x,y,z\n' | moonx cli/cut@0.2.4 -d, -f1,3
+moonx cli/cut@0.2.4 -b 1-4 fixed.txt
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

@@ -17,7 +17,7 @@ async fn run(args : ArrayView[String]) -> Int32 {
     return 0
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("sed 0.2.0\n")
+    @stdio.stdout.write("sed 0.2.1\n")
     return 0
   }
   let scripts : Array[String] = []

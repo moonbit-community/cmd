@@ -106,7 +106,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/xargs@0.2.2 metadata contract",
+      "source_version": "workspace cli/xargs@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: xargs [-0prt] [-d BYTE] [-n N] [-L N] [-s BYTES] [-P N] [-E EOF] [-I REPLACE] [COMMAND [ARG...]]\n  -d, --delimiter=BYTE  separate literal input items with BYTE or an escape\n  -p, --interactive     confirm each invocation through an independent console\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -125,8 +125,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/xargs@0.2.2 metadata contract",
-      "expected_stdout_text": "xargs 0.2.2\n",
+      "source_version": "workspace cli/xargs@0.2.3 metadata contract",
+      "expected_stdout_text": "xargs 0.2.3\n",
       "expected_stderr_text": ""
     },
     {

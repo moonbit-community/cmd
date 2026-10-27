@@ -1,36 +1,37 @@
-# nl for moonx
+# nl
 
-Version **0.2.2** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
-
-Number lines of files or stdin:
+Number input lines for MoonX.
 
 ```sh
-printf 'alpha\nbeta\n' | moonx cli/nl
-moonx cli/nl -b a -w 3 -s ' ' notes.txt
+moonx cli/nl@0.2.3 [-b STYLE] [-h STYLE] [-f STYLE] [-v NUMBER] [-i NUMBER] [-l NUMBER] [-n FORMAT] [-w NUMBER] [-s STRING] [-d STRING] [-p] [FILE...]
 ```
 
-Options: `-b a|t|n` number all/nonempty/no body lines (default `t`), `-h` and
-`-f` select header/footer styles, `-w N` sets number width (default 6), and
-`-s SEP` sets the separator (default TAB). `-v N` sets the initial number,
-`-i N` its increment, `-d STRING` selects the section delimiter (default `\:`), and
-`-p` prevents page resets. `-n ln|rn|rz` selects left, right, or zero-padded
-number fields; `-l N` numbers only the last line in each complete group of N
-blank lines when style `a` is active. Section markers are replaced by blank
-lines. The locale-sensitive `pBRE` numbering style remains outside this fixed
-C-locale profile and is rejected.
-With `-d`, a single-byte value retains `:` as the second delimiter byte; an
-empty value disables section markers. Other values are used as supplied.
-Header, body and footer markers repeat the delimiter three, two and one times.
+## Supported scope
 
-With no file operand, the command silently reads stdin until EOF, matching the
-upstream terminal, pipe, redirection, and explicit `-` behavior.
+Read files or stdin and number body, header and footer sections. Default body style numbers nonempty lines, with width 6 and TAB separation.
 
-## Standalone metadata
+## Options
 
-Standalone `--version` prints exactly `nl 0.2.2` followed by one
-newline. Standalone `--help` starts with `Usage: nl`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+| Option | Description |
+| --- | --- |
+| `-b / -h / -f STYLE` | Set body / header / footer style: a (all), t (nonempty), n (none). |
+| `-w N / -s SEP` | Set number width / separator. |
+| `-v N / -i N` | Set starting number / increment. |
+| `-d STRING` | Set section delimiter; default \:; empty disables markers. |
+| `-p` | Do not restart numbers at logical pages. |
+| `-n ln\|rn\|rz` | Left-align / right-align / zero-pad numbers. |
+| `-l N` | Number the last line of each N blank lines in style a. |
+| `--help` / `--version` | Show help / package version. |
+
+## Limitations
+
+- The pBRE numbering style is unsupported.
+
+## Examples
+
+```sh
+moonx cli/nl@0.2.3 notes.txt
+moonx cli/nl@0.2.3 -b a -w 3 -s ' ' notes.txt
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

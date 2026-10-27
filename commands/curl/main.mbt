@@ -623,7 +623,7 @@ async fn curl_run(options : CurlOptions) -> Int32 {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("curl 0.2.3\n")
+    @stdio.stdout.write("curl 0.2.4\n")
     return
   }
   let options = parse_curl_options(@env.args()[1:]) catch {

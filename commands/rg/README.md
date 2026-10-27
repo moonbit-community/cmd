@@ -1,55 +1,51 @@
-# cli/rg
+# rg
 
-Version **0.1.0**, unpublished candidate. A pure MoonBit recursive search command
-delivered as Wasm through MoonX. The fixed import is rg.mbt 0.2.0 revision
-`2727c25819b00ddd1a0e9b24f9cb683931d64edf`; the semantic reference is ripgrep
-`3fce3b5bb0236da2df6d99672afb8a719642eca7`.
+Search files recursively for MoonX.
 
-```text
-rg -n 'pattern' path/to/file
-rg --hidden -g '*.mbt' 'pattern' .
-rg -i 'pattern' -
-rg --files --sort path
+```sh
+moon run --target wasm --release commands/rg -- [OPTIONS] PATTERN PATH...
 ```
 
-Use explicit paths or `-` for stdin in search mode. Released public MoonBit APIs
-cannot identify stdin's type: an ambiguous no-path search exits 2 with a diagnostic.
-`--files` retains its default current-directory traversal. Standalone `--help`
-and `--version` exit 0 before configuration or input initialization. Version
-output is exactly `rg 0.1.0` followed by a newline.
+## Supported scope
 
-The imported regex/Unicode, glob/ignore, encoding, context, replacement, counting,
-binary/text, multiline, JSON, sorting, type and user-selected `--pre` machinery
-is retained inside this module. Ordinary reads, traversal, reader/sink calls and
-output are asynchronous and incremental. Multiline and sorted modes retain their
-original whole-input or sorted-path storage requirements. `--pre` runs the named
-user program with the file as an argument and stdin, preserving cwd/environment;
-it consumes stdout incrementally and drains stderr concurrently. It belongs to
-the restricted command tier because it can spawn a user-selected program.
+Search explicit paths or stdin (-), with regex/Unicode matching, glob/ignore rules, encodings, context, replacement, counts, multiline and JSON output. --files lists paths.
 
-**Compressed search is deferred.** An effective `-z`/`--search-zip` exits 2 before
-opening input. `--no-search-zip` and a later `--pre` preserve parser precedence.
-The former decoder work, fixtures, tests and integration source are retained
-only in Git history; see the [support record](../../docs/compatibility.md#rg-candidate).
-This candidate has no decoder dependency and performs no implicit
-system decompression. Compression files without `-z` follow ordinary byte-search
-semantics, as in upstream rg.
+## Options
 
-The original single-threaded execution, lack of real mmap and lack of PCRE2
-remain. Terminal auto-detection is unavailable, so automatic color/headings are
-off; explicit output controls work. Device/inode identity, descriptor identity,
-readlink, creation time and raw non-UTF-8 paths are unavailable publicly.
-`--one-file-system` and creation-time sorting reject. Canonical paths detect
-followed directory loops; redirected-output same-file exclusion cannot be proven.
-Paths are represented with the runtime's String API.
-Windows operands and canonical paths are normalized for the internal lexical
-matcher while retaining their drive and UNC prefixes. See the
-[support record](../../docs/compatibility.md#rg-candidate) and
-[architecture decisions](../../docs/adr/README.md) for precise acceptance and
-unlock conditions. This is a command migration, with no compatibility promise
-for the former `moonbit-community/rg/*` library APIs.
+| Option | Description |
+| --- | --- |
+| `-e PATTERN / -f FILE / -F` | Add patterns / read patterns / fixed-string search. |
+| `-i / -s / -S` | Ignore case / respect case / smart case. |
+| `-w / -x / -v` | Whole word / whole line / inverted matches. |
+| `-n / -N / --column / -b` | Line numbers / no line numbers / columns / byte offsets. |
+| `-A N / -B N / -C N` | After / before / surrounding context. |
+| `-o / -r TEXT` | Only matches / replace matched text. |
+| `-c / --count-matches / -l / --files-without-match` | Count lines / count matches / matching paths / nonmatching paths. |
+| `-g GLOB / --iglob GLOB / --hidden / --no-ignore` | Filter paths and control hidden/ignored entries. |
+| `-t TYPE / -T TYPE / --type-list` | Include / exclude file types / list types. |
+| `-L / --max-depth=N` | Follow links / limit traversal depth. |
+| `-a / --binary / -0 / --null-data` | Text / binary search / NUL path separators / NUL records. |
+| `-U / --multiline-dotall / --encoding=NAME` | Multiline patterns / dot across lines / input encoding. |
+| `--json / --files / --sort=KEY / --sortr=KEY` | JSON / list files / ascending or descending sorting. |
+| `--color=WHEN / --heading / -H / -h` | Color / headings / include or suppress path labels. |
+| `--pre=COMMAND / --pre-glob=GLOB` | Run an explicit preprocessor / select its inputs. |
+| `-q / --no-messages / --stats` | Quiet / suppress diagnostics / statistics. |
+| `--help` / `--version` | Show help / package version. |
 
-Local development uses `MOON_HOME="$HOME/.moon-accounts/cli" moon ...` with the
-current PATH toolchain. Product code and maintenance automation are pure MoonBit;
-host reference tools are observation only. Performance acceptance is deferred.
-No registry publication or published MoonX acceptance is claimed.
+## Limitations
+
+- Search requires explicit paths or -; no-path searches are rejected. --files can default to the current directory.
+- Compressed search (-z/--search-zip), PCRE2, --one-file-system and creation-time sorting are unsupported.
+- Automatic terminal color/headings are off. Raw non-UTF-8 paths and redirected-output same-file exclusion are unsupported.
+- Multiline and sorted modes may retain whole input or path lists.
+- Unpublished candidate: excluded from this release. Examples run from the repository; no MoonX registry invocation is available.
+
+## Examples
+
+```sh
+moon run --target wasm --release commands/rg -- -n 'pattern' notes.txt
+moon run --target wasm --release commands/rg -- --hidden -g '*.mbt' 'pattern' .
+moon run --target wasm --release commands/rg -- --files --sort path
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

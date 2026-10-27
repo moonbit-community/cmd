@@ -25,7 +25,7 @@ fn help_message() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("hexdump 0.1.2\n")
+    @stdio.stdout.write("hexdump 0.1.3\n")
     return
   }
   let args = normalized_args(@env.args()[1:])

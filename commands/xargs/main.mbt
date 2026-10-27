@@ -279,7 +279,7 @@ async fn run_xargs_batches(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("xargs 0.2.2\n")
+    @stdio.stdout.write("xargs 0.2.3\n")
     return
   }
   let mut args = @env.args()[1:].to_owned()

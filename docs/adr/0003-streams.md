@@ -5,6 +5,15 @@ Date: 2026-09-05
 Updated: 2026-10-27
 Revision: Define R-stage streaming, snapshot, bounded wide-grid caches, temporary-storage and failure effects while retaining explicit matcher, metadata and signal limits.
 
+Documentation profile update (2026-10-27): command READMEs describe invocation,
+supported options and user-visible limitations; implementation details remain in
+this ADR and the capability matrix. rg help now describes single-threaded reads,
+unavailable mmap/PCRE2/device metadata and explicit terminal formatting rather
+than inheriting upstream capability claims. Both version spellings identify
+cli/rg. This changes documentation/metadata, not search support: rg remains an
+unpublished candidate excluded from this release. Capability boundaries can
+only be lifted with the public APIs and execution evidence specified below.
+
 Delivery validation update (2026-10-26): [ADR-0001](0001-evidence.md) and the
 [Wasm CI migration](../ci-wasm-migration.md) define current acceptance. Future
 regressions and boundary unlock conditions below require Wasm on applicable

@@ -1,38 +1,39 @@
 # cp
 
-This documents version 0.2.2. The [support record](../../docs/compatibility.md)
-tracks platform verification and exact-version publication evidence separately.
+Copy files and directories for MoonX.
 
-New-file copies reuse a 64 KiB buffer through the core 0.8.0
-dependency. Existing preflight and filesystem capability boundaries remain.
+```sh
+moonx cli/cp@0.2.3 [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST
+```
 
-Copy regular files and directory trees to new destinations with
-`--no-preserve=mode` (and `-R`/`-r` for trees). Source modes cannot be read with
-the public async 0.22.5 API, so default copying is explicitly unavailable.
-New files use `0666 & ~umask`, and new directories use `0777 & ~umask`.
-Supports `-T`, `-v`, and `-H/-L/-P` traversal. No-clobber (`-n`) and
-`-u`/`--update` modes (`all`, `none`, `none-fail`, `older`) can select a no-op
-without requiring copying capabilities. Non-recursive command-line symlinks are
-followed; recursive traversal rejects links unless explicitly enabled. The
-source tree, unsupported entries, cycles, and nested destinations are
-preflighted before mutation for each source operand. Existing regular-file
-overwrites are rejected because public file identity and truncation on the
-same open handle are unavailable. This includes same-file and hard-link
-aliases; no temporary-file rename is substituted for inode-preserving overwrite.
-The parser accepts `-f`/`-i`, backup controls (`-b`/`--backup`) and `-S`, but
-they do not enable replacement: overwrite requests fail during preflight,
-before an interactive prompt or backup mutation. A successful new-file copy
-with these flags does not establish their overwrite semantics.
+## Supported scope
 
-`-a`/`--archive` and `-p`/`--preserve` (including an attribute list) are
-recognized but fail before creating output because the portable API cannot
-read and restore complete links, modes, ownership, and timestamps. See the
-[support record](../../docs/compatibility.md).
+Copy to new destinations with `--no-preserve=mode`. Add `-R` for directory trees. Skip modes can succeed without copying.
 
-## Standalone metadata
+## Options
 
-Standalone `--version` prints exactly `cp 0.2.2` followed by one
-newline. Standalone `--help` starts with `Usage: cp`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+| Option | Description |
+| --- | --- |
+| `--no-preserve=mode` | Required for copying to a new destination. |
+| `-R, -r, --recursive` | Copy directory trees. |
+| `-H / -L / -P` | Select source-link traversal. |
+| `-n, --no-clobber` | Skip existing targets. |
+| `-u, --update[=MODE]` | Update selection: all, older, none or none-fail. |
+| `-T, --no-target-directory` | Treat destination as a complete path. |
+| `-v, --verbose` | Show copied paths. |
+| `--help` / `--version` | Show help / package version. |
+
+## Limitations
+
+- Default mode-preserving copies, archive/preserve modes and existing-file replacement are unsupported.
+- -f/-i, -b/--backup and -S are parsed but do not enable overwrite, prompts or backups.
+- Recursive links require an enabled traversal mode; cycles and destinations nested inside the source are rejected.
+
+## Examples
+
+```sh
+moonx cli/cp@0.2.3 --no-preserve=mode source.txt new.txt
+moonx cli/cp@0.2.3 --no-preserve=mode -R source-dir new-dir
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

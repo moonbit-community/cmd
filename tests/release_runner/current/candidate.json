@@ -7,7 +7,7 @@
     {
       "name": "base32",
       "package_name": "cli/base32",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -19,7 +19,7 @@
     {
       "name": "base64",
       "package_name": "cli/base64",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -31,7 +31,7 @@
     {
       "name": "basename",
       "package_name": "cli/basename",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -43,7 +43,7 @@
     {
       "name": "cat",
       "package_name": "cli/cat",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -55,7 +55,7 @@
     {
       "name": "chmod",
       "package_name": "cli/chmod",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -67,7 +67,7 @@
     {
       "name": "cksum",
       "package_name": "cli/cksum",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -86,7 +86,7 @@
     {
       "name": "cmp",
       "package_name": "cli/cmp",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -99,7 +99,7 @@
     {
       "name": "column",
       "package_name": "cli/column",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -116,7 +116,7 @@
     {
       "name": "comm",
       "package_name": "cli/comm",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -136,7 +136,7 @@
     {
       "name": "cp",
       "package_name": "cli/cp",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -148,7 +148,7 @@
     {
       "name": "csplit",
       "package_name": "cli/csplit",
-      "version": "0.2.1",
+      "version": "0.2.2",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -168,7 +168,7 @@
     {
       "name": "curl",
       "package_name": "cli/curl",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -180,7 +180,7 @@
     {
       "name": "cut",
       "package_name": "cli/cut",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -200,7 +200,7 @@
     {
       "name": "date",
       "package_name": "cli/date",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -216,7 +216,7 @@
     {
       "name": "diff",
       "package_name": "cli/diff",
-      "version": "0.2.1",
+      "version": "0.2.2",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -245,7 +245,7 @@
     {
       "name": "dirname",
       "package_name": "cli/dirname",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -257,7 +257,7 @@
     {
       "name": "echo",
       "package_name": "cli/echo",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -272,7 +272,7 @@
     {
       "name": "env",
       "package_name": "cli/env",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -285,7 +285,7 @@
     {
       "name": "expand",
       "package_name": "cli/expand",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -297,7 +297,7 @@
     {
       "name": "expr",
       "package_name": "cli/expr",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -309,7 +309,7 @@
     {
       "name": "false",
       "package_name": "cli/false",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -321,7 +321,7 @@
     {
       "name": "find",
       "package_name": "cli/find",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "findutils",
       "supported_options": [
@@ -333,7 +333,7 @@
     {
       "name": "fmt",
       "package_name": "cli/fmt",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -348,7 +348,7 @@
     {
       "name": "fold",
       "package_name": "cli/fold",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -360,7 +360,7 @@
     {
       "name": "grep",
       "package_name": "cli/grep",
-      "version": "0.3.1",
+      "version": "0.3.2",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -372,7 +372,7 @@
     {
       "name": "gunzip",
       "package_name": "cli/gunzip",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -384,7 +384,7 @@
     {
       "name": "gzip",
       "package_name": "cli/gzip",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -396,7 +396,7 @@
     {
       "name": "head",
       "package_name": "cli/head",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -408,7 +408,7 @@
     {
       "name": "hexdump",
       "package_name": "cli/hexdump",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -424,7 +424,7 @@
     {
       "name": "join",
       "package_name": "cli/join",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -448,7 +448,7 @@
     {
       "name": "jq",
       "package_name": "cli/jq",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "published": false,
       "compare_profile": "jq",
       "supported_options": [
@@ -460,7 +460,7 @@
     {
       "name": "jqlog",
       "package_name": "cli/jqlog",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "published": false,
       "compare_profile": "jqlog",
       "supported_options": [
@@ -473,7 +473,7 @@
     {
       "name": "ln",
       "package_name": "cli/ln",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -485,7 +485,7 @@
     {
       "name": "ls",
       "package_name": "cli/ls",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -509,7 +509,7 @@
     {
       "name": "make",
       "package_name": "cli/make",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "make",
       "supported_options": [
@@ -521,7 +521,7 @@
     {
       "name": "md5sum",
       "package_name": "cli/md5sum",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -534,7 +534,7 @@
     {
       "name": "mkdir",
       "package_name": "cli/mkdir",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -547,7 +547,7 @@
     {
       "name": "mktemp",
       "package_name": "cli/mktemp",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -563,7 +563,7 @@
     {
       "name": "mv",
       "package_name": "cli/mv",
-      "version": "0.2.4",
+      "version": "0.2.5",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -575,7 +575,7 @@
     {
       "name": "nl",
       "package_name": "cli/nl",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -587,7 +587,7 @@
     {
       "name": "od",
       "package_name": "cli/od",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -608,7 +608,7 @@
     {
       "name": "paste",
       "package_name": "cli/paste",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -620,7 +620,7 @@
     {
       "name": "patch",
       "package_name": "cli/patch",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -645,7 +645,7 @@
     {
       "name": "printenv",
       "package_name": "cli/printenv",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -657,7 +657,7 @@
     {
       "name": "printf",
       "package_name": "cli/printf",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -669,7 +669,7 @@
     {
       "name": "pwd",
       "package_name": "cli/pwd",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -681,7 +681,7 @@
     {
       "name": "realpath",
       "package_name": "cli/realpath",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -699,7 +699,7 @@
     {
       "name": "rev",
       "package_name": "cli/rev",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -709,27 +709,9 @@
       "policy_sensitive": false
     },
     {
-      "name": "rg",
-      "package_name": "cli/rg",
-      "version": "0.1.0",
-      "published": false,
-      "compare_profile": "ripgrep",
-      "supported_options": [
-        "help",
-        "version",
-        "regexp",
-        "fixed-strings",
-        "ignore-case",
-        "glob",
-        "json",
-        "pre"
-      ],
-      "policy_sensitive": true
-    },
-    {
       "name": "rm",
       "package_name": "cli/rm",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -742,7 +724,7 @@
     {
       "name": "rmdir",
       "package_name": "cli/rmdir",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -754,7 +736,7 @@
     {
       "name": "sed",
       "package_name": "cli/sed",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -766,7 +748,7 @@
     {
       "name": "seq",
       "package_name": "cli/seq",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -781,7 +763,7 @@
     {
       "name": "sh",
       "package_name": "cli/sh",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "posix",
       "supported_options": [
@@ -795,7 +777,7 @@
     {
       "name": "sha1sum",
       "package_name": "cli/sha1sum",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -808,7 +790,7 @@
     {
       "name": "sha256sum",
       "package_name": "cli/sha256sum",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -821,7 +803,7 @@
     {
       "name": "sha512sum",
       "package_name": "cli/sha512sum",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -834,7 +816,7 @@
     {
       "name": "sleep",
       "package_name": "cli/sleep",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -846,7 +828,7 @@
     {
       "name": "sort",
       "package_name": "cli/sort",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -883,7 +865,7 @@
     {
       "name": "split",
       "package_name": "cli/split",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -905,7 +887,7 @@
     {
       "name": "strings",
       "package_name": "cli/strings",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -924,7 +906,7 @@
     {
       "name": "tac",
       "package_name": "cli/tac",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -939,7 +921,7 @@
     {
       "name": "tail",
       "package_name": "cli/tail",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -952,7 +934,7 @@
     {
       "name": "tee",
       "package_name": "cli/tee",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -965,7 +947,7 @@
     {
       "name": "test",
       "package_name": "cli/test",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -977,7 +959,7 @@
     {
       "name": "touch",
       "package_name": "cli/touch",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -989,7 +971,7 @@
     {
       "name": "tr",
       "package_name": "cli/tr",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -1001,7 +983,7 @@
     {
       "name": "tree",
       "package_name": "cli/tree",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -1028,7 +1010,7 @@
     {
       "name": "true",
       "package_name": "cli/true",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -1040,7 +1022,7 @@
     {
       "name": "unexpand",
       "package_name": "cli/unexpand",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -1052,7 +1034,7 @@
     {
       "name": "uniq",
       "package_name": "cli/uniq",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -1074,7 +1056,7 @@
     {
       "name": "unlink",
       "package_name": "cli/unlink",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -1086,7 +1068,7 @@
     {
       "name": "wc",
       "package_name": "cli/wc",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -1105,7 +1087,7 @@
     {
       "name": "wget",
       "package_name": "cli/wget",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -1117,7 +1099,7 @@
     {
       "name": "which",
       "package_name": "cli/which",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -1131,7 +1113,7 @@
     {
       "name": "xargs",
       "package_name": "cli/xargs",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "findutils",
       "supported_options": [
@@ -1145,7 +1127,7 @@
     {
       "name": "xxd",
       "package_name": "cli/xxd",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "vim",
       "supported_options": [
@@ -1166,7 +1148,7 @@
     {
       "name": "yes",
       "package_name": "cli/yes",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -1178,7 +1160,7 @@
     {
       "name": "zcat",
       "package_name": "cli/zcat",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -1196,16 +1178,11 @@
     "o9-sha2",
     "o9-sha3",
     "o9-sysv",
-    "rg-json",
-    "rg-count",
-    "rg-quiet",
     "o3-tagged",
     "o9-crc32b",
     "o9-sha224",
     "o9-sha384",
     "o9-sha512",
-    "rg-config",
-    "rg-hidden",
     "jq-color-0",
     "jq-color-1",
     "jq-color-2",
@@ -1235,7 +1212,6 @@
     "o9-bsd-raw",
     "o9-default",
     "o9-md5-raw",
-    "rg-context",
     "jq-color-10",
     "jq-color-11",
     "jq-color-12",
@@ -1293,7 +1269,6 @@
     "o9-sha3-512",
     "p0-yes-help",
     "p1-sed-quit",
-    "rg-no-match",
     "jq-raw-slurp",
     "o1-join-auto",
     "o12-basic-10",
@@ -1320,8 +1295,6 @@
     "p2-which-all",
     "p9-cut-bytes",
     "phase5-sh-if",
-    "rg-multiline",
-    "rg-null-data",
     "hexdump-empty",
     "jq-false-exit",
     "o1-comm-total",
@@ -1348,7 +1321,6 @@
     "p2-which-path",
     "p3-sort-month",
     "phase5-sh-for",
-    "rg-file-lines",
     "o13-env-s-long",
     "o13-env-s-stop",
     "o5-empty-bytes",
@@ -1379,7 +1351,6 @@
     "p8-ln-relative",
     "p9-nl-sections",
     "phase5-sh-case",
-    "rg-binary-text",
     "compat-stdin-sh",
     "compat-stdin-wc",
     "fold-tab-column",
@@ -1433,8 +1404,6 @@
     "phase5-sh-shift",
     "r2-csplit-quiet",
     "r3-sort-reverse",
-    "rg-include-zero",
-    "rg-pattern-file",
     "base64-zero-wrap",
     "compat-stdin-cat",
     "compat-stdin-tee",
@@ -1488,10 +1457,6 @@
     "phase3-seq-basic",
     "phase5-env-chdir",
     "repair-jq-tojson",
-    "rg-count-matches",
-    "rg-fixed-strings",
-    "rg-maximum-count",
-    "rg-regex-unicode",
     "sed-spec-n-quiet",
     "compat-merge-comm",
     "compat-merge-join",
@@ -1572,7 +1537,6 @@
     "phase5-sh-heredoc",
     "repair-column-nul",
     "repair-unlink-one",
-    "rg-explicit-stdin",
     "sed-spec-hold-h-g",
     "sed-spec-text-EOF",
     "tee-output-errors",
@@ -1643,7 +1607,6 @@
     "phase5-sh-grouping",
     "repair-date-iso-ns",
     "repair-jq-tostring",
-    "rg-case-precedence",
     "sed-spec-join-noLF",
     "sed-spec-n-default",
     "compat-shell-line-3",
@@ -1737,8 +1700,6 @@
     "repair-column-width",
     "repair-fs-ln-backup",
     "repair-fs-mv-backup",
-    "rg-directory-ignore",
-    "rg-replace-captures",
     "sed-spec-join-quiet",
     "sed-spec-text-empty",
     "base32-negative-wrap",
@@ -1931,7 +1892,6 @@
     "phase4-mkdir-parents",
     "phase5-xargs-replace",
     "repair-column-uneven",
-    "rg-preprocessor-copy",
     "sed-spec-P-multiline",
     "sed-spec-append-noLF",
     "sed-spec-insert-noLF",
@@ -2285,7 +2245,6 @@
     "repair-fs-ln-force-last",
     "repair-jq-unicode-slice",
     "repair-which-executable",
-    "rg-compression-disabled",
     "sed-spec-D-restart-flag",
     "sed-spec-append-D-order",
     "sed-spec-append-b-empty",
@@ -2398,7 +2357,6 @@
     "release-metadata-mv-help",
     "release-metadata-nl-help",
     "release-metadata-od-help",
-    "release-metadata-rg-help",
     "release-metadata-rm-help",
     "release-metadata-sh-help",
     "release-metadata-tr-help",
@@ -2420,7 +2378,6 @@
     "repair-fs-mv-same-update",
     "repair-jq-negative-slice",
     "repair-jqlog-slice-lines",
-    "rg-directory-ignore-glob",
     "s1-csplit-word-assertion",
     "s1-grep-directional-word",
     "sed-spec-D-hold-retained",
@@ -2520,9 +2477,6 @@
     "repair-edge-which-symlink",
     "repair-fs-mv-update-older",
     "repair-strings-encoding-S",
-    "rg-boundary-creation-time",
-    "rg-boundary-file-identity",
-    "rg-windows-backslash-path",
     "rm-final-parent-backslash",
     "sed-spec-T-clears-success",
     "sed-spec-append-autoprint",
@@ -2638,8 +2592,6 @@
     "repair-alias-tr-complement",
     "repair-alias-unexpand-tabs",
     "repair-strings-whole-input",
-    "rg-files-default-directory",
-    "rg-preprocessor-early-stop",
     "s1-grep-ere-literal-errors",
     "sed-spec-append-join-order",
     "sed-spec-branch-empty-auto",
@@ -2735,7 +2687,6 @@
     "release-metadata-od-version",
     "release-metadata-paste-help",
     "release-metadata-patch-help",
-    "release-metadata-rg-version",
     "release-metadata-rm-version",
     "release-metadata-rmdir-help",
     "release-metadata-sh-version",
@@ -2762,7 +2713,6 @@
     "repair-strings-radix-last-x",
     "repair-strings-stdin-prefix",
     "repair-which-not-executable",
-    "rg-boundary-stdin-detection",
     "sed-spec-branch-empty-quiet",
     "sed-spec-branch-enter-group",
     "sed-spec-branch-finite-loop",
@@ -2861,7 +2811,6 @@
     "repair-fs-mv-same-path-alias",
     "repair-unlink-extra-operands",
     "repair-which-windows-pathext",
-    "rg-boundary-compression-long",
     "s1-sed-pattern-backreference",
     "sed-spec-append-delete-order",
     "sed-spec-b-preserves-success",
@@ -2971,7 +2920,6 @@
     "repair-fs-mv-same-interactive",
     "repair-fs-mv-same-update-none",
     "repair-strings-encoding-s-tab",
-    "rg-boundary-compression-short",
     "s1-expr-pattern-backreference",
     "sed-spec-D-residual-numbering",
     "sed-spec-branch-unconditional",
@@ -3127,7 +3075,6 @@
     "repair-final-wget-cookie-domain",
     "repair-final-wget-cookie-header",
     "repair-fs-mv-interactive-no-eof",
-    "rg-preprocessor-partial-failure",
     "s1-csplit-pattern-backreference",
     "s1-grep-ignore-case-upper-class",
     "s1-sed-minimum-repeat-reference",

@@ -345,7 +345,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/join@0.2.2 metadata contract",
+      "source_version": "workspace cli/join@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: join [options] FILE1 FILE2\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nJoin lines of two files sorted on their join fields.\n\nOptions:\n  -1 FIELD    Join on this field of FILE1 (default 1).\n  -2 FIELD    Join on this field of FILE2 (default 1).\n  -t CHAR     Use CHAR as the field separator instead of runs of\n              blanks; the output separator becomes CHAR as well.\n  -a FILENO    Also print unpairable lines from FILENO (1 or 2).\n  -v FILENO    Print only unpairable lines from FILENO.\n  -e STRING    Replace missing or empty fields with STRING.\n  -o LIST      Select output fields (for example 0,1.2,2.2), or auto.\n  -i, --ignore-case  Compare join fields without ASCII case distinctions.\n      --header  Print the first lines as headers without matching keys.\n      --check-order  Diagnose unsorted input.\n      --nocheck-order  Do not diagnose unsorted input.\n  -z           End records with NUL instead of newline.\n\nUse '-' as a file name to read stdin.\n",
       "expected_stderr_text": ""
     },
@@ -364,8 +364,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/join@0.2.2 metadata contract",
-      "expected_stdout_text": "join 0.2.2\n",
+      "source_version": "workspace cli/join@0.2.3 metadata contract",
+      "expected_stdout_text": "join 0.2.3\n",
       "expected_stderr_text": ""
     },
     {

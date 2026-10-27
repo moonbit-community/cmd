@@ -443,7 +443,7 @@ async fn follow_files(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("tail 0.2.2\n")
+    @stdio.stdout.write("tail 0.2.3\n")
     return
   }
   let args = @env.args()[1:]

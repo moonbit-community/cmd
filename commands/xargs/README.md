@@ -1,57 +1,41 @@
 # xargs
 
-Version **0.2.2** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
+Build and execute argument batches for MoonX.
 
-Read arguments from standard input and execute a command with bounded batches.
-Supports whitespace tokenization with quotes/backslashes, byte tokenization
-with `-0` or `-d CHAR` / `--delimiter=CHAR`, and `-n N`
-(`--max-args=N`), `-L N`/`--max-lines=N`, `-s BYTES`/`--max-chars=BYTES`,
-`-E EOF`/`--eof=EOF`, `-r`/`--no-run-if-empty`, `-t`/`--verbose`,
-`--show-limits`, and `-I REPLACE`/`--replace=REPLACE` logical-line
-replacement. Each child argv batch is kept below the configured limit (64 KiB
-by default), and `-P N` runs at most N batches in one structured task window.
-There is no shell evaluation; all children are direct process requests. Wasm
-hosts may require process authorization supplied by the caller.
+```sh
+moonx cli/xargs@0.2.3 [-0prt] [-d BYTE] [-n N] [-L N] [-s BYTES] [-P N] [-E EOF] [-I REPLACE] [COMMAND [ARG...]]
+```
 
-Status classes match findutils for ordinary failures (123), status 255 (124),
-signals (125), and launch failures (126/127). Parallel output ordering is
-intentionally unspecified, but status aggregation is deterministic. The
-runtime does not expose portable process-group cancellation.
+## Supported scope
 
-Both backends inherit the complete caller environment; authorization belongs
-to the host or caller. Environment names and locale variables are not filtered
-or rewritten by this command.
-`xargs` always reads stdin silently until EOF, including on a terminal. Native
-behavior is measured separately from Wasm host authorization.
+Read items from stdin and launch commands directly, with whitespace/quote parsing, delimiter modes, replacement and bounded parallelism.
 
-Delimiter mode preserves empty items, treats quotes/backslashes in input
-literally, and accepts one byte or a GNU named, octal, or hexadecimal escape.
-The last `-0` / `-d` wins. `-E` has no effect in either byte mode and emits the
-GNU warning. The selected immutable findutils oracle uses signed `char`, so
-delimiter bytes above 127 do not match input bytes; valid UTF-8 items still
-work. A raw non-UTF-8 argument prefix cannot cross the public process API's
-`String` argv and is rejected with status 2 before any child is launched.
-Bytes after a NUL inside an item are excluded from its C argv string but still
-count toward the byte limit.
+## Options
 
-`-p` / `--interactive` opens a separate confirmation input (`/dev/tty` on
-POSIX, `CONIN$` on Windows), leaving argument stdin separate. Each proposed
-command is printed on stderr; a line starting with `y` or `Y` accepts it in
-the C locale. If that channel cannot be opened, the command returns status 2
-before consuming argument stdin or launching children. This explicit boundary
-also applies to `-p -r` with empty input; GNU may exit before opening its TTY in
-that case. When the channel opens, empty `-p -r` input exits 0 without prompting
-or launching a child. Windows CI can provide `CONIN$` even when nobody is
-available to answer, so a nonempty interactive request correctly waits for
-confirmation. Confirmation choices are exercised with the existing separate
-input tests; unattended CLI cases do not assume a missing Windows console.
+| Option | Description |
+| --- | --- |
+| `-0 / -d, --delimiter=BYTE` | Read NUL-delimited / selected-byte items. |
+| `-n, --max-args=N / -L, --max-lines=N` | Limit arguments / input lines per invocation. |
+| `-s, --max-chars=BYTES` | Limit argument bytes; default 64 KiB. |
+| `-E, --eof=TEXT` | Stop at the selected logical EOF in whitespace mode. |
+| `-r, --no-run-if-empty` | Do not invoke the command for empty input. |
+| `-I, --replace=TEXT` | Replace TEXT using logical input lines. |
+| `-P N` | Run at most N batches concurrently. |
+| `-t, --verbose / -p, --interactive` | Print commands / confirm through a separate console. |
+| `--show-limits` | Show argument limits. |
+| `--help` / `--version` | Show help / package version. |
 
-## Standalone metadata
+## Limitations
 
-Standalone `--version` prints exactly `xargs 0.2.2` followed by one
-newline. Standalone `--help` starts with `Usage: xargs`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+- Arguments are not shell-evaluated. Non-UTF-8 argument prefixes are rejected before launch.
+- Interactive mode requires a separate confirmation channel; failure to open it returns 2 before reading stdin.
+- Process-group cancellation is unsupported; parallel output order is unspecified.
+
+## Examples
+
+```sh
+printf 'one\ntwo\n' | moonx cli/xargs@0.2.3 -n 1 moonx cli/echo@0.2.3
+printf 'one\000two\000' | moonx cli/xargs@0.2.3 -0 moonx cli/echo@0.2.3
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0006-process.md)

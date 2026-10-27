@@ -28983,44 +28983,8 @@
         "pre"
       ],
       "policy_sensitive": true,
-      "releasable": true,
-      "case_ids": [
-        "rg-file-lines",
-        "rg-explicit-stdin",
-        "rg-no-match",
-        "rg-windows-backslash-path",
-        "rg-preprocessor-copy",
-        "rg-preprocessor-early-stop",
-        "rg-preprocessor-partial-failure",
-        "rg-boundary-creation-time",
-        "rg-regex-unicode",
-        "rg-replace-captures",
-        "rg-fixed-strings",
-        "rg-case-precedence",
-        "rg-context",
-        "rg-count",
-        "rg-count-matches",
-        "rg-maximum-count",
-        "rg-quiet",
-        "rg-directory-ignore-glob",
-        "rg-directory-ignore",
-        "rg-include-zero",
-        "rg-hidden",
-        "rg-files-default-directory",
-        "rg-multiline",
-        "rg-binary-text",
-        "rg-null-data",
-        "rg-config",
-        "rg-pattern-file",
-        "rg-json",
-        "rg-boundary-stdin-detection",
-        "rg-boundary-compression-short",
-        "rg-boundary-compression-long",
-        "rg-compression-disabled",
-        "rg-boundary-file-identity",
-        "release-metadata-rg-version",
-        "release-metadata-rg-help"
-      ]
+      "releasable": false,
+      "case_ids": []
     }
   ]
 }
