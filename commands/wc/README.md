@@ -1,10 +1,10 @@
 # wc for moonx
 
-Unpublished candidate **0.2.3** behavior is documented here. The
+Version **0.2.3** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
-The candidate counts newlines and C-byte words with SIMD masks and carries word
+This version counts newlines and C-byte words with SIMD masks and carries word
 state across blocks. Display-width requests retain scalar counting; -m and -c
 still count bytes. Input buffers are 1 MiB.
 

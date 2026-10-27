@@ -23,7 +23,7 @@ column, csplit and tac declare temporary-file writes, and sort lists its
 buffer-size, temporary-directory and batch-size options. Runtime APIs and
 command dependency coordinates remain unchanged.
 
-Candidate **0.8.2** adds the restricted `rg` command contract and four
+Version **0.8.2** adds the restricted `rg` command contract and four
 performance waves. `stream.RecordReader` returns batches with synchronous record
 iteration and immutable byte views; only split records are assembled. Reads are
 at most 1 MiB, and retained storage follows a block plus the longest record.
@@ -59,8 +59,9 @@ three bytes, otherwise a byte-class Aho-Corasick table with at most 1024 states.
 `find_span` selects the leftmost-longest match; `find_any` returns an occurrence
 without resolving longest ties. Grep uses the latter only for record counting.
 The cut/uniq/wc 0.2.3 and
-grep 0.3.1 candidates select this core coordinate, alongside rg. These candidates
-have not been published. See [the stream ADR](../docs/adr/0003-streams.md#performance-wave-4-candidate-2026-10-26).
+grep 0.3.1 modules select this core coordinate, alongside the unpublished rg
+candidate. Exact publication and acceptance results are recorded in the
+[changelog](../CHANGELOG.md). See [the stream ADR](../docs/adr/0003-streams.md#performance-wave-4-candidate-2026-10-26).
 
 `gzipops.encode` accepts an optional `level` argument, defaulting to six, for
 the private pure MoonBit 32 KiB LZ and stored/fixed/dynamic Huffman encoder.

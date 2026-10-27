@@ -1,10 +1,10 @@
 # grep
 
-Unpublished candidate **0.3.1** behavior is documented here. The
+Version **0.3.1** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
-The candidate uses core 0.8.2's bounded flat byte DFA and required-literal
+This version uses core 0.8.2's bounded flat byte DFA and required-literal
 rejection for eligible boolean searches. A block filter skips complete records
 only when the required literals are absent and inversion/context are disabled;
 binary inspection and incomplete tails keep their existing paths. Counting

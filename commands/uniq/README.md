@@ -1,10 +1,10 @@
 # uniq for moonx
 
-Unpublished candidate **0.2.3** behavior is documented here. The
+Version **0.2.3** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
-The candidate retains byte views for current records/keys and batches output
+This version retains byte views for current records/keys and batches output
 through core 0.8.2. A synchronous batch visitor processes records until an output
 flush is needed; unmodified keys reuse the original view. Group separators and
 duplicate-selection rules are unchanged.

@@ -1,10 +1,10 @@
 # cut for moonx
 
-Unpublished candidate **0.2.3** behavior is documented here. The
+Version **0.2.3** behavior is documented here. The
 [support record](../../docs/compatibility.md) separates local verification from
 published MoonX behavior; `moonx` examples use registry releases.
 
-The candidate batches immutable input views and output bytes through core 0.8.2.
+This version batches immutable input views and output bytes through core 0.8.2.
 It selects a synchronous byte/field visitor once per input and stops field
 selection after the last requested field, with separate compatibility paths
 for equal delimiters and empty selections.
