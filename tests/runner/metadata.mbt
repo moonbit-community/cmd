@@ -158,7 +158,7 @@ async fn metadata_report(
         combined.stderr == b"" &&
         combined.stdout == expected
     }
-    if name == "hexdump" {
+    if name == "hexdump" || name == "rg" {
       let alias_result = invocation(
         name,
         root,

@@ -1,32 +1,33 @@
-# base64 for moonx
+# base64
 
-Version **0.2.2** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
-
-Base64 encode or decode a file or stdin:
+Encode and decode Base64 for MoonX.
 
 ```sh
-printf 'hello' | moonx cli/base64
-moonx cli/base64 -d encoded.txt
-moonx cli/base64 -w0 big.bin # no wrapping or final newline
+moonx cli/base64@0.2.3 [-d|-D] [-i] [-w COLS] [FILE]
 ```
 
-Options: `-d`/`-D`/`--decode` decode (embedded newlines are always accepted),
-`-i`/`--ignore-garbage` discard non-alphabet bytes while decoding, and
-`-w N`/`--wrap=N` wrap encoded output after N characters (default 76, `0`
-disables wrapping and the terminal newline); attached `-w0` is accepted.
-The alphabet is standard Base64 with `=` padding. Garbage mode ignores
-non-alphabet bytes; malformed Base64
-can still fail.
+## Supported scope
 
-With no file operand, the command silently reads stdin until EOF, matching the
-upstream terminal, pipe, redirection, and explicit `-` behavior.
+Encode files or stdin using the standard alphabet and `=` padding. With no file, or `-`, read stdin. Default output width is 76.
 
-## Standalone metadata
+## Options
 
-Standalone `--version` prints exactly `base64 0.2.2` followed by one
-newline. Standalone `--help` starts with `Usage: base64`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+| Option | Description |
+| --- | --- |
+| `-d, -D, --decode` | Decode input; embedded newlines are accepted. |
+| `-i, --ignore-garbage` | Discard non-alphabet bytes while decoding. |
+| `-w, --wrap=COLS` | Set output width; 0 disables wrapping and the final newline. |
+| `--help` / `--version` | Show help / package version. |
+
+## Limitations
+
+- Ignoring garbage does not make malformed Base64 valid.
+
+## Examples
+
+```sh
+printf 'hello' | moonx cli/base64@0.2.3
+moonx cli/base64@0.2.3 -d encoded.txt
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

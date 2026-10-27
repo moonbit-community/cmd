@@ -1,6 +1,6 @@
 ///|
-/// The version of ripgrep this port is based on.
-pub let rg_version : String = "15.2.0"
+/// The cli/rg package version used by every version spelling.
+pub let rg_version : String = "0.1.0"
 
 ///|
 pub fn generate_version_digits() -> String {
@@ -9,7 +9,7 @@ pub fn generate_version_digits() -> String {
 
 ///|
 pub fn generate_version_short() -> String {
-  "ripgrep \{generate_version_digits()}"
+  "rg \{generate_version_digits()}"
 }
 
 ///|

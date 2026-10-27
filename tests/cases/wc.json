@@ -357,7 +357,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/wc@0.2.3 metadata contract",
+      "source_version": "workspace cli/wc@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: wc [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]\n      --total=WHEN  print totals: auto (default), always, only, never\n      --help      display this help and exit\n      --version   display version and exit\nCounting uses the fixed C byte profile; -m counts every byte.\n",
       "expected_stderr_text": ""
     },
@@ -376,8 +376,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/wc@0.2.3 metadata contract",
-      "expected_stdout_text": "wc 0.2.3\n",
+      "source_version": "workspace cli/wc@0.2.4 metadata contract",
+      "expected_stdout_text": "wc 0.2.4\n",
       "expected_stderr_text": ""
     },
     {

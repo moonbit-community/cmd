@@ -21,9 +21,19 @@ yes, completing functional coverage beyond metadata/availability for all 78
 commands. This release does not claim new
 cross-platform acceptance or completion of formal performance work.
 
-There are **80 local command modules and 78 published commands**. Local
-`rg 0.1.0`, `core 0.8.2`, `cut/uniq/wc 0.2.3` and `grep 0.3.1` are unpublished
-candidates; `timeout` is local-only. The performance candidates preserve command
+There are **80 local command modules and 78 published commands**. The 2026-10-27
+release uploaded 78 new command versions with concise MoonX READMEs and
+synchronized metadata. The [latest manifest](../tests/release_runner/current/latest.json)
+records their exact coordinates and separately frozen current expectations.
+`rg 0.1.0` and `timeout` are excluded from this release and remain unpublished.
+Fetched core 0.8.2 matches the workspace source exactly, so dependent commands
+select that already published coordinate without republishing core.
+Local MoonX acceptance passed 2,094 checks with 18 platform skips and zero
+failures; 17 additional README examples passed.
+[Published acceptance run 40432031612](https://github.com/moonbit-community/cmd/actions/runs/40432031612)
+passed all three platforms and the applicable pinned Linux comparisons. Explicit
+boundary results and platform skips retain their meaning; this is not full GNU
+parity or formal performance acceptance. The retained performance changes preserve command
 options and C-byte semantics. They add synchronous record visitors, SIMD/word
 counting, conservative block rejection, flat bounded DFA transitions,
 precomputed span closures, bounded byte endpoint automata, adaptive literal sets
@@ -40,10 +50,9 @@ That exception does not establish formal performance or release acceptance.
 The wave-2 held-out comparison also records an existing difference: empty-pattern
 `grep -v -c` prints `0` here, whereas GNU grep 3.12 exits without stdout. Both
 exit 1. This is not a new fast-path regression or a claim of full GNU parity.
-Published command versions are **37 at 0.2.2, 8 at 0.2.3, 3 at 0.2.0,
-2 at 0.2.1, 12 at 0.1.3, 10 at 0.1.2, 4 at 0.1.4, and one each at
-0.2.4 and 0.3.0**. Shared `cli/core` is **0.8.1**
-and is not counted as a command.
+The R release inventory below remains historical. The current checked-in
+published expectations are retained until this release's exact-coordinate
+acceptance completes. Shared core is not counted as a command.
 
 The [stage 0 release](../CHANGELOG.md#2026-10-20),
 [metadata release](../CHANGELOG.md#2026-10-18)
@@ -347,9 +356,10 @@ and [changelog](../CHANGELOG.md) for workflow and dated results.
 
 ## rg candidate
 
-Updated: 2026-10-26. `cli/rg@0.1.0` and the catalog-only `cli/core@0.8.2` are
-unpublished candidates. Existing published command versions and dependencies
-are unchanged. Current sources and package tests live in `commands/rg`; executable contracts
+Updated: 2026-10-27. `cli/rg@0.1.0` remains an unpublished candidate and is
+excluded from the documentation release. Shared `cli/core@0.8.2` is published;
+the current command release inventory is recorded above. Current sources and
+package tests live in `commands/rg`; executable contracts
 are in `tests/cases/rg.json`. Import pins are in the upstream baseline record. The fixed source is rg.mbt 0.2.0
 `2727c25819b00ddd1a0e9b24f9cb683931d64edf`; the semantic oracle revision is
 `3fce3b5bb0236da2df6d99672afb8a719642eca7`.
@@ -397,13 +407,13 @@ current CI-sealed image identity can establish differential acceptance.
 ## Inventory
 
 The workspace contains **80 command modules**, with **78 published**, unpublished
-`rg 0.1.0` and local-only `timeout`. Published command versions are **37 at 0.2.2, 8 at
-0.2.3, 3 at 0.2.0, 2 at 0.2.1, 12 at 0.1.3, 10 at 0.1.2, 4 at 0.1.4,
-and one each at 0.2.4 and 0.3.0**. Shared `cli/core` is **0.8.1** and is not
+`rg 0.1.0` and local-only `timeout`. Published command versions are **34 at 0.2.3,
+11 at 0.2.4, 3 at 0.2.1, 2 at 0.2.2, 12 at 0.1.4, 10 at 0.1.3,
+4 at 0.1.5, and one each at 0.2.5 and 0.3.2**. Shared `cli/core` is **0.8.2** and is not
 counted as a command.
 Exact registry coordinates and selected local-acceptance cases are in
 [the latest manifest](../tests/release_runner/current/latest.json) and
-[R release summary](../CHANGELOG.md#2026-10-25). Local MoonX acceptance
+[documentation release summary](../CHANGELOG.md#2026-10-27). Local MoonX acceptance
 covers all 78 commands, with zero failures and the documented boundaries and
 platform skips. The previous frozen baseline stays in
 `current/published.json`; earlier manifests remain under

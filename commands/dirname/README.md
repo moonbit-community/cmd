@@ -1,17 +1,31 @@
 # dirname
 
-Version **0.2.2** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
+Extract parent paths for MoonX.
 
-Remove the final path component. Multiple operands and NUL-delimited output
-with `-z` are supported. Empty operands produce `.`, root remains `/`, and
-repeated separators are handled without filesystem access.
+```sh
+moonx cli/dirname@0.2.3 [-z] NAME...
+```
 
-## Standalone metadata
+## Supported scope
 
-Standalone `--version` prints exactly `dirname 0.2.2` followed by one
-newline. Standalone `--help` starts with `Usage: dirname`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+Remove the final component of each path without accessing the filesystem. An empty operand produces `.`.
+
+## Options
+
+| Option | Description |
+| --- | --- |
+| `-z, --zero` | End each result with NUL. |
+| `--help` / `--version` | Show help / package version. |
+
+## Limitations
+
+- Paths are processed textually; symbolic links are not resolved.
+
+## Examples
+
+```sh
+moonx cli/dirname@0.2.3 /tmp/report.txt
+moonx cli/dirname@0.2.3 first/file second/file
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

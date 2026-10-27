@@ -91,7 +91,7 @@ fn help_message() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("column 0.1.4\n")
+    @stdio.stdout.write("column 0.1.5\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [

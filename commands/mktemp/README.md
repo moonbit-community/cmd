@@ -1,42 +1,36 @@
 # mktemp
 
-Version **0.1.3** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
-
-Create one unique temporary file, or a directory with `-d`/`--directory`:
+Create unique temporary paths for MoonX.
 
 ```sh
-moonx cli/mktemp /tmp/moonx.XXXXXX
-moonx cli/mktemp -d /tmp/moonx.XXXXXX
+moonx cli/mktemp@0.1.4 [OPTION]... [TEMPLATE]
 ```
 
-Names use the released MoonBit random source and exclusive creation, so
-collisions are retried before failure; files request mode 0600 and directories
-0700, subject to the operating system umask. Owner metadata and Windows
-permission-bit semantics are not claimed.
+## Supported scope
 
-The command parses the template once. The final run
-of X characters must contain at least three, and may precede an inferred
-suffix (`name.XXX.log`). `--suffix=TEXT` instead requires the original template
-to end in X. A suffix cannot contain a directory separator. Generated names
-use uniformly selected ASCII letters and digits. Exclusive-create collisions
-are retried up to 238328 times; failed attempts never overwrite an existing entry.
+Create a file or directory without overwriting existing entries. The final X run in a template must contain at least three characters.
 
-No operand selects `tmp.XXXXXXXXXX` under nonempty TMPDIR, then `/tmp`.
-An explicit template stays relative to cwd unless a destination option is used.
-`-p DIR`/`--tmpdir[=DIR]` selects a nonempty directory argument before TMPDIR
-and `/tmp`, permits existing relative subdirectories and rejects absolute
-templates. `-t` always prefers TMPDIR, then `-p`, then `/tmp`, and rejects
-directory components in the template. Bare `--tmpdir` does not consume the
-next operand. `-q/--quiet` suppresses creation/output errors while preserving
-template and usage diagnostics. If printing a created name fails, removal of
-that new entry is attempted. Unsafe dry-run `-u` is not supported. Frozen releases are unchanged.
+## Options
 
-## Standalone metadata
+| Option | Description |
+| --- | --- |
+| `-d, --directory` | create a directory |
+| `-p DIR, --tmpdir[=DIR]` | use DIR, then TMPDIR, then /tmp |
+| `-t` | prefer TMPDIR; reject template directories |
+| `--suffix=SUFFIX` | append SUFFIX to a template ending in X |
+| `-q, --quiet` | suppress creation and output errors |
+| `--help` / `--version` | Show help / package version. |
 
-Standalone `--version` prints exactly `mktemp 0.1.3` followed by one
-newline. Standalone `--help` starts with `Usage: mktemp`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+## Limitations
+
+- Unsafe -u dry runs are unsupported. Suffixes cannot contain directory separators.
+- Without a destination, the default uses TMPDIR or /tmp; that directory must exist.
+
+## Examples
+
+```sh
+moonx cli/mktemp@0.1.4 -p . sample.XXXXXX
+moonx cli/mktemp@0.1.4 -d -p . sample.XXXXXX
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

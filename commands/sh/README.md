@@ -1,92 +1,36 @@
 # sh
 
-For stdin mode, `$0` is the executable basename with the build suffix `.exe`
-or `.wasm` removed, so both backends report `sh`. Script paths and explicit
-`-c` command names retain their supplied value.
+Run shell scripts and sessions for MoonX.
 
-`cli/sh` interprets shell source in MoonBit. External commands execute as direct
-child requests with the shell's cwd and exported environment. Authorization is
-owned by the caller and runtime; the interpreter does not filter environment
-names or delegate complete scripts to a host shell.
+```sh
+moonx cli/sh@0.2.3 [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]
+```
 
-The following describes version **0.2.2**. Platform verification and exact
-MoonX publication evidence are tracked in the
-[support record](../../docs/compatibility.md).
-The [support record](../../docs/compatibility.md) is the canonical release record.
+## Supported scope
 
-## Invocation and sessions
+Supports quoting, variables/exports, substitutions, pipelines, redirections, conditionals, loops, functions and common builtins. Stdin sessions execute complete commands before EOF.
 
-`sh -c SOURCE [NAME [ARG...]]` executes a string. `sh FILE [ARG...]` executes a
-file. `sh -s [ARG...]` and a bare invocation read commands from stdin, executing
-complete commands before EOF without prompts. `sh -i` explicitly enables the
-line-oriented interactive session, including `ENV`, `PS1`/`PS2` on stderr,
-multiline input and recovery after a syntax or expansion error.
-`ENV` is expanded as a single startup pathname: parameter, arithmetic and
-`$(...)` substitutions are supported without field splitting or globbing.
-Literal quote characters, repeated spaces and ordinary Windows path
-backslashes survive expansion; backslashes before `$`, backticks, `"`, `\`
-or a newline use double-quoted escape rules. Script sessions never load `ENV`.
+## Options
 
-Command input is read one byte at a time through public async Reader methods,
-so the parser does not prefetch bytes intended for `read` or a foreground child.
-The session retains variables, exported names, cwd, functions, positional
-arguments and status. `cd` updates `PWD`/`OLDPWD`; `-L` and `-P` select logical
-and physical directory traversal. Pipeline stages and substitutions receive
-isolated variable/function state; their IO streams run concurrently.
+| Option | Description |
+| --- | --- |
+| `-c SOURCE [NAME [ARG...]]` | Execute source text. |
+| `FILE [ARG...]` | Execute a script file. |
+| `-s [ARG...]` | Read commands from stdin. |
+| `-i` | Enable explicit interactive prompts and ENV startup. |
+| `--help` / `--version` | Show help / package version. |
 
-The shared shell package provides an opaque `Session` with `new`, asynchronous
-`feed`/`finish`, `prompt`, and `load_startup`. Feed returns `NeedMoreInput`,
-`Completed(status)` or `Exit(status)`. Reader/Writer injection supports embedding
-and testing. `run` remains compatible, and `capture` returns `(status, stdout)`
-without merging stderr.
+## Limitations
 
-## Language subset
+- This is a shell subset: no job control, background jobs, fd duplication, backticks, arithmetic assignment/increment/ternary, or full Bash/POSIX compatibility.
+- No automatic TTY detection, line editing or recoverable Ctrl-C. exec/fg/bg/jobs/wait are rejected.
+- Here-documents support literal bodies; builtin printf supports a smaller format set than cli/printf.
 
-The implementation includes quoting, local variables and explicit exports,
-IFS field splitting, `*`/`?`/bracket pathname patterns, default/alternate/error/
-assignment parameter words, command substitution, pipelines, redirections,
-conditionals, case arms, loops, functions, grouping, positional parameters,
-`shift`, and `set -e/-u`. Command substitution removes trailing LF characters
-only, and a command consisting of assignments returns the last substitution's
-status. Arithmetic supports integer literals/variables, parentheses, unary
-operators and the usual binary arithmetic, bitwise, comparison and logical
-operators; unsupported arithmetic syntax and division by zero fail explicitly.
+## Examples
 
-Builtins include `read [-r] NAME...`, `printf`, `test`/`[`, `.`, `continue`, `cd`,
-`pwd`, `export`, `unset`, `set`, `shift`, `return`, `break`, `exit`, `echo`, `:`,
-`true` and `false`. Dot executes in the existing session. Read preserves the
-remaining fields in its final variable and reports EOF even when it assigns a
-partial final line.
+```sh
+moonx cli/sh@0.2.3 -c 'echo hello'
+moonx cli/sh@0.2.3 script.sh
+```
 
-This is a bounded shell, not a complete POSIX or Bash implementation. In
-particular, the printf builtin currently implements `%s/%c/%b/%d/%i/%u/%o/%x/%X`,
-`%%`, basic width/alignment and common ASCII escapes; unsupported conversions
-fail explicitly. Test supports common string, integer, file-kind/access and
-size predicates; compound expressions should use shell `&&`/`||`. Break and
-continue support one loop level. Arithmetic assignment, increment, ternary
-operators, fd duplication, backticks and background jobs are not supported.
-Here-documents retain their existing literal-body subset.
-
-## Upstream terminal limits
-
-`-i` does not promise automatic TTY detection, raw mode, line editing, terminal
-resize events, recoverable Ctrl-C, or job control. Async 0.22.5 does not expose
-the complete public terminal/process-group interfaces needed for these
-behaviors. `exec`, `fg`, `bg`, `jobs` and `wait` reject the request explicitly.
-See [ADR-0007](../../docs/adr/0007-language.md) for the terminal boundary.
-
-The workspace runner's `sh-interactive-session` scenario verifies persistent
-open stdin, ENV, PS1/PS2, immediate execution, multiline input, variables,
-functions, cwd, read, foreground input, error recovery, EOF and exit. Its
-foreground helper reads one line in pure MoonBit. Run the prebuilt driver with
-`--suite scenarios --case sh-interactive-session --backend wasm`.
-See [test instructions](../../tests/runner/README.md). The original probe is
-retained in Git history; dated milestones are in [CHANGELOG.md](../../CHANGELOG.md).
-
-## Standalone metadata
-
-Standalone `--version` prints exactly `sh 0.2.2` followed by one
-newline. Standalone `--help` starts with `Usage: sh`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0007-language.md)

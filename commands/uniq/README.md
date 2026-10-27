@@ -1,51 +1,38 @@
-# uniq for moonx
+# uniq
 
-Unpublished candidate **0.2.3** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
-
-The candidate retains byte views for current records/keys and batches output
-through core 0.8.2. A synchronous batch visitor processes records until an output
-flush is needed; unmodified keys reuse the original view. Group separators and
-duplicate-selection rules are unchanged.
-
-Filter adjacent repeated lines (pipe through sort first for global dedup):
+Filter adjacent duplicate records for MoonX.
 
 ```sh
-sort words.txt | moonx cli/uniq
-printf 'a\na\nb\n' | moonx cli/uniq -c
+moonx cli/uniq@0.2.4 [-cduDiz] [--all-repeated[=METHOD]] [--group[=METHOD]] [-f FIELDS] [-s CHARS] [-w CHARS] [FILE]
 ```
 
-Options: `-c` prefixes occurrence counts in the GNU seven-column form, `-d`
-selects repeated records, `-u` selects unrepeated records, and `-i` folds ASCII
-case. `-f/--skip-fields` skips blank-delimited fields before
-`-s/--skip-chars`; `-w/--check-chars` limits the compared suffix. `-z` or
-`--zero-terminated` switches record input and output to NUL. Selection uses
-the fixed `LC_ALL=C` byte profile, including malformed byte input.
+## Supported scope
 
-`-D` or `--all-repeated[=METHOD]` prints every member of repeated groups,
-omitting singleton groups. The default method `none` adds no separator;
-`prepend` inserts a record separator before each output group and `separate`
-inserts one only between output groups. A later bare `-D` resets the method to
-`none`. With `-u -D`, every member except the last in each repeated group is
-printed; `-d -u` without `-D` prints nothing.
+Read a file or stdin and compare adjacent records. Sort first for global deduplication; output is written to stdout.
 
-`--group[=METHOD]` prints every input record and separates adjacent groups.
-The default `separate` inserts separators only between groups. `prepend`,
-`append`, and `both` also select separators at the beginning, end, or both.
-Empty input prints no separators. Methods accept unambiguous abbreviations;
-the last specified method is used. `--group` conflicts with `-c`, `-d`, `-D`,
-and `-u`; `-c` also conflicts with `-D`. These conflicts are rejected before
-input or output. Group output retains each original record and streams with
-only one pending record and comparison key retained.
+## Options
 
-With no file operand, the command silently reads stdin until EOF, matching the
-upstream terminal, pipe, redirection, and explicit `-` behavior.
+| Option | Description |
+| --- | --- |
+| `-c / -d / -u` | Count occurrences / repeated records only / singletons only. |
+| `-i` | Ignore ASCII case. |
+| `-f, --skip-fields=N / -s, --skip-chars=N` | Skip fields, then bytes before comparing. |
+| `-w, --check-chars=N` | Limit compared bytes. |
+| `-D, --all-repeated[=METHOD]` | Print all duplicates; none, prepend or separate separators. |
+| `--group[=METHOD]` | Print all groups; separate (default), prepend, append or both. |
+| `-z, --zero-terminated` | Use NUL-delimited records. |
+| `--help` / `--version` | Show help / package version. |
 
-## Standalone metadata
+## Limitations
 
-Standalone `--version` prints exactly `uniq 0.2.3` followed by one
-newline. Standalone `--help` starts with `Usage: uniq`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+- Comparison and case folding use C-byte rules.
+- --group conflicts with -c/-d/-D/-u; -c conflicts with -D.
+
+## Examples
+
+```sh
+printf 'a\na\nb\n' | moonx cli/uniq@0.2.4 -c
+moonx cli/uniq@0.2.4 -d sorted.txt
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

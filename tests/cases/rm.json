@@ -294,7 +294,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/rm@0.2.2 metadata contract",
+      "source_version": "workspace cli/rm@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: rm [OPTION]... FILE...\n  -f, --force             ignore missing files; never prompt\n  -i                      prompt for each removal using stdin\n  -I                      prompt once for recursion or more than three operands\n      --interactive[=WHEN] never, once or always (default with option)\n  -r, -R, --recursive     remove directory trees without following symlinks\n  -d, --dir               remove empty directories\n  -v, --verbose           print removed paths\n      --preserve-root     protect filesystem roots (default)\n      --no-preserve-root  disable root protection\n      --help              display this help and exit\n      --version           display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -313,8 +313,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/rm@0.2.2 metadata contract",
-      "expected_stdout_text": "rm 0.2.2\n",
+      "source_version": "workspace cli/rm@0.2.3 metadata contract",
+      "expected_stdout_text": "rm 0.2.3\n",
       "expected_stderr_text": ""
     },
     {

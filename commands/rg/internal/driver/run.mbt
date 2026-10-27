@@ -97,15 +97,11 @@ async fn generate(mode : GenerateMode) -> Int32 {
 /// returns the exit code.
 pub async fn run_main(cli_args : Array[String]) -> Int32 {
   if cli_args == ["--version"] {
-    write_stdout_str("rg 0.1.0\n")
+    write_stdout_str(generate_version_short() + "\n")
     return 0
   }
   if cli_args == ["--help"] {
-    write_stdout_str(
-      "Usage: rg [OPTIONS] PATTERN [PATH ...]\n\n" +
-      generate_help_long().trim_end().to_owned() +
-      "\n",
-    )
+    write_stdout_str(generate_help_long().trim_end().to_owned() + "\n")
     return 0
   }
   let result = try run(cli_args) catch {

@@ -339,7 +339,7 @@ async fn process_reader(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("cut 0.2.3\n")
+    @stdio.stdout.write("cut 0.2.4\n")
     return
   }
   let args = @env.args()[1:]

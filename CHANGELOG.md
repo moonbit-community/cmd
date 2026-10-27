@@ -5,6 +5,31 @@ by date and delivery milestone rather than by a single package version.
 
 ## 2026-10-27
 
+- Published a MoonX documentation release for all 78 published commands. All
+  80 command READMEs now focus on supported scope, options, limitations and
+  examples, with links to the capability matrix and ADRs. Corrected misleading
+  filesystem help and rg's inherited upstream thread/mmap/terminal claims;
+  rg's short version now identifies cli/rg. rg and timeout are excluded from
+  this release. Command versions advance independently and core dependencies
+  select the existing 0.8.2, whose fetched registry source matches this checkout.
+  All 78 uploads returned HTTP 200 and exact non-yanked registry versions.
+  Local validation passed 1,612 Wasm tests, 118 test-tool regressions and
+  2,062 workspace functional checks with 19 platform skips. The initial Windows
+  README regression exposed CRLF-sensitive assertions; normalization fixed the
+  test, and [development run 40428496917](https://github.com/moonbit-community/cmd/actions/runs/40428496917)
+  passed all three hosts before publication.
+  Local exact-version MoonX acceptance passed 2,094 checks (1,963 semantic,
+  78 startup and 53 explicit boundary results), with 18 platform skips and zero
+  failures. Seventeen additional README examples passed, including nested MoonX,
+  copy/create effects and missing-file suppression.
+  [Published acceptance run 40432031612](https://github.com/moonbit-community/cmd/actions/runs/40432031612)
+  passed Linux (2,287 checks, 15 skips, including 1,507 pinned differential
+  results), macOS (2,094 checks, 18 skips) and Windows (1,961 checks, 151 skips),
+  all with zero failures. The current `latest.json` and its separate case snapshot
+  now bind these accepted coordinates; `published.json` and historical snapshots
+  remain unchanged. This release does not establish formal performance acceptance
+  or remove the documented unsupported behaviors.
+
 - Integrated performance PR #60 as `6705ea8` after documentation PR #59,
   with the maintainer's explicit exception for unresolved repeatability.
   Final-head checks and [actual-main run 40406545144](https://github.com/moonbit-community/cmd/actions/runs/40406545144)

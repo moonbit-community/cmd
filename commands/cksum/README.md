@@ -1,53 +1,47 @@
-# cksum for moonx
+# cksum
 
-Version **0.1.3** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
-
-Compute the POSIX CRC-32 checksum and byte count:
+Compute and verify checksums for MoonX.
 
 ```sh
-printf 'hello' | moonx cli/cksum
-moonx cli/cksum input.bin
+moonx cli/cksum@0.1.4 [OPTION]... [FILE]...
 ```
 
-With no operand, or with `-`, standard input is read. Multiple operands are
-processed in order; later file failures do not hide earlier results and produce
-an eventual nonzero status. `--help` and `--version` are available.
+## Supported scope
 
-`-a/--algorithm` selects `bsd`, `sysv`,
-`crc`, `crc32b`, `md5`, `sha1`, `sha224`, `sha256`, `sha384`,
-`sha512`, `sha2`, `sha3`, `blake2b`, and `sm3`. SHA2 and SHA3 require
-`-l/--length` 224, 256, 384 or 512 when hashing. BLAKE2b supports every
-multiple of eight from 8 through 512; zero selects its 512-bit default.
-Legacy algorithms print their decimal checksum and byte/block count. Modern
-algorithms print BSD tagged records by default; `--untagged` selects GNU
-checksum records. `--base64` changes the modern digest encoding, and `--raw`
-writes only digest bytes for one input. Legacy raw digests use big-endian order.
-`-z/--zero` ends records with NUL and disables filename escaping.
+Process files or stdin. Default is POSIX CRC-32 plus byte count. Algorithms: bsd, sysv, crc, crc32b, md5, sha1, sha224, sha256, sha384, sha512, sha2, sha3, blake2b and sm3. Modern digests support tagged/untagged records and verification.
 
-`-c/--check` verifies modern tagged records, automatically selecting their
-algorithm unless `-a` is specified. With an explicit modern algorithm it also
-accepts untagged records; SHA2, SHA3 and BLAKE2b lengths are inferred from each
-record. Like GNU, explicit SHA2 checking locks to the first fixed SHA tag in a
-manifest; omit `-a` to check a mixture of fixed SHA tags. Hexadecimal and Base64
-digests are accepted. Legacy checksum formats
-cannot be verified. `--quiet`, `--status`, `-w/--warn`, `--strict` and
-`--ignore-missing` follow the sum commands. At least one digest must match,
-including when missing files are ignored. Status mode still reports read errors.
-Explicit `--tag`, `-b/-t` and `-z` are invalid while checking.
+## Options
 
-Hash input uses bounded buffers, including SHA3 and BLAKE2b; manifests are read
-one line at a time. Backslash, LF and CR in modern record filenames are escaped.
-Binary and text flags select record markers; neither translates input bytes on
-Windows. `--base64` and `--raw` conflict, and text output requires
-`--untagged`. Exact-version publication evidence is tracked separately in the
-[support record](../../docs/compatibility.md).
+| Option | Description |
+| --- | --- |
+| `-a, --algorithm=TYPE` | Select the checksum algorithm listed above. |
+| `-l, --length=BITS` | SHA2/SHA3: 224, 256, 384, 512; BLAKE2b: 8..512 by 8 |
+| `--untagged` | omit algorithm tags (modern digests default to tags) |
+| `--base64` | encode modern digests in Base64 |
+| `--raw` | write digest bytes without names or separators |
+| `-b, --binary` | mark untagged output as binary |
+| `-t, --text` | mark untagged output as text (default) |
+| `--tag` | print BSD tagged records |
+| `-c, --check` | read checksum records and verify files |
+| `-z, --zero` | end output records with NUL; disable escaping |
+| `--ignore-missing` | skip missing files when checking |
+| `--quiet` | suppress successful verification output |
+| `--status` | suppress verification results and summaries |
+| `--strict` | fail if a checksum line is malformed |
+| `-w, --warn` | warn for each malformed checksum line |
+| `--help` / `--version` | Show help / package version. |
 
-## Standalone metadata
+## Limitations
 
-Standalone `--version` prints exactly `cksum 0.1.3` followed by one
-newline. Standalone `--help` starts with `Usage: cksum`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+- Legacy checksum formats cannot be verified with --check.
+- Binary/text flags change record markers, not input bytes. --raw accepts one input and conflicts with --base64.
+- Check mode rejects explicit --tag, -b/-t and -z; at least one digest must match even with --ignore-missing.
+
+## Examples
+
+```sh
+moonx cli/cksum@0.1.4 input.bin
+moonx cli/cksum@0.1.4 -a sha256 input.bin
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

@@ -1,6 +1,6 @@
 name = "cli/sed"
 
-version = "0.2.0"
+version = "0.2.1"
 
 readme = "README.md"
 
@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "sed command for MoonX."
 
 import {
-  "cli/core@0.8.0",
+  "cli/core@0.8.2",
   "moonbitlang/async@0.22.5",
   "moonbitlang/x@0.5.5",
 }

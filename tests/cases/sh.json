@@ -539,7 +539,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/sh@0.2.2 metadata contract",
+      "source_version": "workspace cli/sh@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: sh [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]\n  -c SOURCE   execute shell source\n  -s          read commands from standard input\n  -i          enable a persistent line-oriented interactive session\n  --help      display this help and exit\n  --version   display version and exit\nSupports a bounded shell language; terminal job control is unavailable.\n",
       "expected_stderr_text": ""
     },
@@ -558,8 +558,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/sh@0.2.2 metadata contract",
-      "expected_stdout_text": "sh 0.2.2\n",
+      "source_version": "workspace cli/sh@0.2.3 metadata contract",
+      "expected_stdout_text": "sh 0.2.3\n",
       "expected_stderr_text": ""
     }
   ]

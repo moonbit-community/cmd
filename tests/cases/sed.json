@@ -392,7 +392,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/sed@0.2.0 metadata contract",
+      "source_version": "workspace cli/sed@0.2.1 metadata contract",
       "expected_stdout_text": "Usage: sed [-nE] [-e SCRIPT] [-f SCRIPTFILE] [SCRIPT] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nStream editor: p/d/q/=, s/RE/REPLACEMENT/[gNp], h/H/g/G/x, :/b/t/T, groups, n/N/P/D/a/i/c.\nAddresses: line number, $, /RE/, ranges and !. BRE default; -E enables ERE.\nBRE/ERE supports pattern backreferences and word assertions.\nIn-place editing and locale-aware matching are not supported.\n",
       "expected_stderr_text": ""
     },
@@ -411,8 +411,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/sed@0.2.0 metadata contract",
-      "expected_stdout_text": "sed 0.2.0\n",
+      "source_version": "workspace cli/sed@0.2.1 metadata contract",
+      "expected_stdout_text": "sed 0.2.1\n",
       "expected_stderr_text": ""
     },
     {

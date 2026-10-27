@@ -1,23 +1,33 @@
 # echo
 
-Version **0.2.2** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
+Print argument text for MoonX.
 
-Write arguments separated by one space. Supports `-n`, `-e`, and `-E`,
-including the common backslash escapes and byte-valued octal/hex escapes.
-Escapes are evaluated per argument, so a trailing backslash cannot consume the
-space inserted before the next argument. `--help` and `--version` are metadata
-options only when they are the sole argument. The version token matches the
-package version in `moon.mod`.
+```sh
+moonx cli/echo@0.2.3 [-n] [-e|-E] [STRING...]
+```
 
-The normally special `--` operand is printed literally, matching GNU echo's
-historical ambiguity. Use `printf` when option-like input must be unambiguous.
+## Supported scope
 
-## Standalone metadata
+Join arguments with spaces and append a newline by default. Escape processing is selected explicitly.
 
-Standalone `--version` prints exactly `echo 0.2.2` followed by one
-newline. Standalone `--help` starts with `Usage: echo`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+## Options
+
+| Option | Description |
+| --- | --- |
+| `-n` | Omit the final newline. |
+| `-e / -E` | Enable / disable backslash escapes. |
+| `--help` / `--version` | Show help / package version. |
+
+## Limitations
+
+- -- is printed literally. --help and --version are metadata only when used alone.
+- Use printf for unambiguous option-like text.
+
+## Examples
+
+```sh
+moonx cli/echo@0.2.3 hello world
+moonx cli/echo@0.2.3 -e 'one\ntwo'
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

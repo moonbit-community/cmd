@@ -307,7 +307,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/hexdump@0.1.2 metadata contract",
+      "source_version": "workspace cli/hexdump@0.1.3 metadata contract",
       "expected_stdout_text": "Usage: hexdump [OPTION]... [FILE]...\nDisplay concatenated files as numbers and characters; no FILE reads stdin.\n  -b, --one-byte-octal     one-byte octal\n  -c, --one-byte-char      escaped characters\n  -C, --canonical         hexadecimal bytes with ASCII\n  -d, --two-bytes-decimal  two-byte unsigned decimal\n  -o, --two-bytes-octal    two-byte octal\n  -x, --two-bytes-hex      two-byte hexadecimal\n  -X, --one-byte-hex       one-byte hexadecimal\n  -e, --format=FORMAT     add a custom format\n  -f, --format-file=FILE  add formats from a file\n  -L, --color[=WHEN]      enable _L colors: always, auto, or never\n  -n, --length=N          display at most N input bytes\n  -s, --skip=N            skip N input bytes\n  -v, --no-squeezing      display duplicate blocks\n  -h, --help              display this help and exit\n  -V, --version           display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -326,8 +326,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/hexdump@0.1.2 metadata contract",
-      "expected_stdout_text": "hexdump 0.1.2\n",
+      "source_version": "workspace cli/hexdump@0.1.3 metadata contract",
+      "expected_stdout_text": "hexdump 0.1.3\n",
       "expected_stderr_text": ""
     },
     {

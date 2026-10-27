@@ -1,44 +1,39 @@
 # zcat
 
-Version **0.1.2** behavior is documented here. The
-[support record](../../docs/compatibility.md) tracks platform verification and
-exact-version publication evidence separately. The earlier published
-**cli/zcat@0.1.1** retains its recorded profile.
-
-Write the decoded contents of gzip files to stdout, keeping the input files:
+Write decompressed gzip data for MoonX.
 
 ```sh
-moonx cli/zcat first.gz second.gz
-cat first.gz | moonx cli/zcat
+moonx cli/zcat@0.1.3 [OPTION]... [FILE]...
 ```
 
-With no file or with `-`, read stdin. Operands are processed in order. `-c` and
-`-d` explicitly select the default stdout/decompression behavior; `-t` validates
-without output. `-n` is accepted because stdout output never restores metadata.
-`-1` through `-9`, `--fast` and `--best` are accepted and ignored by
-decompression and testing.
+## Supported scope
 
-Concatenated members, optional header fields and CRC/size checks follow the
-same gzip behavior as `gunzip`. Input and output stream through
-64 KiB buffers, a 32 KiB history window and bounded main/secondary Huffman tables.
-Invalid or truncated data returns 1, preserving any
-decoded prefix; trailing garbage returns 2. `-q` suppresses trailing-garbage
-warnings, and `--help`/`--version` provide command information.
-The [shared encoder](../gzip/README.md) uses pure MoonBit 32 KiB LZ
-history, 3–258 byte matches, 64 KiB chunks and stored/fixed/dynamic cost selection.
-The G1 frontend GNU cases pass on Native and Wasm; performance acceptance
-remains pending. See the
-[G1 development summary](../../CHANGELOG.md#2026-10-24).
-The [G2 development summary](../../CHANGELOG.md#2026-10-24) records streaming
-byte/error checks, direct timings and memory observations.
+Decode files or stdin to stdout, retaining input files. Supports concatenated members and checksum/size verification.
 
-Only gzip input is accepted. Other compression formats, filename suffix
-searching, force/pass-through behavior and metadata restoration are not supported.
+## Options
 
-## Standalone metadata
+| Option | Description |
+| --- | --- |
+| `-c, --stdout` | Write to stdout and keep input files. |
+| `-d, --decompress` | Decompress (default for gunzip and zcat). |
+| `-t, --test` | Validate compressed input without output. |
+| `-n, --no-name` | Omit name/time metadata when compressing. |
+| `-q, --quiet` | Suppress trailing-garbage warnings. |
+| `-1 .. -9` | Compression level (default: -6; last option wins). |
+| `--fast` | Same as -1. |
+| `--best` | Same as -9. |
+| `--help` / `--version` | Show help / package version. |
 
-Standalone `--version` prints exactly `zcat 0.1.2` followed by one
-newline. Standalone `--help` starts with `Usage: zcat`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+## Limitations
+
+- Only gzip is supported; no suffix searching, force/pass-through or metadata restoration.
+- Invalid input returns 1 after any decoded prefix; trailing garbage returns 2.
+
+## Examples
+
+```sh
+moonx cli/zcat@0.1.3 first.gz second.gz
+moonx cli/zcat@0.1.3 < first.gz
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

@@ -618,7 +618,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/wget@0.2.3 metadata contract",
+      "source_version": "workspace cli/wget@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: wget [OPTION]... [URL]...\n      --help      display this help and exit\n      --version   display version and exit\n  -q, --quiet                     quiet (no output)\n  -O, --output-document=FILE      write documents to FILE\n  -o, --output-file=FILE          log messages to FILE\n  -a, --append-output=FILE        append messages to FILE\n  -i, --input-file=FILE           download URLs found in FILE\n  -c, --continue                  resume after the already written prefix\n  -N, --timestamping              do not re-retrieve unchanged files\n  -t, --tries=NUMBER              set number of retries (0 means unlimited)\n      --retry-connrefused         retry even if the connection is refused\n      --retry-on-http-error=CODES retry comma-separated HTTP status codes\n      --waitretry=SECONDS         wait between retries\n                                 partial bytes survive retries and failures\n      --max-redirect=NUMBER       maximum redirects (default 20)\n      --content-disposition       honor Content-Disposition filenames\n      --header=STRING             insert STRING among request headers\n      --user=USER                 HTTP Basic user name\n      --password=PASSWORD         HTTP Basic password\n      --auth-no-challenge         send Basic credentials on every request, including redirects\n      --load-cookies=FILE         load a Netscape cookie jar\n      --header='Cookie: ...'      override jar cookies, including on redirects\n      --save-cookies=FILE         save persistent cookies\n      --keep-session-cookies      also save session cookies\n      --no-cookies                disable cookie storage\n      --method=HTTPMethod         use a supported HTTP method\n      --body-data=STRING          send STRING with an explicit --method\n      --body-file=FILE            send FILE with an explicit --method\n      --no-check-certificate      disable TLS certificate verification\n      --no-proxy                  do not use proxy environment variables\n  -T, --timeout=SECONDS           set connect and read timeouts\n      --connect-timeout=SECONDS   set connection timeout\n      --read-timeout=SECONDS      set response inactivity timeout\n      --idle-timeout=SECONDS      extension: response inactivity timeout\n\nCompatibility limits: HTTP/HTTPS only; --method accepts GET, HEAD, POST,\nPUT, DELETE, CONNECT, OPTIONS, TRACE, and PATCH. Timer values are bounded\nby the runtime millisecond timer range.\nContent-coding bytes remain encoded; Accept-Encoding defaults to identity.\nRaw space/TAB/CR/LF/DEL in URL paths or queries uses uppercase percent escapes.\nRedirect spaces use %20 and TAB uses %09; existing escapes remain encoded.\nSet-Cookie without '=' and nonnumeric Max-Age replacements are ignored.\nPositive decimal Max-Age overflow below 32 digits expires its stored cookie.\nGNU chunk payload/trailer EOF rules apply; missing size lines or CRLF fail.\nHTTP 416 succeeds without opening transfer output; -O is initialized first.\nUnsolicited 304 exits 8. Continued GET with --content-disposition selects\nthe filename with HEAD before choosing that file's resume offset.\n",
       "expected_stderr_text": ""
     },
@@ -637,8 +637,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/wget@0.2.3 metadata contract",
-      "expected_stdout_text": "wget 0.2.3\n",
+      "source_version": "workspace cli/wget@0.2.4 metadata contract",
+      "expected_stdout_text": "wget 0.2.4\n",
       "expected_stderr_text": ""
     }
   ]

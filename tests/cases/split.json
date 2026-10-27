@@ -141,7 +141,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/split@0.1.3 metadata contract",
+      "source_version": "workspace cli/split@0.1.4 metadata contract",
       "expected_stdout_text": "Usage: split [OPTION]... [FILE [PREFIX]]\nSplit FILE (or stdin) into byte-preserving pieces; default PREFIX is x.\n  -l, --lines=NUMBER        put NUMBER records in each piece (default 1000)\n  -b, --bytes=SIZE          put SIZE bytes in each piece\n  -C, --line-bytes=SIZE     put at most SIZE bytes of records in each piece\n  -n, --number=CHUNKS       N, K/N, l/N, l/K/N, r/N or r/K/N\n  -a, --suffix-length=N     fixed suffix width; zero selects automatic width\n  -d, --numeric-suffixes[=FROM]  numeric suffixes\n  -x, --hex-suffixes[=FROM]      hexadecimal suffixes\n      --additional-suffix=SUFFIX  append SUFFIX to generated names\n  -e, --elide-empty-files   omit empty outputs\n      --filter=COMMAND     run pure shell source per piece with FILE set\n      --help               display this help and exit\n      --version            display version and exit\nExisting named outputs are refused; filters own their explicit file writes.\nLine-byte and unknown-size partition layouts require temporary write access.\n",
       "expected_stderr_text": ""
     },
@@ -160,8 +160,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/split@0.1.3 metadata contract",
-      "expected_stdout_text": "split 0.1.3\n",
+      "source_version": "workspace cli/split@0.1.4 metadata contract",
+      "expected_stdout_text": "split 0.1.4\n",
       "expected_stderr_text": ""
     },
     {

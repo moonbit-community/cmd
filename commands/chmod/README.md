@@ -1,31 +1,35 @@
 # chmod
 
-This documents version 0.2.2. The [support record](../../docs/compatibility.md)
-tracks platform verification and exact-version publication evidence separately.
+Change file permissions for MoonX.
 
-Change Unix-style permission bits through the public MoonBit filesystem API
-on POSIX hosts. Supports octal modes, `-R`/`--recursive`, and `-v`/`--verbose`.
-Numeric modes follow symbolic links named as command-line operands and change
-their targets. Links encountered while walking a real directory with `-R` are
-skipped. Recursive traversal through a command-line directory symlink is not
-implemented: only that target's own mode is changed.
+```sh
+moonx cli/chmod@0.2.3 [-R] [-v] MODE FILE...
+```
 
-Closed symbolic assignments such as `a=rwx` or `u=rw,g=r,o=` are supported for
-regular files. They must explicitly assign all of `u`, `g`, and `o`; operands
-are checked for this subset before mutation. Incremental `+/-`, omitted
-classes, `X/s/t`, permission copies, directories and symlinks remain rejected
-for symbolic assignments. Numeric operations process operands in order and do
-not roll back earlier successful changes on a later error.
+## Supported scope
 
-`--reference` is recognized but fails before mutation because async 0.22.5
-does not expose current permission bits. Windows permission mutation is
-unavailable in this profile. Host permission denial is reported separately
-from these implementation limits.
+Set numeric modes on POSIX hosts. Complete symbolic assignments such as `u=rw,g=r,o=` are supported for regular files.
 
-## Standalone metadata
+## Options
 
-Standalone `--version` prints exactly `chmod 0.2.2` followed by one
-newline. Standalone `--help` starts with `Usage: chmod`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+| Option | Description |
+| --- | --- |
+| `MODE` | Octal mode, or an explicit = assignment covering u, g and o. |
+| `-R, --recursive` | Process directory contents recursively. |
+| `-v, --verbose` | Describe processed entries. |
+| `--help` / `--version` | Show help / package version. |
+
+## Limitations
+
+- Windows permission changes and `--reference` are unsupported.
+- Symbolic modes reject incremental +/-, omitted classes, X/s/t, permission copies, directories and symlinks.
+- Recursive walks skip encountered links; a command-line directory link changes only its target directory's mode.
+
+## Examples
+
+```sh
+moonx cli/chmod@0.2.3 644 report.txt
+moonx cli/chmod@0.2.3 u=rw,g=r,o= report.txt
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

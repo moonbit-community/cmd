@@ -1,31 +1,32 @@
 # which
 
-Version **0.1.3**. See the [support record](../../docs/compatibility.md) for release evidence.
-
-Find executable files using the caller's `PATH`:
+Find executables for MoonX.
 
 ```sh
-moonx cli/which sh
-moonx cli/which -a sh
-moonx cli/which -s ./tool
+moonx cli/which@0.1.4 [-as] NAME...
 ```
 
-`-a`/`--all` prints all matching executable regular files. Without it,
-only the first match is printed. `-s`/`--silent` suppresses both normal
-and missing-command output; status is 1 if any operand is missing.
-Path operands are checked directly. POSIX requires executable access and
-treats backslash as a filename character. Empty PATH entries mean the
-current directory.
+## Supported scope
 
-Windows uses semicolon-separated PATH and PATHEXT (default
-`.COM;.EXE;.BAT;.CMD`) to resolve executable suffixes. Files are inspected,
-never launched during lookup. Shell aliases and functions are outside
-this command's scope. `--help` and `--version` are available.
+Search PATH or inspect explicit paths without launching files. Windows lookup uses PATHEXT. Return 1 if any requested executable is missing.
 
-## Standalone metadata
+## Options
 
-Standalone `--version` prints exactly `which 0.1.3` followed by one
-newline. Standalone `--help` starts with `Usage: which`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+| Option | Description |
+| --- | --- |
+| `-a, --all` | Print every match instead of the first. |
+| `-s, --silent` | Suppress output and missing-command diagnostics. |
+| `--help` / `--version` | Show help / package version. |
+
+## Limitations
+
+- Shell aliases and functions are not searched.
+
+## Examples
+
+```sh
+moonx cli/which@0.1.4 moonx
+moonx cli/which@0.1.4 -a moonx
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0006-process.md)

@@ -1,34 +1,34 @@
 # fold
 
-Version **0.1.2** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
-
-Wrap input lines to a chosen width:
+Wrap text lines for MoonX.
 
 ```sh
-moonx cli/fold -w 72 notes.txt
-moonx cli/fold -s -w 40 notes.txt
-printf 'abcdef\n' | moonx cli/fold -b -w 3
+moonx cli/fold@0.1.3 [OPTION]... [FILE]...
 ```
 
-The default width is 80 columns. `-w`/`--width` selects a positive width;
-the traditional `-WIDTH` spelling is also accepted. `-b`/`--bytes` counts
-bytes, `-c`/`--characters` selects C-locale characters, and `-s`/`--spaces`
-breaks after the last available space or tab without dropping it. Long words
-are split when necessary. In column mode, tabs advance to the next eight-column
-stop, backspace moves back, and carriage return resets the column.
+## Supported scope
 
-Files are processed in operand order. No file, or `-`, reads stdin. An
-unterminated final line stays unterminated. Input bytes, including NUL and
-invalid UTF-8, are preserved. Locale-dependent Unicode display widths and
-multibyte character counting are outside the current C-locale profile.
-`--help` and `--version` are available. Errors return status 1.
+Wrap files or stdin at 80 columns by default, preserving bytes and an unterminated final line.
 
-## Standalone metadata
+## Options
 
-Standalone `--version` prints exactly `fold 0.1.2` followed by one
-newline. Standalone `--help` starts with `Usage: fold`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+| Option | Description |
+| --- | --- |
+| `-b, --bytes` | count bytes rather than columns |
+| `-c, --characters` | count characters in the C-locale byte profile |
+| `-s, --spaces` | break after the last available blank |
+| `-w, --width=WIDTH` | use WIDTH columns instead of 80 |
+| `--help` / `--version` | Show help / package version. |
+
+## Limitations
+
+- Character and display-width modes use the C-byte profile; multibyte Unicode counting is unsupported.
+
+## Examples
+
+```sh
+moonx cli/fold@0.1.3 -w 72 notes.txt
+moonx cli/fold@0.1.3 -s -w 40 notes.txt
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

@@ -1,23 +1,29 @@
-# true for moonx
+# true
 
-Version **0.2.2** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
-
-Do nothing, successfully:
+Return success for MoonX.
 
 ```sh
-moonx cli/true && echo it worked
+moonx cli/true@0.2.3 [ignored command line arguments]
 ```
 
-Ignores all arguments, produces no output, and exits with status 0. `--help`
-and `--version` print the corresponding metadata and still exit successfully.
-The version token matches the package version in `moon.mod`.
+## Supported scope
 
-## Standalone metadata
+Produce no output and exit 0. Other arguments are ignored, except standalone metadata options.
 
-Standalone `--version` prints exactly `true 0.2.2` followed by one
-newline. Standalone `--help` starts with `Usage: true`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+## Options
+
+| Option | Description |
+| --- | --- |
+| `--help` / `--version` | Show help / package version. |
+
+## Limitations
+
+- Standalone --help and --version print metadata and also exit 0.
+
+## Examples
+
+```sh
+moonx cli/true@0.2.3
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0006-process.md)

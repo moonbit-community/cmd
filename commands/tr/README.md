@@ -1,29 +1,34 @@
-# tr for moonx
+# tr
 
-Version **0.2.2** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
-
-Translate, squeeze, or delete bytes read from stdin:
+Translate and delete bytes for MoonX.
 
 ```sh
-printf 'hello' | moonx cli/tr 'a-z' 'A-Z'
-printf 'a  b' | moonx cli/tr -s ' '
-moonx cli/tr -d '\n' < file.txt
+moonx cli/tr@0.2.3 [-dscCt] SET1 [SET2]
 ```
 
-Options: `-d` delete SET1 bytes, `-s` squeeze repeats, and `-c`/`-C`
-complement SET1. `-t` truncates SET1 to SET2's length. Sets support escapes
-(`\n`, `\t`, `\123`), byte
-ranges, C-locale character and equivalence classes, and `[CHAR*COUNT]` or
-SET2-filling `[CHAR*]` repetition. Operates on raw bytes with C-locale rules;
-locale data beyond that profile is not implemented. The command does not
-rewrite environment locale variables.
+## Supported scope
 
-## Standalone metadata
+Read stdin and translate, squeeze or delete selected bytes. Sets support escapes, ranges, C classes, equivalence classes and repetitions.
 
-Standalone `--version` prints exactly `tr 0.2.2` followed by one
-newline. Standalone `--help` starts with `Usage: tr`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+## Options
+
+| Option | Description |
+| --- | --- |
+| `-d, --delete` | Delete SET1 bytes. |
+| `-s, --squeeze-repeats` | Collapse repeated selected bytes. |
+| `-c, -C, --complement` | Complement SET1. |
+| `-t, --truncate-set1` | Truncate SET1 to SET2's length. |
+| `--help` / `--version` | Show help / package version. |
+
+## Limitations
+
+- Uses raw bytes and C-locale classes; multibyte locale transformations are unsupported.
+
+## Examples
+
+```sh
+printf 'hello' | moonx cli/tr@0.2.3 'a-z' 'A-Z'
+printf 'a  b' | moonx cli/tr@0.2.3 -s ' '
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

@@ -149,26 +149,23 @@ module and version before any release operation.
   Update the published manifest and CHANGELOG.md with those results, then
   commit and push the documentation. Do not publish from a failing or
   unverified candidate.
-- Current registry baseline after the 2026-10-25 R release: core is 0.8.1.
-  There are 78 published commands: 37 at 0.2.2, eight at 0.2.3, three at 0.2.0,
-  two at 0.2.1, 12 at 0.1.3, ten at 0.1.2, four at 0.1.4, and one each at
-  0.2.4 and 0.3.0. Core and seven changed command packages were uploaded;
-  the other 71 command versions are unchanged.
-  Dependency declarations remain unchanged, including mixed core 0.7.0/0.8.0
-  coordinates. `timeout` remains local-only. Exact registry coordinates and
-  local-acceptance cases are in tests/release_runner/current/latest.json;
-  local MoonX acceptance covers all 78 commands with zero failures. The
-  2,135-case run retains 52 explicit boundary results and 22 platform skips;
-  ten supplemental find/test/yes functional checks also passed.
-  Publication and its local validation
-  scope are summarized in CHANGELOG.md under 2026-10-25. This release
-  does not establish new cross-platform or final performance acceptance.
-  current/published.json retains the previous frozen baseline; earlier
-  coordinates remain under tests/release_runner/historical/, including stage 0
-  and the 2026-10-11 repair.
-  The separate 2026-10-26 manual acceptance run 40270955851 passed all three
-  platforms and the full pinned Linux comparison for those same 78 coordinates;
-  it did not publish packages or establish formal performance acceptance.
+- Current registry baseline after the 2026-10-27 documentation release: core
+  is 0.8.2, reused without republishing after fetched-source comparison.
+  All 78 published commands have new versions: 34 at 0.2.3, 11 at 0.2.4,
+  three at 0.2.1, two at 0.2.2, 12 at 0.1.4, ten at 0.1.3, four at 0.1.5,
+  and one each at 0.2.5 and 0.3.2. Commands using core select 0.8.2;
+  echo/false/sleep/true remain independent. `rg` and `timeout` are unpublished
+  and excluded from the release inventory. Exact coordinates and accepted
+  cases are in tests/release_runner/current/latest.json and latest-cases.json.
+  Local MoonX acceptance passed 2,094 checks (1,963 semantic, 78 startup and
+  53 boundary results), with 18 platform skips and zero failures; 17 additional
+  README examples passed. Manual published acceptance run 40432031612 passed
+  Linux (2,287 checks, 15 skips, including 1,507 pinned differential results),
+  macOS (2,094 checks, 18 skips) and Windows (1,961 checks, 151 skips), all with
+  zero failures. See CHANGELOG.md under 2026-10-27. This does not establish
+  full GNU parity or formal performance acceptance.
+  current/published.json and historical snapshots remain unchanged; prior
+  release and acceptance results retain their dated scope in CHANGELOG.md.
   Update this baseline whenever a later release changes it.
 
 ### Mandatory pure MoonBit boundary

@@ -711,7 +711,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/sort@0.2.3 metadata contract",
+      "source_version": "workspace cli/sort@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: sort [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [-S SIZE] [-T DIR] [--batch-size=N] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n\nLarge inputs use temporary disk runs and require filesystem write access.\n-S/--buffer-size selects an accounted byte budget (default units: KiB).\n-T/--temporary-directory may repeat; --batch-size uses at most 16 merge inputs.\nNonzero percentage buffer sizes require an unavailable physical-memory query.\n",
       "expected_stderr_text": ""
     },
@@ -730,8 +730,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/sort@0.2.3 metadata contract",
-      "expected_stdout_text": "sort 0.2.3\n",
+      "source_version": "workspace cli/sort@0.2.4 metadata contract",
+      "expected_stdout_text": "sort 0.2.4\n",
       "expected_stderr_text": ""
     },
     {

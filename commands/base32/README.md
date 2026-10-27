@@ -1,27 +1,34 @@
-# base32 for moonx
+# base32
 
-Version **0.1.3** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
-
-Encode or decode byte input using the RFC 4648 Base32 alphabet:
+Encode and decode Base32 for MoonX.
 
 ```sh
-printf 'hello' | moonx cli/base32
-printf 'NBSWY3DP' | moonx cli/base32 -d
+moonx cli/base32@0.1.4 [-d] [-i] [-w COLS] [FILE]
 ```
 
-The profile supports `-d`/`--decode`, `-i`/`--ignore-garbage`, and
-`-w`/`--wrap`; with no operand, input is read from standard input. Encoding
-uses uppercase symbols and wraps at 76 columns by default; `-w0` disables
-wrapping and the final newline. Lowercase symbols are invalid and are discarded
-only with `-i`. A valid decoded prefix is written before a later malformed group
-is reported. Nonstandard alphabets and locale-specific diagnostics are not claimed.
+## Supported scope
 
-## Standalone metadata
+Encode files or stdin with the RFC 4648 alphabet. With no file, or `-`, read stdin. Output wraps at 76 columns by default.
 
-Standalone `--version` prints exactly `base32 0.1.3` followed by one
-newline. Standalone `--help` starts with `Usage: base32`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+## Options
+
+| Option | Description |
+| --- | --- |
+| `-d, --decode` | Decode input. |
+| `-i, --ignore-garbage` | Ignore non-alphabet bytes when decoding. |
+| `-w, --wrap=COLS` | Set output width; 0 disables wrapping and the final newline. |
+| `--help` / `--version` | Show help / package version. |
+
+## Limitations
+
+- Lowercase symbols are invalid unless discarded with `-i`; malformed input can fail after emitting a valid prefix.
+- Nonstandard alphabets and locale-specific behavior are unsupported.
+
+## Examples
+
+```sh
+printf 'hello' | moonx cli/base32@0.1.4
+printf 'NBSWY3DP' | moonx cli/base32@0.1.4 -d
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

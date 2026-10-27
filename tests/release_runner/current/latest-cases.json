@@ -125,7 +125,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/base32@0.1.3 metadata contract",
+      "source_version": "workspace cli/base32@0.1.4 metadata contract",
       "expected_stdout_text": "Usage: base32 [-d] [-i] [-w COLS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -144,8 +144,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/base32@0.1.3 metadata contract",
-      "expected_stdout_text": "base32 0.1.3\n",
+      "source_version": "workspace cli/base32@0.1.4 metadata contract",
+      "expected_stdout_text": "base32 0.1.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -372,7 +372,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/base64@0.2.2 metadata contract",
+      "source_version": "workspace cli/base64@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: base64 [-d|-D] [-i] [-w COLS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -391,8 +391,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/base64@0.2.2 metadata contract",
-      "expected_stdout_text": "base64 0.2.2\n",
+      "source_version": "workspace cli/base64@0.2.3 metadata contract",
+      "expected_stdout_text": "base64 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -522,7 +522,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/basename@0.2.2 metadata contract",
+      "source_version": "workspace cli/basename@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: basename [-a] [-s SUFFIX] [-z] NAME [SUFFIX]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -541,8 +541,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/basename@0.2.2 metadata contract",
-      "expected_stdout_text": "basename 0.2.2\n",
+      "source_version": "workspace cli/basename@0.2.3 metadata contract",
+      "expected_stdout_text": "basename 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -729,7 +729,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/cat@0.2.2 metadata contract",
+      "source_version": "workspace cli/cat@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: cat [OPTION]... [FILE]...\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nConcatenate FILEs (or stdin) to standard output, byte-transparently:\nno decoding, no newline normalization. Use '-' or no file for stdin.\n\n  -n, --number             Number all output lines.\n  -b, --number-nonblank    Number nonempty output lines (overrides -n).\n  -s, --squeeze-blank      Suppress repeated empty output lines.\n  -T, --show-tabs          Display TAB as ^I.\n  -E, --show-ends          Display '$' at the end of each line.\n  -v, --show-nonprinting   Display nonprinting bytes visibly.\n  -A, --show-all           Equivalent to -vET.\n  -e                       Equivalent to -vE.\n  -t                       Equivalent to -vT.\n  -u, --unbuffered         Accepted for GNU compatibility.\n",
       "expected_stderr_text": ""
     },
@@ -748,8 +748,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/cat@0.2.2 metadata contract",
-      "expected_stdout_text": "cat 0.2.2\n",
+      "source_version": "workspace cli/cat@0.2.3 metadata contract",
+      "expected_stdout_text": "cat 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -886,8 +886,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/chmod@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: chmod [-R] [-v] MODE FILE...\n      --help      display this help and exit\n      --version   display version and exit\n       chmod [-R] [-v] --reference=RFILE FILE...\nMODE may be numeric or a complete symbolic '=' assignment such as a=rwx or u=rw,g=r,o=.\n",
+      "source_version": "workspace cli/chmod@0.2.3 metadata contract",
+      "expected_stdout_text": "Usage: chmod [-R] [-v] MODE FILE...\n      --help      display this help and exit\n      --version   display version and exit\nWindows permission changes and --reference are unsupported. Symbolic assignments must cover u/g/o explicitly and apply only to regular files.\n       chmod [-R] [-v] --reference=RFILE FILE...\nMODE may be numeric or a complete symbolic '=' assignment such as a=rwx or u=rw,g=r,o=.\n",
       "expected_stderr_text": ""
     },
     {
@@ -905,8 +905,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/chmod@0.2.2 metadata contract",
-      "expected_stdout_text": "chmod 0.2.2\n",
+      "source_version": "workspace cli/chmod@0.2.3 metadata contract",
+      "expected_stdout_text": "chmod 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -937,7 +937,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/cksum@0.1.3 metadata contract",
+      "source_version": "workspace cli/cksum@0.1.4 metadata contract",
       "expected_stdout_text": "Usage: cksum [OPTION]... [FILE]...\nPrint or check checksums. With no FILE, or FILE -, read stdin.\n\n  -a, --algorithm=TYPE  bsd, sysv, crc (default), crc32b, md5, sha1,\n                        sha224, sha256, sha384, sha512, sha2, sha3, blake2b, sm3\n  -l, --length=BITS     SHA2/SHA3: 224, 256, 384, 512; BLAKE2b: 8..512 by 8\n      --untagged        omit algorithm tags (modern digests default to tags)\n      --base64          encode modern digests in Base64\n      --raw             write digest bytes without names or separators\n  -b, --binary          mark untagged output as binary\n  -t, --text            mark untagged output as text (default)\n      --tag             print BSD tagged records\n  -c, --check           read checksum records and verify files\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification results and summaries\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nInput bytes are unchanged by -b or -t on every supported platform.\n",
       "expected_stderr_text": ""
     },
@@ -956,8 +956,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/cksum@0.1.3 metadata contract",
-      "expected_stdout_text": "cksum 0.1.3\n",
+      "source_version": "workspace cli/cksum@0.1.4 metadata contract",
+      "expected_stdout_text": "cksum 0.1.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -2703,7 +2703,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/cmp@0.2.2 metadata contract",
+      "source_version": "workspace cli/cmp@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: cmp [-b] [-s|-l] [-n LIMIT] [-i SKIP[:SKIP2]] FILE1 [FILE2]\n  -b, --print-bytes  print differing octal and visible byte values\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -2722,8 +2722,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/cmp@0.2.2 metadata contract",
-      "expected_stdout_text": "cmp 0.2.2\n",
+      "source_version": "workspace cli/cmp@0.2.3 metadata contract",
+      "expected_stdout_text": "cmp 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -3016,14 +3016,14 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "expected_stdout_text": "column 0.1.4\n",
+      "expected_stdout_text": "column 0.1.5\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/column@0.1.4 metadata contract"
+      "source_version": "workspace cli/column@0.1.5 metadata contract"
     },
     {
       "id": "repair-column-default",
@@ -3333,7 +3333,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/column@0.1.4 metadata contract",
+      "source_version": "workspace cli/column@0.1.5 metadata contract",
       "expected_stdout_text": "Usage: column [OPTION]... [FILE]...\nColumnate input in columns (default), or align a table with -t.\n  -t, --table                 create a table\n  -s, --separator=CHARS       table delimiters (default: space and TAB)\n  -o, --output-separator=SEP  table separator (default: two spaces)\n  -c, --output-width=WIDTH    output width (default: COLUMNS or 80)\n  -x, --fillrows              fill rows before columns\n      --help                 display this help and exit\n      --version              display version and exit\nLayout uses the C locale. Bytes above ASCII are printed as \\xHH.\nLayout uses temporary files and requires filesystem write access.\n",
       "expected_stderr_text": ""
     },
@@ -3352,8 +3352,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/column@0.1.4 metadata contract",
-      "expected_stdout_text": "column 0.1.4\n",
+      "source_version": "workspace cli/column@0.1.5 metadata contract",
+      "expected_stdout_text": "column 0.1.5\n",
       "expected_stderr_text": ""
     },
     {
@@ -3661,7 +3661,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/comm@0.2.2 metadata contract",
+      "source_version": "workspace cli/comm@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: comm [-123] [-z] FILE1 FILE2\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nCompare two sorted files line by line, producing three columns:\nlines only in FILE1, lines only in FILE2, and lines in both.\n\nOptions:\n  -1  Suppress column 1 (lines unique to FILE1).\n  -2  Suppress column 2 (lines unique to FILE2).\n  -3  Suppress column 3 (lines in both files).\n      --output-delimiter=STR  Separate columns with STR (empty means NUL).\n      --total  Print counts for all three columns and a total label.\n      --check-order  Diagnose unsorted input.\n      --nocheck-order  Do not diagnose unsorted input.\n  -z, --zero-terminated  End records with NUL instead of newline.\n\nUse '-' as a file name to read stdin.\n",
       "expected_stderr_text": ""
     },
@@ -3680,8 +3680,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/comm@0.2.2 metadata contract",
-      "expected_stdout_text": "comm 0.2.2\n",
+      "source_version": "workspace cli/comm@0.2.3 metadata contract",
+      "expected_stdout_text": "comm 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -4302,8 +4302,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/cp@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: cp [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "source_version": "workspace cli/cp@0.2.3 metadata contract",
+      "expected_stdout_text": "Usage: cp [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nCopying requires --no-preserve=mode and a new destination. Existing-file overwrites, archive and preserve modes are unsupported. Parsed force/interactive/backup flags do not enable replacement.\n",
       "expected_stderr_text": ""
     },
     {
@@ -4321,8 +4321,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/cp@0.2.2 metadata contract",
-      "expected_stdout_text": "cp 0.2.2\n",
+      "source_version": "workspace cli/cp@0.2.3 metadata contract",
+      "expected_stdout_text": "cp 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -4542,7 +4542,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/csplit@0.2.1 metadata contract",
+      "source_version": "workspace cli/csplit@0.2.2 metadata contract",
       "expected_stdout_text": "Usage: csplit [OPTION]... FILE PATTERN...\nSplit FILE (- for stdin) at line numbers or basic regular expressions.\nPatterns: NUMBER, /REGEXP/[OFFSET], %REGEXP%[OFFSET], {N}, {*}\n\n  -f, --prefix=PREFIX      Use PREFIX instead of xx.\n  -n, --digits=NUMBER      Use at least NUMBER suffix digits (default 2).\n  -b, --suffix-format=FORMAT  Use one d/i/u/o/x/X conversion for suffixes.\n      --suppress-matched    Omit the offset-adjusted split boundary line.\n  -s, --silent             Suppress output byte counts.\n  -q, --quiet              Same as --silent.\n  -k, --keep-files         Keep created fragments after a split error.\n  -z, --elide-empty-files  Omit empty output fragments.\n      --help               display this help and exit\n      --version            display version and exit\n\nBRE matching includes backreferences, byte classes and word assertions.\nExisting output paths and locale-specific matching are unsupported.\nWindows output names ending in spaces or dots are rejected before input.\nInput is snapshotted with a disk index; temporary write access is required.\n",
       "expected_stderr_text": ""
     },
@@ -4561,8 +4561,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/csplit@0.2.1 metadata contract",
-      "expected_stdout_text": "csplit 0.2.1\n",
+      "source_version": "workspace cli/csplit@0.2.2 metadata contract",
+      "expected_stdout_text": "csplit 0.2.2\n",
       "expected_stderr_text": ""
     },
     {
@@ -6966,7 +6966,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/curl@0.2.3 metadata contract",
+      "source_version": "workspace cli/curl@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: curl [options...] <url>\n      --help      display this help and exit\n      --version   display version and exit\n  -s, --silent                 silent mode\n  -S, --show-error             show errors with --silent\n  -f, --fail                   fail on HTTP response codes >= 400\n  -o, --output <file>          write to file instead of stdout\n  -O, --remote-name            use the remote file name\n  -J, --remote-header-name     use Content-Disposition with -O\n  -L, --location               follow redirects\n      --max-redirs <num>       maximum redirects (default 50)\n  -I, --head                   show response headers only\n  -H, --header <header>        pass a custom header to the server\n  -u, --user <user:password>   HTTP Basic authentication\n  -b, --cookie <data|file>     send cookies or load a Netscape jar\n  -c, --cookie-jar <file>      write a Netscape cookie jar\n      -H 'Cookie: ...'       send a separate field after stored jar cookies\n  -X, --request <method>       specify a supported HTTP method\n  -d, --data <data>            HTTP POST data\n      --data-raw <data>        HTTP POST data without @ expansion\n      --data-binary <data>     HTTP POST data without conversion\n      --data-urlencode <data>  URL-encode HTTP POST data\n  -T, --upload-file <file>     stream file as an upload\n      --retry <num>            retry transient failures\n      --retry-delay <seconds>  wait between retries\n      --retry-max-time <secs>  maximum time spent retrying\n      --retry-connrefused      retry connection refused failures\n      --retry-all-errors       retry all transfer errors\n      --connect-timeout <secs> maximum connection setup time\n  -m, --max-time <seconds>     maximum time for one transfer\n      --idle-timeout <seconds> extension: inactivity timeout\n  -k, --insecure               allow insecure TLS connections\n  -x, --proxy <url>            use this proxy\n      --noproxy <list>         bypass proxy for matching hosts\n      --remove-on-error        remove opened output after final failure\nAlready written stdout remains; final partial files remain without cleanup.\nCookie values containing CR/LF are rejected before request bytes are sent.\nRaw space/TAB/CR/LF/DEL in an initial URL path or query exits 3 before connecting.\nRedirect spaces use %20 in paths and + in queries; TAB uses %09.\nSet-Cookie without '=' is ignored; nonnumeric Max-Age deletes its stored cookie.\nPositive decimal Max-Age overflow keeps the new cookie under a 400-day cap.\nAn empty HTTP reply exits 52; incomplete bodies exit 18; receive errors exit 56.\nAn initial empty failure leaves ordinary unopened output untouched.\nAn accepted retry resets an opened regular file before the next request.\n-O -J creates valid Content-Disposition filenames exclusively for 2xx/3xx.\nAn existing selected filename exits 23 untouched; retries retain the first name.\nFile write errors exit 23; an earlier transfer failure keeps its exit status.\nA redirect requiring already uploaded stdin to rewind exits 65.\n-sS keeps each failed attempt's error visible even if a later retry succeeds.\nContent-coding bytes remain encoded; Accept-Encoding defaults to identity.\n\nCompatibility limits: HTTP/HTTPS only; -X accepts GET, HEAD, POST, PUT,\nDELETE, CONNECT, OPTIONS, TRACE, and PATCH. Timer values are bounded by\nthe runtime millisecond timer range.\n",
       "expected_stderr_text": ""
     },
@@ -6985,8 +6985,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/curl@0.2.3 metadata contract",
-      "expected_stdout_text": "curl 0.2.3\n",
+      "source_version": "workspace cli/curl@0.2.4 metadata contract",
+      "expected_stdout_text": "curl 0.2.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -7197,7 +7197,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/cut@0.2.2 metadata contract",
+      "source_version": "workspace cli/cut@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: cut (-b LIST | -c LIST | -f LIST [-d CHAR] [-s]) [--complement] [--output-delimiter=STRING] [-z] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -7216,8 +7216,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/cut@0.2.2 metadata contract",
-      "expected_stdout_text": "cut 0.2.2\n",
+      "source_version": "workspace cli/cut@0.2.4 metadata contract",
+      "expected_stdout_text": "cut 0.2.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -7583,14 +7583,14 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "expected_stdout_text": "date 0.1.3\n",
+      "expected_stdout_text": "date 0.1.4\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/date@0.1.3 metadata contract"
+      "source_version": "workspace cli/date@0.1.4 metadata contract"
     },
     {
       "id": "repair-date-fixed-offset",
@@ -8051,7 +8051,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/date@0.1.3 metadata contract",
+      "source_version": "workspace cli/date@0.1.4 metadata contract",
       "expected_stdout_text": "Usage: date [OPTION]... [+FORMAT]\nPrint time in TZ or the host local timezone.\n  -u, --utc           use UTC\n  -d, --date=TEXT     ISO date/time or @SECONDS (up to 9 fractional digits)\n  -I[PRECISION], --iso-8601[=PRECISION]\n                      date, hours, minutes, seconds, or ns\n  -R, --rfc-email     RFC email timestamp\n      --help          display this help and exit\n      --version       display version and exit\nFormats: %Y %y %m %d %e %H %M %S %j %a %A %b %h %B %F %T %R %s %N %z %Z %%\nRelative date parsing and setting the clock are unsupported.\n",
       "expected_stderr_text": ""
     },
@@ -8070,8 +8070,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/date@0.1.3 metadata contract",
-      "expected_stdout_text": "date 0.1.3\n",
+      "source_version": "workspace cli/date@0.1.4 metadata contract",
+      "expected_stdout_text": "date 0.1.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -8420,7 +8420,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/diff@0.2.1 metadata contract",
+      "source_version": "workspace cli/diff@0.2.2 metadata contract",
       "expected_stdout_text": "Usage: diff [-qsauciwbBZrN] [-U LINES | -C LINES] [--label LABEL] FILE1 FILE2\n      --help      display this help and exit\n      --version   display version and exit\nCompare files, directories or one stdin operand. Normal, unified and context output.\n-q reports differences only; -s reports equality; -a treats binary input as text.\n-i ignores ASCII case; -w ignores whitespace; -b ignores changes in whitespace.\n-Z ignores trailing whitespace; -B ignores blank-only change groups.\n--strip-trailing-cr removes one CR before each LF on input, including displayed lines.\n-r recurses; -N treats missing files as empty; --unidirectional-new-file applies only to the left side.\nTimestamp headers use TZ=UTC or public TZif files; label stdin explicitly.\nNon-C locale collation and link-target-text comparison remain unsupported.\n",
       "expected_stderr_text": ""
     },
@@ -8439,8 +8439,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/diff@0.2.1 metadata contract",
-      "expected_stdout_text": "diff 0.2.1\n",
+      "source_version": "workspace cli/diff@0.2.2 metadata contract",
+      "expected_stdout_text": "diff 0.2.2\n",
       "expected_stderr_text": ""
     },
     {
@@ -10070,7 +10070,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/dirname@0.2.2 metadata contract",
+      "source_version": "workspace cli/dirname@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: dirname [-z] NAME...\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -10089,8 +10089,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/dirname@0.2.2 metadata contract",
-      "expected_stdout_text": "dirname 0.2.2\n",
+      "source_version": "workspace cli/dirname@0.2.3 metadata contract",
+      "expected_stdout_text": "dirname 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -10148,9 +10148,9 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "echo 0.2.2\n",
+      "expected_stdout_text": "echo 0.2.3\n",
       "expected_stderr_text": "",
-      "source_version": "workspace cli/echo@0.2.2 metadata contract"
+      "source_version": "workspace cli/echo@0.2.3 metadata contract"
     },
     {
       "id": "p0-echo-help",
@@ -10280,9 +10280,9 @@
       "expected_status": 0,
       "normalizations": [],
       "comparison": "contract",
-      "source_version": "workspace cli/echo@0.2.2 metadata contract",
+      "source_version": "workspace cli/echo@0.2.3 metadata contract",
       "expected_stderr_text": "",
-      "expected_stdout_text": "echo 0.2.2\n"
+      "expected_stdout_text": "echo 0.2.3\n"
     },
     {
       "id": "release-metadata-echo-help",
@@ -10299,7 +10299,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/echo@0.2.2 metadata contract",
+      "source_version": "workspace cli/echo@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: echo [-n] [-e|-E] [STRING...]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -10318,8 +10318,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/echo@0.2.2 metadata contract",
-      "expected_stdout_text": "echo 0.2.2\n",
+      "source_version": "workspace cli/echo@0.2.3 metadata contract",
+      "expected_stdout_text": "echo 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -10580,7 +10580,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/env@0.2.2 metadata contract",
+      "source_version": "workspace cli/env@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: env [-i] [-0] [-u NAME] [-C DIR] [-S STRING] [NAME=VALUE]... [COMMAND [ARG]...]\n  -S, --split-string=STRING  split quotes, escapes and original environment variables\n      --help      display this help and exit\n      --version   display version and exit\nWindows Native: child launches require a nonempty environment.\n",
       "expected_stderr_text": ""
     },
@@ -10599,8 +10599,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/env@0.2.2 metadata contract",
-      "expected_stdout_text": "env 0.2.2\n",
+      "source_version": "workspace cli/env@0.2.3 metadata contract",
+      "expected_stdout_text": "env 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -11371,7 +11371,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/expand@0.1.3 metadata contract",
+      "source_version": "workspace cli/expand@0.1.4 metadata contract",
       "expected_stdout_text": "Usage: expand [OPTION]... [FILE]...\n      --help      display this help and exit\n      --version   display version and exit\n\nConvert tabs in each FILE to spaces, writing to standard output.\nWith no FILE, or when FILE is -, read standard input.\n\n  -i, --initial       do not convert tabs after nonblank characters\n  -t, --tabs=LIST     use ascending tab stops; /N repeats absolute, +N relative\n",
       "expected_stderr_text": ""
     },
@@ -11390,8 +11390,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/expand@0.1.3 metadata contract",
-      "expected_stdout_text": "expand 0.1.3\n",
+      "source_version": "workspace cli/expand@0.1.4 metadata contract",
+      "expected_stdout_text": "expand 0.1.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -12096,7 +12096,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/expr@0.2.0 metadata contract",
+      "source_version": "workspace cli/expr@0.2.1 metadata contract",
       "expected_stdout_text": "Usage: expr EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nEvaluate integer/string expressions: | & comparisons + - * / % :\nFunctions: match, substr, index, length; + quotes one operand.\nC-byte BRE supports captures, backreferences and word assertions; locale collation is unsupported.\n",
       "expected_stderr_text": ""
     },
@@ -12115,8 +12115,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/expr@0.2.0 metadata contract",
-      "expected_stdout_text": "expr 0.2.0\n",
+      "source_version": "workspace cli/expr@0.2.1 metadata contract",
+      "expected_stdout_text": "expr 0.2.1\n",
       "expected_stderr_text": ""
     },
     {
@@ -12223,12 +12223,12 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "false 0.2.2\n",
+      "expected_stdout_text": "false 0.2.3\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-text-line-762"
       ],
-      "source_version": "workspace cli/false@0.2.2 metadata contract"
+      "source_version": "workspace cli/false@0.2.3 metadata contract"
     },
     {
       "id": "p0-false-help",
@@ -12291,7 +12291,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/false@0.2.2 metadata contract",
+      "source_version": "workspace cli/false@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: false [ignored command line arguments]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -12310,8 +12310,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/false@0.2.2 metadata contract",
-      "expected_stdout_text": "false 0.2.2\n",
+      "source_version": "workspace cli/false@0.2.3 metadata contract",
+      "expected_stdout_text": "false 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -12462,7 +12462,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/find@0.2.2 metadata contract",
+      "source_version": "workspace cli/find@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: find [PATH...] [EXPRESSION]\n      --help      display this help and exit\n      --version   display version and exit\nPredicates include names, portable kinds, size, a/c/m times, newerXY, access checks, -used, -xtype, depth controls, actions, and boolean operators.\n",
       "expected_stderr_text": ""
     },
@@ -12481,8 +12481,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/find@0.2.2 metadata contract",
-      "expected_stdout_text": "find 0.2.2\n",
+      "source_version": "workspace cli/find@0.2.3 metadata contract",
+      "expected_stdout_text": "find 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -12736,7 +12736,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/fmt@0.1.2 metadata contract",
+      "source_version": "workspace cli/fmt@0.1.3 metadata contract",
       "expected_stdout_text": "Usage: fmt [-WIDTH] [-w WIDTH] [-g GOAL] [-suct] [-p PREFIX] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nReformat paragraphs, preserving indentation; default width 75.\n-s splits lines without joining; -u uses uniform spacing.\n-c, --crown-margin allows a different first-line indent.\n-t, --tagged-paragraph preserves a hanging indent.\n-p, --prefix=PREFIX reformats only matching prefixed lines.\nC-locale byte columns; split takes precedence over crown, then tagged.\n",
       "expected_stderr_text": ""
     },
@@ -12755,8 +12755,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/fmt@0.1.2 metadata contract",
-      "expected_stdout_text": "fmt 0.1.2\n",
+      "source_version": "workspace cli/fmt@0.1.3 metadata contract",
+      "expected_stdout_text": "fmt 0.1.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -13599,7 +13599,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/fold@0.1.2 metadata contract",
+      "source_version": "workspace cli/fold@0.1.3 metadata contract",
       "expected_stdout_text": "Usage: fold [OPTION]... [FILE]...\nWrap each input line, reading stdin with no FILE or FILE -.\n  -b, --bytes          count bytes rather than columns\n  -c, --characters     count characters in the C-locale byte profile\n  -s, --spaces         break after the last available blank\n  -w, --width=WIDTH    use WIDTH columns instead of 80\n      --help           display this help and exit\n      --version        display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -13618,8 +13618,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/fold@0.1.2 metadata contract",
-      "expected_stdout_text": "fold 0.1.2\n",
+      "source_version": "workspace cli/fold@0.1.3 metadata contract",
+      "expected_stdout_text": "fold 0.1.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -14088,7 +14088,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/grep@0.3.0 metadata contract",
+      "source_version": "workspace cli/grep@0.3.2 metadata contract",
       "expected_stdout_text": "Usage: grep [-EFGivnclLqHhxwrRbszo] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n-r and -R recurse without following symbolic links.\n",
       "expected_stderr_text": ""
     },
@@ -14107,8 +14107,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/grep@0.3.0 metadata contract",
-      "expected_stdout_text": "grep 0.3.0\n",
+      "source_version": "workspace cli/grep@0.3.2 metadata contract",
+      "expected_stdout_text": "grep 0.3.2\n",
       "expected_stderr_text": ""
     },
     {
@@ -14527,7 +14527,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/gunzip@0.1.2 metadata contract",
+      "source_version": "workspace cli/gunzip@0.1.3 metadata contract",
       "expected_stdout_text": "Usage: gunzip [OPTION]... [FILE]...\nProcess gzip streams; no FILE or - reads stdin.\nInput and output use bounded buffers.\n\n  -c, --stdout       Write to stdout and keep input files.\n  -d, --decompress   Decompress (default for gunzip and zcat).\n  -t, --test         Validate compressed input without output.\n  -n, --no-name      Omit name/time metadata when compressing.\n  -q, --quiet        Suppress trailing-garbage warnings.\n  -1 .. -9           Compression level (default: -6; last option wins).\n      --fast         Same as -1.\n      --best         Same as -9.\n      --help         display this help and exit\n      --version      display version and exit\n\nNamed-file gzip compression requires -cn.\nNamed-file gzip/gunzip decompression requires -c unless testing with -t.\nzcat writes named inputs to stdout by default.\nCompression levels are ignored when decompressing or testing.\nIn-place replacement, saved-name metadata and recursion are unsupported.\n",
       "expected_stderr_text": ""
     },
@@ -14546,8 +14546,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/gunzip@0.1.2 metadata contract",
-      "expected_stdout_text": "gunzip 0.1.2\n",
+      "source_version": "workspace cli/gunzip@0.1.3 metadata contract",
+      "expected_stdout_text": "gunzip 0.1.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -14785,7 +14785,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/gzip@0.1.2 metadata contract",
+      "source_version": "workspace cli/gzip@0.1.3 metadata contract",
       "expected_stdout_text": "Usage: gzip [OPTION]... [FILE]...\nProcess gzip streams; no FILE or - reads stdin.\nInput and output use bounded buffers.\n\n  -c, --stdout       Write to stdout and keep input files.\n  -d, --decompress   Decompress (default for gunzip and zcat).\n  -t, --test         Validate compressed input without output.\n  -n, --no-name      Omit name/time metadata when compressing.\n  -q, --quiet        Suppress trailing-garbage warnings.\n  -1 .. -9           Compression level (default: -6; last option wins).\n      --fast         Same as -1.\n      --best         Same as -9.\n      --help         display this help and exit\n      --version      display version and exit\n\nNamed-file gzip compression requires -cn.\nNamed-file gzip/gunzip decompression requires -c unless testing with -t.\nzcat writes named inputs to stdout by default.\nCompression levels are ignored when decompressing or testing.\nIn-place replacement, saved-name metadata and recursion are unsupported.\n",
       "expected_stderr_text": ""
     },
@@ -14804,8 +14804,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/gzip@0.1.2 metadata contract",
-      "expected_stdout_text": "gzip 0.1.2\n",
+      "source_version": "workspace cli/gzip@0.1.3 metadata contract",
+      "expected_stdout_text": "gzip 0.1.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -15096,7 +15096,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/head@0.2.2 metadata contract",
+      "source_version": "workspace cli/head@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: head [-qvz] [-n NUM|-c NUM] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -15115,8 +15115,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/head@0.2.2 metadata contract",
-      "expected_stdout_text": "head 0.2.2\n",
+      "source_version": "workspace cli/head@0.2.3 metadata contract",
+      "expected_stdout_text": "head 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -15425,7 +15425,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/hexdump@0.1.2 metadata contract",
+      "source_version": "workspace cli/hexdump@0.1.3 metadata contract",
       "expected_stdout_text": "Usage: hexdump [OPTION]... [FILE]...\nDisplay concatenated files as numbers and characters; no FILE reads stdin.\n  -b, --one-byte-octal     one-byte octal\n  -c, --one-byte-char      escaped characters\n  -C, --canonical         hexadecimal bytes with ASCII\n  -d, --two-bytes-decimal  two-byte unsigned decimal\n  -o, --two-bytes-octal    two-byte octal\n  -x, --two-bytes-hex      two-byte hexadecimal\n  -X, --one-byte-hex       one-byte hexadecimal\n  -e, --format=FORMAT     add a custom format\n  -f, --format-file=FILE  add formats from a file\n  -L, --color[=WHEN]      enable _L colors: always, auto, or never\n  -n, --length=N          display at most N input bytes\n  -s, --skip=N            skip N input bytes\n  -v, --no-squeezing      display duplicate blocks\n  -h, --help              display this help and exit\n  -V, --version           display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -15444,8 +15444,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/hexdump@0.1.2 metadata contract",
-      "expected_stdout_text": "hexdump 0.1.2\n",
+      "source_version": "workspace cli/hexdump@0.1.3 metadata contract",
+      "expected_stdout_text": "hexdump 0.1.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -16777,7 +16777,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/join@0.2.2 metadata contract",
+      "source_version": "workspace cli/join@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: join [options] FILE1 FILE2\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nJoin lines of two files sorted on their join fields.\n\nOptions:\n  -1 FIELD    Join on this field of FILE1 (default 1).\n  -2 FIELD    Join on this field of FILE2 (default 1).\n  -t CHAR     Use CHAR as the field separator instead of runs of\n              blanks; the output separator becomes CHAR as well.\n  -a FILENO    Also print unpairable lines from FILENO (1 or 2).\n  -v FILENO    Print only unpairable lines from FILENO.\n  -e STRING    Replace missing or empty fields with STRING.\n  -o LIST      Select output fields (for example 0,1.2,2.2), or auto.\n  -i, --ignore-case  Compare join fields without ASCII case distinctions.\n      --header  Print the first lines as headers without matching keys.\n      --check-order  Diagnose unsorted input.\n      --nocheck-order  Do not diagnose unsorted input.\n  -z           End records with NUL instead of newline.\n\nUse '-' as a file name to read stdin.\n",
       "expected_stderr_text": ""
     },
@@ -16796,8 +16796,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/join@0.2.2 metadata contract",
-      "expected_stdout_text": "join 0.2.2\n",
+      "source_version": "workspace cli/join@0.2.3 metadata contract",
+      "expected_stdout_text": "join 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -18455,7 +18455,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/jq@0.2.3 metadata contract",
+      "source_version": "workspace cli/jq@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file FILE    read the filter from FILE\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n",
       "expected_stderr_text": ""
     },
@@ -18474,8 +18474,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/jq@0.2.3 metadata contract",
-      "expected_stdout_text": "jq 0.2.3\n",
+      "source_version": "workspace cli/jq@0.2.4 metadata contract",
+      "expected_stdout_text": "jq 0.2.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -18663,7 +18663,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/jqlog@0.2.3 metadata contract",
+      "source_version": "workspace cli/jqlog@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: jqlog [options] <query> [input]\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nOptions:\n  -f, --file <path>   Read input text from a file.\n\nNotes:\n  - Input is treated as JSONL/NDJSON with possible non-JSON lines.\n  - Non-JSON lines are skipped.\n  - If [input] is omitted, stdin is used.\n  - If [input] is provided without --file, it is treated as raw text.\n\nExamples:\n  cat logs.ndjson | jqlog '.message'\n  jqlog -f output.txt '.a'\n",
       "expected_stderr_text": ""
     },
@@ -18682,8 +18682,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/jqlog@0.2.3 metadata contract",
-      "expected_stdout_text": "jqlog 0.2.3\n",
+      "source_version": "workspace cli/jqlog@0.2.4 metadata contract",
+      "expected_stdout_text": "jqlog 0.2.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -19238,7 +19238,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/ln@0.2.3 metadata contract",
+      "source_version": "workspace cli/ln@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: ln -s [-f|-i] [-r] [-n] [-T] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\n       ln -s [-f|-i] [-r] [-n] [-b|--backup[=CONTROL]] [-S SUFFIX] -t DIRECTORY TARGET...\n      --help      display this help and exit\n      --version   display version and exit\nThe last -f/--force or -i/--interactive selects overwrite behavior.\nDeclining an interactive overwrite returns status 1 without replacing the link.\n",
       "expected_stderr_text": ""
     },
@@ -19257,8 +19257,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/ln@0.2.3 metadata contract",
-      "expected_stdout_text": "ln 0.2.3\n",
+      "source_version": "workspace cli/ln@0.2.4 metadata contract",
+      "expected_stdout_text": "ln 0.2.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -20888,7 +20888,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/ls@0.2.3 metadata contract",
+      "source_version": "workspace cli/ls@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: ls [-aAdF1RCxmrtucSbqNQ] [-w WIDTH] [-T TABSIZE] [-H|-L|-P] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -C lists down columns; -x across rows; -m uses commas; -1 uses lines.\n  -w, --width=COLS sets line width (0 unlimited); -T, --tabsize=COLS sets tabs.\n  -b escapes names; -N is literal; -Q uses C quotes; -q replaces control bytes.\n      --quoting-style=STYLE selects GNU C-locale quoting.\n      --show-control-chars displays remaining control bytes.\n      --color=always,never controls explicit type/extension colors.\n  Active su/sg/ex/ca/mh or tw/ow/st colors require unavailable metadata.\n  -H follows command-line links; -L follows all links; -P follows none (extension).\n  -u, -c and --time select and imply time sorting unless -S or -t selects a sort.\n  -S requires regular files; metadata-rich long listing is not supported.\n",
       "expected_stderr_text": ""
     },
@@ -20907,8 +20907,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/ls@0.2.3 metadata contract",
-      "expected_stdout_text": "ls 0.2.3\n",
+      "source_version": "workspace cli/ls@0.2.4 metadata contract",
+      "expected_stdout_text": "ls 0.2.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -26887,7 +26887,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/make@0.2.2 metadata contract",
+      "source_version": "workspace cli/make@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: make [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -26906,8 +26906,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/make@0.2.2 metadata contract",
-      "expected_stdout_text": "make 0.2.2\n",
+      "source_version": "workspace cli/make@0.2.3 metadata contract",
+      "expected_stdout_text": "make 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -27138,10 +27138,10 @@
       "environment": {},
       "normalizations": [],
       "expected_status": 0,
-      "expected_stdout_text": "md5sum 0.1.2\n",
+      "expected_stdout_text": "md5sum 0.1.3\n",
       "expected_stderr_text": "",
       "comparison": "contract",
-      "source_version": "workspace cli/md5sum@0.1.2 metadata contract"
+      "source_version": "workspace cli/md5sum@0.1.3 metadata contract"
     },
     {
       "id": "checksum-md5sum-tag-boundary",
@@ -27188,7 +27188,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/md5sum@0.1.2 metadata contract",
+      "source_version": "workspace cli/md5sum@0.1.3 metadata contract",
       "expected_stdout_text": "Usage: md5sum [OPTION]... [FILE]...\nPrint or check checksums. With no FILE, or FILE -, read stdin.\n\n  -b, --binary          mark untagged output as binary\n  -t, --text            mark untagged output as text (default)\n      --tag             print BSD tagged records\n  -c, --check           read checksum records and verify files\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification results and summaries\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nInput bytes are unchanged by -b or -t on every supported platform.\n",
       "expected_stderr_text": ""
     },
@@ -27207,8 +27207,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/md5sum@0.1.2 metadata contract",
-      "expected_stdout_text": "md5sum 0.1.2\n",
+      "source_version": "workspace cli/md5sum@0.1.3 metadata contract",
+      "expected_stdout_text": "md5sum 0.1.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -27578,7 +27578,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/mkdir@0.2.2 metadata contract",
+      "source_version": "workspace cli/mkdir@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\nMODE accepts octal or symbolic permissions (rwxXst, copied classes and comma clauses).\nSticky-only +t yields 1755; a=rwx,+t yields 1777.\nOmitted-who expressions requiring the process umask are unavailable.\n",
       "expected_stderr_text": ""
     },
@@ -27597,8 +27597,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/mkdir@0.2.2 metadata contract",
-      "expected_stdout_text": "mkdir 0.2.2\n",
+      "source_version": "workspace cli/mkdir@0.2.3 metadata contract",
+      "expected_stdout_text": "mkdir 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -28336,7 +28336,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/mktemp@0.1.3 metadata contract",
+      "source_version": "workspace cli/mktemp@0.1.4 metadata contract",
       "expected_stdout_text": "Usage: mktemp [OPTION]... [TEMPLATE]\nCreate an exclusive temporary file (0600) or directory (0700).\n  -d, --directory       create a directory\n  -p DIR, --tmpdir[=DIR] use DIR, then TMPDIR, then /tmp\n  -t                    prefer TMPDIR; reject template directories\n      --suffix=SUFFIX   append SUFFIX to a template ending in X\n  -q, --quiet           suppress creation and output errors\n      --help            display this help and exit\n      --version         display version and exit\nDefault template: tmp.XXXXXXXXXX. The final X run requires at least three Xs.\n",
       "expected_stderr_text": ""
     },
@@ -28355,8 +28355,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/mktemp@0.1.3 metadata contract",
-      "expected_stdout_text": "mktemp 0.1.3\n",
+      "source_version": "workspace cli/mktemp@0.1.4 metadata contract",
+      "expected_stdout_text": "mktemp 0.1.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -29642,7 +29642,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/mv@0.2.4 metadata contract",
+      "source_version": "workspace cli/mv@0.2.5 metadata contract",
       "expected_stdout_text": "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nDeclining an interactive overwrite returns status 1 and preserves both files.\nTimestamps describe source and destination entries, including dangling links.\nEqual-time interactive/update targets require unavailable file identity metadata.\nWindows Wasm symlink/junction moves and link backups require a verified host fix.\n",
       "expected_stderr_text": ""
     },
@@ -29661,8 +29661,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/mv@0.2.4 metadata contract",
-      "expected_stdout_text": "mv 0.2.4\n",
+      "source_version": "workspace cli/mv@0.2.5 metadata contract",
+      "expected_stdout_text": "mv 0.2.5\n",
       "expected_stderr_text": ""
     },
     {
@@ -29778,7 +29778,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/nl@0.2.2 metadata contract",
+      "source_version": "workspace cli/nl@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: nl [-b STYLE] [-h STYLE] [-f STYLE] [-v NUMBER] [-i NUMBER] [-l NUMBER] [-n FORMAT] [-w NUMBER] [-s STRING] [-d STRING] [-p] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -29797,8 +29797,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/nl@0.2.2 metadata contract",
-      "expected_stdout_text": "nl 0.2.2\n",
+      "source_version": "workspace cli/nl@0.2.3 metadata contract",
+      "expected_stdout_text": "nl 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -30064,7 +30064,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/od@0.1.2 metadata contract",
+      "source_version": "workspace cli/od@0.1.3 metadata contract",
       "expected_stdout_text": "Usage: od [OPTION]... [FILE]...\nDump concatenated files, or stdin when no FILE or FILE - is given.\n  -A, --address-radix=d|o|x|n  address base, or no addresses\n  -j, --skip-bytes=N          skip N input bytes\n  -N, --read-bytes=N          print at most N bytes\n  -t, --format=TYPE           a, c, integers 1/2/4/8; floats 2/4/8/16; optional z\n  -a -b -c -d -i -l -o -s -x  traditional named/integer formats\n  -f -e -F                    traditional float or double formats\n      --endian=little|big     byte order (default little)\n  -w[N], --width[=N]         bytes per line (default 16, bare option 32)\n  -v, --output-duplicates    do not replace repeated blocks with *\n  -S N, --strings[=N]       print NUL-terminated printable strings (default 3)\n      --traditional        accept old offset and label operands\n      --help                 display this help and exit\n      --version              display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -30083,8 +30083,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/od@0.1.2 metadata contract",
-      "expected_stdout_text": "od 0.1.2\n",
+      "source_version": "workspace cli/od@0.1.3 metadata contract",
+      "expected_stdout_text": "od 0.1.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -31496,7 +31496,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/paste@0.2.2 metadata contract",
+      "source_version": "workspace cli/paste@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: paste [-s] [-d LIST] [-z] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -31515,8 +31515,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/paste@0.2.2 metadata contract",
-      "expected_stdout_text": "paste 0.2.2\n",
+      "source_version": "workspace cli/paste@0.2.3 metadata contract",
+      "expected_stdout_text": "paste 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -31996,7 +31996,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/patch@0.2.0 metadata contract",
+      "source_version": "workspace cli/patch@0.2.1 metadata contract",
       "expected_stdout_text": "Usage: patch [OPTION]... [ORIGINALFILE [PATCHFILE]]\nApply unified or context patches with offsets, fuzz and rejected hunks.\n  -p, --strip=N       remove N leading file-name components\n  -i, --input=FILE    read the patch from FILE instead of stdin\n  -o, --output=-      write patched files to stdout\n  -r, --reject-file=FILE  write rejected hunks to a new FILE; - discards\n  -d, --directory=DIR resolve target paths relative to DIR\n  -R, --reverse       apply additions as removals and vice versa\n      --dry-run       check without writing or deleting files\n  -s, --quiet         suppress routine file messages\n  -u, --unified       require unified input\n  -c, --context       require context input\n  -t, --batch         select a detected reverse without prompting\n  -F, --fuzz=N        ignore up to N outer context lines (default 2)\n      --no-backup-if-mismatch  accept the no-backup strict profile\n      --help          display this help and exit\n      --version       display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -32015,8 +32015,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/patch@0.2.0 metadata contract",
-      "expected_stdout_text": "patch 0.2.0\n",
+      "source_version": "workspace cli/patch@0.2.1 metadata contract",
+      "expected_stdout_text": "patch 0.2.1\n",
       "expected_stderr_text": ""
     },
     {
@@ -33098,7 +33098,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/printenv@0.2.2 metadata contract",
+      "source_version": "workspace cli/printenv@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: printenv [-0] [NAME...]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -33117,8 +33117,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/printenv@0.2.2 metadata contract",
-      "expected_stdout_text": "printenv 0.2.2\n",
+      "source_version": "workspace cli/printenv@0.2.3 metadata contract",
+      "expected_stdout_text": "printenv 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -33250,7 +33250,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/printf@0.2.2 metadata contract",
+      "source_version": "workspace cli/printf@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: printf FORMAT [ARGUMENT...]\n      --help      display this help and exit\n      --version   display version and exit\n\nFormat and print ARGUMENTs under control of FORMAT, like printf(1).\nThe FORMAT is reused as necessary to consume all arguments.\n\nEscapes: \\a \\b \\e \\f \\n \\r \\t \\v \\\\ \\\" \\' \\NNN \\0NNN \\xHH \\uHHHH\n\\UHHHHHHHH, and \\c (stop all output).\n\nConversions: %s %c %b %d %i %u %o %x %X %f %F %e %E %g %G %a %A %%, with the\nflags -+ 0#, field width, and precision (both accept *).\n%b interprets escapes in its argument.\nBare %q quotes an argument for a shell under the C-byte profile.\n\nUse -- before a FORMAT that starts with '-'.\n",
       "expected_stderr_text": ""
     },
@@ -33269,8 +33269,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/printf@0.2.2 metadata contract",
-      "expected_stdout_text": "printf 0.2.2\n",
+      "source_version": "workspace cli/printf@0.2.3 metadata contract",
+      "expected_stdout_text": "printf 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -33869,7 +33869,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/pwd@0.2.2 metadata contract",
+      "source_version": "workspace cli/pwd@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: pwd [-L|-P]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -33888,8 +33888,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/pwd@0.2.2 metadata contract",
-      "expected_stdout_text": "pwd 0.2.2\n",
+      "source_version": "workspace cli/pwd@0.2.3 metadata contract",
+      "expected_stdout_text": "pwd 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -33923,7 +33923,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/realpath@0.1.3 metadata contract",
+      "source_version": "workspace cli/realpath@0.1.4 metadata contract",
       "expected_stdout_text": "Usage: realpath [OPTION]... NAME...\n  -e, --canonicalize-existing  require every component to exist\n  -E, --canonicalize           allow a missing final component (default)\n  -m, --canonicalize-missing   allow missing or non-directory components\n  -s, --strip, --no-symlinks   do not expand symbolic links\n      --relative-to=DIR        print relative to DIR\n      --relative-base=DIR      use relative output only inside DIR\n  -q, --quiet                 suppress operand errors\n  -z, --zero                  terminate output with NUL\n      --help                  display this help and exit\n      --version               display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -33942,8 +33942,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/realpath@0.1.3 metadata contract",
-      "expected_stdout_text": "realpath 0.1.3\n",
+      "source_version": "workspace cli/realpath@0.1.4 metadata contract",
+      "expected_stdout_text": "realpath 0.1.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -35727,7 +35727,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/rev@0.1.4 metadata contract",
+      "source_version": "workspace cli/rev@0.1.5 metadata contract",
       "expected_stdout_text": "Usage: rev [OPTION]... [FILE]...\n      --help      display this help and exit\n      --version   display version and exit\n\nReverse each line from ordered FILE operands, or standard input if absent.\nThe fixed Linux C-locale profile reverses bytes and rejects non-ASCII records.\nAn explicit - is a filename, as in the frozen util-linux profile.\nInput streams one record at a time; memory follows the longest record.\n",
       "expected_stderr_text": ""
     },
@@ -35746,8 +35746,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/rev@0.1.4 metadata contract",
-      "expected_stdout_text": "rev 0.1.4\n",
+      "source_version": "workspace cli/rev@0.1.5 metadata contract",
+      "expected_stdout_text": "rev 0.1.5\n",
       "expected_stderr_text": ""
     },
     {
@@ -36241,7 +36241,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/rm@0.2.2 metadata contract",
+      "source_version": "workspace cli/rm@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: rm [OPTION]... FILE...\n  -f, --force             ignore missing files; never prompt\n  -i                      prompt for each removal using stdin\n  -I                      prompt once for recursion or more than three operands\n      --interactive[=WHEN] never, once or always (default with option)\n  -r, -R, --recursive     remove directory trees without following symlinks\n  -d, --dir               remove empty directories\n  -v, --verbose           print removed paths\n      --preserve-root     protect filesystem roots (default)\n      --no-preserve-root  disable root protection\n      --help              display this help and exit\n      --version           display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -36260,8 +36260,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/rm@0.2.2 metadata contract",
-      "expected_stdout_text": "rm 0.2.2\n",
+      "source_version": "workspace cli/rm@0.2.3 metadata contract",
+      "expected_stdout_text": "rm 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -37498,7 +37498,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/rmdir@0.2.2 metadata contract",
+      "source_version": "workspace cli/rmdir@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: rmdir [-p] [-I] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -37517,8 +37517,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/rmdir@0.2.2 metadata contract",
-      "expected_stdout_text": "rmdir 0.2.2\n",
+      "source_version": "workspace cli/rmdir@0.2.3 metadata contract",
+      "expected_stdout_text": "rmdir 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -37912,7 +37912,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/sed@0.2.0 metadata contract",
+      "source_version": "workspace cli/sed@0.2.1 metadata contract",
       "expected_stdout_text": "Usage: sed [-nE] [-e SCRIPT] [-f SCRIPTFILE] [SCRIPT] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nStream editor: p/d/q/=, s/RE/REPLACEMENT/[gNp], h/H/g/G/x, :/b/t/T, groups, n/N/P/D/a/i/c.\nAddresses: line number, $, /RE/, ranges and !. BRE default; -E enables ERE.\nBRE/ERE supports pattern backreferences and word assertions.\nIn-place editing and locale-aware matching are not supported.\n",
       "expected_stderr_text": ""
     },
@@ -37931,8 +37931,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/sed@0.2.0 metadata contract",
-      "expected_stdout_text": "sed 0.2.0\n",
+      "source_version": "workspace cli/sed@0.2.1 metadata contract",
+      "expected_stdout_text": "sed 0.2.1\n",
       "expected_stderr_text": ""
     },
     {
@@ -40407,9 +40407,9 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "seq 0.2.3\n",
+      "expected_stdout_text": "seq 0.2.4\n",
       "expected_stderr_text": "",
-      "source_version": "workspace cli/seq@0.2.3 metadata contract"
+      "source_version": "workspace cli/seq@0.2.4 metadata contract"
     },
     {
       "id": "p0-seq-equal-width",
@@ -40606,9 +40606,9 @@
       "expected_status": 0,
       "normalizations": [],
       "comparison": "contract",
-      "source_version": "workspace cli/seq@0.2.3 metadata contract",
+      "source_version": "workspace cli/seq@0.2.4 metadata contract",
       "expected_stderr_text": "",
-      "expected_stdout_text": "seq 0.2.3\n",
+      "expected_stdout_text": "seq 0.2.4\n",
       "coverage": [
         "version"
       ]
@@ -40699,7 +40699,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/seq@0.2.3 metadata contract",
+      "source_version": "workspace cli/seq@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: seq [-w] [-f FORMAT] [-s STRING] [FIRST [INCREMENT]] LAST\nPrint a numeric sequence; the default increment is 1.\n  -w, --equal-width       pad numbers with leading zeroes\n  -f, --format=FORMAT     use one e/E/f/F/g/G/a/A floating conversion\n  -s, --separator=STRING  separate numbers with STRING\n      --help              display this help and exit\n      --version           display version and exit\nWithout -f, exact decimal operands are limited to 4096 characters; exponent and decimal scale must be within -4096..4096.\n",
       "expected_stderr_text": ""
     },
@@ -40718,8 +40718,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/seq@0.2.3 metadata contract",
-      "expected_stdout_text": "seq 0.2.3\n",
+      "source_version": "workspace cli/seq@0.2.4 metadata contract",
+      "expected_stdout_text": "seq 0.2.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -42012,7 +42012,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/sh@0.2.2 metadata contract",
+      "source_version": "workspace cli/sh@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: sh [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]\n  -c SOURCE   execute shell source\n  -s          read commands from standard input\n  -i          enable a persistent line-oriented interactive session\n  --help      display this help and exit\n  --version   display version and exit\nSupports a bounded shell language; terminal job control is unavailable.\n",
       "expected_stderr_text": ""
     },
@@ -42031,8 +42031,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/sh@0.2.2 metadata contract",
-      "expected_stdout_text": "sh 0.2.2\n",
+      "source_version": "workspace cli/sh@0.2.3 metadata contract",
+      "expected_stdout_text": "sh 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -42158,10 +42158,10 @@
       "environment": {},
       "normalizations": [],
       "expected_status": 0,
-      "expected_stdout_text": "sha1sum 0.1.2\n",
+      "expected_stdout_text": "sha1sum 0.1.3\n",
       "expected_stderr_text": "",
       "comparison": "contract",
-      "source_version": "workspace cli/sha1sum@0.1.2 metadata contract"
+      "source_version": "workspace cli/sha1sum@0.1.3 metadata contract"
     },
     {
       "id": "release-metadata-sha1sum-help",
@@ -42178,7 +42178,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/sha1sum@0.1.2 metadata contract",
+      "source_version": "workspace cli/sha1sum@0.1.3 metadata contract",
       "expected_stdout_text": "Usage: sha1sum [OPTION]... [FILE]...\nPrint or check checksums. With no FILE, or FILE -, read stdin.\n\n  -b, --binary          mark untagged output as binary\n  -t, --text            mark untagged output as text (default)\n      --tag             print BSD tagged records\n  -c, --check           read checksum records and verify files\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification results and summaries\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nInput bytes are unchanged by -b or -t on every supported platform.\n",
       "expected_stderr_text": ""
     },
@@ -42197,8 +42197,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/sha1sum@0.1.2 metadata contract",
-      "expected_stdout_text": "sha1sum 0.1.2\n",
+      "source_version": "workspace cli/sha1sum@0.1.3 metadata contract",
+      "expected_stdout_text": "sha1sum 0.1.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -42459,7 +42459,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/sha256sum@0.2.2 metadata contract",
+      "source_version": "workspace cli/sha256sum@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: sha256sum [OPTION]... [FILE]...\nPrint or check checksums. With no FILE, or FILE -, read stdin.\n\n  -b, --binary          mark untagged output as binary\n  -t, --text            mark untagged output as text (default)\n      --tag             print BSD tagged records\n  -c, --check           read checksum records and verify files\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification results and summaries\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nInput bytes are unchanged by -b or -t on every supported platform.\n",
       "expected_stderr_text": ""
     },
@@ -42478,8 +42478,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/sha256sum@0.2.2 metadata contract",
-      "expected_stdout_text": "sha256sum 0.2.2\n",
+      "source_version": "workspace cli/sha256sum@0.2.3 metadata contract",
+      "expected_stdout_text": "sha256sum 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -42646,10 +42646,10 @@
       "environment": {},
       "normalizations": [],
       "expected_status": 0,
-      "expected_stdout_text": "sha512sum 0.1.2\n",
+      "expected_stdout_text": "sha512sum 0.1.3\n",
       "expected_stderr_text": "",
       "comparison": "contract",
-      "source_version": "workspace cli/sha512sum@0.1.2 metadata contract"
+      "source_version": "workspace cli/sha512sum@0.1.3 metadata contract"
     },
     {
       "id": "release-metadata-sha512sum-help",
@@ -42666,7 +42666,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/sha512sum@0.1.2 metadata contract",
+      "source_version": "workspace cli/sha512sum@0.1.3 metadata contract",
       "expected_stdout_text": "Usage: sha512sum [OPTION]... [FILE]...\nPrint or check checksums. With no FILE, or FILE -, read stdin.\n\n  -b, --binary          mark untagged output as binary\n  -t, --text            mark untagged output as text (default)\n      --tag             print BSD tagged records\n  -c, --check           read checksum records and verify files\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification results and summaries\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nInput bytes are unchanged by -b or -t on every supported platform.\n",
       "expected_stderr_text": ""
     },
@@ -42685,8 +42685,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/sha512sum@0.1.2 metadata contract",
-      "expected_stdout_text": "sha512sum 0.1.2\n",
+      "source_version": "workspace cli/sha512sum@0.1.3 metadata contract",
+      "expected_stdout_text": "sha512sum 0.1.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -42759,12 +42759,12 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "sleep 0.2.2\n",
+      "expected_stdout_text": "sleep 0.2.3\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-text-line-736"
       ],
-      "source_version": "workspace cli/sleep@0.2.2 metadata contract"
+      "source_version": "workspace cli/sleep@0.2.3 metadata contract"
     },
     {
       "id": "p0-sleep-help",
@@ -42847,7 +42847,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/sleep@0.2.2 metadata contract",
+      "source_version": "workspace cli/sleep@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: sleep NUMBER[SUFFIX]...\n      --help      display this help and exit\n      --version   display version and exit\n\nPause for NUMBER seconds, like sleep(1). NUMBER may be fractional.\nSUFFIX may be 's' (seconds, default), 'm' (minutes), 'h' (hours), or\n'd' (days). With multiple arguments, sleep for their sum.\nThe total is rounded up to milliseconds and capped at 2147483647 ms.\n",
       "expected_stderr_text": ""
     },
@@ -42866,8 +42866,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/sleep@0.2.2 metadata contract",
-      "expected_stdout_text": "sleep 0.2.2\n",
+      "source_version": "workspace cli/sleep@0.2.3 metadata contract",
+      "expected_stdout_text": "sleep 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -43580,7 +43580,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/sort@0.2.3 metadata contract",
+      "source_version": "workspace cli/sort@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: sort [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [-S SIZE] [-T DIR] [--batch-size=N] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n\nLarge inputs use temporary disk runs and require filesystem write access.\n-S/--buffer-size selects an accounted byte budget (default units: KiB).\n-T/--temporary-directory may repeat; --batch-size uses at most 16 merge inputs.\nNonzero percentage buffer sizes require an unavailable physical-memory query.\n",
       "expected_stderr_text": ""
     },
@@ -43599,8 +43599,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/sort@0.2.3 metadata contract",
-      "expected_stdout_text": "sort 0.2.3\n",
+      "source_version": "workspace cli/sort@0.2.4 metadata contract",
+      "expected_stdout_text": "sort 0.2.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -46040,7 +46040,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/split@0.1.3 metadata contract",
+      "source_version": "workspace cli/split@0.1.4 metadata contract",
       "expected_stdout_text": "Usage: split [OPTION]... [FILE [PREFIX]]\nSplit FILE (or stdin) into byte-preserving pieces; default PREFIX is x.\n  -l, --lines=NUMBER        put NUMBER records in each piece (default 1000)\n  -b, --bytes=SIZE          put SIZE bytes in each piece\n  -C, --line-bytes=SIZE     put at most SIZE bytes of records in each piece\n  -n, --number=CHUNKS       N, K/N, l/N, l/K/N, r/N or r/K/N\n  -a, --suffix-length=N     fixed suffix width; zero selects automatic width\n  -d, --numeric-suffixes[=FROM]  numeric suffixes\n  -x, --hex-suffixes[=FROM]      hexadecimal suffixes\n      --additional-suffix=SUFFIX  append SUFFIX to generated names\n  -e, --elide-empty-files   omit empty outputs\n      --filter=COMMAND     run pure shell source per piece with FILE set\n      --help               display this help and exit\n      --version            display version and exit\nExisting named outputs are refused; filters own their explicit file writes.\nLine-byte and unknown-size partition layouts require temporary write access.\n",
       "expected_stderr_text": ""
     },
@@ -46059,8 +46059,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/split@0.1.3 metadata contract",
-      "expected_stdout_text": "split 0.1.3\n",
+      "source_version": "workspace cli/split@0.1.4 metadata contract",
+      "expected_stdout_text": "split 0.1.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -48562,14 +48562,14 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "expected_stdout_text": "strings 0.1.3\n",
+      "expected_stdout_text": "strings 0.1.4\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/strings@0.1.3 metadata contract"
+      "source_version": "workspace cli/strings@0.1.4 metadata contract"
     },
     {
       "id": "p2-strings-octal",
@@ -48990,7 +48990,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/strings@0.1.3 metadata contract",
+      "source_version": "workspace cli/strings@0.1.4 metadata contract",
       "expected_stdout_text": "Usage: strings [OPTION]... [FILE]...\nPrint the sequences of printable characters in each FILE.\n  -a, --all             scan the whole file\n  -f, --print-file-name print the file name before each string\n  -n, --bytes=N         print sequences at least N bytes long\n  -o                    display offsets in octal\n  -t, --radix=RADIX     display offsets in d, o, or x radix\n  -e, --encoding=ENC    s: 7-bit bytes (default); S: 8-bit bytes\n                        wide encodings b/l/B/L are unsupported\n  -s, --output-separator=STR  separate accepted strings with STR\n      --help            display this help and exit\n      --version         display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -49009,8 +49009,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/strings@0.1.3 metadata contract",
-      "expected_stdout_text": "strings 0.1.3\n",
+      "source_version": "workspace cli/strings@0.1.4 metadata contract",
+      "expected_stdout_text": "strings 0.1.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -49158,7 +49158,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/tac@0.1.4 metadata contract",
+      "source_version": "workspace cli/tac@0.1.5 metadata contract",
       "expected_stdout_text": "Usage: tac [OPTION]... [FILE]...\n      --help      display this help and exit\n      --version   display version and exit\n\nWrite each FILE to standard output, last line first.\nWith no FILE, or when FILE is -, read standard input.\n\n  -b, --before             Attach the separator before records.\n  -s, --separator=STRING   Use STRING instead of newline.\n  -r, --regex              Use an Emacs-style byte regular expression.\n\nNonseekable input and regex mode require temporary-directory write access.\nRegex mode retains the complete input for arbitrary-span byte matching.\n",
       "expected_stderr_text": ""
     },
@@ -49177,8 +49177,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/tac@0.1.4 metadata contract",
-      "expected_stdout_text": "tac 0.1.4\n",
+      "source_version": "workspace cli/tac@0.1.5 metadata contract",
+      "expected_stdout_text": "tac 0.1.5\n",
       "expected_stderr_text": ""
     },
     {
@@ -50585,7 +50585,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/tail@0.2.2 metadata contract",
+      "source_version": "workspace cli/tail@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: tail [-fz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n  -z, --zero-terminated  use NUL as the record delimiter\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -50604,8 +50604,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/tail@0.2.2 metadata contract",
-      "expected_stdout_text": "tail 0.2.2\n",
+      "source_version": "workspace cli/tail@0.2.3 metadata contract",
+      "expected_stdout_text": "tail 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -50984,7 +50984,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/tee@0.2.2 metadata contract",
+      "source_version": "workspace cli/tee@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: tee [-ap] [--output-error[=MODE]] [FILE...]\n  -a, --append             append instead of truncating output files\n  -p                       ignore broken output pipes; continue other sinks\n      --output-error[=MODE] warn, warn-nopipe, exit, exit-nopipe\n      --help               display this help and exit\n      --version            display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -51003,8 +51003,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/tee@0.2.2 metadata contract",
-      "expected_stdout_text": "tee 0.2.2\n",
+      "source_version": "workspace cli/tee@0.2.3 metadata contract",
+      "expected_stdout_text": "tee 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -51696,7 +51696,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/test@0.2.2 metadata contract",
+      "source_version": "workspace cli/test@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: test EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nSupports string, integer, portable file-kind, access, size, and timestamp expressions.\n",
       "expected_stderr_text": ""
     },
@@ -51715,8 +51715,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/test@0.2.2 metadata contract",
-      "expected_stdout_text": "test 0.2.2\n",
+      "source_version": "workspace cli/test@0.2.3 metadata contract",
+      "expected_stdout_text": "test 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -51843,8 +51843,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/touch@0.2.2 metadata contract",
-      "expected_stdout_text": "Usage: touch [-c] [-a|-m] [-d STRING|-r FILE|-t STAMP] FILE...\n      --help      display this help and exit\n      --version   display version and exit\nNote: -a/-m/-d/-r/-t are recognized but unavailable without a portable timestamp setter.\n",
+      "source_version": "workspace cli/touch@0.2.3 metadata contract",
+      "expected_stdout_text": "Usage: touch [-c] [-a|-m] [-d STRING|-r FILE|-t STAMP] FILE...\n      --help      display this help and exit\n      --version   display version and exit\nExisting files are unsupported, including with -c. This command creates missing files only; it cannot update timestamps.\nNote: -a/-m/-d/-r/-t are recognized but unavailable without a portable timestamp setter.\n",
       "expected_stderr_text": ""
     },
     {
@@ -51862,8 +51862,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/touch@0.2.2 metadata contract",
-      "expected_stdout_text": "touch 0.2.2\n",
+      "source_version": "workspace cli/touch@0.2.3 metadata contract",
+      "expected_stdout_text": "touch 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -52262,7 +52262,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/tr@0.2.2 metadata contract",
+      "source_version": "workspace cli/tr@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: tr [-dscCt] SET1 [SET2]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -52281,8 +52281,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/tr@0.2.2 metadata contract",
-      "expected_stdout_text": "tr 0.2.2\n",
+      "source_version": "workspace cli/tr@0.2.3 metadata contract",
+      "expected_stdout_text": "tr 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -52316,7 +52316,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/tree@0.1.3 metadata contract",
+      "source_version": "workspace cli/tree@0.1.4 metadata contract",
       "expected_stdout_text": "Usage: tree [-adfJCnsh] [-L level] [-P pattern] [-I pattern] [-H base] [-T title] [directory ...]\n      --help      display this help and exit\n      --version   display version and exit\n  -J emits JSON; -H BASE emits escaped HTML; -T TITLE selects its title.\n  -P includes files; -I excludes names/subtrees; --ignore-case changes matching.\n  --matchdirs includes matching directory contents; --prune removes empty branches.\n  --filelimit N limits entries before traversal; --noreport omits totals.\n  -s, -h, --si and --du use public size metadata; unsupported host metadata reports an error.\n  -C forces explicit type/extension colors; -n disables unforced color.\n  Mode-based colors and symlink targets require unavailable public metadata APIs.\n",
       "expected_stderr_text": ""
     },
@@ -52335,8 +52335,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/tree@0.1.3 metadata contract",
-      "expected_stdout_text": "tree 0.1.3\n",
+      "source_version": "workspace cli/tree@0.1.4 metadata contract",
+      "expected_stdout_text": "tree 0.1.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -57917,7 +57917,7 @@
       "oracle": false,
       "comparison": "contract",
       "source_version": "Selected safe HTML contract: escaped title/base/names and URL path bytes, UTF-8 and real cli/tree metadata/stylesheet/footer. Complete upstream page-byte parity is deliberately not claimed; safe fixture body comparison is retained independently.",
-      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e33223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f223e2e3c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f6125323662223e6126616d703b623c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f7375622f223e7375623c2f613e3c62723e0a09266e6273703b266e6273703b266e6273703b20602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f7375622f7a2e747874223e7a2e7478743c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a33206469726563746f726965732c20322066696c65730a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e333c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
+      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e34223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f223e2e3c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f6125323662223e6126616d703b623c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f7375622f223e7375623c2f613e3c62723e0a09266e6273703b266e6273703b266e6273703b20602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f7375622f7a2e747874223e7a2e7478743c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a33206469726563746f726965732c20322066696c65730a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e343c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
       "normalizations": [],
       "coverage": [
         "html"
@@ -57963,7 +57963,7 @@
       "oracle": false,
       "comparison": "contract",
       "source_version": "Selected safe HTML contract: escaped title/base/names and URL path bytes, UTF-8 and real cli/tree metadata/stylesheet/footer. Complete upstream page-byte parity is deliberately not claimed; safe fixture body comparison is retained independently.",
-      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e33223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742f223e2e3c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742f6125323662223e6126616d703b623c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742f7375622f223e7375623c2f613e3c62723e0a09266e6273703b266e6273703b266e6273703b20602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742f7375622f7a2e747874223e7a2e7478743c2f613e3c62723e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e333c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
+      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e34223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742f223e2e3c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742f6125323662223e6126616d703b623c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742f7375622f223e7375623c2f613e3c62723e0a09266e6273703b266e6273703b266e6273703b20602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742f7375622f7a2e747874223e7a2e7478743c2f613e3c62723e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e343c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
       "normalizations": [],
       "coverage": [
         "html",
@@ -58010,7 +58010,7 @@
       "oracle": false,
       "comparison": "contract",
       "source_version": "Selected safe HTML contract: escaped title/base/names and URL path bytes, UTF-8 and real cli/tree metadata/stylesheet/footer. Complete upstream page-byte parity is deliberately not claimed; safe fixture body comparison is retained independently.",
-      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e33223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a093c6120636c6173733d224449522220687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f2e2f223e2e3c2f613e3c62723e0a097c2d2d203c6120636c6173733d224449522220687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f2e2f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120636c6173733d224449522220687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f2e2f7375622f223e7375623c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a33206469726563746f726965730a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e333c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
+      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e34223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a093c6120636c6173733d224449522220687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f2e2f223e2e3c2f613e3c62723e0a097c2d2d203c6120636c6173733d224449522220687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f2e2f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120636c6173733d224449522220687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f2e2f7375622f223e7375623c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a33206469726563746f726965730a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e343c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
       "normalizations": [],
       "coverage": [
         "color",
@@ -58046,7 +58046,7 @@
       "oracle": false,
       "comparison": "contract",
       "source_version": "Selected safe HTML contract: escaped title/base/names and URL path bytes, UTF-8 and real cli/tree metadata/stylesheet/footer. Complete upstream page-byte parity is deliberately not claimed; safe fixture body comparison is retained independently.",
-      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e33223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a095b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b335d266e6273703b266e6273703b266e6273703b266e6273703b3c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f706c61696e223e706c61696e3c2f613e20205b6572726f72206f70656e696e67206469725d3c62723e0a3c62723e3c62723e3c703e0a0a30206469726563746f726965732c20312066696c650a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e333c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
+      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e34223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a095b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b335d266e6273703b266e6273703b266e6273703b266e6273703b3c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f706c61696e223e706c61696e3c2f613e20205b6572726f72206f70656e696e67206469725d3c62723e0a3c62723e3c62723e3c703e0a0a30206469726563746f726965732c20312066696c650a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e343c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
       "normalizations": [],
       "coverage": [
         "html",
@@ -58094,7 +58094,7 @@
       "oracle": false,
       "comparison": "contract",
       "source_version": "Selected safe HTML contract: escaped title/base/names and URL path bytes, UTF-8 and real cli/tree metadata/stylesheet/footer. Complete upstream page-byte parity is deliberately not claimed; safe fixture body comparison is retained independently.",
-      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e33223e0a203c7469746c653e266c743b7363726970742667743b4126616d703b2671756f743b7469746c65266c743b2f7363726970742667743b3c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e266c743b7363726970742667743b4126616d703b2671756f743b7469746c65266c743b2f7363726970742667743b3c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f223e2e3c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f6125323662223e6126616d703b623c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f7375622f223e7375623c2f613e3c62723e0a09266e6273703b266e6273703b266e6273703b20602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f7375622f7a2e747874223e7a2e7478743c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a33206469726563746f726965732c20322066696c65730a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e333c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
+      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e34223e0a203c7469746c653e266c743b7363726970742667743b4126616d703b2671756f743b7469746c65266c743b2f7363726970742667743b3c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e266c743b7363726970742667743b4126616d703b2671756f743b7469746c65266c743b2f7363726970742667743b3c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f223e2e3c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f6125323662223e6126616d703b623c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f7375622f223e7375623c2f613e3c62723e0a09266e6273703b266e6273703b266e6273703b20602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f7375622f7a2e747874223e7a2e7478743c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a33206469726563746f726965732c20322066696c65730a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e343c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
       "normalizations": [],
       "coverage": [
         "html",
@@ -58131,7 +58131,7 @@
       "host_platforms": [
         "posix"
       ],
-      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e33223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f2e2f223e2e3c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f2e2f612532322533432532362e747874223e612671756f743b266c743b26616d703b2e7478743c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a31206469726563746f72792c20312066696c650a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e333c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
+      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e34223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f2e2f223e2e3c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f2e2f612532322533432532362e747874223e612671756f743b266c743b26616d703b2e7478743c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a31206469726563746f72792c20312066696c650a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e343c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
       "normalizations": [],
       "coverage": [
         "html"
@@ -58503,12 +58503,12 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "true 0.2.2\n",
+      "expected_stdout_text": "true 0.2.3\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-text-line-754"
       ],
-      "source_version": "workspace cli/true@0.2.2 metadata contract"
+      "source_version": "workspace cli/true@0.2.3 metadata contract"
     },
     {
       "id": "p0-true-help",
@@ -58574,7 +58574,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/true@0.2.2 metadata contract",
+      "source_version": "workspace cli/true@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: true [ignored command line arguments]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -58593,8 +58593,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/true@0.2.2 metadata contract",
-      "expected_stdout_text": "true 0.2.2\n",
+      "source_version": "workspace cli/true@0.2.3 metadata contract",
+      "expected_stdout_text": "true 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -58709,7 +58709,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/unexpand@0.1.3 metadata contract",
+      "source_version": "workspace cli/unexpand@0.1.4 metadata contract",
       "expected_stdout_text": "Usage: unexpand [OPTION]... [FILE]...\n      --help      display this help and exit\n      --version   display version and exit\n\nConvert spaces in each FILE to tabs, writing to standard output.\nWith no FILE, or when FILE is -, read standard input.\n\n  -a, --all          convert all blanks, not just leading blanks\n      --first-only   convert only leading blank sequences\n  -t, --tabs=LIST    use ascending stops; /N absolute, +N relative (implies --all)\n",
       "expected_stderr_text": ""
     },
@@ -58728,8 +58728,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/unexpand@0.1.3 metadata contract",
-      "expected_stdout_text": "unexpand 0.1.3\n",
+      "source_version": "workspace cli/unexpand@0.1.4 metadata contract",
+      "expected_stdout_text": "unexpand 0.1.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -59531,7 +59531,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/uniq@0.2.2 metadata contract",
+      "source_version": "workspace cli/uniq@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: uniq [-cduDiz] [--all-repeated[=METHOD]] [--group[=METHOD]] [-f FIELDS] [-s CHARS] [-w CHARS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -59550,8 +59550,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/uniq@0.2.2 metadata contract",
-      "expected_stdout_text": "uniq 0.2.2\n",
+      "source_version": "workspace cli/uniq@0.2.4 metadata contract",
+      "expected_stdout_text": "uniq 0.2.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -60047,7 +60047,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/unlink@0.1.4 metadata contract",
+      "source_version": "workspace cli/unlink@0.1.5 metadata contract",
       "expected_stdout_text": "Usage: unlink FILE\nRemove exactly one non-directory name.\n      --help     display this help and exit\n      --version  display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -60066,8 +60066,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/unlink@0.1.4 metadata contract",
-      "expected_stdout_text": "unlink 0.1.4\n",
+      "source_version": "workspace cli/unlink@0.1.5 metadata contract",
+      "expected_stdout_text": "unlink 0.1.5\n",
       "expected_stderr_text": ""
     },
     {
@@ -60426,7 +60426,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/wc@0.2.2 metadata contract",
+      "source_version": "workspace cli/wc@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: wc [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]\n      --total=WHEN  print totals: auto (default), always, only, never\n      --help      display this help and exit\n      --version   display version and exit\nCounting uses the fixed C byte profile; -m counts every byte.\n",
       "expected_stderr_text": ""
     },
@@ -60445,8 +60445,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/wc@0.2.2 metadata contract",
-      "expected_stdout_text": "wc 0.2.2\n",
+      "source_version": "workspace cli/wc@0.2.4 metadata contract",
+      "expected_stdout_text": "wc 0.2.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -61790,7 +61790,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/wget@0.2.3 metadata contract",
+      "source_version": "workspace cli/wget@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: wget [OPTION]... [URL]...\n      --help      display this help and exit\n      --version   display version and exit\n  -q, --quiet                     quiet (no output)\n  -O, --output-document=FILE      write documents to FILE\n  -o, --output-file=FILE          log messages to FILE\n  -a, --append-output=FILE        append messages to FILE\n  -i, --input-file=FILE           download URLs found in FILE\n  -c, --continue                  resume after the already written prefix\n  -N, --timestamping              do not re-retrieve unchanged files\n  -t, --tries=NUMBER              set number of retries (0 means unlimited)\n      --retry-connrefused         retry even if the connection is refused\n      --retry-on-http-error=CODES retry comma-separated HTTP status codes\n      --waitretry=SECONDS         wait between retries\n                                 partial bytes survive retries and failures\n      --max-redirect=NUMBER       maximum redirects (default 20)\n      --content-disposition       honor Content-Disposition filenames\n      --header=STRING             insert STRING among request headers\n      --user=USER                 HTTP Basic user name\n      --password=PASSWORD         HTTP Basic password\n      --auth-no-challenge         send Basic credentials on every request, including redirects\n      --load-cookies=FILE         load a Netscape cookie jar\n      --header='Cookie: ...'      override jar cookies, including on redirects\n      --save-cookies=FILE         save persistent cookies\n      --keep-session-cookies      also save session cookies\n      --no-cookies                disable cookie storage\n      --method=HTTPMethod         use a supported HTTP method\n      --body-data=STRING          send STRING with an explicit --method\n      --body-file=FILE            send FILE with an explicit --method\n      --no-check-certificate      disable TLS certificate verification\n      --no-proxy                  do not use proxy environment variables\n  -T, --timeout=SECONDS           set connect and read timeouts\n      --connect-timeout=SECONDS   set connection timeout\n      --read-timeout=SECONDS      set response inactivity timeout\n      --idle-timeout=SECONDS      extension: response inactivity timeout\n\nCompatibility limits: HTTP/HTTPS only; --method accepts GET, HEAD, POST,\nPUT, DELETE, CONNECT, OPTIONS, TRACE, and PATCH. Timer values are bounded\nby the runtime millisecond timer range.\nContent-coding bytes remain encoded; Accept-Encoding defaults to identity.\nRaw space/TAB/CR/LF/DEL in URL paths or queries uses uppercase percent escapes.\nRedirect spaces use %20 and TAB uses %09; existing escapes remain encoded.\nSet-Cookie without '=' and nonnumeric Max-Age replacements are ignored.\nPositive decimal Max-Age overflow below 32 digits expires its stored cookie.\nGNU chunk payload/trailer EOF rules apply; missing size lines or CRLF fail.\nHTTP 416 succeeds without opening transfer output; -O is initialized first.\nUnsolicited 304 exits 8. Continued GET with --content-disposition selects\nthe filename with HEAD before choosing that file's resume offset.\n",
       "expected_stderr_text": ""
     },
@@ -61809,8 +61809,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/wget@0.2.3 metadata contract",
-      "expected_stdout_text": "wget 0.2.3\n",
+      "source_version": "workspace cli/wget@0.2.4 metadata contract",
+      "expected_stdout_text": "wget 0.2.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -61847,14 +61847,14 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "expected_stdout_text": "which 0.1.3\n",
+      "expected_stdout_text": "which 0.1.4\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/which@0.1.3 metadata contract"
+      "source_version": "workspace cli/which@0.1.4 metadata contract"
     },
     {
       "id": "p2-which-path",
@@ -62275,7 +62275,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/which@0.1.3 metadata contract",
+      "source_version": "workspace cli/which@0.1.4 metadata contract",
       "expected_stdout_text": "Usage: which [-as] NAME...\nFind executable regular files in PATH. Windows uses PATHEXT.\n  -a, --all     print all matches\n  -s, --silent  return status without output\n      --help    display this help and exit\n      --version display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -62294,8 +62294,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/which@0.1.3 metadata contract",
-      "expected_stdout_text": "which 0.1.3\n",
+      "source_version": "workspace cli/which@0.1.4 metadata contract",
+      "expected_stdout_text": "which 0.1.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -62403,7 +62403,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/xargs@0.2.2 metadata contract",
+      "source_version": "workspace cli/xargs@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: xargs [-0prt] [-d BYTE] [-n N] [-L N] [-s BYTES] [-P N] [-E EOF] [-I REPLACE] [COMMAND [ARG...]]\n  -d, --delimiter=BYTE  separate literal input items with BYTE or an escape\n  -p, --interactive     confirm each invocation through an independent console\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -62422,8 +62422,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/xargs@0.2.2 metadata contract",
-      "expected_stdout_text": "xargs 0.2.2\n",
+      "source_version": "workspace cli/xargs@0.2.3 metadata contract",
+      "expected_stdout_text": "xargs 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -63309,7 +63309,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/xxd@0.2.2 metadata contract",
+      "source_version": "workspace cli/xxd@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: xxd [OPTION]... [INFILE [OUTFILE]]\nDisplay bytes or reverse an addressed, plain, or binary dump.\n  -a, --autoskip       toggle suppression of zero lines\n  -b, --bits           binary digit display\n  -e, --little         little-endian groups\n  -E, --ebcdic         EBCDIC character display\n  -g, --group=N        bytes per group\n  -u, --upper          uppercase hexadecimal digits\n  -o, --offset=N       add N to displayed offsets\n  -p, -ps, --plain     plain hexadecimal display\n  -i, --include        C include display\n  -r, --reverse        reverse a dump\n  -c, --cols=N         bytes per line\n  -l, --len=N          maximum input bytes\n  -s, --seek=[+][-]N   input seek or reverse address adjustment\n  -n, --name=NAME      C include symbol\n      --help           display this help and exit\n      --version        display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -63328,8 +63328,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/xxd@0.2.2 metadata contract",
-      "expected_stdout_text": "xxd 0.2.2\n",
+      "source_version": "workspace cli/xxd@0.2.3 metadata contract",
+      "expected_stdout_text": "xxd 0.2.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -64948,7 +64948,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/yes@0.1.3 metadata contract",
+      "source_version": "workspace cli/yes@0.1.4 metadata contract",
       "expected_stdout_text": "Usage: yes [STRING]...\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -64967,8 +64967,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/yes@0.1.3 metadata contract",
-      "expected_stdout_text": "yes 0.1.3\n",
+      "source_version": "workspace cli/yes@0.1.4 metadata contract",
+      "expected_stdout_text": "yes 0.1.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -65119,7 +65119,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/zcat@0.1.2 metadata contract",
+      "source_version": "workspace cli/zcat@0.1.3 metadata contract",
       "expected_stdout_text": "Usage: zcat [OPTION]... [FILE]...\nProcess gzip streams; no FILE or - reads stdin.\nInput and output use bounded buffers.\n\n  -c, --stdout       Write to stdout and keep input files.\n  -d, --decompress   Decompress (default for gunzip and zcat).\n  -t, --test         Validate compressed input without output.\n  -n, --no-name      Omit name/time metadata when compressing.\n  -q, --quiet        Suppress trailing-garbage warnings.\n  -1 .. -9           Compression level (default: -6; last option wins).\n      --fast         Same as -1.\n      --best         Same as -9.\n      --help         display this help and exit\n      --version      display version and exit\n\nNamed-file gzip compression requires -cn.\nNamed-file gzip/gunzip decompression requires -c unless testing with -t.\nzcat writes named inputs to stdout by default.\nCompression levels are ignored when decompressing or testing.\nIn-place replacement, saved-name metadata and recursion are unsupported.\n",
       "expected_stderr_text": ""
     },
@@ -65138,9 +65138,780 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/zcat@0.1.2 metadata contract",
-      "expected_stdout_text": "zcat 0.1.2\n",
+      "source_version": "workspace cli/zcat@0.1.3 metadata contract",
+      "expected_stdout_text": "zcat 0.1.3\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-file-lines",
+      "command": "rg",
+      "args": [
+        "-n",
+        "alpha",
+        "hay"
+      ],
+      "files": [
+        {
+          "path": "hay",
+          "content_text": "alpha\nbeta alpha\nomega\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "1:alpha\n2:beta alpha\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-explicit-stdin",
+      "command": "rg",
+      "args": [
+        "-n",
+        "alpha",
+        "-"
+      ],
+      "stdin_text": "alpha\nother\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "1:alpha\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-no-match",
+      "command": "rg",
+      "args": [
+        "missing",
+        "-"
+      ],
+      "stdin_text": "alpha\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-windows-backslash-path",
+      "command": "rg",
+      "args": [
+        "alpha",
+        "tree\\hay"
+      ],
+      "files": [
+        {
+          "path": "tree/hay",
+          "content_text": "alpha\n"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "windows"
+      ],
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "alpha\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-preprocessor-copy",
+      "command": "rg",
+      "args": [
+        "--pre",
+        "${RG_PREPROCESSOR}",
+        "alpha",
+        "hay"
+      ],
+      "files": [
+        {
+          "path": "hay",
+          "content_text": "alpha\nbeta alpha\nomega\n"
+        }
+      ],
+      "environment": {
+        "CMD_RG_PREPROCESSOR": "copy"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "alpha\nbeta alpha\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-preprocessor-early-stop",
+      "command": "rg",
+      "args": [
+        "-q",
+        "--pre",
+        "${RG_PREPROCESSOR}",
+        "alpha",
+        "hay"
+      ],
+      "files": [
+        {
+          "path": "hay",
+          "content_text": "alpha\n"
+        }
+      ],
+      "environment": {
+        "CMD_RG_PREPROCESSOR": "stream"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-preprocessor-partial-failure",
+      "command": "rg",
+      "args": [
+        "--pre",
+        "${RG_PREPROCESSOR}",
+        "alpha",
+        "hay"
+      ],
+      "files": [
+        {
+          "path": "hay",
+          "content_text": "alpha\n"
+        }
+      ],
+      "environment": {
+        "CMD_RG_PREPROCESSOR": "partial-failure"
+      },
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "alpha\n",
+      "expected_stderr_contains": "preprocessor failed",
+      "diagnostic_reason": "Retain the child diagnostic and output before nonzero EOF; command wrappers include platform paths."
+    },
+    {
+      "id": "rg-boundary-creation-time",
+      "command": "rg",
+      "args": [
+        "--sort",
+        "created",
+        "alpha",
+        "hay"
+      ],
+      "files": [
+        {
+          "path": "hay",
+          "content_text": "alpha\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "creation time is not available",
+      "diagnostic_reason": "Released public metadata has no creation time; status and stdout are exact."
+    },
+    {
+      "id": "rg-regex-unicode",
+      "command": "rg",
+      "args": [
+        "-o",
+        "\\p{Greek}+",
+        "-"
+      ],
+      "stdin_text": "hello αβγ world\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "αβγ\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-replace-captures",
+      "command": "rg",
+      "args": [
+        "-r",
+        "$2:$1",
+        "(a)(b)",
+        "-"
+      ],
+      "stdin_text": "ab abc\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "b:a b:ac\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-fixed-strings",
+      "command": "rg",
+      "args": [
+        "-F",
+        "a.b",
+        "-"
+      ],
+      "stdin_text": "axb\na.b\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "a.b\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-case-precedence",
+      "command": "rg",
+      "args": [
+        "-i",
+        "-s",
+        "alpha",
+        "-"
+      ],
+      "stdin_text": "ALPHA\nalpha\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "alpha\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-context",
+      "command": "rg",
+      "args": [
+        "-n",
+        "-C1",
+        "hit",
+        "-"
+      ],
+      "stdin_text": "before\nhit\nafter\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "1-before\n2:hit\n3-after\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-count",
+      "command": "rg",
+      "args": [
+        "-c",
+        "hit",
+        "-"
+      ],
+      "stdin_text": "hit hit\nno\nhit\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "2\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-count-matches",
+      "command": "rg",
+      "args": [
+        "--count-matches",
+        "hit",
+        "-"
+      ],
+      "stdin_text": "hit hit\nno\nhit\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "3\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-maximum-count",
+      "command": "rg",
+      "args": [
+        "-m1",
+        "hit",
+        "-"
+      ],
+      "stdin_text": "hit\nhit\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "hit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-quiet",
+      "command": "rg",
+      "args": [
+        "-q",
+        "hit",
+        "-"
+      ],
+      "stdin_text": "hit\nhit\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-directory-ignore-glob",
+      "command": "rg",
+      "args": [
+        "--sort",
+        "path",
+        "--path-separator",
+        "/",
+        "-g",
+        "*.txt",
+        "hit",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree/.ignore",
+          "content_text": "skip.txt\n"
+        },
+        {
+          "path": "tree/keep.txt",
+          "content_text": "hit\n"
+        },
+        {
+          "path": "tree/skip.txt",
+          "content_text": "hit\n"
+        },
+        {
+          "path": "tree/.hidden.txt",
+          "content_text": "hit\n"
+        },
+        {
+          "path": "tree/other.log",
+          "content_text": "hit\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "tree/.hidden.txt:hit\ntree/keep.txt:hit\ntree/skip.txt:hit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-directory-ignore",
+      "command": "rg",
+      "args": [
+        "--sort",
+        "path",
+        "--path-separator",
+        "/",
+        "hit",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree/.ignore",
+          "content_text": "skip.txt\n"
+        },
+        {
+          "path": "tree/keep.txt",
+          "content_text": "hit\n"
+        },
+        {
+          "path": "tree/skip.txt",
+          "content_text": "hit\n"
+        },
+        {
+          "path": "tree/.hidden.txt",
+          "content_text": "hit\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "tree/keep.txt:hit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-include-zero",
+      "command": "rg",
+      "args": [
+        "-c",
+        "--include-zero",
+        "missing",
+        "hay"
+      ],
+      "files": [
+        {
+          "path": "hay",
+          "content_text": "alpha\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "0\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-hidden",
+      "command": "rg",
+      "args": [
+        "--hidden",
+        "--path-separator",
+        "/",
+        "hit",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree/.hidden",
+          "content_text": "hit\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "tree/.hidden:hit\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-files-default-directory",
+      "command": "rg",
+      "args": [
+        "--files",
+        "--sort",
+        "path",
+        "--path-separator",
+        "/"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "one\n"
+        },
+        {
+          "path": "b",
+          "content_text": "two\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "a\nb\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-multiline",
+      "command": "rg",
+      "args": [
+        "-U",
+        "one\\ntwo",
+        "-"
+      ],
+      "stdin_text": "zero\none\ntwo\nthree\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "one\ntwo\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-binary-text",
+      "command": "rg",
+      "args": [
+        "-a",
+        "hit",
+        "-"
+      ],
+      "stdin_hex": "61006869740a",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_hex": "61006869740a",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-null-data",
+      "command": "rg",
+      "args": [
+        "--null-data",
+        "hit",
+        "-"
+      ],
+      "stdin_hex": "6e6f0068697400",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_hex": "68697400",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-config",
+      "command": "rg",
+      "args": [
+        "alpha",
+        "hay"
+      ],
+      "files": [
+        {
+          "path": "config",
+          "content_text": "--ignore-case\n"
+        },
+        {
+          "path": "hay",
+          "content_text": "ALPHA\n"
+        }
+      ],
+      "environment": {
+        "RIPGREP_CONFIG_PATH": "${WORK}/config"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "ALPHA\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-pattern-file",
+      "command": "rg",
+      "args": [
+        "-f",
+        "patterns",
+        "hay"
+      ],
+      "files": [
+        {
+          "path": "patterns",
+          "content_text": "^alpha\n"
+        },
+        {
+          "path": "hay",
+          "content_text": "alpha\nbeta\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "alpha\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-json",
+      "command": "rg",
+      "args": [
+        "--json",
+        "alpha",
+        "hay"
+      ],
+      "files": [
+        {
+          "path": "hay",
+          "content_text": "alpha\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_contains_all": [
+        "\"type\":\"begin\"",
+        "\"type\":\"match\"",
+        "\"type\":\"end\"",
+        "\"type\":\"summary\"",
+        "\"text\":\"alpha\\n\""
+      ],
+      "expected_stdout_ends_with_newline": true,
+      "expected_stderr_text": "",
+      "diagnostic_reason": "JSON elapsed times vary; structured package tests cover records separately."
+    },
+    {
+      "id": "rg-boundary-stdin-detection",
+      "command": "rg",
+      "args": [
+        "alpha"
+      ],
+      "stdin_text": "alpha\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rg: stdin type detection requires a released public MoonBit API; specify a path or -\n"
+    },
+    {
+      "id": "rg-boundary-compression-short",
+      "command": "rg",
+      "args": [
+        "-z",
+        "alpha",
+        "-"
+      ],
+      "stdin_text": "alpha\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rg: compressed search (-z/--search-zip) is deferred in cli/rg\n"
+    },
+    {
+      "id": "rg-boundary-compression-long",
+      "command": "rg",
+      "args": [
+        "--search-zip",
+        "alpha",
+        "-"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rg: compressed search (-z/--search-zip) is deferred in cli/rg\n"
+    },
+    {
+      "id": "rg-compression-disabled",
+      "command": "rg",
+      "args": [
+        "-z",
+        "--no-search-zip",
+        "alpha",
+        "-"
+      ],
+      "stdin_text": "alpha\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "alpha\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "rg-boundary-file-identity",
+      "command": "rg",
+      "args": [
+        "--one-file-system",
+        "alpha",
+        "hay"
+      ],
+      "files": [
+        {
+          "path": "hay",
+          "content_text": "alpha\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "device/inode",
+      "diagnostic_reason": "Exact API-boundary reason; status and stdout are fixed."
+    },
+    {
+      "id": "release-metadata-rg-version",
+      "command": "rg",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "unread\n",
+      "files": [],
+      "environment": {
+        "RIPGREP_CONFIG_PATH": "missing-config"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "expected_stdout_text": "rg 0.1.0\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "release-metadata-rg-help",
+      "command": "rg",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "unread\n",
+      "files": [],
+      "environment": {
+        "RIPGREP_CONFIG_PATH": "missing-config"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "expected_stdout_contains_all": [
+        "Usage: rg",
+        "--help",
+        "--version",
+        "Compressed search is deferred"
+      ],
+      "expected_stdout_ends_with_newline": true,
+      "expected_stderr_text": "",
+      "diagnostic_reason": "Metadata heading and options are stable; imported long option descriptions are maintained separately."
     }
   ],
   "case_files": [],

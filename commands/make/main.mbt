@@ -945,7 +945,7 @@ async fn run(arguments : Array[String]) -> Unit {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("make 0.2.2\n")
+    @stdio.stdout.write("make 0.2.3\n")
     return
   }
   run(@env.args()[1:].to_owned()) catch {

@@ -1,19 +1,33 @@
 # basename
 
-Version **0.2.2** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates local verification from
-published MoonX behavior; `moonx` examples use registry releases.
+Extract path names for MoonX.
 
-Remove directory components from path operands. Supports `-a`/`--multiple`,
-`-s`/`--suffix`, and NUL-delimited output with `-z`.
+```sh
+moonx cli/basename@0.2.3 [-a] [-s SUFFIX] [-z] NAME [SUFFIX]
+```
 
-An empty operand produces an empty record; repeated separators and root paths
-follow the coreutils byte-oriented path rules.
+## Supported scope
 
-## Standalone metadata
+Remove directory components and optionally a suffix. Paths are processed without accessing the filesystem.
 
-Standalone `--version` prints exactly `basename 0.2.2` followed by one
-newline. Standalone `--help` starts with `Usage: basename`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+## Options
+
+| Option | Description |
+| --- | --- |
+| `-a, --multiple` | Process each operand separately. |
+| `-s, --suffix=SUFFIX` | Remove a matching suffix; implies multiple operands. |
+| `-z, --zero` | End each result with NUL. |
+| `--help` / `--version` | Show help / package version. |
+
+## Limitations
+
+- Suffix removal is literal, not pattern matching.
+
+## Examples
+
+```sh
+moonx cli/basename@0.2.3 /tmp/report.txt
+moonx cli/basename@0.2.3 -s .txt report.txt notes.txt
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

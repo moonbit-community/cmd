@@ -184,7 +184,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/gunzip@0.1.2 metadata contract",
+      "source_version": "workspace cli/gunzip@0.1.3 metadata contract",
       "expected_stdout_text": "Usage: gunzip [OPTION]... [FILE]...\nProcess gzip streams; no FILE or - reads stdin.\nInput and output use bounded buffers.\n\n  -c, --stdout       Write to stdout and keep input files.\n  -d, --decompress   Decompress (default for gunzip and zcat).\n  -t, --test         Validate compressed input without output.\n  -n, --no-name      Omit name/time metadata when compressing.\n  -q, --quiet        Suppress trailing-garbage warnings.\n  -1 .. -9           Compression level (default: -6; last option wins).\n      --fast         Same as -1.\n      --best         Same as -9.\n      --help         display this help and exit\n      --version      display version and exit\n\nNamed-file gzip compression requires -cn.\nNamed-file gzip/gunzip decompression requires -c unless testing with -t.\nzcat writes named inputs to stdout by default.\nCompression levels are ignored when decompressing or testing.\nIn-place replacement, saved-name metadata and recursion are unsupported.\n",
       "expected_stderr_text": ""
     },
@@ -203,8 +203,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/gunzip@0.1.2 metadata contract",
-      "expected_stdout_text": "gunzip 0.1.2\n",
+      "source_version": "workspace cli/gunzip@0.1.3 metadata contract",
+      "expected_stdout_text": "gunzip 0.1.3\n",
       "expected_stderr_text": ""
     }
   ]

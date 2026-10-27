@@ -1,42 +1,37 @@
 # strings
 
-Version **0.1.3**. See the [support record](../../docs/compatibility.md) for release evidence.
-
-Print printable byte sequences from files or standard input:
+Extract printable byte sequences for MoonX.
 
 ```sh
-printf 'hello\000world\n' | moonx cli/strings
-moonx cli/strings -n 6 -t d data.bin
+moonx cli/strings@0.1.4 [OPTION]... [FILE]...
 ```
 
-The default minimum is four bytes. `-n`/`--bytes` changes it. TAB and
-printable ASCII belong to a sequence; other control bytes end it.
-`-e s`/`--encoding=s` selects 7-bit bytes (the default); `-e S` includes
-8-bit bytes and preserves their raw output. Wide encodings `b/l/B/L` are
-rejected before input is read.
+## Supported scope
 
-`-t`/`--radix` accepts `d`, `o` or `x` for decimal, octal or hexadecimal
-offsets, padded to at least seven columns. `-o` is octal; the last `-o` or
-`-t` wins. `-f`/`--print-file-name` adds the filename; multiple input files
-do not add it automatically. `-a`/`--all` and bare `-` select whole-file
-scanning. With no files, stdin is read once.
+Scan complete files or stdin for runs of at least four printable bytes by default. TAB belongs to a printable run.
 
-`-s/--output-separator=STR` replaces the newline after each accepted string,
-including the final one. An empty separator joins the runs without adding
-bytes; repeated options use the last value. Prefixes and byte offsets are
-unchanged, and a separator is not emitted for a run below the minimum.
+## Options
 
-Input is scanned in 64 KiB chunks. Once a run reaches the selected minimum,
-its bytes are emitted incrementally; storage is bounded by the chunk buffer
-and a candidate prefix shorter than the minimum. Offsets use 64-bit counters.
+| Option | Description |
+| --- | --- |
+| `-a, --all` | scan the whole file |
+| `-f, --print-file-name` | print the file name before each string |
+| `-n, --bytes=N` | print sequences at least N bytes long |
+| `-o` | display offsets in octal |
+| `-t, --radix=RADIX` | display offsets in d, o, or x radix |
+| `-e, --encoding=ENC` | s: 7-bit bytes (default); S: 8-bit bytes |
+| `-s, --output-separator=STR` | separate accepted strings with STR |
+| `--help` / `--version` | Show help / package version. |
 
-`--help` and `--version` are available. Object-section selection, locale
-decoding and GNU Unicode rendering modes are not implemented.
+## Limitations
 
-## Standalone metadata
+- Wide encodings, object-section selection, locale decoding and GNU Unicode rendering modes are unsupported.
 
-Standalone `--version` prints exactly `strings 0.1.3` followed by one
-newline. Standalone `--help` starts with `Usage: strings`, lists both
-metadata options, and ends with a newline. Both write to stdout, leave stdin
-unread, and exit with status 0. Exact-version publication and verification
-remain recorded separately in the [support record](../../docs/compatibility.md).
+## Examples
+
+```sh
+moonx cli/strings@0.1.4 -n 6 -t d data.bin
+printf 'hello\000world\n' | moonx cli/strings@0.1.4
+```
+
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

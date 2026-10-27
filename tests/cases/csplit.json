@@ -218,7 +218,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/csplit@0.2.1 metadata contract",
+      "source_version": "workspace cli/csplit@0.2.2 metadata contract",
       "expected_stdout_text": "Usage: csplit [OPTION]... FILE PATTERN...\nSplit FILE (- for stdin) at line numbers or basic regular expressions.\nPatterns: NUMBER, /REGEXP/[OFFSET], %REGEXP%[OFFSET], {N}, {*}\n\n  -f, --prefix=PREFIX      Use PREFIX instead of xx.\n  -n, --digits=NUMBER      Use at least NUMBER suffix digits (default 2).\n  -b, --suffix-format=FORMAT  Use one d/i/u/o/x/X conversion for suffixes.\n      --suppress-matched    Omit the offset-adjusted split boundary line.\n  -s, --silent             Suppress output byte counts.\n  -q, --quiet              Same as --silent.\n  -k, --keep-files         Keep created fragments after a split error.\n  -z, --elide-empty-files  Omit empty output fragments.\n      --help               display this help and exit\n      --version            display version and exit\n\nBRE matching includes backreferences, byte classes and word assertions.\nExisting output paths and locale-specific matching are unsupported.\nWindows output names ending in spaces or dots are rejected before input.\nInput is snapshotted with a disk index; temporary write access is required.\n",
       "expected_stderr_text": ""
     },
@@ -237,8 +237,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/csplit@0.2.1 metadata contract",
-      "expected_stdout_text": "csplit 0.2.1\n",
+      "source_version": "workspace cli/csplit@0.2.2 metadata contract",
+      "expected_stdout_text": "csplit 0.2.2\n",
       "expected_stderr_text": ""
     },
     {

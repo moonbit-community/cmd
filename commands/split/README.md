@@ -1,93 +1,42 @@
 # split
 
-Version **0.1.3** behavior is documented here. The
-[support record](../../docs/compatibility.md) separates workspace acceptance
-from exact published MoonX coordinates.
-
-Split a file or stdin into byte-preserving pieces:
+Split input into pieces for MoonX.
 
 ```sh
-moonx cli/split -l 100 input.txt part-
-moonx cli/split -b 64K -d --additional-suffix=.bin input.bin chunk-
-moonx cli/split -n l/3 input.txt part-
-moonx cli/split -n r/2/3 input.txt
-moonx cli/split -C 4K input.txt part-
+moonx cli/split@0.1.4 [OPTION]... [FILE [PREFIX]]
 ```
 
-The default is 1000 records per piece and filenames `xaa`, `xab`, …
-`-l/--lines` changes the record count; `-b/--bytes` selects a byte count,
-accepting `b`, `K`, `M`, `G`, `KiB`, `MiB`, `GiB`, `kB`, `MB` and `GB`
-multipliers. With no first operand, or `-`, input comes from stdin; the
-second operand changes the filename prefix. Unterminated and binary records
-retain their exact bytes.
+## Supported scope
 
-`-n/--number` selects one of these layouts:
+Split files or stdin by records, bytes, bounded line bytes or N-way partitions. Default is 1000 records per piece with names xaa, xab, etc.
 
-| Form | Distribution |
+## Options
+
+| Option | Description |
 | --- | --- |
-| N | Divide bytes into N pieces; the first size%N pieces receive one extra byte. |
-| K/N | Write only the original Kth byte partition to stdout. |
-| l/N | Keep complete records in the partition containing their starting byte. |
-| l/K/N | Write only records assigned to the original Kth partition. |
-| r/N | Assign complete records cyclically to N pieces. |
-| r/K/N | Write only the Kth round-robin stream to stdout. |
+| `-l, --lines=NUMBER` | put NUMBER records in each piece (default 1000) |
+| `-b, --bytes=SIZE` | put SIZE bytes in each piece |
+| `-C, --line-bytes=SIZE` | put at most SIZE bytes of records in each piece |
+| `-n, --number=CHUNKS` | N, K/N, l/N, l/K/N, r/N or r/K/N |
+| `-a, --suffix-length=N` | fixed suffix width; zero selects automatic width |
+| `-d, --numeric-suffixes[=FROM]` | numeric suffixes |
+| `-x, --hex-suffixes[=FROM]` | hexadecimal suffixes |
+| `--additional-suffix=SUFFIX` | append SUFFIX to generated names |
+| `-e, --elide-empty-files` | omit empty outputs |
+| `--filter=COMMAND` | run pure shell source per piece with FILE set |
+| `--help` / `--version` | Show help / package version. |
 
-N-piece modes create empty files as needed. `-e/--elide-empty-files` omits
-them and compresses the generated filename sequence; selected K still refers
-to the original partition. Byte and line partitioning uses the named regular
-file size when available, otherwise spools input to an owned temporary file.
-Round robin reads directly. Empty input in ordinary `-l/-b/-C` modes creates
-no output.
+## Limitations
 
-`-C/--line-bytes=SIZE` packs complete records within the byte ceiling,
-splitting an oversized record only when necessary. It does not fill spare
-space after a short complete record with the beginning of a long record.
-The record prefix is spooled rather than retained as a whole in memory.
-The stream buffer is 64 KiB; temporary disk use for `-C` is at most SIZE,
-and unknown-size N-piece input requires a spool of the consumed input.
+- Existing named outputs are refused; failures retain completed pieces.
+- --filter uses the supported sh subset and cannot combine with selected K/N stdout output. Round-robin filters can run concurrently.
+- Some modes require writable temporary storage.
 
-`-d/--numeric-suffixes[=FROM]` selects decimal names;
-`-x/--hex-suffixes[=FROM]` selects lowercase hexadecimal names. Leading
-zeroes in FROM do not widen its numeric value. Explicit FROM disables automatic
-suffix growth. `-a/--suffix-length` sets a fixed width; zero selects the
-default. N-piece modes calculate their required width before opening input.
-`--additional-suffix` appends literal text after the generated suffix.
-Exhaustion retains completed pieces. Counts use signed 64-bit arithmetic.
+## Examples
 
-Hexadecimal start letters use ordinary base-16 arithmetic: FROM=a produces
-0a,0b,0c. GNU 9.11's frozen implementation indexes outside its alphabet when
-incrementing a start containing a-f; those memory-dependent names are outside
-the upstream comparison profile and are not emulated.
+```sh
+moonx cli/split@0.1.4 -l 100 input.txt part-
+moonx cli/split@0.1.4 -b 64K -d input.bin chunk-
+```
 
-`--filter=COMMAND` runs the existing pure MoonBit shell interpreter once
-per named piece, with FILE exported and the exact piece bytes on stdin. It
-accepts the shell language already documented by `cli/sh`; it does not
-select a host shell through SHELL. Filter stdout and stderr remain inherited.
-The catalog classifies split as Restricted because filters can launch external
-programs. The host authorizes those children; the classification grants no
-process or filesystem permission.
-Sequential pieces await EOF and completion before starting the next filter;
-round-robin filters remain active together. Empty pieces invoke the filter
-unless `-e` suppresses them. A successful filter may ignore stdin.
-
-Byte/record streaming uses at most one ordinary output file handle at a time;
-round-robin files close after each complete record and reopen only for their next
-record. Round robin retains one name/state entry per visited piece. With a filter,
-each visited piece instead owns one live pipe and shell task until input ends;
-their total resources grow with the selected piece count. Filter commands may
-create further children or allocate their own buffers. This mode preserves live
-filter input and does not claim a constant-memory or fixed-child-count bound.
-
-Filters own their explicit file writes: split does not pre-create or truncate
-FILE. Nonzero filter exits propagate with FILE and command diagnostics;
-actual SIGPIPE termination is distinguished from a normal exit141. A filter
-cannot be combined with a selected K/N stdout stream. Ordinary existing named
-outputs remain explicitly refused and unchanged. Read/write/filter failures
-retain completed output; owned temporary spools are removed.
-
-## Standalone metadata
-
-Standalone `--version` prints exactly `split 0.1.3` and one newline.
-Standalone `--help` starts with `Usage: split`, includes both metadata
-options, and ends with a newline. Both write to stdout, leave stdin unread,
-and exit 0. Publication and acceptance are recorded separately.
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

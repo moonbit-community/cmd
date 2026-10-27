@@ -347,7 +347,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/diff@0.2.1 metadata contract",
+      "source_version": "workspace cli/diff@0.2.2 metadata contract",
       "expected_stdout_text": "Usage: diff [-qsauciwbBZrN] [-U LINES | -C LINES] [--label LABEL] FILE1 FILE2\n      --help      display this help and exit\n      --version   display version and exit\nCompare files, directories or one stdin operand. Normal, unified and context output.\n-q reports differences only; -s reports equality; -a treats binary input as text.\n-i ignores ASCII case; -w ignores whitespace; -b ignores changes in whitespace.\n-Z ignores trailing whitespace; -B ignores blank-only change groups.\n--strip-trailing-cr removes one CR before each LF on input, including displayed lines.\n-r recurses; -N treats missing files as empty; --unidirectional-new-file applies only to the left side.\nTimestamp headers use TZ=UTC or public TZif files; label stdin explicitly.\nNon-C locale collation and link-target-text comparison remain unsupported.\n",
       "expected_stderr_text": ""
     },
@@ -366,8 +366,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/diff@0.2.1 metadata contract",
-      "expected_stdout_text": "diff 0.2.1\n",
+      "source_version": "workspace cli/diff@0.2.2 metadata contract",
+      "expected_stdout_text": "diff 0.2.2\n",
       "expected_stderr_text": ""
     },
     {

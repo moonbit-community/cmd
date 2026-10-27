@@ -1,6 +1,6 @@
 name = "cli/jqlog"
 
-version = "0.2.3"
+version = "0.2.4"
 
 readme = "README.md"
 
@@ -18,5 +18,5 @@ import {
   "moonbitlang/async@0.22.5",
   "moonbitlang/x@0.5.5",
   "bobzhang/moonjq@0.2.0",
-  "cli/core@0.7.0",
+  "cli/core@0.8.2",
 }
