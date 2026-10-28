@@ -1,0 +1,270 @@
+{
+  "schema": 1,
+  "artifact_count": 80,
+  "timing": "Complete release Wasm processes with input, output and exit; no MoonX and no startup subtraction",
+  "windows": 2,
+  "pairs": 9,
+  "mad_limit": 0.05,
+  "drift_limit": 0.1,
+  "slowdown_limit": 1.05,
+  "slowdown_policy": "The shared-foundation integration accepts the measured small abstraction costs. A ratio above this review boundary is never offset against another workload's gain.",
+  "coverage_policy": "Compare every built command artifact with a frozen baseline. Every changed artifact needs a registered command profile. Run all registered profiles, including unchanged controls. Missing, failed or unstable evidence cannot pass. Unchanged artifacts do not establish upstream parity.",
+  "profiles": {
+    "ln": [
+      "ln-symbolic-validation"
+    ],
+    "wc": [
+      "wc-l-64m",
+      "wc-w-64m",
+      "wc-all-64m"
+    ],
+    "cut": [
+      "cut-8m",
+      "cut-fields-8m",
+      "cut-fields-tail-8m",
+      "cut-tiny-8m",
+      "cut-long-64m"
+    ],
+    "uniq": [
+      "uniq-8m",
+      "uniq-repeated-8m",
+      "uniq-tiny-8m",
+      "uniq-long-8m"
+    ],
+    "rev": [
+      "rev-8m",
+      "rev-long-8m",
+      "rev-tiny-1m"
+    ],
+    "tac": [
+      "tac-file-8m",
+      "tac-stream-8m",
+      "tac-multi-8m",
+      "tac-long-8m"
+    ],
+    "column": [
+      "column-table-8m",
+      "column-grid-1m",
+      "column-table-long-8m",
+      "column-cache-cap-8m",
+      "column-dense-fields-1m"
+    ],
+    "grep": [
+      "grep-many-count-64m",
+      "grep-set-short-64m",
+      "grep-miss-8m",
+      "grep-tree-search"
+    ],
+    "find": [
+      "find-tree-names",
+      "find-tree-size"
+    ],
+    "tree": [
+      "tree-directory"
+    ],
+    "rg": [
+      "rg-count-64m",
+      "rg-output-8m",
+      "rg-growth8m",
+      "rg-growth20m",
+      "rg-growth32m",
+      "rg-growth64m",
+      "rg-dfa-long",
+      "rg-file-count-64m",
+      "rg-tree-files",
+      "rg-tree-search",
+      "rg-color-1m",
+      "rg-replace-8m",
+      "rg-context-8m",
+      "rg-only-8m",
+      "rg-literal-long-64m-hit",
+      "rg-literal-long-64m-miss",
+      "rg-literal-text-64m",
+      "rg-miss-64m",
+      "rg-regex-count-64m",
+      "rg-regex-miss-64m",
+      "rg-short-collision-1m",
+      "rg-literal-entropy-8m",
+      "rg-numbered-8m",
+      "rg-empty-output",
+      "rg-line-buffered-1m",
+      "rg-output-sparse-8m",
+      "rg-output-dense-regex-8m",
+      "rg-output-miss-64m",
+      "rg-output-regex-miss-64m",
+      "rg-text-output-miss-64m",
+      "rg-text-output-regex-miss-64m",
+      "rg-text-output-8m",
+      "rg-text-sparse-8m",
+      "rg-text-dense-regex-8m",
+      "rg-null-long-output-8m"
+    ],
+    "sort": [
+      "sort-8m",
+      "sort-n-8m"
+    ],
+    "curl": [
+      "curl-loopback-8m"
+    ],
+    "wget": [
+      "wget-loopback-8m"
+    ],
+    "sh": [
+      "sh-control-5000"
+    ],
+    "make": [
+      "make-shell-5000"
+    ],
+    "split": [
+      "split-filter-1m"
+    ],
+    "gzip": [
+      "gzip-stream-8m"
+    ],
+    "gunzip": [
+      "gunzip-stream-8m"
+    ],
+    "zcat": [
+      "zcat-stream-8m"
+    ],
+    "head": [
+      "head-except-last-8m"
+    ],
+    "join": [
+      "join-ordered"
+    ],
+    "comm": [
+      "comm-ordered"
+    ],
+    "cksum": [
+      "cksum-8m"
+    ],
+    "md5sum": [
+      "md5sum-8m"
+    ],
+    "sha1sum": [
+      "sha1sum-8m"
+    ],
+    "sha256sum": [
+      "sha256sum-8m"
+    ],
+    "sha512sum": [
+      "sha512sum-8m"
+    ],
+    "nl": [
+      "nl-8m"
+    ],
+    "paste": [
+      "paste-8m",
+      "paste-serial-8m"
+    ],
+    "jq": [
+      "jq-identity-1m"
+    ]
+  },
+  "separate_required_evidence": {
+    "sort-spill-8m": "The pre-foundation baseline exceeded 20 seconds in warmup at -S 1M. Retain that failure. Validate the candidate with the same deadline and compare its bytes with the baseline default-budget sort; this is a repair observation, not an old/new speed ratio.",
+    "resources": "Observe kernel peak RSS, temporary residue and cleanup separately from timing. Single-pair resource observations are not stability qualification.",
+    "correctness": "Run the applicable Wasm unit and functional suites, including errors, partial output, cancellation, early exit, Unicode and binary cases. Timing fixture coverage alone is insufficient."
+  },
+  "boundaries": [
+    {
+      "sources": [
+        "core/bytesearch",
+        "core/stream/count.mbt",
+        "commands/wc/main.mbt",
+        "commands/rg/internal/searcher",
+        "core/bytere"
+      ],
+      "retain": "SIMD/SWAR kernels, fused counts, conservative prefilters and specialized regex semantics"
+    },
+    {
+      "sources": [
+        "core/stream/records.mbt",
+        "core/stream/stream.mbt"
+      ],
+      "retain": "Synchronous borrowed batches, explicit owned records, retained-view lifetime and original read sizes"
+    },
+    {
+      "sources": [
+        "core/stream/output.mbt",
+        "commands/rg/internal/driver/stdout.mbt",
+        "commands/column/spool.mbt",
+        "commands/nl/main.mbt",
+        "commands/paste/main.mbt",
+        "commands/comm/main.mbt"
+      ],
+      "retain": "Bounded output ownership, no asynchronous reuse, no replay after partial failure, prefix flush on read failure, diagnostics order and command formatting loops"
+    },
+    {
+      "sources": [
+        "core/tempio",
+        "commands/tac/reverse_fixed.mbt",
+        "commands/column/table.mbt",
+        "commands/sort/external.mbt"
+      ],
+      "retain": "Exclusive temporary ownership, exact range reads, independent reverse blocks, page caches and sort run layouts"
+    },
+    {
+      "sources": [
+        "commands/rg/internal/printer",
+        "commands/rg/internal/driver/plan.mbt"
+      ],
+      "retain": "Immutable execution plans and printer configuration built outside the output loop; explicit type-option errors precede input"
+    },
+    {
+      "sources": [
+        "commands/rg/internal/searcher/count_stream.mbt",
+        "commands/rg/internal/driver/search_matcher.mbt",
+        "commands/rg/internal/driver/search_pattern.mbt",
+        "commands/rg/internal/regex/syntax/inner_literals.mbt"
+      ],
+      "retain": "Literal eligibility before input discard; decoder and binary policies; bounded unmatched suffix; one EOF completion; original fallback selected before streaming; command-owned search rules and unchanged regex matching priority"
+    },
+    {
+      "sources": [
+        "core/contracts",
+        "core/cli"
+      ],
+      "retain": "Catalog ownership separated from parsing, with unchanged option precedence and metadata contracts"
+    },
+    {
+      "sources": [
+        "core/fswalk",
+        "commands/rg/internal/sys/filesystem.mbt",
+        "commands/find/main.mbt",
+        "commands/tree/main.mbt",
+        "commands/grep/main.mbt"
+      ],
+      "retain": "Directory lifetime and explicit metadata queries; caller-owned ordering, pruning, links and error precedence"
+    },
+    {
+      "sources": [
+        "core/checksum",
+        "core/gzipops"
+      ],
+      "retain": "Algorithm parents separated from command cli adapters; digest and record formats, CRC, concatenated members, truncation and partial-output behavior"
+    },
+    {
+      "sources": [
+        "core/shell"
+      ],
+      "retain": "Typed incomplete/invalid syntax and loop control; independent exit, return and signal state; diagnostics, quoting, redirection and scope"
+    },
+    {
+      "sources": [
+        "core/netops"
+      ],
+      "retain": "Prepared header ownership and transfer-only execution; profile-specific authentication, framing, redirects, timeout and output cleanup"
+    },
+    {
+      "sources": [
+        "core/bytere/cache.mbt",
+        "core/platform",
+        "core/process",
+        "core/tabstops"
+      ],
+      "retain": "Explicit adaptive-cache failure state, required capability boundaries, launch policy and aligned/relative tab-stop overflow checks"
+    }
+  ]
+}

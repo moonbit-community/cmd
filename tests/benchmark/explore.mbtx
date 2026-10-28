@@ -3,6 +3,8 @@ import {
   "moonbitlang/async@0.22.5",
   "moonbitlang/async@0.22.5/fs",
   "moonbitlang/async@0.22.5/process",
+  "moonbitlang/async@0.22.5/http",
+  "moonbitlang/async@0.22.5/socket",
   "moonbitlang/core/bench",
   "moonbitlang/core/env",
   "moonbitlang/core/encoding/utf8",
@@ -17,6 +19,9 @@ let lab : String = @env.args().get(1).unwrap_or("")
 let cases : Array[Case] = []
 
 ///|
+let loopback_url : Ref[String] = Ref("http://127.0.0.1:0/fixed")
+
+///|
 fn add(
   id : String,
   command : String,
@@ -25,6 +30,7 @@ fn add(
   oracle : String,
   status~ : Int32 = 0,
   compressed~ : Bool = false,
+  stderr~ : String = "",
 ) -> Unit {
   cases.push({
     id,
@@ -34,6 +40,7 @@ fn add(
     oracle: { program: oracle, args: argv, },
     status,
     gzip: compressed,
+    stderr,
   })
 }
 
@@ -52,6 +59,7 @@ struct Case {
   oracle : Invocation
   status : Int32
   gzip : Bool
+  stderr : String
 } derive(ToJson)
 
 ///|
@@ -310,15 +318,45 @@ async fn adaptive_corpora() -> Unit {
 }
 
 ///|
-async fn main {
+async fn growth_corpora() -> Unit {
+  let seed = b"0123456789 alpha beta gamma "
+  for
+    (name, size, terminated) in [
+      ("growth8m", 8388608, true),
+      ("growth20m", 20971520, true),
+      ("growth32m", 33554432, true),
+      ("growth64m", 67108864, true),
+      ("growth-tail8m", 8388608, false),
+    ] {
+    @fs.write_file(
+      lab + "/" + name,
+      Bytes::makei(size, i => {
+        if terminated && i + 1 == size {
+          b'\n'
+        } else {
+          seed[i % seed.length()]
+        }
+      }),
+    )
+  }
+}
+
+///|
+async fn run_cases() -> Unit {
   let args = @env.args()
   guard args.length() >= 6 else {
     fail(
-      "Usage: explore.mbtx LAB WASM_CLI_ROOT prepare|prototype|ab|ci CASE_IDS PAIRS [BASELINE_CLI_ROOT|ORACLE_BIN]",
+      "Usage: explore.mbtx LAB WASM_CLI_ROOT prepare|prepare-growth|prepare-architecture|profiles|prototype|ab|ci CASE_IDS PAIRS [BASELINE_CLI_ROOT|ORACLE_BIN]",
     )
   }
   let mode = args[3]
-  guard mode == "prepare" || mode == "prototype" || mode == "ab" || mode == "ci" else {
+  guard mode == "prepare" ||
+    mode == "prepare-growth" ||
+    mode == "prepare-architecture" ||
+    mode == "profiles" ||
+    mode == "prototype" ||
+    mode == "ab" ||
+    mode == "ci" else {
     fail("invalid mode")
   }
   if mode == "ab" && args.length() != 7 {
@@ -327,7 +365,37 @@ async fn main {
   if mode == "ci" && args.length() != 7 {
     fail("ci requires an exported oracle bin directory")
   }
+  if mode == "prepare-growth" {
+    growth_corpora()
+    return
+  }
+  if mode == "prepare-architecture" {
+    let makefile = lab + "/make-control.mk"
+    let compressed = lab + "/text8m.gz"
+    guard !@fs.exists(makefile) && !@fs.exists(compressed) else {
+      fail("architecture fixtures already exist; preserve them")
+    }
+    @fs.write_file(
+      makefile, ".PHONY: all\nall:\n\t@i=0; while test \"$$i\" -lt 5000; do i=$$((i+1)); if test \"$$i\" -eq 2500; then continue; fi; :; done; printf '%s\\n' \"$$i\"\n",
+    )
+    let output = @process.redirect_to_file(compressed)
+    defer output.close()
+    let input = @process.redirect_from_file(lab + "/text8m")
+    guard @process.run(
+        "moonrun",
+        [args[2] + "/gzip/gzip.wasm", "--", "-n", "-c"],
+        stdin=input,
+        stdout=output,
+      ) ==
+      0 else {
+      fail("baseline gzip fixture generation failed")
+    }
+    return
+  }
   if mode == "prepare" {
+    @fs.mkdir(lab, recursive=true, allow_exist=true)
+    @fs.mkdir(lab + "/results", allow_exist=true)
+    growth_corpora()
     adaptive_corpora()
     @fs.write_file(lab + "/empty", b"")
     @fs.write_file(lab + "/overlap8k", Bytes::make(8192, b'a') + b"\n")
@@ -338,6 +406,69 @@ async fn main {
     corpus("long64m", 67108864, 1048576, false)
     corpus("text1m", 1048576, 80, false)
     corpus("entropy8m", 8388608, 80, false, entropy=true)
+    let entropy = @fs.read_file(lab + "/entropy8m").binary()
+    @fs.write_file(
+      lab + "/ascii-entropy8m",
+      Bytes::makei(entropy.length(), index => {
+        if index % 80 == 79 {
+          b'\n'
+        } else {
+          (97 + entropy[index].to_int() % 26).to_byte()
+        }
+      }),
+    )
+    @fs.write_file(
+      lab + "/ascii-entropy-long8m",
+      Bytes::makei(entropy.length(), index => {
+        if index % 1048576 == 1048575 {
+          b'\n'
+        } else {
+          (97 + entropy[index].to_int() % 26).to_byte()
+        }
+      }),
+    )
+    @fs.write_file(
+      lab + "/tiny1m",
+      Bytes::makei(1048576, index => {
+        if index % 2 == 1 {
+          b'\n'
+        } else if index % 4 == 0 {
+          b'a'
+        } else {
+          b'b'
+        }
+      }),
+    )
+    @fs.write_file(
+      lab + "/column-cache-cap8m",
+      Bytes::makei(8388608, i => {
+        if i % 4096 == 4095 {
+          b'\n'
+        } else if i % 1024 == 1023 {
+          b':'
+        } else {
+          b'x'
+        }
+      }),
+    )
+    @fs.write_file(
+      lab + "/column-dense-fields1m",
+      Bytes::makei(1048576, i => {
+        if i % 2048 == 2047 {
+          b'\n'
+        } else if i % 2 == 1 {
+          b':'
+        } else {
+          b'a'
+        }
+      }),
+    )
+    let tail_fields = @fs.create(lab + "/field-tail8m")
+    defer tail_fields.close()
+    let field_record = b"a|" + Bytes::make(1048571, b'x') + b"|z\n"
+    for _ in 0..<8 {
+      tail_fields.write(field_record)
+    }
     corpus(
       "json1m",
       b"{\"id\":123,\"name\":\"alpha\",\"active\":true}\n".length() * 25000,
@@ -368,6 +499,24 @@ async fn main {
       tiny.write(block)
       repeated.write(same)
     }
+    let ordered = StringBuilder()
+    for index in 0..<100000 {
+      let digits = index.to_string()
+      ordered.write_string(
+        "0".repeat(6 - digits.length()) + digits + " value value\n",
+      )
+    }
+    @fs.write_file(lab + "/ordered", ordered.to_string())
+    @fs.mkdir(lab + "/tree", allow_exist=false)
+    for index in 0..<512 {
+      let directory = lab + "/tree/" + (index / 32).to_string()
+      @fs.mkdir(directory, allow_exist=true)
+      @fs.write_file(
+        directory + "/" + index.to_string() + ".txt",
+        b"alpha\nbeta\n",
+      )
+    }
+    @fs.write_file(lab + "/tree/.ignore", "7\n*.log\n")
     println("corpora prepared")
     return
   }
@@ -376,6 +525,15 @@ async fn main {
   } else {
     lab + "/oracles/coreutils-9.11/src/"
   }
+  add(
+    "ln-symbolic-validation",
+    "ln",
+    ["-s"],
+    "empty",
+    "unused",
+    status=1,
+    stderr="ln: missing operand\n",
+  )
   let gnugrep = if mode == "ci" {
     cu + "grep"
   } else {
@@ -439,6 +597,19 @@ async fn main {
     gnugrep,
     status=1,
   )
+  add("rg-output-sparse-8m", "rg", ["^0", "-"], "text8m", "unused")
+  add("rg-output-dense-regex-8m", "rg", ["^.{8}alpha", "-"], "text8m", "unused")
+  add("rg-numbered-8m", "rg", ["-n", "-F", "alpha", "-"], "text8m", "unused")
+  add("rg-empty-output", "rg", ["-F", "alpha", "-"], "empty", "unused", status=1)
+  add("rg-line-buffered-1m", "rg", ["--line-buffered", "-F", "alpha", "-"], "text1m", "unused")
+  add("rg-output-miss-64m", "rg", ["-F","absent_xyz","-"], "text64m", "unused", status=1)
+  add("rg-output-regex-miss-64m", "rg", ["[0-9]{4}.*absent_xyz","-"], "text64m", "unused", status=1)
+  add("rg-text-output-miss-64m", "rg", ["-a","-F","absent_xyz","-"], "text64m", "unused", status=1)
+  add("rg-text-output-regex-miss-64m", "rg", ["-a","[0-9]{4}.*absent_xyz","-"], "text64m", "unused", status=1)
+  add("rg-text-output-8m", "rg", ["-a","-F","alpha","-"], "text8m", "unused", status=0)
+  add("rg-text-sparse-8m", "rg", ["-a","^0","-"], "text8m", "unused", status=0)
+  add("rg-text-dense-regex-8m", "rg", ["-a","^.{8}alpha","-"], "text8m", "unused", status=0)
+  add("rg-null-long-output-8m", "rg", ["--null-data", "-F", "alpha", "-"], "text8m", "unused")
   add("true-empty", "true", [], "empty", cu + "true")
   add("cat-64m", "cat", [], "text64m", cu + "cat")
   add("wc-l-64m", "wc", ["-l"], "text64m", cu + "wc")
@@ -451,10 +622,102 @@ async fn main {
   add("sha256-8m", "sha256sum", [], "text8m", cu + "sha256sum")
   add("sha512-8m", "sha512sum", [], "text8m", cu + "sha512sum")
   add("cut-8m", "cut", ["-b", "1-8"], "text8m", cu + "cut")
+  add("rev-8m", "rev", [], "text8m", cu + "rev")
+  add("rev-long-8m", "rev", [], "long8m", cu + "rev")
+  add("rev-tiny-1m", "rev", [], "tiny1m", cu + "rev")
+  add("tac-stream-8m", "tac", [], "text8m", cu + "tac")
+  add("tac-file-8m", "tac", [lab + "/text8m"], "empty", cu + "tac")
+  add("tac-long-8m", "tac", [], "long8m", cu + "tac")
+  add("tac-tiny-1m", "tac", [], "tiny1m", cu + "tac")
+  add("tac-before-1m", "tac", ["-b"], "text1m", cu + "tac")
+  add("tac-byte-1m", "tac", ["-s", "a"], "text1m", cu + "tac")
+  add("tac-multi-1m", "tac", ["-s", "alpha"], "text1m", cu + "tac")
+  add("tac-multi-8m", "tac", ["-s", "alpha"], "text8m", cu + "tac")
+  add("tac-multi-before-8m", "tac", ["-b", "-s", "alpha"], "text8m", cu + "tac")
+  add("tac-multi-miss-8m", "tac", ["-s", "absent_xyz"], "text8m", cu + "tac")
+  add(
+    "tac-kmp-overlap-1m",
+    "tac",
+    ["-s", "b" + "a".repeat(63)],
+    "collision-1m",
+    cu + "tac",
+  )
+  add("column-table-1m", "column", ["-t"], "text1m", cu + "column")
+  add("column-table-8m", "column", ["-t"], "text8m", cu + "column")
+  add("column-grid-1m", "column", ["-c", "80"], "text1m", cu + "column")
+  add("column-table-tiny-1m", "column", ["-t"], "tiny1m", cu + "column")
+  add("column-table-long-8m", "column", ["-t"], "long8m", cu + "column")
+  add(
+    "column-cache-cap-8m",
+    "column",
+    ["-t", "-s", ":"],
+    "column-cache-cap8m",
+    cu + "column",
+  )
+  add(
+    "column-dense-fields-1m",
+    "column",
+    ["-t", "-s", ":"],
+    "column-dense-fields1m",
+    cu + "column",
+  )
   add("tr-8m", "tr", ["a-z", "A-Z"], "text8m", cu + "tr")
   add("uniq-8m", "uniq", [], "text8m", cu + "uniq")
   add("grep-fixed-8m", "grep", ["-F", "-c", "alpha"], "text8m", gnugrep)
   add("grep-fixed-64m", "grep", ["-F", "-c", "alpha"], "text64m", gnugrep)
+  for
+    input in [
+      "growth8m", "growth20m", "growth32m", "growth64m", "growth-tail8m",
+    ] {
+    add(
+      "rg-" + input,
+      "rg",
+      ["-a", "-c", "[0-9]{4}.*Q|ZZ", "-"],
+      input,
+      if mode == "ci" {
+        cu + "rg"
+      } else {
+        lab + "/oracles/bin/rg"
+      },
+      status=1,
+    )
+  }
+  for
+    (name, pattern, status) in [("hit", "alpha", 0), ("miss", "absent_xyz", 1)] {
+    add(
+      "rg-literal-long-64m-" + name,
+      "rg",
+      ["-a", "-F", "-c", pattern, "-"],
+      "growth64m",
+      "unused",
+      status~,
+    )
+  }
+  add(
+    "rg-literal-text-64m",
+    "rg",
+    ["-a", "-F", "-c", "alpha", "-"],
+    "text64m",
+    "unused",
+  )
+  for
+    (name, options) in [
+      ("fixed", ["-F", "-c", "absent_xyz", "-"]),
+      ("regex", ["-c", "[0-9]{4}.*Q|ZZ", "-"]),
+    ] {
+    add(
+      "rg-empty-" + name,
+      "rg",
+      options,
+      "empty",
+      if mode == "ci" {
+        cu + "rg"
+      } else {
+        lab + "/oracles/bin/rg"
+      },
+      status=1,
+    )
+  }
   let needles = [
     "absent0", "absent1", "absent2", "absent3", "absent4", "absent5", "absent6",
     "absent7", "absent8", "absent9", "absent10", "absent11", "absent12", "absent13",
@@ -537,15 +800,99 @@ async fn main {
     "rg",
     ["-F", "-c", "alpha", "-"],
     "text8m",
-    lab + "/oracles/bin/rg",
+    if mode == "ci" {
+      cu + "rg"
+    } else {
+      lab + "/oracles/bin/rg"
+    },
   )
   add(
     "rg-regex-1m",
     "rg",
     ["-c", "[0-9]{4}.*gamma", "-"],
     "text1m",
-    lab + "/oracles/bin/rg",
+    if mode == "ci" {
+      cu + "rg"
+    } else {
+      lab + "/oracles/bin/rg"
+    },
   )
+  for
+    (name, options, status) in [
+      ("count", ["-F", "-c", "alpha", "-"], 0),
+      ("output", ["-F", "alpha", "-"], 0),
+      ("miss", ["-F", "-c", "absent_xyz", "-"], 1),
+      ("regex-count", ["-c", "[0-9]{4}.*gamma", "-"], 0),
+      ("regex-miss", ["-c", "[0-9]{4}.*absent_xyz", "-"], 1),
+    ] {
+    for size in ["1m", "8m", "64m"] {
+      add(
+        "rg-" + name + "-" + size,
+        "rg",
+        options,
+        "text" + size,
+        if mode == "ci" {
+          cu + "rg"
+        } else {
+          lab + "/oracles/bin/rg"
+        },
+        status~,
+      )
+    }
+  }
+  for
+    (name, input) in [
+      ("structured", "text64m"),
+      ("long", "long8m"),
+      ("entropy", "ascii-entropy8m"),
+      ("entropy-long", "ascii-entropy-long8m"),
+    ] {
+    add(
+      "grep-block-" + name,
+      "grep",
+      ["-E", "-c", "[0-9]{4}.*Q|ZZ"],
+      input,
+      gnugrep,
+      status=1,
+    )
+  }
+  for
+    (name, input) in [
+      ("structured", "text64m"),
+      ("long", "long8m"),
+      ("entropy-long", "ascii-entropy-long8m"),
+    ] {
+    add(
+      "rg-dfa-" + name,
+      "rg",
+      ["-c", "[0-9]{4}.*Q|ZZ", "-"],
+      input,
+      if mode == "ci" {
+        cu + "rg"
+      } else {
+        lab + "/oracles/bin/rg"
+      },
+      status=1,
+    )
+  }
+  for
+    (name, needle, input) in [
+      ("short-collision-1m", "aaaaaaaaabaaaaaa", "collision-1m"),
+      ("literal-entropy-8m", "absent_xyz", "ascii-entropy8m"),
+    ] {
+    add(
+      "rg-" + name,
+      "rg",
+      ["-F", "-c", needle, "-"],
+      input,
+      if mode == "ci" {
+        cu + "rg"
+      } else {
+        lab + "/oracles/bin/rg"
+      },
+      status=1,
+    )
+  }
   add("gzip-text-8m", "gzip", ["-n", "-c"], "text8m", gzip, compressed=true)
   add(
     "gzip-entropy-8m",
@@ -558,6 +905,27 @@ async fn main {
   add("jq-identity-1m", "jq", ["-c", "."], "json1m", lab + "/oracles/bin/jq")
   add("jq-select-1m", "jq", ["-c", ".id"], "json1m", lab + "/oracles/bin/jq")
   add("cut-fields-8m", "cut", ["-f", "1,3", "-d", " "], "text8m", cu + "cut")
+  add(
+    "cut-fields-long-8m",
+    "cut",
+    ["-f", "1,3", "-d", "|"],
+    "long8m",
+    cu + "cut",
+  )
+  add(
+    "cut-fields-tail-8m",
+    "cut",
+    ["-f", "1", "-d", "|"],
+    "field-tail8m",
+    cu + "cut",
+  )
+  add(
+    "cut-fields-last-8m",
+    "cut",
+    ["-f", "3", "-d", "|"],
+    "field-tail8m",
+    cu + "cut",
+  )
   add("cut-long-8m", "cut", ["-b", "1-8"], "long8m", cu + "cut")
   add("cut-long-64m", "cut", ["-b", "1-8"], "long64m", cu + "cut")
   add("cut-tiny-8m", "cut", ["-b", "1"], "tiny8m", cu + "cut")
@@ -603,12 +971,141 @@ async fn main {
     gnugrep,
   )
   add("wc-all-64m", "wc", ["-lwmc", "--total=only"], "text64m", cu + "wc")
+  add(
+    "rg-file-count-64m",
+    "rg",
+    ["-F", "-c", "alpha", lab + "/text64m"],
+    "empty",
+    "unused",
+  )
+  add(
+    "rg-tree-files",
+    "rg",
+    ["--files", "--sort", "path", lab + "/tree"],
+    "empty",
+    "unused",
+  )
+  add(
+    "rg-tree-search",
+    "rg",
+    ["--sort", "path", "-F", "alpha", lab + "/tree"],
+    "empty",
+    "unused",
+  )
+  add(
+    "find-tree-names",
+    "find",
+    [lab + "/tree", "-type", "f", "-print"],
+    "empty",
+    "unused",
+  )
+  add(
+    "find-tree-size",
+    "find",
+    [lab + "/tree", "-type", "f", "-size", "+0c", "-print"],
+    "empty",
+    "unused",
+  )
+  add(
+    "tree-directory",
+    "tree",
+    ["-a", "--noreport", lab + "/tree"],
+    "empty",
+    "unused",
+  )
+  add(
+    "grep-tree-search",
+    "grep",
+    ["-r", "-F", "alpha", lab + "/tree"],
+    "empty",
+    "unused",
+  )
+  add(
+    "rg-color-1m",
+    "rg",
+    ["--color=always", "-n", "alpha", "-"],
+    "text1m",
+    "unused",
+  )
+  add("rg-replace-8m", "rg", ["-r", "[$0]", "alpha", "-"], "text8m", "unused")
+  add(
+    "rg-context-8m",
+    "rg",
+    ["-n", "-C", "1", "gamma", "-"],
+    "text8m",
+    "unused",
+  )
+  add("rg-only-8m", "rg", ["-n", "-o", "[0-9]{4}", "-"], "text8m", "unused")
+  add("sort-spill-8m", "sort", ["-S", "1M"], "text8m", "unused")
+  add("curl-loopback-8m", "curl", ["-sS", loopback_url.val], "empty", "unused")
+  add(
+    "wget-loopback-8m",
+    "wget",
+    ["-q", "-O", "-", loopback_url.val],
+    "empty",
+    "unused",
+  )
+  add(
+    "sh-control-5000",
+    "sh",
+    [
+      "-c", "i=0; while test \"$i\" -lt 5000; do i=$((i+1)); if test \"$i\" -eq 2500; then continue; fi; :; done; printf '%s\\n' \"$i\"",
+    ],
+    "empty",
+    "unused",
+  )
+  add(
+    "make-shell-5000",
+    "make",
+    ["-s", "-f", lab + "/make-control.mk"],
+    "empty",
+    "unused",
+  )
+  add(
+    "split-filter-1m",
+    "split",
+    [
+      "-b", "64K", "--filter=while read LINE; do printf '%s\\n' \"$LINE\"; break; done",
+    ],
+    "text1m",
+    "unused",
+  )
+  add("gzip-stream-8m", "gzip", ["-n", "-c"], "text8m", "unused")
+  add("gunzip-stream-8m", "gunzip", ["-c"], "text8m.gz", "unused")
+  add("zcat-stream-8m", "zcat", [], "text8m.gz", "unused")
+  add("head-all-8m", "head", ["-n", "9999999"], "text8m", "unused")
+  add("head-except-last-8m", "head", ["-n", "-1"], "text8m", "unused")
+  add(
+    "join-ordered",
+    "join",
+    [lab + "/ordered", lab + "/ordered"],
+    "empty",
+    "unused",
+  )
+  add(
+    "comm-ordered",
+    "comm",
+    [lab + "/ordered", lab + "/ordered"],
+    "empty",
+    "unused",
+  )
+  add("paste-serial-8m", "paste", ["-s"], "text8m", cu + "paste")
+  for
+    command in [
+      "cksum", "md5sum", "sha1sum", "sha256sum", "sha512sum", "nl", "paste",
+    ] {
+    add(command + "-8m", command, [], "text8m", cu + command)
+  }
   let selected = args[4].split(",").map(x => x.to_owned()).collect()
   let trials = @string.parse_int(args[5])
   guard trials > 0 else { fail("positive pair count required") }
   guard !selected.is_empty() &&
     selected.all(id => cases.any(case => case.id == id)) else {
     fail("unknown or empty case selection")
+  }
+  if mode == "profiles" {
+    println(Json(cases.filter(case => selected.contains(case.id))).stringify())
+    return
   }
   let temporary = @fs.tmpdir(prefix="cmd-perf-id-")
   let root = lab +
@@ -665,8 +1162,8 @@ async fn main {
       }
       let mut equivalent = a.status == Some(case.status) &&
         b.status == Some(case.status) &&
-        @fs.file_size(left + ".err") == 0L &&
-        @fs.file_size(right + ".err") == 0L
+        @fs.read_file(left + ".err").binary() == @utf8.encode(case.stderr) &&
+        @fs.read_file(right + ".err").binary() == @utf8.encode(case.stderr)
       if equivalent && case.gzip {
         for side in [left, right] {
           let decoded = measure(
@@ -731,5 +1228,31 @@ async fn main {
   println("REPORT " + root + "/report.json")
   guard all_passed else {
     fail("one or more exploration rows failed correctness")
+  }
+}
+
+///|
+async fn main {
+  let args = @env.args()
+  if args.length() > 4 &&
+    (args[3] == "ab" || args[3] == "prototype") &&
+    (args[4].contains("curl-loopback") || args[4].contains("wget-loopback")) {
+    let payload = @fs.read_file(lab + "/text8m").binary()
+    @async.with_task_group <| group => {
+      let server = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
+      group.add_defer(() => server.close())
+      group.spawn_bg(no_wait=true) <| () => {
+        server.run_forever() <| ((_, _, connection) => {
+          connection.send_response(200, "OK", extra_headers={
+            "Content-Length": payload.length().to_string(),
+          })
+          connection..write(payload).end_response()
+        })
+      }
+      loopback_url.val = "http://127.0.0.1:\{server.addr.port()}/fixed"
+      run_cases()
+    }
+  } else {
+    run_cases()
   }
 }

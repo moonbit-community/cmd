@@ -1,5 +1,10 @@
 # Delivery benchmark workloads
 
+For local old/new protection of shared runtime changes, use the
+[shared-foundation registry and runner](PROTECTION.md). It checks all command
+artifacts and runs the registered two-window profiles. The delivery/upstream
+workflows below retain their separate purpose and historical criteria.
+
 The user's 2026-10-24 decision changes performance acceptance to direct release
 Wasm. Use the schema-2 driver with `--wasm-root` and an explicit `--moonrun`:
 

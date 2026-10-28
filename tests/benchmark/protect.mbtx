@@ -1,0 +1,380 @@
+----
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/async@0.22.5/process",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+}
+----
+
+///|
+fn object(value : Json) -> Map[String, Json] {
+  guard value is Object(fields) else { abort("expected object") }
+  fields
+}
+
+///|
+fn array(value : Json) -> Array[Json] {
+  guard value is Array(values) else { abort("expected array") }
+  values
+}
+
+///|
+fn text(value : Json) -> String {
+  guard value is String(value) else { abort("expected string") }
+  value
+}
+
+///|
+fn number(value : Json) -> Double {
+  guard value is Number(value, ..) else { abort("expected number") }
+  value
+}
+
+///|
+// Ephemeral loopback ports identify the fixture server, not a workload change.
+// Retain actual arguments in each report and normalize only these two fixtures.
+fn workload_identity(value : Json) -> Json raise {
+  let fields = object(value)
+  let id = text(fields["id"])
+  if id != "curl-loopback-8m" && id != "wget-loopback-8m" {
+    return value
+  }
+  let args = array(fields["args"])
+  let url = text(args[args.length() - 1])
+  let prefix = "http://127.0.0.1:"
+  assert_true(url.has_prefix(prefix) && url.has_suffix("/fixed"))
+  let port = url[prefix.length():url.length() - 6]
+  assert_true(!port.is_empty() && port.iter().all(c => c >= '0' && c <= '9'))
+  let normalized = args.copy()
+  normalized[normalized.length() - 1] = Json(prefix + "0/fixed")
+  let oracle = Map(object(fields["oracle"]).to_array())
+  assert_eq(oracle["args"], fields["args"])
+  oracle["args"] = Json(normalized)
+  let identity = Map(fields.to_array())
+  identity["args"] = Json(normalized)
+  identity["oracle"] = Json(oracle)
+  Json(identity)
+}
+
+///|
+fn median(values : Array[Double]) -> Double {
+  let sorted = values.copy()
+  sorted.sort()
+  sorted[sorted.length() / 2]
+}
+
+///|
+fn spread(
+  row : Map[String, Json],
+  side : String,
+  pairs : Int32,
+) -> Double raise {
+  let samples = array(row["samples"])
+  assert_eq(samples.length(), pairs + 1)
+  let values : Array[Double] = []
+  for index in 0..<(pairs + 1) {
+    let sample = object(samples[index])
+    assert_eq(sample["trial"], Json(index))
+    assert_eq(sample["warmup"], Json(index == 0))
+    assert_eq(sample["equivalent"], Json(true))
+    assert_eq(object(sample[side])["status"], object(row["case"])["status"])
+    let elapsed = number(object(sample[side])["elapsed_us"])
+    assert_true(elapsed > 0.0)
+    if index > 0 {
+      values.push(elapsed)
+    }
+  }
+  let middle = median(values)
+  assert_eq(number(row[side + "_median_us"]), middle)
+  median(values.map(value => (value - middle).abs())) / middle
+}
+
+///|
+async fn capture(program : String, args : Array[String], log : String) -> Unit {
+  let output = @process.redirect_to_file(log)
+  defer output.close()
+  guard @process.run(program, args, stdout=output, stderr=output) == 0 else {
+    fail("failed; retained log: " + log)
+  }
+}
+
+///|
+async fn fixture_files(path : String, files : Array[String]) -> Unit {
+  match @fs.kind(path) {
+    Regular => if !files.contains(path) { files.push(path) }
+    Directory =>
+      for name in @fs.readdir(path, include_hidden=true) {
+        fixture_files(path + "/" + name, files)
+      }
+    _ => fail("fixture must resolve to a regular file or directory: " + path)
+  }
+}
+
+///|
+async fn main {
+  let args = @env.args()
+  guard args.length() == 4 else {
+    fail(
+      "Usage: protect.mbtx FIXTURES FROZEN_BASELINE_CLI_ROOT NEW_EVIDENCE_DIRECTORY (run from repository root after release Wasm build)",
+    )
+  }
+  let fixtures = args[1]
+  let baseline = args[2]
+  let evidence = args[3]
+  for
+    (name, expected) in [
+      ("CMD_BENCH_SETTLE_MS", "0"),
+      ("CMD_BENCH_PRELOAD", "0"),
+      ("CMD_BENCH_RUSAGE", "0"),
+      ("CMD_BENCH_PERF", ""),
+    ] {
+    assert_eq(
+      @env.get_env_var(name).unwrap_or(expected),
+      expected,
+      msg="diagnostic observer settings cannot qualify a protection window",
+    )
+  }
+  @fs.mkdir(evidence, allow_exist=false)
+  let registry = @fs.read_file("tests/benchmark/protection.json").text()
+  @fs.write_file(evidence + "/protection.json", registry)
+  let config = object(@json.parse(registry))
+  assert_eq(config["schema"], Json(1))
+  assert_eq(config["windows"], Json(2))
+  let pairs = number(config["pairs"]).to_int()
+  assert_true(pairs > 0 && pairs % 2 == 1)
+  let profiles = object(config["profiles"])
+  let selection : Array[String] = []
+  for _, value in profiles {
+    let ids = array(value)
+    assert_true(!ids.is_empty())
+    for id in ids {
+      let id = text(id)
+      assert_true(!selection.contains(id))
+      selection.push(id)
+    }
+  }
+  assert_true(!selection.is_empty())
+  selection.sort()
+  let commands = @fs.readdir(baseline)
+  commands.sort()
+  assert_eq(commands.length(), number(config["artifact_count"]).to_int())
+  let built = "_build/wasm/release/build/cli"
+  let built_commands : Array[String] = []
+  for command in @fs.readdir(built) {
+    if command != "core" {
+      built_commands.push(command)
+    }
+  }
+  built_commands.sort()
+  assert_eq(built_commands, commands)
+  let coverage : Array[Json] = []
+  let missing : Array[String] = []
+  let hashes : Array[String] = ["-a", "256"]
+  for command in commands {
+    let suffix = "/" + command + "/" + command + ".wasm"
+    let original = baseline + suffix
+    let candidate = evidence + "/candidate" + suffix
+    @fs.mkdir(evidence + "/candidate/" + command, recursive=true)
+    let old = @fs.read_file(original).binary()
+    let new = @fs.read_file(built + suffix).binary()
+    @fs.write_file(candidate, new)
+    hashes.push(original)
+    hashes.push(candidate)
+    let changed = old != new
+    let covered = profiles.contains(command)
+    coverage.push({
+      "command": command,
+      "changed": changed,
+      "profile": covered,
+      "baseline_bytes": old.length(),
+      "candidate_bytes": new.length(),
+    })
+    if changed && !covered {
+      missing.push(command)
+    }
+  }
+  @fs.write_file(
+    evidence + "/coverage.json",
+    Json(coverage).stringify(indent=2),
+  )
+  @fs.write_file(evidence + "/missing-coverage.json", Json(missing).stringify())
+  capture("shasum", hashes, evidence + "/artifacts.sha256")
+  capture("moon", ["version", "--all"], evidence + "/toolchain.txt")
+  capture("git", ["status", "--short"], evidence + "/source-status.txt")
+  capture("git", ["rev-parse", "HEAD"], evidence + "/source-revision.txt")
+  capture(
+    "tar",
+    [
+      "-cf",
+      evidence + "/source.tar",
+      "--exclude=_build",
+      "--exclude=.mooncakes",
+      "--exclude=.git",
+      "--exclude=test-reports",
+      ".",
+    ],
+    evidence + "/source-snapshot.log",
+  )
+  capture(
+    "shasum",
+    ["-a", "256", evidence + "/source.tar", evidence + "/protection.json"],
+    evidence + "/source.sha256",
+  )
+  guard missing.is_empty() else {
+    fail("changed commands lack profiles: " + missing.join(","))
+  }
+  @fs.write_file(
+    evidence + "/explore.mbtx",
+    @fs.read_file("tests/benchmark/explore.mbtx"),
+  )
+  capture(
+    "moon",
+    [
+      "run",
+      evidence + "/explore.mbtx",
+      "--",
+      fixtures,
+      evidence + "/candidate",
+      "profiles",
+      selection.join(","),
+      pairs.to_string(),
+    ],
+    evidence + "/profiles.json",
+  )
+  let inventory = array(
+    @json.parse(@fs.read_file(evidence + "/profiles.json").text()),
+  )
+  assert_eq(inventory.length(), selection.length())
+  let files : Array[String] = []
+  for profile in inventory {
+    let profile = object(profile)
+    assert_true(
+      array(profiles[text(profile["command"])]).contains(profile["id"]),
+    )
+    fixture_files(text(profile["input"]), files)
+    if text(profile["id"]) == "curl-loopback-8m" ||
+      text(profile["id"]) == "wget-loopback-8m" {
+      fixture_files(fixtures + "/text8m", files)
+    }
+    for arg in array(profile["args"]) {
+      let arg = text(arg)
+      if arg.has_prefix(fixtures + "/") {
+        fixture_files(arg, files)
+      }
+    }
+  }
+  files.sort()
+  capture("shasum", ["-a", "256", ..files], evidence + "/fixtures.sha256")
+  let rounds : Array[Array[Json]] = []
+  for round in 0..<2 {
+    let log = evidence + "/window-" + round.to_string() + ".log"
+    capture(
+      "moon",
+      [
+        "run",
+        evidence + "/explore.mbtx",
+        "--",
+        fixtures,
+        evidence + "/candidate",
+        "ab",
+        selection.join(","),
+        pairs.to_string(),
+        baseline,
+      ],
+      log,
+    )
+    let paths = @fs.read_file(log)
+      .text()
+      .split("\n")
+      .filter_map(line => {
+        if line.has_prefix("REPORT ") {
+          Some(line[7:].to_owned())
+        } else {
+          None
+        }
+      })
+      .collect()
+    assert_eq(paths.length(), 1)
+    let rows = array(@json.parse(@fs.read_file(paths[0]).text()))
+    assert_eq(rows.length(), selection.length())
+    let found = rows.map(row => text(object(object(row)["case"])["id"]))
+    found.sort()
+    assert_eq(found, selection)
+    for row in rows {
+      let case = object(object(row)["case"])
+      assert_true(array(profiles[text(case["command"])]).contains(case["id"]))
+      let expected = inventory.filter(profile => {
+        object(profile)["id"] == case["id"]
+      })
+      assert_eq(expected.length(), 1)
+      assert_eq(workload_identity(Json(case)), workload_identity(expected[0]))
+    }
+    @fs.write_file(
+      evidence + "/window-" + round.to_string() + ".json",
+      Json(rows).stringify(indent=2),
+    )
+    rounds.push(rows)
+    println("completed window " + round.to_string())
+  }
+  let summary : Array[Json] = []
+  let mut passed = true
+  for index in 0..<rounds[0].length() {
+    let a = object(rounds[0][index])
+    let b = object(rounds[1][index])
+    assert_eq(workload_identity(a["case"]), workload_identity(b["case"]))
+    assert_eq(a["passed"], Json(true))
+    assert_eq(b["passed"], Json(true))
+    let sides : Array[Json] = []
+    let mut stable = true
+    for side in ["candidate", "reference"] {
+      let x = number(a[side + "_median_us"])
+      let y = number(b[side + "_median_us"])
+      let da = spread(a, side, pairs)
+      let db = spread(b, side, pairs)
+      let drift = (x - y).abs() / ((x + y) / 2.0)
+      let ok = da <= number(config["mad_limit"]) &&
+        db <= number(config["mad_limit"]) &&
+        drift <= number(config["drift_limit"])
+      stable = stable && ok
+      sides.push({
+        "side": side,
+        "first_ms": x / 1000.0,
+        "second_ms": y / 1000.0,
+        "first_mad": da,
+        "second_mad": db,
+        "drift": drift,
+        "stable": ok,
+      })
+    }
+    let within_limit = number(a["ratio"]) <= number(config["slowdown_limit"]) &&
+      number(b["ratio"]) <= number(config["slowdown_limit"])
+    passed = passed && stable && within_limit
+    summary.push({
+      "id": object(a["case"])["id"],
+      "first_ratio": a["ratio"],
+      "second_ratio": b["ratio"],
+      "stable": stable,
+      "within_slowdown_limit": within_limit,
+      "sides": sides,
+    })
+  }
+  @fs.write_file(evidence + "/summary.json", Json(summary).stringify(indent=2))
+  capture("shasum", ["-a", "256", ..files], evidence + "/fixtures-after.sha256")
+  assert_eq(
+    @fs.read_file(evidence + "/fixtures.sha256").binary(),
+    @fs.read_file(evidence + "/fixtures-after.sha256").binary(),
+  )
+  let verdict : Json = {
+    "timing_passed": passed,
+    "workloads": selection.length(),
+    "windows": 2,
+    "pairs_per_window": pairs,
+    "resource_and_correctness_evidence_required_separately": true,
+  }
+  @fs.write_file(evidence + "/verdict.json", verdict.stringify(indent=2))
+  guard passed else {
+    fail("performance review required; preserved all windows and summary")
+  }
+}
