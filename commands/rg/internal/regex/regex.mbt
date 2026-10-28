@@ -127,15 +127,26 @@ pub fn Regex::is_accelerated(self : Regex) -> Bool {
 }
 
 ///|
-/// The number of capture groups, including the implicit group 0.
-pub fn Regex::captures_len(self : Regex) -> Int32 {
-  self.group_names.length()
+/// Counts matching lines only when the prefilter is the complete expression.
+/// The caller must guarantee that `term` cannot occur in an accepted match.
+pub fn Regex::count_exact_lines(
+  self : Regex,
+  hay : FixedArray[Byte],
+  start : Int32,
+  end : Int32,
+  term : Byte,
+) -> Int64? {
+  if self.pre_is_exact {
+    Some(self.pre.unwrap().count_lines(hay, start, end, term))
+  } else {
+    None
+  }
 }
 
 ///|
-/// The names of each capture group, indexed by group index.
-pub fn Regex::group_names(self : Regex) -> Array[String?] {
-  self.group_names
+/// The number of capture groups, including the implicit group 0.
+pub fn Regex::captures_len(self : Regex) -> Int32 {
+  self.group_names.length()
 }
 
 ///|
@@ -328,13 +339,6 @@ pub fn Regex::captures_at(
 pub fn Regex::find(self : Regex, hay : Bytes) -> (Int32, Int32)? {
   let h = hay.to_fixedarray()
   self.find_at(h, 0, h.length(), 0, h.length())
-}
-
-///|
-/// Convenience: returns true if the regex matches anywhere in `hay`.
-pub fn Regex::is_match(self : Regex, hay : Bytes) -> Bool {
-  let h = hay.to_fixedarray()
-  self.is_match_at(h, 0, h.length(), 0, h.length())
 }
 
 ///|

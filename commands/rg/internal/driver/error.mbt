@@ -6,7 +6,7 @@ pub suberror RgError {
 } derive(Debug)
 
 ///|
-pub fn RgError::message(self : RgError) -> String {
+fn RgError::message(self : RgError) -> String {
   let RgError(msg) = self
   msg
 }

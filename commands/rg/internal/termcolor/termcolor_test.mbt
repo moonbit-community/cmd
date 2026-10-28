@@ -228,30 +228,3 @@ async test "buffer and no color" {
   assert_eq(v.to_bytes(), b"hello bc")
   assert_false(w.supports_hyperlinks())
 }
-
-///|
-test "color choice" {
-  let parse = (s : String) => {
-    try @termcolor.ColorChoice::parse(s) catch {
-      e => Err(e.to_string())
-    } noraise {
-      c => Ok(c)
-    }
-  }
-  assert_eq(parse("Always"), Ok(Always))
-  assert_eq(parse("always-ansi"), Ok(AlwaysAnsi))
-  assert_eq(parse("never"), Ok(Never))
-  assert_eq(parse("auto"), Ok(Auto))
-  assert_eq(
-    parse("Foo"),
-    Err(
-      "unrecognized color choice 'foo': valid choices are: always, always-ansi, never, auto",
-    ),
-  )
-  let auto = @termcolor.ColorChoice::Auto
-  assert_false(auto.should_attempt_color(None, false))
-  assert_false(auto.should_attempt_color(Some("dumb"), false))
-  assert_true(auto.should_attempt_color(Some("xterm"), false))
-  assert_false(auto.should_attempt_color(Some("xterm"), true))
-  assert_true(@termcolor.ColorChoice::Always.should_attempt_color(None, true))
-}

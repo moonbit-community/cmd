@@ -26,9 +26,7 @@ fn contents(out : @termcolor.ByteVec) -> String {
 async test "reports_match" {
   let matcher = @grep_regex.RegexMatcher::new("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   let sink = printer.sink(matcher)
   @searcher.SearcherBuilder::new()
   .line_number(false)
@@ -37,9 +35,7 @@ async test "reports_match" {
   assert_true(sink.has_match())
   let matcher = @grep_regex.RegexMatcher::new("zzzzz")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   let sink = printer.sink(matcher)
   @searcher.SearcherBuilder::new()
   .line_number(false)
@@ -52,9 +48,7 @@ async test "reports_match" {
 async test "reports_binary" {
   let matcher = @grep_regex.RegexMatcher::new("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   let sink = printer.sink(matcher)
   @searcher.SearcherBuilder::new()
   .line_number(false)
@@ -63,9 +57,7 @@ async test "reports_binary" {
   assert_true(sink.binary_byte_offset() is None)
   let matcher = @grep_regex.RegexMatcher::new(".+")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   let sink = printer.sink(matcher)
   @searcher.SearcherBuilder::new()
   .line_number(false)
@@ -83,9 +75,10 @@ async test "reports_binary" {
 async test "context_break" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .separator_context(Some(b"--abc--"))
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    separator_context=Some(b"--abc--"),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .before_context(1)
@@ -108,10 +101,11 @@ async test "context_break" {
 async test "context_break_multiple_no_heading" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .separator_search(Some(b"--xyz--"))
-    .separator_context(Some(b"--abc--"))
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    separator_search=Some(b"--xyz--"),
+    separator_context=Some(b"--abc--"),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .before_context(1)
@@ -147,11 +141,12 @@ async test "context_break_multiple_no_heading" {
 async test "context_break_multiple_heading" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .heading(true)
-    .separator_search(Some(b"--xyz--"))
-    .separator_context(Some(b"--abc--"))
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    heading=true,
+    separator_search=Some(b"--xyz--"),
+    separator_context=Some(b"--abc--"),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .before_context(1)
@@ -187,9 +182,7 @@ async test "context_break_multiple_heading" {
 async test "path" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .path(false)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out), path=false)
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .build()
@@ -210,10 +203,11 @@ async test "path" {
 async test "separator_field" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .separator_field_match(b"!!")
-    .separator_field_context(b"^^")
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    separator_field_match=b"!!",
+    separator_field_context=b"^^",
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .before_context(1)
@@ -240,9 +234,10 @@ async test "separator_field" {
 async test "separator_path" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .separator_path(Some(b'Z'))
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    separator_path=Some(b'Z'),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .build()
@@ -263,9 +258,10 @@ async test "separator_path" {
 async test "path_terminator" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .path_terminator(Some(b'Z'))
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    path_terminator=Some(b'Z'),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .build()
@@ -286,9 +282,10 @@ async test "path_terminator" {
 async test "heading" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .heading(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    heading=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .build()
@@ -310,9 +307,10 @@ async test "heading" {
 async test "no_heading" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .heading(false)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    heading=false,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .build()
@@ -333,9 +331,10 @@ async test "no_heading" {
 async test "no_heading_multiple" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .heading(false)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    heading=false,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .build()
@@ -367,9 +366,10 @@ async test "no_heading_multiple" {
 async test "heading_multiple" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .heading(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    heading=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .build()
@@ -403,9 +403,10 @@ async test "heading_multiple" {
 async test "trim_ascii" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .trim_ascii(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    trim_ascii=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .build()
@@ -421,10 +422,11 @@ async test "trim_ascii" {
 async test "trim_ascii_multi_line" {
   let matcher = @grep_regex.RegexMatcher::new("(?s:.{0})Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .trim_ascii(true)
-    .stats(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    trim_ascii=true,
+    stats=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .multi_line(true)
@@ -441,9 +443,10 @@ async test "trim_ascii_multi_line" {
 async test "trim_ascii_with_line_term" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .trim_ascii(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    trim_ascii=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .before_context(1)
@@ -472,9 +475,7 @@ async test "trim_ascii_with_line_term" {
 async test "line_number" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .build()
@@ -491,9 +492,7 @@ async test "line_number" {
 async test "line_number_multi_line" {
   let matcher = @grep_regex.RegexMatcher::new("(?s)Watson.+Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .multi_line(true)
@@ -514,9 +513,10 @@ async test "line_number_multi_line" {
 async test "column_number" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .column(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    column=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .build()
@@ -533,9 +533,10 @@ async test "column_number" {
 async test "column_number_multi_line" {
   let matcher = @grep_regex.RegexMatcher::new("(?s)Watson.+Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .column(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    column=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .multi_line(true)
@@ -556,9 +557,10 @@ async test "column_number_multi_line" {
 async test "byte_offset" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .byte_offset(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    byte_offset=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .build()
@@ -575,9 +577,10 @@ async test "byte_offset" {
 async test "byte_offset_multi_line" {
   let matcher = @grep_regex.RegexMatcher::new("(?s)Watson.+Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .byte_offset(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    byte_offset=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .multi_line(true)
@@ -598,9 +601,10 @@ async test "byte_offset_multi_line" {
 async test "max_columns" {
   let matcher = @grep_regex.RegexMatcher::new("ash|dusted")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .max_columns(Some(63))
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    max_columns=Some(63),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .build()
@@ -617,10 +621,11 @@ async test "max_columns" {
 async test "max_columns_preview" {
   let matcher = @grep_regex.RegexMatcher::new("exhibited|dusted")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .max_columns(Some(46))
-    .max_columns_preview(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    max_columns=Some(46),
+    max_columns_preview=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .build()
@@ -637,10 +642,11 @@ async test "max_columns_preview" {
 async test "max_columns_with_count" {
   let matcher = @grep_regex.RegexMatcher::new("cigar|ash|dusted")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .stats(true)
-    .max_columns(Some(63))
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    stats=true,
+    max_columns=Some(63),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .build()
@@ -657,11 +663,12 @@ async test "max_columns_with_count" {
 async test "max_columns_with_count_preview_no_match" {
   let matcher = @grep_regex.RegexMatcher::new("exhibited|has to have it")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .stats(true)
-    .max_columns(Some(46))
-    .max_columns_preview(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    stats=true,
+    max_columns=Some(46),
+    max_columns_preview=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .build()
@@ -678,11 +685,12 @@ async test "max_columns_with_count_preview_no_match" {
 async test "max_columns_with_count_preview_one_match" {
   let matcher = @grep_regex.RegexMatcher::new("exhibited|dusted")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .stats(true)
-    .max_columns(Some(46))
-    .max_columns_preview(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    stats=true,
+    max_columns=Some(46),
+    max_columns_preview=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .build()
@@ -699,11 +707,12 @@ async test "max_columns_with_count_preview_one_match" {
 async test "max_columns_with_count_preview_two_matches" {
   let matcher = @grep_regex.RegexMatcher::new("exhibited|dusted|has to have it")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .stats(true)
-    .max_columns(Some(46))
-    .max_columns_preview(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    stats=true,
+    max_columns=Some(46),
+    max_columns_preview=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .build()
@@ -720,9 +729,10 @@ async test "max_columns_with_count_preview_two_matches" {
 async test "max_columns_multi_line" {
   let matcher = @grep_regex.RegexMatcher::new("(?s)ash.+dusted")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .max_columns(Some(63))
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    max_columns=Some(63),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .multi_line(true)
@@ -742,11 +752,12 @@ async test "max_columns_multi_line_preview" {
     "(?s)clew|cigar ash.+have it|exhibited",
   )
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .stats(true)
-    .max_columns(Some(46))
-    .max_columns_preview(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    stats=true,
+    max_columns=Some(46),
+    max_columns_preview=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .multi_line(true)
@@ -765,9 +776,7 @@ async test "max_columns_multi_line_preview" {
 async test "max_matches" {
   let matcher = @grep_regex.RegexMatcher::new("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .max_matches(Some(1))
@@ -785,9 +794,7 @@ async test "max_matches_context" {
   // after context: 1
   let matcher = @grep_regex.RegexMatcher::new("Doctor Watsons")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   @searcher.SearcherBuilder::new()
   .max_matches(Some(1))
   .line_number(false)
@@ -802,9 +809,7 @@ async test "max_matches_context" {
   assert_eq(got, expected)
   let out = @termcolor.ByteVec::new()
   // after context: 4
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   @searcher.SearcherBuilder::new()
   .max_matches(Some(1))
   .line_number(false)
@@ -823,9 +828,7 @@ async test "max_matches_context" {
   // after context: 1, max matches: 2
   let matcher = @grep_regex.RegexMatcher::new("Doctor Watsons|but Doctor")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   @searcher.SearcherBuilder::new()
   .max_matches(Some(2))
   .line_number(false)
@@ -843,9 +846,7 @@ async test "max_matches_context" {
   assert_eq(got, expected)
   let out = @termcolor.ByteVec::new()
   // after context: 4, max matches: 2
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   @searcher.SearcherBuilder::new()
   .max_matches(Some(2))
   .line_number(false)
@@ -871,9 +872,7 @@ async test "max_matches_context_invert" {
     "success|extent|clew|dusted|exhibited",
   )
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   @searcher.SearcherBuilder::new()
   .invert_match(true)
   .max_matches(Some(1))
@@ -889,9 +888,7 @@ async test "max_matches_context_invert" {
   assert_eq(got, expected)
   let out = @termcolor.ByteVec::new()
   // after context: 4
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   @searcher.SearcherBuilder::new()
   .invert_match(true)
   .max_matches(Some(1))
@@ -911,9 +908,7 @@ async test "max_matches_context_invert" {
   // after context: 1, max matches: 2
   let matcher = @grep_regex.RegexMatcher::new("success|extent|clew|exhibited")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   @searcher.SearcherBuilder::new()
   .invert_match(true)
   .max_matches(Some(2))
@@ -932,9 +927,7 @@ async test "max_matches_context_invert" {
   assert_eq(got, expected)
   let out = @termcolor.ByteVec::new()
   // after context: 4, max matches: 2
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   @searcher.SearcherBuilder::new()
   .invert_match(true)
   .max_matches(Some(2))
@@ -958,9 +951,7 @@ async test "max_matches_context_invert" {
 async test "max_matches_multi_line1" {
   let matcher = @grep_regex.RegexMatcher::new("(?s:.{0})Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .multi_line(true)
@@ -978,9 +969,7 @@ async test "max_matches_multi_line1" {
 async test "max_matches_multi_line2" {
   let matcher = @grep_regex.RegexMatcher::new("(?s)Watson.+?(Holmeses|clearly)")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .multi_line(true)
@@ -999,9 +988,7 @@ async test "max_matches_multi_line2" {
 async test "max_matches_multi_line3" {
   let matcher = @grep_regex.RegexMatcher::new("line 2\\nline 3")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .multi_line(true)
@@ -1034,9 +1021,7 @@ async test "max_matches_multi_line3" {
 async test "max_matches_multi_line4" {
   let matcher = @grep_regex.RegexMatcher::new("line 2\\nline 3|x\\nline 2\\n")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .multi_line(true)
@@ -1069,10 +1054,11 @@ async test "max_matches_multi_line4" {
 async test "only_matching" {
   let matcher = @grep_regex.RegexMatcher::new("Doctor Watsons|Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .only_matching(true)
-    .column(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    only_matching=true,
+    column=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .build()
@@ -1092,10 +1078,11 @@ async test "only_matching_multi_line1" {
     "(?s:.{0})(Doctor Watsons|Sherlock)",
   )
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .only_matching(true)
-    .column(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    only_matching=true,
+    column=true,
+  )
   @searcher.SearcherBuilder::new()
   .multi_line(true)
   .line_number(true)
@@ -1114,10 +1101,11 @@ async test "only_matching_multi_line1" {
 async test "only_matching_multi_line2" {
   let matcher = @grep_regex.RegexMatcher::new("(?s)Watson.+?(Holmeses|clearly)")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .only_matching(true)
-    .column(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    only_matching=true,
+    column=true,
+  )
   @searcher.SearcherBuilder::new()
   .multi_line(true)
   .line_number(true)
@@ -1137,11 +1125,12 @@ async test "only_matching_multi_line2" {
 async test "only_matching_max_columns" {
   let matcher = @grep_regex.RegexMatcher::new("Doctor Watsons|Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .only_matching(true)
-    .max_columns(Some(10))
-    .column(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    only_matching=true,
+    max_columns=Some(10),
+    column=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .build()
@@ -1159,12 +1148,13 @@ async test "only_matching_max_columns" {
 async test "only_matching_max_columns_preview" {
   let matcher = @grep_regex.RegexMatcher::new("Doctor Watsons|Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .only_matching(true)
-    .max_columns(Some(10))
-    .max_columns_preview(true)
-    .column(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    only_matching=true,
+    max_columns=Some(10),
+    max_columns_preview=true,
+    column=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .build()
@@ -1188,11 +1178,12 @@ async test "only_matching_max_columns_multi_line1" {
     "(?s:.{0})(Doctor Watsons|Sherlock)",
   )
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .only_matching(true)
-    .max_columns(Some(10))
-    .column(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    only_matching=true,
+    max_columns=Some(10),
+    column=true,
+  )
   @searcher.SearcherBuilder::new()
   .multi_line(true)
   .line_number(true)
@@ -1217,12 +1208,13 @@ async test "only_matching_max_columns_preview_multi_line1" {
     "(?s:.{0})(Doctor Watsons|Sherlock)",
   )
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .only_matching(true)
-    .max_columns(Some(10))
-    .max_columns_preview(true)
-    .column(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    only_matching=true,
+    max_columns=Some(10),
+    max_columns_preview=true,
+    column=true,
+  )
   @searcher.SearcherBuilder::new()
   .multi_line(true)
   .line_number(true)
@@ -1241,11 +1233,12 @@ async test "only_matching_max_columns_preview_multi_line1" {
 async test "only_matching_max_columns_multi_line2" {
   let matcher = @grep_regex.RegexMatcher::new("(?s)Watson.+?(Holmeses|clearly)")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .only_matching(true)
-    .max_columns(Some(50))
-    .column(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    only_matching=true,
+    max_columns=Some(50),
+    column=true,
+  )
   @searcher.SearcherBuilder::new()
   .multi_line(true)
   .line_number(true)
@@ -1265,12 +1258,13 @@ async test "only_matching_max_columns_multi_line2" {
 async test "only_matching_max_columns_preview_multi_line2" {
   let matcher = @grep_regex.RegexMatcher::new("(?s)Watson.+?(Holmeses|clearly)")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .only_matching(true)
-    .max_columns(Some(50))
-    .max_columns_preview(true)
-    .column(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    only_matching=true,
+    max_columns=Some(50),
+    max_columns_preview=true,
+    column=true,
+  )
   @searcher.SearcherBuilder::new()
   .multi_line(true)
   .line_number(true)
@@ -1290,10 +1284,11 @@ async test "only_matching_max_columns_preview_multi_line2" {
 async test "per_match" {
   let matcher = @grep_regex.RegexMatcher::new("Doctor Watsons|Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .per_match(true)
-    .column(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    per_match=true,
+    column=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .build()
@@ -1313,10 +1308,11 @@ async test "per_match_multi_line1" {
     "(?s:.{0})(Doctor Watsons|Sherlock)",
   )
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .per_match(true)
-    .column(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    per_match=true,
+    column=true,
+  )
   @searcher.SearcherBuilder::new()
   .multi_line(true)
   .line_number(true)
@@ -1335,10 +1331,11 @@ async test "per_match_multi_line1" {
 async test "per_match_multi_line2" {
   let matcher = @grep_regex.RegexMatcher::new("(?s)Watson.+?(Holmeses|clearly)")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .per_match(true)
-    .column(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    per_match=true,
+    column=true,
+  )
   @searcher.SearcherBuilder::new()
   .multi_line(true)
   .line_number(true)
@@ -1360,10 +1357,11 @@ async test "per_match_multi_line3" {
     "(?s)Watson.+?Holmeses|always.+?be",
   )
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .per_match(true)
-    .column(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    per_match=true,
+    column=true,
+  )
   @searcher.SearcherBuilder::new()
   .multi_line(true)
   .line_number(true)
@@ -1385,11 +1383,12 @@ async test "per_match_multi_line1_only_first_line" {
     "(?s:.{0})(Doctor Watsons|Sherlock)",
   )
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .per_match(true)
-    .per_match_one_line(true)
-    .column(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    per_match=true,
+    per_match_one_line=true,
+    column=true,
+  )
   @searcher.SearcherBuilder::new()
   .multi_line(true)
   .line_number(true)
@@ -1408,11 +1407,12 @@ async test "per_match_multi_line1_only_first_line" {
 async test "per_match_multi_line2_only_first_line" {
   let matcher = @grep_regex.RegexMatcher::new("(?s)Watson.+?(Holmeses|clearly)")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .per_match(true)
-    .per_match_one_line(true)
-    .column(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    per_match=true,
+    per_match_one_line=true,
+    column=true,
+  )
   @searcher.SearcherBuilder::new()
   .multi_line(true)
   .line_number(true)
@@ -1432,11 +1432,12 @@ async test "per_match_multi_line3_only_first_line" {
     "(?s)Watson.+?Holmeses|always.+?be",
   )
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .per_match(true)
-    .per_match_one_line(true)
-    .column(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    per_match=true,
+    per_match_one_line=true,
+    column=true,
+  )
   @searcher.SearcherBuilder::new()
   .multi_line(true)
   .line_number(true)
@@ -1454,9 +1455,10 @@ async test "per_match_multi_line3_only_first_line" {
 async test "replacement_passthru" {
   let matcher = @grep_regex.RegexMatcher::new("Sherlock|Doctor (\\w+)")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .replacement(Some(b"doctah $1 MD"))
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    replacement=Some(b"doctah $1 MD"),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .passthru(true)
@@ -1478,9 +1480,10 @@ async test "replacement_passthru" {
 async test "replacement" {
   let matcher = @grep_regex.RegexMatcher::new("Sherlock|Doctor (\\w+)")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .replacement(Some(b"doctah $1 MD"))
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    replacement=Some(b"doctah $1 MD"),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .build()
@@ -1498,9 +1501,10 @@ async test "replacement" {
 async test "replacement_multi_line" {
   let matcher = @grep_regex.RegexMatcher::new("\\n")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .replacement(Some(b"?"))
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    replacement=Some(b"?"),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .multi_line(true)
@@ -1531,9 +1535,10 @@ async test "replacement_multi_line_diff_line_term" {
     .line_terminator(Some(b'\x00'))
     .build("\\n")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .replacement(Some(b"?"))
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    replacement=Some(b"?"),
+  )
   @searcher.SearcherBuilder::new()
   .line_terminator(@matcher.LineTerminator::byte(b'\x00'))
   .line_number(true)
@@ -1561,9 +1566,10 @@ async test "replacement_multi_line_diff_line_term" {
 async test "replacement_multi_line_combine_lines" {
   let matcher = @grep_regex.RegexMatcher::new("\\n(.)?")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .replacement(Some(b"?$1"))
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    replacement=Some(b"?$1"),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .multi_line(true)
@@ -1592,10 +1598,11 @@ async test "replacement_multi_line_combine_lines" {
 async test "replacement_max_columns" {
   let matcher = @grep_regex.RegexMatcher::new("Sherlock|Doctor (\\w+)")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .max_columns(Some(67))
-    .replacement(Some(b"doctah $1 MD"))
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    max_columns=Some(67),
+    replacement=Some(b"doctah $1 MD"),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .build()
@@ -1613,11 +1620,12 @@ async test "replacement_max_columns" {
 async test "replacement_max_columns_preview1" {
   let matcher = @grep_regex.RegexMatcher::new("Sherlock|Doctor (\\w+)")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .max_columns(Some(67))
-    .max_columns_preview(true)
-    .replacement(Some(b"doctah $1 MD"))
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    max_columns=Some(67),
+    max_columns_preview=true,
+    replacement=Some(b"doctah $1 MD"),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .build()
@@ -1635,11 +1643,12 @@ async test "replacement_max_columns_preview1" {
 async test "replacement_max_columns_preview2" {
   let matcher = @grep_regex.RegexMatcher::new("exhibited|dusted|has to have it")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .max_columns(Some(43))
-    .max_columns_preview(true)
-    .replacement(Some(b"xxx"))
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    max_columns=Some(43),
+    max_columns_preview=true,
+    replacement=Some(b"xxx"),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .build()
@@ -1656,10 +1665,11 @@ async test "replacement_max_columns_preview2" {
 async test "replacement_only_matching" {
   let matcher = @grep_regex.RegexMatcher::new("Sherlock|Doctor (\\w+)")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .only_matching(true)
-    .replacement(Some(b"doctah $1 MD"))
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    only_matching=true,
+    replacement=Some(b"doctah $1 MD"),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .build()
@@ -1678,10 +1688,11 @@ async test "replacement_only_matching" {
 async test "replacement_per_match" {
   let matcher = @grep_regex.RegexMatcher::new("Sherlock|Doctor (\\w+)")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .per_match(true)
-    .replacement(Some(b"doctah $1 MD"))
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    per_match=true,
+    replacement=Some(b"doctah $1 MD"),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .build()
@@ -1700,9 +1711,7 @@ async test "replacement_per_match" {
 async test "invert" {
   let matcher = @grep_regex.RegexMatcher::new("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .invert_match(true)
@@ -1722,9 +1731,7 @@ async test "invert" {
 async test "invert_multi_line" {
   let matcher = @grep_regex.RegexMatcher::new("(?s:.{0})Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   @searcher.SearcherBuilder::new()
   .multi_line(true)
   .line_number(true)
@@ -1745,9 +1752,7 @@ async test "invert_multi_line" {
 async test "invert_context" {
   let matcher = @grep_regex.RegexMatcher::new("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .invert_match(true)
@@ -1771,9 +1776,7 @@ async test "invert_context" {
 async test "invert_context_multi_line" {
   let matcher = @grep_regex.RegexMatcher::new("(?s:.{0})Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   @searcher.SearcherBuilder::new()
   .multi_line(true)
   .line_number(true)
@@ -1798,9 +1801,10 @@ async test "invert_context_multi_line" {
 async test "invert_context_only_matching" {
   let matcher = @grep_regex.RegexMatcher::new("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .only_matching(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    only_matching=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .invert_match(true)
@@ -1824,9 +1828,10 @@ async test "invert_context_only_matching" {
 async test "invert_context_only_matching_multi_line" {
   let matcher = @grep_regex.RegexMatcher::new("(?s:.{0})Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .only_matching(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    only_matching=true,
+  )
   @searcher.SearcherBuilder::new()
   .multi_line(true)
   .line_number(true)
@@ -1851,9 +1856,10 @@ async test "invert_context_only_matching_multi_line" {
 async test "regression_search_empty_with_crlf" {
   let matcher = @grep_regex.RegexMatcherBuilder::new().crlf(true).build("x?")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+  )
   @searcher.SearcherBuilder::new()
   .line_terminator(@matcher.LineTerminator::crlf())
   .build()
@@ -1879,9 +1885,7 @@ async test "regression_after_context_with_match" {
     #|
   let matcher = @grep_regex.RegexMatcherBuilder::new().build("d")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   @searcher.SearcherBuilder::new()
   .max_matches(Some(1))
   .line_number(true)
@@ -1902,9 +1906,7 @@ async test "regression_crlf_preserve" {
   let haystack = "hello\nworld\r\n"
   let matcher = @grep_regex.RegexMatcherBuilder::new().crlf(true).build(".")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new().build(
-    @termcolor.NoColor::new(out),
-  )
+  let printer = @printer.Standard::new(@termcolor.NoColor::new(out))
   let searcher = @searcher.SearcherBuilder::new()
     .line_number(false)
     .line_terminator(@matcher.LineTerminator::crlf())
@@ -1918,9 +1920,10 @@ async test "regression_crlf_preserve" {
   let expected = "hello\nworld\r\n"
   assert_eq(got, expected)
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .replacement(Some(b"$0"))
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    replacement=Some(b"$0"),
+  )
   searcher.search_reader(
     matcher,
     reader(str_bytes(haystack)),

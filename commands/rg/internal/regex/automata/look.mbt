@@ -1,6 +1,6 @@
 ///|
 /// Returns true if the byte is an ASCII word byte (`[0-9A-Za-z_]`).
-pub fn is_word_byte(b : Int32) -> Bool {
+fn is_word_byte(b : Int32) -> Bool {
   (b >= 'a' && b <= 'z') ||
   (b >= 'A' && b <= 'Z') ||
   (b >= '0' && b <= '9') ||
@@ -95,7 +95,7 @@ fn is_word_char_rev(hay : FixedArray[Byte], hs : Int32, at : Int32) -> Bool {
 ///|
 /// Returns true if the look-around assertion is satisfied at position `at`
 /// in the haystack `hay[hs:he]`. Positions are absolute indices into `hay`.
-pub fn look_matches(
+fn look_matches(
   look : @syntax.Look,
   hay : FixedArray[Byte],
   hs : Int32,

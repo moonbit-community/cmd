@@ -97,12 +97,16 @@ fn file_type(kind : @fs.FileKind) -> FileType {
 
 ///|
 async fn stat(path : String, follow : Bool) -> Metadata {
-  let kind = @fs.kind(path, follow_symlink=follow) catch {
+  let entry = @fswalk.Entry::read(path, follow_symlink=follow) catch {
     e => raise io_error(e)
   }
-  // Size is defined for regular files. Other kinds carry no byte-length claim.
-  let len = if kind is Regular { file_len(path) } else { -1L }
-  { file_type: file_type(kind), len, dev: None, ino: None, }
+  let len = entry.regular_size(ResolvedPath) catch { e => raise io_error(e) }
+  {
+    file_type: file_type(entry.kind),
+    len: len.unwrap_or(-1L),
+    dev: None,
+    ino: None,
+  }
 }
 
 ///|
@@ -116,15 +120,10 @@ pub async fn symlink_metadata(path : String) -> Metadata {
 }
 
 ///|
-pub async fn read_dir(path : String) -> Array[DirEntry] {
-  let dir = @fs.opendir(path) catch { e => raise io_error(e) }
-  defer dir.close()
-  let entries : Array[DirEntry] = []
-  while (dir.next(include_hidden=true) catch { e => raise io_error(e) })
-        is Some(entry) {
-    entries.push({ name: entry.name, file_type: None, })
+pub async fn read_dir(path : String) -> Array[String] {
+  @fswalk.read_directory(path) catch {
+    e => raise io_error(e)
   }
-  entries
 }
 
 ///|

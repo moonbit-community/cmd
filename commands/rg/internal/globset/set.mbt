@@ -7,14 +7,6 @@ pub struct GlobSet {
 }
 
 ///|
-/// Create a new [`GlobSetBuilder`]. A `GlobSetBuilder` can be used to add
-/// new patterns. Once all patterns have been added, `build` should be
-/// called to produce a `GlobSet`, which can then be used for matching.
-pub fn GlobSet::builder() -> GlobSetBuilder {
-  GlobSetBuilder::new()
-}
-
-///|
 /// Create an empty `GlobSet`. An empty set matches nothing.
 pub fn GlobSet::empty() -> GlobSet {
   { len: 0, strats: [], }
@@ -48,7 +40,7 @@ pub fn GlobSet::is_match(self : GlobSet, path : String) -> Bool {
 ///
 /// This takes a Candidate as input, which can be used to amortize the
 /// cost of preparing a path for matching.
-pub fn GlobSet::is_match_candidate(self : GlobSet, path : Candidate) -> Bool {
+fn GlobSet::is_match_candidate(self : GlobSet, path : Candidate) -> Bool {
   if self.is_empty() {
     return false
   }
@@ -77,7 +69,7 @@ pub fn GlobSet::matches_all(self : GlobSet, path : String) -> Bool {
 ///
 /// This will return true if the set of globs is empty, as in that case all
 /// `0` of the globs will match.
-pub fn GlobSet::matches_all_candidate(self : GlobSet, path : Candidate) -> Bool {
+fn GlobSet::matches_all_candidate(self : GlobSet, path : Candidate) -> Bool {
   for strat in self.strats {
     if !strat.matches_all(path) {
       return false

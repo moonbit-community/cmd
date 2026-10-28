@@ -83,18 +83,19 @@ async fn RawEntry::ino(self : RawEntry) -> UInt64? {
 async fn RawEntry::from_entry(
   depth : Int32,
   dir : String,
-  ent : @sys.DirEntry,
+  name : String,
   from_walkdir : Bool,
 ) -> RawEntry {
-  let path = path_join(dir, ent.name)
-  let (ty, ino) : (@sys.FileType, UInt64?) = match ent.file_type {
-    Some(ty) => (ty, None)
-    None => {
-      let md = @sys.symlink_metadata(path)
-      (md.file_type, md.ino)
-    }
+  let path = path_join(dir, name)
+  let md = @sys.symlink_metadata(path)
+  {
+    path,
+    ty: md.file_type,
+    follow_link: false,
+    depth,
+    ino: md.ino,
+    from_walkdir,
   }
-  { path, ty, follow_link: false, depth, ino, from_walkdir, }
 }
 
 ///|
@@ -411,7 +412,7 @@ async fn WalkDirIter::push(
     Ok(list) => {
       let mapped = []
       for ent in list {
-        let path = path_join(dent.path, ent.name)
+        let path = path_join(dent.path, ent)
         let entry = match
           (Ok(RawEntry::from_entry(depth + 1, dent.path, ent, true)) catch {
             e => Err(e)

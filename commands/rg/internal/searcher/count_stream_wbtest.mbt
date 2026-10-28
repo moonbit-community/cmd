@@ -1,0 +1,114 @@
+///|
+priv struct FragmentedCountInput {
+  inner : SliceReader
+  chunk : Int32
+}
+
+///|
+impl Reader for FragmentedCountInput with fn read(self, buf, start, len) {
+  Reader::read(self.inner, buf, start, len.min(self.chunk))
+}
+
+///|
+async test "counting agrees across fragmented literals alternatives decoding and final records" {
+  let inputs = [
+    b"",
+    b"\n",
+    b"ab\nc\nabc",
+    b"abc\nabc",
+    b"abc\r\nabc\x00ab\n",
+    b"\xffabc\n",
+    @utf8.encode("甲乙\n甲\n乙\n"),
+    b"\xff\xfea\x00b\x00c\x00\n\x00a\x00b\x00c\x00",
+  ]
+  for
+    pattern in [
+      "abc", "a|abc", "abc|b", "[ab]c", "甲乙", "^abc$", "(abc)", "", "a.*c",
+    ] {
+    let matcher = @grep_regex.RegexMatcherBuilder::new()
+      .line_terminator(Some(b'\n'))
+      .build(pattern)
+    for input in inputs {
+      for chunk in [1, 2, 3, 7, 262144] {
+        let results : Array[(Int64, Int64)] = []
+        for aggregate in [false, true] {
+          let sink : CountSummary = {
+            aggregate,
+            matches: 0,
+            batches: 0,
+            individual: 0,
+            finish: None,
+          }
+          let reader : FragmentedCountInput = {
+            inner: SliceReader::from_bytes(input),
+            chunk,
+          }
+          SearcherBuilder::new().build().search_reader(matcher, reader, sink)
+          results.push((sink.matches, sink.finish.unwrap().byte_count))
+        }
+        assert_eq(results[0], results[1], msg=pattern)
+      }
+    }
+  }
+}
+
+///|
+async test "counting preserves matches crossing bulk windows and long unmatched records" {
+  let matcher = @grep_regex.RegexMatcherBuilder::new()
+    .line_terminator(Some(b'\n'))
+    .build("abc")
+  for offset in [262142, 262143, 262144] {
+    let input = Bytes::make(offset, b'x') +
+      b"abc\n" +
+      Bytes::make(1048576, b'x') +
+      b"\nabc"
+    let results : Array[(Int64, Int64)] = []
+    for aggregate in [false, true] {
+      let sink : CountSummary = {
+        aggregate,
+        matches: 0,
+        batches: 0,
+        individual: 0,
+        finish: None,
+      }
+      SearcherBuilder::new()
+      .build()
+      .search_reader(matcher, SliceReader::from_bytes(input), sink)
+      results.push((sink.matches, sink.finish.unwrap().byte_count))
+    }
+    assert_eq(results[0], (2L, input.length().to_int64()))
+    assert_eq(results[0], results[1])
+  }
+}
+
+///|
+async test "counting does not bypass an explicit heap limit" {
+  let matcher = @grep_regex.RegexMatcherBuilder::new()
+    .line_terminator(Some(b'\n'))
+    .build("hit")
+  for aggregate in [false, true] {
+    let sink : CountSummary = {
+      aggregate,
+      matches: 0,
+      batches: 0,
+      individual: 0,
+      finish: None,
+    }
+    let failed = try {
+      SearcherBuilder::new()
+      .heap_limit(Some(32))
+      .build()
+      .search_reader(
+        matcher,
+        SliceReader::from_bytes(Bytes::make(128, b'x') + b"hit"),
+        sink,
+      )
+      false
+    } catch {
+      _ => true
+    }
+    assert_true(failed)
+    assert_eq(sink.matches, 0L)
+    assert_true(sink.finish is None)
+  }
+}

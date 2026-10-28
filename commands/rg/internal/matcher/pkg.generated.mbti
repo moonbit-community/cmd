@@ -27,10 +27,7 @@ pub fn[M : Matcher] replace_with_captures_at(M, FixedArray[Byte], Int32, Int32, 
 pub struct ByteSet {
   // private fields
 }
-pub fn ByteSet::add(Self, Byte) -> Unit
-pub fn ByteSet::add_all(Self, Byte, Byte) -> Unit
 pub fn ByteSet::contains(Self, Byte) -> Bool
-pub fn ByteSet::empty() -> Self
 pub fn ByteSet::full() -> Self
 pub fn ByteSet::remove(Self, Byte) -> Unit
 pub fn ByteSet::remove_all(Self, Byte, Byte) -> Unit
@@ -39,11 +36,8 @@ pub impl @debug.Debug for ByteSet
 pub struct Captures {
   slots : FixedArray[Int32]
 }
-pub fn Captures::as_match(Self) -> Match
 pub fn Captures::get(Self, Int32) -> Match?
 pub fn Captures::interpolate(Self, (String) -> Int32?, FixedArray[Byte], Int32, Bytes, @buffer.Buffer) -> Unit
-pub fn Captures::is_empty(Self) -> Bool
-pub fn Captures::len(Self) -> Int32
 pub fn Captures::new(Int32) -> Self
 
 pub(all) enum LineMatchKind {
@@ -73,12 +67,13 @@ pub fn Match::new(Int32, Int32) -> Self
 pub fn Match::offset(Self, Int32) -> Self
 pub fn Match::with_end(Self, Int32) -> Self
 pub fn Match::with_start(Self, Int32) -> Self
-pub fn Match::zero(Int32) -> Self
 
 // Type aliases
 
 // Traits
 pub(open) trait Matcher {
+  fn literal_overlap(Self, Byte) -> Int32? = _
+  fn count_matching_lines(Self, FixedArray[Byte], Int32, Int32, Byte) -> Int64? = _
   fn find_at(Self, FixedArray[Byte], Int32, Int32, Int32) -> Match?
   fn new_captures(Self) -> Captures
   fn capture_count(Self) -> Int32 = _

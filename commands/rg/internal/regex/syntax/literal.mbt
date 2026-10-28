@@ -12,12 +12,7 @@ pub fn Lit::exact(bytes : Bytes) -> Lit {
 }
 
 ///|
-pub fn Lit::inexact(bytes : Bytes) -> Lit {
-  { bytes, exact: false, }
-}
-
-///|
-pub fn Lit::len(self : Lit) -> Int32 {
+fn Lit::len(self : Lit) -> Int32 {
   self.bytes.length()
 }
 
@@ -143,18 +138,6 @@ pub fn Seq::min_literal_len(self : Seq) -> Int32? {
 }
 
 ///|
-pub fn Seq::max_literal_len(self : Seq) -> Int32? {
-  guard self.lits is Some(lits) && lits.length() > 0 else { return None }
-  let mut m = lits[0].len()
-  for l in lits {
-    if l.len() > m {
-      m = l.len()
-    }
-  }
-  Some(m)
-}
-
-///|
 pub fn Seq::max_union_len(self : Seq, other : Seq) -> Int32? {
   match (self.len(), other.len()) {
     (Some(a), Some(b)) => Some(a + b)
@@ -190,30 +173,6 @@ pub fn Seq::dedup(self : Seq) -> Unit {
 }
 
 ///|
-pub fn Seq::sort(self : Seq) -> Unit {
-  guard self.lits is Some(lits) else { return }
-  lits.sort_by((a, b) => {
-    let c = compare_bytes(a.bytes, b.bytes)
-    if c != 0 {
-      c
-    } else {
-      a.exact.compare(b.exact)
-    }
-  })
-}
-
-///|
-fn compare_bytes(a : Bytes, b : Bytes) -> Int32 {
-  let n = if a.length() < b.length() { a.length() } else { b.length() }
-  for i in 0..<n {
-    if a[i] != b[i] {
-      return a[i].to_int() - b[i].to_int()
-    }
-  }
-  a.length() - b.length()
-}
-
-///|
 pub fn Seq::keep_first_bytes(self : Seq, len : Int32) -> Unit {
   guard self.lits is Some(lits) else { return }
   for i in 0..<lits.length() {
@@ -222,7 +181,7 @@ pub fn Seq::keep_first_bytes(self : Seq, len : Int32) -> Unit {
 }
 
 ///|
-pub fn Seq::keep_last_bytes(self : Seq, len : Int32) -> Unit {
+fn Seq::keep_last_bytes(self : Seq, len : Int32) -> Unit {
   guard self.lits is Some(lits) else { return }
   for i in 0..<lits.length() {
     lits[i] = lits[i].keep_last(len)
@@ -285,7 +244,7 @@ pub fn Seq::cross_forward(self : Seq, other : Seq) -> Unit {
 
 ///|
 /// Like `cross_forward`, but prepends `other`'s literals.
-pub fn Seq::cross_reverse(self : Seq, other : Seq) -> Unit {
+fn Seq::cross_reverse(self : Seq, other : Seq) -> Unit {
   guard self.cross_preamble(other) is Some((lits1, lits2)) else { return }
   let out = []
   for i, otherlit in lits2 {
@@ -322,7 +281,7 @@ pub fn Seq::union(self : Seq, other : Seq) -> Unit {
 }
 
 ///|
-pub fn Seq::longest_common_prefix(self : Seq) -> Bytes? {
+fn Seq::longest_common_prefix(self : Seq) -> Bytes? {
   guard self.lits is Some(lits) && lits.length() > 0 else { return None }
   let base = lits[0].bytes
   let mut len = base.length()
@@ -341,7 +300,7 @@ pub fn Seq::longest_common_prefix(self : Seq) -> Bytes? {
 }
 
 ///|
-pub fn Seq::longest_common_suffix(self : Seq) -> Bytes? {
+fn Seq::longest_common_suffix(self : Seq) -> Bytes? {
   guard self.lits is Some(lits) && lits.length() > 0 else { return None }
   let base = lits[0].bytes
   let mut len = base.length()
@@ -413,20 +372,8 @@ fn preference_minimize(lits : Array[Lit], keep_exact : Bool) -> Array[Lit] {
 }
 
 ///|
-pub fn Seq::minimize_by_preference(self : Seq) -> Unit {
-  if self.lits is Some(lits) {
-    self.lits = Some(preference_minimize(lits, false))
-  }
-}
-
-///|
 pub fn Seq::optimize_for_prefix_by_preference(self : Seq) -> Unit {
   self.optimize_by_preference(true)
-}
-
-///|
-pub fn Seq::optimize_for_suffix_by_preference(self : Seq) -> Unit {
-  self.optimize_by_preference(false)
 }
 
 ///|

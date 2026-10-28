@@ -50,78 +50,88 @@ fn Paths::is_only_stdin(self : Paths) -> Bool {
 }
 
 ///|
-/// High level arguments derived from the low level flags.
-pub struct HiArgs {
-  priv mode : Mode
-  priv patterns : Array[String]
-  priv paths : Paths
-  /// Whether files are searched as a whole, like ripgrep does when it uses
-  /// memory maps (which changes binary detection; see `MmapChoice`).
-  priv mmap : Bool
-  priv binary : BinaryDetectionPair
-  priv boundary : BoundaryMode?
-  priv buffer : BufferMode
-  priv byte_offset : Bool
-  priv case : CaseMode
-  priv color : ColorChoice
-  priv colors : @printer.ColorSpecs
-  priv column : Bool
-  priv context : ContextMode
-  priv context_separator : Bytes?
-  priv crlf : Bool
-  priv cwd : String
-  priv dfa_size_limit : UInt64?
-  priv encoding : EncodingMode
-  priv engine : EngineChoice
-  priv field_context_separator : Bytes
-  priv field_match_separator : Bytes
-  priv file_separator : Bytes?
-  priv fixed_strings : Bool
-  priv follow : Bool
-  priv globs : @ignore.Override
-  priv heading : Bool
-  priv hidden : Bool
-  priv hyperlink_config : @printer.HyperlinkConfig
-  priv ignore_file_case_insensitive : Bool
-  priv ignore_file : Array[String]
-  priv include_zero : Bool
-  priv invert_match : Bool
-  priv is_terminal_stdout : Bool
-  priv line_number : Bool
-  priv max_columns : UInt64?
-  priv max_columns_preview : Bool
-  priv max_count : UInt64?
-  priv max_depth : Int32?
-  priv max_filesize : UInt64?
-  priv multiline : Bool
-  priv multiline_dotall : Bool
-  priv no_ignore_dot : Bool
-  priv no_ignore_exclude : Bool
-  priv no_ignore_files : Bool
-  priv no_ignore_global : Bool
-  priv no_ignore_parent : Bool
-  priv no_ignore_vcs : Bool
-  priv no_require_git : Bool
-  priv no_unicode : Bool
-  priv null_data : Bool
-  priv one_file_system : Bool
-  priv only_matching : Bool
-  priv path_separator : Byte?
-  priv path_terminator : Byte?
-  priv pre : String?
-  priv pre_globs : @ignore.Override
-  priv quiet : Bool
-  priv quit_after_match : Bool
-  priv regex_size_limit : UInt64?
-  priv replace : Bytes?
-  priv sort : SortMode?
-  priv stats : @printer.Stats?
-  priv stop_on_nonmatch : Bool
-  priv threads : Int32
-  priv trim : Bool
-  priv types : @ignore.Types
-  priv vimgrep : Bool
-  priv with_filename : Bool
+priv struct ExecutionPlan {
+  mode : Mode
+  search : SearchPlan
+  input : InputPlan
+  output : OutputPlan
+}
+
+///|
+priv struct SearchPlan {
+  patterns : Array[String]
+  binary : BinaryDetectionPair
+  boundary : BoundaryMode?
+  case : CaseMode
+  context : ContextMode
+  crlf : Bool
+  dfa_size_limit : UInt64?
+  encoding : EncodingMode
+  engine : EngineChoice
+  fixed_strings : Bool
+  invert_match : Bool
+  max_count : UInt64?
+  multiline : Bool
+  multiline_dotall : Bool
+  no_unicode : Bool
+  null_data : Bool
+  regex_size_limit : UInt64?
+  stop_on_nonmatch : Bool
+}
+
+///|
+priv struct InputPlan {
+  paths : Paths
+  cwd : String
+  follow : Bool
+  globs : @ignore.Override
+  hidden : Bool
+  ignore_file_case_insensitive : Bool
+  ignore_file : Array[String]
+  max_depth : Int32?
+  max_filesize : UInt64?
+  no_ignore_dot : Bool
+  no_ignore_exclude : Bool
+  no_ignore_files : Bool
+  no_ignore_global : Bool
+  no_ignore_parent : Bool
+  no_ignore_vcs : Bool
+  no_require_git : Bool
+  one_file_system : Bool
+  pre : String?
+  pre_globs : @ignore.Override
+  sort : SortMode?
+  types : @ignore.Types
+}
+
+///|
+priv struct OutputPlan {
+  buffer : BufferMode
+  byte_offset : Bool
+  color : ColorChoice
+  colors : @printer.ColorSpecs
+  column : Bool
+  context_separator : Bytes?
+  field_context_separator : Bytes
+  field_match_separator : Bytes
+  file_separator : Bytes?
+  heading : Bool
+  hyperlink_config : @printer.HyperlinkConfig
+  include_zero : Bool
+  is_terminal_stdout : Bool
+  line_number : Bool
+  max_columns : UInt64?
+  max_columns_preview : Bool
+  only_matching : Bool
+  path_separator : Byte?
+  path_terminator : Byte?
+  quiet : Bool
+  quit_after_match : Bool
+  replace : Bytes?
+  stats : Bool
+  trim : Bool
+  vimgrep : Bool
+  with_filename : Bool
 }
 
 ///|
@@ -201,13 +211,6 @@ async fn is_dir_path(path : String) -> Bool {
 }
 
 ///|
-async fn is_file_path(path : String) -> Bool {
-  @sys.metadata(path).is_file() catch {
-    _ => false
-  }
-}
-
-///|
 async fn paths_from_low(state : State, low : LowArgs) -> Paths {
   let paths = []
   for path in low.positional {
@@ -249,7 +252,9 @@ async fn paths_from_low(state : State, low : LowArgs) -> Paths {
 ///|
 fn types_from_low(low : LowArgs) -> @ignore.Types raise RgError {
   let builder = @ignore.TypesBuilder::new()
-  ignore(builder.add_defaults())
+  if !low.type_changes.is_empty() || low.mode is Types {
+    ignore(builder.add_defaults())
+  }
   for change in low.type_changes {
     match change {
       Clear(name) => ignore(builder.clear(name))
@@ -308,14 +313,8 @@ fn preprocessor_globs_from_low(
 }
 
 ///|
-fn stats_from_low(low : LowArgs) -> @printer.Stats? {
-  if !(low.mode is Search(_)) {
-    return None
-  }
-  if low.stats || low.mode is Search(JSON) {
-    return Some(@printer.Stats::new())
-  }
-  None
+fn stats_from_low(low : LowArgs) -> Bool {
+  low.mode is Search(_) && (low.stats || low.mode is Search(JSON))
 }
 
 ///|
@@ -410,8 +409,8 @@ async fn sort_supported(sort : SortMode) -> Unit {
 }
 
 ///|
-/// Converts low level arguments into high level arguments.
-pub async fn HiArgs::from_low_args(low : LowArgs) -> HiArgs {
+/// Validate raw arguments and freeze search, input and output policy before execution.
+async fn ExecutionPlan::from_low_args(low : LowArgs) -> ExecutionPlan {
   if low.search_zip {
     raise RgError("compressed search (-z/--search-zip) is deferred in cli/rg")
   }
@@ -441,26 +440,6 @@ pub async fn HiArgs::from_low_args(low : LowArgs) -> HiArgs {
   let patterns = patterns_from_low(state, low)
   let paths = paths_from_low(state, low)
   let binary = BinaryDetectionPair::from_low(low)
-  let mmap = if @sys.mmap_supported() {
-    match low.mmap {
-      // If we're only searching a few paths and all of them are files, then
-      // memory maps are probably faster.
-      Auto => {
-        let mut all_files = paths.paths.length() <= 10
-        for path in paths.paths {
-          if !all_files {
-            break
-          }
-          all_files = is_file_path(path)
-        }
-        all_files
-      }
-      AlwaysTryMmap => true
-      Never => false
-    }
-  } else {
-    false
-  }
   let colors = color_specs_from_low(low)
   let hyperlink_config = hyperlink_config_from_low(low)
   let stats = stats_from_low(low)
@@ -478,15 +457,7 @@ pub async fn HiArgs::from_low_args(low : LowArgs) -> HiArgs {
     Some(true) => !low.vimgrep
   }
   let path_terminator = if low.null { Some(b'\x00') } else { None }
-  let quit_after_match = stats is None && low.quiet
-  let threads = if low.sort is Some(_) || paths.is_one_file {
-    1
-  } else {
-    match low.threads {
-      Some(t) => t
-      None => 1
-    }
-  }
+  let quit_after_match = !stats && low.quiet
   let with_filename = match low.with_filename {
     Some(b) => b
     None => low.vimgrep || !paths.is_one_file
@@ -532,73 +503,77 @@ pub async fn HiArgs::from_low_args(low : LowArgs) -> HiArgs {
   }
   {
     mode: low.mode,
-    patterns,
-    paths,
-    mmap,
-    binary,
-    boundary: low.boundary,
-    buffer: low.buffer,
-    byte_offset: low.byte_offset,
-    case: low.case,
-    color,
-    colors,
-    column,
-    context: low.context,
-    context_separator: low.context_separator,
-    crlf: low.crlf,
-    cwd: state.cwd,
-    dfa_size_limit: low.dfa_size_limit,
-    encoding: low.encoding,
-    engine: low.engine,
-    field_context_separator: low.field_context_separator,
-    field_match_separator: low.field_match_separator,
-    file_separator,
-    fixed_strings: low.fixed_strings,
-    follow: low.follow,
-    globs,
-    heading,
-    hidden: low.hidden,
-    hyperlink_config,
-    ignore_file_case_insensitive: low.ignore_file_case_insensitive,
-    ignore_file: low.ignore_file,
-    include_zero: low.include_zero,
-    invert_match: low.invert_match,
-    is_terminal_stdout: state.is_terminal_stdout,
-    line_number,
-    max_columns: low.max_columns,
-    max_columns_preview: low.max_columns_preview,
-    max_count: low.max_count,
-    max_depth: low.max_depth,
-    max_filesize: low.max_filesize,
-    multiline: low.multiline,
-    multiline_dotall: low.multiline_dotall,
-    no_ignore_dot: low.no_ignore_dot,
-    no_ignore_exclude: low.no_ignore_exclude,
-    no_ignore_files: low.no_ignore_files,
-    no_ignore_global: low.no_ignore_global,
-    no_ignore_parent: low.no_ignore_parent,
-    no_ignore_vcs: low.no_ignore_vcs,
-    no_require_git: low.no_require_git,
-    no_unicode: low.no_unicode,
-    null_data: low.null_data,
-    one_file_system: low.one_file_system,
-    only_matching: low.only_matching,
-    path_separator: low.path_separator,
-    path_terminator,
-    pre: low.pre,
-    pre_globs,
-    quiet: low.quiet,
-    quit_after_match,
-    regex_size_limit: low.regex_size_limit,
-    replace: low.replace,
-    sort: low.sort,
-    stats,
-    stop_on_nonmatch: low.stop_on_nonmatch,
-    threads,
-    trim: low.trim,
-    types,
-    vimgrep: low.vimgrep,
-    with_filename,
+    search: {
+      patterns,
+      binary,
+      boundary: low.boundary,
+      case: low.case,
+      context: low.context,
+      crlf: low.crlf,
+      dfa_size_limit: low.dfa_size_limit,
+      encoding: low.encoding,
+      engine: low.engine,
+      fixed_strings: low.fixed_strings,
+      invert_match: low.invert_match,
+      max_count: low.max_count,
+      multiline: low.multiline,
+      multiline_dotall: low.multiline_dotall,
+      no_unicode: low.no_unicode,
+      null_data: low.null_data,
+      regex_size_limit: low.regex_size_limit,
+      stop_on_nonmatch: low.stop_on_nonmatch,
+    },
+    input: {
+      paths,
+      cwd: state.cwd,
+      follow: low.follow,
+      globs,
+      hidden: low.hidden,
+      ignore_file_case_insensitive: low.ignore_file_case_insensitive,
+      ignore_file: low.ignore_file,
+      max_depth: low.max_depth,
+      max_filesize: low.max_filesize,
+      no_ignore_dot: low.no_ignore_dot,
+      no_ignore_exclude: low.no_ignore_exclude,
+      no_ignore_files: low.no_ignore_files,
+      no_ignore_global: low.no_ignore_global,
+      no_ignore_parent: low.no_ignore_parent,
+      no_ignore_vcs: low.no_ignore_vcs,
+      no_require_git: low.no_require_git,
+      one_file_system: low.one_file_system,
+      pre: low.pre,
+      pre_globs,
+      sort: low.sort,
+      types,
+    },
+    output: {
+      buffer: low.buffer,
+      byte_offset: low.byte_offset,
+      color,
+      colors,
+      column,
+      context_separator: low.context_separator,
+      field_context_separator: low.field_context_separator,
+      field_match_separator: low.field_match_separator,
+      file_separator,
+      heading,
+      hyperlink_config,
+      include_zero: low.include_zero,
+      is_terminal_stdout: state.is_terminal_stdout,
+      line_number,
+      max_columns: low.max_columns,
+      max_columns_preview: low.max_columns_preview,
+      only_matching: low.only_matching,
+      path_separator: low.path_separator,
+      path_terminator,
+      quiet: low.quiet,
+      quit_after_match,
+      replace: low.replace,
+      stats,
+      trim: low.trim,
+      vimgrep: low.vimgrep,
+      with_filename,
+    },
   }
 }
 
@@ -630,56 +605,58 @@ fn clamp_size(n : UInt64) -> Int32 {
 }
 
 ///|
-fn HiArgs::matcher_rust(
-  self : HiArgs,
+fn ExecutionPlan::matcher_rust(
+  self : ExecutionPlan,
 ) -> @grep_regex.RegexMatcher raise RgError {
   let builder = @grep_regex.RegexMatcherBuilder::new()
     .multi_line(true)
-    .unicode(!self.no_unicode)
+    .unicode(!self.search.no_unicode)
     .octal(false)
-    .fixed_strings(self.fixed_strings)
-  match self.case {
+    .fixed_strings(self.search.fixed_strings)
+  match self.search.case {
     Sensitive => ignore(builder.case_insensitive(false))
     Insensitive => ignore(builder.case_insensitive(true))
     Smart => ignore(builder.case_smart(true))
   }
-  match self.boundary {
+  match self.search.boundary {
     Some(Line) => ignore(builder.whole_line(true))
     Some(Word) => ignore(builder.word(true))
     None => ()
   }
-  if self.multiline {
-    ignore(builder.dot_matches_new_line(self.multiline_dotall))
-    if self.crlf {
+  if self.search.multiline {
+    ignore(builder.dot_matches_new_line(self.search.multiline_dotall))
+    if self.search.crlf {
       ignore(builder.crlf(true).line_terminator(None))
     }
   } else {
     ignore(builder.line_terminator(Some(b'\n')).dot_matches_new_line(false))
-    if self.crlf {
+    if self.search.crlf {
       ignore(builder.crlf(true))
     }
-    if self.null_data {
+    if self.search.null_data {
       ignore(builder.line_terminator(Some(b'\x00')))
     }
   }
-  if self.regex_size_limit is Some(limit) {
+  if self.search.regex_size_limit is Some(limit) {
     ignore(builder.size_limit(clamp_size(limit)))
   }
-  if self.dfa_size_limit is Some(limit) {
+  if self.search.dfa_size_limit is Some(limit) {
     ignore(builder.dfa_size_limit(clamp_size(limit)))
   }
-  if !self.binary.is_none() {
+  if !self.search.binary.is_none() {
     ignore(builder.ban_byte(Some(b'\x00')))
   }
-  builder.build_many(self.patterns) catch {
+  builder.build_many(self.search.patterns) catch {
     e => raise RgError(suggest_text(suggest_multiline(e.to_string())))
   }
 }
 
 ///|
 /// Builds the matcher for the configured regex engine.
-pub fn HiArgs::matcher(self : HiArgs) -> @grep_regex.RegexMatcher raise RgError {
-  match self.engine {
+fn ExecutionPlan::matcher(
+  self : ExecutionPlan,
+) -> @grep_regex.RegexMatcher raise RgError {
+  match self.search.engine {
     Default => self.matcher_rust()
     PCRE2 => raise RgError("PCRE2 is not available in this build of ripgrep")
     Auto => {
@@ -698,78 +675,49 @@ pub fn HiArgs::matcher(self : HiArgs) -> @grep_regex.RegexMatcher raise RgError 
 }
 
 ///|
-pub fn HiArgs::matches_possible(self : HiArgs) -> Bool {
-  if self.patterns.is_empty() && !self.invert_match {
+fn ExecutionPlan::matches_possible(self : ExecutionPlan) -> Bool {
+  if self.search.patterns.is_empty() && !self.search.invert_match {
     return false
   }
-  if self.max_count == Some(0) {
+  if self.search.max_count == Some(0) {
     return false
   }
   true
 }
 
 ///|
-pub fn HiArgs::mode(self : HiArgs) -> Mode {
-  self.mode
-}
-
-///|
-pub fn HiArgs::quiet(self : HiArgs) -> Bool {
-  self.quiet
-}
-
-///|
-pub fn HiArgs::quit_after_match(self : HiArgs) -> Bool {
-  self.quit_after_match
-}
-
-///|
-pub fn HiArgs::has_implicit_path(self : HiArgs) -> Bool {
-  self.paths.has_implicit_path
-}
-
-///|
-pub fn HiArgs::threads(self : HiArgs) -> Int32 {
-  self.threads
-}
-
-///|
-pub fn HiArgs::stats(self : HiArgs) -> @printer.Stats? {
-  match self.stats {
-    Some(s) => Some(s.clone())
-    None => None
+fn ExecutionPlan::new_stats(self : ExecutionPlan) -> @printer.Stats? {
+  if self.output.stats {
+    Some(@printer.Stats::new())
+  } else {
+    None
   }
 }
 
 ///|
-pub fn HiArgs::types(self : HiArgs) -> @ignore.Types {
-  self.types
-}
-
-///|
-pub fn HiArgs::searcher(self : HiArgs) -> @searcher.Searcher {
-  let line_term = if self.crlf {
+fn ExecutionPlan::searcher(self : ExecutionPlan) -> @searcher.Searcher {
+  let line_term = if self.search.crlf {
     @matcher.LineTerminator::crlf()
-  } else if self.null_data {
+  } else if self.search.null_data {
     @matcher.LineTerminator::byte(b'\x00')
   } else {
     @matcher.LineTerminator::byte(b'\n')
   }
   let builder = @searcher.SearcherBuilder::new()
-    .max_matches(self.max_count.map(saturate_i64))
+    .max_matches(self.search.max_count.map(saturate_i64))
     .line_terminator(line_term)
-    .invert_match(self.invert_match)
-    .line_number(self.line_number)
-    .multi_line(self.multiline)
-    .stop_on_nonmatch(self.stop_on_nonmatch)
-  match self.context {
+    .invert_match(self.search.invert_match)
+    .line_number(self.output.line_number)
+    .multi_line(self.search.multiline)
+    .stop_on_nonmatch(self.search.stop_on_nonmatch)
+  match self.search.context {
     Passthru => ignore(builder.passthru(true))
     Limited(limited) => {
       let (before, after) = limited.get()
       ignore(builder.before_context(before).after_context(after))
     }
   }
-  match self.encoding {
+  match self.search.encoding {
     Auto => ()
     Specific(enc) => ignore(builder.encoding(Some(enc)))
     Disabled => ignore(builder.bom_sniffing(false))

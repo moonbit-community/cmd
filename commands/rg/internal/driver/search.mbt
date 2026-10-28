@@ -6,7 +6,7 @@ pub struct Haystack {
 }
 
 ///|
-pub fn Haystack::path(self : Haystack) -> String {
+fn Haystack::path(self : Haystack) -> String {
   let p = self.dent.path()
   if self.strip_dot_prefix && p.has_prefix("./") {
     let rest = p.view(start_offset=2).to_owned()
@@ -22,12 +22,12 @@ pub fn Haystack::path(self : Haystack) -> String {
 }
 
 ///|
-pub fn Haystack::is_stdin(self : Haystack) -> Bool {
+fn Haystack::is_stdin(self : Haystack) -> Bool {
   self.dent.is_stdin()
 }
 
 ///|
-pub async fn Haystack::is_explicit(self : Haystack) -> Bool {
+async fn Haystack::is_explicit(self : Haystack) -> Bool {
   self.is_stdin() || (self.dent.depth() == 0 && !self.is_dir())
 }
 
@@ -89,8 +89,8 @@ async fn HaystackBuilder::build(
 }
 
 ///|
-fn HiArgs::haystack_builder(self : HiArgs) -> HaystackBuilder {
-  { strip_dot_prefix: self.paths.has_implicit_path, }
+fn ExecutionPlan::haystack_builder(self : ExecutionPlan) -> HaystackBuilder {
+  { strip_dot_prefix: self.input.paths.has_implicit_path, }
 }
 
 ///|
@@ -147,25 +147,23 @@ priv struct SearchWorker {
   matcher : @grep_regex.RegexMatcher
   searcher : @searcher.Searcher
   printer : Printer
-  mmap : Bool
 }
 
 ///|
-fn HiArgs::search_worker(
-  self : HiArgs,
+fn ExecutionPlan::search_worker(
+  self : ExecutionPlan,
   matcher : @grep_regex.RegexMatcher,
   searcher : @searcher.Searcher,
   printer : Printer,
 ) -> SearchWorker {
   {
-    preprocessor: self.pre,
-    preprocessor_globs: self.pre_globs,
-    binary_implicit: self.binary.implicit,
-    binary_explicit: self.binary.explicit,
+    preprocessor: self.input.pre,
+    preprocessor_globs: self.input.pre_globs,
+    binary_implicit: self.search.binary.implicit,
+    binary_explicit: self.search.binary.explicit,
     matcher,
     searcher,
     printer,
-    mmap: self.mmap,
   }
 }
 
@@ -233,56 +231,13 @@ async fn SearchWorker::search_preprocessor(
 }
 
 ///|
-/// What a search reads from.
-priv enum Input {
-  Reader(&@searcher.Reader)
-  /// A whole file (`buf[0:len]`), searched like ripgrep searches a memory map.
-  Slice(FixedArray[Byte], Int32)
-}
-
-///|
 async fn SearchWorker::search_path(
   self : SearchWorker,
   path : String,
 ) -> SearchResult {
   let file = @sys.File::open(path)
   defer file.close()
-  // Where ripgrep would use a memory map (only possible for regular
-  // files), search the whole file as a slice: this matters because slices
-  // are searched differently (e.g. binary data isn't converted).
-  // (Files too big for an array are read incrementally instead.)
-  if self.mmap &&
-    (@sys.metadata(path).is_file() catch { _ => false }) &&
-    (@sys.file_len(path) catch { _ => -1L }) is (0L..<0x40000000L) {
-    let (buf, len) = read_all(file, path)
-    self.search_input(path, Slice(buf, len))
-  } else {
-    self.search_input(path, Reader(FileReader::{ file, }))
-  }
-}
-
-///|
-/// Reads all of `file` into a buffer, returning it and the number of bytes.
-async fn read_all(file : @sys.File, path : String) -> (FixedArray[Byte], Int32) {
-  let hint = @sys.file_len(path) catch { _ => 0L }
-  let mut buf : FixedArray[Byte] = FixedArray::make(
-    hint.to_int().max(0) + 1,
-    b'\x00',
-  )
-  let mut len = 0
-  while true {
-    if len == buf.length() {
-      let bigger = FixedArray::make(buf.length() * 2, b'\x00')
-      buf.blit_to(bigger, len~)
-      buf = bigger
-    }
-    let n = file.read(buf, len, buf.length() - len)
-    if n == 0 {
-      break
-    }
-    len += n
-  }
-  (buf, len)
+  self.search_reader(path, FileReader::{ file, })
 }
 
 ///|
@@ -291,21 +246,8 @@ async fn SearchWorker::search_reader(
   path : String,
   rdr : &@searcher.Reader,
 ) -> SearchResult {
-  self.search_input(path, Reader(rdr))
-}
-
-///|
-async fn SearchWorker::search_input(
-  self : SearchWorker,
-  path : String,
-  input : Input,
-) -> SearchResult {
   let run = (sink : &@searcher.Sink) => {
-    match input {
-      Reader(rdr) => self.searcher.search_reader(self.matcher, rdr, sink)
-      Slice(buf, len) =>
-        self.searcher.search_slice(self.matcher, buf, len, sink)
-    }
+    self.searcher.search_reader(self.matcher, rdr, sink)
   }
   match self.printer {
     Standard(p) => {

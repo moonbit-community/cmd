@@ -21,7 +21,7 @@ pub(all) struct Config {
 } derive(Debug)
 
 ///|
-pub fn Config::default() -> Config {
+fn Config::default() -> Config {
   {
     case_insensitive: false,
     case_smart: false,

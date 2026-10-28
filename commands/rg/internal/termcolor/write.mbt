@@ -161,28 +161,8 @@ pub fn ByteVec::length(self : ByteVec) -> Int32 {
 }
 
 ///|
-pub fn ByteVec::is_empty(self : ByteVec) -> Bool {
-  self.len == 0
-}
-
-///|
 pub fn ByteVec::clear(self : ByteVec) -> Unit {
   self.len = 0
-}
-
-///|
-/// Truncates the vector to `len` bytes (no-op if already shorter).
-pub fn ByteVec::truncate(self : ByteVec, len : Int32) -> Unit {
-  if len < self.len {
-    self.len = len
-  }
-}
-
-///|
-#alias("_[_]")
-pub fn ByteVec::at(self : ByteVec, i : Int32) -> Byte {
-  guard i >= 0 && i < self.len else { abort("ByteVec index out of bounds") }
-  self.data[i]
 }
 
 ///|

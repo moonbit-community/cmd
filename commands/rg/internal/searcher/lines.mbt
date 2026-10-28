@@ -1,6 +1,6 @@
 ///|
 /// Returns the index of the first occurrence of `b` in `buf[start:end]`.
-pub fn find_byte(
+fn find_byte(
   buf : FixedArray[Byte],
   b : Byte,
   start : Int32,
@@ -16,7 +16,7 @@ pub fn find_byte(
 
 ///|
 /// Returns the index of the last occurrence of `b` in `buf[start:end]`.
-pub fn rfind_byte(
+fn rfind_byte(
   buf : FixedArray[Byte],
   b : Byte,
   start : Int32,
@@ -50,7 +50,7 @@ pub fn LineStep::new(line_term : Byte, start : Int32, end : Int32) -> LineStep {
 /// Advances to the next line, returning false when there are no more. The
 /// line is then `line_start()..line_end()` (relative to `off`). Unlike
 /// `next`, this doesn't allocate.
-pub fn LineStep::advance(
+fn LineStep::advance(
   self : LineStep,
   buf : FixedArray[Byte],
   off : Int32,
@@ -67,13 +67,13 @@ pub fn LineStep::advance(
 
 ///|
 /// The start of the current line (see `advance`).
-pub fn LineStep::line_start(self : LineStep) -> Int32 {
+fn LineStep::line_start(self : LineStep) -> Int32 {
   self.line_start
 }
 
 ///|
 /// The end of the current line (see `advance`).
-pub fn LineStep::line_end(self : LineStep) -> Int32 {
+fn LineStep::line_end(self : LineStep) -> Int32 {
   self.line_end
 }
 
@@ -92,20 +92,8 @@ pub fn LineStep::next(
 }
 
 ///|
-/// Splits `bytes` into lines (including terminators).
-pub fn lines_of(bytes : Bytes, line_term : Byte) -> Array[Bytes] {
-  let buf = bytes.to_fixedarray()
-  let step = LineStep::new(line_term, 0, buf.length())
-  let out = []
-  while step.next(buf, 0) is Some(m) {
-    out.push(bytes[m.start:m.end].to_owned())
-  }
-  out
-}
-
-///|
 /// Counts the occurrences of `line_term` in `buf[start:end]`.
-pub fn count_lines(
+fn count_lines(
   buf : FixedArray[Byte],
   start : Int32,
   end : Int32,
@@ -117,7 +105,7 @@ pub fn count_lines(
 ///|
 /// Returns the end of `buf[start:end]` with any trailing line terminator
 /// removed.
-pub fn without_terminator(
+fn without_terminator(
   buf : FixedArray[Byte],
   start : Int32,
   end : Int32,
@@ -137,7 +125,7 @@ pub fn without_terminator(
 ///|
 /// Returns the range of the lines containing `range` within the window
 /// `buf[off:off+len]`. All ranges are relative to `off`.
-pub fn locate(
+fn locate(
   buf : FixedArray[Byte],
   off : Int32,
   len : Int32,
@@ -163,7 +151,7 @@ pub fn locate(
 ///|
 /// Returns the start offset (relative to `off`) of the `count + 1`th line
 /// preceding the end of `buf[off:off+len]`.
-pub fn preceding(
+fn preceding(
   buf : FixedArray[Byte],
   off : Int32,
   len : Int32,

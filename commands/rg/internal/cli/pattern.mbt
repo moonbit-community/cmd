@@ -11,7 +11,7 @@ pub fn InvalidPatternError::valid_up_to(self : InvalidPatternError) -> Int32 {
 }
 
 ///|
-pub fn InvalidPatternError::to_string(self : InvalidPatternError) -> String {
+fn InvalidPatternError::to_string(self : InvalidPatternError) -> String {
   let InvalidPatternError(original~, valid_up_to~) = self
   "found invalid UTF-8 in pattern at byte offset \{valid_up_to}: \{original} (disable Unicode mode and use hex escape sequences to match arbitrary bytes in a pattern, e.g., '(?-u)\\xFF')"
 }
@@ -41,7 +41,7 @@ pub suberror PatternsError {
 } derive(Debug)
 
 ///|
-pub fn PatternsError::to_string(self : PatternsError) -> String {
+fn PatternsError::to_string(self : PatternsError) -> String {
   let PatternsError(s) = self
   s
 }

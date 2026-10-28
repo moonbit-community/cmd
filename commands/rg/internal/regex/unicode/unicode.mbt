@@ -95,7 +95,7 @@ fn sorted_lookup(data : Array[(String, String)], key : String) -> String? {
 ///|
 /// Normalizes a property name or value following UAX44-LM3 loose matching,
 /// exactly as regex-syntax does it.
-pub fn symbolic_name_normalize(x : String) -> String {
+fn symbolic_name_normalize(x : String) -> String {
   let bytes = []
   for c in x {
     let code = c.to_int()

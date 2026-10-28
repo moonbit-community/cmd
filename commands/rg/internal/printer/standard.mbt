@@ -1,322 +1,34 @@
 ///|
 /// The configuration for the standard printer.
 priv struct StandardConfig {
-  mut colors : ColorSpecs
-  mut hyperlink : HyperlinkConfig
-  mut stats : Bool
-  mut heading : Bool
-  mut path : Bool
-  mut only_matching : Bool
-  mut per_match : Bool
-  mut per_match_one_line : Bool
-  mut replacement : Bytes?
-  mut max_columns : Int64?
-  mut max_columns_preview : Bool
-  mut column : Bool
-  mut byte_offset : Bool
-  mut trim_ascii : Bool
-  mut separator_search : Bytes?
-  mut separator_context : Bytes?
-  mut separator_field_match : Bytes
-  mut separator_field_context : Bytes
-  mut separator_path : Byte?
-  mut path_terminator : Byte?
-  mut clock : () -> Int64
+  colors : ColorSpecs
+  hyperlink : HyperlinkConfig
+  stats : Bool
+  heading : Bool
+  path : Bool
+  only_matching : Bool
+  per_match : Bool
+  per_match_one_line : Bool
+  replacement : Bytes?
+  max_columns : Int64?
+  max_columns_preview : Bool
+  column : Bool
+  byte_offset : Bool
+  trim_ascii : Bool
+  separator_search : Bytes?
+  separator_context : Bytes?
+  separator_field_match : Bytes
+  separator_field_context : Bytes
+  separator_path : Byte?
+  path_terminator : Byte?
+  clock : () -> Int64
 }
 
 ///|
 /// The default clock used for timing statistics: it always returns `0`.
-/// Callers that want real timings must provide a clock via the builders'
-/// `clock` methods.
+/// Callers that collect timings provide a monotonic clock to the constructor.
 fn zero_clock() -> Int64 {
   0
-}
-
-///|
-fn StandardConfig::default() -> StandardConfig {
-  {
-    colors: ColorSpecs::default(),
-    hyperlink: HyperlinkConfig::default(),
-    stats: false,
-    heading: false,
-    path: true,
-    only_matching: false,
-    per_match: false,
-    per_match_one_line: false,
-    replacement: None,
-    max_columns: None,
-    max_columns_preview: false,
-    column: false,
-    byte_offset: false,
-    trim_ascii: false,
-    separator_search: None,
-    separator_context: Some(b"--"),
-    separator_field_match: b":",
-    separator_field_context: b"-",
-    separator_path: None,
-    path_terminator: None,
-    clock: zero_clock,
-  }
-}
-
-///|
-/// A builder for the "standard" grep-like printer.
-///
-/// The builder permits configuring how the printer behaves. Configurable
-/// behavior includes, but is not limited to, limiting the number of
-/// matches, tweaking separators, executing pattern replacements, recording
-/// statistics and setting colors.
-pub struct StandardBuilder {
-  priv config : StandardConfig
-}
-
-///|
-/// Return a new builder for configuring the standard printer.
-pub fn StandardBuilder::new() -> StandardBuilder {
-  { config: StandardConfig::default(), }
-}
-
-///|
-/// Build a printer using any implementation of `WriteColor`.
-pub fn StandardBuilder::build(
-  self : StandardBuilder,
-  wtr : &@termcolor.WriteColor,
-) -> Standard {
-  { config: { ..self.config, }, wtr: CounterWriter::new(wtr), matches: [], }
-}
-
-///|
-/// Build a printer from any byte sink, wrapped in `NoColor` so that all
-/// color information is dropped.
-pub fn StandardBuilder::build_no_color(
-  self : StandardBuilder,
-  wtr : &@termcolor.Write,
-) -> Standard {
-  self.build(@termcolor.NoColor::new(wtr))
-}
-
-///|
-/// Set the user color specifications to use for coloring in this printer.
-pub fn StandardBuilder::color_specs(
-  self : StandardBuilder,
-  specs : ColorSpecs,
-) -> StandardBuilder {
-  self.config.colors = specs
-  self
-}
-
-///|
-/// Set the configuration to use for hyperlinks output by this printer.
-pub fn StandardBuilder::hyperlink(
-  self : StandardBuilder,
-  config : HyperlinkConfig,
-) -> StandardBuilder {
-  self.config.hyperlink = config
-  self
-}
-
-///|
-/// Enable the gathering of various aggregate statistics.
-pub fn StandardBuilder::stats(
-  self : StandardBuilder,
-  yes : Bool,
-) -> StandardBuilder {
-  self.config.stats = yes
-  self
-}
-
-///|
-/// Enable the use of "headings" in the printer (the file path is printed
-/// once, above the matches from that file).
-pub fn StandardBuilder::heading(
-  self : StandardBuilder,
-  yes : Bool,
-) -> StandardBuilder {
-  self.config.heading = yes
-  self
-}
-
-///|
-/// When enabled, if a path was given to the printer, then it is shown in
-/// the output.
-pub fn StandardBuilder::path(
-  self : StandardBuilder,
-  yes : Bool,
-) -> StandardBuilder {
-  self.config.path = yes
-  self
-}
-
-///|
-/// Only print the specific matches instead of the entire line containing
-/// each match.
-pub fn StandardBuilder::only_matching(
-  self : StandardBuilder,
-  yes : Bool,
-) -> StandardBuilder {
-  self.config.only_matching = yes
-  self
-}
-
-///|
-/// Print at least one line for every match.
-pub fn StandardBuilder::per_match(
-  self : StandardBuilder,
-  yes : Bool,
-) -> StandardBuilder {
-  self.config.per_match = yes
-  self
-}
-
-///|
-/// Print at most one line per match when `per_match` is enabled.
-pub fn StandardBuilder::per_match_one_line(
-  self : StandardBuilder,
-  yes : Bool,
-) -> StandardBuilder {
-  self.config.per_match_one_line = yes
-  self
-}
-
-///|
-/// Set the bytes that will be used to replace each occurrence of a match
-/// found. The replacement may contain capture group references (`$1`,
-/// `$name`, ...).
-pub fn StandardBuilder::replacement(
-  self : StandardBuilder,
-  replacement : Bytes?,
-) -> StandardBuilder {
-  self.config.replacement = replacement
-  self
-}
-
-///|
-/// Set the maximum number of columns allowed for each line printed.
-pub fn StandardBuilder::max_columns(
-  self : StandardBuilder,
-  limit : Int64?,
-) -> StandardBuilder {
-  self.config.max_columns = limit
-  self
-}
-
-///|
-/// When enabled, if a line is found to be over the configured maximum
-/// column limit, then a preview of the long line will be printed instead.
-pub fn StandardBuilder::max_columns_preview(
-  self : StandardBuilder,
-  yes : Bool,
-) -> StandardBuilder {
-  self.config.max_columns_preview = yes
-  self
-}
-
-///|
-/// Print the column number of the first match in a line.
-pub fn StandardBuilder::column(
-  self : StandardBuilder,
-  yes : Bool,
-) -> StandardBuilder {
-  self.config.column = yes
-  self
-}
-
-///|
-/// Print the absolute byte offset of the beginning of each line printed.
-pub fn StandardBuilder::byte_offset(
-  self : StandardBuilder,
-  yes : Bool,
-) -> StandardBuilder {
-  self.config.byte_offset = yes
-  self
-}
-
-///|
-/// When enabled, all lines will have prefix ASCII whitespace trimmed before
-/// being written.
-pub fn StandardBuilder::trim_ascii(
-  self : StandardBuilder,
-  yes : Bool,
-) -> StandardBuilder {
-  self.config.trim_ascii = yes
-  self
-}
-
-///|
-/// Set the separator used between sets of search results (e.g., between
-/// files).
-pub fn StandardBuilder::separator_search(
-  self : StandardBuilder,
-  sep : Bytes?,
-) -> StandardBuilder {
-  self.config.separator_search = sep
-  self
-}
-
-///|
-/// Set the separator used between discontiguous runs of search context
-/// (`--` by default).
-pub fn StandardBuilder::separator_context(
-  self : StandardBuilder,
-  sep : Bytes?,
-) -> StandardBuilder {
-  self.config.separator_context = sep
-  self
-}
-
-///|
-/// Set the separator used between fields emitted for matching lines (`:`
-/// by default).
-pub fn StandardBuilder::separator_field_match(
-  self : StandardBuilder,
-  sep : Bytes,
-) -> StandardBuilder {
-  self.config.separator_field_match = sep
-  self
-}
-
-///|
-/// Set the separator used between fields emitted for context lines (`-` by
-/// default).
-pub fn StandardBuilder::separator_field_context(
-  self : StandardBuilder,
-  sep : Bytes,
-) -> StandardBuilder {
-  self.config.separator_field_context = sep
-  self
-}
-
-///|
-/// Set the path separator used when printing file paths.
-pub fn StandardBuilder::separator_path(
-  self : StandardBuilder,
-  sep : Byte?,
-) -> StandardBuilder {
-  self.config.separator_path = sep
-  self
-}
-
-///|
-/// Set the path terminator used. When set, paths are followed by this byte
-/// instead of the field separator (or line terminator in headings).
-pub fn StandardBuilder::path_terminator(
-  self : StandardBuilder,
-  terminator : Byte?,
-) -> StandardBuilder {
-  self.config.path_terminator = terminator
-  self
-}
-
-///|
-/// Set the clock used for timing statistics. It must return a monotonic
-/// time in nanoseconds. By default, a clock that always returns `0` is
-/// used.
-pub fn StandardBuilder::clock(
-  self : StandardBuilder,
-  clock : () -> Int64,
-) -> StandardBuilder {
-  self.config.clock = clock
-  self
 }
 
 ///|
@@ -330,16 +42,9 @@ pub struct Standard {
 
 ///|
 /// Return a standard printer with a default configuration that writes
-/// matches to the given writer.
-pub fn Standard::new(wtr : &@termcolor.WriteColor) -> Standard {
-  StandardBuilder::new().build(wtr)
-}
-
-///|
-/// Return a standard printer with a default configuration that writes
 /// matches to the given byte sink, dropping all color information.
 pub fn Standard::new_no_color(wtr : &@termcolor.Write) -> Standard {
-  StandardBuilder::new().build_no_color(wtr)
+  Standard::new(@termcolor.NoColor::new(wtr))
 }
 
 ///|
@@ -419,13 +124,6 @@ fn Standard::needs_match_granularity(self : Standard) -> Bool {
 }
 
 ///|
-/// Returns true if and only if this printer has written at least one byte
-/// to the underlying writer during any of the previous searches.
-pub fn Standard::has_written(self : Standard) -> Bool {
-  self.wtr.total_count() > 0
-}
-
-///|
 /// Return the underlying writer.
 pub fn Standard::get_mut(self : Standard) -> &@termcolor.WriteColor {
   self.wtr.get_mut()
@@ -454,13 +152,6 @@ pub struct StandardSink {
 /// previous search.
 pub fn StandardSink::has_match(self : StandardSink) -> Bool {
   self.match_count > 0
-}
-
-///|
-/// Return the total number of matches reported to this sink (i.e., the
-/// number of times `Sink::matched` is called) for the previous search.
-pub fn StandardSink::match_count(self : StandardSink) -> Int64 {
-  self.match_count
 }
 
 ///|
@@ -1534,4 +1225,59 @@ async fn PreludeWriter::write_separator(self : PreludeWriter) -> Unit {
 ///|
 fn PreludeWriter::config(self : PreludeWriter) -> StandardConfig {
   self.std.config()
+}
+
+///|
+/// Construct an immutable output configuration once, before processing input.
+pub fn Standard::new(
+  wtr : &@termcolor.WriteColor,
+  colors~ : ColorSpecs = ColorSpecs::default(),
+  hyperlink~ : HyperlinkConfig = HyperlinkConfig::default(),
+  stats~ : Bool = false,
+  heading~ : Bool = false,
+  path~ : Bool = true,
+  only_matching~ : Bool = false,
+  per_match~ : Bool = false,
+  per_match_one_line~ : Bool = false,
+  replacement~ : Bytes? = None,
+  max_columns~ : Int64? = None,
+  max_columns_preview~ : Bool = false,
+  column~ : Bool = false,
+  byte_offset~ : Bool = false,
+  trim_ascii~ : Bool = false,
+  separator_search~ : Bytes? = None,
+  separator_context~ : Bytes? = Some(b"--"),
+  separator_field_match~ : Bytes = b":",
+  separator_field_context~ : Bytes = b"-",
+  separator_path~ : Byte? = None,
+  path_terminator~ : Byte? = None,
+  clock~ : () -> Int64 = zero_clock,
+) -> Standard {
+  {
+    config: {
+      colors,
+      hyperlink,
+      stats,
+      heading,
+      path,
+      only_matching,
+      per_match,
+      per_match_one_line,
+      replacement,
+      max_columns,
+      max_columns_preview,
+      column,
+      byte_offset,
+      trim_ascii,
+      separator_search,
+      separator_context,
+      separator_field_match,
+      separator_field_context,
+      separator_path,
+      path_terminator,
+      clock,
+    },
+    wtr: CounterWriter::new(wtr),
+    matches: [],
+  }
 }

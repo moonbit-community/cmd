@@ -24,8 +24,6 @@ pub fn perl_word() -> Array[(Int32, Int32)]
 
 pub fn simple_fold(Int32) -> Array[Int32]
 
-pub fn symbolic_name_normalize(String) -> String
-
 // Errors
 pub(all) suberror UnicodeError {
   PropertyNotFound

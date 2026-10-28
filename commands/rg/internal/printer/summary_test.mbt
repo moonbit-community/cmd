@@ -7,9 +7,10 @@ let summary_sherlock : Bytes = b"For the Doctor Watsons of this world, as oppose
 async test "path_with_match_error" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .kind(@printer.SummaryKind::PathWithMatch)
-    .build_no_color(out)
+  let printer = @printer.Summary::new(
+    @termcolor.NoColor::new(out),
+    kind=@printer.SummaryKind::PathWithMatch,
+  )
   let res = try
     @searcher.SearcherBuilder::new()
     .build()
@@ -26,9 +27,10 @@ async test "path_with_match_error" {
 async test "path_without_match_error" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .kind(@printer.SummaryKind::PathWithoutMatch)
-    .build_no_color(out)
+  let printer = @printer.Summary::new(
+    @termcolor.NoColor::new(out),
+    kind=@printer.SummaryKind::PathWithoutMatch,
+  )
   let res = try
     @searcher.SearcherBuilder::new()
     .build()
@@ -45,9 +47,10 @@ async test "path_without_match_error" {
 async test "count_no_path" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .kind(@printer.SummaryKind::Count)
-    .build_no_color(out)
+  let printer = @printer.Summary::new(
+    @termcolor.NoColor::new(out),
+    kind=@printer.SummaryKind::Count,
+  )
   @searcher.SearcherBuilder::new()
   .build()
   .search_reader(matcher, reader(summary_sherlock), printer.sink(matcher))
@@ -65,10 +68,11 @@ async test "count_no_path" {
 async test "count_no_path_even_with_path" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .kind(@printer.SummaryKind::Count)
-    .path(false)
-    .build_no_color(out)
+  let printer = @printer.Summary::new(
+    @termcolor.NoColor::new(out),
+    kind=@printer.SummaryKind::Count,
+    path=false,
+  )
   @searcher.SearcherBuilder::new()
   .build()
   .search_reader(
@@ -90,9 +94,10 @@ async test "count_no_path_even_with_path" {
 async test "count_path" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .kind(@printer.SummaryKind::Count)
-    .build_no_color(out)
+  let printer = @printer.Summary::new(
+    @termcolor.NoColor::new(out),
+    kind=@printer.SummaryKind::Count,
+  )
   @searcher.SearcherBuilder::new()
   .build()
   .search_reader(
@@ -114,10 +119,11 @@ async test "count_path" {
 async test "count_path_with_zero" {
   let matcher = @grep_regex.RegexMatcher::new("NO MATCH")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .kind(@printer.SummaryKind::Count)
-    .exclude_zero(false)
-    .build_no_color(out)
+  let printer = @printer.Summary::new(
+    @termcolor.NoColor::new(out),
+    kind=@printer.SummaryKind::Count,
+    exclude_zero=false,
+  )
   @searcher.SearcherBuilder::new()
   .build()
   .search_reader(
@@ -139,10 +145,11 @@ async test "count_path_with_zero" {
 async test "count_path_without_zero" {
   let matcher = @grep_regex.RegexMatcher::new("NO MATCH")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .kind(@printer.SummaryKind::Count)
-    .exclude_zero(true)
-    .build_no_color(out)
+  let printer = @printer.Summary::new(
+    @termcolor.NoColor::new(out),
+    kind=@printer.SummaryKind::Count,
+    exclude_zero=true,
+  )
   @searcher.SearcherBuilder::new()
   .build()
   .search_reader(
@@ -158,10 +165,11 @@ async test "count_path_without_zero" {
 async test "count_path_field_separator" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .kind(@printer.SummaryKind::Count)
-    .separator_field(b"ZZ")
-    .build_no_color(out)
+  let printer = @printer.Summary::new(
+    @termcolor.NoColor::new(out),
+    kind=@printer.SummaryKind::Count,
+    separator_field=b"ZZ",
+  )
   @searcher.SearcherBuilder::new()
   .build()
   .search_reader(
@@ -183,10 +191,11 @@ async test "count_path_field_separator" {
 async test "count_path_terminator" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .kind(@printer.SummaryKind::Count)
-    .path_terminator(Some(b'\x00'))
-    .build_no_color(out)
+  let printer = @printer.Summary::new(
+    @termcolor.NoColor::new(out),
+    kind=@printer.SummaryKind::Count,
+    path_terminator=Some(b'\x00'),
+  )
   @searcher.SearcherBuilder::new()
   .build()
   .search_reader(
@@ -202,10 +211,11 @@ async test "count_path_terminator" {
 async test "count_path_separator" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .kind(@printer.SummaryKind::Count)
-    .separator_path(Some(b'\\'))
-    .build_no_color(out)
+  let printer = @printer.Summary::new(
+    @termcolor.NoColor::new(out),
+    kind=@printer.SummaryKind::Count,
+    separator_path=Some(b'\\'),
+  )
   @searcher.SearcherBuilder::new()
   .build()
   .search_reader(
@@ -227,9 +237,10 @@ async test "count_path_separator" {
 async test "count_max_matches" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .kind(@printer.SummaryKind::Count)
-    .build_no_color(out)
+  let printer = @printer.Summary::new(
+    @termcolor.NoColor::new(out),
+    kind=@printer.SummaryKind::Count,
+  )
   @searcher.SearcherBuilder::new()
   .max_matches(Some(1))
   .build()
@@ -248,9 +259,10 @@ async test "count_max_matches" {
 async test "count_matches" {
   let matcher = @grep_regex.RegexMatcher::new("Watson|Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .kind(@printer.SummaryKind::CountMatches)
-    .build_no_color(out)
+  let printer = @printer.Summary::new(
+    @termcolor.NoColor::new(out),
+    kind=@printer.SummaryKind::CountMatches,
+  )
   @searcher.SearcherBuilder::new()
   .build()
   .search_reader(
@@ -272,9 +284,10 @@ async test "count_matches" {
 async test "path_with_match_found" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .kind(@printer.SummaryKind::PathWithMatch)
-    .build_no_color(out)
+  let printer = @printer.Summary::new(
+    @termcolor.NoColor::new(out),
+    kind=@printer.SummaryKind::PathWithMatch,
+  )
   @searcher.SearcherBuilder::new()
   .build()
   .search_reader(
@@ -296,9 +309,10 @@ async test "path_with_match_found" {
 async test "path_with_match_not_found" {
   let matcher = @grep_regex.RegexMatcher::new("ZZZZZZZZ")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .kind(@printer.SummaryKind::PathWithMatch)
-    .build_no_color(out)
+  let printer = @printer.Summary::new(
+    @termcolor.NoColor::new(out),
+    kind=@printer.SummaryKind::PathWithMatch,
+  )
   @searcher.SearcherBuilder::new()
   .build()
   .search_reader(
@@ -314,9 +328,10 @@ async test "path_with_match_not_found" {
 async test "path_without_match_found" {
   let matcher = @grep_regex.RegexMatcher::new("ZZZZZZZZZ")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .kind(@printer.SummaryKind::PathWithoutMatch)
-    .build_no_color(out)
+  let printer = @printer.Summary::new(
+    @termcolor.NoColor::new(out),
+    kind=@printer.SummaryKind::PathWithoutMatch,
+  )
   @searcher.SearcherBuilder::new()
   .build()
   .search_reader(
@@ -338,9 +353,10 @@ async test "path_without_match_found" {
 async test "path_without_match_not_found" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .kind(@printer.SummaryKind::PathWithoutMatch)
-    .build_no_color(out)
+  let printer = @printer.Summary::new(
+    @termcolor.NoColor::new(out),
+    kind=@printer.SummaryKind::PathWithoutMatch,
+  )
   @searcher.SearcherBuilder::new()
   .build()
   .search_reader(
@@ -356,9 +372,10 @@ async test "path_without_match_not_found" {
 async test "quiet" {
   let matcher = @grep_regex.RegexMatcher::new("Watson|Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .kind(@printer.SummaryKind::QuietWithMatch)
-    .build_no_color(out)
+  let printer = @printer.Summary::new(
+    @termcolor.NoColor::new(out),
+    kind=@printer.SummaryKind::QuietWithMatch,
+  )
   let match_count = {
     let sink = printer.sink_with_path(matcher, "sherlock")
     @searcher.SearcherBuilder::new()
@@ -377,10 +394,11 @@ async test "quiet" {
 async test "quiet_with_stats" {
   let matcher = @grep_regex.RegexMatcher::new("Watson|Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .kind(@printer.SummaryKind::QuietWithMatch)
-    .stats(true)
-    .build_no_color(out)
+  let printer = @printer.Summary::new(
+    @termcolor.NoColor::new(out),
+    kind=@printer.SummaryKind::QuietWithMatch,
+    stats=true,
+  )
   let match_count = {
     let sink = printer.sink_with_path(matcher, "sherlock")
     @searcher.SearcherBuilder::new()

@@ -115,7 +115,6 @@ pub struct LazyDFA {
   priv set1 : SparseSet
   priv set2 : SparseSet
   priv state_limit : Int32
-  priv mut clear_count : Int32
 }
 
 ///|
@@ -142,7 +141,6 @@ pub fn LazyDFA::new(
     set1: SparseSet::new(n),
     set2: SparseSet::new(n),
     state_limit,
-    clear_count: 0,
   }
   dfa.reset()
   dfa
@@ -519,7 +517,6 @@ fn LazyDFA::next_state(self : LazyDFA, sid : Int32, unit : Int32) -> Int32 {
     return (t & ID_MASK) / self.stride
   }
   if self.states.length() >= self.state_limit {
-    self.clear_count += 1
     self.reset()
     return -1
   }
@@ -717,16 +714,4 @@ pub fn LazyDFA::find_rev(
     }
   }
   mat
-}
-
-///|
-/// The number of states currently in the cache.
-pub fn LazyDFA::state_count(self : LazyDFA) -> Int32 {
-  self.states.length()
-}
-
-///|
-/// The number of times the cache was cleared.
-pub fn LazyDFA::clear_count(self : LazyDFA) -> Int32 {
-  self.clear_count
 }

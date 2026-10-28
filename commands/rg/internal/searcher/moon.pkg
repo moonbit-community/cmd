@@ -1,13 +1,13 @@
 import {
   "cli/rg/internal/matcher",
-  "cli/rg/internal/memchr",
-  "moonbitlang/core/encoding/utf8",
+  "cli/core/bytesearch" @memchr,
 }
 
 warnings = "-implicit_impl_as_method"
 
 import {
   "moonbitlang/async",
+  "moonbitlang/core/encoding/utf8",
   "cli/rg/internal/regex",
   "cli/rg/internal/regex/syntax",
   "cli/rg/internal/grep_regex",

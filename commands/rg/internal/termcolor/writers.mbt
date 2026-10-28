@@ -12,12 +12,6 @@ pub fn NoColor::new(wtr : &Write) -> NoColor {
 }
 
 ///|
-/// Returns the underlying writer.
-pub fn NoColor::get_ref(self : NoColor) -> &Write {
-  self.wtr
-}
-
-///|
 pub impl Write for NoColor with fn write_slice(self, buf, start, end) {
   self.wtr.write_slice(buf, start, end)
 }
@@ -73,12 +67,6 @@ pub struct Ansi {
 /// escape sequences.
 pub fn Ansi::new(wtr : &Write) -> Ansi {
   { wtr, }
-}
-
-///|
-/// Returns the underlying writer.
-pub fn Ansi::get_ref(self : Ansi) -> &Write {
-  self.wtr
 }
 
 ///|
@@ -275,30 +263,9 @@ pub fn Buffer::ansi() -> Buffer {
 }
 
 ///|
-pub fn Buffer::is_empty(self : Buffer) -> Bool {
-  self.bytes.is_empty()
-}
-
-///|
-pub fn Buffer::len(self : Buffer) -> Int32 {
-  self.bytes.length()
-}
-
-///|
-pub fn Buffer::clear(self : Buffer) -> Unit {
-  self.bytes.clear()
-}
-
-///|
 /// Returns a copy of the buffer contents.
 pub fn Buffer::to_bytes(self : Buffer) -> Bytes {
   self.bytes.to_bytes()
-}
-
-///|
-/// Returns the underlying byte vector.
-pub fn Buffer::as_vec(self : Buffer) -> ByteVec {
-  self.bytes
 }
 
 ///|
@@ -339,78 +306,5 @@ pub impl WriteColor for Buffer with fn set_hyperlink(self, link) {
 pub impl WriteColor for Buffer with fn reset(self) {
   if self.ansi {
     ansi_reset(self.bytes)
-  }
-}
-
-///|
-/// Whether to use colors or not, mirroring termcolor's `ColorChoice`.
-pub(all) enum ColorChoice {
-  /// Try very hard to emit colors.
-  Always
-  /// Like Always, but on Windows, use ANSI escape sequences.
-  AlwaysAnsi
-  /// Try to use colors, but don't force the issue.
-  Auto
-  /// Never emit colors.
-  Never
-} derive(Eq, Debug)
-
-///|
-/// An error that occurs when parsing a `ColorChoice` fails.
-pub(all) suberror ColorChoiceParseError {
-  ColorChoiceParseError(String)
-} derive(Eq, Debug)
-
-///|
-pub fn ColorChoiceParseError::to_string(self : ColorChoiceParseError) -> String {
-  let ColorChoiceParseError(unknown) = self
-  "unrecognized color choice '\{unknown}': valid choices are: always, always-ansi, never, auto"
-}
-
-///|
-pub impl Show for ColorChoiceParseError with fn output(self, logger) {
-  logger.write_string(self.to_string())
-}
-
-///|
-pub fn ColorChoice::default() -> ColorChoice {
-  Auto
-}
-
-///|
-/// Parses `always`, `always-ansi`, `never` or `auto` (ASCII
-/// case-insensitively).
-pub fn ColorChoice::parse(
-  s : String,
-) -> ColorChoice raise ColorChoiceParseError {
-  let lower = s.to_lower()
-  match lower {
-    "always" => Always
-    "always-ansi" => AlwaysAnsi
-    "never" => Never
-    "auto" => Auto
-    _ => raise ColorChoiceParseError(lower)
-  }
-}
-
-///|
-/// Returns true if we should attempt to write colored output. The
-/// environment is passed in explicitly: `term` is the value of the `TERM`
-/// environment variable (if set) and `no_color` is whether `NO_COLOR` is
-/// set. This follows termcolor's non-Windows logic.
-pub fn ColorChoice::should_attempt_color(
-  self : ColorChoice,
-  term : String?,
-  no_color : Bool,
-) -> Bool {
-  match self {
-    Always | AlwaysAnsi => true
-    Never => false
-    Auto =>
-      match term {
-        None => false
-        Some("dumb") => false
-        Some(_) => !no_color
-      }
   }
 }

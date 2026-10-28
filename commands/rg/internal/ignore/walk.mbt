@@ -37,12 +37,6 @@ pub fn DirEntry::path(self : DirEntry) -> String {
 }
 
 ///|
-/// The full path that this entry represents (same as `path`).
-pub fn DirEntry::into_path(self : DirEntry) -> String {
-  self.path()
-}
-
-///|
 /// Whether this entry corresponds to a symbolic link or not.
 pub fn DirEntry::path_is_symlink(self : DirEntry) -> Bool {
   match self.dent {
@@ -61,7 +55,7 @@ pub fn DirEntry::is_stdin(self : DirEntry) -> Bool {
 
 ///|
 /// Return the metadata for the file that this entry points to.
-pub async fn DirEntry::metadata(self : DirEntry) -> @sys.Metadata {
+async fn DirEntry::metadata(self : DirEntry) -> @sys.Metadata {
   match self.dent {
     Stdin =>
       raise IgnoreError::Io(
@@ -83,18 +77,6 @@ pub fn DirEntry::file_type(self : DirEntry) -> @sys.FileType? {
 }
 
 ///|
-/// Return the file name of this entry.
-///
-/// If this entry has no file name (e.g., `/`), then the full path is
-/// returned.
-pub fn DirEntry::file_name(self : DirEntry) -> String {
-  match self.dent {
-    Stdin => "<stdin>"
-    Raw(x) => x.file_name()
-  }
-}
-
-///|
 /// Returns the depth at which this entry was created relative to the root.
 pub fn DirEntry::depth(self : DirEntry) -> Int32 {
   match self.dent {
@@ -107,7 +89,7 @@ pub fn DirEntry::depth(self : DirEntry) -> Int32 {
 /// Returns the underlying inode number if one exists.
 ///
 /// If this entry doesn't have an inode number, then `None` is returned.
-pub async fn DirEntry::ino(self : DirEntry) -> UInt64? {
+async fn DirEntry::ino(self : DirEntry) -> UInt64? {
   match self.dent {
     Stdin => None
     Raw(x) => x.ino()
@@ -216,7 +198,6 @@ pub struct WalkBuilder {
   priv mut follow_links : Bool
   priv mut same_file_system : Bool
   priv mut sorter : Sorter?
-  priv mut threads : Int32
   priv mut skip : Handle?
   priv mut filter : ((DirEntry) -> Bool)?
   /// The directory that gitignores should be interpreted relative to.
@@ -239,7 +220,7 @@ pub fn WalkBuilder::new(path : String) -> WalkBuilder {
 ///
 /// Note that if you call `build` on this instance before calling `add`
 /// on it, it will return exactly zero items during iteration.
-pub fn WalkBuilder::empty() -> WalkBuilder {
+fn WalkBuilder::empty() -> WalkBuilder {
   {
     paths: [],
     ig_builder: IgnoreBuilder::new(),
@@ -249,7 +230,6 @@ pub fn WalkBuilder::empty() -> WalkBuilder {
     follow_links: false,
     same_file_system: false,
     sorter: None,
-    threads: 0,
     skip: None,
     filter: None,
     global_gitignores_relative_to: Unset,
@@ -262,7 +242,7 @@ pub fn WalkBuilder::empty() -> WalkBuilder {
 ///
 /// Note that if the sequence is empty, this is the same as
 /// `WalkBuilder::empty`.
-pub fn WalkBuilder::from_iter(paths : ArrayView[String]) -> WalkBuilder {
+fn WalkBuilder::from_iter(paths : ArrayView[String]) -> WalkBuilder {
   let builder = WalkBuilder::empty()
   for path in paths {
     builder.add(path) |> ignore
@@ -314,28 +294,6 @@ pub async fn WalkBuilder::build(self : WalkBuilder) -> Walk {
 }
 
 ///|
-/// Build a new `WalkParallel` iterator.
-///
-/// Note that this *doesn't* return something that implements an iterator.
-/// Instead, the returned value must be run with a closure. e.g.,
-/// `builder.build_parallel().run(() => path => { ...; Continue })`.
-pub async fn WalkBuilder::build_parallel(self : WalkBuilder) -> WalkParallel {
-  let ig_root = self.build_ignore()
-  {
-    paths: self.paths.copy(),
-    ig_root,
-    max_depth: self.max_depth,
-    min_depth: self.min_depth,
-    max_filesize: self.max_filesize,
-    follow_links: self.follow_links,
-    same_file_system: self.same_file_system,
-    threads: self.threads,
-    skip: self.skip,
-    filter: self.filter,
-  }
-}
-
-///|
 /// Add a file path to the iterator.
 ///
 /// Each additional file path added is traversed recursively. This should
@@ -362,21 +320,6 @@ pub fn WalkBuilder::max_depth(
 }
 
 ///|
-/// The minimum depth to recurse.
-///
-/// The default, `None`, imposes no minimum depth restriction.
-pub fn WalkBuilder::min_depth(
-  self : WalkBuilder,
-  depth : Int32?,
-) -> WalkBuilder {
-  self.min_depth = depth
-  if (self.max_depth, self.min_depth) is (Some(max), Some(min)) && min > max {
-    self.min_depth = self.max_depth
-  }
-  self
-}
-
-///|
 /// Whether to follow symbolic links or not.
 pub fn WalkBuilder::follow_links(self : WalkBuilder, yes : Bool) -> WalkBuilder {
   self.follow_links = yes
@@ -390,19 +333,6 @@ pub fn WalkBuilder::max_filesize(
   filesize : UInt64?,
 ) -> WalkBuilder {
   self.max_filesize = filesize
-  self
-}
-
-///|
-/// The number of threads to use for traversal.
-///
-/// Note that this only has an effect when using `build_parallel`. (In this
-/// port, the parallel walker always executes on a single thread.)
-///
-/// The default setting is `0`, which chooses the number of threads
-/// automatically using heuristics.
-pub fn WalkBuilder::threads(self : WalkBuilder, n : Int32) -> WalkBuilder {
-  self.threads = n
   self
 }
 
@@ -482,29 +412,6 @@ pub fn WalkBuilder::overrides(
 pub fn WalkBuilder::types(self : WalkBuilder, types : Types) -> WalkBuilder {
   self.ig_builder.types(types) |> ignore
   self
-}
-
-///|
-/// Enables all the standard ignore filters.
-///
-/// This toggles, as a group, all the filters that are enabled by default:
-/// `hidden`, `parents`, `ignore`, `git_ignore`, `git_global` and
-/// `git_exclude`.
-///
-/// They may still be toggled individually after calling this function.
-///
-/// This is (by definition) enabled by default.
-pub fn WalkBuilder::standard_filters(
-  self : WalkBuilder,
-  yes : Bool,
-) -> WalkBuilder {
-  self
-  .hidden(yes)
-  .parents(yes)
-  .ignore(yes)
-  .git_ignore(yes)
-  .git_global(yes)
-  .git_exclude(yes)
 }
 
 ///|
@@ -607,30 +514,6 @@ pub fn WalkBuilder::ignore_case_insensitive(
 }
 
 ///|
-/// Set a function for sorting directory entries by their path.
-///
-/// If a compare function is set, the resulting iterator will return all
-/// paths in sorted order. The compare function will be called to compare
-/// entries from the same directory. It must return a negative number, zero
-/// or a positive number (like Rust's `Ordering::{Less, Equal, Greater}`).
-///
-/// This is like `sort_by_file_name`, except the comparator accepts
-/// the full path instead of the base file name, which permits it to sort by
-/// more criteria.
-///
-/// This method will override any previous sorter set by this method or
-/// by `sort_by_file_name`.
-///
-/// Note that this is not used in the parallel iterator.
-pub fn WalkBuilder::sort_by_file_path(
-  self : WalkBuilder,
-  cmp : (String, String) -> Int32,
-) -> WalkBuilder {
-  self.sorter = Some(ByPath(cmp))
-  self
-}
-
-///|
 /// Set a function for sorting directory entries by file name.
 ///
 /// If a compare function is set, the resulting iterator will return all
@@ -640,8 +523,6 @@ pub fn WalkBuilder::sort_by_file_path(
 ///
 /// This method will override any previous sorter set by this method or
 /// by `sort_by_file_path`.
-///
-/// Note that this is not used in the parallel iterator.
 pub fn WalkBuilder::sort_by_file_name(
   self : WalkBuilder,
   cmp : (String, String) -> Int32,
@@ -687,28 +568,6 @@ pub async fn WalkBuilder::skip_stdout(
   } else {
     self.skip = None
   }
-  self
-}
-
-///|
-/// Yields only entries which satisfy the given predicate and skips
-/// descending into directories that do not satisfy the given predicate.
-///
-/// The predicate is applied to all entries. If the predicate is
-/// true, iteration carries on as normal. If the predicate is false, the
-/// entry is ignored and if it is a directory, it is not descended into.
-///
-/// Note that the errors for reading entries that may not satisfy the
-/// predicate will still be yielded.
-///
-/// Note also that only one filter predicate can be applied to a
-/// `WalkBuilder`. Calling this subsequent times overrides previous filter
-/// predicates.
-pub fn WalkBuilder::filter_entry(
-  self : WalkBuilder,
-  filter : (DirEntry) -> Bool,
-) -> WalkBuilder {
-  self.filter = Some(filter)
   self
 }
 
@@ -781,26 +640,6 @@ pub struct Walk {
   priv max_filesize : UInt64?
   priv skip : Handle?
   priv filter : ((DirEntry) -> Bool)?
-}
-
-///|
-/// Creates a new recursive directory iterator for the file path given.
-///
-/// Note that this uses default settings, which include respecting
-/// `.gitignore` files. To configure the iterator, use `WalkBuilder`
-/// instead.
-pub async fn Walk::new(path : String) -> Walk {
-  WalkBuilder::new(path).build()
-}
-
-///|
-/// Create a new recursive directory iterator from the sequence of paths
-/// given.
-///
-/// Note that if the provided sequence is empty, then `Walk` is guaranteed
-/// to yield zero entries.
-pub async fn Walk::from_iter(paths : ArrayView[String]) -> Walk {
-  WalkBuilder::from_iter(paths).build()
 }
 
 ///|
@@ -913,21 +752,6 @@ pub async fn Walk::next(self : Walk) -> Result[DirEntry, IgnoreError]? {
       }
     }
   }
-}
-
-///|
-/// Returns an iterator over the remaining results of this walk.
-pub async fn Walk::iter(self : Walk) -> Array[Result[DirEntry, IgnoreError]] {
-  self.collect()
-}
-
-///|
-pub async fn Walk::collect(self : Walk) -> Array[Result[DirEntry, IgnoreError]] {
-  let entries = []
-  while self.next() is Some(entry) {
-    entries.push(entry)
-  }
-  entries
 }
 
 ///|
@@ -1088,4 +912,34 @@ async fn path_equals(dent : DirEntry, handle : Handle) -> Bool {
         .with_path(dent.path())
   }
   h.same(handle)
+}
+
+///|
+pub fn WalkBuilder::min_depth(
+  self : WalkBuilder,
+  depth : Int32?,
+) -> WalkBuilder {
+  self.min_depth = depth
+  if (self.max_depth, self.min_depth) is (Some(max), Some(min)) && min > max {
+    self.min_depth = self.max_depth
+  }
+  self
+}
+
+///|
+pub fn WalkBuilder::sort_by_file_path(
+  self : WalkBuilder,
+  cmp : (String, String) -> Int32,
+) -> WalkBuilder {
+  self.sorter = Some(ByPath(cmp))
+  self
+}
+
+///|
+pub fn WalkBuilder::filter_entry(
+  self : WalkBuilder,
+  filter : (DirEntry) -> Bool,
+) -> WalkBuilder {
+  self.filter = Some(filter)
+  self
 }

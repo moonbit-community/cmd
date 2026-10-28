@@ -515,3 +515,54 @@ async fn SearcherTester::run(self : SearcherTester) -> Unit {
     }
   }
 }
+
+///|
+fn SinkContext::bytes(self : SinkContext) -> Bytes {
+  Bytes::from_array(self.buf[self.start:self.end])
+}
+
+///|
+priv struct Lossy {
+  f : (Int64, String) -> Bool raise
+}
+
+///|
+fn Lossy::new(f : (Int64, String) -> Bool raise) -> Lossy {
+  { f, }
+}
+
+///|
+impl Sink for Lossy with fn matched(self, _searcher, mat) {
+  guard mat.line_number is Some(n) else {
+    raise SearchIOError("line numbers not enabled")
+  }
+  (self.f)(n, @utf8.decode_lossy(mat.bytes()))
+}
+
+///|
+fn SinkMatch::bytes(self : SinkMatch) -> Bytes {
+  Bytes::from_array(
+    self.buf[self.buf_start + self.start:self.buf_start + self.end],
+  )
+}
+
+///|
+fn lines_of(bytes : Bytes, line_term : Byte) -> Array[Bytes] {
+  let buf = bytes.to_fixedarray()
+  let step = LineStep::new(line_term, 0, buf.length())
+  let out = []
+  while step.next(buf, 0) is Some(m) {
+    out.push(bytes[m.start:m.end].to_owned())
+  }
+  out
+}
+
+///|
+fn SinkMatch::lines(self : SinkMatch) -> Array[Bytes] {
+  lines_of(self.bytes(), self.line_term.as_byte())
+}
+
+///|
+fn SinkContext::lines(self : SinkContext) -> Array[Bytes] {
+  lines_of(self.bytes(), self.line_term.as_byte())
+}

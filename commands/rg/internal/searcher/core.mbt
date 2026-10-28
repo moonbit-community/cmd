@@ -20,6 +20,8 @@ priv struct Core {
   matcher : &@matcher.Matcher
   searcher : Searcher
   sink : &Sink
+  synchronous_matched : ((Searcher, SinkMatch) -> Bool)?
+  synchronous_count : ((Int64) -> Unit)?
   binary : Bool
   mut pos : Int32
   mut absolute_byte_offset : Int64
@@ -48,6 +50,19 @@ fn Core::new(
     matcher,
     searcher,
     sink,
+    synchronous_matched: sink.synchronous_matched(),
+    synchronous_count: if !binary &&
+      !searcher.config.invert_match &&
+      searcher.config.max_matches is None &&
+      searcher.config.max_context() == 0 &&
+      !searcher.config.passthru &&
+      !searcher.config.stop_on_nonmatch &&
+      !searcher.config.multi_line &&
+      searcher.config.binary.quit_byte() is None {
+      sink.synchronous_count()
+    } else {
+      None
+    },
     binary,
     pos: 0,
     absolute_byte_offset: 0,
@@ -161,6 +176,17 @@ async fn Core::finish(
 ///|
 async fn Core::match_by_line(self : Core, buf : Win) -> Bool {
   if self.is_line_by_line_fast() {
+    if self.synchronous_count is Some(accept) {
+      self.match_count_batch(buf, accept)
+      return true
+    }
+    if !self.binary &&
+      !self.config.invert_match &&
+      self.config.max_context() == 0 &&
+      !self.config.stop_on_nonmatch &&
+      self.synchronous_matched is Some(accept) {
+      return self.match_by_line_synchronous(buf, accept)
+    }
     match self.match_by_line_fast(buf) {
       SwitchToSlow => self.match_by_line_slow(buf)
       Continue => true
@@ -169,6 +195,119 @@ async fn Core::match_by_line(self : Core, buf : Win) -> Bool {
   } else {
     self.match_by_line_slow(buf)
   }
+}
+
+///|
+// Confirmed matches need only the next line boundary. Candidates retain their
+// full-line verification. The caller has excluded every early-stop mode.
+fn Core::match_count_batch(
+  self : Core,
+  buf : Win,
+  accept : (Int64) -> Unit,
+) -> Unit {
+  if self.matcher.count_matching_lines(
+      buf.arr,
+      buf.off + self.pos,
+      buf.off + buf.len,
+      self.lineterm(),
+    )
+    is Some(count) {
+    if count > 0 {
+      self.count += count
+      self.has_matched = true
+      self.has_sunk = true
+      self.last_line_visited = buf.len
+      self.after_context_left = 0
+      accept(count)
+    }
+    self.pos = buf.len
+    return
+  }
+  let term = self.lineterm()
+  let mut pos = self.pos
+  let mut count = 0L
+  let mut last = self.last_line_visited
+  while pos < buf.len {
+    match
+      self.matcher.find_candidate_line(
+        buf.arr,
+        buf.off + pos,
+        buf.off + buf.len,
+      ) {
+      None => break
+      Some(Confirmed(end)) => {
+        let end = pos + end
+        if end == buf.len && buf.arr[buf.off + end - 1] == term {
+          break
+        }
+        pos = match find_byte(buf.arr, term, buf.off + end, buf.off + buf.len) {
+          Some(next) => next - buf.off + 1
+          None => buf.len
+        }
+        count += 1
+        last = pos
+      }
+      Some(Candidate(end)) => {
+        let line = locate(buf.arr, buf.off, buf.len, term, {
+          start: pos + end,
+          end: pos + end,
+        })
+        if line.start == buf.len {
+          break
+        }
+        pos = line.end
+        if self.is_match(buf, line) {
+          count += 1
+          last = pos
+        }
+      }
+    }
+  }
+  if count > 0 {
+    self.count += count
+    self.has_matched = true
+    self.has_sunk = true
+    self.last_line_visited = last
+    self.after_context_left = 0
+    accept(count)
+  }
+  self.pos = buf.len
+}
+
+///|
+// The reader has already performed binary detection. Context, inversion and
+// slice/multiline searches keep their existing event-driven path.
+fn Core::match_by_line_synchronous(
+  self : Core,
+  buf : Win,
+  accept : (Searcher, SinkMatch) -> Bool,
+) -> Bool {
+  while self.pos < buf.len {
+    guard self.find_by_line_fast(buf) is Some(line) else { break }
+    self.has_matched = true
+    self.count += 1
+    self.pos = line.end
+    self.count_lines(buf, line.start)
+    let mat = self.sink_match
+    mat.buf = buf.arr
+    mat.buf_start = buf.off
+    mat.buf_len = buf.len
+    mat.start = line.start
+    mat.end = line.end
+    mat.absolute_byte_offset = self.absolute_byte_offset + line.start.to_int64()
+    mat.line_number = self.line_number
+    if !accept(self.searcher, mat) {
+      return false
+    }
+    self.last_line_visited = line.end
+    self.after_context_left = 0
+    self.has_sunk = true
+  }
+  if self.has_exceeded_match_limit() {
+    return false
+  }
+  self.pos = buf.len
+  true
 }
 
 ///|

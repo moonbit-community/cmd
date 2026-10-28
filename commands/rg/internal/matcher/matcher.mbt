@@ -4,6 +4,13 @@
 /// are relative to `hs`, and the matcher must treat `hs` and `he` as the
 /// boundaries of the haystack.
 pub(open) trait Matcher {
+  /// A bounded nonempty literal may be searched across chunks by retaining
+  /// this many trailing bytes. Assertions, captures and variable-length
+  /// expressions must decline; `term` must never occur in a match.
+  fn literal_overlap(Self, Byte) -> Int32? = _
+  /// Optionally count matching lines in a complete-line window. The caller
+  /// guarantees `term` cannot occur in a match. None keeps normal discovery.
+  fn count_matching_lines(Self, FixedArray[Byte], Int32, Int32, Byte) -> Int64? = _
   /// Returns the first match in the haystack starting at or after `at`.
   fn find_at(Self, FixedArray[Byte], Int32, Int32, Int32) -> Match?
   /// Creates an empty set of captures for this matcher.
@@ -23,6 +30,16 @@ pub(open) trait Matcher {
   fn line_terminator(Self) -> LineTerminator? = _
   /// Finds a line that might contain a match.
   fn find_candidate_line(Self, FixedArray[Byte], Int32, Int32) -> LineMatchKind? = _
+}
+
+///|
+impl Matcher with fn literal_overlap(_self, _term) {
+  None
+}
+
+///|
+impl Matcher with fn count_matching_lines(_self, _hay, _hs, _he, _term) {
+  None
 }
 
 ///|

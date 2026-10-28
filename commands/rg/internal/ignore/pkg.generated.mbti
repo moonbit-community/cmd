@@ -9,8 +9,6 @@ import {
 // Values
 pub fn compare_utf8(String, String) -> Int32
 
-pub async fn gitconfig_excludes_path() -> String?
-
 // Errors
 pub(all) suberror IgnoreError {
   Partial(Array[IgnoreError])
@@ -23,11 +21,6 @@ pub(all) suberror IgnoreError {
   UnrecognizedFileType(String)
   InvalidDefinition
 } derive(@debug.Debug)
-pub fn IgnoreError::depth(Self) -> Int32?
-pub fn IgnoreError::into_io_error(Self) -> @sys.IOError?
-pub fn IgnoreError::io_error(Self) -> @sys.IOError?
-pub fn IgnoreError::is_io(Self) -> Bool
-pub fn IgnoreError::is_partial(Self) -> Bool
 pub fn IgnoreError::to_string(Self) -> String
 pub impl Show for IgnoreError
 
@@ -37,12 +30,8 @@ pub struct DirEntry {
 }
 pub fn DirEntry::depth(Self) -> Int32
 pub fn DirEntry::error(Self) -> IgnoreError?
-pub fn DirEntry::file_name(Self) -> String
 pub fn DirEntry::file_type(Self) -> @sys.FileType?
-pub async fn DirEntry::ino(Self) -> UInt64?
-pub fn DirEntry::into_path(Self) -> String
 pub fn DirEntry::is_stdin(Self) -> Bool
-pub async fn DirEntry::metadata(Self) -> @sys.Metadata
 pub fn DirEntry::path(Self) -> String
 pub fn DirEntry::path_is_symlink(Self) -> Bool
 pub impl @debug.Debug for DirEntry
@@ -56,16 +45,8 @@ pub fn FileTypeDef::name(Self) -> String
 pub struct Gitignore {
   // private fields
 }
-pub fn Gitignore::empty() -> Self
-pub async fn Gitignore::global() -> (Self, IgnoreError?)
-pub fn Gitignore::is_empty(Self) -> Bool
-pub fn Gitignore::len(Self) -> Int32
 pub fn Gitignore::matched(Self, String, Bool) -> Match[GitignoreGlob]
 pub fn Gitignore::matched_path_or_any_parents(Self, String, Bool) -> Match[GitignoreGlob]
-pub async fn Gitignore::new(String) -> (Self, IgnoreError?)
-pub fn Gitignore::num_ignores(Self) -> Int32
-pub fn Gitignore::num_whitelists(Self) -> Int32
-pub fn Gitignore::path(Self) -> String
 pub impl @debug.Debug for Gitignore
 
 pub struct GitignoreBuilder {
@@ -73,21 +54,12 @@ pub struct GitignoreBuilder {
 }
 pub async fn GitignoreBuilder::add(Self, String) -> IgnoreError?
 pub fn GitignoreBuilder::add_line(Self, String?, String) -> Self raise IgnoreError
-pub fn GitignoreBuilder::add_str(Self, String?, String) -> Self raise IgnoreError
-pub fn GitignoreBuilder::allow_unclosed_class(Self, Bool) -> Self
 pub fn GitignoreBuilder::build(Self) -> Gitignore raise IgnoreError
-pub async fn GitignoreBuilder::build_global(Self) -> (Gitignore, IgnoreError?)
-pub fn GitignoreBuilder::case_insensitive(Self, Bool) -> Self
 pub fn GitignoreBuilder::new(String) -> Self
 
 pub struct GitignoreGlob {
   // private fields
 } derive(Eq, @debug.Debug)
-pub fn GitignoreGlob::actual(Self) -> String
-pub fn GitignoreGlob::from(Self) -> String?
-pub fn GitignoreGlob::is_only_dir(Self) -> Bool
-pub fn GitignoreGlob::is_whitelist(Self) -> Bool
-pub fn GitignoreGlob::original(Self) -> String
 
 pub(all) enum Match[T] {
   None
@@ -108,9 +80,6 @@ pub struct Override {
 pub fn Override::empty() -> Self
 pub fn Override::is_empty(Self) -> Bool
 pub fn Override::matched(Self, String, Bool) -> Match[OverrideGlob]
-pub fn Override::num_ignores(Self) -> Int32
-pub fn Override::num_whitelists(Self) -> Int32
-pub fn Override::path(Self) -> String
 
 pub struct OverrideBuilder {
   // private fields
@@ -130,9 +99,6 @@ pub struct Types {
   // private fields
 }
 pub fn Types::definitions(Self) -> ArrayView[FileTypeDef]
-pub fn Types::empty() -> Self
-pub fn Types::is_empty(Self) -> Bool
-pub fn Types::len(Self) -> Int32
 pub fn Types::matched(Self, String, Bool) -> Match[TypesGlob]
 pub impl @debug.Debug for Types
 
@@ -158,10 +124,6 @@ pub fn TypesGlob::file_type_def(Self) -> FileTypeDef?
 pub struct Walk {
   // private fields
 }
-pub async fn Walk::collect(Self) -> Array[Result[DirEntry, IgnoreError]]
-pub async fn Walk::from_iter(ArrayView[String]) -> Self
-pub async fn Walk::iter(Self) -> Array[Result[DirEntry, IgnoreError]]
-pub async fn Walk::new(String) -> Self
 pub async fn Walk::next(Self) -> Result[DirEntry, IgnoreError]?
 
 pub struct WalkBuilder {
@@ -171,12 +133,9 @@ pub fn WalkBuilder::add(Self, String) -> Self
 pub fn WalkBuilder::add_custom_ignore_filename(Self, String) -> Self
 pub async fn WalkBuilder::add_ignore(Self, String) -> IgnoreError?
 pub async fn WalkBuilder::build(Self) -> Walk
-pub async fn WalkBuilder::build_parallel(Self) -> WalkParallel
 pub fn WalkBuilder::current_dir(Self, String) -> Self
-pub fn WalkBuilder::empty() -> Self
 pub fn WalkBuilder::filter_entry(Self, (DirEntry) -> Bool) -> Self
 pub fn WalkBuilder::follow_links(Self, Bool) -> Self
-pub fn WalkBuilder::from_iter(ArrayView[String]) -> Self
 pub fn WalkBuilder::git_exclude(Self, Bool) -> Self
 pub fn WalkBuilder::git_global(Self, Bool) -> Self
 pub fn WalkBuilder::git_ignore(Self, Bool) -> Self
@@ -194,29 +153,8 @@ pub fn WalkBuilder::same_file_system(Self, Bool) -> Self
 pub async fn WalkBuilder::skip_stdout(Self, Bool) -> Self
 pub fn WalkBuilder::sort_by_file_name(Self, (String, String) -> Int32) -> Self
 pub fn WalkBuilder::sort_by_file_path(Self, (String, String) -> Int32) -> Self
-pub fn WalkBuilder::standard_filters(Self, Bool) -> Self
-pub fn WalkBuilder::threads(Self, Int32) -> Self
 pub fn WalkBuilder::types(Self, Types) -> Self
-
-pub struct WalkParallel {
-  // private fields
-}
-pub async fn WalkParallel::run(Self, () -> (Result[DirEntry, IgnoreError]) -> WalkState) -> Unit
-pub async fn WalkParallel::visit(Self, &ParallelVisitorBuilder) -> Unit
-
-pub(all) enum WalkState {
-  Continue
-  Skip
-  Quit
-} derive(Eq, @debug.Debug)
 
 // Type aliases
 
 // Traits
-pub(open) trait ParallelVisitor {
-  fn visit(Self, Result[DirEntry, IgnoreError]) -> WalkState
-}
-
-pub(open) trait ParallelVisitorBuilder {
-  fn build(Self) -> &ParallelVisitor
-}

@@ -19,22 +19,8 @@ pub fn HyperlinkConfig::new(
 
 ///|
 /// The default hyperlink config, which disables hyperlinks.
-pub fn HyperlinkConfig::default() -> HyperlinkConfig {
+fn HyperlinkConfig::default() -> HyperlinkConfig {
   { env: HyperlinkEnvironment::new(), format: HyperlinkFormat::empty(), }
-}
-
-///|
-/// Returns the hyperlink environment in this configuration.
-pub fn HyperlinkConfig::environment(
-  self : HyperlinkConfig,
-) -> HyperlinkEnvironment {
-  self.env
-}
-
-///|
-/// Returns the hyperlink format in this configuration.
-pub fn HyperlinkConfig::format(self : HyperlinkConfig) -> HyperlinkFormat {
-  self.format
 }
 
 ///|
@@ -55,7 +41,7 @@ pub fn HyperlinkFormat::empty() -> HyperlinkFormat {
 
 ///|
 /// Returns true if this format is empty.
-pub fn HyperlinkFormat::is_empty(self : HyperlinkFormat) -> Bool {
+fn HyperlinkFormat::is_empty(self : HyperlinkFormat) -> Bool {
   self.parts.is_empty()
 }
 
@@ -70,7 +56,7 @@ pub fn HyperlinkFormat::into_config(
 
 ///|
 /// Returns true if this format is line dependent (contains `{line}`).
-pub fn HyperlinkFormat::is_line_dependent(self : HyperlinkFormat) -> Bool {
+fn HyperlinkFormat::is_line_dependent(self : HyperlinkFormat) -> Bool {
   self.is_line_dependent
 }
 
@@ -169,30 +155,6 @@ pub struct HyperlinkAlias {
 } derive(Debug)
 
 ///|
-/// Returns the name of the alias.
-pub fn HyperlinkAlias::name(self : HyperlinkAlias) -> String {
-  self.name
-}
-
-///|
-/// Returns a very short description of this hyperlink alias.
-pub fn HyperlinkAlias::description(self : HyperlinkAlias) -> String {
-  self.description
-}
-
-///|
-/// Returns the display priority of this alias (lower values first).
-pub fn HyperlinkAlias::display_priority(self : HyperlinkAlias) -> Int32? {
-  self.display_priority
-}
-
-///|
-/// Returns the format string of this alias.
-pub fn HyperlinkAlias::format(self : HyperlinkAlias) -> String {
-  self.format
-}
-
-///|
 fn HyperlinkAlias::find(name : String) -> HyperlinkAlias? {
   for al in hyperlink_pattern_aliases {
     if al.name == name {
@@ -204,7 +166,7 @@ fn HyperlinkAlias::find(name : String) -> HyperlinkAlias? {
 
 ///|
 /// Returns all available hyperlink aliases, sorted by name.
-pub fn hyperlink_aliases() -> Array[HyperlinkAlias] {
+fn hyperlink_aliases() -> Array[HyperlinkAlias] {
   hyperlink_pattern_aliases.copy()
 }
 
@@ -267,20 +229,6 @@ pub fn HyperlinkEnvironment::canonicalize(
 }
 
 ///|
-/// Returns the `{host}` value, if set.
-pub fn HyperlinkEnvironment::get_host(self : HyperlinkEnvironment) -> String? {
-  self.host
-}
-
-///|
-/// Returns the `{wslprefix}` value, if set.
-pub fn HyperlinkEnvironment::get_wsl_prefix(
-  self : HyperlinkEnvironment,
-) -> String? {
-  self.wsl_prefix
-}
-
-///|
 /// The kind of a hyperlink format error.
 pub(all) enum HyperlinkFormatErrorKind {
   /// This occurs when there are zero variables in the format.
@@ -307,7 +255,7 @@ pub(all) suberror HyperlinkFormatError {
 } derive(Eq, Debug)
 
 ///|
-pub fn HyperlinkFormatError::kind(
+fn HyperlinkFormatError::kind(
   self : HyperlinkFormatError,
 ) -> HyperlinkFormatErrorKind {
   let HyperlinkFormatError(kind) = self

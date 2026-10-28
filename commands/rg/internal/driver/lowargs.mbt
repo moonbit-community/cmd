@@ -93,7 +93,7 @@ pub(all) struct ContextModeLimited {
 } derive(Debug, Eq)
 
 ///|
-pub fn ContextModeLimited::get(self : ContextModeLimited) -> (Int32, Int32) {
+fn ContextModeLimited::get(self : ContextModeLimited) -> (Int32, Int32) {
   let mut before = 0
   let mut after = 0
   if self.both is Some(n) {
@@ -116,7 +116,7 @@ pub(all) enum ContextMode {
 } derive(Debug, Eq)
 
 ///|
-pub fn ContextMode::default() -> ContextMode {
+fn ContextMode::default() -> ContextMode {
   Limited({ before: None, after: None, both: None, })
 }
 
@@ -282,7 +282,7 @@ pub(all) struct LowArgs {
 }
 
 ///|
-pub fn LowArgs::default() -> LowArgs {
+fn LowArgs::default() -> LowArgs {
   {
     special: None,
     mode: Search(Standard),

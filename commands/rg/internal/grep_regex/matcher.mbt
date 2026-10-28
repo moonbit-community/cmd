@@ -38,15 +38,6 @@ pub fn RegexMatcherBuilder::build_many(
 }
 
 ///|
-/// Builds a matcher from literal strings.
-pub fn RegexMatcherBuilder::build_literals(
-  self : RegexMatcherBuilder,
-  literals : Array[String],
-) -> RegexMatcher raise GrepRegexError {
-  self.build_many(literals)
-}
-
-///|
 pub fn RegexMatcherBuilder::case_insensitive(
   self : RegexMatcherBuilder,
   yes : Bool,
@@ -83,24 +74,6 @@ pub fn RegexMatcherBuilder::dot_matches_new_line(
 }
 
 ///|
-pub fn RegexMatcherBuilder::swap_greed(
-  self : RegexMatcherBuilder,
-  yes : Bool,
-) -> RegexMatcherBuilder {
-  self.config = { ..self.config, swap_greed: yes, }
-  self
-}
-
-///|
-pub fn RegexMatcherBuilder::ignore_whitespace(
-  self : RegexMatcherBuilder,
-  yes : Bool,
-) -> RegexMatcherBuilder {
-  self.config = { ..self.config, ignore_whitespace: yes, }
-  self
-}
-
-///|
 pub fn RegexMatcherBuilder::unicode(
   self : RegexMatcherBuilder,
   yes : Bool,
@@ -133,15 +106,6 @@ pub fn RegexMatcherBuilder::dfa_size_limit(
   bytes : Int32,
 ) -> RegexMatcherBuilder {
   self.config = { ..self.config, dfa_size_limit: bytes, }
-  self
-}
-
-///|
-pub fn RegexMatcherBuilder::nest_limit(
-  self : RegexMatcherBuilder,
-  limit : Int32,
-) -> RegexMatcherBuilder {
-  self.config = { ..self.config, nest_limit: limit, }
   self
 }
 
@@ -225,26 +189,6 @@ pub fn RegexMatcher::new(pattern : String) -> RegexMatcher raise GrepRegexError 
 }
 
 ///|
-/// Creates a matcher that is guaranteed to never match a `\n`.
-pub fn RegexMatcher::new_line_matcher(
-  pattern : String,
-) -> RegexMatcher raise GrepRegexError {
-  RegexMatcherBuilder::new().line_terminator(Some(b'\n')).build(pattern)
-}
-
-///|
-/// The HIR the underlying regex was built from (useful for debugging).
-pub fn RegexMatcher::hir(self : RegexMatcher) -> @syntax.Hir {
-  self.regex.hir()
-}
-
-///|
-/// Whether a fast line regex (inner literals) is in use.
-pub fn RegexMatcher::has_fast_line_regex(self : RegexMatcher) -> Bool {
-  self.fast_line_regex is Some(_)
-}
-
-///|
 pub impl @matcher.Matcher for RegexMatcher with fn find_at(
   self,
   hay,
@@ -311,6 +255,30 @@ pub impl @matcher.Matcher for RegexMatcher with fn shortest_match_at(
 ///|
 pub impl @matcher.Matcher for RegexMatcher with fn non_matching_bytes(self) {
   Some(self.non_matching_bytes)
+}
+
+///|
+pub impl @matcher.Matcher for RegexMatcher with fn literal_overlap(self, term) {
+  match self.regex.hir().kind {
+    Literal(bytes) if bytes.length() > 0 &&
+      bytes.length() <= 4096 &&
+      self.non_matching_bytes.contains(term) => Some(bytes.length() - 1)
+    _ => None
+  }
+}
+
+///|
+pub impl @matcher.Matcher for RegexMatcher with fn count_matching_lines(
+  self,
+  hay,
+  hs,
+  he,
+  term,
+) {
+  if !self.non_matching_bytes.contains(term) {
+    return None
+  }
+  self.regex.count_exact_lines(hay, hs, he, term)
 }
 
 ///|

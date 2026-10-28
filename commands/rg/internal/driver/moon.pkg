@@ -1,6 +1,8 @@
 import {
+  "cli/core/stream",
+  "moonbitlang/async/stdio",
+  "moonbitlang/async/io",
   "cli/rg/internal/osstr",
-  "cli/rg/internal/memchr",
   "cli/rg/internal/cli",
   "cli/rg/internal/sys",
   "cli/rg/internal/searcher",
@@ -22,4 +24,5 @@ import {
 
 import {
   "moonbitlang/async",
+  "moonbitlang/async/os_error",
 } for "wbtest"

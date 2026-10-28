@@ -18,7 +18,7 @@ pub suberror GrepRegexError {
 } derive(Debug)
 
 ///|
-pub fn GrepRegexError::kind(self : GrepRegexError) -> GrepRegexErrorKind {
+fn GrepRegexError::kind(self : GrepRegexError) -> GrepRegexErrorKind {
   let GrepRegexError(k) = self
   k
 }

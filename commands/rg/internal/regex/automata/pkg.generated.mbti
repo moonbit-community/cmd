@@ -2,7 +2,7 @@
 package "cli/rg/internal/regex/automata"
 
 import {
-  "cli/rg/internal/memchr",
+  "cli/core/bytesearch",
   "cli/rg/internal/regex/syntax",
   "moonbitlang/core/debug",
 }
@@ -16,15 +16,7 @@ pub const NO_SPAN : Int64 = -1
 
 pub fn compile_nfa(@syntax.Hir, config? : NFAConfig) -> NFA raise BuildError
 
-pub fn is_word_byte(Int32) -> Bool
-
-pub fn look_matches(@syntax.Look, FixedArray[Byte], Int32, Int32, Int32, lineterm? : Int32) -> Bool
-
-pub fn memchr(Byte, FixedArray[Byte], Int32, Int32) -> Int32?
-
 pub fn span_end(Int64) -> Int32
-
-pub fn span_start(Int64) -> Int32
 
 pub fn utf8_sequences(Int32, Int32) -> Array[Array[(Int32, Int32)]]
 
@@ -37,11 +29,9 @@ pub suberror BuildError {
 pub struct LazyDFA {
   // private fields
 }
-pub fn LazyDFA::clear_count(Self) -> Int32
 pub fn LazyDFA::find_fwd(Self, FixedArray[Byte], Int32, Int32, Int32, Int32, Bool, Bool, pre? : Prefilter) -> Int32
 pub fn LazyDFA::find_rev(Self, FixedArray[Byte], Int32, Int32, Int32, Int32, Bool, Bool) -> Int32
 pub fn LazyDFA::new(NFA, match_all? : Bool, state_limit? : Int32) -> Self
-pub fn LazyDFA::state_count(Self) -> Int32
 
 pub struct NFA {
   states : Array[State]
@@ -57,10 +47,6 @@ pub struct NFA {
 }
 pub fn NFA::group_len(Self) -> Int32
 pub fn NFA::group_names(Self) -> Array[String?]
-pub fn NFA::is_reverse(Self) -> Bool
-pub fn NFA::look_set_any(Self) -> @syntax.LookSet
-pub fn NFA::start_anchored(Self) -> Int32
-pub fn NFA::start_unanchored(Self) -> Int32
 pub fn NFA::states(Self) -> Array[State]
 pub fn NFA::to_string(Self) -> String
 
@@ -77,21 +63,20 @@ pub struct PikeVM {
   // private fields
 }
 pub fn PikeVM::new(NFA) -> Self
-pub fn PikeVM::nfa(Self) -> NFA
 pub fn PikeVM::search_slots(Self, FixedArray[Byte], Int32, Int32, Int32, Int32, Bool, Bool, FixedArray[Int32], pre? : Prefilter) -> Bool
 
 pub(all) enum Prefilter {
   Byte(Byte)
   Bytes2(Byte, Byte)
   Bytes3(Byte, Byte, Byte)
-  ByteSet(FixedArray[Bool])
-  Substr(@memchr.Finder)
-  Teddy(@memchr.Teddy)
-  Multi(@memchr.PairSet?, FixedArray[Byte], FixedArray[Bool], Array[Array[FixedArray[Byte]]], Int32)
+  ByteSet(@bytesearch.ByteSetFinder)
+  Substr(@bytesearch.Finder)
+  Teddy(@bytesearch.Teddy)
+  Multi(@bytesearch.PairSet?, FixedArray[Byte], @bytesearch.ByteSetFinder, Array[Array[FixedArray[Byte]]], Int32)
 }
+pub fn Prefilter::count_lines(Self, FixedArray[Byte], Int32, Int32, Byte) -> Int64
 pub fn Prefilter::find(Self, FixedArray[Byte], Int32, Int32) -> (Int32, Int32)?
 pub fn Prefilter::find_span(Self, FixedArray[Byte], Int32, Int32) -> Int64
-pub fn Prefilter::find_start(Self, FixedArray[Byte], Int32, Int32) -> Int32
 pub fn Prefilter::is_fast(Self) -> Bool
 pub fn Prefilter::new(Array[Bytes]) -> Self?
 
@@ -105,7 +90,6 @@ pub(all) enum State {
   Fail
   Match
 } derive(Eq, @debug.Debug)
-pub fn State::is_epsilon(Self) -> Bool
 
 pub(all) struct Transition {
   start : Int32

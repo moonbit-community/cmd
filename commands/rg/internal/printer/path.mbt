@@ -1,79 +1,25 @@
 ///|
 priv struct PathConfig {
-  mut colors : ColorSpecs
-  mut hyperlink : HyperlinkConfig
-  mut separator : Byte?
-  mut terminator : Byte
+  colors : ColorSpecs
+  hyperlink : HyperlinkConfig
+  separator : Byte?
+  terminator : Byte
 }
 
 ///|
-/// A builder for a printer that emits file paths.
-pub struct PathPrinterBuilder {
-  priv config : PathConfig
-}
-
-///|
-/// Return a new path printer builder with a default configuration.
-pub fn PathPrinterBuilder::new() -> PathPrinterBuilder {
-  {
-    config: {
-      colors: ColorSpecs::default(),
-      hyperlink: HyperlinkConfig::default(),
-      separator: None,
-      terminator: b'\n',
-    },
-  }
-}
-
-///|
-/// Create a new path printer with the current configuration that writes
-/// paths to the given writer.
-pub fn PathPrinterBuilder::build(
-  self : PathPrinterBuilder,
+/// Configure once before writing any paths.
+pub fn PathPrinter::new(
   wtr : &@termcolor.WriteColor,
+  colors~ : ColorSpecs = ColorSpecs::default(),
+  hyperlink~ : HyperlinkConfig = HyperlinkConfig::default(),
+  separator~ : Byte? = None,
+  terminator~ : Byte = b'\n',
 ) -> PathPrinter {
-  let interpolator = Interpolator::new(self.config.hyperlink)
-  { config: { ..self.config, }, wtr, interpolator, }
-}
-
-///|
-/// Set the user color specifications to use for coloring in this printer.
-pub fn PathPrinterBuilder::color_specs(
-  self : PathPrinterBuilder,
-  specs : ColorSpecs,
-) -> PathPrinterBuilder {
-  self.config.colors = specs
-  self
-}
-
-///|
-/// Set the configuration to use for hyperlinks output by this printer.
-pub fn PathPrinterBuilder::hyperlink(
-  self : PathPrinterBuilder,
-  config : HyperlinkConfig,
-) -> PathPrinterBuilder {
-  self.config.hyperlink = config
-  self
-}
-
-///|
-/// Set the path separator used when printing file paths.
-pub fn PathPrinterBuilder::separator(
-  self : PathPrinterBuilder,
-  sep : Byte?,
-) -> PathPrinterBuilder {
-  self.config.separator = sep
-  self
-}
-
-///|
-/// Set the path terminator used (`\n` by default).
-pub fn PathPrinterBuilder::terminator(
-  self : PathPrinterBuilder,
-  terminator : Byte,
-) -> PathPrinterBuilder {
-  self.config.terminator = terminator
-  self
+  {
+    config: { colors, hyperlink, separator, terminator, },
+    wtr,
+    interpolator: Interpolator::new(hyperlink),
+  }
 }
 
 ///|
@@ -110,10 +56,4 @@ async fn PathPrinter::start_hyperlink(
   }
   let values = Values::new(hyperpath)
   self.interpolator.begin(values, self.wtr)
-}
-
-///|
-/// Returns the underlying writer.
-pub fn PathPrinter::get_mut(self : PathPrinter) -> &@termcolor.WriteColor {
-  self.wtr
 }

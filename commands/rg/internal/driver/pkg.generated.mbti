@@ -2,8 +2,6 @@
 package "cli/rg/internal/driver"
 
 import {
-  "cli/rg/internal/grep_regex",
-  "cli/rg/internal/ignore",
   "cli/rg/internal/printer",
   "cli/rg/internal/searcher",
   "cli/rg/internal/termcolor",
@@ -11,75 +9,18 @@ import {
 }
 
 // Values
-pub async fn config_args() -> Array[String]
-
-pub async fn eprintln_locked(String) -> Unit
-
-pub async fn err_message(String) -> Unit
-
-pub fn errored() -> Bool
-
 pub let flag_defs : Array[FlagDef]
 
-pub fn generate_complete_bash() -> String
-
-pub fn generate_complete_fish() -> String
-
-pub fn generate_complete_powershell() -> String
-
-pub fn generate_complete_zsh() -> String
-
-pub fn generate_help_long() -> String
-
-pub fn generate_help_short() -> String
-
-pub fn generate_man_page() -> String
-
-pub fn generate_version_digits() -> String
-
-pub fn generate_version_long() -> String
-
-pub fn generate_version_pcre2() -> (String, Bool)
-
-pub fn generate_version_short() -> String
-
-pub async fn ignore_message(String) -> Unit
-
-pub fn ignore_messages() -> Bool
-
-pub async fn log_debug(String, String) -> Unit
-
-pub async fn log_trace(String, String) -> Unit
-
-pub fn lookup_flag(String) -> FlagDef?
-
-pub async fn message(String) -> Unit
-
-pub fn messages() -> Bool
-
-pub fn parse_config_bytes(Bytes) -> (Array[String], Array[String])
-
-pub fn parse_into(Array[String], LowArgs) -> Unit raise RgError
-
-pub async fn parse_low(Array[String]) -> ParseResult[LowArgs]
-
-pub fn parse_low_raw(Array[String]) -> LowArgs raise RgError
+pub fn parse_config_bytes(Bytes) -> Array[String]
 
 pub let rg_version : String
 
 pub async fn run_main(Array[String]) -> Int32
 
-pub fn set_errored() -> Unit
-
-pub fn set_ignore_messages(Bool) -> Unit
-
-pub fn set_messages(Bool) -> Unit
-
 // Errors
 pub suberror RgError {
   RgError(String)
 } derive(@debug.Debug)
-pub fn RgError::message(Self) -> String
 pub impl Show for RgError
 
 // Types and methods
@@ -116,7 +57,6 @@ pub(all) enum Category {
   Logging
   OtherBehaviors
 } derive(Compare, Eq, @debug.Debug)
-pub fn Category::as_str(Self) -> String
 
 pub(all) enum ColorChoice {
   Never
@@ -137,14 +77,12 @@ pub(all) enum ContextMode {
   Passthru
   Limited(ContextModeLimited)
 } derive(Eq, @debug.Debug)
-pub fn ContextMode::default() -> Self
 
 pub(all) struct ContextModeLimited {
   before : Int32?
   after : Int32?
   both : Int32?
 } derive(Eq, @debug.Debug)
-pub fn ContextModeLimited::get(Self) -> (Int32, Int32)
 
 pub(all) enum EncodingMode {
   Auto
@@ -190,26 +128,6 @@ pub(all) enum GenerateMode {
 pub struct Haystack {
   // private fields
 }
-pub async fn Haystack::is_explicit(Self) -> Bool
-pub fn Haystack::is_stdin(Self) -> Bool
-pub fn Haystack::path(Self) -> String
-
-pub struct HiArgs {
-  // private fields
-}
-pub async fn HiArgs::from_low_args(LowArgs) -> Self
-pub fn HiArgs::has_implicit_path(Self) -> Bool
-pub fn HiArgs::matcher(Self) -> @grep_regex.RegexMatcher raise RgError
-pub fn HiArgs::matches_possible(Self) -> Bool
-pub fn HiArgs::mode(Self) -> Mode
-pub fn HiArgs::printer(Self, SearchMode, &@termcolor.WriteColor) -> Printer
-pub fn HiArgs::quiet(Self) -> Bool
-pub fn HiArgs::quit_after_match(Self) -> Bool
-pub fn HiArgs::searcher(Self) -> @searcher.Searcher
-pub fn HiArgs::stats(Self) -> @printer.Stats?
-pub fn HiArgs::stdout(Self) -> &@termcolor.WriteColor
-pub fn HiArgs::threads(Self) -> Int32
-pub fn HiArgs::types(Self) -> @ignore.Types
 
 pub(all) enum IndexMode {
   Crud
@@ -299,7 +217,6 @@ pub(all) struct LowArgs {
   mut vimgrep : Bool
   mut with_filename : Bool?
 }
-pub fn LowArgs::default() -> Self
 
 pub(all) enum MmapMode {
   Auto
@@ -331,7 +248,6 @@ pub enum Printer {
   Summary(@printer.Summary)
   JSON(@printer.JSON)
 }
-pub fn Printer::get_mut(Self) -> &@termcolor.WriteColor
 
 pub(all) enum SearchMode {
   Standard
@@ -365,7 +281,6 @@ pub(all) enum SpecialMode {
 pub struct StdoutWriter {
   // private fields
 }
-pub fn StdoutWriter::new(Int32, Bool) -> Self
 pub impl @termcolor.Write for StdoutWriter
 
 pub(all) enum TypeChange {

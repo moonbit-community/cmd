@@ -12,11 +12,6 @@ pub fn Match::new(start : Int32, end : Int32) -> Match {
 }
 
 ///|
-pub fn Match::zero(offset : Int32) -> Match {
-  { start: offset, end: offset, }
-}
-
-///|
 pub fn Match::with_start(self : Match, start : Int32) -> Match {
   Match::new(start, self.end)
 }
@@ -104,25 +99,8 @@ pub struct ByteSet {
 }
 
 ///|
-pub fn ByteSet::empty() -> ByteSet {
-  { bits: FixedArray::make(256, false), }
-}
-
-///|
 pub fn ByteSet::full() -> ByteSet {
   { bits: FixedArray::make(256, true), }
-}
-
-///|
-pub fn ByteSet::add(self : ByteSet, b : Byte) -> Unit {
-  self.bits[b.to_int()] = true
-}
-
-///|
-pub fn ByteSet::add_all(self : ByteSet, start : Byte, end : Byte) -> Unit {
-  for b in start.to_int()..<=end.to_int() {
-    self.bits[b] = true
-  }
 }
 
 ///|
@@ -176,17 +154,6 @@ pub fn Captures::new(group_len : Int32) -> Captures {
 }
 
 ///|
-/// The number of groups, including the implicit group 0.
-pub fn Captures::len(self : Captures) -> Int32 {
-  self.slots.length() / 2
-}
-
-///|
-pub fn Captures::is_empty(self : Captures) -> Bool {
-  self.len() == 0
-}
-
-///|
 pub fn Captures::get(self : Captures, i : Int32) -> Match? {
   if i < 0 || 2 * i + 1 >= self.slots.length() {
     return None
@@ -198,12 +165,6 @@ pub fn Captures::get(self : Captures, i : Int32) -> Match? {
   } else {
     Some({ start: s, end: e, })
   }
-}
-
-///|
-/// Returns the overall match (group 0). Panics if there is none.
-pub fn Captures::as_match(self : Captures) -> Match {
-  self.get(0).unwrap()
 }
 
 ///|

@@ -47,28 +47,6 @@ pub fn Look::as_bit(self : Look) -> UInt32 {
 }
 
 ///|
-let all_looks : Array[Look] = [
-  Start,
-  End,
-  StartLF,
-  EndLF,
-  StartCRLF,
-  EndCRLF,
-  WordAscii,
-  WordAsciiNegate,
-  WordUnicode,
-  WordUnicodeNegate,
-  WordStartAscii,
-  WordEndAscii,
-  WordStartUnicode,
-  WordEndUnicode,
-  WordStartHalfAscii,
-  WordEndHalfAscii,
-  WordStartHalfUnicode,
-  WordEndHalfUnicode,
-]
-
-///|
 /// Returns the assertion with the opposite direction.
 pub fn Look::reversed(self : Look) -> Look {
   match self {
@@ -105,12 +83,12 @@ pub fn LookSet::empty() -> LookSet {
 }
 
 ///|
-pub fn LookSet::full() -> LookSet {
+fn LookSet::full() -> LookSet {
   { bits: (1U << 18) - 1, }
 }
 
 ///|
-pub fn LookSet::singleton(look : Look) -> LookSet {
+fn LookSet::singleton(look : Look) -> LookSet {
   { bits: look.as_bit(), }
 }
 
@@ -130,33 +108,13 @@ pub fn LookSet::insert(self : LookSet, look : Look) -> LookSet {
 }
 
 ///|
-pub fn LookSet::remove(self : LookSet, look : Look) -> LookSet {
-  { bits: self.bits & look.as_bit().lnot(), }
-}
-
-///|
-pub fn LookSet::union(self : LookSet, other : LookSet) -> LookSet {
+fn LookSet::union(self : LookSet, other : LookSet) -> LookSet {
   { bits: self.bits | other.bits, }
 }
 
 ///|
-pub fn LookSet::intersect(self : LookSet, other : LookSet) -> LookSet {
+fn LookSet::intersect(self : LookSet, other : LookSet) -> LookSet {
   { bits: self.bits & other.bits, }
-}
-
-///|
-pub fn LookSet::subtract(self : LookSet, other : LookSet) -> LookSet {
-  { bits: self.bits & other.bits.lnot(), }
-}
-
-///|
-pub fn LookSet::iter(self : LookSet) -> Iter[Look] {
-  all_looks.iter().filter(l => self.contains(l))
-}
-
-///|
-pub fn LookSet::contains_anchor(self : LookSet) -> Bool {
-  self.contains_anchor_haystack() || self.contains_anchor_line()
 }
 
 ///|
@@ -170,11 +128,6 @@ pub fn LookSet::contains_anchor_line(self : LookSet) -> Bool {
   self.contains(EndLF) ||
   self.contains(StartCRLF) ||
   self.contains(EndCRLF)
-}
-
-///|
-pub fn LookSet::contains_anchor_lf(self : LookSet) -> Bool {
-  self.contains(StartLF) || self.contains(EndLF)
 }
 
 ///|
@@ -198,7 +151,7 @@ pub fn LookSet::contains_word_unicode(self : LookSet) -> Bool {
 }
 
 ///|
-pub fn LookSet::contains_word_ascii(self : LookSet) -> Bool {
+fn LookSet::contains_word_ascii(self : LookSet) -> Bool {
   self.contains(WordAscii) ||
   self.contains(WordAsciiNegate) ||
   self.contains(WordStartAscii) ||

@@ -9,7 +9,7 @@ pub(all) enum Prefilter {
   /// One of three bytes.
   Bytes3(Byte, Byte, Byte)
   /// A larger set of bytes.
-  ByteSet(FixedArray[Bool])
+  ByteSet(@memchr.ByteSetFinder)
   /// A single literal of length >= 2.
   Substr(@memchr.Finder)
   /// Several literals (at most `@memchr.teddy_max_literals`), found with
@@ -22,7 +22,7 @@ pub(all) enum Prefilter {
   Multi(
     @memchr.PairSet?,
     FixedArray[Byte],
-    FixedArray[Bool],
+    @memchr.ByteSetFinder,
     Array[Array[FixedArray[Byte]]],
     Int32
   )
@@ -70,7 +70,7 @@ pub fn Prefilter::new(lits : Array[Bytes]) -> Prefilter? {
         [a] => Byte(a)
         [a, b] => Bytes2(a, b)
         [a, b, c] => Bytes3(a, b, c)
-        _ => ByteSet(set)
+        _ => ByteSet(@memchr.ByteSetFinder::new(set))
       },
     )
   }
@@ -90,7 +90,15 @@ pub fn Prefilter::new(lits : Array[Bytes]) -> Prefilter? {
   } else {
     []
   }
-  Some(Multi(pair_set(lits, min_len), small, set, buckets, min_len))
+  Some(
+    Multi(
+      pair_set(lits, min_len),
+      small,
+      @memchr.ByteSetFinder::new(set),
+      buckets,
+      min_len,
+    ),
+  )
 }
 
 ///|
@@ -136,28 +144,12 @@ pub fn Prefilter::is_fast(self : Prefilter) -> Bool {
     Multi(_, _, set, _, _) => {
       let mut n = 0
       for i in 0..<256 {
-        if set[i] {
+        if set.contains(i.to_byte()) {
           n += 1
         }
       }
       n <= 16
     }
-  }
-}
-
-///|
-/// Returns the position of the first byte equal to `b` in `hay[start:end]`.
-pub fn memchr(
-  b : Byte,
-  hay : FixedArray[Byte],
-  start : Int32,
-  end : Int32,
-) -> Int32? {
-  let i = @memchr.memchr(b, hay, start, end)
-  if i < 0 {
-    None
-  } else {
-    Some(i)
   }
 }
 
@@ -196,14 +188,7 @@ pub fn Prefilter::find_span(
     Byte(b) => one(@memchr.memchr(b, hay, start, end))
     Bytes2(a, b) => one(@memchr.memchr2(a, b, hay, start, end))
     Bytes3(a, b, c) => one(@memchr.memchr3(a, b, c, hay, start, end))
-    ByteSet(set) => {
-      for i in start..<end {
-        if set[hay[i].to_int()] {
-          return span(i, i + 1)
-        }
-      }
-      NO_SPAN
-    }
+    ByteSet(set) => one(set.find(hay, start, end))
     Teddy(t) => t.find_span(hay, start, end)
     Substr(finder) => {
       let i = finder.find(hay, start, end)
@@ -225,17 +210,7 @@ pub fn Prefilter::find_span(
             1 => @memchr.memchr(small[0], hay, i, last + 1)
             2 => @memchr.memchr2(small[0], small[1], hay, i, last + 1)
             3 => @memchr.memchr3(small[0], small[1], small[2], hay, i, last + 1)
-            _ => {
-              let mut j = i
-              while j <= last && !set[hay[j].to_int()] {
-                j += 1
-              }
-              if j > last {
-                -1
-              } else {
-                j
-              }
-            }
+            _ => set.find(hay, i, last + 1)
           }
         }
         if i < 0 {
@@ -254,6 +229,37 @@ pub fn Prefilter::find_span(
 }
 
 ///|
+/// Counts lines with an exact literal hit; literals must not contain `term`.
+/// Keeping the finder inside the block avoids rebuilding match/span events.
+pub fn Prefilter::count_lines(
+  self : Prefilter,
+  hay : FixedArray[Byte],
+  start : Int32,
+  end : Int32,
+  term : Byte,
+) -> Int64 {
+  let mut pos = start
+  let mut count = 0L
+  match self {
+    Substr(finder) => return finder.count_lines(hay, start, end, term)
+    _ =>
+      while pos < end {
+        let found = self.find_span(hay, pos, end)
+        if found == NO_SPAN {
+          break
+        }
+        count += 1
+        let next = @memchr.memchr(term, hay, span_end(found), end)
+        if next < 0 {
+          break
+        }
+        pos = next + 1
+      }
+  }
+  count
+}
+
+///|
 /// The packed span returned when there is no candidate.
 pub const NO_SPAN : Int64 = -1L
 
@@ -264,7 +270,7 @@ fn span(start : Int32, end : Int32) -> Int64 {
 
 ///|
 /// The start of a packed span.
-pub fn span_start(sp : Int64) -> Int32 {
+fn span_start(sp : Int64) -> Int32 {
   (sp >> 32).to_int()
 }
 
@@ -276,7 +282,7 @@ pub fn span_end(sp : Int64) -> Int32 {
 
 ///|
 /// Returns the start of the next candidate in `hay[start:end]`, or `-1`.
-pub fn Prefilter::find_start(
+fn Prefilter::find_start(
   self : Prefilter,
   hay : FixedArray[Byte],
   start : Int32,

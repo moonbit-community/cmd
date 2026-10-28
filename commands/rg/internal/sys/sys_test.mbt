@@ -27,7 +27,7 @@ async fn fs_roundtrip(dir : String) -> Unit {
   assert_eq(@sys.file_len(dir + "/./sub/../a.txt"), 12L)
   assert_true(@sys.path_exists(dir + "/sub/deeper/c.txt"))
   assert_false(@sys.path_exists(dir + "/nope"))
-  let names = @sys.read_dir(dir).map(entry => entry.name)
+  let names = @sys.read_dir(dir)
   assert_true(
     names.contains("a.txt") && names.contains("sub") && names.contains("t.txt"),
   )

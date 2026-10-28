@@ -9,22 +9,6 @@ import {
 // Values
 pub const DEFAULT_BUFFER_CAPACITY : Int32 = 65536
 
-pub fn count_lines(FixedArray[Byte], Int32, Int32, Byte) -> Int64
-
-pub fn find_byte(FixedArray[Byte], Byte, Int32, Int32) -> Int32?
-
-pub fn lines_of(Bytes, Byte) -> Array[Bytes]
-
-pub fn locate(FixedArray[Byte], Int32, Int32, Byte, @matcher.Match) -> @matcher.Match
-
-pub fn preceding(FixedArray[Byte], Int32, Int32, Byte, Int32) -> Int32
-
-pub fn rfind_byte(FixedArray[Byte], Byte, Int32, Int32) -> Int32?
-
-pub fn slice_has_bom(FixedArray[Byte], Int32, Int32) -> Bool
-
-pub fn without_terminator(FixedArray[Byte], Int32, Int32, @matcher.LineTerminator) -> Int32
-
 // Errors
 pub suberror SearchError {
   ConfigError(String)
@@ -42,12 +26,6 @@ pub(all) enum BinaryDetection {
 pub fn BinaryDetection::convert_byte(Self) -> Byte?
 pub fn BinaryDetection::quit_byte(Self) -> Byte?
 
-pub struct BytesSink {
-  // private fields
-}
-pub fn BytesSink::new((Int64, Bytes) -> Bool raise) -> Self
-pub impl Sink for BytesSink
-
 pub struct Encoding {
   // private fields
 }
@@ -58,37 +36,20 @@ pub struct LineStep {
   line_term : Byte
   // private fields
 }
-pub fn LineStep::advance(Self, FixedArray[Byte], Int32) -> Bool
-pub fn LineStep::line_end(Self) -> Int32
-pub fn LineStep::line_start(Self) -> Int32
 pub fn LineStep::new(Byte, Int32, Int32) -> Self
 pub fn LineStep::next(Self, FixedArray[Byte], Int32) -> @matcher.Match?
-
-pub struct Lossy {
-  // private fields
-}
-pub fn Lossy::new((Int64, String) -> Bool raise) -> Self
-pub impl Sink for Lossy
 
 pub struct Searcher {
   // private fields
 }
-pub fn Searcher::after_context(Self) -> Int32
-pub fn Searcher::before_context(Self) -> Int32
 pub fn Searcher::binary_detection(Self) -> BinaryDetection
 pub fn Searcher::invert_match(Self) -> Bool
-pub fn Searcher::line_number(Self) -> Bool
 pub fn Searcher::line_terminator(Self) -> @matcher.LineTerminator
-pub fn Searcher::max_matches(Self) -> Int64?
-pub fn Searcher::multi_line(Self) -> Bool
 pub fn Searcher::multi_line_with_matcher(Self, &@matcher.Matcher) -> Bool
 pub fn Searcher::new() -> Self
-pub fn Searcher::passthru(Self) -> Bool
 pub async fn Searcher::search_bytes(Self, &@matcher.Matcher, Bytes, &Sink) -> Unit
 pub async fn Searcher::search_reader(Self, &@matcher.Matcher, &Reader, &Sink) -> Unit
-pub async fn Searcher::search_slice(Self, &@matcher.Matcher, FixedArray[Byte], Int32, &Sink) -> Unit
 pub fn Searcher::set_binary_detection(Self, BinaryDetection) -> Unit
-pub fn Searcher::stop_on_nonmatch(Self) -> Bool
 
 pub struct SearcherBuilder {
   // private fields
@@ -124,7 +85,6 @@ pub(all) struct SearcherConfig {
   stop_on_nonmatch : Bool
   max_matches : Int64?
 }
-pub fn SearcherConfig::default() -> Self
 
 pub(all) struct SinkContext {
   mut line_term : @matcher.LineTerminator
@@ -135,8 +95,6 @@ pub(all) struct SinkContext {
   mut absolute_byte_offset : Int64
   mut line_number : Int64?
 }
-pub fn SinkContext::bytes(Self) -> Bytes
-pub fn SinkContext::lines(Self) -> Array[Bytes]
 
 pub(all) enum SinkContextKind {
   Before
@@ -159,14 +117,11 @@ pub(all) struct SinkMatch {
   mut absolute_byte_offset : Int64
   mut line_number : Int64?
 }
-pub fn SinkMatch::bytes(Self) -> Bytes
-pub fn SinkMatch::lines(Self) -> Array[Bytes]
 
 pub struct SliceReader {
   // private fields
 }
 pub fn SliceReader::from_bytes(Bytes) -> Self
-pub fn SliceReader::new(FixedArray[Byte], Int32, Int32) -> Self
 pub impl Reader for SliceReader
 
 // Type aliases
@@ -177,6 +132,9 @@ pub(open) trait Reader {
 }
 
 pub(open) trait Sink {
+  fn synchronous_count(Self) -> ((Int64) -> Unit)? = _
+  fn bulk_scan(Self) -> Bool = _
+  fn synchronous_matched(Self) -> ((Searcher, SinkMatch) -> Bool)? = _
   async fn matched(Self, Searcher, SinkMatch) -> Bool
   async fn context(Self, Searcher, SinkContext) -> Bool = _
   async fn context_break(Self, Searcher) -> Bool = _

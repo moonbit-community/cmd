@@ -1,87 +1,26 @@
 ///|
-/// The configuration for the JSON printer.
 priv struct JSONConfig {
-  mut pretty : Bool
-  mut always_begin_end : Bool
-  mut replacement : Bytes?
-  mut clock : () -> Int64
+  pretty : Bool
+  always_begin_end : Bool
+  replacement : Bytes?
+  clock : () -> Int64
 }
 
 ///|
-/// A builder for a JSON lines printer.
-///
-/// The builder permits configuring how the printer behaves. The JSON
-/// printer has fewer configuration options than the standard printer
-/// because it is a structured format, and the printer always attempts to
-/// find the most information possible.
-pub struct JSONBuilder {
-  priv config : JSONConfig
-}
-
-///|
-/// Return a new builder for configuring the JSON printer.
-pub fn JSONBuilder::new() -> JSONBuilder {
+/// Configure once before emitting JSON lines. Pretty output is for debugging.
+pub fn JSON::new(
+  wtr : &@termcolor.Write,
+  pretty~ : Bool = false,
+  always_begin_end~ : Bool = false,
+  replacement~ : Bytes? = None,
+  clock~ : () -> Int64 = zero_clock,
+) -> JSON {
   {
-    config: {
-      pretty: false,
-      always_begin_end: false,
-      replacement: None,
-      clock: zero_clock,
-    },
-  }
-}
-
-///|
-/// Create a JSON printer that writes results to the given writer.
-pub fn JSONBuilder::build(self : JSONBuilder, wtr : &@termcolor.Write) -> JSON {
-  {
-    config: { ..self.config, },
+    config: { pretty, always_begin_end, replacement, clock, },
     wtr: CounterWriter::new(@termcolor.NoColor::new(wtr)),
     matches: [],
     msg: @termcolor.ByteVec::new(),
   }
-}
-
-///|
-/// Print JSON in a pretty printed format. This is not valid JSON lines
-/// output, so it should only be used for debugging.
-pub fn JSONBuilder::pretty(self : JSONBuilder, yes : Bool) -> JSONBuilder {
-  self.config.pretty = yes
-  self
-}
-
-///|
-/// When enabled, the `begin` and `end` messages are always emitted, even
-/// when no match is found.
-pub fn JSONBuilder::always_begin_end(
-  self : JSONBuilder,
-  yes : Bool,
-) -> JSONBuilder {
-  self.config.always_begin_end = yes
-  self
-}
-
-///|
-/// Set the bytes that will be used to replace each occurrence of a match
-/// found. The replacement is emitted in a `replacement` field of each
-/// submatch.
-pub fn JSONBuilder::replacement(
-  self : JSONBuilder,
-  replacement : Bytes?,
-) -> JSONBuilder {
-  self.config.replacement = replacement
-  self
-}
-
-///|
-/// Set the clock used for timing statistics (monotonic nanoseconds). By
-/// default, a clock that always returns `0` is used.
-pub fn JSONBuilder::clock(
-  self : JSONBuilder,
-  clock : () -> Int64,
-) -> JSONBuilder {
-  self.config.clock = clock
-  self
 }
 
 ///|
@@ -97,12 +36,6 @@ pub struct JSON {
 }
 
 ///|
-/// Return a JSON lines printer with a default configuration.
-pub fn JSON::new(wtr : &@termcolor.Write) -> JSON {
-  JSONBuilder::new().build(wtr)
-}
-
-///|
 /// Return an implementation of `Sink` for the JSON printer.
 pub fn JSON::sink(self : JSON, matcher : &@matcher.Matcher) -> JSONSink {
   {
@@ -112,7 +45,6 @@ pub fn JSON::sink(self : JSON, matcher : &@matcher.Matcher) -> JSONSink {
     path: None,
     start_time: (self.config.clock)(),
     match_count: 0,
-    binary_byte_offset: None,
     begin_printed: false,
     stats: Stats::new(),
   }
@@ -132,7 +64,6 @@ pub fn JSON::sink_with_path(
     path: Some(path),
     start_time: (self.config.clock)(),
     match_count: 0,
-    binary_byte_offset: None,
     begin_printed: false,
     stats: Stats::new(),
   }
@@ -146,13 +77,6 @@ async fn JSON::write_message(self : JSON, message : Message) -> Unit {
   message.write_json(w)
   self.wtr.write_slice(self.msg.storage(), 0, self.msg.length())
   self.wtr.write_bytes(b"\n")
-}
-
-///|
-/// Returns true if and only if this printer has written at least one byte
-/// to the underlying writer during any of the previous searches.
-pub fn JSON::has_written(self : JSON) -> Bool {
-  self.wtr.total_count() > 0
 }
 
 ///|
@@ -171,7 +95,6 @@ pub struct JSONSink {
   priv path : String?
   priv mut start_time : Int64
   priv mut match_count : Int64
-  priv mut binary_byte_offset : Int64?
   priv mut begin_printed : Bool
   priv stats : Stats
 }
@@ -181,19 +104,6 @@ pub struct JSONSink {
 /// previous search.
 pub fn JSONSink::has_match(self : JSONSink) -> Bool {
   self.match_count > 0
-}
-
-///|
-/// Return the total number of matches reported to this sink.
-pub fn JSONSink::match_count(self : JSONSink) -> Int64 {
-  self.match_count
-}
-
-///|
-/// If binary data was found in the previous search, this returns the
-/// offset at which the binary data was first detected.
-pub fn JSONSink::binary_byte_offset(self : JSONSink) -> Int64? {
-  self.binary_byte_offset
 }
 
 ///|
@@ -357,7 +267,6 @@ pub impl @searcher.Sink for JSONSink with fn begin(self, _searcher) {
   self.json.wtr.reset_count()
   self.start_time = (self.json.config.clock)()
   self.match_count = 0
-  self.binary_byte_offset = None
   if !self.json.config.always_begin_end {
     return true
   }
@@ -367,7 +276,6 @@ pub impl @searcher.Sink for JSONSink with fn begin(self, _searcher) {
 
 ///|
 pub impl @searcher.Sink for JSONSink with fn finish(self, _searcher, finish) {
-  self.binary_byte_offset = finish.binary_byte_offset
   self.stats.add_elapsed((self.json.config.clock)() - self.start_time)
   self.stats.add_searches(1)
   if self.match_count > 0 {

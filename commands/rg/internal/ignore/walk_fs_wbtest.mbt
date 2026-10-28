@@ -1,5 +1,4 @@
-// Port of the unit tests in `ignore/src/walk.rs` (native only: they need a
-// writable scratch directory with symlinks and file removal).
+// Traversal contracts adapted from `ignore/src/walk.rs`, exercised on Wasm.
 
 ///|
 fn sorted(paths : Array[String]) -> Array[String] {
@@ -34,49 +33,13 @@ async fn walk_collect(prefix : String, builder : WalkBuilder) -> Array[String] {
 }
 
 ///|
-async fn walk_collect_entries_parallel(
-  builder : WalkBuilder,
-) -> Array[DirEntry] {
-  let dents = []
-  builder
-  .build_parallel()
-  .run(() => {
-    result => {
-      if result is Ok(dent) {
-        dents.push(dent)
-      }
-      Continue
-    }
-  })
-  dents
-}
-
-///|
-async fn walk_collect_parallel(
-  prefix : String,
-  builder : WalkBuilder,
-) -> Array[String] {
-  let paths = []
-  for dent in walk_collect_entries_parallel(builder) {
-    let path = rel(prefix, dent.path())
-    if path == "" {
-      continue
-    }
-    paths.push(path)
-  }
-  sorted(paths)
-}
-
-///|
 async fn assert_paths(
   prefix : String,
   builder : WalkBuilder,
   expected : Array[String],
 ) -> Unit {
   let got = walk_collect(prefix, builder)
-  assert_eq(got, sorted(expected), msg="single threaded")
-  let got = walk_collect_parallel(prefix, builder)
-  assert_eq(got, sorted(expected), msg="parallel")
+  assert_eq(got, sorted(expected))
 }
 
 ///|
@@ -309,9 +272,6 @@ async test "walk/first_path_not_symlink" {
   }
   assert_eq(1, dents.length())
   assert_true(!dents[0].path_is_symlink())
-  let dents = walk_collect_entries_parallel(WalkBuilder::new(td.join("foo")))
-  assert_eq(1, dents.length())
-  assert_true(!dents[0].path_is_symlink())
   td.close()
 }
 
@@ -330,20 +290,6 @@ async test "walk/symlink_loop" {
       errs.push(e.to_string())
     }
   }
-  assert_eq(errs, [
-    "File system loop found: \{td.join("a/b/c")} points to an ancestor \{td.join("a")}",
-  ])
-  let errs = []
-  builder
-  .build_parallel()
-  .run(() => {
-    r => {
-      if r is Err(e) {
-        errs.push(e.to_string())
-      }
-      Continue
-    }
-  })
   assert_eq(errs, [
     "File system loop found: \{td.join("a/b/c")} points to an ancestor \{td.join("a")}",
   ])
@@ -393,75 +339,6 @@ async test "walk/from_iter" {
   ])
   td.close()
 }
-
-///|
-// This should always panic and never hang.
-//
-// Ref: https://github.com/BurntSushi/ripgrep/issues/3009
-test "panic walk/panic_in_parallel" {
-  let visit = (_ : Result[DirEntry, IgnoreError]) => abort("oops!")
-  visit(Ok(DirEntry::new_stdin()))
-}
-
-///|
-async test "walk/visitor panic terminates child without hanging" {
-  let td = TempDir::new("walk-panic_in_parallel")
-  wfile(td.join("foo.txt"), "")
-  defer td.close()
-  let result = @shell.Cmd("moon", [
-    "run",
-    @sys.current_dir().unwrap() + "/internal/ignore/internal/panic_probe",
-    "--target-dir",
-    td.join("probe-build"),
-    "--",
-    "visitor",
-    td.path(),
-  ]).output(timeout_ms=15000)
-  assert_true(
-    result.exit_code() != 0,
-    msg="visitor panic must terminate the child",
-  )
-  assert_true(result.stdout().contains("reached visitor panic"))
-}
-
-///|
-// This should always panic and never hang. The first call to the visitor
-// builder is used while processing the root paths.
-test "panic walk/panic_in_parallel_builder" {
-  let mut builds = 0
-  let build = () => {
-    builds += 1
-    if builds == 3 {
-      abort("builder panic")
-    }
-  }
-  for _ in 0..<3 {
-    build()
-  }
-}
-
-///|
-async test "walk/builder panic terminates child without hanging" {
-  let td = TempDir::new("walk-panic_in_parallel_builder")
-  wfile(td.join("foo.txt"), "")
-  defer td.close()
-  let result = @shell.Cmd("moon", [
-    "run",
-    @sys.current_dir().unwrap() + "/internal/ignore/internal/panic_probe",
-    "--target-dir",
-    td.join("probe-build"),
-    "--",
-    "builder",
-    td.path(),
-  ]).output(timeout_ms=15000)
-  assert_true(
-    result.exit_code() != 0,
-    msg="builder panic must terminate the child",
-  )
-  assert_true(result.stdout().contains("reached builder panic"))
-}
-
-// Additional tests specific to this port.
 
 ///|
 async test "walk/sort_by_file_name" {
@@ -518,20 +395,6 @@ async test "walk/errors" {
   assert_eq(errs.length(), 1)
   assert_true(errs[0].contains(missing))
   assert_true(errs[0].contains(diagnostic))
-  let errs = []
-  WalkBuilder::new(missing)
-  .build_parallel()
-  .run(() => {
-    r => {
-      if r is Err(e) {
-        errs.push(e.to_string())
-      }
-      Continue
-    }
-  })
-  assert_eq(errs.length(), 1)
-  assert_true(errs[0].contains(missing))
-  assert_true(errs[0].contains(diagnostic))
   td.close()
 }
 
@@ -568,59 +431,6 @@ async test "walk/ignore file errors are attached to entries" {
   ]
   assert_eq(errs, expected)
   assert_paths(td.path(), builder, ["a", "a/baz"])
-  td.close()
-}
-
-///|
-async test "walk/parallel quit and skip" {
-  let td = TempDir::new("walk-parallel_quit_skip")
-  mkdirp(td.join("a/b"))
-  mkdirp(td.join("c"))
-  wfile(td.join("a/b/foo"), "")
-  wfile(td.join("c/foo"), "")
-  // Skip: don't descend into `a`.
-  let got = []
-  WalkBuilder::new(td.path())
-  .build_parallel()
-  .run(() => {
-    r => {
-      let dent = r.unwrap()
-      let p = path_strip_prefix(dent.path(), td.path()).unwrap_or(
-        "outside root: " + dent.path(),
-      )
-      got.push(p)
-      if p == "a" {
-        Skip
-      } else {
-        Continue
-      }
-    }
-  })
-  debug_inspect(
-    sorted(got),
-    content=(
-      #|["", "a", "c", "c/foo"]
-    ),
-  )
-  // Quit: stop right after the root.
-  let got = []
-  WalkBuilder::new(td.path())
-  .build_parallel()
-  .run(() => {
-    r => {
-      let path = r.unwrap().path()
-      got.push(
-        path_strip_prefix(path, td.path()).unwrap_or("outside root: " + path),
-      )
-      Quit
-    }
-  })
-  debug_inspect(
-    got,
-    content=(
-      #|[""]
-    ),
-  )
   td.close()
 }
 

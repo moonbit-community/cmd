@@ -60,7 +60,7 @@ pub struct SliceReader {
 }
 
 ///|
-pub fn SliceReader::new(
+fn SliceReader::new(
   buf : FixedArray[Byte],
   start : Int32,
   end : Int32,
@@ -147,7 +147,12 @@ async fn LineBuffer::fill(self : LineBuffer, rdr : &Reader) -> Bool {
   self.roll()
   while true {
     self.ensure_capacity()
-    let readlen = rdr.read(self.buf, self.end, self.buf.length() - self.end)
+    // Keep each read request independent of spare capacity after a long line.
+    let readlen = rdr.read(
+      self.buf,
+      self.end,
+      (self.buf.length() - self.end).min(1048576),
+    )
     if readlen == 0 {
       self.last_lineterm = self.end
       return self.buffer_len() > 0
@@ -204,11 +209,13 @@ fn LineBuffer::ensure_capacity(self : LineBuffer) -> Unit raise SearchError {
     return
   }
   let len = if self.buf.length() < 1 { 1 } else { self.buf.length() }
+  // Retain geometric growth while limiting unused space in large buffers.
+  let growth = if len < 1048576 { len } else { len / 4 }
   let additional = match self.buffer_alloc {
-    Eager => len * 2
+    Eager => growth
     ErrorLimit(limit) => {
       let used = self.buf.length() - self.capacity
-      let n = if len * 2 < limit - used { len * 2 } else { limit - used }
+      let n = if growth < limit - used { growth } else { limit - used }
       if n == 0 {
         raise alloc_error(self.capacity + limit)
       }

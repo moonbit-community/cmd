@@ -22,11 +22,12 @@ async test "rg_compat_color_basic" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -52,11 +53,12 @@ async test "rg_compat_color_no_line_number" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -82,12 +84,13 @@ async test "rg_compat_color_heading" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .heading(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+    heading=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -113,11 +116,12 @@ async test "rg_compat_color_context" {
     .ban_byte(Some(b'\x00'))
     .build("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -145,12 +149,13 @@ async test "rg_compat_color_context_heading" {
     .ban_byte(Some(b'\x00'))
     .build("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .heading(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+    heading=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -178,13 +183,14 @@ async test "rg_compat_color_column_byte_offset" {
     .ban_byte(Some(b'\x00'))
     .build("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .column(true)
-    .byte_offset(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+    column=true,
+    byte_offset=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -210,12 +216,13 @@ async test "rg_compat_color_only_matching" {
     .ban_byte(Some(b'\x00'))
     .build("Sherl\\w+|Hol\\w+")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .only_matching(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+    only_matching=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -241,13 +248,14 @@ async test "rg_compat_color_vimgrep" {
     .ban_byte(Some(b'\x00'))
     .build("Doctor|Holmes")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .column(true)
-    .per_match(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+    column=true,
+    per_match=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -273,12 +281,13 @@ async test "rg_compat_color_replace" {
     .ban_byte(Some(b'\x00'))
     .build("Sher(lock)")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .replacement(Some(b"[$1]"))
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+    replacement=Some(b"[$1]"),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -304,13 +313,14 @@ async test "rg_compat_color_replace_only_matching" {
     .ban_byte(Some(b'\x00'))
     .build("o[a-z]")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(false)
-    .per_match_one_line(true)
-    .replacement(Some(b"<$0>"))
-    .only_matching(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=false,
+    per_match_one_line=true,
+    replacement=Some(b"<$0>"),
+    only_matching=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -335,11 +345,12 @@ async test "rg_compat_color_multiline" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock\\nHolmeses")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .multi_line(true)
@@ -365,11 +376,12 @@ async test "rg_compat_color_multiline_context" {
     .ban_byte(Some(b'\x00'))
     .build("luck\\. Sherlock Holmes\\ncan")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .multi_line(true)
@@ -397,12 +409,13 @@ async test "rg_compat_color_multiline_only_matching" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock\\nHolmeses")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .only_matching(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+    only_matching=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .multi_line(true)
@@ -428,13 +441,14 @@ async test "rg_compat_color_multiline_vimgrep" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock\\nHolmeses|Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .column(true)
-    .per_match(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+    column=true,
+    per_match=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .multi_line(true)
@@ -461,12 +475,13 @@ async test "rg_compat_color_max_columns" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .max_columns(Some(30))
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+    max_columns=Some(30),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -492,13 +507,14 @@ async test "rg_compat_color_max_columns_preview" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .max_columns(Some(30))
-    .max_columns_preview(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+    max_columns=Some(30),
+    max_columns_preview=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -524,13 +540,14 @@ async test "rg_compat_graphemes_max_columns_preview" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(false)
-    .per_match_one_line(true)
-    .max_columns(Some(9))
-    .max_columns_preview(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=false,
+    per_match_one_line=true,
+    max_columns=Some(9),
+    max_columns_preview=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -556,25 +573,24 @@ async test "rg_compat_custom_colors" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(
-      @printer.ColorSpecs::new(
-        [
-          ..@printer.default_color_specs(),
-          @printer.UserColorSpec::parse("match:bg:yellow"),
-          @printer.UserColorSpec::parse("match:fg:0x10"),
-          @printer.UserColorSpec::parse("line:style:underline"),
-          @printer.UserColorSpec::parse("path:fg:255,0,128"),
-          @printer.UserColorSpec::parse("highlight:bg:blue"),
-          @printer.UserColorSpec::parse("column:fg:cyan"),
-          @printer.UserColorSpec::parse("column:style:intense"),
-        ],
-      ),
-    )
-    .path(true)
-    .per_match_one_line(true)
-    .column(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::new(
+      [
+        ..@printer.default_color_specs(),
+        @printer.UserColorSpec::parse("match:bg:yellow"),
+        @printer.UserColorSpec::parse("match:fg:0x10"),
+        @printer.UserColorSpec::parse("line:style:underline"),
+        @printer.UserColorSpec::parse("path:fg:255,0,128"),
+        @printer.UserColorSpec::parse("highlight:bg:blue"),
+        @printer.UserColorSpec::parse("column:fg:cyan"),
+        @printer.UserColorSpec::parse("column:style:intense"),
+      ],
+    ),
+    path=true,
+    per_match_one_line=true,
+    column=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -600,19 +616,18 @@ async test "rg_compat_colors_none" {
     .ban_byte(Some(b'\x00'))
     .build("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(
-      @printer.ColorSpecs::new(
-        [
-          ..@printer.default_color_specs(),
-          @printer.UserColorSpec::parse("match:none"),
-          @printer.UserColorSpec::parse("path:none"),
-        ],
-      ),
-    )
-    .path(true)
-    .per_match_one_line(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::new(
+      [
+        ..@printer.default_color_specs(),
+        @printer.UserColorSpec::parse("match:none"),
+        @printer.UserColorSpec::parse("path:none"),
+      ],
+    ),
+    path=true,
+    per_match_one_line=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -640,12 +655,13 @@ async test "rg_compat_trim" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock|Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(false)
-    .per_match_one_line(true)
-    .trim_ascii(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=false,
+    per_match_one_line=true,
+    trim_ascii=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -671,13 +687,14 @@ async test "rg_compat_trim_only_matching" {
     .ban_byte(Some(b'\x00'))
     .build("\\s+\\S+")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(false)
-    .per_match_one_line(true)
-    .trim_ascii(true)
-    .only_matching(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=false,
+    per_match_one_line=true,
+    trim_ascii=true,
+    only_matching=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -703,11 +720,12 @@ async test "rg_compat_invert" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock|Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -734,11 +752,12 @@ async test "rg_compat_invert_context" {
     .ban_byte(Some(b'\x00'))
     .build("Holmeses|cigar")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -767,14 +786,15 @@ async test "rg_compat_separators" {
     .ban_byte(Some(b'\x00'))
     .build("Doctor")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .separator_field_match(b"::")
-    .separator_field_context(b"~~")
-    .separator_context(Some(b"##"))
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+    separator_field_match=b"::",
+    separator_field_context=b"~~",
+    separator_context=Some(b"##"),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -802,12 +822,13 @@ async test "rg_compat_null_terminator" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .path_terminator(Some(b'\x00'))
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+    path_terminator=Some(b'\x00'),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -833,13 +854,14 @@ async test "rg_compat_null_terminator_heading" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .path_terminator(Some(b'\x00'))
-    .heading(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+    path_terminator=Some(b'\x00'),
+    heading=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -865,12 +887,13 @@ async test "rg_compat_path_separator" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .separator_path(Some(b'@'))
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+    separator_path=Some(b'@'),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -896,11 +919,12 @@ async test "rg_compat_binary_convert" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -926,11 +950,12 @@ async test "rg_compat_binary_convert_first" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -956,10 +981,11 @@ async test "rg_compat_latin1_no_color" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .path(true)
-    .per_match_one_line(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    path=true,
+    per_match_one_line=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -988,13 +1014,14 @@ async test "rg_compat_hyperlink_vscode" {
     .host(None)
     .canonicalize(Some(path => fake_canonicalize(path)))
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .column(true)
-    .hyperlink(@printer.HyperlinkFormat::parse("vscode").into_config(env))
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+    column=true,
+    hyperlink=@printer.HyperlinkFormat::parse("vscode").into_config(env),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1023,13 +1050,14 @@ async test "rg_compat_hyperlink_heading_file" {
     .host(Some("myhost"))
     .canonicalize(Some(path => fake_canonicalize(path)))
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .heading(true)
-    .hyperlink(@printer.HyperlinkFormat::parse("file").into_config(env))
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+    heading=true,
+    hyperlink=@printer.HyperlinkFormat::parse("file").into_config(env),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1058,13 +1086,14 @@ async test "rg_compat_hyperlink_heading_kitty" {
     .host(Some("myhost"))
     .canonicalize(Some(path => fake_canonicalize(path)))
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .heading(true)
-    .hyperlink(@printer.HyperlinkFormat::parse("kitty").into_config(env))
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+    heading=true,
+    hyperlink=@printer.HyperlinkFormat::parse("kitty").into_config(env),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1093,12 +1122,13 @@ async test "rg_compat_hyperlink_context" {
     .host(None)
     .canonicalize(Some(path => fake_canonicalize(path)))
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .hyperlink(@printer.HyperlinkFormat::parse("grep+").into_config(env))
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+    hyperlink=@printer.HyperlinkFormat::parse("grep+").into_config(env),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1126,11 +1156,12 @@ async test "rg_compat_passthru" {
     .ban_byte(Some(b'\x00'))
     .build("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(false)
-    .per_match_one_line(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=false,
+    per_match_one_line=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1157,11 +1188,12 @@ async test "rg_compat_max_count_after" {
     .ban_byte(Some(b'\x00'))
     .build("Doctor")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(false)
-    .per_match_one_line(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=false,
+    per_match_one_line=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1190,11 +1222,12 @@ async test "rg_compat_crlf" {
     .crlf(true)
     .build("Sherlock$|^can")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(false)
-    .per_match_one_line(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=false,
+    per_match_one_line=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1222,12 +1255,13 @@ async test "rg_compat_crlf_only_matching" {
     .crlf(true)
     .build("\\w+$")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(false)
-    .per_match_one_line(true)
-    .only_matching(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=false,
+    per_match_one_line=true,
+    only_matching=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1254,13 +1288,14 @@ async test "rg_compat_byte_offset_only_matching" {
     .ban_byte(Some(b'\x00'))
     .build("o[a-z]")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(false)
-    .per_match_one_line(true)
-    .byte_offset(true)
-    .only_matching(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=false,
+    per_match_one_line=true,
+    byte_offset=true,
+    only_matching=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1286,12 +1321,13 @@ async test "rg_compat_column_context" {
     .ban_byte(Some(b'\x00'))
     .build("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(false)
-    .per_match_one_line(true)
-    .column(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=false,
+    per_match_one_line=true,
+    column=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1319,12 +1355,13 @@ async test "rg_compat_max_columns_context" {
     .ban_byte(Some(b'\x00'))
     .build("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(false)
-    .per_match_one_line(true)
-    .max_columns(Some(20))
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=false,
+    per_match_one_line=true,
+    max_columns=Some(20),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1352,14 +1389,15 @@ async test "rg_compat_max_columns_only_matching_preview" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(false)
-    .per_match_one_line(true)
-    .max_columns(Some(5))
-    .max_columns_preview(true)
-    .only_matching(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=false,
+    per_match_one_line=true,
+    max_columns=Some(5),
+    max_columns_preview=true,
+    only_matching=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1385,13 +1423,14 @@ async test "rg_compat_max_columns_preview_context" {
     .ban_byte(Some(b'\x00'))
     .build("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(false)
-    .per_match_one_line(true)
-    .max_columns(Some(10))
-    .max_columns_preview(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=false,
+    per_match_one_line=true,
+    max_columns=Some(10),
+    max_columns_preview=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1418,13 +1457,14 @@ async test "rg_compat_multiline_max_columns_preview" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock\\nHolmeses")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(false)
-    .per_match_one_line(true)
-    .max_columns(Some(10))
-    .max_columns_preview(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=false,
+    per_match_one_line=true,
+    max_columns=Some(10),
+    max_columns_preview=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .multi_line(true)
@@ -1450,10 +1490,11 @@ async test "rg_compat_multiline_no_color" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock\\nHolmeses")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .path(false)
-    .per_match_one_line(true)
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    path=false,
+    per_match_one_line=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .multi_line(true)
@@ -1479,13 +1520,14 @@ async test "rg_compat_multiline_heading" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock\\nHolmeses")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .path(true)
-    .per_match_one_line(true)
-    .heading(true)
-    .byte_offset(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    path=true,
+    per_match_one_line=true,
+    heading=true,
+    byte_offset=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .multi_line(true)
@@ -1512,11 +1554,12 @@ async test "rg_compat_summary_count" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .kind(@printer.SummaryKind::Count)
-    .path(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Summary::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    kind=@printer.SummaryKind::Count,
+    path=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1539,11 +1582,12 @@ async test "rg_compat_summary_count_matches" {
     .ban_byte(Some(b'\x00'))
     .build("o")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .kind(@printer.SummaryKind::CountMatches)
-    .path(true)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Summary::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    kind=@printer.SummaryKind::CountMatches,
+    path=true,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1566,11 +1610,12 @@ async test "rg_compat_summary_files_with_matches" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .kind(@printer.SummaryKind::PathWithMatch)
-    .path(false)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Summary::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    kind=@printer.SummaryKind::PathWithMatch,
+    path=false,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1593,12 +1638,13 @@ async test "rg_compat_summary_files_with_matches_null" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .kind(@printer.SummaryKind::PathWithMatch)
-    .path(false)
-    .path_terminator(Some(b'\x00'))
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Summary::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    kind=@printer.SummaryKind::PathWithMatch,
+    path=false,
+    path_terminator=Some(b'\x00'),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1621,11 +1667,12 @@ async test "rg_compat_summary_files_without_match" {
     .ban_byte(Some(b'\x00'))
     .build("ZZZ")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .kind(@printer.SummaryKind::PathWithoutMatch)
-    .path(false)
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Summary::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    kind=@printer.SummaryKind::PathWithoutMatch,
+    path=false,
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1651,12 +1698,13 @@ async test "rg_compat_summary_count_hyperlink" {
     .host(None)
     .canonicalize(Some(path => fake_canonicalize(path)))
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.SummaryBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .kind(@printer.SummaryKind::Count)
-    .path(true)
-    .hyperlink(@printer.HyperlinkFormat::parse("vscode").into_config(env))
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.Summary::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    kind=@printer.SummaryKind::Count,
+    path=true,
+    hyperlink=@printer.HyperlinkFormat::parse("vscode").into_config(env),
+  )
   @searcher.SearcherBuilder::new()
   .line_number(false)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1676,9 +1724,10 @@ async test "rg_compat_summary_count_hyperlink" {
 async test "rg_compat_path_printer_basic" {
   // rg --files sherlock
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.PathPrinterBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.PathPrinter::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+  )
   printer.write("sherlock")
   assert_eq(contents(out), "\u{1b}[0m\u{1b}[35msherlock\u{1b}[0m\n")
 }
@@ -1690,12 +1739,13 @@ async test "rg_compat_path_printer_null_sep" {
     .host(None)
     .canonicalize(Some(path => fake_canonicalize(path)))
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.PathPrinterBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .terminator(b'\x00')
-    .separator(Some(b'@'))
-    .hyperlink(@printer.HyperlinkFormat::parse("vscode").into_config(env))
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.PathPrinter::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    terminator=b'\x00',
+    separator=Some(b'@'),
+    hyperlink=@printer.HyperlinkFormat::parse("vscode").into_config(env),
+  )
   printer.write("./sherlock")
   assert_eq(contents(out), "\u{1b}[0m\u{1b}[35m.@sherlock\u{1b}[0m\u{0}")
 }
@@ -1707,10 +1757,11 @@ async test "rg_compat_path_printer_hyperlink" {
     .host(None)
     .canonicalize(Some(path => fake_canonicalize(path)))
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.PathPrinterBuilder::new()
-    .color_specs(@printer.ColorSpecs::default_with_color())
-    .hyperlink(@printer.HyperlinkFormat::parse("vscode").into_config(env))
-    .build(@termcolor.Ansi::new(out))
+  let printer = @printer.PathPrinter::new(
+    @termcolor.Ansi::new(out),
+    colors=@printer.ColorSpecs::default_with_color(),
+    hyperlink=@printer.HyperlinkFormat::parse("vscode").into_config(env),
+  )
   printer.write("./sherlock")
   assert_eq(
     contents(out),
@@ -1728,7 +1779,7 @@ async test "rg_compat_json_basic" {
     .ban_byte(Some(b'\x00'))
     .build("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSONBuilder::new().build(out)
+  let printer = @printer.JSON::new(out)
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1754,7 +1805,7 @@ async test "rg_compat_json_pretty_context" {
     .ban_byte(Some(b'\x00'))
     .build("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSONBuilder::new().pretty(true).build(out)
+  let printer = @printer.JSON::new(out, pretty=true)
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1782,7 +1833,7 @@ async test "rg_compat_json_pretty_non_utf8" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSONBuilder::new().pretty(true).build(out)
+  let printer = @printer.JSON::new(out, pretty=true)
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1808,7 +1859,7 @@ async test "rg_compat_json_context" {
     .ban_byte(Some(b'\x00'))
     .build("Watson")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSONBuilder::new().build(out)
+  let printer = @printer.JSON::new(out)
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1836,9 +1887,7 @@ async test "rg_compat_json_replace" {
     .ban_byte(Some(b'\x00'))
     .build("Sher(lock)")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSONBuilder::new()
-    .replacement(Some(b"<$0>"))
-    .build(out)
+  let printer = @printer.JSON::new(out, replacement=Some(b"<$0>"))
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1864,7 +1913,7 @@ async test "rg_compat_json_invert" {
     .ban_byte(Some(b'\x00'))
     .build("o")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSONBuilder::new().build(out)
+  let printer = @printer.JSON::new(out)
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1891,7 +1940,7 @@ async test "rg_compat_json_non_utf8" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSONBuilder::new().build(out)
+  let printer = @printer.JSON::new(out)
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1917,7 +1966,7 @@ async test "rg_compat_json_binary" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSONBuilder::new().build(out)
+  let printer = @printer.JSON::new(out)
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -1942,7 +1991,7 @@ async test "rg_compat_json_multiline" {
     .ban_byte(Some(b'\x00'))
     .build("Sherlock\\nHolmeses")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSONBuilder::new().build(out)
+  let printer = @printer.JSON::new(out)
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .multi_line(true)

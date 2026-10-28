@@ -17,6 +17,5 @@ import {
 
 import {
   "moonbitlang/async",
-  "moonbitlang/async/shell",
   "moonbitlang/async/fs",
 } for "wbtest"

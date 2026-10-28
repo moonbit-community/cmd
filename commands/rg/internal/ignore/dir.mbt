@@ -203,7 +203,7 @@ async fn Ignore::add_child(
 async fn Ignore::add_child_with_entries(
   self : Ignore,
   dir : String,
-  entries : ArrayView[@sys.DirEntry],
+  entries : ArrayView[String],
 ) -> (Ignore, IgnoreError?) {
   let files = self.collect_ignore_files(entries)
   let (ig, err) = self.add_child_path_with_found_ignore_files(dir, Some(files))
@@ -232,7 +232,7 @@ priv struct IgnoreFilesFound {
 ///|
 fn Ignore::collect_ignore_files(
   self : Ignore,
-  entries : ArrayView[@sys.DirEntry],
+  entries : ArrayView[String],
 ) -> IgnoreFilesFound {
   let custom_ignore_filenames = self.inner.custom_ignore_filenames
   let files = {
@@ -242,8 +242,7 @@ fn Ignore::collect_ignore_files(
     has_jj_dir: false,
     custom_ignore_files: Array::make(custom_ignore_filenames.length(), false),
   }
-  for entry in entries {
-    let file_name = entry.name
+  for file_name in entries {
     if file_name == ".ignore" {
       files.has_ignore = true
     } else if file_name == ".gitignore" {
@@ -579,19 +578,6 @@ fn Ignore::matched_ignore(
   .or(m_gi_exclude)
   .or(m_global)
   .or(m_explicit)
-}
-
-///|
-/// Returns all parent ignore matchers, including this one (from this one
-/// up to the root).
-fn Ignore::parents(self : Ignore) -> Array[IgnoreInner] {
-  let out = []
-  let mut cur = Some(self.inner)
-  while cur is Some(ig) {
-    out.push(ig)
-    cur = ig.parent
-  }
-  out
 }
 
 ///|

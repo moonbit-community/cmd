@@ -13,10 +13,11 @@ fn fake_clock() -> () -> Int64 {
 async test "reports_stats" {
   let matcher = @grep_regex.RegexMatcher::new("Sherlock|opposed")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .stats(true)
-    .clock(fake_clock())
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    stats=true,
+    clock=fake_clock(),
+  )
   let stats = {
     let sink = printer.sink(matcher)
     @searcher.SearcherBuilder::new()
@@ -39,10 +40,11 @@ async test "reports_stats" {
 async test "reports_stats_multiple" {
   let matcher = @grep_regex.RegexMatcher::new("Sherlock|opposed")
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.StandardBuilder::new()
-    .stats(true)
-    .clock(fake_clock())
-    .build(@termcolor.NoColor::new(out))
+  let printer = @printer.Standard::new(
+    @termcolor.NoColor::new(out),
+    stats=true,
+    clock=fake_clock(),
+  )
   let stats = {
     let sink = printer.sink(matcher)
     @searcher.SearcherBuilder::new()
