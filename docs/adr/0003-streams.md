@@ -22,6 +22,160 @@ pairing are retired. Dated Native observations retain their historical scope.
 
 ## Target and decision
 
+### rg bounded boolean count integration (2026-10-28, default release)
+
+The count-only integration stage counts eligible records with a lazily prepared boolean DFA.
+It needs neither match starts nor greedy endpoints. The command adapter owns
+selection; regex construction and transitions stay inside `internal/regex`.
+Mandatory-literal filtering remains active throughout each block, including
+after a dense prefix. Exact literal and accelerated-prefix paths stay intact.
+Assertions, empty matches, unsupported plans and construction-budget exhaustion
+retain the existing engine. Preparation is capped at 512 NFA states, 256 DFA
+states and 65,536 transition cells, with failed preparation cached.
+
+The implementation is now selected only for blocks from 4 KiB through the
+existing ordinary reader capacity of 256 KiB. Larger complete records use the
+existing engine. This upper bound responds to a real default-release failure:
+the first integration slowed general-regex long-record counts by 12-14%.
+The prior extra `moon-wasm-opt -O3 -aimfs=20` experiment had hidden that loss.
+That unrestricted integration is rejected and its two windows are retained.
+The revised candidate restores the 8/20/32/64 MiB counts to ratios between
+0.9972 and 1.0126. This is not a cross-block matcher or a bounded-record-memory
+implementation.
+
+All adoption measurements use plain `moon build --target wasm --release`,
+without a manual optimizer pass, startup subtraction or timing observers.
+The two complete-process protection windows report:
+
+| Workload | Frozen baseline, ms | Candidate, ms | Observation |
+| --- | ---: | ---: | --- |
+| Regex count, 64 MiB | 309.07-313.97 | 104.88-105.55 | 66.1-66.4% less time |
+| Unicode-class count | 65.79-66.48 | 44.39-44.81 | 32.5-32.6% less time |
+| Frequent mandatory literal with no full match | 69.60-69.86 | 59.96-60.19 | 13.8% less time |
+| Dense prefix followed by sparse tail | 30.85-30.94 | 31.59-31.89 | 2.38-3.05% more time |
+| General-regex long-record count, 64 MiB | 787.20-797.43 | 796.30-797.61 | 0.02-1.16% more time |
+
+The density-shift cost is retained as an explicit small tradeoff within the
+registered 5% review boundary, not subtracted from other improvements. The
+overall protection verdict remains **false**: 90/98 profiles qualify, including
+43/44 rg profiles. The rg NUL-delimited long-output control is unstable, as are
+seven unchanged-command controls (`ln-symbolic-validation`, `rev-long-8m`, four
+tac controls and `uniq-8m`). No qualified profile exceeds 3.06% slowdown.
+The noisy observations remain recorded, including unqualified slowdown values;
+there was no unchanged-candidate rerun to obtain a passing gate.
+
+The revised source passes strict Wasm checks, 1,642 Wasm tests and the
+80-command/124-package architecture audit. The preceding integration passed
+118 tool tests and 2,117 functional cases with 19 platform skips. The nine new
+registered workloads cover density changes, literal false positives, Unicode,
+assertions, budget rejection and long-record hit/miss fallbacks. The missing
+prescribed architecture checker was restored from the preserved earlier tool.
+All 80 artifacts at that stage matched its measured candidate; only rg changed.
+
+Evidence is preserved in `/private/tmp/cmd-rg-count-adopt-20261028`, including
+the pre-edit source and all 80 baseline artifacts, rejected `protection-count`,
+revised `protection-guard`, and `guard-review.json`. This is local integration,
+not a passing full performance gate, CI completion, upstream parity or release
+acceptance. rg remains unpublished. MoonX has no optimization-level CLI option;
+the installed tool executes cached registry Wasm via `moonrun`. A local release
+build is not asserted byte-identical to a registry asset. Exact-version MoonX
+acceptance remains a separate post-publication requirement.
+
+The counting approach follows the distinction between boolean and positional
+queries in [regex internals](https://burntsushi.net/regex-internals/) and retains
+the mandatory filter described by
+[regex-automata](https://docs.rs/regex-automata/latest/regex_automata/util/prefilter/index.html).
+The remaining startup experiment uses first-access table construction, analogous
+to [Rust LazyLock](https://doc.rust-lang.org/std/sync/struct.LazyLock.html), while
+preserving every table value. Extra optimizer settings are excluded from the
+delivery recommendation; [the Rust Performance Book](https://nnethercote.github.io/perf-book/inlining.html)
+also emphasizes measuring inlining changes because they can cause slowdowns.
+
+### rg lazy-table integration (2026-10-28, default release)
+
+The final local candidate combines bounded boolean counting with first-use
+construction of eleven Unicode tables and the default file-type table. Each
+table is cached for the process after construction. Initialization contains no
+async suspension, follows the existing single-threaded execution model, and
+preserves every entry and its order. Encoding tables and Unicode meanings are
+unchanged. The existing imports and public command interfaces are unchanged.
+
+This is a source optimization. No manually optimized Wasm enters the final
+comparison. It moves cold initialization behind the actual lookup, rather than
+changing the optimizer level or dropping Unicode/file-type support. Generated
+table entries must retain this initialization wrapper when regenerated.
+
+The dedicated comparison uses default release Wasm, two windows, nine measured
+samples per side and exact output/stderr/status checks. All 75 Wasm series
+(25 workloads across original/count/combined) qualify. The two native Rust
+output series are unstable, so their ratios are not accepted; 98/100 total
+series qualify. The combined candidate's maximum window ratio to the original
+Wasm is about 1.0101 (Unicode word-boundary fallback). Compared with count-only,
+every combined window is lower, with a maximum ratio of 0.9943.
+
+| Workload | Original release, ms | Count plus lazy tables, ms |
+| --- | ---: | ---: |
+| Empty stdin | 24.37-24.82 | 17.41-17.79 |
+| Regex count, 64 MiB | 308.42-308.81 | 97.97-98.23 |
+| Default fixed miss, 64 MiB | 50.06-50.32 | 43.18-43.24 |
+| Unicode-class count | 66.15-66.18 | 38.01-38.15 |
+| Frequent mandatory literal, no full match | 69.43-69.73 | 52.83-52.89 |
+| File-type initialization and count | 32.85-32.93 | 28.25-28.41 |
+| General-regex long output, 64 MiB | 794.89-800.15 | 769.29-778.95 |
+
+The same raw comparison found a 5.34% first-window dense-output cost in the
+count-only stage, with 0.14% in its second window. That extra finding is retained
+alongside the earlier protection gate; it is not covered up by the count gains.
+The combined candidate is faster than the original in both of those windows.
+The qualified native regex-count reference takes 110.28-110.99 ms; the combined
+candidate takes approximately 11% less time on this specific input. Other
+qualified comparisons still show large gaps, including roughly 7.8-8.0x for
+64 MiB general-regex output. This is not general native-Rust parity.
+
+Validation includes 1,642 Wasm tests, 2,117 complete functional results (19
+platform skips), 379 frozen-Wasm complete-process differential cases, and the
+80-command/124-package architecture inventory. A temporary test module compares
+all original table arrays against the lazy arrays, including nested aliases
+and ordering; its 158 selected package tests pass. The integrated rg artifact
+is byte-identical to the measured combined pilot.
+
+Four separately observed Darwin kernel-RSS pairs show 7.36-7.81 MiB less peak
+RSS than count-only. Regex-count peak RSS is 34,045,952 bytes and long-output
+peak RSS is 165,380,096 bytes. These single pairs are local observations, not
+a memory bound or formal cross-platform resource acceptance.
+
+Evidence: `/private/tmp/cmd-rg-count-adopt-20261028/raw-study/`,
+`raw-review.json`, `table-equivalence.log`, `combined-functional/` and
+`lazy-guard-source.tar`. Extra O3/build-flag artifacts created before the delivery
+constraint was clarified are retained as unused diagnostics; none is used in
+these adoption results. The final full protection inventory additionally covers
+standalone help/version and file-type listing/counting.
+
+The final cumulative protection run is `protection-combined`: 92/102 profiles
+qualify, including 47/48 rg profiles. The full gate remains **false**. The rg
+NUL-delimited long-output control has excessive between-window drift on both
+sides; its apparent speedup is unqualified. Nine byte-identical command controls
+are also unstable: `ln-symbolic-validation`, `rev-long-8m`, four tac controls,
+`column-table-long-8m`, `uniq-8m` and `uniq-long-8m`. Raw slowdown values in those
+failed rows are retained, not treated as accepted costs. The largest qualified
+slowdown anywhere in this run is 1.641%; there are no qualified 3-5% costs.
+The final rg count is 97.80-98.23 ms versus 309.69-309.76 ms; empty input is
+17.14-17.71 ms versus 23.72-24.81 ms; default fixed misses are 42.31-43.45 ms
+versus 49.58-50.57 ms. Source/artifact coverage is complete for all 80 commands,
+and only rg changes. This remains a local candidate, with no commit, push,
+publication, three-platform development result or exact-version MoonX claim.
+
+Further exploration should prioritize filter selection and long-record engines.
+The existing `core/bytesearch/byte_set.mbt` already has an exact SIMD byte-set
+finder, but the regex adapter classifies that prefilter as non-fast and may
+prefer an inner literal. The frequent-`gamma`, absent-digit workload is a useful
+test for a whole-block required-prefix rejection before per-record verification.
+Retain dense-hit and changing-density controls so this does not discard the
+new boolean-count benefit. For long records, separately investigate validated
+transition-loop bounds and resumable boolean state; global O3/Oz substitution
+does not satisfy the MoonX delivery requirement. These follow-up ideas have no
+new measured speedup claim.
+
 ### Internal architecture consolidation (2026-10-28, local candidate)
 
 The dependency direction is command adaptation -> domain implementation ->
@@ -2360,3 +2514,379 @@ turning known defects into positive compatibility claims.
 ## Source review (2026-10-26)
 
 Buffer/scanner and external-sort work is `1ffa967`; text options are `5dbe51d`/`2e867a3`; the snapshot/reverse-read changes are `87ca302`. Current sources: [stream.mbt](../../core/stream/stream.mbt), [sort](../../commands/sort/external.mbt), [csplit snapshot](../../commands/csplit/snapshot.mbt), [column spool](../../commands/column/spool.mbt), [tac](../../commands/tac/) and [rev](../../commands/rev/). Their package tests and JSON contracts retain the exact resource/error boundaries above.
+
+## Further rg algorithm pilot (2026-10-28, not adopted)
+
+Updated: 2026-10-28. This section exists in the temporary pilot checkout only.
+The live workspace retains its previous lazy-metadata and bounded-count candidate.
+The new candidate has not been committed, pushed, published or accepted through MoonX.
+
+The experiment is `/private/tmp/cmd-rg-prefix-stream-20261028`. Its baseline is
+the complete current working tree, including the earlier local changes, rather
+than Git HEAD alone. `source.tar`, `baseline/`, `git-head.log` and `source-diff.log`
+preserve that distinction. Every product artifact was built with the default
+`moon build --target wasm --release`; no `moon-wasm-opt`, O3 pass, unsafe array
+access or foreign-language product implementation was added. Local Moon commands
+inherit `MOON_HOME="$HOME/.moon-accounts/cli"` and the existing PATH toolchain.
+
+### Mechanisms and boundaries
+
+1. A necessary byte-set prefix can exclude an entire block even when it is too
+   frequent to serve as the main matcher. If it is present late, candidate-line
+   discovery starts its existing inner-literal search there. An immediate first
+   byte membership check avoids initializing SIMD for every short candidate line.
+2. Oversized boolean searches use direct byte transition rows and four-step
+   loops. An absorbing acceptance row allows one match check per group; line
+   discovery replays a matching group once to recover the exact earliest endpoint.
+   Captures, replacement expansion and greedy match endpoints retain their engine.
+3. Eligible self loops search for their exact exit byte set using existing SIMD
+   byte-set machinery. UTF-8 transition bytes remain in that set. Probing stops
+   for a record when exits are frequent. Ordinary blocks keep the compact table.
+4. Mandatory-literal rejection precedes plan construction. Empty matches, look
+   assertions and over-budget plans retain the existing verification engine.
+   The existing 256-state/65,536-cell construction limits remain; expanded byte
+   rows add at most 257 KiB plus metadata. This is not a total-process memory bound.
+
+These decisions are informed by the primary
+[regex-automata prefilter contract](https://docs.rs/regex-automata/latest/regex_automata/util/prefilter/struct.Prefilter.html),
+[DFA acceleration and alphabet configuration](https://docs.rs/regex-automata/latest/regex_automata/dfa/dense/struct.Config.html#method.accelerate),
+and [The Rust Performance Book's bounds-check discussion](https://nnethercote.github.io/perf-book/bounds-checks.html).
+The direct-byte loop actually removes the class lookup. Merely disabling Rust's
+`byte_classes` setting would retain that lookup and is not the experiment here.
+All array accesses in the pilot remain checked.
+
+### Measured results and rejected variants
+
+Complete-process wall times include startup, input, captured output and exit.
+Each comparison has two windows, one warmup and nine measured samples per tool
+per window, with rotating/reversed order. No sample removal or startup subtraction
+was used. MAD/median must be at most 5%; between-window drift must be at most 10%.
+All builds, tests, resource probes and subsequent diagnostics ran outside timing
+windows. The frozen Rust executable is a local reference, not a sealed Linux
+upstream parity profile.
+
+Selected qualified results from `study-v2/review.json` compare this round's
+starting candidate against `simd.wasm`:
+
+| Workload | Baseline ms, two windows | Pilot ms, two windows | Time reduction |
+| --- | --- | --- | --- |
+| Frequent inner literal, absent required prefix | 52.574 / 53.388 | 22.579 / 23.034 | 56.9-57.1% |
+| 8 MiB long record with late count hit | 116.914 / 117.015 | 32.226 / 32.293 | 72.4% |
+| 8 MiB long record, count miss | 114.551 / 114.505 | 29.587 / 29.526 | 74.2% |
+| Repeated-text long-record output, 8 MiB | 117.212 / 117.836 | 100.204 / 100.933 | 14.3-14.5% |
+| Repeated-text long-record output, 64 MiB | 778.506 / 780.230 | 646.963 / 648.365 | 16.9% |
+| Ordinary regex count, 64 MiB | 97.283 / 97.993 | 97.390 / 98.083 | Approximately unchanged |
+
+The revised matrix contains 44 workloads and four tools: 176 preflights and
+3,520 window invocations, all with equal status, stderr and complete stdout.
+43/44 baseline-to-pilot comparisons qualify; the matching long-output row has
+an unstable pilot window. Five Rust series are also unstable. Those observations
+remain unqualified in the report; the independent protection run does not erase
+them. Stable revised comparisons have no slowdown above 3%. The repeated-text
+64 MiB output still takes 6.63-6.75 times the local Rust reference, so this is
+not a claim of competitive performance across the matrix.
+
+The initial `wide.wasm` variant regressed the frequent-exit no-match control
+by about 12% because it constructed a table before a cheap rejection. The first
+`accel.wasm` probe also cost more than the direct-byte loop on long records:
+limiting exits to three bytes missed UTF-8 state exits. Neither variant is an
+adoption candidate. The first prefix-only variant cost about 3.1% on short-prefix
+output; the revised first-byte check reduces that observation to about 0.5%.
+All initial windows remain in `comparison/` and `review.json`.
+
+### Acceptance and resource status
+
+- Strict Wasm check/build passed; all 1,648 Wasm tests passed. The functional
+  suite has 2,117 passes, 19 platform skips and zero failures. Architecture
+  validation covers 80 commands. Only the rg artifact differs from this round's
+  baseline; the live workspace source and all its artifacts remain unchanged.
+- The revised differential has 707 matching cases, including output-only,
+  color, replacement, context, binary/CRLF, decoder and record-boundary controls.
+  An earlier extended run timed out on the *baseline* with `-a -U -e '^'` and
+  a roughly 1 MiB record. Its incomplete result is preserved in
+  `study-v2/differential-timeout.json`. Large multiline controls other than the
+  selected alternation use a bounded fixture in the subsequent run. The original
+  baseline timeout remains unresolved and is not counted as a pass.
+- The complete protection run registers ten added controls and covers 112
+  workloads, including 58 rg workloads. 110/112 qualify, including 57/58 rg.
+  `rg-null-long-output-8m` and the byte-identical `uniq-long-8m` control have
+  unstable reference windows. The former also has a raw 6.04% second-window
+  slowdown. The full timing verdict is **false**; no retry was used to turn it
+  into a pass. See `gate-review.json` and `protection-simd/`.
+- One stable small cost remains: `rg-dfa-long` changes from 54.566/54.936 ms to
+  56.354/56.972 ms, a 3.28/3.71% slowdown. This is a measured cost, not noise.
+  It is within the gate's 5% review boundary but is not accepted for mainline
+  in this unadopted pilot. Investigate selection/construction cost on its
+  approximately 1 MiB records before integration.
+- Separate Darwin kernel peak-RSS observations cover seven workloads and three
+  artifacts. For 64 MiB long-record counting, baseline and revised pilot peak
+  at 164,970,496 and 165,216,256 bytes (157.33 and 157.56 MiB). Other pairs are
+  similarly close. These single observations establish no memory reduction;
+  full records are still retained. They are not formal resource acceptance.
+
+### Next feasible experiments
+
+The read-only structural probe in `diagnostics/minimize_probe_wbtest.mbt` does
+not change a running matcher. For `[0-9]{4}.*Q|ZZ`, partition refinement reduces
+21 reachable boolean states to 16. In the sampled post-prefix state it removes
+all ten digit bytes from the exit set (141 exits become 131). This explains a
+promising opportunity in repeated numeric text: equivalent boolean states still
+cause avoidable transitions. It is structural evidence, not a timing result.
+
+Try budgeted boolean DFA minimization before expanding byte rows, preserving
+both immediate acceptance and EOF acceptance in the equivalence relation. Keep
+it restricted to oversized boolean searches and measure construction separately.
+[Rust's minimization documentation](https://docs.rs/regex-automata/latest/regex_automata/dfa/dense/struct.Config.html#method.minimize)
+warns that construction can be expensive; do not assume smaller tables are faster.
+The probe uses simple partition refinement and is not an implementation of
+Hopcroft's production algorithm.
+
+For memory, extend the existing literal-stream count protocol with a prepared
+bounded DFA cursor. Eligibility must be established before discarding input;
+unsupported assertions, empty matches, budgets, binary modes and explicit heap
+limits must retain their existing path. Preserve decoder seams, EOF transitions,
+record resets and read/output errors. Whole-line output needs retained or spooled
+record bytes even after an early match; it cannot inherit count-only discarding.
+This continuation architecture has not been implemented or measured in this pilot.
+
+Integration remains conditional on resolving the recorded small cost, completing
+the unstable protection coverage, registering reproducible fixture preparation,
+and the repository's required three-platform development checks. Exact-version
+MoonX and publication acceptance remain separate; rg is still unpublished.
+
+## 2026-10-28 follow-up: bounded boolean minimization and broad exit sets
+
+Updated: 2026-10-28.
+
+### Scope and decision
+
+This is a continuation in `/private/tmp/cmd-rg-minimize-20261028/pilot`.
+The live workspace has not adopted either temporary pilot. All product changes,
+tests and experiment runners remain pure MoonBit. Both new variants use the
+default release Wasm artifact, with no manual O3 or other post-optimization pass.
+The local result does not establish MoonX startup, three-platform development
+acceptance, Linux upstream parity or publication acceptance.
+
+The source baseline is the preceding pilot's frozen `final-pilot-source.tar`.
+Artifact identities distinguish the experiments:
+
+- `original.wasm`: live-workspace candidate,
+  `84ddf070f75fea796ec9a87f8026a849f8f32a2f6faf4cf31350e9b9f49ad8c3`.
+- `baseline.wasm`: preceding direct-row/SIMD pilot,
+  `91dd1e2ac8582d6307f7bcf88708660aeec37140bb043dc1e24532f369b4e781`.
+- `minimized.wasm`: bounded minimization,
+  `4aaa0f840f062d2e900c391cf302656354f0c4d0bb493249db333a011462b72b`.
+- `adaptive.wasm`: minimization plus broad exit-set eligibility,
+  `18ac86ca5f840021582eed8c0074c08c305762938cf31f8b98324f3eb673999d`.
+
+### Why these mechanisms help
+
+The prior structural probe found that different DFA state identifiers can encode
+equivalent future boolean behavior. Treating each identifier change as an exit
+prevents SIMD from skipping repeated numeric text. The pilot refines partitions
+using actual byte-class representatives, preserving immediate acceptance and EOF
+acceptance separately. It then builds exit sets from the reduced direct-byte
+rows. A cache retains the prepared plan for subsequent oversized records.
+
+This is bounded Moore-style partition refinement, not Hopcroft's algorithm.
+Construction stops after 32 rounds or 65,536 signature components; a declined
+attempt returns the original table. It does not promise a minimal automaton when
+the budget is exhausted. The existing 256-state, 65,536-cell and 512-NFA-state
+eligibility limits remain. Short blocks retain their compact path, and mandatory
+literal rejection still precedes construction. No captures, greedy endpoints,
+empty matches, look assertions or unsupported paths change engines.
+
+The next experiment changes one accelerator eligibility rule: permit any exact
+exit set of 1 through 255 byte values, instead of rejecting sets above 192.
+Set cardinality is not the same as exit frequency in the actual input. For
+`[ab]{32}Q`, a state can have 254 possible exits while a homogeneous `a` record
+contains almost none. Four ordinary transitions must return to the same state
+before a probe; fewer than 32 skipped bytes disable further probing for that
+record. The exit set includes every non-self transition, including UTF-8 bytes.
+
+These choices draw on the primary
+[regex-automata minimization documentation](https://docs.rs/regex-automata/latest/regex_automata/dfa/dense/struct.Config.html#method.minimize)
+and [state-acceleration documentation](https://docs.rs/regex-automata/latest/regex_automata/dfa/dense/struct.Config.html#method.accelerate).
+The former warns about expensive construction; the latter warns that frequent
+exits can make acceleration slower. The bounded builder and measured runtime
+disable policy address those distinct costs. The complexity advertised for
+Rust's minimizer is not claimed for this bounded refinement implementation.
+
+### Two staged timing experiments
+
+Each stage uses two windows, one warmup and nine measured samples per tool per
+window, complete process execution, unchanged deadlines and rotating/reversed
+invocation order. MAD/median must be at most 5%, and between-window median drift
+at most 10%. No filtering, startup subtraction or unchanged-candidate retry was
+used. Builds, tests and resource observations run outside these windows.
+
+Stage A compares 49 workloads across the preceding SIMD pilot, live candidate,
+minimization pilot and frozen local Rust executable. All 147 Wasm series are
+stable; five Rust series are unstable. All 196 preflights and 3,920 window
+invocations have equal stdout, stderr and status. Every Wasm old/new comparison
+qualifies, with no incremental slowdown above 3%. See `comparison/` and
+`review.json`; the aggregate four-tool verdict remains false because it includes
+the unstable Rust series.
+
+For the 64 MiB repeated-text long record, minimization reduces output-mode
+search from 644.643/648.058 ms to 70.310/71.222 ms. Count mode changes from
+645.622/650.306 ms to 75.779/76.914 ms. The old `rg-dfa-long` small regression is
+also reversed: its stage-A control changes from 55.142/55.851 ms in the previous
+pilot to 25.502/25.802 ms, below the live candidate's 53.753/54.107 ms.
+
+Stage B adds frequent and sparse exit controls, for 51 workloads and four tools.
+All 153 Wasm series are stable; three Rust series are unstable (`output`,
+`dense-regex`, `long-output-hit`). All 204 preflights and 4,080 window invocations
+have equal stdout, stderr and status. Both incremental and cumulative Wasm pairs
+qualify for all 51 workloads. The four-tool aggregate verdict remains false;
+the three corresponding Rust ratios must not be used as accepted comparisons.
+See `adaptive-study/comparison/` and `adaptive-study/review.json`.
+
+| Workload | Live candidate ms | Minimized ms | Final adaptive ms |
+| --- | --- | --- | --- |
+| Long-record output search, 8 MiB | 117.750 / 118.009 | 29.155 / 29.234 | 29.305 / 29.234 |
+| Long-record output search, 64 MiB | 783.951 / 782.359 | 70.319 / 70.735 | 70.457 / 70.881 |
+| Long-record count, 64 MiB | 788.034 / 790.911 | 76.602 / 76.269 | 76.735 / 76.324 |
+| Approximately 1 MiB records, default mode | 53.718 / 54.052 | 25.532 / 25.760 | 25.548 / 25.791 |
+| `[ab]{32}Q`, homogeneous 8 MiB, late hit | 114.815 / 114.946 | 108.297 / 108.582 | 29.580 / 29.539 |
+| Same pattern, exit every 4 KiB | 114.618 / 114.924 | 107.843 / 108.015 | 28.172 / 28.451 |
+| Same pattern, exit every 40 bytes | 123.700 / 124.581 | 103.739 / 104.586 | 100.628 / 101.266 |
+| Ordinary regex count, 64 MiB | 97.126 / 97.922 | 97.207 / 98.037 | 97.453 / 98.143 |
+
+One stable incremental cost is retained separately: matching long-record output
+changes from 34.048/33.177 ms to 33.699/34.294 ms, or -1.02%/+3.37%, between the
+minimized and adaptive variants. It remains 71.2-72.0% faster than the live
+candidate. This is not relabeled as noise or accepted for mainline by the pilot.
+No incremental qualified cost exceeds the protection rule's 5% review boundary.
+
+The final 64 MiB output search takes 0.731-0.744 times the local Rust duration;
+count takes 0.779-0.796 times. These specific ratios are qualified. This is not
+general Rust parity: empty input still takes 6.55-6.60 times Rust, the many-state
+control 11.39-11.48 times, and frequent exits with a tail match about 7 times.
+
+### Correctness and remaining acceptance
+
+Strict Wasm check and full default-release build pass. All 1,652 Wasm tests pass;
+the functional suite reports 2,117 passes, 19 platform skips and zero failures.
+The architecture inventory covers all 80 commands. Only rg's artifact changes,
+and this follow-up adds no generated-interface changes relative to the preceding
+pilot.
+
+New private tests traverse the reachable product machine of original and reduced
+plans for ten patterns, checking every byte transition plus immediate and EOF
+acceptance. This establishes all-finite-byte-string equivalence for those tested
+machines, rather than relying only on sampled haystacks. Additional controls
+exercise zero/tiny budgets, the 32-round limit, exact broad exit-set membership,
+invalid bytes and compact/wide count agreement.
+
+The revised differential contains 707 matching cases against the live candidate
+and minimized variant. Its multiline fixture bounds are inherited from the
+preceding experiment. The earlier baseline timeout on `-a -U -e '^'` over a long
+record remains unresolved and is not counted as acceptance.
+
+The full protection run compares the final adaptive artifact directly with the
+live-workspace baseline frozen in the preceding experiment's `baseline/`, not
+with the intermediate SIMD or minimized artifacts. The directory name
+`protection-minimized/` covers the final `adaptive.wasm` identity listed above.
+All 80 artifacts are inventoried and all changed artifacts have registered
+coverage. Both complete windows and every result are preserved.
+
+- 113/118 workloads qualify, including all 64/64 rg workloads. The full timing
+  verdict is **false**, with no retry. See `gate-review.json` and
+  `protection-minimized/`.
+- One stable rg construction control has a small cumulative cost:
+  `rg-min-constructor-many-states` changes from 150.658/152.042 ms to
+  156.387/155.542 ms, or +3.80%/+2.30%. It meets the 5% review boundary but is
+  not accepted for mainline in this temporary experiment. The independent
+  51-case cumulative matrix has no cost above 3%; the maximum there is 2.56%.
+  Both observations remain recorded rather than choosing the more favorable run.
+- The five failed controls have byte-identical non-rg artifacts. `rev-long-8m`,
+  `tac-stream-8m`, `tac-long-8m` and `uniq-long-8m` fail stability.
+  `tac-file-8m` is stable by the declared criteria but has a +6.85% second-window
+  cost. That measured threshold failure is not relabeled as noise. The unchanged
+  `tac-multi-8m` control also has a +3.71% second-window cost, within the review
+  boundary. These observations prevent a whole-suite passing claim.
+
+Separate Darwin kernel peak-RSS observations cover seven workloads and three
+artifacts after all timing windows. The live candidate and final adaptive pilot
+peak at 164,937,728 and 165,036,032 bytes for 64 MiB long-record counting, or
+157.30 and 157.39 MiB. The 8/20/32 MiB controls remain similarly close. These
+single observations support no memory reduction and are not formal resource
+acceptance. Complete records are still retained. See `resources/summary.json`.
+
+### Feasibility and next priorities
+
+The bounded minimizer and broader exact exit sets are feasible algorithmic
+changes under the default MoonX delivery compilation profile. The measured
+benefits require neither custom compiler flags nor an external implementation.
+The prior 3-4% long-record control loss has been replaced by a substantial gain;
+the remaining small costs above are explicit integration review items.
+
+Before adoption, retain the two staged comparisons and the complete protection
+failure, review the construction and matching-output costs, make fixture
+preparation portable, and complete required development checks on Linux, macOS
+and Windows. Exact-version MoonX validation remains a separate future step while
+rg is unpublished. No temporary result authorizes publication.
+
+The next architectural experiment should extend the existing count-stream
+protocol with a prepared bounded DFA cursor. Establish eligibility before any
+input is discarded; carry transition and acceptance state across input chunks,
+then reset at each record boundary. Preserve decoder seams, EOF completion,
+binary policies, count/invert/limit behavior and read/output failure ordering.
+Unsupported modes must select their existing path before discarding bytes.
+Whole-record output must retain or spool its bytes and cannot reuse count-only
+discarding. This continuation path is proposed, not implemented or measured.
+
+Separately profile the many-state fallback and empty-input startup. Raising the
+global DFA budget is not justified by these results. Their remaining roughly
+11x and 6.6x gaps to the local Rust reference make them better targets than
+further tuning the already accelerated repeated-text scan.
+
+`incremental-minimization.patch` applies to the preceding temporary pilot;
+`cumulative-algorithm-pilot.patch` applies to the unchanged live working tree.
+`benchmark-profiles.patch`, the pure MoonBit runners and complete evidence stay
+in the experiment directory. Final sealing verifies all 80 live artifacts are
+unchanged, all 80 temporary artifacts match the protected candidate, both patches
+apply without modifying their targets, and the generated interfaces remain
+unchanged relative to the preceding pilot. The final source and artifact hashes
+are retained in `seal-hashes.log`.
+
+## 2026-10-28 branch integration of the default-release rg pilot
+
+Updated: 2026-10-28.
+
+The user authorized integration and a normal push to the existing
+`performance-optimization-and-cleanup` branch for three-platform development
+checks. The cumulative product patch was applied to the live source after
+saving its complete source, Git diff and all 80 default-release artifacts under
+`/private/tmp/cmd-rg-delivery-20261028`. The earlier temporary-pilot sections
+retain their historical scope and failed windows.
+
+This branch accepts the measured +3.80%/+2.30% many-state construction control
+and the minimization-to-adaptive -1.02%/+3.37% matching-output control as explicit
+local tradeoffs for the large long-record gains. Neither is relabeled as noise.
+The complete protection verdict remains false at 113/118, including all 64 rg
+profiles within the declared gate; no unchanged timing run is repeated merely
+to obtain a pass. CI correctness and the new cross-implementation comparison
+are separate evidence.
+
+All sixteen new protection profiles now have portable fixture generation in
+`tests/benchmark/explore.mbtx`'s `prepare` mode. Reconstructed fixture bytes must
+match the frozen pilot inputs before the branch is pushed. Required local
+checks and all 80 default-release artifact identities are checked again after
+integration. The expected rg SHA-256 remains
+`18ac86ca5f840021582eed8c0074c08c305762938cf31f8b98324f3eb673999d`.
+
+The command remains unpublished at its initial `0.1.0` coordinate. There is no
+new option, support-profile or metadata contract, and no publication operation.
+Required Linux, macOS and Windows results must bind to the pushed commit;
+earlier green checks cannot establish acceptance of this source.
+
+The integrated tree passes strict Wasm/product and Native/test-tool checks,
+1,652 Wasm package tests, 118 Native test-tool regressions, and 2,117 functional
+cases with 19 platform skips and zero failures. All 80 command artifacts match
+the frozen final pilot; all nine distinct newly generated input files match its
+recorded fixture bytes. The initial delivery inventory included the non-command
+`core` build directory; the corrected inventory uses the frozen 80-command
+manifest. No product or test failure was hidden by that inventory correction.
+The architecture audit, interface generation, formatting and diff checks pass.

@@ -91,7 +91,46 @@ impl @matcher.Matcher for SearchMatcher with fn count_matching_lines(
   if !self.non_matching_bytes.contains(term) {
     return None
   }
-  self.regex.count_exact_lines(hay, hs, he, term)
+  if self.regex.count_exact_lines(hay, hs, he, term) is Some(count) {
+    return Some(count)
+  }
+  if he - hs >= 4096 && self.regex.byte_prefix_start(hay, hs, he) == Some(-1) {
+    return Some(0L)
+  }
+  if he - hs < 4096 || self.regex.is_accelerated() {
+    return None
+  }
+  if he - hs > 262144 && self.fast_line_regex is Some(filter) {
+    if filter.search_half(hay, hs, he, hs, he) is None {
+      return Some(0L)
+    }
+  }
+  // Retain the mandatory-literal rejection pass. Dense candidates may
+  // use a count-only DFA; sparse candidates keep the existing verifier.
+  if he - hs <= 262144 && self.fast_line_regex is Some(filter) {
+    let mut at = hs
+    for sample in 0..<8 {
+      match filter.search_half(hay, hs, he, at, he) {
+        None => return if sample == 0 { Some(0L) } else { None }
+        Some(end) => {
+          if end - hs > 4096 {
+            return None
+          }
+          at = end.max(at + 1)
+          if at >= he {
+            return None
+          }
+        }
+      }
+    }
+  }
+  self.regex.count_boolean_lines(
+    hay,
+    hs,
+    he,
+    term,
+    required=self.fast_line_regex,
+  )
 }
 
 ///|
@@ -107,15 +146,33 @@ impl @matcher.Matcher for SearchMatcher with fn find_candidate_line(
   he,
 ) {
   match self.fast_line_regex {
-    Some(re) =>
-      match re.search_half(hay, hs, he, hs, he) {
+    Some(re) => {
+      let at = if he - hs >= 4096 {
+        match self.regex.byte_prefix_start(hay, hs, he) {
+          Some(-1) => return None
+          Some(start) => start
+          None => hs
+        }
+      } else {
+        hs
+      }
+      match re.search_half(hay, hs, he, at, he) {
         Some(e) => Some(Candidate(e - hs))
         None => None
       }
-    None =>
+    }
+    None => {
+      if he - hs > 262144 && self.line_terminator is Some(_) {
+        match self.regex.search_boolean_long(hay, hs, he) {
+          Some(-1) => return None
+          Some(end) => return Some(Confirmed(end - hs))
+          None => ()
+        }
+      }
       match self.regex.search_half(hay, hs, he, hs, he) {
         Some(e) => Some(Confirmed(e - hs))
         None => None
       }
+    }
   }
 }

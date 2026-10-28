@@ -1,0 +1,246 @@
+----
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/core/env",
+}
+----
+
+///|
+struct Package {
+  name : String
+  path : String
+  dependencies : Array[String]
+  test_dependencies : Array[String]
+  implementation_lines : Int32
+  test_lines : Int32
+  public_declarations : Int32
+} derive(ToJson)
+
+///|
+fn dependencies(source : String) -> (Array[String], Array[String]) raise {
+  let imports = source
+    .split("\n")
+    .filter(line => !line.trim_start().has_prefix("//"))
+    .collect()
+    .join("\n")
+    .split("import {")
+    .collect()
+  let production : Array[String] = []
+  let tests : Array[String] = []
+  for i in 1..<imports.length() {
+    let parts = imports[i].split("}").collect()
+    assert_true(parts.length() >= 2, msg="incomplete package import")
+    let target = if parts[1].trim_start().has_prefix("for \"test\"") ||
+      parts[1].trim_start().has_prefix("for \"wbtest\"") {
+      tests
+    } else {
+      production
+    }
+    let quoted = parts[0].split("\"").collect()
+    for j in 0..<quoted.length() {
+      if j % 2 == 1 && !target.contains(quoted[j].to_owned()) {
+        target.push(quoted[j].to_owned())
+      }
+    }
+  }
+  (production, tests)
+}
+
+///|
+fn package_name(path : String) -> String {
+  if path.has_prefix("core") {
+    "cli/" + path
+  } else if path.has_prefix("commands/") {
+    "cli/" + path[9:].to_owned()
+  } else {
+    "mooxCLI/cmd-tests" + path[5:].to_owned()
+  }
+}
+
+///|
+async fn inventory(path : String, packages : Map[String, Package]) -> Unit {
+  let names = @fs.readdir(path)
+  if names.contains("moon.pkg") {
+    let (dependencies, test_dependencies) = dependencies(
+      @fs.read_file(path + "/moon.pkg").text(),
+    )
+    let mut implementation_lines = 0
+    let mut test_lines = 0
+    let mut public_declarations = 0
+    for name in names {
+      if name.has_suffix(".mbt") {
+        let source = @fs.read_file(path + "/" + name).text()
+        let lines = source.split("\n").count() -
+          (if source.has_suffix("\n") { 1 } else { 0 })
+        if name.has_suffix("_test.mbt") || name.has_suffix("_wbtest.mbt") {
+          test_lines += lines
+        } else {
+          implementation_lines += lines
+        }
+      } else if name == "pkg.generated.mbti" {
+        public_declarations = @fs.read_file(path + "/" + name)
+          .text()
+          .split("\n")
+          .filter(line => line.has_prefix("pub "))
+          .count()
+      }
+    }
+    let name = package_name(path)
+    assert_false(packages.contains(name), msg="duplicate package " + name)
+    packages[name] = {
+      name,
+      path,
+      dependencies,
+      test_dependencies,
+      implementation_lines,
+      test_lines,
+      public_declarations,
+    }
+  }
+  for name in names {
+    if name.has_prefix(".") || name == "_build" || name == "target" {
+      continue
+    }
+    let child = path + "/" + name
+    if @fs.kind(child, follow_symlink=false) is Directory {
+      inventory(child, packages)
+    }
+  }
+}
+
+///|
+fn visit(
+  name : String,
+  packages : Map[String, Package],
+  states : Map[String, Int32],
+  path : Array[String],
+  failures : Array[String],
+) -> Unit {
+  match states.get(name) {
+    Some(1) => {
+      failures.push("dependency cycle: " + path.join(" -> ") + " -> " + name)
+      return
+    }
+    Some(2) => return
+    _ => ()
+  }
+  states[name] = 1
+  path.push(name)
+  for dep in packages[name].dependencies {
+    if packages.contains(dep) {
+      visit(dep, packages, states, path, failures)
+    }
+  }
+  ignore(path.pop())
+  states[name] = 2
+}
+
+///|
+async fn main {
+  let args = @env.args()
+  guard args.length() == 2 else {
+    fail(
+      "Usage: moon run tests/architecture.mbtx -- NEW_REPORT.json (from repository root)",
+    )
+  }
+  guard !@fs.exists(args[1]) else {
+    fail("preserve the existing architecture report")
+  }
+  assert_eq(
+    dependencies(
+      "import { \"cli/core/stream\", }\nimport { \"test/fixture\", } for \"wbtest\"",
+    ),
+    (["cli/core/stream"], ["test/fixture"]),
+  )
+  let packages : Map[String, Package] = Map([])
+  for path in ["core", "commands", "tests"] {
+    inventory(path, packages)
+  }
+  let failures : Array[String] = []
+  let commands = packages
+    .values()
+    .filter(p => {
+      p.path.has_prefix("commands/") && p.path.split("/").count() == 2
+    })
+    .map(p => p.name)
+    .collect()
+  assert_eq(commands.length(), 80)
+  let reachable : Set[String] = Set([])
+  let work = commands.copy()
+  while work.pop() is Some(name) {
+    if reachable.contains(name) {
+      continue
+    }
+    reachable.add(name)
+    if packages.get(name) is Some(item) {
+      work.append(item.dependencies)
+    }
+  }
+  let states : Map[String, Int32] = Map([])
+  let names = packages.keys().collect()
+  names.sort()
+  for name in names {
+    visit(name, packages, states, [], failures)
+    let item = packages[name]
+    for dep in item.dependencies {
+      if (dep.has_prefix("cli/") || dep.has_prefix("mooxCLI/cmd-tests")) &&
+        !packages.contains(dep) {
+        failures.push(name + " imports missing workspace package " + dep)
+      }
+      if item.path.has_prefix("core/") &&
+        (
+          dep.has_prefix("mooxCLI/cmd-tests") ||
+          (dep.has_prefix("cli/") && !dep.has_prefix("cli/core/"))
+        ) {
+        failures.push(name + " imports a command or test tool: " + dep)
+      }
+      if [
+          "cli/core/bytesearch", "cli/core/bytere", "cli/core/stream", "cli/core/tempio",
+          "cli/core/fswalk", "cli/core/platform", "cli/core/process", "cli/core/checksum",
+          "cli/core/gzipops", "cli/core/numfmt", "cli/core/time_zone", "cli/core/quoting",
+          "cli/core/tabstops", "cli/core/fsops/mode",
+        ].contains(name) &&
+        (
+          dep == "cli/core/cli" ||
+          dep == "cli/core/contracts" ||
+          dep.has_suffix("/cli")
+        ) {
+        failures.push(name + " imports a command adapter: " + dep)
+      }
+    }
+  }
+  let rows : Array[Json] = []
+  for name in names {
+    let item = packages[name]
+    let consumers = packages
+      .values()
+      .filter(other => other.dependencies.contains(name))
+      .map(other => other.name)
+      .collect()
+    consumers.sort()
+    rows.push({
+      "package": Json(item),
+      "runtime_reachable": reachable.contains(name),
+      "direct_consumers": consumers,
+    })
+  }
+  let report : Json = {
+    "commands": commands.length(),
+    "packages": rows,
+    "failures": failures,
+    "scope": "Workspace package dependencies, reachability and source inventory. Export-level ownership and module disposition require the canonical ADR review; generated data and test corpora are not dead code merely because they are not runtime-reachable.",
+  }
+  @fs.write_file(args[1], report.stringify(indent=2))
+  for failure in failures {
+    println(failure)
+  }
+  guard failures.is_empty() else {
+    fail("architecture dependency checks failed")
+  }
+  println(
+    "80 command modules; " +
+    packages.length().to_string() +
+    " packages; dependency checks passed",
+  )
+}

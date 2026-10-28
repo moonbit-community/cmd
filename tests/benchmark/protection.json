@@ -97,7 +97,36 @@
       "rg-text-output-8m",
       "rg-text-sparse-8m",
       "rg-text-dense-regex-8m",
-      "rg-null-long-output-8m"
+      "rg-null-long-output-8m",
+      "rg-boolean-density-shift",
+      "rg-boolean-false-positive",
+      "rg-boolean-sparse",
+      "rg-boolean-repetition",
+      "rg-boolean-unicode",
+      "rg-boolean-word-boundary",
+      "rg-boolean-budget",
+      "rg-boolean-long-hit",
+      "rg-boolean-long-miss",
+      "rg-startup-help",
+      "rg-startup-version",
+      "rg-types-list",
+      "rg-types-count-8m",
+      "rg-pilot-long-regex",
+      "rg-pilot-long-regex-64",
+      "rg-pilot-late-prefix-hit-output",
+      "rg-pilot-late-prefix-hit-count",
+      "rg-pilot-short-prefix-output",
+      "rg-pilot-frequent-exits",
+      "rg-pilot-frequent-exits-hit",
+      "rg-pilot-long-output-hit",
+      "rg-pilot-long-only-hit",
+      "rg-pilot-long-color-hit",
+      "rg-min-dfa-long-text",
+      "rg-min-constructor-chain",
+      "rg-min-constructor-many-states",
+      "rg-min-constructor-declined",
+      "rg-min-broad-frequent",
+      "rg-min-broad-sparse"
     ],
     "sort": [
       "sort-8m",
@@ -168,6 +197,33 @@
     "correctness": "Run the applicable Wasm unit and functional suites, including errors, partial output, cancellation, early exit, Unicode and binary cases. Timing fixture coverage alone is insufficient."
   },
   "boundaries": [
+    {
+      "files": [
+        "commands/rg/internal/ignore/default_types.mbt",
+        "commands/rg/internal/regex/unicode/unicode.mbt",
+        "commands/rg/internal/regex/unicode/age_data.mbt",
+        "commands/rg/internal/regex/unicode/script_data.mbt",
+        "commands/rg/internal/regex/unicode/script_extension_data.mbt",
+        "commands/rg/internal/regex/unicode/perl_word_data.mbt",
+        "commands/rg/internal/regex/unicode/sentence_break_data.mbt",
+        "commands/rg/internal/regex/unicode/gcb_data.mbt",
+        "commands/rg/internal/regex/unicode/general_category_data.mbt",
+        "commands/rg/internal/regex/unicode/word_break_data.mbt",
+        "commands/rg/internal/regex/unicode/property_bool_data.mbt",
+        "commands/rg/internal/regex/unicode/property_names_data.mbt",
+        "commands/rg/internal/regex/unicode/property_values_data.mbt"
+      ],
+      "retain": "Exact imported table values and order, first-use construction without suspension, process-local cached tables, unchanged Unicode/encoding semantics and file-type definitions"
+    },
+    {
+      "sources": [
+        "commands/rg/internal/driver/search_matcher.mbt",
+        "commands/rg/internal/regex/count_boolean.mbt",
+        "commands/rg/internal/regex/automata/record_boolean.mbt",
+        "commands/rg/internal/regex/automata/record_count.mbt"
+      ],
+      "retain": "Lazy bounded boolean-count construction, ordinary blocks no larger than 256 KiB, mandatory-literal filtering throughout each block, exact delimiter exclusion, assertion and empty-match rejection, cached budget decline, and the existing fallback engines"
+    },
     {
       "sources": [
         "core/bytesearch",

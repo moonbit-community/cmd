@@ -318,6 +318,42 @@ async fn adaptive_corpora() -> Unit {
 }
 
 ///|
+async fn boolean_count_corpora() -> Unit {
+  let prefix = b"0001 gamma\n".repeat(16)
+  let block = prefix + Bytes::make(262144 - prefix.length() - 1, b'x') + b"\n"
+  @fs.write_file(lab + "/count-density-shift8m", block.repeat(32))
+  @fs.write_file(lab + "/count-false-positive", b"xxxx gamma gamma gamma\n".repeat(350000))
+  @fs.write_file(lab + "/count-sparse", (b"0001 gamma\n" + b"miss\n".repeat(8192)).repeat(200))
+  @fs.write_file(lab + "/count-repetition", b"xx abababz xx\nzz baztail\nmiss\n".repeat(250000))
+  @fs.write_file(lab + "/count-unicode", @utf8.encode("πσ12345 x\nα99999 π\nmiss\n").repeat(250000))
+  @fs.write_file(lab + "/count-budget", b"ababababbaba\n".repeat(500000))
+  @fs.write_file(lab + "/count-long8m", b"0001" + Bytes::make(8 * 1048576, b'x') + b"gamma")
+}
+
+///|
+async fn boolean_long_corpora() -> Unit {
+  @fs.write_file(lab + "/pilot-late-prefix-hit", b"xxxx gamma gamma\n".repeat(524288) + b"0001 gamma\n")
+  @fs.write_file(lab + "/pilot-short-prefix", b"1 gamma\n".repeat(1048576))
+  @fs.write_file(lab + "/pilot-long-output-hit", b"0001" + Bytes::make(8388608, b'x') + b"Q\nmiss\nZZ\n")
+  let alphabet = b"xQZY0123"
+  let bytes = FixedArray::make(8388608, b'x')
+  let mut random = 104729U
+  for i in 0..<bytes.length() {
+    random = random ^ (random << 13)
+    random = random ^ (random >> 17)
+    random = random ^ (random << 5)
+    bytes[i] = alphabet[(random & 7U).to_int()]
+  }
+  let frequent = b"0001" + Bytes::from_fixedarray(bytes)
+  @fs.write_file(lab + "/pilot-frequent-exits", frequent)
+  @fs.write_file(lab + "/pilot-frequent-exits-hit", frequent + b"QXYZ123")
+  @fs.write_file(lab + "/min-constructor-long", Bytes::make(8388608, b'a') + b"Q")
+  @fs.write_file(lab + "/min-constructor-alternation", b"ababababbaba".repeat(699050))
+  @fs.write_file(lab + "/min-broad-frequent", (Bytes::make(40, b'a') + b"c").repeat(204600))
+  @fs.write_file(lab + "/min-broad-sparse", (Bytes::make(4096, b'a') + b"c").repeat(2047))
+}
+
+///|
 async fn growth_corpora() -> Unit {
   let seed = b"0123456789 alpha beta gamma "
   for
@@ -397,6 +433,8 @@ async fn run_cases() -> Unit {
     @fs.mkdir(lab + "/results", allow_exist=true)
     growth_corpora()
     adaptive_corpora()
+    boolean_count_corpora()
+    boolean_long_corpora()
     @fs.write_file(lab + "/empty", b"")
     @fs.write_file(lab + "/overlap8k", Bytes::make(8192, b'a') + b"\n")
     @fs.write_file(lab + "/overlap16k", Bytes::make(16384, b'a') + b"\n")
@@ -601,6 +639,10 @@ async fn run_cases() -> Unit {
   add("rg-output-dense-regex-8m", "rg", ["^.{8}alpha", "-"], "text8m", "unused")
   add("rg-numbered-8m", "rg", ["-n", "-F", "alpha", "-"], "text8m", "unused")
   add("rg-empty-output", "rg", ["-F", "alpha", "-"], "empty", "unused", status=1)
+  add("rg-startup-help", "rg", ["--help"], "empty", "unused")
+  add("rg-startup-version", "rg", ["--version"], "empty", "unused")
+  add("rg-types-list", "rg", ["--type-list"], "empty", "unused")
+  add("rg-types-count-8m", "rg", ["-F", "-c", "-t", "rust", "alpha", "-"], "text8m", "unused")
   add("rg-line-buffered-1m", "rg", ["--line-buffered", "-F", "alpha", "-"], "text1m", "unused")
   add("rg-output-miss-64m", "rg", ["-F","absent_xyz","-"], "text64m", "unused", status=1)
   add("rg-output-regex-miss-64m", "rg", ["[0-9]{4}.*absent_xyz","-"], "text64m", "unused", status=1)
@@ -619,6 +661,22 @@ async fn run_cases() -> Unit {
   add("base32-8m", "base32", ["-w0"], "text8m", cu + "base32")
   add("sort-8m", "sort", [], "text8m", cu + "sort")
   add("sort-n-8m", "sort", ["-n"], "text8m", cu + "sort")
+  add("rg-pilot-long-regex", "rg", ["-a","[0-9]{4}.*Q|ZZ","-"], "growth8m", "unused", status=1)
+  add("rg-pilot-long-regex-64", "rg", ["-a","[0-9]{4}.*Q|ZZ","-"], "growth64m", "unused", status=1)
+  add("rg-pilot-late-prefix-hit-output", "rg", ["-a","[0-9]{4}.*gamma","-"], "pilot-late-prefix-hit", "unused", status=0)
+  add("rg-pilot-late-prefix-hit-count", "rg", ["-a","-c","[0-9]{4}.*gamma","-"], "pilot-late-prefix-hit", "unused", status=0)
+  add("rg-pilot-short-prefix-output", "rg", ["-a","[0-9]{4}.*gamma","-"], "pilot-short-prefix", "unused", status=1)
+  add("rg-pilot-frequent-exits", "rg", ["-a","-c","[0-9]{4}.*QXYZ123|ZZZEND","-"], "pilot-frequent-exits", "unused", status=1)
+  add("rg-pilot-frequent-exits-hit", "rg", ["-a","-c","[0-9]{4}.*QXYZ123|ZZZEND","-"], "pilot-frequent-exits-hit", "unused", status=0)
+  add("rg-pilot-long-output-hit", "rg", ["-a","[0-9]{4}.*Q|ZZ","-"], "pilot-long-output-hit", "unused", status=0)
+  add("rg-pilot-long-only-hit", "rg", ["-a","-o","[0-9]{4}.*Q|ZZ","-"], "pilot-long-output-hit", "unused", status=0)
+  add("rg-pilot-long-color-hit", "rg", ["-a","--color=always","[0-9]{4}.*Q|ZZ","-"], "pilot-long-output-hit", "unused", status=0)
+  add("rg-min-dfa-long-text", "rg", ["-a","-c","[0-9]{4}.*Q|ZZ","-"], "long8m", "unused", status=1)
+  add("rg-min-constructor-chain", "rg", ["-a","-c","[ab]{32}Q","-"], "min-constructor-long", "unused", status=0)
+  add("rg-min-constructor-many-states", "rg", ["-a","-c","(a|b)*a[ab]{6}","-"], "min-constructor-alternation", "unused", status=0)
+  add("rg-min-constructor-declined", "rg", ["-a","-c","(a|b)*a[ab]{9}","-"], "min-constructor-alternation", "unused", status=0)
+  add("rg-min-broad-frequent", "rg", ["-a","-c","[ab]{32}Q","-"], "min-broad-frequent", "unused", status=1)
+  add("rg-min-broad-sparse", "rg", ["-a","-c","[ab]{32}Q","-"], "min-broad-sparse", "unused", status=1)
   add("sha256-8m", "sha256sum", [], "text8m", cu + "sha256sum")
   add("sha512-8m", "sha512sum", [], "text8m", cu + "sha512sum")
   add("cut-8m", "cut", ["-b", "1-8"], "text8m", cu + "cut")
@@ -665,6 +723,19 @@ async fn run_cases() -> Unit {
   add("uniq-8m", "uniq", [], "text8m", cu + "uniq")
   add("grep-fixed-8m", "grep", ["-F", "-c", "alpha"], "text8m", gnugrep)
   add("grep-fixed-64m", "grep", ["-F", "-c", "alpha"], "text64m", gnugrep)
+  for (name, input, pattern, status) in [
+    ("density-shift", "count-density-shift8m", "[0-9]{4}.*gamma", 0),
+    ("false-positive", "count-false-positive", "[0-9]{4}.*gamma", 1),
+    ("sparse", "count-sparse", "[0-9]{4}.*gamma", 0),
+    ("repetition", "count-repetition", "(ab){2,4}z|baz.*tail", 0),
+    ("unicode", "count-unicode", "\\p{Greek}+[0-9]+", 0),
+    ("word-boundary", "count-unicode", "\\bπ\\b", 0),
+    ("budget", "count-budget", "(a|b)*a[ab]{9}", 0),
+    ("long-hit", "count-long8m", "[0-9]{4}.*gamma", 0),
+    ("long-miss", "count-long8m", "[0-9]{4}.*Q|ZZ", 1),
+  ] {
+    add("rg-boolean-" + name, "rg", ["-a", "-c", pattern, "-"], input, "unused", status~)
+  }
   for
     input in [
       "growth8m", "growth20m", "growth32m", "growth64m", "growth-tail8m",

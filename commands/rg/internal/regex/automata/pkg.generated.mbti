@@ -32,6 +32,7 @@ pub struct LazyDFA {
 pub fn LazyDFA::find_fwd(Self, FixedArray[Byte], Int32, Int32, Int32, Int32, Bool, Bool, pre? : Prefilter) -> Int32
 pub fn LazyDFA::find_rev(Self, FixedArray[Byte], Int32, Int32, Int32, Int32, Bool, Bool) -> Int32
 pub fn LazyDFA::new(NFA, match_all? : Bool, state_limit? : Int32) -> Self
+pub fn LazyDFA::record_boolean(Self) -> RecordBoolean?
 
 pub struct NFA {
   states : Array[State]
@@ -79,6 +80,13 @@ pub fn Prefilter::find(Self, FixedArray[Byte], Int32, Int32) -> (Int32, Int32)?
 pub fn Prefilter::find_span(Self, FixedArray[Byte], Int32, Int32) -> Int64
 pub fn Prefilter::is_fast(Self) -> Bool
 pub fn Prefilter::new(Array[Bytes]) -> Self?
+
+pub struct RecordBoolean {
+  // private fields
+}
+pub fn RecordBoolean::count_lines(Self, FixedArray[Byte], Int32, Int32, Byte, pre? : Prefilter) -> Int64
+pub fn RecordBoolean::count_long_lines(Self, FixedArray[Byte], Int32, Int32, Byte, pre? : Prefilter) -> Int64
+pub fn RecordBoolean::search_long_half(Self, FixedArray[Byte], Int32, Int32) -> Int32
 
 pub(all) enum State {
   ByteRange(Int32, Int32, Int32)

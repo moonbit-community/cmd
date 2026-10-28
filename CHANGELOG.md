@@ -5,6 +5,40 @@ by date and delivery milestone rather than by a single package version.
 
 ## 2026-10-28
 
+- Integrated the default-release rg prefix rejection, direct-byte long-record
+  matching, bounded boolean DFA minimization and adaptive exit-set pilots into
+  the development branch, following review of their measured costs. The
+  cumulative 64 MiB repeated-text search and count controls reduce elapsed time
+  by approximately 91% and 90%. This uses no manual O3 pass. Added portable
+  preparation for all sixteen newly registered protection profiles.
+  The frozen pilot passed 1,652 Wasm tests, 2,117 functional checks (19 skips)
+  and 707 bounded differential cases. All 64 rg protection profiles meet the
+  stability and 5% review rules, with a retained +3.80%/+2.30% construction
+  cost. The whole-suite timing gate remains false at 113/118 because five
+  unchanged-command controls fail stability or the slowdown boundary. Full
+  records remain buffered; 64 MiB count peak RSS is about 157 MiB. Branch CI
+  and a new default-Wasm comparison are recorded separately after execution.
+  This does not publish rg or establish exact-version MoonX acceptance. See
+  [bounded minimization](docs/adr/0003-streams.md#2026-10-28-follow-up-bounded-boolean-minimization-and-broad-exit-sets).
+- Integrated bounded boolean counting and lazy Unicode/file-type tables into
+  the local rg candidate. Default release Wasm, without a manual O3 pass,
+  reduces 64 MiB regex-count time by 68%, Unicode-count time by 43%, empty-input
+  time by 28%, ordinary output by 15-16%, and default fixed misses by 14-15%.
+  An initial 12-14% long-record regression was rejected; complete blocks over
+  256 KiB retain the existing engine. Failed and superseded count-only costs
+  remain in the ADR. All imported table values and order are preserved.
+  Passed 1,642 Wasm tests, 2,117 functional cases (19 skips), 379 complete-process
+  differential cases, exact table comparisons and the 80-command/124-package
+  architecture audit. Added thirteen performance profiles. All 80 artifacts
+  match the measured combined candidate and only rg changes. The full timing
+  gate remains false: 92/102 profiles qualify, including 47/48 rg profiles;
+  one rg output control and nine unchanged-command controls are unstable.
+  No qualified slowdown exceeds 1.65%. Four local kernel-RSS observations
+  decrease by 7.36-7.81 MiB relative to the count-only stage.
+  Source, artifacts and failed windows are retained under
+  `/private/tmp/cmd-rg-count-adopt-20261028`. This is local integration without
+  commit, push, publication or new CI/MoonX acceptance. See the
+  [default-release integration record](docs/adr/0003-streams.md#rg-lazy-table-integration-2026-10-28-default-release).
 - Removed the obsolete rg launcher from the CI Native test-tool selection.
   The launcher had been deleted when rg tests joined the shared runner, but
   its remaining workflow reference stopped all three platforms before tests

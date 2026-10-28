@@ -20,8 +20,10 @@ pub impl Show for RegexError
 pub struct Regex {
   // private fields
 }
+pub fn Regex::byte_prefix_start(Self, FixedArray[Byte], Int32, Int32) -> Int32?
 pub fn Regex::captures_at(Self, FixedArray[Byte], Int32, Int32, Int32, Int32, FixedArray[Int32]) -> Bool
 pub fn Regex::captures_len(Self) -> Int32
+pub fn Regex::count_boolean_lines(Self, FixedArray[Byte], Int32, Int32, Byte, required? : Self?) -> Int64?
 pub fn Regex::count_exact_lines(Self, FixedArray[Byte], Int32, Int32, Byte) -> Int64?
 pub fn Regex::find(Self, Bytes) -> (Int32, Int32)?
 pub fn Regex::find_all(Self, Bytes) -> Array[(Int32, Int32)]
@@ -32,6 +34,7 @@ pub fn Regex::hir(Self) -> @syntax.Hir
 pub fn Regex::is_accelerated(Self) -> Bool
 pub fn Regex::is_match_at(Self, FixedArray[Byte], Int32, Int32, Int32, Int32) -> Bool
 pub fn Regex::new(String) -> Self raise RegexError
+pub fn Regex::search_boolean_long(Self, FixedArray[Byte], Int32, Int32) -> Int32?
 pub fn Regex::search_half(Self, FixedArray[Byte], Int32, Int32, Int32, Int32, earliest? : Bool) -> Int32?
 
 pub(all) struct RegexConfig {

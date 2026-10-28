@@ -135,12 +135,12 @@ fn symbolic_name_normalize(x : String) -> String {
 
 ///|
 fn canonical_prop(norm : String) -> String? {
-  sorted_lookup(property_names_data, norm)
+  sorted_lookup(property_names_data(), norm)
 }
 
 ///|
 fn property_values(canon_prop : String) -> Array[(String, String)]? {
-  for entry in property_values_data {
+  for entry in property_values_data() {
     if entry.0 == canon_prop {
       return Some(entry.1)
     }
@@ -282,7 +282,7 @@ fn gencat(name : String) -> Array[(Int32, Int32)] raise UnicodeError {
     "ASCII" => [(0, 0x7F)]
     "Any" => [(0, 0xD7FF), (0xE000, 0x10FFFF)]
     "Assigned" => negate_ranges(gencat("Unassigned"))
-    _ => table(gencat_data, name, PropertyValueNotFound)
+    _ => table(gencat_data(), name, PropertyValueNotFound)
   }
 }
 
@@ -295,7 +295,7 @@ fn ages(canonical_age : String) -> Array[(Int32, Int32)] raise UnicodeError {
   ]
   let out = []
   for age in order {
-    for r in table(age_data, age, PropertyValueNotFound) {
+    for r in table(age_data(), age, PropertyValueNotFound) {
       out.push(r)
     }
     if age == canonical_age {
@@ -315,17 +315,17 @@ pub fn class(q : ClassQuery) -> Array[(Int32, Int32)] raise UnicodeError {
       match name {
         "Decimal_Number" => perl_digit()
         "White_Space" => perl_space()
-        _ => table(bool_data, name, PropertyNotFound)
+        _ => table(bool_data(), name, PropertyNotFound)
       }
     CGeneralCategory(name) => gencat(name)
-    CScript(name) => table(script_data, name, PropertyValueNotFound)
+    CScript(name) => table(script_data(), name, PropertyValueNotFound)
     CByValue("Age", v) => ages(v)
     CByValue("Script_Extensions", v) =>
-      table(scx_data, v, PropertyValueNotFound)
+      table(scx_data(), v, PropertyValueNotFound)
     CByValue("Grapheme_Cluster_Break", v) =>
-      table(gcb_data, v, PropertyValueNotFound)
-    CByValue("Sentence_Break", v) => table(sb_data, v, PropertyValueNotFound)
-    CByValue("Word_Break", v) => table(wb_data, v, PropertyValueNotFound)
+      table(gcb_data(), v, PropertyValueNotFound)
+    CByValue("Sentence_Break", v) => table(sb_data(), v, PropertyValueNotFound)
+    CByValue("Word_Break", v) => table(wb_data(), v, PropertyValueNotFound)
     CByValue(_, _) => raise PropertyNotFound
   }
 }
@@ -339,7 +339,7 @@ pub fn perl_word() -> Array[(Int32, Int32)] {
   match perl_word_cache.val {
     Some(r) => r
     None => {
-      let r = decode_ranges(perl_word_data[0].1)
+      let r = decode_ranges(perl_word_data()[0].1)
       perl_word_cache.val = Some(r)
       r
     }
@@ -349,13 +349,13 @@ pub fn perl_word() -> Array[(Int32, Int32)] {
 ///|
 /// The ranges for Unicode-aware `\d`.
 pub fn perl_digit() -> Array[(Int32, Int32)] {
-  decode_ranges(find_table(gencat_data, "Decimal_Number").unwrap())
+  decode_ranges(find_table(gencat_data(), "Decimal_Number").unwrap())
 }
 
 ///|
 /// The ranges for Unicode-aware `\s`.
 pub fn perl_space() -> Array[(Int32, Int32)] {
-  decode_ranges(find_table(bool_data, "White_Space").unwrap())
+  decode_ranges(find_table(bool_data(), "White_Space").unwrap())
 }
 
 ///|
@@ -398,7 +398,7 @@ pub fn is_uppercase(c : Int32) -> Bool {
   let table = match uppercase_cache.val {
     Some(t) => t
     None => {
-      let t = decode_ranges(find_table(bool_data, "Uppercase").unwrap())
+      let t = decode_ranges(find_table(bool_data(), "Uppercase").unwrap())
       uppercase_cache.val = Some(t)
       t
     }
