@@ -47,6 +47,8 @@ pub async fn Entry::regular_size(self : Entry, source : SizeSource) -> Int64? {
 ///|
 /// Reading names never requests kind, size or timestamps. Ordering, filtering,
 /// recursion and error policy belong to the command.
+/// `include_hidden` follows the filesystem API: dot-prefixed names on Unix,
+/// the hidden file attribute on Windows.
 pub async fn read_directory(
   path : String,
   include_hidden~ : Bool = true,

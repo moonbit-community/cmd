@@ -7,7 +7,16 @@ async test "directory enumeration owns its handle and leaves ordering to callers
   let names = @fswalk.read_directory(root)
   names.sort()
   assert_eq(names, [".hidden", "visible"])
-  assert_eq(@fswalk.read_directory(root, include_hidden=false), ["visible"])
+  let filtered = @fswalk.read_directory(root, include_hidden=false)
+  filtered.sort()
+  // The public directory API uses the hidden attribute on Windows, where
+  // creating a dot-prefixed file does not make it hidden.
+  let expected = if @async.platform is Windows {
+    [".hidden", "visible"]
+  } else {
+    ["visible"]
+  }
+  assert_eq(filtered, expected)
   let entry = @fswalk.Entry::read(root + "/visible")
   assert_eq(entry.kind, @fs.Regular)
   assert_eq(entry.regular_size(OpenFile), Some(3L))

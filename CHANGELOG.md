@@ -9,6 +9,10 @@ by date and delivery milestone rather than by a single package version.
   The launcher had been deleted when rg tests joined the shared runner, but
   its remaining workflow reference stopped all three platforms before tests
   could run. The Wasm product and regression-test selections are unchanged.
+- Corrected the shared directory-read regression's Windows expectation:
+  a dot-prefixed filename does not imply the hidden file attribute. Both
+  platform branches still check exact directory contents; enumeration and
+  command filtering behavior are unchanged.
 - Adopted a bounded rg text-output batching improvement: eligible plain
   output with binary detection disabled uses a 256 KiB input buffer.
   Release-Wasm fixed/regex misses take 21-22% less time; matching-line
