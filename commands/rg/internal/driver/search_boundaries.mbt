@@ -4,7 +4,7 @@
 fn strip_from_match(
   expr : @syntax.Hir,
   line_term : @matcher.LineTerminator,
-) -> @syntax.Hir raise GrepRegexError {
+) -> @syntax.Hir raise SearchPatternError {
   if line_term.is_crlf() {
     let expr1 = strip_from_match_ascii(expr, b'\r')
     strip_from_match_ascii(expr1, b'\n')
@@ -17,12 +17,12 @@ fn strip_from_match(
 fn strip_from_match_ascii(
   expr : @syntax.Hir,
   byte : Byte,
-) -> @syntax.Hir raise GrepRegexError {
+) -> @syntax.Hir raise SearchPatternError {
   if byte.to_int() > 0x7F {
-    raise GrepRegexError(InvalidLineTerminator(byte))
+    raise SearchPatternError::InvalidLineTerminator(byte)
   }
   let ch = byte.to_int().unsafe_to_char()
-  let invalid = () => GrepRegexError(NotAllowed(ch.to_string()))
+  let invalid = () => SearchPatternError::NotAllowed(ch.to_string())
   match expr.kind {
     Empty => @syntax.Hir::empty()
     Literal(lit) => {
@@ -77,8 +77,8 @@ fn strip_from_match_ascii(
 ///|
 /// Returns an error if the given HIR could only ever match the banned byte
 /// in a position where it would be impossible to match.
-fn ban_check(expr : @syntax.Hir, byte : Byte) -> Unit raise GrepRegexError {
-  let invalid = () => GrepRegexError(Banned(byte))
+fn ban_check(expr : @syntax.Hir, byte : Byte) -> Unit raise SearchPatternError {
+  let invalid = () => SearchPatternError::Banned(byte)
   match expr.kind {
     Empty | Look(_) => ()
     Literal(lit) =>

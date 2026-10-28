@@ -279,7 +279,10 @@ pub async fn WalkBuilder::build(self : WalkBuilder) -> Walk {
       },
     )
   }
-  let ig_root = self.build_ignore()
+  // Stdin entries bypass ignore matching; retain it for every filesystem root.
+  let stdin_only = !self.paths.is_empty() &&
+    self.paths.iter().all(p => p == "-")
+  let ig_root = self.build_ignore(load_global=!stdin_only)
   {
     its,
     its_pos: 0,
@@ -615,10 +618,13 @@ fn WalkBuilder::get_or_set_current_dir(self : WalkBuilder) -> String? {
 
 ///|
 /// Build the root ignore matcher shared by all consumers of this builder.
-async fn WalkBuilder::build_ignore(self : WalkBuilder) -> Ignore {
+async fn WalkBuilder::build_ignore(
+  self : WalkBuilder,
+  load_global~ : Bool,
+) -> Ignore {
   match self.get_or_set_current_dir() {
-    Some(cwd) => self.ig_builder.build_with_cwd(Some(cwd))
-    None => self.ig_builder.build()
+    Some(cwd) => self.ig_builder.build_with_cwd(Some(cwd), load_global~)
+    None => self.ig_builder.build(load_global~)
   }
 }
 

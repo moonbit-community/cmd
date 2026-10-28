@@ -446,3 +446,27 @@ async test "walk/stdin and files as roots" {
   assert_eq(got, [("<stdin>", true, 0), (td.join("f"), false, 0)])
   td.close()
 }
+
+///|
+async test "walk/stdin roots preserve explicit ignore errors and builder reuse" {
+  let td = TempDir::new("walk-stdin-ignore")
+  defer td.close()
+  wfile(td.join("keep"), "alpha\n")
+  wfile(td.join("skip"), "alpha\n")
+  wfile(td.join("rules"), "skip\n")
+  let builder = WalkBuilder::from_iter(["-", "-"])
+    .current_dir(td.path())
+    .git_global(false)
+  assert_true(builder.add_ignore(td.join("missing")) is Some(_))
+  assert_true(builder.add_ignore(td.join("rules")) is None)
+  let stdin = builder.build().collect()
+  assert_eq(stdin.length(), 2)
+  for entry in stdin {
+    assert_true(entry.unwrap().is_stdin())
+  }
+  builder.add(td.path()) |> ignore
+  let paths = builder.build().collect().map(entry => entry.unwrap().path())
+  assert_eq(paths.filter(path => path == "<stdin>").length(), 2)
+  assert_true(paths.contains(td.join("keep")))
+  assert_true(!paths.contains(td.join("skip")))
+}

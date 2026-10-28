@@ -19,11 +19,12 @@ fn fake_canonicalize(p : String) -> String? {
 async test "rg_compat_binary_convert" {
   // rg -n -H --no-heading -e Sherlock bin2
   let haystack = b"Sherlock first\nmiddle\x00\nSherlock again\n"
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .multi_line(true)
-    .line_terminator(Some(b'\n'))
-    .ban_byte(Some(b'\x00'))
-    .build("Sherlock")
+  let matcher = SearchMatcher::new(
+    ["Sherlock"],
+    multi_line=true,
+    line_terminator=Some(b'\n').map(@matcher.LineTerminator::byte),
+    ban=Some(b'\x00'),
+  )
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Standard::new(
     @termcolor.Ansi::new(out),
@@ -50,11 +51,12 @@ async test "rg_compat_binary_convert" {
 async test "rg_compat_binary_convert_first" {
   // rg -n -H --no-heading -e Sherlock bin1
   let haystack = b"abc\x00def\nSherlock here\n"
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .multi_line(true)
-    .line_terminator(Some(b'\n'))
-    .ban_byte(Some(b'\x00'))
-    .build("Sherlock")
+  let matcher = SearchMatcher::new(
+    ["Sherlock"],
+    multi_line=true,
+    line_terminator=Some(b'\n').map(@matcher.LineTerminator::byte),
+    ban=Some(b'\x00'),
+  )
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Standard::new(
     @termcolor.Ansi::new(out),
@@ -81,11 +83,12 @@ async test "rg_compat_binary_convert_first" {
 async test "rg_compat_latin1_no_color" {
   // rg -n -H --no-heading -e Sherlock latin1
   let haystack = b"caf\xe9 Sherlock \xff\xfe\nok Sherlock\n"
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .multi_line(true)
-    .line_terminator(Some(b'\n'))
-    .ban_byte(Some(b'\x00'))
-    .build("Sherlock")
+  let matcher = SearchMatcher::new(
+    ["Sherlock"],
+    multi_line=true,
+    line_terminator=Some(b'\n').map(@matcher.LineTerminator::byte),
+    ban=Some(b'\x00'),
+  )
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Standard::new(
     @termcolor.NoColor::new(out),
@@ -111,11 +114,12 @@ async test "rg_compat_latin1_no_color" {
 async test "rg_compat_hyperlink_vscode" {
   // rg -n -H --no-heading --hyperlink-format vscode --column -e Sherlock sherlock
   let haystack = b"For the Doctor Watsons of this world, as opposed to the Sherlock\nHolmeses, success in the province of detective work must always\nbe, to a very large extent, the result of luck. Sherlock Holmes\ncan extract a clew from a wisp of straw or a flake of cigar ash;\nbut Doctor Watson has to have it taken out for him and dusted,\nand exhibited clearly, with a label attached.\n"
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .multi_line(true)
-    .line_terminator(Some(b'\n'))
-    .ban_byte(Some(b'\x00'))
-    .build("Sherlock")
+  let matcher = SearchMatcher::new(
+    ["Sherlock"],
+    multi_line=true,
+    line_terminator=Some(b'\n').map(@matcher.LineTerminator::byte),
+    ban=Some(b'\x00'),
+  )
   let env = @printer.HyperlinkEnvironment::new()
     .host(None)
     .canonicalize(Some(path => fake_canonicalize(path)))
@@ -147,11 +151,12 @@ async test "rg_compat_hyperlink_vscode" {
 async test "rg_compat_hyperlink_heading_file" {
   // rg -n -H --heading --hyperlink-format file -e Sherlock sherlock
   let haystack = b"For the Doctor Watsons of this world, as opposed to the Sherlock\nHolmeses, success in the province of detective work must always\nbe, to a very large extent, the result of luck. Sherlock Holmes\ncan extract a clew from a wisp of straw or a flake of cigar ash;\nbut Doctor Watson has to have it taken out for him and dusted,\nand exhibited clearly, with a label attached.\n"
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .multi_line(true)
-    .line_terminator(Some(b'\n'))
-    .ban_byte(Some(b'\x00'))
-    .build("Sherlock")
+  let matcher = SearchMatcher::new(
+    ["Sherlock"],
+    multi_line=true,
+    line_terminator=Some(b'\n').map(@matcher.LineTerminator::byte),
+    ban=Some(b'\x00'),
+  )
   let env = @printer.HyperlinkEnvironment::new()
     .host(Some("myhost"))
     .canonicalize(Some(path => fake_canonicalize(path)))
@@ -183,11 +188,12 @@ async test "rg_compat_hyperlink_heading_file" {
 async test "rg_compat_hyperlink_heading_kitty" {
   // rg -n -H --heading --hyperlink-format kitty -e Sherlock sherlock
   let haystack = b"For the Doctor Watsons of this world, as opposed to the Sherlock\nHolmeses, success in the province of detective work must always\nbe, to a very large extent, the result of luck. Sherlock Holmes\ncan extract a clew from a wisp of straw or a flake of cigar ash;\nbut Doctor Watson has to have it taken out for him and dusted,\nand exhibited clearly, with a label attached.\n"
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .multi_line(true)
-    .line_terminator(Some(b'\n'))
-    .ban_byte(Some(b'\x00'))
-    .build("Sherlock")
+  let matcher = SearchMatcher::new(
+    ["Sherlock"],
+    multi_line=true,
+    line_terminator=Some(b'\n').map(@matcher.LineTerminator::byte),
+    ban=Some(b'\x00'),
+  )
   let env = @printer.HyperlinkEnvironment::new()
     .host(Some("myhost"))
     .canonicalize(Some(path => fake_canonicalize(path)))
@@ -219,11 +225,12 @@ async test "rg_compat_hyperlink_heading_kitty" {
 async test "rg_compat_hyperlink_context" {
   // rg -n -H --no-heading -C1 --hyperlink-format grep+ -e Watson sherlock
   let haystack = b"For the Doctor Watsons of this world, as opposed to the Sherlock\nHolmeses, success in the province of detective work must always\nbe, to a very large extent, the result of luck. Sherlock Holmes\ncan extract a clew from a wisp of straw or a flake of cigar ash;\nbut Doctor Watson has to have it taken out for him and dusted,\nand exhibited clearly, with a label attached.\n"
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .multi_line(true)
-    .line_terminator(Some(b'\n'))
-    .ban_byte(Some(b'\x00'))
-    .build("Watson")
+  let matcher = SearchMatcher::new(
+    ["Watson"],
+    multi_line=true,
+    line_terminator=Some(b'\n').map(@matcher.LineTerminator::byte),
+    ban=Some(b'\x00'),
+  )
   let env = @printer.HyperlinkEnvironment::new()
     .host(None)
     .canonicalize(Some(path => fake_canonicalize(path)))
@@ -256,11 +263,12 @@ async test "rg_compat_hyperlink_context" {
 async test "rg_compat_summary_count_hyperlink" {
   // rg -c -H --hyperlink-format vscode -e Sherlock sherlock
   let haystack = b"For the Doctor Watsons of this world, as opposed to the Sherlock\nHolmeses, success in the province of detective work must always\nbe, to a very large extent, the result of luck. Sherlock Holmes\ncan extract a clew from a wisp of straw or a flake of cigar ash;\nbut Doctor Watson has to have it taken out for him and dusted,\nand exhibited clearly, with a label attached.\n"
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .multi_line(true)
-    .line_terminator(Some(b'\n'))
-    .ban_byte(Some(b'\x00'))
-    .build("Sherlock")
+  let matcher = SearchMatcher::new(
+    ["Sherlock"],
+    multi_line=true,
+    line_terminator=Some(b'\n').map(@matcher.LineTerminator::byte),
+    ban=Some(b'\x00'),
+  )
   let env = @printer.HyperlinkEnvironment::new()
     .host(None)
     .canonicalize(Some(path => fake_canonicalize(path)))
@@ -340,11 +348,12 @@ async test "rg_compat_path_printer_hyperlink" {
 async test "rg_compat_json_basic" {
   // rg --json -e Watson sherlock
   let haystack = b"For the Doctor Watsons of this world, as opposed to the Sherlock\nHolmeses, success in the province of detective work must always\nbe, to a very large extent, the result of luck. Sherlock Holmes\ncan extract a clew from a wisp of straw or a flake of cigar ash;\nbut Doctor Watson has to have it taken out for him and dusted,\nand exhibited clearly, with a label attached.\n"
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .multi_line(true)
-    .line_terminator(Some(b'\n'))
-    .ban_byte(Some(b'\x00'))
-    .build("Watson")
+  let matcher = SearchMatcher::new(
+    ["Watson"],
+    multi_line=true,
+    line_terminator=Some(b'\n').map(@matcher.LineTerminator::byte),
+    ban=Some(b'\x00'),
+  )
   let out = @termcolor.ByteVec::new()
   let printer = @printer.JSON::new(out)
   @searcher.SearcherBuilder::new()
@@ -366,11 +375,12 @@ async test "rg_compat_json_basic" {
 async test "rg_compat_json_pretty_context" {
   // rg --json -C1 -e Watson sherlock
   let haystack = b"For the Doctor Watsons of this world, as opposed to the Sherlock\nHolmeses, success in the province of detective work must always\nbe, to a very large extent, the result of luck. Sherlock Holmes\ncan extract a clew from a wisp of straw or a flake of cigar ash;\nbut Doctor Watson has to have it taken out for him and dusted,\nand exhibited clearly, with a label attached.\n"
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .multi_line(true)
-    .line_terminator(Some(b'\n'))
-    .ban_byte(Some(b'\x00'))
-    .build("Watson")
+  let matcher = SearchMatcher::new(
+    ["Watson"],
+    multi_line=true,
+    line_terminator=Some(b'\n').map(@matcher.LineTerminator::byte),
+    ban=Some(b'\x00'),
+  )
   let out = @termcolor.ByteVec::new()
   let printer = @printer.JSON::new(out, pretty=true)
   @searcher.SearcherBuilder::new()
@@ -394,11 +404,12 @@ async test "rg_compat_json_pretty_context" {
 async test "rg_compat_json_pretty_non_utf8" {
   // rg --json -e Sherlock latin1
   let haystack = b"caf\xe9 Sherlock \xff\xfe\nok Sherlock\n"
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .multi_line(true)
-    .line_terminator(Some(b'\n'))
-    .ban_byte(Some(b'\x00'))
-    .build("Sherlock")
+  let matcher = SearchMatcher::new(
+    ["Sherlock"],
+    multi_line=true,
+    line_terminator=Some(b'\n').map(@matcher.LineTerminator::byte),
+    ban=Some(b'\x00'),
+  )
   let out = @termcolor.ByteVec::new()
   let printer = @printer.JSON::new(out, pretty=true)
   @searcher.SearcherBuilder::new()
@@ -420,11 +431,12 @@ async test "rg_compat_json_pretty_non_utf8" {
 async test "rg_compat_json_context" {
   // rg --json -C1 -e Watson sherlock
   let haystack = b"For the Doctor Watsons of this world, as opposed to the Sherlock\nHolmeses, success in the province of detective work must always\nbe, to a very large extent, the result of luck. Sherlock Holmes\ncan extract a clew from a wisp of straw or a flake of cigar ash;\nbut Doctor Watson has to have it taken out for him and dusted,\nand exhibited clearly, with a label attached.\n"
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .multi_line(true)
-    .line_terminator(Some(b'\n'))
-    .ban_byte(Some(b'\x00'))
-    .build("Watson")
+  let matcher = SearchMatcher::new(
+    ["Watson"],
+    multi_line=true,
+    line_terminator=Some(b'\n').map(@matcher.LineTerminator::byte),
+    ban=Some(b'\x00'),
+  )
   let out = @termcolor.ByteVec::new()
   let printer = @printer.JSON::new(out)
   @searcher.SearcherBuilder::new()
@@ -448,11 +460,12 @@ async test "rg_compat_json_context" {
 async test "rg_compat_json_replace" {
   // rg --json -r '<$0>' -e 'Sher(lock)' sherlock
   let haystack = b"For the Doctor Watsons of this world, as opposed to the Sherlock\nHolmeses, success in the province of detective work must always\nbe, to a very large extent, the result of luck. Sherlock Holmes\ncan extract a clew from a wisp of straw or a flake of cigar ash;\nbut Doctor Watson has to have it taken out for him and dusted,\nand exhibited clearly, with a label attached.\n"
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .multi_line(true)
-    .line_terminator(Some(b'\n'))
-    .ban_byte(Some(b'\x00'))
-    .build("Sher(lock)")
+  let matcher = SearchMatcher::new(
+    ["Sher(lock)"],
+    multi_line=true,
+    line_terminator=Some(b'\n').map(@matcher.LineTerminator::byte),
+    ban=Some(b'\x00'),
+  )
   let out = @termcolor.ByteVec::new()
   let printer = @printer.JSON::new(out, replacement=Some(b"<$0>"))
   @searcher.SearcherBuilder::new()
@@ -474,11 +487,12 @@ async test "rg_compat_json_replace" {
 async test "rg_compat_json_invert" {
   // rg --json -v -n -e o sherlock
   let haystack = b"For the Doctor Watsons of this world, as opposed to the Sherlock\nHolmeses, success in the province of detective work must always\nbe, to a very large extent, the result of luck. Sherlock Holmes\ncan extract a clew from a wisp of straw or a flake of cigar ash;\nbut Doctor Watson has to have it taken out for him and dusted,\nand exhibited clearly, with a label attached.\n"
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .multi_line(true)
-    .line_terminator(Some(b'\n'))
-    .ban_byte(Some(b'\x00'))
-    .build("o")
+  let matcher = SearchMatcher::new(
+    ["o"],
+    multi_line=true,
+    line_terminator=Some(b'\n').map(@matcher.LineTerminator::byte),
+    ban=Some(b'\x00'),
+  )
   let out = @termcolor.ByteVec::new()
   let printer = @printer.JSON::new(out)
   @searcher.SearcherBuilder::new()
@@ -501,11 +515,12 @@ async test "rg_compat_json_invert" {
 async test "rg_compat_json_non_utf8" {
   // rg --json -e Sherlock latin1
   let haystack = b"caf\xe9 Sherlock \xff\xfe\nok Sherlock\n"
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .multi_line(true)
-    .line_terminator(Some(b'\n'))
-    .ban_byte(Some(b'\x00'))
-    .build("Sherlock")
+  let matcher = SearchMatcher::new(
+    ["Sherlock"],
+    multi_line=true,
+    line_terminator=Some(b'\n').map(@matcher.LineTerminator::byte),
+    ban=Some(b'\x00'),
+  )
   let out = @termcolor.ByteVec::new()
   let printer = @printer.JSON::new(out)
   @searcher.SearcherBuilder::new()
@@ -527,11 +542,12 @@ async test "rg_compat_json_non_utf8" {
 async test "rg_compat_json_binary" {
   // rg --json -e Sherlock bin2
   let haystack = b"Sherlock first\nmiddle\x00\nSherlock again\n"
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .multi_line(true)
-    .line_terminator(Some(b'\n'))
-    .ban_byte(Some(b'\x00'))
-    .build("Sherlock")
+  let matcher = SearchMatcher::new(
+    ["Sherlock"],
+    multi_line=true,
+    line_terminator=Some(b'\n').map(@matcher.LineTerminator::byte),
+    ban=Some(b'\x00'),
+  )
   let out = @termcolor.ByteVec::new()
   let printer = @printer.JSON::new(out)
   @searcher.SearcherBuilder::new()
@@ -553,10 +569,11 @@ async test "rg_compat_json_binary" {
 async test "rg_compat_json_multiline" {
   // rg --json -U -e 'Sherlock\nHolmeses' sherlock
   let haystack = b"For the Doctor Watsons of this world, as opposed to the Sherlock\nHolmeses, success in the province of detective work must always\nbe, to a very large extent, the result of luck. Sherlock Holmes\ncan extract a clew from a wisp of straw or a flake of cigar ash;\nbut Doctor Watson has to have it taken out for him and dusted,\nand exhibited clearly, with a label attached.\n"
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .multi_line(true)
-    .ban_byte(Some(b'\x00'))
-    .build("Sherlock\\nHolmeses")
+  let matcher = SearchMatcher::new(
+    ["Sherlock\\nHolmeses"],
+    multi_line=true,
+    ban=Some(b'\x00'),
+  )
   let out = @termcolor.ByteVec::new()
   let printer = @printer.JSON::new(out)
   @searcher.SearcherBuilder::new()

@@ -1,5 +1,5 @@
 ///|
-fn show_seq(seq : @syntax.Seq) -> String {
+fn show_seq(seq : Seq) -> String {
   match seq.literals() {
     None => "[inf]"
     Some(lits) =>
@@ -15,10 +15,7 @@ fn show_seq(seq : @syntax.Seq) -> String {
 
 ///|
 fn e(pattern : String) -> String {
-  let hir = @syntax.parse(pattern, config={
-    ..@syntax.ParseConfig::default(),
-    utf8: false,
-  }) catch {
+  let hir = parse(pattern, config={ ..ParseConfig::default(), utf8: false, }) catch {
     err => abort(err.to_string())
   }
   show_seq(InnerExtractor::new().extract_untagged(hir))

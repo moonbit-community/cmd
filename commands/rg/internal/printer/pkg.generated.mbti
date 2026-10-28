@@ -122,7 +122,7 @@ pub struct Standard {
   // private fields
 }
 pub fn Standard::get_mut(Self) -> &@termcolor.WriteColor
-pub fn Standard::new(&@termcolor.WriteColor, colors? : ColorSpecs, hyperlink? : HyperlinkConfig, stats? : Bool, heading? : Bool, path? : Bool, only_matching? : Bool, per_match? : Bool, per_match_one_line? : Bool, replacement? : Bytes?, max_columns? : Int64?, max_columns_preview? : Bool, column? : Bool, byte_offset? : Bool, trim_ascii? : Bool, separator_search? : Bytes?, separator_context? : Bytes?, separator_field_match? : Bytes, separator_field_context? : Bytes, separator_path? : Byte?, path_terminator? : Byte?, clock? : () -> Int64) -> Self
+pub fn Standard::new(&@termcolor.WriteColor, coalesce_matches? : Bool, colors? : ColorSpecs, hyperlink? : HyperlinkConfig, stats? : Bool, heading? : Bool, path? : Bool, only_matching? : Bool, per_match? : Bool, per_match_one_line? : Bool, replacement? : Bytes?, max_columns? : Int64?, max_columns_preview? : Bool, column? : Bool, byte_offset? : Bool, trim_ascii? : Bool, separator_search? : Bytes?, separator_context? : Bytes?, separator_field_match? : Bytes, separator_field_context? : Bytes, separator_path? : Byte?, path_terminator? : Byte?, clock? : () -> Int64) -> Self
 pub fn Standard::new_no_color(&@termcolor.Write) -> Self
 pub fn Standard::sink(Self, &@matcher.Matcher) -> StandardSink
 pub fn Standard::sink_with_path(Self, &@matcher.Matcher, String) -> StandardSink

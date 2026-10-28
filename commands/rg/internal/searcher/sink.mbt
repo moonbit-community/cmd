@@ -6,7 +6,8 @@ pub(all) struct SinkFinish {
 } derive(Debug)
 
 ///|
-/// A matching line (or lines, in multi-line mode). The matched bytes are
+/// A matching span: one line, adjacent lines for an opted-in sink, or a
+/// multi-line match. The matched bytes are
 /// `buf[buf_start + start : buf_start + end]`, where `buf[buf_start :
 /// buf_start + buf_len]` is the buffer being searched.
 ///
@@ -50,6 +51,9 @@ pub(all) struct SinkContext {
 /// A sink receives search results. Returning false from any method stops
 /// the search; raising an error aborts it.
 pub(open) trait Sink {
+  // Opt in to adjacent matching lines in one callback. Reader boundaries
+  // and non-match gaps are never crossed.
+  fn coalesce_matches(Self) -> Bool = _
   // Opt in to complete-reader line counts without per-match events. Binary,
   // begin and finish events retain their existing path; the count cannot stop.
   fn synchronous_count(Self) -> ((Int64) -> Unit)? = _
@@ -65,6 +69,11 @@ pub(open) trait Sink {
   async fn binary_data(Self, Searcher, Int64) -> Bool = _
   async fn begin(Self, Searcher) -> Bool = _
   async fn finish(Self, Searcher, SinkFinish) -> Unit = _
+}
+
+///|
+impl Sink with fn coalesce_matches(_self) {
+  false
 }
 
 ///|

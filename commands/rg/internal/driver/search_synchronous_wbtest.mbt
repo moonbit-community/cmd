@@ -8,16 +8,19 @@ priv struct SynchronousTrace {
 }
 
 ///|
-fn SynchronousTrace::record(self : SynchronousTrace, mat : SinkMatch) -> Bool {
+fn SynchronousTrace::record(
+  self : SynchronousTrace,
+  mat : @searcher.SinkMatch,
+) -> Bool {
   self.calls += 1
   self.events.push(
-    "match:\{mat.absolute_byte_offset}:\{mat.line_number.map(value => value.to_string()).unwrap_or("-")}:\{@utf8.decode_lossy(mat.bytes())}",
+    "match:\{mat.absolute_byte_offset}:\{mat.line_number.map(value => value.to_string()).unwrap_or("-")}:\{@utf8.decode_lossy(Bytes::from_array(mat.buf[mat.buf_start + mat.start:mat.buf_start + mat.end]))}",
   )
   self.calls < self.stop
 }
 
 ///|
-impl Sink for SynchronousTrace with fn synchronous_matched(self) {
+impl @searcher.Sink for SynchronousTrace with fn synchronous_matched(self) {
   if self.enabled {
     Some((_, mat) => {
       self.synchronous_calls += 1
@@ -29,32 +32,32 @@ impl Sink for SynchronousTrace with fn synchronous_matched(self) {
 }
 
 ///|
-impl Sink for SynchronousTrace with fn matched(self, _, mat) {
+impl @searcher.Sink for SynchronousTrace with fn matched(self, _, mat) {
   self.record(mat)
 }
 
 ///|
-impl Sink for SynchronousTrace with fn context(self, _, ctx) {
+impl @searcher.Sink for SynchronousTrace with fn context(self, _, ctx) {
   self.events.push(
-    "context:\{ctx.absolute_byte_offset}:\{ctx.line_number.map(value => value.to_string()).unwrap_or("-")}:\{@utf8.decode_lossy(ctx.bytes())}",
+    "context:\{ctx.absolute_byte_offset}:\{ctx.line_number.map(value => value.to_string()).unwrap_or("-")}:\{@utf8.decode_lossy(Bytes::from_array(ctx.buf[ctx.start:ctx.end]))}",
   )
   true
 }
 
 ///|
-impl Sink for SynchronousTrace with fn context_break(self, _) {
+impl @searcher.Sink for SynchronousTrace with fn context_break(self, _) {
   self.events.push("break")
   true
 }
 
 ///|
-impl Sink for SynchronousTrace with fn binary_data(self, _, offset) {
+impl @searcher.Sink for SynchronousTrace with fn binary_data(self, _, offset) {
   self.events.push("binary:\{offset}")
   true
 }
 
 ///|
-impl Sink for SynchronousTrace with fn finish(self, _, finish) {
+impl @searcher.Sink for SynchronousTrace with fn finish(self, _, finish) {
   self.events.push(
     "finish:\{finish.byte_count}:\{finish.binary_byte_offset.map(value => value.to_string()).unwrap_or("-")}",
   )
@@ -62,13 +65,19 @@ impl Sink for SynchronousTrace with fn finish(self, _, finish) {
 
 ///|
 async test "synchronous reader summaries preserve events limits binary detection and fallback" {
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .line_terminator(Some(b'\n'))
-    .build("hit")
+  let matcher = SearchMatcher::new(
+    ["hit"],
+    line_terminator=Some(b'\n').map(@matcher.LineTerminator::byte),
+  )
   let input = b"skip\nhit one\nskip\nhit two\nhit three\x00tail\nhit end"
   for context in [0, 1] {
     for invert in [false, true] {
-      for binary in [BinaryNone, BinaryQuit(b'\x00'), BinaryConvert(b'\x00')] {
+      for
+        binary in [
+          @searcher.BinaryNone,
+          @searcher.BinaryQuit(b'\x00'),
+          @searcher.BinaryConvert(b'\x00'),
+        ] {
         for stop in [1, 100] {
           for limit in [None, Some(0L), Some(2L)] {
             let traces : Array[SynchronousTrace] = []
@@ -80,7 +89,7 @@ async test "synchronous reader summaries preserve events limits binary detection
                 synchronous_calls: 0,
                 events: [],
               }
-              let searcher = SearcherBuilder::new()
+              let searcher = @searcher.SearcherBuilder::new()
                 .line_number(true)
                 .before_context(context)
                 .after_context(context)
@@ -90,7 +99,7 @@ async test "synchronous reader summaries preserve events limits binary detection
                 .build()
               searcher.search_reader(
                 matcher,
-                SliceReader::from_bytes(input),
+                @searcher.SliceReader::from_bytes(input),
                 sink,
               )
               traces.push(sink)
@@ -99,7 +108,7 @@ async test "synchronous reader summaries preserve events limits binary detection
             if context == 0 &&
               !invert &&
               limit != Some(0L) &&
-              binary != BinaryQuit(b'\x00') {
+              binary != @searcher.BinaryQuit(b'\x00') {
               assert_true(traces[1].synchronous_calls > 0)
             } else {
               assert_eq(traces[1].synchronous_calls, 0)

@@ -65,7 +65,6 @@ priv struct SearchPlan {
   case : CaseMode
   context : ContextMode
   crlf : Bool
-  dfa_size_limit : UInt64?
   encoding : EncodingMode
   engine : EngineChoice
   fixed_strings : Bool
@@ -510,7 +509,6 @@ async fn ExecutionPlan::from_low_args(low : LowArgs) -> ExecutionPlan {
       case: low.case,
       context: low.context,
       crlf: low.crlf,
-      dfa_size_limit: low.dfa_size_limit,
       encoding: low.encoding,
       engine: low.engine,
       fixed_strings: low.fixed_strings,
@@ -607,55 +605,38 @@ fn clamp_size(n : UInt64) -> Int32 {
 ///|
 fn ExecutionPlan::matcher_rust(
   self : ExecutionPlan,
-) -> @grep_regex.RegexMatcher raise RgError {
-  let builder = @grep_regex.RegexMatcherBuilder::new()
-    .multi_line(true)
-    .unicode(!self.search.no_unicode)
-    .octal(false)
-    .fixed_strings(self.search.fixed_strings)
-  match self.search.case {
-    Sensitive => ignore(builder.case_insensitive(false))
-    Insensitive => ignore(builder.case_insensitive(true))
-    Smart => ignore(builder.case_smart(true))
-  }
-  match self.search.boundary {
-    Some(Line) => ignore(builder.whole_line(true))
-    Some(Word) => ignore(builder.word(true))
-    None => ()
-  }
-  if self.search.multiline {
-    ignore(builder.dot_matches_new_line(self.search.multiline_dotall))
-    if self.search.crlf {
-      ignore(builder.crlf(true).line_terminator(None))
-    }
+) -> SearchMatcher raise RgError {
+  let line_terminator = if self.search.multiline {
+    None
+  } else if self.search.null_data {
+    Some(@matcher.LineTerminator::byte(b'\x00'))
+  } else if self.search.crlf {
+    Some(@matcher.LineTerminator::crlf())
   } else {
-    ignore(builder.line_terminator(Some(b'\n')).dot_matches_new_line(false))
-    if self.search.crlf {
-      ignore(builder.crlf(true))
-    }
-    if self.search.null_data {
-      ignore(builder.line_terminator(Some(b'\x00')))
-    }
+    Some(@matcher.LineTerminator::byte(b'\n'))
   }
-  if self.search.regex_size_limit is Some(limit) {
-    ignore(builder.size_limit(clamp_size(limit)))
-  }
-  if self.search.dfa_size_limit is Some(limit) {
-    ignore(builder.dfa_size_limit(clamp_size(limit)))
-  }
-  if !self.search.binary.is_none() {
-    ignore(builder.ban_byte(Some(b'\x00')))
-  }
-  builder.build_many(self.search.patterns) catch {
+  SearchMatcher::new(
+    self.search.patterns,
+    case_mode=self.search.case,
+    boundary=self.search.boundary,
+    multi_line=true,
+    dot_matches_new_line=self.search.multiline && self.search.multiline_dotall,
+    unicode=!self.search.no_unicode,
+    fixed_strings=self.search.fixed_strings,
+    crlf=self.search.crlf,
+    line_terminator~,
+    ban=if self.search.binary.is_none() { None } else { Some(b'\x00') },
+    size_limit=self.search.regex_size_limit
+      .map(clamp_size)
+      .unwrap_or(100 * (1 << 20)),
+  ) catch {
     e => raise RgError(suggest_text(suggest_multiline(e.to_string())))
   }
 }
 
 ///|
 /// Builds the matcher for the configured regex engine.
-fn ExecutionPlan::matcher(
-  self : ExecutionPlan,
-) -> @grep_regex.RegexMatcher raise RgError {
+fn ExecutionPlan::matcher(self : ExecutionPlan) -> SearchMatcher raise RgError {
   match self.search.engine {
     Default => self.matcher_rust()
     PCRE2 => raise RgError("PCRE2 is not available in this build of ripgrep")

@@ -10,5 +10,4 @@ import {
   "moonbitlang/core/encoding/utf8",
   "cli/rg/internal/regex",
   "cli/rg/internal/regex/syntax",
-  "cli/rg/internal/grep_regex",
 } for "wbtest"

@@ -295,7 +295,10 @@ pub async fn Searcher::search_reader(
 // filtering. Explicit heap limits cap both the initial allocation and growth.
 fn Searcher::reader_capacity(self : Searcher, sink : &Sink) -> Int32 {
   let config = self.config
-  let capacity = if sink.bulk_scan() &&
+  let capacity = if (
+      sink.bulk_scan() ||
+      (sink.coalesce_matches() && config.binary is BinaryNone)
+    ) &&
     !config.multi_line &&
     config.max_matches is None &&
     !config.stop_on_nonmatch &&

@@ -1,27 +1,10 @@
 ///|
-/// The kind of an error that can occur when building a regex matcher.
-pub(all) enum GrepRegexErrorKind {
-  /// An error from the regex engine (syntax error or size limit).
+priv suberror SearchPatternError {
   Regex(String)
-  /// A literal that is not allowed (e.g. a line terminator) was found.
   NotAllowed(String)
-  /// The line terminator given is not ASCII.
   InvalidLineTerminator(Byte)
-  /// The pattern contains a banned byte.
   Banned(Byte)
-} derive(Debug, Eq)
-
-///|
-/// An error that can occur when building a regex matcher.
-pub suberror GrepRegexError {
-  GrepRegexError(GrepRegexErrorKind)
 } derive(Debug)
-
-///|
-fn GrepRegexError::kind(self : GrepRegexError) -> GrepRegexErrorKind {
-  let GrepRegexError(k) = self
-  k
-}
 
 ///|
 /// Renders a string like Rust's `{:?}` for `str`.
@@ -84,8 +67,8 @@ fn bstr_debug(bytes : Bytes) -> String {
 }
 
 ///|
-pub fn GrepRegexError::to_string(self : GrepRegexError) -> String {
-  match self.kind() {
+fn SearchPatternError::to_string(self : SearchPatternError) -> String {
+  match self {
     Regex(s) => s
     NotAllowed(lit) =>
       "the literal \{rust_debug_str(lit)} is not allowed in a regex"
@@ -97,6 +80,6 @@ pub fn GrepRegexError::to_string(self : GrepRegexError) -> String {
 }
 
 ///|
-pub impl Show for GrepRegexError with fn output(self, logger) {
+impl Show for SearchPatternError with fn output(self, logger) {
   logger.write_string(self.to_string())
 }

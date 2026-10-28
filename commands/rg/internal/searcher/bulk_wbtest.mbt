@@ -23,9 +23,8 @@ impl Sink for BulkSummary with fn finish(self, _, finish) {
 
 ///|
 async test "bulk summaries preserve final counts offsets and binary conversion across original read boundaries" {
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .line_terminator(Some(b'\n'))
-    .build("hit")
+  let matcher = TestMatcher::new("hit")
+  matcher.line_term = Some(@matcher.LineTerminator::byte(b'\n'))
   for binary in [BinaryNone, BinaryConvert(b'\x00'), BinaryQuit(b'\x00')] {
     for limit in [None, Some(1L), Some(5000L)] {
       let bytes = @utf8.encode(
@@ -90,9 +89,8 @@ test "bulk reader capacity preserves limits and opt-out modes" {
 
 ///|
 async test "reused searchers restore the original window for a non-bulk sink" {
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .line_terminator(Some(b'\n'))
-    .build("hit")
+  let matcher = TestMatcher::new("hit")
+  matcher.line_term = Some(@matcher.LineTerminator::byte(b'\n'))
   let searcher = SearcherBuilder::new().build()
   for enabled in [true, false, true, false] {
     let sink : BulkSummary = { enabled, lines: 0, finish: None, }

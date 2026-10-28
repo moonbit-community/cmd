@@ -11,7 +11,7 @@ let sherlock_lib : String =
 ///|
 /// The crate-level example from grep-printer's lib.rs.
 async test "lib example" {
-  let matcher = @grep_regex.RegexMatcher::new("Sherlock")
+  let matcher = SearchMatcher::new(["Sherlock"])
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Standard::new_no_color(out)
   @searcher.Searcher::new().search_bytes(

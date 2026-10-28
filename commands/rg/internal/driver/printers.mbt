@@ -99,6 +99,11 @@ fn ExecutionPlan::printer_standard(
 ) -> @printer.Standard {
   @printer.Standard::new(
     wtr,
+    coalesce_matches=match self.output.buffer {
+      Auto => !self.output.is_terminal_stdout
+      Line => false
+      Block => true
+    },
     byte_offset=self.output.byte_offset,
     colors=self.output.colors,
     column=self.output.column,

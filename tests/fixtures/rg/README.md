@@ -38,6 +38,9 @@ The 44 CLI-equivalent printer checks are regular entries in
 Their original `rg_compat_*` names remain case aliases. They retain exact
 expected output and now also check process status and stderr. These are
 contract expectations carried from the imported printer suite, not freshly
-sealed ripgrep comparison results. The remaining 20 injected printer checks,
-ordinary printer unit tests, flag white-box tests, Unicode data and engine
-state regressions stay beside their implementations.
+sealed ripgrep comparison results. The remaining 20 injected printer checks
+and other printer/searcher pipelines requiring the concrete command matcher
+live in `commands/rg/internal/driver/*_wbtest.mbt`. They can exercise its private
+adapter without a reverse import from the lower layers. Isolated printer
+tests, searcher buffer/capacity checks, flag white-box tests, Unicode data and
+engine-state regressions stay beside their owning implementations.

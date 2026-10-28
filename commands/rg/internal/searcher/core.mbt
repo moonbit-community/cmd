@@ -22,6 +22,8 @@ priv struct Core {
   sink : &Sink
   synchronous_matched : ((Searcher, SinkMatch) -> Bool)?
   synchronous_count : ((Int64) -> Unit)?
+  mut coalesce_matches : Bool
+  mut pending_match : @matcher.Match?
   binary : Bool
   mut pos : Int32
   mut absolute_byte_offset : Int64
@@ -51,6 +53,16 @@ fn Core::new(
     searcher,
     sink,
     synchronous_matched: sink.synchronous_matched(),
+    coalesce_matches: !binary &&
+    !searcher.config.invert_match &&
+    searcher.config.max_matches is None &&
+    searcher.config.max_context() == 0 &&
+    !searcher.config.line_number &&
+    !searcher.config.passthru &&
+    !searcher.config.stop_on_nonmatch &&
+    !searcher.config.multi_line &&
+    sink.coalesce_matches(),
+    pending_match: None,
     synchronous_count: if !binary &&
       !searcher.config.invert_match &&
       searcher.config.max_matches is None &&
@@ -117,6 +129,7 @@ async fn Core::matched(self : Core, buf : Win, range : @matcher.Match) -> Bool {
 
 ///|
 async fn Core::binary_data(self : Core, offset : Int64) -> Bool {
+  self.coalesce_matches = false
   self.sink.binary_data(self.searcher, offset)
 }
 
@@ -180,6 +193,9 @@ async fn Core::match_by_line(self : Core, buf : Win) -> Bool {
       self.match_count_batch(buf, accept)
       return true
     }
+    if self.coalesce_matches {
+      return self.match_by_line_spans(buf)
+    }
     if !self.binary &&
       !self.config.invert_match &&
       self.config.max_context() == 0 &&
@@ -195,6 +211,44 @@ async fn Core::match_by_line(self : Core, buf : Win) -> Bool {
   } else {
     self.match_by_line_slow(buf)
   }
+}
+
+///|
+fn Core::next_match_span(self : Core, buf : Win) -> @matcher.Match? {
+  let first = match self.pending_match {
+    Some(line) => {
+      self.pending_match = None
+      line
+    }
+    None => {
+      guard self.find_by_line_fast(buf) is Some(line) else { return None }
+      line
+    }
+  }
+  self.count += 1
+  self.has_matched = true
+  self.pos = first.end
+  while self.pos < buf.len {
+    guard self.find_by_line_fast(buf) is Some(next) else { break }
+    if next.start != self.pos {
+      self.pending_match = Some(next)
+      break
+    }
+    self.count += 1
+    self.pos = next.end
+  }
+  Some({ start: first.start, end: self.pos, })
+}
+
+///|
+async fn Core::match_by_line_spans(self : Core, buf : Win) -> Bool {
+  while self.next_match_span(buf) is Some(span) {
+    if !self.sink_matched(buf, span.start, span.end) {
+      return false
+    }
+  }
+  self.pos = buf.len
+  true
 }
 
 ///|

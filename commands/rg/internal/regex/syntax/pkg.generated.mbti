@@ -259,6 +259,7 @@ pub fn Hir::class(Class) -> Self
 pub fn Hir::concat(Array[Self]) -> Self
 pub fn Hir::dot(Dot) -> Self
 pub fn Hir::empty() -> Self
+pub fn Hir::inner_literals(Self) -> Seq
 pub fn Hir::literal(Bytes) -> Self
 pub fn Hir::look(Look) -> Self
 pub fn Hir::repetition(Int32, Int32?, Bool, Self) -> Self

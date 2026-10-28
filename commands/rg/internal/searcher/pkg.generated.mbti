@@ -132,6 +132,7 @@ pub(open) trait Reader {
 }
 
 pub(open) trait Sink {
+  fn coalesce_matches(Self) -> Bool = _
   fn synchronous_count(Self) -> ((Int64) -> Unit)? = _
   fn bulk_scan(Self) -> Bool = _
   fn synchronous_matched(Self) -> ((Searcher, SinkMatch) -> Bool)? = _

@@ -49,7 +49,10 @@ Large rg corpus data is owned by [`fixtures/rg`](fixtures/rg/README.md).
 Engine tests remain Wasm package tests because rg's internal interfaces are
 module-private. CLI-equivalent printer cases use the ordinary JSON contract
 runner and registry; injected clocks, paths and engine state remain package
-regressions. Both layers run in the existing development workflow.
+regressions. Pipelines requiring rg's private command matcher live in driver
+white-box tests; isolated printer and searcher mechanisms retain their own
+tests. Neither lower-level package imports driver for testing. Both layers
+run in the existing development workflow.
 
 ## Results and boundaries
 

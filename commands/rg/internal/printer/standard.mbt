@@ -1,6 +1,7 @@
 ///|
 /// The configuration for the standard printer.
 priv struct StandardConfig {
+  coalesce_matches : Bool
   colors : ColorSpecs
   hyperlink : HyperlinkConfig
   stats : Bool
@@ -263,6 +264,19 @@ pub impl @searcher.Sink for StandardSink with fn matched(self, searcher, mat) {
 }
 
 ///|
+pub impl @searcher.Sink for StandardSink with fn coalesce_matches(self) {
+  let config = self.standard.config
+  config.coalesce_matches &&
+  !self.needs_match_granularity &&
+  self.path is None &&
+  !config.heading &&
+  !config.byte_offset &&
+  !config.trim_ascii &&
+  config.max_columns is None &&
+  config.separator_search is None
+}
+
+///|
 pub impl @searcher.Sink for StandardSink with fn context(self, searcher, ctx) {
   self.standard.matches.clear()
   self.replacer.clear()
@@ -398,7 +412,9 @@ fn StandardImpl::from_context(
 
 ///|
 async fn StandardImpl::sink(self : StandardImpl) -> Unit {
-  self.write_search_prelude()
+  if self.wtr().count() == 0 {
+    self.write_search_prelude()
+  }
   if self.sunk.matches.is_empty() {
     if self.multi_line() && !self.is_context() {
       self.sink_fast_multi_line()
@@ -637,6 +653,12 @@ async fn StandardImpl::write_prelude(
   line_number : Int64?,
   column : Int64?,
 ) -> Unit {
+  if self.path() is None &&
+    line_number is None &&
+    (!self.config().column || column is None) &&
+    !self.config().byte_offset {
+    return
+  }
   let prelude = PreludeWriter::new(self)
   prelude.start(line_number, column)
   prelude.write_path()
@@ -1231,6 +1253,7 @@ fn PreludeWriter::config(self : PreludeWriter) -> StandardConfig {
 /// Construct an immutable output configuration once, before processing input.
 pub fn Standard::new(
   wtr : &@termcolor.WriteColor,
+  coalesce_matches~ : Bool = false,
   colors~ : ColorSpecs = ColorSpecs::default(),
   hyperlink~ : HyperlinkConfig = HyperlinkConfig::default(),
   stats~ : Bool = false,
@@ -1255,6 +1278,7 @@ pub fn Standard::new(
 ) -> Standard {
   {
     config: {
+      coalesce_matches,
       colors,
       hyperlink,
       stats,

@@ -144,7 +144,7 @@ priv struct SearchWorker {
   preprocessor_globs : @ignore.Override
   binary_implicit : @searcher.BinaryDetection
   binary_explicit : @searcher.BinaryDetection
-  matcher : @grep_regex.RegexMatcher
+  matcher : SearchMatcher
   searcher : @searcher.Searcher
   printer : Printer
 }
@@ -152,7 +152,7 @@ priv struct SearchWorker {
 ///|
 fn ExecutionPlan::search_worker(
   self : ExecutionPlan,
-  matcher : @grep_regex.RegexMatcher,
+  matcher : SearchMatcher,
   searcher : @searcher.Searcher,
   printer : Printer,
 ) -> SearchWorker {

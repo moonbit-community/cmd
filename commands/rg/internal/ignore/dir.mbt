@@ -629,8 +629,11 @@ fn IgnoreBuilder::new() -> IgnoreBuilder {
 ///
 /// The matcher returned won't match anything until ignore rules from
 /// directories are added to it.
-async fn IgnoreBuilder::build(self : IgnoreBuilder) -> Ignore {
-  self.build_with_cwd(None)
+async fn IgnoreBuilder::build(
+  self : IgnoreBuilder,
+  load_global~ : Bool = true,
+) -> Ignore {
+  self.build_with_cwd(None, load_global~)
 }
 
 ///|
@@ -638,12 +641,13 @@ async fn IgnoreBuilder::build(self : IgnoreBuilder) -> Ignore {
 async fn IgnoreBuilder::build_with_cwd(
   self : IgnoreBuilder,
   cwd : String?,
+  load_global~ : Bool = true,
 ) -> Ignore {
   let global_gitignores_relative_to = match cwd {
     Some(_) => cwd
     None => self.global_gitignores_relative_to
   }
-  let git_global_matcher = if !self.opts.git_global {
+  let git_global_matcher = if !load_global || !self.opts.git_global {
     Gitignore::empty()
   } else if global_gitignores_relative_to is Some(cwd) {
     let builder = GitignoreBuilder::new(cwd)

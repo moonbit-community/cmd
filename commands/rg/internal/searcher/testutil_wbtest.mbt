@@ -522,24 +522,6 @@ fn SinkContext::bytes(self : SinkContext) -> Bytes {
 }
 
 ///|
-priv struct Lossy {
-  f : (Int64, String) -> Bool raise
-}
-
-///|
-fn Lossy::new(f : (Int64, String) -> Bool raise) -> Lossy {
-  { f, }
-}
-
-///|
-impl Sink for Lossy with fn matched(self, _searcher, mat) {
-  guard mat.line_number is Some(n) else {
-    raise SearchIOError("line numbers not enabled")
-  }
-  (self.f)(n, @utf8.decode_lossy(mat.bytes()))
-}
-
-///|
 fn SinkMatch::bytes(self : SinkMatch) -> Bytes {
   Bytes::from_array(
     self.buf[self.buf_start + self.start:self.buf_start + self.end],

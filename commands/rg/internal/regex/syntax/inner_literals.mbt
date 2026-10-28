@@ -1,23 +1,23 @@
 ///|
 /// A literal sequence tagged with whether it is a prefix of the regex.
 priv struct TSeq {
-  seq : @syntax.Seq
+  seq : Seq
   mut prefix : Bool
 }
 
 ///|
 fn TSeq::empty() -> TSeq {
-  { seq: @syntax.Seq::empty(), prefix: true, }
+  { seq: Seq::empty(), prefix: true, }
 }
 
 ///|
 fn TSeq::infinite() -> TSeq {
-  { seq: @syntax.Seq::infinite(), prefix: true, }
+  { seq: Seq::infinite(), prefix: true, }
 }
 
 ///|
-fn TSeq::singleton(lit : @syntax.Lit) -> TSeq {
-  { seq: @syntax.Seq::singleton(lit), prefix: true, }
+fn TSeq::singleton(lit : Lit) -> TSeq {
+  { seq: Seq::singleton(lit), prefix: true, }
 }
 
 ///|
@@ -49,16 +49,10 @@ fn TSeq::is_really_good(self : TSeq) -> Bool {
 }
 
 ///|
-fn is_poisonous(lit : @syntax.Lit) -> Bool {
-  lit.bytes.length() == 0 ||
-  (lit.bytes.length() == 1 && @syntax.rank(lit.bytes[0].to_int()) >= 250)
-}
-
-///|
 fn TSeq::has_poisonous_literal(self : TSeq) -> Bool {
   match self.seq.literals() {
     None => false
-    Some(lits) => lits.iter().any(is_poisonous)
+    Some(lits) => lits.iter().any(Lit::is_poisonous)
   }
 }
 
@@ -116,10 +110,7 @@ fn InnerExtractor::new() -> InnerExtractor {
 }
 
 ///|
-fn InnerExtractor::extract_untagged(
-  self : InnerExtractor,
-  hir : @syntax.Hir,
-) -> @syntax.Seq {
+fn InnerExtractor::extract_untagged(self : InnerExtractor, hir : Hir) -> Seq {
   let seq = self.extract(hir)
   seq.seq.optimize_for_prefix_by_preference()
   if !seq.is_good() {
@@ -129,11 +120,11 @@ fn InnerExtractor::extract_untagged(
 }
 
 ///|
-fn InnerExtractor::extract(self : InnerExtractor, hir : @syntax.Hir) -> TSeq {
+fn InnerExtractor::extract(self : InnerExtractor, hir : Hir) -> TSeq {
   match hir.kind {
-    Empty | Look(_) => TSeq::singleton(@syntax.Lit::exact(b""))
+    Empty | Look(_) => TSeq::singleton(Lit::exact(b""))
     Literal(bytes) => {
-      let seq = TSeq::singleton(@syntax.Lit::exact(bytes))
+      let seq = TSeq::singleton(Lit::exact(bytes))
       self.enforce_literal_len(seq)
       seq
     }
@@ -149,9 +140,9 @@ fn InnerExtractor::extract(self : InnerExtractor, hir : @syntax.Hir) -> TSeq {
 ///|
 fn InnerExtractor::extract_concat(
   self : InnerExtractor,
-  hirs : Array[@syntax.Hir],
+  hirs : Array[Hir],
 ) -> TSeq {
-  let mut seq = TSeq::singleton(@syntax.Lit::exact(b""))
+  let mut seq = TSeq::singleton(Lit::exact(b""))
   let mut prev : TSeq? = None
   for hir in hirs {
     if seq.seq.is_inexact() {
@@ -167,7 +158,7 @@ fn InnerExtractor::extract_concat(
           Some(p) => p.choose(seq)
         },
       )
-      seq = TSeq::singleton(@syntax.Lit::exact(b""))
+      seq = TSeq::singleton(Lit::exact(b""))
       seq.prefix = false
     }
     seq = self.cross(seq, self.extract(hir))
@@ -181,7 +172,7 @@ fn InnerExtractor::extract_concat(
 ///|
 fn InnerExtractor::extract_alternation(
   self : InnerExtractor,
-  hirs : Array[@syntax.Hir],
+  hirs : Array[Hir],
 ) -> TSeq {
   let mut seq = TSeq::empty()
   for hir in hirs {
@@ -199,21 +190,21 @@ fn InnerExtractor::extract_repetition(
   min : Int32,
   max : Int32?,
   greedy : Bool,
-  sub : @syntax.Hir,
+  sub : Hir,
 ) -> TSeq {
   let subseq = self.extract(sub)
   if min == 0 {
     if max != Some(1) {
       subseq.seq.make_inexact()
     }
-    let empty = TSeq::singleton(@syntax.Lit::exact(b""))
+    let empty = TSeq::singleton(Lit::exact(b""))
     if greedy {
       self.union(subseq, empty)
     } else {
       self.union(empty, subseq)
     }
   } else if max is Some(mx) && min == mx {
-    let mut seq = TSeq::singleton(@syntax.Lit::exact(b""))
+    let mut seq = TSeq::singleton(Lit::exact(b""))
     let n = if min < self.limit_repeat { min } else { self.limit_repeat }
     for _ in 0..<n {
       if seq.seq.is_inexact() {
@@ -226,7 +217,7 @@ fn InnerExtractor::extract_repetition(
     }
     seq
   } else if max is Some(mx) && min < mx {
-    let mut seq = TSeq::singleton(@syntax.Lit::exact(b""))
+    let mut seq = TSeq::singleton(Lit::exact(b""))
     let n = if min < self.limit_repeat { min } else { self.limit_repeat }
     for _ in 0..<n {
       if seq.seq.is_inexact() {
@@ -243,10 +234,7 @@ fn InnerExtractor::extract_repetition(
 }
 
 ///|
-fn InnerExtractor::extract_class(
-  self : InnerExtractor,
-  cls : @syntax.Class,
-) -> TSeq {
+fn InnerExtractor::extract_class(self : InnerExtractor, cls : Class) -> TSeq {
   let mut count = 0
   for r in cls.ranges() {
     if count > self.limit_class {
@@ -266,14 +254,14 @@ fn InnerExtractor::extract_class(
             continue
           }
           let buf = Buffer()
-          @syntax.encode_utf8(buf, c)
-          seq.seq.push(@syntax.Lit::exact(buf.to_bytes()))
+          encode_utf8(buf, c)
+          seq.seq.push(Lit::exact(buf.to_bytes()))
         }
       }
     Bytes(ranges) =>
       for r in ranges {
         for b in r.0..<=r.1 {
-          seq.seq.push(@syntax.Lit::exact(Bytes::make(1, b.to_byte())))
+          seq.seq.push(Lit::exact(Bytes::make(1, b.to_byte())))
         }
       }
   }
@@ -327,28 +315,8 @@ fn InnerExtractor::enforce_literal_len(
 }
 
 ///|
-/// Builds the "fast line regex" from inner literals, if worthwhile.
-fn inner_literals_regex(
-  chir : ConfiguredHIR,
-  re : @regex.Regex,
-) -> @regex.Regex? raise GrepRegexError {
-  if chir.config.line_terminator is None {
-    return None
-  }
-  if re.is_accelerated() && !chir.hir.props.look_set.contains_word_unicode() {
-    return None
-  }
-  if chir.hir.props.alternation_literal {
-    return None
-  }
-  let seq = InnerExtractor::new().extract_untagged(chir.hir)
-  guard seq.literals() is Some(lits) && lits.length() > 0 else { return None }
-  let hir = @syntax.Hir::alternation(
-    lits.map(l => @syntax.Hir::literal(l.bytes)),
-  )
-  Some(
-    @regex.Regex::from_hir(hir) catch {
-      e => raise GrepRegexError(Regex(e.to_string()))
-    },
-  )
+/// Extract bounded literal alternatives that every match must contain.
+/// These may occur inside a match; they are not necessarily prefixes.
+pub fn Hir::inner_literals(self : Hir) -> Seq {
+  InnerExtractor::new().extract_untagged(self)
 }

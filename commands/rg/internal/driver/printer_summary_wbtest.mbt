@@ -5,7 +5,7 @@ let summary_sherlock : Bytes = b"For the Doctor Watsons of this world, as oppose
 
 ///|
 async test "path_with_match_error" {
-  let matcher = @grep_regex.RegexMatcher::new("Watson")
+  let matcher = SearchMatcher::new(["Watson"])
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Summary::new(
     @termcolor.NoColor::new(out),
@@ -25,7 +25,7 @@ async test "path_with_match_error" {
 
 ///|
 async test "path_without_match_error" {
-  let matcher = @grep_regex.RegexMatcher::new("Watson")
+  let matcher = SearchMatcher::new(["Watson"])
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Summary::new(
     @termcolor.NoColor::new(out),
@@ -45,7 +45,7 @@ async test "path_without_match_error" {
 
 ///|
 async test "count_no_path" {
-  let matcher = @grep_regex.RegexMatcher::new("Watson")
+  let matcher = SearchMatcher::new(["Watson"])
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Summary::new(
     @termcolor.NoColor::new(out),
@@ -66,7 +66,7 @@ async test "count_no_path" {
 
 ///|
 async test "count_no_path_even_with_path" {
-  let matcher = @grep_regex.RegexMatcher::new("Watson")
+  let matcher = SearchMatcher::new(["Watson"])
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Summary::new(
     @termcolor.NoColor::new(out),
@@ -92,7 +92,7 @@ async test "count_no_path_even_with_path" {
 
 ///|
 async test "count_path" {
-  let matcher = @grep_regex.RegexMatcher::new("Watson")
+  let matcher = SearchMatcher::new(["Watson"])
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Summary::new(
     @termcolor.NoColor::new(out),
@@ -117,7 +117,7 @@ async test "count_path" {
 
 ///|
 async test "count_path_with_zero" {
-  let matcher = @grep_regex.RegexMatcher::new("NO MATCH")
+  let matcher = SearchMatcher::new(["NO MATCH"])
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Summary::new(
     @termcolor.NoColor::new(out),
@@ -143,7 +143,7 @@ async test "count_path_with_zero" {
 
 ///|
 async test "count_path_without_zero" {
-  let matcher = @grep_regex.RegexMatcher::new("NO MATCH")
+  let matcher = SearchMatcher::new(["NO MATCH"])
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Summary::new(
     @termcolor.NoColor::new(out),
@@ -163,7 +163,7 @@ async test "count_path_without_zero" {
 
 ///|
 async test "count_path_field_separator" {
-  let matcher = @grep_regex.RegexMatcher::new("Watson")
+  let matcher = SearchMatcher::new(["Watson"])
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Summary::new(
     @termcolor.NoColor::new(out),
@@ -189,7 +189,7 @@ async test "count_path_field_separator" {
 
 ///|
 async test "count_path_terminator" {
-  let matcher = @grep_regex.RegexMatcher::new("Watson")
+  let matcher = SearchMatcher::new(["Watson"])
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Summary::new(
     @termcolor.NoColor::new(out),
@@ -209,7 +209,7 @@ async test "count_path_terminator" {
 
 ///|
 async test "count_path_separator" {
-  let matcher = @grep_regex.RegexMatcher::new("Watson")
+  let matcher = SearchMatcher::new(["Watson"])
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Summary::new(
     @termcolor.NoColor::new(out),
@@ -235,7 +235,7 @@ async test "count_path_separator" {
 
 ///|
 async test "count_max_matches" {
-  let matcher = @grep_regex.RegexMatcher::new("Watson")
+  let matcher = SearchMatcher::new(["Watson"])
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Summary::new(
     @termcolor.NoColor::new(out),
@@ -257,7 +257,7 @@ async test "count_max_matches" {
 
 ///|
 async test "count_matches" {
-  let matcher = @grep_regex.RegexMatcher::new("Watson|Sherlock")
+  let matcher = SearchMatcher::new(["Watson|Sherlock"])
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Summary::new(
     @termcolor.NoColor::new(out),
@@ -282,7 +282,7 @@ async test "count_matches" {
 
 ///|
 async test "path_with_match_found" {
-  let matcher = @grep_regex.RegexMatcher::new("Watson")
+  let matcher = SearchMatcher::new(["Watson"])
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Summary::new(
     @termcolor.NoColor::new(out),
@@ -307,7 +307,7 @@ async test "path_with_match_found" {
 
 ///|
 async test "path_with_match_not_found" {
-  let matcher = @grep_regex.RegexMatcher::new("ZZZZZZZZ")
+  let matcher = SearchMatcher::new(["ZZZZZZZZ"])
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Summary::new(
     @termcolor.NoColor::new(out),
@@ -326,7 +326,7 @@ async test "path_with_match_not_found" {
 
 ///|
 async test "path_without_match_found" {
-  let matcher = @grep_regex.RegexMatcher::new("ZZZZZZZZZ")
+  let matcher = SearchMatcher::new(["ZZZZZZZZZ"])
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Summary::new(
     @termcolor.NoColor::new(out),
@@ -351,7 +351,7 @@ async test "path_without_match_found" {
 
 ///|
 async test "path_without_match_not_found" {
-  let matcher = @grep_regex.RegexMatcher::new("Watson")
+  let matcher = SearchMatcher::new(["Watson"])
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Summary::new(
     @termcolor.NoColor::new(out),
@@ -370,7 +370,7 @@ async test "path_without_match_not_found" {
 
 ///|
 async test "quiet" {
-  let matcher = @grep_regex.RegexMatcher::new("Watson|Sherlock")
+  let matcher = SearchMatcher::new(["Watson|Sherlock"])
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Summary::new(
     @termcolor.NoColor::new(out),
@@ -392,7 +392,7 @@ async test "quiet" {
 
 ///|
 async test "quiet_with_stats" {
-  let matcher = @grep_regex.RegexMatcher::new("Watson|Sherlock")
+  let matcher = SearchMatcher::new(["Watson|Sherlock"])
   let out = @termcolor.ByteVec::new()
   let printer = @printer.Summary::new(
     @termcolor.NoColor::new(out),
