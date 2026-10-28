@@ -66,6 +66,12 @@ module and version before any release operation.
   `MOON_HOME="$HOME/.moon-accounts/cli" moon test --update` to refresh
   snapshots.
 
+- Keep large static regression corpora in `tests/fixtures` and CLI-equivalent
+  cases in the existing contract runner/registry. Preserve private-state and
+  injected-runtime tests beside their packages; do not widen product APIs just
+  to relocate tests. Migrations must preserve original expected values and
+  corpus records, with missing fixtures failing rather than silently skipping.
+
 - Prefer `assert_eq` or `assert_true(pattern is Pattern(...))` for results that
   are stable or very unlikely to change. For snapshot tests that record
   structured debugging output, derive `Debug` and use `debug_inspect`, rather
@@ -85,6 +91,30 @@ module and version before any release operation.
 - Serialize workspace check/test/build/info/fmt commands: they share the build
   directory. Agent-authored automation must use pure MoonBit `.mbtx` files.
 
+- Shared high-performance changes follow `tests/benchmark/PROTECTION.md` and
+  the boundary/workload registry in `tests/benchmark/protection.json`. Save the
+  current optimized source and Wasm artifacts before editing. Every changed
+  command artifact needs a registered workload; missing coverage, incomplete
+  windows and unstable results cannot pass. Keep specialized command loops and
+  explicit borrowing, output-failure and temporary-cleanup contracts. Record
+  accepted small timing costs separately from noise and resource observations
+  in ADR-0003. A local timing result does not replace required CI or publication
+  acceptance, and this workflow does not run automatically on ordinary pushes.
+
+- Internal architecture changes follow command adaptation -> domain
+  implementation -> runtime mechanisms and algorithms. Run
+  `MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/architecture.mbtx -- /absolute/new-inventory.json`
+  from the repository root after updating interfaces. Keep module dispositions
+  in ADR-0003, not another report hierarchy. New shared mechanisms need two
+  actual consumers; catalog/contract metadata has validation consumers rather
+  than runtime command consumers. Preserve dialects, error ordering and fast
+  loops instead of forcing them into a generic command framework.
+
+- rg search policy and its concrete matcher adapter are private to `driver`.
+  Keep regex syntax/automata in `internal/regex` and reusable byte mechanisms
+  in `core/bytesearch`; `matcher` and `searcher` must not import the driver.
+  Tests requiring the command adapter belong to driver integration tests;
+  retain private buffer/capacity tests with the searcher and its test matcher.
 - A behavior or option change must update the command README, help, shared
   catalog, compatibility record and relevant regression together. Record
   tradeoffs in the existing canonical ADR with an Updated date, evidence and

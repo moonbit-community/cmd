@@ -1,6 +1,45 @@
 # cli/core
 
 Shared runtime packages used by the independently published command modules.
+
+## Local high-performance foundation
+
+The unpublished shared-foundation integration provides the following boundaries.
+It does not change registry coordinates. Command-specific algorithms still own
+their matching, formatting, ordering and resource policies.
+
+| Package/API | Contract | Current consumers |
+| --- | --- | --- |
+| `contracts` | Capability types and command catalog, separate from argument parsing. | Workspace validation runner. |
+| `fswalk` | Directory-handle ownership and explicit kind/size observations; no implicit pruning, sorting or extra metadata queries. | rg, find, tree and grep. |
+| `checksum/cli`, `gzipops/cli` | Command record formats, options, diagnostics and execution. Parent packages own algorithms and streams. | The five checksum commands and gzip/gunzip/zcat. |
+| `bytesearch` | Allocation-free byte scans/counts and reusable literal filters over explicit ranges; callers keep pattern storage unchanged while a finder uses it. | rg search/regex/line buffers, wc line counting; `stream.count_byte` retains its immutable-view entrypoint. |
+| `stream.RecordReader` / `RecordBatch` | At most 1 MiB per read; synchronous record visitation over immutable storage. Retained views keep their backing block alive. | cut, uniq, rev, column and other bulk readers. |
+| `stream.LineScanner` | An owned-record facade over the same parser, retaining 64 KiB reads. Use it when records survive the current batch. | sort, join, comm, head, jq, nl, paste and existing scanner clients. |
+| `stream.BlockWriter` | Fixed output capacity; private storage cannot be reused during an awaited write. Failure/cancellation consumes the pending queue and poisons further writes; a deferred flush cannot replay a partial prefix. | rg stdout, column snapshot streams, nl, paste and comm. |
+| `tempio.Directory` | Exclusive creation, invocation-owned cleanup, idempotent close after success. Close files before the directory. Cleanup failures propagate; each command chooses error precedence. | tac, column and sort. |
+| `tempio.copy_range` | Exact positional extent copy with caller-owned scratch storage, 64-bit file offsets and completion before buffer reuse. A short extent is an error. | tac reverse output. |
+
+`BlockWriter.write_slice` borrows a fixed-array span until the call returns;
+callers must not mutate it during that interval. Small writes are copied into
+private storage, large writes bypass it after draining. `flush` does not close
+the destination. These APIs do not make line length or process RSS bounded.
+
+Keep fused wc counts, rg/grep prefilters, cut ranges, rev reversal, tac reverse
+blocks, column page caches and sort runs specialized. Shared ownership must not
+introduce an asynchronous call per byte/record into an existing synchronous
+fast path. rg and core regex engines retain their distinct matching semantics.
+
+The [stream ADR](../docs/adr/0003-streams.md#shared-high-performance-foundation-2026-10-27)
+records adoption and limits. The executable [protection registry](../tests/benchmark/protection.json)
+connects shared boundaries to command workloads; see its [runner instructions](../tests/benchmark/PROTECTION.md).
+
+The [internal consolidation decision](../docs/adr/0003-streams.md#internal-architecture-consolidation-2026-10-28-local-candidate)
+records source API breaks, consumer migrations and retained specializations.
+No registry coordinate changes as part of that local work.
+
+## Published history and other candidate APIs
+
 Version **0.6.0** adds a package-version argument to the public gzip runner,
 standardizes checksum help/version output, and exposes standalone metadata
 options in the shared command catalog. Version **0.5.0** added checked 64-bit TZif/POSIX timezone
@@ -32,6 +71,20 @@ partial write from being retried during deferred cleanup. The original
 `LineScanner` API remains available. `RecordBatch.each_while` visits views without
 per-record result objects and pauses after a consumed record for output flushing.
 `stream.count_byte` counts bytes in offset views using bounded word loads.
+
+The unreleased local continuation adds
+`bytere.RecordMatcher.count_records(BytesView, Byte)`. It returns an optional
+pair `(matching_records, complete_records)` for separator-terminated records;
+an incomplete tail is left to the caller. A declined or exhausted DFA returns
+`None`, requiring ordinary matching of the entire block. It shares the existing
+matcher limits and does not apply whole-word or whole-record filters. This new
+API is local development work; registry coordinates are unchanged.
+
+The local cleanup also introduces `fsops/mode.parse_octal_mode(String)` for
+chmod and mkdir. It accepts octal digits with an optional `0o`/`0O` prefix,
+rejects empty or non-octal input, and limits permissions to `0o7777`.
+Symbolic-mode interpretation remains command-specific. This package is not
+part of the published core coordinate yet.
 
 `bytere.Pattern.record_matcher()` creates consumer-owned boolean search state.
 Its `required_literal()` exposes a conservative rejection filter; an empty

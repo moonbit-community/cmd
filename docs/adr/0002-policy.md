@@ -62,4 +62,4 @@ Only upstream command rules justify local environment changes. Adapt changing ho
 
 ## Source review (2026-10-26)
 
-The complete-environment correction begins at `6fff343`; split authority changed in `db9dfe7`, and rg joined the catalog in `c048555`. Current sources are [catalog.mbt](../../core/cli/catalog.mbt), [process.mbt](../../core/process/process.mbt) and the [policy suite](../../tests/runner/policy.mbt). Catalog tiers never grant permissions.
+The complete-environment correction begins at `6fff343`; split authority changed in `db9dfe7`, and rg joined the catalog in `c048555`. Current sources are [catalog.mbt](../../core/contracts/catalog.mbt), [process.mbt](../../core/process/process.mbt) and the [policy suite](../../tests/runner/policy.mbt). Catalog tiers never grant permissions.

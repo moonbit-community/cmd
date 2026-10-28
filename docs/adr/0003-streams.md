@@ -2,8 +2,8 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-27
-Revision: Define R-stage streaming, snapshot, bounded wide-grid caches, temporary-storage and failure effects while retaining explicit matcher, metadata and signal limits.
+Updated: 2026-10-28
+Revision: Consolidate shared ownership and internal execution state while preserving R-stage streaming, temporary-storage, matcher, metadata and failure contracts.
 
 Documentation profile update (2026-10-27): command READMEs describe invocation,
 supported options and user-visible limitations; implementation details remain in
@@ -21,6 +21,1548 @@ hosts and exact-version MoonX acceptance; Native command runs and backend
 pairing are retired. Dated Native observations retain their historical scope.
 
 ## Target and decision
+
+### Internal architecture consolidation (2026-10-28, local candidate)
+
+The dependency direction is command adaptation -> domain implementation ->
+runtime mechanisms and algorithms. Keep one `cli/core` registry module; source
+API breaks are intentional and repository consumers migrate together. This
+work does not change package versions, dependency versions, CLI semantics or
+frozen published expectations. It is not a publication or platform acceptance.
+
+The complete starting working tree, including untracked sources, is preserved
+by `backup/core-restructure-20261027` at
+`c7be0eb98222f6c3cd440cc8602fcc3c5e1f2c23`. The normal Git index was retained.
+Eighty initial Wasm binaries, source archives, toolchain identities and each
+independently reversible stage are under
+`/private/tmp/cmd-core-restructure-20261027`. Observation-time source archives
+must not be confused with the checkpoint source used to build a frozen binary;
+phase evidence records both when they differ. Temporary evidence is local and
+must be retained before deleting that directory.
+
+Package decisions are based on consumers and behavior, not a line-reduction
+quota. Moving code into another package is not a deletion. The inventory tool
+`tests/architecture.mbtx` enumerates production/test dependencies, consumer
+reachability and source/test lines for all 80 commands. It rejects cycles,
+missing workspace imports and reverse dependencies into commands or tests.
+That mechanical inventory complements, rather than replaces, the decisions
+below and the compiler's import checks.
+The complete tracked/untracked review counts 100,871 -> 100,395 implementation
+lines and 33,694 -> 34,309 test lines in core/commands. This includes retained
+generated data and excludes test tools and generated interfaces. The net
+476-line implementation reduction does not count package/file moves as deletion.
+
+| Core package | Decision and ownership | Consumers and constraints |
+| --- | --- | --- |
+| `cli` | Retain parsing; move capability/command records to `contracts`; remove the unused stdin-warning no-op. | Existing adapters retain option order, repeated-option precedence and diagnostics. |
+| `contracts` | Own capability types and the command catalog; no runtime command policy. | The validation runner consumes the catalog. It need not be linked into command binaries. |
+| `platform` | Remove test-only constant capability aliases and unused standard-stream forwarding APIs; synchronous capability queries stay synchronous. | Filesystem/process adapters retain explicit unsupported capabilities; no character-device heuristic substitutes for isatty. |
+| `process` | Retain execution context, environment inheritance and launch/cancel policy; remove unused redirect/pipe forwarding functions. | env, find, make, xargs, timeout and shell retain their command-specific statuses. |
+| `fsops` | Retain shared overwrite, backup, timestamp and traversal policy; do not collapse ordering-sensitive operations. | cp, mv, ln, rm, mkdir, ls, patch, test and other actual clients retain failure and cleanup precedence. |
+| `fsops/mode` | Retain the shared octal parser. | chmod and mkdir use it; symbolic modes remain command-owned. |
+| `fswalk` | Own directory-handle lifetime, entry kind observations and explicitly requested regular-file sizes. | rg, find, tree and grep share directory reads. `OpenFile` versus `ResolvedPath` preserves size-query behavior. Sorting, pruning, ignore rules and link policy remain callers' choices. |
+| `stream` | Retain synchronous borrowed batches, owned scanner records and fixed output ownership. | Bulk consumers keep read sizes and specialized loops. The proposed enum replacement for output state was rejected after unqualified performance evidence; original partial-write/cancellation tests remain. |
+| `tempio` | Retain exclusive temporary-directory creation, retryable failed cleanup and exact range copies. | sort, column and tac own their run/index/reverse formats and cleanup-error priority. |
+| `bytesearch` | Retain SIMD fixed-array kernels and immutable-view SWAR operations. | rg, wc and stream use distinct storage forms; these are purposeful specializations. |
+| `bytere` | Replace three optional-cache/boolean pairs with explicit uninitialized, ready and disabled states. | grep and other regex consumers keep syntax dialects, leftmost-longest/capture rules, bounded caches and whole-query fallback on exhaustion. |
+| `checksum` | Own algorithms, digest specifications and incremental execution; private hasher implementation. | `checksum/cli` is the runtime consumer; no help, version or exit strategy in algorithm APIs. |
+| `checksum/cli` | Own record formats, file handling, verification and command diagnostics; migrate existing format regressions. | cksum, md5sum, sha1sum, sha256sum and sha512sum import this adapter directly. |
+| `gzipops` | Retain codec states, 32 KiB history and bounded Huffman tables; move command policy out. | `gzipops/cli` and codec tests retain level, CRC, concatenated-member, truncation and partial-output contracts. |
+| `gzipops/cli` | Own options, help/version and command execution. | gzip, gunzip and zcat remain thin adapters with their existing behavior. |
+| `shell` | Distinguish incomplete input from invalid syntax structurally; use one mutually exclusive loop-control state. | sh, make and split retain diagnostics, redirection order and scopes. Exit/return status and signal origin remain separate facts. |
+| `netops` | Use `transfer` as the sole execution API; remove unused fetch types/wrappers; prepare header maps once and separate request, response, redirect and output responsibilities. | curl/wget profiles, authentication scope, cookies, timeouts and partial-response/file effects stay distinct. Deferred output and actual destination ownership are not duplicate layers. |
+| `numfmt` | Retain explicit input profiles, normalized dyadic values, rounding and format stages. | printf, seq, od and hexdump need different widths and formatting rules; do not merge them into a lossy host-number conversion. |
+| `time_zone` | Retain bounded TZif parsing and checked timestamp conversion. | date and diff retain 64-bit transitions, POSIX future rules and gap/fold rejection. |
+| `jq_filter` | Retain the small public-AST adapter. | jq and jqlog require string-slice lowering; assignment paths must not be rewritten as ordinary values. |
+| `quoting` | Retain byte-specific locale and shell escaping. | ls, cmp, split and printf have different quoting contracts. |
+| `tabstops` | Retain parsed stops plus aligned/relative interval rules; add boundary/diagnostic regressions. | expand and unexpand share it, including overflow rejection. |
+
+rg owns immutable search, input-selection and output plans constructed before
+execution. Runtime statistics, buffers and adaptive caches are separate. Remove
+the Standard/Summary printer builders and empty configuration-time statistics
+copies, and construct their immutable values directly. The specialized matching
+and output loops remain. The system adapter uses `fswalk` instead of a second
+directory-entry wrapper whose optional kind was always absent.
+
+An independently measured preparation change skips the default file-type table
+when neither type changes nor type listing is requested. Explicit selection,
+addition and clearing still build/validate the table before reading input.
+The literal-count trial determines eligibility before discarding any input:
+one nonempty literal up to 4096 bytes, a byte record delimiter absent from the
+match, count-only sink, no context/inversion/early stop/multiline, no explicit
+heap limit and no binary conversion/quit policy. It runs after the existing
+decoder, retains at most literal-length minus one suffix bytes and ends an
+unterminated record once at EOF. Complete short records retain batched scans.
+Captures, assertions, regex alternatives and unbounded expressions stay on the
+original path; this does not establish a resumable general DFA. Such a DFA must
+prove both state continuation and recovery on cache exhaustion before it can
+discard data. Earlier rejected general-DFA trials remain rejected.
+
+The separate nl/paste/comm output trial reuses `stream.BlockWriter` at each
+existing processing scope. Complete output is flushed on input failure and the
+writer remains poisoned after partial write failure. Comm flushes before order
+diagnostics. Numbering/section state, delimiter cycles, repeated stdin ownership
+and sorted merge policy remain local; output buffering does not justify merging
+their algorithms into one framework.
+
+The rg regex compiler/automata, syntax, Unicode tables, ignore/glob frontends,
+OS-string handling and decoding retain their separate semantics. Generated
+Unicode data and the test corpus are not dead product code. Core BRE/ERE/Emacs
+matching and rg leftmost-first matching are not interchangeable. Sharing a byte
+kernel does not authorize changing either engine's selection rules. Removing
+unconditional size queries from rg requires separate error-order evidence:
+skipping a formerly observable realpath/file-size failure is a behavior change,
+even when a successful traversal becomes faster.
+
+The command review groups cover every module. "Retain" means its current
+responsibility or specialization is justified; it is not an assertion that all
+future performance work is finished.
+
+| Commands | Decision and retained contract |
+| --- | --- |
+| rg | Restructure plans, printers and system adaptation; retain regex, Unicode, ignore and output semantics. |
+| sort | Separate invocation/options, key preparation and comparison; retain packed keys, stable ties and spill formats. |
+| find, grep, tree | Migrate directory mechanisms; preserve each traversal, pruning, output ordering and metadata-demand policy. |
+| cksum, md5sum, sha1sum, sha256sum, sha512sum | Migrate to the checksum command adapter; algorithm state remains in the parent package. |
+| gzip, gunzip, zcat | Migrate to the gzip command adapter; preserve codec levels and partial-output failures. |
+| sh, make, split | Migrate through shell's typed parser/control state; retain command-specific orchestration and filter execution. |
+| curl, wget | Use prepared transfer state; preserve profile-specific retries, output commit, authentication and cleanup. |
+| column, cut, rev, tac, uniq, wc | Retain optimized batches, reverse blocks, field caches and fused scans; protect the earlier shared-foundation changes. |
+| comm, nl, paste | Adopt shared output buffering only after behavior and timing checks; retain merge, numbering, section and delimiter state. |
+| cat, head, tail, tee, join | Retain streaming/merge/follow and multi-destination policies; ownership differs enough to reject a universal command loop. |
+| base32, base64, expand, unexpand, fmt, fold, tr, strings | Retain encoding, wrapping, whitespace and byte-translation rules; tab-stop sharing already has two consumers. |
+| cmp, diff, patch, sed, csplit, expr | Retain comparison/patch state, regex dialects and address/capture semantics. Do not unify glob or regex frontends solely because their loops look alike. |
+| chmod, mkdir, cp, mv, ln, rm, rmdir, unlink, touch, mktemp | Retain filesystem policy and explicit capability boundaries; use shared mode and operation mechanisms where semantics coincide. |
+| ls, pwd, realpath, basename, dirname, which | Retain path representation, link, quoting and ordering behavior; display paths are not canonical filesystem identities. |
+| date, printf, seq, od, hexdump, xxd | Retain precision, byte layouts, timestamp and formatting semantics; existing numfmt/time-zone ownership is explicit. |
+| jq, jqlog | Retain distinct command adapters over the same AST translation; assignment paths remain protected. |
+| env, xargs, timeout, printenv | Retain process/environment contracts and command-specific launch/status policies. |
+| echo, true, false, yes, sleep, test | Retain concise dedicated implementations, short-circuiting and metadata behavior; a generic command framework would add no demonstrated reuse. |
+
+#### rg search compilation ownership (2026-10-28)
+
+Remove the command-local `grep_regex` package. Its only production consumer
+was driver; printer and searcher imported it only for tests. Driver now owns
+private `SearchMatcher` and `SearchPatternError` types and compiles search
+policy directly from the execution plan. Case and boundary selection reuse
+the existing enums. Delete the mutable builder, copied configuration,
+configured-HIR wrapper and separate error-kind wrapper. Compiled matchers
+retain the effective line terminator, regexes and excluded-byte set only.
+
+Keep the existing regex dialect, Unicode, automata, candidate selection and
+literal-count loops. Bounded inner-literal extraction now belongs to the HIR
+in regex syntax, with its complete regression suite. It reuses the existing
+literal poison predicate instead of keeping a second implementation. The
+extra literal regex used for candidate lines is deliberately unchanged;
+replacing it with a finder is a separate algorithm experiment, not part of
+this ownership change. No new shared engine replaces `core/bytere`.
+
+The old DFA byte-limit option was parsed but never consumed by the regex
+compiler, which uses a fixed 10,000-state limit. Remove the dead copies in
+search configuration while retaining argument parsing, diagnostics and the
+existing execution behavior. This does not establish an effective byte limit
+or a process-memory cap; wiring a real limit requires a separate behavior
+decision and cache-exhaustion tests.
+
+Move matcher-dependent printer/searcher pipelines to driver white-box tests,
+preserving their expectations and injected sinks/clocks. Private searcher
+capacity tests keep the existing test matcher. Do not expose the command
+adapter or create a lower-layer dependency on driver to accommodate tests.
+The removed package and all preceding local work are recoverable from
+`backup/rg-boundary-20261028` (`c57c488`). Local artifacts and diagnostics are
+under `/private/tmp/cmd-rg-boundary-20261028`.
+
+Production MoonBit source decreases from 36,041 to 35,726 lines, a net removal
+of 315 lines across rg after accounting for moved code. Test source changes
+from 16,189 to 16,238 lines; every named test and its multiplicity is preserved.
+
+The source passes 1,626 Wasm package tests, 118 test-tool tests and 2,109
+functional cases with 19 platform skips and no failures. Another 268
+pre-refactor/candidate Wasm comparisons preserve stdout, stderr and status
+across patterns, case/boundary flags, CRLF/NUL, multiline, size options and
+pattern-error precedence over missing input. All 80 command artifacts were
+compared; 79 remain byte-identical. The rg binary changes from 1,956,396 to
+1,950,003 bytes. The dependency audit passes for 80 commands and 125 packages.
+The preceding-snapshot comparison ran all 71 registered workloads, each with
+two windows of one warmup and nine alternating pairs. All 17 rg workloads
+pass the unchanged dispersion, drift and 5% regression gates; their per-window
+ratios range from 0.9815 to 1.0191. Across the full registry, 68 qualify and
+three remain unstable: `ln-symbolic-validation`, `sha256sum-8m` and
+`sha512sum-8m`. All three compare byte-identical binaries. The unchanged
+`tac-long-8m` control records ratios 1.0215 and 1.0401; retain its small loss
+separately, without attributing it to this source change. No qualified workload
+regresses above 5%. The aggregate gate is not green, and no timing retry was
+performed. These observations do not overwrite the earlier noisy windows.
+An additional two-window comparison against the initial architecture baseline
+qualifies all 17 rg workloads. The 64 MiB literal hit and miss ratios remain
+0.6099-0.6141 and 0.5762-0.5796 respectively, preserving the earlier streaming
+count gains. This cumulative comparison is distinct from the 71-row phase gate.
+
+Nine separate Darwin kernel-RSS observations cover 8/20/32/64 MiB regex records
+and literal miss records, plus a 64 MiB literal hit. All outputs/statuses agree
+and temporary directories are empty after execution. The 64 MiB regex pair
+records 165.656 -> 165.594 MiB; literal hit records 40.359 -> 40.328 MiB and
+literal miss 40.266 -> 39.969 MiB. The largest observed RSS increase is
+0.235 MiB on the 20/32 MiB regex rows. These are single resource pairs, not
+memory stability qualification; sampled disk usage is a lower bound. None of
+these checks establishes upstream parity or remote platform acceptance.
+
+#### rg source footprint and resumable regex exploration (2026-10-28)
+
+This is a temporary experiment, not an integrated implementation or a release.
+The live product and test sources stay at the preceding ownership baseline.
+`backup/rg-regex-explore-20261028` (`28ddcdc`) preserves tracked and untracked
+source through a temporary index; all 80 release Wasm artifacts are frozen in
+`/private/tmp/cmd-rg-regex-explore-20261028/baseline`. The normal index and
+development HEAD are preserved. The same directory retains candidate sources,
+compiler/test failures, raw timing windows, differential output and resources.
+
+The current raw `.mbt` inventory, excluding `_test.mbt`, `_wbtest.mbt`, build
+outputs and dependencies, is 89,272 lines under core and commands. Commands
+alone contain 71,479 lines; rg contains 35,726: 40.02% of the first denominator
+and 49.98% of the second. This intentionally includes data-bearing source and
+100 lines in testdata packages, whose names alone do not mark them as tests.
+Syntax, automata and Unicode account for 10,187 lines. Roughly 5,400 lines
+across rg are Unicode/encoding tables, flag descriptions, type definitions,
+escaping data and templates. Relocating these or moving a dialect into core
+would not remove equivalent repository complexity. Remaining small wrappers,
+unused fields and stale comments merit targeted cleanup; there is no evidence
+for another large, semantics-preserving subsystem deletion. In particular,
+the NFA `has_empty` field is always initialized to false and has no current
+production reader; it cannot establish eligibility for a new streaming path.
+
+The experiment targets `-a -c` searches with a byte record terminator, no
+assertions or empty matches, and no multiline, inversion, context, early-stop,
+heap-limit or detailed match-output requirements. DecodeReader remains ahead
+of matching. Before discarding input, a separate boolean plan resolves every
+reachable transition within 512 NFA states, 256 DFA states and 65,536 table
+cells; failure declines the plan without changing the existing DFA cache.
+An actual start-state end transition rejects empty matches. Chunk boundaries
+preserve state; record completion performs one end transition and resets it.
+The reader retains a fixed block instead of a complete record. These are
+logical construction bounds, not process-memory caps. The experimental
+closure interface is not a proposed shared public API.
+
+The candidate history constrains the production design:
+
+- V1 proves the streaming benefit but loses the existing fast prefix filter.
+  Across 24 workloads, 22 qualify, one replacement-output control is unstable,
+  and a sparse-prefix workload regresses 2.67-2.70x. It is rejected as a whole.
+- V2 preserves fast prefixes and tries exact self-loop skipping inside the
+  separate count path. Ordinary regex misses regress 29-31%; an additional
+  random-text miss regresses about 2.85x. Its 24-row set also retains two
+  unstable controls. This accelerator is rejected.
+- V3 removes that accelerator. All 24 primary workloads qualify, but two of
+  six held-out workloads regress: random misses by 41.9-42.0% and state churn
+  by 5.27-5.39%. Driver diagnostics identify an existing inner-literal candidate
+  filter on both expressions, absent on the structured long-record workload.
+  Preserving only the prefix filter is therefore insufficient.
+- V4 also declines streaming when driver already has an inner-literal
+  candidate filter. Eligibility depends on compiled mechanisms, not named
+  benchmark expressions. The existing generic DFA loop remains unchanged.
+
+V4 passes all 24 primary protection workloads and five of six held-out
+workloads. The remaining `rg-heldout-budget-short` row is unqualified: the
+candidate's first-window MAD/median is 8.09%, with ratios 1.0514 and 0.9962.
+Keep that failure; the aggregate gate is not green. None of the 29 qualified
+workloads regresses above 5%. The empty-input row grows by 3.76-4.11%
+(about 1.13-1.26 ms); it remains an explicit preparation-cost follow-up rather
+than being offset against large-input gains.
+The user accepted this specific 3.76-4.11% tradeoff on 2026-10-28. This does
+not waive the unstable held-out row or authorize unrelated slowdowns. Further
+size-driven rg decomposition is stopped; subsequent work targets measured
+execution costs.
+
+Qualified V4 observations against the frozen current Wasm baseline are:
+
+| Workload | Baseline median, ms | Candidate median, ms | Speedup |
+| --- | ---: | ---: | ---: |
+| Structured regex miss, one 8 MiB record | 126.77-127.11 | 54.03-54.40 | 2.34-2.35x |
+| Structured regex miss, one 20 MiB record | 272.30-272.55 | 83.90-84.16 | 3.24-3.25x |
+| Structured regex miss, one 32 MiB record | 415.34-416.04 | 113.76-114.31 | 3.63-3.66x |
+| Structured regex miss, one 64 MiB record | 798.62-799.69 | 192.62-193.05 | 4.14-4.15x |
+| Ordinary regex line count, 64 MiB | 88.14-89.06 | 55.67-56.27 | 1.58x |
+| Greedy positive count, one 64 MiB record | 978.19-982.58 | 40.56-41.06 | 23.9-24.1x |
+
+The final row answers existence and avoids completing a greedy match; it does
+not establish the same speedup for span, capture or output searches. The
+fast-prefix long-record control remains about 794-798 ms and is not improved
+by this conservative plan selection. Assertions and the default binary-policy
+control also retain their original paths.
+
+V4 passes `fmt`, `info`, strict Wasm check/build and 1,632 Wasm package tests,
+including 191 eligible imported corpus cases consumed in 1/7/64-byte chunks.
+Another 267 frozen-baseline comparisons preserve deterministic stdout, stderr
+and status, including rejected expressions, error precedence, CRLF/NUL,
+invalid UTF-8, mode exclusions and chunk seams. All 80 artifacts are compared;
+the 79 other commands remain byte-identical. Nine separate Darwin kernel-RSS
+pairs agree on outputs/statuses and leave no temporary entries. The regex
+8/20/32/64 MiB pairs record 56.891/96.406/104.609/165.547 MiB in the baseline
+and 40.000/40.047/40.063/40.156 MiB in V4. These single resource observations
+demonstrate the retained-storage change, not statistical memory stability.
+Literal-count controls retain their approximately 40 MiB process peaks.
+
+Every timing window uses one warmup and nine alternating full-process Wasm
+pairs, with two windows, MAD/median <=5% on both sides and median drift <=10%.
+No startup subtraction, sample removal or timing retry is used. The held-out
+fixture initially lacked its results directory and produced no measurements;
+that setup failure is retained separately from the corrected first window.
+No GNU/Rust ratio, MoonX release acceptance or remote-platform result follows
+from these comparisons with the frozen current Wasm binary.
+
+The executable next step is a count-only plan with an immutable transition
+table and separate per-input state, preserving both kinds of existing
+candidate filter. Reuse decoded record framing instead of keeping two similar
+literal/regex reader loops. Preparation should be cached per compiled matcher;
+consider delaying it until a long record is observed while the first block is
+still retained. A subsequent experiment can resume prefix/candidate filtering
+alongside the automaton to address dense-prefix long records; it must preserve
+partial literals at chunk boundaries and cannot simply replace either filter
+with scalar transitions. Extend binary policy, CRLF, assertions and capture-sensitive
+modes separately, with fallback selected before discarded data would be
+needed. The two regex dialects retain their frontends and selection semantics;
+any shared continuation mechanism needs real consumers in both rg and grep.
+
+#### rg upstream Wasm gap and baseline diagnosis (2026-10-28)
+
+The separately collected comparison in
+`/private/tmp/cmd-weekly-perf-20261028/summary.json` uses upstream rg.mbt
+`b998d487614d70c1131e8f95dc13dcc9d90c5698`; its `.mbt` contents match the imported
+`2727c258` revision. Both sides use the same compiler and moonrun and receive
+`moon-wasm-opt --all-features -O3 -aimfs=20`. The current unoptimized artifact
+has SHA-256 `2ef85099d6f4c16e8b9e4a60a9eb40e9641cb01693e332cd860dd3c6b36c26b1`,
+identical to the frozen baseline of the resumable-regex experiment above.
+These are complete Wasm processes, not Rust-native or MoonX measurements.
+
+All seven comparable stdin workloads preserve output, diagnostics and status
+and satisfy both nine-pair stability windows. Fixed counting improves
+2.04-2.08x and regex counting is approximately unchanged. However, matching-line
+output takes 3.10-3.15x upstream time; fixed misses cost 30-31% more, regex
+misses 22-24% more, and collision/entropy misses about 26-27% more. These gaps
+remain failures to preserve upstream performance; gains elsewhere do not
+offset them. The absolute-file workload failed upstream WASI preopen access
+and is excluded, not counted as a timing pass.
+
+A new bridge comparison in `/private/tmp/cmd-rg-upstream-regression-20261028`
+uses the frozen architecture-start artifact from
+`backup/core-restructure-20261027` (`c7be0eb`) and the screenshot's current
+artifact, with the same additional optimization and byte-identical input
+fixtures. All seven workloads pass two windows of one warmup and nine
+alternating pairs, including exact output/status checks. The 8 MiB output
+medians are 144.66/144.12 ms at architecture start and 144.97/144.59 ms now:
+0.21-0.33% slower. The four miss/collision controls are 2.0-3.3% faster now.
+This locates the large gap before this architecture-reorganization baseline;
+it does not identify the original introducing commit or attribute each cost.
+
+Source comparison identifies a concrete investigation target: upstream's
+search/printer chain is synchronous down to direct WASI reads/writes, while
+the migrated implementation uses public async I/O and async callbacks through
+the line printer. Both stdout buffers are 8 KiB, so a buffer-size difference
+alone cannot explain the result. Async render/callback overhead is a
+hypothesis, not a measured causal breakdown. Do not copy upstream FFI across
+the repository's pure-MoonBit boundary or remove partial-write, cancellation
+or output-order guarantees.
+
+Next experiments should separate synchronous in-memory formatting from async
+drains and measure ordinary output, colored/numbered output, context, replace
+and only-matching controls. Separately diagnose preparation, read and candidate
+costs in the miss workloads. Retain three explicit comparison identities:
+the previous accepted artifact, architecture-start artifact and pinned
+upstream MoonBit Wasm. Existing migration-relative protection cannot establish
+upstream preservation. No product source, release artifact or manifest is
+changed by this diagnosis; no new resource or remote-platform acceptance is
+claimed.
+
+#### Async output hot-path pilot (2026-10-28)
+
+The isolated pilot is retained in `/private/tmp/cmd-rg-async-pilot-20261028`.
+`backup/rg-async-pilot-20261028` (`495bb4b`) preserves the starting tracked and
+untracked source without changing the normal index. The temporary source
+reproduced all 80 starting Wasm artifacts before modification. Live product
+sources and all 80 live artifacts remained unchanged at pilot completion;
+`product-pilot.patch` passed `git apply --check` against that source.
+
+The authorized follow-up adopted this exact patch. Evidence in
+`/private/tmp/cmd-rg-output-followup-20261028/adoption.json` binds the local
+integration to all 80 previously accepted artifacts, reproduced byte for byte.
+Strict checks, 1,627 Wasm tests and 20 benchmark-tool tests pass again. The eight
+additional rg profiles are now registered (79 total protection workloads).
+`backup/rg-async-adopt-20261028` (`e0edbf7`) preserves tracked and untracked
+source with a temporary Git index; the normal index and HEAD remain unchanged.
+This adoption does not publish packages or establish new platform acceptance.
+
+The selected implementation changes two production files and one test file.
+rg skips the already-completed search prelude and an empty per-line prelude.
+`BlockWriter` first attempts a synchronous private buffer append, entering the
+existing async slow path only when needed. Shared append helpers avoid copying
+the implementation into both paths. Public async interfaces, buffer sizes,
+partial-write poisoning, cancellation and borrowing contracts remain intact;
+both affected generated interfaces are byte-identical. No package, dependency
+or runtime API replacement is involved.
+
+The experiments distinguish three mechanisms. Extra printer inline hints do
+not materially help. Skipping empty prefix work reduces ordinary output time
+by about 23% without changing actual I/O. Separating the complete buffered fast
+path adds gains in rg, nl, paste and comm. Merely extracting copy loops, or
+removing the old async inline hints, does not reproduce those shared gains.
+The deduplicated variant preserves the successful fast path. This supports a
+local reduction in frequent async control-flow overhead, not a claim that all
+async I/O should be replaced or that it explains every upstream gap.
+
+The final ordinary release-Wasm comparison passes all 79 registered and added
+workloads in two windows, each with one warmup and nine alternating pairs.
+All output/status comparisons, both sides' MAD/median <=5%, and between-window
+drift <=10% pass. No row is 3% slower in either window. All 80 artifacts are
+compared: 17 change and have protection profiles; 63 remain byte-identical.
+
+| Workload | Initial median, ms | Pilot median, ms | Time reduction |
+| --- | ---: | ---: | ---: |
+| rg matching-line output, 8 MiB | 168.47-168.72 | 121.95-122.56 | 27.4-27.6% |
+| rg replacement output, 8 MiB | 306.38-307.04 | 248.34-248.61 | 18.9-19.0% |
+| rg colored output, 1 MiB | 138.28-139.37 | 124.47-125.05 | 10.0-10.3% |
+| nl, 8 MiB | 180.89-181.19 | 162.81-162.86 | 10.0-10.1% |
+| paste parallel / serial, 8 MiB | 125.61-125.62 / 95.17-95.18 | 114.29-114.65 / 84.20-84.22 | 8.7-9.0% / 11.5% |
+| comm ordered input | 182.51-183.41 | 165.33-165.43 | 9.4-9.8% |
+
+Column table output does not benefit: it is 0.8-1.2% slower. Its shared writers
+store snapshot data/indexes; table rendering already fills synchronous output
+batches. Existing specialized loops in other commands are not rewritten merely
+to use this mechanism.
+
+Final validation passes strict Wasm check/build, `info`, `fmt`, 1,627 Wasm
+tests, 118 tool tests and 2,109 functional cases with 19 platform skips.
+Another 377 frozen-Wasm comparisons preserve prefixes, color, hyperlinks,
+context, replacement, only-matching output, CRLF/NUL, invalid bytes, multiple
+files and buffer seams. A new concatenation model checks partial writes,
+capacities 0/1/2/8/16/17/32, line buffering and ownership after caller mutation.
+Fourteen separate Darwin kernel-RSS pairs preserve outputs and leave no
+temporary entries. The largest observed increase is 0.391 MiB; the 64 MiB
+general-regex record remains about 166 MiB. Single resource pairs do not
+establish memory stability or a process-memory limit.
+
+A separate fresh comparison applies identical `-O3 -aimfs=20` optimization to
+both sides and retains the pinned upstream Wasm artifact above. All seven
+rows are stable. Matching-line output is 107.40-107.68 ms versus upstream's
+47.14-47.65 ms, reducing the earlier 3.10-3.15x ratio to 2.26-2.28x. Fixed
+counting remains about 2.03x faster than upstream. Fixed, regex, collision and
+entropy misses still take about 22-30% more time; these are unresolved costs,
+not improvements established by this output pilot.
+
+An initial post-format identity check stopped before final measurement when
+rg differed from its pre-format binary. Final evidence freezes and verifies
+the formatted candidate. All trial sources, samples, failed identity checks,
+resource diagnostics and final hashes are retained. The resource collector's
+deprecated idempotent `ProcessInput.close` call is recorded separately; its
+compiler warning does not originate in the product or strict product checks.
+No integration, publication, remote CI or platform acceptance was claimed at
+pilot completion; the later local adoption is recorded above.
+
+#### rg output spans and input preparation (2026-10-28)
+
+The follow-up evidence is in `/private/tmp/cmd-rg-output-followup-20261028`.
+At this checkpoint the two previously accepted optimizations were integrated
+locally. The new output-span implementation remained isolated in `pilot/`; the
+reviewable
+`output-spans-pilot.patch` applies to the live source. Only rg changes among
+all 80 candidate artifacts. No development commit, push or publication occurs.
+
+Three deliberately output-discarding diagnostic binaries isolate costs:
+ordinary optimized output takes about 106 ms, discarding only sink writes
+takes about 93 ms, discarding printer work takes about 63 ms, and synchronous
+match callbacks without output take about 41 ms. These binaries are not
+behaviorally equivalent and establish no accepted speedup. Their timings are
+not an additive profile. They justify reducing per-line async dispatch rather
+than replacing all async I/O. A direct printer shortcut improved ordinary
+output by 12-13% but slowed context output by 5.35-5.57%; it was rejected.
+
+The selected pilot instead reports adjacent matching lines from an already
+validated reader buffer as one span. It never crosses a non-match gap or input
+buffer boundary. A pending candidate avoids rescanning sparse matches. The
+standard printer explicitly opts in only for plain block-buffered output;
+line buffering, path prefixes, line numbers, context, statistics, replacement,
+color granularity, trimming, column limits, multiline and early-stop modes
+retain their existing paths. Binary detection disables coalescing before
+delivering matches. Async entrypoints, read sizes and shared writer failure
+handling remain unchanged. The internal Sink capability and Standard option
+belong to their existing packages; no new core layer or FFI is introduced.
+
+The final ordinary release-Wasm protection run compares all 80 artifacts and
+81 workloads in two windows of one warmup plus nine alternating pairs.
+Matching-line output improves from 120.25-120.86 ms to 48.18-48.58 ms, about
+2.49x faster. Sparse output improves 7.9-9.1%; dense regex output improves
+about 2.3x. All 27 rg workloads also pass a separate comparison against the
+pre-async-pilot baseline; ordinary output there improves about 3.50x.
+
+The full protection gate **does not pass**. Eighty workloads qualify, while
+the unchanged `ln-symbolic-validation` reference has second-window MAD/median
+5.81%, above the unchanged 5% limit. No workload exceeds the 5% slowdown
+threshold. The unchanged `tac-long-8m` binary records +3.59% in the first
+window and +0.51% in the second; that observation is not offset by rg gains.
+All samples and both failures below remain retained without automatic retry.
+
+The separate pinned-upstream comparison uses identical additional
+`-O3 -aimfs=20` optimization. Ordinary output observes 49.56-51.51 ms against
+51.51-52.04 ms, but the candidate's first-window MAD/median is 6.16%.
+Consequently this is not a qualified parity claim. Nine other comparisons
+qualify: dense regex output is about 6-7% faster, fixed counting is about
+2.05x faster, and regex counting is within 1%. Default fixed, regex, collision
+and entropy misses remain approximately 21-29% slower. These gaps are not
+resolved by span output.
+
+Strict Wasm check/build, info and fmt pass, as do 1,631 Wasm tests, 118 native
+tool tests, 2,109 functional cases with 19 skips, and 377 exact frozen-Wasm
+comparisons. Four new tests exercise fragmentation, gaps, CRLF/NUL, invalid
+bytes, long records, binary stop prefixes, byte-budget partial-write failures,
+cleanup without replay and a later read failure. Fourteen separate Darwin
+kernel-RSS resource pairs have equal outputs/statuses and no residual entries.
+Ordinary output's peak falls by 1.5 MiB; the largest observed increase is
+0.266 MiB. The 64 MiB general-regex record still retains roughly 166 MiB.
+Single resource pairs do not establish a memory limit or statistical resource
+stability. The unchanged column control's disk sampler sees a transient 8 MiB
+only on one side; the zero observation on the other side is a sampling lower
+bound, not evidence that column stopped using temporary storage.
+
+Further phase diagnostics separate argument parsing, plan construction, input
+preparation, matcher/printer construction and scanning. Input preparation
+costs roughly 9.4 ms locally versus 1.3 ms upstream even for empty stdin;
+matcher construction is already faster locally. Source inspection shows that
+the walker builds a global ignore matcher before returning explicit stdin,
+although that stdin entry bypasses ignore filtering. Both sides' controlled
+`--no-ignore-global` comparisons are stable: empty input falls from about
+29.8 ms to 24.8 ms, collision misses from 30.0-30.3 ms to 25.5-25.7 ms, and
+entropy misses from 31.7 ms to 27.3-27.6 ms. Their upstream gaps shrink to
+about 5-7%; 64 MiB misses still take about 14% more time. This flag experiment
+is diagnostic evidence, not an adopted default or a recommendation to disable
+ignore rules globally. Internal clocks never subtract costs from complete
+Wasm results, and no MoonX startup measurement is involved.
+
+The next bounded preparation change should avoid loading global ignore data
+when every explicit input is stdin, while retaining explicit ignore-file
+diagnostics, type/glob validation, file-search rules and error ordering. It
+needs dedicated configuration regressions before adoption. The span pilot
+also remains pending its complete stability gates. Neither outcome authorizes
+a broader architecture rewrite or establishes remote/platform acceptance.
+
+#### rg span and stdin preparation adoption (2026-10-28)
+
+The user approved local adoption of both bounded changes. Evidence is retained
+in `/private/tmp/cmd-rg-spans-adopt-20261028`; local backup
+`backup/rg-spans-adopt-20261028` (`7001dd1`) includes tracked and untracked
+source without changing normal staged entries. The span path described above
+is now integrated. A private ignore-builder argument also avoids loading global
+Git ignore configuration when every walk root is stdin. Empty or mixed root
+sets and filesystem walks keep the existing global matcher. The builder is
+not mutated to disable ignore rules, and explicit ignore-file loading and
+type/glob validation retain their earlier position and diagnostics.
+
+Eight command regressions first checked the frozen preceding Wasm and now
+protect stdin, mixed roots, file filtering, explicit opt-out, duplicate stdin,
+missing explicit ignore files, invalid types and invalid globs. A walker test
+also preserves explicit ignore errors and builder reuse. Existing span tests
+cover fragmented input, gaps, binary prefixes, CRLF/NUL, invalid bytes, long
+records, partial writes without replay and later read failures.
+
+Only rg changes among 80 command artifacts. Strict Wasm check/build, info and
+fmt pass, with 1,632 Wasm tests, 118 native tool tests, 2,117 functional passes
+(19 platform skips) and 377 exact frozen-Wasm comparisons. The current checkout
+lacks the architecture script referenced above; its retained verified copy
+was run against the current tree from the evidence directory. That audit
+passes all 80 commands and 124 packages, without restoring a repository file.
+
+The preceding-source protection run retains 81 profiles and both complete
+nine-pair windows. Ordinary output improves from 120.23-120.24 ms to
+44.68-44.97 ms (2.67-2.69x), and empty stdin improves from 27.84-29.00 ms to
+24.44-25.21 ms (12.2-13.1% less time). Both qualify. No qualified profile
+regresses more than 5%, but the complete gate is **false**, with 73/81 profiles
+qualifying. Failed profiles are `rg-output-dense-regex-8m`, `rev-long-8m`,
+`tac-stream-8m`, `tac-file-8m`, `tac-long-8m`, `uniq-8m`, `cut-tiny-8m` and
+`uniq-long-8m`. The rg candidate has second-window MAD/median 5.89% and median
+drift 10.05%. The other seven commands are byte-identical; rev and cut also
+have unqualified ratios above 1.05. Equal binaries do not turn unstable
+measurements into passes or prove the cause of noise. No samples were dropped
+and no unchanged comparison was retried to obtain a green verdict.
+
+A separate required cumulative comparison against the pre-async-pilot source
+qualifies all 27 rg profiles, with ordinary output 3.69-3.72x faster. It does
+not replace the failed preceding-source gate. Fourteen separate Darwin kernel
+RSS pairs preserve outputs/statuses and leave no temporary entries. Ordinary
+output's observed peak decreases by 1.97 MiB; all measured rg peaks decrease.
+The 64 MiB general-regex record still retains about 165 MiB, while literal
+long-record cases at 8/20/32/64 MiB remain near 40 MiB. These are single paired
+observations, not statistical memory limits. Disk sampling can miss transient
+files, including the unchanged column control.
+
+The requested chart uses only Wasm: current grep, current rg and pinned
+upstream MoonBit rg `b998d487614d70c1131e8f95dc13dcc9d90c5698`. All three use
+the same compiler/runtime and additional `-O3 -aimfs=20` optimization. Upstream
+source, compiler versions, binary/fixture hashes, full samples and the chart
+are bound in `comparison/`. GNU grep and Rust ripgrep native measurements are
+excluded; this run has no verified Wasm builds for those two programs. Each
+of 11 inputs has two windows with one warmup and nine alternating measurements
+per tool. All 660 invocations agree on stdout, stderr and status; all 33
+tool/workload series satisfy the unchanged dispersion/drift thresholds.
+
+Optimized ordinary output takes 41.41-41.52 ms versus upstream 46.74-46.95 ms,
+11-12% less time. Fixed counting is 2.23-2.26x faster; regex counting is within
+1%. Dense regex output is 9-11% faster. Ordinary-output misses remain 45-48%
+slower, sparse output 17-19% slower, entropy misses about 13% slower and byte
+collisions 7% slower. The chart deliberately uses non-counting miss modes so
+all three programs produce identical output; those ratios must not be
+compared to earlier `-c` miss ratios as if the workload were unchanged. The
+8 MiB general-regex long-record case is 4-6% slower. All timings include the
+complete Wasm process, with no MoonX measurement or startup subtraction.
+
+This integrates local source; it does not complete the full stability gate,
+Linux/Windows development checks, actual-main validation or publication.
+The earlier failed output/span/ln/tac observations remain immutable evidence.
+
+#### rg text-output read batching (2026-10-28)
+
+The user authorized adoption only after measured benefit and acceptable side
+effects. Local backup `backup/rg-miss-pilot-20261028` (`d29cd36`) preserves the
+preceding tracked and untracked source. Isolated sources, all 80 frozen command
+artifacts, rejected candidates and complete measurements are retained in
+`/private/tmp/cmd-rg-miss-pilot-20261028`.
+
+Only `Searcher.reader_capacity` changes in product code. Plain block-buffered
+output that already permits adjacent-match coalescing now starts with a
+256 KiB input buffer when binary detection is disabled. This includes explicit
+text mode and NUL-delimited records. Count-mode bulk scanning keeps its earlier
+policy. Context, early exit, multiline, inverted matches, passthrough and
+formatted/line-buffered output retain their existing eligibility guards.
+Explicit heap limits still cap allocation; async entrypoints, the maximum
+read request, growth policy and public interfaces remain unchanged.
+
+Three isolated candidates establish the scope:
+
+- Moving unmatched-buffer handling out of the async match/output functions
+  qualifies all 20 selected controls, but ordinary fixed/regex misses improve
+  less than 1%. That additional state handling is rejected for insufficient
+  benefit; its source and measurements remain available in `s1-sync-miss/`.
+- Text-output buffers of 128 KiB qualify seven controls and reduce fixed and
+  regex miss time by about 15%. The selected 256 KiB candidate qualifies all
+  20 controls and reduces those optimized-Wasm times by 20-21%. This supports
+  reducing repeated buffer work, without attributing the entire gain to a
+  particular async, copying or matching operation.
+- Unconditionally enlarging the default binary-conversion path is rejected.
+  A first `hit` line followed by 70,000 bytes and a NUL produces that line and
+  a binary-match diagnostic in the frozen baseline, but only the diagnostic
+  with the unsafe candidate. `unsafe-default/` retains both outputs and the
+  failing Wasm. Default binary-detecting output keeps its original window.
+
+Final release-Wasm measurements include the complete process and use two
+windows, each with one warmup and nine alternating pairs. Median milliseconds
+against the immediately preceding source are:
+
+| Workload | Previous | Adopted | Time reduction |
+| --- | ---: | ---: | ---: |
+| Text fixed-string miss, 64 MiB | 49.02-49.56 | 38.15-38.67 | 22.0-22.2% |
+| Text regex miss, 64 MiB | 51.29-52.11 | 40.30-40.86 | 21.4-21.6% |
+| Text matching-line output, 8 MiB | 45.23-45.68 | 42.01-42.33 | 7.1-7.3% |
+| Text sparse output, 8 MiB | 46.21-46.70 | 44.89-45.20 | 2.9-3.2% |
+| Text dense regex output, 8 MiB | 54.35-54.78 | 51.29-51.49 | 5.6-6.0% |
+
+The full registry grows from 81 to 89 profiles, including ordinary miss,
+explicit text output and a long NUL-delimited record. All 35 rg profiles
+qualify. Overall 88/89 profiles qualify, with no qualified slowdown above 3%.
+The complete gate is still **false**: `tac-stream-8m` has second-window
+candidate MAD/median 6.04%. Its command artifact is byte-identical; this does
+not convert the unstable observation into a pass or establish its cause.
+All samples and the failed verdict are preserved, without unchanged retries.
+
+The separate cumulative comparison against the pre-async-pilot source also
+qualifies all 35 rg profiles, with no slowdown above 3%. Ordinary output is
+3.69-3.71x faster and text output 4.05-4.07x faster across those local changes.
+This independent comparison does not replace the failed full-registry gate.
+
+A separate text-empty control qualifies and changes by -0.2%/+0.5%. The
+additional initial buffer capacity is 192 KiB, not a process-memory limit.
+Twenty-two Darwin kernel RSS pairs preserve outputs/statuses and leave no
+temporary entries. Text-output RSS increases are at most 0.30 MiB in these
+single observations; text miss peaks decrease by about 1.1 MiB. The unchanged
+64 MiB general-regex record still peaks near 165 MiB. Literal long records at
+8/20/32/64 MiB remain resource controls. Disk sampling remains a lower bound;
+these observations do not establish a statistical RSS limit.
+
+The six text/NUL-output comparisons with pinned upstream MoonBit rg
+`b998d487614d70c1131e8f95dc13dcc9d90c5698` all qualify. Both use the same
+compiler/runtime and additional `--all-features -O3 -aimfs=20` optimization.
+Text fixed/regex misses remain 13.7-15.3% slower than upstream; text matching
+output uses 19.7-21.5% less time and dense regex output 16.0-16.4% less time.
+Sparse text output remains about 13% slower. These text-mode rows do not
+replace the preceding ordinary-mode chart. Default ordinary misses remain
+unresolved; neither startup subtraction nor MoonX timing is used.
+
+Five new regressions cover first hits after unmatched windows, exact prefixes
+after partial writes, complete records before a read error, original binary
+output prefixes and NUL-delimited gaps/final records. Validation passes strict
+Wasm check/build, info/fmt, 1,637 Wasm tests, 118 native tool tests, 2,117
+functional cases (19 platform skips), 377 frozen-artifact comparisons and the
+retained 80-command/124-package architecture audit. Only rg changes among
+the 80 command artifacts. No option, dependency, generated interface or
+published record changes.
+
+For default binary detection, the next candidate must separate physical read
+batching from the original validation/output window, preserving the proven
+binary prefix and failure boundaries before timing it. Scan fusion remains
+unproven; it should not be introduced merely to compensate for an assumed
+async cost. This is local source adoption, not full stability, three-platform
+development, actual-main or published-consumer acceptance.
+
+
+#### Local verification and remaining gates
+
+The following records describe architecture stage 14, before the later rg test
+and adapter consolidation above; they are preserved as checkpoint evidence.
+
+The final source passes 1,670 Wasm unit tests and 118 Native test-tool tests.
+Initial and candidate Wasm functional runs each report 2,065 passes, 19 explicit
+skips and no failures. Strict Wasm check, release build, generated interfaces,
+formatting and the 80-command/126-package dependency audit pass. Stage 14 has
+identical command binaries to stage 13: its changes only add an explicit
+heap-limit rejection regression and format the test tools. All 80 binaries
+are compared with the starting snapshot; 22 change and 58 remain identical.
+
+`final-protection` retains all 71 profiles, both nine-pair windows, one warmup
+per window, raw stderr/status/output checks, fixture hashes and source binding.
+Sixty-five profiles meet dispersion/drift and slowdown criteria. No qualified
+profile exceeds 5% slowdown. `tac-file-8m` takes 3.17%/1.49% more time in the two
+windows; its candidate and reference binaries are identical. This observation
+is retained separately and is not offset against other gains.
+
+The following six rows are **unqualified**, so the cumulative timing verdict
+is false. Do not replace the run, relax thresholds or treat equal binaries as
+a timing pass:
+
+| Workload | Failed stability observation |
+| --- | --- |
+| ln-symbolic-validation | Reference first-window MAD/median 5.72%. |
+| rev-long-8m | Candidate first-window MAD/median 8.96%; reference drift 12.50%. |
+| tac-stream-8m | Candidate first-window MAD/median 11.41%. |
+| tac-long-8m | Candidate second-window MAD/median 15.26%; reference MAD/median 11.64%/11.82%. |
+| tac-multi-8m | Candidate/reference drift 14.40%/21.15%; reference second-window MAD/median 6.14%. |
+| uniq-8m | Reference second-window MAD/median 5.57%. |
+
+Rev, tac and uniq artifacts are byte-identical to their initial versions.
+These observations alone do not establish a refactor-caused slowdown or prove
+an external cause. The earlier `tac-long-8m` failure is still retained in the
+foundation evidence. Stage 8's output-state enum candidate was independently
+rejected after unstable rev measurements, then only that candidate was reverted.
+Subsequent stages were rebuilt without it. Compilation/setup failures remain
+in their original logs; correcting a harness issue does not erase them.
+
+Stable cumulative improvements relative to this round's initial binaries:
+
+| Workload | Candidate/reference time, two windows | Scope |
+| --- | --- | --- |
+| rg literal 64 MiB record, hit | 0.6101 / 0.6156 | Eligible count-only path. |
+| rg literal 64 MiB record, miss | 0.5764 / 0.5832 | Eligible count-only path. |
+| comm ordered | 0.0605 / 0.0612 | Existing merge with shared output buffering. |
+| nl 8 MiB | 0.0575 / 0.0581 | Existing numbering with shared output buffering. |
+| paste 8 MiB | 0.0594 / 0.0605 | Parallel output. |
+| paste serial 8 MiB | 0.0456 / 0.0462 | Serial delimiter cycles. |
+
+These are old/new Wasm ratios, not GNU/Rust ratios or speedups from the
+project's first implementation. No fresh sealed upstream comparison ran in
+this phase. Existing upstream gaps, especially general-regex long records,
+remain open rather than being declared within the 3-5x target.
+
+`resources-final` contains 16 Darwin kernel-peak observation pairs with equal
+outputs/statuses and no residual temporary entries. Literal-miss peaks at
+8/20/32/64 MiB are approximately 39.84/39.88/39.94/40.02 MiB, versus initial
+56.94/95.92/104.44/165.44 MiB. The 64 MiB literal hit falls from 165.58 to
+40.08 MiB. General-regex peaks remain 56.92/96.25/104.94/165.64 MiB, so neither
+the automaton budget nor the literal fast path establishes a process-wide
+memory ceiling. Comm rises from 32.28 to 35.98 MiB (+3.70 MiB, about 11.5%);
+its output buffer is 64 KiB, so this single RSS observation must not be
+attributed entirely to buffer size. Other observed positive deltas are at most
+0.16 MiB. These single pairs do not establish statistical memory bounds.
+Temporary allocated bytes are sampled at 100 ms plus observer execution;
+zero sampled usage is not proof of zero transient disk use.
+The separate `resources-spill` pair forces sort's one-MiB budget and an explicit
+owned `-T` directory under the same 20-second deadline. Both runs finish with
+identical output and zero residue; kernel peaks are 31.69/31.66 MiB. Sampled
+temporary allocation reaches 11.86/17.68 MiB. Because these are asynchronous
+lower-bound samples, their difference is not an exact peak-disk regression
+measurement and does not establish a disk bound.
+
+The final source remains local and uncommitted. Missing cumulative stability,
+fresh upstream ratios, Linux/Windows development checks and actual-main
+validation are explicit unfinished gates. Local functional evidence and
+phase-level passes do not substitute for them. Retain the source/binary
+checkpoints and raw evidence before cleaning the temporary lab.
+
+Acceptance uses the unchanged per-workload thresholds in
+[`PROTECTION.md`](../../tests/benchmark/PROTECTION.md). Every phase compares all
+80 artifacts, even when timing only changed-command profiles. Final cumulative
+comparison includes unchanged controls and the original baseline. Initial
+test/setup failures and rejected candidates remain in evidence; they are not
+silently replaced by later results. Three-platform development checks and
+actual-main validation remain separate pending work until a later authorized
+delivery workflow.
+
+### Shared high-performance foundation (2026-10-27)
+
+Updated: 2026-10-27. The user accepted the measured small abstraction costs in
+the reader/kernel trials in exchange for a shared high-performance foundation.
+The pre-integration source is preserved by local branch
+`backup/shared-foundation-20261027` at `592311dfe2ed4b790ef2126a8e56a0a97094fe00`
+(tree `a6ddac238c1f473592da61a164deb3a4eb344259`). This is local, unpublished work;
+the earlier observations below retain their original sources and scope.
+
+The adopted boundaries have actual consumers:
+
+- Move rg byte kernels to `core/bytesearch`; rg imports them and wc's line-only
+  path reuses the SIMD counter. Preserve wc's combined word/line loop and the
+  immutable-view SWAR entrypoint. Moving code is consolidation, not deletion.
+- Share record parsing through `RecordReader`; keep synchronous batch visits
+  and an owned `LineScanner` facade with its existing 64 KiB read size. Never
+  force bulk consumers through an asynchronous per-record interface. A retained
+  view keeps its immutable backing block alive; long records remain unbounded.
+- Put fixed-capacity output ownership in `stream.BlockWriter`, used by rg stdout
+  and column snapshots. It rejects reentrant writes, consumes the pending queue
+  before I/O and poisons the writer after failure/cancellation. Deferred flush
+  cannot replay bytes. Command formatting and specialized output loops remain
+  independent; borrowing requires the caller to keep storage unchanged until
+  the awaited call completes.
+- Put exclusive temporary-directory lifetime and exact positional range copies
+  in `core/tempio`, used by tac, column and sort. Keep reverse scanning, column
+  indexes/page caches and sort run formats separate. Close files first; each
+  caller retains its explicit cleanup-error precedence. Abrupt process death
+  still cannot guarantee cleanup.
+- Construct rg path/JSON printer configurations once as immutable values,
+  replacing their duplicate mutable builders. Larger matcher/searcher builders
+  and the distinct rg/core regex semantics remain separate work.
+
+The sort baseline timeout has a concrete repair: a 1 MiB budget previously
+reserved 1.375 MiB for sixteen-way merging, leaving a one-byte run budget.
+Choose fan-in and run storage together; at 1 MiB use two-way merging and a
+512 KiB run budget. The default 64 MiB allocation remains unchanged. Tiny
+budgets retain a minimum working-set fallback and oversized records are still
+allowed. `--batch-size` is an upper bound, not a promise to allocate all lanes.
+Neither accounting policy is a process-RSS cap.
+
+Management rules live in the executable
+[`protection.json`](../../tests/benchmark/protection.json) registry and
+[`protect.mbtx`](../../tests/benchmark/protect.mbtx) runner. Every changed command
+artifact needs an explicit profile; every profile needs complete output/status
+and two nine-pair timing windows. Retain 5% per-window MAD and 10% between-window
+drift limits. The accepted small slowdown allowance is separate from stability;
+new losses above the 5% review boundary require diagnosis or revision. Timing,
+resource observations, correctness and pinned-upstream compatibility remain
+separate evidence. Never turn a missing profile, timeout or noisy window into a
+pass. Extend the registry before changing another shared boundary.
+
+The first combined output implementation failed six profiles despite stable
+measurements: column's cache-cap case slowed about 17-18%, and rg color/only-match
+output about 13-14%. Its complete windows are retained. Move in-flight state,
+cancellation cleanup and rg error translation to the actual I/O boundary;
+buffer filling remains synchronous, with bulk copying for larger byte views.
+The ownership, partial-failure and cancellation regressions remain mandatory.
+This avoids paying exception-cleanup work on every tiny formatting write.
+
+Prior separate trials reported up to 3.36% slower tiny-record uniq and 3.32%
+slower head-except-last; wc line counting improved 6.75-7.23%. Those numbers do
+not establish the combined integration's result. The original `sort -S 1M`
+8 MiB timeout remains a failed baseline case and requires a separate repair
+observation with the original 20-second deadline.
+
+Final local evidence is retained under
+`/private/tmp/cmd-highperf-foundation-20261027`. Strict Wasm check/build,
+1,652 release-Wasm tests and 2,065 functional cases pass, with 19 platform skips.
+Sixty of 80 command binaries remain identical to the saved optimized baseline;
+all twenty changed commands have registered workloads. All 51 profiles preserve
+output, stderr and exit status in both nine-pair windows. Fifty qualify for
+timing; their largest slowdown is 3.39%. Selected costs and gains are:
+
+| Workload | First window time change | Second window time change |
+| --- | ---: | ---: |
+| wc line count, 64 MiB | -8.04% | -7.38% |
+| rg color, 1 MiB | +1.10% | +0.71% |
+| rg context, 8 MiB | -3.46% | -3.29% |
+| column cache-cap, 8 MiB | +3.39% | +2.70% |
+| uniq tiny records, 8 MiB | +2.30% | +3.08% |
+| head except last, 8 MiB | +3.20% | +2.76% |
+
+The final `tac-long-8m` reference has 7.79% second-window MAD and 10.08%
+between-window drift; the candidate has 2.54% MAD and 3.44% drift. That profile
+and the overall timing verdict remain unqualified. The identical tac binary
+passed the preceding windows, but those observations do not replace this
+failure. No sample was removed and no retry was made to obtain a pass.
+
+Ten separate old/new Darwin kernel observations preserve output and leave no
+temporary residue. The largest peak increase is cut long-record input at
+1.05 MiB (3.62%); rg's single 64 MiB record remains about 166 MiB. These single
+pairs are observations, not RSS stability qualification. The repaired
+`sort -S 1M` 8 MiB case completes in 1.096 seconds under the original 20-second
+deadline, matches default-budget baseline sort bytes and leaves no residue.
+Its original same-budget timeout remains retained; no complete old/new speed
+ratio is claimed. This is macOS local acceptance only, with one open timing
+profile, no new GNU/Rust ratios and no cross-platform CI or publication.
+
+Excluding test files and build/dependency caches, rg's implementation area has
+962 fewer lines and all commands together have 1,001 fewer; core has 1,021 more.
+The net implementation increase is 20 lines, including comments and blanks.
+The main result is shared ownership and reduced adapter duplication, not a
+claim that moving code to core deletes it. Further adoption must close or
+explicitly retain the timing qualification gap and extend profiles when another
+command starts using these interfaces.
+
+### Long-record capacity and read requests (2026-10-27)
+
+The next local continuation freezes the exact preceding SIMD candidate under
+`/private/tmp/cmd-capacity-20261027`. Only rg changes among the eight observed
+command binaries. Local main remains uncommitted; package versions, dependency
+coordinates and published expectations are unchanged. The decision prioritizes
+the largest gaps while retaining approximately 3-5x workloads as lower priority.
+
+Line buffers previously added twice their capacity on exhaustion, producing
+threefold growth, and requested all remaining space in each read. The selected
+implementation doubles buffers below 1 MiB, grows larger buffers by one quarter,
+and caps individual read requests at 1 MiB independently of capacity. Growth
+remains geometric; configured allocation limits still cap additional capacity.
+The existing allocation error at a full, unterminated record is preserved.
+Complete records are still retained, so this is not bounded-memory matching.
+
+The experiments separate capacity policy from read-request size. Simple
+doubling reduced the 64 MiB peak but increased the 20 MiB peak substantially;
+1.5x growth alone also retained an intermediate-size increase. Keeping the
+original threefold growth and capping reads independently reduced the 20 MiB
+peak from about 88 to 71 MiB and the 64 MiB peak from about 376 to 314 MiB.
+This establishes an independent read-request contribution without attributing
+all runtime memory to a particular allocator. All trial sources, binaries and
+complete observations are retained, including rejected configurations.
+
+All fifteen selected old/new workloads pass two nine-pair windows, with both-
+side MAD/median <=5% and between-window drift/mean <=10%. Structured 8 MiB
+input with 1 MiB records improves 1.13x (74.51/74.33 to 65.79/65.52 ms).
+Single-record scan times remain near baseline; the 20 MiB probe is 0.8-2.2%
+slower. Conventional counts, misses, output, collision and random-letter
+controls retain their raw small changes. Full release Wasm execution is timed
+through moonrun, including input, output and exit; no MoonX timing, startup
+subtraction, dropped sample or retry for a passing window is used.
+
+Ten separate old/new Darwin kernel pairs record the selected memory tradeoff:
+
+| Input | Previous peak MiB | Selected peak MiB |
+| --- | ---: | ---: |
+| Single 8 MiB record | 76.45 | 56.92 |
+| Single 20 MiB record | 88.30 | 97.22 |
+| Single 32 MiB record | 161.27 | 105.00 |
+| Single 64 MiB record | 375.63 | 165.78 |
+| Unterminated 8 MiB record | 88.50 | 57.23 |
+
+The 64 MiB reduction is about 56%; the intermediate 20 MiB increase is about
+9 MiB. Ordinary count/miss peaks differ by less than 0.3 MiB. These are kernel
+observations, not memory stability windows, and sampled RSS remains a lower
+bound. The policy is selected for its large-record reduction rather than a
+claim that every size improves. Further changes require multiple input sizes,
+including non-powers of two, and ordinary throughput controls.
+
+Six of ten fresh local Rust comparisons qualify. Terminated single-record
+probes remain about 8.3-9.1x Rust time; literal and ordinary regex counts remain
+about 3x. The unterminated, structured long-record, random-letter and collision
+references fail dispersion or drift. Their complete observations remain
+unqualified, without a retry or a claim that every workload is within 3-5x.
+Two failed benchmark setup invocations are preserved separately; neither
+produced a complete comparison window. No pinned Linux acceptance is claimed.
+
+Strict Wasm check/build, 1,648 Wasm tests and 2,062 functional cases pass, with
+19 platform skips. All 792 supplemental comparisons match the preceding Wasm:
+384 repeated rg cases, 288 regex/set cases and 120 new long-record cases. The
+latter cover stdin/files, CRLF, NUL records, BOMs, heap limits, anchors, counts,
+offset output and unterminated records, and all agree with local Rust. The
+existing repeated suite retains one pre-NUL output difference. Four additional
+8/64 MiB held-out/single-record resource comparisons agree in bytes, status
+and effects, with no timeout, stderr or temporary residue. The 118 unchanged
+Native test-tool results are inherited from the preceding sealed round.
+Final Wasm identities match the measured selected artifacts, and the other
+seven observed commands remain byte-identical to this round's baseline.
+
+A separate instrumented Wasm experiment retains five observations per entry:
+the same artifact's early empty-operation entry takes 16.7-21.8 ms, ordinary
+empty fixed search 29.8-30.3 ms, and empty regex search 31.5-32.2 ms. Coarse
+in-command timestamps report 1-2 ms parsing, 2-3 ms argument preparation,
+8-10 ms search setup/execution, about 2 ms building default file types, and
+0-2 ms inside that search interval building the matcher. These diagnostic
+intervals overlap and are not summed or subtracted from end-to-end timing.
+They neither isolate runtime loading from global initialization nor establish
+an accepted comparative speedup. Every instrumentation edit is restored.
+File-type preparation alone is too small to be this round's main target.
+
+The next architectural experiment should carry matcher state across chunks
+for eligible line-count searches, allowing rejected long-record prefixes to
+be discarded. Eligibility must exclude or explicitly preserve capture output,
+look context, anchors, decoder boundaries, binary policy, heap limits and
+fallback behavior; the current DFA API requires a complete haystack and an
+end transition. Full-record retention remains until such a continuation
+interface passes differential and resource checks. The existing general-DFA
+self-loop trials remain rejected for ordinary-count regressions.
+
+### SIMD candidate byte sets (2026-10-27)
+
+After the user reprioritized approximately 3-5x workloads as acceptable for now,
+the next local continuation targets rg's largest observed gap. Its baseline is
+the preceding byte-field/count candidate, sealed under
+`/private/tmp/cmd-pipeline-20261027` with 429 evidence hashes. New evidence lives
+under `/private/tmp/cmd-prefilter-20261027`. All seven other observed command
+binaries remain identical; only rg changes. Work stays uncommitted on local
+main, without new versions, publication, push or remote workflows.
+
+The bottleneck in the random-letter long-record probe was candidate lookup:
+larger prefix-byte sets used scalar membership scanning before the DFA. A new
+internal `ByteSetFinder` stores an immutable 256-entry membership copy and two
+16-byte nibble tables. Sixteen input bytes are classified exactly at once, and
+the first matching lane becomes the candidate. A scalar tail preserves the
+bounded input window. It replaces only the larger single-byte-set and multi-
+literal first-byte fallback scans. Existing one/two/three-byte, pair-set,
+substring and Teddy paths keep their selection. Multi-literal candidates still
+undergo complete literal verification in their original priority order.
+This does not add checks or state expansion to the DFA loop. Internal prefilter
+payload signatures change accordingly; the `is_fast` policy is unchanged.
+
+Both nine-pair windows pass for all ten old/new workloads. The 8 MiB random-
+letter long-record regex improves 1.70-1.72x, from 58.62/60.07 to 34.13/35.42 ms.
+Conventional regex counts retain a 1.1-1.6% slower observation and literal counts
+0.7-1.4%; other controls remain close to baseline. The selected tradeoff removes
+a large scalar scan without the rejected general-DFA trial's 8-11% penalty.
+Fresh fixed local Rust comparisons qualify eight of nine rows. The improved
+long-record regex is about 10.6-10.7x Rust time, down from the preceding
+17.3-17.6x observation, and remains a priority. Literal counts are approximately
+3x and regular regex counts approximately 3.1x. The short collision case remains
+13.4-13.6x. The random-letter literal reference fails its first-window dispersion
+limit at 5.44%; its raw observations are retained without an accepted new ratio
+or automatic retry. These local comparisons are not pinned Linux acceptance.
+
+Two additional empty-input observations help locate the remaining cost. The
+Wasm side is stable at 29.10/29.48 ms for fixed search and 30.47/30.61 ms for
+regex search, close to the 31-35 ms light-input cases. The Rust reference fails
+dispersion, so no comparative empty-input ratio is accepted. Empty-input wall
+time includes runtime loading, initialization, command preparation and exit;
+it does not identify which component dominates. Nothing is subtracted from
+performance results, and MoonX is not involved. The next investigation should
+separate these costs before changing the hot scan further, with particular
+attention to eager command/matcher construction and Wasm artifact composition.
+
+Strict Wasm checking/building and 1,646 Wasm tests pass. The complete functional
+suite passes 2,062 cases with 19 platform skips. All 288 new regex/set comparisons
+agree with both the preceding Wasm and fixed Rust executable, including high
+bytes, long records, page seams, line anchors, folded classes and alternate
+record options. The repeated 384-case rg set agrees with its Wasm baseline and
+retains its single existing pre-NUL output difference. The previous 118 tool
+tests remain recorded for unchanged tool implementations. Prior column/grep
+correctness and resource results retain their scope and exact binary identities.
+
+Four 8/64 MiB held-out/single-record regex resource comparisons match local Rust
+in output, status and effects, without timeout, stderr or temporary residue.
+Six ordinary old/new kernel RSS pairs stay around 40-43 MiB, with differences
+below 0.3 MiB. A follow-up repeats the long-record observation against the exact
+previous Wasm and measures both through Darwin kernel accounting: an 8 MiB
+single record uses 79,839,232 bytes in both; a 64 MiB record uses 393,854,976 old
+and 393,871,360 new bytes (about 376 MiB). The large peak predates this change.
+All four kernel observations have the expected status, empty output and no
+temporary residue. These are single observations, not memory stability windows.
+`LineBuffer::ensure_capacity` currently adds twice the old capacity, producing
+threefold growth and a full copy. Testing smaller geometric growth and then a
+resumable long-record matcher is a concrete next memory direction; the observed
+peak is not attributed entirely to that function without an allocation profile.
+
+### Byte fields and fused count pipelines (2026-10-27)
+
+The local continuation freezes the preceding block-count candidate in
+`/private/tmp/cmd-pipeline-20261027`. Its eight baseline Wasm files match the
+previous laboratory exactly. Work remains uncommitted on local main after
+`987cf02`; versions, dependency coordinates and published expectations do not
+change. Only grep, rg and column binaries change relative to this round's
+baseline. The other five observed command binaries remain identical.
+
+Rg's exact substring counter hoists needle offsets and SIMD pair setup outside
+the repeated search loop. Each verified occurrence advances past its containing
+record, retaining exact-literal and terminator eligibility. Grep's single-pattern
+regex count path dispatches once per complete block through the new public
+`bytere.RecordMatcher.count_records` method. The optional result contains matching
+and complete record counts. Incomplete tails are excluded. Assertions, references,
+unsupported programs or exhausted DFA state return None, and the caller runs the
+ordinary matcher over the entire block before committing counts. Existing word,
+whole-record, binary and long-record boundaries remain authoritative. The shared
+core signature and rg's internal finder signature are regenerated explicitly.
+
+Column tables borrow normalized byte fields instead of decoding snapshot rows
+into strings and encoding each field again. Field splitting, display-width
+collection and optional metadata construction share one ingestion pass. Only
+rows of at least 1 KiB can cache field ranges and widths. The cache holds at most
+128 rows and 64 KiB of encoded triples, with a per-row budget of one eighth of
+the row length. Oversized partial plans are discarded while width collection
+continues without restarting. No payload bytes are cached in this map and the
+on-disk data/16-byte-index format is unchanged. The current row, global column
+widths, cache object overhead, existing page caches and runtime memory remain
+outside this metadata bound. Grid rendering retains its direct string-fetch
+path; sharing the table's extra async wrapper had regressed its control case.
+
+Final old/new measurements cover 27 workloads, each with two windows of one
+warmup plus nine alternating pairs. All pass both-side 5% MAD/median and 10%
+between-window drift limits. Full release-Wasm startup, input, output and exit
+remain included; no MoonX timing or startup subtraction is used. Column's
+8 MiB table improves 1.54x, long rows 1.47-1.49x, 1 MiB tables 1.35x and tiny
+rows 1.11-1.12x. Cache-cap and dense-field probes improve 1.45-1.47x and
+1.31-1.35x respectively. Grid time stays within 0.5% of baseline. Rg 64 MiB
+literal counting improves 1.15x (62.50/63.35 to 54.16/54.95 ms). Grep's 64 MiB
+regex count improves 1.09x (108.85/108.59 to 100.02/99.77 ms), with short regex
+and structured/entropy rejection gains of about 4%. Dense grep literals and rg
+fixed misses retain about 1% slower observations; other controls are near baseline.
+
+All 17 fixed local GNU/Rust comparisons pass this round's two-window stability
+criteria. Five workloads are within 3x in both windows, including grep regex
+counts at 2.76x and rg regex counts at 2.97-2.98x. Rg literal counting is
+approximately 3x. The user's updated prioritization accepts approximately 3-5x
+for now and focuses subsequent work on the largest gaps; raw ratios and
+stability thresholds remain unchanged. Rg misses remain 5.28-5.41x, its long structured DFA scan 5.50x,
+and long random-letter DFA scan 17.34-17.59x. Small collision and random-letter
+literal probes remain 10.90-13.06x. Grep fixed/dense/span paths remain 3.15-3.38x,
+short random-letter regex rejection 7.81-8.15x and long random-letter rejection
+3.64-3.68x. Prior noisy windows remain intact; this later local observation does
+not retroactively qualify them or resolve hosted Linux variability. Column uses
+the preceding Wasm artifact as its reference, not util-linux upstream acceptance.
+
+Negative experiments are retained, not silently overwritten. Removing the first
+column cache made its sparse large-row probe 2% slower but long rows 4% faster:
+the failed-plan path was scanning twice. Combining required and optional work
+resolved that overhead and produced the selected larger gains. An rg DFA trial
+classified only already-resolved, nonaccepting self-loop bytes and cleared its
+bounded plans with state identities. It passed differential unit tests and made
+long records 1.26x faster, but ordinary regex counting regressed 8-11%. Checking
+only after 256 consumed bytes and at 256-byte boundaries still regressed regex
+counts 8-9% and lost the long-record gain. Both artifacts and all samples remain;
+the complete trial, including its byte-set API, is removed from the candidate.
+
+A temporary stage profiler confirms the default UTF-8 path already passes
+through. In single diagnostic observations the binary pass took about 1.5-2 ms,
+while the conventional regex matcher took about 270 ms. Read times varied from
+about 9 to 25 ms. These instrumented component measurements do not explain all
+wall time, certify repeatability or authorize subtracting initialization. The
+profiler and dependency changes were restored before final acceptance.
+
+Strict Wasm checking/building, 1,644 Wasm tests, 118 test-tool tests and 2,062
+functional cases pass, with 19 platform skips. The five supplemental sets cover
+1,728 cases: 1,698 equal their designated reference and 30 retain the documented
+binary grep, overlapping tac and binary-output rg differences. The added 96
+column cases cover cache thresholds, row limits, page seams, dense fields and
+control/invalid bytes. Twelve resource comparisons agree in output, status and
+effects, with no timeout, stderr or temporary residue. Column uses 1/8 MiB
+inputs and the preceding Wasm reference; grep/rg use 8/64 MiB and local oracles.
+Fourteen separate old/new kernel RSS pairs show about 23-43 MiB on the timing
+workloads. Column's 8 MiB table observes 27.52 to 24.67 MiB; other differences
+are small. These are individual observations, not repeated memory acceptance.
+Sampled RSS still misses short rg runs, and the 64 MiB single-record grep probe
+still samples about 226 MiB. Metadata limits do not bound whole-process memory.
+
+The next deeper search experiment should first target the 17-18x random-letter
+regex case and 11-13x collision/literal cases, with the 8x grep random-letter
+case next. Approximately 3-5x workloads are lower priority. One candidate is
+to dispatch an eligible long-record
+executor before entering its hot loop, rather than adding per-byte planning
+checks to the general DFA. It must preserve look context, end transitions,
+cache-reset identities and scalar/PikeVM fallback, with ordinary short regex
+controls and full Wasm measurements. Column can next test page-local field
+iteration to reduce per-field objects without changing snapshot storage; the
+retained cache ablation shows that a larger cache alone is not the main gain.
+Grep literal/span output, tac stdin/dense-hit paths and wc metadata gaps remain
+open. This local round does not resolve hosted Linux noise or establish new
+three-platform, registry-consumer or pinned Linux upstream acceptance.
+
+### Block counts and certified state skips (2026-10-27)
+
+This round freezes the preceding candidate's source and eight exact Wasm
+artifacts under `/private/tmp/cmd-block-20261027`. Work remains uncommitted on
+local main after `987cf02`; no branch, push, registry upload or remote workflow
+is part of this continuation. Published expectations and package versions stay
+unchanged. The previous laboratories retain their complete dated evidence.
+
+Rg's optional summary-count callback receives one count per complete reader
+block instead of individual match events. It is selected only without context,
+inversion, match limits, passthrough, multiline, stop-on-nonmatch or binary-quit
+filtering. Existing sinks default to the ordinary event path. Confirmed matches
+advance directly to the next terminator; candidate matches retain full-line
+verification. Begin, binary notifications and finish keep their existing path.
+Line-number bookkeeping is deferred to the existing block roll. Nullable and
+assertion-bearing expressions retain normal discovery where required.
+
+A second layer lets exact literal prefilters count matching lines inside the
+finder loop. It does not turn a rejecting prefilter into an accepting matcher:
+the expression must already be marked exact, and the configured terminator
+must be absent from accepted matches. Substring search and terminator discovery
+then run without constructing per-match metadata or crossing the matcher/sink
+layers. Optional matcher/sink methods default to None; two helper signatures
+are added within rg's internal regex packages. No public core signature changes.
+
+Grep's assertion-free boolean DFA can build an exact self-loop membership set
+for a state. Two 16-byte nibble tables represent all 256 input bytes without
+hash collisions. Sixteen lanes are classified at once, and only the leading
+bytes known to remain in the same nonaccepting state are skipped. Two bounded
+64-bit loads construct the vector without copying or mutating the immutable
+record. This uses the published experimental `moonbitlang/core/v128` surface,
+already used by rg; the package opts into that alert explicitly. It adds no
+FFI, native stub or host implementation. Cross-platform acceptance is pending.
+
+At most eight state plans are attempted per DFA, with 256-element plan/attempt
+tables and 32 bytes of SIMD membership payload per successful plan, plus runtime
+object overhead. Existing 256-state/NFA limits remain. Resolving a row can fill
+other bounded DFA entries; exhaustion declines acceleration and the existing
+matcher fallback remains authoritative. Plans are keyed only by exact DFA
+states, never by input hashes. Assertions, backreferences, word/whole-line
+requirements, mandatory-literal filters and records shorter than 256 bytes keep
+their prior paths. The scalar loop is separate to avoid accelerator bookkeeping
+inside short scans. This is not a process-RSS cap.
+
+Final local timing includes complete release-Wasm startup, input, output and
+exit. Every window has one warmup plus nine alternating pairs, retaining the
+5% MAD/median and 10% between-window drift thresholds. No MoonX timing, startup
+subtraction, sample deletion or automatic retry is used. All 17 selected
+old/new workloads pass both windows. Rg fixed counting improves 1.91-1.92x
+(117.46/119.13 to 61.14/62.50 ms on 64 MiB); regex counting improves modestly.
+Grep's long structured scan improves about 1.16x and long random-letter records
+about 2.15x. Ordinary short structured/random scans are approximately unchanged.
+The conventional grep regex-count control remains about 2% slower; this small
+regression is retained rather than excluded. Other measured controls and
+no-match paths remain in the complete result.
+
+Fixed local GNU/Rust comparisons qualify 11 of 14 workloads. Rg fixed counts
+are 3.39-3.42x Rust time, regex counts 3.03-3.09x, and misses 5.18-5.33x: none
+of these is certified within the 1-3x target. Grep structured/long rejection
+is 2.18-2.22x GNU time; long random records remain 3.59-3.66x. Fixed grep,
+dense literal sets and span extraction remain about 3.26-3.43x. The ordinary
+regex count straddles the boundary at 2.990/3.004x and is not rounded into a
+pass. Short rg collision/entropy and grep entropy reference rows fail dispersion
+and retain no accepted ratio. These macOS executable comparisons do not replace
+the pinned Linux oracle profile or resolve hosted Linux stability failures.
+
+The column pilot appends field ranges and display widths to each snapshot row,
+then renders byte views without reparsing. Correctness tests pass and long rows
+improve about 20%, but tiny rows regress 53-55%. Each row adds four bytes plus
+twelve per field, explaining why small records pay disproportionate storage
+and processing costs. Its 8 MiB table reference also fails dispersion. The
+entire pilot is restored to this round's baseline; its source, binary and both
+windows remain. The lesson is to test selective large-row metadata or a bounded
+page-level cache rather than making every short record carry that format.
+
+The first unrestricted grep skip pilot improves random short records but slows
+ordinary structured and regex counting by about 17-18%. Separating mandatory
+literal and short-record paths removes most of that cost. The intermediate
+restricted variant still slows short entropy by about 4%; moving dispatch out
+of the original scalar loop removes that measured penalty. All three artifacts
+and their complete windows remain, and only the final artifact is selected.
+
+Final strict Wasm checking/building, 1,640 Wasm tests, 118 Native test-tool tests
+and 2,062 functional cases pass (19 platform skips). The four supplemental sets
+cover 1,632 cases: 1,602 match their designated reference and 30 retain existing
+differences, with no new regression. The 480-case grep extension agrees with
+the preceding Wasm candidate in every case; its 27 GNU differences all involve
+the two NUL-containing inputs, including inverted, nullable and whole-line
+counts. For example, `grep -E -c -v '(ab|cd)+Z'` on sixteen repetitions of all
+256 byte values returns 17 in both Wasm artifacts and 33 in GNU 3.12. The other
+three differences are the previously recorded binary grep, overlapping tac
+and binary-output rg cases. The 120 column cases compare against the preceding
+candidate, not util-linux. These observations do not certify full upstream
+compatibility. All case arguments, outputs, statuses and diagnostics remain.
+
+Eight additional 8/64 MiB resource comparisons cover mixed record lengths with
+NUL/high bytes and single long records. Output/status/effects agree with the
+local oracles, with no timeout, stderr or temporary residue. Sampled RSS is a
+lower bound: several rg samples capture only 192 KiB and cannot estimate its
+actual peak. Eight separate old/new Darwin kernel pairs observe about 34-41 MiB
+on the timed workloads, with each pair differing by less than 0.5 MiB. This is
+single-observation evidence, not a memory-regression acceptance window. The
+64 MiB single-record grep probe still samples about 226 MiB (GNU about 228 MiB);
+long-record storage remains proportional to record length. Bounded DFA plans
+do not bound input buffering or total runtime memory.
+
+Next, rg's remaining count/miss gap calls for measuring reader/decoder/binary
+passes as a combined block pipeline; a larger window alone is insufficient.
+Grep's per-record boolean dispatch is a candidate for block-level count/reset
+fusion, with exact separator and empty-match behavior preserved. Column needs
+a hybrid metadata trial with explicit disk/RSS accounting and tiny-row controls.
+The earlier tac stdin/dense-hit, grep literal/span and wc metadata limits remain
+open; unchanged binaries do not acquire new performance acceptance here.
+
+### Bounded ingestion and selective scan windows (2026-10-27)
+
+This round starts from the previously validated local continuation, with its
+eight Wasm artifacts checked byte-for-byte before implementation. It remains
+uncommitted development on local main; versions, module manifests and frozen
+release expectations are unchanged. Evidence is retained separately under
+`/private/tmp/cmd-deeper-20261027`, including rejected sources and measurements.
+
+Column ingests immutable record batches up to 1 MiB and stages data and 16-byte
+index entries synchronously. Separate 64 KiB buffers bound pending data/index
+writes. An encoded record that does not fit is retained once and written after
+the pending data, without growing the batch. A record can still be as large as
+the longest input record; this is not a constant process-memory bound. Global
+widths, the complete disk snapshot, C-byte conversion, empty/NUL handling and
+late-input-error behavior are preserved. Overflow is rejected before mutating
+the pending buffers; a failed snapshot write aborts layout without replay.
+
+Rg summary sinks can opt in to a 256 KiB initial reader window for full-input
+line counts without statistics. The default sink method returns false. The
+searcher additionally excludes match limits, inversion, context, passthrough,
+stop-on-nonmatch, multiline and binary-quit modes; explicit heap limits still
+cap allocation. Reusing a searcher with another sink restores the original
+window. Slice/multiline binary sniffing keeps its original 64 KiB boundary.
+This avoids a global constant change that would alter early-read behavior.
+Eligible reader buffers add up to 192 KiB before long-line growth, with normal
+allocator/runtime overhead and transient construction storage outside that
+algorithmic difference. This opt-in does not promise the original ordering of
+binary notifications relative to intermediate callbacks; the selected summary
+sink exposes only its final count and does not stop on those notifications.
+
+Tac uses the existing KMP state to certify a skip: only with no partial prefix
+can a byte other than the separator's last byte be skipped during reverse
+search. Public byte-view reverse search finds the next possible start. Partial
+prefixes retain ordinary KMP transitions across reads; matching remains exact
+and nonoverlapping, without a speculative cache. Tests cover sparse/dense data,
+overlap, 33-byte blocks and 64 KiB seams in addition to the earlier exhaustive
+short-input and long-separator comparisons.
+
+All performance measurements include complete release-Wasm initialization,
+input, output and exit. Two windows each retain one warmup plus nine alternating
+pairs, with both-side MAD/median <=5% and median drift/mean <=10%. No MoonX timing,
+startup subtraction, sample deletion or automatic retry is used.
+
+| Workload | Speedup over this round's baseline | Qualification |
+| --- | ---: | --- |
+| column tiny rows, 1 MiB | 2.31x | both windows pass |
+| column table, 8 MiB | 1.17x | both windows pass |
+| column grid, 1 MiB | 1.23x | both windows pass |
+| column long rows, 8 MiB | 1.10-1.11x | both windows pass |
+| column table, 1 MiB | no accepted gain | baseline dispersion/drift fails |
+| rg fixed count, 64 MiB | 1.08x | both windows pass |
+| rg fixed/regex miss, 64 MiB | 1.24-1.26x | both windows pass |
+| rg regex count, 64 MiB | 1.02-1.03x | both windows pass |
+| tac multi-byte hit/before, 8 MiB | 1.12-1.13x | both windows pass |
+| tac multi-byte miss, 8 MiB | 1.63-1.64x | both windows pass |
+
+The 12-row combined comparison is stable, including controls. Tac's long-prefix
+overlap control regresses about 1.8%; the unchanged single-byte file path varies
+from 0.6% to 4.6% slower. Rg ordinary output is about 0.5% slower, the repeated
+byte collision about 0.2%, and high-entropy miss improves 3.5-4%. These controls
+are retained, not excluded from the result. The separate column phase has four
+qualified rows out of five; its noisy 1 MiB row is not retried.
+
+Fixed local GNU/Rust comparisons qualify 9/12 workloads. Tac file reversal is
+2.73-2.76x GNU time and multi-byte miss is 2.60-2.61x, within target. Stdin stays
+3.55-3.82x and multi-byte hit/before 3.95-4.01x. Rg fixed count is 6.51-6.53x,
+fixed/regex miss 5.22-5.29x, and regex count 3.14-3.18x. The short tac overlap,
+rg collision and rg entropy references fail dispersion and have no accepted
+ratio. Column has no suitable local util-linux oracle. These macOS executable
+observations are not pinned Linux or three-platform acceptance.
+
+Strict Wasm checking/building and all 1,634 Wasm package tests pass, together
+with 118 Native test-tool tests and 2,062 functional checks (19 platform skips).
+The 432-case imported and 336-case layout differentials retain their two
+previously recorded GNU differences. All 384 new rg stdin/file/directory cases
+agree with this round's baseline; 383 also agree with Rust. The remaining case
+uses `-n -b -o hit -`, 13,000 `hit a\n` records, then `tail\0hit\n`, 35,000
+`miss\n` records and final `hit`. Both versions report NUL at byte 78,004, but
+Wasm prints 10,922 preceding matches while Rust prints 12,287. This pre-existing
+binary output/read-window difference remains unsupported parity, not a new
+count-path regression. No existing difference is converted into acceptance.
+
+Thirteen resource comparisons cover held-out binary/mixed-width inputs, long
+records and 64 MiB tac/rg inputs. Output/status/effects agree with the round
+baseline for column and fixed local GNU/Rust for tac/rg; stderr, timeouts and
+temporary residue are empty. Ten paired Darwin kernel observations show
+column peaks rising by 2.0-3.0 MiB, tac remaining approximately unchanged, and
+rg varying downward by 0.6-1.9 MiB. These are one-shot process observations,
+not memory guarantees; sampled RSS remains a lower bound. The audit checks
+complete windows and exact final binary fingerprints. The earlier Linux
+stability blocker is unresolved, and no remote CI or published acceptance ran.
+
+The rejected rg short-needle standard-library-search pilot passes correctness
+but slows misses about 5% and repeated-byte collisions about 39%; the existing
+rare-byte pair finder is retained. A global 256 KiB reader probe established the
+I/O batching benefit, but only the restricted summary opt-in is selected. The
+old DFA block-cache pilots remain excluded. Further work should move rg count
+discovery and newline aggregation into block-level operations; larger reads
+alone leave the fixed-count gap above 6x. Column's next measured alternative is
+recording field/width metadata during ingestion versus its extra disk/index
+cost. Tac can investigate block-local output copying for dense hits; its sparse
+skip cannot reduce that cost. Grep needs state-certified skips with entropy
+controls, and wc's descriptor metadata API gap remains open.
+
+### Local continuation after the documentation release (2026-10-27)
+
+The maintainer authorized development directly on local main after the
+documentation release. The merged remote release branch was deleted after
+checking its exact head and ancestry, and local main fast-forwarded to
+`987cf02`. The isolated candidate was then applied, adapting its README notes
+to the new concise template and retaining all accepted coordinates, version
+output, published expectations and release history. No new branch, publication
+or main push is part of this continuation.
+
+Tac now scans each block's multi-byte separator matches synchronously using the
+existing reverse KMP failure function. An incomplete prefix carries between
+backward reads. Completed nonoverlapping starts are retained in a reusable
+array bounded by the block size. Ranges whose endpoints span later blocks use
+the original positional copy; only fully contained ranges enter the output
+batch. This matters when a separator is itself longer than a block or ends in
+a later block. Input spooling, 64-bit offsets, before-separator semantics and
+the regex path remain unchanged. Independent rightmost-substring tests cover
+exhaustive short inputs, overlapping patterns and separators through 131,074
+bytes, including one-byte reads.
+
+Column's table renderer runs synchronously while required index/data pages are
+cached and resumes async work only on a page miss or a full 64 KiB output batch.
+An explicit field/padding/separator/newline cursor resumes inside expanded
+rows, including inside UTF-8 output-separator bytes. It never materializes a
+complete padded row. The full input snapshot, 16-byte record index, bounded page
+caches and longest-record/field storage are unchanged; no input is reopened.
+The renderer adds one bounded output batch and current-row state. Output errors
+stop without replaying buffered data; completed input records remain available
+after a late input error.
+
+Column also classifies ASCII separators once per snapshot and reuses the table
+for width calculation and rendering. Input conversion checks eight bytes at a
+time and decodes a proven ASCII prefix in bulk. NUL truncation, blank-line
+filtering, high-byte `\xHH` escapes and the C-locale control/color width rules
+retain their previous behavior. The public rejection of non-ASCII input
+separators is unchanged. Grid rendering keeps its previous layout path and
+benefits only from the shared input conversion.
+
+Local evidence is retained under `/private/tmp/cmd-local-20261027`: the released
+source, the imported candidate before further changes, each measured pilot,
+two complete nine-pair windows, and separate correctness/resource observations.
+Direct-Wasm timing and existing stability thresholds are unchanged. The
+initial table-batch pilot's small grid slowdown remains visible; subsequent
+conversion changes are evaluated as a new artifact, not as a retry of that run.
+The earlier rejected DFA block cache remains excluded.
+
+Final local observations compare against the imported candidate, not the first
+implementation: selected 8 MiB multi-byte tac cases improve 8.24-8.69x, column's
+8 MiB table 3.65-3.66x, long rows 3.99-4.02x, tiny rows 1.54x and the grid about
+1.10x. Every selected old/new row passes both windows. Against fixed local GNU
+9.11, tac file reversal is 2.67-2.71x, stdin 3.47x, and selected multi-byte cases
+4.19-4.47x. The short overlap reference fails the 5% dispersion threshold; its
+8.17-8.86x observed ratio is not accepted. No local util-linux column oracle is
+available, so column has no new upstream-target certification.
+
+The first strict check rejected a deprecated String escape in a new test. Its
+subsequent build had not run, so `final-column` still measured the binary before
+delimiter classification; that phase's source snapshot is not a matching build
+provenance record. After replacing the test escape and passing info/format/check,
+the release build changed column's fingerprint. `column-reviewed` independently
+measures that exact final artifact and preserves every older phase. Tac's final
+binary matches `combined-batches` and `final-tac-upstream`. The audit verifies
+all samples, hashes, outputs and thresholds without retrying noisy observations.
+
+Local correctness passed 1,627 Wasm package tests and 118 Native test-tool tests.
+The functional suite passed 2,062 cases with 19 skips before the final column
+rebuild; final column is also checked by its 18 package tests, a 22-case command-only
+functional replay and 120 exact baseline differentials. The full 768-case
+supplemental selection has 766 exact matches and two unchanged upstream
+differences. One is the previously recorded binary grep inversion/count case.
+The other is GNU tac 9.11 with `-s aa` on `head\n` + 65,535 `a` bytes +
+`b\nend`: the old and new Wasm outputs agree, but GNU differs at byte 65,538.
+The initial failed comparison and complete classified rerun are retained;
+neither difference is treated as upstream compatibility acceptance.
+
+Nine held-out/long-input resource comparisons pass output, status and effect
+checks with no stderr, timeouts or residual temporary entries. Column compares
+against the imported Wasm baseline; tac compares against local GNU. Separate
+Darwin kernel observations cover six old/new workloads. Column's long-record
+peak falls from 46,186,496 to 32,653,312 bytes in that single observation; the
+two 8 MiB tac peaks stay around 27 MB. Sampled RSS is only a lower bound, and
+neither observation establishes a portable memory limit. The earlier hosted
+Linux stability failures remain unresolved. No remote development/resource
+workflow or exact-version publication acceptance ran for this local source.
+
+The next column step is to measure batching the ingest/index writes for tiny
+records; each record still crosses async scanner and buffered-writer calls.
+Only then consider storing validated field/width metadata to avoid the second
+parse, measuring its extra disk/index cost. Rg's larger count/miss gaps need
+block-level discovery and line-count batching; prepared output batches target
+printing separately. Grep state-certified skips must retain entropy controls.
+Tac can investigate skips in the zero-prefix KMP state without weakening seam
+or overlap semantics. Wc's descriptor metadata gap remains open.
+
+### Isolated performance candidates (2026-10-27)
+
+These experiments are prepared against `2064a16` in
+`/private/tmp/cmd-next-20261027/source`, separately from the maintainer's active
+release checkout. They do not publish, update registry manifests, create a PR,
+or establish Linux resource/three-platform acceptance.
+
+Selected changes are bounded batch reversal for rev, delimiter and contiguous
+range specialization for cut, block-batched single-byte reversal for tac,
+packed literal-automaton metadata, and an opt-in
+synchronous summary callback for rg's reader path. Rev retains whole-record
+ASCII rejection and exact buffered-write count/error boundaries. Its fixed
+64 KiB output buffer no longer allocates a reversed copy of each record;
+immutable input batches are capped at 1 MiB, with separate longest-record
+accumulation. Cut's special empty-field and equal-delimiter cases are unchanged.
+
+Tac uses reverse byte searches and a synchronous batch for ranges contained in
+the same 64 KiB input block. The first boundary can still span later blocks and
+uses the existing bounded positional copy. The batch adds O(block size) storage;
+stdin is still completely spooled before any output. Single-byte custom/NUL
+separators and before-separator mode share the same path. Multi-byte KMP and
+regex paths are unchanged. Independent forward-partition tests cover all six-byte
+binary separator arrangements and long records straddling 64 KiB boundaries.
+Two complete local windows measured 16.33-16.77x improvement for the 8 MiB file
+case, reaching 2.61-2.67x GNU tac. The stdin case improved 12.96-13.03x but remains
+3.52-3.53x GNU; tiny and multiple-byte cases still exceed the target.
+
+The literal table retains at most 1024 states and 257 byte classes. Therefore
+the largest row offset is 1023 * 257 = 262911 (19 bits), and the longest accepted
+nonempty literal is 1023 bytes (10 bits). A single positive Int32 stores both.
+The maximum integer table payload is 1,052,672 bytes, plus classes, patterns,
+construction maps and object overhead. This is an allocation bound, not RSS.
+
+Rg's optional synchronous callback has no I/O or raising effect. Default sinks
+return None. The selected summary sink reuses the same match accounting logic
+on both paths; binary notifications, begin and finish remain async and ordered.
+The fast loop is limited to eligible reader searches without context, inversion
+or stop-on-nonmatch. Slice/multiline and output sinks retain their existing path.
+Regression traces compare both dispatch modes, including binary modes, line
+and byte offsets, early callback stops and zero/two-match limits.
+
+A deeper assertion-free boolean-DFA pilot caches exact eight-byte transfers,
+keyed by all 64 input bits and entry state, in 4096 slots (64 KiB integer
+payload). It never uses hashes to establish matches. Repeated-input cases
+improved, but random ASCII regressed about 30%. A second pilot suspended the
+cache for 64 KiB after fewer than eight hits in 64 probes; the random penalty
+fell to about 7-8%, while ordinary 1 MiB regex counting still regressed 2-3%.
+Both variants are retained as negative evidence and excluded from the selected
+candidate. Revisit with a demonstrably cheap eligibility rule or per-state
+certified self-loop skips; require heterogeneous controls before integration.
+
+Column's diagnostic-only stage instrumentation measured 575-590 ms for snapshot
+ingestion and 1036-1042 ms for rendering an 8 MiB table in three observations.
+The diagnostic source and Wasm are retained separately; no profiling output or
+column implementation change is selected. Rendering accounts for about 64% of
+these measured internal stages. The next pilot should batch table layout while
+retaining the complete snapshot, Unicode display widths, bounded page cache and
+error cleanup. Removing the snapshot is not justified by this evidence.
+
+Final local checks pass 1,618 release-Wasm tests. Earlier checks on the selected
+rev/cut/grep/rg changes pass 117 tool tests and 2,062 functional cases (19 skips);
+the subsequent tac change passes its 54-case functional replay. Supplemental
+432-case comparisons retain one baseline-equal binary grep difference and no
+new regression; eight rev cases use the original Wasm rather than a Linux oracle.
+Sixteen resource observations compare cut/grep/tac against fixed local GNU
+binaries, including held-out and long records at 8/64 MiB and literal stress.
+All output/status/effect checks pass, with no timeout or residual temporary
+entry. Sampled RSS is a lower bound. Separate Darwin kernel observations on
+eight old/new workloads show no process-RSS reduction from table packing; rev's
+peak rises by about 1.9-2.5 MiB in the two observed shapes. Neither observation
+is a Linux memory certification or a constant process-memory bound.
+
+Measurements remain complete release-Wasm processes, including initialization,
+I/O and exit, without MoonX timing, startup subtraction, sample deletion or
+automatic retries. Both sides must have MAD/median <= 5% in each nine-pair
+window and between-window median difference / mean <= 10%. Several early
+windows failed and remain failed. Raw phases, diagnostic rg stage observations,
+source snapshots and comparisons are retained under `/private/tmp/cmd-next-20261027`.
+The final report distinguishes gains over the same-source baseline from the
+remaining GNU/Rust ratios; selected gains do not establish the global 1-3x goal.
 
 ### Adaptive literal planner (2026-10-27)
 

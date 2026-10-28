@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-26
+Updated: 2026-10-28
 Revision: Validate the Wasm delivery path on three platforms; retire change
 audits, Native product pairing and source/artifact sealing.
 
@@ -25,6 +25,45 @@ closure, per-test evidence adapter and audited-push wrapper are retired by the
 2026-10-26 user decision. They must not be rebuilt under another name.
 
 ## Correctness and observations
+
+### Repository-owned rg corpus and command contracts
+
+Large static corpus data belongs in `tests/fixtures/rg`, not generated product
+source. The 751 imported regex records retain their original bytes, capture
+expectations, compile flags and bounds. Existing PikeVM, lazy-DFA and meta-regex
+drivers remain package tests: moving them across module boundaries would require
+exposing internal APIs. The small test-only loader fails on absent, malformed,
+duplicate or incomplete corpus input. Existing per-engine exclusions remain;
+corpus size is not an engine-coverage count.
+
+Forty-four printer cases with equivalent CLI behavior moved into
+`tests/cases/rg.json` and the existing registry. Original expected output remains
+exact, with status and stderr checked through the common Wasm launcher. Old
+`rg_compat_*` names remain aliases. The remaining 20 cases require injected
+paths/timing, binary-conversion policy or decoding behavior and stay in the
+printer package. Flags, engine state, Unicode tables and specialized failure
+regressions also retain their package boundaries. Neither directory movement
+nor passing a current command establishes new upstream parity.
+
+Both layers run in the existing development workflow, without a new test
+framework or product-to-test module dependency. These repository integration
+fixtures require the checkout; standalone published module archives do not
+carry them. See the [fixture ownership and provenance](../../tests/fixtures/rg/README.md).
+
+Local migration validation (2026-10-28): all 751 records were compared field by
+field with the compiled original constants, and all 44 extracted expectations
+passed against the frozen starting Wasm command before their package wrappers
+were removed. Final checks passed 1,626 Wasm tests, 118 test-tool tests and
+2,109 functional checks with 19 skips and no failures. All 80 release-Wasm
+command artifacts remain byte-identical; the adapter has no production
+consumer. Strict checks, interfaces, formatting and dependency validation pass.
+The initial missing-ignore-fixture failures and migration setup diagnostics
+remain in `/private/tmp/cmd-rg-tests-20261028`; local backup
+`backup/rg-tests-20261028` preserves the full starting tree. This does not
+replace Linux/macOS/Windows CI, published acceptance or earlier unresolved
+performance stability gates.
+
+### Result interpretation
 
 Availability, semantic contracts, upstream agreement and expected rejection are
 different results. Missing observers, timeouts, startup failures and uncertain

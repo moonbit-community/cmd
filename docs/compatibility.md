@@ -3,6 +3,59 @@
 Date: 2026-09-05
 Updated: 2026-10-27
 
+The local development candidate imports the isolated rev/cut/tac, packed literal
+automaton and rg summary optimizations after release commit `987cf02`. Its
+implementation and diagnostic limits are recorded in
+[ADR-0003](adr/0003-streams.md#isolated-performance-candidates-2026-10-27).
+These local changes do not amend the accepted registry coordinates below.
+The newest continuation reduces rg long-record allocation and caps individual
+read requests. A 64 MiB record drops from about 376 to 166 MiB kernel peak RSS;
+a 20 MiB record retains a roughly 9 MiB increase. Full-record retention and
+configured allocation errors remain. No support boundary or release coordinate
+changes. See [long-record capacity](adr/0003-streams.md#long-record-capacity-and-read-requests-2026-10-27)
+for complete measurements and the next streaming-matcher investigation.
+The preceding continuation replaces scalar rg prefix-byte membership scanning
+with exact SIMD candidate lookup. A long random-letter regex improves about
+1.7x, with full verification and existing regex semantics retained. All 288
+new set/regex comparisons agree with both the preceding Wasm and local Rust
+artifact. No option or binary boundary is lifted. See
+[SIMD candidate byte sets](adr/0003-streams.md#simd-candidate-byte-sets-2026-10-27)
+for the remaining large gaps, small control costs and empty-input diagnostics.
+The preceding local round adds fused rg literal counts, grep block regex counts
+and byte-based column table fields with bounded optional metadata. All 27 final
+old/new timing workloads pass the unchanged local stability criteria. The rg
+general-DFA skip trial is rejected for ordinary regex regressions; column's
+snapshot format remains unchanged. See [byte fields and fused counts](adr/0003-streams.md#byte-fields-and-fused-count-pipelines-2026-10-27).
+The new public core count method is unreleased local API work. It does not
+change command options, locale support or published acceptance.
+The preceding local round adds rg block-level line counts and bounded exact
+self-loop skipping for eligible long-record grep regex scans. The column
+field-metadata pilot was rejected and restored to the preceding candidate.
+See [block counts and certified skips](adr/0003-streams.md#block-counts-and-certified-state-skips-2026-10-27)
+for eligibility, small regressions and the remaining GNU/Rust gaps. Command
+options, binary boundaries and accepted publication coordinates are unchanged.
+The expanded local grep comparison retains 27 existing differences on
+NUL-containing inputs across count, inverted-count and whole-line selections.
+All 480 extension cases agree with the preceding Wasm artifact; 453 agree with
+GNU 3.12. This is a known binary-count compatibility gap, not a performance
+regression or a claim of complete GNU parity.
+The subsequent local continuation batches tac's multi-byte separators and
+column table rendering, with reusable field-delimiter classification and
+ASCII conversion. Snapshot, C-byte, output-order and error boundaries remain
+unchanged; see the [local continuation](adr/0003-streams.md#local-continuation-after-the-documentation-release-2026-10-27).
+Its supplemental local comparison also records an existing GNU tac 9.11
+difference for a long repeated input with overlapping separator `aa`.
+Old and new Wasm agree; this case is not upstream-compatible acceptance.
+The next local round batches column snapshot writes, selectively enlarges rg's
+full-input count window, and skips impossible tac reverse-match starts.
+No command option, published coordinate or locale boundary changes. See
+[bounded ingestion and scan windows](adr/0003-streams.md#bounded-ingestion-and-selective-scan-windows-2026-10-27)
+for memory tradeoffs, measured gains, rejected pilots and remaining target gaps.
+An added rg binary-output comparison also preserves an existing difference:
+`-n -b -o` can print fewer preceding matches than Rust before the same NUL
+notification because read windows differ. The new count-only batching keeps
+the original output path and does not establish parity for that case.
+
 Current delivery acceptance targets Wasm through MoonX on Linux, macOS and
 Windows. Native implementations may remain compilable, but Native command tests
 and backend pairing are no longer delivery gates. Dated Native observations
@@ -26,8 +79,8 @@ release uploaded 78 new command versions with concise MoonX READMEs and
 synchronized metadata. The [latest manifest](../tests/release_runner/current/latest.json)
 records their exact coordinates and separately frozen current expectations.
 `rg 0.1.0` and `timeout` are excluded from this release and remain unpublished.
-Fetched core 0.8.2 matches the workspace source exactly, so dependent commands
-select that already published coordinate without republishing core.
+At publication, fetched core 0.8.2 matched the release source exactly, so dependent
+commands selected that already published coordinate without republishing core.
 Local MoonX acceptance passed 2,094 checks with 18 platform skips and zero
 failures; 17 additional README examples passed.
 [Published acceptance run 40432031612](https://github.com/moonbit-community/cmd/actions/runs/40432031612)
@@ -80,7 +133,7 @@ and exact-version local MoonX acceptance separately from the earlier
 | csplit | One input snapshot plus a disk index of 64-bit line boundaries; two caches of at most 64 KiB, a current regex line and created-output paths. Input/spool failure precedes fragment creation. | Disk is input bytes plus eight bytes per boundary. Regex-line indices and numeric patterns/offsets retain signed 32-bit limits; `-k` controls retention of owned fragments after later failure. |
 | tac | Fixed separators use backward 64 KiB reads and bounded overlap; stdin/nonregular/regex input spools before output. | Regular files can change concurrently. Regex requires O(input) memory and signed 32-bit matcher indices until a paged/seekable shared matcher is implemented and verified; no fixed overlap truncates arbitrary spans. |
 | column | Two-pass layout uses one displayed-record snapshot and disk index; no reopened input or complete output string. First output follows the attempted input pass. | Disk is displayed bytes plus sixteen bytes per record; memory includes the longest record, table widths and fixed buffers. Table/small-grid caches use at most 1 MiB data pages and 64 KiB index pages; wide grids grow on demand to at most 256 pages per cache (16 MiB data plus 1 MiB index). Late read errors preserve complete records; output failure may retain a prefix. |
-| sort | `-S/--buffer-size`, repeated `-T/--temporary-directory` and `--batch-size` control accounted run storage and merge fan-in, capped at sixteen. The default remains 64 MiB. | The budget is not an RSS cap and allows an oversized record. `0%` selects the minimum budget; nonzero percentage sizes reject before input effects until a public physical-memory-capacity query and rounding/overflow regressions exist. |
+| sort | `-S/--buffer-size`, repeated `-T/--temporary-directory` and `--batch-size` control accounted run storage and maximum merge fan-in, capped at sixteen. The default remains 64 MiB. The local shared-foundation candidate lowers fan-in for small budgets; 1 MiB retains 512 KiB for runs with two merge inputs. | The budget is not an RSS cap and allows an oversized record. `0%` selects the minimum budget; nonzero percentage sizes reject before input effects until a public physical-memory-capacity query and rounding/overflow regressions exist. |
 | diff | Records borrow byte views from buffered inputs; unchanged comparison keys reuse those bytes and edit reconstruction retains O(N+M) auxiliary space. | Complete inputs, record indexes, transformed keys and edit/output records remain resident; this is not constant-memory diff. |
 
 Column, csplit and tac's spooled modes require temporary write access, which the

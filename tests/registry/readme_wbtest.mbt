@@ -20,13 +20,18 @@ async test "command README coordinates match source and preserve unpublished bou
       assert_true(readme.contains("\n## " + section + "\n"))
     }
     assert_true(readme.contains("../../docs/compatibility.md"))
-    if ["rg", "timeout"].contains(name) {
+    if name == "timeout" {
       assert_true(
         readme.contains("moon run --target wasm --release commands/" + name),
       )
       assert_true(!readme.contains("moonx cli/" + name + "@"))
     } else {
       assert_true(readme.contains("moonx cli/" + name + "@" + version))
+      if name == "rg" {
+        assert_true(readme.contains("unpublished candidate"))
+        assert_true(readme.contains("after publication"))
+        assert_true(!readme.contains("moon run"))
+      }
     }
   }
 }

@@ -120,7 +120,9 @@ pure MoonBit; upstream executables serve only as test oracles.
 The rg import pins rg.mbt 0.2.0 at
 `2727c25819b00ddd1a0e9b24f9cb683931d64edf`. Its algorithms, generated Unicode/
 encoding tables, author notices and package tests are retained in
-[commands/rg](../commands/rg/). This source pin differs from the ripgrep semantic
+[commands/rg](../commands/rg/). Large corpus data and CLI-equivalent printer
+checks are integrated with the [shared test fixtures](../tests/fixtures/rg/README.md)
+and contract runner, without changing their expectations. This source pin differs from the ripgrep semantic
 oracle above. System access uses released public async APIs; compressed search
 is deferred. The removed experiment and migration ledgers remain recoverable
 from Git commit `65b4b7eea24c8215776c40721e1e00ad436268ce`.
