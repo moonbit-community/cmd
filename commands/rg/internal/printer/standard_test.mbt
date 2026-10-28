@@ -67,10 +67,6 @@ async test "reports_binary" {
   assert_eq(sink.binary_byte_offset(), Some(3))
 }
 
-// SKIPPED: reports_stats
-
-// SKIPPED: reports_stats_multiple
-
 ///|
 async test "context_break" {
   let matcher = @grep_regex.RegexMatcher::new("Watson")

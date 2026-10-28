@@ -4,9 +4,9 @@ fn is_char_boundary(hay : FixedArray[Byte], len : Int32, at : Int32) -> Bool {
 }
 
 ///|
-test "corpus: meta regex" {
+async test "corpus: meta regex" {
   let failures = []
-  for tc in @testdata.cases {
+  for tc in @testdata.load() {
     if tc.name.has_prefix("regex-lite/") || tc.line_terminator is Some(_) {
       continue
     }

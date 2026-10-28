@@ -2,7 +2,7 @@
 package "cli/rg/internal/regex/internal/testdata"
 
 // Values
-pub let cases : Array[TestCase]
+pub async fn load() -> Array[TestCase]
 
 // Errors
 

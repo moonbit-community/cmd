@@ -45,6 +45,12 @@ The [runtime index](registry/README.md) supplies stable case selections and
 release policy. Ordinary package tests execute in batches through Moon;
 individual test names are not separately registered or sealed.
 
+Large rg corpus data is owned by [`fixtures/rg`](fixtures/rg/README.md).
+Engine tests remain Wasm package tests because rg's internal interfaces are
+module-private. CLI-equivalent printer cases use the ordinary JSON contract
+runner and registry; injected clocks, paths and engine state remain package
+regressions. Both layers run in the existing development workflow.
+
 ## Results and boundaries
 
 Results are `pass`, `fail`, `skip` or `infra`. Verification kinds distinguish

@@ -90,10 +90,10 @@ fn parse_case(tc : @testdata.TestCase) -> @syntax.Hir? {
 }
 
 ///|
-test "corpus: pikevm" {
+async test "corpus: pikevm" {
   let failures = []
   let mut ran = 0
-  for tc in @testdata.cases {
+  for tc in @testdata.load() {
     if tc.name.has_prefix("regex-lite/") {
       continue
     }
@@ -131,10 +131,10 @@ test "corpus: pikevm" {
 }
 
 ///|
-test "corpus: lazy dfa" {
+async test "corpus: lazy dfa" {
   let failures = []
   let mut fallbacks = 0
-  for tc in @testdata.cases {
+  for tc in @testdata.load() {
     if tc.name.has_prefix("regex-lite/") || tc.line_terminator is Some(_) {
       continue
     }

@@ -7,5 +7,6 @@ import {
 warnings = "-implicit_impl_as_method"
 
 import {
+  "moonbitlang/async",
   "cli/rg/internal/regex/internal/testdata",
 } for "test"
