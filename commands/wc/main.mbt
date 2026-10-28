@@ -57,22 +57,7 @@ async fn count_reader(
       counts.chars += count.to_int64()
     }
     if selection.lines && !selection.words && !selection.max_line_length {
-      let newline = @v128.i8x16_splat(b'\n')
-      let mut offset = 0
-      let mut found = 0
-      while offset + 16 <= count {
-        found += @v128.i8x16_bitmask(
-          @v128.i8x16_eq(@v128.v128_load(buffer, offset), newline),
-        ).popcnt()
-        offset += 16
-      }
-      while offset < count {
-        if buffer[offset] == b'\n' {
-          found += 1
-        }
-        offset += 1
-      }
-      counts.lines += found.to_int64()
+      counts.lines += @bytesearch.count(b'\n', buffer, 0, count).to_int64()
     } else if selection.words && !selection.max_line_length {
       let mut offset = 0
       let mut lines = 0

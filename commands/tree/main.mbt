@@ -331,12 +331,7 @@ async fn collect_node(
           None => true
         }
         if kind == Directory && can_descend {
-          let entries = @fs.readdir(
-            path,
-            include_hidden=true,
-            include_special=false,
-            sort=false,
-          ) catch {
+          let entries = @fswalk.read_directory(path) catch {
             _ => raise TreeError("cannot read directory '\{path}'")
           }
           entries.sort_by((left, right) => {

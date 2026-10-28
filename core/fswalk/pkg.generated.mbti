@@ -1,0 +1,29 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/core/fswalk"
+
+import {
+  "moonbitlang/async/fs",
+}
+
+// Values
+pub async fn read_directory(String, include_hidden? : Bool) -> Array[String]
+
+// Errors
+
+// Types and methods
+pub struct Entry {
+  kind : @fs.FileKind
+  // private fields
+}
+pub fn Entry::known(String, @fs.FileKind) -> Self
+pub async fn Entry::read(String, follow_symlink? : Bool) -> Self
+pub async fn Entry::regular_size(Self, SizeSource) -> Int64?
+
+pub(all) enum SizeSource {
+  OpenFile
+  ResolvedPath
+}
+
+// Type aliases
+
+// Traits

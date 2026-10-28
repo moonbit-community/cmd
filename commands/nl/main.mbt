@@ -46,7 +46,10 @@ async fn process_reader(
   section_delimiter : String,
   section : Ref[Int32],
   blank_run : Ref[Int32],
+  writer~ : &@io.Writer = @stdio.stdout,
 ) -> Unit {
+  let output = @stream.BlockWriter::new(writer)
+  defer output.flush()
   let scanner = @stream.LineScanner::new(reader)
   let header_marker = @utf8.encode(section_delimiter.repeat(3))
   let body_marker = @utf8.encode(section_delimiter.repeat(2))
@@ -68,7 +71,7 @@ async fn process_reader(
       if !no_renumber {
         number.val = starting_number
       }
-      @stdio.stdout.write("\n")
+      output.write("\n")
       continue
     }
     let style = match section.val {
@@ -89,17 +92,15 @@ async fn process_reader(
       style == "a" || style == "t"
     }
     if numbered {
-      @stdio.stdout.write(
-        format_number(number.val, width, number_format) + separator,
-      )
-      @stdio.stdout.write(line.data)
-      @stdio.stdout.write("\n")
+      output.write(format_number(number.val, width, number_format) + separator)
+      output.write(line.data)
+      output.write("\n")
       number.val += increment
     } else {
-      @stdio.stdout.write(spaces(width))
-      @stdio.stdout.write(separator)
-      @stdio.stdout.write(line.data)
-      @stdio.stdout.write("\n")
+      output.write(spaces(width))
+      output.write(separator)
+      output.write(line.data)
+      output.write("\n")
     }
   }
 }
