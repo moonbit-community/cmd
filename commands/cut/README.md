@@ -26,6 +26,8 @@ Select positions from files or stdin. Lists accept N, N-M, N- and -M; output pre
 
 ## Limitations
 
+The local development candidate uses delimiter searches and bounded contiguous projections; field selection and output-delimiter behavior are unchanged.
+
 - -c counts bytes, not Unicode characters.
 - -d and -s require field mode. Equal field and record delimiters make field positions span the input file.
 

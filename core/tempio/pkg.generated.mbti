@@ -1,0 +1,25 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/core/tempio"
+
+import {
+  "moonbitlang/async/fs",
+  "moonbitlang/async/io",
+}
+
+// Values
+pub async fn copy_range(@fs.File, Int64, Int64, FixedArray[Byte], &@io.Writer) -> Unit
+
+// Errors
+pub suberror TemporaryError {
+  TemporaryError(String)
+}
+
+// Types and methods
+type Directory
+pub async fn Directory::close(Self) -> Unit
+pub async fn Directory::new(prefix~ : String, parent? : String?) -> Self
+pub fn Directory::path(Self) -> String
+
+// Type aliases
+
+// Traits

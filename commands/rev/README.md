@@ -18,6 +18,8 @@ Read files or stdin and reverse each record, retaining its terminator.
 
 ## Limitations
 
+The local development candidate batches ASCII validation and reversal into a fixed 64 KiB output buffer; cross-chunk records still require longest-record storage.
+
 - The supported C profile rejects non-ASCII records. Memory grows with the longest record.
 - An explicit `-` is a filename, not stdin; omit file operands to read stdin.
 

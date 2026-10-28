@@ -48,6 +48,19 @@ fn GrepInput::count_buffered(
   ignore_case : Bool,
   invert : Bool,
 ) -> UInt64 {
+  if matcher is Regular([pattern], false, false) {
+    let remaining = self.bytes[self.position:]
+    if remaining.rev_find(self.delimiter) is Some(last) {
+      let complete = remaining[:last + 1]
+      if pattern.count_records(complete, self.delimiter[0])
+        is Some((matched, records)) {
+        self.position += complete.length()
+        self.offset += complete.length().to_int64()
+        self.number += records.to_int64()
+        return (if invert { records - matched } else { matched }).to_uint64()
+      }
+    }
+  }
   if !ignore_case &&
     matcher is ManyFixed(set) &&
     !set.contains_byte(self.delimiter[0]) {

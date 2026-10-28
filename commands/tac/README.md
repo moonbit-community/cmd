@@ -21,7 +21,10 @@ Reverse records from each file or stdin, preserving separator bytes and missing 
 
 ## Limitations
 
+The local development candidate batches fixed-separator ranges within each 64 KiB block, including multi-byte separators. With no partial separator match, it skips bytes that cannot start a reverse match. Input spooling and cross-block record semantics are unchanged; memory remains bounded by the block and separator sizes.
+
 - Empty regex separators and locale-aware matching are unsupported.
+- A local GNU 9.11 comparison retains a long repeated-input difference with the overlapping fixed separator `aa`; see [ADR-0003](../../docs/adr/0003-streams.md#local-continuation-after-the-documentation-release-2026-10-27).
 - Stdin/nonregular inputs and regex mode require temporary storage. Regex mode also retains input in memory.
 
 ## Examples

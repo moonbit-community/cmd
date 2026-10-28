@@ -172,7 +172,7 @@ async fn collect_files(
   while stack.pop() is Some(path) {
     let kind = @fs.kind(path, follow_symlink=false)
     if kind == Directory {
-      let entries = @fs.readdir(path, include_hidden=true, sort=false)
+      let entries = @fswalk.read_directory(path)
       entries.sort_by((left, right) => left.lexical_compare(right))
       let mut index = entries.length()
       while index > 0 {

@@ -2,7 +2,6 @@
 priv struct LiteralAutomaton {
   classes : FixedArray[Int32]
   transitions : FixedArray[Int32]
-  lengths : FixedArray[Int32]
   maximum : Int32
   first : Bytes?
 }
@@ -69,17 +68,16 @@ fn LiteralAutomaton::new(
       }
     }
   }
-  let lengths = FixedArray::make(count * width, 0)
-  for state in 0..<count {
-    lengths[state * width] = terminal[state]
-  }
+  // At most 1024 states (including root) and 257 byte classes: a row
+  // offset fits in 19 bits, and a nonempty accepted length in 10 bits.
+  // Store both in one positive Int32, avoiding a second table load per byte.
   for slot in 0..<transitions.length() {
-    transitions[slot] *= width
+    let target = transitions[slot]
+    transitions[slot] = (target * width) | (terminal[target] << 19)
   }
   Some({
     classes,
     transitions,
-    lengths,
     maximum,
     first: first.map(byte => Bytes::from_array([byte])),
   })
@@ -101,9 +99,10 @@ fn LiteralAutomaton::search(
       guard value[position:].find(byte) is Some(offset) else { break }
       position += offset
     }
-    state = self.transitions[state + self.classes[value[position].to_int()]]
+    let target = self.transitions[state + self.classes[value[position].to_int()]]
+    state = target & 0x7FFFF
     position += 1
-    let length = self.lengths[state]
+    let length = target >> 19
     if length > 0 {
       let begin = position - length
       if first_only {

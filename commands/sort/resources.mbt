@@ -102,19 +102,13 @@ fn resource_controls(parsed : @cli.ParsedArgs) -> (Int64, Int32) raise CliError 
 }
 
 ///|
-async fn temporary_root(parent : String) -> String {
-  for _ in 0..<32 {
-    let random = match @env.rand(16) {
-      Some(bytes) => @crypto.bytes_to_hex_string(bytes)
-      None => raise CliError("sort: secure random source is unavailable")
-    }
-    let path = parent + "/cli-sort-" + random
-    try @fs.mkdir(path, permission=0o700) catch {
-      @os_error.OSError(_) as error if error.is_EEXIST() => ()
-      error => raise error
-    } noraise {
-      _ => return path
-    }
-  }
-  raise CliError("sort: cannot create an exclusive temporary directory")
+// Keep at least half of a feasible budget for runs before choosing merge
+// fan-in. Tiny budgets retain the documented minimum working-set fallback.
+fn merge_budget(budget : Int64, requested_fan_in : Int32) -> (Int64, Int32) {
+  let fan_in = (budget / 131072L - 6L)
+    .max(2L)
+    .min(requested_fan_in.min(16).to_int64())
+    .to_int()
+  let reserve = (fan_in + 6).to_int64() * 65536L
+  ((budget - reserve).max(1L), fan_in)
 }

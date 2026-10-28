@@ -25,7 +25,7 @@ Sort files or stdin using C-byte order, selected keys and numeric/month/version/
 | `-o, --output=FILE` | Write named output; - is a literal filename. |
 | `-S, --buffer-size=SIZE` | Sorting budget; default 64 MiB; bare numbers use KiB. |
 | `-T, --temporary-directory=DIR` | Select temporary directories; may repeat. |
-| `--batch-size=N` | Merge fan-in; at least 2, capped at 16. |
+| `--batch-size=N` | Maximum merge fan-in; at least 2, capped at 16. |
 | `--help` / `--version` | Show help / package version. |
 
 ## Limitations

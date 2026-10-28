@@ -4,12 +4,9 @@
 /// acceptance rules. Construct one matcher per consumer, outside its record loop.
 struct RecordMatcher {
   pattern : Pattern
-  mut dfa : RecordDfa?
-  mut initialized : Bool
-  mut span_plan : SpanPlan?
-  mut span_initialized : Bool
-  mut span_dfa : SpanDfa?
-  mut span_dfa_initialized : Bool
+  mut dfa : EngineCache[RecordDfa]
+  mut span_plan : EngineCache[SpanPlan]
+  mut span_dfa : EngineCache[SpanDfa]
   byte_literal : Bytes?
 }
 
@@ -17,12 +14,9 @@ struct RecordMatcher {
 pub fn Pattern::record_matcher(self : Pattern) -> RecordMatcher {
   {
     pattern: self,
-    dfa: None,
-    initialized: false,
-    span_plan: None,
-    span_initialized: false,
-    span_dfa: None,
-    span_dfa_initialized: false,
+    dfa: Uninitialized,
+    span_plan: Uninitialized,
+    span_dfa: Uninitialized,
     byte_literal: self.literal.map(literal => bytes(literal.text)),
   }
 }
@@ -45,14 +39,18 @@ pub fn RecordMatcher::matches(
   if required.length() >= 2 && value.find(required) is None {
     return false
   }
-  if !whole && !word && !self.initialized {
-    self.dfa = RecordDfa::new(self.pattern)
-    self.initialized = true
+  if !whole && !word && self.dfa is Uninitialized {
+    self.dfa = engine_cache(RecordDfa::new(self.pattern))
   }
-  if !whole && !word && self.dfa is Some(dfa) {
-    match dfa.matches(value) {
+  if !whole && !word && self.dfa is Ready(dfa) {
+    let result = if required.is_empty() && value.length() >= 256 {
+      dfa.matches_accelerated(value)
+    } else {
+      dfa.matches(value)
+    }
+    match result {
       Some(result) => return result
-      None => self.dfa = None
+      None => self.dfa = Disabled
     }
   }
   self.find_span(text(value), whole~, word~) is Some(_)
@@ -68,11 +66,10 @@ pub fn RecordMatcher::find_span(
   whole~ : Bool = false,
   word~ : Bool = false,
 ) -> (Int32, Int32)? {
-  if self.pattern.literal is None && !self.span_initialized {
-    self.span_plan = SpanPlan::new(self.pattern)
-    self.span_initialized = true
+  if self.pattern.literal is None && self.span_plan is Uninitialized {
+    self.span_plan = engine_cache(SpanPlan::new(self.pattern))
   }
-  if self.span_plan is Some(plan) {
+  if self.span_plan is Ready(plan) {
     return plan.find(self.pattern, value[:], start, whole, word)
   }
   self.pattern.find_span(value, start~, whole~, word~)
@@ -91,6 +88,9 @@ priv struct RecordDfa {
   states : Array[RecordState]
   ids : Map[Array[Int32], Int32]
   edges : FixedArray[Int32]
+  skip_plans : FixedArray[RecordSkip?]
+  skip_planned : FixedArray[Bool]
+  mut skip_budget : Int32
 }
 
 ///|
@@ -120,6 +120,9 @@ fn RecordDfa::new(pattern : Pattern) -> RecordDfa? {
     states: [],
     ids: Map([]),
     edges: FixedArray::make(256 * representatives.length(), -1),
+    skip_plans: FixedArray::make(256, None),
+    skip_planned: FixedArray::make(256, false),
+    skip_budget: 8,
   }
   let nodes = dfa.closure([pattern.entry])
   dfa.states.push({ nodes, })
@@ -223,6 +226,41 @@ fn RecordDfa::transition(
 }
 
 ///|
+#inline
+fn RecordDfa::matches_accelerated(self : RecordDfa, value : BytesView) -> Bool? {
+  if self.states[0].nodes[0] == 0 {
+    return Some(true)
+  }
+  let mut state = 0
+  let mut index = 0
+  while index < value.length() {
+    if (index & 15) == 0 && value.length() - index >= 32 {
+      if self.skip_plan(state) is Some(plan) {
+        index = plan.advance(value, index)
+        if index == value.length() {
+          break
+        }
+      }
+    }
+    let byte = value[index]
+    let class = self.classes[byte.to_int()]
+    let edge = self.edges[state + class]
+    let next = if edge == -1 { self.transition(state, class) } else { edge }
+    if next == -2 {
+      return Some(true)
+    }
+    if next == -3 {
+      return None
+    }
+    state = next
+    index += 1
+  }
+  Some(false)
+}
+
+///|
+// A mandatory-literal rejection pass already filters these records. Keep its
+// original small scalar DFA loop without per-byte accelerator bookkeeping.
 #inline
 fn RecordDfa::matches(self : RecordDfa, value : BytesView) -> Bool? {
   if self.states[0].nodes[0] == 0 {

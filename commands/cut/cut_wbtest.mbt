@@ -128,7 +128,14 @@ fn cut_fields(
   separator : Bytes,
 ) -> Bytes? {
   let output = @buffer.Buffer()
-  if cut_fields_into(line, ranges, delimiter, only_delimited, separator, output) {
+  if cut_fields_into(
+      line,
+      ranges,
+      Bytes::from_array([delimiter]),
+      only_delimited,
+      separator,
+      output,
+    ) {
     Some(output.to_bytes())
   } else {
     None

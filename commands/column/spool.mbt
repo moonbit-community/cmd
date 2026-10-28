@@ -19,10 +19,8 @@ priv struct PageCache {
 
 ///|
 async fn PageCache::get(self : PageCache, page : Int64, size : Int64) -> Bytes {
-  for cached in self.pages {
-    if cached.0 == page {
-      return cached.1
-    }
+  if self.peek(page) is Some(bytes) {
+    return bytes
   }
   let position = page * self.page_size.to_int64()
   let length = (size - position).min(self.page_size.to_int64()).to_int()
@@ -37,14 +35,26 @@ async fn PageCache::get(self : PageCache, page : Int64, size : Int64) -> Bytes {
 }
 
 ///|
+fn PageCache::peek(self : PageCache, page : Int64) -> Bytes? {
+  for cached in self.pages {
+    if cached.0 == page {
+      return Some(cached.1)
+    }
+  }
+  None
+}
+
+///|
 priv struct Snapshot {
   data : PageCache
   index : PageCache
-  data_writer : @io.BufferedWriter[@fs.File]
-  index_writer : @io.BufferedWriter[@fs.File]
+  data_writer : @stream.BlockWriter
+  index_writer : @stream.BlockWriter
   table : Bool
-  separator : String?
+  separator : FieldSeparator
   widths : Array[Int32]
+  field_plans : Map[Int64, Bytes]
+  mut field_plan_bytes : Int32
   mut records : Int64
   mut size : Int64
   mut longest : Int32
@@ -56,8 +66,9 @@ async fn with_snapshot(
   separator~ : String?,
   action : async (Snapshot) -> Bool,
 ) -> Bool {
-  let root = @fs.tmpdir(prefix="cli-column-")
-  defer @fs.rmdir(root, recursive=true)
+  let directory = @tempio.Directory::new(prefix="cli-column-")
+  defer directory.close()
+  let root = directory.path()
   let data = @fs.open(
     root + "/records",
     mode=ReadWrite,
@@ -87,11 +98,13 @@ async fn with_snapshot(
       capacity: 16,
       next_page: 0,
     },
-    data_writer: @io.BufferedWriter::new(data, size=65536),
-    index_writer: @io.BufferedWriter::new(index, size=65536),
+    data_writer: @stream.BlockWriter::new(data),
+    index_writer: @stream.BlockWriter::new(index),
     table,
-    separator,
+    separator: FieldSeparator::new(separator),
     widths: [],
+    field_plans: Map([]),
+    field_plan_bytes: 0,
     records: 0,
     size: 0,
     longest: 0,
@@ -108,42 +121,19 @@ fn index_number(bytes : Bytes, offset : Int32) -> Int64 {
 }
 
 ///|
-async fn Snapshot::append(self : Snapshot, line : String) -> Unit {
-  let bytes = @utf8.encode(line)
-  if self.records == 576460752303423487L ||
-    self.size > 9223372036854775807L - bytes.length().to_int64() {
-    raise LayoutError("temporary snapshot exceeds 64-bit offsets")
-  }
-  let entry = Buffer(size_hint=16)
-  entry.write_int64_le(self.size)
-  entry.write_int64_le(bytes.length().to_int64())
-  self.data_writer.write(bytes)
-  self.index_writer.write(entry.contents())
-  self.records += 1
-  self.size += bytes.length().to_int64()
-  if self.table {
-    for i, field in split_fields(line, self.separator) {
-      while self.widths.length() <= i {
-        self.widths.push(0)
-      }
-      self.widths[i] = self.widths[i].max(display_width(field, table=true))
-    }
-  } else {
-    self.longest = self.longest.max(display_width(line))
-  }
-}
-
-///|
 async fn Snapshot::consume(self : Snapshot, input : &@io.Reader) -> Unit {
-  let scanner = @stream.LineScanner::new(input)
+  let scanner = @stream.RecordReader::new(input)
+  let pending = SpoolBatch::new()
   for ;; {
-    let record = scanner.next() catch {
+    let records = scanner.next_batch() catch {
       err => raise InputError(err.to_string())
     }
-    guard record is Some(record) else { break }
-    if input_line(record.data) is Some(line) {
-      self.append(line)
+    guard records is Some(records) else { break }
+    while !self.stage_records(records, pending) {
+      pending.flush(self.data_writer, self.index_writer)
     }
+    // Commit complete records before the next read can fail.
+    pending.flush(self.data_writer, self.index_writer)
   }
 }
 
@@ -151,6 +141,47 @@ async fn Snapshot::consume(self : Snapshot, input : &@io.Reader) -> Unit {
 async fn Snapshot::finish(self : Snapshot) -> Unit {
   self.data_writer.flush()
   self.index_writer.flush()
+}
+
+///|
+async fn Snapshot::record_bytes(self : Snapshot, record : Int64) -> BytesView {
+  // Grid rendering grows this bounded cache for its interleaved cursors,
+  // without retaining an offset entry for every input record.
+  let page = record / 256
+  let bytes = self.index.get(page, self.records * 16)
+  let slot = (record % 256).to_int() * 16
+  let position = index_number(bytes, slot)
+  let length = index_number(bytes, slot + 8).to_int()
+  let first = self.data.get(position / 65536, self.size)
+  let start = (position % 65536).to_int()
+  if length <= first.length() - start {
+    return first[start:start + length]
+  }
+  let line = Buffer(size_hint=length)
+  for copied = 0; copied < length; {
+    let offset = position + copied.to_int64()
+    let bytes = self.data.get(offset / 65536, self.size)
+    let start = (offset % 65536).to_int()
+    let count = (length - copied).min(bytes.length() - start)
+    line.write_bytes(bytes[start:start + count])
+    continue copied + count
+  }
+  line.to_bytes()[:]
+}
+
+///|
+fn Snapshot::cached_record_bytes(self : Snapshot, record : Int64) -> BytesView? {
+  guard self.index.peek(record / 256) is Some(entry) else { return None }
+  let slot = (record % 256).to_int() * 16
+  let position = index_number(entry, slot)
+  let length = index_number(entry, slot + 8).to_int()
+  if length == 0 {
+    return Some(b""[:])
+  }
+  guard self.data.peek(position / 65536) is Some(bytes) else { return None }
+  let start = (position % 65536).to_int()
+  guard length <= bytes.length() - start else { return None }
+  Some(bytes[start:start + length])
 }
 
 ///|
@@ -177,39 +208,6 @@ async fn Snapshot::line(self : Snapshot, record : Int64) -> String {
     continue copied + count
   }
   @utf8.decode(line.contents())
-}
-
-///|
-async fn write_spaces(output : &@io.Writer, count : Int32) -> Unit {
-  let spaces = "                                                                "
-  for remaining = count; remaining > 0; {
-    let length = remaining.min(spaces.length())
-    output.write(spaces[:length])
-    continue remaining - length
-  }
-}
-
-///|
-async fn Snapshot::render_table(
-  self : Snapshot,
-  output : &@io.Writer,
-  output_separator : String,
-) -> Unit {
-  for record = 0L; record < self.records; record = record + 1 {
-    let row = split_fields(self.line(record), self.separator)
-    for index in 0..<self.widths.length() {
-      let field = row.get(index).unwrap_or("")
-      output.write(field)
-      if index + 1 < self.widths.length() {
-        write_spaces(
-          output,
-          self.widths[index] - display_width(field, table=true),
-        )
-        output.write(output_separator)
-      }
-    }
-    output.write("\n")
-  }
 }
 
 ///|
