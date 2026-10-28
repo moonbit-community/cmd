@@ -1,5 +1,5 @@
 ///|
-priv enum Digest {
+pub(all) enum Digest {
   Bsd
   Sysv
   Crc
@@ -14,13 +14,13 @@ priv enum Digest {
 }
 
 ///|
-priv struct DigestSpec {
+pub(all) struct DigestSpec {
   algorithm : Digest
   bits : Int32
 }
 
 ///|
-fn Digest::label(self : Digest) -> String {
+pub fn Digest::label(self : Digest) -> String {
   match self {
     Bsd => "BSD"
     Sysv => "SYSV"
@@ -37,7 +37,7 @@ fn Digest::label(self : Digest) -> String {
 }
 
 ///|
-fn Digest::default_bits(self : Digest) -> Int32 {
+pub fn Digest::default_bits(self : Digest) -> Int32 {
   match self {
     Bsd | Sysv => 16
     Crc | Crc32b => 32
@@ -50,29 +50,8 @@ fn Digest::default_bits(self : Digest) -> Int32 {
 }
 
 ///|
-fn Digest::legacy(self : Digest) -> Bool {
+pub fn Digest::legacy(self : Digest) -> Bool {
   self is (Bsd | Sysv | Crc | Crc32b)
-}
-
-///|
-fn named_algorithm(value : String) -> Digest? {
-  match value {
-    "bsd" => Some(Bsd)
-    "sysv" => Some(Sysv)
-    "crc" => Some(Crc)
-    "crc32b" => Some(Crc32b)
-    "md5" => Some(Fixed(Md5))
-    "sha1" => Some(Fixed(Sha1))
-    "sha224" => Some(Sha224)
-    "sha256" => Some(Fixed(Sha256))
-    "sha384" => Some(Sha384)
-    "sha512" => Some(Fixed(Sha512))
-    "sha2" => Some(Sha2)
-    "sha3" => Some(Sha3)
-    "blake2b" => Some(Blake2b)
-    "sm3" => Some(Sm3)
-    _ => None
-  }
 }
 
 ///|
@@ -82,16 +61,6 @@ fn sha2_digest(bits : Int32) -> Digest {
     256 => Fixed(Sha256)
     384 => Sha384
     _ => Fixed(Sha512)
-  }
-}
-
-///|
-fn DigestSpec::tag(self : DigestSpec) -> String {
-  match self.algorithm {
-    Sha2 => "SHA\{self.bits}"
-    Sha3 => "SHA3-\{self.bits}"
-    Blake2b if self.bits != 512 => "BLAKE2b-\{self.bits}"
-    _ => self.algorithm.label()
   }
 }
 
@@ -191,7 +160,7 @@ fn make_hasher(spec : DigestSpec) -> Hasher {
 }
 
 ///|
-async fn digest_reader(
+pub async fn digest_reader(
   spec : DigestSpec,
   reader : &@io.Reader,
 ) -> (Bytes, UInt64) {
@@ -203,35 +172,4 @@ async fn digest_reader(
   }
   let result = (hasher.finish)()
   (result[:spec.bits / 8].to_owned(), length)
-}
-
-///|
-async fn digest_source(spec : DigestSpec, path : String) -> (Bytes, UInt64) {
-  if path == "-" {
-    digest_reader(spec, @stdio.stdin)
-  } else {
-    let file = @fs.open(path, mode=ReadOnly)
-    defer file.close()
-    if file.kind() is Directory {
-      raise DigestError("Is a directory")
-    }
-    digest_reader(spec, file)
-  }
-}
-
-///|
-priv suberror DigestError {
-  DigestError(String)
-}
-
-///|
-fn error_message(error : Error) -> String {
-  match error {
-    DigestError(message) => message
-    @os_error.OSError(_) as error if error.is_ENOENT() =>
-      "No such file or directory"
-    @os_error.OSError(_) as error if error.is_EACCES() => "Permission denied"
-    @os_error.OSError(_) as error if error.is_ENOTDIR() => "Not a directory"
-    _ => error.to_string()
-  }
 }

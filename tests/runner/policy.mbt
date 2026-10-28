@@ -223,7 +223,7 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
     "chmod", "curl", "env", "find", "make", "rg", "sh", "split", "timeout", "wget",
     "xargs",
   ]
-  let catalog = @cli.command_catalog()
+  let catalog = @contracts.command_catalog()
   record(
     catalog.length() == 80,
     "catalog must contain exactly 80 commands",
@@ -298,7 +298,7 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
     failures,
   )
   for name in expected_restricted {
-    match @cli.find_contract(name) {
+    match @contracts.find_contract(name) {
       Some(contract) =>
         record(
           contract.tier == Restricted,
@@ -309,20 +309,20 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
     }
   }
   for name in ["make", "sh", "xargs"] {
-    match @cli.find_contract(name) {
+    match @contracts.find_contract(name) {
       Some(contract) =>
         record(
-          @cli.releasable(contract),
+          @contracts.releasable(contract),
           "\{name}: direct-child semantics must not require process groups",
           failures,
         )
       None => ()
     }
   }
-  match @cli.find_contract("timeout") {
+  match @contracts.find_contract("timeout") {
     Some(contract) =>
       record(
-        !@cli.releasable(contract),
+        !@contracts.releasable(contract),
         "timeout: must remain gated without process-group cancellation",
         failures,
       )
@@ -845,7 +845,7 @@ async fn check_mutation_policy(root : String, failures : Array[String]) -> Unit 
     }
   }
   record(mv.status == 0, "mv: write policy rejected mutation", failures)
-  if @platform.symbolic_links_supported() {
+  if @platform.symbolic_link_creation_supported() {
     let ln = moon_run(root, policy, "ln", [
       root_path(fixture, "source"),
       root_path(fixture, "allowed-link"),

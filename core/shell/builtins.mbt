@@ -332,9 +332,9 @@ async fn run_builtin(argv : Array[String], context : Context) -> Int32? {
         return Some(builtin_error(context, "\{name}: outside a loop"))
       }
       if name == "break" {
-        context.break_loop = true
+        context.loop_control = Some(BreakLoop)
       } else {
-        context.continue_loop = true
+        context.loop_control = Some(ContinueLoop)
       }
       Some(0)
     }

@@ -1,0 +1,73 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/core/contracts"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn command_catalog() -> Array[CommandContract]
+
+pub fn find_contract(String) -> CommandContract?
+
+pub fn process_group_cancellation_available() -> Bool
+
+pub fn releasable(CommandContract) -> Bool
+
+// Errors
+
+// Types and methods
+pub(all) enum Capability {
+  FileRead
+  FileWrite
+  ProcessSpawn
+  Network
+  PermissionMutation
+  SymbolicLink
+  ProcessGroupCancellation
+} derive(Eq, @debug.Debug)
+pub fn Capability::equal(Self, Self) -> Bool
+pub fn Capability::not_equal(Self, Self) -> Bool
+pub fn Capability::to_repr(Self) -> @debug.Repr
+
+pub(all) struct CommandContract {
+  name : String
+  tier : CompatibilityTier
+  input : InputMode
+  output : OutputMode
+  exit_codes : Array[Int32]
+  capabilities : Array[Capability]
+  options : Array[String]
+}
+
+pub(all) enum CompatibilityTier {
+  Core
+  Extended
+  Restricted
+} derive(Eq, @debug.Debug)
+pub fn CompatibilityTier::equal(Self, Self) -> Bool
+pub fn CompatibilityTier::not_equal(Self, Self) -> Bool
+pub fn CompatibilityTier::to_repr(Self) -> @debug.Repr
+
+pub(all) enum InputMode {
+  NoInput
+  OptionalStdin
+  FileOrStdin
+  StructuredInput
+} derive(Eq, @debug.Debug)
+pub fn InputMode::equal(Self, Self) -> Bool
+pub fn InputMode::not_equal(Self, Self) -> Bool
+pub fn InputMode::to_repr(Self) -> @debug.Repr
+
+pub(all) enum OutputMode {
+  ByteStream
+  LineStream
+  StructuredOutput
+} derive(Eq, @debug.Debug)
+pub fn OutputMode::equal(Self, Self) -> Bool
+pub fn OutputMode::not_equal(Self, Self) -> Bool
+pub fn OutputMode::to_repr(Self) -> @debug.Repr
+
+// Type aliases
+
+// Traits

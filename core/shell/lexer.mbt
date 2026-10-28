@@ -47,11 +47,11 @@ fn push_word(
 }
 
 ///|
-fn parse_dollar(
+fn parse_dollar_input(
   chars : Array[Char],
   start : Int32,
   quoted : Bool,
-) -> (WordPart?, Int32) raise ShellError {
+) -> (WordPart?, Int32) raise ParseIssue {
   if start + 1 >= chars.length() {
     return (None, start + 1)
   }
@@ -85,7 +85,7 @@ fn parse_dollar(
           if depth == 0 {
             if arithmetic {
               if chars.get(end - 1) != Some(')') {
-                raise ShellError("invalid arithmetic expansion")
+                raise InvalidSyntax("invalid arithmetic expansion")
               }
               return (
                 Some(
@@ -110,7 +110,7 @@ fn parse_dollar(
         }
         end += 1
       }
-      raise ShellError("unterminated command substitution")
+      raise IncompleteSyntax("unterminated command substitution")
     }
     '{' => {
       let mut end = start + 2
@@ -128,7 +128,7 @@ fn parse_dollar(
         end += 1
       }
       if end >= chars.length() {
-        raise ShellError("unterminated variable expansion")
+        raise IncompleteSyntax("unterminated variable expansion")
       }
       let raw_name = String::from_array(chars[start + 2:end])
       let raw_chars = raw_name.iter().collect()
@@ -162,17 +162,17 @@ fn parse_dollar(
       if raw_name.has_prefix("#") {
         let name = raw_name[1:].to_owned()
         if name == "" || !is_name_start(name.iter().next().unwrap()) {
-          raise ShellError("invalid variable name: '\\{raw_name}'")
+          raise InvalidSyntax("invalid variable name: '\\{raw_name}'")
         }
         return (Some(LengthVariable(name, quoted)), end + 1)
       }
       let name = raw_name
       if name == "" || !is_name_start(name.iter().next().unwrap()) {
-        raise ShellError("invalid variable name: '\{name}'")
+        raise InvalidSyntax("invalid variable name: '\{name}'")
       }
       for char in name {
         if !is_name_char(char) {
-          raise ShellError("invalid variable name: '\{name}'")
+          raise InvalidSyntax("invalid variable name: '\{name}'")
         }
       }
       (Some(Variable(name, quoted)), end + 1)
@@ -189,10 +189,10 @@ fn parse_dollar(
 }
 
 ///|
-fn lex(
+fn lex_input(
   script : String,
   fragment~ : Bool = false,
-) -> Array[Token] raise ShellError {
+) -> Array[Token] raise ParseIssue {
   let chars : Array[Char] = script.iter().collect()
   let tokens : Array[Token] = []
   let parts : Array[WordPart] = []
@@ -220,7 +220,7 @@ fn lex(
           i += 1
         } else if char == '\\' {
           if i + 1 >= chars.length() {
-            raise ShellError("unterminated escape in double quote")
+            raise IncompleteSyntax("unterminated escape in double quote")
           }
           let next = chars[i + 1]
           if next == '\n' {
@@ -235,19 +235,19 @@ fn lex(
           }
         } else if char == '$' {
           flush_literal(parts, literal, quoted=true)
-          let (part, next) = parse_dollar(chars, i, true)
+          let (part, next) = parse_dollar_input(chars, i, true)
           match part {
             Some(value) => parts.push(value)
             None => literal.write_char('$')
           }
           i = next
         } else if char == '`' {
-          raise ShellError("backtick command substitution is not supported")
+          raise InvalidSyntax("backtick command substitution is not supported")
         } else {
           literal.write_char(char)
           i += 1
         }
-      Some(_) => raise ShellError("invalid internal quote state")
+      Some(_) => raise InvalidSyntax("invalid internal quote state")
       None =>
         if fragment &&
           (
@@ -287,7 +287,7 @@ fn lex(
           i += 1
         } else if char == '\\' {
           if i + 1 >= chars.length() {
-            raise ShellError("script ends with an unmatched backslash")
+            raise IncompleteSyntax("script ends with an unmatched backslash")
           }
           if chars[i + 1] == '\n' {
             i += 2
@@ -299,7 +299,7 @@ fn lex(
           }
         } else if char == '$' {
           flush_literal(parts, literal)
-          let (part, next) = parse_dollar(chars, i, false)
+          let (part, next) = parse_dollar_input(chars, i, false)
           match part {
             Some(value) => parts.push(value)
             None => literal.write_char('$')
@@ -307,7 +307,7 @@ fn lex(
           started = true
           i = next
         } else if char == '`' {
-          raise ShellError("backtick command substitution is not supported")
+          raise InvalidSyntax("backtick command substitution is not supported")
         } else if char == '&' {
           push_word(tokens, parts, literal, started, preserve_empty)
           started = false
@@ -316,7 +316,7 @@ fn lex(
             tokens.push(AndIf)
             i += 2
           } else {
-            raise ShellError("background execution is not supported")
+            raise InvalidSyntax("background execution is not supported")
           }
         } else if char == '|' {
           push_word(tokens, parts, literal, started, preserve_empty)
@@ -358,7 +358,7 @@ fn lex(
                 delimiter_end += 1
               }
               if delimiter_end == delimiter_start {
-                raise ShellError("here-document requires a delimiter")
+                raise InvalidSyntax("here-document requires a delimiter")
               }
               let delimiter = String::from_array(
                 chars[delimiter_start:delimiter_end],
@@ -368,7 +368,7 @@ fn lex(
                 line_start += 1
               }
               if line_start >= chars.length() {
-                raise ShellError("here-document must start on a new line")
+                raise IncompleteSyntax("here-document must start on a new line")
               }
               line_start += 1
               let mut cursor = line_start
@@ -400,7 +400,7 @@ fn lex(
                 cursor = line_end + 1
               }
               if !found {
-                raise ShellError("unterminated here-document")
+                raise IncompleteSyntax("unterminated here-document")
               }
               tokens.push(RedirectHereDoc)
               tokens.push(
@@ -454,11 +454,32 @@ fn lex(
     }
   }
   if quote is Some(_) {
-    raise ShellError("unterminated quote")
+    raise IncompleteSyntax("unterminated quote")
   }
   push_word(tokens, parts, literal, started, preserve_empty)
   while tokens.last() == Some(Sequence) {
     ignore(tokens.pop())
   }
   tokens
+}
+
+///|
+fn lex(
+  script : String,
+  fragment~ : Bool = false,
+) -> Array[Token] raise ShellError {
+  lex_input(script, fragment~) catch {
+    issue => raise issue.shell_error()
+  }
+}
+
+///|
+fn parse_dollar(
+  chars : Array[Char],
+  index : Int32,
+  quoted : Bool,
+) -> (WordPart?, Int32) raise ShellError {
+  parse_dollar_input(chars, index, quoted) catch {
+    issue => raise issue.shell_error()
+  }
 }

@@ -33,7 +33,7 @@ fn validate_manifest(manifest : Manifest) -> Array[String] {
   if manifest.schema != 1 && manifest.schema != 2 {
     failures.push("manifest: expected schema 1, got \{manifest.schema}")
   }
-  let catalog = @cli.command_catalog()
+  let catalog = @contracts.command_catalog()
   if manifest.commands.length() != catalog.length() {
     failures.push(
       "manifest: expected \{catalog.length()} command rows, got \{manifest.commands.length()}",

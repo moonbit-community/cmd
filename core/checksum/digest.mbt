@@ -7,7 +7,7 @@ pub(all) enum Algorithm {
 }
 
 ///|
-fn Algorithm::label(self : Algorithm) -> String {
+pub fn Algorithm::label(self : Algorithm) -> String {
   match self {
     Md5 => "MD5"
     Sha1 => "SHA1"
@@ -17,12 +17,7 @@ fn Algorithm::label(self : Algorithm) -> String {
 }
 
 ///|
-fn Algorithm::command(self : Algorithm) -> String {
-  self.label().to_lower() + "sum"
-}
-
-///|
-fn Algorithm::hex_length(self : Algorithm) -> Int32 {
+pub fn Algorithm::hex_length(self : Algorithm) -> Int32 {
   match self {
     Md5 => 32
     Sha1 => 40
@@ -138,9 +133,4 @@ fn Sha1State::finalize_bytes(self : Sha1State) -> Bytes {
     result[i] = (self.words[i / 4] >> (24 - i % 4 * 8)).to_byte()
   }
   result.unsafe_reinterpret_as_bytes()
-}
-
-///|
-fn hex_digest(bytes : Bytes) -> String {
-  @hex.encode(bytes[:])
 }

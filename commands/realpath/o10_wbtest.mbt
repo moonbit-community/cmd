@@ -19,7 +19,7 @@ async test "realpath missing and strip modes preserve physical link semantics" {
   } noraise {
     _ => fail("non-directory components require -m")
   }
-  if @platform.symbolic_links_supported() {
+  if @platform.symbolic_link_creation_supported() {
     @fs.symlink(target="existing/child", root + "/link")
     assert_eq(
       resolve_path(root + "/link/../new", Missing, false),

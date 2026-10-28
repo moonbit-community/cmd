@@ -23,7 +23,7 @@ pub fn help(command : String) -> String {
 ///|
 fn parse_gzip_args(
   args : ArrayView[String],
-) -> @cli.ParsedArgs raise @cli.CliError {
+) -> @args.ParsedArgs raise @args.CliError {
   // The shared specs name every flag; numeric levels 2..8 are short-only.
   for arg in args {
     if arg == "--" {
@@ -31,7 +31,7 @@ fn parse_gzip_args(
     }
     for digit in ["2", "3", "4", "5", "6", "7", "8"] {
       if arg == "--" + digit || arg.has_prefix("--" + digit + "=") {
-        raise @cli.CliError(
+        raise @args.CliError(
           kind=UnknownOption,
           option=arg[2:].to_owned(),
           message="unknown option",
@@ -39,28 +39,28 @@ fn parse_gzip_args(
       }
     }
   }
-  @cli.parse(args, [
-    @cli.flag("stdout", short='c'),
-    @cli.flag("decompress", short='d'),
-    @cli.flag("test", short='t'),
-    @cli.flag("no-name", short='n'),
-    @cli.flag("quiet", short='q'),
-    @cli.flag("fast", short='1'),
-    @cli.flag("2", short='2'),
-    @cli.flag("3", short='3'),
-    @cli.flag("4", short='4'),
-    @cli.flag("5", short='5'),
-    @cli.flag("6", short='6'),
-    @cli.flag("7", short='7'),
-    @cli.flag("8", short='8'),
-    @cli.flag("best", short='9'),
-    @cli.flag("help"),
-    @cli.flag("version"),
+  @args.parse(args, [
+    @args.flag("stdout", short='c'),
+    @args.flag("decompress", short='d'),
+    @args.flag("test", short='t'),
+    @args.flag("no-name", short='n'),
+    @args.flag("quiet", short='q'),
+    @args.flag("fast", short='1'),
+    @args.flag("2", short='2'),
+    @args.flag("3", short='3'),
+    @args.flag("4", short='4'),
+    @args.flag("5", short='5'),
+    @args.flag("6", short='6'),
+    @args.flag("7", short='7'),
+    @args.flag("8", short='8'),
+    @args.flag("best", short='9'),
+    @args.flag("help"),
+    @args.flag("version"),
   ])
 }
 
 ///|
-fn gzip_level(parsed : @cli.ParsedArgs) -> Int32 {
+fn gzip_level(parsed : @args.ParsedArgs) -> Int32 {
   match
     parsed.last_occurrence(["fast", "2", "3", "4", "5", "6", "7", "8", "best"]) {
     Some("fast") => 1
@@ -82,7 +82,7 @@ pub async fn run(
   version : String,
 ) -> Int32 {
   let parsed = parse_gzip_args(args) catch {
-    @cli.CliError(message~, option~, ..) => {
+    @args.CliError(message~, option~, ..) => {
       @stdio.stderr.write("\{command}: \{message}: '\{option}'\n")
       return 2
     }
@@ -119,11 +119,11 @@ pub async fn run(
     try {
       if decompress {
         let trailing = if path == "-" {
-          decode_reader(@stdio.stdin, @stdio.stdout, test_only)
+          @gzipops.decode_reader(@stdio.stdin, @stdio.stdout, test_only)
         } else {
           let file = @fs.open(path, mode=ReadOnly)
           defer file.close()
-          decode_reader(file, @stdio.stdout, test_only)
+          @gzipops.decode_reader(file, @stdio.stdout, test_only)
         }
         if trailing {
           if !parsed.contains("quiet") {
@@ -136,11 +136,11 @@ pub async fn run(
           }
         }
       } else if path == "-" {
-        encode(@stdio.stdin, @stdio.stdout, level~)
+        @gzipops.encode(@stdio.stdin, @stdio.stdout, level~)
       } else {
         let file = @fs.open(path, mode=ReadOnly)
         defer file.close()
-        encode(file, @stdio.stdout, level~)
+        @gzipops.encode(file, @stdio.stdout, level~)
       }
     } catch {
       err => {

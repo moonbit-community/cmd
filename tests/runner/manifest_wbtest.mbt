@@ -14,7 +14,7 @@ test "workspace manifest accepts explicit link kinds without accepting invalid f
   })
   let manifest : Manifest = {
     schema: 2,
-    commands: @cli.command_catalog().map(command => {
+    commands: @contracts.command_catalog().map(command => {
       name: command.name,
       baseline: "fixture",
       status: "unmeasured",

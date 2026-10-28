@@ -48,30 +48,30 @@ async fn run_command(
   version : String,
 ) -> Int32 {
   let modern = fixed is None
-  let command = fixed.map(a => a.command()).unwrap_or("cksum")
+  let command = fixed.map(a => a.label().to_lower() + "sum").unwrap_or("cksum")
   let specs = [
-    @cli.flag("check", short='c'),
-    @cli.flag("zero", short='z'),
-    @cli.flag("binary", short='b'),
-    @cli.flag("text", short='t'),
-    @cli.flag("tag"),
-    @cli.flag("quiet"),
-    @cli.flag("status"),
-    @cli.flag("strict"),
-    @cli.flag("warn", short='w'),
-    @cli.flag("ignore-missing"),
-    @cli.flag("help"),
-    @cli.flag("version"),
+    @args.flag("check", short='c'),
+    @args.flag("zero", short='z'),
+    @args.flag("binary", short='b'),
+    @args.flag("text", short='t'),
+    @args.flag("tag"),
+    @args.flag("quiet"),
+    @args.flag("status"),
+    @args.flag("strict"),
+    @args.flag("warn", short='w'),
+    @args.flag("ignore-missing"),
+    @args.flag("help"),
+    @args.flag("version"),
   ]
   if modern {
-    specs.push(@cli.option("algorithm", short='a'))
-    specs.push(@cli.option("length", short='l'))
-    specs.push(@cli.flag("untagged"))
-    specs.push(@cli.flag("base64"))
-    specs.push(@cli.flag("raw"))
+    specs.push(@args.option("algorithm", short='a'))
+    specs.push(@args.option("length", short='l'))
+    specs.push(@args.flag("untagged"))
+    specs.push(@args.flag("base64"))
+    specs.push(@args.flag("raw"))
   }
-  let parsed = @cli.parse(args, specs) catch {
-    @cli.CliError(option~, message~, ..) => {
+  let parsed = @args.parse(args, specs) catch {
+    @args.CliError(option~, message~, ..) => {
       @stdio.stderr.write("\{command}: \{message}: '\{option}'\n")
       return 1
     }
@@ -105,7 +105,7 @@ async fn run_command(
       }
     }
   }
-  let algorithm = if fixed is Some(fixed) {
+  let algorithm : Digest = if fixed is Some(fixed) {
     Fixed(fixed)
   } else {
     selected_algorithm.unwrap_or(Crc)

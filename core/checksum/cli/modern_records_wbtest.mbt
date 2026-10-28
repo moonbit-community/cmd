@@ -18,7 +18,7 @@ test "tagged and untagged checksum records select exact algorithms" {
       { spec: { algorithm: Fixed(Md5), bits: 128, }, name: "payload", .. }
     ),
   )
-  assert_eq(tagged.map(r => hex_digest(r.expected)), Some(md5))
+  assert_eq(tagged.map(r => @hex.encode(r.expected)), Some(md5))
   assert_true(manifest_record(md5 + "  payload", None, true, standard) is None)
   assert_true(
     manifest_record(
@@ -36,7 +36,7 @@ test "tagged and untagged checksum records select exact algorithms" {
     true,
     auto,
   )
-  assert_eq(encoded.map(r => hex_digest(r.expected)), Some(md5))
+  assert_eq(encoded.map(r => @hex.encode(r.expected)), Some(md5))
   assert_true(
     manifest_record(
       "MD5 (payload) = C+6JsHokjifIP8PVlRITwQ==",

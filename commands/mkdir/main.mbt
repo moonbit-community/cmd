@@ -1,27 +1,4 @@
 ///|
-fn parse_mode(text : String) -> Int32 raise {
-  let digits = if text.has_prefix("0o") || text.has_prefix("0O") {
-    text[2:].to_owned()
-  } else {
-    text
-  }
-  if digits == "" {
-    fail("empty mode")
-  }
-  let mut value = 0
-  for digit in digits {
-    if !(digit is ('0'..<='7')) {
-      fail("invalid mode")
-    }
-    value = value * 8 + digit.to_int() - '0'.to_int()
-    if value > 0o7777 {
-      fail("mode out of range")
-    }
-  }
-  value
-}
-
-///|
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
@@ -50,7 +27,7 @@ async fn main {
   let mut symbolic = false
   let permission = match parsed.last_value("mode") {
     Some(value) =>
-      parse_mode(value) catch {
+      @mode.parse_octal_mode(value) catch {
         _ => {
           symbolic = true
           symbolic_mode(value) catch {

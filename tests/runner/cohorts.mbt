@@ -1,6 +1,6 @@
 ///|
 fn metadata_cases() -> Array[@testkit.Case] raise {
-  @cli.command_catalog().map(contract => {
+  @contracts.command_catalog().map(contract => {
     @json.from_json({
       "id": "metadata:" + contract.name,
       "command": contract.name,
@@ -18,7 +18,7 @@ fn metadata_cases() -> Array[@testkit.Case] raise {
 /// Legacy multi-command scenarios retain their original assertions. Register
 /// their scope explicitly so filtering never silently executes the whole suite.
 fn cohort_cases() -> Array[@testkit.Case] raise {
-  let all = @cli.command_catalog().map(item => item.name)
+  let all = @contracts.command_catalog().map(item => item.name)
   let specs : Array[(String, String, Array[String])] = [
     ("compat-catalog", "compat", all),
     ("compat-environment", "compat", ["sh", "make", "xargs", "env", "printenv"]),

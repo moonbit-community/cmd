@@ -158,7 +158,7 @@ async test "copy supports explicit no-preserve mode only for new files" {
 
 ///|
 async test "copy preflight rejects followed symbolic-link cycles before output" {
-  if !@platform.symbolic_links_supported() {
+  if !@platform.symbolic_link_creation_supported() {
     return
   }
   let root = @fs.tmpdir(prefix="mooncmd-fsops-cycle")
@@ -198,7 +198,7 @@ async test "numbered backups select the first available GNU sibling" {
 
 ///|
 async test "recursive removal does not follow a symbolic link" {
-  if !@platform.symbolic_links_supported() {
+  if !@platform.symbolic_link_creation_supported() {
     return
   }
   let root = @fs.tmpdir(prefix="mooncmd-fsops-link")
@@ -299,7 +299,7 @@ async test "metadata lookup distinguishes missing paths and symbolic links" {
   let root = @fs.tmpdir(prefix="mooncmd-fsops-metadata")
   defer (@fs.rmdir(root, recursive=true) catch { _ => () })
   assert_eq(@fsops.metadata_if_exists(@fsops.join(root, "missing")), None)
-  if !@platform.symbolic_links_supported() {
+  if !@platform.symbolic_link_creation_supported() {
     return
   }
   let target = @fsops.join(root, "target")

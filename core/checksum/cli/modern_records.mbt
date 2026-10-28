@@ -49,7 +49,7 @@ fn tagged_spec(tag : String, selected : Digest?, modern : Bool) -> DigestSpec? {
       return None
     }
   }
-  let algorithm = match base {
+  let algorithm : Digest = match base {
     "MD5" => Fixed(Md5)
     "SHA1" => Fixed(Sha1)
     "SHA224" => Sha224
@@ -263,7 +263,11 @@ fn output_record(
     }
     return fields + (if implicit_stdin { "" } else { " " + source }) + end
   }
-  let digest = if base64 { @base64.encode(bytes[:]) } else { hex_digest(bytes) }
+  let digest = if base64 {
+    @base64.encode(bytes[:])
+  } else {
+    @hex.encode(bytes)
+  }
   if !tagged {
     return format_record(digest, source, binary, zero)
   }
@@ -273,7 +277,7 @@ fn output_record(
     encode_filename(source)
   }
   (if escaped { "\\" } else { "" }) +
-  "\{spec.tag()} (\{name}) = \{digest}\{end}"
+  "\{digest_tag(spec)} (\{name}) = \{digest}\{end}"
 }
 
 ///|

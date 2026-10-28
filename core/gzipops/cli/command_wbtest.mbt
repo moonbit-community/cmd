@@ -36,7 +36,7 @@ test "gzip level parsing preserves option terminators and decompression flags" {
 test "gzip level parsing rejects zero and unsupported long numeric forms" {
   for arg in ["-0", "-90", "--0", "--1", "--2", "--2=fast", "--9"] {
     try parse_gzip_args([arg]) catch {
-      @cli.CliError(kind=UnknownOption, ..) => ()
+      @args.CliError(kind=UnknownOption, ..) => ()
       _ => fail("expected unknown level option")
     } noraise {
       _ => fail("must reject unsupported level option: " + arg)
