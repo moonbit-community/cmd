@@ -1,4 +1,5 @@
 ///|
+// Strategy: rg-regex-probe-replay
 // Count-only text mode permits discarding records once a bounded, resumable
 // matcher is ready. Declined probes replay decoded bytes through the old path.
 async fn Searcher::stream_regex_count(
@@ -7,18 +8,7 @@ async fn Searcher::stream_regex_count(
   reader : &Reader,
   sink : &Sink,
 ) -> Bool {
-  let config = self.config
-  guard !config.multi_line &&
-    !config.invert_match &&
-    config.max_matches is None &&
-    config.max_context() == 0 &&
-    !config.passthru &&
-    !config.stop_on_nonmatch &&
-    config.heap_limit is None &&
-    config.binary is BinaryNone &&
-    config.line_term is Byte(term) else {
-    return false
-  }
+  guard self.config.stream_count_term() is Some(term) else { return false }
   guard matcher.stream_count_candidate(term) else { return false }
   guard sink.synchronous_count() is Some(accept) else { return false }
   if !sink.begin(self) {
@@ -57,21 +47,8 @@ async fn Searcher::stream_regex_count(
     None
   }
   guard counter is Some(counter) else {
-    self.line_buffer.end = length
-    self.line_buffer.last_lineterm = if ended {
-      length
-    } else {
-      let last = @memchr.memrchr(term, probe, 0, length)
-      if last < 0 {
-        0
-      } else {
-        last + 1
-      }
-    }
     ReadByLine::new(self, matcher, reader, sink).run(
-      begun=true,
-      prefetched=true,
-      ended~,
+      entry=Replay(length, ended),
     )
     return true
   }

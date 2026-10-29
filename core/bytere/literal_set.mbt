@@ -1,10 +1,16 @@
 ///|
+// Strategy: bytere-literal-adaptive
+///|
 /// A bounded literal set using two-byte shifts or a byte-class Aho-Corasick table.
 struct LiteralSet {
   classes : FixedArray[Int32]
-  shift : LiteralShift?
-  mut automaton : LiteralAutomaton?
-  mut automaton_attempted : Bool
+  mut plan : LiteralPlan
+}
+
+///|
+priv enum LiteralPlan {
+  Shift(LiteralShift, EngineCache[LiteralAutomaton])
+  Automaton(LiteralAutomaton)
 }
 
 ///|
@@ -31,7 +37,7 @@ pub fn LiteralSet::new(patterns : Array[Bytes]) -> LiteralSet? {
   let mut width = 1
   let mut total = 0
   for pattern in patterns {
-    if pattern.length() > 4096 - total {
+    if pattern.length() > literal_set_byte_limit - total {
       return None
     }
     total += pattern.length()
@@ -43,22 +49,12 @@ pub fn LiteralSet::new(patterns : Array[Bytes]) -> LiteralSet? {
     }
   }
   if LiteralShift::new(patterns) is Some(shift) {
-    return Some({
-      classes,
-      shift: Some(shift),
-      automaton: None,
-      automaton_attempted: false,
-    })
+    return Some({ classes, plan: Shift(shift, Uninitialized), })
   }
   guard LiteralAutomaton::new(patterns, classes) is Some(automaton) else {
     return None
   }
-  Some({
-    classes,
-    shift: None,
-    automaton: Some(automaton),
-    automaton_attempted: true,
-  })
+  Some({ classes, plan: Automaton(automaton), })
 }
 
 ///|
@@ -107,33 +103,40 @@ fn LiteralSet::search(
   if start < 0 || start >= value.length() {
     return None
   }
-  if self.shift is Some(shift) {
-    // Reconsider each input even when the automaton is cached: a later sparse
-    // record can still benefit from shifts. Only construction is memoized.
-    let found = shift.find(
-      value,
-      start,
-      first_only,
-      allow_switch=!self.automaton_attempted || self.automaton is Some(_),
-    )
-    match found {
-      Some((-1, next_start)) => {
-        if !self.automaton_attempted {
-          self.automaton_attempted = true
-          self.automaton = LiteralAutomaton::new(shift.patterns, self.classes)
+  match self.plan {
+    Automaton(automaton) => automaton.search(value, start, first_only)
+    Shift(shift, cached) => {
+      // Reconsider each input even when the automaton is cached: a later sparse
+      // record can still benefit from shifts. Only construction is memoized.
+      let found = shift.find(
+        value,
+        start,
+        first_only,
+        allow_switch=!(cached is Disabled),
+      )
+      match found.outcome {
+        Resume => {
+          let next_start = found.start
+          let prepared = if cached is Uninitialized {
+            let prepared = engine_cache(
+              LiteralAutomaton::new(shift.patterns, self.classes),
+            )
+            self.plan = Shift(shift, prepared)
+            prepared
+          } else {
+            cached
+          }
+          if prepared is Ready(automaton) {
+            return automaton.search(value, next_start, first_only)
+          }
+          // Budget exhaustion resumes after fully rejected starts. It neither
+          // loses a match nor repeats construction on this or subsequent inputs.
+          return shift
+            .find(value, next_start, first_only, allow_switch=false)
+            .span()
         }
-        if self.automaton is Some(automaton) {
-          return automaton.search(value, next_start, first_only)
-        }
-        // Budget exhaustion resumes after fully rejected starts. It neither
-        // loses a match nor repeats construction on this or subsequent inputs.
-        return shift.find(value, next_start, first_only, allow_switch=false)
+        _ => found.span()
       }
-      _ => return found
     }
-  }
-  match self.automaton {
-    Some(automaton) => automaton.search(value, start, first_only)
-    None => None
   }
 }

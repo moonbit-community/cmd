@@ -7,6 +7,15 @@ It freezes candidate artifacts, source, SHA-256 identities, toolchain and
 registry before running every registered workload. Byte-identical commands
 outside the registry need no new timing claim.
 
+Schema 2 also registers strategy owner, adopted/rejected-control/historical
+status, concrete source files, named correctness tests, invariants and workload
+IDs. `tests/architecture.mbtx` validates this inventory on all three CI hosts
+and before protection windows. Missing sources or named tests, duplicate IDs,
+unknown statuses, orphan profiles and empty required selections fail closed.
+Historical `grep-onepass-*` names deliberately remain rejection controls; they
+do not imply an adopted general one-pass engine. Strategy validation establishes
+coverage links, not correctness or timing success by itself.
+
 Run from the repository root with the current PATH toolchain:
 
 ```sh

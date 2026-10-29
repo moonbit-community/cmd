@@ -1,4 +1,5 @@
 ///|
+// Strategy: rg-literal-stream
 // Eligibility is decided before reading. Once a record is discarded there is
 // no fallback: only a bounded literal can prove the retained suffix sufficient.
 async fn Searcher::stream_literal_count(
@@ -7,18 +8,7 @@ async fn Searcher::stream_literal_count(
   reader : &Reader,
   sink : &Sink,
 ) -> Bool {
-  let config = self.config
-  guard !config.multi_line &&
-    !config.invert_match &&
-    config.max_matches is None &&
-    config.max_context() == 0 &&
-    !config.passthru &&
-    !config.stop_on_nonmatch &&
-    config.heap_limit is None &&
-    config.binary is BinaryNone &&
-    config.line_term is Byte(term) else {
-    return false
-  }
+  guard self.config.stream_count_term() is Some(term) else { return false }
   guard matcher.literal_overlap(term) is Some(overlap) else { return false }
   guard sink.synchronous_count() is Some(accept) else { return false }
   let mut total = 0L

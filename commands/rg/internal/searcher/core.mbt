@@ -20,11 +20,10 @@ priv struct Core {
   matcher : &@matcher.Matcher
   searcher : Searcher
   sink : &Sink
-  synchronous_matched : ((Searcher, SinkMatch) -> Bool)?
-  synchronous_count : ((Int64) -> Unit)?
-  mut coalesce_matches : Bool
+  mut execution : LineExecution
+  record_scan : Bool
   mut pending_match : @matcher.Match?
-  binary : Bool
+  scan_binary : Bool
   mut pos : Int32
   mut absolute_byte_offset : Int64
   mut binary_byte_offset : Int32?
@@ -45,37 +44,17 @@ fn Core::new(
   searcher : Searcher,
   matcher : &@matcher.Matcher,
   sink : &Sink,
-  binary : Bool,
+  scan_binary : Bool,
 ) -> Core {
   {
     config: searcher.config,
     matcher,
     searcher,
     sink,
-    synchronous_matched: sink.synchronous_matched(),
-    coalesce_matches: !binary &&
-    !searcher.config.invert_match &&
-    searcher.config.max_matches is None &&
-    searcher.config.max_context() == 0 &&
-    !searcher.config.line_number &&
-    !searcher.config.passthru &&
-    !searcher.config.stop_on_nonmatch &&
-    !searcher.config.multi_line &&
-    sink.coalesce_matches(),
+    execution: searcher.config.line_execution(sink, scan_binary),
+    record_scan: record_scan_proof(matcher, searcher.config.line_term),
     pending_match: None,
-    synchronous_count: if !binary &&
-      !searcher.config.invert_match &&
-      searcher.config.max_matches is None &&
-      searcher.config.max_context() == 0 &&
-      !searcher.config.passthru &&
-      !searcher.config.stop_on_nonmatch &&
-      !searcher.config.multi_line &&
-      searcher.config.binary.quit_byte() is None {
-      sink.synchronous_count()
-    } else {
-      None
-    },
-    binary,
+    scan_binary,
     pos: 0,
     absolute_byte_offset: 0,
     binary_byte_offset: None,
@@ -129,7 +108,7 @@ async fn Core::matched(self : Core, buf : Win, range : @matcher.Match) -> Bool {
 
 ///|
 async fn Core::binary_data(self : Core, offset : Int64) -> Bool {
-  self.coalesce_matches = false
+  self.execution = self.execution.after_binary()
   self.sink.binary_data(self.searcher, offset)
 }
 
@@ -189,19 +168,14 @@ async fn Core::finish(
 ///|
 async fn Core::match_by_line(self : Core, buf : Win) -> Bool {
   if self.is_line_by_line_fast() {
-    if self.synchronous_count is Some(accept) {
-      self.match_count_batch(buf, accept)
-      return true
-    }
-    if self.coalesce_matches {
-      return self.match_by_line_spans(buf)
-    }
-    if !self.binary &&
-      !self.config.invert_match &&
-      self.config.max_context() == 0 &&
-      !self.config.stop_on_nonmatch &&
-      self.synchronous_matched is Some(accept) {
-      return self.match_by_line_synchronous(buf, accept)
+    match self.execution {
+      Count(accept) => {
+        self.match_count_batch(buf, accept)
+        return true
+      }
+      Coalesced(_) => return self.match_by_line_spans(buf)
+      Synchronous(accept) => return self.match_by_line_synchronous(buf, accept)
+      Ordinary => ()
     }
     match self.match_by_line_fast(buf) {
       SwitchToSlow => self.match_by_line_slow(buf)
@@ -671,7 +645,7 @@ async fn Core::sink_matched(
   start : Int32,
   end : Int32,
 ) -> Bool {
-  if self.binary && self.detect_binary(buf, start, end) {
+  if self.scan_binary && self.detect_binary(buf, start, end) {
     return false
   }
   if !self.sink_break_context(start) {
@@ -724,7 +698,7 @@ async fn Core::sink_before_context(
   start : Int32,
   end : Int32,
 ) -> Bool {
-  if self.binary && self.detect_binary(buf, start, end) {
+  if self.scan_binary && self.detect_binary(buf, start, end) {
     return false
   }
   if !self.sink_context(buf, start, end, Before) {
@@ -743,7 +717,7 @@ async fn Core::sink_after_context(
   end : Int32,
 ) -> Bool {
   guard self.after_context_left >= 1 else { abort("no after context left") }
-  if self.binary && self.detect_binary(buf, start, end) {
+  if self.scan_binary && self.detect_binary(buf, start, end) {
     return false
   }
   if !self.sink_context(buf, start, end, After) {
@@ -762,7 +736,7 @@ async fn Core::sink_other_context(
   start : Int32,
   end : Int32,
 ) -> Bool {
-  if self.binary && self.detect_binary(buf, start, end) {
+  if self.scan_binary && self.detect_binary(buf, start, end) {
     return false
   }
   if !self.sink_context(buf, start, end, Other) {
@@ -810,19 +784,7 @@ fn Core::is_line_by_line_fast(self : Core) -> Bool {
   if self.config.stop_on_nonmatch && self.has_matched {
     return false
   }
-  if self.matcher.line_terminator() is Some(lt) {
-    if lt.as_byte() == b'\x00' {
-      return false
-    }
-    if lt == self.config.line_term {
-      return true
-    }
-  }
-  if self.matcher.non_matching_bytes() is Some(nm) &&
-    nm.contains(self.lineterm()) {
-    return true
-  }
-  false
+  self.record_scan
 }
 
 ///|

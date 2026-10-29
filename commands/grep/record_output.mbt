@@ -1,4 +1,5 @@
 ///|
+// Strategy: grep-record-output
 // Batch complete unadorned records from the current immutable input chunk.
 // Adjacent selected records share one copy; partial records retain next().
 fn GrepInput::collect_records(
@@ -12,6 +13,7 @@ fn GrepInput::collect_records(
   let mut run_start = -1
   let start = self.position
   let mut at = start
+  let mut records = 0L
   while self.bytes[at:].find(self.delimiter) is Some(relative) {
     let end = at + relative
     let matched = matcher.matches_record(
@@ -29,12 +31,11 @@ fn GrepInput::collect_records(
       run_start = -1
     }
     at = end + 1
-    self.number += 1L
+    records += 1L
   }
   if run_start >= 0 {
     buffer.write_bytes(self.bytes[run_start:at])
   }
-  self.position = at
-  self.offset += (at - start).to_int64()
+  self.consume_records(at, records)
   selected
 }

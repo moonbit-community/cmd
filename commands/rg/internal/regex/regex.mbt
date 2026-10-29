@@ -1,4 +1,6 @@
 ///|
+// Strategy: rg-generic-regex
+///|
 /// An error that occurred while building a regex.
 pub suberror RegexError {
   /// A syntax error, rendered in the same format as Rust's regex crate.
@@ -46,8 +48,7 @@ pub struct Regex {
   /// When true, the prefilter itself finds exact matches.
   priv pre_is_exact : Bool
   priv group_names : Array[String?]
-  priv mut count_plan_ready : Bool
-  priv mut count_plan : @automata.RecordBoolean?
+  priv mut count_plan : BooleanPlanCache
 }
 
 ///|
@@ -109,8 +110,7 @@ pub fn Regex::from_hir(
     pre,
     pre_is_exact,
     group_names: nfa.group_names(),
-    count_plan_ready: false,
-    count_plan: None,
+    count_plan: Uninitialized,
   }
 }
 

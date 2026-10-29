@@ -128,6 +128,25 @@ fn LineBuffer::clear(self : LineBuffer) -> Unit {
 }
 
 ///|
+fn LineBuffer::commit_prefix(
+  self : LineBuffer,
+  length : Int32,
+  eof : Bool,
+) -> Unit {
+  self.end = length
+  self.last_lineterm = if eof {
+    length
+  } else {
+    let last = @memchr.memrchr(self.lineterm, self.buf, 0, length)
+    if last < 0 {
+      0
+    } else {
+      last + 1
+    }
+  }
+}
+
+///|
 fn LineBuffer::buffer_len(self : LineBuffer) -> Int32 {
   self.last_lineterm - self.pos
 }
@@ -151,7 +170,7 @@ async fn LineBuffer::fill(self : LineBuffer, rdr : &Reader) -> Bool {
     let readlen = rdr.read(
       self.buf,
       self.end,
-      (self.buf.length() - self.end).min(1048576),
+      (self.buf.length() - self.end).min(maximum_record_read_bytes),
     )
     if readlen == 0 {
       self.last_lineterm = self.end

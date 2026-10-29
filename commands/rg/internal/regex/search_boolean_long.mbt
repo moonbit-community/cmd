@@ -18,9 +18,5 @@ pub fn Regex::search_boolean_long(
   if at < 0 {
     return Some(-1)
   }
-  if !self.count_plan_ready {
-    self.count_plan = self.fwd.record_boolean()
-    self.count_plan_ready = true
-  }
-  self.count_plan.map(plan => plan.search_long_half(hay, at, end))
+  self.boolean_plan().map(plan => plan.search_long_half(hay, at, end))
 }

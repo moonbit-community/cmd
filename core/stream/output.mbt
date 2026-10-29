@@ -1,4 +1,6 @@
 ///|
+// Strategy: bounded-output
+///|
 /// Bounded output storage. Writes borrow private storage until completion.
 /// Failure consumes the queued prefix and prevents deferred cleanup from
 /// replaying bytes already accepted by the destination.

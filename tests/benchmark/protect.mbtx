@@ -140,7 +140,12 @@ async fn main {
   let registry = @fs.read_file("tests/benchmark/protection.json").text()
   @fs.write_file(evidence + "/protection.json", registry)
   let config = object(@json.parse(registry))
-  assert_eq(config["schema"], Json(1))
+  assert_eq(config["schema"], Json(2))
+  capture(
+    "moon",
+    ["run", "tests/architecture.mbtx", "--", evidence + "/architecture.json"],
+    evidence + "/architecture.log",
+  )
   assert_eq(config["windows"], Json(2))
   let pairs = number(config["pairs"]).to_int()
   assert_true(pairs > 0 && pairs % 2 == 1)

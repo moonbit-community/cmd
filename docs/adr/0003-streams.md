@@ -40,6 +40,60 @@ exceeds the 5% slowdown boundary. Only rg and tac artifacts changed. Evidence:
 `/private/tmp/cmd-governance-20261029-9dc4284/phase1-protection`. These preserved
 windows do not qualify a whole-suite performance claim.
 
+Batch 2 addresses A03-A08 and A16. Searcher-owned policy distinguishes streaming
+discard eligibility, read capacity and sink delivery. `LineExecution` records
+count/coalesced/synchronous/ordinary priority, while binary detection can
+transition a coalesced plan back to its synchronous or ordinary route. Immutable
+delimiter proof is computed once; content-dependent stopping remains dynamic.
+`ReaderEntry` distinguishes a fresh search from a probe replay, with prefix
+commit owned by the line buffer. Begin, EOF, read-error and sink-stop ordering
+remain unchanged. Boolean preparation has uninitialized/declined/ready states;
+literal plans make shift/AC ownership and resume handoff explicit. grep selects
+its output/summary mode once and commits complete buffered records through one
+accounting operation. Incremental cross-chunk reads and the two output queues
+retain their different error contracts.
+
+The owner-local policy inventory separates construction limits from measured
+dispatch thresholds. Equal numeric values do not imply shared policy:
+
+| Owner | Limit and unit | Kind / fallback | Evidence controls |
+| --- | --- | --- | --- |
+| rg driver | 4 KiB minimum block; 256 KiB ordinary block; 8 density samples in 4 KiB | Profitability; ordinary verifier or wide plan | boolean density, sparse and oversized boundary tests |
+| rg driver | 4 KiB literal cursor | Retained-suffix bound; buffered matcher | literal long hit/miss and stream regressions |
+| rg searcher | 64/256 KiB nominal reads; 1 MiB grown-record request cap | I/O policy; retained allocation is separate | reuse, bulk capacity, replay and EOF tests |
+| rg automata | 512 NFA / 256 DFA states; 65,536 transition entries | Construction bounds; existing regex engine | NFA boundary and over-budget cached-decline tests |
+| rg minimizer | 65,536 work components; 32 rounds | Construction bounds; original rows | exact work boundary, deep-chain and product-machine equivalence tests |
+| rg wide scan | 64-byte probe; 32-byte sparse-exit threshold | Profitability; exact transition loop | frequent exits, stream phase and periodic controls |
+| bytere literal set | 4,096 literal bytes; 1,024 AC states | Construction/packed-representation bounds; shift or ordinary matcher | byte/state N-1/N/N+1 tests and adaptive cache tests |
+| bytere adaptive shift | 4 KiB density window; 256 verification checks | Profitability; bounded AC attempt | dense collision and sparse input histories |
+| bytere record DFA | 256 NFA/DFA states; 8 skip plans; 256-byte acceleration entry | Construction/metadata bounds and profitability; span engine | exhausted-cache and certified-skip equivalence tests |
+
+Schema 2 of the existing protection registry links strategy status, source,
+named correctness tests and registered workloads. The existing architecture
+runner validates those links, including rejection controls, on each CI host and
+before performance windows. It does not replace semantic tests or reinterpret
+historical timing failures as acceptance.
+
+Batch 2's first frozen candidate passed semantic checks but regressed the
+multi-literal grep count by 16.55% and 16.49% in stable windows. The boxed handoff
+result is rejected. The revised handoff uses a value type and avoids rebuilding
+an already cached shift plan. All 154 revised workloads preserve bytes/status;
+132 qualify and no qualified row exceeds 5%. The whole timing verdict remains
+false because 22 profiles are unstable. Retained small costs are
+`rg-stream-frequent` 3.90-4.69%, `rg-min-broad-frequent` 3.62-4.08%,
+`column-table-long-8m` 0.89-3.26%, `grep-set-short-64m` 0.54-4.49% and
+`grep-hotspot-dense` -2.36% to +4.72%; commands without changed execution logic
+remain controls, not attributed to this source change. Original and revised windows are under
+`/private/tmp/cmd-governance-20261029-9dc4284/phase2-protection` and
+`phase2-value-protection`. The first batch's three-platform functional failure
+was the active tac help expectation missing its new cleanup sentence; batch 2
+updates that current contract without rewriting frozen published expectations.
+The revised batch passes 1,673 Wasm package tests and the complete local
+functional suite, including the repaired tac help contract. The strategy
+registry passes 18 bidirectional source-marker registrations and named-test
+checks, including CRLF checkout controls. The multi-literal count ratios are
+0.9884 and 0.9891 in the revised stable windows.
+
 Documentation profile update (2026-10-27): command READMEs describe invocation,
 supported options and user-visible limitations; implementation details remain in
 this ADR and the capability matrix. rg help now describes single-threaded reads,

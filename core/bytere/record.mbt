@@ -1,4 +1,6 @@
 ///|
+// Strategy: bytere-record-dfa
+///|
 /// Reusable boolean search for immutable byte records. The bounded lazy DFA
 /// handles assertion-free expressions; other cases retain the span engine's
 /// acceptance rules. Construct one matcher per consumer, outside its record loop.
@@ -48,7 +50,8 @@ pub fn RecordMatcher::matches(
     self.dfa = engine_cache(RecordDfa::new(self.pattern))
   }
   if !whole && !word && self.dfa is Ready(dfa) {
-    let result = if required.is_empty() && value.length() >= 256 {
+    let result = if required.is_empty() &&
+      value.length() >= record_acceleration_min_bytes {
       dfa.matches_accelerated(value)
     } else {
       dfa.matches(value)
@@ -112,7 +115,7 @@ fn Instruction::consumes(self : Instruction, byte : Int32) -> Bool {
 fn RecordDfa::new(pattern : Pattern) -> RecordDfa? {
   // Bound both the NFA and cached subsets. Assertions need position/word context,
   // and references need registers; neither is approximated by this byte DFA.
-  if pattern.program.length() > 256 ||
+  if pattern.program.length() > record_nfa_state_limit ||
     pattern.backreferences ||
     pattern.program.iter().any(instruction => instruction is Assert(_, _)) {
     return None
@@ -124,10 +127,13 @@ fn RecordDfa::new(pattern : Pattern) -> RecordDfa? {
     representatives,
     states: [],
     ids: Map([]),
-    edges: FixedArray::make(256 * representatives.length(), -1),
-    skip_plans: FixedArray::make(256, None),
-    skip_planned: FixedArray::make(256, false),
-    skip_budget: 8,
+    edges: FixedArray::make(
+      record_dfa_state_limit * representatives.length(),
+      -1,
+    ),
+    skip_plans: FixedArray::make(record_dfa_state_limit, None),
+    skip_planned: FixedArray::make(record_dfa_state_limit, false),
+    skip_budget: record_skip_plan_limit,
   }
   let nodes = dfa.closure([pattern.entry])
   dfa.states.push({ nodes, })
@@ -220,7 +226,7 @@ fn RecordDfa::transition(
     self.edges[slot] = existing * width
     return existing * width
   }
-  if self.states.length() >= 256 {
+  if self.states.length() >= record_dfa_state_limit {
     return -3
   }
   let next = self.states.length()

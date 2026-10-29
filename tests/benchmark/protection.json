@@ -1,5 +1,5 @@
 {
-  "schema": 1,
+  "schema": 2,
   "artifact_count": 80,
   "timing": "Complete release Wasm processes with input, output and exit; no MoonX and no startup subtraction",
   "windows": 2,
@@ -234,7 +234,8 @@
   },
   "boundaries": [
     {
-      "files": [
+      "retain": "Exact imported table values and order, first-use construction without suspension, process-local cached tables, unchanged Unicode/encoding semantics and file-type definitions",
+      "sources": [
         "commands/rg/internal/ignore/default_types.mbt",
         "commands/rg/internal/regex/unicode/unicode.mbt",
         "commands/rg/internal/regex/unicode/age_data.mbt",
@@ -248,8 +249,7 @@
         "commands/rg/internal/regex/unicode/property_bool_data.mbt",
         "commands/rg/internal/regex/unicode/property_names_data.mbt",
         "commands/rg/internal/regex/unicode/property_values_data.mbt"
-      ],
-      "retain": "Exact imported table values and order, first-use construction without suspension, process-local cached tables, unchanged Unicode/encoding semantics and file-type definitions"
+      ]
     },
     {
       "sources": [
@@ -371,6 +371,430 @@
         "core/tabstops"
       ],
       "retain": "Explicit adaptive-cache failure state, required capability boundaries, launch policy and aligned/relative tab-stop overflow checks"
+    }
+  ],
+  "strategies": [
+    {
+      "id": "rg-record-policy",
+      "owner": "commands/rg/internal/searcher",
+      "commands": [
+        "rg"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/rg/internal/searcher/policy.mbt",
+        "commands/rg/internal/searcher/core.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/rg/internal/searcher/policy_wbtest.mbt",
+          "name": "record policies preserve count coalescing and synchronous stop boundaries"
+        }
+      ],
+      "profiles": [
+        "rg-count-64m",
+        "rg-context-8m",
+        "rg-numbered-8m"
+      ],
+      "invariant": "Count precedes coalesced, synchronous and ordinary execution. Binary scan ownership, raw multiline policy, stop conditions and sink capabilities remain distinct."
+    },
+    {
+      "id": "rg-literal-stream",
+      "owner": "commands/rg/internal/searcher",
+      "commands": [
+        "rg"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/rg/internal/searcher/count_stream.mbt",
+        "commands/rg/internal/driver/search_matcher.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/rg/internal/driver/search_count_stream_wbtest.mbt",
+          "name": "counting agrees across fragmented literals alternatives decoding and final records"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_count_stream_wbtest.mbt",
+          "name": "counting preserves matches crossing bulk windows and long unmatched records"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_count_stream_wbtest.mbt",
+          "name": "counting does not bypass an explicit heap limit"
+        }
+      ],
+      "profiles": [
+        "rg-literal-long-64m-hit",
+        "rg-literal-long-64m-miss"
+      ],
+      "invariant": "Resolve delimiter exclusion and decoding before discarding bytes; retain the unmatched suffix until a delimiter or actual EOF."
+    },
+    {
+      "id": "rg-regex-probe-replay",
+      "owner": "commands/rg/internal/searcher",
+      "commands": [
+        "rg"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/rg/internal/searcher/count_regex_stream.mbt",
+        "commands/rg/internal/searcher/glue.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/rg/internal/driver/search_reuse_wbtest.mbt",
+          "name": "audit reused regex probe must retain its nominal read bound"
+        }
+      ],
+      "profiles": [
+        "rg-stream-long64",
+        "rg-stream-phase-4095"
+      ],
+      "invariant": "Probe uses nominal capacity independent of retained storage. Replay owns the original decoder, begins once and delivers complete records before later errors."
+    },
+    {
+      "id": "rg-boolean-count",
+      "owner": "commands/rg/internal/regex",
+      "commands": [
+        "rg"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/rg/internal/regex/prepared.mbt",
+        "commands/rg/internal/regex/count_boolean.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/rg/internal/regex/count_boolean_wbtest.mbt",
+          "name": "boolean count preparation is lazy and over-budget rejection is cached"
+        }
+      ],
+      "profiles": [
+        "rg-boolean-budget",
+        "rg-boolean-density-shift"
+      ],
+      "invariant": "Preparation distinguishes uninitialized, declined and ready. Mandatory-literal filtering continues throughout the block."
+    },
+    {
+      "id": "rg-wide-boolean",
+      "owner": "commands/rg/internal/regex/automata",
+      "commands": [
+        "rg"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/rg/internal/regex/automata/record_wide.mbt",
+        "commands/rg/internal/regex/automata/record_stream.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/rg/internal/regex/wide_boolean_wbtest.mbt",
+          "name": "wide count table agrees with compact table for tails offsets and bytes"
+        }
+      ],
+      "profiles": [
+        "rg-pilot-frequent-exits",
+        "rg-stream-period-1009"
+      ],
+      "invariant": "Exact transition and exit membership preserve delayed matches, EOF and chunk phase. Endpoint discovery replays transitions to recover the earliest endpoint."
+    },
+    {
+      "id": "rg-generic-regex",
+      "owner": "commands/rg/internal/regex",
+      "commands": [
+        "rg"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/rg/internal/regex/regex.mbt",
+        "commands/rg/internal/regex/prepared.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/rg/internal/driver/search_matcher_wbtest.mbt",
+          "name": "boolean discovery ends early while full matches and captures remain greedy"
+        }
+      ],
+      "profiles": [
+        "rg-dfa-long",
+        "rg-only-8m",
+        "rg-replace-8m"
+      ],
+      "invariant": "Boolean discovery does not replace greedy span or capture semantics; fallback retains the original search interval and priority."
+    },
+    {
+      "id": "grep-execution",
+      "owner": "commands/grep",
+      "commands": [
+        "grep"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/grep/execution.mbt",
+        "commands/grep/streaming.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/grep/execution_wbtest.mbt",
+          "name": "grep execution preserves flag priority and contextual span output"
+        }
+      ],
+      "profiles": [
+        "grep-hotspot-context",
+        "grep-hotspot-only",
+        "grep-hotspot-invert"
+      ],
+      "invariant": "Static route selection preserves summary flag priority, span output with context, and dynamic binary transitions."
+    },
+    {
+      "id": "grep-record-output",
+      "owner": "commands/grep",
+      "commands": [
+        "grep"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/grep/record_output.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/grep/record_output_wbtest.mbt",
+          "name": "whole record batches do not retry a partial output failure"
+        }
+      ],
+      "profiles": [
+        "grep-hotspot-output",
+        "grep-hotspot-sparse"
+      ],
+      "invariant": "Commit complete buffered records once; retain cross-chunk tails and never replay a partially failed write."
+    },
+    {
+      "id": "grep-span-output",
+      "owner": "commands/grep",
+      "commands": [
+        "grep"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/grep/streaming.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/grep/span_output_wbtest.mbt",
+          "name": "span output flushes a complete and partial record before a read error"
+        }
+      ],
+      "profiles": [
+        "grep-hotspot-only"
+      ],
+      "invariant": "Span queue resets before writing; partial input record precedes its pending read error."
+    },
+    {
+      "id": "grep-summary",
+      "owner": "commands/grep",
+      "commands": [
+        "grep"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/grep/prefilter.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/grep/prefilter_wbtest.mbt",
+          "name": "counting batches retain inverted matches NUL records and final fragments"
+        }
+      ],
+      "profiles": [
+        "grep-hotspot-dense-count",
+        "grep-hotspot-sparse-count"
+      ],
+      "invariant": "Batch record accounting shares one commit operation without changing incremental cross-chunk accounting."
+    },
+    {
+      "id": "bytere-literal-adaptive",
+      "owner": "core/bytere",
+      "commands": [
+        "grep"
+      ],
+      "status": "adopted",
+      "sources": [
+        "core/bytere/literal_set.mbt",
+        "core/bytere/literal_shift.mbt",
+        "core/bytere/literal_automaton.mbt"
+      ],
+      "tests": [
+        {
+          "file": "core/bytere/literal_adaptive_wbtest.mbt",
+          "name": "adaptive construction is lazy cached and bounded"
+        }
+      ],
+      "profiles": [
+        "grep-many-count-64m",
+        "grep-set-short-64m"
+      ],
+      "invariant": "Short literals use AC; shift plans carry explicit optional AC state and a typed handoff. Construction budget decline is cached."
+    },
+    {
+      "id": "bytere-record-dfa",
+      "owner": "core/bytere",
+      "commands": [
+        "grep"
+      ],
+      "status": "adopted",
+      "sources": [
+        "core/bytere/record.mbt",
+        "core/bytere/record_skip.mbt"
+      ],
+      "tests": [
+        {
+          "file": "core/bytere/record_skip_wbtest.mbt",
+          "name": "certified skips preserve boolean matching for reused states long tails and all byte classes"
+        }
+      ],
+      "profiles": [
+        "grep-hotspot-long-miss",
+        "grep-hotspot-many-states"
+      ],
+      "invariant": "Certified self-loop skips preserve Boolean semantics; budget failure falls back to the span engine."
+    },
+    {
+      "id": "bytere-anchored-linear",
+      "owner": "core/bytere",
+      "commands": [
+        "grep"
+      ],
+      "status": "adopted",
+      "sources": [
+        "core/bytere/record_linear.mbt"
+      ],
+      "tests": [
+        {
+          "file": "core/bytere/record_linear_wbtest.mbt",
+          "name": "anchored byte predicates agree with the span engine across all short records"
+        }
+      ],
+      "profiles": [
+        "grep-hotspot-regex-count"
+      ],
+      "invariant": "Only branch-free fixed-length anchored Boolean matching uses the linear plan; exact EOF acceptance is required."
+    },
+    {
+      "id": "grep-general-onepass-rejected",
+      "owner": "core/bytere",
+      "commands": [
+        "grep"
+      ],
+      "status": "rejected-control",
+      "sources": [
+        "core/bytere/record_linear.mbt",
+        "core/bytere/matcher.mbt"
+      ],
+      "tests": [
+        {
+          "file": "core/bytere/record_linear_wbtest.mbt",
+          "name": "anchored linear plans decline branching and position-sensitive syntax"
+        }
+      ],
+      "profiles": [
+        "grep-onepass-repeat",
+        "grep-onepass-ambiguous",
+        "grep-onepass-only"
+      ],
+      "invariant": "Historical onepass profile names are fallback controls. No general onepass implementation is adopted."
+    },
+    {
+      "id": "bounded-output",
+      "owner": "core/stream",
+      "commands": [
+        "rg",
+        "column"
+      ],
+      "status": "adopted",
+      "sources": [
+        "core/stream/output.mbt",
+        "commands/rg/internal/driver/stdout.mbt"
+      ],
+      "tests": [
+        {
+          "file": "core/stream/output_test.mbt",
+          "name": "failed shared output never replays a partially written prefix"
+        }
+      ],
+      "profiles": [
+        "rg-output-8m",
+        "column-table-8m"
+      ],
+      "invariant": "Output owns queued bytes, serializes borrowing and consumes failed or cancelled writes without replay."
+    },
+    {
+      "id": "column-table-plans",
+      "owner": "commands/column",
+      "commands": [
+        "column"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/column/fields.mbt",
+        "commands/column/spool.mbt",
+        "commands/column/table.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/column/fields_wbtest.mbt",
+          "name": "large-row field metadata is bounded and does not alter snapshot storage"
+        }
+      ],
+      "profiles": [
+        "column-cache-cap-8m",
+        "column-dense-fields-1m"
+      ],
+      "invariant": "Record retrieval and field traversal share mechanisms while row plans remain bounded and output retains original delimiter semantics."
+    },
+    {
+      "id": "tac-spool",
+      "owner": "commands/tac",
+      "commands": [
+        "tac"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/tac/reverse.mbt",
+        "commands/tac/reverse_fixed.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/tac/cleanup_wbtest.mbt",
+          "name": "spool cleanup runs once and preserves primary error precedence"
+        }
+      ],
+      "profiles": [
+        "tac-stream-8m",
+        "tac-long-8m"
+      ],
+      "invariant": "Close the file before directory cleanup, preserve the primary error, and report cleanup-only failure."
+    },
+    {
+      "id": "sort-spill",
+      "owner": "commands/sort",
+      "commands": [
+        "sort"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/sort/external.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/sort/sort_wbtest.mbt",
+          "name": "sort merge reservation leaves useful run space for a one MiB budget"
+        }
+      ],
+      "profiles": [
+        "sort-8m",
+        "sort-n-8m"
+      ],
+      "invariant": "Bound run and merge reservations; the separate spill repair observation is not a passing baseline timing ratio."
     }
   ]
 }

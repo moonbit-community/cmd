@@ -1,4 +1,5 @@
 ///|
+// Strategy: sort-spill
 priv struct Run {
   path : String
   largest_entry : Int64

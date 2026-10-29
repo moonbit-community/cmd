@@ -46,7 +46,9 @@ fn BooleanRecordStream::scan(
     state = table[state + hay[at + 2].to_int()]
     state = table[state + hay[at + 3].to_int()]
     at += 4
-    if self.accelerating && state == previous && end - at >= 64 {
+    if self.accelerating &&
+      state == previous &&
+      end - at >= boolean_probe_window_bytes {
       if plan.accelerators[state / 256] is Some(filter) {
         let next = filter.find_start(hay, at, end)
         if next < 0 {
@@ -54,8 +56,8 @@ fn BooleanRecordStream::scan(
         } else {
           // A chunk may resume just before an exit. That truncated distance
           // does not describe the record's exit density.
-          if at - start >= 64 {
-            self.accelerating = next - at >= 32
+          if at - start >= boolean_probe_window_bytes {
+            self.accelerating = next - at >= boolean_sparse_exit_bytes
           }
           at = next
         }

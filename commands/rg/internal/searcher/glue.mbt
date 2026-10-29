@@ -28,16 +28,28 @@ fn ReadByLine::win(self : ReadByLine) -> Win {
 }
 
 ///|
+priv enum ReaderEntry {
+  Fresh
+  // begin already succeeded; the original buffer contains decoded bytes.
+  Replay(Int32, Bool)
+}
+
+///|
 async fn ReadByLine::run(
   self : ReadByLine,
-  begun~ : Bool = false,
-  prefetched~ : Bool = false,
-  ended~ : Bool = false,
+  entry~ : ReaderEntry = Fresh,
 ) -> Unit {
-  if begun || self.core.begin() {
+  let begun = match entry {
+    Fresh => self.core.begin()
+    Replay(length, ended) => {
+      self.lb.commit_prefix(length, ended)
+      true
+    }
+  }
+  if begun {
     // A declined probe is already decoded in this reader's original buffer.
     // Process its complete records before another read can report an error.
-    if prefetched && (ended || self.lb.buffer_len() > 0) {
+    if entry is Replay(_, ended) && (ended || self.lb.buffer_len() > 0) {
       let keep_reading = self.core.match_by_line(self.win())
       if ended || !keep_reading {
         self.lb.consume(self.core.pos)

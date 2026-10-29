@@ -5,15 +5,11 @@ pub fn Regex::boolean_stream_counter(
   term : Byte,
   required~ : Regex? = None,
 ) -> ((FixedArray[Byte], Int32, Int32, Bool) -> Int64)? {
-  if !self.count_plan_ready {
-    self.count_plan = self.fwd.record_boolean()
-    self.count_plan_ready = true
-  }
   let pre = match required {
     Some(re) if re.pre_is_exact => re.pre
     _ => None
   }
-  self.count_plan.map(plan => plan.stream_counter(term, pre?))
+  self.boolean_plan().map(plan => plan.stream_counter(term, pre?))
 }
 
 ///|
@@ -28,15 +24,13 @@ pub fn Regex::count_boolean_lines(
   term : Byte,
   required~ : Regex? = None,
 ) -> Int64? {
-  if !self.count_plan_ready {
-    self.count_plan = self.fwd.record_boolean()
-    self.count_plan_ready = true
-  }
   let pre = match required {
     Some(re) if re.pre_is_exact => re.pre
     _ => None
   }
-  self.count_plan.map(plan => {
+  self
+  .boolean_plan()
+  .map(plan => {
     if end - start > 262144 {
       plan.count_long_lines(hay, start, end, term, pre?)
     } else {

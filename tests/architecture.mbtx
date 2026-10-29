@@ -3,6 +3,7 @@ import {
   "moonbitlang/async@0.22.5",
   "moonbitlang/async@0.22.5/fs",
   "moonbitlang/core/env",
+  "moonbitlang/core/json",
 }
 ----
 
@@ -16,6 +17,146 @@ struct Package {
   test_lines : Int32
   public_declarations : Int32
 } derive(ToJson)
+
+///|
+struct StrategyTest {
+  file : String
+  name : String
+} derive(FromJson)
+
+///|
+struct Strategy {
+  id : String
+  owner : String
+  commands : Array[String]
+  status : String
+  sources : Array[String]
+  tests : Array[StrategyTest]
+  profiles : Array[String]
+  invariant : String
+} derive(FromJson)
+
+///|
+struct Boundary {
+  sources : Array[String]
+  retain : String
+} derive(FromJson)
+
+///|
+struct ProtectionRegistry {
+  schema : Int32
+  profiles : Map[String, Array[String]]
+  boundaries : Array[Boundary]
+  strategies : Array[Strategy]
+} derive(FromJson)
+
+///|
+fn strategy_errors(
+  strategies : Array[Strategy],
+  profiles : Map[String, Array[String]],
+) -> Array[String] {
+  let errors : Array[String] = []
+  let seen : Set[String] = Set([])
+  if strategies.is_empty() {
+    errors.push("empty strategy inventory")
+  }
+  for strategy in strategies {
+    if strategy.id.is_empty() || seen.contains(strategy.id) {
+      errors.push("duplicate or empty strategy: " + strategy.id)
+    }
+    seen.add(strategy.id)
+    if !["adopted", "rejected-control", "historical"].contains(strategy.status) {
+      errors.push("unknown strategy status: " + strategy.id)
+    }
+    if strategy.owner.is_empty() || strategy.invariant.is_empty() ||
+      strategy.commands.is_empty() || strategy.sources.is_empty() ||
+      strategy.tests.is_empty() || strategy.profiles.is_empty() {
+      errors.push("incomplete strategy: " + strategy.id)
+    }
+    let allowed : Set[String] = Set([])
+    for command in strategy.commands {
+      match profiles.get(command) {
+        Some(ids) => for id in ids { allowed.add(id) }
+        None => errors.push("unregistered command: " + command)
+      }
+    }
+    for profile in strategy.profiles {
+      if !allowed.contains(profile) {
+        errors.push("orphan strategy profile: " + strategy.id + ":" + profile)
+      }
+    }
+  }
+  errors
+}
+
+///|
+fn has_named_test(source : String, name : String) -> Bool {
+  source.split("\n").any(line => {
+    let line = line.trim_end()
+    line == "test \"" + name + "\" {" || line == "async test \"" + name + "\" {"
+  })
+}
+
+///|
+async fn check_strategies(markers : Map[String, String]) -> Int32 {
+  for newline in ["\n", "\r\n"] {
+    assert_true(has_named_test("///|" + newline + "test \"boundary\" {" + newline + "}", "boundary"))
+    assert_true(has_named_test("async test \"boundary\" {" + newline, "boundary"))
+    assert_false(has_named_test("// test \"boundary\" {" + newline, "boundary"))
+    assert_false(has_named_test("test \"boundary extra\" {" + newline, "boundary"))
+  }
+  let registry : ProtectionRegistry = @json.from_json(
+    @json.parse(@fs.read_file("tests/benchmark/protection.json").text()),
+  )
+  assert_eq(registry.schema, 2)
+  assert_true(!registry.boundaries.is_empty())
+  let profiles : Set[String] = Set([])
+  for command, ids in registry.profiles {
+    assert_true(@fs.exists("commands/" + command + "/moon.pkg"))
+    assert_true(!ids.is_empty(), msg="empty profile selection: " + command)
+    for id in ids {
+      assert_true(!id.is_empty() && !profiles.contains(id), msg=id)
+      profiles.add(id)
+    }
+  }
+  assert_eq(strategy_errors(registry.strategies, registry.profiles), [])
+  assert_eq(markers.length(), registry.strategies.length(), msg="orphan or missing strategy registration")
+  // Negative controls ensure incomplete and orphan registrations fail closed.
+  let valid = registry.strategies[0]
+  assert_false(strategy_errors([], registry.profiles).is_empty())
+  assert_false(strategy_errors([valid, valid], registry.profiles).is_empty())
+  for invalid in [
+    { ..valid, tests: [] },
+    { ..valid, profiles: ["unregistered-profile"] },
+    { ..valid, commands: ["unregistered-command"] },
+    { ..valid, status: "unreviewed" },
+  ] {
+    assert_false(strategy_errors([invalid], registry.profiles).is_empty())
+  }
+  for boundary in registry.boundaries {
+    assert_true(!boundary.sources.is_empty() && !boundary.retain.is_empty())
+    for path in boundary.sources {
+      assert_true(@fs.exists(path), msg="missing boundary source: " + path)
+    }
+  }
+  for strategy in registry.strategies {
+    let marker = markers.get(strategy.id).unwrap_or("")
+    assert_true(strategy.sources.contains(marker), msg="missing strategy source marker: " + strategy.id)
+    assert_true(@fs.exists(strategy.owner), msg="missing strategy owner: " + strategy.owner)
+    for path in strategy.sources {
+      assert_true(!@fs.read_file(path).text().is_empty(), msg="empty strategy source: " + path)
+    }
+    for check in strategy.tests {
+      let source = @fs.read_file(check.file).text()
+      assert_true(!check.name.is_empty())
+      assert_true(
+        has_named_test(source, check.name),
+        msg="missing strategy test: " + check.file + ":" + check.name,
+      )
+    }
+  }
+  registry.strategies.length()
+}
 
 ///|
 fn dependencies(source : String) -> (Array[String], Array[String]) raise {
@@ -59,7 +200,7 @@ fn package_name(path : String) -> String {
 }
 
 ///|
-async fn inventory(path : String, packages : Map[String, Package]) -> Unit {
+async fn inventory(path : String, packages : Map[String, Package], markers : Map[String, String]) -> Unit {
   let names = @fs.readdir(path)
   if names.contains("moon.pkg") {
     let (dependencies, test_dependencies) = dependencies(
@@ -77,6 +218,13 @@ async fn inventory(path : String, packages : Map[String, Package]) -> Unit {
           test_lines += lines
         } else {
           implementation_lines += lines
+          for line in source.split("\n") {
+            if line.has_prefix("// Strategy: ") {
+              let id = line[13:].trim().to_owned()
+              assert_false(markers.contains(id), msg="duplicate strategy marker: " + id)
+              markers[id] = path + "/" + name
+            }
+          }
         }
       } else if name == "pkg.generated.mbti" {
         public_declarations = @fs.read_file(path + "/" + name)
@@ -104,7 +252,7 @@ async fn inventory(path : String, packages : Map[String, Package]) -> Unit {
     }
     let child = path + "/" + name
     if @fs.kind(child, follow_symlink=false) is Directory {
-      inventory(child, packages)
+      inventory(child, packages, markers)
     }
   }
 }
@@ -154,9 +302,11 @@ async fn main {
     (["cli/core/stream"], ["test/fixture"]),
   )
   let packages : Map[String, Package] = Map([])
+  let markers : Map[String, String] = Map([])
   for path in ["core", "commands", "tests"] {
-    inventory(path, packages)
+    inventory(path, packages, markers)
   }
+  let strategies = check_strategies(markers)
   let failures : Array[String] = []
   let commands = packages
     .values()
@@ -227,6 +377,7 @@ async fn main {
   }
   let report : Json = {
     "commands": commands.length(),
+    "validated_strategies": strategies,
     "packages": rows,
     "failures": failures,
     "scope": "Workspace package dependencies, reachability and source inventory. Export-level ownership and module disposition require the canonical ADR review; generated data and test corpora are not dead code merely because they are not runtime-reachable.",

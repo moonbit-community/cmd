@@ -1,4 +1,5 @@
 ///|
+// Strategy: column-table-plans
 priv struct TableField {
   data : BytesView
   width : Int32

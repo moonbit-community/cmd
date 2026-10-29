@@ -1,4 +1,5 @@
 ///|
+// Strategy: tac-spool
 let block_size : Int32 = 65536
 
 ///|

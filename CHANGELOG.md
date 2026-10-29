@@ -3,6 +3,14 @@
 This repository integrates multiple command packages, so changes are recorded
 by date and delivery milestone rather than by a single package version.
 
+## 2026-10-29 (execution governance, batch 2 of 3)
+
+- Consolidate search policy, explicit replay and prepared-engine state, literal
+  handoff and grep record accounting without widening fast-path eligibility.
+- Name owner-local budgets and add exact boundary regressions. Validate the
+  strategy/source/test/workload inventory in all three CI jobs and before
+  performance protection. Historical rejected strategy controls are retained.
+
 ## 2026-10-29 (execution governance, batch 1 of 3)
 
 - Bound rg regex-count probes and streaming reads by the configured window,

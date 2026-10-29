@@ -76,12 +76,25 @@ test "boolean count adapter selects direct byte rows for oversized records" {
   )
   let prefix = b"0001 gamma\n".repeat(32)
   let hay = (prefix + Bytes::make(262145 - prefix.length(), b'x')).to_fixedarray()
-  assert_eq(
-    @matcher.Matcher::count_matching_lines(matcher, hay, 0, 262144, b'\n'),
-    Some(32L),
-  )
-  assert_eq(
-    @matcher.Matcher::count_matching_lines(matcher, hay, 0, 262145, b'\n'),
-    Some(32L),
-  )
+  for
+    size in [
+      boolean_min_block_bytes - 1,
+      boolean_min_block_bytes,
+      boolean_min_block_bytes + 1,
+      boolean_ordinary_block_bytes - 1,
+      boolean_ordinary_block_bytes,
+      boolean_ordinary_block_bytes + 1,
+    ] {
+    let count = @matcher.Matcher::count_matching_lines(
+      matcher, hay, 0, size, b'\n',
+    )
+    assert_eq(
+      count,
+      if size < boolean_min_block_bytes {
+        None
+      } else {
+        Some(32L)
+      },
+    )
+  }
 }

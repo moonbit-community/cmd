@@ -79,6 +79,8 @@ jobs:
         run: moon update
       - name: Check Wasm products
         run: moon check --target wasm --deny-warn
+      - name: Architecture and strategy registry
+        run: moon run tests/architecture.mbtx -- test-reports/architecture.json
       - name: Check Native test tools
         run: moon check --target native --deny-warn tests/runner tests/release_runner tests/testkit tests/registry tests/network_scenarios tests/mv_scenarios tests/benchmark
       - name: Build Wasm commands once

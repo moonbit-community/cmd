@@ -8,7 +8,7 @@ fn minimize_boolean_rows(
   start : Int32,
   accept : Int32,
   alphabet : Array[Int32],
-  budget~ : Int32 = 65536,
+  budget~ : Int32 = boolean_refinement_work_limit,
 ) -> (FixedArray[Int32], FixedArray[Bool], Int32, Int32)? {
   let states = eof.length()
   let width = alphabet.length() + 2
@@ -24,7 +24,7 @@ fn minimize_boolean_rows(
   })
   let mut count = 0
   let mut stable = false
-  for _round in 0..<32 {
+  for _round in 0..<boolean_refinement_round_limit {
     if budget - work < states * width {
       return None
     }

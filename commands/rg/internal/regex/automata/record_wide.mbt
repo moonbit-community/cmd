@@ -1,4 +1,5 @@
 ///|
+// Strategy: rg-wide-boolean
 // Expand only for oversized records. Direct byte rows remove the class lookup;
 // an absorbing accepting row permits four transitions between match checks.
 priv struct WideBoolean {
@@ -108,13 +109,15 @@ pub fn RecordBoolean::search_long_half(
       }
     }
     at += 4
-    if accelerating && state == previous && end - at >= 64 {
+    if accelerating &&
+      state == previous &&
+      end - at >= boolean_probe_window_bytes {
       if plan.accelerators[state / 256] is Some(filter) {
         let next = filter.find_start(hay, at, end)
         if next < 0 {
           at = end
         } else {
-          accelerating = next - at >= 32
+          accelerating = next - at >= boolean_sparse_exit_bytes
           at = next
         }
       }
@@ -170,14 +173,16 @@ pub fn RecordBoolean::count_long_lines(
       state = table[state + hay[i + 2].to_int()]
       state = table[state + hay[i + 3].to_int()]
       i += 4
-      if accelerating && state == previous && line_end - i >= 64 {
+      if accelerating &&
+        state == previous &&
+        line_end - i >= boolean_probe_window_bytes {
         if plan.accelerators[state / 256] is Some(filter) {
           let next = filter.find_start(hay, i, line_end)
           if next < 0 {
             i = line_end
           } else {
             // Stop probing this record when exits are too frequent.
-            accelerating = next - i >= 32
+            accelerating = next - i >= boolean_sparse_exit_bytes
             i = next
           }
         }

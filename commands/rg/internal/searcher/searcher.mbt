@@ -294,32 +294,6 @@ pub async fn Searcher::search_reader(
 }
 
 ///|
-// Keep the original read window for early exit, context, multiline and binary
-// filtering. Explicit heap limits cap both the initial allocation and growth.
-fn Searcher::reader_capacity(self : Searcher, sink : &Sink) -> Int32 {
-  let config = self.config
-  let capacity = if (
-      sink.bulk_scan() ||
-      (sink.coalesce_matches() && config.binary is BinaryNone)
-    ) &&
-    !config.multi_line &&
-    config.max_matches is None &&
-    !config.stop_on_nonmatch &&
-    !config.invert_match &&
-    !config.passthru &&
-    config.max_context() == 0 &&
-    config.binary.quit_byte() is None {
-    262144
-  } else {
-    DEFAULT_BUFFER_CAPACITY
-  }
-  match config.heap_limit {
-    Some(limit) => capacity.min(limit)
-    None => capacity
-  }
-}
-
-///|
 /// Searches the given slice `buf[0:len]`.
 async fn Searcher::search_slice(
   self : Searcher,

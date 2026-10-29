@@ -1,4 +1,6 @@
 ///|
+// Strategy: bytere-anchored-linear
+// Strategy: grep-general-onepass-rejected
 // A bounded, branch-free program with a leading Begin assertion has exactly
 // one candidate start. Resolve it directly on bytes for boolean record queries.
 fn Pattern::is_anchored_linear(self : Pattern) -> Bool {
