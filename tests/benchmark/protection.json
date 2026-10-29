@@ -171,10 +171,14 @@
       "sort-n-8m"
     ],
     "curl": [
-      "curl-loopback-8m"
+      "curl-loopback-8m",
+      "curl-loopback-bytes-upload-8m",
+      "curl-loopback-file-upload-8m",
+      "curl-loopback-stdin-upload-8m"
     ],
     "wget": [
-      "wget-loopback-8m"
+      "wget-loopback-8m",
+      "wget-loopback-file-upload-8m"
     ],
     "sh": [
       "sh-control-5000"

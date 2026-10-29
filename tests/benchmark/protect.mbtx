@@ -34,11 +34,11 @@ fn number(value : Json) -> Double {
 
 ///|
 // Ephemeral loopback ports identify the fixture server, not a workload change.
-// Retain actual arguments in each report and normalize only these two fixtures.
+// Retain actual arguments in each report and normalize only these fixtures.
 fn workload_identity(value : Json) -> Json raise {
   let fields = object(value)
   let id = text(fields["id"])
-  if id != "curl-loopback-8m" && id != "wget-loopback-8m" {
+  if !loopback_fixture(id) {
     return value
   }
   let args = array(fields["args"])
@@ -56,6 +56,15 @@ fn workload_identity(value : Json) -> Json raise {
   identity["args"] = Json(normalized)
   identity["oracle"] = Json(oracle)
   Json(identity)
+}
+
+///|
+fn loopback_fixture(id : String) -> Bool {
+  [
+    "curl-loopback-8m", "wget-loopback-8m",
+    "curl-loopback-bytes-upload-8m", "curl-loopback-file-upload-8m",
+    "curl-loopback-stdin-upload-8m", "wget-loopback-file-upload-8m",
+  ].contains(id)
 }
 
 ///|
@@ -259,8 +268,7 @@ async fn main {
       array(profiles[text(profile["command"])]).contains(profile["id"]),
     )
     fixture_files(text(profile["input"]), files)
-    if text(profile["id"]) == "curl-loopback-8m" ||
-      text(profile["id"]) == "wget-loopback-8m" {
+    if loopback_fixture(text(profile["id"])) {
       fixture_files(fixtures + "/text8m", files)
     }
     for arg in array(profile["args"]) {

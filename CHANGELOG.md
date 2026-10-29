@@ -25,6 +25,19 @@ by date and delivery milestone rather than by a single package version.
   The corrected option contract becomes the baseline for subsequent cleanup
   comparisons; this correctness fix makes no timing acceptance claim.
 
+## 2026-10-30 (history-led cleanup, batch 3)
+
+- Remove the HTTP upload forwarding function and call the existing wire owner
+  directly at all three request-body write sites. Timeout, framing and error
+  ownership remain in `HttpWire::write_payload`.
+- Add four registered 8 MiB upload controls for curl bytes/file/stdin and wget
+  file bodies. The server checks the complete request body. All six HTTP
+  download/upload controls qualified in both protection windows.
+- Local correctness passed with the combined cleanup candidate. The revised
+  complete timing suite qualified 159/160 rows; an unchanged ln startup
+  control exceeded the MAD limit. Preserve that failure without claiming
+  complete performance acceptance. No version or release coordinate changes.
+
 ## 2026-10-29 (rg progressive reads and granular output)
 
 - Separate physical regular-file refills from logical decoder requests. Begin

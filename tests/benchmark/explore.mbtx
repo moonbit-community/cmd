@@ -1189,6 +1189,10 @@ async fn run_cases() -> Unit {
   add("rg-only-8m", "rg", ["-n", "-o", "[0-9]{4}", "-"], "text8m", "unused")
   add("sort-spill-8m", "sort", ["-S", "1M"], "text8m", "unused")
   add("curl-loopback-8m", "curl", ["-sS", loopback_url.val], "empty", "unused")
+  add("curl-loopback-bytes-upload-8m", "curl", ["-sS", "--data-binary", "@" + lab + "/text8m", loopback_url.val], "empty", "unused")
+  add("curl-loopback-file-upload-8m", "curl", ["-sS", "-T", lab + "/text8m", loopback_url.val], "empty", "unused")
+  add("curl-loopback-stdin-upload-8m", "curl", ["-sS", "-T", "-", loopback_url.val], "text8m", "unused")
+  add("wget-loopback-file-upload-8m", "wget", ["-q", "-O", "-", "--method=POST", "--body-file=" + lab + "/text8m", loopback_url.val], "empty", "unused")
   add(
     "wget-loopback-8m",
     "wget",
@@ -1393,7 +1397,10 @@ async fn main {
       let server = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
       group.add_defer(() => server.close())
       group.spawn_bg(no_wait=true) <| () => {
-        server.run_forever() <| ((_, _, connection) => {
+        server.run_forever() <| ((request, body, connection) => {
+          if request.meth == @http.Post || request.meth == @http.Put {
+            assert_eq(body.read_all().binary(), payload)
+          }
           connection.send_response(200, "OK", extra_headers={
             "Content-Length": payload.length().to_string(),
           })

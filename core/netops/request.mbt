@@ -181,16 +181,6 @@ async fn open_client(
 }
 
 ///|
-async fn write_client_chunk(
-  client : HttpWire,
-  chunk : Bytes,
-  options : TransferOptions,
-  started : Int64,
-) -> Unit {
-  client.write_payload(chunk, options, started)
-}
-
-///|
 async fn stream_file_body(
   client : HttpWire,
   path : String,
@@ -223,7 +213,7 @@ async fn stream_file_body(
       Some(None) => break
       None => raise timeout_message("request body input", timeout)
     }
-    write_client_chunk(client, chunk, options, started)
+    client.write_payload(chunk, options, started)
   }
 }
 
@@ -251,7 +241,7 @@ async fn stream_stdin_body(
       Some(None) => break
       None => raise timeout_message("request body input", timeout)
     }
-    write_client_chunk(client, chunk, options, started)
+    client.write_payload(chunk, options, started)
   }
 }
 
@@ -271,7 +261,7 @@ async fn send_request(
   )
   match body {
     EmptyBody => ()
-    BytesBody(data) => write_client_chunk(client, data, options, started)
+    BytesBody(data) => client.write_payload(data, options, started)
     FileBody(path) => stream_file_body(client, path, options, started)
     StdinBody => stream_stdin_body(client, options, started)
   }

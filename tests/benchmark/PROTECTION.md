@@ -66,8 +66,13 @@ Compare each adopted phase with its preceding passing phase, then compare the
 final candidate cumulatively with the starting artifacts. Report 3–5% losses
 individually; reject or revise a qualified loss above 5%. For every recorded
 window the declared profile, actual arguments and expected status/diagnostic
-must agree. Only the dynamically assigned loopback port of the two local HTTP
+must agree. Only the dynamically assigned loopback port of the six local HTTP
 fixtures is normalized; raw invocations remain in the reports.
+
+The HTTP set includes 8 MiB downloads plus curl in-memory, file and stdin
+uploads and wget file upload. The loopback server consumes every uploaded
+body and checks its complete bytes before responding. These upload controls
+exercise all three request-body write paths in the shared HTTP wire owner.
 
 The architecture profiles add local HTTP transfers, shell/make/filter execution,
 gzip streams, directory traversal, long rg records at 8/20/32/64 MiB, and
