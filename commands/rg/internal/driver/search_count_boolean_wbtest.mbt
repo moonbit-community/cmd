@@ -1,4 +1,55 @@
 ///|
+test "count selection revisits dense sparse and dense inputs on the same matcher" {
+  let matcher = SearchMatcher::new(
+    ["[0-9]{4}.*gamma"],
+    line_terminator=Some(@matcher.LineTerminator::byte(b'\n')),
+  )
+  let dense = b"0001 gamma\n".repeat(1000)
+  let sparse = b"0001 gamma\n" + Bytes::make(8192, b'x') + b"\n0002 gamma\n"
+  for
+    (input, expected) in [
+      (dense, Some(1000L)),
+      (sparse, None),
+      (dense, Some(1000L)),
+    ] {
+    let hay = input.to_fixedarray()
+    assert_eq(
+      @matcher.Matcher::count_matching_lines(
+        matcher,
+        hay,
+        0,
+        hay.length(),
+        b'\n',
+      ),
+      expected,
+    )
+  }
+}
+
+///|
+test "literal streaming eligibility has an exact retained suffix bound" {
+  for
+    size in [
+      literal_stream_max_bytes - 1,
+      literal_stream_max_bytes,
+      literal_stream_max_bytes + 1,
+    ] {
+    let matcher = SearchMatcher::new(
+      ["a".repeat(size)],
+      line_terminator=Some(@matcher.LineTerminator::byte(b'\n')),
+    )
+    assert_eq(
+      @matcher.Matcher::literal_overlap(matcher, b'\n'),
+      if size <= literal_stream_max_bytes {
+        Some(size - 1)
+      } else {
+        None
+      },
+    )
+  }
+}
+
+///|
 test "dense boolean counts agree with existing per-record engine" {
   let body = b"0001 alpha gamma\n0002 miss\n0003 gamma gamma\ncat dog tail\naaaab\nababz\n\xff\x00gamma\n"
   let input = body.repeat(256) + b"0004 gamma"

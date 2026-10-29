@@ -1,4 +1,24 @@
 ///|
+// This regex-local representation threshold deliberately does not import the
+// command adapter's eligibility/density policy.
+let compact_boolean_block_bytes : Int32 = 262144
+
+///|
+priv enum BooleanCountRoute {
+  Compact
+  Wide
+}
+
+///|
+fn boolean_count_route(bytes : Int32) -> BooleanCountRoute {
+  if bytes > compact_boolean_block_bytes {
+    Wide
+  } else {
+    Compact
+  }
+}
+
+///|
 // The adapter must prove that a match cannot include the record terminator.
 pub fn Regex::boolean_stream_counter(
   self : Regex,
@@ -31,10 +51,9 @@ pub fn Regex::count_boolean_lines(
   self
   .boolean_plan()
   .map(plan => {
-    if end - start > 262144 {
-      plan.count_long_lines(hay, start, end, term, pre?)
-    } else {
-      plan.count_lines(hay, start, end, term, pre?)
+    match boolean_count_route(end - start) {
+      Wide => plan.count_long_lines(hay, start, end, term, pre?)
+      Compact => plan.count_lines(hay, start, end, term, pre?)
     }
   })
 }

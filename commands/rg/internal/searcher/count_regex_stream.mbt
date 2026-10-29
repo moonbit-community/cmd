@@ -41,7 +41,13 @@ async fn Searcher::stream_regex_count(
   // This avoids building an expensive plan when early boolean search is cheap.
   let counter = if !terminated &&
     length == capacity &&
-    !@matcher.is_match_at(matcher, probe, 0, length.min(65536), 0) {
+    !@matcher.is_match_at(
+      matcher,
+      probe,
+      0,
+      length.min(stream_probe_prefix_bytes),
+      0,
+    ) {
     matcher.stream_counter(term)
   } else {
     None

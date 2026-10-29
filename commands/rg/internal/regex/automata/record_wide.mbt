@@ -95,10 +95,7 @@ pub fn RecordBoolean::search_long_half(
   let mut accelerating = true
   while end - at >= 4 {
     let previous = state
-    state = table[state + hay[at].to_int()]
-    state = table[state + hay[at + 1].to_int()]
-    state = table[state + hay[at + 2].to_int()]
-    state = table[state + hay[at + 3].to_int()]
+    state = wide_step4(table, hay, state, at)
     if state == plan.accept {
       state = previous
       for offset in 0..<4 {
@@ -112,15 +109,9 @@ pub fn RecordBoolean::search_long_half(
     if accelerating &&
       state == previous &&
       end - at >= boolean_probe_window_bytes {
-      if plan.accelerators[state / 256] is Some(filter) {
-        let next = filter.find_start(hay, at, end)
-        if next < 0 {
-          at = end
-        } else {
-          accelerating = next - at >= boolean_sparse_exit_bytes
-          at = next
-        }
-      }
+      let probe = plan.probe_exit(hay, at, end, state, true)
+      at = probe.offset
+      accelerating = probe.accelerating
     }
   }
   while at < end {
@@ -168,24 +159,14 @@ pub fn RecordBoolean::count_long_lines(
     let mut accelerating = true
     while line_end - i >= 4 && state != plan.accept {
       let previous = state
-      state = table[state + hay[i].to_int()]
-      state = table[state + hay[i + 1].to_int()]
-      state = table[state + hay[i + 2].to_int()]
-      state = table[state + hay[i + 3].to_int()]
+      state = wide_step4(table, hay, state, i)
       i += 4
       if accelerating &&
         state == previous &&
         line_end - i >= boolean_probe_window_bytes {
-        if plan.accelerators[state / 256] is Some(filter) {
-          let next = filter.find_start(hay, i, line_end)
-          if next < 0 {
-            i = line_end
-          } else {
-            // Stop probing this record when exits are too frequent.
-            accelerating = next - i >= boolean_sparse_exit_bytes
-            i = next
-          }
-        }
+        let probe = plan.probe_exit(hay, i, line_end, state, true)
+        i = probe.offset
+        accelerating = probe.accelerating
       }
     }
     while i < line_end && state != plan.accept {

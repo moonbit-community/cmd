@@ -41,27 +41,21 @@ fn BooleanRecordStream::scan(
   let mut at = start
   while end - at >= 4 && state != plan.accept {
     let previous = state
-    state = table[state + hay[at].to_int()]
-    state = table[state + hay[at + 1].to_int()]
-    state = table[state + hay[at + 2].to_int()]
-    state = table[state + hay[at + 3].to_int()]
+    state = wide_step4(table, hay, state, at)
     at += 4
     if self.accelerating &&
       state == previous &&
       end - at >= boolean_probe_window_bytes {
-      if plan.accelerators[state / 256] is Some(filter) {
-        let next = filter.find_start(hay, at, end)
-        if next < 0 {
-          at = end
-        } else {
-          // A chunk may resume just before an exit. That truncated distance
-          // does not describe the record's exit density.
-          if at - start >= boolean_probe_window_bytes {
-            self.accelerating = next - at >= boolean_sparse_exit_bytes
-          }
-          at = next
-        }
-      }
+      // A truncated chunk prefix is not evidence of record exit density.
+      let probe = plan.probe_exit(
+        hay,
+        at,
+        end,
+        state,
+        at - start >= boolean_probe_window_bytes,
+      )
+      at = probe.offset
+      self.accelerating = probe.accelerating
     }
   }
   while at < end && state != plan.accept {

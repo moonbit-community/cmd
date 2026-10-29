@@ -1,5 +1,6 @@
 ///|
 // Strategy: bytere-literal-adaptive
+
 ///|
 /// A bounded literal set using two-byte shifts or a byte-class Aho-Corasick table.
 struct LiteralSet {

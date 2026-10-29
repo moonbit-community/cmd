@@ -11,6 +11,16 @@ pub struct RecordBoolean {
 
 ///|
 pub fn LazyDFA::record_boolean(self : LazyDFA) -> RecordBoolean? {
+  self.record_boolean_with_table_limit(boolean_table_entry_limit)
+}
+
+///|
+// The private builder keeps the fixed production limit independently testable
+// from the state bound; transition-cell counts and state counts are not bytes.
+fn LazyDFA::record_boolean_with_table_limit(
+  self : LazyDFA,
+  table_limit : Int32,
+) -> RecordBoolean? {
   if !self.nfa.look_set_any.is_empty() ||
     self.nfa.states.length() > boolean_nfa_state_limit {
     return None
@@ -29,7 +39,7 @@ pub fn LazyDFA::record_boolean(self : LazyDFA) -> RecordBoolean? {
   let mut sid = 2
   while sid < dfa.states.length() {
     if dfa.states.length() > boolean_dfa_state_limit ||
-      dfa.states.length() * dfa.stride > boolean_table_entry_limit {
+      dfa.states.length() * dfa.stride > table_limit {
       return None
     }
     if !dfa.states[sid].is_match {

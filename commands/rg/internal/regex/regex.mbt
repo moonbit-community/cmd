@@ -1,5 +1,6 @@
 ///|
 // Strategy: rg-generic-regex
+
 ///|
 /// An error that occurred while building a regex.
 pub suberror RegexError {
@@ -41,9 +42,10 @@ pub fn RegexConfig::default() -> RegexConfig {
 /// leftmost-first semantics (like Rust's regex crate).
 pub struct Regex {
   priv hir : @syntax.Hir
-  priv pikevm : @automata.PikeVM
+  priv mut pikevm : DeferredEngine[@automata.PikeVM]
   priv fwd : @automata.LazyDFA
-  priv rev : @automata.LazyDFA
+  priv mut rev : DeferredEngine[@automata.LazyDFA]
+  priv dfa_state_limit : Int32
   priv pre : @automata.Prefilter?
   /// When true, the prefilter itself finds exact matches.
   priv pre_is_exact : Bool
@@ -100,13 +102,10 @@ pub fn Regex::from_hir(
   }
   {
     hir,
-    pikevm: @automata.PikeVM::new(nfa),
+    pikevm: Pending(nfa),
     fwd: @automata.LazyDFA::new(nfa, state_limit=config.dfa_state_limit),
-    rev: @automata.LazyDFA::new(
-      rev_nfa,
-      match_all=true,
-      state_limit=config.dfa_state_limit,
-    ),
+    rev: Pending(rev_nfa),
+    dfa_state_limit: config.dfa_state_limit,
     pre,
     pre_is_exact,
     group_names: nfa.group_names(),
@@ -198,7 +197,9 @@ pub fn Regex::search_half(
   )
   if e == @automata.DFA_FAILED {
     let slots = FixedArray::make(2, -1)
-    if self.pikevm.search_slots(
+    if self
+      .pikevm_engine()
+      .search_slots(
         hay,
         hs,
         he,
@@ -262,7 +263,7 @@ pub fn Regex::find_at(
   if e < 0 {
     return None
   }
-  let s = self.rev.find_rev(hay, hs, he, start, e, true, false)
+  let s = self.reverse_engine().find_rev(hay, hs, he, start, e, true, false)
   if s == @automata.DFA_FAILED {
     return self.find_pikevm(hay, hs, he, start, end)
   }
@@ -283,17 +284,9 @@ fn Regex::find_pikevm(
   end : Int32,
 ) -> (Int32, Int32)? {
   let slots = FixedArray::make(2, -1)
-  if self.pikevm.search_slots(
-      hay,
-      hs,
-      he,
-      start,
-      end,
-      false,
-      false,
-      slots,
-      pre?=self.pre,
-    ) {
+  if self
+    .pikevm_engine()
+    .search_slots(hay, hs, he, start, end, false, false, slots, pre?=self.pre) {
     Some((slots[0], slots[1]))
   } else {
     None
@@ -334,7 +327,7 @@ pub fn Regex::captures_at(
     None => false
     Some((s, e)) =>
       // Run the PikeVM only on the match span to resolve capture groups.
-      self.pikevm.search_slots(hay, hs, he, s, e, true, false, slots)
+      self.pikevm_engine().search_slots(hay, hs, he, s, e, true, false, slots)
   }
 }
 

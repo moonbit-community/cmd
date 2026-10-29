@@ -19,6 +19,12 @@ pub let teddy_max_literals : Int32
 // Errors
 
 // Types and methods
+pub struct ByteMembership {
+  // private fields
+}
+pub fn ByteMembership::mask(Self, V128) -> Int32
+pub fn ByteMembership::new(FixedArray[Bool]) -> Self
+
 pub struct ByteSetFinder {
   // private fields
 }

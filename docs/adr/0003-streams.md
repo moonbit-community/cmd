@@ -66,7 +66,7 @@ dispatch thresholds. Equal numeric values do not imply shared policy:
 | rg wide scan | 64-byte probe; 32-byte sparse-exit threshold | Profitability; exact transition loop | frequent exits, stream phase and periodic controls |
 | bytere literal set | 4,096 literal bytes; 1,024 AC states | Construction/packed-representation bounds; shift or ordinary matcher | byte/state N-1/N/N+1 tests and adaptive cache tests |
 | bytere adaptive shift | 4 KiB density window; 256 verification checks | Profitability; bounded AC attempt | dense collision and sparse input histories |
-| bytere record DFA | 256 NFA/DFA states; 8 skip plans; 256-byte acceleration entry | Construction/metadata bounds and profitability; span engine | exhausted-cache and certified-skip equivalence tests |
+| bytere record DFA | 256 NFA/DFA states; 8 skip plans; 256-byte acceleration entry | Construction/metadata bounds and profitability; span engine | exact 255/256/257 construction, exhausted-cache and certified-skip tests |
 
 Schema 2 of the existing protection registry links strategy status, source,
 named correctness tests and registered workloads. The existing architecture
@@ -93,6 +93,211 @@ functional suite, including the repaired tac help contract. The strategy
 registry passes 18 bidirectional source-marker registrations and named-test
 checks, including CRLF checkout controls. The multi-literal count ratios are
 0.9884 and 0.9891 in the revised stable windows.
+
+Batch 3 addresses A09-A11 and A13-A14, and closes A08/A15 evidence gaps. Wide
+Boolean consumers share the four-byte transition and exact-exit probe operations;
+endpoint replay, complete-record termination and cross-chunk state remain in
+their specialized loops. The immutable `ByteMembership` shares nibble preparation
+and the SIMD lane mask between `ByteSetFinder` and bytere's `RecordSkip`.
+Loading fixed arrays or borrowed views, inverse membership and scalar tails
+stay with those two actual consumers. This is the only new core public type;
+it does not introduce a command-level framework.
+Generated default Wasm retains a call to the shared membership mask; the source
+`#inline` annotation is only an optimization hint, as specified by the
+[MoonBit attribute documentation](https://docs.moonbitlang.com/en/stable/language/attributes.html#inline-attribute).
+The mask performs no heap construction. Acceptance therefore uses measured
+default-artifact protection rather than assuming the compiler removes the call.
+
+Column uses one value-returning field-boundary scanner and one paged record retrieval operation.
+Field-plan limits remain 64 KiB total, 128 rows and one eighth of each eligible
+row's bytes, with a 1 KiB entry threshold and 12-byte entries. Exact boundary
+tests cover the row threshold, per-row fraction and global remaining budget.
+Display widths continue to be computed even when a partial plan is discarded.
+
+Generic lazy DFAs now track constructed rows, searched offset progress and
+pressure clears. After three clears, fewer than ten searched bytes per
+constructed row retires that mutable engine for its remaining lifetime. A
+productive window resets its accounting instead. Prefilter jumps count as
+progress, conservatively favoring continued DFA use. Unicode quit does not
+count as cache pressure. Forward and reverse retirement returns the existing
+failure result and restarts the original full query through PikeVM; no partial
+span is reused. Tests exercise real productive searches between pressure
+windows, repeated retirement in both directions, and later ASCII queries after
+Unicode exits. The thresholds are profitability policy, not language limits.
+
+Both NFAs still compile eagerly: syntax/size errors, group names and error
+timing remain constructor contracts. Only the non-raising PikeVM storage and
+reverse DFA storage are prepared once on demand. The forward DFA remains the
+shared search/Boolean-plan entry. Half searches can avoid reverse/capture storage;
+captures and reverse-budget failures still prepare the complete fallback. The
+separate empty-input profile observes construction including startup; dense
+count, captures, replacement and pressure profiles observe repeated work.
+
+The first batch-3 protection candidate is rejected: all 156 profiles preserve
+output/status, but only 126 qualify (19 unstable and 11 stable rows beyond the
+5% boundary). Stable generic-regex losses reach 38.61%; column table output
+reaches 5.82%. The preserved `phase3-protection` windows remain failed evidence.
+The revised DFA records progress through one `finish_search` operation at each
+search exit, keeping the mutable cursor out of a deferred closure. Column's
+shared scanner returns a value record with explicit presence; neither a
+capturing field callback nor an optional boxed field result is retained. The
+optional-result pilot regressed table output by 18.83% and is also rejected.
+Nine-pair diagnostic measurements of the revised value result are +1.18% for
+table output and -2.87% for long table rows; they are observations, not completed
+two-window acceptance. The raw pilots and rejected artifacts remain in the
+governance evidence directory.
+
+The revised `phase3-value-protection` windows preserve all 156 outputs/statuses;
+145 rows meet stability and 143 meet all timing rules. Eleven rows are unstable.
+`rg-pilot-long-output-hit` is +5.035%/-1.784%, and the byte-identical `rev-8m`
+control is +5.427%/-2.963%; both still fail the per-window slowdown rule. They
+are not averaged into passing results. A further revision keeps the probe-entry
+guard in each specialized wide loop and shares only actual exit probing, avoiding
+unnecessary result transfers and stream-state writes on ineligible iterations.
+
+The guarded `phase3-guard-protection` candidate completes both 156-profile windows
+with equivalent bytes/status. Of 133 stable rows, 132 satisfy all timing rules;
+no stable changed-command row exceeds 5%. The unchanged sort artifact's
+`sort-n-8m` control is +0.61%/+6.83% and remains failed evidence, alongside 23
+unstable profiles. The complete timing verdict is false. This control cannot
+establish a source-induced slowdown, but its failure is neither removed nor
+reclassified as a pass. Cumulative baseline protection is recorded separately.
+Qualified small-cost controls in that candidate include `rg-growth32m`
+3.55-4.42%, `rg-stream-long64` 3.40-4.12%, `rg-boolean-budget` 3.38-3.94%,
+`rg-stream-phase-4095` 2.96-3.71% and `rg-min-constructor-chain` 3.50-3.76%.
+These measured costs are retained explicitly; the complete per-profile values,
+including unchanged-command controls, are in that directory's `summary.json`.
+They remain separate from instability and resource observations.
+
+The first cumulative comparison against the original `9dc4284` artifacts
+preserves all 156 outputs/statuses, but only 127 rows satisfy all timing rules:
+27 are unstable, and the stable `rg-growth8m` and `rg-growth32m` controls reach
+5.14% and 5.82% in one window. The identical workloads also retain their
+separately registered streaming controls; neither set of observations replaces
+the other. `cumulative-protection` remains failed. A same-artifact A/A diagnostic
+records ratios 0.9851 for rev, 0.9696 for rg output, 0.8955 for grep inverted
+output and 0.9981 for rg 32 MiB growth; this exposes output noise but does not
+waive the two stable growth failures. Disabling bookkeeping inlining produces
+byte-identical Wasm and is not a fix. Restoring explicit four-transition groups
+does not materially improve the diagnostic and is not retained.
+
+The subsequent candidate retains both shared wide kernels and changes the
+immutable membership pair from a reference object to a value type. Its public
+method signatures and the two consumers' semantics are unchanged. Default-Wasm
+diagnostics measure cumulative growth8/32/64 ratios 1.0225/1.0262/1.0271;
+complete protection windows remain the acceptance evidence, not these probes.
+
+The first value-membership full window (`phase3-final-protection`) terminates
+with `No space left on device` while opening the paste output file. It has no
+complete two-window verdict and is rejected as incomplete evidence. At the
+user's request, historical temporary experiments are deleted directly, retaining
+the current governance directory and the three recent search experiment groups.
+Temporary usage falls from about 88 GiB to 24 GiB, with available disk space
+increasing from 121 MiB to about 55 GiB. The candidate Wasm is unchanged across
+cleanup. Any post-cleanup windows are separately identified environment trials;
+they do not overwrite or qualify the earlier failed windows. Swap usage remains
+about 1.7 GiB after disk cleanup, so disk space is not a claim of idle memory.
+
+The post-cleanup `phase3-clean-protection` run preserves all 156 outputs/statuses;
+154 rows are stable and 152 satisfy all timing rules. The value-membership
+candidate is rejected: `rg-pilot-long-regex-64` consistently regresses by
+63.22%/62.02%; the unchanged tac multi-file control also exceeds the boundary
+in one window. Two other profiles are unstable. The representation change alone
+is therefore insufficient. Each SIMD consumer now loads its immutable membership
+value once before the scan loop. This retains the shared mask, specialized
+loading/polarity/tails and the value representation without repeatedly obtaining
+the same nested value for each block. The six-profile diagnostic against the
+original baseline records long-regex64 at 0.9620, growth8/32/64 at
+1.0225/1.0116/0.9981, grep-many at 0.9974 and grep-long-miss at 1.0061, with
+equivalent outputs/statuses. These probes motivate the revised complete windows;
+they do not replace them or establish the compiler-level cause conclusively.
+
+The hoisted value candidate (`phase3-hoist-protection`) preserves all 156
+outputs/statuses; 149 rows are stable and 148 qualify. It is also rejected:
+`rg-boolean-false-positive` is +5.77%/+2.62%, while seven rows are unstable.
+The next candidate retains the two loop-entry bindings but restores an immutable
+reference representation for the shared membership pair. This changes no mask
+operation, eligibility rule or public method signature. Nine cumulative
+diagnostic profiles remain equivalent, with long-regex64 at 0.9534 and the
+remaining ratios between 1.0036 and 1.0344. Representation choice is measured
+against all registered controls rather than inferred from a narrow probe.
+
+The final cumulative `cumulative-bound-protection` windows compare this candidate
+directly with the original `9dc4284` artifacts. All 156 workloads preserve
+output/status, and 154 satisfy every timing rule. No stable row exceeds 5%.
+Only the byte-identical `ln-symbolic-validation` and `tree-directory` controls
+fail stability, so the whole-suite timing verdict remains false. Their noise is
+not reassigned to source changes or counted as a pass. The following qualified
+3-5% costs are retained explicitly; all values are percent elapsed-time changes
+in the first/second windows, separate from instability and resource observations:
+
+| Cumulative control | First / second cost |
+| --- | --- |
+| `rg-stream-sparse` | +2.81% / +3.50% |
+| `rg-stream-phase-16` | +4.23% / +3.59% |
+| `rg-stream-phase-4095` | +3.44% / +3.51% |
+| `rg-pilot-late-prefix-hit-output` | +3.56% / +2.62% |
+| `rg-pilot-short-prefix-output` | +2.87% / +3.05% |
+| `rg-pilot-long-color-hit` | +3.16% / +3.50% |
+| `rg-min-dfa-long-text` | +3.18% / +1.91% |
+| `rg-min-broad-sparse` | +2.99% / +4.28% |
+| `rg-boolean-false-positive` | +2.29% / +3.33% |
+| `rg-boolean-sparse` | +2.86% / +3.31% |
+| `rg-boolean-budget` | +4.03% / +3.46% |
+| `rg-boolean-long-miss` | +3.12% / +2.79% |
+
+The separate final-batch `phase3-bound-protection` comparison against the exact
+`3393528` artifacts preserves all 156 outputs/statuses, with 155 rows satisfying
+every timing rule and no stable loss above 5%. The sole unstable profile is the
+unchanged `ln-symbolic-validation` control; the whole-suite verdict remains
+false. Qualified 3-5% costs in this comparison are `rg-stream-sparse`
+2.88%/3.18%, `rg-stream-phase-16` 3.59%/2.85%, `rg-stream-phase-4095`
+2.91%/3.65%, `rg-pilot-late-prefix-hit-count` 3.30%/1.93%,
+`rg-min-broad-sparse` 2.93%/3.61%, `rg-boolean-sparse` 3.06%/2.62%,
+`rg-boolean-budget` 3.50%/3.80% and `rg-growth8m` 2.43%/3.67%.
+Both final comparisons freeze the same 80 candidate artifacts. All earlier
+failed, unstable and incomplete windows retain their original verdicts.
+
+Separate Darwin `/usr/bin/time -l` observations run three alternating pairs
+after timing, checking complete output, stderr and exit status in every pair.
+Median maximum RSS (original/final, MiB) is 27.42/27.45 for column table output,
+45.70/48.08 for grep multi-literal count, 37.83/37.78 for rg cache pressure and
+31.64/31.63 for empty-input regex construction. The grep observation retains an
+approximately 2.38 MiB cost: baseline samples span 45.70-46.00 MiB and candidate
+samples 47.45-48.36 MiB. No compiler or allocation cause is inferred from RSS
+alone. The other three observations do not establish a meaningful memory
+reduction, including for deferred engine storage. These four local process
+observations are not Linux, three-platform or all-workload resource acceptance.
+Raw records are in `final-resource-observations/observations.json` under the
+governance evidence directory; cleanup/cancellation semantics remain covered by
+the independent correctness tests.
+
+The audit closure map is intentionally kept in this canonical ADR:
+
+| Finding | Disposition | Required regression evidence |
+| --- | --- | --- |
+| A01 | Nominal count-probe/read capacity independent of retained allocation | bulk/ordinary reuse, decoded EOF and error histories |
+| A02 | Exactly-once spool cleanup and primary-error precedence | all success/error pairs plus actual cancellation cleanup |
+| A03 | Searcher policy with explicit line execution priority | count/coalesced/synchronous/ordinary, binary transition and stop controls |
+| A04 | Fresh/replay entry and line-buffer-owned prefix commit | begin denial, complete-prefix error order, EOF and reuse |
+| A05 | One explicit Boolean preparation lifecycle | lazy ready/declined state and repeated use |
+| A06 | Valid literal engine plans and value-type handoff | lazy AC success/decline, dense/sparse reuse and stable count protection |
+| A07 | Static grep execution mode and one buffered record commit | flag precedence, partial records, output failure and byte offsets |
+| A08 | Owner-local limits with units and fallback | NFA/DFA/table/work/round boundaries, literal byte/state and field budgets |
+| A09 | Shared transition/probe mechanisms, specialized outer loops | exact endpoint replay, all byte values, tails and chunk phases |
+| A10 | Shared immutable byte membership | all singleton bytes, both polarities, offset views and scalar tails |
+| A11 | Shared column field traversal and record retrieval | empty fields, escapes, page crossings, budget decline and output failure |
+| A12 | Remove unused color capability | interfaces; active searcher synchronous protocol retained |
+| A13 | Cost-based repeated-pressure retirement | productive/pressure histories, Unicode quits and forward/reverse fallback |
+| A14 | Defer non-raising reverse/capture storage | compile limits, named groups, captures, exact literals and low-budget reuse |
+| A15 | Explicit route and lifecycle observations | nominal literal reads, dense/sparse/dense choices and compact/wide selectors |
+| A16 | Bidirectional strategy inventory in CI | sources, named tests, workload IDs, marker ownership and negative controls |
+
+The registry documents 21 strategies and keeps rejected controls distinct from
+adopted implementations. Static links do not prove a test enters its path;
+the route observations above provide that separate evidence. Delivery requires
+exact-commit CI, independent review and clean-copy acceptance;
+timing, resource observations and publication remain separate verdicts.
 
 Documentation profile update (2026-10-27): command READMEs describe invocation,
 supported options and user-visible limitations; implementation details remain in

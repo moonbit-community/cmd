@@ -162,7 +162,9 @@
       "rg-stream-phase-16",
       "rg-stream-phase-4095",
       "rg-stream-period-513",
-      "rg-stream-period-1009"
+      "rg-stream-period-1009",
+      "rg-cache-pressure-spans",
+      "rg-regex-cold-empty"
     ],
     "sort": [
       "sort-8m",
@@ -389,6 +391,14 @@
         {
           "file": "commands/rg/internal/searcher/policy_wbtest.mbt",
           "name": "record policies preserve count coalescing and synchronous stop boundaries"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_synchronous_wbtest.mbt",
+          "name": "synchronous reader summaries preserve events limits binary detection and fallback"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_output_spans_wbtest.mbt",
+          "name": "plain match spans preserve partial write failure prefixes"
         }
       ],
       "profiles": [
@@ -421,6 +431,10 @@
         {
           "file": "commands/rg/internal/driver/search_count_stream_wbtest.mbt",
           "name": "counting does not bypass an explicit heap limit"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_count_stream_wbtest.mbt",
+          "name": "literal streaming keeps nominal reads while declined routes grow records"
         }
       ],
       "profiles": [
@@ -444,6 +458,14 @@
         {
           "file": "commands/rg/internal/driver/search_reuse_wbtest.mbt",
           "name": "audit reused regex probe must retain its nominal read bound"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_regex_stream_wbtest.mbt",
+          "name": "regex count streaming does not finalize a partial record on read failure"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_regex_stream_wbtest.mbt",
+          "name": "adaptive count probes preserve begin denial and decoded replay"
         }
       ],
       "profiles": [
@@ -461,12 +483,25 @@
       "status": "adopted",
       "sources": [
         "commands/rg/internal/regex/prepared.mbt",
-        "commands/rg/internal/regex/count_boolean.mbt"
+        "commands/rg/internal/regex/count_boolean.mbt",
+        "commands/rg/internal/regex/automata/record_boolean.mbt"
       ],
       "tests": [
         {
           "file": "commands/rg/internal/regex/count_boolean_wbtest.mbt",
           "name": "boolean count preparation is lazy and over-budget rejection is cached"
+        },
+        {
+          "file": "commands/rg/internal/regex/automata/record_policy_wbtest.mbt",
+          "name": "resolved state and transition cell budgets enforce exact boundaries"
+        },
+        {
+          "file": "commands/rg/internal/regex/count_boolean_wbtest.mbt",
+          "name": "compact and wide routing observes both sides of its exact threshold"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_count_boolean_wbtest.mbt",
+          "name": "count selection revisits dense sparse and dense inputs on the same matcher"
         }
       ],
       "profiles": [
@@ -484,12 +519,17 @@
       "status": "adopted",
       "sources": [
         "commands/rg/internal/regex/automata/record_wide.mbt",
-        "commands/rg/internal/regex/automata/record_stream.mbt"
+        "commands/rg/internal/regex/automata/record_stream.mbt",
+        "commands/rg/internal/regex/automata/record_kernel.mbt"
       ],
       "tests": [
         {
           "file": "commands/rg/internal/regex/wide_boolean_wbtest.mbt",
           "name": "wide count table agrees with compact table for tails offsets and bytes"
+        },
+        {
+          "file": "commands/rg/internal/regex/automata/record_kernel_wbtest.mbt",
+          "name": "wide endpoint count and stream kernels agree at every chunk phase"
         }
       ],
       "profiles": [
@@ -560,6 +600,10 @@
         {
           "file": "commands/grep/record_output_wbtest.mbt",
           "name": "whole record batches do not retry a partial output failure"
+        },
+        {
+          "file": "commands/grep/record_output_wbtest.mbt",
+          "name": "whole record batches preserve cross-chunk records and final tails"
         }
       ],
       "profiles": [
@@ -582,6 +626,10 @@
         {
           "file": "commands/grep/span_output_wbtest.mbt",
           "name": "span output flushes a complete and partial record before a read error"
+        },
+        {
+          "file": "commands/grep/span_output_wbtest.mbt",
+          "name": "span output never retries a partially failed threshold flush"
         }
       ],
       "profiles": [
@@ -650,6 +698,18 @@
         {
           "file": "core/bytere/record_skip_wbtest.mbt",
           "name": "certified skips preserve boolean matching for reused states long tails and all byte classes"
+        },
+        {
+          "file": "core/bytere/span_wbtest.mbt",
+          "name": "record DFA budget exhaustion falls back and keeps subsequent searches correct"
+        },
+        {
+          "file": "core/bytere/policy_wbtest.mbt",
+          "name": "record NFA construction includes the exact state budget"
+        },
+        {
+          "file": "core/bytere/policy_wbtest.mbt",
+          "name": "record DFA admits 255 and 256 states and rejects a 257th without losing cached rows"
         }
       ],
       "profiles": [
@@ -743,6 +803,10 @@
         {
           "file": "commands/column/fields_wbtest.mbt",
           "name": "large-row field metadata is bounded and does not alter snapshot storage"
+        },
+        {
+          "file": "commands/column/fields_wbtest.mbt",
+          "name": "field metadata thresholds preserve widths at exact row and byte limits"
         }
       ],
       "profiles": [
@@ -766,6 +830,10 @@
         {
           "file": "commands/tac/cleanup_wbtest.mbt",
           "name": "spool cleanup runs once and preserves primary error precedence"
+        },
+        {
+          "file": "commands/tac/cleanup_wbtest.mbt",
+          "name": "cancelled spool operations still clean up once"
         }
       ],
       "profiles": [
@@ -788,6 +856,10 @@
         {
           "file": "commands/sort/sort_wbtest.mbt",
           "name": "sort merge reservation leaves useful run space for a one MiB budget"
+        },
+        {
+          "file": "commands/sort/sort_wbtest.mbt",
+          "name": "sort temporary parent failure cleans owned runs and preserves output"
         }
       ],
       "profiles": [
@@ -795,6 +867,107 @@
         "sort-n-8m"
       ],
       "invariant": "Bound run and merge reservations; the separate spill repair observation is not a passing baseline timing ratio."
+    },
+    {
+      "id": "rg-lazy-cache",
+      "owner": "commands/rg/internal/regex/automata",
+      "commands": [
+        "rg"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/rg/internal/regex/automata/cache_policy.mbt",
+        "commands/rg/internal/regex/automata/dfa.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/rg/internal/regex/automata/cache_policy_wbtest.mbt",
+          "name": "repeated cache pressure retires an unproductive DFA without retrying rows"
+        },
+        {
+          "file": "commands/rg/internal/regex/automata/cache_policy_wbtest.mbt",
+          "name": "Unicode quits never retire later ASCII searches"
+        },
+        {
+          "file": "commands/rg/internal/regex/prepared_wbtest.mbt",
+          "name": "reverse cache pressure falls back over the original full span"
+        },
+        {
+          "file": "commands/rg/internal/regex/automata/cache_policy_wbtest.mbt",
+          "name": "real successful scans amortize pressure before a later unproductive window"
+        }
+      ],
+      "profiles": [
+        "rg-cache-pressure-spans",
+        "rg-dfa-long",
+        "rg-boolean-word-boundary"
+      ],
+      "invariant": "Retire only after repeated unproductive cache fills. Unicode quit is distinct; productive windows restart accounting. Forward and reverse fallback restart the original query."
+    },
+    {
+      "id": "rg-deferred-storage",
+      "owner": "commands/rg/internal/regex",
+      "commands": [
+        "rg"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/rg/internal/regex/prepared.mbt",
+        "commands/rg/internal/regex/regex.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/rg/internal/regex/prepared_wbtest.mbt",
+          "name": "half and boolean searches prepare neither reverse nor capture storage"
+        },
+        {
+          "file": "commands/rg/internal/regex/prepared_wbtest.mbt",
+          "name": "deferred fallback preserves low-budget spans earliest endpoints and Unicode"
+        },
+        {
+          "file": "commands/rg/internal/regex/prepared_wbtest.mbt",
+          "name": "literal engines defer storage without removing extended capture slots"
+        }
+      ],
+      "profiles": [
+        "rg-regex-cold-empty",
+        "rg-only-8m",
+        "rg-replace-8m"
+      ],
+      "invariant": "Compile both NFAs eagerly to preserve constructor errors and metadata. Prepare non-raising reverse/PikeVM storage once on demand; retain all semantic fallback routes."
+    },
+    {
+      "id": "exact-byte-membership",
+      "owner": "core/bytesearch",
+      "commands": [
+        "grep",
+        "rg"
+      ],
+      "status": "adopted",
+      "sources": [
+        "core/bytesearch/byte_membership.mbt",
+        "core/bytesearch/byte_set.mbt",
+        "core/bytere/record_skip.mbt"
+      ],
+      "tests": [
+        {
+          "file": "core/bytesearch/byte_membership_wbtest.mbt",
+          "name": "shared SIMD membership is exact for every singleton byte and both polarities"
+        },
+        {
+          "file": "core/bytere/record_skip_wbtest.mbt",
+          "name": "certified SIMD membership covers every byte and nonzero view offsets"
+        },
+        {
+          "file": "core/bytesearch/byte_set_test.mbt",
+          "name": "byte-set candidates match scalar membership across all bytes and boundaries"
+        }
+      ],
+      "profiles": [
+        "grep-hotspot-long-miss",
+        "rg-min-broad-frequent"
+      ],
+      "invariant": "Share immutable 256-byte membership packing and lane masks. Fixed-array/view loading, polarity and scalar tails stay with their consumers."
     }
   ]
 }

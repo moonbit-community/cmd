@@ -12,9 +12,18 @@ status, concrete source files, named correctness tests, invariants and workload
 IDs. `tests/architecture.mbtx` validates this inventory on all three CI hosts
 and before protection windows. Missing sources or named tests, duplicate IDs,
 unknown statuses, orphan profiles and empty required selections fail closed.
+Implementation `Strategy:` markers are checked in both directions against the
+registry, so a removed registration cannot leave an unregistered marked path.
 Historical `grep-onepass-*` names deliberately remain rejection controls; they
 do not imply an adopted general one-pass engine. Strategy validation establishes
 coverage links, not correctness or timing success by itself.
+
+The governance profiles add `rg-cache-pressure-spans` (deterministic repeated
+high-state construction with full spans) and `rg-regex-cold-empty` (regex
+construction on empty input). Compare the cold profile separately from existing
+dense count, capture, replacement and long-record steady-work profiles. Do not
+subtract process startup. Fresh `prepare` includes the pressure fixture; an
+existing fixture directory can add it exactly once with `prepare-cache-pressure`.
 
 Run from the repository root with the current PATH toolchain:
 

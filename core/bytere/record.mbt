@@ -1,5 +1,6 @@
 ///|
 // Strategy: bytere-record-dfa
+
 ///|
 /// Reusable boolean search for immutable byte records. The bounded lazy DFA
 /// handles assertion-free expressions; other cases retain the span engine's

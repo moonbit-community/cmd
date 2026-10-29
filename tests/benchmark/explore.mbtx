@@ -332,6 +332,7 @@ async fn boolean_count_corpora() -> Unit {
 
 ///|
 async fn boolean_long_corpora() -> Unit {
+  cache_pressure_corpus()
   @fs.write_file(lab + "/pilot-late-prefix-hit", b"xxxx gamma gamma\n".repeat(524288) + b"0001 gamma\n")
   @fs.write_file(lab + "/pilot-short-prefix", b"1 gamma\n".repeat(1048576))
   @fs.write_file(lab + "/pilot-long-output-hit", b"0001" + Bytes::make(8388608, b'x') + b"Q\nmiss\nZZ\n")
@@ -363,6 +364,21 @@ async fn boolean_long_corpora() -> Unit {
 }
 
 ///|
+async fn cache_pressure_corpus() -> Unit {
+  let path = lab + "/cache-pressure"
+  guard !@fs.exists(path) else { fail("cache pressure fixture already exists; preserve it") }
+  let bytes = FixedArray::make(8 * 32769, b'a')
+  let mut random = 104729U
+  for i in 0..<bytes.length() {
+    random = random ^ (random << 13)
+    random = random ^ (random >> 17)
+    random = random ^ (random << 5)
+    bytes[i] = if i % 32769 == 32768 { b'\n' } else if (random & 1U) == 0U { b'a' } else { b'b' }
+  }
+  @fs.write_file(path, Bytes::from_array(bytes))
+}
+
+///|
 async fn growth_corpora() -> Unit {
   let seed = b"0123456789 alpha beta gamma "
   for
@@ -391,13 +407,14 @@ async fn run_cases() -> Unit {
   let args = @env.args()
   guard args.length() >= 6 else {
     fail(
-      "Usage: explore.mbtx LAB WASM_CLI_ROOT prepare|prepare-growth|prepare-architecture|profiles|prototype|ab|ci CASE_IDS PAIRS [BASELINE_CLI_ROOT|ORACLE_BIN]",
+      "Usage: explore.mbtx LAB WASM_CLI_ROOT prepare|prepare-growth|prepare-architecture|prepare-cache-pressure|profiles|prototype|ab|ci CASE_IDS PAIRS [BASELINE_CLI_ROOT|ORACLE_BIN]",
     )
   }
   let mode = args[3]
   guard mode == "prepare" ||
     mode == "prepare-growth" ||
     mode == "prepare-architecture" ||
+    mode == "prepare-cache-pressure" ||
     mode == "profiles" ||
     mode == "prototype" ||
     mode == "ab" ||
@@ -409,6 +426,10 @@ async fn run_cases() -> Unit {
   }
   if mode == "ci" && args.length() != 7 {
     fail("ci requires an exported oracle bin directory")
+  }
+  if mode == "prepare-cache-pressure" {
+    cache_pressure_corpus()
+    return
   }
   if mode == "prepare-growth" {
     growth_corpora()
@@ -714,6 +735,8 @@ async fn run_cases() -> Unit {
   add("rg-min-constructor-chain", "rg", ["-a","-c","[ab]{32}Q","-"], "min-constructor-long", "unused", status=0)
   add("rg-min-constructor-many-states", "rg", ["-a","-c","(a|b)*a[ab]{6}","-"], "min-constructor-alternation", "unused", status=0)
   add("rg-min-constructor-declined", "rg", ["-a","-c","(a|b)*a[ab]{9}","-"], "min-constructor-alternation", "unused", status=0)
+  add("rg-cache-pressure-spans", "rg", ["-a","-o","(a|b)*a[ab]{15}","-"], "cache-pressure", "unused", status=0)
+  add("rg-regex-cold-empty", "rg", ["-a","-c","[0-9]{4}.*Q|ZZ","-"], "empty", "unused", status=1)
   add("rg-min-broad-frequent", "rg", ["-a","-c","[ab]{32}Q","-"], "min-broad-frequent", "unused", status=1)
   add("rg-min-broad-sparse", "rg", ["-a","-c","[ab]{32}Q","-"], "min-broad-sparse", "unused", status=1)
   add("sha256-8m", "sha256sum", [], "text8m", cu + "sha256sum")

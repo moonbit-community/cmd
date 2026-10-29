@@ -186,28 +186,7 @@ fn Snapshot::cached_record_bytes(self : Snapshot, record : Int64) -> BytesView? 
 
 ///|
 async fn Snapshot::line(self : Snapshot, record : Int64) -> String {
-  // Grid rendering grows this bounded cache for its interleaved cursors,
-  // without retaining an offset entry for every input record.
-  let page = record / 256
-  let bytes = self.index.get(page, self.records * 16)
-  let slot = (record % 256).to_int() * 16
-  let position = index_number(bytes, slot)
-  let length = index_number(bytes, slot + 8).to_int()
-  let first = self.data.get(position / 65536, self.size)
-  let start = (position % 65536).to_int()
-  if length <= first.length() - start {
-    return @utf8.decode(first[start:start + length])
-  }
-  let line = Buffer(size_hint=length)
-  for copied = 0; copied < length; {
-    let offset = position + copied.to_int64()
-    let bytes = self.data.get(offset / 65536, self.size)
-    let start = (offset % 65536).to_int()
-    let count = (length - copied).min(bytes.length() - start)
-    line.write_bytes(bytes[start:start + count])
-    continue copied + count
-  }
-  @utf8.decode(line.contents())
+  @utf8.decode(self.record_bytes(record))
 }
 
 ///|

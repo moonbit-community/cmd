@@ -1,4 +1,34 @@
 ///|
+async test "literal streaming keeps nominal reads while declined routes grow records" {
+  for bulk in [false, true] {
+    for
+      (pattern, input, heap, streaming) in [
+        ("abc", b"abc" + Bytes::make(2097152, b'x'), None, true),
+        ("abc", b"abc" + Bytes::make(2097152, b'x'), Some(4194304), false),
+        ("ab.c", b"abxc" + Bytes::make(2097152, b'x'), None, false),
+      ] {
+      let matcher = SearchMatcher::new(
+        [pattern],
+        line_terminator=Some(@matcher.LineTerminator::byte(b'\n')),
+      )
+      let requests : Array[Int32] = []
+      let reader = AuditReadRequests::{
+        inner: @searcher.SliceReader::from_bytes(input),
+        requests,
+      }
+      let sink = audit_count_sink(bulk)
+      @searcher.SearcherBuilder::new()
+      .heap_limit(heap)
+      .build()
+      .search_reader(matcher, reader, sink)
+      assert_eq(sink.matches, 1L)
+      let nominal = if bulk { 262144 } else { 65536 }
+      assert_eq(requests.iter().all(size => size <= nominal), streaming)
+    }
+  }
+}
+
+///|
 priv struct FragmentedCountInput {
   inner : @searcher.SliceReader
   chunk : Int32

@@ -85,15 +85,20 @@ test "minimized repetition no longer exits on equivalent digit histories" {
 
 ///|
 test "a deep refinement chain declines at its iteration budget" {
-  let states = 40
-  let accept = (states - 1) * 256
-  let table = FixedArray::makei(states * 256, i => {
-    (i / 256 + 1).min(states - 1) * 256
-  })
-  let eof = FixedArray::makei(states, i => i == states - 1)
-  assert_eq(minimize_boolean_rows(table, eof, 0, accept, [0]), None)
-  for i in 0..<(states * 256) {
-    assert_eq(table[i], (i / 256 + 1).min(states - 1) * 256)
+  for states in [32, 33, 34, 40] {
+    let accept = (states - 1) * 256
+    let table = FixedArray::makei(states * 256, i => {
+      (i / 256 + 1).min(states - 1) * 256
+    })
+    let eof = FixedArray::makei(states, i => i == states - 1)
+    let result = minimize_boolean_rows(table, eof, 0, accept, [0])
+    assert_eq(result is Some(_), states <= boolean_refinement_round_limit + 1)
+    if result is Some(result) {
+      assert_boolean_rows_equivalent((table, eof, 0, accept), result)
+    }
+    for i in 0..<(states * 256) {
+      assert_eq(table[i], (i / 256 + 1).min(states - 1) * 256)
+    }
   }
 }
 

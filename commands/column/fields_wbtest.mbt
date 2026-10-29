@@ -1,4 +1,71 @@
 ///|
+async test "field metadata thresholds preserve widths at exact row and byte limits" {
+  for length in [1535, 1536, 1537] {
+    ignore(
+      with_snapshot(table=true, separator=Some(":"), snapshot => {
+        let pending = SpoolBatch::new()
+        let line = "x".repeat(length - 30) + ":x".repeat(15)
+        assert_true(snapshot.stage_record(pending, line))
+        assert_eq(snapshot.field_plans.contains(0L), length >= 1536)
+        assert_eq(
+          snapshot.widths,
+          Array::makei(16, i => if i == 0 { length - 30 } else { 1 }),
+        )
+        if snapshot.field_plans.get(0L) is Some(plan) {
+          let data = @utf8.encode(line)
+          let cached = fields_from_plan(data, plan)
+          let ordinary = snapshot.separator.table_fields(data)
+          for i in 0..<ordinary.length() {
+            assert_eq(cached[i].data, ordinary[i].data)
+            assert_eq(cached[i].width, ordinary[i].width)
+          }
+        }
+        false
+      }),
+    )
+  }
+  for
+    length in [
+      field_plan_min_row_bytes - 1,
+      field_plan_min_row_bytes,
+      field_plan_min_row_bytes + 1,
+    ] {
+    ignore(
+      with_snapshot(table=true, separator=Some(":"), snapshot => {
+        let pending = SpoolBatch::new()
+        assert_true(snapshot.stage_record(pending, "x".repeat(length)))
+        assert_eq(
+          snapshot.field_plans.contains(0L),
+          length >= field_plan_min_row_bytes,
+        )
+        assert_eq(snapshot.widths, [length])
+        false
+      }),
+    )
+  }
+  for available in [23, 24, 25] {
+    ignore(
+      with_snapshot(table=true, separator=Some(":"), snapshot => {
+        let before = field_plan_byte_limit - available
+        snapshot.field_plan_bytes = before
+        let pending = SpoolBatch::new()
+        assert_true(snapshot.stage_record(pending, "x".repeat(1024) + ":y"))
+        assert_eq(
+          snapshot.field_plan_bytes - before,
+          if available < 24 {
+            0
+          } else {
+            24
+          },
+        )
+        assert_eq(snapshot.widths, [1024, 1])
+        false
+      }),
+    )
+  }
+}
+
+///|
 test "byte fields preserve empty delimiters and control-sequence widths" {
   for separator in [None, Some(""), Some(":"), Some(" \t,:")] {
     let split = FieldSeparator::new(separator)

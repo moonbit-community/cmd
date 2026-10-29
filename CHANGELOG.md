@@ -3,6 +3,28 @@
 This repository integrates multiple command packages, so changes are recorded
 by date and delivery milestone rather than by a single package version.
 
+## 2026-10-29 (execution governance, batch 3 of 3)
+
+- Complete the A01-A16 source governance map in ADR-0003. Share exact byte
+  membership, wide-scan operations and column field/record traversal while
+  keeping specialized streaming, endpoint and error semantics.
+- Retire repeatedly unproductive lazy DFA caches without treating Unicode
+  quits as pressure. Defer non-raising reverse/capture storage while preserving
+  eager NFA construction errors, metadata and full-query fallback.
+- Add exact construction/field budget tests, direct route observations and
+  real pressure/reuse histories. Local checks pass 1,692 Wasm tests, 118
+  test-tool regressions, 2,117 functional checks with 19 platform skips and
+  21 registered strategies. Correctness, timing, resources and exact-commit CI
+  retain separate acceptance records; failed timing windows remain evidence.
+- Repair the active tac help expectation from batch 1 and the final formatting
+  gate identified on batch 2. Frozen published expectations are preserved.
+- Final default-release comparisons preserve all 156 workload outputs/statuses.
+  Cumulative protection qualifies 154/156 profiles; the final-batch comparison
+  qualifies 155/156. All stable rows stay within 5%; unchanged ln/tree controls
+  retain their stability failures, so neither whole-suite timing verdict passes.
+  ADR-0003 records the retained small timing costs and the local grep multi-literal
+  count peak-RSS observation of approximately +2.38 MiB.
+
 ## 2026-10-29 (execution governance, batch 2 of 3)
 
 - Consolidate search policy, explicit replay and prepared-engine state, literal

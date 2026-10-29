@@ -18,9 +18,15 @@ test "wide earliest endpoints agree including replay and end of input" {
           let expected = re
             .search_half(hay, offset, end, offset, end, earliest=true)
             .unwrap_or(-1)
-          if re.search_boolean_long(hay, offset, end) is Some(actual) {
-            assert_eq(actual, expected, msg=pattern)
-          }
+          assert_eq(
+            re.search_boolean_long(hay, offset, end),
+            if pattern == "foo|foobar" {
+              None
+            } else {
+              Some(expected)
+            },
+            msg=pattern,
+          )
         }
       }
     }
