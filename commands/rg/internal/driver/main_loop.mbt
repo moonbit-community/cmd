@@ -26,8 +26,6 @@ async fn ExecutionPlan::walk_builder(
     .max_depth(self.input.max_depth)
     .follow_links(self.input.follow)
     .max_filesize(self.input.max_filesize)
-    .same_file_system(self.input.one_file_system)
-    .skip_stdout(self.mode is Search(_))
     .overrides(self.input.globs)
     .types(self.input.types)
     .hidden(!self.input.hidden)

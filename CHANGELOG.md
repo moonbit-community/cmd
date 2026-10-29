@@ -38,6 +38,29 @@ by date and delivery milestone rather than by a single package version.
   control exceeded the MAD limit. Preserve that failure without claiming
   complete performance acceptance. No version or release coordinate changes.
 
+## 2026-10-30 (history-led cleanup, batch 4)
+
+- Remove unreachable indexing and device/inode traversal state, unused
+  thread/mmap storage, redundant mode updates and unused ignore-origin
+  payloads. Keep unsupported-option errors, documented no-op syntax, metadata
+  error ordering and canonical symlink-loop checks.
+- Make driver argument types private, remove test-only derived traits, and
+  move fixture helpers to white-box tests while preserving expected values.
+- Reject the initial cleanup after three stable 19-21% boolean-count
+  regressions. The revised representation removes the remaining canonical
+  path wrapper and restores those controls. Preserve both candidates and
+  every failed window in the evidence referenced by ADR-0003.
+- Final local validation passes 1,707 release-Wasm tests, 118 tool tests and
+  2,122 functional checks with 19 platform skips. All 89 real-corpus rows
+  qualify; no qualified timing loss reaches 3%. Complete protection remains
+  unqualified at 159/160 because of an unchanged ln startup control's MAD.
+  Correctness, affected-command timing and full-suite acceptance remain
+  separate conclusions.
+- Retain C01-C03 for user decisions. Document eight dump-command probes,
+  the 18-entry core export review, published 0.8.2 API comparison and restored
+  visibility/async probes. Three unpublished exports can be made private with
+  all 80 command artifacts unchanged in the isolated probe.
+
 ## 2026-10-29 (rg progressive reads and granular output)
 
 - Separate physical regular-file refills from logical decoder requests. Begin

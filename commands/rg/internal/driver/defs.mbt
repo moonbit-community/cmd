@@ -72,11 +72,6 @@ fn sort_kind(v : String) -> SortModeKind? raise RgError {
 }
 
 ///|
-fn check_indexing_allowed() -> Unit raise RgError {
-  raise RgError(INDEXING_NOT_SUPPORTED)
-}
-
-///|
 /// Flags whose values must be valid UTF-8.
 let utf8_flags : Array[String] = [
   "after-context", "before-context", "color", "colors", "context", "dfa-size-limit",
@@ -136,8 +131,8 @@ fn update_flag(
         Switch(false) => None
         Value(s) => Some(@cli.unescape(s))
       }
-    "count" => args.mode = args.mode.updated(Search(Count))
-    "count-matches" => args.mode = args.mode.updated(Search(CountMatches))
+    "count" => args.mode = Search(Count)
+    "count-matches" => args.mode = Search(CountMatches)
     "crlf" => {
       args.crlf = v.unwrap_switch()
       if args.crlf {
@@ -180,11 +175,9 @@ fn update_flag(
       args.field_context_separator = @cli.unescape(v.unwrap_value())
     "field-match-separator" =>
       args.field_match_separator = @cli.unescape(v.unwrap_value())
-    "files" => args.mode = args.mode.updated(Files)
-    "files-with-matches" =>
-      args.mode = args.mode.updated(Search(FilesWithMatches))
-    "files-without-match" =>
-      args.mode = args.mode.updated(Search(FilesWithoutMatch))
+    "files" => args.mode = Files
+    "files-with-matches" => args.mode = Search(FilesWithMatches)
+    "files-without-match" => args.mode = Search(FilesWithoutMatch)
     "fixed-strings" => args.fixed_strings = v.unwrap_switch()
     "follow" => args.follow = v.unwrap_switch()
     "generate" => {
@@ -196,7 +189,7 @@ fn update_flag(
         "complete-powershell" => CompletePowerShell
         unk => raise RgError("choice '\{unk}' is unrecognized")
       }
-      args.mode = args.mode.updated(Generate(genmode))
+      args.mode = Generate(genmode)
     }
     "glob" => args.globs.push(v.unwrap_value())
     "glob-case-insensitive" => args.glob_case_insensitive = v.unwrap_switch()
@@ -220,31 +213,14 @@ fn update_flag(
     "ignore-file-case-insensitive" =>
       args.ignore_file_case_insensitive = v.unwrap_switch()
     "include-zero" => args.include_zero = v.unwrap_switch()
-    "index" => {
-      check_indexing_allowed()
-      args.index += 1
-      if args.index > 2 {
-        raise RgError("-X/--index may be given at most twice")
-      }
-    }
-    "x-crud" => {
-      check_indexing_allowed()
-      args.mode = args.mode.updated(Index(Crud))
-    }
-    "x-force" => {
-      check_indexing_allowed()
-      args.index_force = true
-    }
-    "x-path" => {
-      check_indexing_allowed()
-      args.index_path = Some(v.unwrap_value())
-    }
+    "index" | "x-crud" | "x-force" | "x-path" =>
+      raise RgError(INDEXING_NOT_SUPPORTED)
     "invert-match" => args.invert_match = v.unwrap_switch()
     "json" =>
       if v.unwrap_switch() {
-        args.mode = args.mode.updated(Search(JSON))
+        args.mode = Search(JSON)
       } else if args.mode is Search(JSON) {
-        args.mode = args.mode.updated(Search(Standard))
+        args.mode = Search(Standard)
       }
     "line-buffered" => args.buffer = if v.unwrap_switch() { Line } else { Auto }
     "line-number" => args.line_number = Some(true)
@@ -259,7 +235,7 @@ fn update_flag(
     "max-depth" => args.max_depth = Some(convert_usize(v.unwrap_value()))
     "max-filesize" =>
       args.max_filesize = Some(convert_human_readable_u64(v.unwrap_value()))
-    "mmap" => args.mmap = if v.unwrap_switch() { AlwaysTryMmap } else { Never }
+    "mmap" => ()
     "multiline" => {
       args.multiline = v.unwrap_switch()
       if args.multiline {
@@ -353,17 +329,14 @@ fn update_flag(
       args.multiline = false
     }
     "text" => args.binary = if v.unwrap_switch() { AsText } else { Auto }
-    "threads" => {
-      let threads = convert_usize(v.unwrap_value())
-      args.threads = if threads == 0 { None } else { Some(threads) }
-    }
+    "threads" => ignore(convert_usize(v.unwrap_value()))
     "trace" => args.logging = Some(Trace)
     "trim" => args.trim = v.unwrap_switch()
     "type" => args.type_changes.push(Select(v.unwrap_value()))
     "type-not" => args.type_changes.push(Negate(v.unwrap_value()))
     "type-add" => args.type_changes.push(Add(v.unwrap_value()))
     "type-clear" => args.type_changes.push(Clear(v.unwrap_value()))
-    "type-list" => args.mode = args.mode.updated(Types)
+    "type-list" => args.mode = Types
     "unrestricted" => {
       args.unrestricted += 1
       if args.unrestricted > 3 {
@@ -392,37 +365,4 @@ fn update_flag(
       }
     other => abort("unhandled flag --\{other}")
   }
-}
-
-///|
-/// Returns the first flag that doesn't support indexing, if any is set.
-fn LowArgs::indexing_unsupported_flag(self : LowArgs) -> String? {
-  if self.mode is Search(FilesWithoutMatch) {
-    return Some("files-without-match")
-  }
-  if self.binary is AsText {
-    return Some("binary")
-  }
-  if !(self.encoding is Auto) {
-    return Some("encoding")
-  }
-  if self.engine is PCRE2 {
-    return Some("engine")
-  }
-  if self.follow {
-    return Some("follow")
-  }
-  if !self.globs.is_empty() {
-    return Some("glob")
-  }
-  if self.hidden {
-    return Some("hidden")
-  }
-  if !self.iglobs.is_empty() {
-    return Some("glob")
-  }
-  if !self.ignore_file.is_empty() {
-    return Some("ignore-file")
-  }
-  None
 }

@@ -25,8 +25,6 @@ pub struct DirEntry {
 pub(all) struct Metadata {
   file_type : FileType
   len : Int64
-  dev : UInt64?
-  ino : UInt64?
 } derive(Debug, Eq)
 
 ///|

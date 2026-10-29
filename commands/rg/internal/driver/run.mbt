@@ -1,6 +1,6 @@
 ///|
 /// The result of parsing CLI arguments.
-pub(all) enum ParseResult[T] {
+priv enum ParseResult[T] {
   Special(SpecialMode)
   ParseOk(T)
   ParseErr(String)
@@ -136,7 +136,6 @@ async fn run(cli_args : Array[String]) -> Int32 {
   let matched = match args.mode {
     Search(_) if !args.matches_possible() => false
     Search(mode) => run_search(args, mode)
-    Index(_) => raise RgError(INDEXING_NOT_SUPPORTED)
     Files => run_files(args)
     Types => return run_types(args)
     Generate(mode) => return generate(mode)

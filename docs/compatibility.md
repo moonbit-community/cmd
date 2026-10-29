@@ -453,7 +453,7 @@ missing, malformed and overflowing values retain parser validation. The engine's
 fixed DFA state-count limit is not a byte budget. Supporting this option requires
 engine-level byte accounting, a configurable cache budget and execution tests
 covering budget exhaustion and fallback. Indexing flags also reject explicitly;
-their existing rejection diagnostics remain unchanged.
+their dormant execution state is removed without changing those diagnostics.
 
 `--pre` consumes child stdout incrementally, drains stderr concurrently and
 reaps the direct child on completion/early close/cancellation. Stderr diagnostic

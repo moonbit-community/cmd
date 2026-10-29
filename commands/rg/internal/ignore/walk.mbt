@@ -86,17 +86,6 @@ pub fn DirEntry::depth(self : DirEntry) -> Int32 {
 }
 
 ///|
-/// Returns the underlying inode number if one exists.
-///
-/// If this entry doesn't have an inode number, then `None` is returned.
-async fn DirEntry::ino(self : DirEntry) -> UInt64? {
-  match self.dent {
-    Stdin => None
-    Raw(x) => x.ino()
-  }
-}
-
-///|
 /// Returns an error, if one exists, associated with processing this entry.
 ///
 /// An example of an error is one that occurred while parsing an ignore
@@ -196,9 +185,7 @@ pub struct WalkBuilder {
   priv mut min_depth : Int32?
   priv mut max_filesize : UInt64?
   priv mut follow_links : Bool
-  priv mut same_file_system : Bool
   priv mut sorter : Sorter?
-  priv mut skip : Handle?
   priv mut filter : ((DirEntry) -> Bool)?
   /// The directory that gitignores should be interpreted relative to.
   priv mut global_gitignores_relative_to : CwdState
@@ -228,9 +215,7 @@ fn WalkBuilder::empty() -> WalkBuilder {
     min_depth: None,
     max_filesize: None,
     follow_links: false,
-    same_file_system: false,
     sorter: None,
-    skip: None,
     filter: None,
     global_gitignores_relative_to: Unset,
   }
@@ -272,7 +257,6 @@ pub async fn WalkBuilder::build(self : WalkBuilder) -> Walk {
           follow_links: follow_links || is_file(p),
           max_depth: max_depth.unwrap_or(2147483647),
           min_depth: min_depth.unwrap_or(0),
-          same_file_system: self.same_file_system,
           sorter: cmp,
         }
         (p, Some(WalkEventIter::new(WalkDirIter::new(p, opts))))
@@ -291,7 +275,6 @@ pub async fn WalkBuilder::build(self : WalkBuilder) -> Walk {
     ig: ig_root,
     max_depth: self.max_depth,
     max_filesize: self.max_filesize,
-    skip: self.skip,
     filter: self.filter,
   }
 }
@@ -535,46 +518,6 @@ pub fn WalkBuilder::sort_by_file_name(
 }
 
 ///|
-/// Do not cross file system boundaries.
-///
-/// When this option is enabled, directory traversal will not descend into
-/// directories that are on a different file system from the root path.
-///
-/// On backends that cannot report device numbers (wasm), all paths are
-/// considered to be on the same file system.
-pub fn WalkBuilder::same_file_system(
-  self : WalkBuilder,
-  yes : Bool,
-) -> WalkBuilder {
-  self.same_file_system = yes
-  self
-}
-
-///|
-/// Do not yield directory entries that are believed to correspond to
-/// stdout.
-///
-/// This is useful when a command is invoked via shell redirection to a
-/// file that is also being read. For example, `grep -r foo ./ > results`
-/// might end up trying to search `results` even though it is also writing
-/// to it, which could cause an unbounded feedback loop. Setting this
-/// option prevents this from happening by skipping over the `results`
-/// file.
-///
-/// This is disabled by default.
-pub async fn WalkBuilder::skip_stdout(
-  self : WalkBuilder,
-  yes : Bool,
-) -> WalkBuilder {
-  if yes {
-    self.skip = stdout_handle()
-  } else {
-    self.skip = None
-  }
-  self
-}
-
-///|
 /// Set the current working directory used for matching global gitignores.
 ///
 /// If this is not set, then this walker will attempt to discover the
@@ -644,7 +587,6 @@ pub struct Walk {
   priv mut ig : Ignore
   priv max_depth : Int32?
   priv max_filesize : UInt64?
-  priv skip : Handle?
   priv filter : ((DirEntry) -> Bool)?
 }
 
@@ -657,11 +599,6 @@ async fn Walk::skip_entry(self : Walk, ent : DirEntry) -> Bool {
   // expensive operations (stat, filesystem other) are done.
   if should_skip_entry(self.ig, ent) {
     return true
-  }
-  if self.skip is Some(stdout) {
-    if path_equals(ent, stdout) {
-      return true
-    }
   }
   if self.max_filesize is Some(max_filesize) && !ent.is_dir() {
     return skip_filesize(
@@ -869,55 +806,6 @@ fn should_skip_entry(ig : Ignore, dent : DirEntry) -> Bool {
   } else {
     false
   }
-}
-
-///|
-/// Returns a handle to stdout for filtering search.
-///
-/// A handle is returned if and only if stdout is being redirected to a file.
-/// The handle returned corresponds to that file.
-///
-/// This port determines the stdout file by querying the metadata of
-/// `/dev/stdout`, which on Linux and macOS resolves to the file open on
-/// file descriptor 1.
-async fn stdout_handle() -> Handle? {
-  if @sys.is_tty(1) is Available(true) {
-    return None
-  }
-  let md = @sys.metadata("/dev/stdout") catch { _ => return None }
-  if !(md.file_type is File) {
-    return None
-  }
-  if md.dev is None || md.ino is None {
-    // Can't identify the file.
-    return None
-  }
-  // On macOS, `/dev/stdout` resolves through the `fdesc` file system: the
-  // inode number is the one of the open file, but the device number is the
-  // one of `/dev`. In that case only the inode number can be compared.
-  let dev_known = try @sys.metadata("/dev").dev != md.dev catch {
-    _ => true
-  }
-  Some({ dev: md.dev, ino: md.ino, dev_known, canonical: None, })
-}
-
-///|
-/// Returns true if and only if the given directory entry is believed to be
-/// equivalent to the given handle. If there was a problem querying the path
-/// for information to determine equality, then that error is returned.
-async fn path_equals(dent : DirEntry, handle : Handle) -> Bool {
-  // If we know for sure that these two things aren't equal, then avoid
-  // the costly extra stat call to determine equality.
-  if dent.is_stdin() || dent.ino() != handle.ino {
-    return false
-  }
-  let h = Handle::from_path(dent.path()) catch {
-    err =>
-      raise IgnoreError::Io(@sys.from_error(err))
-        .with_depth(dent.depth())
-        .with_path(dent.path())
-  }
-  h.same(handle)
 }
 
 ///|

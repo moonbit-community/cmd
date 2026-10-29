@@ -110,12 +110,7 @@ async fn stat(path : String, follow : Bool) -> Metadata {
     e => raise io_error(e)
   }
   let len = entry.regular_size(ResolvedPath) catch { e => raise io_error(e) }
-  {
-    file_type: file_type(entry.kind),
-    len: len.unwrap_or(-1L),
-    dev: None,
-    ino: None,
-  }
+  { file_type: file_type(entry.kind), len: len.unwrap_or(-1L), }
 }
 
 ///|

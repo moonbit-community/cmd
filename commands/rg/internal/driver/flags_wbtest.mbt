@@ -1,37 +1,50 @@
 ///|
+fn assert_context(actual : ContextMode, expected : ContextMode) -> Unit raise {
+  match (actual, expected) {
+    (Passthru, Passthru) => ()
+    (Limited(a), Limited(b)) => {
+      assert_eq(a.before, b.before)
+      assert_eq(a.after, b.after)
+      assert_eq(a.both, b.both)
+    }
+    _ => fail("context mode differs")
+  }
+}
+
+///|
 test "flags/test_after_context" {
   let mkctx = (lines : Int32) => ContextMode::default().set_after(lines)
 
   let args = low([])
-  assert_eq(args.context, ContextMode::default())
+  assert_context(args.context, ContextMode::default())
 
   let args = low(["--after-context", "5"])
-  assert_eq(args.context, mkctx(5))
+  assert_context(args.context, mkctx(5))
 
   let args = low(["--after-context=5"])
-  assert_eq(args.context, mkctx(5))
+  assert_context(args.context, mkctx(5))
 
   let args = low(["-A", "5"])
-  assert_eq(args.context, mkctx(5))
+  assert_context(args.context, mkctx(5))
 
   let args = low(["-A5"])
-  assert_eq(args.context, mkctx(5))
+  assert_context(args.context, mkctx(5))
 
   let args = low(["-A5", "-A10"])
-  assert_eq(args.context, mkctx(10))
+  assert_context(args.context, mkctx(10))
 
   let args = low(["-A5", "-A0"])
-  assert_eq(args.context, mkctx(0))
+  assert_context(args.context, mkctx(0))
 
   let args = low(["-A5", "--passthru"])
-  assert_eq(args.context, ContextMode::Passthru)
+  assert_context(args.context, ContextMode::Passthru)
 
   let args = low(["--passthru", "-A5"])
-  assert_eq(args.context, mkctx(5))
+  assert_context(args.context, mkctx(5))
 
   let n = "18446744073709551615"
   let args = low(["--after-context", n])
-  assert_eq(args.context, mkctx(0x7FFFFFFF))
+  assert_context(args.context, mkctx(0x7FFFFFFF))
   let n = "18446744073709551616"
   let result = try_parse(["--after-context", n])
   assert_true(result is Err(_))
@@ -40,31 +53,31 @@ test "flags/test_after_context" {
 ///|
 test "flags/test_auto_hybrid_regex" {
   let args = low([])
-  assert_eq(args.engine, EngineChoice::Default)
+  assert_true(args.engine is EngineChoice::Default)
 
   let args = low(["--auto-hybrid-regex"])
-  assert_eq(args.engine, EngineChoice::Auto)
+  assert_true(args.engine is EngineChoice::Auto)
 
   let args = low(["--auto-hybrid-regex", "--no-auto-hybrid-regex"])
-  assert_eq(args.engine, EngineChoice::Default)
+  assert_true(args.engine is EngineChoice::Default)
 
   let args = low(["--no-auto-hybrid-regex", "--auto-hybrid-regex"])
-  assert_eq(args.engine, EngineChoice::Auto)
+  assert_true(args.engine is EngineChoice::Auto)
 
   let args = low(["--auto-hybrid-regex", "-P"])
-  assert_eq(args.engine, EngineChoice::PCRE2)
+  assert_true(args.engine is EngineChoice::PCRE2)
 
   let args = low(["-P", "--auto-hybrid-regex"])
-  assert_eq(args.engine, EngineChoice::Auto)
+  assert_true(args.engine is EngineChoice::Auto)
 
   let args = low(["--engine=auto", "--auto-hybrid-regex"])
-  assert_eq(args.engine, EngineChoice::Auto)
+  assert_true(args.engine is EngineChoice::Auto)
 
   let args = low(["--engine=default", "--auto-hybrid-regex"])
-  assert_eq(args.engine, EngineChoice::Auto)
+  assert_true(args.engine is EngineChoice::Auto)
 
   let args = low(["--auto-hybrid-regex", "--engine=default"])
-  assert_eq(args.engine, EngineChoice::Default)
+  assert_true(args.engine is EngineChoice::Default)
 }
 
 ///|
@@ -72,35 +85,35 @@ test "flags/test_before_context" {
   let mkctx = (lines : Int32) => ContextMode::default().set_before(lines)
 
   let args = low([])
-  assert_eq(args.context, ContextMode::default())
+  assert_context(args.context, ContextMode::default())
 
   let args = low(["--before-context", "5"])
-  assert_eq(args.context, mkctx(5))
+  assert_context(args.context, mkctx(5))
 
   let args = low(["--before-context=5"])
-  assert_eq(args.context, mkctx(5))
+  assert_context(args.context, mkctx(5))
 
   let args = low(["-B", "5"])
-  assert_eq(args.context, mkctx(5))
+  assert_context(args.context, mkctx(5))
 
   let args = low(["-B5"])
-  assert_eq(args.context, mkctx(5))
+  assert_context(args.context, mkctx(5))
 
   let args = low(["-B5", "-B10"])
-  assert_eq(args.context, mkctx(10))
+  assert_context(args.context, mkctx(10))
 
   let args = low(["-B5", "-B0"])
-  assert_eq(args.context, mkctx(0))
+  assert_context(args.context, mkctx(0))
 
   let args = low(["-B5", "--passthru"])
-  assert_eq(args.context, ContextMode::Passthru)
+  assert_context(args.context, ContextMode::Passthru)
 
   let args = low(["--passthru", "-B5"])
-  assert_eq(args.context, mkctx(5))
+  assert_context(args.context, mkctx(5))
 
   let n = "18446744073709551615"
   let args = low(["--before-context", n])
-  assert_eq(args.context, mkctx(0x7FFFFFFF))
+  assert_context(args.context, mkctx(0x7FFFFFFF))
   let n = "18446744073709551616"
   let result = try_parse(["--before-context", n])
   assert_true(result is Err(_))
@@ -109,40 +122,40 @@ test "flags/test_before_context" {
 ///|
 test "flags/test_binary" {
   let args = low([])
-  assert_eq(args.binary, BinaryMode::Auto)
+  assert_true(args.binary is BinaryMode::Auto)
 
   let args = low(["--binary"])
-  assert_eq(args.binary, BinaryMode::SearchAndSuppress)
+  assert_true(args.binary is BinaryMode::SearchAndSuppress)
 
   let args = low(["--binary", "--no-binary"])
-  assert_eq(args.binary, BinaryMode::Auto)
+  assert_true(args.binary is BinaryMode::Auto)
 
   let args = low(["--no-binary", "--binary"])
-  assert_eq(args.binary, BinaryMode::SearchAndSuppress)
+  assert_true(args.binary is BinaryMode::SearchAndSuppress)
 
   let args = low(["--binary", "-a"])
-  assert_eq(args.binary, BinaryMode::AsText)
+  assert_true(args.binary is BinaryMode::AsText)
 
   let args = low(["-a", "--binary"])
-  assert_eq(args.binary, BinaryMode::SearchAndSuppress)
+  assert_true(args.binary is BinaryMode::SearchAndSuppress)
 
   let args = low(["-a", "--no-binary"])
-  assert_eq(args.binary, BinaryMode::Auto)
+  assert_true(args.binary is BinaryMode::Auto)
 }
 
 ///|
 test "flags/test_block_buffered" {
   let args = low([])
-  assert_eq(args.buffer, BufferMode::Auto)
+  assert_true(args.buffer is BufferMode::Auto)
 
   let args = low(["--block-buffered"])
-  assert_eq(args.buffer, BufferMode::Block)
+  assert_true(args.buffer is BufferMode::Block)
 
   let args = low(["--block-buffered", "--no-block-buffered"])
-  assert_eq(args.buffer, BufferMode::Auto)
+  assert_true(args.buffer is BufferMode::Auto)
 
   let args = low(["--block-buffered", "--line-buffered"])
-  assert_eq(args.buffer, BufferMode::Line)
+  assert_true(args.buffer is BufferMode::Line)
 }
 
 ///|
@@ -166,40 +179,40 @@ test "flags/test_byte_offset" {
 ///|
 test "flags/test_case_sensitive" {
   let args = low([])
-  assert_eq(args.case, CaseMode::Sensitive)
+  assert_true(args.case is CaseMode::Sensitive)
 
   let args = low(["--case-sensitive"])
-  assert_eq(args.case, CaseMode::Sensitive)
+  assert_true(args.case is CaseMode::Sensitive)
 
   let args = low(["-s"])
-  assert_eq(args.case, CaseMode::Sensitive)
+  assert_true(args.case is CaseMode::Sensitive)
 }
 
 ///|
 test "flags/test_color" {
   let args = low([])
-  assert_eq(args.color, ColorChoice::Auto)
+  assert_true(args.color is ColorChoice::Auto)
 
   let args = low(["--color", "never"])
-  assert_eq(args.color, ColorChoice::Never)
+  assert_true(args.color is ColorChoice::Never)
 
   let args = low(["--color", "auto"])
-  assert_eq(args.color, ColorChoice::Auto)
+  assert_true(args.color is ColorChoice::Auto)
 
   let args = low(["--color", "always"])
-  assert_eq(args.color, ColorChoice::Always)
+  assert_true(args.color is ColorChoice::Always)
 
   let args = low(["--color", "ansi"])
-  assert_eq(args.color, ColorChoice::Ansi)
+  assert_true(args.color is ColorChoice::Ansi)
 
   let args = low(["--color=never"])
-  assert_eq(args.color, ColorChoice::Never)
+  assert_true(args.color is ColorChoice::Never)
 
   let args = low(["--color", "always", "--color", "never"])
-  assert_eq(args.color, ColorChoice::Never)
+  assert_true(args.color is ColorChoice::Never)
 
   let args = low(["--color", "never", "--color", "always"])
-  assert_eq(args.color, ColorChoice::Always)
+  assert_true(args.color is ColorChoice::Always)
 
   let result = try_parse(["--color", "foofoo"])
   assert_true(result is Err(_))
@@ -248,35 +261,35 @@ test "flags/test_context" {
   let mkctx = (lines : Int32) => ContextMode::default().set_both(lines)
 
   let args = low([])
-  assert_eq(args.context, ContextMode::default())
+  assert_context(args.context, ContextMode::default())
 
   let args = low(["--context", "5"])
-  assert_eq(args.context, mkctx(5))
+  assert_context(args.context, mkctx(5))
 
   let args = low(["--context=5"])
-  assert_eq(args.context, mkctx(5))
+  assert_context(args.context, mkctx(5))
 
   let args = low(["-C", "5"])
-  assert_eq(args.context, mkctx(5))
+  assert_context(args.context, mkctx(5))
 
   let args = low(["-C5"])
-  assert_eq(args.context, mkctx(5))
+  assert_context(args.context, mkctx(5))
 
   let args = low(["-C5", "-C10"])
-  assert_eq(args.context, mkctx(10))
+  assert_context(args.context, mkctx(10))
 
   let args = low(["-C5", "-C0"])
-  assert_eq(args.context, mkctx(0))
+  assert_context(args.context, mkctx(0))
 
   let args = low(["-C5", "--passthru"])
-  assert_eq(args.context, ContextMode::Passthru)
+  assert_context(args.context, ContextMode::Passthru)
 
   let args = low(["--passthru", "-C5"])
-  assert_eq(args.context, mkctx(5))
+  assert_context(args.context, mkctx(5))
 
   let n = "18446744073709551615"
   let args = low(["--context", n])
-  assert_eq(args.context, mkctx(0x7FFFFFFF))
+  assert_context(args.context, mkctx(0x7FFFFFFF))
   {
     let n = "18446744073709551616"
     let result = try_parse(["--context", n])
@@ -291,14 +304,14 @@ test "flags/test_context" {
   let mut mode = ContextMode::default()
   mode = mode.set_after(1)
   mode = mode.set_both(5)
-  assert_eq(args.context, mode)
+  assert_context(args.context, mode)
   assert_eq(args.context.get_limited(), (5, 1))
 
   let args = low(["-B1", "-C5"])
   let mut mode = ContextMode::default()
   mode = mode.set_before(1)
   mode = mode.set_both(5)
-  assert_eq(args.context, mode)
+  assert_context(args.context, mode)
   assert_eq(args.context.get_limited(), (1, 5))
 
   let args = low(["-A1", "-B2", "-C5"])
@@ -306,7 +319,7 @@ test "flags/test_context" {
   mode = mode.set_before(2)
   mode = mode.set_after(1)
   mode = mode.set_both(5)
-  assert_eq(args.context, mode)
+  assert_context(args.context, mode)
   assert_eq(args.context.get_limited(), (2, 1))
 
   // These next three are like the ones above, but with -C before -A/-B. This
@@ -316,14 +329,14 @@ test "flags/test_context" {
   let mut mode = ContextMode::default()
   mode = mode.set_after(1)
   mode = mode.set_both(5)
-  assert_eq(args.context, mode)
+  assert_context(args.context, mode)
   assert_eq(args.context.get_limited(), (5, 1))
 
   let args = low(["-C5", "-B1"])
   let mut mode = ContextMode::default()
   mode = mode.set_before(1)
   mode = mode.set_both(5)
-  assert_eq(args.context, mode)
+  assert_context(args.context, mode)
   assert_eq(args.context.get_limited(), (1, 5))
 
   let args = low(["-C5", "-A1", "-B2"])
@@ -331,7 +344,7 @@ test "flags/test_context" {
   mode = mode.set_before(2)
   mode = mode.set_after(1)
   mode = mode.set_both(5)
-  assert_eq(args.context, mode)
+  assert_context(args.context, mode)
   assert_eq(args.context.get_limited(), (2, 1))
 }
 
@@ -373,34 +386,34 @@ test "flags/test_context_separator" {
 ///|
 test "flags/test_count" {
   let args = low([])
-  assert_eq(args.mode, Mode::Search(Standard))
+  assert_true(args.mode is Mode::Search(Standard))
 
   let args = low(["--count"])
-  assert_eq(args.mode, Mode::Search(Count))
+  assert_true(args.mode is Mode::Search(Count))
 
   let args = low(["-c"])
-  assert_eq(args.mode, Mode::Search(Count))
+  assert_true(args.mode is Mode::Search(Count))
 
   let args = low(["--count-matches", "--count"])
-  assert_eq(args.mode, Mode::Search(Count))
+  assert_true(args.mode is Mode::Search(Count))
 
   let args = low(["--count-matches", "-c"])
-  assert_eq(args.mode, Mode::Search(Count))
+  assert_true(args.mode is Mode::Search(Count))
 }
 
 ///|
 test "flags/test_count_matches" {
   let args = low([])
-  assert_eq(args.mode, Mode::Search(Standard))
+  assert_true(args.mode is Mode::Search(Standard))
 
   let args = low(["--count-matches"])
-  assert_eq(args.mode, Mode::Search(CountMatches))
+  assert_true(args.mode is Mode::Search(CountMatches))
 
   let args = low(["--count", "--count-matches"])
-  assert_eq(args.mode, Mode::Search(CountMatches))
+  assert_true(args.mode is Mode::Search(CountMatches))
 
   let args = low(["-c", "--count-matches"])
-  assert_eq(args.mode, Mode::Search(CountMatches))
+  assert_true(args.mode is Mode::Search(CountMatches))
 }
 
 ///|
@@ -432,13 +445,13 @@ test "flags/test_crlf" {
 ///|
 test "flags/test_debug" {
   let args = low([])
-  assert_eq(args.logging, None)
+  assert_true(args.logging is None)
 
   let args = low(["--debug"])
-  assert_eq(args.logging, Some(LoggingMode::Debug))
+  assert_true(args.logging is Some(LoggingMode::Debug))
 
   let args = low(["--trace", "--debug"])
-  assert_eq(args.logging, Some(LoggingMode::Debug))
+  assert_true(args.logging is Some(LoggingMode::Debug))
 }
 
 ///|
@@ -471,35 +484,35 @@ test "flags/test_dfa_size_limit" {
 ///|
 test "flags/test_encoding" {
   let args = low([])
-  assert_eq(args.encoding, EncodingMode::Auto)
+  assert_true(args.encoding is EncodingMode::Auto)
 
   let args = low(["--encoding", "auto"])
-  assert_eq(args.encoding, EncodingMode::Auto)
+  assert_true(args.encoding is EncodingMode::Auto)
 
   let args = low(["--encoding", "none"])
-  assert_eq(args.encoding, EncodingMode::Disabled)
+  assert_true(args.encoding is EncodingMode::Disabled)
 
   let args = low(["--encoding=none"])
-  assert_eq(args.encoding, EncodingMode::Disabled)
+  assert_true(args.encoding is EncodingMode::Disabled)
 
   let args = low(["-E", "none"])
-  assert_eq(args.encoding, EncodingMode::Disabled)
+  assert_true(args.encoding is EncodingMode::Disabled)
 
   let args = low(["-Enone"])
-  assert_eq(args.encoding, EncodingMode::Disabled)
+  assert_true(args.encoding is EncodingMode::Disabled)
 
   let args = low(["-E", "none", "--no-encoding"])
-  assert_eq(args.encoding, EncodingMode::Auto)
+  assert_true(args.encoding is EncodingMode::Auto)
 
   let args = low(["--no-encoding", "-E", "none"])
-  assert_eq(args.encoding, EncodingMode::Disabled)
+  assert_true(args.encoding is EncodingMode::Disabled)
 
   let args = low(["-E", "utf-16"])
   let enc = @searcher.Encoding::new("utf-16")
-  assert_eq(args.encoding, EncodingMode::Specific(enc))
+  assert_true(args.encoding is Specific(actual) && actual.name() == enc.name())
 
   let args = low(["-E", "utf-16", "--no-encoding"])
-  assert_eq(args.encoding, EncodingMode::Auto)
+  assert_true(args.encoding is EncodingMode::Auto)
 
   let result = try_parse(["-E", "foo"])
   assert_true(result is Err(_))
@@ -508,28 +521,28 @@ test "flags/test_encoding" {
 ///|
 test "flags/test_engine" {
   let args = low([])
-  assert_eq(args.engine, EngineChoice::Default)
+  assert_true(args.engine is EngineChoice::Default)
 
   let args = low(["--engine", "pcre2"])
-  assert_eq(args.engine, EngineChoice::PCRE2)
+  assert_true(args.engine is EngineChoice::PCRE2)
 
   let args = low(["--engine=pcre2"])
-  assert_eq(args.engine, EngineChoice::PCRE2)
+  assert_true(args.engine is EngineChoice::PCRE2)
 
   let args = low(["--auto-hybrid-regex", "--engine=pcre2"])
-  assert_eq(args.engine, EngineChoice::PCRE2)
+  assert_true(args.engine is EngineChoice::PCRE2)
 
   let args = low(["--engine=pcre2", "--auto-hybrid-regex"])
-  assert_eq(args.engine, EngineChoice::Auto)
+  assert_true(args.engine is EngineChoice::Auto)
 
   let args = low(["--auto-hybrid-regex", "--engine=auto"])
-  assert_eq(args.engine, EngineChoice::Auto)
+  assert_true(args.engine is EngineChoice::Auto)
 
   let args = low(["--auto-hybrid-regex", "--engine=default"])
-  assert_eq(args.engine, EngineChoice::Default)
+  assert_true(args.engine is EngineChoice::Default)
 
   let args = low(["--engine=pcre2", "--no-auto-hybrid-regex"])
-  assert_eq(args.engine, EngineChoice::Default)
+  assert_true(args.engine is EngineChoice::Default)
 }
 
 ///|
@@ -611,37 +624,36 @@ test "flags/test_field_match_separator" {
 ///|
 test "flags/test_file" {
   let args = low([])
-  assert_eq(args.patterns, [])
+  assert_true(args.patterns is [])
 
   let args = low(["--file", "foo"])
-  assert_eq(args.patterns, [PatternSource::File("foo")])
+  assert_true(args.patterns is [PatternSource::File("foo")])
 
   let args = low(["--file=foo"])
-  assert_eq(args.patterns, [PatternSource::File("foo")])
+  assert_true(args.patterns is [PatternSource::File("foo")])
 
   let args = low(["-f", "foo"])
-  assert_eq(args.patterns, [PatternSource::File("foo")])
+  assert_true(args.patterns is [PatternSource::File("foo")])
 
   let args = low(["-ffoo"])
-  assert_eq(args.patterns, [PatternSource::File("foo")])
+  assert_true(args.patterns is [PatternSource::File("foo")])
 
   let args = low(["--file", "-foo"])
-  assert_eq(args.patterns, [PatternSource::File("-foo")])
+  assert_true(args.patterns is [PatternSource::File("-foo")])
 
   let args = low(["--file=-foo"])
-  assert_eq(args.patterns, [PatternSource::File("-foo")])
+  assert_true(args.patterns is [PatternSource::File("-foo")])
 
   let args = low(["-f", "-foo"])
-  assert_eq(args.patterns, [PatternSource::File("-foo")])
+  assert_true(args.patterns is [PatternSource::File("-foo")])
 
   let args = low(["-f-foo"])
-  assert_eq(args.patterns, [PatternSource::File("-foo")])
+  assert_true(args.patterns is [PatternSource::File("-foo")])
 
   let args = low(["--file=foo", "--file", "bar"])
-  assert_eq(args.patterns, [
-    PatternSource::File("foo"),
-    PatternSource::File("bar"),
-  ])
+  assert_true(
+    args.patterns is [PatternSource::File("foo"), PatternSource::File("bar")],
+  )
 
   // We permit path arguments to be invalid UTF-8. So test that. Some of
   // these cases are tricky and depend on lexopt doing the right thing.
@@ -654,37 +666,37 @@ test "flags/test_file" {
 ///|
 test "flags/test_files" {
   let args = low([])
-  assert_eq(args.mode, Mode::Search(Standard))
+  assert_true(args.mode is Mode::Search(Standard))
 
   let args = low(["--files"])
-  assert_eq(args.mode, Mode::Files)
+  assert_true(args.mode is Mode::Files)
 }
 
 ///|
 test "flags/test_files_with_matches" {
   let args = low([])
-  assert_eq(args.mode, Mode::Search(Standard))
+  assert_true(args.mode is Mode::Search(Standard))
 
   let args = low(["--files-with-matches"])
-  assert_eq(args.mode, Mode::Search(FilesWithMatches))
+  assert_true(args.mode is Mode::Search(FilesWithMatches))
 
   let args = low(["-l"])
-  assert_eq(args.mode, Mode::Search(FilesWithMatches))
+  assert_true(args.mode is Mode::Search(FilesWithMatches))
 }
 
 ///|
 test "flags/test_files_without_match" {
   let args = low([])
-  assert_eq(args.mode, Mode::Search(Standard))
+  assert_true(args.mode is Mode::Search(Standard))
 
   let args = low(["--files-without-match"])
-  assert_eq(args.mode, Mode::Search(FilesWithoutMatch))
+  assert_true(args.mode is Mode::Search(FilesWithoutMatch))
 
   let args = low(["--files-with-matches", "--files-without-match"])
-  assert_eq(args.mode, Mode::Search(FilesWithoutMatch))
+  assert_true(args.mode is Mode::Search(FilesWithoutMatch))
 
   let args = low(["--files-without-match", "--files-with-matches"])
-  assert_eq(args.mode, Mode::Search(FilesWithMatches))
+  assert_true(args.mode is Mode::Search(FilesWithMatches))
 }
 
 ///|
@@ -726,33 +738,33 @@ test "flags/test_follow" {
 ///|
 test "flags/test_generate" {
   let args = low([])
-  assert_eq(args.mode, Mode::Search(Standard))
+  assert_true(args.mode is Mode::Search(Standard))
 
   let args = low(["--generate", "man"])
-  assert_eq(args.mode, Mode::Generate(Man))
+  assert_true(args.mode is Mode::Generate(Man))
 
   let args = low(["--generate", "complete-bash"])
-  assert_eq(args.mode, Mode::Generate(CompleteBash))
+  assert_true(args.mode is Mode::Generate(CompleteBash))
 
   let args = low(["--generate", "complete-zsh"])
-  assert_eq(args.mode, Mode::Generate(CompleteZsh))
+  assert_true(args.mode is Mode::Generate(CompleteZsh))
 
   let args = low(["--generate", "complete-fish"])
-  assert_eq(args.mode, Mode::Generate(CompleteFish))
+  assert_true(args.mode is Mode::Generate(CompleteFish))
 
   let args = low(["--generate", "complete-powershell"])
-  assert_eq(args.mode, Mode::Generate(CompletePowerShell))
+  assert_true(args.mode is Mode::Generate(CompletePowerShell))
 
   let args = low(["--generate", "complete-bash", "--generate=man"])
-  assert_eq(args.mode, Mode::Generate(Man))
+  assert_true(args.mode is Mode::Generate(Man))
 
   let args = low(["--generate", "man", "-l"])
-  assert_eq(args.mode, Mode::Search(FilesWithMatches))
+  assert_true(args.mode is Mode::Search(FilesWithMatches))
 
   // An interesting quirk of how the modes override each other that lets
   // you get back to the "default" mode of searching.
   let args = low(["--generate", "man", "--json", "--no-json"])
-  assert_eq(args.mode, Mode::Search(Standard))
+  assert_true(args.mode is Mode::Search(Standard))
 }
 
 ///|
@@ -821,19 +833,19 @@ test "flags/test_heading" {
 ///|
 test "flags/test_help" {
   let args = low([])
-  assert_eq(args.special, None)
+  assert_true(args.special is None)
 
   let args = low(["-h"])
-  assert_eq(args.special, Some(SpecialMode::HelpShort))
+  assert_true(args.special is Some(SpecialMode::HelpShort))
 
   let args = low(["--help"])
-  assert_eq(args.special, Some(SpecialMode::HelpLong))
+  assert_true(args.special is Some(SpecialMode::HelpLong))
 
   let args = low(["-h", "--help"])
-  assert_eq(args.special, Some(SpecialMode::HelpLong))
+  assert_true(args.special is Some(SpecialMode::HelpLong))
 
   let args = low(["--help", "-h"])
-  assert_eq(args.special, Some(SpecialMode::HelpShort))
+  assert_true(args.special is Some(SpecialMode::HelpShort))
 }
 
 ///|
@@ -887,19 +899,19 @@ test "flags/test_iglob" {
 ///|
 test "flags/test_ignore_case" {
   let args = low([])
-  assert_eq(args.case, CaseMode::Sensitive)
+  assert_true(args.case is CaseMode::Sensitive)
 
   let args = low(["--ignore-case"])
-  assert_eq(args.case, CaseMode::Insensitive)
+  assert_true(args.case is CaseMode::Insensitive)
 
   let args = low(["-i"])
-  assert_eq(args.case, CaseMode::Insensitive)
+  assert_true(args.case is CaseMode::Insensitive)
 
   let args = low(["-i", "-s"])
-  assert_eq(args.case, CaseMode::Sensitive)
+  assert_true(args.case is CaseMode::Sensitive)
 
   let args = low(["-s", "-i"])
-  assert_eq(args.case, CaseMode::Insensitive)
+  assert_true(args.case is CaseMode::Insensitive)
 }
 
 ///|
@@ -1013,34 +1025,34 @@ test "flags/test_invert_match" {
 ///|
 test "flags/test_json" {
   let args = low([])
-  assert_eq(args.mode, Mode::Search(Standard))
+  assert_true(args.mode is Mode::Search(Standard))
 
   let args = low(["--json"])
-  assert_eq(args.mode, Mode::Search(JSON))
+  assert_true(args.mode is Mode::Search(JSON))
 
   let args = low(["--json", "--no-json"])
-  assert_eq(args.mode, Mode::Search(Standard))
+  assert_true(args.mode is Mode::Search(Standard))
 
   let args = low(["--json", "--files", "--no-json"])
-  assert_eq(args.mode, Mode::Files)
+  assert_true(args.mode is Mode::Files)
 
   let args = low(["--json", "-l", "--no-json"])
-  assert_eq(args.mode, Mode::Search(FilesWithMatches))
+  assert_true(args.mode is Mode::Search(FilesWithMatches))
 }
 
 ///|
 test "flags/test_line_buffered" {
   let args = low([])
-  assert_eq(args.buffer, BufferMode::Auto)
+  assert_true(args.buffer is BufferMode::Auto)
 
   let args = low(["--line-buffered"])
-  assert_eq(args.buffer, BufferMode::Line)
+  assert_true(args.buffer is BufferMode::Line)
 
   let args = low(["--line-buffered", "--no-line-buffered"])
-  assert_eq(args.buffer, BufferMode::Auto)
+  assert_true(args.buffer is BufferMode::Auto)
 
   let args = low(["--line-buffered", "--block-buffered"])
-  assert_eq(args.buffer, BufferMode::Block)
+  assert_true(args.buffer is BufferMode::Block)
 }
 
 ///|
@@ -1076,13 +1088,13 @@ test "flags/test_no_line_number" {
 ///|
 test "flags/test_line_regexp" {
   let args = low([])
-  assert_eq(args.boundary, None)
+  assert_true(args.boundary is None)
 
   let args = low(["--line-regexp"])
-  assert_eq(args.boundary, Some(BoundaryMode::Line))
+  assert_true(args.boundary is Some(BoundaryMode::Line))
 
   let args = low(["-x"])
-  assert_eq(args.boundary, Some(BoundaryMode::Line))
+  assert_true(args.boundary is Some(BoundaryMode::Line))
 }
 
 ///|
@@ -1170,20 +1182,16 @@ test "flags/test_max_filesize" {
 
 ///|
 test "flags/test_mmap" {
-  let args = low([])
-  assert_eq(args.mmap, MmapMode::Auto)
-
-  let args = low(["--mmap"])
-  assert_eq(args.mmap, MmapMode::AlwaysTryMmap)
-
-  let args = low(["--no-mmap"])
-  assert_eq(args.mmap, MmapMode::Never)
-
-  let args = low(["--mmap", "--no-mmap"])
-  assert_eq(args.mmap, MmapMode::Never)
-
-  let args = low(["--no-mmap", "--mmap"])
-  assert_eq(args.mmap, MmapMode::AlwaysTryMmap)
+  for
+    args in [
+      [],
+      ["--mmap"],
+      ["--no-mmap"],
+      ["--mmap", "--no-mmap"],
+      ["--no-mmap", "--mmap"],
+    ] {
+    assert_true(try_parse(args) is Ok(_))
+  }
 }
 
 ///|
@@ -1477,43 +1485,43 @@ test "flags/test_path_separator" {
 ///|
 test "flags/test_passthru" {
   let args = low([])
-  assert_eq(args.context, ContextMode::default())
+  assert_context(args.context, ContextMode::default())
 
   let args = low(["--passthru"])
-  assert_eq(args.context, ContextMode::Passthru)
+  assert_context(args.context, ContextMode::Passthru)
 
   let args = low(["--passthrough"])
-  assert_eq(args.context, ContextMode::Passthru)
+  assert_context(args.context, ContextMode::Passthru)
 }
 
 ///|
 test "flags/test_pcre2" {
   let args = low([])
-  assert_eq(args.engine, EngineChoice::Default)
+  assert_true(args.engine is EngineChoice::Default)
 
   let args = low(["--pcre2"])
-  assert_eq(args.engine, EngineChoice::PCRE2)
+  assert_true(args.engine is EngineChoice::PCRE2)
 
   let args = low(["-P"])
-  assert_eq(args.engine, EngineChoice::PCRE2)
+  assert_true(args.engine is EngineChoice::PCRE2)
 
   let args = low(["-P", "--no-pcre2"])
-  assert_eq(args.engine, EngineChoice::Default)
+  assert_true(args.engine is EngineChoice::Default)
 
   let args = low(["--engine=auto", "-P", "--no-pcre2"])
-  assert_eq(args.engine, EngineChoice::Default)
+  assert_true(args.engine is EngineChoice::Default)
 
   let args = low(["-P", "--engine=auto"])
-  assert_eq(args.engine, EngineChoice::Auto)
+  assert_true(args.engine is EngineChoice::Auto)
 }
 
 ///|
 test "flags/test_pcre2_version" {
   let args = low([])
-  assert_eq(args.special, None)
+  assert_true(args.special is None)
 
   let args = low(["--pcre2-version"])
-  assert_eq(args.special, Some(SpecialMode::VersionPCRE2))
+  assert_true(args.special is Some(SpecialMode::VersionPCRE2))
 }
 
 ///|
@@ -1552,17 +1560,17 @@ test "flags/test_pre_glob" {
 ///|
 test "flags/test_pretty" {
   let args = low([])
-  assert_eq(args.color, ColorChoice::Auto)
+  assert_true(args.color is ColorChoice::Auto)
   assert_eq(args.heading, None)
   assert_eq(args.line_number, None)
 
   let args = low(["--pretty"])
-  assert_eq(args.color, ColorChoice::Always)
+  assert_true(args.color is ColorChoice::Always)
   assert_eq(args.heading, Some(true))
   assert_eq(args.line_number, Some(true))
 
   let args = low(["-p"])
-  assert_eq(args.color, ColorChoice::Always)
+  assert_true(args.color is ColorChoice::Always)
   assert_eq(args.heading, Some(true))
   assert_eq(args.line_number, Some(true))
 }
@@ -1629,54 +1637,56 @@ test "flags/test_regex_size_limit" {
 ///|
 test "flags/test_regexp" {
   let args = low([])
-  assert_eq(args.patterns, [])
+  assert_true(args.patterns is [])
 
   let args = low(["--regexp", "foo"])
-  assert_eq(args.patterns, [PatternSource::Regexp("foo")])
+  assert_true(args.patterns is [PatternSource::Regexp("foo")])
 
   let args = low(["--regexp=foo"])
-  assert_eq(args.patterns, [PatternSource::Regexp("foo")])
+  assert_true(args.patterns is [PatternSource::Regexp("foo")])
 
   let args = low(["-e", "foo"])
-  assert_eq(args.patterns, [PatternSource::Regexp("foo")])
+  assert_true(args.patterns is [PatternSource::Regexp("foo")])
 
   let args = low(["-efoo"])
-  assert_eq(args.patterns, [PatternSource::Regexp("foo")])
+  assert_true(args.patterns is [PatternSource::Regexp("foo")])
 
   let args = low(["--regexp", "-foo"])
-  assert_eq(args.patterns, [PatternSource::Regexp("-foo")])
+  assert_true(args.patterns is [PatternSource::Regexp("-foo")])
 
   let args = low(["--regexp=-foo"])
-  assert_eq(args.patterns, [PatternSource::Regexp("-foo")])
+  assert_true(args.patterns is [PatternSource::Regexp("-foo")])
 
   let args = low(["-e", "-foo"])
-  assert_eq(args.patterns, [PatternSource::Regexp("-foo")])
+  assert_true(args.patterns is [PatternSource::Regexp("-foo")])
 
   let args = low(["-e-foo"])
-  assert_eq(args.patterns, [PatternSource::Regexp("-foo")])
+  assert_true(args.patterns is [PatternSource::Regexp("-foo")])
 
   let args = low(["--regexp=foo", "--regexp", "bar"])
-  assert_eq(args.patterns, [
-    PatternSource::Regexp("foo"),
-    PatternSource::Regexp("bar"),
-  ])
+  assert_true(
+    args.patterns
+    is [PatternSource::Regexp("foo"), PatternSource::Regexp("bar")],
+  )
 
   // While we support invalid UTF-8 arguments in general, patterns must be
   // valid UTF-8.
 
   // Check that combining -e/--regexp and -f/--file works as expected.
   let args = low(["-efoo", "-fbar"])
-  assert_eq(args.patterns, [
-    PatternSource::Regexp("foo"),
-    PatternSource::File("bar"),
-  ])
+  assert_true(
+    args.patterns is [PatternSource::Regexp("foo"), PatternSource::File("bar")],
+  )
 
   let args = low(["-efoo", "-fbar", "-equux"])
-  assert_eq(args.patterns, [
-    PatternSource::Regexp("foo"),
-    PatternSource::File("bar"),
-    PatternSource::Regexp("quux"),
-  ])
+  assert_true(
+    args.patterns
+    is [
+      PatternSource::Regexp("foo"),
+      PatternSource::File("bar"),
+      PatternSource::Regexp("quux"),
+    ],
+  )
 }
 
 ///|
@@ -1730,130 +1740,105 @@ test "flags/test_search_zip" {
 ///|
 test "flags/test_smart_case" {
   let args = low([])
-  assert_eq(args.case, CaseMode::Sensitive)
+  assert_true(args.case is CaseMode::Sensitive)
 
   let args = low(["--smart-case"])
-  assert_eq(args.case, CaseMode::Smart)
+  assert_true(args.case is CaseMode::Smart)
 
   let args = low(["-S"])
-  assert_eq(args.case, CaseMode::Smart)
+  assert_true(args.case is CaseMode::Smart)
 
   let args = low(["-S", "-s"])
-  assert_eq(args.case, CaseMode::Sensitive)
+  assert_true(args.case is CaseMode::Sensitive)
 
   let args = low(["-S", "-i"])
-  assert_eq(args.case, CaseMode::Insensitive)
+  assert_true(args.case is CaseMode::Insensitive)
 
   let args = low(["-s", "-S"])
-  assert_eq(args.case, CaseMode::Smart)
+  assert_true(args.case is CaseMode::Smart)
 
   let args = low(["-i", "-S"])
-  assert_eq(args.case, CaseMode::Smart)
+  assert_true(args.case is CaseMode::Smart)
 }
 
 ///|
 test "flags/test_sort_files" {
   let args = low([])
-  assert_eq(args.sort, None)
+  assert_true(args.sort is None)
 
   let args = low(["--sort-files"])
-  assert_eq(
-    args.sort,
-    Some(SortMode::{ reverse: false, kind: SortModeKind::Path, }),
-  )
+  assert_true(args.sort is Some({ reverse: false, kind: SortModeKind::Path, }))
 
   let args = low(["--sort-files", "--no-sort-files"])
-  assert_eq(args.sort, None)
+  assert_true(args.sort is None)
 
   let args = low(["--sort", "created", "--sort-files"])
-  assert_eq(
-    args.sort,
-    Some(SortMode::{ reverse: false, kind: SortModeKind::Path, }),
-  )
+  assert_true(args.sort is Some({ reverse: false, kind: SortModeKind::Path, }))
 
   let args = low(["--sort-files", "--sort", "created"])
-  assert_eq(
-    args.sort,
-    Some(SortMode::{ reverse: false, kind: SortModeKind::Created, }),
+  assert_true(
+    args.sort is Some({ reverse: false, kind: SortModeKind::Created, }),
   )
 
   let args = low(["--sortr", "created", "--sort-files"])
-  assert_eq(
-    args.sort,
-    Some(SortMode::{ reverse: false, kind: SortModeKind::Path, }),
-  )
+  assert_true(args.sort is Some({ reverse: false, kind: SortModeKind::Path, }))
 
   let args = low(["--sort-files", "--sortr", "created"])
-  assert_eq(
-    args.sort,
-    Some(SortMode::{ reverse: true, kind: SortModeKind::Created, }),
+  assert_true(
+    args.sort is Some({ reverse: true, kind: SortModeKind::Created, }),
   )
 
   let args = low(["--sort=path", "--no-sort-files"])
-  assert_eq(args.sort, None)
+  assert_true(args.sort is None)
 
   let args = low(["--sortr=path", "--no-sort-files"])
-  assert_eq(args.sort, None)
+  assert_true(args.sort is None)
 }
 
 ///|
 test "flags/test_sort" {
   let args = low([])
-  assert_eq(args.sort, None)
+  assert_true(args.sort is None)
 
   let args = low(["--sort", "path"])
-  assert_eq(
-    args.sort,
-    Some(SortMode::{ reverse: false, kind: SortModeKind::Path, }),
-  )
+  assert_true(args.sort is Some({ reverse: false, kind: SortModeKind::Path, }))
 
   let args = low(["--sort", "path", "--sort=created"])
-  assert_eq(
-    args.sort,
-    Some(SortMode::{ reverse: false, kind: SortModeKind::Created, }),
+  assert_true(
+    args.sort is Some({ reverse: false, kind: SortModeKind::Created, }),
   )
 
   let args = low(["--sort=none"])
-  assert_eq(args.sort, None)
+  assert_true(args.sort is None)
 
   let args = low(["--sort", "path", "--sort=none"])
-  assert_eq(args.sort, None)
+  assert_true(args.sort is None)
 }
 
 ///|
 test "flags/test_sortr" {
   let args = low([])
-  assert_eq(args.sort, None)
+  assert_true(args.sort is None)
 
   let args = low(["--sortr", "path"])
-  assert_eq(
-    args.sort,
-    Some(SortMode::{ reverse: true, kind: SortModeKind::Path, }),
-  )
+  assert_true(args.sort is Some({ reverse: true, kind: SortModeKind::Path, }))
 
   let args = low(["--sortr", "path", "--sortr=created"])
-  assert_eq(
-    args.sort,
-    Some(SortMode::{ reverse: true, kind: SortModeKind::Created, }),
+  assert_true(
+    args.sort is Some({ reverse: true, kind: SortModeKind::Created, }),
   )
 
   let args = low(["--sortr=none"])
-  assert_eq(args.sort, None)
+  assert_true(args.sort is None)
 
   let args = low(["--sortr", "path", "--sortr=none"])
-  assert_eq(args.sort, None)
+  assert_true(args.sort is None)
 
   let args = low(["--sort=path", "--sortr=path"])
-  assert_eq(
-    args.sort,
-    Some(SortMode::{ reverse: true, kind: SortModeKind::Path, }),
-  )
+  assert_true(args.sort is Some({ reverse: true, kind: SortModeKind::Path, }))
 
   let args = low(["--sortr=path", "--sort=path"])
-  assert_eq(
-    args.sort,
-    Some(SortMode::{ reverse: false, kind: SortModeKind::Path, }),
-  )
+  assert_true(args.sort is Some({ reverse: false, kind: SortModeKind::Path, }))
 }
 
 ///|
@@ -1892,61 +1877,66 @@ test "flags/test_stop_on_nonmatch" {
 ///|
 test "flags/test_text" {
   let args = low([])
-  assert_eq(args.binary, BinaryMode::Auto)
+  assert_true(args.binary is BinaryMode::Auto)
 
   let args = low(["--text"])
-  assert_eq(args.binary, BinaryMode::AsText)
+  assert_true(args.binary is BinaryMode::AsText)
 
   let args = low(["-a"])
-  assert_eq(args.binary, BinaryMode::AsText)
+  assert_true(args.binary is BinaryMode::AsText)
 
   let args = low(["-a", "--no-text"])
-  assert_eq(args.binary, BinaryMode::Auto)
+  assert_true(args.binary is BinaryMode::Auto)
 
   let args = low(["-a", "--binary"])
-  assert_eq(args.binary, BinaryMode::SearchAndSuppress)
+  assert_true(args.binary is BinaryMode::SearchAndSuppress)
 
   let args = low(["--binary", "-a"])
-  assert_eq(args.binary, BinaryMode::AsText)
+  assert_true(args.binary is BinaryMode::AsText)
 
   let args = low(["-a", "--no-binary"])
-  assert_eq(args.binary, BinaryMode::Auto)
+  assert_true(args.binary is BinaryMode::Auto)
 
   let args = low(["--binary", "--no-text"])
-  assert_eq(args.binary, BinaryMode::Auto)
+  assert_true(args.binary is BinaryMode::Auto)
 }
 
 ///|
 test "flags/test_threads" {
-  let args = low([])
-  assert_eq(args.threads, None)
-
-  let args = low(["--threads", "5"])
-  assert_eq(args.threads, Some(5))
-
-  let args = low(["-j", "5"])
-  assert_eq(args.threads, Some(5))
-
-  let args = low(["-j5"])
-  assert_eq(args.threads, Some(5))
-
-  let args = low(["-j5", "-j10"])
-  assert_eq(args.threads, Some(10))
-
-  let args = low(["-j5", "-j0"])
-  assert_eq(args.threads, None)
+  for
+    args in [
+      [],
+      ["--threads", "5"],
+      ["-j", "5"],
+      ["-j5"],
+      ["-j5", "-j10"],
+      ["-j5", "-j0"],
+      ["-j99999999999999"],
+    ] {
+    assert_true(try_parse(args) is Ok(_))
+  }
+  for
+    args in [
+      ["--threads"],
+      ["-j-1"],
+      ["-jbad"],
+      ["-j18446744073709551616"],
+      ["-jbad", "-j0"],
+    ] {
+    assert_true(try_parse(args) is Err(_))
+  }
 }
 
 ///|
 test "flags/test_trace" {
   let args = low([])
-  assert_eq(args.logging, None)
+  assert_true(args.logging is None)
 
   let args = low(["--trace"])
-  assert_eq(args.logging, Some(LoggingMode::Trace))
+  assert_true(args.logging is Some(LoggingMode::Trace))
 
   let args = low(["--debug", "--trace"])
-  assert_eq(args.logging, Some(LoggingMode::Trace))
+  assert_true(args.logging is Some(LoggingMode::Trace))
 }
 
 ///|
@@ -1963,88 +1953,97 @@ test "flags/test_trim" {
 
 ///|
 test "flags/test_type" {
-  let select = (name : String) => TypeChange::Select(name)
-
   let args = low([])
-  assert_eq(args.type_changes, [])
+  assert_true(args.type_changes is [])
 
   let args = low(["--type", "rust"])
-  assert_eq(args.type_changes, [select("rust")])
+  assert_true(args.type_changes is [TypeChange::Select("rust")])
 
   let args = low(["-t", "rust"])
-  assert_eq(args.type_changes, [select("rust")])
+  assert_true(args.type_changes is [TypeChange::Select("rust")])
 
   let args = low(["-trust"])
-  assert_eq(args.type_changes, [select("rust")])
+  assert_true(args.type_changes is [TypeChange::Select("rust")])
 
   let args = low(["-trust", "-tpython"])
-  assert_eq(args.type_changes, [select("rust"), select("python")])
+  assert_true(
+    args.type_changes
+    is [TypeChange::Select("rust"), TypeChange::Select("python")],
+  )
 
   let args = low(["-tabcdefxyz"])
-  assert_eq(args.type_changes, [select("abcdefxyz")])
+  assert_true(args.type_changes is [TypeChange::Select("abcdefxyz")])
 }
 
 ///|
 test "flags/test_type_add" {
   let args = low([])
-  assert_eq(args.type_changes, [])
+  assert_true(args.type_changes is [])
 
   let args = low(["--type-add", "foo"])
-  assert_eq(args.type_changes, [TypeChange::Add("foo")])
+  assert_true(args.type_changes is [TypeChange::Add("foo")])
 
   let args = low(["--type-add", "foo", "--type-add=bar"])
-  assert_eq(args.type_changes, [TypeChange::Add("foo"), TypeChange::Add("bar")])
+  assert_true(
+    args.type_changes is [TypeChange::Add("foo"), TypeChange::Add("bar")],
+  )
 }
 
 ///|
 test "flags/test_type_clear" {
   let args = low([])
-  assert_eq(args.type_changes, [])
+  assert_true(args.type_changes is [])
 
   let args = low(["--type-clear", "foo"])
-  assert_eq(args.type_changes, [TypeChange::Clear("foo")])
+  assert_true(args.type_changes is [TypeChange::Clear("foo")])
 
   let args = low(["--type-clear", "foo", "--type-clear=bar"])
-  assert_eq(args.type_changes, [
-    TypeChange::Clear("foo"),
-    TypeChange::Clear("bar"),
-  ])
+  assert_true(
+    args.type_changes is [TypeChange::Clear("foo"), TypeChange::Clear("bar")],
+  )
 }
 
 ///|
 test "flags/test_type_not" {
-  let select = (name : String) => TypeChange::Select(name)
-  let negate = (name : String) => TypeChange::Negate(name)
-
   let args = low([])
-  assert_eq(args.type_changes, [])
+  assert_true(args.type_changes is [])
 
   let args = low(["--type-not", "rust"])
-  assert_eq(args.type_changes, [negate("rust")])
+  assert_true(args.type_changes is [TypeChange::Negate("rust")])
 
   let args = low(["-T", "rust"])
-  assert_eq(args.type_changes, [negate("rust")])
+  assert_true(args.type_changes is [TypeChange::Negate("rust")])
 
   let args = low(["-Trust"])
-  assert_eq(args.type_changes, [negate("rust")])
+  assert_true(args.type_changes is [TypeChange::Negate("rust")])
 
   let args = low(["-Trust", "-Tpython"])
-  assert_eq(args.type_changes, [negate("rust"), negate("python")])
+  assert_true(
+    args.type_changes
+    is [TypeChange::Negate("rust"), TypeChange::Negate("python")],
+  )
 
   let args = low(["-Tabcdefxyz"])
-  assert_eq(args.type_changes, [negate("abcdefxyz")])
+  assert_true(args.type_changes is [TypeChange::Negate("abcdefxyz")])
 
   let args = low(["-Trust", "-ttoml", "-Tjson"])
-  assert_eq(args.type_changes, [negate("rust"), select("toml"), negate("json")])
+  assert_true(
+    args.type_changes
+    is [
+      TypeChange::Negate("rust"),
+      TypeChange::Select("toml"),
+      TypeChange::Negate("json"),
+    ],
+  )
 }
 
 ///|
 test "flags/test_type_list" {
   let args = low([])
-  assert_eq(args.mode, Mode::Search(Standard))
+  assert_true(args.mode is Mode::Search(Standard))
 
   let args = low(["--type-list"])
-  assert_eq(args.mode, Mode::Types)
+  assert_true(args.mode is Mode::Types)
 }
 
 ///|
@@ -2052,22 +2051,22 @@ test "flags/test_unrestricted" {
   let args = low([])
   assert_eq(args.no_ignore_vcs, false)
   assert_eq(args.hidden, false)
-  assert_eq(args.binary, BinaryMode::Auto)
+  assert_true(args.binary is BinaryMode::Auto)
 
   let args = low(["--unrestricted"])
   assert_eq(args.no_ignore_vcs, true)
   assert_eq(args.hidden, false)
-  assert_eq(args.binary, BinaryMode::Auto)
+  assert_true(args.binary is BinaryMode::Auto)
 
   let args = low(["--unrestricted", "-u"])
   assert_eq(args.no_ignore_vcs, true)
   assert_eq(args.hidden, true)
-  assert_eq(args.binary, BinaryMode::Auto)
+  assert_true(args.binary is BinaryMode::Auto)
 
   let args = low(["-uuu"])
   assert_eq(args.no_ignore_vcs, true)
   assert_eq(args.hidden, true)
-  assert_eq(args.binary, BinaryMode::SearchAndSuppress)
+  assert_true(args.binary is BinaryMode::SearchAndSuppress)
 
   let result = try_parse(["-uuuu"])
   assert_true(result is Err(_))
@@ -2076,19 +2075,19 @@ test "flags/test_unrestricted" {
 ///|
 test "flags/test_version" {
   let args = low([])
-  assert_eq(args.special, None)
+  assert_true(args.special is None)
 
   let args = low(["-V"])
-  assert_eq(args.special, Some(SpecialMode::VersionShort))
+  assert_true(args.special is Some(SpecialMode::VersionShort))
 
   let args = low(["--version"])
-  assert_eq(args.special, Some(SpecialMode::VersionLong))
+  assert_true(args.special is Some(SpecialMode::VersionLong))
 
   let args = low(["-V", "--version"])
-  assert_eq(args.special, Some(SpecialMode::VersionLong))
+  assert_true(args.special is Some(SpecialMode::VersionLong))
 
   let args = low(["--version", "-V"])
-  assert_eq(args.special, Some(SpecialMode::VersionShort))
+  assert_true(args.special is Some(SpecialMode::VersionShort))
 }
 
 ///|
@@ -2133,19 +2132,19 @@ test "flags/test_with_filename_no" {
 ///|
 test "flags/test_word_regexp" {
   let args = low([])
-  assert_eq(args.boundary, None)
+  assert_true(args.boundary is None)
 
   let args = low(["--word-regexp"])
-  assert_eq(args.boundary, Some(BoundaryMode::Word))
+  assert_true(args.boundary is Some(BoundaryMode::Word))
 
   let args = low(["-w"])
-  assert_eq(args.boundary, Some(BoundaryMode::Word))
+  assert_true(args.boundary is Some(BoundaryMode::Word))
 
   let args = low(["-x", "-w"])
-  assert_eq(args.boundary, Some(BoundaryMode::Word))
+  assert_true(args.boundary is Some(BoundaryMode::Word))
 
   let args = low(["-w", "-x"])
-  assert_eq(args.boundary, Some(BoundaryMode::Line))
+  assert_true(args.boundary is Some(BoundaryMode::Line))
 }
 
 ///|

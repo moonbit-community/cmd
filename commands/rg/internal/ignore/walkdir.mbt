@@ -1,7 +1,6 @@
 // A port of the parts of the `walkdir` crate (v2) used by the sequential
 // `Walk` iterator: a depth-first recursive directory iterator with optional
-// sorting, symlink following (with loop detection), depth limits and
-// same-file-system restriction.
+// sorting, symlink following (with loop detection) and depth limits.
 
 ///|
 /// A raw directory entry. This models both `walkdir::DirEntry` and ignore's
@@ -17,8 +16,6 @@ priv struct RawEntry {
   follow_link : Bool
   /// The depth at which this entry was generated relative to the root.
   depth : Int32
-  /// The underlying inode number, computed lazily when not known.
-  mut ino : UInt64?
   /// Whether this entry was produced by the walkdir iterator (affects the
   /// rendering of metadata errors only).
   from_walkdir : Bool
@@ -60,22 +57,7 @@ async fn RawEntry::metadata(self : RawEntry) -> @sys.Metadata {
           .with_path(self.path)
       }
   }
-  if self.ino is None {
-    self.ino = md.ino
-  }
   md
-}
-
-///|
-async fn RawEntry::ino(self : RawEntry) -> UInt64? {
-  match self.ino {
-    Some(ino) => Some(ino)
-    None => {
-      let ino = @sys.symlink_metadata(self.path).ino catch { _ => None }
-      self.ino = ino
-      ino
-    }
-  }
 }
 
 ///|
@@ -88,7 +70,7 @@ async fn RawEntry::from_entry(
 ) -> RawEntry {
   let path = path_join(dir, entry.name)
   let ty = entry.file_type(path)
-  { path, ty, follow_link: false, depth, ino: None, from_walkdir, }
+  { path, ty, follow_link: false, depth, from_walkdir, }
 }
 
 ///|
@@ -106,57 +88,16 @@ async fn RawEntry::from_path(
   } else {
     @sys.symlink_metadata(path)
   }
-  { path, ty: md.file_type, follow_link, depth, ino: md.ino, from_walkdir, }
+  { path, ty: md.file_type, follow_link, depth, from_walkdir, }
 }
 
 ///|
-/// A file "handle" used to determine whether two paths refer to the same
-/// file (like the `same-file` crate), by comparing device and inode numbers.
-///
-/// On backends that cannot report device and inode numbers (they are
-/// reported as 0), canonicalized paths are compared instead. When only the
-/// inode number is trustworthy (`dev_known` is false), only inode numbers
-/// are compared.
-priv struct Handle {
-  dev : UInt64?
-  ino : UInt64?
-  dev_known : Bool
-  canonical : String?
-}
-
-///|
-async fn Handle::from_path(path : String) -> Handle {
-  let md = @sys.metadata(path)
-  if md.dev is None && md.ino is None {
-    {
-      dev: None,
-      ino: None,
-      dev_known: false,
-      canonical: (Ok(canonicalize(path)) catch { e => Err(e) }).to_option(),
-    }
-  } else {
-    { dev: md.dev, ino: md.ino, dev_known: true, canonical: None, }
-  }
-}
-
-///|
-fn Handle::has_ids(self : Handle) -> Bool {
-  self.dev is Some(_) && self.ino is Some(_)
-}
-
-///|
-fn Handle::same(self : Handle, other : Handle) -> Bool {
-  if self.has_ids() && other.has_ids() {
-    if self.dev_known && other.dev_known {
-      self.dev == other.dev && self.ino == other.ino
-    } else {
-      self.ino == other.ino
-    }
-  } else {
-    match (self.canonical, other.canonical) {
-      (Some(a), Some(b)) => a == b
-      _ => false
-    }
+/// Canonical path evidence used only for followed-directory loop detection.
+async fn canonical_for_loop(path : String) -> String? {
+  // Preserve metadata errors before the optional canonical-path observation.
+  ignore(@sys.metadata(path))
+  Some(canonicalize(path)) catch {
+    _ => None
   }
 }
 
@@ -241,7 +182,6 @@ priv struct WalkDirOptions {
   follow_links : Bool
   max_depth : Int32
   min_depth : Int32
-  same_file_system : Bool
   sorter : ((RawEntry, RawEntry) -> Int32)?
 }
 
@@ -266,7 +206,7 @@ fn DirList::next(self : DirList) -> Result[RawEntry, WdError]? {
 ///|
 priv struct Ancestor {
   path : String
-  handle : Handle
+  canonical : String?
 }
 
 ///|
@@ -277,31 +217,17 @@ priv struct WalkDirIter {
   stack_list : Array[DirList]
   stack_path : Array[Ancestor]
   mut depth : Int32
-  mut root_device : UInt64?
 }
 
 ///|
 fn WalkDirIter::new(root : String, opts : WalkDirOptions) -> WalkDirIter {
-  {
-    opts,
-    start: Some(root),
-    stack_list: [],
-    stack_path: [],
-    depth: 0,
-    root_device: None,
-  }
+  { opts, start: Some(root), stack_list: [], stack_path: [], depth: 0, }
 }
 
 ///|
 async fn WalkDirIter::next(self : WalkDirIter) -> Result[RawEntry, WdError]? {
   if self.start is Some(start) {
     self.start = None
-    if self.opts.same_file_system {
-      match (Ok(@sys.metadata(start)) catch { e => Err(e) }) {
-        Ok(md) => self.root_device = md.dev
-        Err(e) => return Some(Err(WdError::from_path(0, start, e)))
-      }
-    }
     let dent = RawEntry::from_path(
       0,
       start,
@@ -360,13 +286,7 @@ async fn WalkDirIter::handle_entry(
   }
   let is_normal_dir = !(dent.ty is Symlink) && dent.is_dir()
   if is_normal_dir {
-    if self.opts.same_file_system && dent.depth > 0 {
-      match self.is_same_file_system(dent) {
-        Ok(true) => if self.push(dent) is Err(e) { return Some(Err(e)) }
-        Ok(false) => ()
-        Err(e) => return Some(Err(e))
-      }
-    } else if self.push(dent) is Err(e) {
+    if self.push(dent) is Err(e) {
       return Some(Err(e))
     }
   } else if dent.depth == 0 && dent.ty is Symlink {
@@ -429,10 +349,10 @@ async fn WalkDirIter::push(
     })
   }
   if self.opts.follow_links {
-    let handle = Handle::from_path(dent.path) catch {
+    let canonical = canonical_for_loop(dent.path) catch {
       err => return Err(WdError::from_io(self.depth, err))
     }
-    self.stack_path.push({ path: dent.path, handle, })
+    self.stack_path.push({ path: dent.path, canonical, })
   }
   self.stack_list.push({ entries, pos: 0, })
   Ok(())
@@ -476,12 +396,12 @@ async fn WalkDirIter::check_loop(
   self : WalkDirIter,
   child : String,
 ) -> Result[Unit, WdError] {
-  let hchild = Handle::from_path(child) catch {
+  let canonical = canonical_for_loop(child) catch {
     err => return Err(WdError::from_io(self.depth, err))
   }
   for i = self.stack_path.length() - 1; i >= 0; i = i - 1 {
     let ancestor = self.stack_path[i]
-    if ancestor.handle.same(hchild) {
+    if (ancestor.canonical, canonical) is (Some(a), Some(b)) && a == b {
       return Err({
         depth: self.depth,
         inner: Loop(ancestor=ancestor.path, child~),
@@ -489,23 +409,6 @@ async fn WalkDirIter::check_loop(
     }
   }
   Ok(())
-}
-
-///|
-async fn WalkDirIter::is_same_file_system(
-  self : WalkDirIter,
-  dent : RawEntry,
-) -> Result[Bool, WdError] {
-  let md = @sys.metadata(dent.path) catch {
-    err => return Err(WdError::from_path(dent.depth, dent.path, err))
-  }
-  guard self.root_device is Some(_) && md.dev is Some(_) else {
-    raise @sys.IOError::other(
-      Unsupported,
-      "--one-file-system requires public file identity metadata",
-    )
-  }
-  Ok(self.root_device == md.dev)
 }
 
 ///|

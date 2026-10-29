@@ -1,6 +1,27 @@
 // Tests for the Rust `Path`-like helpers and `pathutil` port.
 
 ///|
+/// Component-wise prefix removal for filesystem fixtures.
+fn path_strip_prefix(path : String, base : String) -> String? {
+  let pc = path_components(path)
+  let bc = path_components(base)
+  if bc.length() > pc.length() {
+    return None
+  }
+  for i, b in bc {
+    if pc[i].0 != b.0 {
+      return None
+    }
+  }
+  if pc.length() == bc.length() {
+    Some("")
+  } else {
+    let (_, start, _) = pc[bc.length()]
+    Some(path.unsafe_substring(start~, end=path.length()))
+  }
+}
+
+///|
 test "pathutil/file_name" {
   debug_inspect(file_name(""), content="None")
   debug_inspect(file_name("."), content="None")

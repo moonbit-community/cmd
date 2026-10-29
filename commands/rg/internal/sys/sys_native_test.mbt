@@ -17,8 +17,6 @@ async test "native: file system" {
     @sys.symlink("a.txt", root + "/link")
     assert_eq(@sys.symlink_metadata(root + "/link").file_type, Symlink)
     assert_eq(@sys.metadata(root + "/link").len, 12L)
-    assert_eq(@sys.metadata(root + "/link").ino, None)
-    assert_eq(@sys.metadata(root + "/link").dev, None)
     assert_eq(@sys.read_file(root + "/link"), b"hello\nworld\n")
   }
   @sys.remove_file(root + "/t.txt")

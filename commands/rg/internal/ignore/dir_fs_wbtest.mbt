@@ -247,7 +247,7 @@ async test "dir/stops_at_git_dir" {
   let ig0 = IgnoreBuilder::new().build()
   let (ig1, err) = ig0.add_child(td.path())
   assert_true(err is None)
-  let (ig2, err) = ig1.add_child(path_join(ig1.path(), "foo"))
+  let (ig2, err) = ig1.add_child(path_join(ig1.inner.dir, "foo"))
   assert_true(err is None)
   assert_true(ig1.matched("foo", false).is_ignore())
   assert_true(ig2.matched("foo", false).is_none())

@@ -32,11 +32,195 @@ catalog and the compatibility record agree; two command-level boundary cases
 fix status, empty stdout and the full diagnostic. The first-release candidate
 remains unpublished `cli/rg@0.1.0`.
 
+Batch 2 is commit `1e9db36`; all three required checks passed in run
+`40964402975`, attempt 2. The first Windows attempt failed four existing mv
+PowerShell link observations at their 10-second deadline. Its full log is
+retained; retrying that failed job passed without changing assertions or
+deadlines. This does not erase the initial observation failure.
+
 This option-contract correction intentionally changes help output. It is a
 correctness fix with no speed claim. Its source and all 80 command artifacts
 form the immutable corrected-contract baseline for the following cleanup
 phase; the earlier audit baseline remains preserved. Cleanup comparisons must
 retain equal outputs under that contract, including the help workload.
+
+The initial A05-A12 candidate passed 1,707 release-Wasm tests, 118 Native
+test-tool tests and 2,122 functional checks (19 platform skips). Its full
+protection result was rejected: 155/160 rows qualified. Three stable rg
+boolean-count controls exceeded the 5% limit in both windows:
+`rg-pilot-late-prefix-hit-count` (20.44%/21.30%),
+`rg-boolean-false-positive` (19.59%/18.81%) and
+`rg-boolean-sparse` (20.27%/19.71%). `tac-stream-8m` and `tac-long-8m`
+were unstable despite unchanged tac bytes. All 89 real-corpus tasks retained
+output equality against pinned Rust 15.2.0 and qualified for stability and
+the slowdown threshold. The small real-corpus cost was
+`wiki-unicode-count` (4.38%/4.42%); unchanged `tac-multi-8m` measured
+0.70%/4.30%. The overall candidate was not accepted.
+
+Four source counterfactuals and a revised implementation are retained in
+`rg-diagnosis`. Reverting A12 kept the three regressions; reverting A08 or A09
+removed them in the diagnostic window, while reverting the driver cleanup
+also changed the profile (one remaining 6.10% sparse-case observation).
+This does not isolate a single source-level hot-loop cause. No regex or
+boolean-count algorithm was edited. The evidence is consistent with a
+combination-sensitive compiled result, not proof of a particular compiler
+mechanism.
+
+The revised A09 stores the optional canonical path directly in `Ancestor`,
+removing the remaining single-field `Handle` wrapper and its comparison
+method. Metadata failure still precedes the optional canonical-path lookup;
+two absent canonical paths never count as a loop. This further simplifies the
+actual representation without restoring dead code or adding layout padding.
+Its diagnostic ratios for those three controls were 0.9899, 1.0028 and 0.9857.
+Those small diagnostic windows are not full performance acceptance. Initial
+source, artifacts, all failed windows and the complete 89-task report remain
+under `cleanup-protection` and `cleanup-real`; revised validation uses separate
+`final-*` evidence paths.
+
+Batch 3 is commit `cd25293`: the upload forwarder removal and four additional
+HTTP protection controls. All three required checks passed on the first
+attempt in run `40971804014`.
+
+The revised complete protection run qualifies 159/160 rows. Every registered
+workload for the three changed commands (rg, curl and wget) is stable and
+within the 5% slowdown boundary. The sole unqualified row is
+`ln-symbolic-validation`: candidate/reference first-window MAD fractions are
+9.16%/8.20% for roughly 9 ms complete processes, above the 5% limit. Its
+window ratios are 1.0110/0.9938 and ln's complete artifact is byte-identical.
+The full timing verdict remains **failed**, with no repeated identical run
+to obtain a passing result. These commits deliver a correctness-checked PR
+cleanup candidate; they do not claim full-registry performance acceptance,
+mainline acceptance or published-coordinate acceptance.
+
+The revised real-corpus comparison qualifies all 89/89 tasks, with complete
+Rust-oracle output/status checks and both 12-pair timing windows. No qualified
+loss reaches 3% in either the protection suite or this real matrix. The three
+formerly regressing synthetic controls now have ratios 0.9877/0.9728,
+0.9813/0.9791 and 0.9813/0.9771. Protection took 650.8 seconds; real preflight
+49.0 seconds; the real windows took 553.7 and 552.2 seconds. Exact rows and
+durations are in `final-verdict.json`, `final-real/verdicts.json` and
+`performance-final-stages.json`.
+
+Separate single-pair macOS peak-RSS observations are 33.63/33.77 MiB for rg,
+32.31/32.39 MiB for curl and 32.80/32.63 MiB for wget (baseline/candidate).
+Their outputs and statuses match. These are diagnostic observations, not a
+resource acceptance window or evidence of a memory improvement. Existing
+output-failure and temporary-cleanup regressions pass in the full suites.
+
+### A01-A12 delivery checklist
+
+| ID | Concrete change | Verification |
+| --- | --- | --- |
+| A01 | Delete the unused generic matcher replacement helper. | No semantic callers; batch 1 preserves all 80 complete Wasm artifacts. |
+| A02 | Replace constant-disabled indexing success assertions with actual rejection cases. | Eleven indexing spellings/orderings and missing-value handling are exercised. |
+| A03 | Reject the unused DFA byte-budget option and remove its stored field. | Exact positive/zero-budget command diagnostics, numeric errors, help/README/catalog/support agreement. |
+| A04 | Enforce the driver import boundary across production and both test import forms. | Six negative controls and a real temporary searcher white-box import injection; all three CI hosts. |
+| A05 | Remove indexing-only fields, mode and unreachable validators. | Rejection/error ordering and original parser expectations remain. |
+| A06 | Remove thread/mmap state and the unused mmap mode type. | Accepted syntax remains; invalid/missing numeric cases and both option orders are covered, including valid UInt64 values that the existing parser clamps. |
+| A07 | Make the remaining 19 driver argument types and `ParseResult` private; remove unused traits. | Strict compiler checking; 247 assertions retain their original expected values through direct pattern checks and a white-box context helper. |
+| A08 | Replace unused ignore-origin payloads with the existing `Match[Unit]`. | Override, ignore, type and hidden precedence is retained in existing traversal regressions. |
+| A09 | Remove unavailable device/inode, same-filesystem and stdout-identity paths; keep direct canonical ancestor evidence. | Metadata errors precede optional canonicalization; missing evidence cannot compare equal; identity rejection and symlink traversal regressions remain. |
+| A10 | Replace `Mode::updated`, which discarded its receiver, with assignments. | Existing mode-order cases and an execution case where count overrides files mode. |
+| A11 | Call `HttpWire::write_payload` directly at its three request-body callers. | Full local suites plus six qualified download/upload protection controls, including four new complete 8 MiB upload comparisons. |
+| A12 | Move `path_strip_prefix` beside its six white-box/fixture references and replace the one-use `Ignore::path` getter with private-state access. | Original fixture values and path cases are preserved; no product API is widened. |
+
+The final local correctness pass comprises 1,707 release-Wasm tests, 118
+Native test-tool tests and 2,122 functional checks with 19 platform skips,
+plus strict checking, interface/format regeneration and architecture inventory.
+Only rg, curl and wget artifacts differ from the corrected-contract baseline;
+the other 77 are byte-identical. C01-C03 are explicitly outside this implementation
+list, with the follow-up evidence below.
+
+### Candidate follow-up: dump input ownership (C01)
+
+The identical 16-line `DumpState::read` methods are confirmed duplication.
+Both bounded readers arrived together in `008ce12` (2026-10-11), rather than
+surviving removal of an earlier shared reader.
+Both retain a 64 KiB buffer, accept short reads, stop only on a zero read,
+and cap each read at `min(65536, min(skip, 65536) + min(remaining, 65536))`.
+The cap prevents consuming bytes beyond the requested input budget, including
+stdin. State persists across files; moving that state into a per-file helper
+would break combined-input offsets, partial rows and repeated-row squeezing.
+
+Eight execution probes against the frozen command artifacts confirm the
+following differences (`dump-probe/results.json` in the delivery evidence):
+
+| Input | hexdump | od |
+| --- | --- | --- |
+| Zero byte limit and a missing filename | exits 0 without opening the file | opens the first source and exits 1 |
+| Skip 10 bytes from a three-byte file | exits 0 and prints final offset `0000003` | exits 1 with the combined-input EOF diagnostic |
+| Empty regular file | no output | prints final offset `0000000` |
+| Skip two, read three across two `abc` files | renders `cab` in its canonical layout and final offset five | renders the same three bytes in its own selected layout |
+
+The rendering owners also differ: hexdump feeds `Bytes` through a configurable
+format program and final-address unit; od feeds `String`, owns width/endian/
+floating-point and traditional-label behavior, and has a separate strings
+reader. Existing `stream.read_chunk` does not accept this changing read budget.
+A shared command loop would require new state access/callback plumbing and
+must still preserve these separate finalization and error rules.
+
+Decision: retain C01 as a candidate, with a recommendation to keep the two
+small owner-local loops. The next useful pilot is narrower: investigate the
+explicit `buffer[:count].to_owned()` materialization before `Bytes::from_array`
+without changing input ownership. This source expression alone does not prove
+two runtime allocations; the public constructor may reuse exclusive storage.
+Any trial needs short-read/EOF/budget/output-failure tests and separate
+hexdump/od workload and allocation observations. No dump source is changed.
+The existing case files contain 60 hexdump and 61 od entries, largely covering
+CLI/format behavior. Package tests cover feed/row state, but there are no
+injected short-reader/output-failure tests beside these two read methods.
+Those 121 case records therefore do not by themselves establish the contracts
+needed to replace the loops with a new shared mechanism.
+
+### Candidate follow-up: core visibility and async (C02)
+
+The exported-API inventory's 18 zero-dependent-use functions/constants were
+checked against same-package code, white-box tests, test-tool modules and
+freshly fetched `cli/core@0.8.2` sources. This is a scoped review of that
+inventory, not proof that every exported type/field/variant is minimal.
+
+| Group | Actual evidence and disposition |
+| --- | --- |
+| `bytesearch.teddy_max_literals`, `checksum.Algorithm::hex_length`, `gzipops/cli.help` | Each has a real same-package production consumer but no dependent caller. The first two exports and the new adapter package arrived on 2026-10-28 and are absent at those coordinates in fetched 0.8.2. Good candidates for private visibility before the next core release; keep their implementations. Old 0.8.2 exported gzip help at `gzipops.help`, so a release still needs an explicit old-to-new API migration policy. |
+| `contracts.command_catalog`, `find_contract`, `releasable`, `process_group_cancellation_available` | Catalog, lookup and release eligibility have actual test-runner validation consumers; the capability helper feeds eligibility locally. Runtime-command-only usage counts miss this ownership. Retain the validation API; consider only the local capability helper's visibility in a deliberate compatibility review. |
+| `gzipops.decode` | Used by the benchmark tool's decoded-output validation. It is not a redundant alternative to the streaming product entry point. Retain. |
+| `netops.url_host` | Used by proxy bypass evaluation and a white-box regression. Private visibility is locally possible; deletion is not. Already exported by 0.8.2. |
+| `CookieJar::netscape`, `TransferResult::header` | The former is used by save plus eight white-box cases; the latter by content-disposition filename handling plus three cases. They also provide meaningful in-memory serialization/lookup APIs already exported in 0.8.2. Retain unless an intentional public API reduction is chosen. |
+| `platform.current`, `is_terminal`, `terminal_policy_allows` | Locally feed platform selection and terminal policy; tests exercise the capability boundary. A current constant-false terminal capability is an honest unsupported boundary, not a speculative fallback to delete. |
+| `platform.native_separator`, `accepts_separator`, `is_cross_device_error` | The first two have test-only local consumers; the last has no current code consumer. These are the strongest published deprecation candidates in this scan. All three exist in 0.8.2; local non-use cannot establish external non-use. |
+| `time_zone.decode` | Used by zone-file loading and TZif regressions, with an existing published in-memory decoding contract. Retain. |
+
+`Session::finish` has seven semantic references: sh (two), split (one),
+`Session::run` (one), and three tests. Its body only checks/updates pending,
+finished and exit state; it contains no async operation. No common trait or
+function-value contract with `feed` requires async. The future-cleanup comment
+is therefore an unnecessary implementation constraint, but the async function
+type is already public in 0.8.2.
+
+History confirms that the future-only async comment and the unconsumed
+`is_cross_device_error` export both arrived in `6fff343` (2026-09-21).
+Searching that original revision also finds only the error helper's
+declaration, not a product caller. This is unused initial scaffolding, not a
+currently necessary cross-device rename fallback.
+
+An isolated probe made `finish` synchronous while retaining its generic error
+effect and made `gzipops/cli.help` private. Strict workspace checking and all
+1,707 release-Wasm tests passed. Complete artifact comparison changed sh,
+make and split, in addition to the unrelated staged rg cleanup. Both probe
+changes were restored. A preliminary narrower `raise ShellError` signature
+also exposed an unreachable generic catch arm in a test; that result is kept
+as evidence rather than suppressed. Neither probe establishes external API
+compatibility or performance acceptance.
+
+Recommended next decision: first approve adopting the visibility-only change for the
+three unpublished exports above. A separate isolated probe of exactly those
+three visibility changes passed strict workspace checking and left all 80
+complete command binaries byte-identical to the frozen cleanup candidate;
+the probe was then restored (`core-export-probe`). Separately choose whether to deprecate the
+three unused/test-only published platform helpers and whether a future core
+API revision should make `Session::finish` synchronous. Do not combine these
+decisions with removal of useful serialization, decoding or catalog APIs.
+C02 remains unimplemented; C03 also remains a candidate.
 
 ## History-led cleanup audit and isolated pilots (2026-10-30)
 

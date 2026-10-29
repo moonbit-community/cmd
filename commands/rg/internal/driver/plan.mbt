@@ -96,7 +96,6 @@ priv struct InputPlan {
   no_ignore_parent : Bool
   no_ignore_vcs : Bool
   no_require_git : Bool
-  one_file_system : Bool
   pre : String?
   pre_globs : @ignore.Override
   sort : SortMode?
@@ -421,11 +420,6 @@ async fn ExecutionPlan::from_low_args(low : LowArgs) -> ExecutionPlan {
   if low.sort is Some(sort) {
     sort_supported(sort)
   }
-  if low.index > 0 || low.mode is Index(_) {
-    if low.indexing_unsupported_flag() is Some(flag) {
-      raise RgError("flag --\{flag} does not support indexing")
-    }
-  }
   match low.mode {
     Search(CountMatches) if low.invert_match => low.mode = Search(Count)
     Search(Count) if low.only_matching => low.mode = Search(CountMatches)
@@ -538,7 +532,6 @@ async fn ExecutionPlan::from_low_args(low : LowArgs) -> ExecutionPlan {
       no_ignore_parent: low.no_ignore_parent,
       no_ignore_vcs: low.no_ignore_vcs,
       no_require_git: low.no_require_git,
-      one_file_system: low.one_file_system,
       pre: low.pre,
       pre_globs,
       sort: low.sort,

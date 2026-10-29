@@ -149,8 +149,6 @@ pub fn WalkBuilder::new(String) -> Self
 pub fn WalkBuilder::overrides(Self, Override) -> Self
 pub fn WalkBuilder::parents(Self, Bool) -> Self
 pub fn WalkBuilder::require_git(Self, Bool) -> Self
-pub fn WalkBuilder::same_file_system(Self, Bool) -> Self
-pub async fn WalkBuilder::skip_stdout(Self, Bool) -> Self
 pub fn WalkBuilder::sort_by_file_name(Self, (String, String) -> Int32) -> Self
 pub fn WalkBuilder::sort_by_file_path(Self, (String, String) -> Int32) -> Self
 pub fn WalkBuilder::types(Self, Types) -> Self
