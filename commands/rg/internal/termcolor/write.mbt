@@ -5,12 +5,19 @@
 /// Only `write_slice` is required. Writers backed by the OS (e.g. stdout)
 /// are expected to be provided by the CLI layer by implementing this trait.
 pub(open) trait Write {
+  /// Accept the whole span synchronously, or return false without writing.
+  fn try_write_slice(Self, FixedArray[Byte], Int32, Int32) -> Bool raise = _
   /// Writes all of `buf[start:end]`.
   async fn write_slice(Self, FixedArray[Byte], Int32, Int32) -> Unit
   /// Writes all of the given bytes.
   async fn write_bytes(Self, BytesView) -> Unit = _
   /// Flushes any buffered data.
   async fn flush(Self) -> Unit = _
+}
+
+///|
+impl Write with fn try_write_slice(_self, _buf, _start, _end) {
+  false
 }
 
 ///|
@@ -183,6 +190,12 @@ pub fn ByteVec::slice_to_bytes(
 ///|
 pub impl Write for ByteVec with fn write_slice(self, buf, start, end) {
   self.extend_slice(buf, start, end)
+}
+
+///|
+pub impl Write for ByteVec with fn try_write_slice(self, buf, start, end) {
+  self.extend_slice(buf, start, end)
+  true
 }
 
 ///|

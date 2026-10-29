@@ -23,7 +23,6 @@ fn StdoutWriter::new(line_buffered : Bool) -> StdoutWriter {
   {
     output: @stream.BlockWriter::new(
       StdoutSink::{ writer: @stdio.stdout, },
-      size=8192,
       line_buffered~,
     ),
   }
@@ -37,6 +36,16 @@ pub impl @termcolor.Write for StdoutWriter with fn write_slice(
   end,
 ) {
   self.output.write_slice(data, start, end)
+}
+
+///|
+pub impl @termcolor.Write for StdoutWriter with fn try_write_slice(
+  self,
+  data,
+  start,
+  end,
+) {
+  self.output.try_write_slice(data, start, end)
 }
 
 ///|

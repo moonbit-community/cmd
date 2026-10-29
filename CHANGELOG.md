@@ -3,6 +3,56 @@
 This repository integrates multiple command packages, so changes are recorded
 by date and delivery milestone rather than by a single package version.
 
+## 2026-10-29 (rg progressive reads and granular output)
+
+- Separate physical regular-file refills from logical decoder requests. Begin
+  with 64 KiB reads and expand only after a full block, reusing one bounded
+  buffer per worker. Preserve stdin, explicit early exits, decoder boundaries,
+  retained errors and cancellation.
+- Reuse atomic plain-record admission after ordinary match extraction,
+  replacement and statistics. Keep styled, multiline, over-limit and explicit
+  line-buffered output on their ordered paths.
+- Reject unconditional 1 MiB buffering after a roughly 7% small-file counting
+  regression. A separate Rust-style digit-pair formatting pilot passed
+  correctness but showed no meaningful whole-command gain, so it is not
+  adopted. Preserve all candidate sources and observations in ADR-0003's
+  referenced evidence. Local, three-platform CI and MoonX verdicts remain
+  separate.
+- Local validation passes 1,706 release-Wasm tests, 118 tool regressions and
+  2,117 functional checks with 19 platform skips. The unchanged 89-task real
+  matrix qualifies every before/after pair: 34 improve by more than 5% in both
+  windows, with no 3% regression. Tasks more than 10% slower than upstream fall
+  from 45 to 35 in the same run; 35 still remain, so general upstream superiority
+  is not claimed. Only rg changes among the 80 command artifacts.
+- Full shared protection first qualifies 155/156 timings because an unchanged
+  ln control is unstable. An independent zero-delay A/A check passes, followed
+  by one pre-registered complete confirmation passing all 156 profiles with
+  no 3% observed regression. Preserve the first failure and both later records.
+  Separate RSS observations range from -0.97 to +1.86 MiB versus the starting
+  artifact. These results do not establish remote CI or MoonX acceptance.
+
+## 2026-10-29 (rg general-corpus I/O repair)
+
+- Retain directory kind observations and avoid eager child size and
+  canonical-path queries. Batch ordinary prefix formatting and buffered events,
+  including existing coalesced spans, over the shared 64 KiB output writer.
+  Add bounded initial regular-file reads while preserving decoder boundaries,
+  explicit early exits, failed output prefixes and cancellation.
+- Register the new mechanisms and boundary regressions. Local checks pass
+  1,703 release-Wasm tests, 118 test-tool regressions, 2,117 functional checks
+  with 19 platform skips, and 23 strategy registrations. Only rg's command
+  artifact changes; the other 79 artifacts are byte-identical to the baseline.
+- The unchanged 89-task real-corpus matrix preserves all outputs/statuses.
+  All before/after pairs qualify; 49 improve by more than 5% in both windows
+  and no loss reaches 3%. There are still 43 tasks more than 10% slower than
+  community rg in both windows, versus 59 for the starting artifact in the
+  same run. ADR-0003 records costs, remaining gaps and separate resource
+  observations. This local result does not establish remote CI, publication
+  or exact-version MoonX acceptance.
+- Cumulative shared protection passes all 156 workloads, two windows, complete
+  output/status checks, stability and the 5% slowdown boundary. The sole 3–5%
+  observation belongs to the byte-identical ln control and remains recorded.
+
 ## 2026-10-29 (execution governance, batch 3 of 3)
 
 - Complete the A01-A16 source governance map in ADR-0003. Share exact byte

@@ -22,6 +22,7 @@ pub async fn read_chunk(&@io.Reader) -> Bytes?
 type BlockWriter
 pub async fn BlockWriter::flush(Self) -> Unit
 pub fn BlockWriter::new(&@io.Writer, size? : Int32, line_buffered? : Bool) -> Self
+pub fn BlockWriter::try_write_slice(Self, FixedArray[Byte], Int32, Int32) -> Bool raise
 pub async fn BlockWriter::write(Self, &@io.Data) -> Unit
 pub async fn BlockWriter::write_bytes(Self, BytesView) -> Unit
 pub async fn BlockWriter::write_once(Self, Bytes, offset~ : Int32, len~ : Int32) -> Int32

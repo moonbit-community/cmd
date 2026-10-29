@@ -12,6 +12,11 @@ pub fn NoColor::new(wtr : &Write) -> NoColor {
 }
 
 ///|
+pub impl Write for NoColor with fn try_write_slice(self, buf, start, end) {
+  self.wtr.try_write_slice(buf, start, end)
+}
+
+///|
 pub impl Write for NoColor with fn write_slice(self, buf, start, end) {
   self.wtr.write_slice(buf, start, end)
 }
@@ -62,6 +67,11 @@ pub struct Ansi {
 /// escape sequences.
 pub fn Ansi::new(wtr : &Write) -> Ansi {
   { wtr, }
+}
+
+///|
+pub impl Write for Ansi with fn try_write_slice(self, buf, start, end) {
+  self.wtr.try_write_slice(buf, start, end)
 }
 
 ///|

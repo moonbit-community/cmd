@@ -1,4 +1,7 @@
 ///|
+// Strategy: rg-directory-observations
+
+///|
 pub async fn File::open(path : String) -> File {
   { inner: @fs.open(path, mode=ReadOnly) catch { e => raise io_error(e) }, }
 }
@@ -18,6 +21,12 @@ pub async fn File::read(
 ///|
 pub fn File::close(self : File) -> Unit {
   self.inner.close()
+}
+
+///|
+/// The open handle already carries this observation; no path stat is needed.
+pub fn File::is_regular(self : File) -> Bool {
+  self.inner.kind() is Regular
 }
 
 ///|
@@ -120,9 +129,31 @@ pub async fn symlink_metadata(path : String) -> Metadata {
 }
 
 ///|
-pub async fn read_dir(path : String) -> Array[String] {
-  @fswalk.read_directory(path) catch {
+pub async fn read_dir(path : String) -> Array[DirEntry] {
+  try {
+    let dir = @fs.opendir(path)
+    defer dir.close()
+    let entries : Array[DirEntry] = []
+    while dir.next(include_hidden=true) is Some(entry) {
+      entries.push({ name: entry.name, is_dir: entry.is_dir, })
+    }
+    entries
+  } catch {
     e => raise io_error(e)
+  }
+}
+
+///|
+/// Reuse the directory observation without asking for size or a resolved path.
+/// Public DirectoryEntry exposes no full kind or inode, so unknown kinds are
+/// queried without following links and identities remain unavailable.
+pub async fn DirEntry::file_type(self : DirEntry, path : String) -> FileType {
+  if self.is_dir {
+    Dir
+  } else {
+    file_type(@fs.kind(path, follow_symlink=false)) catch {
+      e => raise io_error(e)
+    }
   }
 }
 

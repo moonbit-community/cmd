@@ -7,6 +7,43 @@ priv struct OutputProbe {
 }
 
 ///|
+async test "synchronous output admission is atomic and retains failure state" {
+  let sink = OutputProbe::{ bytes: [], calls: 0, limit: 2, fail_after: 100, }
+  let output = @stream.BlockWriter::new(sink, size=8)
+  assert_true(output.try_write_slice(b"abc".to_fixedarray(), 0, 3))
+  assert_false(output.try_write_slice(b"123456".to_fixedarray(), 0, 6))
+  assert_eq(sink.calls, 0)
+  output.flush()
+  assert_eq(Bytes::from_array(sink.bytes), b"abc")
+  let line = @stream.BlockWriter::new(sink, size=8, line_buffered=true)
+  assert_false(line.try_write_slice(b"line\n".to_fixedarray(), 0, 5))
+  line.flush()
+  assert_eq(Bytes::from_array(sink.bytes), b"abc")
+  let broken = OutputProbe::{ bytes: [], calls: 0, limit: 2, fail_after: 1, }
+  let output = @stream.BlockWriter::new(broken, size=8)
+  assert_true(output.try_write_slice(b"abcdef".to_fixedarray(), 0, 6))
+  assert_true(
+    try {
+      output.flush()
+      false
+    } catch {
+      _ => true
+    },
+  )
+  assert_true(
+    try {
+      ignore(output.try_write_slice(b"retry".to_fixedarray(), 0, 5))
+      false
+    } catch {
+      _ => true
+    },
+  )
+  output.flush()
+  assert_eq(Bytes::from_array(broken.bytes), b"ab")
+  assert_eq(broken.calls, 2)
+}
+
+///|
 impl @io.Writer for OutputProbe with fn write_once(self, bytes, offset~, len~) {
   self.calls += 1
   if self.calls > self.fail_after {

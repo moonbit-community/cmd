@@ -175,6 +175,7 @@ async fn Core::match_by_line(self : Core, buf : Win) -> Bool {
       }
       Coalesced(_) => return self.match_by_line_spans(buf)
       Synchronous(accept) => return self.match_by_line_synchronous(buf, accept)
+      Buffered(accept) => return self.match_by_line_buffered(buf, accept)
       Ordinary => ()
     }
     match self.match_by_line_fast(buf) {
@@ -216,6 +217,9 @@ fn Core::next_match_span(self : Core, buf : Win) -> @matcher.Match? {
 
 ///|
 async fn Core::match_by_line_spans(self : Core, buf : Win) -> Bool {
+  if self.sink.buffered_matched() is Some(accept) {
+    return self.match_by_line_buffered(buf, accept, coalesced=true)
+  }
   while self.next_match_span(buf) is Some(span) {
     if !self.sink_matched(buf, span.start, span.end) {
       return false

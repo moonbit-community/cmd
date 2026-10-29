@@ -385,7 +385,11 @@
       "status": "adopted",
       "sources": [
         "commands/rg/internal/searcher/policy.mbt",
-        "commands/rg/internal/searcher/core.mbt"
+        "commands/rg/internal/searcher/core.mbt",
+        "commands/rg/internal/searcher/buffered_sink.mbt",
+        "commands/rg/internal/printer/standard.mbt",
+        "commands/rg/internal/printer/buffered_sink.mbt",
+        "commands/rg/internal/printer/plain_prelude.mbt"
       ],
       "tests": [
         {
@@ -399,14 +403,89 @@
         {
           "file": "commands/rg/internal/driver/search_output_spans_wbtest.mbt",
           "name": "plain match spans preserve partial write failure prefixes"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_buffered_trace_wbtest.mbt",
+          "name": "buffered sink handoff never duplicates events and respects stopping modes"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_buffered_output_wbtest.mbt",
+          "name": "buffered standard output preserves numbered records failures and decoding"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_granular_output_wbtest.mbt",
+          "name": "buffered granular records preserve extraction replacement limits and failures"
         }
       ],
       "profiles": [
         "rg-count-64m",
         "rg-context-8m",
-        "rg-numbered-8m"
+        "rg-numbered-8m",
+        "rg-only-8m",
+        "rg-replace-8m"
       ],
-      "invariant": "Count precedes coalesced, synchronous and ordinary execution. Binary scan ownership, raw multiline policy, stop conditions and sink capabilities remain distinct."
+      "invariant": "Count precedes coalesced, buffered, synchronous and ordinary execution. Buffered admission commits one complete event or declines without output; the pending event reaches async fallback exactly once. Binary scan ownership, raw multiline policy, stop conditions and sink capabilities remain distinct."
+    },
+    {
+      "id": "rg-directory-observations",
+      "owner": "commands/rg/internal/sys",
+      "commands": ["rg"],
+      "status": "adopted",
+      "sources": [
+        "commands/rg/internal/sys/filesystem.mbt",
+        "commands/rg/internal/sys/types.mbt",
+        "commands/rg/internal/ignore/walkdir.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/rg/internal/sys/directory_test.mbt",
+          "name": "directory entries retain known directories and query unknown kinds"
+        },
+        {
+          "file": "commands/rg/internal/sys/directory_test.mbt",
+          "name": "directory kind queries do not follow live or dangling links"
+        }
+      ],
+      "profiles": ["rg-tree-files", "rg-tree-search"],
+      "invariant": "Reuse only directory facts supplied by the public API. Unknown kinds require a non-following query; size and canonical path stay demand-driven."
+    },
+    {
+      "id": "rg-file-read-ahead",
+      "owner": "commands/rg/internal/driver",
+      "commands": ["rg"],
+      "status": "adopted",
+      "sources": [
+        "commands/rg/internal/driver/file_read_buffer.mbt",
+        "commands/rg/internal/driver/search.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/rg/internal/driver/file_read_buffer_wbtest.mbt",
+          "name": "initial file buffering preserves chunk boundaries offsets and EOF"
+        },
+        {
+          "file": "commands/rg/internal/driver/file_read_buffer_wbtest.mbt",
+          "name": "file prefix policy excludes early exits and non-search modes"
+        },
+        {
+          "file": "commands/rg/internal/driver/file_read_decode_wbtest.mbt",
+          "name": "initial file buffering preserves BOM binary windows legacy decoding and read failures"
+        },
+        {
+          "file": "commands/rg/internal/driver/file_read_buffer_wbtest.mbt",
+          "name": "initial file buffering propagates cancellation after copying cached bytes"
+        },
+        {
+          "file": "commands/rg/internal/driver/file_read_ahead_wbtest.mbt",
+          "name": "physical file read expansion preserves logical decoder and binary windows"
+        },
+        {
+          "file": "commands/rg/internal/driver/file_read_ahead_wbtest.mbt",
+          "name": "physical file read expansion keeps short-file probes small and grows only after a full block"
+        }
+      ],
+      "profiles": ["rg-file-count-64m", "rg-tree-search"],
+      "invariant": "One reusable 1 MiB buffer per worker, only for opened regular files and full searches. Begin with 64 KiB physical refills and expand only after a full block. Keep logical decoder requests, retained errors and EOF distinct; stdin, preprocessors and explicit early exits bypass read-ahead."
     },
     {
       "id": "rg-literal-stream",
@@ -779,13 +858,17 @@
         {
           "file": "core/stream/output_test.mbt",
           "name": "failed shared output never replays a partially written prefix"
+        },
+        {
+          "file": "core/stream/output_test.mbt",
+          "name": "synchronous output admission is atomic and retains failure state"
         }
       ],
       "profiles": [
         "rg-output-8m",
         "column-table-8m"
       ],
-      "invariant": "Output owns queued bytes, serializes borrowing and consumes failed or cancelled writes without replay."
+      "invariant": "Output owns queued bytes, serializes borrowing and consumes failed or cancelled writes without replay. Synchronous admission never flushes or suspends; false leaves the queue unchanged and preserves line-buffered delivery."
     },
     {
       "id": "column-table-plans",

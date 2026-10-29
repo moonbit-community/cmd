@@ -63,6 +63,9 @@ pub(open) trait Sink {
   // Opt in only when match handling needs no I/O or suspension. Reader loops
   // may call this callback synchronously; all other sink events stay ordered.
   fn synchronous_matched(Self) -> ((Searcher, SinkMatch) -> Bool)? = _
+  // A bounded sink may accept complete matches without suspension. False
+  // commits no event or output; matched receives that same pending match once.
+  fn buffered_matched(Self) -> ((Searcher, SinkMatch) -> Bool raise)? = _
   async fn matched(Self, Searcher, SinkMatch) -> Bool
   async fn context(Self, Searcher, SinkContext) -> Bool = _
   async fn context_break(Self, Searcher) -> Bool = _
@@ -88,6 +91,11 @@ impl Sink with fn synchronous_count(_self) {
 
 ///|
 impl Sink with fn synchronous_matched(_self) {
+  None
+}
+
+///|
+impl Sink with fn buffered_matched(_self) {
   None
 }
 

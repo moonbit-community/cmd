@@ -36,7 +36,7 @@ pub fn now_nanos() -> Int64
 
 pub async fn path_exists(String) -> Bool
 
-pub async fn read_dir(String) -> Array[String]
+pub async fn read_dir(String) -> Array[DirEntry]
 
 pub async fn read_fd(Int32, FixedArray[Byte], Int32, Int32) -> Int32
 
@@ -76,10 +76,17 @@ pub(all) enum Capability[T] {
   Unavailable(String)
 } derive(Eq, @debug.Debug)
 
+pub struct DirEntry {
+  name : String
+  // private fields
+}
+pub async fn DirEntry::file_type(Self, String) -> FileType
+
 pub struct File {
   // private fields
 }
 pub fn File::close(Self) -> Unit
+pub fn File::is_regular(Self) -> Bool
 pub async fn File::open(String) -> Self
 pub async fn File::read(Self, FixedArray[Byte], Int32, Int32) -> Int32
 

@@ -105,6 +105,7 @@ pub(all) enum ParseColorErrorKind {
 
 // Traits
 pub(open) trait Write {
+  fn try_write_slice(Self, FixedArray[Byte], Int32, Int32) -> Bool raise = _
   async fn write_slice(Self, FixedArray[Byte], Int32, Int32) -> Unit
   async fn write_bytes(Self, BytesView) -> Unit = _
   async fn flush(Self) -> Unit = _

@@ -13,6 +13,7 @@ async fn fs_roundtrip(dir : String) -> Unit {
   assert_eq(@sys.read_file(dir + "/t.txt"), b"short")
   assert_eq(@sys.read_file(dir + "/a.txt"), b"hello\nworld\n")
   let file = @sys.File::open(dir + "/a.txt")
+  assert_true(file.is_regular())
   let chunk = FixedArray::make(16, b'\x00')
   assert_eq(file.read(chunk, 2, 5), 5)
   assert_eq(Bytes::from_array(chunk[2:7]), b"hello")
@@ -27,7 +28,7 @@ async fn fs_roundtrip(dir : String) -> Unit {
   assert_eq(@sys.file_len(dir + "/./sub/../a.txt"), 12L)
   assert_true(@sys.path_exists(dir + "/sub/deeper/c.txt"))
   assert_false(@sys.path_exists(dir + "/nope"))
-  let names = @sys.read_dir(dir)
+  let names = @sys.read_dir(dir).map(entry => entry.name)
   assert_true(
     names.contains("a.txt") && names.contains("sub") && names.contains("t.txt"),
   )

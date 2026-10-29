@@ -5,6 +5,259 @@ Date: 2026-09-05
 Updated: 2026-10-29
 Revision: Consolidate shared ownership and internal execution state while preserving R-stage streaming, temporary-storage, matcher, metadata and failure contracts.
 
+## Further rg read and granular-output pilots (2026-10-29)
+
+This follow-up starts from the preceding repair's default release Wasm
+`32cf63b3fd8b0b4fd4caa35fd71933b70b547fdd6b9793dbc8f76742beb3f4c4`.
+All 80 starting command artifacts and the complete dirty source were frozen
+before editing. The 22 diagnostic cases are unchanged selections from the
+89-task real-corpus matrix below, including stdin, early-exit file summaries,
+counts, absent matches, ordinary output and match-only extraction. Each phase
+uses two balanced windows with 12 measured rounds and complete Rust-oracle
+stdout/status checks. The final candidate still requires the complete matrix
+and all 156 shared protection profiles; diagnostics cannot replace either.
+
+Adopted mechanisms:
+
+- `FileReadBuffer` keeps physical file reads separate from the decoder's BOM
+  and logical read requests. Each eligible worker reuses at most 1 MiB of
+  storage. A file begins with 64 KiB physical refills; only a full block enables
+  larger subsequent refills. Large logical requests bypass an empty cache.
+  A short physical read is not EOF, and cached bytes precede a retained error.
+  Stdin, preprocessors, non-regular files and explicit early exits retain their
+  existing read path. This raises the private buffer bound by 960 KiB per
+  eligible worker; it is not a bound on total search memory.
+- The ordinary granular printer keeps match extraction, replacement and
+  statistics. It shares the existing bounded plain-record admission helper
+  with the buffered sink, avoiding asynchronous field/body/terminator calls
+  when a complete record fits. Declining admission changes no output or
+  counters. Color, hyperlinks, multiline formatting, over-limit records and
+  explicit line buffering retain their existing ordered paths. No second
+  output queue, pattern recognizer or corpus-dependent branch is introduced.
+
+The reading mechanism follows the buffering principle documented by Rust's
+[BufReader](https://doc.rust-lang.org/std/io/struct.BufReader.html). Fixed
+64 KiB repeated buffering offered little benefit. Fixed 256 KiB buffering
+reduced some large-file costs but added 3.08–3.42% to log status counting.
+Fixed 1 MiB buffering regressed source literal/absent counts by about 7% and
+was rejected. Progressive refills preserved the large-file benefit without
+that regression: all 22 baseline/candidate pairs qualified, eight improved by
+more than 5% in both windows, and none regressed by 3%. Wiki absent output
+fell by 24.99–25.80%, log status output by 28.31–28.32%, and plain status output
+by 29.39–29.53%. Source literal counts remained within -0.12% to +0.16%.
+
+The separate granular-output phase also qualified all 22 pairs with no 3%
+regression. Relative to progressive reads, log IPv4 match-only extraction
+fell by 18.46–18.91%, and source definition extraction by 7.39–7.68%.
+
+A third pilot used the digit-pair table principle from Rust
+[itoa 1.0.18](https://docs.rs/itoa/1.0.18/src/itoa/lib.rs.html), retaining the
+existing unsigned interpretation of all 64 bits. Boundary and varied-bit
+correctness tests passed, but complete-command differences stayed within
+±0.5% across the diagnostic set. It is not adopted: there is no
+demonstrated application benefit to justify another formatting implementation.
+Its source, tests, artifact and every timing sample remain in the pilot evidence.
+
+The current public `moonbitlang/async@0.22.5` directory entry exposes `name`
+and `is_dir`, not a complete kind; its identity field is private. The remaining
+small-file gap therefore cannot be removed by assuming that every non-directory
+is regular. A future pilot may overlap a bounded number of kind queries while
+preserving traversal, link and error order, or use a released equivalent kind
+observation. Neither a hypothetical improvement nor these I/O results establish
+a language/compiler ceiling.
+
+Pilot evidence: `/private/tmp/cmd-rg-batching-20261029-32cf63b3`.
+The cumulative candidate is default Wasm SHA-256
+`132abfe2d9395c531210a583301dfc7fda124119cb4944f2de40634114a5f7a8`,
+1,992,455 bytes (1,036 bytes above the starting rg artifact). The other 79
+command artifacts are byte-identical. Local checks pass 1,706 release-Wasm
+tests, 118 tool regressions, 2,117 functional checks with 19 platform skips,
+and architecture validation for 80 commands, 124 packages and 23 strategies.
+The strengthened full-physical-refill decoding regression subsequently passed
+with all 288 driver tests; rebuilding preserved the measured artifact exactly.
+
+All 89 unchanged real-corpus tasks preserve complete output and exit status.
+All starting/current pairs qualify; 34 improve by more than 5% in both windows.
+The maximum observed loss is 0.686%, on `source-absent-lines`, and no task
+reaches a 3% regression. Wiki absent output falls by 25.82–26.31%, log status
+output by 27.93–28.07%, plain status output by 29.97–30.07%, IPv4 match-only
+output by 21.18–21.40%, and source definition extraction by 7.43–7.49%.
+Source literal counting remains effectively unchanged (-0.13% to +0.02%).
+
+Current/upstream comparisons qualify 88/89 tasks. In this same run the number
+more than 10% slower than upstream in both windows falls from 45 to 35; the
+number more than 10% faster rises from 10 to 14. Source literal counting is
+still 2.11–2.12 times upstream's elapsed time. Current/Rust comparisons qualify
+87/89. Preserve observational marks for Rust `source-exception-count` and
+`logs-requests-lines-plain`, and upstream `literature-literal-lines-stdin-plain`;
+their unstable measurements cannot establish comparative speed claims.
+
+Separate Darwin `time -l` observations cover numbered/plain log output,
+source count/file summaries and IPv4 match-only output, with two reversed-order
+pairs each. Observed current peak RSS is 34.59–39.39 MiB, with paired changes
+from -0.97 to +1.86 MiB. These five profiles are resource observations, not a
+total-memory bound or a three-platform resource claim.
+
+The initial protection invocation failed before timing because its frozen
+build-directory inventory included the shared `core` directory (81 entries).
+The corrected 80-command inventory copies exactly the original frozen bytes;
+the original inventory and setup failure remain unchanged. The ensuing full
+156-profile run preserves all outputs/statuses but qualifies 155/156 timings.
+Its byte-identical `ln-symbolic-validation` control has a first-window MAD of
+11.51% on one side; the other 155 profiles are stable and below the slowdown
+limit. This run is not an overall timing pass. A separate zero-delay A/A check
+of ln, regex cold startup and rg counting passes the original two-window,
+nine-pair stability criteria. One additional complete confirmation is
+pre-registered without changing artifacts, cadence, selection or thresholds;
+all earlier samples and its eventual verdict are retained.
+
+That single complete confirmation passes all 156 profiles: both windows,
+all stdout/status checks, stability and the 5% slowdown limit. No profile in
+the confirmation reaches a 3% observed regression. This confirms the candidate
+under the unchanged protocol; it does not erase the first run's unstable ln
+control. The setup failure, first complete run, A/A control and confirmation
+are separate evidence directories, with no sample filtering or further repeats.
+Durable results, all 89 normalized rows, source snapshots, candidate/rejected
+artifacts and raw observations are in
+`/Users/winter/.codex/visualizations/2026/10/29/rg-batching-32cf63b3`.
+These measurements establish local macOS default-Wasm acceptance and were
+recorded before branch delivery. Remote CI, publication and exact-version
+MoonX acceptance require separate evidence.
+
+## General-corpus rg I/O repair (2026-10-29)
+
+The unchanged enwik8, Shakespeare, NASA July 1995 log and CPython 3.13.0
+Lib matrix exposed costs hidden by the earlier synthetic long-record emphasis.
+Its 89 tasks remain the general comparison; long-record, collision and cache
+pressure profiles remain separate stress controls. Neither a generated single
+long line nor an aggregate speedup establishes general search performance.
+
+The repair preserves default release Wasm, the public async runtime and the
+existing regex algorithms. It applies three changes in diagnostic order:
+
+1. Retain the public directory entry's `is_dir` observation. Query unknown
+   kinds without following links; do not eagerly request size or canonical
+   paths. Full metadata remains available to actual size, link and sort users.
+   Unknown entries are never assumed to be regular files.
+2. Assemble unstyled prefixes synchronously and use the shared writer's
+   existing 64 KiB default. Its existing synchronous admission mechanism is
+   exposed as `BlockWriter::try_write_slice`: acceptance owns the complete
+   span, while a decline leaves output untouched. The searcher can deliver
+   ordinary matches or existing coalesced spans until one needs asynchronous
+   I/O. That pending event is delivered exactly once through the ordinary sink.
+   A complete record copy is capped at 64 KiB; prefix-free complete spans use
+   the source slice directly. First events, large records, styling, replacement,
+   statistics, contexts and explicit line buffering preserve their required
+   event/flush behavior. Failure and cancellation retain the shared no-replay
+   state; this does not introduce another output queue.
+3. Reuse one 64 KiB initial block per search worker for opened regular files.
+   The adapter returns the original short BOM prefix and combines retained
+   bytes with subsequent reads, preserving decoder request boundaries. EOF
+   and errors are retained without replay. Stdin, preprocessors, non-regular
+   handles and explicit early-exit/file-summary modes bypass read-ahead.
+   This adds bounded physical read-ahead to full regular-file searches, not a
+   total search-memory bound. Existing long-record buffers retain their own
+   capacity policy.
+
+The design follows the separation of scanning and output described in
+[ripgrep's implementation article](https://burntsushi.net/ripgrep/), the
+[Rust 15.2.0 directory walker](https://github.com/BurntSushi/ripgrep/blob/15.2.0/crates/ignore/src/walk.rs),
+and its small synchronous
+[counting writer](https://github.com/BurntSushi/ripgrep/blob/15.2.0/crates/printer/src/counter.rs).
+The community port at `b998d487614d70c1131e8f95dc13dcc9d90c5698` retains
+cheap directory kind observations and a synchronous WASI output chain. Its
+product source is identical to the imported pin
+`2727c25819b00ddd1a0e9b24f9cb683931d64edf`; only documentation/scripts differ.
+The comparison builds its default Wasm and does not run its manual O3 script.
+These references guide mechanisms, not corpus-specific branches or different
+regex semantics.
+
+Remaining directory cost includes a public-API query for each unknown kind.
+The current runtime's directory entry exposes no complete kind or identity.
+Remove that query only when a released public API supplies an equivalent
+observation, or a separately tested traversal change preserves link handling,
+filtering and error ordering. Synchronous upstream WASI and the public async
+runtime have different I/O costs; do not label the residual gap a compiler
+ceiling without further measurements.
+
+Evidence starts from `ee3fc42e7d9a8782dac3a194d81b3ad56781db6f` and frozen
+artifacts for all 80 commands. Each adopted phase retains two balanced windows
+against its predecessor. The final matrix compares the cumulative candidate
+with that starting artifact, community rg and pinned native Rust rg 15.2.0.
+Every stdout/status comparison, unstable window and qualified loss is retained;
+default Wasm, resource observations, three-platform CI and MoonX acceptance are
+separate verdicts.
+
+Local correctness passes 1,703 release-Wasm tests, 118 test-tool regressions,
+2,117 functional checks (19 platform skips, zero failures), and the 80-command
+architecture inventory with 23 registered strategies. Generated interfaces add
+the shared writer admission method and private rg adapter capabilities; no CLI
+option or support boundary changes. Only rg's command artifact differs from
+the frozen baseline (1,978,821 to 1,991,419 bytes); the other 79 are identical.
+
+The final 89-task matrix completes all 8,544 measured invocations, plus 1,424
+warmups, with full stdout/status agreement. All 89 before/after pairs qualify;
+49 improve by more than 5% in both windows, with no qualified loss reaching 3%.
+The largest accepted small cost is `logs-images-count`, +2.90% in both
+windows; `wiki-absent-lines-plain` costs +2.16–2.25%. Both are stable timing
+observations, not discarded noise, and neither is offset against output gains.
+Of 88 qualified candidate/community comparisons, 43 remain more than 10%
+slower in both windows and ten are more than 10% faster. The same run places
+the starting artifact above that slowdown threshold in 59 tasks. The remaining
+community `literature-literal-count-stdin` arm is unstable and cannot qualify
+a speed comparison. Rust-normalized ratios retain their own qualification.
+
+Representative two-window elapsed times, in milliseconds:
+
+| Real workload | Starting artifact | Candidate | Community rg |
+| --- | ---: | ---: | ---: |
+| NASA `/images/`, numbered lines | 1633.27–1633.40 | 393.09–396.43 | 365.97–372.93 |
+| NASA `/images/`, plain lines | 600.47–601.94 | 290.11–291.42 | 265.30–266.75 |
+| NASA IPv4, only matching | 1541.80–1547.01 | 1265.20–1265.98 | 921.89–927.93 |
+| CPython literal count | 394.40–395.22 | 296.97–297.66 | 141.78–142.05 |
+| CPython literal numbered lines | 404.12–404.36 | 263.42–264.74 | 155.57–155.65 |
+| enwik8 absent literal, lines | 62.93–62.95 | 62.64–62.85 | 41.10–41.11 |
+
+The five predecessor comparisons preserve metadata, prefix/buffer, buffered
+match, initial-file and coalesced-span stages. All 13 before/after pairs in
+each stage qualify without losses reaching 3%; one metadata-stage community
+count arm is unstable and remains recorded. Coalesced-span submission improves
+plain NASA output by a further 37.6–37.7%; initial-file buffering improves
+CPython searches by 3.0–5.0%. These subset results do not replace the full
+matrix. The source formatting pass changes the rg artifact identity; final
+comparisons use the formatted artifact, subsequently verified byte-identical
+after the added cancellation regression and final build.
+
+Separate Darwin kernel peak-RSS observations cover numbered/plain NASA output,
+CPython counting and directory listing, twice in reversed order. Paired deltas
+range from -0.20 to +0.59 MiB, with candidate peaks of 35.06–38.86 MiB. These
+are observations, not an allocation bound or cross-platform resource acceptance.
+The complete protocol, per-file identities, phase artifacts and every raw
+window are retained in the dated local `rg-io-repair-ee3fc42` evidence bundle.
+No remote CI, publication or exact-version MoonX acceptance is claimed here.
+
+The cumulative shared protection run passes all 156 workloads, both windows,
+all output/status checks, stability qualification and the 5% slowdown boundary.
+The only 3–5% observation is unchanged `ln-symbolic-validation`: +4.09% in the
+first window and +2.02% in the second. Its artifacts are byte-identical, so this
+is retained as a control observation rather than attributed to rg's source
+change. No changed-rg protection workload incurs a qualified cost reaching 3%.
+Fixture and real-corpus identities match before and after their respective runs.
+
+The next input-side hypothesis is to separate physical regular-file read
+batching from logical decoder/binary windows. Current bulk counts can request
+256 KiB while ordinary output with default binary handling retains a 64 KiB
+window. NASA status counting takes 68.74–68.82 ms versus community
+55.84–55.98 ms, while plain status output takes 106.63–107.22 ms versus
+60.65–60.89 ms. This difference motivates measuring read-call counts and a
+bounded file-buffer pilot; it does not prove the whole gap is I/O. Any pilot
+must retain decoder chunk boundaries, binary stopping, cancellation, read-error
+ordering, explicit early exits and long-record controls, then repeat the full
+real-corpus matrix. Do not simply enlarge every logical search window.
+Granular `-o`/replacement/styled formatting is another separate workstream;
+the current bounded admission callback deliberately does not bypass its match
+and event semantics.
+
 ## Execution governance (2026-10-29)
 
 The audit of `9dc42846c486697054fa13333ae65e03965a9c09` identified A01-A16.

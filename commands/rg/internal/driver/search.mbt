@@ -147,6 +147,8 @@ priv struct SearchWorker {
   matcher : SearchMatcher
   searcher : @searcher.Searcher
   printer : Printer
+  buffer_file_reads : Bool
+  mut file_read_storage : FixedArray[Byte]?
 }
 
 ///|
@@ -164,6 +166,8 @@ fn ExecutionPlan::search_worker(
     matcher,
     searcher,
     printer,
+    buffer_file_reads: self.buffer_file_reads(),
+    file_read_storage: None,
   }
 }
 
@@ -237,7 +241,20 @@ async fn SearchWorker::search_path(
 ) -> SearchResult {
   let file = @sys.File::open(path)
   defer file.close()
-  self.search_reader(path, FileReader::{ file, })
+  let reader = FileReader::{ file, }
+  if self.buffer_file_reads && file.is_regular() {
+    let storage = match self.file_read_storage {
+      Some(storage) => storage
+      None => {
+        let storage = FixedArray::make(maximum_file_read_bytes, b'\x00')
+        self.file_read_storage = Some(storage)
+        storage
+      }
+    }
+    self.search_reader(path, FileReadBuffer::new(reader, storage))
+  } else {
+    self.search_reader(path, reader)
+  }
 }
 
 ///|

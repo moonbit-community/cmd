@@ -13,6 +13,15 @@ pub(all) enum FileType {
 } derive(Debug, Eq)
 
 ///|
+/// Information available from one directory visit. A non-directory entry
+/// still needs a kind query: it can be a file, a link, or a special entry.
+#valtype
+pub struct DirEntry {
+  name : String
+  priv is_dir : Bool
+}
+
+///|
 pub(all) struct Metadata {
   file_type : FileType
   len : Int64

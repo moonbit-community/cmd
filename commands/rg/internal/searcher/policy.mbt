@@ -58,6 +58,7 @@ priv enum LineExecution {
   Count((Int64) -> Unit)
   Coalesced(((Searcher, SinkMatch) -> Bool)?)
   Synchronous((Searcher, SinkMatch) -> Bool)
+  Buffered((Searcher, SinkMatch) -> Bool raise)
   Ordinary
 }
 
@@ -83,6 +84,12 @@ fn SearcherConfig::line_execution(
     if !self.line_number && sink.coalesce_matches() {
       return Coalesced(synchronous)
     }
+  }
+  if !self.invert_match &&
+    self.max_context() == 0 &&
+    !self.stop_on_nonmatch &&
+    sink.buffered_matched() is Some(accept) {
+    return Buffered(accept)
   }
   match synchronous {
     Some(accept) => Synchronous(accept)

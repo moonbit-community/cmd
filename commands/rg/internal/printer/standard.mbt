@@ -347,6 +347,7 @@ priv struct StandardImpl {
   mut in_color_match : Bool
   /// The prelude writer, reused for every line.
   mut prelude : PreludeWriter?
+  mut plain_prelude : @termcolor.ByteVec?
 }
 
 ///|
@@ -381,6 +382,7 @@ fn StandardImpl::reuse(
         sunk: Sunk::empty(),
         in_color_match: false,
         prelude: None,
+        plain_prelude: None,
       }
       sink.cache = Some(imp)
       imp
@@ -473,6 +475,16 @@ async fn StandardImpl::sink_slow(self : StandardImpl) -> Unit {
   let base = self.sunk.start
   if self.config().only_matching {
     for m in self.sunk.matches {
+      if self.try_buffer_line(
+          self.sunk.absolute_byte_offset + m.start.to_int64(),
+          self.sunk.line_number,
+          Some(m.start.to_int64() + 1),
+          buf,
+          base + m.start,
+          base + m.end,
+        ) {
+        continue
+      }
       self.write_prelude(
         self.sunk.absolute_byte_offset + m.start.to_int64(),
         self.sunk.line_number,
@@ -487,6 +499,16 @@ async fn StandardImpl::sink_slow(self : StandardImpl) -> Unit {
     }
   } else if self.config().per_match {
     for m in self.sunk.matches {
+      if self.try_buffer_line(
+          self.sunk.absolute_byte_offset + m.start.to_int64(),
+          self.sunk.line_number,
+          Some(m.start.to_int64() + 1),
+          buf,
+          base,
+          self.sunk.end,
+        ) {
+        continue
+      }
       self.write_prelude(
         self.sunk.absolute_byte_offset + m.start.to_int64(),
         self.sunk.line_number,
@@ -495,6 +517,16 @@ async fn StandardImpl::sink_slow(self : StandardImpl) -> Unit {
       self.write_colored_line([m], buf, base, self.sunk.end)
     }
   } else {
+    if self.try_buffer_line(
+        self.sunk.absolute_byte_offset,
+        self.sunk.line_number,
+        Some(self.sunk.matches[0].start.to_int64() + 1),
+        buf,
+        base,
+        self.sunk.end,
+      ) {
+      return
+    }
     self.write_prelude(
       self.sunk.absolute_byte_offset,
       self.sunk.line_number,
@@ -657,6 +689,41 @@ async fn StandardImpl::write_prelude(
     line_number is None &&
     (!self.config().column || column is None) &&
     !self.config().byte_offset {
+    return
+  }
+  // Formatting ordinary fields does not need asynchronous writer calls.
+  // Keep styled output on its existing ordered color/hyperlink protocol.
+  if !self.wtr().supports_color() && self.config().hyperlink.format.is_empty() {
+    let bytes = match self.plain_prelude {
+      Some(bytes) => bytes
+      None => {
+        let bytes = @termcolor.ByteVec::new()
+        self.plain_prelude = Some(bytes)
+        bytes
+      }
+    }
+    format_plain_prelude(
+      bytes,
+      if self.config().heading {
+        None
+      } else {
+        self.path().map(p => p.bytes)
+      },
+      self.config().path_terminator,
+      line_number,
+      if self.config().column {
+        column
+      } else {
+        None
+      },
+      if self.config().byte_offset {
+        Some(absolute_byte_offset)
+      } else {
+        None
+      },
+      self.separator_field(),
+    )
+    self.write(bytes.storage(), 0, bytes.length())
     return
   }
   let prelude = PreludeWriter::new(self)

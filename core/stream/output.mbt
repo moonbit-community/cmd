@@ -150,7 +150,10 @@ pub impl @io.Writer for BlockWriter with fn write_once(
 pub extend BlockWriter with @io.Writer::{write_once, write, write_reader}
 
 ///|
-fn BlockWriter::buffer_slice(
+/// Accept a complete span without I/O. False leaves the buffer unchanged;
+/// the caller may then use the ordinary async write. Failed or active writers
+/// reject the operation before touching either buffer.
+pub fn BlockWriter::try_write_slice(
   self : BlockWriter,
   data : FixedArray[Byte],
   start : Int32,
@@ -177,7 +180,7 @@ pub async fn BlockWriter::write_slice(
   start : Int32,
   end : Int32,
 ) -> Unit {
-  if !self.buffer_slice(data, start, end) {
+  if !self.try_write_slice(data, start, end) {
     self.write_slice_slow(data, start, end)
   }
 }

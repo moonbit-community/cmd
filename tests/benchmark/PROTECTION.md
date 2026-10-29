@@ -18,6 +18,19 @@ Historical `grep-onepass-*` names deliberately remain rejection controls; they
 do not imply an adopted general one-pass engine. Strategy validation establishes
 coverage links, not correctness or timing success by itself.
 
+The rg I/O repair registers directory observations, bounded regular-file
+read-ahead and atomic synchronous output admission. Physical refills begin at
+64 KiB and expand only after a full block, independently of logical decoding
+windows. Granular output retains match extraction, replacement and statistics
+before admitting one formatted record. Existing tree, file-count, numbered,
+only-match, replacement, context and long-record profiles cover these boundaries.
+These synthetic controls must be accompanied by the unchanged 89-task real
+corpus matrix recorded in ADR-0003: enwik8, Shakespeare, NASA July 1995 logs and
+CPython 3.13.0 Lib. Preserve original source checksums, queries and stdout/status
+checks against a pinned Rust binary. Report every task, including unstable and
+slower rows; do not replace ordinary records with generated long-line inputs or
+use aggregate gains to dismiss an individual regression.
+
 The governance profiles add `rg-cache-pressure-spans` (deterministic repeated
 high-state construction with full spans) and `rg-regex-cold-empty` (regex
 construction on empty input). Compare the cold profile separately from existing

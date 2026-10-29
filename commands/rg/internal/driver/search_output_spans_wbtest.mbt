@@ -50,33 +50,71 @@ async fn span_output(
   read_failure~ : Bool = false,
   budget~ : Int32 = 2147483647,
   partial~ : Int32 = 4096,
+  line_numbers~ : Bool = false,
+  byte_offsets~ : Bool = false,
+  path~ : String? = None,
+  line_buffered~ : Bool = false,
+  max_matches~ : Int64? = None,
+  initial_buffer~ : Bool = false,
+  initial_capacity~ : Int32 = 65536,
+  encoding~ : String? = None,
+  only_matching~ : Bool = false,
+  per_match~ : Bool = false,
+  column~ : Bool = false,
+  replacement~ : Bytes? = None,
+  trim_ascii~ : Bool = false,
+  max_columns~ : Int64? = None,
+  heading~ : Bool = false,
+  path_terminator~ : Byte? = None,
 ) -> (Bytes, Bool, Bool, Int64?) {
   let destination : SpanOutput = { bytes: [], limit: partial, budget, }
   let output : StdoutWriter = {
     output: @stream.BlockWriter::new(
       StdoutSink::{ writer: destination, },
       size=8192,
+      line_buffered~,
     ),
   }
   let printer = @printer.Standard::new(
     @termcolor.NoColor::new(output),
     coalesce_matches=coalesce,
+    byte_offset=byte_offsets,
+    only_matching~,
+    per_match~,
+    column~,
+    replacement~,
+    trim_ascii~,
+    max_columns~,
+    heading~,
+    path_terminator~,
   )
   let matcher = SearchMatcher::new([pattern], line_terminator=Some(term))
-  let sink = printer.sink(matcher)
+  let sink = match path {
+    Some(path) => printer.sink_with_path(matcher, path)
+    None => printer.sink(matcher)
+  }
   let reader : SpanInput = {
     bytes: input,
     chunk,
     fail_at_end: read_failure,
     pos: 0,
   }
+  let source : &@searcher.Reader = if initial_buffer {
+    (
+      FileReadBuffer::new(reader, FixedArray::make(initial_capacity, b'\x00')) :
+      &@searcher.Reader)
+  } else {
+    (reader : &@searcher.Reader)
+  }
   let failed = try {
     @searcher.SearcherBuilder::new()
-    .line_number(false)
+    .line_number(line_numbers)
+    .max_matches(max_matches)
+    .encoding(encoding.map(@searcher.Encoding::new))
     .line_terminator(term)
     .binary_detection(binary)
     .build()
-    .search_reader(matcher, reader, sink)
+    .search_reader(matcher, source, sink)
     false
   } catch {
     _ => true
