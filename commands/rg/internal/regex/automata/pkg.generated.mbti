@@ -87,6 +87,7 @@ pub struct RecordBoolean {
 pub fn RecordBoolean::count_lines(Self, FixedArray[Byte], Int32, Int32, Byte, pre? : Prefilter) -> Int64
 pub fn RecordBoolean::count_long_lines(Self, FixedArray[Byte], Int32, Int32, Byte, pre? : Prefilter) -> Int64
 pub fn RecordBoolean::search_long_half(Self, FixedArray[Byte], Int32, Int32) -> Int32
+pub fn RecordBoolean::stream_counter(Self, Byte, pre? : Prefilter) -> (FixedArray[Byte], Int32, Int32, Bool) -> Int64
 
 pub(all) enum State {
   ByteRange(Int32, Int32, Int32)

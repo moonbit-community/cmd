@@ -3,6 +3,50 @@
 This repository integrates multiple command packages, so changes are recorded
 by date and delivery milestone rather than by a single package version.
 
+## 2026-10-29 (selected search integration)
+
+- Adopted grep whole-record output batching and fixed-length anchored byte
+  matching, plus rg early Boolean termination and selective cross-chunk regex
+  counting. Kept the one-pass branch/repetition experiment out because of its
+  measured output regressions; borrowed output and superseded streaming
+  policies remain rejected. The selected grep and rg artifacts exactly match
+  their corresponding frozen pilot variants, and all other 78 commands remain
+  byte-identical to the starting commit. Passed 1,664 release-Wasm tests, 118
+  Native test-tool regressions and 2,117 functional checks (19 platform skips),
+  plus strict checks and the architecture audit. See ADR-0003 for the selection,
+  timing costs, resource observations and historical failed windows. The new
+  cumulative comparison completes all 154 profiles: 141 pass, including 99/104
+  grep/rg profiles; thirteen remain unstable. Every qualified profile is within
+  the 5% slowdown boundary, with small measured costs retained explicitly. This
+  integrates source without publishing or changing registry versions.
+
+## 2026-10-29 (temporary search pilot)
+
+- Extended the separate pilot with bounded deterministic anchored matching for
+  grep and selective resumable regex counting for rg. Against the preceding
+  frozen candidate, qualified anchored grep controls take 85–93% less time;
+  eligible 64 MiB `rg -a -c` long-record counts take 47–48% less time with peak
+  RSS around 32 MiB instead of 157 MiB. Rejected unconditional setup, a borrowed
+  output variant, and probe policies that regressed other cases. The final code
+  passes 1,666 Wasm tests and 2,117 functional checks (19 platform skips).
+  The full timing gate remains false at 144/154 (98/104 grep/rg): seven unstable
+  profiles and three qualified losses remain, including grep controls at
+  +6.51% and +5.03% in one window. The prototype remains unintegrated; the large
+  gains do not waive these costs. See the follow-up evidence and limitations in
+  ADR-0003. No manual O3, push, publication or MoonX acceptance is involved.
+
+- Explored grep whole-record output batching, bounded anchored byte predicates,
+  and rg early boolean termination against development commit `0d65187`, using
+  default release Wasm without manual O3. Qualified 8 MiB controls reduce grep
+  fixed output time by about 69%, dense anchored-regex output by 89%, and rg
+  many-state count by 82%. All 1,659 Wasm tests pass. The complete functional
+  suite passed before the final anchored specialization; its subsequent grep/rg
+  functional check passed 124 cases with one platform skip. The cumulative
+  performance gate remains false at 129/132 (81/82 grep/rg), with three unstable
+  observations retained. Small stable timing costs and approximately 3 MiB more
+  peak RSS for grep dense output are documented in ADR-0003. This temporary
+  checkout is not integrated, pushed, published or accepted through MoonX.
+
 ## 2026-10-28
 
 - Integrated the default-release rg prefix rejection, direct-byte long-record

@@ -323,9 +323,19 @@ async fn process_reader(
     !options.files_with_matches &&
     !options.files_without_match &&
     !options.quiet
+  let batch_records = emit_records &&
+    !options.only_matching &&
+    !options.context_enabled &&
+    !options.line_number &&
+    !options.byte_offset &&
+    !prefix_filename
   for ;; {
     if !options.invert && !options.context_enabled {
       input.skip_nonmatching(matcher, options.ignore_case)
+    }
+    if batch_records && (!input.binary || options.binary_mode != Report) {
+      selected_count += input.collect_records(matcher, options, spans)
+      @stream.flush_buffer(output, spans)
     }
     if emit_records &&
       options.only_matching &&

@@ -20,6 +20,7 @@ pub impl Show for RegexError
 pub struct Regex {
   // private fields
 }
+pub fn Regex::boolean_stream_counter(Self, Byte, required? : Self?) -> ((FixedArray[Byte], Int32, Int32, Bool) -> Int64)?
 pub fn Regex::byte_prefix_start(Self, FixedArray[Byte], Int32, Int32) -> Int32?
 pub fn Regex::captures_at(Self, FixedArray[Byte], Int32, Int32, Int32, Int32, FixedArray[Int32]) -> Bool
 pub fn Regex::captures_len(Self) -> Int32

@@ -28,8 +28,26 @@ fn ReadByLine::win(self : ReadByLine) -> Win {
 }
 
 ///|
-async fn ReadByLine::run(self : ReadByLine) -> Unit {
-  if self.core.begin() {
+async fn ReadByLine::run(
+  self : ReadByLine,
+  begun~ : Bool = false,
+  prefetched~ : Bool = false,
+  ended~ : Bool = false,
+) -> Unit {
+  if begun || self.core.begin() {
+    // A declined probe is already decoded in this reader's original buffer.
+    // Process its complete records before another read can report an error.
+    if prefetched && (ended || self.lb.buffer_len() > 0) {
+      let keep_reading = self.core.match_by_line(self.win())
+      if ended || !keep_reading {
+        self.lb.consume(self.core.pos)
+        self.core.finish(
+          self.lb.absolute_byte_offset,
+          self.lb.binary_byte_offset,
+        )
+        return
+      }
+    }
     while self.fill() {
       if !self.core.match_by_line(self.win()) {
         self.lb.consume(self.core.pos)

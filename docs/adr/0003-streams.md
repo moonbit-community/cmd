@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-28
+Updated: 2026-10-29
 Revision: Consolidate shared ownership and internal execution state while preserving R-stage streaming, temporary-storage, matcher, metadata and failure contracts.
 
 Documentation profile update (2026-10-27): command READMEs describe invocation,
@@ -2890,3 +2890,408 @@ recorded fixture bytes. The initial delivery inventory included the non-command
 `core` build directory; the corrected inventory uses the frozen 80-command
 manifest. No product or test failure was hidden by that inventory correction.
 The architecture audit, interface generation, formatting and diff checks pass.
+
+## 2026-10-29 search hotspot pilot (temporary checkout)
+
+Updated: 2026-10-29. This section records a local pilot against commit
+`0d65187615b3c67b71d986ef4b26d41cdb2c675f`. The live checkout and remote branch
+are unchanged. No publication, integration or new three-platform CI acceptance
+is claimed. All executable measurements use default release Wasm, without a
+manual O3 pass or startup subtraction.
+
+### Scope and mechanisms
+
+- grep batches complete, unadorned records inside its existing immutable input
+  chunk. Adjacent selected records share a contiguous copy and a batch flush.
+  Prefixes, context and only-matching output retain their existing paths;
+  incomplete records retain the existing cross-chunk assembler. Binary decisions
+  remain in the refill path. Input/output failure ordering and short writes are
+  covered by injected-reader/writer tests.
+- rg's shortest-match adapter requests `earliest=true`. Candidate-line discovery
+  requests it only when a configured terminator cannot occur in the match. Full
+  span searches and captures retain their existing greedy semantics. This avoids
+  scanning the rest of a long matching record after a bounded boolean plan has
+  declined construction.
+- grep's existing byte-record matcher recognizes a conservative anchored linear
+  program: at most 256 instructions, a Begin assertion before consumption, no
+  branches, references, word/line assertions or variable repetition. Boolean
+  queries inspect bytes directly instead of converting each record to a String
+  and entering the general span matcher. Whole-record and word-mode constraints
+  retain their original fallback. No public API is added.
+
+The rg decision follows the documented purpose of
+[regex-automata earliest searches](https://docs.rs/regex-automata/latest/regex_automata/struct.Input.html#method.earliest).
+The anchored specialization follows the broader engine-selection lesson of
+[Rust's one-pass DFA](https://docs.rs/regex-automata/latest/regex_automata/dfa/onepass/struct.DFA.html):
+recognize a restricted deterministic workload before using a general engine.
+This pilot is a smaller branch-free interpreter, not an implementation of the
+Rust one-pass DFA or its capture support.
+
+### Staged evidence
+
+The immutable baseline, sources, runners and raw samples are under
+`/private/tmp/cmd-search-hotspots-20261029`. `v1` contains record-output batching
+and rg early termination; `v2` additionally contains anchored byte predicates.
+Each stage uses two windows of one warmup plus nine alternating old/new pairs,
+20-second invocation deadlines, complete output/status comparison, MAD/median
+at most 5% and window drift at most 10%.
+
+`timing-v1-isolated` qualifies all 28 workloads. Relative to the starting source,
+grep fixed-string output takes 68.60–69.54% less time, dense anchored-regex output
+25.06–25.68% less, and sparse output 26.80–28.55% less. rg's many-state long-record
+count takes 82.86–82.92% less time. Stable costs are retained separately: grep
+numbered output +3.18/+3.20%, context +4.30/+4.39%, many-state count +4.39/+3.12%,
+and empty input +3.33/+4.30%.
+
+`timing-v2-v1` qualifies all 14 grep controls. Relative to v1, dense output takes
+85.00–85.55% less time and its same-pattern count 87.21–87.35% less. Sparse output
+and count take about 72% less; context takes 47.25–48.04% less. Fixed-string
+output has a +3.63/-0.11% staged cost. These are measured costs, not discarded
+samples or a claim that every workload improves.
+
+The initially overlapped timing attempt was stopped and retained in `timing-v1`;
+`timing-v1-invalid.txt` explains the concurrent functional run. It supplies no
+qualified timing evidence. Full-protection setup failures are also retained:
+missing Git metadata in the archive checkout, deprecated fixture APIs emitting
+warnings into JSON, and missing architecture fixtures. They happened before any
+full-protection timing window. The pilot fixes the deprecated API calls and
+documents the separate `prepare-architecture` step.
+
+### Correctness, resources and cumulative gate
+
+The first stage passes all 1,657 Wasm tests and the complete functional suite
+(2,117 passes, 19 platform skips). The final code passes 1,659 Wasm tests,
+including 60,918 generated anchored/fallback comparisons against the general
+span engine. A subsequent grep/rg functional run passes 124 checks with one
+platform skip. Strict Wasm checking, interface generation, formatting and the
+80-module/124-package architecture audit pass. Generated interfaces are unchanged.
+The 80-command inventory changes only grep and rg; the other 78 artifacts remain
+byte-identical. Fourteen additional grep profiles are registered.
+
+`protection-v2-all` completes both windows for all 132 registered profiles.
+Every measured invocation preserves stdout, stderr and exit status. The complete
+timing verdict is **false: 129/132 pass**, with **81/82 grep/rg profiles passing**.
+No qualified profile exceeds the 5% slowdown boundary. The failing observations
+are retained without retry:
+
+- `grep-hotspot-invert`: candidate window-two MAD/median is 9.13%. Its large
+  apparent cumulative gain is unqualified, despite both staged experiments
+  qualifying this workload.
+- `ln-symbolic-validation`: unchanged candidate window-two MAD/median is 6.27%.
+- `paste-8m`: unchanged reference medians drift by 14.89% between windows.
+
+Stable cumulative results, against the starting commit:
+
+| Workload | Baseline ms, two windows | Candidate ms, two windows | Elapsed reduction |
+| --- | --- | --- | --- |
+| grep fixed-string output, 8 MiB | 98.58 / 98.59 | 29.74 / 30.15 | 69.41–69.83% |
+| grep dense anchored-regex output, 8 MiB | 289.84 / 289.99 | 31.57 / 32.21 | 88.89–89.11% |
+| grep same dense regex, count | 214.95 / 215.38 | 27.64 / 27.98 | 87.01–87.14% |
+| grep sparse anchored output, 8 MiB | 114.22 / 113.48 | 23.32 / 23.38 | 79.39–79.58% |
+| rg many-state long-record count, 8 MiB | 154.03 / 155.79 | 26.75 / 27.60 | 82.28–82.63% |
+
+Retained cumulative timing costs are grep numbered output +4.52/+3.62%, grep
+empty input +3.61/+4.67%, grep 8 MiB count-miss +3.72/+2.61%, and rg entropy
+literal count +3.45/-0.29%. These are explicit pilot tradeoffs; this document
+does not authorize acceptance or label them as noise.
+
+`resources/summary.json` contains three separate Darwin kernel peak-RSS
+observations per workload and variant, using `/usr/bin/time -l` around moonrun.
+grep dense output changes from 40.08–40.39 MiB to 43.02–43.09 MiB (approximately
+3 MiB additional peak memory). rg many-state count remains 48.70–48.94 MiB and
+64 MiB long-regex count remains 157.38–157.47 MiB across variants. This is not a
+memory optimization. These changes create no product temporary files; injected
+output failures still stop without retrying a partially written batch.
+
+The pilot remains separate from the live branch. The failing cumulative timing
+gate, small stable costs and grep memory increase must remain visible in an
+integration decision. Correctness results from this local macOS run do not
+establish Linux, Windows, exact-version MoonX or publication acceptance.
+
+### Remaining feasible directions
+
+1. Extend anchored byte execution to deterministic branches/repetition only when
+   ambiguity can be rejected during bounded construction. Retain C-locale byte
+   semantics, backreferences and leftmost-longest span extraction. Add held-out
+   patterns and construction/short-input controls before broadening eligibility.
+2. For rg, measure compilation, boolean-plan construction, scanning and Wasm
+   startup separately. A bounded early-match probe may avoid constructing an
+   unnecessary eager plan; it must not treat a probe boundary as EOF or invent
+   assertion matches. Do not raise the DFA state cap without a cost model.
+   Rust's [hybrid cache efficiency controls](https://docs.rs/regex-automata/latest/regex_automata/hybrid/dfa/struct.Config.html#method.minimum_bytes_per_state)
+   illustrate measuring bytes processed per constructed state rather than
+   treating more cached states as automatically faster.
+3. General-regex count-only streaming needs a resumable automaton whose eligibility
+   is settled before discarding bytes. Carry state, pending-record acceptance and
+   decoder/EOF context across chunks. Preserve binary/error ordering and reject
+   unsupported assertions before consumption. Existing literal streaming is a
+   starting point, not evidence that arbitrary regex counting is already bounded.
+4. For misses, attribute time to binary detection, delimiter scans and substring
+   filtering before changing buffering. Avoid counting skipped delimiters when
+   line metadata is unobservable, and examine prepared finders. A fused scan or
+   larger read window must preserve visible output preceding binary detection.
+   Neither this pilot nor the earlier long-record work removes full-record
+   retention for general regexes.
+
+## 2026-10-29 follow-up: deterministic anchors and resumable regex counts
+
+### Scope and bounded mechanisms
+
+This follow-up starts from the preceding temporary pilot's frozen `v2`
+artifacts, not from the live branch. Its laboratory is
+`/private/tmp/cmd-search-followup-20261029`. Every measurement uses default
+release Wasm without manual O3. The previous pilot's failed cumulative gate and
+its costs remain historical evidence; this follow-up does not erase them.
+
+grep's Boolean record matcher now recognizes anchored deterministic repetition
+and alternatives after the existing branch-free and ordinary DFA paths. Every
+epsilon closure must have at most one consuming instruction for each byte.
+Preparation rejects more than 256 NFA instructions, ambiguous choices,
+backreferences and unsupported assertions. The dense table has at most 65,536
+cells, with separate ordinary and real-EOF acceptance. Full span extraction,
+captures, word/whole-record constraints and leftmost-longest behavior retain the
+existing engine. This follows the restricted-search approach documented by
+[Rust's one-pass DFA](https://docs.rs/regex-automata/latest/regex_automata/dfa/onepass/struct.DFA.html),
+but implements only the Boolean byte-record subset, not Rust's capture engine.
+
+rg gains a resumable cursor for its existing bounded Boolean plan. The driver
+proves that matches exclude the record delimiter; assertions, empty matches and
+construction-budget exhaustion decline the path before any bytes are discarded.
+The searcher selects ordinary count-only text mode, without context, inversion,
+multiline, statistics, stop/limit semantics or an explicit heap limit. A cheap
+driver policy declines a required-literal filter whose shortest alternative is
+longer than one byte, before any probe read. Eligible inputs fill the original line buffer at its ordinary
+capacity (256 KiB for the CLI count sink). Only an unterminated full buffer
+without an early Boolean match in its first 64 KiB attempts a streaming plan.
+A match against that truncated prefix only declines optimization: it never
+supplies a count. On decline, complete decoded records already in the original
+buffer are processed before another read can fail. There is no replay wrapper,
+second begin event, decoding pass or read after an observed EOF. Accepted
+cursors reuse the same fixed-capacity input buffer.
+
+The cursor retains DFA state and pending-record status across fixed-capacity
+reads. Delimiters and actual EOF finalize records; chunk boundaries do not.
+This follows the explicit
+[end-of-input transition contract](https://docs.rs/regex-automata/latest/regex_automata/dfa/trait.Automaton.html#tymethod.next_eoi_state).
+Read failure does not finalize an unterminated record. Complete records already
+counted remain counted. Mandatory-literal filtering applies only to complete
+fresh records, and exit-set acceleration remains active across chunk phases.
+The optimization currently requires the first record to be long: a short header
+followed by a long record still takes the old path. Early-matching long records
+also retain it. Ordinary output and general regex search still retain complete
+records; this is not a universal bounded-memory matcher.
+
+### Rejected variants and resource observations
+
+The unconditional `stream` variant reduces 64 MiB long-record count time by
+48.26–49.11%, but stably slows ordinary regex misses by 9.84–10.48% and empty
+input by 10.94–12.17%. It is rejected. The decoded-probe `adaptive` variant fixes
+those costs but changes read alignment and regresses sparse accelerator exits
+by 40.74–41.38%. The cause is treating the shortened distance from a chunk start
+to its first exit as evidence of dense exits. The `phase` revision ignores that
+truncated density observation. Four additional controls vary exit period and
+phase; all qualify, with 9.15–19.53% reductions. The original sparse control
+improves by 10.49–10.74%. These failed variants and their complete timing windows
+are retained rather than retried or filtered.
+
+An independent grep experiment borrowed the final contiguous output run instead
+of copying it into the batch. Its 22-workload comparison qualifies only 18 rows,
+does not establish an output speed benefit, and raises dense-output peak RSS
+from 42.83–42.91 MiB to 43.89–43.98 MiB. It is reverted. The earlier batching
+implementation is retained, including its previously documented memory cost.
+
+The `phase` rg variant also raises the many-state early-hit control from about
+49 MiB to 55 MiB by attempting an unnecessary bounded plan before fallback.
+The intermediate `probe-match` revision declines that preparation after an early probe
+match. Three separate Darwin kernel peak-RSS observations per side show:
+
+| Workload | Previous pilot | Follow-up candidate |
+| --- | --- | --- |
+| grep dense output, 8 MiB | 42.73–43.00 MiB | 42.80–42.98 MiB |
+| rg many-state early-hit count, 8 MiB | 48.75–48.89 MiB | 48.83–49.00 MiB |
+| rg late/missing regex count, 64 MiB | 157.36–157.72 MiB | 32.33–32.39 MiB |
+
+These observations use `/usr/bin/time -l` around moonrun, separate from timing
+windows. They are local macOS process peaks, not Linux/Windows resource or MoonX
+acceptance. No new temporary product files are created.
+
+The first complete protection run, `protection-final`, exposes two additional
+qualified regressions that the narrower stages missed: late-prefix counting
++25.86/+25.47%, and frequent-exit misses +53.57/+53.34%. Its whole verdict is
+false: 139/154 pass, including 96/104 grep/rg profiles; thirteen other profiles
+are unstable. The guarded revision returns prefetched records to the original
+line buffer and retains whole-record multi-byte mandatory-literal rejection.
+However, performing its cheap policy check only after searching the probe still
+costs 12.65/12.81% on frequent-exit misses. That stage is also rejected.
+
+The `preflight` revision moves the policy check before reading and bounds the
+early-match inspection at 64 KiB while retaining the original read capacity.
+All eighteen targeted controls qualify in two windows. Late-prefix count costs
++0.44/+0.57%, frequent-exit misses +0.51/+0.50%, and its corresponding hit
++1.53/+1.74%. The 64 MiB long-record count retains a 47.12% time reduction.
+This explicitly gives up the intermediate streaming gain on the expensive
+multi-byte-literal hit case in order to preserve its much cheaper miss path.
+The policy is structural, not a list of benchmark pattern strings. Broader
+streaming eligibility requires a correct cross-chunk mandatory-literal design
+and renewed hit/miss measurements.
+
+Final `resources-preflight` observations retain 32.25–32.47 MiB for the 64 MiB
+count (baseline 157.39–157.69 MiB), and 48.78–48.89 MiB for the early-hit control
+(baseline 48.75 MiB in all three observations). grep's unchanged one-pass
+artifact ranges from 43.23–45.14 MiB, against 43.25–43.80 MiB for the baseline in
+this collection. The higher observation is retained; this pilot makes no grep
+memory-improvement claim and does not replace the raw resource ranges with the
+earlier narrower sample.
+
+### Final validation and unresolved acceptance boundary
+
+`protection-preflight` compares all 80 artifacts and completes both windows for
+154 registered workloads. Only grep and rg differ from the preceding pilot;
+the other 78 artifacts are byte-identical. Every measured stdout, stderr and
+exit status agrees. The timing verdict remains **false: 144/154 pass**, including
+**98/104 grep/rg profiles**. This is a revised implementation, not a retry of the
+failed `probe-match` candidate. Its earlier windows remain preserved.
+
+Qualified improvements against the preceding frozen pilot are:
+
+| Workload | Previous ms, two windows | Candidate ms, two windows | Elapsed reduction |
+| --- | --- | --- | --- |
+| grep anchored repetition count, 8 MiB | 229.71 / 231.21 | 28.04 / 28.76 | 87.56–87.79% |
+| grep deterministic anchored branch output, 8 MiB | 241.29 / 241.46 | 36.21 / 33.13 | 85.00–86.28% |
+| grep deterministic expression with end anchor, 8 MiB | 681.62 / 683.51 | 46.27 / 47.31 | 93.08–93.21% |
+| rg text regex count, 8 MiB long record | 30.56 / 31.30 | 26.54 / 27.46 | 12.26–13.16% |
+| rg text regex count, 20 MiB long record | 42.08 / 42.96 | 29.71 / 30.43 | 29.17–29.39% |
+| rg text regex count, 32 MiB long record | 50.86 / 51.56 | 32.53 / 33.58 | 34.88–36.04% |
+| rg text regex count, 64 MiB long record | 76.82 / 78.58 | 39.94 / 41.54 | 47.14–48.02% |
+
+The earlier 25% and 53% regressions are resolved: late-prefix counting is
++0.04/+1.71%, and frequent-exit misses +0.98/+1.30% in this complete run.
+However, two grep controls exceed the 5% boundary while satisfying stability:
+`grep-hotspot-dense` is +6.51/+2.62%, and `grep-hotspot-invert` is +5.03/+1.46%.
+The one-pass candidate is therefore **not accepted for integration**. Its large
+targeted gains do not waive these losses. These controls use the preceding
+anchored-linear path; attribution to dispatch/code generation versus output
+cost needs a separate diagnostic, not an unsupported claim that the results
+are noise. The unchanged `tac-multi-8m` artifact also fails at +5.32/+0.26%.
+
+The seven unstable profiles are `ln-symbolic-validation`,
+`grep-onepass-repeat`, `rg-output-dense-regex-8m`, `rg-line-buffered-1m`,
+`rg-null-long-output-8m`, `rev-8m` and `uniq-long-8m`. Their apparent gains or
+losses are not qualified. Smaller stable costs remain visible:
+`rg-min-dfa-long-text` +3.63/+3.46%, and unchanged `rev-long-8m` +0.16/+4.45%.
+No final rg profile has a qualified slowdown above 5%, but its unstable output
+controls still prevent complete rg timing acceptance.
+
+The final code passes 1,666 Wasm tests, including deterministic-program
+comparisons, fragmented LF/NUL records, decoded BOM input, actual EOF versus
+probe/chunk boundaries, begin denial and read failures after complete records.
+The complete functional suite passes 2,117 checks with 19 platform skips and
+zero failures. Strict Wasm checking, interface generation, formatting and the
+80-module/124-package architecture audit pass. Core's public interface is
+unchanged; four internal matcher/regex declarations are added. Source and
+artifacts are sealed separately from the live branch. These local results do
+not establish three-platform CI, exact-version MoonX or publication acceptance.
+
+### Further experiments, not accepted implementations
+
+Before integrating grep, isolate the remaining anchored-linear output costs
+with allocation/dispatch observations and unchanged-artifact controls. Preserve
+this failed verdict; a new timing window needs an identified change or a stated
+diagnostic purpose, not an attempt to obtain a passing number.
+
+1. Move count-mode long-record detection into the record reader so that a long
+   record after a short header can activate a cursor. Preserve already consumed
+   complete records, pending bytes, one begin event and the original read-error
+   ordering. The present first-record restriction is an implementation boundary,
+   not a regex or language limit. Start with the existing text/count eligibility;
+   binary reporting and output modes need separate designs.
+   Separately investigate cross-chunk mandatory-literal filtering. An absent
+   literal in the current chunk does not justify discarding the regex prefix
+   state: the literal may arrive in a later chunk. Preserve that state and
+   partial literal suffixes before attempting wider eligibility.
+2. Attribute default-mode misses to NUL detection, delimiter discovery and
+   mandatory-literal searching before fusing scans. `LineBuffer::fill` currently
+   performs binary and delimiter scans separately; grep also scans the input
+   chunk and individual records. A fused path must retain the first binary-byte
+   offset and any earlier observable output. [Prepared per-pattern finders](https://docs.rs/memchr/latest/memchr/memmem/struct.Finder.html) should
+   be compared with the existing byte-search mechanisms, including repeated-byte
+   collisions and high-entropy input, rather than added as an unmeasured layer.
+3. Measure plan construction separately from scanning before broadening the
+   streaming eligibility. The rejected early-hit allocation demonstrates that
+   a bounded plan can still be unnecessary. Compare a bounded probe, existing
+   early search and construction work per input byte; Rust's
+   [hybrid DFA efficiency control](https://docs.rs/regex-automata/latest/regex_automata/hybrid/dfa/struct.Config.html#method.minimum_bytes_per_state)
+   is a useful model for cost-aware fallback, not a reason to raise state caps.
+   Alphabet compression of grep's new dense table is another candidate, but it
+   adds a lookup to every byte and needs construction/short-input controls.
+4. Investigate output allocation lifetimes before another borrowing experiment.
+   The rejected slice variant is evidence that eliminating a source-level copy
+   does not by itself establish lower peak memory or elapsed time in this target.
+   Preserve the original partial-write and deferred-flush contracts and measure
+   both allocation/peak memory and complete-process output throughput.
+
+## 2026-10-29 selected search integration
+
+The authorized integration selects the first pilot's grep whole-record output
+batching and fixed-length branch-free anchored predicates, plus rg's early
+Boolean termination and the follow-up `preflight` streaming counter. The
+deterministic repetition/alternative one-pass experiment is excluded because
+its qualified dense/inverted-output costs exceeded the 5% boundary. Its source,
+patch and failed windows remain in the separate pilot evidence. The borrowed
+output experiment and superseded streaming policies are also excluded.
+
+All 80 artifacts were rebuilt and frozen before applying the selected source.
+The integrated grep Wasm is byte-identical to first-pilot `v2`; integrated rg
+is byte-identical to follow-up `preflight`; the other 78 artifacts are unchanged
+from commit `0d65187615b3c67b71d986ef4b26d41cdb2c675f`. This avoids inferring
+the selected behavior from a mixed experimental source tree. The eight anchored
+profiles originally registered for one-pass exploration remain as fallback
+controls, although that implementation is not included.
+
+Local strict Wasm and Native-tool checks pass, as do 1,664 release-Wasm tests,
+118 Native test-tool regressions, the complete functional suite (2,117 passes,
+19 platform skips, zero failures), interface generation, formatting and the
+80-module/124-package architecture audit. Core's public interface is unchanged;
+the internal matcher/regex interface additions are intentional. Product code
+and fixtures remain pure MoonBit and use default release Wasm, without an
+additional optimization pass. No versions, registry coordinates or frozen
+published expectations change. Required remote development CI is verified
+separately on the pushed commit; this selection is not publication or exact-
+version MoonX acceptance.
+
+The new integration evidence is under
+`/private/tmp/cmd-search-integration-20261029`. Its cumulative timing comparison
+uses the pre-integration commit's frozen artifacts, rather than either temporary
+pilot as the denominator. Historical whole-suite failures and recorded resource
+costs remain valid within their dated scopes.
+
+The cumulative integration run completes both windows for all 154 profiles,
+with matching stdout, stderr and exit status throughout. Its timing verdict is
+**false: 141/154 pass**, including **99/104 grep/rg profiles**. Every qualified
+profile is within the 5% slowdown boundary. The thirteen failures are stability
+failures: `ln-symbolic-validation`, `grep-onepass-empty`,
+`rg-output-dense-regex-8m`, `rg-text-dense-regex-8m`, `rg-null-long-output-8m`,
+`rg-pilot-long-output-hit`, `rev-8m`, `rev-long-8m`, `tac-stream-8m`,
+`tac-file-8m`, `tac-long-8m`, `tac-multi-8m` and `column-table-8m`.
+Their observations are preserved without declaring a passing whole-suite
+performance result. The one-pass-named empty control exercises the unchanged
+fallback implementation in this selected source.
+
+Qualified cumulative time reductions include grep fixed output 68.68–69.58%,
+dense anchored output 89.06–89.11%, the same-pattern count 87.07–87.10%, inverted
+output 82.09–82.19%, and rg's eligible 64 MiB text regex count 47.41–49.07%.
+The integration retains these measured small costs separately from instability:
+
+| Control | First-window cost | Second-window cost |
+| --- | --- | --- |
+| rg long text DFA | +3.41% | +3.17% |
+| grep short literal set | +3.20% | +0.86% |
+| grep numbered output | +4.01% | +4.57% |
+| grep many-state regex | +3.29% | +2.59% |
+| grep empty input | +3.35% | +4.70% |
+| grep 8 MiB miss | +3.67% | +3.51% |
+
+These are retained tradeoffs in the authorized subset integration, not zero-cost
+claims. The earlier grep output-batch peak-memory increase also remains visible
+in the first-pilot resource evidence. Because the selected binaries match their
+frozen variants, no new resource improvement is inferred from this integration.

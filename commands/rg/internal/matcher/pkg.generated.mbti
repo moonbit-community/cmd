@@ -72,6 +72,8 @@ pub fn Match::with_start(Self, Int32) -> Self
 
 // Traits
 pub(open) trait Matcher {
+  fn stream_counter(Self, Byte) -> ((FixedArray[Byte], Int32, Int32, Bool) -> Int64)? = _
+  fn stream_count_candidate(Self, Byte) -> Bool = _
   fn literal_overlap(Self, Byte) -> Int32? = _
   fn count_matching_lines(Self, FixedArray[Byte], Int32, Int32, Byte) -> Int64? = _
   fn find_at(Self, FixedArray[Byte], Int32, Int32, Int32) -> Match?

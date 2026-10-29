@@ -5,6 +5,27 @@ fn is_match(m : SearchMatcher, hay : Bytes) -> Bool {
 }
 
 ///|
+test "boolean discovery ends early while full matches and captures remain greedy" {
+  let m = SearchMatcher::new(
+    ["([ab]+)"],
+    line_terminator=Some(@matcher.LineTerminator::byte(b'\n')),
+  )
+  let h = b"xxababb\nyy".to_fixedarray()
+  assert_eq(@matcher.Matcher::shortest_match_at(m, h, 2, 8, 0), Some(1))
+  assert_eq(
+    @matcher.Matcher::find_at(m, h, 2, 8, 0),
+    Some({ start: 0, end: 5, }),
+  )
+  let caps = @matcher.Matcher::new_captures(m)
+  assert_true(@matcher.Matcher::captures_at(m, h, 2, 8, 0, caps))
+  assert_eq(caps.get(1), Some({ start: 0, end: 5, }))
+  assert_eq(
+    @matcher.Matcher::find_candidate_line(m, h, 2, 8),
+    Some(@matcher.LineMatchKind::Confirmed(1)),
+  )
+}
+
+///|
 test "word" {
   let m = SearchMatcher::new(["-2"], boundary=Some(Word))
   inspect(is_match(m, b"abc -2 foo"), content="true")

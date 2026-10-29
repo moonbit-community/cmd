@@ -8,6 +8,7 @@ struct RecordMatcher {
   mut span_plan : EngineCache[SpanPlan]
   mut span_dfa : EngineCache[SpanDfa]
   byte_literal : Bytes?
+  anchored_linear : Bool
 }
 
 ///|
@@ -18,6 +19,7 @@ pub fn Pattern::record_matcher(self : Pattern) -> RecordMatcher {
     span_plan: Uninitialized,
     span_dfa: Uninitialized,
     byte_literal: self.literal.map(literal => bytes(literal.text)),
+    anchored_linear: self.is_anchored_linear(),
   }
 }
 
@@ -38,6 +40,9 @@ pub fn RecordMatcher::matches(
   let required = self.pattern.required_literal
   if required.length() >= 2 && value.find(required) is None {
     return false
+  }
+  if self.anchored_linear && !whole && !word {
+    return self.pattern.matches_anchored_linear(value)
   }
   if !whole && !word && self.dfa is Uninitialized {
     self.dfa = engine_cache(RecordDfa::new(self.pattern))

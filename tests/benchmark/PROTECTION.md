@@ -12,6 +12,7 @@ Run from the repository root with the current PATH toolchain:
 ```sh
 MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release
 MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/benchmark/explore.mbtx -- /absolute/new-fixtures unused prepare unused 9
+MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/benchmark/explore.mbtx -- /absolute/new-fixtures /absolute/frozen-baseline-cli prepare-architecture unused 9
 MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/benchmark/protect.mbtx -- /absolute/new-fixtures /absolute/frozen-baseline-cli /absolute/new-evidence
 ```
 

@@ -4,6 +4,11 @@
 /// are relative to `hs`, and the matcher must treat `hs` and `he` as the
 /// boundaries of the haystack.
 pub(open) trait Matcher {
+  /// Return a fully prepared record counter, or decline before discarding input.
+  /// The final flag denotes actual EOF, never an ordinary chunk boundary.
+  fn stream_counter(Self, Byte) -> ((FixedArray[Byte], Int32, Int32, Bool) -> Int64)? = _
+  /// Cheap policy check before any input probe; preparation can still decline.
+  fn stream_count_candidate(Self, Byte) -> Bool = _
   /// A bounded nonempty literal may be searched across chunks by retaining
   /// this many trailing bytes. Assertions, captures and variable-length
   /// expressions must decline; `term` must never occur in a match.
@@ -30,6 +35,16 @@ pub(open) trait Matcher {
   fn line_terminator(Self) -> LineTerminator? = _
   /// Finds a line that might contain a match.
   fn find_candidate_line(Self, FixedArray[Byte], Int32, Int32) -> LineMatchKind? = _
+}
+
+///|
+impl Matcher with fn stream_counter(_self, _term) {
+  None
+}
+
+///|
+impl Matcher with fn stream_count_candidate(_self, _term) {
+  false
 }
 
 ///|

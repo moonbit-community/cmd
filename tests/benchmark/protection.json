@@ -53,7 +53,29 @@
       "grep-many-count-64m",
       "grep-set-short-64m",
       "grep-miss-8m",
-      "grep-tree-search"
+      "grep-tree-search",
+      "grep-hotspot-output",
+      "grep-hotspot-dense",
+      "grep-hotspot-dense-count",
+      "grep-hotspot-sparse",
+      "grep-hotspot-sparse-count",
+      "grep-hotspot-numbered",
+      "grep-hotspot-context",
+      "grep-hotspot-only",
+      "grep-hotspot-invert",
+      "grep-hotspot-fixed-miss",
+      "grep-hotspot-regex-count",
+      "grep-hotspot-long-miss",
+      "grep-hotspot-many-states",
+      "grep-hotspot-empty",
+      "grep-onepass-repeat",
+      "grep-onepass-repeat-count",
+      "grep-onepass-branch",
+      "grep-onepass-false-positive",
+      "grep-onepass-ambiguous",
+      "grep-onepass-end",
+      "grep-onepass-empty",
+      "grep-onepass-only"
     ],
     "find": [
       "find-tree-names",
@@ -126,7 +148,21 @@
       "rg-min-constructor-many-states",
       "rg-min-constructor-declined",
       "rg-min-broad-frequent",
-      "rg-min-broad-sparse"
+      "rg-min-broad-sparse",
+      "rg-stream-long8",
+      "rg-stream-long20",
+      "rg-stream-long32",
+      "rg-stream-long64",
+      "rg-stream-dense64",
+      "rg-stream-miss64",
+      "rg-stream-chain",
+      "rg-stream-frequent",
+      "rg-stream-sparse",
+      "rg-stream-empty",
+      "rg-stream-phase-16",
+      "rg-stream-phase-4095",
+      "rg-stream-period-513",
+      "rg-stream-period-1009"
     ],
     "sort": [
       "sort-8m",
@@ -276,6 +312,20 @@
         "commands/rg/internal/regex/syntax/inner_literals.mbt"
       ],
       "retain": "Literal eligibility before input discard; decoder and binary policies; bounded unmatched suffix; one EOF completion; original fallback selected before streaming; command-owned search rules and unchanged regex matching priority"
+    },
+    {
+      "sources": [
+        "commands/rg/internal/searcher/count_regex_stream.mbt",
+        "commands/rg/internal/regex/automata/record_stream.mbt"
+      ],
+      "retain": "Cheap policy decline before reads; preserve multi-byte mandatory-literal rejection and the original read capacity; one begin event; prefix matches only decline optimization and never supply results; prefetched decoded records stay in the original line buffer and precede later read errors; fully resolved bounded matcher before discarding bytes; carry state until a delimiter or actual EOF; chunk phase does not disable sparse exit acceleration"
+    },
+    {
+      "sources": [
+        "commands/grep/record_output.mbt",
+        "core/bytere/record_linear.mbt"
+      ],
+      "retain": "Immutable selected runs and output-failure ordering; branch-free fixed-length anchored Boolean matching; exact EOF acceptance; captures, word/whole-record constraints, branches, repetition and backreferences retain the existing span engine"
     },
     {
       "sources": [

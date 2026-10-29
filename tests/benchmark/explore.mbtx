@@ -342,15 +342,24 @@ async fn boolean_long_corpora() -> Unit {
     random = random ^ (random << 13)
     random = random ^ (random >> 17)
     random = random ^ (random << 5)
-    bytes[i] = alphabet[(random & 7U).to_int()]
+    bytes[i] = alphabet[(random & 7U).reinterpret_as_int()]
   }
-  let frequent = b"0001" + Bytes::from_fixedarray(bytes)
+  let frequent = b"0001" + Bytes::from_array(bytes)
   @fs.write_file(lab + "/pilot-frequent-exits", frequent)
   @fs.write_file(lab + "/pilot-frequent-exits-hit", frequent + b"QXYZ123")
   @fs.write_file(lab + "/min-constructor-long", Bytes::make(8388608, b'a') + b"Q")
   @fs.write_file(lab + "/min-constructor-alternation", b"ababababbaba".repeat(699050))
   @fs.write_file(lab + "/min-broad-frequent", (Bytes::make(40, b'a') + b"c").repeat(204600))
   @fs.write_file(lab + "/min-broad-sparse", (Bytes::make(4096, b'a') + b"c").repeat(2047))
+  for (name, period, offset) in [
+    ("stream-phase-16", 4097, 16),
+    ("stream-phase-4095", 4097, 4095),
+    ("stream-period-513", 513, 7),
+    ("stream-period-1009", 1009, 21),
+  ] {
+    @fs.write_file(lab + "/" + name, Bytes::makei(8388608, i =>
+      if (i + offset) % period == period - 1 { b'c' } else { b'a' }))
+  }
 }
 
 ///|
@@ -636,6 +645,36 @@ async fn run_cases() -> Unit {
     status=1,
   )
   add("rg-output-sparse-8m", "rg", ["^0", "-"], "text8m", "unused")
+  for (name, input, options, status) in [
+    ("long8", "growth8m", ["-a","-c","[0-9]{4}.*Q|ZZ"], 1),
+    ("long20", "growth20m", ["-a","-c","[0-9]{4}.*Q|ZZ"], 1),
+    ("long32", "growth32m", ["-a","-c","[0-9]{4}.*Q|ZZ"], 1),
+    ("long64", "growth64m", ["-a","-c","[0-9]{4}.*Q|ZZ"], 1),
+    ("dense64", "text64m", ["-a","-c","[0-9]{4}.*gamma"], 0),
+    ("miss64", "text64m", ["-a","-c","[0-9]{4}.*absent_xyz"], 1),
+    ("chain", "min-constructor-long", ["-a","-c","[ab]{32}Q"], 0),
+    ("frequent", "min-broad-frequent", ["-a","-c","[ab]{32}Q"], 1),
+    ("sparse", "min-broad-sparse", ["-a","-c","[ab]{32}Q"], 1),
+    ("empty", "empty", ["-a","-c","[0-9]{4}.*Q|ZZ"], 1),
+    ("phase-16", "stream-phase-16", ["-a","-c","[ab]{32}Q"], 1),
+    ("phase-4095", "stream-phase-4095", ["-a","-c","[ab]{32}Q"], 1),
+    ("period-513", "stream-period-513", ["-a","-c","[ab]{32}Q"], 1),
+    ("period-1009", "stream-period-1009", ["-a","-c","[ab]{32}Q"], 1),
+  ] {
+    add("rg-stream-"+name, "rg", [..options,"-"], input, "unused", status~)
+  }
+  for (name, input, options, status) in [
+    ("repeat", "text8m", ["-E","^[0-9]+alpha"], 0),
+    ("repeat-count", "text8m", ["-E","-c","^[0-9]+alpha"], 0),
+    ("branch", "text8m", ["-E","^([0-4][0-9]*|[5-9][0-9]*)alpha"], 0),
+    ("false-positive", "text8m", ["-E","^[a-z]+alpha"], 1),
+    ("ambiguous", "text1m", ["-E","^([0-9]|[0-9][0-9])*alpha"], 0),
+    ("end", "text8m", ["-E","^[0-9]+alpha beta gamma [0-9]+ delta omega alpha beta gamma [0-9]+ del$"], 0),
+    ("empty", "empty", ["-E","^[0-9]+alpha"], 1),
+    ("only", "text1m", ["-E","-o","^[0-9]+alpha"], 0),
+  ] {
+    add("grep-onepass-"+name, "grep", [..options,"-"], input, "unused", status~)
+  }
   add("rg-output-dense-regex-8m", "rg", ["^.{8}alpha", "-"], "text8m", "unused")
   add("rg-numbered-8m", "rg", ["-n", "-F", "alpha", "-"], "text8m", "unused")
   add("rg-empty-output", "rg", ["-F", "alpha", "-"], "empty", "unused", status=1)
@@ -833,6 +872,24 @@ async fn run_cases() -> Unit {
     )
   }
   add("grep-overlap-8k", "grep", ["-E", "-o", "a|a.*z"], "overlap8k", gnugrep)
+  for (name, input, options, status) in [
+    ("output", "text8m", ["-F", "alpha"], 0),
+    ("dense", "text8m", ["-E", "^.{8}alpha"], 0),
+    ("dense-count", "text8m", ["-E", "-c", "^.{8}alpha"], 0),
+    ("sparse", "text8m", ["-E", "^0"], 0),
+    ("sparse-count", "text8m", ["-E", "-c", "^0"], 0),
+    ("numbered", "text8m", ["-n", "-F", "alpha"], 0),
+    ("context", "text8m", ["-C", "1", "-E", "^0"], 0),
+    ("only", "text1m", ["-o", "-E", "[a-z]+"], 0),
+    ("invert", "text8m", ["-v", "-E", "^0"], 0),
+    ("fixed-miss", "text64m", ["-F", "absent_xyz"], 1),
+    ("regex-count", "text64m", ["-E", "-c", "[0-9]{4}.*gamma"], 0),
+    ("long-miss", "growth8m", ["-a", "-E", "[0-9]{4}.*Q|ZZ"], 1),
+    ("many-states", "min-constructor-alternation", ["-a", "-E", "-c", "(a|b)*a[ab]{6}"], 0),
+    ("empty", "empty", ["-F", "alpha"], 1),
+  ] {
+    add("grep-hotspot-"+name, "grep", [..options, "-"], input, gnugrep, status~)
+  }
   add("grep-overlap-16k", "grep", ["-E", "-o", "a|a.*z"], "overlap16k", gnugrep)
   add("grep-span-many-1m", "grep", ["-E", "-o", "[a-z]+"], "text1m", gnugrep)
   add("grep-span-literal-1m", "grep", ["-o", "alpha"], "text1m", gnugrep)

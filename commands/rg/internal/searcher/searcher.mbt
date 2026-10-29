@@ -271,6 +271,9 @@ pub async fn Searcher::search_reader(
   if self.stream_literal_count(matcher, decoder, sink) {
     return
   }
+  if self.stream_regex_count(matcher, decoder, sink) {
+    return
+  }
   if self.multi_line_with_matcher(matcher) {
     self.fill_multi_line_buffer_from_reader(decoder)
     MultiLine::new(

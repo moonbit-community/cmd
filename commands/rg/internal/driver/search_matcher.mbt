@@ -59,7 +59,7 @@ impl @matcher.Matcher for SearchMatcher with fn shortest_match_at(
   he,
   at,
 ) {
-  match self.regex.search_half(hay, hs, he, hs + at, he) {
+  match self.regex.search_half(hay, hs, he, hs + at, he, earliest=true) {
     Some(e) => Some(e - hs)
     None => None
   }
@@ -78,6 +78,32 @@ impl @matcher.Matcher for SearchMatcher with fn literal_overlap(self, term) {
       self.non_matching_bytes.contains(term) => Some(bytes.length() - 1)
     _ => None
   }
+}
+
+///|
+impl @matcher.Matcher for SearchMatcher with fn stream_count_candidate(
+  self,
+  term,
+) {
+  if !self.non_matching_bytes.contains(term) {
+    return false
+  }
+  // Whole-record literal rejection can skip all DFA work. Preserve it until
+  // the streaming cursor can carry a multi-byte mandatory-literal filter.
+  if self.fast_line_regex is Some(required) &&
+    required.hir().props.minimum_len is Some(length) &&
+    length > 1 {
+    return false
+  }
+  true
+}
+
+///|
+impl @matcher.Matcher for SearchMatcher with fn stream_counter(self, term) {
+  if !@matcher.Matcher::stream_count_candidate(self, term) {
+    return None
+  }
+  self.regex.boolean_stream_counter(term, required=self.fast_line_regex)
 }
 
 ///|
@@ -169,7 +195,15 @@ impl @matcher.Matcher for SearchMatcher with fn find_candidate_line(
           None => ()
         }
       }
-      match self.regex.search_half(hay, hs, he, hs, he) {
+      match
+        self.regex.search_half(
+          hay,
+          hs,
+          he,
+          hs,
+          he,
+          earliest=self.line_terminator is Some(_),
+        ) {
         Some(e) => Some(Confirmed(e - hs))
         None => None
       }
