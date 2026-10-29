@@ -443,27 +443,23 @@ test "flags/test_debug" {
 
 ///|
 test "flags/test_dfa_size_limit" {
-  let args = low([])
-  assert_eq(args.dfa_size_limit, None)
-  {
-    let args = low(["--dfa-size-limit", "9G"])
-    assert_eq(args.dfa_size_limit, Some(9 * (1 << 30)))
-
-    let args = low(["--dfa-size-limit=9G"])
-    assert_eq(args.dfa_size_limit, Some(9 * (1 << 30)))
-
-    let args = low(["--dfa-size-limit=9G", "--dfa-size-limit=0"])
-    assert_eq(args.dfa_size_limit, Some(0))
+  for
+    args in [
+      ["--dfa-size-limit", "9G"],
+      ["--dfa-size-limit=9G"],
+      ["--dfa-size-limit=9G", "--dfa-size-limit=0"],
+      ["--dfa-size-limit=0K"],
+      ["--dfa-size-limit=0M"],
+      ["--dfa-size-limit=0G"],
+    ] {
+    assert_true(
+      try_parse(args) is Err(message) &&
+      message.has_suffix(
+        ": --dfa-size-limit requires a byte-budgeted DFA cache and is unsupported in cli/rg",
+      ),
+    )
   }
-
-  let args = low(["--dfa-size-limit=0K"])
-  assert_eq(args.dfa_size_limit, Some(0))
-
-  let args = low(["--dfa-size-limit=0M"])
-  assert_eq(args.dfa_size_limit, Some(0))
-
-  let args = low(["--dfa-size-limit=0G"])
-  assert_eq(args.dfa_size_limit, Some(0))
+  assert_true(try_parse(["--dfa-size-limit"]) is Err(_))
 
   let result = try_parse(["--dfa-size-limit", "9999999999999999999999"])
   assert_true(result is Err(_))

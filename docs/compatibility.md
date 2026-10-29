@@ -448,6 +448,13 @@ their existing ordinary-read implementation. OS diagnostics retain public
 runtime messages rather than fabricated errno translations. Elapsed JSON times
 derive from the public millisecond clock and are not CPU/resource measurements.
 
+`--dfa-size-limit` rejects valid numeric values with status 2 and no stdout;
+missing, malformed and overflowing values retain parser validation. The engine's
+fixed DFA state-count limit is not a byte budget. Supporting this option requires
+engine-level byte accounting, a configurable cache budget and execution tests
+covering budget exhaustion and fallback. Indexing flags also reject explicitly;
+their existing rejection diagnostics remain unchanged.
+
 `--pre` consumes child stdout incrementally, drains stderr concurrently and
 reaps the direct child on completion/early close/cancellation. Stderr diagnostic
 storage follows the imported accumulated-error API. No process-tree cleanup

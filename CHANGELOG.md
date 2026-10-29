@@ -13,6 +13,18 @@ by date and delivery milestone rather than by a single package version.
   candidates for separate decisions. Runtime command artifacts remain identical
   to the audit baseline; this batch makes no performance improvement claim.
 
+## 2026-10-30 (history-led cleanup, batch 2)
+
+- Reject `--dfa-size-limit` explicitly instead of silently accepting an unused
+  byte budget. Preserve numeric parsing errors and the engine's existing fixed
+  state-count limit. Synchronize help, README, catalog and compatibility notes.
+- Add exact command-level rejection cases for positive and zero budgets. Keep
+  the unpublished rg first-release coordinate at 0.1.0 and frozen published
+  expectations unchanged.
+- Batch 1 commit `713b076` passed all required checks in CI run `40914956163`.
+  The corrected option contract becomes the baseline for subsequent cleanup
+  comparisons; this correctness fix makes no timing acceptance claim.
+
 ## 2026-10-29 (rg progressive reads and granular output)
 
 - Separate physical regular-file refills from logical decoder requests. Begin

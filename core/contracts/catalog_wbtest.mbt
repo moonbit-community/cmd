@@ -46,3 +46,13 @@ test "catalog records shared child launch outcomes without owning diagnostics" {
   }
   assert_eq(xargs.exit_codes, [0, 1, 2, 123, 124, 125, 126, 127])
 }
+
+///|
+test "rg does not advertise unsupported DFA budgets or indexing" {
+  guard find_contract("rg") is Some(contract) else {
+    fail("missing rg contract")
+  }
+  for option in ["dfa-size-limit", "index", "x-crud", "x-force", "x-path"] {
+    assert_false(contract.options.contains(option))
+  }
+}

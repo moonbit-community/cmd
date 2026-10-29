@@ -145,8 +145,12 @@ fn update_flag(
       }
     }
     "debug" => args.logging = Some(Debug)
-    "dfa-size-limit" =>
-      args.dfa_size_limit = Some(convert_human_readable_u64(v.unwrap_value()))
+    "dfa-size-limit" => {
+      ignore(convert_human_readable_u64(v.unwrap_value()))
+      raise RgError(
+        "--dfa-size-limit requires a byte-budgeted DFA cache and is unsupported in cli/rg",
+      )
+    }
     "encoding" =>
       match v {
         Value(label) =>

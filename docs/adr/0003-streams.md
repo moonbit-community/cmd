@@ -19,6 +19,25 @@ controls cover matcher and searcher, while allowing the executable to import
 its driver and the mechanisms to import shared bytesearch. This does not add
 test-only imports to runtime reachability or prohibit legitimate test cycles.
 
+Batch 1 is commit `713b076`; required ubuntu-24.04, macos-15 and windows-2025
+checks passed in run `40914956163`. A real injected searcher white-box driver
+import now exits nonzero and records the forbidden dependency.
+
+Batch 2 resolves A03 as an explicit boundary. Valid `--dfa-size-limit` values
+now fail before input is opened; numeric parsing, including overflow and missing
+values, retains its existing diagnostics. The fixed engine state-count limit
+is unchanged. Enabling this option requires actual cache byte accounting and
+budget/fallback execution regressions. README, help, the supported-option
+catalog and the compatibility record agree; two command-level boundary cases
+fix status, empty stdout and the full diagnostic. The first-release candidate
+remains unpublished `cli/rg@0.1.0`.
+
+This option-contract correction intentionally changes help output. It is a
+correctness fix with no speed claim. Its source and all 80 command artifacts
+form the immutable corrected-contract baseline for the following cleanup
+phase; the earlier audit baseline remains preserved. Cleanup comparisons must
+retain equal outputs under that contract, including the help workload.
+
 ## History-led cleanup audit and isolated pilots (2026-10-30)
 
 This review fixes its starting point at

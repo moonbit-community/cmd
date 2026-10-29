@@ -337,6 +337,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     ),
     // Explicit paths or '-' are required when stdin kind cannot be detected.
     // Compression is deferred; preprocessing remains user-selected authority.
+    // DFA byte budgets and indexing reject explicitly; neither is a supported option.
     contract(
       "rg",
       Restricted,

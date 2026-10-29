@@ -217,7 +217,6 @@ pub(all) struct LowArgs {
   mut context : ContextMode
   mut context_separator : Bytes?
   mut crlf : Bool
-  mut dfa_size_limit : UInt64?
   mut encoding : EncodingMode
   mut engine : EngineChoice
   mut field_context_separator : Bytes
@@ -299,7 +298,6 @@ fn LowArgs::default() -> LowArgs {
     context: ContextMode::default(),
     context_separator: Some(b"--"),
     crlf: false,
-    dfa_size_limit: None,
     encoding: Auto,
     engine: Default,
     field_context_separator: b"-",

@@ -1,6 +1,8 @@
 {
   "schema": 3,
   "entries": [
+    {"behavior_id":"case:rg-boundary-dfa-budget","command":"rg","status":"boundary","implementation":"json-case","source":"tests/cases/rg.json","case_id":"rg-boundary-dfa-budget","aliases":[],"platforms":[],"oracle_profile":""},
+    {"behavior_id":"case:rg-boundary-dfa-zero","command":"rg","status":"boundary","implementation":"json-case","source":"tests/cases/rg.json","case_id":"rg-boundary-dfa-zero","aliases":[],"platforms":[],"oracle_profile":""},
     {
       "behavior_id": "case:base32-rfc4648-foobar",
       "command": "base32",

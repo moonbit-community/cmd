@@ -38,6 +38,7 @@ Search explicit paths or stdin (`-`) with regex/Unicode matching, glob/ignore ru
 
 - Search requires explicit paths or `-`; no-path searches are rejected. `--files` can default to the current directory.
 - Compressed search (`-z`/`--search-zip`), PCRE2, `--one-file-system` and creation-time sorting are unsupported.
+- `--dfa-size-limit` is rejected: the engine has a fixed state-count limit, not a configurable byte budget. Indexing options (`-X`/`--index`, `--x-crud`, `--x-force`, `--x-path`) are also rejected.
 - Automatic terminal color/headings are off. Raw non-UTF-8 paths and redirected-output same-file exclusion are unsupported.
 - Searches are single-threaded; `--threads` does not start workers, and mmap options use streaming reads.
 - Long records may require record-sized buffers. Multiline and sorted modes may retain whole input or path lists.

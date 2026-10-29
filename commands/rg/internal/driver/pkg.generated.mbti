@@ -154,7 +154,6 @@ pub(all) struct LowArgs {
   mut context : ContextMode
   mut context_separator : Bytes?
   mut crlf : Bool
-  mut dfa_size_limit : UInt64?
   mut encoding : EncodingMode
   mut engine : EngineChoice
   mut field_context_separator : Bytes
