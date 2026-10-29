@@ -200,6 +200,12 @@ fn package_name(path : String) -> String {
 }
 
 ///|
+fn invalid_driver_dependency(name : String, dependency : String) -> Bool {
+  ["cli/rg/internal/matcher", "cli/rg/internal/searcher"].contains(name) &&
+  dependency == "cli/rg/internal/driver"
+}
+
+///|
 async fn inventory(path : String, packages : Map[String, Package], markers : Map[String, String]) -> Unit {
   let names = @fs.readdir(path)
   if names.contains("moon.pkg") {
@@ -301,6 +307,21 @@ async fn main {
     ),
     (["cli/core/stream"], ["test/fixture"]),
   )
+  for name in ["cli/rg/internal/matcher", "cli/rg/internal/searcher"] {
+    for suffix in ["", " for \"test\"", " for \"wbtest\""] {
+      let (production, tests) = dependencies(
+        "import { \"cli/rg/internal/driver\", }" + suffix,
+      )
+      assert_true(
+        production.iter().any(dep => invalid_driver_dependency(name, dep)) ||
+        tests.iter().any(dep => invalid_driver_dependency(name, dep)),
+      )
+    }
+    assert_false(invalid_driver_dependency(name, "cli/core/bytesearch"))
+  }
+  assert_false(
+    invalid_driver_dependency("cli/rg", "cli/rg/internal/driver"),
+  )
   let packages : Map[String, Package] = Map([])
   let markers : Map[String, String] = Map([])
   for path in ["core", "commands", "tests"] {
@@ -333,7 +354,15 @@ async fn main {
   for name in names {
     visit(name, packages, states, [], failures)
     let item = packages[name]
+    for dep in item.test_dependencies {
+      if invalid_driver_dependency(name, dep) {
+        failures.push(name + " tests import the private command adapter: " + dep)
+      }
+    }
     for dep in item.dependencies {
+      if invalid_driver_dependency(name, dep) {
+        failures.push(name + " imports the private command adapter: " + dep)
+      }
       if (dep.has_prefix("cli/") || dep.has_prefix("mooxCLI/cmd-tests")) &&
         !packages.contains(dep) {
         failures.push(name + " imports missing workspace package " + dep)

@@ -17,8 +17,6 @@ pub fn interpolate(Bytes, (Int32, @buffer.Buffer) -> Unit, (String) -> Int32?, @
 
 pub fn[M : Matcher] is_match_at(M, FixedArray[Byte], Int32, Int32, Int32) -> Bool
 
-pub fn[M : Matcher] replace(M, FixedArray[Byte], Int32, Int32, @buffer.Buffer, (Match, @buffer.Buffer) -> Bool) -> Unit
-
 pub fn[M : Matcher] replace_with_captures_at(M, FixedArray[Byte], Int32, Int32, Int32, Captures, @buffer.Buffer, (Captures, @buffer.Buffer) -> Bool) -> Unit
 
 // Errors

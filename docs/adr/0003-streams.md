@@ -2,8 +2,164 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-29
+Updated: 2026-10-30
 Revision: Consolidate shared ownership and internal execution state while preserving R-stage streaming, temporary-storage, matcher, metadata and failure contracts.
+
+## History-led cleanup delivery (2026-10-30)
+
+The user authorized incremental cleanup of A01-A12 below and normal branch
+pushes after local checks. C01-C03 remain candidates; the dump-loop and core
+API/async candidates receive further audit without product changes.
+Delivery evidence is retained under
+`/Users/winter/.codex/visualizations/2026/10/29/01a18848-fe88-7423-8793-7a3730b785e9/cmd-cleanup-20261030`.
+
+Batch 1 retains A01/A02 and repairs A04. Architecture validation now checks the
+driver boundary for production and both test import forms. Its negative
+controls cover matcher and searcher, while allowing the executable to import
+its driver and the mechanisms to import shared bytesearch. This does not add
+test-only imports to runtime reachability or prohibit legitimate test cycles.
+
+## History-led cleanup audit and isolated pilots (2026-10-30)
+
+This review fixes its starting point at
+`e568bdffc326f55ba71fd5428267587563ae56ee`, with a clean source checkout.
+The original `performance-optimization-and-cleanup` checkout is not edited.
+The isolated checkout is
+`/Users/winter/.codex/worktrees/cmd-slop-audit-20261029/cmd`.
+Evidence, source archives, all starting command binaries, diagnostic patches
+and logs are retained at
+`/Users/winter/.codex/visualizations/2026/10/29/01a18848-fe88-7423-8793-7a3730b785e9/cmd-slop-audit-e568bdf`.
+No commit, push, merge, version change or publication is part of this audit.
+
+### Scope and historical causes
+
+The history inventory contains 257 reachable commits. Review followed the
+history of each candidate with `git log -S`, blame and selected diffs, plus
+workspace-wide package, exported-API and duplicate-body inventories. This is
+not a claim to have semantically reviewed every line of every historical
+revision. Current mechanical coverage is 80 commands and 124 packages. The
+core/command source scan counts 390 implementation files / 86,302 lines,
+236 test files / 35,807 lines, and 17 files named `*_data.mbt` / 5,214 lines.
+These are physical lines including comments, not counts of removable code;
+the filename-based data classification is not a complete generated-code audit.
+The exported-API analyzer counts dependent-package use, not all same-package
+or test-tool use. A zero in that inventory alone is not a deletion criterion.
+
+| Historical step | Consequence checked against the current source |
+| --- | --- |
+| `5028c62`, then `1f3ca61` | `write_client_chunk` originally owned timeout/error handling. The responsibility now belongs to `HttpWire::write_payload`; the forwarding function survived. |
+| `c048555` | Importing rg brought a large existing library surface, constant-disabled indexing tests, inactive feature state, and platform-identity alternatives. Imported code is not automatically unnecessary. |
+| `e61d1c6`, `40efae2` | The old audit/sealing workflow was retired. Historical frozen release inputs remain evidence; they must not be classified as live product dependencies or deleted as duplicate fixtures. |
+| `7f915a5`, `1f3ca61`, `7232784`, `3230632` | Shared kernels, command adapters and rg ownership were consolidated. Current references confirm actual reuse; the copied memchr package, old grep_regex adapter and sequential parallel-walker facade are already gone. |
+| `0d65187`, `3393528` | Architecture inventory and strategy checks were added, but the explicit matcher/searcher-to-driver test-import prohibition is not enforced. |
+| `6d4e569`, `ee3fc42`, `e568bdf` | Read budgets, cleanup ownership, lazy regex state and buffered I/O changed. Their tests and measured specializations must survive cleanup. Earlier findings about missing architecture tooling or already-removed wrappers are not current findings. |
+
+The code-only diff from `987cf02` to this baseline is 315 files,
+18,254 inserted lines and 23,119 deleted lines, including tests and scripts.
+Net line count is neither a quality verdict nor proof of needless abstraction.
+
+### Confirmed findings and dispositions
+
+P1 denotes a misleading contract or a demonstrated validation blind spot;
+P2 denotes verified cleanup debt. A proposed simplification is not an accepted
+runtime optimization. Locations below refer to the fixed baseline unless the
+pilot explicitly changes them.
+
+| ID | Priority and evidence | Smallest cleanup and required gate |
+| --- | --- | --- |
+| A01 | P2, completed pilot. `internal/matcher/matcher.mbt:181` exported generic `replace` has zero semantic references, including tests. It arrived in `c048555`. Actual replacement uses `replace_with_captures_at`. | Delete the 24-line unused implementation and regenerate the interface. All 80 complete release-Wasm command binaries remain byte-identical. |
+| A02 | P2, completed pilot. Four indexing tests in `internal/driver/flags_wbtest.mbt:953` return inside `if !false`, leaving success assertions unreachable. A deliberately failing assertion inserted after the return still yields a passing test. | Remove the unreachable tails while keeping all four test names and the existing missing-value rejection. Exercise eleven supplied indexing spellings/orderings against the actual unsupported diagnostic. This is stronger rejection coverage, not indexing support. |
+| A03 | P1. `defs.mbt:148` parses `--dfa-size-limit` into `LowArgs.dfa_size_limit`; no product read exists. `search_pattern.mbt:88` hardcodes `dfa_state_limit: 10000`. `flag_defs_data.mbt:236` promises a size limit in bytes; existing tests assert only stored parser values. | Decide an honest contract: implement a real byte budget through the engine or explicitly reject/document the unsupported option. Do not reinterpret bytes as a state count. Update README, generated help source, catalog/support record and an execution-level budget regression together. |
+| A04 | P1. `tests/architecture.mbtx:278,336` traverses/checks production dependencies only. Injecting `cli/rg/internal/driver` into searcher's white-box imports still prints `dependency checks passed`, with an empty failure list. The injection was restored. | Enforce the explicit matcher/searcher-to-driver rule over both production and test dependencies. Keep a negative control for each direction. This is a guard failure, not evidence that the current clean dependency graph has that violation. |
+| A05 | P2. `defs.mbt:75` always raises for indexing. Assignments after its four calls, indexing-only fields, and the downstream compatibility validator in `plan.mbt:424` / `defs.mbt:395` cannot run through the current CLI. | Retain the flag names and current rejection/error order, including missing-argument handling. Remove unsupported execution state and its unreachable validators as one slice. Re-run parser-order and command-boundary tests; do not enable indexing. |
+| A06 | P2. `LowArgs.threads` and `LowArgs.mmap` are written but never read. README and compatibility already state single-threaded, streaming behavior. | Preserve accepted syntax, numeric validation and last-option behavior; eliminate stored values and obsolete state types where possible. This is state cleanup, not a feature fix. Check help, invalid values, aliases and option ordering. |
+| A07 | P2. The driver exposes 21 `pub(all)` declarations in `lowargs.mbt`, plus `ParseResult`, without dependent runtime users. A private-visibility probe exposes 34 strict compiler errors: five never-read fields and 29 unused trait implementations. | Remove genuinely unused state first, then reduce visibility in small groups. Keep test-only capabilities in white-box helpers. The blanket private conversion was reverted; adding warning suppressions would conceal the debt again. |
+| A08 | P2. `IgnoreMatch` creates Override/Gitignore/Types/Hidden provenance payloads, but no consumer reads any variant. Removing its warning suppression produces four `unused_constructor` errors explicitly saying the variants are never read. | Keep Ignore/Whitelist/None decisions and all precedence rules. Trial a payload-free internal decision only after checking glob/ignore diagnostics and performance. Hidden-file filtering is live; deleting its branch would be wrong. No allocation or speed improvement is claimed by this audit. |
+| A09 | P2. `sys/filesystem.mbt:116` always supplies `dev: None, ino: None`. Consequently `stdout_handle` never returns an identity handle, ID-based `Handle::same` branches have no production producer, and `--one-file-system` is rejected before the walker. Normal searches nevertheless call `skip_stdout`, which attempts metadata work before returning None. | Express the unavailable capability directly; remove dormant identity plumbing only as a bounded slice. Preserve canonical-path loop detection, unknown-entry kind queries, existing rejection diagnostics and the public-API unlock condition. This audit establishes source reachability, not a measured syscall/time reduction. |
+| A10 | P2. `Mode::updated` ignores `self` and returns `new`; ten parser call sites use it as if it were a transition policy. Its comment confirms that every mode overrides the current one. | Replace the wrapper with direct assignments and retain competing-mode order tests. Do not invent a mode-transition framework. Rebuild and compare artifacts before accepting runtime effects. |
+| A11 | P2. `core/netops/request.mbt:184` only forwards to `HttpWire::write_payload` at three upload call sites. Historical timeout/error ownership explains why the wrapper existed, but no responsibility remains in it. | Inline the three calls without changing file/stdin/bytes-body failure ownership. Retain timeout and upload regressions; include upload workloads in protection coverage. The prior failed timing experiment is not a current acceptance result. |
+| A12 | P2, successful correctness trial only. `ignore/path.mbt:96` has six test-only references; `Ignore::path` has one test-only reference. Both live in product source behind `unused_value` suppression. | Move prefix removal into existing white-box test helpers and replace the one getter use with private-state access. The combined trial passed all correctness checks but changed rg's binary layout; its patch is retained and its source changes were reverted. Do not call it performance accepted. |
+
+### Conditional candidates and rejected shortcuts
+
+| Candidate | Evidence, decision and condition |
+| --- | --- |
+| C01: duplicated dump input loop | `hexdump/stream.mbt:75` and `od/stream.mbt:71` have the same 16-line read loop and similar skip/remaining/feed state. They have different rendering and numeric suffix dialects. Trial only the bounded input mechanism if it reduces total complexity; require short-read, offset, EOF, output-failure and both-command protection cases. No shared framework is justified merely by this text match. |
+| C02: excess core exports / future-only async | Examples include `gzipops/cli.help`, internal helpers exported from netops, and `shell.Session::finish` retaining async solely for driver symmetry/future cleanup. Local consumers alone cannot prove a published API is unused externally. Review ownership and compatibility in a deliberate API change; these are not approved deletions. |
+| C03: decision-document growth | ADR-0003 starts at 3,844 lines and interleaves current decisions with many dated experiments. Make current dispositions easy to locate and recover older full reports from their immutable Git revisions; do not rewrite failed measurements or promote historical candidates to acceptance. Avoid adding a second report hierarchy. |
+
+The textual scan found only five equal-body groups under its conservative
+function-body comparison. Other groups are weekday abbreviations, tiny whole-input
+read helpers, two byte-count projections in searcher, and UTF-8 width arithmetic.
+They are not five proven reasons for new packages. Parameter types, storage
+ownership and dialects need separate verification; tiny duplication may be
+cheaper than another public abstraction.
+
+Retain the following checked boundaries:
+
+- `core/bytesearch.count_byte(BytesView)` and SIMD `count(FixedArray, ...)`
+  use different storage/load mechanisms; forcing a conversion would add copying.
+- ByteMembership/ByteSetFinder already share the common membership operation.
+  Keep their scalar tails and command-owned loading policies.
+- `stream`, `tempio`, `fswalk`, `numfmt`, `time_zone`, `jq_filter` and
+  checksum/gzip adapters have concrete consumers. Package reachability excludes
+  valid test tools and the contracts catalog by design.
+- Keep the two regex dialect families, literal/count/ordinary/span paths,
+  bounded caches, fallback behavior, output no-replay states and temporary
+  cleanup ownership. Their existence is not evidence of redundant algorithms.
+- `StdoutWriter` translates errors and implements the printer protocol over
+  BlockWriter; it is not equivalent to the empty upload forwarding function.
+- Preserve Unicode/encoding data, fixed regression corpora, frozen published
+  cases and explicit API-gap rejection tests. No uncovered branch was treated
+  as proof of impossibility.
+
+### Pilot evidence and next order
+
+The retained code pilot changes only matcher source/interface and the four
+indexing tests: 54 fewer source/test lines, plus two generated-interface lines.
+Test-only helper relocation and blanket driver privatization are retained as
+separate diagnostic patches, not applied changes. The first removal of
+IgnoreMatch suppression correctly failed compilation. An artifact comparison
+accidentally run after that failure examined stale artifacts; it is explicitly
+named `invalid-stale-after-failed-build.json` and is not validation evidence.
+
+The starting and final rg binaries have SHA-256
+`132abfe2d9395c531210a583301dfc7fda124119cb4944f2de40634114a5f7a8`.
+All 80 commands are compared as complete byte sequences, not just file sizes.
+The broader helper-relocation trial had a different rg hash
+`be78da8a48784b1c934289289ed8e56a68f8dceda1a03cd0107c061d203b79b8`;
+it passed 1,706 Wasm tests and 2,117 functional checks with 19 platform skips,
+but no timing acceptance is asserted for that discarded trial.
+
+Final local validation on macOS completed on 2026-10-30:
+
+| Check | Result and evidence under the directory above |
+| --- | --- |
+| Wasm interfaces, formatting, strict check and release build | Passed; `logs/final-info.log`, `final-fmt.log`, `final-check.log`, `final-build.log`. The only interface change removes matcher `replace`. |
+| Complete Wasm tests | 1,706 passed, zero failed; `logs/final-tests.log`. |
+| Native test-tool regressions | 118 passed, zero failed; `logs/tool-tests.log`. Native is used only for tools. |
+| Final functional suite | 2,117 passed (2,064 contract and 53 boundary), 19 platform skips, zero failures; `final-functional/summary.jsonl`. |
+| Final architecture inventory | 80 commands, 124 packages, 23 strategies, no failures; `final-architecture.json`. This clean-graph pass does not repair the A04 negative-control gap. |
+| Complete command artifacts | 80 compared, zero changed; `final-artifacts.json`. |
+
+Final functional stage durations in milliseconds are metadata 2,289,
+compatibility 11,329, contracts 10,043, scenarios 25,757, policy 1,144 and
+stress 7,529 (`final-functional/stages.json`). These are suite-stage
+observations, not benchmark results. The toolchain is moon 0.1.20261023,
+moonc v0.10.17+d971670cd and moonrun 0.1.20261023.
+
+There is no claimed speedup, new platform acceptance, remote CI,
+published-consumer result or GNU/Rust parity result. The reviewable code and
+documentation remain uncommitted in the isolated checkout; the original
+checkout remains clean at the starting revision.
+
+Recommended order: resolve A03/A04 contract and guard gaps; keep the A01/A02
+pilot as the smallest review unit; remove indexing-only state and empty
+wrappers; then narrow the driver interface and test-only surface; investigate
+IgnoreMatch/identity simplification only with their required correctness and
+performance controls. Conditional duplication and document consolidation come
+last. Each runtime-changing slice needs its own baseline, affected-workload
+coverage and failure-preserving verdict before the next slice is combined.
 
 ## Further rg read and granular-output pilots (2026-10-29)
 

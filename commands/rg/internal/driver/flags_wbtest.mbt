@@ -951,82 +951,52 @@ test "flags/test_include_zero" {
 
 ///|
 test "flags/test_index" {
-  if !false {
-    assert_true(try_parse(["-X"]) is Err(_))
-    return
+  for args in [["-X"], ["--index"], ["-XX"], ["-X", "--index"], ["-XXX"]] {
+    assert_true(
+      try_parse(args) is Err(message) &&
+      message.has_suffix(
+        ": Indexing is not supported in this build of ripgrep.",
+      ),
+    )
   }
-
-  let args = low([])
-  assert_eq(args.index, 0)
-  assert_eq(args.mode, Mode::Search(Standard))
-
-  let args = low(["-X"])
-  assert_eq(args.index, 1)
-  assert_eq(args.mode, Mode::Search(Standard))
-
-  let args = low(["--index"])
-  assert_eq(args.index, 1)
-
-  let args = low(["-XX"])
-  assert_eq(args.index, 2)
-
-  let args = low(["-X", "--index"])
-  assert_eq(args.index, 2)
-
-  let result = try_parse(["-XXX"])
-  assert_true(result is Err(_))
 }
 
 ///|
 test "flags/test_index_crud" {
-  if !false {
-    assert_true(try_parse(["--x-crud"]) is Err(_))
-    return
+  for
+    args in [
+      ["--x-crud"],
+      ["--files", "--x-crud", "foo"],
+      ["--x-crud", "--files"],
+    ] {
+    assert_true(
+      try_parse(args) is Err(message) &&
+      message.has_suffix(
+        ": Indexing is not supported in this build of ripgrep.",
+      ),
+    )
   }
-
-  let args = low([])
-  assert_eq(args.mode, Mode::Search(Standard))
-
-  let args = low(["--x-crud"])
-  assert_eq(args.mode, Mode::Index(IndexMode::Crud))
-
-  let args = low(["--files", "--x-crud", "foo"])
-  assert_eq(args.mode, Mode::Index(IndexMode::Crud))
-  assert_eq(args.positional, ["foo"])
-
-  let args = low(["--x-crud", "--files"])
-  assert_eq(args.mode, Mode::Files)
 }
 
 ///|
 test "flags/test_index_force" {
-  if !false {
-    assert_true(try_parse(["--x-force"]) is Err(_))
-    return
-  }
-
-  let args = low([])
-  assert_eq(args.index_force, false)
-
-  let args = low(["--x-force"])
-  assert_eq(args.index_force, true)
+  assert_true(
+    try_parse(["--x-force"]) is Err(message) &&
+    message.has_suffix(": Indexing is not supported in this build of ripgrep."),
+  )
 }
 
 ///|
 test "flags/test_index_path" {
-  if !false {
-    assert_true(try_parse(["--x-path"]) is Err(_))
-    return
+  assert_true(try_parse(["--x-path"]) is Err(_))
+  for args in [["--x-path", "foo"], ["--x-path=foo", "--x-path", "bar"]] {
+    assert_true(
+      try_parse(args) is Err(message) &&
+      message.has_suffix(
+        ": Indexing is not supported in this build of ripgrep.",
+      ),
+    )
   }
-
-  let args = low([])
-  assert_eq(args.index_path, None)
-
-  let args = low(["--x-path", "foo"])
-  assert_eq(args.index_path, Some("foo"))
-
-  let args = low(["--x-path=foo", "--x-path", "bar"])
-  assert_eq(args.index_path, Some("bar"))
 }
 
 ///|

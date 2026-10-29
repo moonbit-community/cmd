@@ -3,6 +3,16 @@
 This repository integrates multiple command packages, so changes are recorded
 by date and delivery milestone rather than by a single package version.
 
+## 2026-10-30 (history-led cleanup, batch 1)
+
+- Remove the unused rg matcher replacement helper and replace unreachable
+  indexing-success assertions with actual unsupported-option regressions.
+- Enforce the matcher/searcher-to-driver boundary for production, black-box
+  and white-box imports, with negative controls for both lower-level packages.
+- Preserve the audit's conditional dump-loop, core API/async and documentation
+  candidates for separate decisions. Runtime command artifacts remain identical
+  to the audit baseline; this batch makes no performance improvement claim.
+
 ## 2026-10-29 (rg progressive reads and granular output)
 
 - Separate physical regular-file refills from logical decoder requests. Begin

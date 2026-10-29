@@ -176,30 +176,6 @@ pub fn[M : Matcher] captures_iter_at(
 }
 
 ///|
-/// Replaces every match in `hay[hs:he]` by calling `append`, writing the
-/// result to `dst`.
-pub fn[M : Matcher] replace(
-  m : M,
-  hay : FixedArray[Byte],
-  hs : Int32,
-  he : Int32,
-  dst : Buffer,
-  append : (Match, Buffer) -> Bool,
-) -> Unit {
-  let mut last = 0
-  find_iter(m, hay, hs, he, mat => {
-    for i in last..<mat.start {
-      dst.write_byte(hay[hs + i])
-    }
-    last = mat.end
-    append(mat, dst)
-  })
-  for i in (hs + last)..<he {
-    dst.write_byte(hay[i])
-  }
-}
-
-///|
 /// Replaces every match in `hay[hs:he]` starting at `at`, using capture
 /// groups, writing the result to `dst`.
 pub fn[M : Matcher] replace_with_captures_at(
