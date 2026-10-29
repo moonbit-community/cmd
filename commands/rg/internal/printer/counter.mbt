@@ -93,11 +93,6 @@ impl @termcolor.WriteColor for CounterWriter with fn reset(self) {
 }
 
 ///|
-impl @termcolor.WriteColor for CounterWriter with fn is_synchronous(self) {
-  self.wtr.is_synchronous()
-}
-
-///|
 extend CounterWriter with @termcolor.Write::{write_slice, write_bytes}
 
 ///|

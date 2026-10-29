@@ -87,6 +87,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("tail", Core, FileOrStdin, ByteStream, [FileRead], [
       "bytes", "follow", "lines", "quiet", "sleep-interval", "verbose", "zero-terminated",
     ]),
+    // Spool cleanup is required; a cleanup-only failure is observable.
     contract("tac", Core, FileOrStdin, ByteStream, [FileRead, FileWrite], [
       "before", "regex", "separator",
     ]),

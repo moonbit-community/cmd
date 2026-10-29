@@ -3,6 +3,16 @@
 This repository integrates multiple command packages, so changes are recorded
 by date and delivery milestone rather than by a single package version.
 
+## 2026-10-29 (execution governance, batch 1 of 3)
+
+- Bound rg regex-count probes and streaming reads by the configured window,
+  independently of buffers retained from previous long files. Added repeated
+  search coverage for ordinary/bulk sinks, replay, EOF and decoded input.
+- Report tac cleanup-only errors while preserving primary operation errors and
+  cancellation cleanup. Remove the unused internal color synchronization
+  capability. No package is published and frozen release expectations remain
+  unchanged. Governance scope and acceptance boundaries are in ADR-0003.
+
 ## 2026-10-29 (selected search integration)
 
 - Adopted grep whole-record output batching and fixed-length anchored byte

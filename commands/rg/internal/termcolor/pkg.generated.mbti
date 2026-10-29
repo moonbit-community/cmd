@@ -114,7 +114,6 @@ pub(open) trait WriteColor : Write {
   fn supports_color(Self) -> Bool
   async fn set_color(Self, ColorSpec) -> Unit
   async fn reset(Self) -> Unit
-  fn is_synchronous(Self) -> Bool = _
   async fn set_hyperlink(Self, HyperlinkSpec) -> Unit = _
   fn supports_hyperlinks(Self) -> Bool = _
 }

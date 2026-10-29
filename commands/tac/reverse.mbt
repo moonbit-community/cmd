@@ -211,21 +211,38 @@ async fn reverse_spooled(
   writer~ : &@io.Writer = @stdio.stdout,
 ) -> Unit {
   let directory = @tempio.Directory::new(prefix="cli-tac-")
-  defer (directory.close() catch { _ => () })
-  let root = directory.path()
-  let file = @fs.open(
-    root + "/input",
-    mode=ReadWrite,
-    create_mode=CreateNew,
-    permission=0o600,
+  with_spool_cleanup(
+    () => {
+      let file = @fs.open(
+        directory.path() + "/input",
+        mode=ReadWrite,
+        create_mode=CreateNew,
+        permission=0o600,
+      )
+      defer file.close()
+      let buffer = FixedArray::make(block_size, b'\x00')
+      while reader.read(buffer) is count && count > 0 {
+        file.write(buffer.unsafe_reinterpret_as_bytes()[:count])
+      }
+      match regex {
+        None => reverse_file(file, separator, before, writer~)
+        Some(pattern) => reverse_regex(file, pattern, before, writer)
+      }
+    },
+    () => directory.close(),
   )
-  defer file.close()
-  let buffer = FixedArray::make(block_size, b'\x00')
-  while reader.read(buffer) is count && count > 0 {
-    file.write(buffer.unsafe_reinterpret_as_bytes()[:count])
+}
+
+///|
+// The operation owns its file handles and closes them before directory cleanup.
+// A cleanup-only failure is observable; a primary failure keeps its diagnostic.
+async fn with_spool_cleanup(
+  operation : async () -> Unit,
+  cleanup : async () -> Unit,
+) -> Unit {
+  {
+    errdefer (cleanup() catch { _ => () })
+    operation()
   }
-  match regex {
-    None => reverse_file(file, separator, before, writer~)
-    Some(pattern) => reverse_regex(file, pattern, before, writer)
-  }
+  cleanup()
 }

@@ -41,18 +41,10 @@ pub(open) trait WriteColor: Write {
   async fn set_color(Self, ColorSpec) -> Unit
   /// Reset the current color settings to their original settings.
   async fn reset(Self) -> Unit
-  /// Returns true if and only if the underlying writer must synchronously
-  /// interact with an end user's device in order to control colors.
-  fn is_synchronous(Self) -> Bool = _
   /// Set the current hyperlink of the writer.
   async fn set_hyperlink(Self, HyperlinkSpec) -> Unit = _
   /// Returns true if and only if the underlying writer supports hyperlinks.
   fn supports_hyperlinks(Self) -> Bool = _
-}
-
-///|
-impl WriteColor with fn is_synchronous(_self) {
-  false
 }
 
 ///|

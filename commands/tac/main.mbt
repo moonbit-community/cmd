@@ -13,6 +13,7 @@ fn help_message() -> String {
     #|  -r, --regex              Use an Emacs-style byte regular expression.
     #|
     #|Nonseekable input and regex mode require temporary-directory write access.
+    #|A cleanup failure is reported unless an earlier operation already failed.
     #|Regex mode retains the complete input for arbitrary-span byte matching.
   message
 }

@@ -34,8 +34,9 @@ async fn Searcher::stream_regex_count(
   let mut length = 0
   let mut ended = false
   let mut terminated = false
-  while length < probe.length() {
-    let size = reader.read(probe, length, probe.length() - length)
+  // Retained allocation belongs to prior inputs, not to this search's policy.
+  while length < capacity {
+    let size = reader.read(probe, length, capacity - length)
     if size == 0 {
       ended = true
       break
@@ -49,7 +50,7 @@ async fn Searcher::stream_regex_count(
   // A prefix match only declines the optimization; it never supplies a result.
   // This avoids building an expensive plan when early boolean search is cheap.
   let counter = if !terminated &&
-    length == probe.length() &&
+    length == capacity &&
     !@matcher.is_match_at(matcher, probe, 0, length.min(65536), 0) {
     matcher.stream_counter(term)
   } else {
@@ -81,7 +82,7 @@ async fn Searcher::stream_regex_count(
   let mut total = length.to_int64()
   let buffer = probe
   for ;; {
-    let length = reader.read(buffer, 0, buffer.length())
+    let length = reader.read(buffer, 0, capacity)
     let count = counter(buffer, 0, length, length == 0)
     if count > 0L {
       accept(count)

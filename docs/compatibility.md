@@ -140,6 +140,9 @@ Column, csplit and tac's spooled modes require temporary write access, which the
 catalog declares alongside sort and split. Invocation-owned temporary paths are
 exclusive and removed on success, ordinary errors and runtime-observable
 cancellation; SIGKILL and machine failure cannot guarantee cleanup. Preserve
+the primary tac operation error when cleanup also fails; a cleanup-only tac
+failure is reported by the current workspace candidate. This changes no frozen
+published-coordinate expectation. Preserve
 actual byte/status/effect and resource observations separately from source
 contracts and final platform acceptance. The [streams ADR](adr/0003-streams.md#r-streaming-and-temporary-storage-contracts)
 records the choices, limitations and unlock conditions.

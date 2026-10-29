@@ -5,6 +5,41 @@ Date: 2026-09-05
 Updated: 2026-10-29
 Revision: Consolidate shared ownership and internal execution state while preserving R-stage streaming, temporary-storage, matcher, metadata and failure contracts.
 
+## Execution governance (2026-10-29)
+
+The audit of `9dc42846c486697054fa13333ae65e03965a9c09` identified A01-A16.
+Governance is delivered in three reviewable batches: resource/error boundaries
+and regression gaps; selection policy, cache/replay state and registry ownership;
+then duplicated mechanisms and inherited engine preparation costs. Completion
+requires the exact final commit's three-platform CI and an independent review
+with clean-copy acceptance. Historical timing failures below remain unchanged.
+
+Batch 1 implements A01, A02 and A12, and starts A15 transition coverage. Regex
+count probes and subsequent streaming reads use the nominal reader capacity,
+even after an earlier input enlarged retained storage. Replayed ordinary reads
+retain their separate 1 MiB cap; this is not a total retained-memory limit.
+History regressions exercise both bulk and ordinary count sinks, decoded input,
+EOF and replay. The tac spool scope closes files before removing its directory,
+reports cleanup-only errors, preserves a primary error, and runs cleanup under
+runtime cancellation. Private injected-operation tests cover all error pairs
+and cancellation. The unused `WriteColor.is_synchronous` capability is removed;
+the actively used searcher synchronous-match protocol is unchanged.
+
+The trailing Boolean in `LineBuffer.fill` remains a type-checking requirement
+of its current loop expression. Semantic grep/rg fallback engines remain
+necessary. This batch neither changes algorithm profitability thresholds nor
+asserts a new performance or published-consumer acceptance result.
+
+Batch 1 validation passes 1,667 release-Wasm tests, the amended 289-test
+driver/tac selection and the 80-command/124-package architecture inventory.
+The two default-release protection windows complete all 154 profiles with
+equivalent output/status; 145 qualify. The timing verdict remains false because
+`ln-symbolic-validation`, `rg-null-long-output-8m`, `rev-long-8m`, all four tac
+controls, `uniq-long-8m` and `paste-serial-8m` fail stability. No qualified row
+exceeds the 5% slowdown boundary. Only rg and tac artifacts changed. Evidence:
+`/private/tmp/cmd-governance-20261029-9dc4284/phase1-protection`. These preserved
+windows do not qualify a whole-suite performance claim.
+
 Documentation profile update (2026-10-27): command READMEs describe invocation,
 supported options and user-visible limitations; implementation details remain in
 this ADR and the capability matrix. rg help now describes single-threaded reads,

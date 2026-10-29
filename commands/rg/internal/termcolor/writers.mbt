@@ -52,11 +52,6 @@ pub impl WriteColor for NoColor with fn reset(_self) {
 }
 
 ///|
-pub impl WriteColor for NoColor with fn is_synchronous(_self) {
-  false
-}
-
-///|
 /// Satisfies `WriteColor` using standard ANSI escape sequences.
 pub struct Ansi {
   priv wtr : &Write
@@ -107,11 +102,6 @@ pub impl WriteColor for Ansi with fn set_hyperlink(self, link) {
 ///|
 pub impl WriteColor for Ansi with fn reset(self) {
   ansi_reset(self.wtr)
-}
-
-///|
-pub impl WriteColor for Ansi with fn is_synchronous(_self) {
-  false
 }
 
 ///|
