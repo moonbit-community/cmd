@@ -49,6 +49,33 @@ policy plumbing without demonstrated reuse. Generated Unicode tables, imported
 corpora and meaningful published APIs are not dead code merely because a
 runtime-only usage scan finds no dependent caller.
 
+## 0.9.0 release candidate
+
+The 2026-10-30 candidate selects `cli/core@0.9.0` because the current source
+changes public APIs from published 0.8.2. Catalog types and functions move from
+`cli` to `contracts`; checksum and gzip command entrypoints move to
+`checksum/cli` and `gzipops/cli`, leaving algorithms and codecs in their parent
+packages. Netops fetch wrappers, process I/O forwarding wrappers, redundant
+platform probes and `cli.warn_stdin_wait` are removed. Callers use the shared
+transfer API or the released async filesystem/process APIs directly.
+
+`platform.is_terminal` and `terminal_output_enabled` become synchronous;
+automatic terminal detection remains unavailable. `LineScanner` now wraps
+`RecordReader`, changing its exposed storage fields while retaining `new` and
+`next`. The [core migration table](../../core/README.md#090-release-candidate)
+records the source replacements. The version boundary makes these ownership
+and function-type changes explicit for downstream consumers.
+
+The selected release contains 43 changed commands, including the first `rg`
+release at 0.1.0, based on direct source changes or changed runtime-package
+reachability. Thirty-six published commands retain their existing pins;
+`timeout` remains local-only. Registry upload and exact-version MoonX acceptance
+are pending. Earlier validation below retains its recorded scope and does not
+establish acceptance of these candidate coordinates.
+
+The C02 visibility, deprecation and `Session::finish` proposals remain unadopted.
+The release version change does not add those API changes to the candidate.
+
 ## Search ownership and execution
 
 Rg's driver owns private search policy and its concrete matcher adapter.
@@ -187,7 +214,7 @@ coverage in addition to the existing format cases.
 
 | Candidate | Decision evidence and next condition |
 | --- | --- |
-| Private teddy_max_literals, Algorithm::hex_length and gzipops/cli.help | Real same-package consumers, no dependent callers and absent at these coordinates in published 0.8.2. An isolated visibility trial passed strict checking with all 80 command binaries identical. Suitable first change before release; old gzipops.help still needs an explicit migration policy. |
+| Private teddy_max_literals, Algorithm::hex_length and gzipops/cli.help | Real same-package consumers, no dependent callers and absent at these coordinates in published 0.8.2. An isolated visibility trial passed strict checking with all 80 command binaries identical. The visibility change remains deferred; the 0.9.0 candidate separately documents migration of old gzipops.help to gzipops/cli.help. |
 | Deprecate platform.is_cross_device_error, native_separator and accepts_separator | First has no current caller; the others have only local test callers. All are published. Choose a compatibility policy before removal; local non-use cannot prove external non-use. |
 | Make Session::finish synchronous | No async operation or shared callable contract requires async. Trial passed strict checking and 1,707 Wasm tests, but changes the published function type and sh/make/split binaries. Requires a deliberate core API revision and performance checks. |
 

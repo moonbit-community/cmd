@@ -3,7 +3,7 @@
 Search directory trees for MoonX.
 
 ```sh
-moonx cli/find@0.2.3 [PATH...] [EXPRESSION]
+moonx cli/find@0.2.4 [PATH...] [EXPRESSION]
 ```
 
 ## Supported scope
@@ -33,8 +33,8 @@ Walk without following symbolic links. Combine predicates with negation, AND and
 ## Examples
 
 ```sh
-moonx cli/find@0.2.3 . -name '*.mbt'
-moonx cli/find@0.2.3 . -type f -maxdepth 2 -print0
+moonx cli/find@0.2.4 . -name '*.mbt'
+moonx cli/find@0.2.4 . -type f -maxdepth 2 -print0
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

@@ -3,7 +3,7 @@
 Count input records and bytes for MoonX.
 
 ```sh
-moonx cli/wc@0.2.4 [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]
+moonx cli/wc@0.2.5 [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]
 ```
 
 ## Supported scope
@@ -30,8 +30,8 @@ Read files or stdin and count lines, words and bytes by default. Supports select
 ## Examples
 
 ```sh
-moonx cli/wc@0.2.4 -l notes.txt
-printf 'one two\nthree\n' | moonx cli/wc@0.2.4
+moonx cli/wc@0.2.5 -l notes.txt
+printf 'one two\nthree\n' | moonx cli/wc@0.2.5
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

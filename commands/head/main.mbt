@@ -273,7 +273,7 @@ async fn head_reader(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("head 0.2.3\n")
+    @stdio.stdout.write("head 0.2.4\n")
     return
   }
   let args = legacy_count_args(@env.args()[1:])

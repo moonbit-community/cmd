@@ -11,7 +11,12 @@ Their failed, incomplete and platform-limited results keep their original scope.
 
 ## 2026-10-30
 
-Development cleanup; no package versions changed.
+Development cleanup and release preparation.
+
+- Prepare core 0.9.0 with explicit public API migrations and 43 command uploads,
+  including the first rg 0.1.0 release. Unaffected published coordinates stay
+  unchanged; timeout remains local-only. Candidate coordinates and expectations
+  are separate from the accepted latest inventory until exact-version acceptance.
 
 - Made HTTP method expectations independent of the implementation, consolidated
   duplicate cases through selectable aliases, and removed redundant assertions

@@ -3,7 +3,7 @@
 Compress and decompress gzip data for MoonX.
 
 ```sh
-moonx cli/gzip@0.1.3 [OPTION]... [FILE]...
+moonx cli/gzip@0.1.4 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -33,9 +33,9 @@ Compress stdin, compress named files with -cn, or decode/test gzip streams. Supp
 ## Examples
 
 ```sh
-printf 'hello\n' | moonx cli/gzip@0.1.3 > hello.gz
-moonx cli/gzip@0.1.3 -cn notes.txt > notes.txt.gz
-moonx cli/gzip@0.1.3 -t notes.txt.gz
+printf 'hello\n' | moonx cli/gzip@0.1.4 > hello.gz
+moonx cli/gzip@0.1.4 -cn notes.txt > notes.txt.gz
+moonx cli/gzip@0.1.4 -t notes.txt.gz
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

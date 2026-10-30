@@ -3,7 +3,7 @@
 Reverse each input record for MoonX.
 
 ```sh
-moonx cli/rev@0.1.5 [OPTION]... [FILE]...
+moonx cli/rev@0.1.6 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -26,8 +26,8 @@ The local development candidate batches ASCII validation and reversal into a fix
 ## Examples
 
 ```sh
-printf 'abc\n' | moonx cli/rev@0.1.5
-moonx cli/rev@0.1.5 notes.txt
+printf 'abc\n' | moonx cli/rev@0.1.6
+moonx cli/rev@0.1.6 notes.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

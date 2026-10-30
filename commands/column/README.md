@@ -3,7 +3,7 @@
 Arrange text into columns for MoonX.
 
 ```sh
-moonx cli/column@0.1.5 [OPTION]... [FILE]...
+moonx cli/column@0.1.6 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -33,8 +33,8 @@ Table rendering now borrows normalized byte fields. Field splitting and width co
 ## Examples
 
 ```sh
-moonx cli/column@0.1.5 -t table.txt
-moonx cli/column@0.1.5 -t -s , -o ' | ' data.csv
+moonx cli/column@0.1.6 -t table.txt
+moonx cli/column@0.1.6 -t -s , -o ' | ' data.csv
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

@@ -216,7 +216,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/uniq@0.2.4 metadata contract",
+      "source_version": "workspace cli/uniq@0.2.5 metadata contract",
       "expected_stdout_text": "Usage: uniq [-cduDiz] [--all-repeated[=METHOD]] [--group[=METHOD]] [-f FIELDS] [-s CHARS] [-w CHARS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -235,8 +235,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/uniq@0.2.4 metadata contract",
-      "expected_stdout_text": "uniq 0.2.4\n",
+      "source_version": "workspace cli/uniq@0.2.5 metadata contract",
+      "expected_stdout_text": "uniq 0.2.5\n",
       "expected_stderr_text": ""
     },
     {

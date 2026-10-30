@@ -2,7 +2,9 @@
 
 Search files recursively for MoonX.
 
-`cli/rg@0.1.0` is an unpublished candidate. The MoonX commands below apply after publication.
+Install `cli/rg@0.1.0`, using `cli/core@0.9.0`. The repository's
+[release inventory](../../tests/release_runner/current/latest.json) records
+accepted coordinates and their independent expected cases.
 
 ```sh
 moonx cli/rg@0.1.0 [OPTIONS] PATTERN PATH...

@@ -3,7 +3,7 @@
 Join sorted text files for MoonX.
 
 ```sh
-moonx cli/join@0.2.3 [options] FILE1 FILE2
+moonx cli/join@0.2.4 [options] FILE1 FILE2
 ```
 
 ## Supported scope
@@ -32,8 +32,8 @@ Join two files on matching fields; default keys are the first blank-separated fi
 ## Examples
 
 ```sh
-moonx cli/join@0.2.3 people.txt colors.txt
-moonx cli/join@0.2.3 -t, -1 2 -2 1 a.csv b.csv
+moonx cli/join@0.2.4 people.txt colors.txt
+moonx cli/join@0.2.4 -t, -1 2 -2 1 a.csv b.csv
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

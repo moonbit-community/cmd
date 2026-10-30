@@ -3,7 +3,7 @@
 Split files at line or pattern boundaries for MoonX.
 
 ```sh
-moonx cli/csplit@0.2.2 [OPTION]... FILE PATTERN...
+moonx cli/csplit@0.2.3 [OPTION]... FILE PATTERN...
 ```
 
 ## Supported scope
@@ -32,8 +32,8 @@ Split a file or stdin (`-`) using line numbers, `/BRE/[OFFSET]`, `%BRE%[OFFSET]`
 ## Examples
 
 ```sh
-moonx cli/csplit@0.2.2 input.txt 10
-moonx cli/csplit@0.2.2 -f part- input.txt '/^SECTION/' '{*}'
+moonx cli/csplit@0.2.3 input.txt 10
+moonx cli/csplit@0.2.3 -f part- input.txt '/^SECTION/' '{*}'
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

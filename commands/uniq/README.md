@@ -3,7 +3,7 @@
 Filter adjacent duplicate records for MoonX.
 
 ```sh
-moonx cli/uniq@0.2.4 [-cduDiz] [--all-repeated[=METHOD]] [--group[=METHOD]] [-f FIELDS] [-s CHARS] [-w CHARS] [FILE]
+moonx cli/uniq@0.2.5 [-cduDiz] [--all-repeated[=METHOD]] [--group[=METHOD]] [-f FIELDS] [-s CHARS] [-w CHARS] [FILE]
 ```
 
 ## Supported scope
@@ -31,8 +31,8 @@ Read a file or stdin and compare adjacent records. Sort first for global dedupli
 ## Examples
 
 ```sh
-printf 'a\na\nb\n' | moonx cli/uniq@0.2.4 -c
-moonx cli/uniq@0.2.4 -d sorted.txt
+printf 'a\na\nb\n' | moonx cli/uniq@0.2.5 -c
+moonx cli/uniq@0.2.5 -d sorted.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

@@ -3,7 +3,7 @@
 Create and reverse hex dumps for MoonX.
 
 ```sh
-moonx cli/xxd@0.2.3 [OPTION]... [INFILE [OUTFILE]]
+moonx cli/xxd@0.2.4 [OPTION]... [INFILE [OUTFILE]]
 ```
 
 ## Supported scope
@@ -38,8 +38,8 @@ Display files or stdin as hex, bits or include text; reverse addressed hex, plai
 ## Examples
 
 ```sh
-moonx cli/xxd@0.2.3 -p data.bin
-printf '68690a' | moonx cli/xxd@0.2.3 -r -p
+moonx cli/xxd@0.2.4 -p data.bin
+printf '68690a' | moonx cli/xxd@0.2.4 -r -p
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

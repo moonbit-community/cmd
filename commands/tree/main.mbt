@@ -556,7 +556,7 @@ fn usage() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("tree 0.1.4\n")
+    @stdio.stdout.write("tree 0.1.5\n")
     return
   }
   let invocation = parse_arguments(@env.args()[1:].to_owned()) catch {

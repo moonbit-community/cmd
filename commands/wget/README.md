@@ -3,7 +3,7 @@
 Download HTTP and HTTPS resources for MoonX.
 
 ```sh
-moonx cli/wget@0.2.4 [OPTION]... [URL]...
+moonx cli/wget@0.2.5 [OPTION]... [URL]...
 ```
 
 ## Supported scope
@@ -56,8 +56,8 @@ Download URLs or URL lists with resume, conditional requests, headers/bodies, re
 ## Examples
 
 ```sh
-moonx cli/wget@0.2.4 -O page.html https://example.com/
-moonx cli/wget@0.2.4 -q -O - https://example.com/
+moonx cli/wget@0.2.5 -O page.html https://example.com/
+moonx cli/wget@0.2.5 -q -O - https://example.com/
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0005-transfer.md)

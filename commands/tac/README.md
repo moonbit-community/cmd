@@ -3,7 +3,7 @@
 Reverse record order for MoonX.
 
 ```sh
-moonx cli/tac@0.1.5 [OPTION]... [FILE]...
+moonx cli/tac@0.1.6 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -31,8 +31,8 @@ The local development candidate batches fixed-separator ranges within each 64 Ki
 ## Examples
 
 ```sh
-printf 'one\ntwo\n' | moonx cli/tac@0.1.5
-moonx cli/tac@0.1.5 -s '--' records.txt
+printf 'one\ntwo\n' | moonx cli/tac@0.1.6
+moonx cli/tac@0.1.6 -s '--' records.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

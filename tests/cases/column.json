@@ -72,14 +72,14 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "expected_stdout_text": "column 0.1.5\n",
+      "expected_stdout_text": "column 0.1.6\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/column@0.1.5 metadata contract",
+      "source_version": "workspace cli/column@0.1.6 metadata contract",
       "aliases": [
         "release-metadata-column-version"
       ]
@@ -392,7 +392,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/column@0.1.5 metadata contract",
+      "source_version": "workspace cli/column@0.1.6 metadata contract",
       "expected_stdout_text": "Usage: column [OPTION]... [FILE]...\nColumnate input in columns (default), or align a table with -t.\n  -t, --table                 create a table\n  -s, --separator=CHARS       table delimiters (default: space and TAB)\n  -o, --output-separator=SEP  table separator (default: two spaces)\n  -c, --output-width=WIDTH    output width (default: COLUMNS or 80)\n  -x, --fillrows              fill rows before columns\n      --help                 display this help and exit\n      --version              display version and exit\nLayout uses the C locale. Bytes above ASCII are printed as \\xHH.\nLayout uses temporary files and requires filesystem write access.\n",
       "expected_stderr_text": ""
     }

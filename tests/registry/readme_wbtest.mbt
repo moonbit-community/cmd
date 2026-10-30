@@ -20,9 +20,6 @@ async test "command README coordinates match source and preserve unpublished bou
       assert_true(!readme.contains("moonx cli/" + name + "@"))
       "moon run --target wasm --release commands/" + name + " --"
     } else {
-      if name == "rg" {
-        assert_true(readme.contains("unpublished"))
-      }
       "moonx cli/" + name + "@" + version
     }
     assert_true(

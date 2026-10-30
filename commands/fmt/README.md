@@ -3,7 +3,7 @@
 Reformat text paragraphs for MoonX.
 
 ```sh
-moonx cli/fmt@0.1.3 [-WIDTH] [-w WIDTH] [-g GOAL] [-suct] [-p PREFIX] [FILE...]
+moonx cli/fmt@0.1.4 [-WIDTH] [-w WIDTH] [-g GOAL] [-suct] [-p PREFIX] [FILE...]
 ```
 
 ## Supported scope
@@ -31,8 +31,8 @@ Read files or stdin, preserve indentation and separate paragraphs at blank lines
 ## Examples
 
 ```sh
-moonx cli/fmt@0.1.3 -w 60 notes.txt
-moonx cli/fmt@0.1.3 -s -w 40 notes.txt
+moonx cli/fmt@0.1.4 -w 60 notes.txt
+moonx cli/fmt@0.1.4 -s -w 40 notes.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

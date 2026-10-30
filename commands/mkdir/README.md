@@ -3,7 +3,7 @@
 Create directories for MoonX.
 
 ```sh
-moonx cli/mkdir@0.2.3 [-p] [-m MODE] [-v] DIRECTORY...
+moonx cli/mkdir@0.2.4 [-p] [-m MODE] [-v] DIRECTORY...
 ```
 
 ## Supported scope
@@ -27,8 +27,8 @@ Create multiple directories and optional parents. Failed operands do not stop la
 ## Examples
 
 ```sh
-moonx cli/mkdir@0.2.3 -p output/reports
-moonx cli/mkdir@0.2.3 -m 700 private-dir
+moonx cli/mkdir@0.2.4 -p output/reports
+moonx cli/mkdir@0.2.4 -m 700 private-dir
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

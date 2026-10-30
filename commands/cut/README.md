@@ -3,7 +3,7 @@
 Select fields and byte positions for MoonX.
 
 ```sh
-moonx cli/cut@0.2.4 (-b LIST | -c LIST | -f LIST [-d CHAR] [-s]) [--complement] [--output-delimiter=STRING] [-z] [FILE...]
+moonx cli/cut@0.2.5 (-b LIST | -c LIST | -f LIST [-d CHAR] [-s]) [--complement] [--output-delimiter=STRING] [-z] [FILE...]
 ```
 
 ## Supported scope
@@ -34,8 +34,8 @@ The local development candidate uses delimiter searches and bounded contiguous p
 ## Examples
 
 ```sh
-printf 'x,y,z\n' | moonx cli/cut@0.2.4 -d, -f1,3
-moonx cli/cut@0.2.4 -b 1-4 fixed.txt
+printf 'x,y,z\n' | moonx cli/cut@0.2.5 -d, -f1,3
+moonx cli/cut@0.2.5 -b 1-4 fixed.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

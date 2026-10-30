@@ -175,7 +175,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/xxd@0.2.3 metadata contract",
+      "source_version": "workspace cli/xxd@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: xxd [OPTION]... [INFILE [OUTFILE]]\nDisplay bytes or reverse an addressed, plain, or binary dump.\n  -a, --autoskip       toggle suppression of zero lines\n  -b, --bits           binary digit display\n  -e, --little         little-endian groups\n  -E, --ebcdic         EBCDIC character display\n  -g, --group=N        bytes per group\n  -u, --upper          uppercase hexadecimal digits\n  -o, --offset=N       add N to displayed offsets\n  -p, -ps, --plain     plain hexadecimal display\n  -i, --include        C include display\n  -r, --reverse        reverse a dump\n  -c, --cols=N         bytes per line\n  -l, --len=N          maximum input bytes\n  -s, --seek=[+][-]N   input seek or reverse address adjustment\n  -n, --name=NAME      C include symbol\n      --help           display this help and exit\n      --version        display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -194,8 +194,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/xxd@0.2.3 metadata contract",
-      "expected_stdout_text": "xxd 0.2.3\n",
+      "source_version": "workspace cli/xxd@0.2.4 metadata contract",
+      "expected_stdout_text": "xxd 0.2.4\n",
       "expected_stderr_text": ""
     },
     {

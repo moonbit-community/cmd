@@ -149,7 +149,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/find@0.2.3 metadata contract",
+      "source_version": "workspace cli/find@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: find [PATH...] [EXPRESSION]\n      --help      display this help and exit\n      --version   display version and exit\nPredicates include names, portable kinds, size, a/c/m times, newerXY, access checks, -used, -xtype, depth controls, actions, and boolean operators.\n",
       "expected_stderr_text": ""
     },
@@ -168,8 +168,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/find@0.2.3 metadata contract",
-      "expected_stdout_text": "find 0.2.3\n",
+      "source_version": "workspace cli/find@0.2.4 metadata contract",
+      "expected_stdout_text": "find 0.2.4\n",
       "expected_stderr_text": ""
     }
   ]

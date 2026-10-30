@@ -3,7 +3,7 @@
 Filter JSON for MoonX.
 
 ```sh
-moonx cli/jq@0.2.4 [OPTION]... [FILTER] [FILE...]
+moonx cli/jq@0.2.5 [OPTION]... [FILTER] [FILE...]
 ```
 
 ## Supported scope
@@ -40,8 +40,8 @@ Apply jq-compatible filters to consecutive JSON values, files or stdin. Supports
 ## Examples
 
 ```sh
-printf '%s' '{"name":"Moon"}' | moonx cli/jq@0.2.4 -r '.name'
-moonx cli/jq@0.2.4 -n -c '{ok: true, values: [1, 2]}'
+printf '%s' '{"name":"Moon"}' | moonx cli/jq@0.2.5 -r '.name'
+moonx cli/jq@0.2.5 -n -c '{ok: true, values: [1, 2]}'
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0007-language.md)

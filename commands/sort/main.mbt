@@ -2,7 +2,7 @@
 async fn main {
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("sort 0.2.4\n")
+    @stdio.stdout.write("sort 0.2.5\n")
     return
   }
   let parsed = parse_args(args) catch {

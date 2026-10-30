@@ -3,7 +3,7 @@
 Run shell scripts and sessions for MoonX.
 
 ```sh
-moonx cli/sh@0.2.3 [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]
+moonx cli/sh@0.2.4 [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]
 ```
 
 ## Supported scope
@@ -29,8 +29,8 @@ Supports quoting, variables/exports, substitutions, pipelines, redirections, con
 ## Examples
 
 ```sh
-moonx cli/sh@0.2.3 -c 'echo hello'
-moonx cli/sh@0.2.3 script.sh
+moonx cli/sh@0.2.4 -c 'echo hello'
+moonx cli/sh@0.2.4 script.sh
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0007-language.md)

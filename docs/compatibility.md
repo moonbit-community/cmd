@@ -1,7 +1,15 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-10-27
+Updated: 2026-10-30
+
+The 2026-10-30 release candidate targets `cli/core@0.9.0` and 43 command uploads:
+42 updates to existing packages and the first release of `cli/rg@0.1.0`.
+Another 36 existing command coordinates remain unchanged. The candidate targets
+79 published commands, with `timeout` remaining local-only. Publication and
+exact-version MoonX acceptance are pending; this preparation is not an accepted
+release. [latest.json](../tests/release_runner/current/latest.json) and its frozen
+expectations retain the accepted 2026-10-27 inventory until acceptance passes.
 
 The local development candidate imports the isolated rev/cut/tac, packed literal
 automaton and rg summary optimizations after release commit `987cf02`. Its
@@ -74,11 +82,11 @@ yes, completing functional coverage beyond metadata/availability for all 78
 commands. This release does not claim new
 cross-platform acceptance or completion of formal performance work.
 
-There are **80 local command modules and 78 published commands**. The 2026-10-27
-release uploaded 78 new command versions with concise MoonX READMEs and
-synchronized metadata. The [latest manifest](../tests/release_runner/current/latest.json)
-records their exact coordinates and separately frozen current expectations.
-`rg 0.1.0` and `timeout` are excluded from this release and remain unpublished.
+The 2026-10-27 release covered **78 published commands among 80 local command
+modules**. It uploaded 78 new command versions with concise MoonX READMEs and
+synchronized metadata. Its coordinates and acceptance results are recorded in
+the [release summary](../CHANGELOG.md#2026-10-27).
+`rg 0.1.0` and `timeout` were excluded from that release.
 At publication, fetched core 0.8.2 matched the release source exactly, so dependent
 commands selected that already published coordinate without republishing core.
 Local MoonX acceptance passed 2,094 checks with 18 platform skips and zero
@@ -372,8 +380,12 @@ verified immutable oracle profile. A focused run is not full acceptance.
 ## Published-version verification
 
 [latest.json](../tests/release_runner/current/latest.json) selects the 78 exact
-published coordinates and independent `latest-cases.json` expectations.
-`candidate.json` selects reviewed workspace versions and `active-cases.json`.
+coordinates from the accepted 2026-10-27 release and independent
+`latest-cases.json` expectations. `candidate.json` selects the proposed 79-command
+inventory, including the first `rg` release, and `active-cases.json` expectations.
+After upload, acceptance must select `candidate.json`; the default latest
+selection continues to check the preceding accepted release. Promote the new
+coordinates and freeze their resolved expectations only after acceptance passes.
 Retired manifests and source archives retain their older frozen meanings in
 [Git at 234f960](https://github.com/moonbit-community/cmd/tree/234f9602347e43bd6d7c86c454489fc3f672c722/tests/release_runner).
 The current driver does not implement historical replay, receipt verification
@@ -412,12 +424,14 @@ excluded platform. Resource observations and formal performance acceptance
 remain separate manual work. See the [release guide](../tests/release_runner/README.md)
 and [changelog](../CHANGELOG.md) for workflow and dated results.
 
-## rg candidate
+<a id="rg-candidate"></a>
 
-Updated: 2026-10-27. `cli/rg@0.1.0` remains an unpublished candidate and is
-excluded from the documentation release. Shared `cli/core@0.8.2` is published;
-the current command release inventory is recorded above. Current sources and
-package tests live in `commands/rg`; executable contracts
+## rg first-release target
+
+Updated: 2026-10-30. `cli/rg@0.1.0` is the first-release target in the current
+candidate and selects `cli/core@0.9.0`. It awaits publication and exact-version
+MoonX acceptance; the accepted 2026-10-27 inventory does not include `rg`.
+Current sources and package tests live in `commands/rg`; executable contracts
 are in `tests/cases/rg.json`. Import pins are in the upstream baseline record. The fixed source is rg.mbt 0.2.0
 `2727c25819b00ddd1a0e9b24f9cb683931d64edf`; the semantic oracle revision is
 `3fce3b5bb0236da2df6d99672afb8a719642eca7`.
@@ -471,16 +485,20 @@ current CI-sealed image identity can establish differential acceptance.
 
 ## Inventory
 
-The workspace contains **80 command modules**, with **78 published**, unpublished
-`rg 0.1.0` and local-only `timeout`. Published command versions are **34 at 0.2.3,
+The workspace contains **80 command modules**. The accepted 2026-10-27 inventory
+contains **78 published commands** and excludes `rg` and local-only `timeout`.
+The current candidate targets **79 commands** through 43 command uploads
+(42 updates and `rg 0.1.0`) while retaining 36 existing command coordinates.
+Candidate core is **0.9.0**; the accepted core remains **0.8.2** until acceptance.
+The 2026-10-27 published command versions are **34 at 0.2.3,
 11 at 0.2.4, 3 at 0.2.1, 2 at 0.2.2, 12 at 0.1.4, 10 at 0.1.3,
-4 at 0.1.5, and one each at 0.2.5 and 0.3.2**. Shared `cli/core` is **0.8.2** and is not
-counted as a command.
+4 at 0.1.5, and one each at 0.2.5 and 0.3.2**. Shared `cli/core` is not counted
+as a command.
 Exact registry coordinates and selected local-acceptance cases are in
 [the latest manifest](../tests/release_runner/current/latest.json) and
-[documentation release summary](../CHANGELOG.md#2026-10-27). Local MoonX acceptance
-covers all 78 commands, with zero failures and the documented boundaries and
-platform skips. Previous frozen baselines and earlier manifests are recoverable
+[documentation release summary](../CHANGELOG.md#2026-10-27). That release's local
+MoonX acceptance covered all 78 commands, with zero failures and the documented
+boundaries and platform skips. Previous frozen baselines and earlier manifests are recoverable
 from the Git revision linked above; they are not active-checkout execution inputs.
 
 `timeout` is intentionally local-only because portable
@@ -535,7 +553,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `false` | subset verified | any args: no output, status 1; help/version return 0 | Metadata text is package-versioned |
 | `find` | restricted | names/paths/types, `-empty/-size`, metadata predicates, access checks, `-xtype`, depth/actions | File/process policy required; P8 time/reference/access combinations still need independent probes; ownership, inode, link-count, and full GNU expression grammar not claimed |
 | `grep` | subset verified | Default BRE / `-G`, ERE / `-E`, byte-based `-F`, `-o` leftmost-longest, context-only separators, existing context/file/binary options; published 0.3.0 adds the shared matcher, grammar-preserving ASCII `-i`, streaming input/output and early `-q`/`-l` completion | [Workspace matcher limits](#published-matcher-and-sed-profiles), non-C locale classes/case folding and worst-case capture/reference resources remain open |
-| `rg` | unpublished candidate | Fixed rg.mbt 0.2.0 algorithms and Unicode data; asynchronous explicit-file/directory/stdin search, glob/ignore, output modes and user preprocessing | [rg candidate](#rg-candidate); effective `-z` rejects; no-path search needs explicit input; public system API and inherited engine limits remain |
+| `rg` | first-release candidate | Fixed rg.mbt 0.2.0 algorithms and Unicode data; asynchronous explicit-file/directory/stdin search, glob/ignore, output modes and user preprocessing | [rg release target](#rg-candidate); effective `-z` rejects; no-path search needs explicit input; public system API and inherited engine limits remain |
 | `head` | subset verified | `-n`, `-c`, signed/attached/long/legacy counts and decimal/binary/IEC size suffixes, `-z`, `-q/-v`, files/stdin and headers | Counts are bounded by signed 64-bit storage; locale-aware records are not claimed |
 | `join` | subset verified | Field/unpaired/empty output, `-z`, ASCII ignore-case, headers, automatic or accumulated explicit output fields, last order policy | Locale behavior beyond the fixed C profile not claimed |
 | `jq` | subset verified | Consecutive JSON, -s/-R/-n/-e, AST binding, partial output before errors, -C/-M/JQ_COLORS, tostring/tojson and Unicode string slices | Released moonjq 0.2.0 plus public-AST adapter; full evaluator/modules/streaming/diagnostics and automatic TTY color are not claimed |

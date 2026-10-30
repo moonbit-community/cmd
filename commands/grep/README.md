@@ -3,7 +3,7 @@
 Search text patterns for MoonX.
 
 ```sh
-moonx cli/grep@0.3.2 [-EFGivnclLqHhxwrRbszo] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]
+moonx cli/grep@0.3.3 [-EFGivnclLqHhxwrRbszo] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]
 ```
 
 ## Supported scope
@@ -41,8 +41,8 @@ Eligible single-pattern regex counts aggregate complete records within each inpu
 ## Examples
 
 ```sh
-moonx cli/grep@0.3.2 -n 'TODO' notes.txt
-moonx cli/grep@0.3.2 -r -F -e TODO -e FIXME src
+moonx cli/grep@0.3.3 -n 'TODO' notes.txt
+moonx cli/grep@0.3.3 -r -F -e TODO -e FIXME src
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

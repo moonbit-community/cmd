@@ -3,7 +3,7 @@
 Wrap text lines for MoonX.
 
 ```sh
-moonx cli/fold@0.1.3 [OPTION]... [FILE]...
+moonx cli/fold@0.1.4 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -27,8 +27,8 @@ Wrap files or stdin at 80 columns by default, preserving bytes and an unterminat
 ## Examples
 
 ```sh
-moonx cli/fold@0.1.3 -w 72 notes.txt
-moonx cli/fold@0.1.3 -s -w 40 notes.txt
+moonx cli/fold@0.1.4 -w 72 notes.txt
+moonx cli/fold@0.1.4 -s -w 40 notes.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)
