@@ -9,11 +9,11 @@ pub struct Haystack {
 pub fn Haystack::path(self : Haystack) -> String {
   let p = self.dent.path()
   if self.strip_dot_prefix && p.has_prefix("./") {
-    let rest = p.view(start_offset=2).to_owned()
+    let rest = p[2:].to_owned()
     // Path::strip_prefix also removes any redundant separators.
     let mut r = rest
     while r.has_prefix("/") {
-      r = r.view(start_offset=1).to_owned()
+      r = r[1:].to_owned()
     }
     r
   } else {

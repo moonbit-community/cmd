@@ -177,7 +177,7 @@ pub fn GlobSet::new(globs : ArrayView[Glob]) -> GlobSet raise GlobError {
       Prefix(prefix) => prefixes.add(i, prefix)
       Suffix(suffix~, component~) => {
         if component {
-          lits.add(i, suffix.view(start_offset=1).to_owned())
+          lits.add(i, suffix[1:].to_owned())
         }
         suffixes.add(i, suffix)
       }
