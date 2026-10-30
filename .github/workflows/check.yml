@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       use_cache:
-        description: Restore dependency and compilation caches
+        description: Use dependency, compilation, and Docker caches (only main saves)
         type: boolean
         default: true
 
@@ -105,7 +105,7 @@ jobs:
           load: true
           tags: mooncmd-oracle:phase0
           cache-from: ${{ (github.event_name != 'workflow_dispatch' || inputs.use_cache) && 'type=gha,scope=mooncmd-oracle' || '' }}
-          cache-to: type=gha,mode=max,scope=mooncmd-oracle
+          cache-to: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.use_cache) && 'type=gha,mode=max,scope=mooncmd-oracle' || '' }}
       - name: Record pinned oracle
         if: runner.os == 'Linux'
         run: moon run tests/oracle.mbtx -- --image '${{ steps.oracle.outputs.imageid }}'
@@ -137,7 +137,7 @@ jobs:
           retention-days: 7
           if-no-files-found: warn
       - name: Save dependency and compilation state
-        if: ${{ success() && steps.compilation-cache.outputs.cache-hit != 'true' }}
+        if: ${{ success() && github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.use_cache) && steps.compilation-cache.outputs.cache-hit != 'true' }}
         uses: actions/cache/save@v4
         with:
           path: |
