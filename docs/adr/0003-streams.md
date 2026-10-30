@@ -62,7 +62,7 @@ transfer API or the released async filesystem/process APIs directly.
 `platform.is_terminal` and `terminal_output_enabled` become synchronous;
 automatic terminal detection remains unavailable. `LineScanner` now wraps
 `RecordReader`, changing its exposed storage fields while retaining `new` and
-`next`. The [core migration table](../../core/README.md#090-release-candidate)
+`next`. The [core migration table](../../core/README.md#090-api-changes)
 records the source replacements. The version boundary makes these ownership
 and function-type changes explicit for downstream consumers.
 

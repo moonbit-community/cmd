@@ -92,19 +92,18 @@ partial write from being retried during deferred cleanup. The original
 per-record result objects and pauses after a consumed record for output flushing.
 `stream.count_byte` counts bytes in offset views using bounded word loads.
 
-The **0.9.0** candidate adds
+Version **0.9.0** adds
 `bytere.RecordMatcher.count_records(BytesView, Byte)`. It returns an optional
 pair `(matching_records, complete_records)` for separator-terminated records;
 an incomplete tail is left to the caller. A declined or exhausted DFA returns
 `None`, requiring ordinary matching of the entire block. It shares the existing
-matcher limits and does not apply whole-word or whole-record filters. Exact
-published-coordinate acceptance for this new API is pending.
+matcher limits and does not apply whole-word or whole-record filters. Published
+acceptance results are recorded in the repository changelog.
 
-The **0.9.0** candidate also introduces `fsops/mode.parse_octal_mode(String)` for
+Version **0.9.0** also introduces `fsops/mode.parse_octal_mode(String)` for
 chmod and mkdir. It accepts octal digits with an optional `0o`/`0O` prefix,
 rejects empty or non-octal input, and limits permissions to `0o7777`.
-Symbolic-mode interpretation remains command-specific. The package is part of
-the release candidate and awaits published-coordinate acceptance.
+Symbolic-mode interpretation remains command-specific.
 
 `bytere.Pattern.record_matcher()` creates consumer-owned boolean search state.
 Its `required_literal()` exposes a conservative rejection filter; an empty
