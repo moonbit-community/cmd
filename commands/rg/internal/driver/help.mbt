@@ -116,15 +116,15 @@ fn render_custom_markup(
   let prefix = "\\" + tag + "{"
   let mut rest = doc
   while rest.find(prefix) is Some(offset) {
-    out.write_string(rest.view(end_offset=offset).to_owned())
+    out.write_string(rest[:offset].to_owned())
     let start = offset + prefix.length()
-    let after = rest.view(start_offset=start).to_owned()
+    let after = rest[start:].to_owned()
     guard after.find("}") is Some(i) else {
       abort("found \{prefix} without closing }")
     }
-    let name = after.view(end_offset=i).to_owned()
+    let name = after[:i].to_owned()
     replacement(name, out)
-    rest = after.view(start_offset=i + 1).to_owned()
+    rest = after[i + 1:].to_owned()
   }
   out.write_string(rest)
   out.to_string()
@@ -278,7 +278,7 @@ fn rust_lines(s : String) -> Array[String] {
   }
   out.map(l => {
     if l.has_suffix("\r") {
-      l.view(end_offset=l.length() - 1).to_owned()
+      l[:l.length() - 1].to_owned()
     } else {
       l
     }

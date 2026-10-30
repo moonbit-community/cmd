@@ -1302,21 +1302,13 @@ fn Parser::parse_unicode_class(self : Parser) -> ClassUnicode raise SyntaxError 
     let kind = if name.find("!=") is Some(i) {
       ClassUnicodeKind::NamedValue(
         NotEqual,
-        name.view(end_offset=i).to_owned(),
-        name.view(start_offset=i + 2).to_owned(),
+        name[:i].to_owned(),
+        name[i + 2:].to_owned(),
       )
     } else if name.find(":") is Some(i) {
-      NamedValue(
-        Colon,
-        name.view(end_offset=i).to_owned(),
-        name.view(start_offset=i + 1).to_owned(),
-      )
+      NamedValue(Colon, name[:i].to_owned(), name[i + 1:].to_owned())
     } else if name.find("=") is Some(i) {
-      NamedValue(
-        Equal,
-        name.view(end_offset=i).to_owned(),
-        name.view(start_offset=i + 1).to_owned(),
-      )
+      NamedValue(Equal, name[:i].to_owned(), name[i + 1:].to_owned())
     } else {
       Named(name)
     }
