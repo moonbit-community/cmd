@@ -1,156 +1,57 @@
-# ADR-0006: Direct Child Lifecycle and Public Process Limits
+# ADR-0006: Direct-Child Lifecycle and Process Limits
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-26
-Revision: Add split filter sessions, env split strings and xargs byte/confirmation boundaries without expanding process or shell guarantees.
+Updated: 2026-10-30
 
-Delivery validation update (2026-10-26): [ADR-0001](0001-evidence.md) and the
-[Wasm CI migration](../ci-wasm-migration.md) define current acceptance. Future
-regressions and boundary unlock conditions below require Wasm on applicable
-hosts and exact-version MoonX acceptance; Native command runs and backend
-pairing are retired. Dated Native observations retain their historical scope.
+## Decision
 
-## Target and decision
+Forward literal argv, cwd, stdio and complete environment through public
+process APIs. Own direct children and pipes explicitly. Cancellation requests,
+signals, exit status, wait/reap and pipe EOF are separate observations.
 
-### rg preprocessing candidate (2026-10-26)
+Cleanup closes owned streams in the required order, cancels and waits for
+direct children in an uncancellable region, and reports cleanup failure.
+Pipe handles outlive the task group performing their I/O so Windows pending
+completion cannot race handle closure. Ordinary catch does not catch async
+cancellation; use protected deferred cleanup where required.
 
-`--pre` remains explicit user-selected process authority; the rg catalog tier is
-restricted. Public async process/pipe APIs preserve argv, cwd and environment.
-An async memory reader applies backpressure to stdout, while a concurrent task
-drains stderr for the retained error payload API. Stderr may grow with the child
-diagnostic output; this is separate from incremental search stdout. Normal EOF
-checks exit status; early close cancels the owned task group and reaps its direct
-child in an uncancellable completion wait. No descendant-tree guarantee exists.
-The pipe handles outlive the task group that reads them, so pending Windows I/O
-cancellation completes before close. Normal completion also waits for stderr EOF
-before retiring its drain task; child diagnostics cannot be lost to task-group
-shutdown. The retained early-close and cancellation tests exercise these paths.
-Portable pure-MoonBit fixtures exercise early close; original process tests are
-retained. Lift process-tree limits only after released public group cancellation
-and three-host Wasm lifecycle evidence. See [rg support profile](../../docs/compatibility.md#rg-candidate).
+Neither spawn-and-wait nor task cancellation implements exec replacement,
+arbitrary signal sending or descendant-tree control. Timeout remains a local
+direct-child subset. Cancellation wrappers that discard OS errors cannot
+implement a faithful kill command.
 
-Forward argv, cwd, stdio and complete environment through public process APIs. Distinguish cancellation requests, signals, process exit, wait/reap and pipe EOF. Cancel all owned fixture processes before waiting for cleanup. async 0.22.5 ordinary catch does not catch cancellation; defer cleanup must be nocancel, using protect_from_cancel when required.
+## Command contracts
 
-Both Native test drivers share process execution and fixture cleanup. Ordinary
-local cases have a 15-second default deadline; Docker and MoonX cases have a
-120-second default, with explicit per-case overrides. Expiry is reported as a
-runner timeout, separately from a command deliberately returning 124. Cleanup
-closes owned pipes, requests cancellation and waits for direct children in an
-uncancellable region. Cleanup failures remain visible infrastructure failures.
-Pipe handles outlive the task group that performs their IO: pending reads and
-writes must finish cancellation before closing the handles. Closing a handle
-from the group's main task can race Windows completion delivery. The direct
-child timeout scenario retains partial output and records each lifecycle phase
-so a cleanup stall remains diagnosable in CI.
+| Command | Ownership and boundary |
+| --- | --- |
+| rg --pre | Backpressure child stdout while draining stderr concurrently. Normal EOF checks exit and finishes stderr; early close cancels owned tasks and reaps the direct child. Retained diagnostics may grow with child stderr. No process-tree guarantee. |
+| split --filter | Reuse the pure MoonBit Session and public pipes with per-piece FILE. Keep signal termination separate from explicit exit 141; pipeline status follows its last command. |
+| env -S | Parse its own quote/escape/comment grammar and expand variables from the original environment. Splice literal words into option processing; shell metacharacters stay child arguments. |
+| xargs -0/-d | Last delimiter option wins; preserve raw-byte scanning. Invalid UTF-8 argv prefixes reject before launch until a public raw-byte argv API exists. |
+| xargs -p | Use an independent confirmation channel, never argument stdin. Hosts without a channel reject before input/launch; this includes the documented empty -r preflight. Windows CONIN$ availability and empty-input success have separate contracts. |
+| yes | Repeated bounded output stops on real write failure. Do not swallow that failure; exact SIGPIPE status/diagnostic parity remains unverified. |
+| which | POSIX regular-file plus public can_execute, preserving PATH order, empty entries and symlinks. Windows uses PATHEXT. Never execute a candidate to test access or claim another shell's alias/function state. |
 
-## Alternatives and compatibility cost
+Released async 0.22.5 has a Windows Native empty-environment construction
+defect. The historical Native env guard rejects an empty final child environment
+with 125; it does not restrict current Wasm empty-environment behavior. Never
+inject a variable to approximate emptiness. Remove that guard only after a
+released fix and child-observed environment/stream/status tests.
 
-The published split filter reuses the pure MoonBit shell Session with
-public pipes and a per-piece FILE environment. The small public `last_signal`
-query preserves raw signal termination separately from an ordinary exit 141;
-pipeline status follows the last command. This is observation of the public
-process result, not signal sending, exec replacement or descendant control.
-No host shell implements a product command.
+## Verification and reconsideration
 
-O13 env `-S` parses its selected quote, escape, comment and stop grammar,
-expands `${NAME}` from the original environment, and splices words back into
-option processing. Shell metacharacters remain literal child arguments. The
-grammar is env-specific and does not widen the shell profile in ADR-0007.
+The shared test drivers default to fifteen-second local deadlines and
+120-second Docker/MoonX deadlines, with explicit case overrides. A runner
+timeout differs from a command intentionally returning 124. Preserve partial
+output and lifecycle phase diagnostics; missing cleanup cannot pass.
 
-Windows Native `env` rejects a child with an empty final environment before
-spawn (status 125). In released async 0.22.5, `OsEnv::make` allocates this
-environment block without writing its NUL terminators when inheritance is
-disabled and there are no entries; the O-stage Windows run returned
-`ERROR_INVALID_PARAMETER`. Public process APIs share this construction path.
-Empty enumeration, nonempty final assignments, POSIX and Wasm remain supported.
-Do not inject a variable or temporarily rewrite global environment state to
-approximate an empty child environment. Lift the restriction after a released
-public implementation fixes the block and actual Windows Native/Wasm
-child-observed empty-environment, stream and status regressions pass. The retired
-Native-only Windows harness recorded the explicit rejection, empty enumeration
-and a successful nonempty child. Current Wasm checks retain the real empty-child
-contract on applicable hosts; Native-only behavior is outside delivery scope.
+Use ready/ack synchronization to establish concurrency, not sleep guesses.
+Keep lifecycle fixtures serial and do not automatically retry unstable cases
+into success. Process-group, exec and signal claims require their own released
+public APIs and actual Wasm-host tests for scope, errors, waits and pipe closure.
 
-Xargs `-d` scans raw bytes with the selected named/octal/hex escape rules;
-`-0` and `-d` use last-option precedence. Existing batching and child-tail
-arguments remain distinct from command options. A valid UTF-8 argument prefix
-can use String argv, while an invalid-byte prefix rejects before launch.
-Lift that transport boundary only after a released raw-byte argv API and
-Native/Wasm child-observed byte, NUL and size-limit comparisons pass.
-
-Xargs `-p` independently opens the confirmation channel and serializes prompts
-before each child; argument stdin is never the confirmation reader. On hosts
-without that channel it fails before reading argument stdin or launching,
-including the explicit empty `-r` preflight. This stronger preflight is a
-documented boundary rather than GNU empty-input parity. A host exposing the
-independent channel can lift its host limitation through yes/no/EOF and child
-effect tests. Opening a character device is public; absence of a usable
-console is not a missing character-device API.
-The no-channel fixtures apply to the observed POSIX CI profile. Windows CI
-opens `CONIN$`: nonempty `-p` waits for confirmation and empty `-p -r` exits 0
-without a prompt or child. The latter has its own Windows contract. Separate
-confirmation-reader tests cover yes/no/EOF; unattended console availability
-must not be relabeled as a missing-channel rejection.
-
-Reject spawn+wait as exec replacement and direct-PID kill as descendant cleanup. Process groups are not authorization. handle_cancellation cannot clear current task cancellation. Timeout remains a local direct-child subset, not a published portable process-group guarantee.
-
-The public CancellationHandler wrapper can expose the supplied cancellation
-function, but using it as a kill command loses errors: async 0.22.4 Native
-kill wrappers discard the syscall result. A macOS probe on the 2026-09-20
-toolchain confirms an absent PID is rejected by host kill but returns Unit
-through hard_cancel. graceful_cancel additionally escalates after a timeout.
-Reject this workaround because it would reintroduce false success; release a
-standalone kill subset only when signal/target selection and failure reporting
-are faithful. The needed API is public signal sending with observable OS errors,
-separate from task cancellation. The original probe is recoverable from the pre-cleanup Git history;
-this does not turn cancellation into a supported signal-sending API.
-
-Reject sleep-duration guesses as proof of concurrency. Ready/ack synchronization
-establishes that independent make recipes overlap while shared prerequisites
-run once; deadlines bound failures. Lifecycle scenarios run serially even when
-ordinary independent contracts use bounded concurrency. No automatic retry
-turns an unstable process test into a pass.
-
-## Versions and evidence
-
-Current process code uses public async 0.22.5 APIs. Shell/process package
-tests and shared stateful scenarios observe owned pipes, direct-child waits,
-timeouts, inherited environment and continuous input. Rg's pipe-ordering
-fix is commit `880f4ad`; its early-close and cancellation regressions remain
-under `commands/rg/internal/sys`. Process-group, exec and terminal claims
-require separate released APIs and actual Wasm-host evidence.
-
-## Migrated process-adjacent profiles
-
-Published `yes@0.1.3` uses a repeated byte producer, public stream writes and downstream
-closure to terminate. The target is an unbounded producer without unbounded
-allocation. Reject generating an infinite in-memory string, swallowing a write
-failure as success, or invoking host yes. Exact SIGPIPE status/diagnostic parity
-is still unverified and is distinct from observing EOF/termination. Evidence:
-`tests/cases/yes.json`, pipe lifecycle coverage and the dated release entries in CHANGELOG.md. Expand the signal claim only after closed-pipe
-status/cleanup comparisons on Native/Wasm per host; ordinary output is usable.
-
-`which` uses public `fs.can_execute` plus regular-file kind on POSIX. Access
-checks do not require missing mode metadata. Preserve PATH ordering, direct
-operands, empty PATH entries, symlink following and POSIX backslash filenames.
-Reject the former regular-file-only approximation and never launch a candidate
-to test whether it is executable. Windows uses PATHEXT, with the default
-`.COM;.EXE;.BAT;.CMD`; this explicit platform contract does not emulate shell
-aliases/functions, which belong to a different process's state.
-
-The change intentionally stops reporting mode-0644 POSIX files as commands.
-Evidence: async 0.22.4 public access APIs, the original
-[Native/Wasm/MoonX probe](../../CHANGELOG.md#2026-10-11),
-and repaired 0644/0755/symlink/PATH/backslash/Windows fixtures. Add shell-aware
-lookup only through an explicitly supplied shell session; ordinary PATH lookup
-does not depend on a future metadata API. Mode-query absence
-remains real for cp/chmod, but must not be reused to justify this false success.
-
-## Revisit when
-
-Require released public exec/process-group/event APIs and validate descendant scope, cancellation, wait/reap and pipe closure separately on each backend.
-
-## Source review (2026-10-26)
-
-Current sources are [process.mbt](../../core/process/process.mbt), [test execution](../../tests/testkit/execute.mbt), [process scenarios](../../tests/runner/scenario_process.mbt), [rg process ownership](../../commands/rg/internal/sys/process.mbt), [env](../../commands/env/) and [xargs](../../commands/xargs/). Original Session/process work is `6fff343`; env/filter extensions are `db9dfe7`/`f366030`.
+Implementation: [process](../../core/process/process.mbt),
+[execution](../../tests/testkit/execute.mbt),
+[process scenarios](../../tests/runner/scenario_process.mbt),
+[rg child ownership](../../commands/rg/internal/sys/process.mbt).

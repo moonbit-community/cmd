@@ -6,32 +6,32 @@ Updated: 2026-10-27
 The local development candidate imports the isolated rev/cut/tac, packed literal
 automaton and rg summary optimizations after release commit `987cf02`. Its
 implementation and diagnostic limits are recorded in
-[ADR-0003](adr/0003-streams.md#isolated-performance-candidates-2026-10-27).
+[ADR-0003](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/docs/adr/0003-streams.md#isolated-performance-candidates-2026-10-27).
 These local changes do not amend the accepted registry coordinates below.
 The newest continuation reduces rg long-record allocation and caps individual
 read requests. A 64 MiB record drops from about 376 to 166 MiB kernel peak RSS;
 a 20 MiB record retains a roughly 9 MiB increase. Full-record retention and
 configured allocation errors remain. No support boundary or release coordinate
-changes. See [long-record capacity](adr/0003-streams.md#long-record-capacity-and-read-requests-2026-10-27)
+changes. See [long-record capacity](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/docs/adr/0003-streams.md#long-record-capacity-and-read-requests-2026-10-27)
 for complete measurements and the next streaming-matcher investigation.
 The preceding continuation replaces scalar rg prefix-byte membership scanning
 with exact SIMD candidate lookup. A long random-letter regex improves about
 1.7x, with full verification and existing regex semantics retained. All 288
 new set/regex comparisons agree with both the preceding Wasm and local Rust
 artifact. No option or binary boundary is lifted. See
-[SIMD candidate byte sets](adr/0003-streams.md#simd-candidate-byte-sets-2026-10-27)
+[SIMD candidate byte sets](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/docs/adr/0003-streams.md#simd-candidate-byte-sets-2026-10-27)
 for the remaining large gaps, small control costs and empty-input diagnostics.
 The preceding local round adds fused rg literal counts, grep block regex counts
 and byte-based column table fields with bounded optional metadata. All 27 final
 old/new timing workloads pass the unchanged local stability criteria. The rg
 general-DFA skip trial is rejected for ordinary regex regressions; column's
-snapshot format remains unchanged. See [byte fields and fused counts](adr/0003-streams.md#byte-fields-and-fused-count-pipelines-2026-10-27).
+snapshot format remains unchanged. See [byte fields and fused counts](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/docs/adr/0003-streams.md#byte-fields-and-fused-count-pipelines-2026-10-27).
 The new public core count method is unreleased local API work. It does not
 change command options, locale support or published acceptance.
 The preceding local round adds rg block-level line counts and bounded exact
 self-loop skipping for eligible long-record grep regex scans. The column
 field-metadata pilot was rejected and restored to the preceding candidate.
-See [block counts and certified skips](adr/0003-streams.md#block-counts-and-certified-state-skips-2026-10-27)
+See [block counts and certified skips](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/docs/adr/0003-streams.md#block-counts-and-certified-state-skips-2026-10-27)
 for eligibility, small regressions and the remaining GNU/Rust gaps. Command
 options, binary boundaries and accepted publication coordinates are unchanged.
 The expanded local grep comparison retains 27 existing differences on
@@ -42,14 +42,14 @@ regression or a claim of complete GNU parity.
 The subsequent local continuation batches tac's multi-byte separators and
 column table rendering, with reusable field-delimiter classification and
 ASCII conversion. Snapshot, C-byte, output-order and error boundaries remain
-unchanged; see the [local continuation](adr/0003-streams.md#local-continuation-after-the-documentation-release-2026-10-27).
+unchanged; see the [local continuation](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/docs/adr/0003-streams.md#local-continuation-after-the-documentation-release-2026-10-27).
 Its supplemental local comparison also records an existing GNU tac 9.11
 difference for a long repeated input with overlapping separator `aa`.
 Old and new Wasm agree; this case is not upstream-compatible acceptance.
 The next local round batches column snapshot writes, selectively enlarges rg's
 full-input count window, and skips impossible tac reverse-match starts.
 No command option, published coordinate or locale boundary changes. See
-[bounded ingestion and scan windows](adr/0003-streams.md#bounded-ingestion-and-selective-scan-windows-2026-10-27)
+[bounded ingestion and scan windows](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/docs/adr/0003-streams.md#bounded-ingestion-and-selective-scan-windows-2026-10-27)
 for memory tradeoffs, measured gains, rejected pilots and remaining target gaps.
 An added rg binary-output comparison also preserves an existing difference:
 `-n -b -o` can print fewer preceding matches than Rust before the same NUL
@@ -96,7 +96,7 @@ construction is not retried and later sparse records retain shift scanning. Span
 resumes after each output flush; captured spans, word/whole filters,
 binary input decisions and failure effects retain their existing contracts.
 Selected local measurements are diagnostic, not cross-platform or formal
-performance acceptance; see [ADR-0003](adr/0003-streams.md#adaptive-literal-planner-2026-10-27).
+performance acceptance; see [ADR-0003](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/docs/adr/0003-streams.md#adaptive-literal-planner-2026-10-27).
 PR #60's integration and actual-main development checks passed on all three
 hosts after an explicit maintainer exception for unresolved resource stability.
 That exception does not establish formal performance or release acceptance.
@@ -144,7 +144,7 @@ the primary tac operation error when cleanup also fails; a cleanup-only tac
 failure is reported by the current workspace candidate. This changes no frozen
 published-coordinate expectation. Preserve
 actual byte/status/effect and resource observations separately from source
-contracts and final platform acceptance. The [streams ADR](adr/0003-streams.md#r-streaming-and-temporary-storage-contracts)
+contracts and final platform acceptance. The [streams ADR](adr/0003-streams.md#streaming-and-temporary-storage)
 records the choices, limitations and unlock conditions.
 
 ## Published O5-O13 option profiles

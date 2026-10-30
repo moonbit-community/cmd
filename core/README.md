@@ -30,11 +30,11 @@ blocks, column page caches and sort runs specialized. Shared ownership must not
 introduce an asynchronous call per byte/record into an existing synchronous
 fast path. rg and core regex engines retain their distinct matching semantics.
 
-The [stream ADR](../docs/adr/0003-streams.md#shared-high-performance-foundation-2026-10-27)
+The [stream ADR](../docs/adr/0003-streams.md#input-and-output-mechanisms)
 records adoption and limits. The executable [protection registry](../tests/benchmark/protection.json)
 connects shared boundaries to command workloads; see its [runner instructions](../tests/benchmark/PROTECTION.md).
 
-The [internal consolidation decision](../docs/adr/0003-streams.md#internal-architecture-consolidation-2026-10-28-local-candidate)
+The [internal consolidation decision](../docs/adr/0003-streams.md#package-ownership)
 records source API breaks, consumer migrations and retained specializations.
 No registry coordinate changes as part of that local work.
 
@@ -113,7 +113,7 @@ three bytes, otherwise a byte-class Aho-Corasick table with at most 1024 states.
 without resolving longest ties. Grep uses the latter only for record counting.
 The cut/uniq/wc 0.2.3 and
 grep 0.3.1 candidates select this core coordinate, alongside rg. These candidates
-have not been published. See [the stream ADR](../docs/adr/0003-streams.md#performance-wave-4-candidate-2026-10-26).
+have not been published. See [the stream ADR](../docs/adr/0003-streams.md#search-ownership-and-execution).
 
 `gzipops.encode` accepts an optional `level` argument, defaulting to six, for
 the private pure MoonBit 32 KiB LZ and stored/fixed/dynamic Huffman encoder.

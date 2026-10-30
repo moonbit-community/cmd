@@ -1,686 +1,121 @@
 # Changelog
 
-This repository integrates multiple command packages, so changes are recorded
-by date and delivery milestone rather than by a single package version.
+This multi-package repository records changes by date. An entry marked
+development describes workspace source, not a registry release. Exact
+published versions are in [latest.json](tests/release_runner/current/latest.json).
+Current technical decisions are in [docs/adr](docs/adr/README.md).
 
-## 2026-10-30 (history-led cleanup, batch 1)
+Full historical experiment reports remain in the
+[pre-simplification Git version](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/CHANGELOG.md).
+Their failed, incomplete and platform-limited results keep their original scope.
 
-- Remove the unused rg matcher replacement helper and replace unreachable
-  indexing-success assertions with actual unsupported-option regressions.
-- Enforce the matcher/searcher-to-driver boundary for production, black-box
-  and white-box imports, with negative controls for both lower-level packages.
-- Preserve the audit's conditional dump-loop, core API/async and documentation
-  candidates for separate decisions. Runtime command artifacts remain identical
-  to the audit baseline; this batch makes no performance improvement claim.
+## 2026-10-30
 
-## 2026-10-30 (history-led cleanup, batch 2)
+Development cleanup; no package versions changed.
 
-- Reject `--dfa-size-limit` explicitly instead of silently accepting an unused
-  byte budget. Preserve numeric parsing errors and the engine's existing fixed
-  state-count limit. Synchronize help, README, catalog and compatibility notes.
-- Add exact command-level rejection cases for positive and zero budgets. Keep
-  the unpublished rg first-release coordinate at 0.1.0 and frozen published
-  expectations unchanged.
-- Batch 1 commit `713b076` passed all required checks in CI run `40914956163`.
-  The corrected option contract becomes the baseline for subsequent cleanup
-  comparisons; this correctness fix makes no timing acceptance claim.
+- Rg now rejects ineffective --dfa-size-limit values explicitly, with aligned
+  help, README, support metadata and command regressions.
+- Removed unused matcher helpers, indexing/device-identity branches,
+  thread/mmap state, ignore-origin payloads and redundant mode wrappers.
+  Narrowed driver types and moved test-only helpers beside their tests.
+- Enforced the matcher/searcher-to-driver boundary for production and both
+  test import forms. Replaced unreachable success assertions with rejection
+  coverage and added complete HTTP upload protection cases.
+- Removed the HTTP payload forwarder while preserving wire ownership.
+- Simplified ADRs into current decisions and this changelog into dated
+  updates; complete earlier reports remain recoverable from Git.
 
-## 2026-10-30 (history-led cleanup, batch 3)
+Cleanup commit 6e7be83 passed [three-platform CI](https://github.com/moonbit-community/cmd/actions/runs/40973796440).
+Local correctness: 1,707 Wasm tests, 118 test-tool tests and 2,122 functional
+checks, with nineteen platform skips. The real-corpus matrix qualified 89/89;
+full performance protection remains failed at 159/160 because an unchanged
+ln startup control exceeded dispersion limits. This is not published or
+mainline acceptance. Dump-loop and core API/async proposals remain pending
+in [ADR-0003](docs/adr/0003-streams.md#pending-cleanup-decisions).
 
-- Remove the HTTP upload forwarding function and call the existing wire owner
-  directly at all three request-body write sites. Timeout, framing and error
-  ownership remain in `HttpWire::write_payload`.
-- Add four registered 8 MiB upload controls for curl bytes/file/stdin and wget
-  file bodies. The server checks the complete request body. All six HTTP
-  download/upload controls qualified in both protection windows.
-- Local correctness passed with the combined cleanup candidate. The revised
-  complete timing suite qualified 159/160 rows; an unchanged ln startup
-  control exceeded the MAD limit. Preserve that failure without claiming
-  complete performance acceptance. No version or release coordinate changes.
+## 2026-10-29
 
-## 2026-10-30 (history-led cleanup, batch 4)
+Development changes; published coordinates unchanged.
 
-- Remove unreachable indexing and device/inode traversal state, unused
-  thread/mmap storage, redundant mode updates and unused ignore-origin
-  payloads. Keep unsupported-option errors, documented no-op syntax, metadata
-  error ordering and canonical symlink-loop checks.
-- Make driver argument types private, remove test-only derived traits, and
-  move fixture helpers to white-box tests while preserving expected values.
-- Reject the initial cleanup after three stable 19-21% boolean-count
-  regressions. The revised representation removes the remaining canonical
-  path wrapper and restores those controls. Preserve both candidates and
-  every failed window in the evidence referenced by ADR-0003.
-- Final local validation passes 1,707 release-Wasm tests, 118 tool tests and
-  2,122 functional checks with 19 platform skips. All 89 real-corpus rows
-  qualify; no qualified timing loss reaches 3%. Complete protection remains
-  unqualified at 159/160 because of an unchanged ln startup control's MAD.
-  Correctness, affected-command timing and full-suite acceptance remain
-  separate conclusions.
-- Retain C01-C03 for user decisions. Document eight dump-command probes,
-  the 18-entry core export review, published 0.8.2 API comparison and restored
-  visibility/async probes. Three unpublished exports can be made private with
-  all 80 command artifacts unchanged in the isolated probe.
+- Added grep whole-record output batching and bounded anchored matching,
+  plus rg early Boolean termination and selective cross-chunk regex counts.
+- Made search policy, replay, cache preparation and pressure retirement
+  explicit. Shared byte-membership/wide-scan mechanisms and column field
+  traversal while retaining specialized command loops.
+- Bounded reads independently of retained long-record allocation and
+  deferred non-raising reverse/capture storage. Fixed tac cleanup-only
+  error reporting and retained cancellation cleanup.
+- Reduced eager rg metadata work; added progressive regular-file refills
+  and plain-record output admission without changing decoder/error order.
+- Added strategy/source/test/workload validation and boundary regressions.
 
-## 2026-10-29 (rg progressive reads and granular output)
-
-- Separate physical regular-file refills from logical decoder requests. Begin
-  with 64 KiB reads and expand only after a full block, reusing one bounded
-  buffer per worker. Preserve stdin, explicit early exits, decoder boundaries,
-  retained errors and cancellation.
-- Reuse atomic plain-record admission after ordinary match extraction,
-  replacement and statistics. Keep styled, multiline, over-limit and explicit
-  line-buffered output on their ordered paths.
-- Reject unconditional 1 MiB buffering after a roughly 7% small-file counting
-  regression. A separate Rust-style digit-pair formatting pilot passed
-  correctness but showed no meaningful whole-command gain, so it is not
-  adopted. Preserve all candidate sources and observations in ADR-0003's
-  referenced evidence. Local, three-platform CI and MoonX verdicts remain
-  separate.
-- Local validation passes 1,706 release-Wasm tests, 118 tool regressions and
-  2,117 functional checks with 19 platform skips. The unchanged 89-task real
-  matrix qualifies every before/after pair: 34 improve by more than 5% in both
-  windows, with no 3% regression. Tasks more than 10% slower than upstream fall
-  from 45 to 35 in the same run; 35 still remain, so general upstream superiority
-  is not claimed. Only rg changes among the 80 command artifacts.
-- Full shared protection first qualifies 155/156 timings because an unchanged
-  ln control is unstable. An independent zero-delay A/A check passes, followed
-  by one pre-registered complete confirmation passing all 156 profiles with
-  no 3% observed regression. Preserve the first failure and both later records.
-  Separate RSS observations range from -0.97 to +1.86 MiB versus the starting
-  artifact. These results do not establish remote CI or MoonX acceptance.
-
-## 2026-10-29 (rg general-corpus I/O repair)
-
-- Retain directory kind observations and avoid eager child size and
-  canonical-path queries. Batch ordinary prefix formatting and buffered events,
-  including existing coalesced spans, over the shared 64 KiB output writer.
-  Add bounded initial regular-file reads while preserving decoder boundaries,
-  explicit early exits, failed output prefixes and cancellation.
-- Register the new mechanisms and boundary regressions. Local checks pass
-  1,703 release-Wasm tests, 118 test-tool regressions, 2,117 functional checks
-  with 19 platform skips, and 23 strategy registrations. Only rg's command
-  artifact changes; the other 79 artifacts are byte-identical to the baseline.
-- The unchanged 89-task real-corpus matrix preserves all outputs/statuses.
-  All before/after pairs qualify; 49 improve by more than 5% in both windows
-  and no loss reaches 3%. There are still 43 tasks more than 10% slower than
-  community rg in both windows, versus 59 for the starting artifact in the
-  same run. ADR-0003 records costs, remaining gaps and separate resource
-  observations. This local result does not establish remote CI, publication
-  or exact-version MoonX acceptance.
-- Cumulative shared protection passes all 156 workloads, two windows, complete
-  output/status checks, stability and the 5% slowdown boundary. The sole 3–5%
-  observation belongs to the byte-identical ln control and remains recorded.
-
-## 2026-10-29 (execution governance, batch 3 of 3)
-
-- Complete the A01-A16 source governance map in ADR-0003. Share exact byte
-  membership, wide-scan operations and column field/record traversal while
-  keeping specialized streaming, endpoint and error semantics.
-- Retire repeatedly unproductive lazy DFA caches without treating Unicode
-  quits as pressure. Defer non-raising reverse/capture storage while preserving
-  eager NFA construction errors, metadata and full-query fallback.
-- Add exact construction/field budget tests, direct route observations and
-  real pressure/reuse histories. Local checks pass 1,692 Wasm tests, 118
-  test-tool regressions, 2,117 functional checks with 19 platform skips and
-  21 registered strategies. Correctness, timing, resources and exact-commit CI
-  retain separate acceptance records; failed timing windows remain evidence.
-- Repair the active tac help expectation from batch 1 and the final formatting
-  gate identified on batch 2. Frozen published expectations are preserved.
-- Final default-release comparisons preserve all 156 workload outputs/statuses.
-  Cumulative protection qualifies 154/156 profiles; the final-batch comparison
-  qualifies 155/156. All stable rows stay within 5%; unchanged ln/tree controls
-  retain their stability failures, so neither whole-suite timing verdict passes.
-  ADR-0003 records the retained small timing costs and the local grep multi-literal
-  count peak-RSS observation of approximately +2.38 MiB.
-
-## 2026-10-29 (execution governance, batch 2 of 3)
-
-- Consolidate search policy, explicit replay and prepared-engine state, literal
-  handoff and grep record accounting without widening fast-path eligibility.
-- Name owner-local budgets and add exact boundary regressions. Validate the
-  strategy/source/test/workload inventory in all three CI jobs and before
-  performance protection. Historical rejected strategy controls are retained.
-
-## 2026-10-29 (execution governance, batch 1 of 3)
-
-- Bound rg regex-count probes and streaming reads by the configured window,
-  independently of buffers retained from previous long files. Added repeated
-  search coverage for ordinary/bulk sinks, replay, EOF and decoded input.
-- Report tac cleanup-only errors while preserving primary operation errors and
-  cancellation cleanup. Remove the unused internal color synchronization
-  capability. No package is published and frozen release expectations remain
-  unchanged. Governance scope and acceptance boundaries are in ADR-0003.
-
-## 2026-10-29 (selected search integration)
-
-- Adopted grep whole-record output batching and fixed-length anchored byte
-  matching, plus rg early Boolean termination and selective cross-chunk regex
-  counting. Kept the one-pass branch/repetition experiment out because of its
-  measured output regressions; borrowed output and superseded streaming
-  policies remain rejected. The selected grep and rg artifacts exactly match
-  their corresponding frozen pilot variants, and all other 78 commands remain
-  byte-identical to the starting commit. Passed 1,664 release-Wasm tests, 118
-  Native test-tool regressions and 2,117 functional checks (19 platform skips),
-  plus strict checks and the architecture audit. See ADR-0003 for the selection,
-  timing costs, resource observations and historical failed windows. The new
-  cumulative comparison completes all 154 profiles: 141 pass, including 99/104
-  grep/rg profiles; thirteen remain unstable. Every qualified profile is within
-  the 5% slowdown boundary, with small measured costs retained explicitly. This
-  integrates source without publishing or changing registry versions.
-
-## 2026-10-29 (temporary search pilot)
-
-- Extended the separate pilot with bounded deterministic anchored matching for
-  grep and selective resumable regex counting for rg. Against the preceding
-  frozen candidate, qualified anchored grep controls take 85–93% less time;
-  eligible 64 MiB `rg -a -c` long-record counts take 47–48% less time with peak
-  RSS around 32 MiB instead of 157 MiB. Rejected unconditional setup, a borrowed
-  output variant, and probe policies that regressed other cases. The final code
-  passes 1,666 Wasm tests and 2,117 functional checks (19 platform skips).
-  The full timing gate remains false at 144/154 (98/104 grep/rg): seven unstable
-  profiles and three qualified losses remain, including grep controls at
-  +6.51% and +5.03% in one window. The prototype remains unintegrated; the large
-  gains do not waive these costs. See the follow-up evidence and limitations in
-  ADR-0003. No manual O3, push, publication or MoonX acceptance is involved.
-
-- Explored grep whole-record output batching, bounded anchored byte predicates,
-  and rg early boolean termination against development commit `0d65187`, using
-  default release Wasm without manual O3. Qualified 8 MiB controls reduce grep
-  fixed output time by about 69%, dense anchored-regex output by 89%, and rg
-  many-state count by 82%. All 1,659 Wasm tests pass. The complete functional
-  suite passed before the final anchored specialization; its subsequent grep/rg
-  functional check passed 124 cases with one platform skip. The cumulative
-  performance gate remains false at 129/132 (81/82 grep/rg), with three unstable
-  observations retained. Small stable timing costs and approximately 3 MiB more
-  peak RSS for grep dense output are documented in ADR-0003. This temporary
-  checkout is not integrated, pushed, published or accepted through MoonX.
+Final local correctness passed 1,706 Wasm tests, 118 tool tests and 2,117
+functional checks with nineteen skips. The final 89-task real matrix
+qualified; a registered confirmation passed 156 protection profiles after
+an earlier noisy run. Earlier governance and pilot failures remain failed.
+These local measurements do not establish general upstream superiority,
+published-coordinate acceptance or formal resource acceptance.
 
 ## 2026-10-28
 
-- Integrated the default-release rg prefix rejection, direct-byte long-record
-  matching, bounded boolean DFA minimization and adaptive exit-set pilots into
-  the development branch, following review of their measured costs. The
-  cumulative 64 MiB repeated-text search and count controls reduce elapsed time
-  by approximately 91% and 90%. This uses no manual O3 pass. Added portable
-  preparation for all sixteen newly registered protection profiles.
-  The frozen pilot passed 1,652 Wasm tests, 2,117 functional checks (19 skips)
-  and 707 bounded differential cases. All 64 rg protection profiles meet the
-  stability and 5% review rules, with a retained +3.80%/+2.30% construction
-  cost. The whole-suite timing gate remains false at 113/118 because five
-  unchanged-command controls fail stability or the slowdown boundary. Full
-  records remain buffered; 64 MiB count peak RSS is about 157 MiB. Branch CI
-  and a new default-Wasm comparison are recorded separately after execution.
-  This does not publish rg or establish exact-version MoonX acceptance. See
-  [bounded minimization](docs/adr/0003-streams.md#2026-10-28-follow-up-bounded-boolean-minimization-and-broad-exit-sets).
-- Integrated bounded boolean counting and lazy Unicode/file-type tables into
-  the local rg candidate. Default release Wasm, without a manual O3 pass,
-  reduces 64 MiB regex-count time by 68%, Unicode-count time by 43%, empty-input
-  time by 28%, ordinary output by 15-16%, and default fixed misses by 14-15%.
-  An initial 12-14% long-record regression was rejected; complete blocks over
-  256 KiB retain the existing engine. Failed and superseded count-only costs
-  remain in the ADR. All imported table values and order are preserved.
-  Passed 1,642 Wasm tests, 2,117 functional cases (19 skips), 379 complete-process
-  differential cases, exact table comparisons and the 80-command/124-package
-  architecture audit. Added thirteen performance profiles. All 80 artifacts
-  match the measured combined candidate and only rg changes. The full timing
-  gate remains false: 92/102 profiles qualify, including 47/48 rg profiles;
-  one rg output control and nine unchanged-command controls are unstable.
-  No qualified slowdown exceeds 1.65%. Four local kernel-RSS observations
-  decrease by 7.36-7.81 MiB relative to the count-only stage.
-  Source, artifacts and failed windows are retained under
-  `/private/tmp/cmd-rg-count-adopt-20261028`. This is local integration without
-  commit, push, publication or new CI/MoonX acceptance. See the
-  [default-release integration record](docs/adr/0003-streams.md#rg-lazy-table-integration-2026-10-28-default-release).
-- Removed the obsolete rg launcher from the CI Native test-tool selection.
-  The launcher had been deleted when rg tests joined the shared runner, but
-  its remaining workflow reference stopped all three platforms before tests
-  could run. The Wasm product and regression-test selections are unchanged.
-- Corrected the shared directory-read regression's Windows expectation:
-  a dot-prefixed filename does not imply the hidden file attribute. Both
-  platform branches still check exact directory contents; enumeration and
-  command filtering behavior are unchanged.
-- Adopted a bounded rg text-output batching improvement: eligible plain
-  output with binary detection disabled uses a 256 KiB input buffer.
-  Release-Wasm fixed/regex misses take 21-22% less time; matching-line
-  output improves 7%, with 192 KiB additional initial buffer capacity.
-  Rejected the ineffective unmatched-buffer async bypass and an unsafe
-  default-mode enlargement that loses a previously printed binary prefix.
-  Default binary-detecting miss performance remains unresolved. Passed
-  1,637 Wasm tests, 118 tool tests, 2,117 functional cases (19 skips),
-  377 frozen comparisons, 22 resource pairs and all 35 cumulative rg
-  profiles. The full gate remains false: 88/89 profiles qualify and the
-  unchanged tac stream control is unstable; no qualified slowdown exceeds
-  3%. All 80 locally rebuilt artifacts match the measured candidate, and
-  only rg changes. Backup `backup/rg-miss-pilot-20261028` preserves the
-  preceding source; no development commit, push or publication occurred.
-  See [text-output batching](docs/adr/0003-streams.md#rg-text-output-read-batching-2026-10-28).
-- Integrated rg's adjacent matching-line spans and skipped unused global Git
-  ignore initialization for stdin-only walks. Existing async entrypoints,
-  explicit ignore diagnostics and filesystem-root filtering are preserved.
-  Ordinary release-Wasm output improves 2.67-2.69x against the preceding
-  source; the optimized Wasm comparison is 11-12% faster than pinned upstream
-  rg. Passed 1,632 Wasm tests, 118 tool tests, 2,117 functional cases (19 skips),
-  377 frozen comparisons, 14 resource pairs and the recovered 80-command,
-  124-package dependency audit. All 27 cumulative rg profiles qualify, as do
-  all 33 tool/workload measurements in the Wasm-only chart. The complete
-  81-workload protection gate remains false: eight profiles are unstable,
-  including rg dense regex output and seven unchanged command controls.
-  No qualified profile regresses more than 5%; failed windows are retained.
-  `backup/rg-spans-adopt-20261028` preserves the prior source; no development
-  commit, push or publication occurred. See the
-  [adoption record](docs/adr/0003-streams.md#rg-span-and-stdin-preparation-adoption-2026-10-28).
-- Adopted the two verified async-output optimizations into local development:
-  empty rg print-prefix guards and the shared writer's private synchronous
-  buffer append. All 80 rebuilt Wasm artifacts exactly match the previously
-  accepted pilot; strict checks, 1,627 Wasm tests and 20 benchmark-tool tests
-  pass again. Registered the eight additional rg protection workloads.
-  `backup/rg-async-adopt-20261028` preserves tracked and untracked source;
-  the normal Git index and HEAD are unchanged. This is local integration,
-  without publication or new platform acceptance.
-- Isolated the remaining rg output bottleneck and retained an adjacent-match
-  span pilot. Complete release-Wasm output falls from 120.25-120.86 ms to
-  48.18-48.58 ms without changing public async entrypoints or read sizes.
-  Passed 1,631 Wasm tests, 118 tool tests, 2,109 functional cases (19 skips),
-  377 frozen-output comparisons and 14 resource pairs. At that checkpoint the
-  new pilot was unadopted: the 81-workload protection run had one unstable
-  unchanged ln control, and its separate ordinary-output upstream comparison
-  was unstable.
-  No qualified workload exceeds the 5% slowdown limit; an unchanged tac
-  control's 3.59% first-window observation remains listed separately.
-  Further diagnostics identify avoidable global-ignore preparation for
-  explicit stdin as a concrete target for several remaining miss gaps.
-  See [output spans and input preparation](docs/adr/0003-streams.md#rg-output-spans-and-input-preparation-2026-10-28).
-- Completed an isolated async-output pilot without changing public interfaces
-  or the live product. Skipping empty rg print prefixes and separating the
-  private buffered fast path reduces complete release-Wasm time by about 27%
-  for rg matching-line output, 19% for replacement output and 9-12% for
-  nl/paste/comm. All 79 two-window protection workloads pass; none slows by 3%.
-  Passed 1,627 Wasm tests, 118 tool tests, 2,109 functional cases (19 skips),
-  377 output comparisons and 14 resource pairs with no temporary residue.
-  Under identical additional Wasm optimization, the output gap against pinned
-  upstream falls from 3.10-3.15x to 2.26-2.28x; miss workloads remain slower.
-  A reviewable patch and full evidence remain in the temporary pilot directory.
-  See the [pilot record](docs/adr/0003-streams.md#async-output-hot-path-pilot-2026-10-28).
-- Confirmed a pre-existing rg performance gap against pinned upstream MoonBit
-  Wasm: matching-line output takes 3.10-3.15x the time and several miss workloads
-  cost 22-31% more, despite faster fixed counting. A fresh two-window,
-  seven-workload comparison with the architecture-start artifact passes and
-  puts the output change since that baseline at only +0.21-0.33%. Thus the
-  large gap predates the current architecture reorganization; its precise
-  introducing change remains unidentified. Recorded the async output chain
-  as a diagnostic target, not a proven complete explanation. Stopped further
-  size-driven rg decomposition and recorded the user's acceptance of the
-  separate count prototype's 3.76-4.11% empty-input cost without waiving other
-  gates. Product sources and artifacts remain unchanged. See the
-  [upstream Wasm diagnosis](docs/adr/0003-streams.md#rg-upstream-wasm-gap-and-baseline-diagnosis-2026-10-28).
-- Explored rg source footprint and resumable regex line counting in temporary
-  MoonBit/Wasm copies. The live rg implementation remains unchanged. The
-  inventory puts rg at 40.02% of core plus command implementation lines and
-  49.98% of command lines alone. Trials distinguish the memory benefit of
-  cross-block boolean state from regressions caused by bypassing prefix or
-  inner-literal filters and by additional self-loop dispatch. The final trial
-  improves the qualified structured 64 MiB regex miss by 4.14-4.15x and records
-  a kernel RSS change from 165.55 to 40.16 MiB. Its 1,632 Wasm tests and 267
-  frozen-Wasm differential cases pass; 29 of 30 timing workloads qualify,
-  while a short-input state-budget row remains unstable. Empty-input cost
-  increases 3.76-4.11%. Failed trials and complete samples are retained, the
-  aggregate timing gate remains incomplete, and no prototype is integrated.
-  This is not release or platform acceptance. See the
-  [experiment and next-step record](docs/adr/0003-streams.md#rg-source-footprint-and-resumable-regex-exploration-2026-10-28).
-- Removed rg's separate `grep_regex` package. Driver now owns the private
-  search-rule compiler and matcher adapter; regex syntax owns bounded
-  inner-literal analysis. Deleted the builder, copied configuration and
-  redundant error wrapper, retaining both regex semantics and existing fast
-  paths. Production source is reduced by 315 lines after accounting for moves;
-  all named tests and their multiplicities are preserved. Matcher-dependent
-  pipeline tests move to driver without exporting
-  the adapter or introducing reverse dependencies. All 1,626 Wasm package
-  tests, 118 tool regressions and 2,109 functional cases pass, with 19 platform
-  skips; 268 additional frozen-Wasm comparisons preserve output, diagnostics
-  and status. The 79 other command binaries are byte-identical. All 17 rg
-  protection workloads pass; the full 71-workload gate retains three unstable
-  unchanged controls and is not marked green. The cumulative 17-workload rg
-  comparison also passes; nine separate resource pairs preserve approximately
-  166 MiB regex / 40 MiB literal-count RSS at 64 MiB, with no temporary residue.
-  See the
-  [ownership and acceptance record](docs/adr/0003-streams.md#rg-search-compilation-ownership-2026-10-28).
-  Local backup: `backup/rg-boundary-20261028` (`c57c488`). No development commit,
-  push, publication or remote-platform acceptance is included.
-- Integrated rg's large test data with the existing repository test layers.
-  Moved all 751 generated regex records into `tests/fixtures/rg` after a
-  field-by-field comparison, preserving the three engine drivers and their
-  exclusions. Migrated 44 CLI-equivalent printer cases into the ordinary JSON
-  contracts and registry, retaining exact output and original-name aliases;
-  20 injected printer cases remain package tests. Recovered two missing ignore
-  fixtures, including their BOM bytes, into the same fixture tree. The source
-  backup is `backup/rg-tests-20261028` (`a708d86`). See
-  [ADR-0001](docs/adr/0001-evidence.md#repository-owned-rg-corpus-and-command-contracts)
-  for ownership and [fixture provenance](tests/fixtures/rg/README.md) for scope.
-  rg's MoonBit sources decrease from 64,475 to 52,230 lines, principally by
-  externalizing data and removing repeated CLI-test setup, not by dropping
-  corpus cases. Passed 1,626 Wasm package tests, 118 test-tool tests and 2,109
-  functional checks (19 skips, zero failures). The 44 package tests now run
-  as CLI contracts. All 80 release-Wasm command binaries are byte-identical
-  to the starting artifacts. Versions, published records and product behavior
-  are unchanged; no commit, push, publication or remote CI ran.
+Development changes; no registry release.
 
-- Implemented the local internal consolidation across the complete 80-command,
-  126-package inventory. Separated contracts from parsing and checksum/gzip
-  adapters from algorithms, removed unused fetch/platform/process wrappers,
-  typed shell continuation and loop state, simplified bytere cache state, and
-  gave rg immutable plans/printers plus shared directory mechanisms. Existing
-  optimized layouts and distinct regex/Unicode semantics remain. Package and
-  command dispositions are in [ADR-0003](docs/adr/0003-streams.md#internal-architecture-consolidation-2026-10-28-local-candidate).
-  The complete starting tree is backed up at
-  `backup/core-restructure-20261027` (`c7be0eb`); the normal index is preserved.
-  Across core and command sources, implementation decreases by 476 lines and
-  behavior tests increase by 615 lines; moved files are counted on both sides.
-- Adopted independently checked literal-only rg count streaming and shared
-  output buffering for nl/paste/comm. Against this round's already optimized
-  starting binaries, 64 MiB literal-record counts use 39-42% less time;
-  nl/paste/comm workloads improve approximately 16-22x. Literal-count kernel
-  peak RSS falls from about 166 to 40 MiB. General regex long records still
-  reach about 166 MiB; comm's single resource pair increases by 3.70 MiB.
-  These are complete Wasm executions, without MoonX or startup subtraction.
-- Passed 1,670 Wasm tests, 118 test-tool tests and both initial/candidate
-  functional runs (2,065 passes, 19 skips, no failures each). Compared all
-  80 artifacts: 22 changed and 58 remain byte-identical. The cumulative
-  71-profile, two-window run preserves outputs/statuses, but only 65 profiles
-  qualify for timing. Six unstable rows remain failures; no qualified row
-  exceeds 5% slowdown. The 3.17% tac-file observation is listed separately
-  despite its identical binaries. The output-state enum trial was reverted;
-  failed trials, setup diagnostics and earlier tac noise remain preserved.
-  Full timing acceptance, fresh sealed upstream comparison, three-platform CI
-  and actual-main validation remain incomplete. No development commit, push,
-  publication, dependency update or frozen-release-record change is included.
+- Separated command catalog, checksum/gzip CLI adapters and algorithms.
+  Added shared directory mechanisms and typed shell/cache states; removed
+  unused forwarding APIs while preserving command-specific policies.
+- Moved rg search policy and its matcher adapter into driver. Preserved
+  regex dialects, Unicode tables and lower-layer independence.
+- Moved 751 imported regex records to fixtures and 44 CLI-equivalent
+  printer tests to the common runner, preserving expected values and
+  private/injected tests. Restored two missing ignore fixtures.
+- Added bounded literal/Boolean counting, lazy tables, prefix rejection,
+  exact long-record matching, DFA minimization and adaptive exit probes.
+- Batched rg output and reused buffered output for nl/paste/comm.
+- Removed the obsolete rg launcher from CI and corrected the Windows
+  hidden-attribute test without changing directory filtering.
+
+Selected correctness and affected-command measurements passed, but several
+complete performance selections remained unstable or incomplete. Their
+results are preserved in the historical ADR; no full-suite or release
+acceptance is inferred from these integrations.
 
 ## 2026-10-27
 
-- Added the local shared high-performance foundation: rg/wc byte kernels,
-  borrowed batches plus owned line scanning, bounded output ownership for rg
-  and column, and temporary-directory/range-I/O primitives for tac/column/sort.
-  Replaced rg path/JSON printer builders with immutable configurations. Fixed
-  sort's one-MiB budget degenerating into per-record runs. Added a workload
-  registry and fail-closed artifact/fixture validation, documented in AGENTS.md
-  and [ADR-0003](docs/adr/0003-streams.md#shared-high-performance-foundation-2026-10-27).
-  The source backup is `backup/shared-foundation-20261027` (`592311d`).
-  Passed 1,652 release-Wasm tests and 2,065 functional cases (19 skips).
-  All 51 two-window profiles preserve results; 50 qualify for timing, with a
-  largest slowdown of 3.39% and wc line counting 7.38-8.04% faster. The final
-  tac long-record reference fails dispersion/drift, so full timing acceptance
-  remains incomplete; all failed experiments are retained without retrying for
-  a pass. Ten kernel observation pairs leave no temporary residue, with a
-  largest peak increase of 1.05 MiB (3.62%). The repaired sort workload completes
-  in 1.096 seconds under the unchanged 20-second deadline and preserves output.
-  Sixty of 80 binaries remain identical; the twenty changed commands all have
-  profiles. Moving kernels reduces rg's implementation area by 962 lines;
-  repository implementation grows by 20 lines overall. Local work remains
-  uncommitted and unpublished, without new cross-platform or upstream acceptance.
-
-- Cleaned imported rg scaffolding after repository-wide dependency and duplicate
-  scans, starting from local backup `backup/pre-slop-20261027` (`9712a70`).
-  Removed unused walker/mmap layers and duplicate color policy, narrowed internal
-  APIs, moved test-only adapters beside tests, and shared chmod/mkdir octal parsing.
-  Net reduction is 1,852 MoonBit source lines and 369 generated-interface lines;
-  rg implementation shrinks by 1,782 lines (5.3%). Preserved generated data,
-  regression corpora and previous performance algorithms. All 22 release-Wasm
-  workloads pass two nine-pair stability windows; worst slowdown is 0.40%.
-  Seventy-seven of 80 command binaries remain byte-identical. Ten paired Darwin
-  kernel observations show at most 112 KiB (0.28%) higher peak RSS and no residue;
-  the 64 MiB record remains about 166 MiB. Passed 1,643 Wasm tests and 2,065
-  functional checks with 19 platform skips. These are local observations, with
-  no new Linux/Windows or published-consumer acceptance. Work remains local and
-  unpublished. See [ADR-0008](docs/adr/0008-data.md#internal-api-cleanup-2026-10-27).
-
-- Reduced rg long-record memory with smaller geometric buffer growth and
-  independent read-request limits. A 64 MiB record drops from about 376 to
-  166 MiB kernel peak RSS (56%); the 20 MiB probe retains a 9 MiB increase.
-  All 15 old/new workloads pass both stability windows, with structured long
-  records improving 1.13x. Six of ten fresh local Rust comparisons qualify;
-  single-record scans still take about 8-9x Rust time. Preserved four noisy
-  references and initialization diagnostics without accepting new ratios.
-  Passed 1,648 Wasm tests, 2,062 functional cases (19 skips), 792 supplemental
-  comparisons with one unchanged upstream difference, and four resource
-  comparisons with no residue. Work remains local and unpublished. See
-  [ADR-0003](docs/adr/0003-streams.md#long-record-capacity-and-read-requests-2026-10-27)
-  for the tradeoff and the proposed cross-chunk matcher continuation.
-- Continued with exact SIMD prefix-byte lookup in rg, targeting the largest
-  observed gap. Long random-letter regex scans improve 1.70-1.72x over the
-  preceding local candidate; all ten old/new workloads are stable. Eight of
-  nine fresh local Rust comparisons qualify, with the improved workload still
-  about 10.6x Rust time. One noisy reference remains unqualified. Passed 1,646
-  Wasm tests and 2,062 functional cases (19 skips); all 288 new regex/set cases
-  agree with both Wasm baseline and Rust. The existing rg set retains one
-  pre-NUL output difference. Empty-input Wasm observations identify a remaining
-  29-31 ms full-execution cost for further diagnosis, without subtracting it.
-  Resource checks retain zero residue; old/new kernel diagnosis confirms that
-  the roughly 376 MiB peak for a 64 MiB single regex record predates this change.
-  Approximately 3-5x workloads are lower priority. No release coordinates change.
-  See [ADR-0003](docs/adr/0003-streams.md#simd-candidate-byte-sets-2026-10-27).
-- Adopted byte-based column table fields, bounded optional field metadata and
-  fused rg literal/grep regex count loops in the local candidate. All 27 final
-  old/new workloads pass both stability windows: column tables improve about
-  1.54x, rg fixed counts 1.15x and grep regex counts 1.09x relative to the previous
-  local candidate. All 17 fixed local GNU/Rust comparisons are stable; substantial
-  8-18x gaps remain, while approximately 3-5x workloads are now lower priority.
-  Rejected the rg general-DFA skip trial for ordinary regex regressions. Passed
-  1,644 Wasm tests, 118 tool tests and 2,062 functional cases (19 skips), plus
-  1,728 supplemental comparisons with 30 unchanged upstream differences and
-  no new regression. Twelve resource comparisons leave no temporary residue;
-  14 kernel RSS pairs retain their single-observation scope. Versions and
-  published expectations are unchanged; no push, publish or remote CI ran.
-  See [ADR-0003](docs/adr/0003-streams.md#byte-fields-and-fused-count-pipelines-2026-10-27).
-- Continued the local candidate with block-level rg counts and bounded exact
-  SIMD self-loop skips for eligible long grep records. Two nine-pair windows
-  pass all 17 old/new workloads: rg fixed counting improves 1.91-1.92x, grep
-  long structured scans about 1.16x and long random-letter scans about 2.15x.
-  Rg fixed counting remains 3.39-3.42x Rust time; conventional grep regex counts
-  retain a roughly 2% regression. Three of 14 upstream reference rows remain
-  noisy. Reverted the column field-metadata pilot after tiny rows slowed 53-55%,
-  retaining its source and negative measurements. Passed 1,640 Wasm tests,
-  118 tool tests, 2,062 functional cases (19 skips), eight resource comparisons
-  and 1,632 supplemental comparisons with 30 existing reference differences
-  and no new regression. Eight old/new kernel RSS pairs differ by less than
-  0.5 MiB; long-record input storage remains unbounded by the DFA budget.
-  See [ADR-0003](docs/adr/0003-streams.md#block-counts-and-certified-state-skips-2026-10-27)
-  for exact eligibility, expanded binary-count gaps and subsequent experiments.
-  Versions and publication expectations are unchanged; no commit, push,
-  publication or remote CI run.
-
-- Continued the local performance candidate with bounded column data/index
-  ingestion, selective 256 KiB rg count reads and certified zero-prefix tac
-  skips. Against the preceding candidate, two nine-pair windows show 2.31x for
-  tiny column rows, 1.17x for the 8 MiB table, 1.24-1.26x for rg misses and
-  1.63-1.64x for tac multi-byte misses. The latter reaches 2.60-2.61x GNU time;
-  rg fixed counts remain 6.51-6.53x Rust time. Retained small control regressions,
-  noisy reference rows and the rejected rg short-needle finder pilot.
-  Passed 1,634 Wasm tests, 118 tool tests, 2,062 functional cases (19 skips),
-  13 resource comparisons and 1,152 supplemental comparisons with three
-  unchanged upstream differences and no new regression. Ten paired Darwin
-  kernel observations show column's peak increasing about 2-3 MiB.
-  See [ADR-0003](docs/adr/0003-streams.md#bounded-ingestion-and-selective-scan-windows-2026-10-27)
-  for exact limits and next steps. Package versions, publication expectations
-  and remote branches are unchanged; no commit, push, publication or CI run.
-
-- Continued performance work on local main after the documentation release at
-  `987cf02`, importing the isolated candidate without changing published
-  coordinates. Added synchronous multi-byte KMP batches for tac and bounded
-  cached-page table rendering, ASCII conversion and reusable delimiter
-  classification for column. Relative to the imported candidate, two stable
-  nine-pair windows measured 8.24-8.69x for tac's selected 8 MiB multi-byte
-  separators, 3.65-3.66x for column's 8 MiB table, 3.99-4.02x for long rows,
-  and 1.54x for tiny rows. GNU tac file reversal is about 2.7x; multi-byte cases
-  remain about 4.2-4.5x and one short GNU reference remains noisy. These are
-  local direct-Wasm observations, not final Linux performance acceptance.
-  Validation passed 1,627 Wasm tests, 118 test-tool regressions, 2,062 functional
-  cases (19 skips), and nine resource comparisons. Supplemental comparisons
-  retain two existing GNU differences across 768 cases, with no new regression.
-  See [ADR-0003](docs/adr/0003-streams.md#local-continuation-after-the-documentation-release-2026-10-27)
-  for final-artifact checks, the column replay and remaining limits. No main
-  push, new branch, package publication or remote CI was performed.
-
-- Prepared an isolated performance experiment against `2064a16`, outside the
-  active release checkout. Selected changes batch rev output and tac byte
-  separators, specialize cut projections, pack literal-automaton metadata and
-  dispatch rg summary matches synchronously. Stable local old/new windows
-  measured 16.51-16.58x for tiny-record rev, 16.33-16.77x for file tac,
-  2.40x for 64 MiB rg fixed counting, and 1.78-1.82x for cut's final-field case.
-  Selected cut and file-tac workloads reached the 1-3x GNU target; other
-  workloads remain above it or noisy. A regex block cache was rejected for
-  heterogeneous-input regressions. Final local validation passed 1,618 Wasm
-  tests, with 117 tool tests, 2,062 functional cases (19 skips), a subsequent
-  54-case tac replay and 16 resource comparisons. Supplemental differential
-  checks found no new regression in 432 cases and retained one existing binary
-  grep difference. Publication, CI and release manifests are unchanged.
-  See [ADR-0003](docs/adr/0003-streams.md#isolated-performance-candidates-2026-10-27).
-
-- Published a MoonX documentation release for all 78 published commands. All
-  80 command READMEs now focus on supported scope, options, limitations and
-  examples, with links to the capability matrix and ADRs. Corrected misleading
-  filesystem help and rg's inherited upstream thread/mmap/terminal claims;
-  rg's short version now identifies cli/rg. rg and timeout are excluded from
-  this release. Command versions advance independently and core dependencies
-  select the existing 0.8.2, whose fetched registry source matches this checkout.
-  All 78 uploads returned HTTP 200 and exact non-yanked registry versions.
-  Local validation passed 1,612 Wasm tests, 118 test-tool regressions and
-  2,062 workspace functional checks with 19 platform skips. The initial Windows
-  README regression exposed CRLF-sensitive assertions; normalization fixed the
-  test, and [development run 40428496917](https://github.com/moonbit-community/cmd/actions/runs/40428496917)
-  passed all three hosts before publication.
-  Local exact-version MoonX acceptance passed 2,094 checks (1,963 semantic,
-  78 startup and 53 explicit boundary results), with 18 platform skips and zero
-  failures. Seventeen additional README examples passed, including nested MoonX,
-  copy/create effects and missing-file suppression.
-  [Published acceptance run 40432031612](https://github.com/moonbit-community/cmd/actions/runs/40432031612)
-  passed Linux (2,287 checks, 15 skips, including 1,507 pinned differential
-  results), macOS (2,094 checks, 18 skips) and Windows (1,961 checks, 151 skips),
-  all with zero failures. The current `latest.json` and its separate case snapshot
-  now bind these accepted coordinates; `published.json` and historical snapshots
-  remain unchanged. This release does not establish formal performance acceptance
-  or remove the documented unsupported behaviors.
-
-- Integrated performance PR #60 as `6705ea8` after documentation PR #59,
-  with the maintainer's explicit exception for unresolved repeatability.
-  Final-head checks and [actual-main run 40406545144](https://github.com/moonbit-community/cmd/actions/runs/40406545144)
-  passed Linux, macOS and Windows. Failed resource stability remains failed;
-  thresholds, published coordinates and frozen expectations are unchanged.
-- Promoted the adaptive literal pilot into the unpublished core/grep candidate:
-  dense verification can lazily build one bounded automaton, budget exhaustion
-  safely resumes shifts, and subsequent sparse inputs keep the shift fast path.
-  Added independent span/offset/folding/record regressions, thirteen real-command
-  performance workloads and sixteen sampled/kernel resource comparisons.
-  Real-command local pairs improved 1 MiB collision inputs by 13.98x–14.63x
-  over merged main while preserving sparse throughput. An initial 15% dense
-  count regression was corrected; two existing controls retain 2–3% regressions.
-  All 26 old/new rows were stable, while five of 26 GNU rows remained noisy and
-  several GNU ratios exceeded 3x. These are diagnostic results, not acceptance.
-  Local validation passed 1,611 Wasm tests, 117 tool tests, 2,062 functional
-  cases (19 skips), and eight resource smoke comparisons; interfaces are unchanged.
-  See [ADR-0003](docs/adr/0003-streams.md#adaptive-literal-planner-2026-10-27).
-
-- Cache/control diagnostic 40398697579 completed every window but retained
-  unstable empty-input controls and no passing full selection. Input preloading
-  is not a selected fix. Added a separate Linux perf null-counter diagnostic
-  with finer CPU accounting; ordinary resource acceptance remains unchanged.
-
-- Linux diagnostic run 40395472012 completed all controlled windows but found
-  no stable full selection: 17/23 for either observer, 14/23 with settling or
-  one-CPU affinity. Retained these rejected approaches and added a cache/control
-  phase with separate kernel-counter observations. Stability remains unresolved;
-  performance PR #60 was still unmerged at this investigation stage.
-- Added an explicit Linux stability diagnostic to investigate the six noisy
-  workloads in resource run 40346450167. It compares observer backends, a fixed
-  between-arm pause and one-CPU affinity while retaining every sample and the
-  same release Wasm commands. This is diagnostic infrastructure, not a stability
-  fix or acceptance result. The ordinary resource gate and thresholds are unchanged.
+- Published documentation/metadata updates for all 78 released commands.
+  Reused existing core 0.8.2; rg and timeout remained unpublished. Exact
+  command versions and frozen cases are in the latest release manifest.
+- Local MoonX acceptance passed 2,094 checks with eighteen skips, plus
+  seventeen README examples. [Published acceptance](https://github.com/moonbit-community/cmd/actions/runs/40432031612)
+  passed Linux/macOS/Windows with 2,287/2,094/1,961 checks and 15/18/151
+  skips, including 1,507 pinned Linux differential results; zero failures.
+- Integrated performance PR #60 with the explicit maintainer exception
+  for unresolved repeatability. [Actual-main checks](https://github.com/moonbit-community/cmd/actions/runs/40406545144)
+  passed; the resource stability failure remained unresolved.
+- Continued development with shared byte/buffer/temp-I/O mechanisms,
+  adaptive literal matching, lower long-record allocation and specialized
+  count, field and reverse-read paths. Removed unused imported rg layers
+  and shared chmod/mkdir octal parsing. These later source changes did not
+  update the released coordinates or establish formal performance acceptance.
 
 ## 2026-10-26
 
-- Extended the manual resource workflow to cover cut/uniq/wc alongside the
-  existing commands, including Linux kernel peak RSS. Added a 23-workload
-  direct-Wasm performance profile with two independent nine-pair windows and
-  explicit dispersion/drift checks. Raw samples and noisy results are retained;
-  this does not publish packages or replace formal performance acceptance.
-- Extended unpublished core 0.8.2 and grep 0.3.1 with adaptive multi-literal
-  search, record-level count skipping and reuse of proven regex suffixes.
-  Selected local pairs improved 64 MiB / 16-pattern counts by 4.49x and a
-  16 KiB overlapping-span case by 25.44x over wave 3. Broader literal shapes
-  improved 1.21x–1.70x; several GNU ratios still exceed the 1–3x exploration
-  target. A regressing reverse-DFA skip experiment was removed. Passed 1,604
-  Wasm package tests, 117 Native tool tests and 2,062 functional cases with
-  19 skips and no failures. The independent GNU set matched 792/796, retaining
-  four known empty-pattern differences. [ADR-0003](docs/adr/0003-streams.md#performance-wave-4-candidate-2026-10-26)
-  records measurements, bounds, negative evidence and deeper follow-up
-  directions. No publication or formal performance acceptance is claimed.
-- Extended unpublished core 0.8.2 and grep 0.3.1 with borrowed byte searches,
-  paired endpoint DFAs, shared fallback decoding and resumable synchronous span
-  emission. Selected local pairs improved original/many-match/long-record spans
-  by 3.24x/4.08x/3.64x over wave 2. Original spans remain 3.16x GNU; many-match
-  and word-filtered rows are 2.19x and 1.96x. Counting gains are smaller and some
-  regex count rows show small regressions. Passed 1,597 Wasm package tests,
-  117 Native tool tests and 2,062 functional cases with 19 skips and no failures.
-  The independent GNU set matched 684/688, retaining four known empty-pattern
-  differences. [ADR-0003](docs/adr/0003-streams.md#performance-wave-3-candidate-2026-10-26)
-  records resource bounds, raw evidence and remaining gaps. No publication or
-  formal performance acceptance is claimed.
-- Extended the same unpublished performance candidates with synchronous record
-  visitors, block rejection, synchronous count scans, flat DFA transitions and
-  precomputed span closures. Final local pairs improved short-record cut/uniq
-  by 4.96x/2.41x and 64 MiB regex counting by 2.67x over wave 1. Their selected
-  GNU ratios are 2.84x, 2.52x and 2.89x; span extraction remains 10.33x.
-  Passed 1,584 Wasm package tests, 117 Native tool tests and the full functional
-  suite (2,062 passes, 19 skips, zero failures). The independent local comparison
-  matched 242 of 244 GNU cases; two empty-pattern grep differences also occur in
-  wave 1. See [ADR-0003](docs/adr/0003-streams.md#performance-wave-2-candidate-2026-10-26)
-  for bounds, evidence and remaining work. No package was uploaded, and these
-  diagnostic measurements do not establish formal performance acceptance.
-- Prepared the unpublished first performance wave in `core 0.8.2`,
-  `cut/uniq/wc 0.2.3` and `grep 0.3.1`: immutable record batches, synchronous
-  output accumulation, SIMD line/word counting, compact span worklists and a
-  bounded lazy DFA with conservative literal rejection. Published coordinates
-  and snapshots remain unchanged. Updated prospective direct-Wasm performance
-  limits to 3.0x per the current target; historical verdicts remain unchanged.
-  Local macOS checks passed 1,579 Wasm package tests, 117 Native tool tests and
-  the full functional run (2,062 passes, 19 explicit skips, zero failures).
-  Selected nine-pair measurements and the remaining short-record/regex gaps are
-  recorded in [ADR-0003](docs/adr/0003-streams.md#performance-wave-1-candidate-2026-10-26).
-  These observations do not establish three-host, published-consumer or formal
-  performance acceptance. No package was uploaded.
-- Migrated development CI to release Wasm commands on Linux, macOS and Windows,
-  with shared workspace/MoonX assertions and Native test tools. Removed the
-  daily schedule, Native product pairing, change-coverage audits and source/
-  artifact sealing. Resource observations and published acceptance run manually.
-- Added metadata stdin-preservation checks, strict cleanup/report failures,
-  bounded package-test execution and retained cancellation diagnostics. Reused
-  compilation state and parallelized independent pinned-oracle build stages.
-- Verified all 78 published coordinates on three platforms in
-  [run 40270955851](https://github.com/moonbit-community/cmd/actions/runs/40270955851),
-  including the complete pinned Linux comparison. Linux/macOS/Windows recorded
-  2,287/2,094/1,961 passes and 15/18/151 explicit platform skips, with no failures.
+- Migrated required CI to Wasm products on Linux, macOS and Windows, with
+  shared workspace/MoonX assertions and Native test tools. Retired daily
+  schedules, Native product pairing, change audits and artifact sealing.
+  Resource and published acceptance workflows remain manual.
+- Added live-stdin metadata checks, bounded test execution and strict
+  process/container cleanup and reporting. Reused compilation state.
+- Verified all 78 published coordinates in [run 40270955851](https://github.com/moonbit-community/cmd/actions/runs/40270955851):
+  Linux/macOS/Windows passed 2,287/2,094/1,961 checks with 15/18/151 skips.
   This validation uploaded no packages.
-- Recorded a preliminary cold CI run at `635f355`: Linux 13:35, macOS 5:48,
-  Windows 12:44 and 32:07 total runner time. These release-tool observations do
-  not establish a controlled cold/warm result for the later debug-tool setup.
-- Integrated the unpublished `cli/rg@0.1.0` candidate and catalog-only
-  `cli/core@0.8.2` through PR #58. Retained pinned rg.mbt algorithms and Unicode
-  data while replacing system access with public async APIs. Added Windows
-  path handling and direct-child pipe cancellation/diagnostic-drain regressions.
-  Effective compressed search rejects; stdin/terminal/file-identity limits,
-  PCRE2, real mmap and parallel search remain explicit boundaries.
-- Updated all three CI workflows to MoonBit `0.10.17+d971670cd` with matching
-  core. Local rg integration recorded 1,566 passing workspace Wasm package
-  tests and 117 passing Native harness tests; these are dated observations,
-  not publication or complete ripgrep compatibility claims.
-- Passed all three actual-main development checks for the rg integration in
-  [run 40307223749](https://github.com/moonbit-community/cmd/actions/runs/40307223749)
-  at `65b4b7e`, following PR run 40304444558. This did not publish rg or lift
-  its documented input, engine and compression boundaries.
-- Consolidated implementation and release reports into this changelog. Removed
-  obsolete planning, provenance and rg migration documents, the deferred
-  compression experiment and its one-time reporting tools. Refreshed the support
-  record, upstream pins and nine canonical ADRs from source and Git history;
-  cleared accumulated local test reports. No package versions or dependencies
-  changed in this documentation cleanup.
+- Integrated unpublished rg 0.1.0 through PR #58 with pinned algorithms,
+  public async I/O, Windows paths and direct-child lifecycle regressions.
+  [Actual-main CI](https://github.com/moonbit-community/cmd/actions/runs/40307223749) passed;
+  compression, identity, terminal, PCRE2, mmap and parallel-search limits remained.
+- Added unpublished byte/count/regex accelerators and manual direct-Wasm
+  resource profiles. Known upstream differences and unstable measurements
+  remained explicit; no performance acceptance or publication was claimed.
+- Consolidated obsolete reports and migration plans into canonical docs.
 
 ## 2026-10-25
 
