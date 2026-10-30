@@ -1,5 +1,5 @@
 ///|
-test "shared SIMD membership is exact for every singleton byte and both polarities" {
+test "shared SIMD membership is exact for every singleton byte" {
   let hay = FixedArray::makei(256, i => i.to_byte())
   for selected in 0..<256 {
     let members = FixedArray::makei(256, i => i == selected)
@@ -13,7 +13,6 @@ test "shared SIMD membership is exact for every singleton byte and both polariti
         0
       }
       assert_eq(mask, expected)
-      assert_eq(mask ^ 65535, expected ^ 65535)
     }
   }
 }

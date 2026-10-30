@@ -47,12 +47,16 @@ test "workspace manifest accepts explicit link kinds without accepting invalid f
         cases: [{ ..fixture, files: [absolute_target], }],
       }).any(error => error.contains("target must be relative")),
     )
-    let unknown_kind = { ..file, kind: Some("unknown-reparse-kind"), }
-    assert_true(
-      validate_manifest({
-        ..manifest,
-        cases: [{ ..fixture, files: [unknown_kind], }],
-      }).any(error => error.contains("unsupported fixture kind")),
-    )
   }
+  let unknown_kind : @testkit.FixtureFile = @json.from_json({
+    "path": "link",
+    "kind": "unknown-reparse-kind",
+    "target": "target",
+  })
+  assert_true(
+    validate_manifest({
+      ..manifest,
+      cases: [{ ..fixture, files: [unknown_kind], }],
+    }).any(error => error.contains("unsupported fixture kind")),
+  )
 }

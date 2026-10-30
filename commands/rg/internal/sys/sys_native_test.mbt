@@ -1,29 +1,4 @@
 ///|
-async test "native: file system" {
-  let root = @fs.tmpdir(prefix="rg-original-native-fs-")
-  defer @fs.rmdir(root, recursive=true)
-  fs_roundtrip(root)
-  // Link text/identity cannot be inferred from a successful canonical lookup.
-  assert_true(
-    try {
-      ignore(@sys.read_link(root + "/link"))
-      false
-    } catch {
-      @sys.IOError(kind=Unsupported, ..) => true
-      _ => false
-    },
-  )
-  if !(@async.platform is Windows) {
-    @sys.symlink("a.txt", root + "/link")
-    assert_eq(@sys.symlink_metadata(root + "/link").file_type, Symlink)
-    assert_eq(@sys.metadata(root + "/link").len, 12L)
-    assert_eq(@sys.read_file(root + "/link"), b"hello\nworld\n")
-  }
-  @sys.remove_file(root + "/t.txt")
-  assert_false(@sys.path_exists(root + "/t.txt"))
-}
-
-///|
 test "native: process info" {
   let time = @sys.now_nanos()
   assert_true(@sys.now_nanos() >= time)

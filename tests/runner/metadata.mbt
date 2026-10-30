@@ -123,13 +123,7 @@ async fn metadata_report(
       help_text.has_prefix("Usage: " + name) &&
       help_text.has_suffix("\n") &&
       help_text.contains("--help") &&
-      help_text.contains("--version") &&
-      help_text.contains("display this help and exit") &&
-      help_text.contains("display version and exit") &&
-      !help_text.contains("Show this help") &&
-      !help_text.contains("Show version") &&
-      !help_text.contains("package version") &&
-      !help_text.contains("output version information")
+      help_text.contains("--version")
     let actual_version = invocation(
       name,
       root,

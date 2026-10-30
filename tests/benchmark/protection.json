@@ -1039,7 +1039,7 @@
       "tests": [
         {
           "file": "core/bytesearch/byte_membership_wbtest.mbt",
-          "name": "shared SIMD membership is exact for every singleton byte and both polarities"
+          "name": "shared SIMD membership is exact for every singleton byte"
         },
         {
           "file": "core/bytere/record_skip_wbtest.mbt",

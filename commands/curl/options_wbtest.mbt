@@ -62,11 +62,19 @@ test "curl max-redirs accepts the upstream unlimited sentinel" {
 ///|
 test "curl accepts the complete documented HTTP method set" {
   for
-    name in [
-      "GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH",
+    (name, expected_method) in [
+      ("GET", @netops.Get),
+      ("HEAD", @netops.Head),
+      ("POST", @netops.Post),
+      ("PUT", @netops.Put),
+      ("DELETE", @netops.Delete),
+      ("CONNECT", @netops.Connect),
+      ("OPTIONS", @netops.Options),
+      ("TRACE", @netops.Trace),
+      ("PATCH", @netops.Patch),
     ] {
     let options = parse_curl_options(["-X", name, "https://example.test"])
-    assert_eq(options.request_method, Some(@netops.parse_http_method(name)))
+    assert_eq(options.request_method, Some(expected_method))
   }
 }
 

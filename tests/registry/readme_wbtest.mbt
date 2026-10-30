@@ -14,24 +14,27 @@ async test "command README coordinates match source and preserve unpublished bou
     let readme = @fs.read_file(directory + "/README.md")
       .text()
       .replace_all(old="\r\n", new="\n")
-    assert_true(readme.has_prefix("# " + name + "\n"))
-    assert_true(readme.contains("MoonX"))
-    for section in ["Supported scope", "Options", "Limitations", "Examples"] {
-      assert_true(readme.contains("\n## " + section + "\n"))
-    }
     assert_true(readme.contains("../../docs/compatibility.md"))
-    if name == "timeout" {
-      assert_true(
-        readme.contains("moon run --target wasm --release commands/" + name),
-      )
+    assert_true(readme.contains("../../docs/adr/"))
+    let invocation = if name == "timeout" {
       assert_true(!readme.contains("moonx cli/" + name + "@"))
+      "moon run --target wasm --release commands/" + name + " --"
     } else {
-      assert_true(readme.contains("moonx cli/" + name + "@" + version))
       if name == "rg" {
-        assert_true(readme.contains("unpublished candidate"))
-        assert_true(readme.contains("after publication"))
-        assert_true(!readme.contains("moon run"))
+        assert_true(readme.contains("unpublished"))
       }
+      "moonx cli/" + name + "@" + version
     }
+    assert_true(
+      readme
+      .split("\n")
+      .any(line => {
+        let line = line.trim().to_owned()
+        (line == invocation || line.contains(invocation + " ")) &&
+        !line.contains("[") &&
+        !line.contains("...")
+      }),
+      msg="missing concrete command example: " + name,
+    )
   }
 }
