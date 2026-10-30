@@ -284,6 +284,9 @@
       "oracle": true,
       "coverage": [
         "number"
+      ],
+      "aliases": [
+        "o5-lines-pipe"
       ]
     },
     {
@@ -756,53 +759,6 @@
       "oracle": true,
       "coverage": [
         "elide-empty-files",
-        "number"
-      ]
-    },
-    {
-      "id": "o5-lines-pipe",
-      "command": "split",
-      "args": [
-        "-n",
-        "l/3",
-        "-",
-        "p"
-      ],
-      "stdin_hex": "410a42424242420a430a44",
-      "files": [],
-      "environment": {
-        "LC_ALL": "C",
-        "LANG": "C",
-        "TZ": "UTC"
-      },
-      "expected_status": 0,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "",
-      "expected_files": [
-        {
-          "path": "paa",
-          "exists": true,
-          "kind": "file",
-          "content_hex": "410a42424242420a"
-        },
-        {
-          "path": "pab",
-          "exists": true,
-          "kind": "file",
-          "content_hex": ""
-        },
-        {
-          "path": "pac",
-          "exists": true,
-          "kind": "file",
-          "content_hex": "430a44"
-        }
-      ],
-      "normalizations": [],
-      "source_version": "GNU coreutils 9.11 fixed native development observation with bare argv0",
-      "comparison": "contract",
-      "oracle": true,
-      "coverage": [
         "number"
       ]
     },

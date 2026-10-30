@@ -58,7 +58,10 @@
       ],
       "expected_stdout_text": "echo 0.2.3\n",
       "expected_stderr_text": "",
-      "source_version": "workspace cli/echo@0.2.3 metadata contract"
+      "source_version": "workspace cli/echo@0.2.3 metadata contract",
+      "aliases": [
+        "release-metadata-echo-version"
+      ]
     },
     {
       "id": "p0-echo-help",
@@ -76,7 +79,10 @@
         "help"
       ],
       "expected_stdout_text": "Usage: echo [-n] [-e|-E] [STRING...]\n      --help      display this help and exit\n      --version   display version and exit\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "release-metadata-echo-help"
+      ]
     },
     {
       "id": "p0-echo-no-newline",
@@ -191,44 +197,6 @@
       "source_version": "workspace cli/echo@0.2.3 metadata contract",
       "expected_stderr_text": "",
       "expected_stdout_text": "echo 0.2.3\n"
-    },
-    {
-      "id": "release-metadata-echo-help",
-      "command": "echo",
-      "args": [
-        "--help"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "coverage": [
-        "help"
-      ],
-      "source_version": "workspace cli/echo@0.2.3 metadata contract",
-      "expected_stdout_text": "Usage: echo [-n] [-e|-E] [STRING...]\n      --help      display this help and exit\n      --version   display version and exit\n",
-      "expected_stderr_text": ""
-    },
-    {
-      "id": "release-metadata-echo-version",
-      "command": "echo",
-      "args": [
-        "--version"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "coverage": [
-        "version"
-      ],
-      "source_version": "workspace cli/echo@0.2.3 metadata contract",
-      "expected_stdout_text": "echo 0.2.3\n",
-      "expected_stderr_text": ""
     }
   ]
 }

@@ -5,7 +5,6 @@ using @testkit {
   snapshots_equal,
   normalize_text,
   controlled_environment,
-  oracle_request_name,
 }
 
 ///|

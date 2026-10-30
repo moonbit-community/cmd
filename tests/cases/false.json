@@ -29,7 +29,8 @@
       "expected_stdout_text": "false 0.2.3\n",
       "expected_stderr_text": "",
       "aliases": [
-        "compat-text-line-762"
+        "compat-text-line-762",
+        "release-metadata-false-version"
       ],
       "source_version": "workspace cli/false@0.2.3 metadata contract"
     },
@@ -49,7 +50,10 @@
         "help"
       ],
       "expected_stdout_text": "Usage: false [ignored command line arguments]\n      --help      display this help and exit\n      --version   display version and exit\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "release-metadata-false-help"
+      ]
     },
     {
       "id": "compat-text-line-745",
@@ -77,44 +81,6 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "",
-      "expected_stderr_text": ""
-    },
-    {
-      "id": "release-metadata-false-help",
-      "command": "false",
-      "args": [
-        "--help"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "coverage": [
-        "help"
-      ],
-      "source_version": "workspace cli/false@0.2.3 metadata contract",
-      "expected_stdout_text": "Usage: false [ignored command line arguments]\n      --help      display this help and exit\n      --version   display version and exit\n",
-      "expected_stderr_text": ""
-    },
-    {
-      "id": "release-metadata-false-version",
-      "command": "false",
-      "args": [
-        "--version"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "coverage": [
-        "version"
-      ],
-      "source_version": "workspace cli/false@0.2.3 metadata contract",
-      "expected_stdout_text": "false 0.2.3\n",
       "expected_stderr_text": ""
     }
   ]

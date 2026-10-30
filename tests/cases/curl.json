@@ -283,7 +283,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
     },
     {
       "id": "phase2-curl-location",
@@ -296,7 +300,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "hello",
+      "expected_stderr_text": ""
     },
     {
       "id": "phase2-curl-fail-status-22",

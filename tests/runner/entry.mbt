@@ -265,14 +265,7 @@ async fn run_driver() -> Unit {
     )
     let all = @testkit.load_cases(manifest_path)
     let all = match published {
-      Some((_, ids)) => {
-        for id in ids {
-          guard all.any(item => item.id == id) else {
-            fail("published case does not exist: " + id)
-          }
-        }
-        all.filter(item => ids.contains(item.id))
-      }
+      Some((_, ids)) => @testkit.select_cases(all, [], ids)
       None => all
     }
     let manifest = { ..manifest, cases: all, }

@@ -476,7 +476,10 @@ async fn run_pilot(options : Map[String, String]) -> Bool {
       fail("invalid workload ID or negative input size")
     }
     guard registry.entries.any(entry => {
-      entry.behavior_id == workload.reference_behavior_id &&
+      (
+        entry.behavior_id == workload.reference_behavior_id ||
+        entry.aliases.contains(workload.reference_behavior_id)
+      ) &&
       entry.command == workload.command
     }) else {
       fail(

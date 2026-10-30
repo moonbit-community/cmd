@@ -217,7 +217,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "hello",
+      "expected_stderr_text": ""
     },
     {
       "id": "phase2-wget-http-status-8",
@@ -351,7 +355,45 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "range",
+          "exists": true,
+          "kind": "file",
+          "content_text": "hello"
+        }
+      ]
+    },
+    {
+      "id": "p1-wget-continue-new-file",
+      "command": "wget",
+      "args": [
+        "-q",
+        "-c",
+        "${HTTP_BASE}/range"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "range",
+          "exists": true,
+          "kind": "file",
+          "content_text": "hello"
+        }
+      ]
     },
     {
       "id": "p1-wget-timestamp-not-modified",

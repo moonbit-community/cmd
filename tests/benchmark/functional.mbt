@@ -530,7 +530,10 @@ async fn run_functional(options : Map[String, String], sample~ : Bool) -> Bool {
     for workload in workloads {
       guard @testkit.safe_relative_path(workload.id) &&
         registry.entries.any(entry => {
-          entry.behavior_id == workload.reference_behavior_id &&
+          (
+            entry.behavior_id == workload.reference_behavior_id ||
+            entry.aliases.contains(workload.reference_behavior_id)
+          ) &&
           (entry.command == workload.command || entry.command == "all")
         }) else {
         fail("workload has no matching behavior reference: " + workload.id)

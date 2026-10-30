@@ -1,11 +1,61 @@
 {
   "schema": 3,
   "entries": [
-    {"behavior_id":"case:rg-boundary-dfa-budget","command":"rg","status":"boundary","implementation":"json-case","source":"tests/cases/rg.json","case_id":"rg-boundary-dfa-budget","aliases":[],"platforms":[],"oracle_profile":""},
-    {"behavior_id":"case:rg-boundary-dfa-zero","command":"rg","status":"boundary","implementation":"json-case","source":"tests/cases/rg.json","case_id":"rg-boundary-dfa-zero","aliases":[],"platforms":[],"oracle_profile":""},
-    {"behavior_id":"case:rg-noop-worker-mmap-options","command":"rg","status":"supported","implementation":"json-case","source":"tests/cases/rg.json","case_id":"rg-noop-worker-mmap-options","aliases":[],"platforms":[],"oracle_profile":""},
-    {"behavior_id":"case:rg-noop-worker-mmap-reverse","command":"rg","status":"supported","implementation":"json-case","source":"tests/cases/rg.json","case_id":"rg-noop-worker-mmap-reverse","aliases":[],"platforms":[],"oracle_profile":""},
-    {"behavior_id":"case:rg-mode-files-count-order","command":"rg","status":"supported","implementation":"json-case","source":"tests/cases/rg.json","case_id":"rg-mode-files-count-order","aliases":[],"platforms":[],"oracle_profile":""},
+    {
+      "behavior_id": "case:rg-boundary-dfa-budget",
+      "command": "rg",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "rg-boundary-dfa-budget",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:rg-boundary-dfa-zero",
+      "command": "rg",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "rg-boundary-dfa-zero",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:rg-noop-worker-mmap-options",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "rg-noop-worker-mmap-options",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:rg-noop-worker-mmap-reverse",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "rg-noop-worker-mmap-reverse",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:rg-mode-files-count-order",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "rg-mode-files-count-order",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
     {
       "behavior_id": "case:base32-rfc4648-foobar",
       "command": "base32",
@@ -626,7 +676,10 @@
       "implementation": "json-case",
       "source": "tests/cases/column.json",
       "case_id": "p2-column-version",
-      "aliases": [],
+      "aliases": [
+        "release-metadata-column-version",
+        "case:release-metadata-column-version"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -1477,7 +1530,10 @@
       "implementation": "json-case",
       "source": "tests/cases/date.json",
       "case_id": "p2-date-version",
-      "aliases": [],
+      "aliases": [
+        "release-metadata-date-version",
+        "case:release-metadata-date-version"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -1961,7 +2017,10 @@
       "implementation": "json-case",
       "source": "tests/cases/echo.json",
       "case_id": "p0-echo-version",
-      "aliases": [],
+      "aliases": [
+        "release-metadata-echo-version",
+        "case:release-metadata-echo-version"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -1972,7 +2031,10 @@
       "implementation": "json-case",
       "source": "tests/cases/echo.json",
       "case_id": "p0-echo-help",
-      "aliases": [],
+      "aliases": [
+        "release-metadata-echo-help",
+        "case:release-metadata-echo-help"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -2446,7 +2508,9 @@
       "source": "tests/cases/false.json",
       "case_id": "p0-false-version",
       "aliases": [
-        "compat-text-line-762"
+        "compat-text-line-762",
+        "release-metadata-false-version",
+        "case:release-metadata-false-version"
       ],
       "platforms": [],
       "oracle_profile": ""
@@ -2458,7 +2522,10 @@
       "implementation": "json-case",
       "source": "tests/cases/false.json",
       "case_id": "p0-false-help",
-      "aliases": [],
+      "aliases": [
+        "release-metadata-false-help",
+        "case:release-metadata-false-help"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -4335,7 +4402,10 @@
       "implementation": "json-case",
       "source": "tests/cases/ln.json",
       "case_id": "repair-fs-ln-interactive-last",
-      "aliases": [],
+      "aliases": [
+        "repair-fs-ln-interactive-last-eof",
+        "case:repair-fs-ln-interactive-last-eof"
+      ],
       "platforms": [
         "posix"
       ],
@@ -4387,19 +4457,6 @@
       "implementation": "json-case",
       "source": "tests/cases/ln.json",
       "case_id": "repair-fs-ln-no-dereference",
-      "aliases": [],
-      "platforms": [
-        "posix"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:repair-fs-ln-interactive-last-eof",
-      "command": "ln",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/ln.json",
-      "case_id": "repair-fs-ln-interactive-last-eof",
       "aliases": [],
       "platforms": [
         "posix"
@@ -6319,7 +6376,10 @@
       "implementation": "json-case",
       "source": "tests/cases/seq.json",
       "case_id": "p0-seq-version",
-      "aliases": [],
+      "aliases": [
+        "release-metadata-seq-version",
+        "case:release-metadata-seq-version"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -7127,7 +7187,9 @@
       "source": "tests/cases/sleep.json",
       "case_id": "p0-sleep-version",
       "aliases": [
-        "compat-text-line-736"
+        "compat-text-line-736",
+        "release-metadata-sleep-version",
+        "case:release-metadata-sleep-version"
       ],
       "platforms": [],
       "oracle_profile": ""
@@ -7139,7 +7201,10 @@
       "implementation": "json-case",
       "source": "tests/cases/sleep.json",
       "case_id": "p0-sleep-help",
-      "aliases": [],
+      "aliases": [
+        "release-metadata-sleep-help",
+        "case:release-metadata-sleep-help"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -7680,7 +7745,10 @@
       "implementation": "json-case",
       "source": "tests/cases/strings.json",
       "case_id": "p2-strings-version",
-      "aliases": [],
+      "aliases": [
+        "release-metadata-strings-version",
+        "case:release-metadata-strings-version"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -8446,7 +8514,9 @@
       "source": "tests/cases/true.json",
       "case_id": "p0-true-version",
       "aliases": [
-        "compat-text-line-754"
+        "compat-text-line-754",
+        "release-metadata-true-version",
+        "case:release-metadata-true-version"
       ],
       "platforms": [],
       "oracle_profile": ""
@@ -8459,7 +8529,9 @@
       "source": "tests/cases/true.json",
       "case_id": "p0-true-help",
       "aliases": [
-        "compat-text-line-746"
+        "compat-text-line-746",
+        "release-metadata-true-help",
+        "case:release-metadata-true-help"
       ],
       "platforms": [],
       "oracle_profile": ""
@@ -8975,6 +9047,17 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
+      "behavior_id": "case:p1-wget-continue-new-file",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "p1-wget-continue-new-file",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
       "behavior_id": "case:p1-wget-timestamp-not-modified",
       "command": "wget",
       "status": "supported",
@@ -9106,7 +9189,10 @@
       "implementation": "json-case",
       "source": "tests/cases/which.json",
       "case_id": "p2-which-version",
-      "aliases": [],
+      "aliases": [
+        "release-metadata-which-version",
+        "case:release-metadata-which-version"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -11012,17 +11098,6 @@
       "oracle_profile": ""
     },
     {
-      "behavior_id": "case:release-metadata-seq-version",
-      "command": "seq",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/seq.json",
-      "case_id": "release-metadata-seq-version",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
       "behavior_id": "case:release-metadata-tac-help",
       "command": "tac",
       "status": "supported",
@@ -11166,17 +11241,6 @@
       "oracle_profile": ""
     },
     {
-      "behavior_id": "case:release-metadata-date-version",
-      "command": "date",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/date.json",
-      "case_id": "release-metadata-date-version",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
       "behavior_id": "case:release-metadata-diff-help",
       "command": "diff",
       "status": "supported",
@@ -11194,28 +11258,6 @@
       "implementation": "json-case",
       "source": "tests/cases/diff.json",
       "case_id": "release-metadata-diff-version",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:release-metadata-echo-help",
-      "command": "echo",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/echo.json",
-      "case_id": "release-metadata-echo-help",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:release-metadata-echo-version",
-      "command": "echo",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/echo.json",
-      "case_id": "release-metadata-echo-version",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -11485,28 +11527,6 @@
       "oracle_profile": ""
     },
     {
-      "behavior_id": "case:release-metadata-true-help",
-      "command": "true",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/true.json",
-      "case_id": "release-metadata-true-help",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:release-metadata-true-version",
-      "command": "true",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/true.json",
-      "case_id": "release-metadata-true-version",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
       "behavior_id": "case:release-metadata-uniq-help",
       "command": "uniq",
       "status": "supported",
@@ -11612,28 +11632,6 @@
       "implementation": "json-case",
       "source": "tests/cases/cksum.json",
       "case_id": "release-metadata-cksum-version",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:release-metadata-false-help",
-      "command": "false",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/false.json",
-      "case_id": "release-metadata-false-help",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:release-metadata-false-version",
-      "command": "false",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/false.json",
-      "case_id": "release-metadata-false-version",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -11749,28 +11747,6 @@
       "oracle_profile": ""
     },
     {
-      "behavior_id": "case:release-metadata-sleep-help",
-      "command": "sleep",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sleep.json",
-      "case_id": "release-metadata-sleep-help",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:release-metadata-sleep-version",
-      "command": "sleep",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sleep.json",
-      "case_id": "release-metadata-sleep-version",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
       "behavior_id": "case:release-metadata-split-help",
       "command": "split",
       "status": "supported",
@@ -11821,17 +11797,6 @@
       "implementation": "json-case",
       "source": "tests/cases/which.json",
       "case_id": "release-metadata-which-help",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:release-metadata-which-version",
-      "command": "which",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/which.json",
-      "case_id": "release-metadata-which-version",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -11909,17 +11874,6 @@
       "implementation": "json-case",
       "source": "tests/cases/column.json",
       "case_id": "release-metadata-column-help",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:release-metadata-column-version",
-      "command": "column",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/column.json",
-      "case_id": "release-metadata-column-version",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -12151,17 +12105,6 @@
       "implementation": "json-case",
       "source": "tests/cases/strings.json",
       "case_id": "release-metadata-strings-help",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:release-metadata-strings-version",
-      "command": "strings",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/strings.json",
-      "case_id": "release-metadata-strings-version",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -17435,7 +17378,10 @@
       "implementation": "json-case",
       "source": "tests/cases/split.json",
       "case_id": "o5-lines-3",
-      "aliases": [],
+      "aliases": [
+        "o5-lines-pipe",
+        "case:o5-lines-pipe"
+      ],
       "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -17567,17 +17513,6 @@
       "implementation": "json-case",
       "source": "tests/cases/split.json",
       "case_id": "o5-empty-round-elide",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:o5-lines-pipe",
-      "command": "split",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/split.json",
-      "case_id": "o5-lines-pipe",
       "aliases": [],
       "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
@@ -26913,9 +26848,7 @@
         "compat-catalog-line-243",
         "p0-echo-disable-escapes",
         "p9-echo-octal-per-argument",
-        "release-metadata-echo-help",
-        "p9-echo-double-dash-literal",
-        "release-metadata-echo-version"
+        "p9-echo-double-dash-literal"
       ]
     },
     {
@@ -26991,9 +26924,7 @@
         "p0-false-version",
         "phase0-false-status",
         "compat-text-line-745",
-        "compat-catalog-line-90",
-        "release-metadata-false-help",
-        "release-metadata-false-version"
+        "compat-catalog-line-90"
       ]
     },
     {
@@ -27267,7 +27198,6 @@
         "repair-fs-ln-interactive-last",
         "repair-fs-ln-target-directory",
         "compat-filesystem-symbolic-link",
-        "repair-fs-ln-interactive-last-eof",
         "compat-filesystem-windows-ln-boundary"
       ]
     },
@@ -27729,7 +27659,6 @@
         "repair-edge-seq-precision-1e4097",
         "repair-edge-seq-precision-1e-4097",
         "release-metadata-seq-help",
-        "release-metadata-seq-version",
         "o3-seq-format-basic",
         "o3-seq-format-percent",
         "o3-seq-format-separator",
@@ -27856,9 +27785,7 @@
         "compat-text-line-727",
         "compat-text-line-728",
         "p9-sleep-double-dash",
-        "compat-catalog-line-235",
-        "release-metadata-sleep-help",
-        "release-metadata-sleep-version"
+        "compat-catalog-line-235"
       ]
     },
     {
@@ -28167,9 +28094,7 @@
         "p0-true-version",
         "phase3-true-status",
         "compat-text-line-744",
-        "compat-catalog-line-294",
-        "release-metadata-true-help",
-        "release-metadata-true-version"
+        "compat-catalog-line-294"
       ]
     },
     {
@@ -28326,7 +28251,8 @@
         "p1-wget-method-and-repeated-header",
         "p1-wget-content-disposition-collision",
         "phase2-wget-https-no-check-certificate",
-        "transfer-wget-unsatisfied-without-resume"
+        "transfer-wget-unsatisfied-without-resume",
+        "p1-wget-continue-new-file"
       ]
     },
     {
@@ -29056,7 +28982,6 @@
         "o5-lines-3",
         "o5-lines-hole",
         "o5-lines-hole-elide",
-        "o5-lines-pipe",
         "o5-lines-selected-2-of-3",
         "o5-long-line-bytes-alias",
         "o5-long-number-alias",
@@ -29329,7 +29254,6 @@
         "repair-column-table-final-lf",
         "repair-column-empty-separator",
         "repair-final-column-ansi-width",
-        "release-metadata-column-version",
         "repair-edge-column-invalid-bytes"
       ]
     },
@@ -29362,7 +29286,6 @@
         "repair-edge-date-dst-fold",
         "release-metadata-date-help",
         "repair-date-gmt-abbreviation",
-        "release-metadata-date-version",
         "repair-date-negative-fraction",
         "repair-edge-date-Asia-Shanghai",
         "repair-edge-date-Europe-Dublin",
@@ -29405,7 +29328,6 @@
         "p2-strings-unsupported-encoding",
         "p2-strings-version",
         "release-metadata-strings-help",
-        "release-metadata-strings-version",
         "repair-alias-strings-all",
         "repair-alias-strings-bytes",
         "repair-alias-strings-octal",
@@ -29453,7 +29375,6 @@
         "repair-which-not-executable",
         "repair-edge-which-empty-path",
         "repair-which-windows-pathext",
-        "release-metadata-which-version",
         "repair-final-which-duplicate-path"
       ]
     },

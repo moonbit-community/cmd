@@ -286,6 +286,9 @@
           "kind": "file",
           "content_text": "old"
         }
+      ],
+      "aliases": [
+        "repair-fs-ln-interactive-last-eof"
       ]
     },
     {
@@ -488,53 +491,6 @@
         {
           "path": "directory/source",
           "exists": false
-        }
-      ]
-    },
-    {
-      "id": "repair-fs-ln-interactive-last-eof",
-      "command": "ln",
-      "args": [
-        "-s",
-        "-f",
-        "-i",
-        "source",
-        "destination"
-      ],
-      "stdin_text": "",
-      "files": [
-        {
-          "path": "source",
-          "content_text": "new"
-        },
-        {
-          "path": "destination",
-          "content_text": "old"
-        }
-      ],
-      "environment": {
-        "LC_ALL": "C",
-        "TZ": "UTC"
-      },
-      "expected_status": 1,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "ln: replace 'destination'? ",
-      "normalizations": [],
-      "comparison": "contract",
-      "oracle": true,
-      "source_version": "GNU coreutils 9.11 Linux CI 38117528667: interactive refusal returns 1",
-      "host_platforms": [
-        "posix"
-      ],
-      "expected_files": [
-        {
-          "path": "source",
-          "content_text": "new"
-        },
-        {
-          "path": "destination",
-          "kind": "file",
-          "content_text": "old"
         }
       ]
     },
