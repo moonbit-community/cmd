@@ -1,7 +1,7 @@
 {
   "schema": 2,
-  "published_manifest": "tests/release_runner/current/published.json",
-  "case_corpus": "tests/release_runner/current/published.json.cases.json",
+  "published_manifest": "tests/release_runner/current/latest.json",
+  "case_corpus": "tests/release_runner/current/latest-cases.json",
   "base_manifest": "tests/benchmark/functional.json",
   "workloads": [],
   "sweeps": [

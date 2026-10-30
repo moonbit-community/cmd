@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "published_manifest": "tests/release_runner/current/published.json",
+  "published_manifest": "tests/release_runner/current/latest.json",
   "workloads": [
     {
       "id": "basename-operand-0",

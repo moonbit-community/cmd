@@ -1,7 +1,7 @@
 {
   "schema": 2,
-  "published_manifest": "tests/release_runner/current/published.json",
-  "case_corpus": "tests/release_runner/current/published.json.cases.json",
+  "published_manifest": "tests/release_runner/current/latest.json",
+  "case_corpus": "tests/release_runner/current/latest-cases.json",
   "workloads": [
     {"id":"base32-functional","command":"base32","reference_behavior_id":"case:base32-rfc4648-foobar","case_id":"base32-rfc4648-foobar"},
     {"id":"base64-functional","command":"base64","reference_behavior_id":"case:phase0-base64-stdin","case_id":"phase0-base64-stdin"},

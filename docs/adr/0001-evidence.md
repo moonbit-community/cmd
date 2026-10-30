@@ -21,6 +21,12 @@ corpora. Missing fixtures fail. Do not expose product APIs to relocate tests.
 The retired change-coverage audit, source/artifact sealing and audited-push
 wrapper are not current gates and must not be recreated under another name.
 
+Current duplicate CLI cases have one canonical record with selectable aliases;
+aliases do not schedule a second execution. Frozen published expectations remain
+independent. Shared HTTP fixtures serve JSON cases and stateful cohorts; keep
+counted retry and cross-request state checks distinct. Legacy assertions needed
+only by the frozen published corpus run only in published mode.
+
 ## Evidence rules
 
 - Assert stdout, stderr, exit status and relevant file effects independently.
@@ -67,6 +73,11 @@ case snapshot define published acceptance. Workspace changes never rewrite
 old-coordinate expectations. Exercise actual MoonX dependency resolution after
 upload; a workspace build is insufficient. Release results remain dated in
 [CHANGELOG.md](../../CHANGELOG.md).
+
+Benchmark defaults select that same accepted inventory and matching independent
+case corpus. Retired source/provenance/registry archives live in Git at 234f960,
+not in the active checkout. Historical measurements keep their original
+coordinates; changing defaults does not requalify an old result.
 
 Required development checks target roughly ten minutes, normally below fifteen
 and at most twenty, excluding queue time. Report actual stage durations and

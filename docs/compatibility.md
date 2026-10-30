@@ -374,10 +374,12 @@ verified immutable oracle profile. A focused run is not full acceptance.
 [latest.json](../tests/release_runner/current/latest.json) selects the 78 exact
 published coordinates and independent `latest-cases.json` expectations.
 `candidate.json` selects reviewed workspace versions and `active-cases.json`.
-`published.json` and the historical manifests retain older frozen meanings.
-The current driver does not implement the retired historical-replay,
-receipt-verification or publication-freezing protocols. Git retains those
-older implementations; historical records are not current execution inputs.
+Retired manifests and source archives retain their older frozen meanings in
+[Git at 234f960](https://github.com/moonbit-community/cmd/tree/234f9602347e43bd6d7c86c454489fc3f672c722/tests/release_runner).
+The current driver does not implement historical replay, receipt verification
+or publication freezing. Benchmark defaults now select the same latest accepted
+inventory and its independent case corpus; historical reports keep their
+recorded coordinates.
 
 The manual [release workflow](../.github/workflows/release-acceptance.yml)
 executes exact MoonX coordinates on all three hosts, plus the pinned Linux
@@ -478,9 +480,8 @@ Exact registry coordinates and selected local-acceptance cases are in
 [the latest manifest](../tests/release_runner/current/latest.json) and
 [documentation release summary](../CHANGELOG.md#2026-10-27). Local MoonX acceptance
 covers all 78 commands, with zero failures and the documented boundaries and
-platform skips. The previous frozen baseline stays in
-`current/published.json`; earlier manifests remain under
-`tests/release_runner/historical/`.
+platform skips. Previous frozen baselines and earlier manifests are recoverable
+from the Git revision linked above; they are not active-checkout execution inputs.
 
 `timeout` is intentionally local-only because portable
 `ProcessGroupCancellation` is unavailable:

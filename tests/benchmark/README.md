@@ -139,9 +139,12 @@ remain open.
 The original schema-1 pilot covers eight early command families. Each
 workload links a `reference_behavior_id` as context for the same command and
 reads its exact published coordinate from
-`tests/release_runner/current/published.json`. That reference does not execute
+`tests/release_runner/current/latest.json`. The defaults now follow the current
+accepted inventory; old measurements retain their recorded coordinates and
+must not be compared as if their baselines were identical. That reference does not execute
 the cited case or satisfy coverage audit; each workload's own arguments and
-output checks define its measured behavior. Each candidate
+output checks define its measured behavior. Schema-2 functional/scaled defaults
+use the matching independent `current/latest-cases.json` corpus. Each candidate
 call is a real `moonx <coordinate> -- <args...>` process. Source Native and
 direct Wasm timings cannot substitute for this delivery role.
 

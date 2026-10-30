@@ -194,8 +194,10 @@ module and version before any release operation.
   macOS (2,094 checks, 18 skips) and Windows (1,961 checks, 151 skips), all with
   zero failures. See CHANGELOG.md under 2026-10-27. This does not establish
   full GNU parity or formal performance acceptance.
-  current/published.json and historical snapshots remain unchanged; prior
-  release and acceptance results retain their dated scope in CHANGELOG.md.
+  Current latest/candidate snapshots remain independent. Retired published and
+  historical archives are preserved in Git at 234f960, rather than duplicated
+  in the active checkout. Prior acceptance results retain their dated scope
+  in CHANGELOG.md.
   Update this baseline whenever a later release changes it.
 
 ### Mandatory pure MoonBit boundary

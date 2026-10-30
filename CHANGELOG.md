@@ -13,6 +13,18 @@ Their failed, incomplete and platform-limited results keep their original scope.
 
 Development cleanup; no package versions changed.
 
+- Made HTTP method expectations independent of the implementation, consolidated
+  duplicate cases through selectable aliases, and removed redundant assertions
+  and duplicate filesystem executions. Retained failure-path coverage.
+- Shared HTTP fixtures between current cases and retained cohorts; workspace
+  redirects/resume use explicit JSON contracts while frozen published checks
+  retain their existing assertions. Removed editorial wording locks.
+- Switched benchmark defaults to the latest accepted inventory and corpus.
+  Removed retired release archives from the checkout; their complete contents
+  remain in Git at 234f960. Latest/candidate snapshot bytes are unchanged.
+  Test cleanup passed 1,706 Wasm tests, 118 tool tests and 2,112 functional
+  checks with nineteen skips. All 80 product binaries match the baseline
+  rebuilt with the same current toolchain.
 - Rg now rejects ineffective --dfa-size-limit values explicitly, with aligned
   help, README, support metadata and command regressions.
 - Removed unused matcher helpers, indexing/device-identity branches,
