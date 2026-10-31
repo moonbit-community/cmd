@@ -53,6 +53,7 @@ jobs:
       - run: moon build --target wasm --release --deny-warn
       - uses: docker/setup-buildx-action@v3
         with:
+          cache-binary: ${{ github.ref == 'refs/heads/main' }}
           buildkitd-config-inline: |
             [worker.oci]
               max-parallelism = 2

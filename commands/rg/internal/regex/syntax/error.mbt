@@ -136,7 +136,7 @@ fn pattern_lines(pattern : Array[Char]) -> Array[String] {
       let s = cur.to_string()
       lines.push(
         if s.has_suffix("\r") {
-          s.view(end_offset=s.length() - 1).to_owned()
+          s[:s.length() - 1].to_owned()
         } else {
           s
         },

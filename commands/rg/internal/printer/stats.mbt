@@ -269,8 +269,8 @@ pub fn format_fixed(x : Double, prec : Int32) -> String {
     digits = "0" + digits
   }
   let int_len = digits.length() - prec
-  let int_part = digits.view(end_offset=int_len).to_owned()
-  let frac_part = digits.view(start_offset=int_len).to_owned()
+  let int_part = digits[:int_len].to_owned()
+  let frac_part = digits[int_len:].to_owned()
   let sign = if neg && q != @bigint.BigInt::from_int(0) { "-" } else { "" }
   if prec == 0 {
     sign + int_part

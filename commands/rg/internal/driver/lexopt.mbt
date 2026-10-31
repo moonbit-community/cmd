@@ -130,13 +130,13 @@ fn Lexer::next(self : Lexer) -> Arg? raise RgError {
     let mut name = arg
     match arg.find("=") {
       Some(i) => {
-        self.state = PendingValue(arg.view(start_offset=i + 1).to_owned())
-        name = arg.view(end_offset=i).to_owned()
+        self.state = PendingValue(arg[i + 1:].to_owned())
+        name = arg[:i].to_owned()
       }
       None => ()
     }
     self.last_option = Some(name)
-    Some(Long(name.view(start_offset=2).to_owned()))
+    Some(Long(name[2:].to_owned()))
   } else if arg.length() > 1 && arg.has_prefix("-") {
     self.state = Shorts(arg.iter().collect(), 1)
     self.next()
