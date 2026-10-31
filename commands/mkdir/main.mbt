@@ -1,31 +1,8 @@
 ///|
-fn parse_mode(text : String) -> Int32 raise {
-  let digits = if text.has_prefix("0o") || text.has_prefix("0O") {
-    text[2:].to_owned()
-  } else {
-    text
-  }
-  if digits == "" {
-    fail("empty mode")
-  }
-  let mut value = 0
-  for digit in digits {
-    if !(digit is ('0'..<='7')) {
-      fail("invalid mode")
-    }
-    value = value * 8 + digit.to_int() - '0'.to_int()
-    if value > 0o7777 {
-      fail("mode out of range")
-    }
-  }
-  value
-}
-
-///|
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("mkdir 0.2.3\n")
+    @stdio.stdout.write("mkdir 0.2.4\n")
     return
   }
   let args = @env.args()[1:]
@@ -43,17 +20,21 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\nMODE accepts octal or symbolic permissions (rwxXst, copied classes and comma clauses).\nSticky-only +t yields 1755; a=rwx,+t yields 1777.\nOmitted-who expressions requiring the process umask are unavailable.\n",
+      "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\nMODE accepts octal or symbolic permissions (rwxXst, copied classes and comma clauses).\nSticky-only +t yields 1755 on Linux and 1777 on macOS; a=rwx,+t yields 1777.\nOmitted-who expressions requiring the process umask are unavailable.\n",
     )
     return
   }
   let mut symbolic = false
+  let creation_retains_sticky = match @async.platform {
+    MacOS => false
+    Linux | Windows => true
+  }
   let permission = match parsed.last_value("mode") {
     Some(value) =>
-      parse_mode(value) catch {
+      @mode.parse_octal_mode(value) catch {
         _ => {
           symbolic = true
-          symbolic_mode(value) catch {
+          symbolic_mode(value, creation_retains_sticky~) catch {
             InvalidMode => {
               @stdio.stderr.write("mkdir: invalid mode '\{value}'\n")
               @sys.exit(1)

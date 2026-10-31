@@ -1,0 +1,2869 @@
+{
+  "schema": 1,
+  "scope": "One real-input registry for43 commands:40 timing and3 explicit correctness-only dispositions. Requirements are finite mode/facet observations, not all options, workload-frequency weights, full compatibility or performance acceptance.",
+  "source_catalog": "tests/fixtures/benchmark/real-sources.json",
+  "facet_vocabulary": [
+    "bytes",
+    "records",
+    "utf8",
+    "binary",
+    "empty",
+    "unterminated",
+    "long-record",
+    "named-files",
+    "tree",
+    "pipe-input",
+    "slow-output",
+    "early-exit",
+    "formatting",
+    "selection",
+    "sorting",
+    "spill",
+    "duplicates",
+    "codec",
+    "network"
+  ],
+  "timing_command_count": 40,
+  "correctness_only_command_count": 3,
+  "commands": [
+    {
+      "command": "base32",
+      "disposition": "timing",
+      "required_modes": [
+        "base32-binary-encode",
+        "base32-encode-unwrapped"
+      ],
+      "required_facets": [
+        "binary",
+        "bytes",
+        "codec",
+        "records"
+      ],
+      "local_case_ids": [
+        "base32-rfc4648-foobar",
+        "base32-rfc4648-decode"
+      ]
+    },
+    {
+      "command": "base64",
+      "disposition": "timing",
+      "required_modes": [
+        "base64-binary-encode",
+        "base64-encode-unwrapped"
+      ],
+      "required_facets": [
+        "binary",
+        "bytes",
+        "codec",
+        "records"
+      ],
+      "local_case_ids": [
+        "base64-zero-wrap",
+        "compat-text-line-632"
+      ]
+    },
+    {
+      "command": "cat",
+      "disposition": "timing",
+      "required_modes": [
+        "cat-binary-path",
+        "cat-copy",
+        "cat-empty",
+        "cat-format",
+        "cat-slow-output",
+        "cat-unterminated",
+        "cat-utf8-copy"
+      ],
+      "required_facets": [
+        "binary",
+        "bytes",
+        "empty",
+        "formatting",
+        "named-files",
+        "pipe-input",
+        "records",
+        "slow-output",
+        "unterminated",
+        "utf8"
+      ],
+      "local_case_ids": [
+        "proof-cat-unicode-path-binary-tail",
+        "compat-text-line-33"
+      ]
+    },
+    {
+      "command": "cksum",
+      "disposition": "timing",
+      "required_modes": [
+        "cksum-binary",
+        "cksum-crc"
+      ],
+      "required_facets": [
+        "binary",
+        "bytes",
+        "records"
+      ],
+      "local_case_ids": [
+        "p0-cksum-stdin",
+        "o9-default"
+      ]
+    },
+    {
+      "command": "column",
+      "disposition": "timing",
+      "required_modes": [
+        "column-delimited-table",
+        "column-grid-width80"
+      ],
+      "required_facets": [
+        "bytes",
+        "formatting",
+        "records"
+      ],
+      "local_case_ids": [
+        "p2-column-table",
+        "p2-column-delimiter"
+      ]
+    },
+    {
+      "command": "comm",
+      "disposition": "timing",
+      "required_modes": [
+        "comm-shared-and-unpaired"
+      ],
+      "required_facets": [
+        "bytes",
+        "named-files",
+        "records",
+        "sorting"
+      ],
+      "local_case_ids": [
+        "compat-text-comm-nul-records",
+        "compat-text-comm-check-order"
+      ]
+    },
+    {
+      "command": "csplit",
+      "disposition": "timing",
+      "required_modes": [
+        "csplit-repeated-interior-boundaries"
+      ],
+      "required_facets": [
+        "bytes",
+        "records"
+      ],
+      "local_case_ids": [
+        "p1-csplit-lines",
+        "p1-csplit-regex-repeat"
+      ]
+    },
+    {
+      "command": "curl",
+      "disposition": "timing",
+      "required_modes": [
+        "curl-download",
+        "curl-file-upload",
+        "curl-post-file"
+      ],
+      "required_facets": [
+        "bytes",
+        "named-files",
+        "network",
+        "records"
+      ],
+      "local_case_ids": [
+        "network-transfer-boundaries",
+        "network-auth-cookie"
+      ]
+    },
+    {
+      "command": "cut",
+      "disposition": "timing",
+      "required_modes": [
+        "cut-byte-selection",
+        "cut-field-selection",
+        "cut-long-record"
+      ],
+      "required_facets": [
+        "bytes",
+        "long-record",
+        "records",
+        "selection"
+      ],
+      "local_case_ids": [
+        "compat-text-line-605",
+        "compat-text-line-684"
+      ]
+    },
+    {
+      "command": "diff",
+      "disposition": "timing",
+      "required_modes": [
+        "diff-distinct-equal",
+        "diff-real-module-pair"
+      ],
+      "required_facets": [
+        "bytes",
+        "named-files",
+        "records"
+      ],
+      "local_case_ids": [
+        "p1-diff-normal",
+        "p1-diff-unified",
+        "d-diff-repeated-delete",
+        "d-diff-repeated-cross"
+      ]
+    },
+    {
+      "command": "expand",
+      "disposition": "timing",
+      "required_modes": [
+        "expand-tabstop4"
+      ],
+      "required_facets": [
+        "bytes",
+        "formatting",
+        "records"
+      ],
+      "local_case_ids": [
+        "p0-expand-basic-tabs",
+        "p0-expand-initial"
+      ]
+    },
+    {
+      "command": "find",
+      "disposition": "timing",
+      "required_modes": [
+        "find-tree-names",
+        "find-tree-size"
+      ],
+      "required_facets": [
+        "bytes",
+        "named-files",
+        "records",
+        "selection",
+        "tree"
+      ],
+      "local_case_ids": [
+        "phase4-find-metadata",
+        "phase4-find-prune-depth"
+      ]
+    },
+    {
+      "command": "fold",
+      "disposition": "timing",
+      "required_modes": [
+        "fold-width80"
+      ],
+      "required_facets": [
+        "bytes",
+        "formatting",
+        "records"
+      ],
+      "local_case_ids": [
+        "fold-width-newline",
+        "fold-space-break"
+      ]
+    },
+    {
+      "command": "grep",
+      "disposition": "timing",
+      "required_modes": [
+        "grep-early-exit",
+        "grep-empty",
+        "grep-literal-count",
+        "grep-literal-miss",
+        "grep-long-record-count",
+        "grep-regex-count",
+        "grep-regex-numbered-output",
+        "grep-unterminated"
+      ],
+      "required_facets": [
+        "bytes",
+        "early-exit",
+        "empty",
+        "long-record",
+        "pipe-input",
+        "records",
+        "selection",
+        "unterminated"
+      ],
+      "local_case_ids": [
+        "grep-no-context-separator",
+        "grep-basic-plus-literal"
+      ]
+    },
+    {
+      "command": "gunzip",
+      "disposition": "timing",
+      "required_modes": [
+        "gunzip-concatenated-block-types",
+        "gunzip-first-dynamic-native",
+        "gunzip-fixed-literals",
+        "gunzip-stored-blocks"
+      ],
+      "required_facets": [
+        "bytes",
+        "codec",
+        "records"
+      ],
+      "local_case_ids": [
+        "p1-gunzip-concatenated",
+        "p1-gunzip-validate"
+      ]
+    },
+    {
+      "command": "gzip",
+      "disposition": "timing",
+      "required_modes": [
+        "gzip-default-compress"
+      ],
+      "required_facets": [
+        "bytes",
+        "codec",
+        "records"
+      ],
+      "local_case_ids": [
+        "p1-gzip-concatenated",
+        "p1-gzip-validate"
+      ]
+    },
+    {
+      "command": "head",
+      "disposition": "timing",
+      "required_modes": [
+        "head-early-exit10",
+        "head-pipe-early-exit"
+      ],
+      "required_facets": [
+        "bytes",
+        "early-exit",
+        "pipe-input",
+        "records",
+        "selection"
+      ],
+      "local_case_ids": [
+        "compat-text-line-552",
+        "compat-text-line-561"
+      ]
+    },
+    {
+      "command": "join",
+      "disposition": "timing",
+      "required_modes": [
+        "join-shared-and-unpaired"
+      ],
+      "required_facets": [
+        "bytes",
+        "named-files",
+        "records",
+        "sorting"
+      ],
+      "local_case_ids": [
+        "compat-text-join-output-list",
+        "compat-text-join-nul-records",
+        "o1-join-case-cartesian"
+      ]
+    },
+    {
+      "command": "jq",
+      "disposition": "timing",
+      "required_modes": [
+        "jq-compact-identity",
+        "jq-filter-selection",
+        "jq-property-missing-null-string",
+        "jq-slurp-aggregate",
+        "jq-slurp-group-cardinality",
+        "jq-slurp-sort-by-id"
+      ],
+      "required_facets": [
+        "bytes",
+        "records",
+        "selection"
+      ],
+      "local_case_ids": [
+        "jq-stream-framing",
+        "jq-slurp-stream"
+      ]
+    },
+    {
+      "command": "ln",
+      "disposition": "correctness-only",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "compat-filesystem-symbolic-link",
+        "compat-filesystem-windows-ln-boundary",
+        "repair-fs-ln-no-dereference"
+      ],
+      "reason": "No meaningful bulk real-corpus timing row is declared. Exact local symbolic-link effects, alias spelling and Windows capability boundary remain required; do not infer hard-link fidelity or throughput."
+    },
+    {
+      "command": "make",
+      "disposition": "correctness-only",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "make-ready-ack",
+        "compat-text-make-include-cli-override"
+      ],
+      "reason": "The former5000-recipe synthetic timing is retired. Real project Makefile corpus not registered; exact ready/ACK DAG, shared prerequisite, controlled serial keep-going and include/CLI override scenarios remain correctness-only."
+    },
+    {
+      "command": "md5sum",
+      "disposition": "timing",
+      "required_modes": [
+        "md5sum-binary",
+        "md5sum-digest"
+      ],
+      "required_facets": [
+        "binary",
+        "bytes",
+        "records"
+      ],
+      "local_case_ids": [
+        "checksum-md5sum-stdin",
+        "checksum-md5sum-empty"
+      ]
+    },
+    {
+      "command": "nl",
+      "disposition": "timing",
+      "required_modes": [
+        "nl-number-records"
+      ],
+      "required_facets": [
+        "bytes",
+        "formatting",
+        "records"
+      ],
+      "local_case_ids": [
+        "compat-text-line-623",
+        "compat-text-line-945"
+      ]
+    },
+    {
+      "command": "paste",
+      "disposition": "timing",
+      "required_modes": [
+        "paste-parallel",
+        "paste-serial"
+      ],
+      "required_facets": [
+        "bytes",
+        "formatting",
+        "named-files",
+        "records"
+      ],
+      "local_case_ids": [
+        "compat-text-line-719",
+        "compat-text-paste-nul-records"
+      ]
+    },
+    {
+      "command": "rev",
+      "disposition": "timing",
+      "required_modes": [
+        "rev-ascii-records",
+        "rev-long-record"
+      ],
+      "required_facets": [
+        "bytes",
+        "formatting",
+        "long-record",
+        "records"
+      ],
+      "local_case_ids": [
+        "p0-rev-lines",
+        "o6-rev-unterminated"
+      ]
+    },
+    {
+      "command": "rg",
+      "disposition": "timing",
+      "required_modes": [
+        "rg-early-exit",
+        "rg-empty",
+        "rg-literal-count",
+        "rg-literal-miss",
+        "rg-long-record-count",
+        "rg-regex-count",
+        "rg-regex-numbered-output",
+        "rg-regex-spans",
+        "rg-slow-output",
+        "rg-tree-files",
+        "rg-unterminated"
+      ],
+      "required_facets": [
+        "bytes",
+        "early-exit",
+        "empty",
+        "long-record",
+        "named-files",
+        "pipe-input",
+        "records",
+        "selection",
+        "slow-output",
+        "tree",
+        "unterminated"
+      ],
+      "local_case_ids": [
+        "rg-boundary-dfa-budget",
+        "rg-boundary-dfa-zero"
+      ]
+    },
+    {
+      "command": "sed",
+      "disposition": "timing",
+      "required_modes": [
+        "sed-substitution-hit",
+        "sed-substitution-miss"
+      ],
+      "required_facets": [
+        "bytes",
+        "records",
+        "selection"
+      ],
+      "local_case_ids": [
+        "s1-sed-nullable-reference-address",
+        "p1-sed-substitution"
+      ]
+    },
+    {
+      "command": "sh",
+      "disposition": "correctness-only",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "sh-interactive-session",
+        "compat-shell-array-boundary",
+        "proof-sh-stdin-positional-contract"
+      ],
+      "reason": "The former5000-control-loop synthetic timing is retired. A safe genuine shell-program performance corpus is not registered; interactive, stdin/command language and unsupported-syntax boundaries remain local correctness only."
+    },
+    {
+      "command": "sha1sum",
+      "disposition": "timing",
+      "required_modes": [
+        "sha1sum-binary",
+        "sha1sum-digest"
+      ],
+      "required_facets": [
+        "binary",
+        "bytes",
+        "records"
+      ],
+      "local_case_ids": [
+        "checksum-sha1sum-stdin",
+        "checksum-sha1sum-empty"
+      ]
+    },
+    {
+      "command": "sha256sum",
+      "disposition": "timing",
+      "required_modes": [
+        "sha256sum-binary",
+        "sha256sum-digest"
+      ],
+      "required_facets": [
+        "binary",
+        "bytes",
+        "records"
+      ],
+      "local_case_ids": [
+        "compat-text-sha256sum-warn-malformed",
+        "compat-text-sha256sum-strict-status"
+      ]
+    },
+    {
+      "command": "sha512sum",
+      "disposition": "timing",
+      "required_modes": [
+        "sha512sum-binary",
+        "sha512sum-digest"
+      ],
+      "required_facets": [
+        "binary",
+        "bytes",
+        "records"
+      ],
+      "local_case_ids": [
+        "checksum-sha512sum-stdin",
+        "checksum-sha512sum-binary"
+      ]
+    },
+    {
+      "command": "sort",
+      "disposition": "timing",
+      "required_modes": [
+        "sort-budget-4m",
+        "sort-lexical",
+        "sort-numeric"
+      ],
+      "required_facets": [
+        "bytes",
+        "records",
+        "sorting",
+        "spill"
+      ],
+      "local_case_ids": [
+        "compat-text-line-372",
+        "compat-text-line-381"
+      ]
+    },
+    {
+      "command": "split",
+      "disposition": "timing",
+      "required_modes": [
+        "split-byte-chunks-1m"
+      ],
+      "required_facets": [
+        "bytes",
+        "records"
+      ],
+      "local_case_ids": [
+        "p1-split-lines",
+        "p1-split-binary"
+      ]
+    },
+    {
+      "command": "strings",
+      "disposition": "timing",
+      "required_modes": [
+        "strings-binary-all",
+        "strings-scan-all-bytes"
+      ],
+      "required_facets": [
+        "binary",
+        "bytes",
+        "records"
+      ],
+      "local_case_ids": [
+        "p2-strings-default",
+        "p2-strings-minimum-and-radix"
+      ]
+    },
+    {
+      "command": "tac",
+      "disposition": "timing",
+      "required_modes": [
+        "tac-pipe-reversal",
+        "tac-reverse-records"
+      ],
+      "required_facets": [
+        "bytes",
+        "pipe-input",
+        "records"
+      ],
+      "local_case_ids": [
+        "p0-tac-lines",
+        "o6-tac-default-unterminated"
+      ]
+    },
+    {
+      "command": "tail",
+      "disposition": "timing",
+      "required_modes": [
+        "tail-pipe-last10",
+        "tail-regular-stdin-last10"
+      ],
+      "required_facets": [
+        "bytes",
+        "pipe-input",
+        "records",
+        "selection"
+      ],
+      "local_case_ids": [
+        "compat-tail-follow-stdin",
+        "compat-tail-interval-without-follow"
+      ]
+    },
+    {
+      "command": "tr",
+      "disposition": "timing",
+      "required_modes": [
+        "tr-uppercase-ascii"
+      ],
+      "required_facets": [
+        "bytes",
+        "formatting",
+        "records"
+      ],
+      "local_case_ids": [
+        "compat-text-line-823",
+        "compat-text-line-824"
+      ]
+    },
+    {
+      "command": "tree",
+      "disposition": "timing",
+      "required_modes": [
+        "tree-directory-json"
+      ],
+      "required_facets": [
+        "bytes",
+        "formatting",
+        "named-files",
+        "records",
+        "tree"
+      ],
+      "local_case_ids": [
+        "o12-basic-1",
+        "o12-basic-2"
+      ]
+    },
+    {
+      "command": "unexpand",
+      "disposition": "timing",
+      "required_modes": [
+        "unexpand-all-tabstop4"
+      ],
+      "required_facets": [
+        "bytes",
+        "formatting",
+        "records"
+      ],
+      "local_case_ids": [
+        "p0-unexpand-leading",
+        "p0-unexpand-all"
+      ]
+    },
+    {
+      "command": "uniq",
+      "disposition": "timing",
+      "required_modes": [
+        "uniq-adjacent",
+        "uniq-count-runs"
+      ],
+      "required_facets": [
+        "bytes",
+        "duplicates",
+        "records"
+      ],
+      "local_case_ids": [
+        "compat-text-line-476",
+        "compat-text-line-485"
+      ]
+    },
+    {
+      "command": "wc",
+      "disposition": "timing",
+      "required_modes": [
+        "wc-all-counts",
+        "wc-empty",
+        "wc-named-bytes",
+        "wc-pipe-bytes",
+        "wc-regular-stdin-metadata",
+        "wc-scan-lines",
+        "wc-scan-words"
+      ],
+      "required_facets": [
+        "bytes",
+        "empty",
+        "named-files",
+        "pipe-input",
+        "records",
+        "utf8"
+      ],
+      "local_case_ids": [
+        "compat-text-line-495",
+        "compat-text-line-496"
+      ]
+    },
+    {
+      "command": "wget",
+      "disposition": "timing",
+      "required_modes": [
+        "wget-download",
+        "wget-post-file"
+      ],
+      "required_facets": [
+        "bytes",
+        "named-files",
+        "network",
+        "records"
+      ],
+      "local_case_ids": [
+        "network-transfer-boundaries",
+        "network-auth-cookie"
+      ]
+    },
+    {
+      "command": "zcat",
+      "disposition": "timing",
+      "required_modes": [
+        "zcat-concatenated-block-types",
+        "zcat-first-dynamic-native",
+        "zcat-fixed-literals",
+        "zcat-stored-blocks"
+      ],
+      "required_facets": [
+        "bytes",
+        "codec",
+        "records"
+      ],
+      "local_case_ids": [
+        "p1-zcat-concatenated",
+        "p1-zcat-validate"
+      ]
+    }
+  ],
+  "remaining_facets": [
+    {
+      "commands": [
+        "gunzip",
+        "zcat"
+      ],
+      "scope": "Stored, literal-only fixed, verified first native-dynamic and distinct concatenated-member encodings of complete real bytes are timed and reconstruct exactly the original. Exact fixed distance1/distance32768, adversarial malformed layouts and CRC/truncation boundaries remain package/contract correctness; no periodic payload is generated."
+    },
+    {
+      "commands": [
+        "diff"
+      ],
+      "scope": "Distinct equal files and genuinely different complete modules are timed. Synthetic sparse/distributed edits are not natural workload evidence; future real revision pairs need their own registered source identities."
+    },
+    {
+      "commands": [
+        "join"
+      ],
+      "scope": "Natural airport/routes shared and unpaired keys are timed. Two-sided duplicate Cartesian expansion has no declared real-source timing witness and remains a finite correctness/next-corpus gap."
+    },
+    {
+      "commands": [
+        "jq"
+      ],
+      "scope": "The real JSON registry activates selection, missing-property nulls, per-document slurp, numeric aggregation, sorting and grouping. Several independent top-level real documents and exceptionally large JSON objects are not implied."
+    },
+    {
+      "commands": [
+        "rg",
+        "grep"
+      ],
+      "scope": "Natural text/tree count, spans, output, misses, pipe, slow sink, empty and genuine87443-byte records are timed. Historical64MiB single records, DFA cache/budget/phase pressure and engine-route claims remain private correctness or separately observed limitations."
+    },
+    {
+      "commands": [
+        "curl",
+        "wget"
+      ],
+      "scope": "Loopback transfer uses genuine source bytes and declared GET/POST/PUT operations. Auth/cookies, replay, framing, redirects, retries, resume, timeout and output cleanup remain exact local scenario boundaries; numerical delay and public-network performance are not claimed."
+    },
+    {
+      "commands": [
+        "find",
+        "tree",
+        "ln"
+      ],
+      "scope": "The bounded complete-file collection does not establish permission denial, arbitrary links, full metadata or cross-platform traversal parity. Required local cases cover only their exact stated platform facets."
+    },
+    {
+      "commands": [
+        "base32",
+        "base64",
+        "cat",
+        "cksum",
+        "column",
+        "comm",
+        "csplit",
+        "curl",
+        "cut",
+        "diff",
+        "expand",
+        "find",
+        "fold",
+        "grep",
+        "gunzip",
+        "gzip",
+        "head",
+        "join",
+        "jq",
+        "ln",
+        "make",
+        "md5sum",
+        "nl",
+        "paste",
+        "rev",
+        "rg",
+        "sed",
+        "sh",
+        "sha1sum",
+        "sha256sum",
+        "sha512sum",
+        "sort",
+        "split",
+        "strings",
+        "tac",
+        "tail",
+        "tr",
+        "tree",
+        "unexpand",
+        "uniq",
+        "wc",
+        "wget",
+        "zcat"
+      ],
+      "scope": "Local cases must execute through the current frozen Wasm/contract driver before timing. Declared case IDs, corpus feature labels, timing success or profile counts alone are not correctness passes. Missing/skipped unsupported required applicable witnesses, observation mismatches, incomplete windows and unstable timing are not accepted."
+    }
+  ],
+  "mode_contract_scope": "Declared-operation contracts reviewed before candidate execution: exact allowed argv, preparation recipe and expected status per command/mode, independent of workload row IDs. Operation facets describe the requested operation and require actual input/transport observations plus native calibration and independent local correctness; argv does not prove data-feature activation, matcher route, internal fast path, temporary I/O or bytes read. Sorting for join/comm is untimed genuine-source preparation; spill is a requested sort run budget only. These finite definitions do not establish execution or performance acceptance.",
+  "operation_facet_vocabulary": [
+    "formatting",
+    "selection",
+    "sorting",
+    "spill",
+    "codec",
+    "network",
+    "early-exit"
+  ],
+  "mode_contracts": [
+    {
+      "command": "base32",
+      "mode": "base32-binary-encode",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-w0"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "codec"
+      ],
+      "description": "Request unwrapped base32 encoding of observed genuine binary bytes."
+    },
+    {
+      "command": "base32",
+      "mode": "base32-encode-unwrapped",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-w0"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "codec"
+      ],
+      "description": "Request unwrapped base32 encoding with -w0."
+    },
+    {
+      "command": "base64",
+      "mode": "base64-binary-encode",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-w0"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "codec"
+      ],
+      "description": "Request unwrapped base64 encoding of observed genuine binary bytes."
+    },
+    {
+      "command": "base64",
+      "mode": "base64-encode-unwrapped",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-w0"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "codec"
+      ],
+      "description": "Request unwrapped base64 encoding with -w0."
+    },
+    {
+      "command": "cat",
+      "mode": "cat-binary-path",
+      "allowed_invocations": [
+        {
+          "args": [
+            "${INPUT}"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Copy the named genuine source path with no binary transformation."
+    },
+    {
+      "command": "cat",
+      "mode": "cat-copy",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Copy genuine input bytes unchanged; no formatting operation is declared."
+    },
+    {
+      "command": "cat",
+      "mode": "cat-empty",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Copy a genuine empty source; empty activation is established by observed size."
+    },
+    {
+      "command": "cat",
+      "mode": "cat-format",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-n"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "formatting"
+      ],
+      "description": "Request line numbering with -n; actual numbering and input suitability require correctness and observations."
+    },
+    {
+      "command": "cat",
+      "mode": "cat-slow-output",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Copy genuine bytes through the separately declared slow-output sink."
+    },
+    {
+      "command": "cat",
+      "mode": "cat-unterminated",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Copy genuine bytes without adding an EOF line delimiter."
+    },
+    {
+      "command": "cat",
+      "mode": "cat-utf8-copy",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Copy complete genuine text bytes without requesting character conversion."
+    },
+    {
+      "command": "cksum",
+      "mode": "cksum-binary",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request default CRC and byte count on observed genuine binary bytes."
+    },
+    {
+      "command": "cksum",
+      "mode": "cksum-crc",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request default CRC and byte count on complete genuine text bytes."
+    },
+    {
+      "command": "column",
+      "mode": "column-delimited-table",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-t",
+            "-s",
+            ";"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "formatting"
+      ],
+      "description": "Request table formatting with semicolon-delimited input fields."
+    },
+    {
+      "command": "column",
+      "mode": "column-grid-width80",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-c",
+            "80"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "formatting"
+      ],
+      "description": "Request column-grid formatting with an 80-column declared output width."
+    },
+    {
+      "command": "comm",
+      "mode": "comm-shared-and-unpaired",
+      "allowed_invocations": [
+        {
+          "args": [
+            "left",
+            "right"
+          ],
+          "recipe": "bench-comm-natural-idsets",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "sorting"
+      ],
+      "description": "Compare sorted genuine projected airport/route ID sets with all three output classes. Sorting/key projection is checked preparation outside timed comm."
+    },
+    {
+      "command": "csplit",
+      "mode": "csplit-repeated-interior-boundaries",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-s",
+            "-z",
+            "-n",
+            "6",
+            "-f",
+            "part-",
+            "-",
+            "/^SQLITE_API /",
+            "{*}"
+          ],
+          "recipe": "bench-csplit-boundaries",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Split at each matching SQLITE_API record with {*} repetition, suppress empty pieces and use fixed-width names; actual multiple/interior boundaries and reconstruction require evidence."
+    },
+    {
+      "command": "curl",
+      "mode": "curl-download",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-sS",
+            "${HTTP_BASE}/real-source"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "network"
+      ],
+      "description": "Request GET of the complete genuine source from the checked local HTTP endpoint with quiet/error options."
+    },
+    {
+      "command": "curl",
+      "mode": "curl-file-upload",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-sS",
+            "-T",
+            "${INPUT}",
+            "${HTTP_BASE}/real-upload/PUT"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "network"
+      ],
+      "description": "Request a complete named-file PUT body to the method-enforcing local endpoint."
+    },
+    {
+      "command": "curl",
+      "mode": "curl-post-file",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-sS",
+            "--data-binary",
+            "@${INPUT}",
+            "${HTTP_BASE}/real-upload/POST"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "network"
+      ],
+      "description": "Request a complete binary file POST body to the method-enforcing local endpoint."
+    },
+    {
+      "command": "cut",
+      "mode": "cut-byte-selection",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-b",
+            "1-20"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Select byte positions 1 through 20."
+    },
+    {
+      "command": "cut",
+      "mode": "cut-field-selection",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-d",
+            ";",
+            "-f",
+            "2,3"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Select semicolon-delimited fields 2 and 3."
+    },
+    {
+      "command": "cut",
+      "mode": "cut-long-record",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-b",
+            "1-80"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Select byte positions 1 through 80; long-record activation needs actual record observation."
+    },
+    {
+      "command": "diff",
+      "mode": "diff-distinct-equal",
+      "allowed_invocations": [
+        {
+          "args": [
+            "--label",
+            "left",
+            "--label",
+            "right",
+            "-u",
+            "left",
+            "right"
+          ],
+          "recipe": "real-file-pair",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request unified comparison with stable labels of distinct complete files containing equal genuine bytes; expected status is 0."
+    },
+    {
+      "command": "diff",
+      "mode": "diff-real-module-pair",
+      "allowed_invocations": [
+        {
+          "args": [
+            "--label",
+            "left",
+            "--label",
+            "right",
+            "-u",
+            "left",
+            "right"
+          ],
+          "recipe": "real-file-pair",
+          "expected_status": 1
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request unified comparison with stable labels of two genuine complete modules; expected difference status is 1."
+    },
+    {
+      "command": "expand",
+      "mode": "expand-tabstop4",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-t",
+            "4"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "formatting"
+      ],
+      "description": "Request expansion using four-column tab stops; actual tabs and transformed output require separate evidence."
+    },
+    {
+      "command": "find",
+      "mode": "find-tree-names",
+      "allowed_invocations": [
+        {
+          "args": [
+            "tree",
+            "-type",
+            "f",
+            "-name",
+            "*.py"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request regular files whose names match *.py under the genuine source collection."
+    },
+    {
+      "command": "find",
+      "mode": "find-tree-size",
+      "allowed_invocations": [
+        {
+          "args": [
+            "tree",
+            "-type",
+            "f",
+            "-size",
+            "+10k"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request regular files passing the +10k size predicate under the genuine source collection."
+    },
+    {
+      "command": "fold",
+      "mode": "fold-width80",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-w",
+            "80"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "formatting"
+      ],
+      "description": "Request wrapping at width80; actual long records and output relation remain independently checked."
+    },
+    {
+      "command": "grep",
+      "mode": "grep-early-exit",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-E",
+            "-q",
+            "SQLITE_API"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "early-exit",
+        "selection"
+      ],
+      "description": "Quiet exit on the first match through the supported -q option; no unsupported max-count option is measured."
+    },
+    {
+      "command": "grep",
+      "mode": "grep-empty",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-E",
+            "-c",
+            "SQLITE_API"
+          ],
+          "recipe": "real-input",
+          "expected_status": 1
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request extended-regex SQLITE_API counts with expected no-match status1 on an observed genuine empty file."
+    },
+    {
+      "command": "grep",
+      "mode": "grep-literal-count",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-F",
+            "-c",
+            "SQLITE_API"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request fixed-string SQLITE_API matching-record counts."
+    },
+    {
+      "command": "grep",
+      "mode": "grep-literal-miss",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-F",
+            "-c",
+            "UNLIKELY_SYMBOL_987654"
+          ],
+          "recipe": "real-input",
+          "expected_status": 1
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request fixed-string counts for the declared unlikely symbol; expected no-match status is 1."
+    },
+    {
+      "command": "grep",
+      "mode": "grep-long-record-count",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-E",
+            "-c",
+            "function"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request extended-regex matching-record counts for function; long-record activation needs actual source observation."
+    },
+    {
+      "command": "grep",
+      "mode": "grep-regex-count",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-E",
+            "-c",
+            "^SQLITE_API "
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request extended-regex matching-record counts anchored at SQLITE_API."
+    },
+    {
+      "command": "grep",
+      "mode": "grep-regex-numbered-output",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-E",
+            "-n",
+            "^SQLITE_API "
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request extended-regex numbered records anchored at SQLITE_API."
+    },
+    {
+      "command": "grep",
+      "mode": "grep-unterminated",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-E",
+            "-n",
+            "</html>"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request numbered extended-regex matches for the closing HTML tag; EOF shape needs actual source observation."
+    },
+    {
+      "command": "gunzip",
+      "mode": "gunzip-concatenated-block-types",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-c"
+          ],
+          "recipe": "bench-gunzip-members",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "codec"
+      ],
+      "description": "Decode registered concatenated members encoding complete genuine bytes with distinct declared block formats."
+    },
+    {
+      "command": "gunzip",
+      "mode": "gunzip-first-dynamic-native",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-c"
+          ],
+          "recipe": "bench-gunzip-native-dynamic",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "codec"
+      ],
+      "description": "Decode a gzip encoding of complete genuine bytes whose first native-generated block is separately verified dynamic; argv alone does not prove its block type."
+    },
+    {
+      "command": "gunzip",
+      "mode": "gunzip-fixed-literals",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-c"
+          ],
+          "recipe": "bench-gunzip-fixed-literals",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "codec"
+      ],
+      "description": "Decode the registered literal-only fixed-Huffman encoding of complete genuine bytes; no distance/overlap activation is claimed."
+    },
+    {
+      "command": "gunzip",
+      "mode": "gunzip-stored-blocks",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-c"
+          ],
+          "recipe": "bench-gunzip-stored",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "codec"
+      ],
+      "description": "Decode the registered stored-block encoding of complete genuine bytes."
+    },
+    {
+      "command": "gzip",
+      "mode": "gzip-default-compress",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-n",
+            "-c"
+          ],
+          "recipe": "gzip",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "codec"
+      ],
+      "description": "Request deterministic-header gzip compression to stdout; correctness independently decodes the output to the complete genuine source."
+    },
+    {
+      "command": "head",
+      "mode": "head-early-exit10",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-n",
+            "10"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "early-exit",
+        "selection"
+      ],
+      "description": "Request the first ten records. The early-exit facet declares the stop rule, not measured input bytes read."
+    },
+    {
+      "command": "head",
+      "mode": "head-pipe-early-exit",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-n",
+            "10"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "early-exit"
+      ],
+      "description": "Request the first ten records under actual fragmented-pipe transport; producer cancellation is separate evidence, not inferred from argv."
+    },
+    {
+      "command": "join",
+      "mode": "join-shared-and-unpaired",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-t",
+            ",",
+            "-1",
+            "1",
+            "-2",
+            "4",
+            "-a1",
+            "-a2",
+            "left",
+            "right"
+          ],
+          "recipe": "bench-join-natural-csv",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "sorting"
+      ],
+      "description": "Join comma-delimited airport field1 to route field4 with both unpaired sides included. Sorting/key projection is checked preparation outside timed join, not an assertion that join sorts."
+    },
+    {
+      "command": "jq",
+      "mode": "jq-compact-identity",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-c",
+            "."
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Evaluate the root identity program and request compact JSON output."
+    },
+    {
+      "command": "jq",
+      "mode": "jq-filter-selection",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-c",
+            ".licenses[] | select(.isOsiApproved == true)"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Select license elements whose isOsiApproved property is true."
+    },
+    {
+      "command": "jq",
+      "mode": "jq-property-missing-null-string",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-r",
+            ".licenses[].licenseId"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        },
+        {
+          "args": [
+            "-c",
+            ".licenses[] | .missing_metadata_field"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Project licenseId strings or a missing property from license elements; missing lookup emits null. This does not assert a separate present-null input witness."
+    },
+    {
+      "command": "jq",
+      "mode": "jq-slurp-aggregate",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-s",
+            "[.[] | .licenses[] | .referenceNumber] | add"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Slurp input and add license referenceNumber values."
+    },
+    {
+      "command": "jq",
+      "mode": "jq-slurp-group-cardinality",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-s",
+            "-c",
+            "[.[] | .licenses[]] | group_by(.isDeprecatedLicenseId) | map(length)"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Slurp input, group license elements by isDeprecatedLicenseId and map each group to its length."
+    },
+    {
+      "command": "jq",
+      "mode": "jq-slurp-sort-by-id",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-s",
+            "-c",
+            "[.[] | .licenses[]] | sort_by(.licenseId)"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Slurp input, collect license elements and request sort_by(licenseId)."
+    },
+    {
+      "command": "md5sum",
+      "mode": "md5sum-binary",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request default MD5 digest of observed genuine binary bytes."
+    },
+    {
+      "command": "md5sum",
+      "mode": "md5sum-digest",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request default MD5 digest of complete genuine text bytes."
+    },
+    {
+      "command": "nl",
+      "mode": "nl-number-records",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "formatting"
+      ],
+      "description": "Request default line-number formatting."
+    },
+    {
+      "command": "paste",
+      "mode": "paste-parallel",
+      "allowed_invocations": [
+        {
+          "args": [
+            "left",
+            "right"
+          ],
+          "recipe": "real-file-pair",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request parallel joining of two genuine complete files prepared at left/right."
+    },
+    {
+      "command": "paste",
+      "mode": "paste-serial",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-s"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "formatting"
+      ],
+      "description": "Request serial record joining with -s."
+    },
+    {
+      "command": "rev",
+      "mode": "rev-ascii-records",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "formatting"
+      ],
+      "description": "Request per-record character reversal; actual ASCII source and independent reversal calibration remain required."
+    },
+    {
+      "command": "rev",
+      "mode": "rev-long-record",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "formatting"
+      ],
+      "description": "Request per-record reversal; actual long-record shape and reversal calibration remain required."
+    },
+    {
+      "command": "rg",
+      "mode": "rg-early-exit",
+      "allowed_invocations": [
+        {
+          "args": [
+            "--no-config",
+            "--color=never",
+            "-m",
+            "1",
+            "SQLITE_API",
+            "-"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "early-exit",
+        "selection"
+      ],
+      "description": "Request at most one matching record with -m1. This is a declared stop rule, not a measured read-count or syscall claim."
+    },
+    {
+      "command": "rg",
+      "mode": "rg-empty",
+      "allowed_invocations": [
+        {
+          "args": [
+            "--no-config",
+            "--color=never",
+            "-c",
+            "SQLITE_API",
+            "-"
+          ],
+          "recipe": "real-input",
+          "expected_status": 1
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request SQLITE_API counts with expected no-match status 1 on an observed genuine empty file."
+    },
+    {
+      "command": "rg",
+      "mode": "rg-literal-count",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-F",
+            "-c",
+            "SQLITE_API",
+            "-"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        },
+        {
+          "args": [
+            "--no-config",
+            "--color=never",
+            "-F",
+            "-c",
+            "SQLITE_API",
+            "-"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request fixed-string SQLITE_API matching-record counts; no matcher-route or hit-density proof follows from argv."
+    },
+    {
+      "command": "rg",
+      "mode": "rg-literal-miss",
+      "allowed_invocations": [
+        {
+          "args": [
+            "--no-config",
+            "--color=never",
+            "-F",
+            "-c",
+            "UNLIKELY_SYMBOL_987654",
+            "-"
+          ],
+          "recipe": "real-input",
+          "expected_status": 1
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request fixed-string counts for the declared unlikely symbol; expected no-match status is 1."
+    },
+    {
+      "command": "rg",
+      "mode": "rg-long-record-count",
+      "allowed_invocations": [
+        {
+          "args": [
+            "--no-config",
+            "--color=never",
+            "-c",
+            "function",
+            "-"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request regex matching-record counts for function; long-record activation needs actual source observation."
+    },
+    {
+      "command": "rg",
+      "mode": "rg-regex-count",
+      "allowed_invocations": [
+        {
+          "args": [
+            "--no-config",
+            "--color=never",
+            "-c",
+            "^SQLITE_API ",
+            "-"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request counts for records matching the anchored SQLITE_API regex."
+    },
+    {
+      "command": "rg",
+      "mode": "rg-regex-numbered-output",
+      "allowed_invocations": [
+        {
+          "args": [
+            "--no-config",
+            "--color=never",
+            "-n",
+            "^SQLITE_API ",
+            "-"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request numbered records for the anchored SQLITE_API regex."
+    },
+    {
+      "command": "rg",
+      "mode": "rg-regex-spans",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-n",
+            "-o",
+            "HTTP/[0-9][.][0-9]",
+            "-"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request numbered only-match spans for the declared HTTP-version regex."
+    },
+    {
+      "command": "rg",
+      "mode": "rg-slow-output",
+      "allowed_invocations": [
+        {
+          "args": [
+            "--no-config",
+            "--color=never",
+            "-n",
+            ".",
+            "-"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request numbered records matching dot; actual slow-output sink is established separately."
+    },
+    {
+      "command": "rg",
+      "mode": "rg-tree-files",
+      "allowed_invocations": [
+        {
+          "args": [
+            "--no-config",
+            "--color=never",
+            "--sort=path",
+            "-g",
+            "*.py",
+            "-F",
+            "-c",
+            "import",
+            "tree"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request path-sorted fixed-string import counts over *.py files in the declared collection. Collection bytes, path selection and results require separate evidence."
+    },
+    {
+      "command": "rg",
+      "mode": "rg-unterminated",
+      "allowed_invocations": [
+        {
+          "args": [
+            "--no-config",
+            "--color=never",
+            "-n",
+            "</html>",
+            "-"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request numbered matching records for the closing HTML tag; EOF shape needs actual source observation."
+    },
+    {
+      "command": "sed",
+      "mode": "sed-substitution-hit",
+      "allowed_invocations": [
+        {
+          "args": [
+            "s/SQLITE_/LIBSQL_/g"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request global substitution of SQLITE_ with LIBSQL_ in each input record; actual matches are not established by argv."
+    },
+    {
+      "command": "sed",
+      "mode": "sed-substitution-miss",
+      "allowed_invocations": [
+        {
+          "args": [
+            "s/UNLIKELY_SYMBOL_987654/REPLACED/g"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request global substitution of the declared unlikely literal; actual miss status needs source/output correctness."
+    },
+    {
+      "command": "sha1sum",
+      "mode": "sha1sum-binary",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request default SHA-1 digest of observed genuine binary bytes."
+    },
+    {
+      "command": "sha1sum",
+      "mode": "sha1sum-digest",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request default SHA-1 digest of complete genuine text bytes."
+    },
+    {
+      "command": "sha256sum",
+      "mode": "sha256sum-binary",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request default SHA-256 digest of observed genuine binary bytes."
+    },
+    {
+      "command": "sha256sum",
+      "mode": "sha256sum-digest",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request default SHA-256 digest of complete genuine text bytes."
+    },
+    {
+      "command": "sha512sum",
+      "mode": "sha512sum-binary",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request default SHA-512 digest of observed genuine binary bytes."
+    },
+    {
+      "command": "sha512sum",
+      "mode": "sha512sum-digest",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request default SHA-512 digest of complete genuine text bytes."
+    },
+    {
+      "command": "sort",
+      "mode": "sort-budget-4m",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-S",
+            "4M"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "sorting",
+        "spill"
+      ],
+      "description": "Request lexical sorting with a 4M run-memory budget. The spill facet means requested run budget only; it does not prove temporary-file I/O or a spill event."
+    },
+    {
+      "command": "sort",
+      "mode": "sort-lexical",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "sorting"
+      ],
+      "description": "Request default whole-record lexical sorting."
+    },
+    {
+      "command": "sort",
+      "mode": "sort-numeric",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-t",
+            ",",
+            "-k1,1n"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "sorting"
+      ],
+      "description": "Request numeric comparison of the first comma-delimited field."
+    },
+    {
+      "command": "split",
+      "mode": "split-byte-chunks-1m",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-b",
+            "1M",
+            "-",
+            "part-"
+          ],
+          "recipe": "bench-split-byte-chunks",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request 1MiB byte partitions with the declared prefix; reconstructing all pieces must equal the complete genuine source."
+    },
+    {
+      "command": "strings",
+      "mode": "strings-binary-all",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-a"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request scanning all genuine binary source bytes with -a; binary activation requires actual NUL observation."
+    },
+    {
+      "command": "strings",
+      "mode": "strings-scan-all-bytes",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-a"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request scanning all input bytes with -a; printable-run content requires actual input/output correctness."
+    },
+    {
+      "command": "tac",
+      "mode": "tac-pipe-reversal",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request reversal of complete input-record order under independently observed pipe transport."
+    },
+    {
+      "command": "tac",
+      "mode": "tac-reverse-records",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request reversal of complete input-record order."
+    },
+    {
+      "command": "tail",
+      "mode": "tail-pipe-last10",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-n",
+            "10"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request the final ten records under independently observed fragmented-pipe transport."
+    },
+    {
+      "command": "tail",
+      "mode": "tail-regular-stdin-last10",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-n",
+            "10"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Request the final ten records from declared regular-file stdin."
+    },
+    {
+      "command": "tr",
+      "mode": "tr-uppercase-ascii",
+      "allowed_invocations": [
+        {
+          "args": [
+            "a-z",
+            "A-Z"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "formatting"
+      ],
+      "description": "Request ASCII a-z to A-Z transliteration."
+    },
+    {
+      "command": "tree",
+      "mode": "tree-directory-json",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-J",
+            "--noreport",
+            "tree"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "formatting"
+      ],
+      "description": "Request JSON directory formatting with the summary report disabled; complete parsed output retains array order and values."
+    },
+    {
+      "command": "unexpand",
+      "mode": "unexpand-all-tabstop4",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-a",
+            "-t",
+            "4"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "formatting"
+      ],
+      "description": "Request all eligible blank conversion at four-column tab stops; actual data suitability requires separate evidence."
+    },
+    {
+      "command": "uniq",
+      "mode": "uniq-adjacent",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request default adjacent duplicate suppression; observed input runs remain independently required."
+    },
+    {
+      "command": "uniq",
+      "mode": "uniq-count-runs",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-c"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request adjacent-run counts with -c; duplicate activation requires observed adjacent duplicate records."
+    },
+    {
+      "command": "wc",
+      "mode": "wc-all-counts",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request the default line, word and byte count fields."
+    },
+    {
+      "command": "wc",
+      "mode": "wc-empty",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request default counts on an actually observed empty source."
+    },
+    {
+      "command": "wc",
+      "mode": "wc-named-bytes",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-c",
+            "${INPUT}"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request -c for the named genuine source path; argv does not prove an internal fast path."
+    },
+    {
+      "command": "wc",
+      "mode": "wc-pipe-bytes",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-c"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request byte count with -c; fragmented-pipe transport is a separate actual invocation observation."
+    },
+    {
+      "command": "wc",
+      "mode": "wc-regular-stdin-metadata",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-c"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request byte count with -c over declared regular-file stdin; argv does not prove an internal metadata shortcut."
+    },
+    {
+      "command": "wc",
+      "mode": "wc-scan-lines",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-l"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request LF counting with -l; actual record content and input transport are observed separately."
+    },
+    {
+      "command": "wc",
+      "mode": "wc-scan-words",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-w"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Request C-byte word counting with -w; reference environment is independently recorded."
+    },
+    {
+      "command": "wget",
+      "mode": "wget-download",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-qO-",
+            "${HTTP_BASE}/real-source"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "network"
+      ],
+      "description": "Request quiet GET of the complete genuine source to stdout from the checked local endpoint."
+    },
+    {
+      "command": "wget",
+      "mode": "wget-post-file",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-qO-",
+            "--method=POST",
+            "--body-file=${INPUT}",
+            "${HTTP_BASE}/real-upload/POST"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "network"
+      ],
+      "description": "Request a complete named-file POST body and response to stdout from the method-enforcing local endpoint."
+    },
+    {
+      "command": "zcat",
+      "mode": "zcat-concatenated-block-types",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "bench-zcat-members",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "codec"
+      ],
+      "description": "Decode to stdout registered concatenated members of complete genuine bytes with distinct declared block formats."
+    },
+    {
+      "command": "zcat",
+      "mode": "zcat-first-dynamic-native",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "bench-zcat-native-dynamic",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "codec"
+      ],
+      "description": "Decode to stdout a genuine-source gzip encoding with separately verified first native dynamic block."
+    },
+    {
+      "command": "zcat",
+      "mode": "zcat-fixed-literals",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "bench-zcat-fixed-literals",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "codec"
+      ],
+      "description": "Decode to stdout the registered literal-only fixed-Huffman encoding of complete genuine bytes; no distance/overlap activation is claimed."
+    },
+    {
+      "command": "zcat",
+      "mode": "zcat-stored-blocks",
+      "allowed_invocations": [
+        {
+          "args": [],
+          "recipe": "bench-zcat-stored",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "codec"
+      ],
+      "description": "Decode to stdout the registered stored-block encoding of complete genuine bytes."
+    }
+  ],
+  "untimed_regimes": [
+    {
+      "command": "diff",
+      "regime": "diff-interior-insert-delete",
+      "disposition": "not-timed",
+      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
+      "correctness_bindings": [
+        {
+          "kind": "local-contract",
+          "case_ids": [
+            "d-diff-repeated-delete",
+            "d-diff-repeated-cross"
+          ],
+          "scope": "Exact small repeated-record deletion and crossed add/remove alignment, executed in the local Wasm preflight. These do not reproduce the old sparse/distributed large synthetic input."
+        },
+        {
+          "kind": "package-whitebox",
+          "source": "commands/diff/compare_wbtest.mbt",
+          "test_name": "edit scripts reconstruct both sides with minimum edit count",
+          "scope": "Exhaustive four-record binary choices reconstruct both sides and compare edit cost with dynamic programming. Requires separate package-test execution; not a real-source timing witness."
+        }
+      ]
+    },
+    {
+      "command": "diff",
+      "regime": "diff-distributed-edits",
+      "disposition": "not-timed",
+      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
+      "correctness_bindings": [
+        {
+          "kind": "local-contract",
+          "case_ids": [
+            "d-diff-repeated-delete",
+            "d-diff-repeated-cross"
+          ],
+          "scope": "Exact small repeated-record deletion and crossed add/remove alignment, executed in the local Wasm preflight. These do not reproduce the old sparse/distributed large synthetic input."
+        },
+        {
+          "kind": "package-whitebox",
+          "source": "commands/diff/compare_wbtest.mbt",
+          "test_name": "edit scripts reconstruct both sides with minimum edit count",
+          "scope": "Exhaustive four-record binary choices reconstruct both sides and compare edit cost with dynamic programming. Requires separate package-test execution; not a real-source timing witness."
+        }
+      ]
+    },
+    {
+      "command": "join",
+      "regime": "join-duplicate-cartesian",
+      "disposition": "not-timed",
+      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
+      "correctness_bindings": [
+        {
+          "kind": "local-contract",
+          "case_ids": [
+            "o1-join-case-cartesian"
+          ],
+          "scope": "Exact two-by-two ASCII-folded duplicate-key Cartesian product plus both unpaired sides under -i -a1 -a2 -oauto. Executed in local Wasm preflight; no large duplicate-run timing claim."
+        }
+      ]
+    },
+    {
+      "command": "gunzip",
+      "regime": "gunzip-fixed-distance1-overlap",
+      "disposition": "not-timed",
+      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
+      "correctness_bindings": [
+        {
+          "kind": "test-tool-whitebox",
+          "source": "tests/benchmark/compressed_inputs_wbtest.mbt",
+          "test_name": "fixed backreference controls preserve overlap full-window distances tails and checksums",
+          "scope": "Native benchmark-tool regression constructs fixed-Huffman distance1 and distance32768 sources, invokes the actual shared gzip decoder, checks decoded boundary/tail bytes and CRC rejection. Requires separate Native test execution; does not establish command-Wasm or real-source timing acceptance."
+        }
+      ]
+    },
+    {
+      "command": "gunzip",
+      "regime": "gunzip-fixed-distance32768-window",
+      "disposition": "not-timed",
+      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
+      "correctness_bindings": [
+        {
+          "kind": "test-tool-whitebox",
+          "source": "tests/benchmark/compressed_inputs_wbtest.mbt",
+          "test_name": "fixed backreference controls preserve overlap full-window distances tails and checksums",
+          "scope": "Native benchmark-tool regression constructs fixed-Huffman distance1 and distance32768 sources, invokes the actual shared gzip decoder, checks decoded boundary/tail bytes and CRC rejection. Requires separate Native test execution; does not establish command-Wasm or real-source timing acceptance."
+        }
+      ]
+    },
+    {
+      "command": "zcat",
+      "regime": "zcat-fixed-distance1-overlap",
+      "disposition": "not-timed",
+      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
+      "correctness_bindings": [
+        {
+          "kind": "test-tool-whitebox",
+          "source": "tests/benchmark/compressed_inputs_wbtest.mbt",
+          "test_name": "fixed backreference controls preserve overlap full-window distances tails and checksums",
+          "scope": "Native benchmark-tool regression constructs fixed-Huffman distance1 and distance32768 sources, invokes the actual shared gzip decoder, checks decoded boundary/tail bytes and CRC rejection. Requires separate Native test execution; does not establish command-Wasm or real-source timing acceptance."
+        }
+      ]
+    },
+    {
+      "command": "zcat",
+      "regime": "zcat-fixed-distance32768-window",
+      "disposition": "not-timed",
+      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
+      "correctness_bindings": [
+        {
+          "kind": "test-tool-whitebox",
+          "source": "tests/benchmark/compressed_inputs_wbtest.mbt",
+          "test_name": "fixed backreference controls preserve overlap full-window distances tails and checksums",
+          "scope": "Native benchmark-tool regression constructs fixed-Huffman distance1 and distance32768 sources, invokes the actual shared gzip decoder, checks decoded boundary/tail bytes and CRC rejection. Requires separate Native test execution; does not establish command-Wasm or real-source timing acceptance."
+        }
+      ]
+    }
+  ]
+}

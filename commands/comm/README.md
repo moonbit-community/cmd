@@ -3,7 +3,7 @@
 Compare sorted text files for MoonX.
 
 ```sh
-moonx cli/comm@0.2.3 [-123] [-z] FILE1 FILE2
+moonx cli/comm@0.2.4 [-123] [-z] FILE1 FILE2
 ```
 
 ## Supported scope
@@ -32,8 +32,8 @@ Print records unique to the first file, unique to the second, and common to both
 ## Examples
 
 ```sh
-moonx cli/comm@0.2.3 left.txt right.txt
-moonx cli/comm@0.2.3 -12 left.txt right.txt
+moonx cli/comm@0.2.4 left.txt right.txt
+moonx cli/comm@0.2.4 -12 left.txt right.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

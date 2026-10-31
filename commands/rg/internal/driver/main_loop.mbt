@@ -7,13 +7,15 @@ fn is_broken_pipe(e : Error) -> Bool {
 }
 
 ///|
-async fn HiArgs::walk_builder(self : HiArgs) -> @ignore.WalkBuilder {
-  let builder = @ignore.WalkBuilder::new(self.paths.paths[0])
-  for i in 1..<self.paths.paths.length() {
-    ignore(builder.add(self.paths.paths[i]))
+async fn ExecutionPlan::walk_builder(
+  self : ExecutionPlan,
+) -> @ignore.WalkBuilder {
+  let builder = @ignore.WalkBuilder::new(self.input.paths.paths[0])
+  for i in 1..<self.input.paths.paths.length() {
+    ignore(builder.add(self.input.paths.paths[i]))
   }
-  if !self.no_ignore_files {
-    for path in self.ignore_file {
+  if !self.input.no_ignore_files {
+    for path in self.input.ignore_file {
       if builder.add_ignore(path) is Some(err) {
         ignore_message(err.to_string())
       }
@@ -21,28 +23,25 @@ async fn HiArgs::walk_builder(self : HiArgs) -> @ignore.WalkBuilder {
   }
   ignore(
     builder
-    .max_depth(self.max_depth)
-    .follow_links(self.follow)
-    .max_filesize(self.max_filesize)
-    .threads(self.threads)
-    .same_file_system(self.one_file_system)
-    .skip_stdout(self.mode is Search(_))
-    .overrides(self.globs)
-    .types(self.types)
-    .hidden(!self.hidden)
-    .parents(!self.no_ignore_parent)
-    .ignore(!self.no_ignore_dot)
-    .git_global(!self.no_ignore_vcs && !self.no_ignore_global)
-    .git_ignore(!self.no_ignore_vcs)
-    .git_exclude(!self.no_ignore_vcs && !self.no_ignore_exclude)
-    .require_git(!self.no_require_git)
-    .ignore_case_insensitive(self.ignore_file_case_insensitive)
-    .current_dir(self.cwd),
+    .max_depth(self.input.max_depth)
+    .follow_links(self.input.follow)
+    .max_filesize(self.input.max_filesize)
+    .overrides(self.input.globs)
+    .types(self.input.types)
+    .hidden(!self.input.hidden)
+    .parents(!self.input.no_ignore_parent)
+    .ignore(!self.input.no_ignore_dot)
+    .git_global(!self.input.no_ignore_vcs && !self.input.no_ignore_global)
+    .git_ignore(!self.input.no_ignore_vcs)
+    .git_exclude(!self.input.no_ignore_vcs && !self.input.no_ignore_exclude)
+    .require_git(!self.input.no_require_git)
+    .ignore_case_insensitive(self.input.ignore_file_case_insensitive)
+    .current_dir(self.input.cwd),
   )
-  if !self.no_ignore_dot {
+  if !self.input.no_ignore_dot {
     ignore(builder.add_custom_ignore_filename(".rgignore"))
   }
-  if self.sort is Some(sort) && !sort.reverse && sort.kind is Path {
+  if self.input.sort is Some(sort) && !sort.reverse && sort.kind is Path {
     ignore(builder.sort_by_file_name(@ignore.compare_utf8))
   }
   builder
@@ -71,11 +70,11 @@ async fn Haystacks::next(self : Haystacks) -> Haystack? {
 
 ///|
 /// Sorting retains its original full-list path; ordinary traversal stays incremental.
-async fn HiArgs::haystacks(self : HiArgs) -> Haystacks {
+async fn ExecutionPlan::haystacks(self : ExecutionPlan) -> Haystacks {
   let builder = self.haystack_builder()
   let walk = self.walk_builder().build()
   let unsorted = Walking(walk, builder)
-  guard self.sort is Some(sort) else { return unsorted }
+  guard self.input.sort is Some(sort) else { return unsorted }
   match sort.kind {
     Path if !sort.reverse => unsorted
     Path => {
@@ -171,12 +170,12 @@ async fn eprint_nothing_searched() -> Unit {
 }
 
 ///|
-async fn run_search(args : HiArgs, mode : SearchMode) -> Bool {
+async fn run_search(args : ExecutionPlan, mode : SearchMode) -> Bool {
   let started_at = @sys.now_nanos()
   let haystacks = args.haystacks()
   let mut matched = false
   let mut searched = false
-  let stats = args.stats()
+  let stats = args.new_stats()
   let stdout = args.stdout()
   let worker = args.search_worker(
     args.matcher(),
@@ -200,11 +199,11 @@ async fn run_search(args : HiArgs, mode : SearchMode) -> Bool {
     if stats is Some(s) && result.stats is Some(rs) {
       s.add_stats(rs)
     }
-    if matched && args.quit_after_match() {
+    if matched && args.output.quit_after_match {
       break
     }
   }
-  if args.has_implicit_path() && !searched {
+  if args.input.paths.has_implicit_path && !searched {
     eprint_nothing_searched()
   }
   if stats is Some(s) {
@@ -220,14 +219,14 @@ async fn run_search(args : HiArgs, mode : SearchMode) -> Bool {
 }
 
 ///|
-async fn run_files(args : HiArgs) -> Bool {
+async fn run_files(args : ExecutionPlan) -> Bool {
   let haystacks = args.haystacks()
   let mut matched = false
   let stdout = args.stdout()
-  let path_printer = args.path_printer_builder().build(stdout)
+  let path_printer = args.path_printer(stdout)
   while haystacks.next() is Some(haystack) {
     matched = true
-    if args.quit_after_match() {
+    if args.output.quit_after_match {
       break
     }
     path_printer.write(haystack.path()) catch {
@@ -242,10 +241,10 @@ async fn run_files(args : HiArgs) -> Bool {
 }
 
 ///|
-async fn run_types(args : HiArgs) -> Int32 {
+async fn run_types(args : ExecutionPlan) -> Int32 {
   let mut count = 0
-  let out = StdoutWriter::new(1, false)
-  for def in args.types().definitions() {
+  let out = StdoutWriter::new(false)
+  for def in args.input.types.definitions() {
     count += 1
     let line = StringBuilder()
     line.write_string(def.name())

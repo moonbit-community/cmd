@@ -147,6 +147,27 @@
       "source_version": "workspace cli/base32@0.1.4 metadata contract",
       "expected_stdout_text": "base32 0.1.4\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "proof-base32-ignore-garbage",
+      "command": "base32",
+      "args": [
+        "--decode",
+        "--ignore-garbage"
+      ],
+      "stdin_text": "MZ!!XW6===\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "foo",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "decode",
+        "ignore-garbage"
+      ],
+      "source_version": "RFC4648 foo vector plus documented discard of non-alphabet bytes; immutable oracle verification pending"
     }
   ]
 }

@@ -1,8 +1,7 @@
-// Original system-test identities are retained against the released API adapter.
-// Public-runtime diagnostic strings replace native-only errno translations.
-
 ///|
-async fn fs_roundtrip(dir : String) -> Unit {
+async test "released filesystem operations preserve files links and error boundaries" {
+  let dir = @fs.tmpdir(prefix="rg-system-filesystem-")
+  defer @fs.rmdir(dir, recursive=true)
   @sys.create_dir_all(dir + "/sub/deeper")
   @sys.create_dir_all(dir + "/sub")
   @sys.write_file(dir + "/a.txt", b"hello\nworld\n")
@@ -13,6 +12,7 @@ async fn fs_roundtrip(dir : String) -> Unit {
   assert_eq(@sys.read_file(dir + "/t.txt"), b"short")
   assert_eq(@sys.read_file(dir + "/a.txt"), b"hello\nworld\n")
   let file = @sys.File::open(dir + "/a.txt")
+  assert_true(file.is_regular())
   let chunk = FixedArray::make(16, b'\x00')
   assert_eq(file.read(chunk, 2, 5), 5)
   assert_eq(Bytes::from_array(chunk[2:7]), b"hello")
@@ -44,6 +44,24 @@ async fn fs_roundtrip(dir : String) -> Unit {
     }
     assert_true(rejected)
   }
+  // Link text/identity cannot be inferred from a successful canonical lookup.
+  assert_true(
+    try {
+      ignore(@sys.read_link(dir + "/link"))
+      false
+    } catch {
+      @sys.IOError(kind=Unsupported, ..) => true
+      _ => false
+    },
+  )
+  if !(@async.platform is Windows) {
+    @sys.symlink("a.txt", dir + "/link")
+    assert_eq(@sys.symlink_metadata(dir + "/link").file_type, Symlink)
+    assert_eq(@sys.metadata(dir + "/link").len, 12L)
+    assert_eq(@sys.read_file(dir + "/link"), b"hello\nworld\n")
+  }
+  @sys.remove_file(dir + "/t.txt")
+  assert_false(@sys.path_exists(dir + "/t.txt"))
 }
 
 ///|

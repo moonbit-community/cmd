@@ -1,0 +1,122 @@
+----
+import {
+  "moonbitlang/async@0.22.5", "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/core/env", "moonbitlang/core/json", "moonbitlang/core/encoding/utf8",
+  "moonbitlang/x@0.5.5/crypto",
+}
+----
+
+fn field(value : Json,key : String) -> Json {match value{Object(fields)=>fields.get(key).unwrap_or(Json::null());_=>Json::null()}}
+fn array(value : Json) -> Array[Json] raise {guard value is Array(items) else{fail("required array missing")};items}
+fn string(value : Json) -> String raise {guard value is String(text) && !text.is_empty() else{fail("required nonempty string missing")};text}
+fn digest(text : String) -> String {let digest=@crypto.SHA256::new();digest.update(@utf8.encode(text)[:]);@crypto.bytes_to_hex_string(digest.finalize())}
+async fn main {
+  let args=@env.args()[1:]
+  let options : Map[String,String]=Map([])
+  for i=0;i<args.length();i=i+2 {
+    guard i+1<args.length() && ["--manifest","--review","--output","--markdown","--proof-report"].contains(args[i]) && !options.contains(args[i]) else {fail("Usage: proof_gaps.mbtx --output FRESH_JSON [--markdown FRESH_MD] [--proof-report ACTUAL_PROOFS]")}
+    options[args[i]]=args[i+1]
+  }
+  let output=options.get("--output").unwrap_or("")
+  guard !output.is_empty() && !@fs.exists(output) else {fail("choose a fresh gap report output")}
+  let manifest_text=@fs.read_file(options.get("--manifest").unwrap_or("tests/registry/coverage.json")).text()
+  let review_text=@fs.read_file(options.get("--review").unwrap_or("tests/registry/coverage-gap-review.json")).text()
+  let manifest=@json.parse(manifest_text)
+  let review=@json.parse(review_text)
+  guard field(manifest,"schema")==Json(1) && field(review,"schema")==Json(1) else {fail("unsupported coverage or independent review schema")}
+  let obligations=array(field(manifest,"obligations"))
+  guard !obligations.is_empty() else {fail("empty coverage obligations")}
+  let obligation_ids : Set[String]=Set([])
+  for row in obligations {
+    let id=string(field(row,"claim_id"))
+    guard !obligation_ids.contains(id) && id.has_prefix(string(field(row,"command"))+":") else {fail("duplicate or cross-command coverage identity: "+id)}
+    obligation_ids.add(id)
+  }
+  let cases : Map[String,Json]=Map([])
+  for name in @fs.readdir("tests/cases") {
+    if name.has_suffix(".json") {
+      for row in array(field(@json.parse(@fs.read_file("tests/cases/"+name).text()),"cases")) {
+        let id=string(field(row,"id"))
+        guard !cases.contains(id) else {fail("duplicate current case identity")}
+        cases[id]=row
+      }
+    }
+  }
+  let known : Map[String,Json]=Map([])
+  for row in array(field(review,"gaps")) {
+    let id=string(field(row,"claim_id"))
+    guard !known.contains(id) && obligations.any(item=>field(item,"claim_id")==Json(id)) else {fail("duplicate or obsolete independent gap classification: "+id)}
+    known[id]=row
+  }
+  let gaps : Array[Json]=[]
+  let mut reviewed=0
+  let mut new_fixtures=0
+  let mut upgrades=0
+  let mut activation_reviews=0
+  let mut features=0
+  for row in obligations {
+    let id=string(field(row,"claim_id"))
+    if field(row,"reviewed")==Json(true) {reviewed+=1;continue}
+    guard field(row,"reviewed")==Json(false) && known.get(id) is Some(detail) else {fail("unreviewed label has no independent gap classification: "+id)}
+    guard field(detail,"command")==field(row,"command") && field(detail,"feature")==field(row,"feature") else {fail("gap classification belongs to another command or feature: "+id)}
+    let related=if field(detail,"related_current_case_ids") is Array(items) {items}else{[]}
+    for value in [..array(field(detail,"existing_case_ids")),..related] {
+      let case_id=string(value)
+      guard cases.get(case_id) is Some(fixture) else {fail("gap refers to a deleted or unknown current fixture: "+case_id)}
+      let commands=if field(fixture,"related_commands") is Array(items) {items}else{[]}
+      guard field(fixture,"command")==field(row,"command") || commands.contains(field(row,"command")) else {fail("gap refers to a different command's fixture: "+id+" -> "+case_id)}
+    }
+    let category=string(field(detail,"classification"))
+    guard !string(field(detail,"existing_evidence")).trim().is_empty() && !string(field(detail,"required_work")).trim().is_empty() else {fail("gap requires evidence and concrete work: "+id)}
+    if field(row,"feature")==Json(true) {
+      guard category=="new_stream_lifecycle_observer" else {fail("primary feature has an incorrect gap category: "+id)}
+      features+=1
+    } else if category=="new_activated_fixture_or_observer" {new_fixtures+=1}
+    else if category=="existing_fixture_assertion_upgrade" {upgrades+=1}
+    else if category=="existing_fixture_activation_review" {activation_reviews+=1}
+    else {fail("unknown independent gap category: "+id)}
+    guard detail is Object(fields) else {fail("gap object required")}
+    let current=fields.copy()
+    current["current_activation"]=field(row,"activation")
+    current["unqualified_bindings"]=field(row,"unqualified_bindings")
+    gaps.push(Json(current))
+  }
+  let reminders : Array[Json]=[]
+  for reminder in [..array(field(review,"known_partial_facet_reminders")),..array(field(review,"additional_partial_facet_reminders"))] {
+    let id=string(field(reminder,"claim_id"))
+    guard obligations.filter(row=>field(row,"claim_id")==Json(id)) is [current] && reminder is Object(fields) else {fail("stale partial-facet reminder: "+id)}
+    let updated=fields.copy()
+    updated["current_activation"]=field(current,"activation")
+    updated["current_case_ids"]=field(current,"case_ids")
+    updated["current_scenario_bindings"]=field(current,"scenario_bindings")
+    updated["current_remaining_facets"]=field(current,"remaining_facets")
+    updated["counts_as_new_label_gap"]=Json(false)
+    reminders.push(Json(updated))
+  }
+  let proof=if options.get("--proof-report") is Some(path) {
+    let actual=@json.parse(@fs.read_file(path).text())
+    guard field(actual,"proof_definitions_sha256")==Json(digest(manifest_text)) && field(actual,"freshness_checked")==Json(true) && field(actual,"current_driver_build_checked")==Json(true) && field(actual,"reviewed_profile_passed")==Json(true) && field(actual,"reviewed_definitions")==Json(reviewed) && field(actual,"unresolved_catalog_claims")==Json(new_fixtures+upgrades+activation_reviews) && field(actual,"unresolved_primary_features")==Json(features) else {fail("actual proof result is stale or disagrees with the current gap inventory")}
+    let checked : Int64=@json.from_json(field(actual,"checked_at_ms"))
+    guard checked>0L else {fail("actual proof report has no verification timestamp")}
+    ({"status":"actual-profile-for-matching-coverage-definitions","source_freshness":"Source and build freshness were checked by the referenced verifier at verified_at_ms; this gap reporter does not revalidate current source identity.","verified_at_ms":checked,"platform":field(actual,"platform"),"executed_definitions_sha256":field(actual,"executed_definitions_sha256"),"executed_scenario_proofs_sha256":field(actual,"executed_scenario_proofs_sha256")} : Json)
+  }else{({"status":"definition-review-only; no execution pass inferred"} : Json)}
+  let report : Json={"schema":1,"coverage_manifest_sha256":digest(manifest_text),"independent_review_sha256":digest(review_text),"reviewed_definitions":reviewed,"remaining_catalog_labels":new_fixtures+upgrades+activation_reviews,"new_fixture_or_observer_catalog_labels":new_fixtures,"existing_fixture_assertion_upgrade_catalog_labels":upgrades,"existing_fixture_activation_review_catalog_labels":activation_reviews,"remaining_primary_features":features,"unknown_classifications":0,"gaps":gaps,"partial_facet_reminders":reminders,"execution":proof,"counting_scope":"Counts are independently reviewed labels, not missing implementations or required test counts. Activation reviews already have strengthened assertions and must not be counted as missing fixtures. One new fixture may cover several labels. Partial reminders add no new unresolved labels.","full_semantic_exhaustiveness":false}
+  @fs.write_file(output,report.stringify(indent=2)+"\n")
+  if options.get("--markdown") is Some(path) {
+    guard !@fs.exists(path) else {fail("preserve existing readable gap index")}
+    let text=StringBuilder()
+    text.write_string("# Remaining finite evidence work\n\n")
+    text.write_string("Reviewed definitions: "+reviewed.to_string()+". Remaining catalog labels: "+(new_fixtures+upgrades+activation_reviews).to_string()+"; new activated fixtures/observers: "+new_fixtures.to_string()+"; existing fixture assertion upgrades: "+upgrades.to_string()+"; strengthened fixtures requiring activation review: "+activation_reviews.to_string()+"; supplemental primary features: "+features.to_string()+". Unknown classifications: 0. These are label counts, not test counts.\n\n")
+    text.write_string("| Claim | Classification | Existing cases | Required work |\n| --- | --- | --- | --- |\n")
+    for gap in gaps {
+      let id=string(field(gap,"claim_id"))
+      let category=string(field(gap,"classification"))
+      let cases=array(field(gap,"existing_case_ids")).map(item=>string(item)).join(", ")
+      let work=string(field(gap,"required_work")).replace_all(old="|",new="\\|").replace_all(old="\n",new=" ")
+      text.write_string("| "+id+" | "+category+" | "+cases+" | "+work+" |\n")
+    }
+    text.write_string("\nPartial-facet reminders are separate in the JSON report; their historical narrow scopes do not imply that currently bound typed scenarios are absent. Every qualified label remains a finite facet, not exhaustive behavior.\n")
+    @fs.write_file(path,text.to_string())
+  }
+  println("Current finite gaps: "+new_fixtures.to_string()+" new-observer labels, "+upgrades.to_string()+" assertion-upgrade labels, "+activation_reviews.to_string()+" activation-review labels, "+features.to_string()+" primary features")
+}

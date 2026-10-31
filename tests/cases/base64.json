@@ -9,31 +9,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-base64-ignore-garbage",
-      "command": "base64",
-      "args": [
-        "-di"
-      ],
-      "stdin_text": "aG!k=",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-base64-wrap-boundary",
-      "command": "base64",
-      "args": [
-        "-w4"
-      ],
-      "stdin_text": "abcdef",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "aGVsbG8K\n"
     },
     {
       "id": "base64-zero-wrap",
@@ -97,7 +77,11 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "aG!k=",
       "expected_stdout_text": "hi",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "p9-base64-ignore-garbage"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-642",
@@ -129,7 +113,11 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "abcdef",
       "expected_stdout_text": "YWJj\nZGVm\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "p9-base64-wrap-boundary"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-652",
@@ -225,7 +213,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/base64@0.2.3 metadata contract",
+      "source_version": "workspace cli/base64@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: base64 [-d|-D] [-i] [-w COLS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -244,8 +232,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/base64@0.2.3 metadata contract",
-      "expected_stdout_text": "base64 0.2.3\n",
+      "source_version": "workspace cli/base64@0.2.4 metadata contract",
+      "expected_stdout_text": "base64 0.2.4\n",
       "expected_stderr_text": ""
     }
   ]

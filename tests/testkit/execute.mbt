@@ -29,12 +29,9 @@ pub async fn execute_contract(
     duration_ms: 0L,
     observations: [],
     missing_observations: [],
+    local_contract: None,
     evidence: None,
   }
-  if !fixture.platform_applies() {
-    return base
-  }
-  guard safe_relative_path(fixture.id) else { fail("unsafe case ID") }
   let invalid = contract_errors(fixture)
   if !invalid.is_empty() {
     return {
@@ -44,6 +41,10 @@ pub async fn execute_contract(
       detail: invalid.join("; "),
     }
   }
+  if !fixture.platform_applies() {
+    return base
+  }
+  guard safe_relative_path(fixture.id) else { fail("unsafe case ID") }
   let work = report_dir + "/" + case_directory_name(fixture.id)
   if @fs.exists(work) {
     fail("evidence already exists: \{work}; choose a fresh --report-dir")
@@ -59,7 +60,11 @@ pub async fn execute_contract(
   let dimensions = contract_observations(fixture)
   try {
     prepare_fixture(fixture_root, fixture, http_base?)
-    let before = if fixture.expected_rejection is Some(_) {
+    let fixture = resolve_runtime_contract(fixture, fixture_root, http_base?)
+    let before = if fixture.expected_rejection is Some(_) ||
+      fixture.expected_files
+      .unwrap_or([])
+      .any(file => file.unchanged == Some(true)) {
       snapshot(
         fixture_root,
         observe=dimensions,
@@ -112,8 +117,17 @@ pub async fn execute_contract(
             errors.push("rejection status differs from contract")
           }
           if fixture.expected_status != 0 {
-            errors.append(check_contract(fixture, observed, fixture_root))
-            errors.append(check_expected_files(fixture, fixture_root))
+            errors.append(
+              check_contract(fixture, observed, fixture_root, http_base?),
+            )
+            errors.append(
+              check_expected_files(
+                fixture,
+                fixture_root,
+                http_base?,
+                baseline=before,
+              ),
+            )
           }
           if observed.stdout != b"" {
             errors.push("unsupported operation wrote stdout")
@@ -123,8 +137,18 @@ pub async fn execute_contract(
           }
         }
         None => {
-          errors.append(check_contract(fixture, observed, fixture_root))
-          errors.append(check_expected_files(fixture, fixture_root))
+          errors.append(
+            check_contract(fixture, observed, fixture_root, http_base?),
+          )
+          errors.append(
+            check_expected_files(
+              fixture,
+              fixture_root,
+              http_base?,
+              baseline=before,
+            ),
+          )
+          errors.append(check_runtime_contract(fixture, observed))
         }
       }
     }
@@ -151,7 +175,17 @@ pub async fn execute_contract(
         @fs.write_file(work + "/status.txt", observed.status.to_string())
         @fs.write_file(
           work + "/snapshot.txt",
-          snapshot_fingerprint(snapshot(fixture_root, observe=dimensions)),
+          snapshot_fingerprint(
+            snapshot(
+              fixture_root,
+              observe=dimensions,
+              content=dimensions.contains("content") ||
+                fixture.expected_rejection is Some(_) ||
+                fixture.expected_files
+                .unwrap_or([])
+                .any(file => file.unchanged == Some(true)),
+            ),
+          ),
         )
       }
     } catch {

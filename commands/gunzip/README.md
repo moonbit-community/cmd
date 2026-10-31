@@ -3,7 +3,7 @@
 Decompress gzip data for MoonX.
 
 ```sh
-moonx cli/gunzip@0.1.3 [OPTION]... [FILE]...
+moonx cli/gunzip@0.1.4 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -32,8 +32,8 @@ Read stdin or named gzip files, including concatenated members. Verify header/da
 ## Examples
 
 ```sh
-moonx cli/gunzip@0.1.3 -c notes.txt.gz
-moonx cli/gunzip@0.1.3 -t notes.txt.gz
+moonx cli/gunzip@0.1.4 -c notes.txt.gz
+moonx cli/gunzip@0.1.4 -t notes.txt.gz
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

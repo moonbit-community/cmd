@@ -1,7 +1,7 @@
 // Port of `ignore/tests/gitignore_matched_path_or_any_parents_tests.rs`.
 
 ///|
-const IGNORE_FILE : String = "internal/ignore/testdata/gitignore_matched_path_or_any_parents_tests.gitignore"
+const IGNORE_FILE : String = "../../tests/fixtures/rg/ignore/gitignore_matched_path_or_any_parents_tests.gitignore"
 
 ///|
 async fn get_gitignore() -> @ignore.Gitignore {
@@ -291,7 +291,7 @@ async test "test_dirs_in_deep" {
 async test "gitignore_skip_bom" {
   let builder = @ignore.GitignoreBuilder::new("ROOT")
   let error = builder.add(
-    "internal/ignore/testdata/gitignore_skip_bom.gitignore",
+    "../../tests/fixtures/rg/ignore/gitignore_skip_bom.gitignore",
   )
   assert_true(error is None, msg="failed to open gitignore file")
   let g = builder.build()

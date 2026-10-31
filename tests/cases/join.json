@@ -2,67 +2,6 @@
   "schema": 2,
   "cases": [
     {
-      "id": "phase3-join-unpaired-output-list",
-      "command": "join",
-      "args": [
-        "-a",
-        "1",
-        "-a",
-        "2",
-        "-e",
-        "0",
-        "-o",
-        "0,1.2,2.2",
-        "left",
-        "right"
-      ],
-      "stdin_text": "",
-      "files": [
-        {
-          "path": "left",
-          "content_text": "a left\nb only-left\nc left-c\n"
-        },
-        {
-          "path": "right",
-          "content_text": "a right\nc right-c\nd only-right\n"
-        }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "coverage": [
-        "after",
-        "empty",
-        "output"
-      ]
-    },
-    {
-      "id": "p9-join-zero-terminated",
-      "command": "join",
-      "args": [
-        "-z",
-        "left",
-        "right"
-      ],
-      "stdin_text": "",
-      "files": [
-        {
-          "path": "left",
-          "content_hex": "31206c6566740032206c65667400"
-        },
-        {
-          "path": "right",
-          "content_hex": "31207269676874003220726967687400"
-        }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "coverage": [
-        "zero-terminated"
-      ]
-    },
-    {
       "id": "p9-join-check-order",
       "command": "join",
       "args": [
@@ -86,7 +25,11 @@
       "normalizations": [],
       "coverage": [
         "check-order"
-      ]
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "a\nb\n"
     },
     {
       "id": "compat-text-join-output-list",
@@ -124,7 +67,12 @@
         "after",
         "empty",
         "output"
-      ]
+      ],
+      "aliases": [
+        "phase3-join-unpaired-output-list"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "compat-text-join-nul-records",
@@ -153,7 +101,12 @@
       "expected_stderr_text": "",
       "coverage": [
         "zero-terminated"
-      ]
+      ],
+      "aliases": [
+        "p9-join-zero-terminated"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "compat-text-join-check-order",
@@ -245,25 +198,6 @@
       "coverage": []
     },
     {
-      "id": "compat-catalog-line-108",
-      "command": "join",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
-      "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact.",
-      "coverage": [
-        "help"
-      ]
-    },
-    {
       "id": "repair-alias-join-after",
       "command": "join",
       "args": [
@@ -345,9 +279,14 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/join@0.2.3 metadata contract",
+      "source_version": "workspace cli/join@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: join [options] FILE1 FILE2\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nJoin lines of two files sorted on their join fields.\n\nOptions:\n  -1 FIELD    Join on this field of FILE1 (default 1).\n  -2 FIELD    Join on this field of FILE2 (default 1).\n  -t CHAR     Use CHAR as the field separator instead of runs of\n              blanks; the output separator becomes CHAR as well.\n  -a FILENO    Also print unpairable lines from FILENO (1 or 2).\n  -v FILENO    Print only unpairable lines from FILENO.\n  -e STRING    Replace missing or empty fields with STRING.\n  -o LIST      Select output fields (for example 0,1.2,2.2), or auto.\n  -i, --ignore-case  Compare join fields without ASCII case distinctions.\n      --header  Print the first lines as headers without matching keys.\n      --check-order  Diagnose unsorted input.\n      --nocheck-order  Do not diagnose unsorted input.\n  -z           End records with NUL instead of newline.\n\nUse '-' as a file name to read stdin.\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-108"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-join-version",
@@ -364,8 +303,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/join@0.2.3 metadata contract",
-      "expected_stdout_text": "join 0.2.3\n",
+      "source_version": "workspace cli/join@0.2.4 metadata contract",
+      "expected_stdout_text": "join 0.2.4\n",
       "expected_stderr_text": ""
     },
     {

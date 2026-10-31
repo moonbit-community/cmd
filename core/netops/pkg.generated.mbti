@@ -6,14 +6,6 @@ import {
 }
 
 // Values
-pub async fn fetch(String, String?, Bool) -> Unit
-
-pub fn fetch_options(Bool, Int32, Bool, String) -> FetchOptions
-
-pub fn fetch_options_with_feedback(Bool, Int32, FeedbackMode, String, diagnostic_path? : String?) -> FetchOptions
-
-pub async fn fetch_with_options(String, String?, FetchOptions) -> Unit
-
 pub fn http_header(String, String) -> HttpHeader
 
 pub fn parse_http_method(String) -> HttpMethod raise TransferError
@@ -31,10 +23,6 @@ pub fn transfer_options(profile? : TransferProfile, request_method? : HttpMethod
 pub fn url_host(String) -> String raise TransferError
 
 // Errors
-pub(all) suberror NetOpError {
-  NetOpError(String)
-}
-
 pub(all) suberror TransferError {
   TransferError(kind~ : TransferErrorKind, message~ : String, status~ : Int32?, context~ : TransferFailureContext?)
 } derive(Eq, @debug.Debug)
@@ -63,24 +51,6 @@ pub async fn CookieJar::save(Self, String, include_session? : Bool) -> Unit
 pub(all) enum CustomCookieMode {
   SeparateFields
   ReplaceStored
-}
-
-pub(all) enum FeedbackMode {
-  Quiet
-  ErrorsOnly
-  Progress
-  Summary
-} derive(Eq, @debug.Debug)
-pub fn FeedbackMode::equal(Self, Self) -> Bool
-pub fn FeedbackMode::not_equal(Self, Self) -> Bool
-pub fn FeedbackMode::to_repr(Self) -> @debug.Repr
-
-pub(all) struct FetchOptions {
-  fail_on_http_error : Bool
-  idle_timeout_ms : Int32
-  feedback : FeedbackMode
-  label : String
-  diagnostic_path : String?
 }
 
 pub(all) struct HttpHeader {

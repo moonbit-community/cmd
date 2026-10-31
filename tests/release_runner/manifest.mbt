@@ -38,11 +38,8 @@ async fn generate_candidate() -> Unit {
     guard command.case_ids is Some(ids) && !ids.is_empty() else {
       fail("missing release cases: " + command.name)
     }
-    for id in ids {
-      guard cases.any(fixture => fixture.id == id) else {
-        fail("unknown release case: " + id)
-      }
-      selected.add(id)
+    for fixture in @testkit.select_cases(cases, [], ids) {
+      selected.add(fixture.id)
     }
   }
   let ids = selected.iter().collect()

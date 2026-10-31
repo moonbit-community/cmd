@@ -1,6 +1,6 @@
 ///|
 /// The result of parsing CLI arguments.
-pub(all) enum ParseResult[T] {
+priv enum ParseResult[T] {
   Special(SpecialMode)
   ParseOk(T)
   ParseErr(String)
@@ -20,7 +20,7 @@ fn set_log_levels(low : LowArgs) -> Unit {
 ///|
 /// Parses the CLI arguments (excluding the program name), including any
 /// arguments from a config file.
-pub async fn parse_low(cli_args : Array[String]) -> ParseResult[LowArgs] {
+async fn parse_low(cli_args : Array[String]) -> ParseResult[LowArgs] {
   let low = LowArgs::default()
   parse_into(cli_args, low) catch {
     e => return ParseErr(e.message())
@@ -132,16 +132,15 @@ async fn run(cli_args : Array[String]) -> Int32 {
     Special(mode) => return special(mode)
     ParseOk(low) => low
   }
-  let args = HiArgs::from_low_args(low)
-  let matched = match args.mode() {
+  let args = ExecutionPlan::from_low_args(low)
+  let matched = match args.mode {
     Search(_) if !args.matches_possible() => false
     Search(mode) => run_search(args, mode)
-    Index(_) => raise RgError(INDEXING_NOT_SUPPORTED)
     Files => run_files(args)
     Types => return run_types(args)
     Generate(mode) => return generate(mode)
   }
-  if matched && (args.quiet() || !errored()) {
+  if matched && (args.output.quiet || !errored()) {
     0
   } else if errored() {
     2

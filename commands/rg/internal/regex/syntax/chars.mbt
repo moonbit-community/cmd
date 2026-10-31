@@ -42,7 +42,7 @@ fn cached_table(
 
 ///|
 /// Rust's `char::is_whitespace`.
-pub fn is_whitespace_char(c : Char) -> Bool {
+fn is_whitespace_char(c : Char) -> Bool {
   let code = c.to_int()
   if code < 0x80 {
     return code == 0x20 || (code >= 0x09 && code <= 0x0D)

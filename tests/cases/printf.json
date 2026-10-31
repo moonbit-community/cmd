@@ -16,25 +16,11 @@
       "normalizations": [],
       "coverage": [
         "format"
-      ]
-    },
-    {
-      "id": "p9-printf-repeated-format",
-      "command": "printf",
-      "args": [
-        "%d,",
-        "1",
-        "2",
-        "3"
       ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "coverage": [
-        "format"
-      ]
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "answer=42\n"
     },
     {
       "id": "compat-text-line-695",
@@ -55,7 +41,12 @@
       "expected_stderr_text": "",
       "coverage": [
         "format"
-      ]
+      ],
+      "aliases": [
+        "p9-printf-repeated-format"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "compat-text-line-704",

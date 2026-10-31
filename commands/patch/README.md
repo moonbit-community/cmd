@@ -3,7 +3,7 @@
 Apply unified and context patches for MoonX.
 
 ```sh
-moonx cli/patch@0.2.1 [OPTION]... [ORIGINALFILE [PATCHFILE]]
+moonx cli/patch@0.2.2 [OPTION]... [ORIGINALFILE [PATCHFILE]]
 ```
 
 ## Supported scope
@@ -38,8 +38,8 @@ Check patches with offsets, fuzz and reversal. Supports creating/deleting files 
 ## Examples
 
 ```sh
-moonx cli/patch@0.2.1 --dry-run -i change.diff
-moonx cli/patch@0.2.1 -o - -i change.diff original.txt
+moonx cli/patch@0.2.2 --dry-run -i change.diff
+moonx cli/patch@0.2.2 -o - -i change.diff original.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

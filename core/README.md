@@ -1,6 +1,65 @@
 # cli/core
 
 Shared runtime packages used by the independently published command modules.
+
+## 0.9.0 API changes
+
+Version **0.9.0** introduces the source API migrations below. Commands select
+their core dependency independently; upgrading core does not require updating
+an unaffected command. Accepted coordinates and release evidence are recorded
+in the repository's release inventory and changelog.
+
+The version boundary makes the package ownership changes explicit for consumers
+of published `0.8.2`:
+
+| Previous API | 0.9.0 migration |
+| --- | --- |
+| `cli` catalog functions, capability and command-contract types | Import `cli/core/contracts`; `cli/core/cli` retains argument parsing and diagnostics. |
+| `checksum.run`, `checksum.run_cksum` | Import `cli/core/checksum/cli`; `checksum` owns digest algorithms and `digest_reader`. |
+| `gzipops.help`, `gzipops.run` | Import `cli/core/gzipops/cli`; codec entrypoints remain in `gzipops`. |
+| `netops.fetch*`, `FetchOptions`, `FeedbackMode`, `NetOpError` | Use `transfer`, `transfer_options` and typed `TransferError`; callers own command feedback and exit-status policy. |
+| `process.pipe`, `redirect_from_file`, `redirect_to_file` | Use the released `moonbitlang/async/process` APIs directly. |
+| Redundant platform capability probes and stream-specific terminal wrappers | Use the applicable released filesystem/process APIs and `platform.is_terminal(StandardStream)`. `is_terminal` and `terminal_output_enabled` are synchronous; terminal discovery remains unavailable. |
+| Exposed `LineScanner` storage fields | Construct with `LineScanner::new` and consume with `next`; the scanner now wraps `RecordReader`. |
+
+The deprecated `cli.warn_stdin_wait` warning helper is also removed. These source
+breaks separate command policy from reusable mechanisms and remove forwarding
+APIs with no independent contract. Command-specific algorithms continue to own
+matching, formatting, ordering and resource policies.
+
+## Shared mechanisms
+
+| Package/API | Contract | Current consumers |
+| --- | --- | --- |
+| `contracts` | Capability types and command catalog, separate from argument parsing. | Workspace validation runner. |
+| `fswalk` | Directory-handle ownership and explicit kind/size observations; no implicit pruning, sorting or extra metadata queries. | rg, find, tree and grep. |
+| `checksum/cli`, `gzipops/cli` | Command record formats, options, diagnostics and execution. Parent packages own algorithms and streams. | The five checksum commands and gzip/gunzip/zcat. |
+| `bytesearch` | Allocation-free byte scans/counts and reusable literal filters over explicit ranges; callers keep pattern storage unchanged while a finder uses it. | rg search/regex/line buffers, wc line counting; `stream.count_byte` retains its immutable-view entrypoint. |
+| `stream.RecordReader` / `RecordBatch` | At most 1 MiB per read; synchronous record visitation over immutable storage. Retained views keep their backing block alive. | cut, uniq, rev, column and other bulk readers. |
+| `stream.LineScanner` | An owned-record facade over the same parser, retaining 64 KiB reads. Use it when records survive the current batch. | sort, join, comm, head, jq, nl, paste and existing scanner clients. |
+| `stream.BlockWriter` | Fixed output capacity; private storage cannot be reused during an awaited write. Failure/cancellation consumes the pending queue and poisons further writes; a deferred flush cannot replay a partial prefix. | rg stdout, column snapshot streams, nl, paste and comm. |
+| `tempio.Directory` | Exclusive creation, invocation-owned cleanup, idempotent close after success. Close files before the directory. Cleanup failures propagate; each command chooses error precedence. | tac, column and sort. |
+| `tempio.copy_range` | Exact positional extent copy with caller-owned scratch storage, 64-bit file offsets and completion before buffer reuse. A short extent is an error. | tac reverse output. |
+
+`BlockWriter.write_slice` borrows a fixed-array span until the call returns;
+callers must not mutate it during that interval. Small writes are copied into
+private storage, large writes bypass it after draining. `flush` does not close
+the destination. These APIs do not make line length or process RSS bounded.
+
+Keep fused wc counts, rg/grep prefilters, cut ranges, rev reversal, tac reverse
+blocks, column page caches and sort runs specialized. Shared ownership must not
+introduce an asynchronous call per byte/record into an existing synchronous
+fast path. rg and core regex engines retain their distinct matching semantics.
+
+The [stream ADR](../docs/adr/0003-streams.md#input-and-output-mechanisms)
+records adoption and limits. The executable [protection registry](../tests/benchmark/protection.json)
+connects shared boundaries to command workloads; see its [runner instructions](../tests/benchmark/PROTECTION.md).
+
+The [internal consolidation decision](../docs/adr/0003-streams.md#package-ownership)
+records source API breaks, consumer migrations and retained specializations.
+
+## Earlier versions and runtime mechanisms
+
 Version **0.6.0** adds a package-version argument to the public gzip runner,
 standardizes checksum help/version output, and exposes standalone metadata
 options in the shared command catalog. Version **0.5.0** added checked 64-bit TZif/POSIX timezone
@@ -23,7 +82,7 @@ column, csplit and tac declare temporary-file writes, and sort lists its
 buffer-size, temporary-directory and batch-size options. Runtime APIs and
 command dependency coordinates remain unchanged.
 
-Candidate **0.8.2** adds the restricted `rg` command contract and four
+The earlier **0.8.2** candidate introduced the restricted `rg` command contract and four
 performance waves. `stream.RecordReader` returns batches with synchronous record
 iteration and immutable byte views; only split records are assembled. Reads are
 at most 1 MiB, and retained storage follows a block plus the longest record.
@@ -32,6 +91,19 @@ partial write from being retried during deferred cleanup. The original
 `LineScanner` API remains available. `RecordBatch.each_while` visits views without
 per-record result objects and pauses after a consumed record for output flushing.
 `stream.count_byte` counts bytes in offset views using bounded word loads.
+
+Version **0.9.0** adds
+`bytere.RecordMatcher.count_records(BytesView, Byte)`. It returns an optional
+pair `(matching_records, complete_records)` for separator-terminated records;
+an incomplete tail is left to the caller. A declined or exhausted DFA returns
+`None`, requiring ordinary matching of the entire block. It shares the existing
+matcher limits and does not apply whole-word or whole-record filters. Published
+acceptance results are recorded in the repository changelog.
+
+Version **0.9.0** also introduces `fsops/mode.parse_octal_mode(String)` for
+chmod and mkdir. It accepts octal digits with an optional `0o`/`0O` prefix,
+rejects empty or non-octal input, and limits permissions to `0o7777`.
+Symbolic-mode interpretation remains command-specific.
 
 `bytere.Pattern.record_matcher()` creates consumer-owned boolean search state.
 Its `required_literal()` exposes a conservative rejection filter; an empty
@@ -58,9 +130,10 @@ sets within 4096 total bytes: two-byte shifts when all literals have at least
 three bytes, otherwise a byte-class Aho-Corasick table with at most 1024 states.
 `find_span` selects the leftmost-longest match; `find_any` returns an occurrence
 without resolving longest ties. Grep uses the latter only for record counting.
-The cut/uniq/wc 0.2.3 and
-grep 0.3.1 candidates select this core coordinate, alongside rg. These candidates
-have not been published. See [the stream ADR](../docs/adr/0003-streams.md#performance-wave-4-candidate-2026-10-26).
+Earlier source notes recorded cut/uniq/wc 0.2.3 and grep 0.3.1, alongside rg,
+as unpublished candidates selecting that stage of the core. Those descriptions
+retain their historical scope. Current adoption and limits are in
+[the stream ADR](../docs/adr/0003-streams.md#search-ownership-and-execution).
 
 `gzipops.encode` accepts an optional `level` argument, defaulting to six, for
 the private pure MoonBit 32 KiB LZ and stored/fixed/dynamic Huffman encoder.

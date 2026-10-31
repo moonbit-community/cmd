@@ -9,14 +9,21 @@
         "-maxdepth",
         "0",
         "-exec",
-        "false",
+        "${FALSE_CHILD}",
+        "--emit",
+        "child-failed\n",
         ";"
       ],
       "stdin_text": "",
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "child-failed\n",
+      "expected_stderr_text": "",
+      "source_version": "Controlled false helper emits an exact marker before exit1; find's supported final -exec predicate must execute the child while retaining traversal status0."
     },
     {
       "id": "phase4-find-metadata",
@@ -44,7 +51,23 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "./one\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "one",
+          "kind": "file",
+          "content_text": "x"
+        },
+        {
+          "path": "two",
+          "kind": "file",
+          "content_text": "xx"
+        }
+      ]
     },
     {
       "id": "phase4-find-prune-depth",
@@ -72,7 +95,27 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "./keep\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "keep",
+          "kind": "file",
+          "content_text": "k"
+        },
+        {
+          "path": "skip",
+          "kind": "directory"
+        },
+        {
+          "path": "skip/hidden",
+          "kind": "file",
+          "content_text": "h"
+        }
+      ]
     },
     {
       "id": "p8-find-readable",
@@ -91,7 +134,18 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": ".\n./input\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "input",
+          "kind": "file",
+          "content_text": "x"
+        }
+      ]
     },
     {
       "id": "p8-find-xtype-link",
@@ -116,23 +170,18 @@
       "normalizations": [],
       "host_platforms": [
         "posix"
-      ]
-    },
-    {
-      "id": "compat-catalog-line-91",
-      "command": "find",
-      "args": [
-        "--help"
       ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
       "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
+      "oracle": true,
+      "expected_stdout_text": "./dangling\n",
       "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+      "expected_files": [
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ]
     },
     {
       "id": "release-metadata-find-help",
@@ -149,9 +198,14 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/find@0.2.3 metadata contract",
+      "source_version": "workspace cli/find@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: find [PATH...] [EXPRESSION]\n      --help      display this help and exit\n      --version   display version and exit\nPredicates include names, portable kinds, size, a/c/m times, newerXY, access checks, -used, -xtype, depth controls, actions, and boolean operators.\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-91"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-find-version",
@@ -168,9 +222,117 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/find@0.2.3 metadata contract",
-      "expected_stdout_text": "find 0.2.3\n",
+      "source_version": "workspace cli/find@0.2.4 metadata contract",
+      "expected_stdout_text": "find 0.2.4\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "quality-find-exec-false-or-print",
+      "command": "find",
+      "args": [
+        ".",
+        "-maxdepth",
+        "0",
+        "-exec",
+        "${FALSE_CHILD}",
+        ";",
+        "-o",
+        "-print"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "find: -exec ... ; must be the final expression action\n",
+      "coverage": [
+        "expression-language"
+      ],
+      "expected_rejection": "must be the final expression action",
+      "source_version": "Documented local expression boundary: -exec must be the final action. This is a rejection/nonmutation witness, not a GNU successful -exec/-o compatibility claim."
+    },
+    {
+      "id": "quality-find-exec-true-or-print",
+      "command": "find",
+      "args": [
+        ".",
+        "-maxdepth",
+        "0",
+        "-exec",
+        "${PRINTF_CHILD}",
+        "child-ok\n",
+        ";"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "child-ok\n",
+      "expected_stderr_text": "",
+      "coverage": [
+        "expression-language"
+      ],
+      "source_version": "Controlled helper produces observable child-ok LF through a supported final -exec action; historical case ID retained."
+    },
+    {
+      "id": "quality-find-readable-negative",
+      "command": "find",
+      "args": [
+        ".",
+        "-type",
+        "f",
+        "-readable",
+        "-print"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "readable",
+          "content_text": "visible",
+          "mode": 384,
+          "readable": true
+        },
+        {
+          "path": "locked",
+          "content_text": "hidden",
+          "mode": 0,
+          "readable": false
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "./readable\n",
+      "expected_stderr_text": "",
+      "stdout_order": "lines",
+      "expected_files": [
+        {
+          "path": "readable",
+          "kind": "file",
+          "mode": 384
+        },
+        {
+          "path": "locked",
+          "kind": "file",
+          "mode": 0
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "host_platforms": [
+        "posix"
+      ],
+      "source_version": "Independent unprivileged POSIX access predicate: mode0600 is readable and mode0000 is excluded. Root execution is outside this finite fixture profile; metadata-only assertions never read the locked file.",
+      "coverage": [
+        "readable",
+        "access-negative-control"
+      ]
     }
   ]
 }

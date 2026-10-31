@@ -3,17 +3,17 @@
 pub let rg_version : String = "0.1.0"
 
 ///|
-pub fn generate_version_digits() -> String {
+fn generate_version_digits() -> String {
   rg_version
 }
 
 ///|
-pub fn generate_version_short() -> String {
+fn generate_version_short() -> String {
   "rg \{generate_version_digits()}"
 }
 
 ///|
-pub fn generate_version_long() -> String {
+fn generate_version_long() -> String {
   let out = StringBuilder()
   out.write_string(generate_version_short())
   out.write_string("\n\n")
@@ -24,7 +24,7 @@ pub fn generate_version_long() -> String {
 }
 
 ///|
-pub fn generate_version_pcre2() -> (String, Bool) {
+fn generate_version_pcre2() -> (String, Bool) {
   ("PCRE2 is not available in this build of ripgrep.\n", false)
 }
 
@@ -61,7 +61,7 @@ fn generate_short_flag(flag : FlagDef) -> (String, String) {
 
 ///|
 /// Generates the `-h` output.
-pub fn generate_help_short() -> String {
+fn generate_help_short() -> String {
   let cats : Map[String, (Array[String], Array[String])] = Map([])
   let mut maxcol1 = 0
   for flag in flag_defs {
@@ -239,7 +239,7 @@ fn generate_long_flag(flag : FlagDef, out : StringBuilder) -> Unit {
 
 ///|
 /// Generates the `--help` output.
-pub fn generate_help_long() -> String {
+fn generate_help_long() -> String {
   let cats : Map[String, StringBuilder] = Map([])
   for flag in flag_defs {
     let key = flag.doc_category.as_str()

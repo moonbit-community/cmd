@@ -383,9 +383,15 @@ fn edits(
   for side in 0..<2 {
     let index : Array[Int32] = []
     let values : Array[Int32] = []
+    let discarded = discarded_lines(
+      keys[side],
+      first,
+      ends[side],
+      counts[1 - side],
+    )
     for i in first..<ends[side] {
       let key = keys[side][i]
-      if counts[1 - side][key] == 0 {
+      if discarded[i] {
         flags[side][i] = true
       } else {
         index.push(i)

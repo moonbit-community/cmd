@@ -3,7 +3,7 @@
 Sort and merge records for MoonX.
 
 ```sh
-moonx cli/sort@0.2.4 [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [-S SIZE] [-T DIR] [--batch-size=N] [FILE...]
+moonx cli/sort@0.2.5 [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [-S SIZE] [-T DIR] [--batch-size=N] [FILE...]
 ```
 
 ## Supported scope
@@ -25,7 +25,7 @@ Sort files or stdin using C-byte order, selected keys and numeric/month/version/
 | `-o, --output=FILE` | Write named output; - is a literal filename. |
 | `-S, --buffer-size=SIZE` | Sorting budget; default 64 MiB; bare numbers use KiB. |
 | `-T, --temporary-directory=DIR` | Select temporary directories; may repeat. |
-| `--batch-size=N` | Merge fan-in; at least 2, capped at 16. |
+| `--batch-size=N` | Maximum merge fan-in; at least 2, capped at 16. |
 | `--help` / `--version` | Show help / package version. |
 
 ## Limitations
@@ -36,8 +36,8 @@ Sort files or stdin using C-byte order, selected keys and numeric/month/version/
 ## Examples
 
 ```sh
-moonx cli/sort@0.2.4 names.txt
-moonx cli/sort@0.2.4 -t, -k 2 -u data.csv
+moonx cli/sort@0.2.5 names.txt
+moonx cli/sort@0.2.5 -t, -k 2 -u data.csv
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

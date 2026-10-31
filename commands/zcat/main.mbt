@@ -1,4 +1,4 @@
 ///|
 async fn main {
-  @sys.exit(@gzipops.run("zcat", @env.args()[1:], "0.1.3"))
+  @sys.exit(@gzipops.run("zcat", @env.args()[1:], "0.1.4"))
 }

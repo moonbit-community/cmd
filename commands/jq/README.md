@@ -3,7 +3,7 @@
 Filter JSON for MoonX.
 
 ```sh
-moonx cli/jq@0.2.4 [OPTION]... [FILTER] [FILE...]
+moonx cli/jq@0.2.5 [OPTION]... [FILTER] [FILE...]
 ```
 
 ## Supported scope
@@ -36,12 +36,13 @@ Apply jq-compatible filters to consecutive JSON values, files or stdin. Supports
 
 - Modules, --stream events and full jq compatibility are unsupported.
 - Color requires explicit -C; automatic terminal color is unavailable. -l/--logs skips invalid lines and conflicts with -n/-R.
+- The unreleased workspace adapter preserves complete `group_by`/`sort_by` key streams and stable ties. Grouping canonicalizes object key order and safe numeric representations; numeric ordering at or above 2^53 still follows the dependency's floating-point comparison and is not claimed exact.
 
 ## Examples
 
 ```sh
-printf '%s' '{"name":"Moon"}' | moonx cli/jq@0.2.4 -r '.name'
-moonx cli/jq@0.2.4 -n -c '{ok: true, values: [1, 2]}'
+printf '%s' '{"name":"Moon"}' | moonx cli/jq@0.2.5 -r '.name'
+moonx cli/jq@0.2.5 -n -c '{ok: true, values: [1, 2]}'
 ```
 
-[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0007-language.md)
+[Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

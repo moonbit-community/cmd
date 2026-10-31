@@ -2,11 +2,26 @@
 package "cli/rg/internal/regex/internal/testdata"
 
 // Values
-pub let cases : Array[TestCase]
+pub fn alias_count(ArrayView[CorpusGroup]) -> Int32
+
+pub fn compile_expectation(TestCase, parsed~ : Bool) -> String?
+
+pub fn exclusion(TestCase, meta? : Bool) -> String?
+
+pub fn execution_groups(ArrayView[TestCase]) -> Array[CorpusGroup] raise
+
+pub async fn load() -> Array[TestCase]
+
+pub async fn load_execution_groups() -> Array[CorpusGroup]
 
 // Errors
 
 // Types and methods
+pub(all) struct CorpusGroup {
+  fixture : TestCase
+  names : Array[String]
+}
+
 pub(all) struct TestCase {
   name : String
   regex : String

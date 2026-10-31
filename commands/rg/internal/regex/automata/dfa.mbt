@@ -115,7 +115,7 @@ pub struct LazyDFA {
   priv set1 : SparseSet
   priv set2 : SparseSet
   priv state_limit : Int32
-  priv mut clear_count : Int32
+  priv mut health : DfaCacheHealth
 }
 
 ///|
@@ -142,7 +142,7 @@ pub fn LazyDFA::new(
     set1: SparseSet::new(n),
     set2: SparseSet::new(n),
     state_limit,
-    clear_count: 0,
+    health: Measuring({ clears: 0, constructed: 0L, searched: 0L, }),
   }
   dfa.reset()
   dfa
@@ -202,6 +202,9 @@ fn LazyDFA::add_state(self : LazyDFA, s : DState) -> Int32 {
     Some(id) => id
     None => {
       let id = self.states.length()
+      if self.health is Measuring(work) {
+        work.constructed += 1L
+      }
       self.states.push(s)
       self.map[key] = id
       for _ in 0..<self.stride {
@@ -519,8 +522,7 @@ fn LazyDFA::next_state(self : LazyDFA, sid : Int32, unit : Int32) -> Int32 {
     return (t & ID_MASK) / self.stride
   }
   if self.states.length() >= self.state_limit {
-    self.clear_count += 1
-    self.reset()
+    self.clear_under_pressure()
     return -1
   }
   let next = self.compute_next(sid, unit)
@@ -543,18 +545,21 @@ pub fn LazyDFA::find_fwd(
   pre? : Prefilter,
 ) -> Int32 {
   let len = he
+  if self.health is Retired {
+    return DFA_FAILED
+  }
   let mut at = start
   let pre = if anchored { None } else { pre }
   if pre is Some(p) {
     let s = p.find_start(hay, at, end)
     if s < 0 {
-      return DFA_NO_MATCH
+      return self.finish_search(DFA_NO_MATCH, at - start)
     }
     at = s
   }
   let prev = if at > hs { hay[at - 1].to_int() } else { -1 }
   if self.start_quits(prev) {
-    return DFA_FAILED
+    return self.finish_search(DFA_FAILED, at - start)
   }
   let mut sid = self.start_state(anchored, prev)
   let mut start_pid = sid * self.stride
@@ -574,13 +579,13 @@ pub fn LazyDFA::find_fwd(
         match pre {
           Some(p) =>
             match p.find_start(hay, at, end) {
-              -1 => return DFA_NO_MATCH
+              -1 => return self.finish_search(DFA_NO_MATCH, at - start)
               s =>
                 if s > at {
                   at = s
                   let prev = if at > hs { hay[at - 1].to_int() } else { -1 }
                   if self.start_quits(prev) {
-                    return DFA_FAILED
+                    return self.finish_search(DFA_FAILED, at - start)
                   }
                   sid = self.start_state(false, prev)
                   start_pid = sid * stride
@@ -600,27 +605,27 @@ pub fn LazyDFA::find_fwd(
     }
     if sid <= quit_id {
       if sid == dead_id {
-        return mat
+        return self.finish_search(mat, at - start)
       }
-      return DFA_FAILED
+      return self.finish_search(DFA_FAILED, at - start)
     }
     cur = sid * stride
     if self.states[sid].is_match {
       mat = at
       if earliest {
-        return mat
+        return self.finish_search(mat, at - start)
       }
     }
     at += 1
     if cur == start_pid && mat < 0 && pre is Some(p) {
       match p.find_start(hay, at, end) {
-        -1 => return DFA_NO_MATCH
+        -1 => return self.finish_search(DFA_NO_MATCH, at - start)
         s =>
           if s > at {
             at = s
             let prev = if at > hs { hay[at - 1].to_int() } else { -1 }
             if self.start_quits(prev) {
-              return DFA_FAILED
+              return self.finish_search(DFA_FAILED, at - start)
             }
             sid = self.start_state(false, prev)
             start_pid = sid * stride
@@ -634,10 +639,17 @@ pub fn LazyDFA::find_fwd(
   if end < len {
     sid = self.next_state(sid, hay[end].to_int())
     if sid < 0 {
-      return DFA_FAILED
+      return self.finish_search(DFA_FAILED, at - start)
     }
     if sid == quit_id {
-      return if mat >= 0 { mat } else { DFA_FAILED }
+      return self.finish_search(
+        if mat >= 0 {
+          mat
+        } else {
+          DFA_FAILED
+        },
+        at - start,
+      )
     }
     if self.states[sid].is_match {
       mat = end
@@ -645,13 +657,13 @@ pub fn LazyDFA::find_fwd(
   } else {
     sid = self.next_state(sid, 256)
     if sid < 0 {
-      return DFA_FAILED
+      return self.finish_search(DFA_FAILED, at - start)
     }
     if self.states[sid].is_match {
       mat = len
     }
   }
-  mat
+  self.finish_search(mat, at - start)
 }
 
 ///|
@@ -669,13 +681,16 @@ pub fn LazyDFA::find_rev(
   earliest : Bool,
 ) -> Int32 {
   let len = he
+  if self.health is Retired {
+    return DFA_FAILED
+  }
+  let mut at = end
   let next_byte = if end < len { hay[end].to_int() } else { -1 }
   if self.start_quits(next_byte) {
-    return DFA_FAILED
+    return self.finish_search(DFA_FAILED, end - at)
   }
   let mut sid = self.start_state(anchored, next_byte)
   let mut mat = DFA_NO_MATCH
-  let mut at = end
   let stride = self.stride
   let classes = self.classes
   while at > start {
@@ -685,24 +700,31 @@ pub fn LazyDFA::find_rev(
     sid = if t >= 0 { (t & ID_MASK) / stride } else { self.next_state(sid, b) }
     if sid <= quit_id {
       if sid == dead_id {
-        return mat
+        return self.finish_search(mat, end - at)
       }
-      return DFA_FAILED
+      return self.finish_search(DFA_FAILED, end - at)
     }
     if self.states[sid].is_match {
       mat = at + 1
       if earliest {
-        return mat
+        return self.finish_search(mat, end - at)
       }
     }
   }
   if start > hs {
     sid = self.next_state(sid, hay[start - 1].to_int())
     if sid < 0 {
-      return DFA_FAILED
+      return self.finish_search(DFA_FAILED, end - at)
     }
     if sid == quit_id {
-      return if mat >= 0 { mat } else { DFA_FAILED }
+      return self.finish_search(
+        if mat >= 0 {
+          mat
+        } else {
+          DFA_FAILED
+        },
+        end - at,
+      )
     }
     if self.states[sid].is_match {
       mat = start
@@ -710,23 +732,11 @@ pub fn LazyDFA::find_rev(
   } else {
     sid = self.next_state(sid, 256)
     if sid < 0 {
-      return DFA_FAILED
+      return self.finish_search(DFA_FAILED, end - at)
     }
     if self.states[sid].is_match {
       mat = hs
     }
   }
-  mat
-}
-
-///|
-/// The number of states currently in the cache.
-pub fn LazyDFA::state_count(self : LazyDFA) -> Int32 {
-  self.states.length()
-}
-
-///|
-/// The number of times the cache was cleared.
-pub fn LazyDFA::clear_count(self : LazyDFA) -> Int32 {
-  self.clear_count
+  self.finish_search(mat, end - at)
 }

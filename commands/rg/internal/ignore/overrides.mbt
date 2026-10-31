@@ -34,14 +34,6 @@ pub fn Override::empty() -> Override {
 }
 
 ///|
-/// Returns the directory of this override set.
-///
-/// All matches are done relative to this path.
-pub fn Override::path(self : Override) -> String {
-  self.gi.path()
-}
-
-///|
 /// Returns true if and only if this matcher is empty.
 ///
 /// When a matcher is empty, it will never match any file path.
@@ -50,14 +42,8 @@ pub fn Override::is_empty(self : Override) -> Bool {
 }
 
 ///|
-/// Returns the total number of ignore globs.
-pub fn Override::num_ignores(self : Override) -> Int32 {
-  self.gi.num_whitelists()
-}
-
-///|
 /// Returns the total number of whitelisted globs.
-pub fn Override::num_whitelists(self : Override) -> Int32 {
+fn Override::num_whitelists(self : Override) -> Int32 {
   self.gi.num_ignores()
 }
 

@@ -7,17 +7,11 @@ import {
 }
 
 // Values
-pub fn canonicalize_ranges(Array[(Int32, Int32)], unicode? : Bool) -> Array[(Int32, Int32)]
-
 pub fn encode_utf8(@buffer.Buffer, Int32) -> Unit
 
 pub fn escape(String) -> String
 
-pub fn is_escapeable_character(Char) -> Bool
-
 pub fn is_meta_character(Char) -> Bool
-
-pub fn is_whitespace_char(Char) -> Bool
 
 pub fn parse(String, config? : ParseConfig) -> Hir raise SyntaxError
 
@@ -27,14 +21,10 @@ pub fn rank(Int32) -> Int32
 
 pub fn translate(String, Ast, config? : TranslatorConfig) -> Hir raise SyntaxError
 
-pub fn utf8_len(Int32) -> Int32
-
 // Errors
 pub suberror SyntaxError {
   SyntaxError(kind~ : ErrorKind, pattern~ : String, span~ : Span)
 } derive(@debug.Debug)
-pub fn SyntaxError::kind(Self) -> ErrorKind
-pub fn SyntaxError::span(Self) -> Span
 pub fn SyntaxError::to_string(Self) -> String
 pub impl Show for SyntaxError
 
@@ -68,29 +58,14 @@ pub(all) enum Ast {
   Alternation(Span, Array[Ast])
   Concat(Span, Array[Ast])
 } derive(Eq, @debug.Debug)
-pub fn Ast::span(Self) -> Span
 
 pub(all) enum Class {
   Unicode(Array[(Int32, Int32)])
   Bytes(Array[(Int32, Int32)])
 } derive(Eq, @debug.Debug)
-pub fn Class::case_fold_simple(Self) -> Self
 pub fn Class::difference(Self, Self) -> Self
-pub fn Class::intersect(Self, Self) -> Self
-pub fn Class::is_ascii(Self) -> Bool
 pub fn Class::is_empty(Self) -> Bool
-pub fn Class::is_unicode(Self) -> Bool
-pub fn Class::literal(Self) -> Bytes?
-pub fn Class::maximum_len(Self) -> Int32?
-pub fn Class::minimum_len(Self) -> Int32?
-pub fn Class::negate(Self) -> Self
-pub fn Class::new_bytes(Array[(Int32, Int32)]) -> Self
-pub fn Class::new_unicode(Array[(Int32, Int32)]) -> Self
 pub fn Class::ranges(Self) -> Array[(Int32, Int32)]
-pub fn Class::symmetric_difference(Self, Self) -> Self
-pub fn Class::to_bytes(Self) -> Self?
-pub fn Class::to_unicode(Self) -> Self?
-pub fn Class::union(Self, Self) -> Self
 
 pub(all) enum ClassAsciiKind {
   Alnum
@@ -148,7 +123,6 @@ pub(all) struct ClassUnicode {
   negated : Bool
   kind : ClassUnicodeKind
 } derive(Eq, @debug.Debug)
-pub fn ClassUnicode::is_negated(Self) -> Bool
 
 pub(all) enum ClassUnicodeKind {
   OneLetter(Char)
@@ -216,7 +190,6 @@ pub(all) enum ErrorKind {
   UnicodePerlClassNotFound
   UnicodeCaseUnavailable
 } derive(Eq, @debug.Debug)
-pub fn ErrorKind::message(Self) -> String
 
 pub(all) enum ExtractKind {
   Prefix
@@ -247,7 +220,6 @@ pub(all) struct Flags {
   mut span : Span
   items : Array[FlagsItem]
 } derive(Eq, @debug.Debug)
-pub fn Flags::flag_state(Self, Flag) -> Bool?
 
 pub(all) struct FlagsItem {
   span : Span
@@ -287,8 +259,7 @@ pub fn Hir::class(Class) -> Self
 pub fn Hir::concat(Array[Self]) -> Self
 pub fn Hir::dot(Dot) -> Self
 pub fn Hir::empty() -> Self
-pub fn Hir::fail() -> Self
-pub fn Hir::is_empty_kind(Self) -> Bool
+pub fn Hir::inner_literals(Self) -> Seq
 pub fn Hir::literal(Bytes) -> Self
 pub fn Hir::look(Look) -> Self
 pub fn Hir::repetition(Int32, Int32?, Bool, Self) -> Self
@@ -311,15 +282,12 @@ pub(all) struct Lit {
   exact : Bool
 } derive(Compare, Eq, @debug.Debug)
 pub fn Lit::exact(Bytes) -> Self
-pub fn Lit::inexact(Bytes) -> Self
-pub fn Lit::len(Self) -> Int32
 
 pub(all) struct Literal {
   span : Span
   kind : LiteralKind
   c : Char
 } derive(Eq, @debug.Debug)
-pub fn Literal::byte(Self) -> Int32?
 
 pub(all) enum LiteralKind {
   Verbatim
@@ -358,24 +326,14 @@ pub(all) struct LookSet {
   bits : UInt32
 } derive(Eq, Hash, @debug.Debug)
 pub fn LookSet::contains(Self, Look) -> Bool
-pub fn LookSet::contains_anchor(Self) -> Bool
 pub fn LookSet::contains_anchor_crlf(Self) -> Bool
 pub fn LookSet::contains_anchor_haystack(Self) -> Bool
-pub fn LookSet::contains_anchor_lf(Self) -> Bool
 pub fn LookSet::contains_anchor_line(Self) -> Bool
 pub fn LookSet::contains_word(Self) -> Bool
-pub fn LookSet::contains_word_ascii(Self) -> Bool
 pub fn LookSet::contains_word_unicode(Self) -> Bool
 pub fn LookSet::empty() -> Self
-pub fn LookSet::full() -> Self
 pub fn LookSet::insert(Self, Look) -> Self
-pub fn LookSet::intersect(Self, Self) -> Self
 pub fn LookSet::is_empty(Self) -> Bool
-pub fn LookSet::iter(Self) -> Iter[Look]
-pub fn LookSet::remove(Self, Look) -> Self
-pub fn LookSet::singleton(Look) -> Self
-pub fn LookSet::subtract(Self, Self) -> Self
-pub fn LookSet::union(Self, Self) -> Self
 
 pub(all) struct ParseConfig {
   case_insensitive : Bool
@@ -398,7 +356,6 @@ pub(all) struct ParserConfig {
   octal : Bool
   empty_min_range : Bool
 }
-pub fn ParserConfig::default() -> Self
 
 pub(all) struct Position {
   offset : Int32
@@ -446,7 +403,6 @@ pub(all) struct Seq {
 } derive(Eq, @debug.Debug)
 pub fn Seq::copy(Self) -> Self
 pub fn Seq::cross_forward(Self, Self) -> Unit
-pub fn Seq::cross_reverse(Self, Self) -> Unit
 pub fn Seq::dedup(Self) -> Unit
 pub fn Seq::empty() -> Self
 pub fn Seq::infinite() -> Self
@@ -455,31 +411,22 @@ pub fn Seq::is_exact(Self) -> Bool
 pub fn Seq::is_finite(Self) -> Bool
 pub fn Seq::is_inexact(Self) -> Bool
 pub fn Seq::keep_first_bytes(Self, Int32) -> Unit
-pub fn Seq::keep_last_bytes(Self, Int32) -> Unit
 pub fn Seq::len(Self) -> Int32?
 pub fn Seq::literals(Self) -> Array[Lit]?
-pub fn Seq::longest_common_prefix(Self) -> Bytes?
-pub fn Seq::longest_common_suffix(Self) -> Bytes?
 pub fn Seq::make_inexact(Self) -> Unit
 pub fn Seq::make_infinite(Self) -> Unit
 pub fn Seq::max_cross_len(Self, Self) -> Int32?
-pub fn Seq::max_literal_len(Self) -> Int32?
 pub fn Seq::max_union_len(Self, Self) -> Int32?
 pub fn Seq::min_literal_len(Self) -> Int32?
-pub fn Seq::minimize_by_preference(Self) -> Unit
 pub fn Seq::optimize_for_prefix_by_preference(Self) -> Unit
-pub fn Seq::optimize_for_suffix_by_preference(Self) -> Unit
 pub fn Seq::push(Self, Lit) -> Unit
 pub fn Seq::singleton(Lit) -> Self
-pub fn Seq::sort(Self) -> Unit
 pub fn Seq::union(Self, Self) -> Unit
 
 pub(all) struct Span {
   start : Position
   end : Position
 } derive(Compare, Eq, @debug.Debug)
-pub fn Span::is_one_line(Self) -> Bool
-pub fn Span::new(Position, Position) -> Self
 
 pub(all) struct TranslatorConfig {
   utf8 : Bool
@@ -491,7 +438,6 @@ pub(all) struct TranslatorConfig {
   swap_greed : Bool
   unicode : Bool
 }
-pub fn TranslatorConfig::default() -> Self
 
 // Type aliases
 

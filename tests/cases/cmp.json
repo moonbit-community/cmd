@@ -2,28 +2,6 @@
   "schema": 2,
   "cases": [
     {
-      "id": "phase3-cmp-equal",
-      "command": "cmp",
-      "args": [
-        "left",
-        "right"
-      ],
-      "stdin_text": "",
-      "files": [
-        {
-          "path": "left",
-          "content_text": "same\n"
-        },
-        {
-          "path": "right",
-          "content_text": "same\n"
-        }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
       "id": "p9-cmp-different",
       "command": "cmp",
       "args": [
@@ -43,7 +21,11 @@
       ],
       "environment": {},
       "expected_status": 1,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "left right differ: char 1, line 1\n"
     },
     {
       "id": "p9-cmp-implicit-stdin",
@@ -60,7 +42,11 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": ""
     },
     {
       "id": "compat-text-cmp-equal-status",
@@ -85,7 +71,12 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "phase3-cmp-equal"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "compat-text-cmp-different-status",
@@ -135,22 +126,6 @@
       "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted."
     },
     {
-      "id": "compat-catalog-line-40",
-      "command": "cmp",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
-      "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
-    },
-    {
       "id": "release-metadata-cmp-help",
       "command": "cmp",
       "args": [
@@ -167,7 +142,12 @@
       ],
       "source_version": "workspace cli/cmp@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: cmp [-b] [-s|-l] [-n LIMIT] [-i SKIP[:SKIP2]] FILE1 [FILE2]\n  -b, --print-bytes  print differing octal and visible byte values\n      --help      display this help and exit\n      --version   display version and exit\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-40"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-cmp-version",

@@ -37,12 +37,6 @@ pub fn DirEntry::path(self : DirEntry) -> String {
 }
 
 ///|
-/// The full path that this entry represents (same as `path`).
-pub fn DirEntry::into_path(self : DirEntry) -> String {
-  self.path()
-}
-
-///|
 /// Whether this entry corresponds to a symbolic link or not.
 pub fn DirEntry::path_is_symlink(self : DirEntry) -> Bool {
   match self.dent {
@@ -61,7 +55,7 @@ pub fn DirEntry::is_stdin(self : DirEntry) -> Bool {
 
 ///|
 /// Return the metadata for the file that this entry points to.
-pub async fn DirEntry::metadata(self : DirEntry) -> @sys.Metadata {
+async fn DirEntry::metadata(self : DirEntry) -> @sys.Metadata {
   match self.dent {
     Stdin =>
       raise IgnoreError::Io(
@@ -83,34 +77,11 @@ pub fn DirEntry::file_type(self : DirEntry) -> @sys.FileType? {
 }
 
 ///|
-/// Return the file name of this entry.
-///
-/// If this entry has no file name (e.g., `/`), then the full path is
-/// returned.
-pub fn DirEntry::file_name(self : DirEntry) -> String {
-  match self.dent {
-    Stdin => "<stdin>"
-    Raw(x) => x.file_name()
-  }
-}
-
-///|
 /// Returns the depth at which this entry was created relative to the root.
 pub fn DirEntry::depth(self : DirEntry) -> Int32 {
   match self.dent {
     Stdin => 0
     Raw(x) => x.depth
-  }
-}
-
-///|
-/// Returns the underlying inode number if one exists.
-///
-/// If this entry doesn't have an inode number, then `None` is returned.
-pub async fn DirEntry::ino(self : DirEntry) -> UInt64? {
-  match self.dent {
-    Stdin => None
-    Raw(x) => x.ino()
   }
 }
 
@@ -214,10 +185,7 @@ pub struct WalkBuilder {
   priv mut min_depth : Int32?
   priv mut max_filesize : UInt64?
   priv mut follow_links : Bool
-  priv mut same_file_system : Bool
   priv mut sorter : Sorter?
-  priv mut threads : Int32
-  priv mut skip : Handle?
   priv mut filter : ((DirEntry) -> Bool)?
   /// The directory that gitignores should be interpreted relative to.
   priv mut global_gitignores_relative_to : CwdState
@@ -239,7 +207,7 @@ pub fn WalkBuilder::new(path : String) -> WalkBuilder {
 ///
 /// Note that if you call `build` on this instance before calling `add`
 /// on it, it will return exactly zero items during iteration.
-pub fn WalkBuilder::empty() -> WalkBuilder {
+fn WalkBuilder::empty() -> WalkBuilder {
   {
     paths: [],
     ig_builder: IgnoreBuilder::new(),
@@ -247,10 +215,7 @@ pub fn WalkBuilder::empty() -> WalkBuilder {
     min_depth: None,
     max_filesize: None,
     follow_links: false,
-    same_file_system: false,
     sorter: None,
-    threads: 0,
-    skip: None,
     filter: None,
     global_gitignores_relative_to: Unset,
   }
@@ -262,7 +227,7 @@ pub fn WalkBuilder::empty() -> WalkBuilder {
 ///
 /// Note that if the sequence is empty, this is the same as
 /// `WalkBuilder::empty`.
-pub fn WalkBuilder::from_iter(paths : ArrayView[String]) -> WalkBuilder {
+fn WalkBuilder::from_iter(paths : ArrayView[String]) -> WalkBuilder {
   let builder = WalkBuilder::empty()
   for path in paths {
     builder.add(path) |> ignore
@@ -292,14 +257,16 @@ pub async fn WalkBuilder::build(self : WalkBuilder) -> Walk {
           follow_links: follow_links || is_file(p),
           max_depth: max_depth.unwrap_or(2147483647),
           min_depth: min_depth.unwrap_or(0),
-          same_file_system: self.same_file_system,
           sorter: cmp,
         }
         (p, Some(WalkEventIter::new(WalkDirIter::new(p, opts))))
       },
     )
   }
-  let ig_root = self.build_ignore()
+  // Stdin entries bypass ignore matching; retain it for every filesystem root.
+  let stdin_only = !self.paths.is_empty() &&
+    self.paths.iter().all(p => p == "-")
+  let ig_root = self.build_ignore(load_global=!stdin_only)
   {
     its,
     its_pos: 0,
@@ -308,29 +275,6 @@ pub async fn WalkBuilder::build(self : WalkBuilder) -> Walk {
     ig: ig_root,
     max_depth: self.max_depth,
     max_filesize: self.max_filesize,
-    skip: self.skip,
-    filter: self.filter,
-  }
-}
-
-///|
-/// Build a new `WalkParallel` iterator.
-///
-/// Note that this *doesn't* return something that implements an iterator.
-/// Instead, the returned value must be run with a closure. e.g.,
-/// `builder.build_parallel().run(() => path => { ...; Continue })`.
-pub async fn WalkBuilder::build_parallel(self : WalkBuilder) -> WalkParallel {
-  let ig_root = self.build_ignore()
-  {
-    paths: self.paths.copy(),
-    ig_root,
-    max_depth: self.max_depth,
-    min_depth: self.min_depth,
-    max_filesize: self.max_filesize,
-    follow_links: self.follow_links,
-    same_file_system: self.same_file_system,
-    threads: self.threads,
-    skip: self.skip,
     filter: self.filter,
   }
 }
@@ -362,21 +306,6 @@ pub fn WalkBuilder::max_depth(
 }
 
 ///|
-/// The minimum depth to recurse.
-///
-/// The default, `None`, imposes no minimum depth restriction.
-pub fn WalkBuilder::min_depth(
-  self : WalkBuilder,
-  depth : Int32?,
-) -> WalkBuilder {
-  self.min_depth = depth
-  if (self.max_depth, self.min_depth) is (Some(max), Some(min)) && min > max {
-    self.min_depth = self.max_depth
-  }
-  self
-}
-
-///|
 /// Whether to follow symbolic links or not.
 pub fn WalkBuilder::follow_links(self : WalkBuilder, yes : Bool) -> WalkBuilder {
   self.follow_links = yes
@@ -390,19 +319,6 @@ pub fn WalkBuilder::max_filesize(
   filesize : UInt64?,
 ) -> WalkBuilder {
   self.max_filesize = filesize
-  self
-}
-
-///|
-/// The number of threads to use for traversal.
-///
-/// Note that this only has an effect when using `build_parallel`. (In this
-/// port, the parallel walker always executes on a single thread.)
-///
-/// The default setting is `0`, which chooses the number of threads
-/// automatically using heuristics.
-pub fn WalkBuilder::threads(self : WalkBuilder, n : Int32) -> WalkBuilder {
-  self.threads = n
   self
 }
 
@@ -482,29 +398,6 @@ pub fn WalkBuilder::overrides(
 pub fn WalkBuilder::types(self : WalkBuilder, types : Types) -> WalkBuilder {
   self.ig_builder.types(types) |> ignore
   self
-}
-
-///|
-/// Enables all the standard ignore filters.
-///
-/// This toggles, as a group, all the filters that are enabled by default:
-/// `hidden`, `parents`, `ignore`, `git_ignore`, `git_global` and
-/// `git_exclude`.
-///
-/// They may still be toggled individually after calling this function.
-///
-/// This is (by definition) enabled by default.
-pub fn WalkBuilder::standard_filters(
-  self : WalkBuilder,
-  yes : Bool,
-) -> WalkBuilder {
-  self
-  .hidden(yes)
-  .parents(yes)
-  .ignore(yes)
-  .git_ignore(yes)
-  .git_global(yes)
-  .git_exclude(yes)
 }
 
 ///|
@@ -607,30 +500,6 @@ pub fn WalkBuilder::ignore_case_insensitive(
 }
 
 ///|
-/// Set a function for sorting directory entries by their path.
-///
-/// If a compare function is set, the resulting iterator will return all
-/// paths in sorted order. The compare function will be called to compare
-/// entries from the same directory. It must return a negative number, zero
-/// or a positive number (like Rust's `Ordering::{Less, Equal, Greater}`).
-///
-/// This is like `sort_by_file_name`, except the comparator accepts
-/// the full path instead of the base file name, which permits it to sort by
-/// more criteria.
-///
-/// This method will override any previous sorter set by this method or
-/// by `sort_by_file_name`.
-///
-/// Note that this is not used in the parallel iterator.
-pub fn WalkBuilder::sort_by_file_path(
-  self : WalkBuilder,
-  cmp : (String, String) -> Int32,
-) -> WalkBuilder {
-  self.sorter = Some(ByPath(cmp))
-  self
-}
-
-///|
 /// Set a function for sorting directory entries by file name.
 ///
 /// If a compare function is set, the resulting iterator will return all
@@ -640,75 +509,11 @@ pub fn WalkBuilder::sort_by_file_path(
 ///
 /// This method will override any previous sorter set by this method or
 /// by `sort_by_file_path`.
-///
-/// Note that this is not used in the parallel iterator.
 pub fn WalkBuilder::sort_by_file_name(
   self : WalkBuilder,
   cmp : (String, String) -> Int32,
 ) -> WalkBuilder {
   self.sorter = Some(ByName(cmp))
-  self
-}
-
-///|
-/// Do not cross file system boundaries.
-///
-/// When this option is enabled, directory traversal will not descend into
-/// directories that are on a different file system from the root path.
-///
-/// On backends that cannot report device numbers (wasm), all paths are
-/// considered to be on the same file system.
-pub fn WalkBuilder::same_file_system(
-  self : WalkBuilder,
-  yes : Bool,
-) -> WalkBuilder {
-  self.same_file_system = yes
-  self
-}
-
-///|
-/// Do not yield directory entries that are believed to correspond to
-/// stdout.
-///
-/// This is useful when a command is invoked via shell redirection to a
-/// file that is also being read. For example, `grep -r foo ./ > results`
-/// might end up trying to search `results` even though it is also writing
-/// to it, which could cause an unbounded feedback loop. Setting this
-/// option prevents this from happening by skipping over the `results`
-/// file.
-///
-/// This is disabled by default.
-pub async fn WalkBuilder::skip_stdout(
-  self : WalkBuilder,
-  yes : Bool,
-) -> WalkBuilder {
-  if yes {
-    self.skip = stdout_handle()
-  } else {
-    self.skip = None
-  }
-  self
-}
-
-///|
-/// Yields only entries which satisfy the given predicate and skips
-/// descending into directories that do not satisfy the given predicate.
-///
-/// The predicate is applied to all entries. If the predicate is
-/// true, iteration carries on as normal. If the predicate is false, the
-/// entry is ignored and if it is a directory, it is not descended into.
-///
-/// Note that the errors for reading entries that may not satisfy the
-/// predicate will still be yielded.
-///
-/// Note also that only one filter predicate can be applied to a
-/// `WalkBuilder`. Calling this subsequent times overrides previous filter
-/// predicates.
-pub fn WalkBuilder::filter_entry(
-  self : WalkBuilder,
-  filter : (DirEntry) -> Bool,
-) -> WalkBuilder {
-  self.filter = Some(filter)
   self
 }
 
@@ -756,10 +561,13 @@ fn WalkBuilder::get_or_set_current_dir(self : WalkBuilder) -> String? {
 
 ///|
 /// Build the root ignore matcher shared by all consumers of this builder.
-async fn WalkBuilder::build_ignore(self : WalkBuilder) -> Ignore {
+async fn WalkBuilder::build_ignore(
+  self : WalkBuilder,
+  load_global~ : Bool,
+) -> Ignore {
   match self.get_or_set_current_dir() {
-    Some(cwd) => self.ig_builder.build_with_cwd(Some(cwd))
-    None => self.ig_builder.build()
+    Some(cwd) => self.ig_builder.build_with_cwd(Some(cwd), load_global~)
+    None => self.ig_builder.build(load_global~)
   }
 }
 
@@ -779,28 +587,7 @@ pub struct Walk {
   priv mut ig : Ignore
   priv max_depth : Int32?
   priv max_filesize : UInt64?
-  priv skip : Handle?
   priv filter : ((DirEntry) -> Bool)?
-}
-
-///|
-/// Creates a new recursive directory iterator for the file path given.
-///
-/// Note that this uses default settings, which include respecting
-/// `.gitignore` files. To configure the iterator, use `WalkBuilder`
-/// instead.
-pub async fn Walk::new(path : String) -> Walk {
-  WalkBuilder::new(path).build()
-}
-
-///|
-/// Create a new recursive directory iterator from the sequence of paths
-/// given.
-///
-/// Note that if the provided sequence is empty, then `Walk` is guaranteed
-/// to yield zero entries.
-pub async fn Walk::from_iter(paths : ArrayView[String]) -> Walk {
-  WalkBuilder::from_iter(paths).build()
 }
 
 ///|
@@ -812,11 +599,6 @@ async fn Walk::skip_entry(self : Walk, ent : DirEntry) -> Bool {
   // expensive operations (stat, filesystem other) are done.
   if should_skip_entry(self.ig, ent) {
     return true
-  }
-  if self.skip is Some(stdout) {
-    if path_equals(ent, stdout) {
-      return true
-    }
   }
   if self.max_filesize is Some(max_filesize) && !ent.is_dir() {
     return skip_filesize(
@@ -913,21 +695,6 @@ pub async fn Walk::next(self : Walk) -> Result[DirEntry, IgnoreError]? {
       }
     }
   }
-}
-
-///|
-/// Returns an iterator over the remaining results of this walk.
-pub async fn Walk::iter(self : Walk) -> Array[Result[DirEntry, IgnoreError]] {
-  self.collect()
-}
-
-///|
-pub async fn Walk::collect(self : Walk) -> Array[Result[DirEntry, IgnoreError]] {
-  let entries = []
-  while self.next() is Some(entry) {
-    entries.push(entry)
-  }
-  entries
 }
 
 ///|
@@ -1042,50 +809,31 @@ fn should_skip_entry(ig : Ignore, dent : DirEntry) -> Bool {
 }
 
 ///|
-/// Returns a handle to stdout for filtering search.
-///
-/// A handle is returned if and only if stdout is being redirected to a file.
-/// The handle returned corresponds to that file.
-///
-/// This port determines the stdout file by querying the metadata of
-/// `/dev/stdout`, which on Linux and macOS resolves to the file open on
-/// file descriptor 1.
-async fn stdout_handle() -> Handle? {
-  if @sys.is_tty(1) is Available(true) {
-    return None
+pub fn WalkBuilder::min_depth(
+  self : WalkBuilder,
+  depth : Int32?,
+) -> WalkBuilder {
+  self.min_depth = depth
+  if (self.max_depth, self.min_depth) is (Some(max), Some(min)) && min > max {
+    self.min_depth = self.max_depth
   }
-  let md = @sys.metadata("/dev/stdout") catch { _ => return None }
-  if !(md.file_type is File) {
-    return None
-  }
-  if md.dev is None || md.ino is None {
-    // Can't identify the file.
-    return None
-  }
-  // On macOS, `/dev/stdout` resolves through the `fdesc` file system: the
-  // inode number is the one of the open file, but the device number is the
-  // one of `/dev`. In that case only the inode number can be compared.
-  let dev_known = try @sys.metadata("/dev").dev != md.dev catch {
-    _ => true
-  }
-  Some({ dev: md.dev, ino: md.ino, dev_known, canonical: None, })
+  self
 }
 
 ///|
-/// Returns true if and only if the given directory entry is believed to be
-/// equivalent to the given handle. If there was a problem querying the path
-/// for information to determine equality, then that error is returned.
-async fn path_equals(dent : DirEntry, handle : Handle) -> Bool {
-  // If we know for sure that these two things aren't equal, then avoid
-  // the costly extra stat call to determine equality.
-  if dent.is_stdin() || dent.ino() != handle.ino {
-    return false
-  }
-  let h = Handle::from_path(dent.path()) catch {
-    err =>
-      raise IgnoreError::Io(@sys.from_error(err))
-        .with_depth(dent.depth())
-        .with_path(dent.path())
-  }
-  h.same(handle)
+pub fn WalkBuilder::sort_by_file_path(
+  self : WalkBuilder,
+  cmp : (String, String) -> Int32,
+) -> WalkBuilder {
+  self.sorter = Some(ByPath(cmp))
+  self
+}
+
+///|
+pub fn WalkBuilder::filter_entry(
+  self : WalkBuilder,
+  filter : (DirEntry) -> Bool,
+) -> WalkBuilder {
+  self.filter = Some(filter)
+  self
 }

@@ -246,6 +246,14 @@ async test "sort selected fan-in preserves merge source order and prepared rando
 }
 
 ///|
+test "sort merge reservation leaves useful run space for a one MiB budget" {
+  assert_eq(merge_budget(1048576L, 16), (524288L, 2))
+  assert_eq(merge_budget(67108864L, 16), (65667072L, 16))
+  assert_eq(merge_budget(67108864L, 2), (66584576L, 2))
+  assert_eq(merge_budget(0L, 16), (1L, 2))
+}
+
+///|
 async test "sort temporary run paths rotate between explicitly selected parents" {
   let root = @fs.tmpdir(prefix="sort-temp-parents-")
   defer @fs.rmdir(root, recursive=true)
@@ -256,7 +264,7 @@ async test "sort temporary run paths rotate between explicitly selected parents"
   let spool : Spool = { directories: parents, roots: [None, None], next: 0, }
   defer (for child in spool.roots {
     if child is Some(child) {
-      @fs.rmdir(child, recursive=true)
+      child.close()
     }
   })
   let first = spool.path()

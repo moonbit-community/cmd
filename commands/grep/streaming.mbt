@@ -1,4 +1,5 @@
 ///|
+// Strategy: grep-span-output
 priv struct GrepInput {
   reader : &@io.Reader
   delimiter : Bytes
@@ -45,9 +46,7 @@ fn GrepInput::next_buffered(self : GrepInput) -> Record? {
   }
   let end = start + relative
   let offset = self.offset
-  self.position = end + 1
-  self.offset += (relative + 1).to_int64()
-  self.number += 1L
+  self.consume_records(end + 1, 1L)
   Some({
     data: self.bytes[start:end],
     terminated: true,
@@ -312,6 +311,8 @@ async fn process_reader(
     },
   )
   let output = @io.BufferedWriter::new(stdout, size=65536)
+  // Record output owns BufferedWriter; span output owns reset-before-write
+  // storage. Only the input-error boundary flushes BufferedWriter after failure.
   let spans = @buffer.Buffer(size_hint=@stream.chunk_size)
   defer @stream.flush_buffer(stdout, spans)
   let before : @deque.Deque[Record] = @deque.Deque([])
@@ -319,17 +320,18 @@ async fn process_reader(
   let mut emitted_through = 0L
   let mut after = 0
   let mut binary_reported = false
-  let emit_records = !options.count &&
-    !options.files_with_matches &&
-    !options.files_without_match &&
-    !options.quiet
+  let execution = options.execution(prefix_filename)
+  let emit_records = !(execution is Summary(_))
   for ;; {
     if !options.invert && !options.context_enabled {
       input.skip_nonmatching(matcher, options.ignore_case)
     }
-    if emit_records &&
-      options.only_matching &&
-      !options.invert &&
+    if execution is BatchedRecords &&
+      (!input.binary || options.binary_mode != Report) {
+      selected_count += input.collect_records(matcher, options, spans)
+      @stream.flush_buffer(output, spans)
+    }
+    if execution is MatchSpans &&
       (!input.binary || options.binary_mode != Report) {
       selected_count += input.emit_buffered(
         path, matcher, options, prefix_filename, spans,
@@ -339,7 +341,7 @@ async fn process_reader(
         continue
       }
     }
-    if !emit_records && !options.quiet && !options.files_with_matches {
+    if execution is Summary(true) {
       selected_count += input.count_buffered(
         matcher,
         options.ignore_case,
@@ -354,9 +356,7 @@ async fn process_reader(
       }
     }
     guard record is Some(record) else { break }
-    if emit_records &&
-      options.only_matching &&
-      !options.invert &&
+    if execution is MatchSpans &&
       (!input.binary || options.binary_mode != Report) {
       input.pending_match = Some(MatchEmitter::new(record, matcher, options))
       continue

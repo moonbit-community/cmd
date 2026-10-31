@@ -3,7 +3,7 @@
 Encode and decode Base64 for MoonX.
 
 ```sh
-moonx cli/base64@0.2.3 [-d|-D] [-i] [-w COLS] [FILE]
+moonx cli/base64@0.2.4 [-d|-D] [-i] [-w COLS] [FILE]
 ```
 
 ## Supported scope
@@ -26,8 +26,8 @@ Encode files or stdin using the standard alphabet and `=` padding. With no file,
 ## Examples
 
 ```sh
-printf 'hello' | moonx cli/base64@0.2.3
-moonx cli/base64@0.2.3 -d encoded.txt
+printf 'hello' | moonx cli/base64@0.2.4
+moonx cli/base64@0.2.4 -d encoded.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

@@ -34,6 +34,7 @@ fn suite_report(
     duration_ms: @async.now() - start,
     observations: ["status", "stdout", "stderr", "file-content"],
     missing_observations: [],
+    local_contract: None,
     evidence: None,
   }
 }
@@ -82,6 +83,13 @@ async fn run_driver() -> Unit {
   }
   if raw.get(0) == Some("--metadata-observer") {
     metadata_observer(raw[1:])
+    return
+  }
+  if raw.get(0) == Some("--generate-quality-catalog") {
+    guard raw is [_, output] else {
+      fail("Usage: cmd-test-runner --generate-quality-catalog FRESH_JSON")
+    }
+    @testkit.generate_local_quality_catalog(output)
     return
   }
   if raw.get(0) == Some("--option-test-helper") {
@@ -265,17 +273,24 @@ async fn run_driver() -> Unit {
     )
     let all = @testkit.load_cases(manifest_path)
     let all = match published {
-      Some((_, ids)) => {
-        for id in ids {
-          guard all.any(item => item.id == id) else {
-            fail("published case does not exist: " + id)
-          }
-        }
-        all.filter(item => ids.contains(item.id))
-      }
+      Some((_, ids)) => @testkit.select_cases(all, [], ids)
       None => all
     }
     let manifest = { ..manifest, cases: all, }
+    if published is None {
+      @testkit.configure_local_quality(
+        workspace_input(project_root, "tests/registry/case-quality.json"),
+        all,
+        registry.entries
+        .filter(row => row.implementation == "stateful-scenario")
+        .map(row => {
+          row.behavior_id
+          .strip_prefix("scenario:")
+          .map(StringView::to_owned)
+          .unwrap_or(row.case_id)
+        }),
+      )
+    }
     let failures = validate_manifest(manifest)
     if !failures.is_empty() {
       fail(failures.join("\n"))
@@ -294,7 +309,8 @@ async fn run_driver() -> Unit {
     for fixture in selected {
       if fixture.oracle == Some(true) && suites.contains("oracle") {
         guard registry.entries.any(entry => {
-          entry.case_id == fixture.id && entry.oracle_profile != ""
+          (entry.case_id == fixture.id || entry.aliases.contains(fixture.id)) &&
+          entry.oracle_profile != ""
         }) else {
           fail(
             fixture.id + ": differential requires a registered oracle profile",
@@ -307,6 +323,7 @@ async fn run_driver() -> Unit {
         entry.oracle_profile != "" &&
         selected.any(fixture => {
           entry.case_id == fixture.id ||
+          entry.aliases.contains(fixture.id) ||
           entry.behavior_id == "scenario:" + fixture.id
         })
       })
@@ -337,6 +354,28 @@ async fn run_driver() -> Unit {
     @fs.mkdir(report_dir, recursive=true)
   }
   report_dir = @fs.realpath(report_dir)
+  guard !@fs.exists(report_dir + "/selected-cases.json") &&
+    !@fs.exists(report_dir + "/run.json") else {
+    fail(
+      "choose a fresh report directory; preserve previous definitions/results",
+    )
+  }
+  let scenario_contracts = @testkit.scenario_contract_snapshot(selected)
+  let scenario_receipts : Array[Json] = []
+  let definition_text = (
+      {
+        "schema": 1,
+        "cases": ToJson::to_json(selected),
+        "metadata_contracts": @testkit.metadata_contract_snapshot(selected),
+        "scenario_contracts": scenario_contracts,
+        "driver_sha256": @testkit.sha256_bytes(
+          @fs.read_file(@fs.realpath(@env.args()[0])).binary(),
+        ),
+        "prepared_at_ms": @async.now(),
+      } : Json).stringify(indent=2) +
+    "\n"
+  @fs.write_file(report_dir + "/selected-cases.json", definition_text)
+  let definition_hash = @testkit.sha256_bytes(@utf8.encode(definition_text))
   let run_started = @async.now()
   let reports : Array[@testkit.CaseReport] = []
   let stage_durations : Map[String, Int64] = Map([])
@@ -419,13 +458,27 @@ async fn run_driver() -> Unit {
                 }
                 @testkit.append_report(
                   reports,
-                  @testkit.execute_contract(
-                    transformed,
-                    bin_root,
-                    backend == "wasm",
-                    report_dir,
-                    http_base?=base,
-                  ),
+                  if published is None &&
+                    ["release-metadata-rg-help", "compat-catalog-line-277"].contains(
+                      transformed.id,
+                    ) {
+                    let checked = metadata_report(
+                      transformed.command,
+                      bin_root,
+                      backend,
+                      report_dir,
+                      fixture=transformed,
+                    )
+                    { ..checked, id: transformed.id, }
+                  } else {
+                    @testkit.execute_contract(
+                      transformed,
+                      bin_root,
+                      backend == "wasm",
+                      report_dir,
+                      http_base?=base,
+                    )
+                  },
                 )
               }
             })
@@ -536,7 +589,7 @@ async fn run_driver() -> Unit {
                   })
                   return
                 }
-                let failures = run_case(
+                let outcome = run_case(
                   fixture,
                   bin_root,
                   oracle_image,
@@ -546,8 +599,13 @@ async fn run_driver() -> Unit {
                   report_dir,
                   docker_user,
                 ) catch {
-                  error => ["infrastructure: " + error.to_string()]
+                  error =>
+                    {
+                      failures: ["infrastructure: " + error.to_string()],
+                      local_contract: None,
+                    }
                 }
+                let failures = outcome.failures
                 let report = suite_report(fixture.id, backend, begin, failures)
                 let infrastructure = failures.any(message => {
                   message.contains("failed to start") ||
@@ -589,7 +647,7 @@ async fn run_driver() -> Unit {
                   },
                   stage,
                   observations: if failures.is_empty() {
-                    [
+                    let observed = [
                       "status",
                       "stdout",
                       "stderr",
@@ -597,6 +655,14 @@ async fn run_driver() -> Unit {
                       "type",
                       ..fixture.observe.unwrap_or([]),
                     ]
+                    if outcome.local_contract is Some(receipt) {
+                      for dimension in receipt.observations {
+                        if !observed.contains(dimension) {
+                          observed.push(dimension)
+                        }
+                      }
+                    }
+                    observed
                   } else {
                     []
                   },
@@ -605,6 +671,7 @@ async fn run_driver() -> Unit {
                   } else {
                     []
                   },
+                  local_contract: outcome.local_contract,
                   evidence: if report.result == "pass" {
                     None
                   } else {
@@ -621,7 +688,14 @@ async fn run_driver() -> Unit {
             item.comparison == Some("scenario")
           })
           run_scenario_batch(cases, reports, jobs, fixture => {
-            execute_scenario(fixture, bin_root, true, report_dir)
+            execute_scenario(
+              fixture,
+              bin_root,
+              true,
+              report_dir,
+              proof_catalog=scenario_contracts,
+              proof_receipts=scenario_receipts,
+            )
           })
         }
       }
@@ -632,7 +706,20 @@ async fn run_driver() -> Unit {
     report_dir + "/stages.json",
     ToJson::to_json(stage_durations).stringify(indent=2) + "\n",
   )
-  @testkit.write_reports(report_dir, reports)
+  let scenario_text = ({ "schema": 1, "scenarios": scenario_receipts } : Json).stringify(
+      indent=2,
+    ) +
+    "\n"
+  guard !@fs.exists(report_dir + "/scenario-proofs.json") else {
+    fail("preserve previous scenario proof receipts")
+  }
+  @fs.write_file(report_dir + "/scenario-proofs.json", scenario_text)
+  @testkit.write_reports(
+    report_dir,
+    reports,
+    case_definitions_sha256=definition_hash,
+    scenario_proofs_sha256=@testkit.sha256_bytes(@utf8.encode(scenario_text)),
+  )
   println(
     "semantic passes: \{reports.filter(item => item.semantic_pass()).length()}; report: \{report_dir}",
   )

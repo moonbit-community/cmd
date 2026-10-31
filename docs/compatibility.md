@@ -1,7 +1,104 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-10-27
+Updated: 2026-10-31
+
+The 2026-10-30 release published `cli/core@0.9.0` and 43 command packages:
+42 updates and the first `cli/rg@0.1.0` release. Another 36 command coordinates
+remain unchanged, giving 79 published commands; `timeout` remains local-only.
+All 44 uploads and registry builds were verified. Local exact-version MoonX
+acceptance passed 2,180 checks with 19 skips and zero failures across all 79
+coordinates. [latest.json](../tests/release_runner/current/latest.json) and its
+independent expected cases select the exact published inventory. The
+[release summary](../CHANGELOG.md#2026-10-30) records source CI and three-platform
+published acceptance.
+
+The current development test policy requires source-bound independent local
+assertions on every regression before platform execution, including complete
+structured/runtime output observers and explicit finite diagnostic contracts.
+Duplicate invocations retain their former identities as aliases. Frozen
+published expectations remain independent. Linux pinned-oracle comparison
+supplements this local gate; it does not replace it. The unified real-source
+benchmark and its explicit untimed boundaries are described in
+[the benchmark guide](../tests/benchmark/README.md). These policy changes alone
+do not establish a new compatibility, performance or publication result.
+The final audit corrects the earlier Darwin `mkdir` setuid diagnosis: the
+native and Wasm observations used different sandbox contexts. Paired execution
+under one unrestricted context agrees on those bits. It separately exposed
+and repaired sticky-only `+t` creation on Darwin; Linux keeps its existing
+result. Default diff alignment now follows GNU's sparse repeated-anchor rule
+on the genuine source pair. See [ADR-0004](adr/0004-filesystem.md) and
+[ADR-0003](adr/0003-streams.md) for the bounded evidence and retained limits.
+Regular-file stdin alignment for wc still requires an unavailable public
+descriptor metadata API and remains explicitly outside acceptance.
+
+The final local macOS development run passes 2,260 functional checks with 21
+platform skips and zero failures, plus 1,723 Wasm package and 192 Native
+test-tool tests. All 652 reviewed finite definitions join fresh receipts; four
+keep explicit platform-partial scopes. The real-source comparison checks 123
+of 125 rows and retains the two exact wc padding failures. Current evidence
+work remains 180 new-observer labels, 32 activation-review labels and one yes
+lifecycle feature. These are finite label counts, not test counts or complete
+option coverage. Three-platform CI and exact-version publication acceptance
+are separate gates.
+
+The following paragraphs retain development observations made before the
+2026-10-30 publication. Their local scope and exclusions remain unchanged;
+they do not establish performance acceptance of the published coordinates.
+
+Development work after release commit `987cf02` imported the isolated rev/cut/tac,
+packed literal automaton and rg summary optimizations. Its
+implementation and diagnostic limits are recorded in
+[ADR-0003](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/docs/adr/0003-streams.md#isolated-performance-candidates-2026-10-27).
+Those local changes did not amend the then-accepted registry coordinates.
+The newest continuation reduces rg long-record allocation and caps individual
+read requests. A 64 MiB record drops from about 376 to 166 MiB kernel peak RSS;
+a 20 MiB record retains a roughly 9 MiB increase. Full-record retention and
+configured allocation errors remain. At that stage, no support boundary or
+release coordinate changed. See [long-record capacity](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/docs/adr/0003-streams.md#long-record-capacity-and-read-requests-2026-10-27)
+for complete measurements and the next streaming-matcher investigation.
+The preceding continuation replaces scalar rg prefix-byte membership scanning
+with exact SIMD candidate lookup. A long random-letter regex improves about
+1.7x, with full verification and existing regex semantics retained. All 288
+new set/regex comparisons agree with both the preceding Wasm and local Rust
+artifact. No option or binary boundary is lifted. See
+[SIMD candidate byte sets](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/docs/adr/0003-streams.md#simd-candidate-byte-sets-2026-10-27)
+for the remaining large gaps, small control costs and empty-input diagnostics.
+The preceding local round adds fused rg literal counts, grep block regex counts
+and byte-based column table fields with bounded optional metadata. All 27 final
+old/new timing workloads pass the unchanged local stability criteria. The rg
+general-DFA skip trial is rejected for ordinary regex regressions; column's
+snapshot format remains unchanged. See [byte fields and fused counts](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/docs/adr/0003-streams.md#byte-fields-and-fused-count-pipelines-2026-10-27).
+The public core count method was unreleased at that development stage and is
+now included in core 0.9.0. Adding that API did not change command options or
+locale support; those measurements did not establish published-coordinate acceptance.
+The preceding local round adds rg block-level line counts and bounded exact
+self-loop skipping for eligible long-record grep regex scans. The column
+field-metadata pilot was rejected and restored to the preceding candidate.
+See [block counts and certified skips](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/docs/adr/0003-streams.md#block-counts-and-certified-state-skips-2026-10-27)
+for eligibility, small regressions and the remaining GNU/Rust gaps. At that
+stage, command options, binary boundaries and accepted coordinates were unchanged.
+The expanded local grep comparison retains 27 existing differences on
+NUL-containing inputs across count, inverted-count and whole-line selections.
+All 480 extension cases agree with the preceding Wasm artifact; 453 agree with
+GNU 3.12. This is a known binary-count compatibility gap, not a performance
+regression or a claim of complete GNU parity.
+The subsequent local continuation batches tac's multi-byte separators and
+column table rendering, with reusable field-delimiter classification and
+ASCII conversion. Snapshot, C-byte, output-order and error boundaries remain
+unchanged; see the [local continuation](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/docs/adr/0003-streams.md#local-continuation-after-the-documentation-release-2026-10-27).
+Its supplemental local comparison also records an existing GNU tac 9.11
+difference for a long repeated input with overlapping separator `aa`.
+Old and new Wasm agree; this case is not upstream-compatible acceptance.
+The next local round batches column snapshot writes, selectively enlarges rg's
+full-input count window, and skips impossible tac reverse-match starts.
+At that stage, no command option, published coordinate or locale boundary changed. See
+[bounded ingestion and scan windows](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/docs/adr/0003-streams.md#bounded-ingestion-and-selective-scan-windows-2026-10-27)
+for memory tradeoffs, measured gains, rejected pilots and remaining target gaps.
+An added rg binary-output comparison also preserves an existing difference:
+`-n -b -o` can print fewer preceding matches than Rust before the same NUL
+notification because read windows differ. The new count-only batching keeps
+the original output path and does not establish parity for that case.
 
 Current delivery acceptance targets Wasm through MoonX on Linux, macOS and
 Windows. Native implementations may remain compilable, but Native command tests
@@ -21,13 +118,13 @@ yes, completing functional coverage beyond metadata/availability for all 78
 commands. This release does not claim new
 cross-platform acceptance or completion of formal performance work.
 
-There are **80 local command modules and 78 published commands**. The 2026-10-27
-release uploaded 78 new command versions with concise MoonX READMEs and
-synchronized metadata. The [latest manifest](../tests/release_runner/current/latest.json)
-records their exact coordinates and separately frozen current expectations.
-`rg 0.1.0` and `timeout` are excluded from this release and remain unpublished.
-Fetched core 0.8.2 matches the workspace source exactly, so dependent commands
-select that already published coordinate without republishing core.
+The 2026-10-27 release covered **78 published commands among 80 local command
+modules**. It uploaded 78 new command versions with concise MoonX READMEs and
+synchronized metadata. Its coordinates and acceptance results are recorded in
+the [release summary](../CHANGELOG.md#2026-10-27).
+`rg 0.1.0` and `timeout` were excluded from that release.
+At publication, fetched core 0.8.2 matched the release source exactly, so dependent
+commands selected that already published coordinate without republishing core.
 Local MoonX acceptance passed 2,094 checks with 18 platform skips and zero
 failures; 17 additional README examples passed.
 [Published acceptance run 40432031612](https://github.com/moonbit-community/cmd/actions/runs/40432031612)
@@ -43,7 +140,7 @@ construction is not retried and later sparse records retain shift scanning. Span
 resumes after each output flush; captured spans, word/whole filters,
 binary input decisions and failure effects retain their existing contracts.
 Selected local measurements are diagnostic, not cross-platform or formal
-performance acceptance; see [ADR-0003](adr/0003-streams.md#adaptive-literal-planner-2026-10-27).
+performance acceptance; see [ADR-0003](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/docs/adr/0003-streams.md#adaptive-literal-planner-2026-10-27).
 PR #60's integration and actual-main development checks passed on all three
 hosts after an explicit maintainer exception for unresolved resource stability.
 That exception does not establish formal performance or release acceptance.
@@ -80,15 +177,18 @@ and exact-version local MoonX acceptance separately from the earlier
 | csplit | One input snapshot plus a disk index of 64-bit line boundaries; two caches of at most 64 KiB, a current regex line and created-output paths. Input/spool failure precedes fragment creation. | Disk is input bytes plus eight bytes per boundary. Regex-line indices and numeric patterns/offsets retain signed 32-bit limits; `-k` controls retention of owned fragments after later failure. |
 | tac | Fixed separators use backward 64 KiB reads and bounded overlap; stdin/nonregular/regex input spools before output. | Regular files can change concurrently. Regex requires O(input) memory and signed 32-bit matcher indices until a paged/seekable shared matcher is implemented and verified; no fixed overlap truncates arbitrary spans. |
 | column | Two-pass layout uses one displayed-record snapshot and disk index; no reopened input or complete output string. First output follows the attempted input pass. | Disk is displayed bytes plus sixteen bytes per record; memory includes the longest record, table widths and fixed buffers. Table/small-grid caches use at most 1 MiB data pages and 64 KiB index pages; wide grids grow on demand to at most 256 pages per cache (16 MiB data plus 1 MiB index). Late read errors preserve complete records; output failure may retain a prefix. |
-| sort | `-S/--buffer-size`, repeated `-T/--temporary-directory` and `--batch-size` control accounted run storage and merge fan-in, capped at sixteen. The default remains 64 MiB. | The budget is not an RSS cap and allows an oversized record. `0%` selects the minimum budget; nonzero percentage sizes reject before input effects until a public physical-memory-capacity query and rounding/overflow regressions exist. |
+| sort | `-S/--buffer-size`, repeated `-T/--temporary-directory` and `--batch-size` control accounted run storage and maximum merge fan-in, capped at sixteen. The default remains 64 MiB. The current implementation lowers fan-in for small budgets; 1 MiB retains 512 KiB for runs with two merge inputs. | The budget is not an RSS cap and allows an oversized record. `0%` selects the minimum budget; nonzero percentage sizes reject before input effects until a public physical-memory-capacity query and rounding/overflow regressions exist. |
 | diff | Records borrow byte views from buffered inputs; unchanged comparison keys reuse those bytes and edit reconstruction retains O(N+M) auxiliary space. | Complete inputs, record indexes, transformed keys and edit/output records remain resident; this is not constant-memory diff. |
 
 Column, csplit and tac's spooled modes require temporary write access, which the
 catalog declares alongside sort and split. Invocation-owned temporary paths are
 exclusive and removed on success, ordinary errors and runtime-observable
 cancellation; SIGKILL and machine failure cannot guarantee cleanup. Preserve
+the primary tac operation error when cleanup also fails; a cleanup-only tac
+failure is reported by the current implementation. Historical frozen expectations
+retain their recorded behavior. Preserve
 actual byte/status/effect and resource observations separately from source
-contracts and final platform acceptance. The [streams ADR](adr/0003-streams.md#r-streaming-and-temporary-storage-contracts)
+contracts and final platform acceptance. The [streams ADR](adr/0003-streams.md#streaming-and-temporary-storage)
 records the choices, limitations and unlock conditions.
 
 ## Published O5-O13 option profiles
@@ -315,13 +415,19 @@ verified immutable oracle profile. A focused run is not full acceptance.
 
 ## Published-version verification
 
-[latest.json](../tests/release_runner/current/latest.json) selects the 78 exact
-published coordinates and independent `latest-cases.json` expectations.
-`candidate.json` selects reviewed workspace versions and `active-cases.json`.
-`published.json` and the historical manifests retain older frozen meanings.
-The current driver does not implement the retired historical-replay,
-receipt-verification or publication-freezing protocols. Git retains those
-older implementations; historical records are not current execution inputs.
+[latest.json](../tests/release_runner/current/latest.json) selects 79 exact
+published coordinates and independent `latest-cases.json` expectations from the
+2026-10-30 release. Candidate generation keeps proposed coordinates and the
+active workspace case index separate. Acceptance against a candidate must name
+that manifest explicitly; the runner never rewrites either expectation set.
+Promote coordinates and materialize independent published cases through a
+reviewed documentation change after acceptance passes.
+Retired manifests and source archives retain their older frozen meanings in
+[Git at 234f960](https://github.com/moonbit-community/cmd/tree/234f9602347e43bd6d7c86c454489fc3f672c722/tests/release_runner).
+The current driver does not implement historical replay, receipt verification
+or publication freezing. Benchmark defaults select the same latest published
+inventory and its independent case corpus; historical reports keep their
+recorded coordinates.
 
 The manual [release workflow](../.github/workflows/release-acceptance.yml)
 executes exact MoonX coordinates on all three hosts, plus the pinned Linux
@@ -354,12 +460,15 @@ excluded platform. Resource observations and formal performance acceptance
 remain separate manual work. See the [release guide](../tests/release_runner/README.md)
 and [changelog](../CHANGELOG.md) for workflow and dated results.
 
-## rg candidate
+<a id="rg-candidate"></a>
 
-Updated: 2026-10-27. `cli/rg@0.1.0` remains an unpublished candidate and is
-excluded from the documentation release. Shared `cli/core@0.8.2` is published;
-the current command release inventory is recorded above. Current sources and
-package tests live in `commands/rg`; executable contracts
+## rg published profile
+
+Updated: 2026-10-30. `cli/rg@0.1.0` is published and selects `cli/core@0.9.0`.
+Its local and three-platform exact-coordinate acceptance results are recorded
+in the [release summary](../CHANGELOG.md#2026-10-30).
+The accepted 2026-10-27 inventory did not include `rg`.
+Current sources and package tests live in `commands/rg`; executable contracts
 are in `tests/cases/rg.json`. Import pins are in the upstream baseline record. The fixed source is rg.mbt 0.2.0
 `2727c25819b00ddd1a0e9b24f9cb683931d64edf`; the semantic oracle revision is
 `3fce3b5bb0236da2df6d99672afb8a719642eca7`.
@@ -392,6 +501,13 @@ their existing ordinary-read implementation. OS diagnostics retain public
 runtime messages rather than fabricated errno translations. Elapsed JSON times
 derive from the public millisecond clock and are not CPU/resource measurements.
 
+`--dfa-size-limit` rejects valid numeric values with status 2 and no stdout;
+missing, malformed and overflowing values retain parser validation. The engine's
+fixed DFA state-count limit is not a byte budget. Supporting this option requires
+engine-level byte accounting, a configurable cache budget and execution tests
+covering budget exhaustion and fallback. Indexing flags also reject explicitly;
+their dormant execution state is removed without changing those diagnostics.
+
 `--pre` consumes child stdout incrementally, drains stderr concurrently and
 reaps the direct child on completion/early close/cancellation. Stderr diagnostic
 storage follows the imported accumulated-error API. No process-tree cleanup
@@ -406,18 +522,23 @@ current CI-sealed image identity can establish differential acceptance.
 
 ## Inventory
 
-The workspace contains **80 command modules**, with **78 published**, unpublished
-`rg 0.1.0` and local-only `timeout`. Published command versions are **34 at 0.2.3,
+The workspace contains **80 command modules** and **79 published commands** after
+the 2026-10-30 release. Core **0.9.0** and 43 command packages were uploaded:
+42 updates and the first `rg 0.1.0` release. Another 36 command coordinates remain
+unchanged. The new 43 commands select core 0.9.0, 32 retained commands select
+core 0.8.2, and echo/false/sleep/true remain independent. Shared core is not
+counted as a command; `timeout` remains local-only.
+
+The 2026-10-27 published command versions were **34 at 0.2.3,
 11 at 0.2.4, 3 at 0.2.1, 2 at 0.2.2, 12 at 0.1.4, 10 at 0.1.3,
-4 at 0.1.5, and one each at 0.2.5 and 0.3.2**. Shared `cli/core` is **0.8.2** and is not
-counted as a command.
-Exact registry coordinates and selected local-acceptance cases are in
+4 at 0.1.5, and one each at 0.2.5 and 0.3.2**; those values retain their historical
+scope. Current exact coordinates and independent expected cases are in
 [the latest manifest](../tests/release_runner/current/latest.json) and
-[documentation release summary](../CHANGELOG.md#2026-10-27). Local MoonX acceptance
-covers all 78 commands, with zero failures and the documented boundaries and
-platform skips. The previous frozen baseline stays in
-`current/published.json`; earlier manifests remain under
-`tests/release_runner/historical/`.
+`latest-cases.json`. The [2026-10-30 release summary](../CHANGELOG.md#2026-10-30)
+records local and three-platform exact-version acceptance results.
+Previous frozen baselines and earlier manifests are
+recoverable from the Git revision linked above; they are not active-checkout
+execution inputs.
 
 `timeout` is intentionally local-only because portable
 `ProcessGroupCancellation` is unavailable:
@@ -446,7 +567,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `date` | subset verified | UTC/TZ, fixed offsets, checked 64-bit TZif/POSIX future rules, ISO local input, fractional epochs, selected ISO/RFC/format directives | Ambiguous/nonexistent local times reject; relative dates/additional directives and clock setting remain; x/time offset bounds are documented |
 | `od`, `hexdump` | subset verified | Frozen Linux float formats, od strings/traditional offsets, custom hexdump format/color units, partial elements and final offsets | Non-C/native-ABI equivalence is unclaimed; hexdump forward stdin skip is a documented extension, not util-linux pipe parity |
 | `md5sum`, `sha1sum`, `sha512sum` | subset verified | Incremental hashes, tags, GNU escaped/tagged check records and manifest flags | Windows text transformation remains outside the selected C byte profile |
-| `sed` | subset verified | BRE/ERE substitution, captures, addresses/ranges and ordered scripts; published 0.2.0 adds hold/branch/group/multiline/text execution and repeated nullable captures | [Workspace candidate scope](#published-matcher-and-sed-profiles) retains project diagnostic formatting and script-controlled space growth; in-place editing and complete GNU grammar remain open |
+| `sed` | subset verified | BRE/ERE substitution, captures, addresses/ranges and ordered scripts; published 0.2.0 adds hold/branch/group/multiline/text execution and repeated nullable captures | [Matcher and sed limits](#published-matcher-and-sed-profiles) retain project diagnostic formatting and script-controlled space growth; in-place editing and complete GNU grammar remain open |
 | `diff` | subset verified | Published 0.2.1 borrows input record views while retaining normal/unified/context output, selected C-byte whitespace/case rules and recursive directory/new-file modes with 0/1/2 statuses | Distinct directory device numbers need public metadata; full GNU grammar and every ambiguous alignment choice remain outside the selected scope |
 | `patch` | subset verified | Unified/context offset/fuzz matching, reverse detection, partial success, dry run and new reject files | Existing target/named-output mode preservation and existing-reject replacement retain their public-API boundaries |
 | `split`, `csplit` | subset verified | Selected chunk/line-byte/filter layouts and suffix starts/elision; csplit suffix/suppress-matched/keep-files and indexed input snapshots; published R versions 0.1.3 and 0.2.1 | Existing outputs refuse until safe identity/truncation effects are established; filter tasks, created-output paths, regex-line storage and [matcher limits](#published-matcher-and-sed-profiles) remain explicit |
@@ -471,7 +592,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `false` | subset verified | any args: no output, status 1; help/version return 0 | Metadata text is package-versioned |
 | `find` | restricted | names/paths/types, `-empty/-size`, metadata predicates, access checks, `-xtype`, depth/actions | File/process policy required; P8 time/reference/access combinations still need independent probes; ownership, inode, link-count, and full GNU expression grammar not claimed |
 | `grep` | subset verified | Default BRE / `-G`, ERE / `-E`, byte-based `-F`, `-o` leftmost-longest, context-only separators, existing context/file/binary options; published 0.3.0 adds the shared matcher, grammar-preserving ASCII `-i`, streaming input/output and early `-q`/`-l` completion | [Workspace matcher limits](#published-matcher-and-sed-profiles), non-C locale classes/case folding and worst-case capture/reference resources remain open |
-| `rg` | unpublished candidate | Fixed rg.mbt 0.2.0 algorithms and Unicode data; asynchronous explicit-file/directory/stdin search, glob/ignore, output modes and user preprocessing | [rg candidate](#rg-candidate); effective `-z` rejects; no-path search needs explicit input; public system API and inherited engine limits remain |
+| `rg` | published subset | Fixed rg.mbt 0.2.0 algorithms and Unicode data; asynchronous explicit-file/directory/stdin search, glob/ignore, output modes and user preprocessing | [rg profile](#rg-candidate); effective `-z` rejects; no-path search needs explicit input; public system API and inherited engine limits remain |
 | `head` | subset verified | `-n`, `-c`, signed/attached/long/legacy counts and decimal/binary/IEC size suffixes, `-z`, `-q/-v`, files/stdin and headers | Counts are bounded by signed 64-bit storage; locale-aware records are not claimed |
 | `join` | subset verified | Field/unpaired/empty output, `-z`, ASCII ignore-case, headers, automatic or accumulated explicit output fields, last order policy | Locale behavior beyond the fixed C profile not claimed |
 | `jq` | subset verified | Consecutive JSON, -s/-R/-n/-e, AST binding, partial output before errors, -C/-M/JQ_COLORS, tostring/tojson and Unicode string slices | Released moonjq 0.2.0 plus public-AST adapter; full evaluator/modules/streaming/diagnostics and automatic TTY color are not claimed |
@@ -552,3 +673,62 @@ pinned oracle cases, and Wasm policy checks are repeatable.
 Per-command decisions are in [`docs/adr/README.md`](adr/README.md). Source provenance and fixed
 reference versions are in [upstream baselines](upstream-baselines.md); dated
 delivery history is in [CHANGELOG.md](../CHANGELOG.md).
+
+## Current test-evidence correction (2026-10-30 development)
+
+The current runner rejects malformed selection metadata and vacuous substring
+assertions before platform applicability is considered. One shell errexit
+fixture now checks exact empty stderr, including the independent expectation
+for the locally rechecked `cli/sh@0.2.4` coordinate. This strengthens the test;
+it changes no command behavior or version. Earlier acceptance totals retain
+their dated scope and did not prove the previously unasserted empty stderr.
+Regex corpus execution partitions and benchmark evidence scope are described
+in [ADR-0003](adr/0003-streams.md#test-evidence-repair-2026-10-30-development).
+Synthetic matrices, test counts and noisy timing rows cannot establish general
+performance or full upstream compatibility.
+
+The later registration/scenario reconciliation repairs 83 exact-contract and
+23 typed-scenario omissions and narrows claims to their actual observations.
+The current local macOS/Wasm profile passes 2167 checks with zero failures and
+19 skips. Its 113 typed scenario observations and all 651 applicable finite
+facets are joined to current definitions and a freshly built test driver; four
+facets retain explicit platform companion exclusions. Two independent reviewers
+verify the actual receipt identities and all twelve negative-pipeline rejections.
+This does not broaden the dated published acceptance above.
+
+The [remaining work index](../tests/registry/coverage-gaps.md) identifies 180
+catalog labels needing new activated fixtures or observers, 33 needing stronger
+assertions on existing fixtures, and one supplemental `yes` stream-lifecycle
+feature. Each row states existing evidence and concrete work; these are label
+counts, not test counts or missing implementations. Separate partial-facet
+reminders preserve limits on already bound labels. Full upstream compatibility,
+three-platform execution and formal performance remain outside this profile.
+
+Native benchmark `wc` references use `LC_ALL=C POSIXLY_CORRECT=1` for the
+documented six-ASCII-whitespace word profile. GNU's default extended whitespace
+classification differs on nonbreaking-space bytes; the first reserved
+evaluation exposed a30492/30494 distinction on complete IANA Europe data and
+remains failed as originally executed. Scalar/vector exact contracts and a
+separately labeled ordinary replay exercise the calibrated profile. Unicode
+word/character behavior is not added to the product support claim.
+
+The subsequent benchmark execution repair is recorded in
+[ADR-0003](adr/0003-streams.md#benchmark-execution-and-corpus-repair-2026-10-30-development).
+Actual generated-data comparisons exposed a current jq evaluator gap:
+`group_by(.active) | map(length)` returns groups in encounter order rather
+than jq key order when null, false and true keys are mixed. The unreleased
+workspace now lowers grouping and sorting through public AST operations,
+capturing complete key streams once and preserving encounter order for ties.
+Exact CLI and package vectors cover mixed types, object key insertion order,
+empty/multiple key streams and outer lexical bindings. The unchanged 1/8 MiB
+benchmark rows must be rerun against the implementation; the harness never
+sorts their output to hide a difference. Numeric ordering at or above 2^53
+and full jq evaluator semantics remain unqualified. This does not change
+published coordinates or rewrite earlier acceptance.
+
+The local macOS util-linux 2.40 rev reference also fails a minimal ASCII
+1024-byte terminated record followed by another record: it reverses their
+order. Candidate Wasm matches independent per-record reversal at that boundary.
+The two affected mixed-record comparisons therefore cannot establish a product
+regression or a valid performance ratio. Keep the inputs and failure captures;
+qualify a semantically valid reference on the measured host before comparing.

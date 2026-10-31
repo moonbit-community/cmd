@@ -3,12 +3,16 @@
 Compare files and directories for MoonX.
 
 ```sh
-moonx cli/diff@0.2.2 [-qsauciwbBZrN] [-U LINES | -C LINES] [--label LABEL] FILE1 FILE2
+moonx cli/diff@0.2.3 [-qsauciwbBZrN] [-U LINES | -C LINES] [--label LABEL] FILE1 FILE2
 ```
 
 ## Supported scope
 
 Produce normal, unified or context differences. One input may be stdin. Exit 0 for equal inputs, 1 for differences and 2 for errors.
+
+Default edit alignment follows GNU's repeated-line anchor heuristic. Sparse
+repetitions inside unmatched regions need not produce a globally minimal
+script; small-input reconstruction and minimality remain separately tested.
 
 ## Options
 
@@ -32,8 +36,8 @@ Produce normal, unified or context differences. One input may be stdin. Exit 0 f
 ## Examples
 
 ```sh
-moonx cli/diff@0.2.2 -u old.txt new.txt
-moonx cli/diff@0.2.2 -r old-dir new-dir
+moonx cli/diff@0.2.3 -u old.txt new.txt
+moonx cli/diff@0.2.3 -r old-dir new-dir
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

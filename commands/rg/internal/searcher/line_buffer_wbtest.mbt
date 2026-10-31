@@ -122,6 +122,48 @@ fn replace_str(
 }
 
 ///|
+async test "line_buffer/long_records_preserve_tail_and_offsets" {
+  let input = Bytes::make(1048583, b'x') + b"\nshort\ntail"
+  for capacity in [0, 65536, 262144] {
+    let lb = LineBuffer::new(capacity, b'\n', Eager, BNone)
+    let reader = SliceReader::from_bytes(input)
+    let output = Buffer()
+    while lb.fill(reader) {
+      let length = lb.buffer_len()
+      assert_true(length > 0)
+      output.write_bytes(Bytes::from_array(lb.buf[lb.pos:lb.last_lineterm]))
+      lb.consume(length)
+    }
+    assert_eq(output.to_bytes(), input)
+    assert_eq(lb.absolute_byte_offset, input.length().to_int64())
+    assert_eq(lb.binary_byte_offset, None)
+  }
+}
+
+///|
+async test "line_buffer/long_records_preserve_binary_boundaries" {
+  let prefix = Bytes::make(1048583, b'x')
+  let input = prefix + b"\x00tail\n"
+  for mode in [BQuit(b'\x00'), BConvert(b'\x00')] {
+    let lb = LineBuffer::new(65536, b'\n', Eager, mode)
+    let reader = SliceReader::from_bytes(input)
+    let output = Buffer()
+    while lb.fill(reader) {
+      let length = lb.buffer_len()
+      output.write_bytes(Bytes::from_array(lb.buf[lb.pos:lb.last_lineterm]))
+      lb.consume(length)
+    }
+    assert_eq(lb.binary_byte_offset, Some(prefix.length().to_int64()))
+    let expected = match mode {
+      BQuit(_) => prefix
+      _ => prefix + b"\ntail\n"
+    }
+    assert_eq(output.to_bytes(), expected)
+    assert_eq(lb.absolute_byte_offset, expected.length().to_int64())
+  }
+}
+
+///|
 test "line_buffer/replace" {
   assert_eq(replace_str("", b'b', b'z'), ("", None))
   assert_eq(replace_str("a", b'a', b'a'), ("a", None))

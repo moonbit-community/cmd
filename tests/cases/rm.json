@@ -91,7 +91,17 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "removed",
+          "exists": false
+        }
+      ]
     },
     {
       "id": "compat-text-rm-partial-order",
@@ -222,22 +232,6 @@
       ]
     },
     {
-      "id": "compat-catalog-line-202",
-      "command": "rm",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
-      "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
-    },
-    {
       "id": "repair-alias-rm-recursive",
       "command": "rm",
       "args": [
@@ -296,7 +290,12 @@
       ],
       "source_version": "workspace cli/rm@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: rm [OPTION]... FILE...\n  -f, --force             ignore missing files; never prompt\n  -i                      prompt for each removal using stdin\n  -I                      prompt once for recursion or more than three operands\n      --interactive[=WHEN] never, once or always (default with option)\n  -r, -R, --recursive     remove directory trees without following symlinks\n  -d, --dir               remove empty directories\n  -v, --verbose           print removed paths\n      --preserve-root     protect filesystem roots (default)\n      --no-preserve-root  disable root protection\n      --help              display this help and exit\n      --version           display version and exit\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-202"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-rm-version",

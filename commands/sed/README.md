@@ -3,7 +3,7 @@
 Edit text streams for MoonX.
 
 ```sh
-moonx cli/sed@0.2.1 [-nE] [-e SCRIPT] [-f SCRIPTFILE] [SCRIPT] [FILE...]
+moonx cli/sed@0.2.2 [-nE] [-e SCRIPT] [-f SCRIPTFILE] [SCRIPT] [FILE...]
 ```
 
 ## Supported scope
@@ -28,8 +28,8 @@ Read files or stdin with BRE/ERE substitutions, line/pattern addresses, ranges, 
 ## Examples
 
 ```sh
-moonx cli/sed@0.2.1 's/old/new/g' file.txt
-moonx cli/sed@0.2.1 -n '2,5p' file.txt
+moonx cli/sed@0.2.2 's/old/new/g' file.txt
+moonx cli/sed@0.2.2 -n '2,5p' file.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0007-language.md)

@@ -2,33 +2,6 @@
   "schema": 2,
   "cases": [
     {
-      "id": "phase3-nl-empty",
-      "command": "nl",
-      "args": [],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-nl-sections",
-      "command": "nl",
-      "args": [
-        "-ba",
-        "-ha",
-        "-w1",
-        "-s:",
-        "-v10",
-        "-i2"
-      ],
-      "stdin_text": "\\:\\:\\:\nh\n\\:\\:\nb\n",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
       "id": "p9-nl-number-format",
       "command": "nl",
       "args": [
@@ -41,7 +14,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "001\ta\n002\tb\n"
     },
     {
       "id": "compat-text-line-623",
@@ -80,7 +57,11 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "\\:\\:\\:\nh\n\\:\\:\nb\n",
       "expected_stdout_text": "\n10:h\n\n10:b\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "p9-nl-sections"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-catalog-line-174",
@@ -96,8 +77,10 @@
       "expected_stdout_text": "",
       "expected_stderr_text": "",
       "aliases": [
-        "compat-stdin-nl"
-      ]
+        "compat-stdin-nl",
+        "phase3-nl-empty"
+      ],
+      "oracle": true
     },
     {
       "id": "release-metadata-nl-help",
@@ -114,7 +97,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/nl@0.2.3 metadata contract",
+      "source_version": "workspace cli/nl@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: nl [-b STYLE] [-h STYLE] [-f STYLE] [-v NUMBER] [-i NUMBER] [-l NUMBER] [-n FORMAT] [-w NUMBER] [-s STRING] [-d STRING] [-p] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
@@ -133,9 +116,121 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/nl@0.2.3 metadata contract",
-      "expected_stdout_text": "nl 0.2.3\n",
+      "source_version": "workspace cli/nl@0.2.4 metadata contract",
+      "expected_stdout_text": "nl 0.2.4\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "proof-nl-increment-activation",
+      "command": "nl",
+      "args": [
+        "-ba",
+        "-w1",
+        "-s:",
+        "-v10",
+        "-i2"
+      ],
+      "stdin_text": "a\nb\nc\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "10:a\n12:b\n14:c\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "line-increment",
+        "starting-line-number"
+      ],
+      "source_version": "Independent arithmetic definition; existing -i2 case has one record per reset and cannot activate the increment."
+    },
+    {
+      "id": "proof-nl-zero-padded-number-format",
+      "command": "nl",
+      "args": [
+        "-n",
+        "rz",
+        "-w3"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "001\ta\n002\tb\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "number-format",
+        "number-width"
+      ],
+      "source_version": "Independent exact rendering for the existing differential-only p9-nl-number-format input."
+    },
+    {
+      "id": "proof-nl-unnumbered-padding",
+      "command": "nl",
+      "args": [],
+      "stdin_text": "a\n\nb\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "     1\ta\n       \n     2\tb\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "unnumbered-padding",
+        "blank-records"
+      ],
+      "source_version": "Independent GNU nl C-profile formatting: an unnumbered line has number-width plus separator-width spaces, no TAB"
+    },
+    {
+      "id": "proof-nl-unnumbered-custom-separator",
+      "command": "nl",
+      "args": [
+        "-bn",
+        "-w3",
+        "-s::"
+      ],
+      "stdin_text": "a\n\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "     a\n     \n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "body-numbering",
+        "number-separator",
+        "unnumbered-padding"
+      ],
+      "source_version": "Independent GNU nl C-profile rendering: suppressed numbering replaces the entire3+2-column prefix by spaces"
+    },
+    {
+      "id": "proof-nl-unnumbered-utf8-separator",
+      "command": "nl",
+      "args": [
+        "-bn",
+        "-w3",
+        "-s😀"
+      ],
+      "stdin_text": "a\n\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "       a\n       \n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "body-numbering",
+        "number-separator",
+        "unnumbered-padding"
+      ],
+      "source_version": "Independent fixed GNU nl9.11 C-profile oracle: unnumbered prefix uses separator byte length4, not UTF16 length2"
     }
   ]
 }

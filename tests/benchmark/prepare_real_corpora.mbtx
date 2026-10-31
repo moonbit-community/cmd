@@ -1,0 +1,302 @@
+----
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/async@0.22.5/process",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+  "moonbitlang/x@0.5.5/crypto",
+  "moonbitlang/x@0.5.5/path",
+}
+----
+
+///|
+struct RealSource {
+  path : String
+  sha256 : String
+  bytes : Int64
+  url : String
+  provenance : String
+  family : String
+  license_record : String
+  cache_paths : Array[String]?
+  archive_name : String?
+  archive_format : String?
+  archive_sha256 : String?
+  archive_bytes : Int64?
+  archive_member : String?
+} derive(FromJson, ToJson)
+
+///|
+fn field(value : Json, name : String) -> Json {
+  match value {
+    Object(fields) => fields.get(name).unwrap_or(Json::null())
+    _ => Json::null()
+  }
+}
+
+///|
+fn safe_relative(value : String) -> Bool {
+  !value.is_empty() &&
+  !value.has_prefix("/") &&
+  !value.contains(":") &&
+  !value.contains("\\") &&
+  value.split("/").all(part => !part.is_empty() && part != "." && part != "..")
+}
+
+///|
+fn valid_digest(value : String) -> Bool {
+  value.length() == 64 &&
+  value.iter().all(c => (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f'))
+}
+
+///|
+async fn file_digest(path : String) -> String {
+  let input = @fs.open(path, mode=ReadOnly)
+  defer input.close()
+  let buffer = FixedArray::make(65536, b'\x00')
+  let bytes = buffer.unsafe_reinterpret_as_bytes()
+  let hash = @crypto.SHA256::new()
+  while input.read(buffer) is count && count > 0 {
+    hash.update(bytes[:count])
+  }
+  @crypto.bytes_to_hex_string(hash.finalize())
+}
+
+///|
+async fn copy_complete(source : String, target : String) -> Unit {
+  guard @fs.kind(source) is Regular else {
+    fail("cached source is not a regular file: " + source)
+  }
+  let input = @fs.open(source, mode=ReadOnly)
+  defer input.close()
+  let original_size = input.size()
+  let output = @fs.create(target, allow_existing=false)
+  defer output.close()
+  let buffer = FixedArray::make(65536, b'\x00')
+  let bytes = buffer.unsafe_reinterpret_as_bytes()
+  let mut copied = 0L
+  while input.read(buffer) is count && count > 0 {
+    output.write(bytes[:count])
+    copied += count.to_int64()
+  }
+  guard copied == original_size && input.size() == original_size else {
+    fail("cached source changed while copying: " + source)
+  }
+}
+
+///|
+async fn cached_file(
+  roots : Array[String],
+  names : Array[String],
+) -> String? {
+  for root in roots {
+    for name in names {
+      guard safe_relative(name) else { fail("unsafe cache path: " + name) }
+      let path = root + "/" + name
+      if @fs.exists(path) && @fs.kind(path) is Regular {
+        return Some(path)
+      }
+    }
+  }
+  None
+}
+
+///|
+async fn download(url : String, target : String, log : String) -> Unit {
+  guard url.has_prefix("https://") else { fail("HTTPS source URL required") }
+  let errors = @process.redirect_to_file(log)
+  defer errors.close()
+  let status = @process.run(
+    "curl",
+    [
+      "--noproxy", "*", "--fail", "--location", "--max-time", "180", "--max-filesize",
+      "67108864", "--output", target, url,
+    ],
+    stderr=errors,
+  )
+  guard status == 0 else {
+    fail("source download failed; preserve diagnostic: " + log)
+  }
+}
+
+///|
+async fn prepare_archive(
+  source : RealSource,
+  roots : Array[String],
+  downloads : String,
+  allow_download : Bool,
+  prepared : Map[String, String],
+) -> String {
+  guard source.archive_name is Some(name) &&
+    safe_relative(name) &&
+    source.archive_sha256 is Some(expected) &&
+    valid_digest(expected) else {
+    fail("archive source needs a safe name and fixed SHA-256")
+  }
+  if prepared.get(name) is Some(path) {
+    guard file_digest(path) == expected else {
+      fail("cached archive identity changed: " + name)
+    }
+    return path
+  }
+  let output = downloads + "/" + name
+  match cached_file(roots, [name, "downloads/" + name]) {
+    Some(path) => copy_complete(path, output)
+    None => {
+      guard allow_download else {
+        fail("required archive missing; add --from or explicit --download: " + name)
+      }
+      download(source.url, output, output + ".download.log")
+    }
+  }
+  guard @fs.file_size(output) <= 67108864L &&
+    file_digest(output) == expected else {
+    fail("download container exceeds limit or SHA-256 differs: " + name)
+  }
+  if source.archive_bytes is Some(bytes) {
+    assert_eq(@fs.file_size(output), bytes, msg="archive byte count: " + name)
+  }
+  prepared[name] = output
+  output
+}
+
+///|
+async fn extract_member(
+  source : RealSource,
+  archive : String,
+  target : String,
+) -> Unit {
+  guard source.archive_member is Some(archive_entry) && safe_relative(archive_entry) else {
+    fail("safe complete archive member required")
+  }
+  let output = @process.redirect_to_file(target)
+  defer output.close()
+  let errors = @process.redirect_to_file(target + ".extract.log")
+  defer errors.close()
+  let (program, args) = match source.archive_format {
+    Some("tar") => ("tar", ["-xOf", archive, archive_entry])
+    Some("zip") => ("unzip", ["-p", archive, archive_entry])
+    _ => fail("unsupported immutable archive container")
+  }
+  let status = @process.run(program, args, stdout=output, stderr=errors)
+  guard status == 0 else {
+    fail("complete archive member extraction failed: " + archive_entry)
+  }
+}
+
+///|
+async fn main {
+  let args = @env.args()[1:]
+  guard args.length() >= 1 && @path.Path(args[0]).is_absolute() else {
+    fail("Usage: prepare_real_corpora.mbtx FRESH_ABSOLUTE_ROOT [--from EXISTING_ROOT]... [--download] [--catalog FILE]")
+  }
+  let destination = args[0]
+  let roots : Array[String] = []
+  let mut allow_download = false
+  let mut catalog_path = "tests/fixtures/benchmark/real-sources.json"
+  let mut catalog_selected = false
+  let mut i = 1
+  while i < args.length() {
+    match args[i] {
+      "--download" => {
+        guard !allow_download else { fail("duplicate --download") }
+        allow_download = true
+        i += 1
+      }
+      "--from" | "--catalog" => {
+        guard i + 1 < args.length() else { fail("missing preparation option value") }
+        if args[i] == "--from" {
+          let root = @fs.realpath(args[i + 1])
+          guard @fs.kind(root) is Directory && !roots.contains(root) else {
+            fail("duplicate or non-directory cache root")
+          }
+          roots.push(root)
+        } else {
+          guard !catalog_selected else { fail("duplicate --catalog") }
+          catalog_selected = true
+          catalog_path = args[i + 1]
+        }
+        i += 2
+      }
+      _ => fail("unknown real source preparation option: " + args[i])
+    }
+  }
+  guard allow_download || !roots.is_empty() else {
+    fail("explicit --download or at least one --from root is required")
+  }
+  let catalog_text = @fs.read_file(catalog_path).text()
+  let catalog = @json.parse(catalog_text)
+  guard field(catalog, "schema") == Json(1) else {
+    fail("unsupported real source catalog schema")
+  }
+  let sources : Array[RealSource] = @json.from_json(field(catalog, "files"))
+  guard !sources.is_empty() else { fail("empty real source catalog") }
+  let paths : Set[String] = Set([])
+  let unique : Map[String, Int64] = Map([])
+  let mut total = 0L
+  for source in sources {
+    guard safe_relative(source.path) &&
+      !paths.contains(source.path) &&
+      valid_digest(source.sha256) &&
+      source.bytes >= 0L &&
+      source.bytes <= 16777216L &&
+      !source.provenance.trim().is_empty() &&
+      !source.family.trim().is_empty() &&
+      !source.license_record.trim().is_empty() else {
+      fail("invalid, duplicate, oversized or undocumented source: " + source.path)
+    }
+    paths.add(source.path)
+    match unique.get(source.sha256) {
+      Some(bytes) => assert_eq(bytes, source.bytes, msg="one identity has conflicting sizes")
+      None => {
+        guard total <= 67108864L - source.bytes else {
+          fail("unique real payload exceeds64MiB")
+        }
+        total += source.bytes
+        unique[source.sha256] = source.bytes
+      }
+    }
+  }
+  @fs.mkdir(destination, recursive=true, allow_exist=false)
+  let downloads = destination + "/downloads"
+  @fs.mkdir(downloads)
+  let archives : Map[String, String] = Map([])
+  let receipts : Array[Json] = []
+  for source in sources {
+    let output = destination + "/" + source.path
+    @fs.mkdir(@path.Path(output).dirname().to_string(), recursive=true, allow_exist=true)
+    let pending = output + ".pending"
+    let names = [source.path, ..source.cache_paths.unwrap_or([])]
+    let origin = match cached_file(roots, names) {
+      Some(path) => {
+        copy_complete(path, pending)
+        "checked complete cached source: " + path
+      }
+      None => {
+        if source.archive_member is Some(_) {
+          let archive = prepare_archive(source, roots, downloads, allow_download, archives)
+          extract_member(source, archive, pending)
+          "exact complete member of checked archive"
+        } else {
+          guard allow_download else {
+            fail("complete source missing; add --from or explicit --download: " + source.path)
+          }
+          download(source.url, pending, pending + ".download.log")
+          "complete source from fixed-hash HTTPS request"
+        }
+      }
+    }
+    assert_eq(@fs.file_size(pending), source.bytes, msg="complete source byte count: " + source.path)
+    assert_eq(file_digest(pending), source.sha256, msg="complete source SHA-256: " + source.path)
+    @fs.rename(pending, output, replace=false)
+    assert_eq(file_digest(output), source.sha256, msg="admitted source changed: " + source.path)
+    receipts.push({"source":ToJson::to_json(source),"origin":origin,"sha256":source.sha256,"bytes":source.bytes,"transformation":"none; complete original file or complete original archive member"})
+  }
+  @fs.write_file(destination + "/real-sources.json", catalog_text)
+  @fs.write_file(
+    destination + "/preparation.json",
+    ({"schema":1,"source_catalog":catalog_path,"source_files":sources.length(),"unique_payload_bytes":total,"max_source_bytes":Json(16777216L),"max_unique_payload_bytes":Json(67108864L),"download_container_policy":"Checked immutable containers are setup material, not measured payload; only named members are extracted. Container bytes are capped separately at64MiB.","repetition":false,"padding":false,"generated_size_budget":false,"blind_holdout":false,"files":receipts} : Json).stringify(indent=2) + "\n",
+  )
+  println("Prepared " + sources.length().to_string() + " complete real sources; unique payload bytes=" + total.to_string() + ": " + destination)
+}

@@ -1,7 +1,6 @@
 import {
   "moonbitlang/core/debug",
   "cli/core/fsops",
-  "cli/core/platform",
   "moonbitlang/async",
   "moonbitlang/async/fs",
   "moonbitlang/async/http",

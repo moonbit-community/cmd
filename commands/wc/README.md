@@ -3,7 +3,7 @@
 Count input records and bytes for MoonX.
 
 ```sh
-moonx cli/wc@0.2.4 [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]
+moonx cli/wc@0.2.5 [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]
 ```
 
 ## Supported scope
@@ -26,12 +26,21 @@ Read files or stdin and count lines, words and bytes by default. Supports select
 
 - Unicode character counting and other locale profiles are unsupported.
 - --files0-from cannot be combined with positional files.
+- Multi-counter stdin output uses a minimum field width of seven, including
+  regular-file redirection. GNU may derive a smaller width from the input
+  descriptor's physical file size, so exact regular-stdin column alignment is
+  not supported. The released `moonbitlang/async@0.22.5` API exposes
+  [`Input::fd`](https://mooncakes.io/docs/moonbitlang/async/stdio), but no public
+  query for that borrowed descriptor's kind and size. Lifting this limitation
+  requires a released public metadata API that neither consumes, reopens nor
+  closes stdin, followed by regular-file, pipe, empty-input and pre-positioned
+  input validation. Named-file widths already use public size metadata.
 
 ## Examples
 
 ```sh
-moonx cli/wc@0.2.4 -l notes.txt
-printf 'one two\nthree\n' | moonx cli/wc@0.2.4
+moonx cli/wc@0.2.5 -l notes.txt
+printf 'one two\nthree\n' | moonx cli/wc@0.2.5
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

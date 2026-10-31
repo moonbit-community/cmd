@@ -40,6 +40,7 @@ pub fn Pattern::record_matcher(Self) -> RecordMatcher
 pub fn Pattern::rfind_span(Self, String, Int32) -> (Int32, Int32)?
 
 type RecordMatcher
+pub fn RecordMatcher::count_records(Self, BytesView, Byte) -> (Int32, Int32)?
 pub fn RecordMatcher::find_span(Self, String, start? : Int32, whole? : Bool, word? : Bool) -> (Int32, Int32)?
 pub fn RecordMatcher::matches(Self, BytesView, whole? : Bool, word? : Bool) -> Bool
 pub fn RecordMatcher::required_literal(Self) -> Bytes

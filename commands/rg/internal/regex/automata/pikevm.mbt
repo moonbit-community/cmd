@@ -89,11 +89,6 @@ pub fn PikeVM::new(nfa : NFA) -> PikeVM {
 }
 
 ///|
-pub fn PikeVM::nfa(self : PikeVM) -> NFA {
-  self.nfa
-}
-
-///|
 /// Executes a leftmost-first search for a match in `hay[start:end]`, where
 /// the haystack is `hay[hs:he]`. Capture positions are written into
 /// `slots` (which may be shorter than the number of slots in the regex).

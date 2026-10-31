@@ -1,10 +1,12 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "cli/core/checksum"
 
-// Values
-pub async fn run(Algorithm, ArrayView[String], String) -> Int32
+import {
+  "moonbitlang/async/io",
+}
 
-pub async fn run_cksum(ArrayView[String], String) -> Int32
+// Values
+pub async fn digest_reader(DigestSpec, &@io.Reader) -> (Bytes, UInt64)
 
 // Errors
 
@@ -14,6 +16,30 @@ pub(all) enum Algorithm {
   Sha1
   Sha256
   Sha512
+}
+pub fn Algorithm::hex_length(Self) -> Int32
+pub fn Algorithm::label(Self) -> String
+
+pub(all) enum Digest {
+  Bsd
+  Sysv
+  Crc
+  Crc32b
+  Fixed(Algorithm)
+  Sha224
+  Sha384
+  Sha2
+  Sha3
+  Blake2b
+  Sm3
+}
+pub fn Digest::default_bits(Self) -> Int32
+pub fn Digest::label(Self) -> String
+pub fn Digest::legacy(Self) -> Bool
+
+pub(all) struct DigestSpec {
+  algorithm : Digest
+  bits : Int32
 }
 
 // Type aliases

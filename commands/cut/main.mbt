@@ -101,12 +101,12 @@ fn output_delimiter_bytes(value : String) -> Bytes {
 fn cut_fields_into(
   line : BytesView,
   ranges : Array[(Int32, Int32)],
-  delimiter : Byte,
+  delimiter : Bytes,
   only_delimited : Bool,
   output_delimiter : Bytes,
   kept : @buffer.Buffer,
 ) -> Bool {
-  if !line.iter().any(byte => byte == delimiter) {
+  guard line.find(delimiter) is Some(first_end) else {
     if only_delimited {
       return false
     }
@@ -118,23 +118,26 @@ fn cut_fields_into(
   let mut range_index = 0
   let mut first = true
   let last_field = ranges.last().map(range => range.1).unwrap_or(0)
-  for index in 0..<=line.length() {
-    if index == line.length() || line[index] == delimiter {
-      while range_index < ranges.length() && ranges[range_index].1 < field {
-        range_index += 1
+  let mut index = first_end
+  for ;; {
+    while range_index < ranges.length() && ranges[range_index].1 < field {
+      range_index += 1
+    }
+    if range_index < ranges.length() && ranges[range_index].0 <= field {
+      if !first {
+        kept.write_bytes(output_delimiter)
       }
-      if range_index < ranges.length() && ranges[range_index].0 <= field {
-        if !first {
-          kept.write_bytes(output_delimiter)
-        }
-        kept.write_bytes(line[start:index])
-        first = false
-      }
-      start = index + 1
-      field += 1
-      if field > last_field {
-        break
-      }
+      kept.write_bytes(line[start:index])
+      first = false
+    }
+    start = index + 1
+    field += 1
+    if field > last_field || index == line.length() {
+      break
+    }
+    index = match line[start:].find(delimiter) {
+      Some(relative) => start + relative
+      None => line.length()
     }
   }
   true
@@ -307,6 +310,7 @@ async fn process_reader(
     return
   }
   let scanner = @stream.RecordReader::new(reader, delimiter=record_delimiter)
+  let field_delimiter = Bytes::from_array([delimiter])
   let output = @buffer.Buffer(size_hint=@stream.chunk_size)
   defer @stream.flush_buffer(writer, output)
   let consume_record : (BytesView, Bool) -> Bool = match
@@ -314,10 +318,25 @@ async fn process_reader(
     (Some(ranges), _) =>
       (line, _) => {
         if cut_fields_into(
-            line, ranges, delimiter, only_delimited, field_output_delimiter, output,
+            line, ranges, field_delimiter, only_delimited, field_output_delimiter,
+            output,
           ) {
           output.write_byte(record_delimiter)
         }
+        output.length() < @stream.chunk_size
+      }
+    (None, Some([(lo, hi)])) =>
+      (line, _) => {
+        if lo <= line.length() {
+          let start = lo - 1
+          let end = hi.min(line.length())
+          match end - start {
+            1 => output.write_byte(line[start])
+            8 => output.write_uint64_le(line.unsafe_read_uint64_le(start))
+            _ => output.write_bytes(line[start:end])
+          }
+        }
+        output.write_byte(record_delimiter)
         output.length() < @stream.chunk_size
       }
     (None, Some(ranges)) =>
@@ -339,7 +358,7 @@ async fn process_reader(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("cut 0.2.4\n")
+    @stdio.stdout.write("cut 0.2.5\n")
     return
   }
   let args = @env.args()[1:]

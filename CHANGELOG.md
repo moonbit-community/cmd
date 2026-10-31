@@ -1,157 +1,294 @@
 # Changelog
 
-This repository integrates multiple command packages, so changes are recorded
-by date and delivery milestone rather than by a single package version.
+This multi-package repository records changes by date. An entry marked
+development describes workspace source, not a registry release. Exact
+published versions are in [latest.json](tests/release_runner/current/latest.json).
+Current technical decisions are in [docs/adr](docs/adr/README.md).
+
+Full historical experiment reports remain in the
+[pre-simplification Git version](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/CHANGELOG.md).
+Their failed, incomplete and platform-limited results keep their original scope.
+
+## 2026-10-31
+
+Development test and benchmark replacement; no publication.
+
+- The follow-up Linux CI run passes every functional/upstream comparison but
+  rejects 355 finite proof claims because differential results did not carry
+  their independently executed local assertion receipts. Keep the failed run;
+  add typed receipts only after exact/runtime/file checks actually complete,
+  bound to the original case digest and full local observation dimensions.
+  Proofs require that receipt in addition to a complete differential pass;
+  an oracle-equality label alone remains insufficient. New producer and consumer
+  counterexamples bring Native tool validation to 192 passing tests. Failed
+  claim IDs now appear in concise CI diagnostics.
+
+- The first final-cleanup CI run exposed four Windows path-expectation failures
+  and two Linux env directory-output differential failures. Complete captures
+  show host separator spelling and the oracle's `/work` mount identity. Add
+  explicit native-path expectation templates without rewriting observed output;
+  declare the existing mount-identity relation for the two env cases. New
+  counterexamples retain exact child/control directory, filename, payload,
+  terminator and extra-record constraints. Frozen published expectations and
+  the original failed CI captures remain unchanged. The follow-up Native
+  test-tool run passes all 190 tests, including the two new counterexample tests.
+
+- Final cleanup removes the old pilot/schema2/synthetic benchmark engine and
+  unused reserved/disclosure/stability workflows; their source is preserved
+  at `8c4efe2`. The active benchmark has one genuine-source Wasm execution path.
+  Quality generation and runtime checks share one classifier. Add independent
+  false-result test predicates and require the sleep cancellation observer to
+  distinguish a waiting child from an immediate-success no-op.
+- Correction to the initial audit below: the claimed Darwin mkdir setuid
+  incompatibility came from mismatched sandbox contexts and was invalid.
+  Same-context native/Wasm controls agree on those bits. A separate sticky-only
+  `+t` Darwin creation discrepancy is repaired without changing Linux behavior.
+  Default diff now agrees with GNU on the genuine CPython source pair and160
+  bounded alignment controls. The documented wc descriptor-metadata boundary
+  remains; no package is published by this development update.
+- Pre-CI local verification passes 1,723 release-Wasm package tests, 188 Native
+  test-tool tests and 2,260 functional checks, with 21 platform skips and zero
+  failures. All 652 reviewed finite definitions join fresh execution receipts;
+  four retain explicit platform-partial scopes. The 125 real-source comparisons
+  check 123 rows and retain exactly two failed wc regular-stdin padding rows,
+  with artifact integrity intact. The genuine diff pair now agrees exactly;
+  24 same-context mkdir mode pairs agree after the Darwin fix. Seven new exact
+  CLI regressions bring the active JSON inventory to 2,194 definitions. The
+  remaining index still records 180 new-observer labels, 32 activation-review
+  labels and one yes lifecycle feature; these are label counts, not test counts.
+  This is finite development correctness evidence, not complete compatibility,
+  formal performance or exact-version published acceptance.
+
+Initial replacement audit (its original results and subsequent correction are
+recorded separately):
+
+- Replace generated performance matrices and the rg-specific timing launcher
+  with one schema-3 real-source engine: 125 rows, 105 reviewed modes, 40 timing
+  commands and explicit correctness-only dispositions for ln/make/sh. Pin 31
+  complete sources totaling 22,152,148 bytes; enforce 16 MiB per source and
+  64 MiB unique bytes without repetition, padding or trimming. Seven former
+  synthetic regimes retain finite correctness bindings rather than invented
+  real-source timing claims.
+- Consolidate 107 duplicate CLI invocations while retaining aliases, oracle
+  routes and independent assertions; add 13 activating companions and strengthen
+  existing stream, runtime and filesystem expectations. All 2,187 current JSON
+  definitions have source-bound exact/typed/finite assertion descriptors.
+  Imported rg data preserves all 751 original records/names through 726 unique
+  execution groups. Local gates supplement Linux pinned differential checks.
+- Independently correct bad supplemental expectations and unsupported benchmark
+  arguments exposed by actual execution. Preserve an actual Darwin mkdir
+  setuid-directory difference as a failing regression; see ADR-0004. Quality
+  descriptors alone do not prove option activation: 180 catalog labels still
+  require new scenario evidence, 32 strengthened labels require activation
+  review, and one yes lifecycle feature remains. The SHA256 per-line warning
+  facet is independently reconciled through exact diagnostics and its actual
+  local pass. Historical acceptance is not
+  broadened; publication continues to use `moon publish` only.
+- Current macOS evidence: 1,722 release-Wasm package tests and 208 Native
+  test-tool tests pass; 41 disclosure controls and six CLI failure gates pass.
+  The fresh real-source run records all 125 rows: 122 checked and three exact
+  native mismatches (two documented wc regular-stdin padding boundaries and
+  default-GNU versus minimal diff). Its independent local preflight passes88
+  with one platform skip. Full functional execution passes2,253, fails the
+  retained Darwin mkdir case and skips20. The uniform cksum A/A control passes
+  three workloads through two windows of nine pairs; this is pipeline
+  validation, not an improvement or full performance result. Independent final
+  readback confirms these scopes. One old diagnostic capture was accidentally
+  overwritten/reproduced and is excluded from final evidence; the fresh
+  complete run is authoritative. Full compatibility, three-platform, formal
+  performance and publication acceptance remain unestablished.
+
+## 2026-10-30
+
+Development cleanup and publication.
+
+- Development evidence reconciliation: repair 83 exact-contract and 23 typed
+  scenario registration omissions, narrow mixed-scope claims, and require every
+  named binding. Bind actual scenario values to current reviewed descriptors,
+  command ownership, complete result streams and the freshly built test driver.
+  The subsequent local macOS/Wasm run passes 2,167 functional checks with 19
+  skips and zero failures; 113 typed observations cover six executed scenes.
+  All 651 reviewed facets pass where applicable; four retain explicit platform
+  exclusions. Native test-tool tests pass 179/179 and twelve malformed/stale
+  evidence checks reject. Independent readback verifies these identities and
+  observations. The [remaining work index](tests/registry/coverage-gaps.md)
+  distinguishes 180 catalog labels requiring new activated fixtures/observers,
+  33 requiring stronger assertions on existing fixtures, and one supplemental
+  `yes` lifecycle feature. These are label counts, not test counts. Full
+  compatibility and three-platform, upstream, performance and publication
+  acceptance remain unestablished by this development run.
+
+- Further development evidence repair: add 53 independent CLI contracts,
+  183 seed variants, 60 complete-source tasks and 14 slow-output controls;
+  connect their applicable panels to performance protection. Add an ordinary
+  CI proof join for finite reviewed assertions, typed metadata versions,
+  source-case identity and complete observation dimensions. Current local
+  results are 1,718 release-Wasm package tests, 172 Native test-tool tests,
+  and 2,165 functional results with 19 platform skips and zero failures.
+  The proof profile executes 545 reviewed facets; 319 catalog labels and
+  one supplemental primary operation remain unresolved. New samples exposed
+  and repaired unreleased jq grouping/sorting, sh stdin-option and nl padding
+  defects. Independent reserved evaluation remains failed at 21/22 because
+  GNU-default wc whitespace differs from the documented C-byte profile;
+  an explicitly calibrated ordinary replay passes 22/22. Two canonical rev
+  rows retain invalid-reference status. No general compatibility, formal
+  performance, three-platform or publication acceptance is established;
+  package publication remains `moon publish` only.
+
+- Development benchmark repair: connect required command-mode, natural-file,
+  fragmented-pipe and original 89-query rg panels to protection and resource
+  timing. Verify aliases, freeze actual executables/inputs, retain per-row
+  feature observations and fail incomplete or unstable windows. Replace
+  self-input/early-exit fixtures with explicit diff, join, comm, csplit, jq and
+  codec regimes; compare gzip by decoded content. Previously used evaluation
+  files remain explicitly unblinded. Historical results and published
+  coordinates are unchanged; this does not establish general performance or
+  resource acceptance.
+
+- Development test-evidence repair: reject vacuous assertions and malformed
+  selection metadata before platform skips; strengthen one shell stderr
+  expectation, including its locally rechecked published coordinate. Add exact
+  per-engine regex corpus accounting, orthogonal record/file-size sweeps and
+  varied synthetic corpora. Reports explicitly scope timing claims; rename the
+  synthetic resource profile while retaining its legacy alias. These changes
+  do not retroactively broaden the release results below or establish general
+  performance acceptance.
+
+- Published core 0.9.0 and 43 command packages from source commit `4ca0e4d`:
+  42 updates and the first rg 0.1.0 release. All 44 uploads and registry builds
+  were verified. Thirty-six command coordinates remain unchanged; timeout remains
+  local-only. The latest inventory selects 79 commands and independent resolved
+  expectations. Core API migrations are explicit; C02 trial proposals remain
+  unadopted.
+- Source [development CI](https://github.com/moonbit-community/cmd/actions/runs/40984331217)
+  passed all three required hosts. Local exact-version MoonX acceptance passed
+  2,180 checks (2,048 semantic contract results, 79 startup availability checks
+  and 53 boundary results), with 19 skips and zero failures across all 79
+  coordinates.
+  [Initial startup attempts](https://github.com/moonbit-community/cmd/actions/runs/40985862616)
+  stopped while registry assets were queued; full acceptance restarted after all
+  builds succeeded. [Three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/40986324873):
+  passed Linux (2,369 checks, 16 skips, including 1,531 pinned differential results),
+  macOS (2,180 checks, 19 skips) and Windows (2,049 checks, 150 skips), all with
+  zero failures. Formal performance acceptance remains unresolved; no broader
+  upstream parity is inferred.
+
+- Made HTTP method expectations independent of the implementation, consolidated
+  duplicate cases through selectable aliases, and removed redundant assertions
+  and duplicate filesystem executions. Retained failure-path coverage.
+- Shared HTTP fixtures between current cases and retained cohorts; workspace
+  redirects/resume use explicit JSON contracts while frozen published checks
+  retain their existing assertions. Removed editorial wording locks.
+- Switched benchmark defaults to the latest accepted inventory and corpus.
+  Removed retired release archives from the checkout; their complete contents
+  remain in Git at 234f960. At that cleanup stage, latest/candidate snapshot
+  bytes were unchanged.
+  Test cleanup passed 1,706 Wasm tests, 118 tool tests and 2,112 functional
+  checks with nineteen skips. All 80 product binaries match the baseline
+  rebuilt with the same current toolchain.
+- Rg now rejects ineffective --dfa-size-limit values explicitly, with aligned
+  help, README, support metadata and command regressions.
+- Removed unused matcher helpers, indexing/device-identity branches,
+  thread/mmap state, ignore-origin payloads and redundant mode wrappers.
+  Narrowed driver types and moved test-only helpers beside their tests.
+- Enforced the matcher/searcher-to-driver boundary for production and both
+  test import forms. Replaced unreachable success assertions with rejection
+  coverage and added complete HTTP upload protection cases.
+- Removed the HTTP payload forwarder while preserving wire ownership.
+- Simplified ADRs into current decisions and this changelog into dated
+  updates; complete earlier reports remain recoverable from Git.
+
+Cleanup commit 6e7be83 passed [three-platform CI](https://github.com/moonbit-community/cmd/actions/runs/40973796440).
+Local correctness: 1,707 Wasm tests, 118 test-tool tests and 2,122 functional
+checks, with nineteen platform skips. The real-corpus matrix qualified 89/89;
+full performance protection remains failed at 159/160 because an unchanged
+ln startup control exceeded dispersion limits. This is not published or
+mainline acceptance. Dump-loop and core API/async proposals remain pending
+in [ADR-0003](docs/adr/0003-streams.md#pending-cleanup-decisions).
+
+## 2026-10-29
+
+Development changes; published coordinates unchanged.
+
+- Added grep whole-record output batching and bounded anchored matching,
+  plus rg early Boolean termination and selective cross-chunk regex counts.
+- Made search policy, replay, cache preparation and pressure retirement
+  explicit. Shared byte-membership/wide-scan mechanisms and column field
+  traversal while retaining specialized command loops.
+- Bounded reads independently of retained long-record allocation and
+  deferred non-raising reverse/capture storage. Fixed tac cleanup-only
+  error reporting and retained cancellation cleanup.
+- Reduced eager rg metadata work; added progressive regular-file refills
+  and plain-record output admission without changing decoder/error order.
+- Added strategy/source/test/workload validation and boundary regressions.
+
+Final local correctness passed 1,706 Wasm tests, 118 tool tests and 2,117
+functional checks with nineteen skips. The final 89-task real matrix
+qualified; a registered confirmation passed 156 protection profiles after
+an earlier noisy run. Earlier governance and pilot failures remain failed.
+These local measurements do not establish general upstream superiority,
+published-coordinate acceptance or formal resource acceptance.
+
+## 2026-10-28
+
+Development changes; no registry release.
+
+- Separated command catalog, checksum/gzip CLI adapters and algorithms.
+  Added shared directory mechanisms and typed shell/cache states; removed
+  unused forwarding APIs while preserving command-specific policies.
+- Moved rg search policy and its matcher adapter into driver. Preserved
+  regex dialects, Unicode tables and lower-layer independence.
+- Moved 751 imported regex records to fixtures and 44 CLI-equivalent
+  printer tests to the common runner, preserving expected values and
+  private/injected tests. Restored two missing ignore fixtures.
+- Added bounded literal/Boolean counting, lazy tables, prefix rejection,
+  exact long-record matching, DFA minimization and adaptive exit probes.
+- Batched rg output and reused buffered output for nl/paste/comm.
+- Removed the obsolete rg launcher from CI and corrected the Windows
+  hidden-attribute test without changing directory filtering.
+
+Selected correctness and affected-command measurements passed, but several
+complete performance selections remained unstable or incomplete. Their
+results are preserved in the historical ADR; no full-suite or release
+acceptance is inferred from these integrations.
 
 ## 2026-10-27
 
-- Published a MoonX documentation release for all 78 published commands. All
-  80 command READMEs now focus on supported scope, options, limitations and
-  examples, with links to the capability matrix and ADRs. Corrected misleading
-  filesystem help and rg's inherited upstream thread/mmap/terminal claims;
-  rg's short version now identifies cli/rg. rg and timeout are excluded from
-  this release. Command versions advance independently and core dependencies
-  select the existing 0.8.2, whose fetched registry source matches this checkout.
-  All 78 uploads returned HTTP 200 and exact non-yanked registry versions.
-  Local validation passed 1,612 Wasm tests, 118 test-tool regressions and
-  2,062 workspace functional checks with 19 platform skips. The initial Windows
-  README regression exposed CRLF-sensitive assertions; normalization fixed the
-  test, and [development run 40428496917](https://github.com/moonbit-community/cmd/actions/runs/40428496917)
-  passed all three hosts before publication.
-  Local exact-version MoonX acceptance passed 2,094 checks (1,963 semantic,
-  78 startup and 53 explicit boundary results), with 18 platform skips and zero
-  failures. Seventeen additional README examples passed, including nested MoonX,
-  copy/create effects and missing-file suppression.
-  [Published acceptance run 40432031612](https://github.com/moonbit-community/cmd/actions/runs/40432031612)
-  passed Linux (2,287 checks, 15 skips, including 1,507 pinned differential
-  results), macOS (2,094 checks, 18 skips) and Windows (1,961 checks, 151 skips),
-  all with zero failures. The current `latest.json` and its separate case snapshot
-  now bind these accepted coordinates; `published.json` and historical snapshots
-  remain unchanged. This release does not establish formal performance acceptance
-  or remove the documented unsupported behaviors.
-
-- Integrated performance PR #60 as `6705ea8` after documentation PR #59,
-  with the maintainer's explicit exception for unresolved repeatability.
-  Final-head checks and [actual-main run 40406545144](https://github.com/moonbit-community/cmd/actions/runs/40406545144)
-  passed Linux, macOS and Windows. Failed resource stability remains failed;
-  thresholds, published coordinates and frozen expectations are unchanged.
-- Promoted the adaptive literal pilot into the unpublished core/grep candidate:
-  dense verification can lazily build one bounded automaton, budget exhaustion
-  safely resumes shifts, and subsequent sparse inputs keep the shift fast path.
-  Added independent span/offset/folding/record regressions, thirteen real-command
-  performance workloads and sixteen sampled/kernel resource comparisons.
-  Real-command local pairs improved 1 MiB collision inputs by 13.98x–14.63x
-  over merged main while preserving sparse throughput. An initial 15% dense
-  count regression was corrected; two existing controls retain 2–3% regressions.
-  All 26 old/new rows were stable, while five of 26 GNU rows remained noisy and
-  several GNU ratios exceeded 3x. These are diagnostic results, not acceptance.
-  Local validation passed 1,611 Wasm tests, 117 tool tests, 2,062 functional
-  cases (19 skips), and eight resource smoke comparisons; interfaces are unchanged.
-  See [ADR-0003](docs/adr/0003-streams.md#adaptive-literal-planner-2026-10-27).
-
-- Cache/control diagnostic 40398697579 completed every window but retained
-  unstable empty-input controls and no passing full selection. Input preloading
-  is not a selected fix. Added a separate Linux perf null-counter diagnostic
-  with finer CPU accounting; ordinary resource acceptance remains unchanged.
-
-- Linux diagnostic run 40395472012 completed all controlled windows but found
-  no stable full selection: 17/23 for either observer, 14/23 with settling or
-  one-CPU affinity. Retained these rejected approaches and added a cache/control
-  phase with separate kernel-counter observations. Stability remains unresolved;
-  performance PR #60 was still unmerged at this investigation stage.
-- Added an explicit Linux stability diagnostic to investigate the six noisy
-  workloads in resource run 40346450167. It compares observer backends, a fixed
-  between-arm pause and one-CPU affinity while retaining every sample and the
-  same release Wasm commands. This is diagnostic infrastructure, not a stability
-  fix or acceptance result. The ordinary resource gate and thresholds are unchanged.
+- Published documentation/metadata updates for all 78 released commands.
+  Reused existing core 0.8.2; rg and timeout remained unpublished. Exact
+  command versions and frozen cases are in the latest release manifest.
+- Local MoonX acceptance passed 2,094 checks with eighteen skips, plus
+  seventeen README examples. [Published acceptance](https://github.com/moonbit-community/cmd/actions/runs/40432031612)
+  passed Linux/macOS/Windows with 2,287/2,094/1,961 checks and 15/18/151
+  skips, including 1,507 pinned Linux differential results; zero failures.
+- Integrated performance PR #60 with the explicit maintainer exception
+  for unresolved repeatability. [Actual-main checks](https://github.com/moonbit-community/cmd/actions/runs/40406545144)
+  passed; the resource stability failure remained unresolved.
+- Continued development with shared byte/buffer/temp-I/O mechanisms,
+  adaptive literal matching, lower long-record allocation and specialized
+  count, field and reverse-read paths. Removed unused imported rg layers
+  and shared chmod/mkdir octal parsing. These later source changes did not
+  update the released coordinates or establish formal performance acceptance.
 
 ## 2026-10-26
 
-- Extended the manual resource workflow to cover cut/uniq/wc alongside the
-  existing commands, including Linux kernel peak RSS. Added a 23-workload
-  direct-Wasm performance profile with two independent nine-pair windows and
-  explicit dispersion/drift checks. Raw samples and noisy results are retained;
-  this does not publish packages or replace formal performance acceptance.
-- Extended unpublished core 0.8.2 and grep 0.3.1 with adaptive multi-literal
-  search, record-level count skipping and reuse of proven regex suffixes.
-  Selected local pairs improved 64 MiB / 16-pattern counts by 4.49x and a
-  16 KiB overlapping-span case by 25.44x over wave 3. Broader literal shapes
-  improved 1.21x–1.70x; several GNU ratios still exceed the 1–3x exploration
-  target. A regressing reverse-DFA skip experiment was removed. Passed 1,604
-  Wasm package tests, 117 Native tool tests and 2,062 functional cases with
-  19 skips and no failures. The independent GNU set matched 792/796, retaining
-  four known empty-pattern differences. [ADR-0003](docs/adr/0003-streams.md#performance-wave-4-candidate-2026-10-26)
-  records measurements, bounds, negative evidence and deeper follow-up
-  directions. No publication or formal performance acceptance is claimed.
-- Extended unpublished core 0.8.2 and grep 0.3.1 with borrowed byte searches,
-  paired endpoint DFAs, shared fallback decoding and resumable synchronous span
-  emission. Selected local pairs improved original/many-match/long-record spans
-  by 3.24x/4.08x/3.64x over wave 2. Original spans remain 3.16x GNU; many-match
-  and word-filtered rows are 2.19x and 1.96x. Counting gains are smaller and some
-  regex count rows show small regressions. Passed 1,597 Wasm package tests,
-  117 Native tool tests and 2,062 functional cases with 19 skips and no failures.
-  The independent GNU set matched 684/688, retaining four known empty-pattern
-  differences. [ADR-0003](docs/adr/0003-streams.md#performance-wave-3-candidate-2026-10-26)
-  records resource bounds, raw evidence and remaining gaps. No publication or
-  formal performance acceptance is claimed.
-- Extended the same unpublished performance candidates with synchronous record
-  visitors, block rejection, synchronous count scans, flat DFA transitions and
-  precomputed span closures. Final local pairs improved short-record cut/uniq
-  by 4.96x/2.41x and 64 MiB regex counting by 2.67x over wave 1. Their selected
-  GNU ratios are 2.84x, 2.52x and 2.89x; span extraction remains 10.33x.
-  Passed 1,584 Wasm package tests, 117 Native tool tests and the full functional
-  suite (2,062 passes, 19 skips, zero failures). The independent local comparison
-  matched 242 of 244 GNU cases; two empty-pattern grep differences also occur in
-  wave 1. See [ADR-0003](docs/adr/0003-streams.md#performance-wave-2-candidate-2026-10-26)
-  for bounds, evidence and remaining work. No package was uploaded, and these
-  diagnostic measurements do not establish formal performance acceptance.
-- Prepared the unpublished first performance wave in `core 0.8.2`,
-  `cut/uniq/wc 0.2.3` and `grep 0.3.1`: immutable record batches, synchronous
-  output accumulation, SIMD line/word counting, compact span worklists and a
-  bounded lazy DFA with conservative literal rejection. Published coordinates
-  and snapshots remain unchanged. Updated prospective direct-Wasm performance
-  limits to 3.0x per the current target; historical verdicts remain unchanged.
-  Local macOS checks passed 1,579 Wasm package tests, 117 Native tool tests and
-  the full functional run (2,062 passes, 19 explicit skips, zero failures).
-  Selected nine-pair measurements and the remaining short-record/regex gaps are
-  recorded in [ADR-0003](docs/adr/0003-streams.md#performance-wave-1-candidate-2026-10-26).
-  These observations do not establish three-host, published-consumer or formal
-  performance acceptance. No package was uploaded.
-- Migrated development CI to release Wasm commands on Linux, macOS and Windows,
-  with shared workspace/MoonX assertions and Native test tools. Removed the
-  daily schedule, Native product pairing, change-coverage audits and source/
-  artifact sealing. Resource observations and published acceptance run manually.
-- Added metadata stdin-preservation checks, strict cleanup/report failures,
-  bounded package-test execution and retained cancellation diagnostics. Reused
-  compilation state and parallelized independent pinned-oracle build stages.
-- Verified all 78 published coordinates on three platforms in
-  [run 40270955851](https://github.com/moonbit-community/cmd/actions/runs/40270955851),
-  including the complete pinned Linux comparison. Linux/macOS/Windows recorded
-  2,287/2,094/1,961 passes and 15/18/151 explicit platform skips, with no failures.
+- Migrated required CI to Wasm products on Linux, macOS and Windows, with
+  shared workspace/MoonX assertions and Native test tools. Retired daily
+  schedules, Native product pairing, change audits and artifact sealing.
+  Resource and published acceptance workflows remain manual.
+- Added live-stdin metadata checks, bounded test execution and strict
+  process/container cleanup and reporting. Reused compilation state.
+- Verified all 78 published coordinates in [run 40270955851](https://github.com/moonbit-community/cmd/actions/runs/40270955851):
+  Linux/macOS/Windows passed 2,287/2,094/1,961 checks with 15/18/151 skips.
   This validation uploaded no packages.
-- Recorded a preliminary cold CI run at `635f355`: Linux 13:35, macOS 5:48,
-  Windows 12:44 and 32:07 total runner time. These release-tool observations do
-  not establish a controlled cold/warm result for the later debug-tool setup.
-- Integrated the unpublished `cli/rg@0.1.0` candidate and catalog-only
-  `cli/core@0.8.2` through PR #58. Retained pinned rg.mbt algorithms and Unicode
-  data while replacing system access with public async APIs. Added Windows
-  path handling and direct-child pipe cancellation/diagnostic-drain regressions.
-  Effective compressed search rejects; stdin/terminal/file-identity limits,
-  PCRE2, real mmap and parallel search remain explicit boundaries.
-- Updated all three CI workflows to MoonBit `0.10.17+d971670cd` with matching
-  core. Local rg integration recorded 1,566 passing workspace Wasm package
-  tests and 117 passing Native harness tests; these are dated observations,
-  not publication or complete ripgrep compatibility claims.
-- Passed all three actual-main development checks for the rg integration in
-  [run 40307223749](https://github.com/moonbit-community/cmd/actions/runs/40307223749)
-  at `65b4b7e`, following PR run 40304444558. This did not publish rg or lift
-  its documented input, engine and compression boundaries.
-- Consolidated implementation and release reports into this changelog. Removed
-  obsolete planning, provenance and rg migration documents, the deferred
-  compression experiment and its one-time reporting tools. Refreshed the support
-  record, upstream pins and nine canonical ADRs from source and Git history;
-  cleared accumulated local test reports. No package versions or dependencies
-  changed in this documentation cleanup.
+- Integrated unpublished rg 0.1.0 through PR #58 with pinned algorithms,
+  public async I/O, Windows paths and direct-child lifecycle regressions.
+  [Actual-main CI](https://github.com/moonbit-community/cmd/actions/runs/40307223749) passed;
+  compression, identity, terminal, PCRE2, mmap and parallel-search limits remained.
+- Added unpublished byte/count/regex accelerators and manual direct-Wasm
+  resource profiles. Known upstream differences and unstable measurements
+  remained explicit; no performance acceptance or publication was claimed.
+- Consolidated obsolete reports and migration plans into canonical docs.
 
 ## 2026-10-25
 

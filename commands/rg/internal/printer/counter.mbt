@@ -42,6 +42,21 @@ fn CounterWriter::get_mut(self : CounterWriter) -> &@termcolor.WriteColor {
 }
 
 ///|
+impl @termcolor.Write for CounterWriter with fn try_write_slice(
+  self,
+  buf,
+  start,
+  end,
+) {
+  if @termcolor.Write::try_write_slice(self.wtr, buf, start, end) {
+    self.count += (end - start).to_int64()
+    true
+  } else {
+    false
+  }
+}
+
+///|
 impl @termcolor.Write for CounterWriter with fn write_slice(
   self,
   buf,
@@ -90,11 +105,6 @@ impl @termcolor.WriteColor for CounterWriter with fn reset(self) {
   if self.color {
     self.wtr.reset()
   }
-}
-
-///|
-impl @termcolor.WriteColor for CounterWriter with fn is_synchronous(self) {
-  self.wtr.is_synchronous()
 }
 
 ///|

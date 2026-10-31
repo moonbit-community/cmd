@@ -21,7 +21,7 @@ fn build(
     builder.backslash_escape(bsesc) |> ignore
   }
   if ealtre is Some(ealtre) {
-    builder.empty_alternates(ealtre) |> ignore
+    builder.opts = { ..builder.opts, empty_alternates: ealtre, }
   }
   if unccls is Some(unccls) {
     builder.allow_unclosed_class(unccls) |> ignore

@@ -2,110 +2,27 @@
 package "cli/rg/internal/driver"
 
 import {
-  "cli/rg/internal/grep_regex",
-  "cli/rg/internal/ignore",
   "cli/rg/internal/printer",
-  "cli/rg/internal/searcher",
   "cli/rg/internal/termcolor",
   "moonbitlang/core/debug",
 }
 
 // Values
-pub async fn config_args() -> Array[String]
-
-pub async fn eprintln_locked(String) -> Unit
-
-pub async fn err_message(String) -> Unit
-
-pub fn errored() -> Bool
-
 pub let flag_defs : Array[FlagDef]
 
-pub fn generate_complete_bash() -> String
-
-pub fn generate_complete_fish() -> String
-
-pub fn generate_complete_powershell() -> String
-
-pub fn generate_complete_zsh() -> String
-
-pub fn generate_help_long() -> String
-
-pub fn generate_help_short() -> String
-
-pub fn generate_man_page() -> String
-
-pub fn generate_version_digits() -> String
-
-pub fn generate_version_long() -> String
-
-pub fn generate_version_pcre2() -> (String, Bool)
-
-pub fn generate_version_short() -> String
-
-pub async fn ignore_message(String) -> Unit
-
-pub fn ignore_messages() -> Bool
-
-pub async fn log_debug(String, String) -> Unit
-
-pub async fn log_trace(String, String) -> Unit
-
-pub fn lookup_flag(String) -> FlagDef?
-
-pub async fn message(String) -> Unit
-
-pub fn messages() -> Bool
-
-pub fn parse_config_bytes(Bytes) -> (Array[String], Array[String])
-
-pub fn parse_into(Array[String], LowArgs) -> Unit raise RgError
-
-pub async fn parse_low(Array[String]) -> ParseResult[LowArgs]
-
-pub fn parse_low_raw(Array[String]) -> LowArgs raise RgError
+pub fn parse_config_bytes(Bytes) -> Array[String]
 
 pub let rg_version : String
 
 pub async fn run_main(Array[String]) -> Int32
 
-pub fn set_errored() -> Unit
-
-pub fn set_ignore_messages(Bool) -> Unit
-
-pub fn set_messages(Bool) -> Unit
-
 // Errors
 pub suberror RgError {
   RgError(String)
 } derive(@debug.Debug)
-pub fn RgError::message(Self) -> String
 pub impl Show for RgError
 
 // Types and methods
-pub(all) enum BinaryMode {
-  Auto
-  SearchAndSuppress
-  AsText
-} derive(Eq, @debug.Debug)
-
-pub(all) enum BoundaryMode {
-  Line
-  Word
-} derive(Eq, @debug.Debug)
-
-pub(all) enum BufferMode {
-  Auto
-  Line
-  Block
-} derive(Eq, @debug.Debug)
-
-pub(all) enum CaseMode {
-  Sensitive
-  Insensitive
-  Smart
-} derive(Eq, @debug.Debug)
-
 pub(all) enum Category {
   Input
   Search
@@ -116,14 +33,6 @@ pub(all) enum Category {
   Logging
   OtherBehaviors
 } derive(Compare, Eq, @debug.Debug)
-pub fn Category::as_str(Self) -> String
-
-pub(all) enum ColorChoice {
-  Never
-  Auto
-  Always
-  Ansi
-} derive(Eq, @debug.Debug)
 
 pub(all) enum CompletionType {
   Other
@@ -131,33 +40,6 @@ pub(all) enum CompletionType {
   Executable
   Filetype
   Encoding
-} derive(Eq, @debug.Debug)
-
-pub(all) enum ContextMode {
-  Passthru
-  Limited(ContextModeLimited)
-} derive(Eq, @debug.Debug)
-pub fn ContextMode::default() -> Self
-
-pub(all) struct ContextModeLimited {
-  before : Int32?
-  after : Int32?
-  both : Int32?
-} derive(Eq, @debug.Debug)
-pub fn ContextModeLimited::get(Self) -> (Int32, Int32)
-
-pub(all) enum EncodingMode {
-  Auto
-  Specific(@searcher.Encoding)
-  Disabled
-}
-pub impl Eq for EncodingMode
-pub impl @debug.Debug for EncodingMode
-
-pub(all) enum EngineChoice {
-  Default
-  Auto
-  PCRE2
 } derive(Eq, @debug.Debug)
 
 pub(all) struct FlagDef {
@@ -179,201 +61,20 @@ pub(all) enum FlagValue {
   Value(String)
 } derive(Eq, @debug.Debug)
 
-pub(all) enum GenerateMode {
-  Man
-  CompleteBash
-  CompleteZsh
-  CompleteFish
-  CompletePowerShell
-} derive(Eq, @debug.Debug)
-
 pub struct Haystack {
   // private fields
 }
-pub async fn Haystack::is_explicit(Self) -> Bool
-pub fn Haystack::is_stdin(Self) -> Bool
-pub fn Haystack::path(Self) -> String
-
-pub struct HiArgs {
-  // private fields
-}
-pub async fn HiArgs::from_low_args(LowArgs) -> Self
-pub fn HiArgs::has_implicit_path(Self) -> Bool
-pub fn HiArgs::matcher(Self) -> @grep_regex.RegexMatcher raise RgError
-pub fn HiArgs::matches_possible(Self) -> Bool
-pub fn HiArgs::mode(Self) -> Mode
-pub fn HiArgs::printer(Self, SearchMode, &@termcolor.WriteColor) -> Printer
-pub fn HiArgs::quiet(Self) -> Bool
-pub fn HiArgs::quit_after_match(Self) -> Bool
-pub fn HiArgs::searcher(Self) -> @searcher.Searcher
-pub fn HiArgs::stats(Self) -> @printer.Stats?
-pub fn HiArgs::stdout(Self) -> &@termcolor.WriteColor
-pub fn HiArgs::threads(Self) -> Int32
-pub fn HiArgs::types(Self) -> @ignore.Types
-
-pub(all) enum IndexMode {
-  Crud
-} derive(Eq, @debug.Debug)
-
-pub(all) enum LoggingMode {
-  Debug
-  Trace
-} derive(Eq, @debug.Debug)
-
-pub(all) struct LowArgs {
-  mut special : SpecialMode?
-  mut mode : Mode
-  positional : Array[String]
-  patterns : Array[PatternSource]
-  mut binary : BinaryMode
-  mut boundary : BoundaryMode?
-  mut buffer : BufferMode
-  mut byte_offset : Bool
-  mut case : CaseMode
-  mut color : ColorChoice
-  colors : Array[String]
-  mut column : Bool?
-  mut context : ContextMode
-  mut context_separator : Bytes?
-  mut crlf : Bool
-  mut dfa_size_limit : UInt64?
-  mut encoding : EncodingMode
-  mut engine : EngineChoice
-  mut field_context_separator : Bytes
-  mut field_match_separator : Bytes
-  mut fixed_strings : Bool
-  mut follow : Bool
-  mut glob_case_insensitive : Bool
-  globs : Array[String]
-  mut heading : Bool?
-  mut hidden : Bool
-  mut hostname_bin : String?
-  mut hyperlink_format : String
-  iglobs : Array[String]
-  ignore_file : Array[String]
-  mut ignore_file_case_insensitive : Bool
-  mut include_zero : Bool
-  mut index : Int32
-  mut index_force : Bool
-  mut index_path : String?
-  mut invert_match : Bool
-  mut line_number : Bool?
-  mut logging : LoggingMode?
-  mut max_columns : UInt64?
-  mut max_columns_preview : Bool
-  mut max_count : UInt64?
-  mut max_depth : Int32?
-  mut max_filesize : UInt64?
-  mut mmap : MmapMode
-  mut multiline : Bool
-  mut multiline_dotall : Bool
-  mut no_config : Bool
-  mut no_ignore_dot : Bool
-  mut no_ignore_exclude : Bool
-  mut no_ignore_files : Bool
-  mut no_ignore_global : Bool
-  mut no_ignore_messages : Bool
-  mut no_ignore_parent : Bool
-  mut no_ignore_vcs : Bool
-  mut no_messages : Bool
-  mut no_require_git : Bool
-  mut no_unicode : Bool
-  mut null : Bool
-  mut null_data : Bool
-  mut one_file_system : Bool
-  mut only_matching : Bool
-  mut path_separator : Byte?
-  mut pre : String?
-  pre_glob : Array[String]
-  mut quiet : Bool
-  mut regex_size_limit : UInt64?
-  mut replace : Bytes?
-  mut search_zip : Bool
-  mut sort : SortMode?
-  mut stats : Bool
-  mut stop_on_nonmatch : Bool
-  mut threads : Int32?
-  mut trim : Bool
-  type_changes : Array[TypeChange]
-  mut unrestricted : Int32
-  mut vimgrep : Bool
-  mut with_filename : Bool?
-}
-pub fn LowArgs::default() -> Self
-
-pub(all) enum MmapMode {
-  Auto
-  AlwaysTryMmap
-  Never
-} derive(Eq, @debug.Debug)
-
-pub(all) enum Mode {
-  Search(SearchMode)
-  Index(IndexMode)
-  Files
-  Types
-  Generate(GenerateMode)
-} derive(Eq, @debug.Debug)
-
-pub(all) enum ParseResult[T] {
-  Special(SpecialMode)
-  ParseOk(T)
-  ParseErr(String)
-}
-
-pub(all) enum PatternSource {
-  Regexp(String)
-  File(String)
-} derive(Eq, @debug.Debug)
 
 pub enum Printer {
   Standard(@printer.Standard)
   Summary(@printer.Summary)
   JSON(@printer.JSON)
 }
-pub fn Printer::get_mut(Self) -> &@termcolor.WriteColor
-
-pub(all) enum SearchMode {
-  Standard
-  FilesWithMatches
-  FilesWithoutMatch
-  Count
-  CountMatches
-  JSON
-} derive(Eq, @debug.Debug)
-
-pub(all) struct SortMode {
-  reverse : Bool
-  kind : SortModeKind
-} derive(Eq, @debug.Debug)
-
-pub(all) enum SortModeKind {
-  Path
-  LastModified
-  LastAccessed
-  Created
-} derive(Eq, @debug.Debug)
-
-pub(all) enum SpecialMode {
-  HelpShort
-  HelpLong
-  VersionShort
-  VersionLong
-  VersionPCRE2
-} derive(Eq, @debug.Debug)
 
 pub struct StdoutWriter {
   // private fields
 }
-pub fn StdoutWriter::new(Int32, Bool) -> Self
 pub impl @termcolor.Write for StdoutWriter
-
-pub(all) enum TypeChange {
-  Clear(String)
-  Add(String)
-  Select(String)
-  Negate(String)
-} derive(Eq, @debug.Debug)
 
 // Type aliases
 

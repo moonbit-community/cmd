@@ -3,7 +3,7 @@
 Compute and verify checksums for MoonX.
 
 ```sh
-moonx cli/cksum@0.1.4 [OPTION]... [FILE]...
+moonx cli/cksum@0.1.5 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -40,8 +40,8 @@ Process files or stdin. Default is POSIX CRC-32 plus byte count. Algorithms: bsd
 ## Examples
 
 ```sh
-moonx cli/cksum@0.1.4 input.bin
-moonx cli/cksum@0.1.4 -a sha256 input.bin
+moonx cli/cksum@0.1.5 input.bin
+moonx cli/cksum@0.1.5 -a sha256 input.bin
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

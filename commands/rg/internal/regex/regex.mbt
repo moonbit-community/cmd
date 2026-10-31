@@ -1,4 +1,7 @@
 ///|
+// Strategy: rg-generic-regex
+
+///|
 /// An error that occurred while building a regex.
 pub suberror RegexError {
   /// A syntax error, rendered in the same format as Rust's regex crate.
@@ -39,13 +42,15 @@ pub fn RegexConfig::default() -> RegexConfig {
 /// leftmost-first semantics (like Rust's regex crate).
 pub struct Regex {
   priv hir : @syntax.Hir
-  priv pikevm : @automata.PikeVM
+  priv mut pikevm : DeferredEngine[@automata.PikeVM]
   priv fwd : @automata.LazyDFA
-  priv rev : @automata.LazyDFA
+  priv mut rev : DeferredEngine[@automata.LazyDFA]
+  priv dfa_state_limit : Int32
   priv pre : @automata.Prefilter?
   /// When true, the prefilter itself finds exact matches.
   priv pre_is_exact : Bool
   priv group_names : Array[String?]
+  priv mut count_plan : BooleanPlanCache
 }
 
 ///|
@@ -97,16 +102,14 @@ pub fn Regex::from_hir(
   }
   {
     hir,
-    pikevm: @automata.PikeVM::new(nfa),
+    pikevm: Pending(nfa),
     fwd: @automata.LazyDFA::new(nfa, state_limit=config.dfa_state_limit),
-    rev: @automata.LazyDFA::new(
-      rev_nfa,
-      match_all=true,
-      state_limit=config.dfa_state_limit,
-    ),
+    rev: Pending(rev_nfa),
+    dfa_state_limit: config.dfa_state_limit,
     pre,
     pre_is_exact,
     group_names: nfa.group_names(),
+    count_plan: Uninitialized,
   }
 }
 
@@ -127,15 +130,26 @@ pub fn Regex::is_accelerated(self : Regex) -> Bool {
 }
 
 ///|
-/// The number of capture groups, including the implicit group 0.
-pub fn Regex::captures_len(self : Regex) -> Int32 {
-  self.group_names.length()
+/// Counts matching lines only when the prefilter is the complete expression.
+/// The caller must guarantee that `term` cannot occur in an accepted match.
+pub fn Regex::count_exact_lines(
+  self : Regex,
+  hay : FixedArray[Byte],
+  start : Int32,
+  end : Int32,
+  term : Byte,
+) -> Int64? {
+  if self.pre_is_exact {
+    Some(self.pre.unwrap().count_lines(hay, start, end, term))
+  } else {
+    None
+  }
 }
 
 ///|
-/// The names of each capture group, indexed by group index.
-pub fn Regex::group_names(self : Regex) -> Array[String?] {
-  self.group_names
+/// The number of capture groups, including the implicit group 0.
+pub fn Regex::captures_len(self : Regex) -> Int32 {
+  self.group_names.length()
 }
 
 ///|
@@ -183,7 +197,9 @@ pub fn Regex::search_half(
   )
   if e == @automata.DFA_FAILED {
     let slots = FixedArray::make(2, -1)
-    if self.pikevm.search_slots(
+    if self
+      .pikevm_engine()
+      .search_slots(
         hay,
         hs,
         he,
@@ -247,7 +263,7 @@ pub fn Regex::find_at(
   if e < 0 {
     return None
   }
-  let s = self.rev.find_rev(hay, hs, he, start, e, true, false)
+  let s = self.reverse_engine().find_rev(hay, hs, he, start, e, true, false)
   if s == @automata.DFA_FAILED {
     return self.find_pikevm(hay, hs, he, start, end)
   }
@@ -268,17 +284,9 @@ fn Regex::find_pikevm(
   end : Int32,
 ) -> (Int32, Int32)? {
   let slots = FixedArray::make(2, -1)
-  if self.pikevm.search_slots(
-      hay,
-      hs,
-      he,
-      start,
-      end,
-      false,
-      false,
-      slots,
-      pre?=self.pre,
-    ) {
+  if self
+    .pikevm_engine()
+    .search_slots(hay, hs, he, start, end, false, false, slots, pre?=self.pre) {
     Some((slots[0], slots[1]))
   } else {
     None
@@ -319,7 +327,7 @@ pub fn Regex::captures_at(
     None => false
     Some((s, e)) =>
       // Run the PikeVM only on the match span to resolve capture groups.
-      self.pikevm.search_slots(hay, hs, he, s, e, true, false, slots)
+      self.pikevm_engine().search_slots(hay, hs, he, s, e, true, false, slots)
   }
 }
 
@@ -328,13 +336,6 @@ pub fn Regex::captures_at(
 pub fn Regex::find(self : Regex, hay : Bytes) -> (Int32, Int32)? {
   let h = hay.to_fixedarray()
   self.find_at(h, 0, h.length(), 0, h.length())
-}
-
-///|
-/// Convenience: returns true if the regex matches anywhere in `hay`.
-pub fn Regex::is_match(self : Regex, hay : Bytes) -> Bool {
-  let h = hay.to_fixedarray()
-  self.is_match_at(h, 0, h.length(), 0, h.length())
 }
 
 ///|

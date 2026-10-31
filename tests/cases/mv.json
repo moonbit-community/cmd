@@ -37,7 +37,22 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "source",
+          "exists": false
+        },
+        {
+          "path": "moved",
+          "kind": "file",
+          "content_text": "payload\n"
+        }
+      ]
     },
     {
       "id": "p8-mv-update-none",
@@ -61,7 +76,23 @@
       "delay_ms": 2,
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "old"
+        },
+        {
+          "path": "destination",
+          "kind": "file",
+          "content_text": "new"
+        }
+      ]
     },
     {
       "id": "compat-filesystem-rename",
@@ -95,22 +126,6 @@
       ],
       "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
       "expected_stderr_text": ""
-    },
-    {
-      "id": "compat-catalog-line-166",
-      "command": "mv",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
-      "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "repair-fs-mv-same-path",
@@ -993,7 +1008,12 @@
       ],
       "source_version": "workspace cli/mv@0.2.5 metadata contract",
       "expected_stdout_text": "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nDeclining an interactive overwrite returns status 1 and preserves both files.\nTimestamps describe source and destination entries, including dangling links.\nEqual-time interactive/update targets require unavailable file identity metadata.\nWindows Wasm symlink/junction moves and link backups require a verified host fix.\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-166"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-mv-version",

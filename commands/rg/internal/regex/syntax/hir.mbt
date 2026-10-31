@@ -57,7 +57,7 @@ pub fn Hir::empty() -> Hir {
 
 ///|
 /// An expression that never matches.
-pub fn Hir::fail() -> Hir {
+fn Hir::fail() -> Hir {
   let class = Class::Bytes([])
   { kind: Class(class), props: class_props(class), }
 }
@@ -607,9 +607,4 @@ pub fn Hir::dot(dot : Dot) -> Hir {
     AnyByteExceptLF => Hir::class(Bytes([(0, 9), (0xB, 0xFF)]))
     AnyByteExceptCRLF => Hir::class(Bytes([(0, 9), (0xB, 0xC), (0xE, 0xFF)]))
   }
-}
-
-///|
-pub fn Hir::is_empty_kind(self : Hir) -> Bool {
-  self.kind is Empty
 }

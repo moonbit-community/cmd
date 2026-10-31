@@ -10,25 +10,11 @@
       "environment": {},
       "expected_status": 0,
       "normalizations": [],
-      "coverage": []
-    },
-    {
-      "id": "p3-sort-multiple-key-modifiers",
-      "command": "sort",
-      "args": [
-        "-t:",
-        "-k2,2n",
-        "-k1,1r"
-      ],
-      "stdin_text": "b:2\na:10\nc:2\n",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "coverage": [
-        "field-separator",
-        "key"
-      ]
+      "coverage": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "a\nb\n"
     },
     {
       "id": "p3-sort-general-numeric",
@@ -43,105 +29,11 @@
       "normalizations": [],
       "coverage": [
         "general-numeric-sort"
-      ]
-    },
-    {
-      "id": "p3-sort-general-numeric-classes",
-      "command": "sort",
-      "args": [
-        "-g"
       ],
-      "stdin_text": "inf\n1\n-inf\nnan\ntext\n",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "coverage": [
-        "general-numeric-sort"
-      ]
-    },
-    {
-      "id": "p3-sort-local-key-modifier-combination",
-      "command": "sort",
-      "args": [
-        "-t:",
-        "-k2n,2r"
-      ],
-      "stdin_text": "a:2\nb:10\n",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "coverage": [
-        "field-separator",
-        "key"
-      ]
-    },
-    {
-      "id": "p3-sort-blank-field-boundaries",
-      "command": "sort",
-      "args": [
-        "-k2,2"
-      ],
-      "stdin_text": "x  b\nz a\ny   a\n",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "coverage": [
-        "key"
-      ]
-    },
-    {
-      "id": "p3-sort-character-modifiers",
-      "command": "sort",
-      "args": [
-        "-bdf"
-      ],
-      "stdin_text": "  z!\na-\n B\n",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "coverage": [
-        "ignore-leading-blanks",
-        "dictionary-order",
-        "ignore-case"
-      ]
-    },
-    {
-      "id": "p3-sort-unique-key-stability",
-      "command": "sort",
-      "args": [
-        "-u",
-        "-t:",
-        "-k2,2"
-      ],
-      "stdin_text": "b:1\na:1\n",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "coverage": [
-        "unique",
-        "field-separator",
-        "key"
-      ]
-    },
-    {
-      "id": "p3-sort-human-numeric",
-      "command": "sort",
-      "args": [
-        "-h"
-      ],
-      "stdin_text": "999999K\n1M\n10K\n",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "coverage": [
-        "human-numeric-sort"
-      ]
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "9\n2.5e1\n1e2\n"
     },
     {
       "id": "p3-sort-month",
@@ -156,37 +48,11 @@
       "normalizations": [],
       "coverage": [
         "month-sort"
-      ]
-    },
-    {
-      "id": "p3-sort-version",
-      "command": "sort",
-      "args": [
-        "-V"
       ],
-      "stdin_text": "file10\nfile2\nfile1\n",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "coverage": [
-        "version-sort"
-      ]
-    },
-    {
-      "id": "p3-sort-zero-records",
-      "command": "sort",
-      "args": [
-        "-z"
-      ],
-      "stdin_hex": "62006100",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "coverage": [
-        "zero-terminated"
-      ]
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "zzz\nJAN\nFeb\nMar\n",
+      "expected_stderr_text": ""
     },
     {
       "id": "p3-sort-ignore-nonprinting",
@@ -201,22 +67,11 @@
       "normalizations": [],
       "coverage": [
         "ignore-nonprinting"
-      ]
-    },
-    {
-      "id": "p3-sort-ignore-case-c-locale",
-      "command": "sort",
-      "args": [
-        "-f"
       ],
-      "stdin_text": "[\na\n",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "coverage": [
-        "ignore-case"
-      ]
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "ay\na\u0001z\n",
+      "expected_stderr_text": ""
     },
     {
       "id": "p3-sort-check-quiet",
@@ -231,7 +86,11 @@
       "normalizations": [],
       "coverage": [
         "check"
-      ]
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": ""
     },
     {
       "id": "compat-text-line-372",
@@ -253,7 +112,11 @@
       "coverage": [
         "field-separator",
         "key"
-      ]
+      ],
+      "aliases": [
+        "p3-sort-multiple-key-modifiers"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-381",
@@ -272,7 +135,11 @@
       "expected_stderr_text": "",
       "coverage": [
         "general-numeric-sort"
-      ]
+      ],
+      "aliases": [
+        "p3-sort-general-numeric-classes"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-390",
@@ -293,7 +160,11 @@
       "coverage": [
         "field-separator",
         "key"
-      ]
+      ],
+      "aliases": [
+        "p3-sort-local-key-modifier-combination"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-399",
@@ -312,7 +183,11 @@
       "expected_stderr_text": "",
       "coverage": [
         "key"
-      ]
+      ],
+      "aliases": [
+        "p3-sort-blank-field-boundaries"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-408",
@@ -335,7 +210,11 @@
         "unique",
         "field-separator",
         "key"
-      ]
+      ],
+      "aliases": [
+        "p3-sort-unique-key-stability"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-417",
@@ -354,7 +233,11 @@
       "expected_stderr_text": "",
       "coverage": [
         "human-numeric-sort"
-      ]
+      ],
+      "aliases": [
+        "p3-sort-human-numeric"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-426",
@@ -375,7 +258,11 @@
         "ignore-leading-blanks",
         "dictionary-order",
         "ignore-case"
-      ]
+      ],
+      "aliases": [
+        "p3-sort-character-modifiers"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-435",
@@ -394,7 +281,11 @@
       "expected_stderr_text": "",
       "coverage": [
         "ignore-case"
-      ]
+      ],
+      "aliases": [
+        "p3-sort-ignore-case-c-locale"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-436",
@@ -413,7 +304,11 @@
       "expected_stderr_text": "",
       "coverage": [
         "version-sort"
-      ]
+      ],
+      "aliases": [
+        "p3-sort-version"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-445",
@@ -432,7 +327,11 @@
       "expected_stderr_text": "",
       "coverage": [
         "zero-terminated"
-      ]
+      ],
+      "aliases": [
+        "p3-sort-zero-records"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-454",
@@ -711,7 +610,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/sort@0.2.4 metadata contract",
+      "source_version": "workspace cli/sort@0.2.5 metadata contract",
       "expected_stdout_text": "Usage: sort [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [-S SIZE] [-T DIR] [--batch-size=N] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n\nLarge inputs use temporary disk runs and require filesystem write access.\n-S/--buffer-size selects an accounted byte budget (default units: KiB).\n-T/--temporary-directory may repeat; --batch-size uses at most 16 merge inputs.\nNonzero percentage buffer sizes require an unavailable physical-memory query.\n",
       "expected_stderr_text": ""
     },
@@ -730,8 +629,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/sort@0.2.4 metadata contract",
-      "expected_stdout_text": "sort 0.2.4\n",
+      "source_version": "workspace cli/sort@0.2.5 metadata contract",
+      "expected_stdout_text": "sort 0.2.5\n",
       "expected_stderr_text": ""
     },
     {
@@ -3030,6 +2929,29 @@
       ],
       "source_version": "GNU coreutils 9.11 C profile; R resource controls",
       "oracle": true
+    },
+    {
+      "id": "proof-sort-dictionary-order-activation",
+      "command": "sort",
+      "args": [
+        "--dictionary-order",
+        "--stable"
+      ],
+      "stdin_text": "b\na~\na\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "a~\na\nb\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "dictionary-order",
+        "stable"
+      ],
+      "source_version": "Independent definition: ignored punctuation makes a~ and a equal; stable preserves their input order. Existing -bdf fixture does not discriminate -d."
     }
   ]
 }

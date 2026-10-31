@@ -23,6 +23,7 @@ Apply a jq-compatible filter to each valid JSON line and emit compact JSON. Read
 
 - Invalid JSON lines are skipped. Filter errors return failure and preserve earlier results.
 - Supports the same bounded filter language as jq; not the full jq CLI.
+- The unreleased shared adapter preserves complete grouping/sorting key streams and stable ties. Exact numeric ordering at or above 2^53 remains outside the verified key domain.
 
 ## Examples
 

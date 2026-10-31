@@ -10,7 +10,11 @@ async test "POSIX CRC-32 vectors include the input length" {
     let reader = @io.MemoryReader(writer => writer.write(input))
     defer reader.close()
     let (digest, actual_length) = digest_reader(spec, reader)
-    assert_eq((legacy_number(digest), actual_length), (checksum, length))
+    assert_eq(
+      digest,
+      Bytes::makei(4, i => (checksum >> ((3 - i) * 8)).to_byte()),
+    )
+    assert_eq(actual_length, length)
   }
 }
 
@@ -18,35 +22,6 @@ async test "POSIX CRC-32 vectors include the input length" {
 test "length bytes are folded from low to high order" {
   assert_eq(crc_length(0U, 0UL), 0xFFFFFFFFU)
   assert_eq(crc_length(0U, 1UL), 4215202376U)
-}
-
-///|
-test "legacy digest encodings preserve GNU checksums and byte counts" {
-  for
-    (algorithm, bits, expected) in [
-      (Bsd, 16, "08288     1 payload\n"),
-      (Sysv, 16, "304 1 payload\n"),
-      (Crc, 32, "1112837078 4 payload\n"),
-      (Crc32b, 32, "1200128334 4 payload\n"),
-    ] {
-    let spec : DigestSpec = { algorithm, bits, }
-    let state = make_hasher(spec)
-    (state.update)(b"abc\n")
-    assert_eq(
-      output_record(
-        spec,
-        (state.finish)(),
-        4UL,
-        "payload",
-        false,
-        true,
-        false,
-        false,
-        false,
-      ),
-      expected,
-    )
-  }
 }
 
 ///|
@@ -113,7 +88,7 @@ test "modern digest vectors include all SHA2 and SHA3 widths" {
     let state = make_hasher({ algorithm, bits, })
     (state.update)(b"ab")
     (state.update)(b"c\n")
-    assert_eq(hex_digest((state.finish)()), expected)
+    assert_eq(@hex.encode((state.finish)()), expected)
   }
   for length in [0, 111, 112, 127, 128, 129, 65537] {
     let input = Bytes::make(length, b'\x00')
@@ -126,7 +101,7 @@ test "modern digest vectors include all SHA2 and SHA3 widths" {
         (state.update)(input[offset:end].to_owned())
         offset = end
       }
-      assert_eq(hex_digest((state.finish)()), expected)
+      assert_eq(@hex.encode((state.finish)()), expected)
     }
   }
 }
@@ -218,7 +193,7 @@ test "BLAKE2b incremental state preserves final blocks and output lengths" {
         state.update(bytes[offset:end])
         offset = end
       }
-      assert_eq(hex_digest(state.finalize()), expected)
+      assert_eq(@hex.encode(state.finalize()), expected)
     }
   }
 }

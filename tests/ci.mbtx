@@ -1,9 +1,24 @@
-///|
+----
 import {
   "moonbitlang/async@0.22.5",
   "moonbitlang/async@0.22.5/fs",
   "moonbitlang/async@0.22.5/shell",
   "moonbitlang/core/env",
+  "moonbitlang/core/json",
+  "moonbitlang/x@0.5.5/crypto",
+  "moonbitlang/x@0.5.5/path",
+}
+----
+
+///|
+async fn hash_file(path : String) -> String {
+  let input=@fs.open(path,mode=ReadOnly)
+  defer input.close()
+  let digest=@crypto.SHA256::new()
+  let buffer=FixedArray::make(65536,b'\x00')
+  let bytes=buffer.unsafe_reinterpret_as_bytes()
+  while input.read(buffer) is count && count>0 {digest.update(bytes[:count])}
+  @crypto.bytes_to_hex_string(digest.finalize())
 }
 
 ///|
@@ -14,6 +29,9 @@ async fn main {
   }
   let published = args[1] == "published"
   let root = @fs.realpath(".")
+  let report_root=@env.get_env_var("CMD_TEST_REPORT_ROOT").unwrap_or(root+"/test-reports")
+  guard @path.Path(report_root).is_absolute() else {fail("CMD_TEST_REPORT_ROOT must be absolute")}
+  @fs.mkdir(report_root,recursive=true,allow_exist=true)
   let profile = @env.get_env_var("CMD_TEST_PROFILE").unwrap_or("release")
   guard ["debug", "release"].contains(profile) else { fail("unknown test-tool profile: " + profile) }
   let program = root + "/_build/native/" + profile + "/build/mooxCLI/cmd-tests/" +
@@ -21,7 +39,7 @@ async fn main {
   let arguments = [
     "--suite", if @async.platform is Linux { "all" } else { "functional" },
     "--jobs", if published { "1" } else { "4" },
-    "--report-dir", root + "/test-reports/" + (if published { "published" } else { "functional" }),
+    "--report-dir", report_root + "/" + (if published { "published" } else { "functional" }),
   ]
   if published {
     arguments.append(["--manifest", @env.get_env_var("CMD_RELEASE_MANIFEST").unwrap_or("tests/release_runner/current/latest.json")])
@@ -31,11 +49,35 @@ async fn main {
     arguments.append(["--oracle-image", image, "--oracle-profile", "test-reports/oracle-profile/profile.json"])
   }
   let started = @async.now()
+  let proof = root + "/_build/native/" + profile + "/build/mooxCLI/cmd-tests/proofs/proofs.exe"
+  let build_path=report_root+"/driver-build.json"
+  if !published {
+    let bootstrap=["build","--target","native","--deny-warn","tests/proofs"]
+    if profile=="release" {bootstrap.push("--release")}
+    @shell.Cmd("moon",bootstrap,stdout=Inherit,stderr=Inherit).run()
+    @shell.Cmd(proof,["--source-snapshot",report_root+"/assertions-before-build.json"],stdout=Inherit,stderr=Inherit).run()
+    let build_args=["build","--target","native","--deny-warn","tests/runner","tests/proofs"]
+    if profile=="release" {build_args.push("--release")}
+    let status=@shell.Cmd("moon",build_args,stdout=Inherit,stderr=Inherit).status()
+    let built=@async.now()
+    guard status==0 else {fail("current Native proof driver build failed")}
+    @shell.Cmd(proof,["--source-snapshot",report_root+"/assertions-after-build.json"],stdout=Inherit,stderr=Inherit).run()
+    let before=@json.parse(@fs.read_file(report_root+"/assertions-before-build.json").text())
+    let after=@json.parse(@fs.read_file(report_root+"/assertions-after-build.json").text())
+    assert_eq(before,after,msg="test assertion sources changed during build")
+    guard after is Object(fields) && fields.get("assertion_sources") is Some(sources) else {fail("missing current assertion sources")}
+    guard !@fs.exists(build_path) else {fail("preserve previous driver build receipt")}
+    @fs.write_file(build_path,({"schema":1,"program":"moon","arguments":Json(build_args),"status":status,"started_at_ms":started,"completed_at_ms":built,"assertion_sources":sources,"driver_sha256":hash_file(program)} : Json).stringify(indent=2)+"\n")
+  }
   let status = @shell.Cmd(program, arguments, stdout=Inherit, stderr=Inherit).status()
   let timing : Json = { "mode": args[1], "tool_profile": profile, "duration_ms": @async.now() - started, "status": status }
-  @fs.write_file("test-reports/execution.json", timing.stringify(indent=2) + "\n")
+  @fs.write_file(report_root+"/execution.json", timing.stringify(indent=2) + "\n")
   if @env.get_env_var("GITHUB_STEP_SUMMARY") is Some(path) {
     @fs.write_file(path, "Command validation: " + timing.stringify() + "\n", append=true)
   }
   guard status == 0 else { fail("command validation failed with status \{status}") }
+  if !published {
+    @shell.Cmd(proof,["--reports",report_root+"/functional","--output",report_root+"/proofs.json","--started-after-ms",started.to_string(),"--build-receipt",build_path],stdout=Inherit,stderr=Inherit).run()
+    @shell.Cmd("moon",["run","tests/proof_gaps.mbtx","--","--output",report_root+"/coverage-gaps.json","--markdown",report_root+"/coverage-gaps.md","--proof-report",report_root+"/proofs.json"],stdout=Inherit,stderr=Inherit).run()
+  }
 }

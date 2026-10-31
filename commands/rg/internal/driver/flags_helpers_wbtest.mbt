@@ -26,3 +26,10 @@ fn ContextMode::get_limited(self : ContextMode) -> (Int32, Int32) {
     Limited(l) => l.get()
   }
 }
+
+///|
+fn parse_low_raw(rawargs : Array[String]) -> LowArgs raise RgError {
+  let args = LowArgs::default()
+  parse_into(rawargs, args)
+  args
+}

@@ -1,4 +1,5 @@
 ///|
+// Strategy: sort-spill
 priv struct Run {
   path : String
   largest_entry : Int64
@@ -302,7 +303,7 @@ async fn merge_input_sources(
 ///|
 priv struct Spool {
   directories : Array[String]
-  roots : Array[String?]
+  roots : Array[@tempio.Directory?]
   mut next : Int64
 }
 
@@ -312,16 +313,18 @@ async fn Spool::path(self : Spool) -> String {
   let root = match self.roots[slot] {
     Some(root) => root
     None => {
-      let root = if self.directories.is_empty() {
-        @fs.tmpdir(prefix="cli-sort-")
-      } else {
-        temporary_root(self.directories[slot])
+      let root = @tempio.Directory::new(
+        prefix="cli-sort-",
+        parent=self.directories.get(slot),
+      ) catch {
+        @tempio.TemporaryError(message) => raise CliError("sort: " + message)
+        error => raise error
       }
       self.roots[slot] = Some(root)
       root
     }
   }
-  let path = root + "/run-" + self.next.to_string()
+  let path = root.path() + "/run-" + self.next.to_string()
   self.next += 1
   path
 }
@@ -555,9 +558,7 @@ async fn sort_sources(
   } else {
     specs.length()
   }
-  // Reserve input/output and selected merge buffers plus the bounded run index.
-  let reserve = (fan_in + 6).to_int64() * 65536L
-  let run_limit = (budget - reserve).max(1)
+  let (run_limit, fan_in) = merge_budget(budget, fan_in)
   let spool : Spool = {
     directories: temporary_directories,
     roots: Array::make(temporary_directories.length().max(1), None),
@@ -565,7 +566,7 @@ async fn sort_sources(
   }
   defer (for root in spool.roots {
     if root is Some(root) {
-      @fs.rmdir(root, recursive=true)
+      root.close()
     }
   })
   let runs : Array[Run] = []

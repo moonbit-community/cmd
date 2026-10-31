@@ -115,14 +115,14 @@ test "stats json" {
   let out = @termcolor.ByteVec::new()
   stats.write_json(@printer.JsonWriter::new(out))
   assert_eq(
-    contents(out),
+    @utf8.decode_lossy(out.to_bytes()),
     "{\"elapsed\":{\"secs\":0,\"nanos\":33916,\"human\":\"0.000034s\"},\"searches\":1,\"searches_with_match\":1,\"bytes_searched\":367,\"bytes_printed\":529,\"matched_lines\":2,\"matches\":2}",
   )
   // The sorted form, as embedded in ripgrep's `summary` JSON message.
   let out = @termcolor.ByteVec::new()
   stats.write_json(@printer.JsonWriter::new(out), sorted_keys=true)
   assert_eq(
-    contents(out),
+    @utf8.decode_lossy(out.to_bytes()),
     "{\"bytes_printed\":529,\"bytes_searched\":367,\"elapsed\":{\"human\":\"0.000034s\",\"nanos\":33916,\"secs\":0},\"matched_lines\":2,\"matches\":2,\"searches\":1,\"searches_with_match\":1}",
   )
   let sum = stats + stats

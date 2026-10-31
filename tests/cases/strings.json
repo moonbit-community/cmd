@@ -81,7 +81,10 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/strings@0.1.4 metadata contract"
+      "source_version": "workspace cli/strings@0.1.4 metadata contract",
+      "aliases": [
+        "release-metadata-strings-version"
+      ]
     },
     {
       "id": "p2-strings-octal",
@@ -504,25 +507,6 @@
       ],
       "source_version": "workspace cli/strings@0.1.4 metadata contract",
       "expected_stdout_text": "Usage: strings [OPTION]... [FILE]...\nPrint the sequences of printable characters in each FILE.\n  -a, --all             scan the whole file\n  -f, --print-file-name print the file name before each string\n  -n, --bytes=N         print sequences at least N bytes long\n  -o                    display offsets in octal\n  -t, --radix=RADIX     display offsets in d, o, or x radix\n  -e, --encoding=ENC    s: 7-bit bytes (default); S: 8-bit bytes\n                        wide encodings b/l/B/L are unsupported\n  -s, --output-separator=STR  separate accepted strings with STR\n      --help            display this help and exit\n      --version         display version and exit\n",
-      "expected_stderr_text": ""
-    },
-    {
-      "id": "release-metadata-strings-version",
-      "command": "strings",
-      "args": [
-        "--version"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "coverage": [
-        "version"
-      ],
-      "source_version": "workspace cli/strings@0.1.4 metadata contract",
-      "expected_stdout_text": "strings 0.1.4\n",
       "expected_stderr_text": ""
     },
     {

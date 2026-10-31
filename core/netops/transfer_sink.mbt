@@ -148,3 +148,107 @@ async fn TransferSink::cleanup_after_error(self : TransferSink) -> Unit {
     sink.cleanup_after_error()
   }
 }
+
+///|
+fn output_path(output : TransferOutput, response : @http.Response) -> String? {
+  match output {
+    FileOutput(path~, content_disposition=true, ..) =>
+      match response.headers.get("Content-Disposition") {
+        Some(value) =>
+          match content_disposition_filename(value) {
+            Some(name) => Some(@fsops.basename(name))
+            None => Some(path)
+          }
+        None => Some(path)
+      }
+    FileOutput(path~, ..) => Some(path)
+    StandardOutput | DiscardOutput => None
+  }
+}
+
+///|
+priv enum OutputSink {
+  StdoutSink
+  DiscardSink
+  FileSink(String, @fs.File, Bool)
+}
+
+///|
+async fn open_sink(
+  output : TransferOutput,
+  response : @http.Response,
+  exclusive~ : Bool = false,
+) -> OutputSink {
+  match output {
+    StandardOutput => StdoutSink
+    DiscardOutput => DiscardSink
+    FileOutput(mode~, remove_on_error~, ..) => {
+      let path = output_path(output, response).unwrap()
+      let opened = try {
+        if exclusive {
+          (path, @fsops.open_output(path, CreateNew))
+        } else {
+          match mode {
+            Truncate => (path, @fsops.open_output(path, CreateOrTruncate))
+            Append => (path, @fsops.open_output(path, AppendOrCreate))
+            Unique => @fsops.open_unique_numbered_output(path)
+          }
+        }
+      } catch {
+        err =>
+          raise transfer_error(
+            OutputFailure,
+            "cannot open output '\{path}': \{err}",
+          )
+      }
+      FileSink(opened.0, opened.1, remove_on_error)
+    }
+  }
+}
+
+///|
+fn OutputSink::path(self : OutputSink) -> String? {
+  match self {
+    FileSink(path, _, _) => Some(path)
+    StdoutSink | DiscardSink => None
+  }
+}
+
+///|
+fn OutputSink::close(self : OutputSink) -> Unit {
+  match self {
+    FileSink(_, file, _) => file.close()
+    StdoutSink | DiscardSink => ()
+  }
+}
+
+///|
+async fn OutputSink::write(self : OutputSink, chunk : Bytes) -> Unit {
+  match self {
+    StdoutSink =>
+      @stdio.stdout.write(chunk) catch {
+        err =>
+          raise transfer_error(
+            OutputFailure,
+            "cannot write standard output: \{err}",
+          )
+      }
+    DiscardSink => ()
+    FileSink(path, file, _) =>
+      file.write(chunk) catch {
+        err =>
+          raise transfer_error(
+            OutputFailure,
+            "cannot write output '\{path}': \{err}",
+          )
+      }
+  }
+}
+
+///|
+async fn OutputSink::cleanup_after_error(self : OutputSink) -> Unit {
+  match self {
+    FileSink(path, _, true) => @fsops.cleanup_file_if_exists(path)
+    FileSink(_, _, false) | StdoutSink | DiscardSink => ()
+  }
+}

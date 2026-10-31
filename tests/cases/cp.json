@@ -30,7 +30,26 @@
       "host_platforms": [
         "posix"
       ],
-      "source_version": "GNU coreutils 9.11"
+      "source_version": "GNU coreutils 9.11",
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "payload\n",
+          "unchanged": true
+        },
+        {
+          "path": "copy",
+          "kind": "file",
+          "content_text": "payload\n",
+          "same_mode_as": "source",
+          "different_identity_as": "source"
+        }
+      ]
     },
     {
       "id": "p8-cp-update-older",
@@ -55,7 +74,23 @@
       "delay_ms": 2,
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "old"
+        },
+        {
+          "path": "destination",
+          "kind": "file",
+          "content_text": "new"
+        }
+      ]
     },
     {
       "id": "p8-cp-numbered-backup",
@@ -79,8 +114,28 @@
         }
       ],
       "environment": {},
-      "expected_status": 0,
-      "normalizations": []
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "identity",
+      "diagnostic_reason": "The bounded unsupported identity operation must reject with status 1, an identity diagnostic, empty stdout and unchanged fixtures; host diagnostic wording is not frozen.",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "kind": "file",
+          "content_text": "old"
+        },
+        {
+          "path": "destination.~1~",
+          "exists": false
+        }
+      ]
     },
     {
       "id": "p8-cp-command-line-link",
@@ -112,6 +167,27 @@
       ],
       "aliases": [
         "candidate-p8-cp-command-line-link"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "target",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "target"
+        },
+        {
+          "path": "copy",
+          "kind": "file",
+          "content_text": "payload"
+        }
       ]
     },
     {
@@ -157,8 +233,19 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "",
       "expected_stderr_contains": "metadata",
-      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted.",
-      "expected_rejection": "metadata"
+      "diagnostic_reason": "The unsupported metadata-preservation operation must reject before mutation. Status, empty stdout and fixture nonmutation are exact; only host-dependent diagnostic wording is matched by its metadata reason.",
+      "expected_rejection": "metadata",
+      "expected_files": [
+        {
+          "path": "left",
+          "kind": "file",
+          "content_text": "a left\n"
+        },
+        {
+          "path": "preserved-copy",
+          "exists": false
+        }
+      ]
     },
     {
       "id": "compat-filesystem-copy",
@@ -221,7 +308,16 @@
       "expected_stdout_text": "",
       "expected_files": [
         {
+          "path": "tree",
+          "kind": "directory"
+        },
+        {
+          "path": "tree/child",
+          "kind": "directory"
+        },
+        {
           "path": "tree/file",
+          "kind": "file",
           "content_text": "x"
         },
         {
@@ -231,23 +327,7 @@
       ],
       "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
       "expected_stderr_contains": "inside the source",
-      "diagnostic_reason": "OS path formatting may vary; status, empty stdout and declared filesystem effects remain exact."
-    },
-    {
-      "id": "compat-catalog-line-56",
-      "command": "cp",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
-      "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+      "diagnostic_reason": "The attempt to copy a directory inside itself must reject with status 1 before creating the destination. Existing source and child types and source bytes are exact; path wording may vary."
     },
     {
       "id": "release-metadata-cp-help",
@@ -266,7 +346,12 @@
       ],
       "source_version": "workspace cli/cp@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: cp [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nCopying requires --no-preserve=mode and a new destination. Existing-file overwrites, archive and preserve modes are unsupported. Parsed force/interactive/backup flags do not enable replacement.\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-56"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-cp-version",
@@ -286,6 +371,215 @@
       "source_version": "workspace cli/cp@0.2.3 metadata contract",
       "expected_stdout_text": "cp 0.2.3\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "proof-cp-no-clobber-preserves-existing",
+      "command": "cp",
+      "args": [
+        "-n",
+        "source",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new\n"
+        },
+        {
+          "path": "target",
+          "content_text": "old\n"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "new\n"
+        },
+        {
+          "path": "target",
+          "kind": "file",
+          "content_text": "old\n"
+        }
+      ],
+      "comparison": "contract",
+      "coverage": [
+        "no-clobber",
+        "no-mutation"
+      ],
+      "source_version": "README skip-mode support without copying; no overwrite or preserve capability inferred"
+    },
+    {
+      "id": "quality-cp-recursive-command-line-link",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "-R",
+        "-H",
+        "link",
+        "copy"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "tree/file",
+          "content_text": "payload"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "tree"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "tree/file",
+          "kind": "file",
+          "content_text": "payload",
+          "unchanged": true
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "tree",
+          "unchanged": true
+        },
+        {
+          "path": "copy",
+          "kind": "directory"
+        },
+        {
+          "path": "copy/file",
+          "kind": "file",
+          "content_text": "payload",
+          "different_identity_as": "tree/file"
+        }
+      ],
+      "coverage": [
+        "recursive",
+        "dereference-command-line"
+      ]
+    },
+    {
+      "id": "quality-cp-recursive-command-line-link-control",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "-R",
+        "link",
+        "copy"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "tree/file",
+          "content_text": "payload"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "tree"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 1,
+      "expected_rejection": "symbolic-link sources",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "symbolic-link sources are not supported",
+      "diagnostic_reason": "The documented local profile rejects recursive symbolic-link operands unless traversal is enabled. Status 1, empty stdout and complete fixture nonmutation are independent requirements; no GNU positive link-preservation behavior or full product diagnostic golden is asserted.",
+      "expected_files": [
+        {
+          "path": "tree/file",
+          "kind": "file",
+          "content_text": "payload",
+          "unchanged": true
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "tree",
+          "unchanged": true
+        },
+        {
+          "path": "copy",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "quality-cp-update-older-fixed-times",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "--update=older",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "old",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "destination",
+          "content_text": "new",
+          "mtime": "202101010000.00"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "old",
+          "mtime": "1577836800:0",
+          "unchanged": true
+        },
+        {
+          "path": "destination",
+          "kind": "file",
+          "content_text": "new",
+          "mtime": "1609459200:0",
+          "unchanged": true
+        }
+      ],
+      "coverage": [
+        "update",
+        "update-mode"
+      ]
     }
   ]
 }

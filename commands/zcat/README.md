@@ -3,7 +3,7 @@
 Write decompressed gzip data for MoonX.
 
 ```sh
-moonx cli/zcat@0.1.3 [OPTION]... [FILE]...
+moonx cli/zcat@0.1.4 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -32,8 +32,8 @@ Decode files or stdin to stdout, retaining input files. Supports concatenated me
 ## Examples
 
 ```sh
-moonx cli/zcat@0.1.3 first.gz second.gz
-moonx cli/zcat@0.1.3 < first.gz
+moonx cli/zcat@0.1.4 first.gz second.gz
+moonx cli/zcat@0.1.4 < first.gz
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

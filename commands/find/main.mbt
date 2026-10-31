@@ -652,7 +652,7 @@ fn begins_expression(token : String) -> Bool {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("find 0.2.3\n")
+    @stdio.stdout.write("find 0.2.4\n")
     return
   }
   let args = @env.args()[1:]
@@ -738,7 +738,7 @@ async fn main {
       continue
     }
     let entries = if kind == Directory {
-      @fs.readdir(path, include_hidden=true, include_special=false, sort=false) catch {
+      @fswalk.read_directory(path) catch {
         err => {
           @stdio.stderr.write("find: '\{path}': \{err}\n")
           failed = true
@@ -749,10 +749,8 @@ async fn main {
       []
     }
     entries.sort_by((left, right) => left.lexical_compare(right))
-    let size = if needs.size && kind == Regular {
-      let file = @fs.open(path, mode=ReadOnly)
-      defer file.close()
-      Some(file.size())
+    let size = if needs.size {
+      @fswalk.Entry::known(path, kind).regular_size(OpenFile)
     } else {
       None
     }

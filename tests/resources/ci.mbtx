@@ -71,7 +71,7 @@ async fn main {
   let profiles : Array[(String, Array[String])] = [
     ("records", ["--sizes", "8388608,67108864,536870912"]),
     ("long", ["--sizes", "67108864", "--long-record", "true"]),
-    ("heldout", ["--sizes", "8388608", "--distribution", "heldout"]),
+    ("mixed-synthetic", ["--sizes", "8388608", "--distribution", "mixed-synthetic"]),
     (
       "kernel-rss-linux",
       [
@@ -81,7 +81,6 @@ async fn main {
     ),
     ("performance", []),
     ("literal-planner", []),
-    ("stability-diagnostic", []),
   ]
   let results : Array[Json] = []
   let mut failures = 0
@@ -96,9 +95,6 @@ async fn main {
     fail("unknown resource profile: " + selected_profile)
   }
   for (name, options) in profiles {
-    if name == "stability-diagnostic" && selected_profile == "all" {
-      continue
-    }
     if selected_profile != "all" && name != selected_profile {
       continue
     }
@@ -119,24 +115,11 @@ async fn main {
       )
       continue
     }
-    if name == "performance" &&
-      !selected_commands.is_empty() &&
-      !selected_commands
-      .split(",")
-      .any(command => ["cut", "uniq", "wc", "grep"].contains(command.to_owned())) {
-      guard selected_profile == "all" else {
-        fail("no applicable performance commands")
-      }
-      results.push({
-        "profile": name,
-        "status": Json::null(),
-        "skipped": "no applicable performance commands",
-      })
-      @fs.write_file(
-        reports + "/profiles.json",
-        Json(results).stringify(indent=2) + "\n",
-      )
-      continue
+    let corpus_parent = if name == "performance" { @fs.tmpdir(prefix="cmd-benchmark-corpora-") } else { "" }
+    let corpus = if name == "performance" { corpus_parent + "/inputs" } else { "" }
+    defer { if !corpus_parent.is_empty() { @fs.rmdir(corpus_parent,recursive=true) } }
+    if name == "performance" {
+      @shell.Cmd("moon",["run",workspace+"/tests/benchmark/prepare_real_corpora.mbtx","--",corpus,"--download"],stdout=Inherit,stderr=Inherit).run()
     }
     let options = if selected_commands.is_empty() {
       options
@@ -155,20 +138,7 @@ async fn main {
     }
     let status = @shell.Cmd(
       "moon",
-      if name == "stability-diagnostic" {
-        [
-          "run",
-          "--target",
-          "native",
-          "--release",
-          workspace + "/tests/resources/stability_diagnostic.mbtx",
-          "--",
-          reports + "/stability-diagnostic",
-          workspace + "/_build/wasm/release/build/cli",
-          prefix + "/bin",
-          selected_commands,
-        ]
-      } else if name == "literal-planner" {
+      if name == "literal-planner" {
         [
           "run",
           workspace + "/tests/resources/literal.mbtx",
@@ -192,7 +162,7 @@ async fn main {
         [..common, "--report-dir", reports + "/" + name, ..options]
       },
       cwd=workspace,
-      env=Map([("LD_LIBRARY_PATH", libraries)]),
+      env=Map([("LD_LIBRARY_PATH", libraries),("CMD_BENCH_CORPUS_ROOT",corpus)]),
       stdout=Inherit,
       stderr=Inherit,
     ).status() catch {

@@ -3,10 +3,14 @@
 Number input lines for MoonX.
 
 ```sh
-moonx cli/nl@0.2.3 [-b STYLE] [-h STYLE] [-f STYLE] [-v NUMBER] [-i NUMBER] [-l NUMBER] [-n FORMAT] [-w NUMBER] [-s STRING] [-d STRING] [-p] [FILE...]
+moonx cli/nl@0.2.4 [-b STYLE] [-h STYLE] [-f STYLE] [-v NUMBER] [-i NUMBER] [-l NUMBER] [-n FORMAT] [-w NUMBER] [-s STRING] [-d STRING] [-p] [FILE...]
 ```
 
 ## Supported scope
+
+The unreleased workspace pads unnumbered lines with spaces across the number
+field and separator width. Exact ordinary blank-line and custom-separator
+cases complement complete-source comparisons.
 
 Read files or stdin and number body, header and footer sections. Default body style numbers nonempty lines, with width 6 and TAB separation.
 
@@ -30,8 +34,8 @@ Read files or stdin and number body, header and footer sections. Default body st
 ## Examples
 
 ```sh
-moonx cli/nl@0.2.3 notes.txt
-moonx cli/nl@0.2.3 -b a -w 3 -s ' ' notes.txt
+moonx cli/nl@0.2.4 notes.txt
+moonx cli/nl@0.2.4 -b a -w 3 -s ' ' notes.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

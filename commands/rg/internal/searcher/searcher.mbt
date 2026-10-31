@@ -53,7 +53,7 @@ pub(all) struct SearcherConfig {
 }
 
 ///|
-pub fn SearcherConfig::default() -> SearcherConfig {
+fn SearcherConfig::default() -> SearcherConfig {
   {
     line_term: @matcher.LineTerminator::default(),
     invert_match: false,
@@ -81,14 +81,17 @@ fn SearcherConfig::max_context(self : SearcherConfig) -> Int32 {
 }
 
 ///|
-fn SearcherConfig::line_buffer(self : SearcherConfig) -> LineBuffer {
+fn SearcherConfig::line_buffer(
+  self : SearcherConfig,
+  capacity~ : Int32 = DEFAULT_BUFFER_CAPACITY,
+) -> LineBuffer {
   let (capacity, alloc) = match self.heap_limit {
-    None => (DEFAULT_BUFFER_CAPACITY, Eager)
+    None => (capacity, Eager)
     Some(limit) =>
-      if limit <= DEFAULT_BUFFER_CAPACITY {
+      if limit <= capacity {
         (limit, ErrorLimit(0))
       } else {
-        (DEFAULT_BUFFER_CAPACITY, ErrorLimit(limit - DEFAULT_BUFFER_CAPACITY))
+        (capacity, ErrorLimit(limit - capacity))
       }
   }
   LineBuffer::new(capacity, self.line_term.as_byte(), alloc, self.binary.mode())
@@ -241,7 +244,7 @@ pub fn SearcherBuilder::max_matches(
 /// sink.
 pub struct Searcher {
   priv mut config : SearcherConfig
-  priv line_buffer : LineBuffer
+  priv mut line_buffer : LineBuffer
   priv mut multi_line_buffer : FixedArray[Byte]
   priv mut multi_line_len : Int32
 }
@@ -265,6 +268,12 @@ pub async fn Searcher::search_reader(
     self.config.encoding.map(e => e.kind),
     self.config.bom_sniffing,
   )
+  if self.stream_literal_count(matcher, decoder, sink) {
+    return
+  }
+  if self.stream_regex_count(matcher, decoder, sink) {
+    return
+  }
   if self.multi_line_with_matcher(matcher) {
     self.fill_multi_line_buffer_from_reader(decoder)
     MultiLine::new(
@@ -275,6 +284,10 @@ pub async fn Searcher::search_reader(
       sink,
     ).run()
   } else {
+    let capacity = self.reader_capacity(sink)
+    if self.line_buffer.capacity != capacity {
+      self.line_buffer = self.config.line_buffer(capacity~)
+    }
     self.line_buffer.clear()
     ReadByLine::new(self, matcher, decoder, sink).run()
   }
@@ -282,7 +295,7 @@ pub async fn Searcher::search_reader(
 
 ///|
 /// Searches the given slice `buf[0:len]`.
-pub async fn Searcher::search_slice(
+async fn Searcher::search_slice(
   self : Searcher,
   matcher : &@matcher.Matcher,
   buf : FixedArray[Byte],
@@ -372,23 +385,8 @@ pub fn Searcher::invert_match(self : Searcher) -> Bool {
 }
 
 ///|
-pub fn Searcher::line_number(self : Searcher) -> Bool {
-  self.config.line_number
-}
-
-///|
-pub fn Searcher::multi_line(self : Searcher) -> Bool {
+fn Searcher::multi_line(self : Searcher) -> Bool {
   self.config.multi_line
-}
-
-///|
-pub fn Searcher::stop_on_nonmatch(self : Searcher) -> Bool {
-  self.config.stop_on_nonmatch
-}
-
-///|
-pub fn Searcher::max_matches(self : Searcher) -> Int64? {
-  self.config.max_matches
 }
 
 ///|
@@ -409,21 +407,6 @@ pub fn Searcher::multi_line_with_matcher(
     return false
   }
   true
-}
-
-///|
-pub fn Searcher::after_context(self : Searcher) -> Int32 {
-  self.config.after_context
-}
-
-///|
-pub fn Searcher::before_context(self : Searcher) -> Int32 {
-  self.config.before_context
-}
-
-///|
-pub fn Searcher::passthru(self : Searcher) -> Bool {
-  self.config.passthru
 }
 
 ///|

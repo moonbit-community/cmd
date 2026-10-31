@@ -230,19 +230,9 @@ pub fn ColorSpec::set_bold(self : ColorSpec, yes : Bool) -> ColorSpec {
 }
 
 ///|
-pub fn ColorSpec::dimmed(self : ColorSpec) -> Bool {
-  self.dimmed
-}
-
-///|
 pub fn ColorSpec::set_dimmed(self : ColorSpec, yes : Bool) -> ColorSpec {
   self.dimmed = yes
   self
-}
-
-///|
-pub fn ColorSpec::italic(self : ColorSpec) -> Bool {
-  self.italic
 }
 
 ///|
@@ -252,19 +242,9 @@ pub fn ColorSpec::set_italic(self : ColorSpec, yes : Bool) -> ColorSpec {
 }
 
 ///|
-pub fn ColorSpec::underline(self : ColorSpec) -> Bool {
-  self.underline
-}
-
-///|
 pub fn ColorSpec::set_underline(self : ColorSpec, yes : Bool) -> ColorSpec {
   self.underline = yes
   self
-}
-
-///|
-pub fn ColorSpec::strikethrough(self : ColorSpec) -> Bool {
-  self.strikethrough
 }
 
 ///|
@@ -274,21 +254,9 @@ pub fn ColorSpec::set_strikethrough(self : ColorSpec, yes : Bool) -> ColorSpec {
 }
 
 ///|
-/// Whether a reset escape sequence is emitted before this spec is applied.
-pub fn ColorSpec::reset(self : ColorSpec) -> Bool {
-  self.reset
-}
-
-///|
 pub fn ColorSpec::set_reset(self : ColorSpec, yes : Bool) -> ColorSpec {
   self.reset = yes
   self
-}
-
-///|
-/// Whether the "intense" (bright) variants of colors are used.
-pub fn ColorSpec::intense(self : ColorSpec) -> Bool {
-  self.intense
 }
 
 ///|
@@ -339,9 +307,4 @@ pub fn HyperlinkSpec::open(uri : Bytes) -> HyperlinkSpec {
 /// Creates a hyperlink specification representing no hyperlink.
 pub fn HyperlinkSpec::close() -> HyperlinkSpec {
   { uri: None, }
-}
-
-///|
-pub fn HyperlinkSpec::uri(self : HyperlinkSpec) -> Bytes? {
-  self.uri
 }

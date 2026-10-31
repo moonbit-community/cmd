@@ -6,7 +6,7 @@
       "command": "xargs",
       "args": [
         "-I{}",
-        "printf",
+        "${PRINTF_CHILD}",
         "<%s>\\n",
         "{}"
       ],
@@ -14,19 +14,27 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "<first line>\n<second line>\n"
     },
     {
       "id": "phase5-xargs-child-status",
       "command": "xargs",
       "args": [
-        "false"
+        "${FALSE_CHILD}"
       ],
       "stdin_text": "value\n",
       "files": [],
       "environment": {},
       "expected_status": 123,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": ""
     },
     {
       "id": "phase4-xargs-lines-eof",
@@ -36,14 +44,18 @@
         "1",
         "-E",
         "STOP",
-        "printf",
+        "${PRINTF_CHILD}",
         "<%s>\\n"
       ],
       "stdin_text": "one two\nSTOP\nthree\n",
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "<one>\n<two>\n"
     },
     {
       "id": "compat-text-line-110",

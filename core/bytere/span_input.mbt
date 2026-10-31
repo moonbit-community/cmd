@@ -166,11 +166,10 @@ pub fn RecordSearch::find_span(
     return self.find_literal(literal, needle, start)
   }
   if !self.whole && !self.word {
-    if !matcher.span_dfa_initialized {
-      matcher.span_dfa = SpanDfa::new(matcher.pattern)
-      matcher.span_dfa_initialized = true
+    if matcher.span_dfa is Uninitialized {
+      matcher.span_dfa = engine_cache(SpanDfa::new(matcher.pattern))
     }
-    if matcher.span_dfa is Some(dfa) {
+    if matcher.span_dfa is Ready(dfa) {
       if self.starts is None {
         self.starts = dfa.starts(self.value)
       }
@@ -191,14 +190,13 @@ pub fn RecordSearch::find_span(
         None => ()
       }
       // Cache limits fall back on this same query, never on a partial result.
-      matcher.span_dfa = None
+      matcher.span_dfa = Disabled
     }
   }
-  if !matcher.span_initialized {
-    matcher.span_plan = SpanPlan::new(matcher.pattern)
-    matcher.span_initialized = true
+  if matcher.span_plan is Uninitialized {
+    matcher.span_plan = engine_cache(SpanPlan::new(matcher.pattern))
   }
-  if matcher.span_plan is Some(plan) {
+  if matcher.span_plan is Ready(plan) {
     return plan.find(matcher.pattern, self.value, start, self.whole, self.word)
   }
   let decoded = match self.input.decoded {

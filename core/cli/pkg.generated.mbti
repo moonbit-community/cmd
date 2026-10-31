@@ -6,10 +6,6 @@ import {
 }
 
 // Values
-pub fn command_catalog() -> Array[CommandContract]
-
-pub fn find_contract(String) -> CommandContract?
-
 pub fn flag(String, short? : Char, repeatable? : Bool) -> OptionSpec
 
 pub fn option(String, short? : Char, repeatable? : Bool, allow_attached? : Bool) -> OptionSpec
@@ -17,13 +13,6 @@ pub fn option(String, short? : Char, repeatable? : Bool, allow_attached? : Bool)
 pub fn parse(ArrayView[String], ArrayView[OptionSpec]) -> ParsedArgs raise CliError
 
 pub fn parse_idle_timeout(String) -> Int32 raise CliError
-
-pub fn process_group_cancellation_available() -> Bool
-
-pub fn releasable(CommandContract) -> Bool
-
-#deprecated
-pub fn warn_stdin_wait(String) -> Unit
 
 // Errors
 pub(all) suberror CliError {
@@ -34,38 +23,6 @@ pub fn CliError::not_equal(Self, Self) -> Bool
 pub fn CliError::to_repr(Self) -> @debug.Repr
 
 // Types and methods
-pub(all) enum Capability {
-  FileRead
-  FileWrite
-  ProcessSpawn
-  Network
-  PermissionMutation
-  SymbolicLink
-  ProcessGroupCancellation
-} derive(Eq, @debug.Debug)
-pub fn Capability::equal(Self, Self) -> Bool
-pub fn Capability::not_equal(Self, Self) -> Bool
-pub fn Capability::to_repr(Self) -> @debug.Repr
-
-pub(all) struct CommandContract {
-  name : String
-  tier : CompatibilityTier
-  input : InputMode
-  output : OutputMode
-  exit_codes : Array[Int32]
-  capabilities : Array[Capability]
-  options : Array[String]
-}
-
-pub(all) enum CompatibilityTier {
-  Core
-  Extended
-  Restricted
-} derive(Eq, @debug.Debug)
-pub fn CompatibilityTier::equal(Self, Self) -> Bool
-pub fn CompatibilityTier::not_equal(Self, Self) -> Bool
-pub fn CompatibilityTier::to_repr(Self) -> @debug.Repr
-
 pub(all) enum ErrorKind {
   UnknownOption
   MissingOptionValue
@@ -79,16 +36,6 @@ pub fn ErrorKind::equal(Self, Self) -> Bool
 pub fn ErrorKind::not_equal(Self, Self) -> Bool
 pub fn ErrorKind::to_repr(Self) -> @debug.Repr
 
-pub(all) enum InputMode {
-  NoInput
-  OptionalStdin
-  FileOrStdin
-  StructuredInput
-} derive(Eq, @debug.Debug)
-pub fn InputMode::equal(Self, Self) -> Bool
-pub fn InputMode::not_equal(Self, Self) -> Bool
-pub fn InputMode::to_repr(Self) -> @debug.Repr
-
 pub(all) struct OptionSpec {
   name : String
   short : Char?
@@ -96,15 +43,6 @@ pub(all) struct OptionSpec {
   repeatable : Bool
   allow_attached : Bool
 }
-
-pub(all) enum OutputMode {
-  ByteStream
-  LineStream
-  StructuredOutput
-} derive(Eq, @debug.Debug)
-pub fn OutputMode::equal(Self, Self) -> Bool
-pub fn OutputMode::not_equal(Self, Self) -> Bool
-pub fn OutputMode::to_repr(Self) -> @debug.Repr
 
 pub(all) struct ParsedArgs {
   occurrences : Map[String, Array[String?]]

@@ -6,7 +6,8 @@ pub(all) struct SinkFinish {
 } derive(Debug)
 
 ///|
-/// A matching line (or lines, in multi-line mode). The matched bytes are
+/// A matching span: one line, adjacent lines for an opted-in sink, or a
+/// multi-line match. The matched bytes are
 /// `buf[buf_start + start : buf_start + end]`, where `buf[buf_start :
 /// buf_start + buf_len]` is the buffer being searched.
 ///
@@ -21,20 +22,6 @@ pub(all) struct SinkMatch {
   mut end : Int32
   mut absolute_byte_offset : Int64
   mut line_number : Int64?
-}
-
-///|
-/// Returns a copy of the matched bytes.
-pub fn SinkMatch::bytes(self : SinkMatch) -> Bytes {
-  Bytes::from_array(
-    self.buf[self.buf_start + self.start:self.buf_start + self.end],
-  )
-}
-
-///|
-/// Returns each line in the match (including terminators).
-pub fn SinkMatch::lines(self : SinkMatch) -> Array[Bytes] {
-  lines_of(self.bytes(), self.line_term.as_byte())
 }
 
 ///|
@@ -61,26 +48,55 @@ pub(all) struct SinkContext {
 }
 
 ///|
-/// Returns a copy of the context bytes.
-pub fn SinkContext::bytes(self : SinkContext) -> Bytes {
-  Bytes::from_array(self.buf[self.start:self.end])
-}
-
-///|
-pub fn SinkContext::lines(self : SinkContext) -> Array[Bytes] {
-  lines_of(self.bytes(), self.line_term.as_byte())
-}
-
-///|
 /// A sink receives search results. Returning false from any method stops
 /// the search; raising an error aborts it.
 pub(open) trait Sink {
+  // Opt in to adjacent matching lines in one callback. Reader boundaries
+  // and non-match gaps are never crossed.
+  fn coalesce_matches(Self) -> Bool = _
+  // Opt in to complete-reader line counts without per-match events. Binary,
+  // begin and finish events retain their existing path; the count cannot stop.
+  fn synchronous_count(Self) -> ((Int64) -> Unit)? = _
+  // Opt in only for complete scans whose observable result is a final summary.
+  // A larger read may detect binary data before earlier match callbacks.
+  fn bulk_scan(Self) -> Bool = _
+  // Opt in only when match handling needs no I/O or suspension. Reader loops
+  // may call this callback synchronously; all other sink events stay ordered.
+  fn synchronous_matched(Self) -> ((Searcher, SinkMatch) -> Bool)? = _
+  // A bounded sink may accept complete matches without suspension. False
+  // commits no event or output; matched receives that same pending match once.
+  fn buffered_matched(Self) -> ((Searcher, SinkMatch) -> Bool raise)? = _
   async fn matched(Self, Searcher, SinkMatch) -> Bool
   async fn context(Self, Searcher, SinkContext) -> Bool = _
   async fn context_break(Self, Searcher) -> Bool = _
   async fn binary_data(Self, Searcher, Int64) -> Bool = _
   async fn begin(Self, Searcher) -> Bool = _
   async fn finish(Self, Searcher, SinkFinish) -> Unit = _
+}
+
+///|
+impl Sink with fn coalesce_matches(_self) {
+  false
+}
+
+///|
+impl Sink with fn bulk_scan(_self) {
+  false
+}
+
+///|
+impl Sink with fn synchronous_count(_self) {
+  None
+}
+
+///|
+impl Sink with fn synchronous_matched(_self) {
+  None
+}
+
+///|
+impl Sink with fn buffered_matched(_self) {
+  None
 }
 
 ///|
@@ -106,43 +122,4 @@ impl Sink with fn begin(_self, _searcher) {
 ///|
 impl Sink with fn finish(_self, _searcher, _finish) {
   ()
-}
-
-///|
-/// A sink that calls a function with the line number and the (lossily
-/// decoded) matched text.
-pub struct Lossy {
-  priv f : (Int64, String) -> Bool raise
-}
-
-///|
-pub fn Lossy::new(f : (Int64, String) -> Bool raise) -> Lossy {
-  { f, }
-}
-
-///|
-pub impl Sink for Lossy with fn matched(self, _searcher, mat) {
-  guard mat.line_number is Some(n) else {
-    raise SearchIOError("line numbers not enabled")
-  }
-  (self.f)(n, @utf8.decode_lossy(mat.bytes()))
-}
-
-///|
-/// A sink that calls a function with the line number and matched bytes.
-pub struct BytesSink {
-  priv f : (Int64, Bytes) -> Bool raise
-}
-
-///|
-pub fn BytesSink::new(f : (Int64, Bytes) -> Bool raise) -> BytesSink {
-  { f, }
-}
-
-///|
-pub impl Sink for BytesSink with fn matched(self, _searcher, mat) {
-  guard mat.line_number is Some(n) else {
-    raise SearchIOError("line numbers not enabled")
-  }
-  (self.f)(n, mat.bytes())
 }

@@ -13,11 +13,18 @@ pub(all) enum FileType {
 } derive(Debug, Eq)
 
 ///|
+/// Information available from one directory visit. A non-directory entry
+/// still needs a kind query: it can be a file, a link, or a special entry.
+#valtype
+pub struct DirEntry {
+  name : String
+  priv is_dir : Bool
+}
+
+///|
 pub(all) struct Metadata {
   file_type : FileType
   len : Int64
-  dev : UInt64?
-  ino : UInt64?
 } derive(Debug, Eq)
 
 ///|
@@ -29,17 +36,6 @@ pub fn Metadata::is_file(self : Metadata) -> Bool {
 pub fn Metadata::is_dir(self : Metadata) -> Bool {
   self.file_type is Dir
 }
-
-///|
-pub fn Metadata::is_symlink(self : Metadata) -> Bool {
-  self.file_type is Symlink
-}
-
-///|
-pub(all) struct DirEntry {
-  name : String
-  file_type : FileType?
-} derive(Debug, Eq)
 
 ///|
 pub(all) struct FileTimes {
@@ -79,13 +75,13 @@ pub fn IOError::kind(self : IOError) -> IOErrorKind {
 }
 
 ///|
-pub fn IOError::code(self : IOError) -> Int32 {
+fn IOError::code(self : IOError) -> Int32 {
   let IOError(code~, ..) = self
   code
 }
 
 ///|
-pub fn IOError::message(self : IOError) -> String {
+fn IOError::message(self : IOError) -> String {
   let IOError(message~, ..) = self
   message
 }

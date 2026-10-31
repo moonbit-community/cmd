@@ -2,6 +2,7 @@ import {
   "cli/core/cli",
   "cli/core/platform",
   "cli/core/fsops",
+  "cli/core/fsops/mode",
   "moonbitlang/async",
   "moonbitlang/async/fs",
   "moonbitlang/async/os_error",

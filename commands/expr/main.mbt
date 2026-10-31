@@ -209,7 +209,7 @@ fn evaluate(args : Array[String]) -> String raise {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("expr 0.2.1\n")
+    @stdio.stdout.write("expr 0.2.2\n")
     return
   }
   let args = @env.args()[1:].to_owned()
@@ -220,7 +220,7 @@ async fn main {
     return
   }
   if args == ["--version"] {
-    @stdio.stdout.write("expr 0.2.1\n")
+    @stdio.stdout.write("expr 0.2.2\n")
     return
   }
   if args.get(0) == Some("--") {

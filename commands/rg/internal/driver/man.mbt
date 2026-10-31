@@ -48,7 +48,7 @@ fn generate_man_flag(flag : FlagDef, out : StringBuilder) -> Unit {
 
 ///|
 /// Generates ripgrep's man page in roff format.
-pub fn generate_man_page() -> String {
+fn generate_man_page() -> String {
   let cats : Map[String, StringBuilder] = Map([])
   for flag in flag_defs {
     let key = flag.doc_category.as_str()

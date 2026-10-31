@@ -34,7 +34,7 @@ async fn drive_input(session : @shell.Session, interactive : Bool) -> Int32 {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("sh 0.2.3\n")
+    @stdio.stdout.write("sh 0.2.4\n")
     return
   }
   if metadata_args.length() == 1 && metadata_args[0] == "--help" {
@@ -77,11 +77,13 @@ async fn main {
     } else if options && argument == "-s" {
       stdin_script = true
       index += 1
-      break
     } else if options && argument.has_prefix("-") && argument != "-" {
       @stdio.stderr.write("sh: unsupported option '\{argument}'\n")
       @sys.exit(2)
     } else {
+      if stdin_script {
+        break
+      }
       script_path = Some(argument)
       index += 1
     }

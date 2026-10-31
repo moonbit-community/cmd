@@ -4,7 +4,7 @@
 /// Return the file path of the current environment's global gitignore file.
 ///
 /// Note that the file path returned may not exist.
-pub async fn gitconfig_excludes_path() -> String? {
+async fn gitconfig_excludes_path() -> String? {
   // When GIT_CONFIG_GLOBAL is set, it replaces both $HOME/.gitconfig and
   // $XDG_CONFIG_HOME/git/config (per git 2.32+). Otherwise, git supports
   // $HOME/.gitconfig and $XDG_CONFIG_HOME/git/config simultaneously, where

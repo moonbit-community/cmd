@@ -4,6 +4,7 @@ async fn reversed(
   separator : Bytes,
   before : Bool,
   regex~ : @bytere.Pattern? = None,
+  size~ : Int32 = 3,
 ) -> Bytes {
   let root = @fs.tmpdir(prefix="cli-tac-test-")
   defer (@fs.rmdir(root, recursive=true) catch { _ => () })
@@ -17,12 +18,65 @@ async fn reversed(
   file.write(data)
   let output = @io.MemoryReader(writer => {
     match regex {
-      None => reverse_file(file, separator, before, writer~, size=3)
+      None => reverse_file(file, separator, before, writer~, size~)
       Some(pattern) => reverse_regex(file, pattern, before, writer)
     }
   })
   defer output.close()
   output.read_all().binary()
+}
+
+///|
+fn reversed_byte_oracle(data : Bytes, separator : Byte, before : Bool) -> Bytes {
+  let records : Array[BytesView] = []
+  let mut start = 0
+  for index, byte in data {
+    if byte == separator {
+      let end = index + (if before { 0 } else { 1 })
+      records.push(data[start:end])
+      start = end
+    }
+  }
+  records.push(data[start:])
+  let output = @buffer.Buffer()
+  for index = records.length() - 1; index >= 0; index = index - 1 {
+    output.write_bytes(records[index])
+  }
+  output.to_bytes()
+}
+
+///|
+async test "tac byte batches agree with forward partitions across arbitrary small blocks" {
+  for separator in [b'\n', b'\x00'] {
+    for number in 0..<64 {
+      let data = Bytes::makei(6, index => {
+        if (number & (1 << index)) == 0 {
+          b'a'
+        } else {
+          separator
+        }
+      })
+      for before in [false, true] {
+        assert_eq(
+          reversed(data, Bytes::from_array([separator]), before),
+          reversed_byte_oracle(data, separator, before),
+        )
+      }
+    }
+    for length in [65535, 65536, 65537, 131073] {
+      let data = b"head" +
+        Bytes::from_array([separator]) +
+        Bytes::make(length, b'x') +
+        Bytes::from_array([separator]) +
+        b"tail"
+      for before in [false, true] {
+        assert_eq(
+          reversed(data, Bytes::from_array([separator]), before, size=65536),
+          reversed_byte_oracle(data, separator, before),
+        )
+      }
+    }
+  }
 }
 
 ///|
@@ -98,7 +152,13 @@ async test "tac byte ranges retain 64-bit sparse offsets" {
   let start = 4294967296L - 2L
   file.write_at(b"tail", position=start)
   let output = @io.MemoryReader(writer => {
-    write_range(file, start, start + 4L, FixedArray::make(3, b'\x00'), writer)
+    @tempio.copy_range(
+      file,
+      start,
+      start + 4L,
+      FixedArray::make(3, b'\x00'),
+      writer,
+    )
   })
   defer output.close()
   assert_eq(output.read_all().binary(), b"tail")

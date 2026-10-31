@@ -1,27 +1,4 @@
 ///|
-fn parse_mode(text : String) -> Int32 raise {
-  let digits = if text.has_prefix("0o") || text.has_prefix("0O") {
-    text[2:].to_owned()
-  } else {
-    text
-  }
-  if digits == "" {
-    fail("empty mode")
-  }
-  let mut value = 0
-  for digit in digits {
-    if !(digit is ('0'..<='7')) {
-      fail("invalid mode")
-    }
-    value = value * 8 + digit.to_int() - '0'.to_int()
-    if value > 0o7777 {
-      fail("mode out of range")
-    }
-  }
-  value
-}
-
-///|
 fn mode_text(mode : Int32) -> String {
   let digits = "01234567"
   let out = StringBuilder()
@@ -155,7 +132,7 @@ async fn chmod_numeric_path(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("chmod 0.2.3\n")
+    @stdio.stdout.write("chmod 0.2.4\n")
     return
   }
   let args = @env.args()[1:]
@@ -191,7 +168,7 @@ async fn main {
   }
   let (selected_mode, symbolic_mode) = match parsed.operands.get(0) {
     Some(value) => {
-      let numeric = try parse_mode(value) catch {
+      let numeric = try @mode.parse_octal_mode(value) catch {
         _ => None
       } noraise {
         mode => Some(mode)

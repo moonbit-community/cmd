@@ -1,11 +1,12 @@
 import {
   "cli/rg/internal/regex/syntax",
   "cli/rg/internal/regex/unicode",
-  "cli/rg/internal/memchr",
+  "cli/core/bytesearch" @memchr,
 }
 
 warnings = "-implicit_impl_as_method"
 
 import {
+  "moonbitlang/async",
   "cli/rg/internal/regex/internal/testdata",
 } for "test"

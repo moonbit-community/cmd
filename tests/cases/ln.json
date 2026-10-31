@@ -27,7 +27,25 @@
         "identity",
         "symlink-target"
       ],
-      "source_version": "GNU coreutils 9.11"
+      "source_version": "GNU coreutils 9.11",
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "payload\n",
+          "unchanged": true
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "source",
+          "different_identity_as": "source"
+        }
+      ]
     },
     {
       "id": "p8-ln-relative",
@@ -56,7 +74,25 @@
       "host_platforms": [
         "posix"
       ],
-      "source_version": "GNU coreutils 9.11"
+      "source_version": "GNU coreutils 9.11",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "target",
+          "kind": "file",
+          "content_text": "x",
+          "unchanged": true
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "target",
+          "different_identity_as": "target"
+        }
+      ],
+      "comparison": "contract",
+      "oracle": true
     },
     {
       "id": "compat-filesystem-symbolic-link",
@@ -135,22 +171,6 @@
         "windows"
       ],
       "expected_rejection": "unsupported capability"
-    },
-    {
-      "id": "compat-catalog-line-134",
-      "command": "ln",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
-      "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "repair-alias-ln-symbolic",
@@ -286,6 +306,9 @@
           "kind": "file",
           "content_text": "old"
         }
+      ],
+      "aliases": [
+        "repair-fs-ln-interactive-last-eof"
       ]
     },
     {
@@ -492,53 +515,6 @@
       ]
     },
     {
-      "id": "repair-fs-ln-interactive-last-eof",
-      "command": "ln",
-      "args": [
-        "-s",
-        "-f",
-        "-i",
-        "source",
-        "destination"
-      ],
-      "stdin_text": "",
-      "files": [
-        {
-          "path": "source",
-          "content_text": "new"
-        },
-        {
-          "path": "destination",
-          "content_text": "old"
-        }
-      ],
-      "environment": {
-        "LC_ALL": "C",
-        "TZ": "UTC"
-      },
-      "expected_status": 1,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "ln: replace 'destination'? ",
-      "normalizations": [],
-      "comparison": "contract",
-      "oracle": true,
-      "source_version": "GNU coreutils 9.11 Linux CI 38117528667: interactive refusal returns 1",
-      "host_platforms": [
-        "posix"
-      ],
-      "expected_files": [
-        {
-          "path": "source",
-          "content_text": "new"
-        },
-        {
-          "path": "destination",
-          "kind": "file",
-          "content_text": "old"
-        }
-      ]
-    },
-    {
       "id": "release-metadata-ln-help",
       "command": "ln",
       "args": [
@@ -555,7 +531,12 @@
       ],
       "source_version": "workspace cli/ln@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: ln -s [-f|-i] [-r] [-n] [-T] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\n       ln -s [-f|-i] [-r] [-n] [-b|--backup[=CONTROL]] [-S SUFFIX] -t DIRECTORY TARGET...\n      --help      display this help and exit\n      --version   display version and exit\nThe last -f/--force or -i/--interactive selects overwrite behavior.\nDeclining an interactive overwrite returns status 1 without replacing the link.\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-134"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-ln-version",
@@ -575,6 +556,96 @@
       "source_version": "workspace cli/ln@0.2.4 metadata contract",
       "expected_stdout_text": "ln 0.2.4\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "quality-ln-relative-cross-directory",
+      "command": "ln",
+      "args": [
+        "-s",
+        "-r",
+        "targets/file",
+        "links/link"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "targets/file",
+          "content_text": "x"
+        },
+        {
+          "path": "links",
+          "kind": "directory"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "targets/file",
+          "kind": "file",
+          "content_text": "x",
+          "unchanged": true
+        },
+        {
+          "path": "links/link",
+          "kind": "symlink",
+          "target": "../targets/file"
+        }
+      ],
+      "coverage": [
+        "relative"
+      ]
+    },
+    {
+      "id": "quality-ln-relative-control",
+      "command": "ln",
+      "args": [
+        "-s",
+        "targets/file",
+        "links/link"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "targets/file",
+          "content_text": "x"
+        },
+        {
+          "path": "links",
+          "kind": "directory"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "targets/file",
+          "kind": "file",
+          "content_text": "x",
+          "unchanged": true
+        },
+        {
+          "path": "links/link",
+          "kind": "symlink",
+          "target": "targets/file"
+        }
+      ]
     }
   ]
 }

@@ -14,151 +14,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-stdin-positional",
-      "command": "sh",
-      "args": [
-        "-s",
-        "shell-name",
-        "value"
-      ],
-      "stdin_text": "printf '%s|%s\\n' \"$0\" \"$1\"\n",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-command-substitution",
-      "command": "sh",
-      "args": [
-        "-c",
-        "printf '%s\\n' \"$(printf inner)\""
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-heredoc",
-      "command": "sh",
-      "args": [
-        "-c",
-        "cat <<EOF\nheredoc\nEOF"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-if",
-      "command": "sh",
-      "args": [
-        "-c",
-        "if false; then printf no; else printf yes; fi"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-case",
-      "command": "sh",
-      "args": [
-        "-c",
-        "case flower in f*) printf match;; *) printf no;; esac"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-for",
-      "command": "sh",
-      "args": [
-        "-c",
-        "for x in a b; do printf '%s' \"$x\"; done"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-while-until",
-      "command": "sh",
-      "args": [
-        "-c",
-        "while false; do printf no; done; until true; do printf no; done; printf yes"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-function-return",
-      "command": "sh",
-      "args": [
-        "-c",
-        "f() { printf '%s' \"$1\"; return 7; }; f ok"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 7,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-grouping",
-      "command": "sh",
-      "args": [
-        "-c",
-        "(printf one); { printf two; }"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-parameter-length",
-      "command": "sh",
-      "args": [
-        "-c",
-        "VALUE=abcd; printf '%s' \"${#VALUE}\""
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase5-sh-shift",
-      "command": "sh",
-      "args": [
-        "-c",
-        "set -- first second; shift; printf '%s' \"$1\""
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "value\n"
     },
     {
       "id": "p0-sh-public-error",
@@ -181,7 +41,14 @@
         "command"
       ],
       "expected_stdout_text": "",
-      "expected_stderr_text": "sh: unexpected token after command\n"
+      "expected_stderr_text": "sh: unexpected token after command\n",
+      "oracle": false,
+      "expected_rejection": "unexpected token after command",
+      "aliases": [
+        "compat-shell-array-boundary"
+      ],
+      "expected_stderr_contains": "unexpected token after command",
+      "diagnostic_reason": "The parser diagnostic identifies the rejected structure; status and stdout are exact."
     },
     {
       "id": "p0-sh-stdin-script",
@@ -196,10 +63,13 @@
       "environment": {},
       "expected_status": 0,
       "normalizations": [],
-      "comparison": "exact",
+      "comparison": "contract",
       "coverage": [
         "stdin-script"
-      ]
+      ],
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "shell\n"
     },
     {
       "id": "sh-command-substitution-trailing-newlines",
@@ -276,7 +146,11 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "printf '%s|%s\\n' \"$0\" \"$1\"\n",
       "expected_stdout_text": "sh|shell-name\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "phase5-sh-stdin-positional"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-catalog-line-234",
@@ -308,7 +182,12 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "inner\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "phase5-sh-command-substitution"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "compat-shell-line-12",
@@ -324,7 +203,12 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "heredoc\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "phase5-sh-heredoc"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "compat-shell-line-21",
@@ -340,7 +224,12 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "yes",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "phase5-sh-if"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "compat-shell-line-30",
@@ -356,7 +245,12 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "match",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "phase5-sh-case"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "compat-shell-line-39",
@@ -372,7 +266,12 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "ab",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "phase5-sh-for"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "compat-shell-line-48",
@@ -388,7 +287,12 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "yes",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "phase5-sh-while-until"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "compat-shell-line-59",
@@ -404,7 +308,12 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "ok",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "phase5-sh-function-return"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "compat-shell-line-68",
@@ -420,7 +329,12 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "onetwo",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "phase5-sh-grouping"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "compat-shell-line-77",
@@ -436,7 +350,12 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "4",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "phase5-sh-parameter-length"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "compat-shell-line-86",
@@ -452,7 +371,12 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "second",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "phase5-sh-shift"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "compat-shell-line-95",
@@ -468,8 +392,7 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "",
-      "expected_stderr_contains": "",
-      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+      "expected_stderr_text": ""
     },
     {
       "id": "compat-shell-line-103",
@@ -503,28 +426,6 @@
       "expected_stderr_text": ""
     },
     {
-      "id": "compat-shell-array-boundary",
-      "command": "sh",
-      "args": [
-        "-c",
-        "arr=(one two)"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 2,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_text": "",
-      "expected_rejection": "unexpected token after command",
-      "expected_stderr_contains": "unexpected token after command",
-      "diagnostic_reason": "The parser diagnostic identifies the rejected structure; status and stdout are exact.",
-      "forbidden_stderr": [
-        "ShellError",
-        "cli/core/shell"
-      ]
-    },
-    {
       "id": "release-metadata-sh-help",
       "command": "sh",
       "args": [
@@ -539,7 +440,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/sh@0.2.3 metadata contract",
+      "source_version": "workspace cli/sh@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: sh [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]\n  -c SOURCE   execute shell source\n  -s          read commands from standard input\n  -i          enable a persistent line-oriented interactive session\n  --help      display this help and exit\n  --version   display version and exit\nSupports a bounded shell language; terminal job control is unavailable.\n",
       "expected_stderr_text": ""
     },
@@ -558,9 +459,55 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/sh@0.2.3 metadata contract",
-      "expected_stdout_text": "sh 0.2.3\n",
+      "source_version": "workspace cli/sh@0.2.4 metadata contract",
+      "expected_stdout_text": "sh 0.2.4\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "proof-sh-stdin-positional-contract",
+      "command": "sh",
+      "args": [
+        "-s",
+        "--",
+        "left",
+        "right"
+      ],
+      "stdin_text": "printf '%s|%s\\n' \"$1\" \"$2\"\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "left|right\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "stdin",
+        "positional-parameters",
+        "option-terminator"
+      ],
+      "source_version": "Independent shell stdin positional expectation without unstable argv0; candidate and immutable oracle execution pending"
+    },
+    {
+      "id": "proof-sh-stdin-positional-no-terminator",
+      "command": "sh",
+      "args": [
+        "-s",
+        "left",
+        "right"
+      ],
+      "stdin_text": "printf '%s|%s\\n' \"$1\" \"$2\"\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "left|right\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "stdin-script",
+        "positional-parameters"
+      ],
+      "source_version": "Independent stdin-script positional definition paired with the option-terminator case"
     }
   ]
 }

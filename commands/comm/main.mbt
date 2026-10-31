@@ -36,6 +36,7 @@ priv struct CommOrder {
 
 ///|
 async fn next_checked(
+  output : @stream.BlockWriter,
   scanner : @stream.LineScanner,
   state : CommOrder,
   name : String,
@@ -54,6 +55,7 @@ async fn next_checked(
   if !state.warned &&
     state.descending &&
     (order_mode > 0 || (order_mode == 0 && unpairable.val)) {
+    output.flush()
     if order_mode > 0 {
       raise CommError("\{name} is not in sorted order")
     }
@@ -64,12 +66,17 @@ async fn next_checked(
 }
 
 ///|
-async fn write_line(prefix : String, line : Bytes, delimiter : Byte) -> Unit {
+async fn write_line(
+  writer : &@io.Writer,
+  prefix : String,
+  line : Bytes,
+  delimiter : Byte,
+) -> Unit {
   if prefix != "" {
-    @stdio.stdout.write(prefix)
+    writer.write(prefix)
   }
-  @stdio.stdout.write(line)
-  @stdio.stdout.write(Bytes::from_array([delimiter]))
+  writer.write(line)
+  writer.write(Bytes::from_array([delimiter]))
 }
 
 ///|
@@ -83,17 +90,20 @@ async fn merge_readers(
   record_delimiter : Byte,
   column_delimiter : String,
   total : Bool,
+  writer~ : &@io.Writer = @stdio.stdout,
 ) -> Unit {
+  let output = @stream.BlockWriter::new(writer)
+  defer output.flush()
   let scanner1 = @stream.LineScanner::new(reader1, delimiter=record_delimiter)
   let scanner2 = @stream.LineScanner::new(reader2, delimiter=record_delimiter)
   let state1 : CommOrder = { previous: None, descending: false, warned: false, }
   let state2 : CommOrder = { previous: None, descending: false, warned: false, }
   let unpairable = Ref(false)
   let mut line1 = next_checked(
-    scanner1, state1, "file 1", order_mode, unpairable,
+    output, scanner1, state1, "file 1", order_mode, unpairable,
   )
   let mut line2 = next_checked(
-    scanner2, state2, "file 2", order_mode, unpairable,
+    output, scanner2, state2, "file 2", order_mode, unpairable,
   )
   let col2_prefix = if hide1 { "" } else { column_delimiter }
   let col3_prefix = (if hide1 { "" } else { column_delimiter }) +
@@ -107,43 +117,56 @@ async fn merge_readers(
       unpairable.val = true
       count1 += 1
       if !hide1 {
-        write_line("", left.data, record_delimiter)
+        write_line(output, "", left.data, record_delimiter)
       }
-      line1 = next_checked(scanner1, state1, "file 1", order_mode, unpairable)
+      line1 = next_checked(
+        output, scanner1, state1, "file 1", order_mode, unpairable,
+      )
     } else if order > 0 {
       unpairable.val = true
       count2 += 1
       if !hide2 {
-        write_line(col2_prefix, right.data, record_delimiter)
+        write_line(output, col2_prefix, right.data, record_delimiter)
       }
-      line2 = next_checked(scanner2, state2, "file 2", order_mode, unpairable)
+      line2 = next_checked(
+        output, scanner2, state2, "file 2", order_mode, unpairable,
+      )
     } else {
       count3 += 1
       if !hide3 {
-        write_line(col3_prefix, left.data, record_delimiter)
+        write_line(output, col3_prefix, left.data, record_delimiter)
       }
-      line1 = next_checked(scanner1, state1, "file 1", order_mode, unpairable)
-      line2 = next_checked(scanner2, state2, "file 2", order_mode, unpairable)
+      line1 = next_checked(
+        output, scanner1, state1, "file 1", order_mode, unpairable,
+      )
+      line2 = next_checked(
+        output, scanner2, state2, "file 2", order_mode, unpairable,
+      )
     }
   }
   while line1 is Some(left) {
     unpairable.val = true
     count1 += 1
     if !hide1 {
-      write_line("", left.data, record_delimiter)
+      write_line(output, "", left.data, record_delimiter)
     }
-    line1 = next_checked(scanner1, state1, "file 1", order_mode, unpairable)
+    line1 = next_checked(
+      output, scanner1, state1, "file 1", order_mode, unpairable,
+    )
   }
   while line2 is Some(right) {
     unpairable.val = true
     count2 += 1
     if !hide2 {
-      write_line(col2_prefix, right.data, record_delimiter)
+      write_line(output, col2_prefix, right.data, record_delimiter)
     }
-    line2 = next_checked(scanner2, state2, "file 2", order_mode, unpairable)
+    line2 = next_checked(
+      output, scanner2, state2, "file 2", order_mode, unpairable,
+    )
   }
   if total {
     write_line(
+      output,
       "\{count1}\{column_delimiter}\{count2}\{column_delimiter}\{count3}\{column_delimiter}",
       b"total",
       record_delimiter,
@@ -158,7 +181,7 @@ async fn merge_readers(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("comm 0.2.3\n")
+    @stdio.stdout.write("comm 0.2.4\n")
     return
   }
   let args = @env.args()[1:]

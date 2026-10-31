@@ -4,6 +4,14 @@ This package contains the shared HTTP streaming path for `curl` and `wget`.
 It does not invoke a host network executable. Network access remains visible
 to the configured network policy.
 
+The local source API uses `transfer` as its execution entrypoint. The unused
+legacy `fetch*` wrappers and their option/error types have been removed; their
+file-output, HTTP-error and idle-timeout assertions now exercise `transfer`.
+Request preparation owns persistent/per-request header maps and records whether
+authorization was supplied before adding URL credentials. Response framing,
+redirect policy and output lifetime remain separate responsibilities. These
+internal API changes do not alter published coordinates.
+
 The `transfer` state machine parses HTTP/HTTPS URLs without using private
 runtime APIs, resolves relative redirects according to RFC 3986, closes every
 hop, detects loops, strips sensitive headers across origins, and streams both
